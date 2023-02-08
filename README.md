@@ -14,7 +14,6 @@ A select list of Optimism data dashboards:
 - [AttestationStation Usage](https://app.flipsidecrypto.com/dashboard/optimism-attestation-station-data-station-WAT27_)
 
 ### DeFi
-- [DEX Market (by hildobby)](https://dune.com/hildobby/optimism-dexs)
 - [Perpetuals Market (by rplust)](https://dune.com/rplust/Perpetuals-Trading-on-Optimism)
 
 ### NFTs
