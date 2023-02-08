@@ -15,6 +15,9 @@ A select list of Optimism data dashboards:
 
 ### DeFi
 - [Perpetuals Market (by rplust)](https://dune.com/rplust/Perpetuals-Trading-on-Optimism)
+- [Total Value Locked in DeFi (by Defillama)](https://defillama.com/chain/Optimism)
+- [App Fees & Revenue (by Defillama)](https://defillama.com/fees/chains/optimism)
+- [DEX Trade Volume (by Defillama)](https://defillama.com/dexs/chains/optimism)
 
 ### NFTs
 - [NFT Marketplaces and Collection Volume](https://dune.com/oplabspbc/optimism-nft-secondary-marketplaces)
@@ -22,6 +25,7 @@ A select list of Optimism data dashboards:
 
 ### Protocol Economics
 - [L2 Transaction Fees, L1 Security Costs, Sequencer Fees](https://dune.com/optimismfnd/optimism-l1-batch-submission-fees-security-costs)
+- [Protocol Revenue (by TokenTerminal)](https://tokenterminal.com/terminal/projects/optimism/revenue-share)
 
 ### Transaction Costs
 - [Transaction Fee Savings Calculator](https://dune.com/optimismfnd/How-Much-Could-You-Save-on-Optimism-Fee-Savings-Calculator)
