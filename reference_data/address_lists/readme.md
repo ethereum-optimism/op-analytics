@@ -13,3 +13,9 @@ Airdrop #2 (Feb 2023) address lists, category eligibility, and total OP eligible
 - `address`: User address
 - `total_op_eligible_to_claim`: Total OP the address received. *Note: These numbers need to be divided by 10^18 to get to the # of OP (they are in raw form, not decimal adjusted)*
 - Additional field descriptions are available in [Optimism Airdrop #2 Docs](https://community.optimism.io/docs/governance/airdrop-2/) for explanations.
+
+### op_airdrop2_simple_list.csv
+Simplified Airdrop #2 (Feb 2023) address list with total OP eligible to claim. See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-2/) for explanations.
+- `address`: User address
+- `total_op`: Total OP the address received in human readable form (i.e. already decimal adjusted)
+- Additional field descriptions are available in [Optimism Airdrop #2 Docs](https://community.optimism.io/docs/governance/airdrop-2/) for explanations.
