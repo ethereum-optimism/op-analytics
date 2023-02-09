@@ -19,3 +19,6 @@ Simplified Airdrop #2 (Feb 2023) address list with total OP eligible to claim. S
 - `address`: User address
 - `total_op`: Total OP the address received in human readable form (i.e. already decimal adjusted)
 - Additional field descriptions are available in [Optimism Airdrop #2 Docs](https://community.optimism.io/docs/governance/airdrop-2/) for explanations.
+- Dashboards
+  - [@theericstone on Flipside - Optimism Airdrop Round 2](https://twitter.com/theericstone/status/1623787729023639552?s=20&t=W5R0wRLql6FHBuCQ3Ne0xQ)
+  - [@oplabspbc on Dune - OP Airdrop #2 Distributions](https://dune.com/oplabspbc/op-airdrop-2-distributions)
