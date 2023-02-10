@@ -21,5 +21,5 @@ Simplified Airdrop #2 (Feb 2023) address list with total OP eligible to claim. S
 - Additional field descriptions are available in [Optimism Airdrop #2 Docs](https://community.optimism.io/docs/governance/airdrop-2/) for explanations.
 - **Dashboards**
   - [@theericstone on Flipside / Optimism Airdrop Round 2](https://flipsidecrypto.xyz/theericstone-pine/optimism-airdrop-round-2-qu3UsW)
-  - [@oplabspbc on Dune / OP Airdrop #2 Distributions](https://dune.com/oplabspbc/op-airdrop-2-distributions)
   - [@springzhang on Dune / OP Airdrop #2 Summary](https://dune.com/springzhang/op-airdrop-2-summary)
+  - [@oplabspbc on Dune / OP Airdrop #2 Distributions](https://dune.com/oplabspbc/op-airdrop-2-distributions)
