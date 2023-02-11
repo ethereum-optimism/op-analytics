@@ -1,5 +1,5 @@
 # OP Analytics
-On-Chain Data, Utilities, References, and other Analytics on Optimism
+On-Chain Data, Utilities, References, and other Analytics on Optimism. Join the conversation with other numba nerds in the #analytics channel in the Optimism Discord.
 
 ## I'm Looking for Data About:
 A select list of Optimism data dashboards:
