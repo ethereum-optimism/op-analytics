@@ -33,3 +33,18 @@ A select list of Optimism data dashboards:
 ### User Onboarding
 - [CEX & On/Off-Ramp Usage](https://dune.com/oplabspbc/optimism-onoff-ramp-usage)
 - [App Growth on Optimism After Quests](https://dune.com/oplabspbc/optimism-quests-project-usage-growth)
+
+
+## Configs
+For scripts which use APIs from providers with API keys, add the lines like below in a .env file (Replace with your API key - remember to add to gitignore):
+```
+DUNE_API_KEY = 'Your API Key'
+FLIPSIDE_SHROOMDK_KEY = 'Your API Key'
+```
+
+## Common Requirements
+Common python packages used include
+- pandas
+- requests
+- os
+- [dune-client](https://github.com/cowprotocol/dune-client)
