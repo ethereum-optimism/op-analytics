@@ -4,7 +4,7 @@
 # In[ ]:
 
 
-get_ipython().system(' jupyter nbconvert --to python subgraph_utils.ipynb')
+# ! jupyter nbconvert --to python subgraph_utils.ipynb
 # This notebook seres for testing functions that we can then export to a .py file
 
 
