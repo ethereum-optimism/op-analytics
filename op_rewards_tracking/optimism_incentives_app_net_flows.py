@@ -55,6 +55,7 @@ protocols = pd.read_csv('inputs/' + 'op_incentive_protocols.csv')
 protocols['contracts'] = protocols['contracts'].apply(pu.str_to_list)
 # display(protocols)
 
+# If we need to map Defillama slugs to our unified App Name (Dune-Based) - Not case sensitive
 protocol_name_mapping = pd.DataFrame(
     [
         ['aave-v3','aave'],
@@ -77,7 +78,7 @@ protocols = protocols.merge(protocol_name_mapping,on='slug', how = 'left')
 
 # For subgraphs
 protocols['protocol'] = protocols['slug']
-protocols['app_name'] = protocols['app_name'].combine_first(protocols['slug'])
+protocols['app_name'] = (protocols['app_name'].combine_first(protocols['slug'])).str.replace('-',' ').str.title()
 protocols['id_format'] = protocols['slug'].str.replace('-',' ').str.title()
 protocols['program_name'] = np.where( ( (protocols['name'] == '') )
                                     , protocols['id_format']
@@ -830,5 +831,5 @@ print("yay")
 # In[ ]:
 
 
-get_ipython().system(' jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb')
+# ! jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb
 
