@@ -1,60 +1,60 @@
-include_in_summary,slug,num_op_override,start_date,end_date,name,op_source,data_source,contracts,source_slug
-1,velodrome,3000000,7/13/22,11/17/22,Velodrome #1 ,Partner Fund,defillama,,
-1,pooltogether,450000,7/22/22,,,Partner Fund,defillama,,
-1,lyra,,8/2/22,,,Gov Fund - Phase 0,defillama,,
-1,rubicon,,7/15/22,,,Gov Fund - Phase 0,defillama,,
-1,perpetual-protocol,,7/14/22,,,Gov Fund - Phase 0,defillama,,
-1,thales,,7/15/22,,,Gov Fund - Phase 0,defillama,,
-1,aave-v3,5000000,8/4/22,11/4/22,Aave - Liquidity Mining,Partner Fund,defillama,,
-1,wepiggy,,8/3/22,,,Gov Fund - Phase 0,defillama,,
-1,stargate,,8/5/22,,,Gov Fund - Phase 0,defillama,,
-1,pika-protocol,,8/29/22,,,Gov Fund - Phase 0,defillama,,
-1,pickle,,9/9/22,,Pickle Finance,Gov Fund - Season 1,defillama,,
-1,aelin,,9/12/22,9/14/22,,Gov Fund - Phase 0,defillama,,
-1,polynomial-protocol,,9/14/22,,,Gov Fund - Phase 0,defillama,,
-1,xtoken,,9/19/22,,,Gov Fund - Season 1,defillama,,
-1,hop-protocol,,9/22/22,,,Gov Fund - Phase 0,defillama,,
-1,beethoven-x,,9/29/22,,,Gov Fund - Season 1,defillama,,
-1,beefy,,10/24/22,,,Gov Fund - Season 1,defillama,,
-1,hundred-finance,,11/28/22,,,Gov Fund - Season 1,defillama,,
-1,dforce,,11/30/22,,,Gov Fund - Season 1,defillama,,
-1,cbridge,,8/13/22,,Celer,Gov Fund - Phase 0,defillama,,
-1,clipper,,1/23/23,,,Gov Fund - Phase 0,defillama,,
-1,sushi-trident,,3/3/23,,,Gov Fund - Season 1,defillama,,
-0,uniswap-v3,50000,10/26/22,11/21/22,Uniswap LM - Phase 1,Gov Fund - Phase 0,defillama,,
-1,arrakis-finance,16666.66667,10/26/22,11/21/22,Uniswap LM - Phase 1,Gov Fund - Phase 0,defillama,,
-1,gamma,16666.66667,10/26/22,11/21/22,Uniswap LM - Phase 1,Gov Fund - Phase 0,defillama,,
-1,xtoken,16666.66667,10/26/22,11/21/22,Uniswap LM - Phase 1,Gov Fund - Phase 0,defillama,,
-0,uniswap-v3,100000,1/16/23,2/8/23,Uniswap LM - Phase 2,Gov Fund - Phase 0,defillama,,
-1,arrakis-finance,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Gov Fund - Phase 0,defillama,,
-1,gamma,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Gov Fund - Phase 0,defillama,,
-1,xtoken,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Gov Fund - Phase 0,defillama,,
-1,defiedge,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Gov Fund - Phase 0,defillama,,
-1,qidao,,8/26/22,,sUSDC/MAI: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0xd62c9d8a3d4fd98b27caaefe3571782a3af0a737'],velodrome
-1,qidao,,8/26/22,,vUSDC/MAI: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x0B5581d5db524Eaf0006A0BafD1e8D206c70Cc0d'],velodrome
-1,dhedge,,2/3/23,,DHT/OP: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x827ecd158b76f63010e8f129b19fe64a85e97e95'],velodrome
-1,rocket-pool,,11/9/22,2/8/23,sWETH/rETH: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x69f795e2d9249021798645d784229e5bec2a5a25'],velodrome
-1,rocket-pool,,2/8/23,,vWETH/rETH: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x985612ff2c9409174fedcff23d4f4761af124f88'],velodrome
-1,rocket-pool,,11/9/22,,WETH/rETH: Beethoven X,Gov Fund - Season 1,pool-subgraph-messari,['0x4fd63966879300cafafbb35d157dc5229278ed23'],beethoven-x
-0,synthetix,,8/25/22,,All Synthetix Curve Pools,Gov Fund - Phase 0,pool-subgraph-curve,"['0x7bc5728bc2b59b45a58d9a576e2ffc5f0505b35e', '0x061b87122ed14b9526a813209c8a59a633257bab']",curve
-1,synthetix,,8/25/22,,sUSD-3Crv: Curve,Gov Fund - Phase 0,pool-subgraph-curve,['0x061b87122ed14b9526a813209c8a59a633257bab'],curve
-1,synthetix,,8/25/22,,sETH-ETH: Curve,Gov Fund - Phase 0,pool-subgraph-curve,['0x7bc5728bc2b59b45a58d9a576e2ffc5f0505b35e'],curve
-1,overnight,,1/10/23,,USD+/USDC: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x67124355cce2ad7a8ea283e990612ebe12730175'],velodrome
-1,overnight,,1/10/23,,BPT-USD+: Beethoven X,Gov Fund - Season 1,pool-subgraph-messari,['0xb1c9ac57594e9b1ec0f3787d9f6744ef4cb0a024'],beethoven-x
-1,overnight,,1/30/23,,USD+/DOLA: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0xa99817d2d286c894f8f3888096a5616d06f20d46'],velodrome
-1,overnight,,1/30/23,,USD+/LUSD: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x8a9cd3dce710e90177b4332c108e159a15736a0f'],velodrome
-0,synthetix,,9/27/22,,All Synthetix Velo Pools,Gov Fund - Phase 0,pool-subgraph-velodrome,"['0x9056eb7ca982a5dd65a584189994e6a27318067d', '0xd16232ad60188b68076a235c65d692090caba155', '0xfd7fddfc0a729ecf45fb6b12fa3b71a575e1966f']",velodrome
-1,synthetix,,9/27/22,,USDC/SNX: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0x9056eb7ca982a5dd65a584189994e6a27318067d'],velodrome
-1,synthetix,,9/27/22,,USDC/sUSD: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0xd16232ad60188b68076a235c65d692090caba155'],velodrome
-1,synthetix,,9/27/22,,ETH/sETH: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0xfd7fddfc0a729ecf45fb6b12fa3b71a575e1966f'],velodrome
-1,synthetix,,10/25/22,,SNX Bridge: Hop,Gov Fund - Phase 0,pool-defillama-hop,['SNX'],hop
-1,layer2dao,,7/20/22,8/22/22,L2DAO/OP: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0xfc77e39de40e54f820e313039207dc850e4c9e60'],velodrome
-1,beefy,,9/13/22,,BIFI/OP: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0x81f638e5d063618fc5f6a976e48e9b803b3240c0'],velodrome
-1,beefy,,9/13/22,,BIFI/WETH: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0x17d99c78F1AA7870ab30FB3E93b2fE9F6502d192'],velodrome
-1,velodrome,,11/24/22,,Velodrome #2 (Tour de OP),Gov Fund - Season 2,defillama,,
-1,revert-compoundor,,11/3/22,,,Gov Fund - Season 2,defillama,,
-1,dhedge,,12/21/22,,,Gov Fund - Season 2,defillama,,
-1,alchemix,,1/8/23,,alETH/WETH: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x6fd5bee1ddb4dbbb0b7368b080ab99b8ba765902'],velodrome
-1,angle,,2/20/23,,agEUR/MAI: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x389d9aea762fd5f9fbd4434d8e11295f15097b67'],velodrome
-1,angle,,2/20/23,,OP/agEUR: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0xbda45a58bac8b327d02798a9184a850ceed9a477'],velodrome
-1,angle,,2/20/23,,USDC/agEUR: Uniswap,Gov Fund - Season 1,pool-subgraph-messari,['0xf44acaa38be5e965c5ddf374e7a2ba270e580684'],uniswap-v3
+include_in_summary,slug,num_op_override,num_op,start_date,end_date,name,op_source,data_source,contracts,source_slug
+1,velodrome,3000000,3000000,7/13/22,11/17/22,Velodrome #1 ,Partner Fund,defillama,,
+1,pooltogether,450000,450000,7/22/22,,,Partner Fund,defillama,,
+1,lyra,,3000000,8/2/22,,,Gov Fund - Phase 0,defillama,,
+1,rubicon,,900000,7/15/22,,,Gov Fund - Phase 0,defillama,,
+1,perpetual-protocol,,9000000,7/14/22,,,Gov Fund - Phase 0,defillama,,
+1,thales,,900000,7/15/22,,,Gov Fund - Phase 0,defillama,,
+1,aave-v3,5000000,5000000,8/4/22,11/4/22,Aave - Liquidity Mining,Partner Fund,defillama,,
+1,wepiggy,,300000,8/3/22,,,Gov Fund - Phase 0,defillama,,
+1,stargate,,1000000,8/5/22,,,Gov Fund - Phase 0,defillama,,
+1,pika-protocol,,900000,8/29/22,,,Gov Fund - Phase 0,defillama,,
+1,pickle,,200000,9/9/22,,Pickle Finance,Gov Fund - Season 1,defillama,,
+1,aelin,,900000,9/12/22,9/14/22,,Gov Fund - Phase 0,defillama,,
+1,polynomial-protocol,,900000,9/14/22,,,Gov Fund - Phase 0,defillama,,
+1,xtoken,,900000,9/19/22,,,Gov Fund - Season 1,defillama,,
+1,hop-protocol,,1000000,9/22/22,,,Gov Fund - Phase 0,defillama,,
+1,beethoven-x,,500000,9/29/22,,,Gov Fund - Season 1,defillama,,
+1,beefy,,325000,10/24/22,,,Gov Fund - Season 1,defillama,,
+1,hundred-finance,,300000,11/28/22,,,Gov Fund - Season 1,defillama,,
+1,dforce,,300000,11/30/22,,,Gov Fund - Season 1,defillama,,
+1,cbridge,,300000,8/13/22,,Celer,Gov Fund - Phase 0,defillama,,
+1,clipper,,300000,1/23/23,,,Gov Fund - Phase 0,defillama,,
+1,sushi-trident,,504000,3/3/23,,,Gov Fund - Season 1,defillama,,
+0,uniswap-v3,50000,50000,10/26/22,11/21/22,Uniswap LM - Phase 1,Gov Fund - Phase 0,defillama,,
+1,arrakis-finance,16666.66667,16666.66667,10/26/22,11/21/22,Uniswap LM - Phase 1,Gov Fund - Phase 0,defillama,,
+1,gamma,16666.66667,16666.66667,10/26/22,11/21/22,Uniswap LM - Phase 1,Gov Fund - Phase 0,defillama,,
+1,xtoken,16666.66667,16666.66667,10/26/22,11/21/22,Uniswap LM - Phase 1,Gov Fund - Phase 0,defillama,,
+0,uniswap-v3,100000,100000,1/16/23,2/8/23,Uniswap LM - Phase 2,Gov Fund - Phase 0,defillama,,
+1,arrakis-finance,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Gov Fund - Phase 0,defillama,,
+1,gamma,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Gov Fund - Phase 0,defillama,,
+1,xtoken,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Gov Fund - Phase 0,defillama,,
+1,defiedge,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Gov Fund - Phase 0,defillama,,
+1,qidao,,,8/26/22,,sUSDC/MAI: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0xd62c9d8a3d4fd98b27caaefe3571782a3af0a737'],velodrome
+1,qidao,,,8/26/22,,vUSDC/MAI: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x0B5581d5db524Eaf0006A0BafD1e8D206c70Cc0d'],velodrome
+1,dhedge,,,2/3/23,,DHT/OP: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x827ecd158b76f63010e8f129b19fe64a85e97e95'],velodrome
+1,rocket-pool,,,11/9/22,2/8/23,sWETH/rETH: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x69f795e2d9249021798645d784229e5bec2a5a25'],velodrome
+1,rocket-pool,,,2/8/23,,vWETH/rETH: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x985612ff2c9409174fedcff23d4f4761af124f88'],velodrome
+1,rocket-pool,,,11/9/22,,WETH/rETH: Beethoven X,Gov Fund - Season 1,pool-subgraph-messari,['0x4fd63966879300cafafbb35d157dc5229278ed23'],beethoven-x
+0,synthetix,,,8/25/22,,All Synthetix Curve Pools,Gov Fund - Phase 0,pool-subgraph-curve,"['0x7bc5728bc2b59b45a58d9a576e2ffc5f0505b35e', '0x061b87122ed14b9526a813209c8a59a633257bab']",curve
+1,synthetix,,,8/25/22,,sUSD-3Crv: Curve,Gov Fund - Phase 0,pool-subgraph-curve,['0x061b87122ed14b9526a813209c8a59a633257bab'],curve
+1,synthetix,,,8/25/22,,sETH-ETH: Curve,Gov Fund - Phase 0,pool-subgraph-curve,['0x7bc5728bc2b59b45a58d9a576e2ffc5f0505b35e'],curve
+1,overnight,,,1/10/23,,USD+/USDC: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x67124355cce2ad7a8ea283e990612ebe12730175'],velodrome
+1,overnight,,,1/10/23,,BPT-USD+: Beethoven X,Gov Fund - Season 1,pool-subgraph-messari,['0xb1c9ac57594e9b1ec0f3787d9f6744ef4cb0a024'],beethoven-x
+1,overnight,,,1/30/23,,USD+/DOLA: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0xa99817d2d286c894f8f3888096a5616d06f20d46'],velodrome
+1,overnight,,,1/30/23,,USD+/LUSD: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x8a9cd3dce710e90177b4332c108e159a15736a0f'],velodrome
+0,synthetix,,,9/27/22,,All Synthetix Velo Pools,Gov Fund - Phase 0,pool-subgraph-velodrome,"['0x9056eb7ca982a5dd65a584189994e6a27318067d', '0xd16232ad60188b68076a235c65d692090caba155', '0xfd7fddfc0a729ecf45fb6b12fa3b71a575e1966f']",velodrome
+1,synthetix,,,9/27/22,,USDC/SNX: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0x9056eb7ca982a5dd65a584189994e6a27318067d'],velodrome
+1,synthetix,,,9/27/22,,USDC/sUSD: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0xd16232ad60188b68076a235c65d692090caba155'],velodrome
+1,synthetix,,,9/27/22,,ETH/sETH: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0xfd7fddfc0a729ecf45fb6b12fa3b71a575e1966f'],velodrome
+1,synthetix,,,10/25/22,,SNX Bridge: Hop,Gov Fund - Phase 0,pool-defillama-hop,['SNX'],hop
+1,layer2dao,,,7/20/22,8/22/22,L2DAO/OP: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0xfc77e39de40e54f820e313039207dc850e4c9e60'],velodrome
+1,beefy,,,9/13/22,,BIFI/OP: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0x81f638e5d063618fc5f6a976e48e9b803b3240c0'],velodrome
+1,beefy,,,9/13/22,,BIFI/WETH: Velodrome,Gov Fund - Phase 0,pool-subgraph-velodrome,['0x17d99c78F1AA7870ab30FB3E93b2fE9F6502d192'],velodrome
+1,velodrome,,4000000,11/24/22,,Velodrome #2 (Tour de OP),Gov Fund - Season 2,defillama,,
+1,revert-compoundor,,240000,11/3/22,,,Gov Fund - Season 2,defillama,,
+1,dhedge,,350000,12/21/22,,,Gov Fund - Season 2,defillama,,
+1,alchemix,,,1/8/23,,alETH/WETH: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x6fd5bee1ddb4dbbb0b7368b080ab99b8ba765902'],velodrome
+1,angle,,,2/20/23,,agEUR/MAI: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0x389d9aea762fd5f9fbd4434d8e11295f15097b67'],velodrome
+1,angle,,,2/20/23,,OP/agEUR: Velodrome,Gov Fund - Season 1,pool-subgraph-velodrome,['0xbda45a58bac8b327d02798a9184a850ceed9a477'],velodrome
+1,angle,,,2/20/23,,USDC/agEUR: Uniswap,Gov Fund - Season 1,pool-subgraph-messari,['0xf44acaa38be5e965c5ddf374e7a2ba270e580684'],uniswap-v3

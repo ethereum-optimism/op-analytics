@@ -83,7 +83,7 @@ protocols['program_name'] = np.where( ( (protocols['name'] == '') )
                                     , protocols['id_format']
                                     , protocols['id_format'] + ' - ' + protocols['name']
                                     )
-protocols['top_level_name'] = np.where( protocols['name'] == ''
+protocols['top_level_name'] = np.where( protocols['name'].isna()
                                     , protocols['id_format']
                                     , protocols['name']
                                     )
@@ -91,7 +91,7 @@ protocols['top_level_name'] = np.where( protocols['name'] == ''
 
 protocols = protocols.sort_values(by='start_date', ascending=True)
                     
-# display(protocols)
+display(protocols)
 
 
 # In[ ]:
@@ -343,7 +343,7 @@ for c in join_cols:
         netdf_df[c+'_join'] = netdf_df[c].str[:-1].where(netdf_df[c].str[-1] == '*', netdf_df[c])
         protocols[c+'_join'] = protocols[c]
 
-protocol_cols = ['include_in_summary','op_source','start_date','end_date','num_op'] + join_cols_join
+protocol_cols = ['include_in_summary','op_source','start_date','end_date','num_op','num_op_override'] + join_cols_join
 
 netdf_df = netdf_df.merge(protocols[protocol_cols], on=join_cols_join)
 
@@ -372,7 +372,7 @@ for d in date_cols:
 # In[ ]:
 
 
-summary_cols = ['cumul_net_dollar_flow','cumul_last_price_net_dollar_flow','cumul_net_price_stock_change','num_op']
+summary_cols = ['cumul_net_dollar_flow','cumul_last_price_net_dollar_flow','cumul_net_price_stock_change','num_op_override']
 
 netdf_df['program_rank_desc'] = netdf_df.groupby(['protocol', 'program_name'])['date'].\
                             rank(method='dense',ascending=False).astype(int)
@@ -524,12 +524,13 @@ for df in df_list:
                         df[col] = df[col].astype(float)
                         df[col] = np.where(df[col] == 0, np.NaN, df[col])
 
-        df['cumul_flows_per_op_at_program_end'] = df['cumul_net_dollar_flow_at_program_end'] / df['num_op_at_program_end']
+# Per OP Metrics Migrated to combined deployment measures
+        # df['cumul_flows_per_op_at_program_end'] = df['cumul_net_dollar_flow_at_program_end'] / df['num_op_at_program_end']
         
-        df['cumul_flows_per_op_latest'] = df['cumul_net_dollar_flow'] / df['num_op']
+        # df['cumul_flows_per_op_latest'] = df['cumul_net_dollar_flow'] / df['num_op']
 
-        df['last_price_net_dollar_flows_per_op_at_program_end'] = df['cumul_last_price_net_dollar_flow_at_program_end'] / df['num_op_at_program_end']
-        df['last_price_net_dollar_flows_per_op_latest'] = df['cumul_last_price_net_dollar_flow'] / df['num_op']
+        # df['last_price_net_dollar_flows_per_op_at_program_end'] = df['cumul_last_price_net_dollar_flow_at_program_end'] / df['num_op_at_program_end']
+        # df['last_price_net_dollar_flows_per_op_latest'] = df['cumul_last_price_net_dollar_flow'] / df['num_op']
 
         df['flows_retention'] = \
                         df['cumul_net_dollar_flow_if_ended'] / df['cumul_net_dollar_flow_at_program_end'] \
@@ -546,12 +547,15 @@ for df in df_list:
     # display(df)
     #get df name
     col_list = [
-        'date','include_in_summary','top_level_name','program_name','app_name','num_op','period','op_source','start_date','end_date'
+        'date','include_in_summary','top_level_name','program_name','app_name','num_op','num_op_override','period','op_source','start_date','end_date'
         ,'cumul_net_dollar_flow_at_program_end'
         ,'cumul_net_dollar_flow'
-        ,'cumul_flows_per_op_at_program_end','cumul_last_price_net_dollar_flow_at_program_end'
-        ,'cumul_flows_per_op_latest', 'cumul_last_price_net_dollar_flow'
-        , 'last_price_net_dollar_flows_per_op_at_program_end','last_price_net_dollar_flows_per_op_latest'
+        # ,'cumul_flows_per_op_at_program_end'
+        ,'cumul_last_price_net_dollar_flow_at_program_end'
+        # ,'cumul_flows_per_op_latest'
+        , 'cumul_last_price_net_dollar_flow'
+        # , 'last_price_net_dollar_flows_per_op_at_program_end'
+        # ,'last_price_net_dollar_flows_per_op_latest'
         ,'flows_retention', 'last_price_net_dollar_flows_retention'
     ]
     summary_exclude_list = ['date','top_level_name','program_name','app_name','period','start_date','end_date']
@@ -826,5 +830,5 @@ print("yay")
 # In[ ]:
 
 
-# ! jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb
+get_ipython().system(' jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb')
 
