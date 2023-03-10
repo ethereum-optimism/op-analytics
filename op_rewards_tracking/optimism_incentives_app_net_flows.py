@@ -34,11 +34,12 @@ import pandas_utils as pu
 
 
 pwd = os.getcwd()
-if 'L2 TVL' in pwd:
+# Verify that our path is right
+if 'op_rewards_tracking' in pwd:
     prepend = ''
 else:
-    prepend = 'L2 TVL/'
-
+    prepend = 'op_rewards_tracking/'
+print(pwd)
 # if TVL by token is not available, do we fallback on raw TVL (sensitive to token prices)?
 do_fallback_on_raw_tvl = True
 str_fallback_indicator = '' #Dont append any indicator yet, since it screws up joins
@@ -197,9 +198,6 @@ df_df_sub = pd.concat(dfs_sub)
 df_df_comb = pd.concat([df_dfl, df_df_sub])
 #remove * from protocol
 df_df_comb['protocol'] = df_df_comb['protocol'].str[:-1].where(df_df_comb['protocol'].str[-1] == '*', df_df_comb['protocol'])
-# display(
-#         df_dfl[(df_dfl['protocol']=='pooltogether')]
-#         )
 
 
 # display(df_df_comb)
@@ -589,6 +587,12 @@ for df in df_list:
 
     if not os.path.exists(prepend + "csv_outputs"):
         os.mkdir(prepend + "csv_outputs")
+    if not os.path.exists(prepend + "img_outputs"):
+        os.mkdir(prepend + "img_outputs")
+        os.mkdir(prepend + "img_outputs/overall")
+        os.mkdir(prepend + "img_outputs/overall/png")
+        os.mkdir(prepend + "img_outputs/overall/svg")
+        os.mkdir(prepend + "img_outputs/overall/html")
     df_format.to_csv(prepend + 'csv_outputs/' + html_name + '.csv', index=False)
 
     format_cols = [
@@ -671,6 +675,11 @@ for df in df_list:
     # print(type(pd_html))
     # open(prepend + "img_outputs/app/html/" + html_name + ".html", "w").write(pd_html)
 
+    if not os.path.exists(prepend+'img_outputs/app'):
+        os.mkdir(prepend+'img_outputs/app')
+        os.mkdir(prepend+'img_outputs/app/png')
+        os.mkdir(prepend+'img_outputs/app/svg')
+        os.mkdir(prepend+'img_outputs/app/html')
 
     fig_tbl.write_html(prepend+'img_outputs/app/html/'+html_name+'.html', include_plotlyjs='cdn')
 
@@ -687,29 +696,20 @@ netdf_df = netdf_df[netdf_df['date'] <= pd.to_datetime("today").floor('d')]
 
 
 fig = px.line(netdf_df, x="date", y="net_dollar_flow", color="program_name", \
-             title="Daily Net Dollar Flow since Program Announcement",\
+             title="Daily Liquidity Flows Since Program Announcement",\
             labels={
                      "date": "Day",
-                     "net_dollar_flow": "Net Dollar Flow (N$F)"
+                     "net_dollar_flow": "Net Liquidity Flows (USD)"
                  }
             )
 fig.update_layout(
     legend_title="App Name"
 )
 fig.update_layout(yaxis_tickprefix = '$')
-fig.write_image(prepend + "img_outputs/svg/daily_ndf.svg")
-fig.write_image(prepend + "img_outputs/png/daily_ndf.png")
-fig.write_html(prepend + "img_outputs/daily_ndf.html", include_plotlyjs='cdn')
+fig.write_image(prepend + "img_outputs/overall/svg/daily_ndf.svg")
+fig.write_image(prepend + "img_outputs/overall/png/daily_ndf.png")
+fig.write_html(prepend + "img_outputs/overall/daily_ndf.html", include_plotlyjs='cdn')
 
-# cumul_fig = px.area(netdf_df, x="date", y="cumul_net_dollar_flow", color="program_name", \
-#              title="Cumulative Dollar Flow since Program Announcement",\
-#                    labels={
-#                      "date": "Day",
-#                      "cumul_net_dollar_flow": "Cumulative Net Dollar Flow (N$F)"
-#                  }
-#             ,areamode='group')
-# cumul_fig.update_layout(yaxis_tickprefix = '$')
-# cumul_fig_app.show()
 
 
 cumul_fig = go.Figure()
@@ -723,15 +723,15 @@ for p in proto_names:
 
 cumul_fig.update_layout(yaxis_tickprefix = '$')
 cumul_fig.update_layout(
-    title="Cumulative Net Flows since Program Announcement<br><sup>For Ended Programs, we show continue to show flows through 30 days after program end. | * Shows raw TVL change, rather than flows</sup>",
+    title="Cumulative Net Liquidity Flows Since Program Announcement<br><sup>For Ended Programs, we show continue to show flows through 30 days after program end. | * Shows raw TVL change, rather than flows</sup>",
     xaxis_title="Day",
-    yaxis_title="Cumulative Net Flows (USD)",
+    yaxis_title="Cumulative Net Liquidity Flows (USD)",
     legend_title="App Name",
 #     color_discrete_map=px.colors.qualitative.G10
 )
-cumul_fig.write_image(prepend + "img_outputs/svg/cumul_ndf.svg") #prepend + 
-cumul_fig.write_image(prepend + "img_outputs/png/cumul_ndf.png") #prepend + 
-cumul_fig.write_html(prepend + "img_outputs/cumul_ndf.html", include_plotlyjs='cdn')
+cumul_fig.write_image(prepend + "img_outputs/overall/svg/cumul_ndf.svg") #prepend + 
+cumul_fig.write_image(prepend + "img_outputs/overall/png/cumul_ndf.png") #prepend + 
+cumul_fig.write_html(prepend + "img_outputs/overall/cumul_ndf.html", include_plotlyjs='cdn')
 
 
 fig_last = go.Figure()
@@ -751,9 +751,9 @@ fig_last.update_layout(
     legend_title="App Name",
 #     color_discrete_map=px.colors.qualitative.G10
 )
-fig_last.write_image(prepend + "img_outputs/svg/cumul_ndf_last_price.svg")
-fig_last.write_image(prepend + "img_outputs/png/cumul_ndf_last_price.png")
-fig_last.write_html(prepend + "img_outputs/cumul_ndf_last_price.html", include_plotlyjs='cdn')
+fig_last.write_image(prepend + "img_outputs/overall/svg/cumul_ndf_last_price.svg")
+fig_last.write_image(prepend + "img_outputs/overall/png/cumul_ndf_last_price.png")
+fig_last.write_html(prepend + "img_outputs/overall/cumul_ndf_last_price.html", include_plotlyjs='cdn')
 # cumul_fig.show()
 
 
