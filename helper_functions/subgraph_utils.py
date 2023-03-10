@@ -328,17 +328,16 @@ def get_messari_format_pool_tvl(slug, pool_id, chain = 'optimism', min_ts = 0, m
         snap_lst['token_order'] = snap_lst.groupby('pool_date_id')['pool_date_id'].cumcount() + 1
         pool_lst['token_order'] = pool_lst.groupby('pool_id')['pool_id'].cumcount() + 1
 
-        snap_lst['dt'] = pd.to_datetime(snap_lst['timestamp'], unit='s').dt.date
+        snap_lst['date'] = pd.to_datetime(snap_lst['timestamp'], unit='s').dt.date
 
         data_df = snap_lst.merge(pool_lst,on='token_order',how='left')
-        data_df = data_df.merge(prices,on=['inputTokens_id','dt'],how='left')
+        data_df = data_df.merge(prices,on=['inputTokens_id','date'],how='left')
         data_df['token_price'] = data_df['price'].combine_first(data_df['inputTokens_lastPriceUSD']) #prefer defillama's 'price'
 
         data_df['token_balance'] = data_df['inputTokenBalances'] / 10**data_df['inputTokens_decimals']
         data_df['usd_balance'] = data_df['token_balance'] * data_df['token_price']
 
         data_df = data_df.rename(columns={
-                'dt':'date',
                 'symbol':'token',
                 'token_balance':'token_value',
                 'usd_balance':'usd_value'
