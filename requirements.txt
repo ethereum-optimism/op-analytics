@@ -1,0 +1,4 @@
+panda>=1.1.5
+requests=="*"
+jupyter=="*"
+dune-client==0.3.0
