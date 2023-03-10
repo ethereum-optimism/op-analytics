@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 # ! pip install pandas
@@ -12,7 +12,7 @@
 # ! pip freeze = requirements.txt
 
 
-# In[ ]:
+# In[2]:
 
 
 import pandas as pd
@@ -30,7 +30,7 @@ import defillama_utils as dfl
 import pandas_utils as pu
 
 
-# In[ ]:
+# In[3]:
 
 
 pwd = os.getcwd()
@@ -45,7 +45,7 @@ do_fallback_on_raw_tvl = True
 str_fallback_indicator = '' #Dont append any indicator yet, since it screws up joins
 
 
-# In[ ]:
+# In[4]:
 
 
 # Protocol Incentive Start Dates
@@ -55,6 +55,7 @@ protocols = pd.read_csv('inputs/' + 'op_incentive_protocols.csv')
 protocols['contracts'] = protocols['contracts'].apply(pu.str_to_list)
 # display(protocols)
 
+# If we need to map Defillama slugs to our unified App Name (Dune-Based) - Not case sensitive
 protocol_name_mapping = pd.DataFrame(
     [
         ['aave-v3','aave'],
@@ -77,7 +78,7 @@ protocols = protocols.merge(protocol_name_mapping,on='slug', how = 'left')
 
 # For subgraphs
 protocols['protocol'] = protocols['slug']
-protocols['app_name'] = protocols['app_name'].combine_first(protocols['slug'])
+protocols['app_name'] = (protocols['app_name'].combine_first(protocols['slug'])).str.replace('-',' ').str.title()
 protocols['id_format'] = protocols['slug'].str.replace('-',' ').str.title()
 protocols['program_name'] = np.where( ( (protocols['name'] == '') )
                                     , protocols['id_format']
@@ -94,7 +95,7 @@ protocols = protocols.sort_values(by='start_date', ascending=True)
 display(protocols)
 
 
-# In[ ]:
+# In[5]:
 
 
 # Pull Data
@@ -110,7 +111,7 @@ df_dfl = dfl.get_range(dfl_slugs[['slug']],['Optimism'], fallback_on_raw_tvl= do
 df_dfl['is_raw_tvl'] = np.where(df_dfl['slug'].str.endswith('*'), 1, 0)
 
 
-# In[ ]:
+# In[6]:
 
 
 # Format Columns
@@ -138,7 +139,7 @@ df_dfl = df_dfl[['date', 'token', 'token_value', 'usd_value', 'protocol', 'start
 # display(df_dfl)
 
 
-# In[ ]:
+# In[7]:
 
 
 subg_protocols = protocols[protocols['data_source'].str.contains('pool-')].copy()
@@ -149,7 +150,7 @@ subg_protocols['df_source'] = subg_protocols['data_source'].str.split('-').str[-
 # display(subg_protocols)
 
 
-# In[ ]:
+# In[8]:
 
 
 dfs_sub = []
@@ -185,14 +186,14 @@ df_df_sub = pd.concat(dfs_sub)
 # display(df_df_sub[df_df_sub['program_name'].str.contains('Velo')])
 
 
-# In[ ]:
+# In[9]:
 
 
 # display(df_df_sub.sort_values(by='date'))
 # display(df_dfl[df_dfl['protocol']=='defiedge'])
 
 
-# In[ ]:
+# In[10]:
 
 
 df_df_comb = pd.concat([df_dfl, df_df_sub])
@@ -240,7 +241,7 @@ df_df = df_df.groupby(['date','token','protocol','start_date','end_date_30','pro
 #         )
 
 
-# In[ ]:
+# In[11]:
 
 
 data_df = df_df.copy()#merge(cg_df, on=['date','token'],how='inner')
@@ -262,7 +263,7 @@ last_df = last_df[['token','protocol','program_name','last_price_usd']]
 # display(last_df)
 
 
-# In[ ]:
+# In[12]:
 
 
 data_df = data_df.merge(last_df, on=['token','protocol','program_name'], how='left')
@@ -290,7 +291,7 @@ data_df['net_price_stock_change'] = data_df['last_token_value'] * data_df['net_p
 # display(data_df)
 
 
-# In[ ]:
+# In[13]:
 
 
 #filter before start date
@@ -304,7 +305,7 @@ if not os.path.exists(prepend + "csv_outputs"):
 data_df.to_csv(prepend + 'csv_outputs/' + 'tvl_flows_by_token.csv')
 
 
-# In[ ]:
+# In[14]:
 
 
 # data_df[data_df['protocol']=='perpetual-protocol'].sort_values(by='date')
@@ -313,7 +314,7 @@ data_df.to_csv(prepend + 'csv_outputs/' + 'tvl_flows_by_token.csv')
 # data_df[(data_df['protocol'] == 'pooltogether') & (data_df['date'] >= '2022-10-06') & (data_df['date'] <= '2022-10-12')].tail(10)
 
 
-# In[ ]:
+# In[15]:
 
 
 netdf_df = data_df[['date','protocol','program_name','net_dollar_flow','net_price_stock_change','last_price_net_dollar_flow','usd_value','app_name','top_level_name']]
@@ -369,7 +370,7 @@ for d in date_cols:
 # display(netdf_df[netdf_df['protocol'] == 'velodrome'])
 
 
-# In[ ]:
+# In[16]:
 
 
 summary_cols = ['cumul_net_dollar_flow','cumul_last_price_net_dollar_flow','cumul_net_price_stock_change','num_op_override']
@@ -404,14 +405,14 @@ for s in summary_cols:
 # display(netdf_df[netdf_df['protocol'] == 'hundred-finance'].sort_values(by='program_rank_desc'))
 
 
-# In[ ]:
+# In[17]:
 
 
 # netdf_df[(netdf_df['date'] >= '2022-10-06') & (netdf_df['date'] <= '2022-10-12')].tail(10)
 # netdf_df.tail()
 
 
-# In[ ]:
+# In[18]:
 
 
 during_str = 'During Program'
@@ -430,7 +431,7 @@ netdf_df = netdf_df.sort_values(by=['top_level_name','program_name','app_name'],
 # print(netdf_df.columns)
 
 
-# In[ ]:
+# In[19]:
 
 
 latest_data_df = netdf_df[netdf_df['program_rank_desc'] == 1]
@@ -452,7 +453,7 @@ latest_data_df = latest_data_df.sort_values(by='start_date', ascending=False)
 # display(latest_data_df)
 
 
-# In[ ]:
+# In[20]:
 
 
 # Generate agg summary df
@@ -469,7 +470,7 @@ season_summary_completed_raw = season_summary_pds[season_summary_pds['end_date']
 
 
 
-# In[ ]:
+# In[21]:
 
 
 # SEASON SUMMARY
@@ -502,14 +503,14 @@ season_summary_completed.reset_index(inplace=True)
 # season_summary.head()
 
 
-# In[ ]:
+# In[22]:
 
 
 # print(latest_data_df.columns)
 # print(season_summary.columns)
 
 
-# In[ ]:
+# In[23]:
 
 
 df_list = [latest_data_df, season_summary, season_summary_completed]
@@ -540,7 +541,7 @@ for df in df_list:
                         * np.where(df['cumul_last_price_net_dollar_flow'] < 0, -1, 1)
 
 
-# In[ ]:
+# In[24]:
 
 
 for df in df_list:
@@ -688,7 +689,7 @@ for df in df_list:
     fig_tbl.write_html(prepend+'img_outputs/app/html/'+html_name+'.html', include_plotlyjs='cdn')
 
 
-# In[ ]:
+# In[25]:
 
 
 #Filter for Charts
@@ -696,7 +697,7 @@ for df in df_list:
 netdf_df = netdf_df[netdf_df['date'] <= pd.to_datetime("today").floor('d')]
 
 
-# In[ ]:
+# In[26]:
 
 
 fig = px.line(netdf_df, x="date", y="net_dollar_flow", color="program_name", \
@@ -761,7 +762,7 @@ fig_last.write_html(prepend + "img_outputs/overall/cumul_ndf_last_price.html", i
 # cumul_fig.show()
 
 
-# In[ ]:
+# In[27]:
 
 
 # Program-Specific Charts
@@ -820,15 +821,15 @@ for val in value_list:
       # cumul_fig_app.show()
 
 
-# In[ ]:
+# In[28]:
 
 
 fig_last.show()
 print("yay")
 
 
-# In[ ]:
+# In[29]:
 
 
-get_ipython().system(' jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb')
+# ! jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb
 
