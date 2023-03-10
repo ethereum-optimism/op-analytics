@@ -546,7 +546,7 @@ for df in df_list:
     # display(df)
     #get df name
     col_list = [
-        'date','include_in_summary','program_name','app_name','num_op','period','op_source','start_date','end_date'
+        'date','include_in_summary','top_level_name','program_name','app_name','num_op','period','op_source','start_date','end_date'
         ,'cumul_net_dollar_flow_at_program_end'
         ,'cumul_net_dollar_flow'
         ,'cumul_flows_per_op_at_program_end','cumul_last_price_net_dollar_flow_at_program_end'
@@ -554,7 +554,7 @@ for df in df_list:
         , 'last_price_net_dollar_flows_per_op_at_program_end','last_price_net_dollar_flows_per_op_latest'
         ,'flows_retention', 'last_price_net_dollar_flows_retention'
     ]
-    summary_exclude_list = ['date','program_name','app_name','period','start_date','end_date']
+    summary_exclude_list = ['date','top_level_name','program_name','app_name','period','start_date','end_date']
     sort_cols = ['Start','# OP']
 
     if df.name == 'op_summer_latest':
