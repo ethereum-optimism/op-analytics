@@ -2,3 +2,4 @@ reference_data/.DS_Store
 .DS_Store
 *.env
 *.ini
+Pipfile.lock
