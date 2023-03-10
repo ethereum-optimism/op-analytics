@@ -43,9 +43,9 @@ DUNE_API_KEY = 'Your API Key'
 FLIPSIDE_SHROOMDK_KEY = 'Your API Key'
 ```
 
-## Common Requirements
-Common python packages used include
-- pandas
-- requests
-- os
-- [dune-client](https://github.com/cowprotocol/dune-client)
+# Installation
+```
+python -m pip install pipenv
+pipenv install
+```
+See `Pipfile` for all the requirements
