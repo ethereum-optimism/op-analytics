@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-def format_number(num, decimal=1):
+def format_number(num: float, decimal: int=1) -> str: 
     """
     Convert a number to a string in the format of K, M, B, T.
     """
