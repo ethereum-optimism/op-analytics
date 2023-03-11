@@ -52,3 +52,15 @@ Common python packages used include
 - [subgrounds](https://github.com/0xPlaygrounds/subgrounds)
 - [web3.py](https://github.com/ethereum/web3.py)
 - [ethereum-etl](https://github.com/blockchain-etl/ethereum-etl)
+
+## Select Optimism Data Abstractions
+**[Dune Spellbook](https://github.com/duneanalytics/spellbook/tree/main/models)**: *Tables can be used in [Dune Analytics](https://dune.com/browse/dashboards)*
+- [`contracts_optimism.contract_mapping`](https://github.com/duneanalytics/spellbook/tree/main/models/contracts/optimism): Near exhaustive mappings of contracts to project names on Optimism - uses decoded contracts in Dune (`optimism.contracts`) and known deployer addresses to map contracts.
+- [`dex.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/dex): Aggregation of swaps across many decentralized exchanges
+- [`nft.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/nft): Aggregation of swaps across many NFT marketplaces
+- [`perpetual.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/perpetual): Aggregation of swaps across many perpetuals exchanges (by rplust)
+
+**[Flipside Crypto - Optimism Models > Gold-Level Tables](https://github.com/FlipsideCrypto/optimism-models/tree/main/models/gold)**: *Tables can be used in [Flipside](https://flipsidecrypto.xyz/)*
+- [`optimism.core.ez_dex_swaps`](https://github.com/FlipsideCrypto/optimism-models/tree/main/models/gold/dex): Aggregation of swaps across many decentralized exchanges
+- [`optimism.core.ez_nft_sales`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__ez_nft_sales.sql): Aggregation of swaps across many NFT marketplaces
+- [`optimism.core.fact_delegations`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__fact_delegations.sql): Aggregation of OP governance delegation events.
