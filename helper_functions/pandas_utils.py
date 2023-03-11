@@ -1,7 +1,19 @@
-# https://www.thepythoncode.com/article/convert-pandas-dataframe-to-html-table-python
 import pandas as pd
 import datetime
 import ast
+import requests as r
+import json
+
+def api_json_to_df(api_url):
+    inf = pd.DataFrame( r.get(api_url).json() )
+    return inf
+
+def get_element_from_json_column(col,element):
+    col = col.apply(json.dumps)
+    # extract the 'name' element from the JSON data
+    return pd.json_normalize(col.apply(json.loads))[element]
+
+# https://www.thepythoncode.com/article/convert-pandas-dataframe-to-html-table-python
 
 def generate_html(dataframe: pd.DataFrame):
     # get the table HTML from the dataframe
