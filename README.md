@@ -45,7 +45,10 @@ FLIPSIDE_SHROOMDK_KEY = 'Your API Key'
 
 ## Common Requirements
 Common python packages used include
-- pandas
-- requests
-- os
+- [pandas](https://github.com/pandas-dev/pandas)
+- [requests](https://github.com/psf/requests)
+- [aiohttp-retry](https://github.com/inyutin/aiohttp_retry)
 - [dune-client](https://github.com/cowprotocol/dune-client)
+- [subgrounds](https://github.com/0xPlaygrounds/subgrounds)
+- [web3.py](https://github.com/ethereum/web3.py)
+- [ethereum-etl](https://github.com/blockchain-etl/ethereum-etl)
