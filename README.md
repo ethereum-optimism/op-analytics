@@ -5,8 +5,8 @@ On-Chain Data, Utilities, References, and other Analytics on Optimism. Join the 
 A select list of Optimism data dashboards:
 
 ### Network Usage
-- [Protocol Metrics (i.e. transactions, fees, on-chain value)](https://dune.com/optimismfnd/Optimism)
-- [Popular Apps and Project Usage Trends](https://dune.com/optimismfnd/Optimism-Project-Usage-Trends)
+- [Optimism Protocol Metrics (i.e. transactions, fees, on-chain value)](https://dune.com/optimismfnd/Optimism)
+- [Popular Apps on Optimism and Project Usage Trends](https://dune.com/optimismfnd/Optimism-Project-Usage-Trends)
 
 ### Token House & Citizen's House Governance
 - [OP Token House Delegates](https://dune.com/optimismfnd/optimism-op-token-house)
