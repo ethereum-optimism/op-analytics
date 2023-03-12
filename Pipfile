@@ -13,6 +13,7 @@ loguru = "*"
 plotly = "*"
 aiohttp = "*"
 aiohttp_retry = "*"
+subgrounds = "*"
 
 [dev-packages]
 
