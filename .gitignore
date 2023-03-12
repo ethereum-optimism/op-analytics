@@ -2,4 +2,5 @@ reference_data/.DS_Store
 .DS_Store
 *.env
 *.ini
+Pipfile.lock
 op_rewards_tracking/csv_outputs/tvl_flows_by_token.csv
