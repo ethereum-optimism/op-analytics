@@ -5,8 +5,8 @@ On-Chain Data, Utilities, References, and other Analytics on Optimism. Join the 
 A select list of Optimism data dashboards:
 
 ### Network Usage
-- [Protocol Metrics (i.e. transactions, fees, on-chain value)](https://dune.com/optimismfnd/Optimism)
-- [Popular Apps and Project Usage Trends](https://dune.com/optimismfnd/Optimism-Project-Usage-Trends)
+- [Optimism Protocol Metrics (i.e. transactions, fees, on-chain value)](https://dune.com/optimismfnd/Optimism)
+- [Popular Apps on Optimism and Project Usage Trends](https://dune.com/optimismfnd/Optimism-Project-Usage-Trends)
 
 ### Token House & Citizen's House Governance
 - [OP Token House Delegates](https://dune.com/optimismfnd/optimism-op-token-house)
@@ -43,9 +43,31 @@ DUNE_API_KEY = 'Your API Key'
 FLIPSIDE_SHROOMDK_KEY = 'Your API Key'
 ```
 
-# Installation
+## Common Requirements
+Common python packages used include
+- [pandas](https://github.com/pandas-dev/pandas)
+- [requests](https://github.com/psf/requests)
+- [aiohttp-retry](https://github.com/inyutin/aiohttp_retry)
+- [dune-client](https://github.com/cowprotocol/dune-client)
+- [subgrounds](https://github.com/0xPlaygrounds/subgrounds)
+- [web3.py](https://github.com/ethereum/web3.py)
+- [ethereum-etl](https://github.com/blockchain-etl/ethereum-etl)
+
+## Installation
 ```
 python -m pip install pipenv
 pipenv install
 ```
 See `Pipfile` for all the requirements
+
+## Select Optimism Data Abstractions
+**[Dune Spellbook](https://github.com/duneanalytics/spellbook/tree/main/models)**: *Tables can be used in [Dune Analytics](https://dune.com/browse/dashboards)*
+- [`contracts_optimism.contract_mapping`](https://github.com/duneanalytics/spellbook/tree/main/models/contracts/optimism): Near exhaustive mappings of contracts to project names on Optimism - uses decoded contracts in Dune (`optimism.contracts`) and known deployer addresses to map contracts.
+- [`dex.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/dex): Aggregation of swaps across many decentralized exchanges
+- [`nft.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/nft): Aggregation of swaps across many NFT marketplaces
+- [`perpetual.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/perpetual): Aggregation of swaps across many perpetuals exchanges (by rplust)
+
+**[Flipside Crypto - Optimism Models > Gold-Level Tables](https://github.com/FlipsideCrypto/optimism-models/tree/main/models/gold)**: *Tables can be used in [Flipside](https://flipsidecrypto.xyz/)*
+- [`optimism.core.ez_dex_swaps`](https://github.com/FlipsideCrypto/optimism-models/tree/main/models/gold/dex): Aggregation of swaps across many decentralized exchanges
+- [`optimism.core.ez_nft_sales`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__ez_nft_sales.sql): Aggregation of swaps across many NFT marketplaces
+- [`optimism.core.fact_delegations`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__fact_delegations.sql): Aggregation of OP governance delegation events.
