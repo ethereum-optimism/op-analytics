@@ -1,3 +1,5 @@
+# NOTE: A lot of tech debt / legacy naming here. Things may not make sense. To be cleaned up!
+
 import pandas as pd
 import asyncio, aiohttp, nest_asyncio
 from aiohttp_retry import RetryClient, ExponentialRetry
