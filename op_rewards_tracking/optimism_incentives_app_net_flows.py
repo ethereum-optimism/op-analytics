@@ -696,6 +696,7 @@ for df in df_list:
 #Filter for Charts
 
 netdf_df = netdf_df[netdf_df['date'] <= pd.to_datetime("today").floor('d')]
+netdf_df = netdf_df[netdf_df['include_in_summary'] == 1]
 
 
 # In[ ]:
