@@ -53,6 +53,13 @@ Common python packages used include
 - [web3.py](https://github.com/ethereum/web3.py)
 - [ethereum-etl](https://github.com/blockchain-etl/ethereum-etl)
 
+## Installation
+```
+python -m pip install pipenv
+pipenv install
+```
+See `Pipfile` for all the requirements
+
 ## Select Optimism Data Abstractions
 **[Dune Spellbook](https://github.com/duneanalytics/spellbook/tree/main/models)**: *Tables can be used in [Dune Analytics](https://dune.com/browse/dashboards)*
 - [`contracts_optimism.contract_mapping`](https://github.com/duneanalytics/spellbook/tree/main/models/contracts/optimism): Near exhaustive mappings of contracts to project names on Optimism - uses decoded contracts in Dune (`optimism.contracts`) and known deployer addresses to map contracts.
