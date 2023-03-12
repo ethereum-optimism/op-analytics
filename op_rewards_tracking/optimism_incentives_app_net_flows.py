@@ -79,8 +79,8 @@ protocols = protocols.merge(protocol_name_mapping,on='slug', how = 'left')
 # For subgraphs
 protocols['protocol'] = protocols['slug']
 protocols['app_name'] = (protocols['app_name'].combine_first(protocols['slug'])).str.replace('-',' ').str.title()
-protocols['id_format'] = protocols['slug'].str.replace('-',' ').str.title()
-protocols['program_name'] = np.where( ( (protocols['name'] == '') )
+protocols['id_format'] = protocols['app_name']#protocols['slug'].str.replace('-',' ').str.title()
+protocols['program_name'] = np.where( ( (protocols['name'].isna() ) )
                                     , protocols['id_format']
                                     , protocols['id_format'] + ' - ' + protocols['name']
                                     )
@@ -92,7 +92,7 @@ protocols['top_level_name'] = np.where( protocols['name'].isna()
 
 protocols = protocols.sort_values(by='start_date', ascending=True)
                     
-display(protocols)
+# display(protocols)
 
 
 # In[ ]:
@@ -153,6 +153,7 @@ subg_protocols['df_source'] = subg_protocols['data_source'].str.split('-').str[-
 # In[ ]:
 
 
+# display(df_dfl)
 dfs_sub = []
 for index, program in subg_protocols.iterrows():
         min_tsmp = int( pd.to_datetime(program['start_date']).timestamp() )
