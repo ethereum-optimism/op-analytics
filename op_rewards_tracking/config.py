@@ -1,7 +1,6 @@
 # set parameters
 LAST_N_DAYS = 30
 INCENTIVE_PROGRAMS_ONLY = False
-GOV_INCENTIVE_PROGRAMS_ONLY = True
 
 COL_NAMES_TO_INCLUDE = [
     "Status",
