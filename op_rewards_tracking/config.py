@@ -1,6 +1,7 @@
 # set parameters
 LAST_N_DAYS = 30
-INCENTIVE_PROGRAMS_ONLY = True
+INCENTIVE_PROGRAMS_ONLY = False
+GOV_INCENTIVE_PROGRAMS_ONLY = True
 
 COL_NAMES_TO_INCLUDE = [
     "Status",
@@ -42,4 +43,5 @@ COL_NAMES_TO_INCLUDE = [
     "incremental_gas_fee_usd_per_day_after",
     "incremental_l2_gas_used_per_day_after",
     "incremental_l1_gas_used_per_day_after",
+    "cumul_last_price_net_dollar_flow"
 ]
