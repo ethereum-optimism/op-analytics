@@ -20,7 +20,10 @@ async def get_tvl(apistring, header, statuses, chains, prot, prot_name, fallback
         async with retry_client.get(apistring, retry_options=ExponentialRetry(attempts=10), raise_for_status=statuses) as response:
                 try:
                         prot_req = await response.json()
-                        cats = prot_req['category']
+                        try: #error handling
+                                cats = prot_req['category']
+                        except:
+                                cats = ''
                         try: # if parent protocol exists
                                 parent_prot_name = prot_req['parentProtocol']
                         except: # if not, then use the name
@@ -29,7 +32,7 @@ async def get_tvl(apistring, header, statuses, chains, prot, prot_name, fallback
                         for ch in chains:
                                 ad = pd.json_normalize( prot_req[ch]['tokens'] )
                                 ad_usd = pd.json_normalize( prot_req[ch]['tokensInUsd'] )
-                                if (ad.empty) & (fallback_on_raw_tvl == True):
+                                if (ad_usd.empty) & (fallback_on_raw_tvl == True):
                                         ad = pd.DataFrame( prot_req[ch]['tvl'] )
                                         prot_map = prot + str(fallback_indicator)
                                 else:
@@ -179,16 +182,20 @@ def get_single_tvl(prot, chains, header = header, statuses = statuses, fallback_
         prod = []
         # retry_client = RetryClient()
         apistring = 'https://api.llama.fi/protocol/' + prot
+        # print(apistring)
         # response = retry_client.get(apistring, retry_options=ExponentialRetry(attempts=10), raise_for_status=statuses)
         try:
                 prot_req = r.get(apistring).json()
-                cats = prot_req['category']
+                try:
+                        cats = prot_req['category']
+                except:
+                        cats = ''
                 prot_req = prot_req['chainTvls']
                 for ch in chains:
                         ch = ch.capitalize() # defillama uses initcap
                         ad = pd.json_normalize( prot_req[ch]['tokens'] )
                         ad_usd = pd.json_normalize( prot_req[ch]['tokensInUsd'] )
-                        if (ad.empty) & (fallback_on_raw_tvl == False):
+                        if (ad_usd.empty) & (fallback_on_raw_tvl == True):
                                 ad = pd.DataFrame( prot_req[ch]['tvl'] )
                         try: #if there's generic tvl
                                 ad_tvl = pd.json_normalize( prot_req[ch]['tvl'] )
