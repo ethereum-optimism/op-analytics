@@ -5,3 +5,4 @@ reference_data/.DS_Store
 Pipfile.lock
 op_rewards_tracking/csv_outputs/tvl_flows_by_token.csv
 *.pyc
+__pycache__/
