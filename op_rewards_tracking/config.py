@@ -6,12 +6,10 @@ COL_NAMES_TO_INCLUDE = [
     "Status",
     "# OP Allocated",
     "App Name",
+    "app_name",
     "app_name_join",
     "Source",
-    "source_cleanup",
-    "announced_date",
-    "start_date",
-    "end_date",
+    "op_source",
     "category",
     "incentive_type",
     "txs_per_day",
@@ -42,5 +40,7 @@ COL_NAMES_TO_INCLUDE = [
     "incremental_gas_fee_usd_per_day_after",
     "incremental_l2_gas_used_per_day_after",
     "incremental_l1_gas_used_per_day_after",
-    "cumul_last_price_net_dollar_flow"
+    "cumul_last_price_net_dollar_flow",
+    "net_op_deployed",
+    "op_deployed"
 ]
