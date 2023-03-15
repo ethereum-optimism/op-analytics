@@ -36,14 +36,15 @@ A select list of Optimism data dashboards:
 - [App Growth on Optimism After Quests](https://dune.com/oplabspbc/optimism-quests-project-usage-growth)
 
 
-## Configs
+## Contributors
+### Configs
 For scripts which use APIs from providers with API keys, add the lines like below in a .env file (Replace with your API key - remember to add to gitignore):
 ```
 DUNE_API_KEY = 'Your API Key'
 FLIPSIDE_SHROOMDK_KEY = 'Your API Key'
 ```
 
-## Common Requirements
+### Common Requirements
 Common python packages used include
 - [pandas](https://github.com/pandas-dev/pandas)
 - [requests](https://github.com/psf/requests)
@@ -53,12 +54,22 @@ Common python packages used include
 - [web3.py](https://github.com/ethereum/web3.py)
 - [ethereum-etl](https://github.com/blockchain-etl/ethereum-etl)
 
-## Installation
+### Installation
 ```
 python -m pip install pipenv
 pipenv install
 ```
-See `Pipfile` for all the requirements
+See `Pipfile` for all the requirements.
+
+In this repository, we use `pre-commit` to ensure consistency of formatting. To install for Mac, run
+```
+brew install pre-commit
+```
+Once installed, in the command line of the repository, run
+```
+pre-commit install
+```
+This will install `pre-commit` to the Git hook, so that `pre-commit` will run and fix files covered in its config before committing.
 
 ## Select Optimism Data Abstractions
 **[Dune Spellbook](https://github.com/duneanalytics/spellbook/tree/main/models)**: *Tables can be used in [Dune Analytics](https://dune.com/browse/dashboards)*
