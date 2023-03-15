@@ -1,16 +1,13 @@
 repos:
-  - repo: https://github.com/psf/black
-    rev: 21.12b0
-    hooks:
-      - id: black
 
   - repo: https://github.com/psf/black
-    rev: "22.1.0"
+    rev: 23.1.0
     hooks:
       - id: black-jupyter
+      - id: black
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v4.4.0
     hooks:
       - id: check-yaml
       - id: end-of-file-fixer
