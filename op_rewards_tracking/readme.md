@@ -1,5 +1,5 @@
 ## Data Sources
-- [OP Incentive Program Info](https://www.notion.so/oplabs/26d856d5ad7c4fda919c62e839cf6051?v=4e38174b2e994129b51dcfa127965aa4) (requires manual update)
+- [OP Incentive Program Info](https://oplabs.notion.site/26d856d5ad7c4fda919c62e839cf6051?v=4e38174b2e994129b51dcfa127965aa4) (requires manual update)
 - [OP Incentive Program Info - Dune](https://dune.com/queries/1861732) (requires manual update)
 - [Incentive Program Usage Stats](https://dune.com/queries/2195796)
 - [OP Deployed](https://dune.com/queries/1886707)
