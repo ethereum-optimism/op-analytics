@@ -4,6 +4,8 @@
 # In[ ]:
 
 
+# THIS IS WIP / EXPERIMENTAL
+
 # ! pip install pandas
 # ! pip install requests
 # ! pip install plotly
@@ -44,6 +46,10 @@ print(pwd)
 do_fallback_on_raw_tvl = True
 str_fallback_indicator = '' #Dont append any indicator yet, since it screws up joins
 
+#protocols info
+protocol_cols = ['include_in_summary','op_source','start_date','end_date','num_op','num_op_override']
+join_cols = ['program_name','protocol','app_name','top_level_name','parent_protocol']
+
 
 # In[ ]:
 
@@ -53,6 +59,7 @@ str_fallback_indicator = '' #Dont append any indicator yet, since it screws up j
 protocols = pd.read_csv('inputs/' + 'op_incentive_protocols.csv')
 #evaluate arrays as array
 protocols['contracts'] = protocols['contracts'].apply(pu.str_to_list)
+protocols['is_external_dex_bridge_pool'] = protocols['is_external_dex_bridge_pool'].fillna(0)
 # display(protocols)
 
 # If we need to map Defillama slugs to our unified App Name (Dune-Based) - Not case sensitive
@@ -79,10 +86,13 @@ protocols = protocols.merge(protocol_name_mapping,on='slug', how = 'left')
 # For subgraphs
 protocols['protocol'] = protocols['slug']
 protocols['app_name'] = (protocols['app_name'].combine_first(protocols['slug'])).str.replace('-',' ').str.title()
-protocols['id_format'] = protocols['app_name']#protocols['slug'].str.replace('-',' ').str.title()
+
+protocols['parent_protocol'] = (protocols['parent_protocol'].combine_first(protocols['app_name'])).str.capitalize()
+
+protocols['id_format'] = protocols['parent_protocol']#protocols['slug'].str.replace('-',' ').str.title()
 protocols['program_name'] = np.where( ( (protocols['name'].isna() ) )
-                                    , protocols['id_format']
-                                    , protocols['id_format'] + ' - ' + protocols['name']
+                                    , protocols['slug'].str.replace('-',' ').str.title()
+                                    , protocols['slug'].str.replace('-',' ').str.title() + ' - ' + protocols['name']
                                     )
 protocols['top_level_name'] = np.where( protocols['name'].isna()
                                     , protocols['id_format']
@@ -93,6 +103,12 @@ protocols['top_level_name'] = np.where( protocols['name'].isna()
 protocols = protocols.sort_values(by='start_date', ascending=True)
                     
 # display(protocols)
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
@@ -114,6 +130,13 @@ df_dfl['is_raw_tvl'] = np.where(df_dfl['slug'].str.endswith('*'), 1, 0)
 # In[ ]:
 
 
+# display(df_dfl[df_dfl['protocol'].str.contains('arrakis')])
+# display(df_dfl)
+
+
+# In[ ]:
+
+
 # Format Columns
 # df_dfl['app_name'] = df_dfl['app_name'].combine_first(df_dfl['protocol'])
 
@@ -126,6 +149,7 @@ df_dfl = df_dfl.merge(dfl_protocols, on ='slug')
 # display(df_dfl)
 
 # df_dfl['protocol'] = df_dfl['slug']#.combine_first(df_dfl['slug_y'])
+df_dfl['parent_protocol'] = df_dfl['parent_protocol_y'].combine_first(df_dfl['parent_protocol_x'])
 # display(df_dfl)
 df_dfl['name'] = df_dfl['name_y'].combine_first(df_dfl['name_x']) + \
                         np.where(df_dfl['protocol'].str.endswith('*'), '*','') #IF Raw TVL, pull this in
@@ -134,7 +158,14 @@ df_dfl['top_level_name'] = df_dfl['top_level_name'] + np.where(df_dfl['protocol'
 
 df_dfl['program_name'] = df_dfl['program_name'] + np.where(df_dfl['protocol'].str.endswith('*'), '*','') #IF Raw TVL, pull this in
 
-df_dfl = df_dfl[['date', 'token', 'token_value', 'usd_value', 'protocol', 'start_date','end_date','program_name','app_name','top_level_name']]
+# display(df_dfl)
+
+df_dfl = df_dfl[['date', 'token', 'token_value', 'usd_value', 'protocol', 'start_date','end_date','program_name','app_name','top_level_name','parent_protocol','include_in_summary','is_external_dex_bridge_pool']]
+
+
+
+# In[ ]:
+
 
 # display(df_dfl)
 
@@ -147,6 +178,9 @@ subg_protocols['og_app_name'] = subg_protocols['app_name']
 subg_protocols['og_protocol'] = subg_protocols['slug']
 subg_protocols['og_top_level_name'] = subg_protocols['top_level_name']
 subg_protocols['df_source'] = subg_protocols['data_source'].str.split('-').str[-1]
+subg_protocols['og_include_in_summary'] = subg_protocols['include_in_summary']
+subg_protocols['og_is_external_dex_bridge_pool'] = subg_protocols['is_external_dex_bridge_pool']
+subg_protocols['og_parent_protocol'] = protocols['parent_protocol']
 # display(subg_protocols)
 
 
@@ -179,6 +213,9 @@ for index, program in subg_protocols.iterrows():
                 sdf['protocol'] = program['og_protocol']
                 sdf['app_name'] = program['og_app_name']
                 sdf['top_level_name'] = program['og_top_level_name']
+                sdf['parent_protocol'] = program['og_parent_protocol']
+                sdf['include_in_summary'] = program['og_include_in_summary']
+                sdf['is_external_dex_bridge_pool'] = program['og_is_external_dex_bridge_pool']
 
                 sdf['token_value'] = sdf['token_value'].fillna(0)
                 sdf['usd_value'] = sdf['usd_value'].fillna(0)
@@ -208,6 +245,7 @@ df_df_comb['end_date'] = pd.to_datetime(df_df_comb['end_date'])
 df_df_comb['date'] = pd.to_datetime(df_df_comb['date'])
 # display(df_df_comb)
 
+# display(df_df_comb[df_df_comb['usd_value'] ==''])
 # Make sure datatypes are clean
 df_df_comb['token_value'] = df_df_comb['token_value'].astype('float64')
 df_df_comb['usd_value'] = df_df_comb['usd_value'].astype('float64')
@@ -234,11 +272,18 @@ df_df['end_date_30'] = df_df['end_date'].fillna(pd.to_datetime("today")).dt.floo
 #         df_df[(df_df['protocol']=='velodrome')] 
 #         )
 
-df_df = df_df.groupby(['date','token','protocol','start_date','end_date_30','program_name','app_name','top_level_name']).sum().reset_index()
+df_df = df_df.groupby(['date','token','protocol','start_date','end_date_30','program_name','app_name','top_level_name','parent_protocol','include_in_summary','is_external_dex_bridge_pool']).sum().reset_index()
 
-# display(df_df)
 # display(
 #         df_df[(df_df['protocol']=='pooltogether')] 
+#         )
+
+
+# In[ ]:
+
+
+# display(
+#         df_df[(df_df['protocol']=='velodrome')] 
 #         )
 
 
@@ -318,9 +363,73 @@ data_df.to_csv(prepend + 'csv_outputs/' + 'tvl_flows_by_token.csv')
 # In[ ]:
 
 
-netdf_df = data_df[['date','protocol','program_name','net_dollar_flow','net_price_stock_change','last_price_net_dollar_flow','usd_value','app_name','top_level_name']]
+# display(data_df)
 
-netdf_df = netdf_df.groupby(['date','protocol','program_name','app_name','top_level_name']).sum(['net_dollar_flow','net_price_stock_change','last_price_net_dollar_flow','usd_value'])
+
+# In[ ]:
+
+
+# ---
+# Add rows for unified program views
+# ---
+#Remove * from mappings
+data_df['top_level_name_map'] = data_df['top_level_name'].str[:-1].where(data_df['top_level_name'].str[-1] == '*', data_df['top_level_name'])
+data_df['program_name_map'] = data_df['program_name'].str[:-1].where(data_df['program_name'].str[-1] == '*', data_df['program_name'])
+
+tst = data_df[data_df['include_in_summary'] == 1]
+tst = tst.groupby(['top_level_name_map']).agg({'program_name_map':'nunique'}).reset_index()
+tst = tst[tst['program_name_map'] > 1]
+# display(tst)
+
+unified_prg = data_df[(data_df['top_level_name_map'].isin(tst['top_level_name_map']) ) & (data_df['include_in_summary'] == 1) ]
+unified_prot = protocols[(protocols['name'].isin(tst['top_level_name_map']) ) & (protocols['include_in_summary'] == 1) ][protocol_cols + join_cols + ['name']]
+unified_prg['include_in_summary'] = 0
+unified_prot['include_in_summary'] = 0
+# # set the values of the columns to the dictionary value using loc
+cols_override = ['protocol','program_name','app_name','top_level_name','parent_protocol']
+for i in cols_override:
+        unified_prg[i] = unified_prg['top_level_name_map']
+        unified_prot[i] = unified_prot['name']
+
+unified_prot = unified_prot.groupby(join_cols + ['include_in_summary','op_source']).agg({
+        'start_date':'min'
+        ,'end_date':'max'
+        ,'num_op':'sum'
+        ,'num_op_override':'sum'
+})
+unified_prot = unified_prot.reset_index()
+# display(unified_prot)
+unified_prot = unified_prot[protocol_cols + join_cols]
+
+#align program info
+unified_prg['start_date'] = unified_prg.groupby('program_name')['start_date'].transform('min')
+# unified_prg['end_date'] = unified_prg.groupby('program_name')['end_date'].transform('max')
+# unified_prg['end_date_30'] = unified_prg.groupby('program_name')['end_date_30'].transform('max')
+
+# Add to protocol info
+
+# display(unified_prg)
+
+# APPEND BACK IN 
+
+data_df = pd.concat([data_df,unified_prg])
+protocols = pd.concat([protocols[protocol_cols + join_cols],unified_prot[protocol_cols + join_cols]])
+
+# display(data_df)
+
+
+# In[ ]:
+
+
+# 
+
+
+# In[ ]:
+
+
+netdf_df = data_df[['date','protocol','program_name','net_dollar_flow','net_price_stock_change','last_price_net_dollar_flow','usd_value','app_name','top_level_name','parent_protocol','is_external_dex_bridge_pool']]
+
+netdf_df = netdf_df.groupby(['date','protocol','program_name','app_name','top_level_name','parent_protocol','is_external_dex_bridge_pool']).sum(['net_dollar_flow','net_price_stock_change','last_price_net_dollar_flow','usd_value'])
 
 # reset & get program data
 netdf_df.reset_index(inplace=True)
@@ -339,15 +448,15 @@ for c in cumul_cols:
 # print(netdf_df.columns)
 
 # Bring Program info Back In
-join_cols = ['program_name','protocol','app_name','top_level_name']
+
 join_cols_join = [col + '_join' for col in join_cols]
 for c in join_cols:
         netdf_df[c+'_join'] = netdf_df[c].str[:-1].where(netdf_df[c].str[-1] == '*', netdf_df[c])
         protocols[c+'_join'] = protocols[c]
 
-protocol_cols = ['include_in_summary','op_source','start_date','end_date','num_op','num_op_override'] + join_cols_join
+protocol_cols = protocol_cols + join_cols_join
 
-netdf_df = netdf_df.merge(protocols[protocol_cols], on=join_cols_join)
+netdf_df = netdf_df.merge(protocols[protocol_cols], on=join_cols_join, how='left')
 
 # for c in join_cols_join:
 #         old_col = c.replace("_join", "")
@@ -374,6 +483,12 @@ for d in date_cols:
 # In[ ]:
 
 
+# display(netdf_df[netdf_df['protocol'].str.contains('velodr')])
+
+
+# In[ ]:
+
+
 summary_cols = ['cumul_net_dollar_flow','cumul_last_price_net_dollar_flow','cumul_net_price_stock_change','num_op_override']
 
 netdf_df['program_rank_desc'] = netdf_df.groupby(['protocol', 'program_name'])['date'].\
@@ -386,7 +501,7 @@ summary_cols = summary_cols + new_ended_cols
 program_end_df = netdf_df[
         (pd.to_datetime(netdf_df['date']) == pd.to_datetime(netdf_df['end_date']) ) # is at end date
         | (netdf_df['program_rank_desc'] ==1)# or is latest date
-                        ].groupby(['protocol', 'program_name','app_name']).sum(numeric_only=True)
+                        ].groupby(['protocol', 'program_name','app_name','parent_protocol']).sum(numeric_only=True)
 program_end_df.reset_index(inplace=True)
 # display(program_end_df)
 
@@ -410,7 +525,7 @@ for s in summary_cols:
 
 
 # netdf_df[(netdf_df['date'] >= '2022-10-06') & (netdf_df['date'] <= '2022-10-12')].tail(10)
-# netdf_df.tail()
+# netdf_df[netdf_df['protocol'].str.contains('velodr')]
 
 
 # In[ ]:
@@ -427,7 +542,7 @@ if not os.path.exists(prepend + "csv_outputs"):
 netdf_df.to_csv(prepend + 'csv_outputs/op_summer_daily_stats.csv', index=False)
 
 #SORT FOR CHARTS
-netdf_df = netdf_df.sort_values(by=['top_level_name','program_name','app_name'], ascending=[True,True,True])
+netdf_df = netdf_df.sort_values(by=['top_level_name','program_name','app_name','parent_protocol'], ascending=[True,True,True,True])
 # display(netdf_df.head())
 # print(netdf_df.columns)
 
@@ -549,7 +664,9 @@ for df in df_list:
     # display(df)
     #get df name
     col_list = [
-        'date','include_in_summary','top_level_name','program_name','app_name','num_op','num_op_override','period','op_source','start_date','end_date'
+        'date','include_in_summary','top_level_name','parent_protocol','is_external_dex_bridge_pool'
+        ,'program_name','app_name','num_op','num_op_override','period','op_source'
+        ,'start_date','end_date'
         ,'cumul_net_dollar_flow_at_program_end'
         ,'cumul_net_dollar_flow'
         # ,'cumul_flows_per_op_at_program_end'
@@ -560,7 +677,7 @@ for df in df_list:
         # ,'last_price_net_dollar_flows_per_op_latest'
         ,'flows_retention', 'last_price_net_dollar_flows_retention'
     ]
-    summary_exclude_list = ['date','top_level_name','program_name','app_name','period','start_date','end_date']
+    summary_exclude_list = ['date','top_level_name','program_name','app_name','period','start_date','end_date','parent_protocol','is_external_dex_bridge_pool']
     sort_cols = ['Start','# OP']
 
     if df.name == 'op_summer_latest':
@@ -696,7 +813,7 @@ for df in df_list:
 #Filter for Charts
 
 netdf_df = netdf_df[netdf_df['date'] <= pd.to_datetime("today").floor('d')]
-netdf_df = netdf_df[netdf_df['include_in_summary'] == 1]
+# netdf_df = netdf_df[netdf_df['include_in_summary'] == 1]
 
 
 # In[ ]:
@@ -828,6 +945,12 @@ for val in value_list:
 
 fig_last.show()
 print("yay")
+
+
+# In[ ]:
+
+
+# 
 
 
 # In[ ]:
