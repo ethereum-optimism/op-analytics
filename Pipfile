@@ -12,6 +12,7 @@ python-dotenv = "*"
 loguru = "*"
 plotly = "*"
 subgrounds = "*"
+aiohttp_retry = "2.8.3"
 
 [dev-packages]
 
