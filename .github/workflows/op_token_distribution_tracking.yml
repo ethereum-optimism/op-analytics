@@ -38,21 +38,26 @@ jobs:
           python -m pip install --upgrade pip pandas numpy
           pip install -U kaleido asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert
 
+      - name: Change directory to rewards_tracking
+        working-directory: rewards_tracking
+        run: |
+          # Commands to run in the rewards_tracking directory
+          echo "Current directory: $(pwd)"
   # Generate .py files for each notebook
       - name: Generate py files
         run: |
-          jupyter nbconvert --to python op_rewards_tracking/op_incentives_program_attribution.ipynb
-          jupyter nbconvert --to python op_rewards_tracking/op_incentive_program_summary.ipynb
+          jupyter nbconvert --to python op_incentives_program_attribution.ipynb
+          jupyter nbconvert --to python op_incentive_program_summary.ipynb
           
   # Runs a single command using the runners shell
 
   # Incentives Attribution
       - name: Update OP Incentives Attribution
-        run: python op_rewards_tracking/op_incentives_program_attribution.py
+        run: python op_incentives_program_attribution.py
   
   # Incentives Program Summary
       - name: Update OP Incentives Summary
-        run: python op_rewards_tracking/op_incentive_program_summary.py
+        run: python op_incentive_program_summary.py
  
         
   # commit_results:
