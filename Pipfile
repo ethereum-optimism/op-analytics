@@ -12,12 +12,13 @@ python-dotenv = "*"
 loguru = "*"
 plotly = "*"
 subgrounds = "*"
+aiohttp = "3.8.3"
 aiohttp_retry = "2.8.3"
 
 [dev-packages]
 
 [requires]
-python_version = "3.11"
+python_version = "3.10.8"
 
 [pipenv]
 allow_prereleases = true
