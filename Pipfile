@@ -21,4 +21,4 @@ aiohttp_retry = "2.8.3"
 python_version = "3.11"
 
 [pipenv]
-allow_prereleases = true
+allow_prereleases = false
