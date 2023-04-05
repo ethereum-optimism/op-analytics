@@ -43,6 +43,7 @@ jobs:
         run: |
           # Commands to run in the rewards_tracking directory
           echo "Current directory: $(pwd)"
+          echo "$(ls)"
   # Generate .py files for each notebook
       - name: Generate py files
         run: |
