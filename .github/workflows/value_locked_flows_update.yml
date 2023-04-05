@@ -32,11 +32,6 @@ jobs:
       - name: Install Dependencies
         run: |
           pipenv install --dev
-      
-      - name: Install Missing Python dependencies
-        run: |
-          python -m pip install --upgrade pip pandas numpy
-          pip install -U kaleido asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert
 
   # Generate .py files for each notebook
       - name: Generate py files
