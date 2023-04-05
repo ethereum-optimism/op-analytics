@@ -47,18 +47,18 @@ jobs:
   # Generate .py files for each notebook
       - name: Generate py files
         run: |
-          jupyter nbconvert --to python op_incentives_program_attribution.ipynb
-          jupyter nbconvert --to python op_incentive_program_summary.ipynb
+          jupyter nbconvert --to python op_rewards_tracking/op_incentives_program_attribution.ipynb
+          jupyter nbconvert --to python op_rewards_tracking/op_incentive_program_summary.ipynb
           
   # Runs a single command using the runners shell
 
   # Incentives Attribution
       - name: Update OP Incentives Attribution
-        run: python op_incentives_program_attribution.py
+        run: python op_rewards_tracking/op_incentives_program_attribution.py
   
   # Incentives Program Summary
       - name: Update OP Incentives Summary
-        run: python op_incentive_program_summary.py
+        run: python op_rewards_tracking/op_incentive_program_summary.py
  
         
   # commit_results:
