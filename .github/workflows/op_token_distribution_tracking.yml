@@ -44,8 +44,14 @@ jobs:
         run: |
           jupyter nbconvert --to python op_incentives_program_attribution.ipynb
           jupyter nbconvert --to python op_incentive_program_summary.ipynb
+          jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb
           
   # Runs a single command using the runners shell
+
+  # Incentives Program Summary
+      - name: Update OP App Net Flows
+        working-directory: op_rewards_tracking
+        run: python optimism_incentives_app_net_flows.py
 
   # Incentives Attribution
       - name: Update OP Incentives Attribution
