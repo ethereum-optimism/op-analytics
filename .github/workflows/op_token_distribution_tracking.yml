@@ -51,7 +51,7 @@ jobs:
         run: python op_rewards_tracking/op_incentives_program_attribution.py
   
   # Incentives Program Summary
-      - name: Update OP Incentives Attribution
+      - name: Update OP Incentives Summary
         run: python op_rewards_tracking/op_incentive_program_summary.py
  
         
