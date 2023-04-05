@@ -23,7 +23,7 @@ jobs:
       - name: Generate Requirements
         run: |
           python -m pip install pipenv
-          pipenv install
+          pipenv --python 3.10.8 install
         # pip install pipreqs
         # python -m  pipreqs.pipreqs
       
