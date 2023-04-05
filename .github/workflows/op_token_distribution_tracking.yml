@@ -39,7 +39,7 @@ jobs:
           pip install -U kaleido asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert
 
       - name: Change directory to rewards_tracking
-        working-directory: rewards_tracking
+        working-directory: op_rewards_tracking
         run: |
           # Commands to run in the rewards_tracking directory
           echo "Current directory: $(pwd)"
