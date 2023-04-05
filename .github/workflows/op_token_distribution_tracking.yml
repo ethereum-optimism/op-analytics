@@ -22,8 +22,10 @@ jobs:
       
       - name: Generate Requirements
         run: |
-          pip install pipreqs
-          python -m  pipreqs.pipreqs
+          python -m pip install pipenv
+          pipenv install
+        # pip install pipreqs
+        # python -m  pipreqs.pipreqs
       
       - uses: actions/setup-python@v4
         with:
