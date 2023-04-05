@@ -39,7 +39,10 @@ jobs:
           pip install -U kaleido asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert
 
       - name: Change directory to op_rewards_tracking
-        run: cd op_rewards_tracking && echo "Current directory: $(pwd)" && ls
+        run: |
+          cd op_rewards_tracking 
+          echo "Current directory: $(pwd)" 
+          ls
         shell: bash
   # Generate .py files for each notebook
       - name: Generate py files
