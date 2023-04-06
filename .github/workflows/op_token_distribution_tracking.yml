@@ -2,9 +2,9 @@ name: Run OP Distribution Tracking Scripts
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule
+  # Run on a schedule - Once per day at 12:10 am
   schedule:
-      - cron: '0 */6 * * *'
+      - cron: '10 0 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
