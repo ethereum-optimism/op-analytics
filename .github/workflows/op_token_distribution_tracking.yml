@@ -59,7 +59,7 @@ jobs:
   # Dune Data
       - name: Pull OP Usage Data in Dune
         working-directory: op_rewards_tracking
-        run: python pull_dune_data.py
+        run: pipenv run python pull_dune_data.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
 
