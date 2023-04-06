@@ -2,9 +2,9 @@ name: Run OP Distribution Tracking Scripts
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule
+  # Run on a schedule - Once per day at 12:10 am
   schedule:
-      - cron: '0 */6 * * *'
+      - cron: '10 0 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -43,23 +43,23 @@ jobs:
       - name: Install Missing Python dependencies
         run: |
           python -m pip install --upgrade pip pandas numpy
-          pip install -U kaleido asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert plotly aiohttp_retry
+          pip install -U kaleido asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert plotly aiohttp_retry python-dotenv
 
   # Generate .py files for each notebook
       - name: Generate py files
         working-directory: op_rewards_tracking
         run: |
-          jupyter nbconvert --to python op_incentives_program_attribution.ipynb
-          jupyter nbconvert --to python op_incentive_program_summary.ipynb
+          jupyter nbconvert --to python pull_dune_data.ipynb
           jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb
-          jupyter nbconvert --to python pull_dune_date.ipynb
+          jupyter nbconvert --to python op_incentives_program_attribution.ipynb
+          jupyter nbconvert --to python op_incentive_program_summary.ipynb          
           
   # Runs a single command using the runners shell
 
   # Dune Data
       - name: Pull OP Usage Data in Dune
         working-directory: op_rewards_tracking
-        run: python pull_dune_date.py
+        run: pipenv run python pull_dune_data.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
 
