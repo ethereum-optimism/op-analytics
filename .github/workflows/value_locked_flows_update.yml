@@ -2,9 +2,9 @@ name: Value Locked Flows Update
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule
+  # Run on a schedule - Once per day at 12:10 am
   schedule:
-      - cron: '0 */6 * * *'
+      - cron: '10 0 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -41,10 +41,12 @@ jobs:
         run: |
           pipenv install --dev
 
-      # - name: Install Missing Python dependencies
-      #   run: |
-      #     python -m pip install --upgrade pip pandas numpy
-      #     pip install -U kaleido asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert plotly aiohttp_retry
+      # Some dependencies just don't run
+      - name: Install Missing Python dependencies
+        run: |
+          python -m pip install --upgrade pip pandas numpy
+          pip install -U kaleido 
+      #asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert plotly aiohttp_retry python-dotenv
 
     # Generate .py files for each notebook
       - name: Generate py files
