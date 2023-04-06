@@ -25,6 +25,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
+        # Set max space to see if this helps with timeouts
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
         # Update the Node.js version to 16
@@ -51,10 +52,18 @@ jobs:
           jupyter nbconvert --to python op_incentives_program_attribution.ipynb
           jupyter nbconvert --to python op_incentive_program_summary.ipynb
           jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb
+          jupyter nbconvert --to python pull_dune_date.ipynb
           
   # Runs a single command using the runners shell
 
-  # Incentives Program Summary
+  # Dune Data
+      - name: Pull OP Usage Data in Dune
+        working-directory: op_rewards_tracking
+        run: python pull_dune_date.py
+        env:
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+
+  # OP App Flows
       - name: Update OP App Net Flows
         working-directory: op_rewards_tracking
         run: python optimism_incentives_app_net_flows.py
