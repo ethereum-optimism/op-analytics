@@ -141,6 +141,8 @@ def get_range(protocols, chains = '', fallback_on_raw_tvl = False, fallback_indi
         df_df_all = pd.concat(df_list)
         df_df_all = df_df_all.fillna(0)
         
+        data_dfs = [] #Free up Memory
+        
         return df_df_all
 
 def remove_bad_cats(netdf):
@@ -299,10 +301,12 @@ def get_protocol_tvls(min_tvl = 0, excluded_cats = ['CEX','Chain']): #,excluded_
 def get_all_protocol_tvls_by_chain_and_token(min_tvl = 0, fallback_on_raw_tvl = False, fallback_indicator='*', excluded_cats = ['CEX','Chain']):
         res = get_protocol_tvls(min_tvl)
         protocols = res[['slug','name','category','parentProtocol','chainTvls']]
+        res = [] #Free up memory
+
         protocols['parentProtocol'] = protocols['parentProtocol'].combine_first(protocols['name'])
-        # re = res['chainTvls']
         protocols['chainTvls'] = protocols['chainTvls'].apply(lambda x: list(x.keys()) )
         df_df = get_range(protocols, '', fallback_on_raw_tvl, fallback_indicator)
+        protocols = [] #Free up memory
 
         # Get Other Flags -- not working right now?
         # proto_info = res[['name','is_doubelcount','is_liqstake']]
