@@ -41,10 +41,10 @@ jobs:
         run: |
           pipenv install --dev
 
-      - name: Install Missing Python dependencies
-        run: |
-          python -m pip install --upgrade pip pandas numpy
-          pip install -U kaleido asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert plotly aiohttp_retry
+      # - name: Install Missing Python dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip pandas numpy
+      #     pip install -U kaleido asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert plotly aiohttp_retry
 
     # Generate .py files for each notebook
       - name: Generate py files
@@ -57,7 +57,7 @@ jobs:
     # Value Flows
       - name: Update Value Flows
         working-directory: value_locked_flows
-        run: python total_app_net_flows_async.py
+        run: pipenv run python total_app_net_flows_async.py
 
 
 
