@@ -50,7 +50,7 @@ jobs:
       - name: Generate py files
         working-directory: value_locked_flows
         run: |
-          jupyter nbconvert --to python total_app_net_flows_async.ipynb
+          pipenv run jupyter nbconvert --to python total_app_net_flows_async.ipynb
 
     # Runs a single command using the runners shell
 
