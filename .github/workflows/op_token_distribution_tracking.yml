@@ -49,17 +49,17 @@ jobs:
       - name: Generate py files
         working-directory: op_rewards_tracking
         run: |
-          jupyter nbconvert --to python op_incentives_program_attribution.ipynb
-          jupyter nbconvert --to python op_incentive_program_summary.ipynb
+          jupyter nbconvert --to python pull_dune_data.ipynb
           jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb
-          jupyter nbconvert --to python pull_dune_date.ipynb
+          jupyter nbconvert --to python op_incentives_program_attribution.ipynb
+          jupyter nbconvert --to python op_incentive_program_summary.ipynb          
           
   # Runs a single command using the runners shell
 
   # Dune Data
       - name: Pull OP Usage Data in Dune
         working-directory: op_rewards_tracking
-        run: python pull_dune_date.py
+        run: python pull_dune_data.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
 
