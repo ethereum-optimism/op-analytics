@@ -12,44 +12,50 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+  # The type of runner that the job will run on
+  runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.11
+  # Steps represent a sequence of tasks that will be executed as part of the job
+  steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v3
+    
+    # Set up Python and Node.js
+    - name: Set up Python and Node.js
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+      env:
+        NODE_OPTIONS: '--max-old-space-size=4096'
+      # Update the Node.js version to 16
+      node-version: '16'
 
-      - name: Install pipenv
-        run: |
-          python -m pip install pipenv
 
-      - name: Install Dependencies
-        run: |
-          pipenv install --dev
-      
-      - name: Install Missing Python dependencies
-        run: |
-          python -m pip install --upgrade pip pandas numpy
-          pip install -U kaleido asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert plotly aiohttp_retry
+    - name: Install pipenv
+      run: |
+        python -m pip install pipenv
+
+    - name: Install Dependencies
+      run: |
+        pipenv install --dev
+
+    - name: Install Missing Python dependencies
+      run: |
+        python -m pip install --upgrade pip pandas numpy
+        pip install -U kaleido asyncio aiohttp nest_asyncio subgrounds jupyter nbconvert plotly aiohttp_retry
 
   # Generate .py files for each notebook
-      - name: Generate py files
-        working-directory: value_locked_flows
-        run: |
-          jupyter nbconvert --to python total_app_net_flows_async.ipynb
+    - name: Generate py files
+      working-directory: value_locked_flows
+      run: |
+        jupyter nbconvert --to python total_app_net_flows_async.ipynb
           
   # Runs a single command using the runners shell
 
   # Value Flows
-      - name: Update Value Flows
-        working-directory: value_locked_flows
-        run: python total_app_net_flows_async.py
+    - name: Update Value Flows
+      working-directory: value_locked_flows
+      run: python total_app_net_flows_async.py
 
  
         
