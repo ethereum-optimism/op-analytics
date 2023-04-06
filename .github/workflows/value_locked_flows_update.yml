@@ -28,7 +28,7 @@ jobs:
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
         # Update the Node.js version to 16
-        node-version: '16'
+          node-version: '16'
 
 
       - name: Install pipenv
