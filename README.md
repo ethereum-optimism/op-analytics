@@ -1,11 +1,11 @@
 # OP Analytics
-On-Chain Data, Utilities, References, and other Analytics on Optimism. Join the conversation with other numba nerds in the #analytics channel in the Optimism Discord.
+Onchain Data, Utilities, References, and other Analytics on Optimism. Join the conversation with other numba nerds in the #analytics channel in the Optimism Discord.
 
 ## I'm Looking for Data About:
 A select list of Optimism data dashboards:
 
 ### Network Usage
-- [Optimism Protocol Metrics (i.e. transactions, fees, on-chain value)](https://dune.com/optimismfnd/Optimism)
+- [Optimism Protocol Metrics (i.e. transactions, fees, onchain value)](https://dune.com/optimismfnd/Optimism)
 - [Popular Apps on Optimism and Project Usage Trends](https://dune.com/optimismfnd/Optimism-Project-Usage-Trends)
 
 ### Token House & Citizen's House Governance
