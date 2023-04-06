@@ -75,7 +75,7 @@ df_df_shift['usd_value'] = 0.0
 
 #merge back in
 df_df = pd.concat([df_df,df_df_shift])
-
+df_df_shift = [] #free up memory
 # print(df_df_all.dtypes)
 
 df_df = df_df[df_df['date'] <= pd.to_datetime("today") ]
@@ -85,17 +85,12 @@ df_df_all = df_df.groupby(['date','token','chain','protocol','name','category','
 
 
 df_df = df_df.reset_index()
-df_df_shift = []
 
 
 # In[ ]:
 
 
-# df_df_all = pd.concat(df_df_all)
-# print(df_df_all[2])
 print("done api")
-# display(df_df_all[df_df_all['protocol'] == 'velodrome'])
-# display(df_df_all)
 
 
 # In[ ]:
@@ -115,6 +110,7 @@ df_df = df_df[df_df['date'].dt.date >= start_date ]
 
 
 data_df = df_df.copy()
+df_df = [] # Free Up Memory
 data_df = data_df.sort_values(by='date')
 
 # price = usd value / num tokens
@@ -147,27 +143,30 @@ data_df['token_rank_desc_prot_gt0'] = data_df.query('token_value > 0')\
 # get latest price either by protocol or in aggregate
 # if we don't have a match by protocol, then select in aggregate.
 # This section is messy
-latest_prices_df_raw_prot = data_df[~data_df['price_usd'].isna()][['token','chain','protocol','price_usd']][data_df['token_rank_desc_prot'] ==1]
-latest_prices_df_raw = data_df[~data_df['price_usd'].isna()][['token','chain','price_usd']][data_df['token_rank_desc'] ==1]
-latest_prices_df_raw_prot_gt0 = data_df[~data_df['price_usd'].isna()][['token','chain','price_usd','protocol']][data_df['token_rank_desc_prot_gt0'] ==1]
+prices_df = data_df[['chain','protocol','token']].drop_duplicates()
 
+
+latest_prices_df_raw_prot = data_df[~data_df['price_usd'].isna()][['token','chain','protocol','price_usd']][data_df['token_rank_desc_prot'] ==1]
 latest_prices_df_prot = latest_prices_df_raw_prot.groupby(['token','chain','protocol']).median('price_usd')
 latest_prices_df_prot = latest_prices_df_prot.rename(columns={'price_usd':'latest_price_usd_prot'})
+latest_prices_df_prot = latest_prices_df_prot.reset_index()
+prices_df = prices_df.merge(latest_prices_df_prot,on=['token','chain','protocol'], how='left')
+latest_prices_df_raw_prot = [] # Free up memory
 
+latest_prices_df_raw = data_df[~data_df['price_usd'].isna()][['token','chain','price_usd']][data_df['token_rank_desc'] ==1]
 latest_prices_df = latest_prices_df_raw.groupby(['token','chain']).median('price_usd')
 latest_prices_df = latest_prices_df.rename(columns={'price_usd':'latest_price_usd_raw'})
+latest_prices_df = latest_prices_df.reset_index()
+prices_df = prices_df.merge(latest_prices_df,on=['token','chain'], how='left')
+latest_prices_df = [] # Free up memory
 
+latest_prices_df_raw_prot_gt0 = data_df[~data_df['price_usd'].isna()][['token','chain','price_usd','protocol']][data_df['token_rank_desc_prot_gt0'] ==1]
 latest_prices_df_prot_gt0 = latest_prices_df_raw_prot_gt0.groupby(['token','chain','protocol']).median('price_usd')
 latest_prices_df_prot_gt0 = latest_prices_df_prot_gt0.rename(columns={'price_usd':'latest_price_usd_prot_gt0'})
-
-latest_prices_df_prot = latest_prices_df_prot.reset_index()
-latest_prices_df = latest_prices_df.reset_index()
 latest_prices_df_prot_gt0 = latest_prices_df_prot_gt0.reset_index()
-
-prices_df = data_df[['chain','protocol','token']].drop_duplicates()
-prices_df = prices_df.merge(latest_prices_df_prot,on=['token','chain','protocol'], how='left')
-prices_df = prices_df.merge(latest_prices_df,on=['token','chain'], how='left')
 prices_df = prices_df.merge(latest_prices_df_prot_gt0,on=['token','chain','protocol'], how='left')
+latest_prices_df_prot_gt0 = [] # Free up memory
+
 #Select the latest price we want in priority order
 prices_df['latest_price_usd'] = \
         prices_df['latest_price_usd_prot'].where(prices_df['latest_price_usd_prot'] > 0, \
@@ -181,12 +180,15 @@ prices_df = prices_df[~prices_df['latest_price_usd'].isna()]
 
 #Merge back in to the data dataframe
 data_df = data_df.merge(prices_df,on=['token','chain','protocol'], how='left')
+prices_df = [] #Free Up Memory
 
 
 # In[ ]:
 
 
 # Sort in date order
+print("prices map done")
+
 data_df.sort_values(by='date',inplace=True)
 
 # get net token change
@@ -216,6 +218,9 @@ data_df['net_dollar_flow_latest_price'] = np.where(
 # Get net flows by protocol
 
 netdf_df = data_df[['date','protocol','chain','name','category','parent_protocol','net_dollar_flow','usd_value','net_dollar_flow_latest_price']]
+
+data_df = [] #Free Up memory
+
 netdf_df = netdf_df.fillna(0)
 netdf_df = netdf_df.sort_values(by='date',ascending=True)
 netdf_df = netdf_df.groupby(['date','protocol','chain','name','category','parent_protocol']).sum(['net_dollar_flow','usd_value','net_dollar_flow_latest_price']) ##agg by app
@@ -315,6 +320,7 @@ final_summary_df.to_csv('csv_outputs/latest_tvl_app_trends.csv', mode='w', index
 # In[ ]:
 
 
+print("starting chart outputs")
 # display(summary_df)
 for i in drange:
         fig = ''
