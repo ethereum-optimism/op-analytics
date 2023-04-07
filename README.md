@@ -1,6 +1,13 @@
 # OP Analytics
 Onchain Data, Utilities, References, and other Analytics on Optimism. Join the conversation with other numba nerds in the #analytics channel in the Optimism Discord.
 
+## Table of Contents
+* [I'm looking for Data About](#I'm looking for Data About)
+* [Contributors](#Contributors)
+* [Select Optimism Data Abstractions](#Select Optimism Data Abstractions)
+
+---
+
 ## I'm Looking for Data About:
 A select list of Optimism data dashboards:
 
@@ -51,6 +58,16 @@ pipenv install
 ```
 See `Pipfile` for all the requirements.
 
+### Common Requirements
+Common packages used for python scripts include
+- [pandas](https://github.com/pandas-dev/pandas)
+- [requests](https://github.com/psf/requests)
+- [aiohttp-retry](https://github.com/inyutin/aiohttp_retry)
+- [dune-client](https://github.com/cowprotocol/dune-client)
+- [subgrounds](https://github.com/0xPlaygrounds/subgrounds)
+- [web3.py](https://github.com/ethereum/web3.py)
+- [ethereum-etl](https://github.com/blockchain-etl/ethereum-etl)
+
 In this repository, we use `pre-commit` to ensure consistency of formatting. To install for Mac, run
 ```
 brew install pre-commit
@@ -73,13 +90,3 @@ This will install `pre-commit` to the Git hook, so that `pre-commit` will run an
 - [`optimism.core.ez_dex_swaps`](https://github.com/FlipsideCrypto/optimism-models/tree/main/models/gold/dex): Aggregation of swaps across many decentralized exchanges
 - [`optimism.core.ez_nft_sales`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__ez_nft_sales.sql): Aggregation of swaps across many NFT marketplaces
 - [`optimism.core.fact_delegations`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__fact_delegations.sql): Aggregation of OP governance delegation events.
-
-### Common Requirements
-Common packages used for python scripts include
-- [pandas](https://github.com/pandas-dev/pandas)
-- [requests](https://github.com/psf/requests)
-- [aiohttp-retry](https://github.com/inyutin/aiohttp_retry)
-- [dune-client](https://github.com/cowprotocol/dune-client)
-- [subgrounds](https://github.com/0xPlaygrounds/subgrounds)
-- [web3.py](https://github.com/ethereum/web3.py)
-- [ethereum-etl](https://github.com/blockchain-etl/ethereum-etl)
