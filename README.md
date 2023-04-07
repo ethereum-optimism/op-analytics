@@ -2,9 +2,9 @@
 Onchain Data, Utilities, References, and other Analytics on Optimism. Join the conversation with other numba nerds in the #analytics channel in the Optimism Discord.
 
 ## Table of Contents
-* [I'm looking for Data About](#I'm looking for Data About)
-* [Contributors](#Contributors)
-* [Select Optimism Data Abstractions](#Select Optimism Data Abstractions)
+* [I'm looking for Data About](#im-looking-for-data-about)
+* [Contributors](#contributors)
+* [Select Optimism Data Abstractions](#select-optimism-data-abstractions)
 
 ---
 
