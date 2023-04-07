@@ -42,6 +42,18 @@ A select list of Optimism data dashboards:
 - [CEX & On/Off-Ramp Usage](https://dune.com/oplabspbc/optimism-onoff-ramp-usage)
 - [App Growth on Optimism After Quests](https://dune.com/oplabspbc/optimism-quests-project-usage-growth)
 
+## Select Optimism Data Abstractions
+**[Dune Spellbook](https://github.com/duneanalytics/spellbook/tree/main/models)**: *Tables can be used in [Dune Analytics](https://dune.com/browse/dashboards)*
+- [`contracts_optimism.contract_mapping`](https://github.com/duneanalytics/spellbook/tree/main/models/contracts/optimism): Near exhaustive mappings of contracts to project names on Optimism - uses decoded contracts in Dune (`optimism.contracts`) and known deployer addresses to map contracts.
+- [`op_token_distributions_optimism.transfer_mapping`](https://github.com/duneanalytics/spellbook/tree/main/models/op/token_distributions/optimism): Mappings of token distributions from the OP Foundation & by Grant/Growth Experiment recipients. You can use this table to count h0w much OP has been deployed, by who, and to where. *Note: These are "best guess" mappings* (contirbute address mappings in the [Dune Spellbook repo](https://github.com/duneanalytics/spellbook/tree/main/models/op/token_distributions/optimism)).
+- [`dex.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/dex): Aggregation of swaps across many decentralized exchanges
+- [`nft.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/nft): Aggregation of swaps across many NFT marketplaces. Also see [`nft.wash_trades`](https://github.com/duneanalytics/spellbook/blob/main/models/nft/optimism/nft_optimism_wash_trades.sql) by hildobby for filtering out likely wash trades.
+- [`perpetual.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/perpetual): Aggregation of swaps across many perpetuals exchanges (by rplust)
+
+**[Flipside Crypto - Optimism Models > Gold-Level Tables](https://github.com/FlipsideCrypto/optimism-models/tree/main/models/gold)**: *Tables can be used in [Flipside](https://flipsidecrypto.xyz/)*
+- [`optimism.core.ez_dex_swaps`](https://github.com/FlipsideCrypto/optimism-models/tree/main/models/gold/dex): Aggregation of swaps across many decentralized exchanges
+- [`optimism.core.ez_nft_sales`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__ez_nft_sales.sql): Aggregation of swaps across many NFT marketplaces
+- [`optimism.core.fact_delegations`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__fact_delegations.sql): Aggregation of OP governance delegation events.
 
 ## Contributors
 ### Configs
@@ -77,16 +89,3 @@ Once installed, in the command line of the repository, run
 pre-commit install
 ```
 This will install `pre-commit` to the Git hook, so that `pre-commit` will run and fix files covered in its config before committing.
-
-## Select Optimism Data Abstractions
-**[Dune Spellbook](https://github.com/duneanalytics/spellbook/tree/main/models)**: *Tables can be used in [Dune Analytics](https://dune.com/browse/dashboards)*
-- [`contracts_optimism.contract_mapping`](https://github.com/duneanalytics/spellbook/tree/main/models/contracts/optimism): Near exhaustive mappings of contracts to project names on Optimism - uses decoded contracts in Dune (`optimism.contracts`) and known deployer addresses to map contracts.
-- [`op_token_distributions_optimism.transfer_mapping`](https://github.com/duneanalytics/spellbook/tree/main/models/op/token_distributions/optimism): Mappings of token distributions from the OP Foundation & by Grant/Growth Experiment recipients. You can use this table to count h0w much OP has been deployed, by who, and to where. *Note: These are "best guess" mappings* (contirbute address mappings in the [Dune Spellbook repo](https://github.com/duneanalytics/spellbook/tree/main/models/op/token_distributions/optimism)).
-- [`dex.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/dex): Aggregation of swaps across many decentralized exchanges
-- [`nft.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/nft): Aggregation of swaps across many NFT marketplaces. Also see [`nft.wash_trades`](https://github.com/duneanalytics/spellbook/blob/main/models/nft/optimism/nft_optimism_wash_trades.sql) by hildobby for filtering out likely wash trades.
-- [`perpetual.trades`](https://github.com/duneanalytics/spellbook/tree/main/models/perpetual): Aggregation of swaps across many perpetuals exchanges (by rplust)
-
-**[Flipside Crypto - Optimism Models > Gold-Level Tables](https://github.com/FlipsideCrypto/optimism-models/tree/main/models/gold)**: *Tables can be used in [Flipside](https://flipsidecrypto.xyz/)*
-- [`optimism.core.ez_dex_swaps`](https://github.com/FlipsideCrypto/optimism-models/tree/main/models/gold/dex): Aggregation of swaps across many decentralized exchanges
-- [`optimism.core.ez_nft_sales`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__ez_nft_sales.sql): Aggregation of swaps across many NFT marketplaces
-- [`optimism.core.fact_delegations`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__fact_delegations.sql): Aggregation of OP governance delegation events.
