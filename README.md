@@ -3,8 +3,8 @@ Onchain Data, Utilities, References, and other Analytics on Optimism. Join the c
 
 ## Table of Contents
 * [I'm looking for Data About](#im-looking-for-data-about)
-* [Contributors](#contributors)
 * [Select Optimism Data Abstractions](#select-optimism-data-abstractions)
+* [Contributors](#contributors)
 
 ---
 
