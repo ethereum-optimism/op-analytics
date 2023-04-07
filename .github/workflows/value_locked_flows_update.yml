@@ -13,8 +13,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
   # The type of runner that the job will run on
-  # We use 20.04 because this seems to fail on latest (i.e. 22.04)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -25,7 +24,7 @@ jobs:
       - name: Set up Python and Node.js
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: '3.11'
         # Set max space to see if this helps with timeouts
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
