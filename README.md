@@ -44,16 +44,6 @@ DUNE_API_KEY = 'Your API Key'
 FLIPSIDE_SHROOMDK_KEY = 'Your API Key'
 ```
 
-### Common Requirements
-Common python packages used include
-- [pandas](https://github.com/pandas-dev/pandas)
-- [requests](https://github.com/psf/requests)
-- [aiohttp-retry](https://github.com/inyutin/aiohttp_retry)
-- [dune-client](https://github.com/cowprotocol/dune-client)
-- [subgrounds](https://github.com/0xPlaygrounds/subgrounds)
-- [web3.py](https://github.com/ethereum/web3.py)
-- [ethereum-etl](https://github.com/blockchain-etl/ethereum-etl)
-
 ### Installation
 ```
 python -m pip install pipenv
@@ -83,3 +73,13 @@ This will install `pre-commit` to the Git hook, so that `pre-commit` will run an
 - [`optimism.core.ez_dex_swaps`](https://github.com/FlipsideCrypto/optimism-models/tree/main/models/gold/dex): Aggregation of swaps across many decentralized exchanges
 - [`optimism.core.ez_nft_sales`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__ez_nft_sales.sql): Aggregation of swaps across many NFT marketplaces
 - [`optimism.core.fact_delegations`](https://github.com/FlipsideCrypto/optimism-models/blob/main/models/gold/core__fact_delegations.sql): Aggregation of OP governance delegation events.
+
+### Common Requirements
+Common packages used for python scripts include
+- [pandas](https://github.com/pandas-dev/pandas)
+- [requests](https://github.com/psf/requests)
+- [aiohttp-retry](https://github.com/inyutin/aiohttp_retry)
+- [dune-client](https://github.com/cowprotocol/dune-client)
+- [subgrounds](https://github.com/0xPlaygrounds/subgrounds)
+- [web3.py](https://github.com/ethereum/web3.py)
+- [ethereum-etl](https://github.com/blockchain-etl/ethereum-etl)
