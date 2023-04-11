@@ -22,6 +22,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+      
+      - name: Display System Info
+        run: |
+          free -h
+          df -h
 
       # Set up Python and Node.js
       - name: Set up Python and Node.js
