@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[23]:
 
 
 import pandas as pd
@@ -10,15 +10,16 @@ from datetime import datetime, timedelta, date
 import numpy as np
 import os
 import sys
+import shutil
 sys.path.append('../helper_functions')
 import defillama_utils as dfl
 
 
-# In[ ]:
+# In[24]:
 
 
 # date ranges to build charts for
-drange = [0, 1, 7, 30, 90, 180, 365]
+drange = [7, 30, 90, 180, 365]
 # Do we count net flows marked at the lastest token price (1) or the price on each day (0)
 # By default, we opt to 1, so that price movement isn't accidentally counted as + or - flow remainder
 mark_at_latest_price = 1 #some errors with missing token prices we need to find solves for first
@@ -30,7 +31,7 @@ start_date = date.today()-timedelta(days=trailing_num_days +1)
 print(start_date)
 
 
-# In[ ]:
+# In[25]:
 
 
 #get all apps > 5 m tvl
@@ -42,7 +43,7 @@ is_fallback_on_raw_tvl = True#False
 df_df = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl, is_fallback_on_raw_tvl)
 
 
-# In[ ]:
+# In[26]:
 
 
 df_df.head()
@@ -51,7 +52,7 @@ df_df.head()
 # df_df_all[(df_df_all['protocol'] == 'app_name') & (df_df_all['date'] == '2023-01-27')]
 
 
-# In[ ]:
+# In[27]:
 
 
 # display(df_df_all)
@@ -62,7 +63,7 @@ df_df['usd_value'] = df_df['usd_value'].astype('float64')
 # display(df_df_all2)
 
 
-# In[ ]:
+# In[28]:
 
 
 #create an extra day to handle for tokens dropping to 0
@@ -87,13 +88,13 @@ df_df_all = df_df.groupby(['date','token','chain','protocol','name','category','
 df_df = df_df.reset_index()
 
 
-# In[ ]:
+# In[29]:
 
 
 print("done api")
 
 
-# In[ ]:
+# In[30]:
 
 
 #filter down a bit so we can do trailing comparisons w/o doing every row
@@ -106,7 +107,7 @@ df_df = df_df[df_df['date'].dt.date >= start_date ]
 # display(df_df[df_df['protocol'] == 'velodrome'])
 
 
-# In[ ]:
+# In[31]:
 
 
 data_df = df_df.copy()
@@ -125,7 +126,7 @@ data_df['price_usd'] = data_df[['price_usd','last_price_usd']].bfill(axis=1).ilo
 data_df.sample(10)
 
 
-# In[ ]:
+# In[32]:
 
 
 # Find what is the latest token price. This sometimes gets skewed if tokens disappear or supply locked goes to 0
@@ -152,6 +153,7 @@ latest_prices_df_prot = latest_prices_df_prot.rename(columns={'price_usd':'lates
 latest_prices_df_prot = latest_prices_df_prot.reset_index()
 prices_df = prices_df.merge(latest_prices_df_prot,on=['token','chain','protocol'], how='left')
 latest_prices_df_raw_prot = [] # Free up memory
+print('done latest_prices_df_raw_prot')
 
 latest_prices_df_raw = data_df[~data_df['price_usd'].isna()][['token','chain','price_usd']][data_df['token_rank_desc'] ==1]
 latest_prices_df = latest_prices_df_raw.groupby(['token','chain']).median('price_usd')
@@ -159,6 +161,7 @@ latest_prices_df = latest_prices_df.rename(columns={'price_usd':'latest_price_us
 latest_prices_df = latest_prices_df.reset_index()
 prices_df = prices_df.merge(latest_prices_df,on=['token','chain'], how='left')
 latest_prices_df = [] # Free up memory
+print('done latest_prices_df')
 
 latest_prices_df_raw_prot_gt0 = data_df[~data_df['price_usd'].isna()][['token','chain','price_usd','protocol']][data_df['token_rank_desc_prot_gt0'] ==1]
 latest_prices_df_prot_gt0 = latest_prices_df_raw_prot_gt0.groupby(['token','chain','protocol']).median('price_usd')
@@ -166,12 +169,33 @@ latest_prices_df_prot_gt0 = latest_prices_df_prot_gt0.rename(columns={'price_usd
 latest_prices_df_prot_gt0 = latest_prices_df_prot_gt0.reset_index()
 prices_df = prices_df.merge(latest_prices_df_prot_gt0,on=['token','chain','protocol'], how='left')
 latest_prices_df_prot_gt0 = [] # Free up memory
+print('done latest_prices_df_prot_gt0')
+
+
+# prices_df['latest_price_usd'] = \
+#         prices_df['latest_price_usd_prot'].where(prices_df['latest_price_usd_prot'] > 0, \
+#         prices_df['latest_price_usd_raw'].where(prices_df['latest_price_usd_raw'] > 0, \
+#         prices_df['latest_price_usd_prot_gt0']))
 
 #Select the latest price we want in priority order
-prices_df['latest_price_usd'] = \
-        prices_df['latest_price_usd_prot'].where(prices_df['latest_price_usd_prot'] > 0, \
-        prices_df['latest_price_usd_raw'].where(prices_df['latest_price_usd_raw'] > 0, \
-        prices_df['latest_price_usd_prot_gt0']))
+
+# Chat GPT did this logic
+# Define the conditions and choices for the numpy.select() function
+conditions = [
+    prices_df['latest_price_usd_prot'] > 0,
+    prices_df['latest_price_usd_raw'] > 0,
+]
+choices = [
+    prices_df['latest_price_usd_prot'],
+    prices_df['latest_price_usd_raw'],
+]
+
+# If both conditions are False, choose prices_df['latest_price_usd_prot_gt0']
+default_choice = prices_df['latest_price_usd_prot_gt0']
+
+# Use numpy.select() to select the latest price
+prices_df['latest_price_usd'] = np.select(conditions, choices, default_choice)
+print("done price choice")
 
 #Filter down
 prices_df = prices_df[['chain','protocol','token','latest_price_usd']]
@@ -181,13 +205,13 @@ prices_df = prices_df[~prices_df['latest_price_usd'].isna()]
 #Merge back in to the data dataframe
 data_df = data_df.merge(prices_df,on=['token','chain','protocol'], how='left')
 prices_df = [] #Free Up Memory
+print("prices map done")
 
 
-# In[ ]:
+# In[33]:
 
 
 # Sort in date order
-print("prices map done")
 
 data_df.sort_values(by='date',inplace=True)
 
@@ -203,7 +227,7 @@ data_df = data_df[abs(data_df['net_dollar_flow']) < 50_000_000_000] #50 bil erro
 data_df = data_df[~data_df['net_dollar_flow'].isna()]
 
 
-# In[ ]:
+# In[34]:
 
 
 # Handle for errors where a token price went to zero (i.e. magpie ANKRBNB 2023-01-27)
@@ -212,7 +236,7 @@ data_df['net_dollar_flow_latest_price'] = np.where(
 )
 
 
-# In[ ]:
+# In[35]:
 
 
 # Get net flows by protocol
@@ -240,7 +264,7 @@ except:
 
 
 
-# In[ ]:
+# In[36]:
 
 
 #get latest
@@ -264,7 +288,21 @@ netdf_df = netdf_df[  #( netdf_df['rank_desc'] == 1 ) &\
 # display(netdf_df[netdf_df['protocol']=='makerdao'])
 
 
-# In[ ]:
+# In[37]:
+
+
+# netdf_df.columns
+
+for i in ('svg','png','html'):
+                dir_path = "img_outputs/" + i
+                # clear out folder
+                if os.path.exists(dir_path):
+                        shutil.rmtree(dir_path)
+                # create folder
+                os.mkdir(dir_path)
+
+
+# In[38]:
 
 
 summary_df = netdf_df.copy()
@@ -282,12 +320,18 @@ else:
 # Cast 'net_dollar_flow' to float64 data type
 summary_df['net_dollar_flow'] = summary_df['net_dollar_flow'].astype('float64')
 
+summary_df['cumul_net_dollar_flow'] = summary_df[['protocol','chain','net_dollar_flow']]\
+                                    .groupby(['protocol','chain']).cumsum()
+summary_df['flow_direction'] = np.where(summary_df['cumul_net_dollar_flow']*1.0 >= 0, 1,-1)
+summary_df['abs_cumul_net_dollar_flow'] = abs(summary_df['cumul_net_dollar_flow'])
+
 for i in drange:
         if i == 0:
-                summary_df['cumul_net_dollar_flow'] = summary_df[['protocol','chain','net_dollar_flow']]\
-                                    .groupby(['protocol','chain']).cumsum()
-                summary_df['flow_direction'] = np.where(summary_df['cumul_net_dollar_flow']*1.0 >= 0, 1,-1)
-                summary_df['abs_cumul_net_dollar_flow'] = abs(summary_df['cumul_net_dollar_flow'])
+                continue
+                # summary_df['cumul_net_dollar_flow'] = summary_df[['protocol','chain','net_dollar_flow']]\
+                #                     .groupby(['protocol','chain']).cumsum()
+                # summary_df['flow_direction'] = np.where(summary_df['cumul_net_dollar_flow']*1.0 >= 0, 1,-1)
+                # summary_df['abs_cumul_net_dollar_flow'] = abs(summary_df['cumul_net_dollar_flow'])
 
         else:
                 col_str = 'cumul_net_dollar_flow_' + str(i) + 'd'
@@ -317,7 +361,7 @@ os.makedirs('img_outputs/html', exist_ok=True)
 final_summary_df.to_csv('csv_outputs/latest_tvl_app_trends.csv', mode='w', index=False, encoding='utf-8')
 
 
-# In[ ]:
+# In[39]:
 
 
 print("starting chart outputs")
@@ -370,7 +414,7 @@ for i in drange:
                 
                 , hover_data = [hval]
                 )
-        
+
         fig.update_traces(root_color="lightgrey")
         fig.update_layout(margin = dict(t=50, l=25, r=25, b=25))
         fig_app.update_traces(root_color="lightgrey")
@@ -390,7 +434,7 @@ for i in drange:
 # fig.update_layout(tickprefix = '$')
 
 
-# In[ ]:
+# In[40]:
 
 
 # ! jupyter nbconvert --to python total_app_net_flows_async.ipynb
