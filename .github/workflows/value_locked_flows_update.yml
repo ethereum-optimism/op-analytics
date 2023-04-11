@@ -14,8 +14,6 @@ jobs:
   build:
   # The type of runner that the job will run on
     runs-on: ubuntu-20.04
-    container:
-      options: --memory=4g # increase memory to 4GB
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
