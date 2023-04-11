@@ -26,6 +26,7 @@ A select list of Optimism data dashboards:
 - [Total Value Locked in DeFi (by Defillama)](https://defillama.com/chain/Optimism)
 - [App Fees & Revenue (by Defillama)](https://defillama.com/fees/chains/optimism)
 - [DEX Trade Volume (by Defillama)](https://defillama.com/dexs/chains/optimism)
+- TVL Flows Between Apps and Chains (From Defillama API): [Last 7 Days](https://static.optimism.io/op-analytics/value_locked_flows/img_outputs/html/net_app_flows_7d.html), [30 Days](https://static.optimism.io/op-analytics/value_locked_flows/img_outputs/html/net_app_flows_30d.html), [90 Days](https://static.optimism.io/op-analytics/value_locked_flows/img_outputs/html/net_app_flows_90d.html), [180 Days](https://static.optimism.io/op-analytics/value_locked_flows/img_outputs/html/net_app_flows_180d.html), [365 Days](https://static.optimism.io/op-analytics/value_locked_flows/img_outputs/html/net_app_flows_365d.html)
 
 ### NFTs
 - [NFT Marketplaces and Collection Volume](https://dune.com/oplabspbc/optimism-nft-secondary-marketplaces)
