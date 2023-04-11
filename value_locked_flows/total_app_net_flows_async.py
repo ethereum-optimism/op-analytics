@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[23]:
+# In[ ]:
 
 
 import pandas as pd
@@ -15,7 +15,7 @@ sys.path.append('../helper_functions')
 import defillama_utils as dfl
 
 
-# In[24]:
+# In[ ]:
 
 
 # date ranges to build charts for
@@ -31,7 +31,7 @@ start_date = date.today()-timedelta(days=trailing_num_days +1)
 print(start_date)
 
 
-# In[25]:
+# In[ ]:
 
 
 #get all apps > 5 m tvl
@@ -43,7 +43,7 @@ is_fallback_on_raw_tvl = True#False
 df_df = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl, is_fallback_on_raw_tvl)
 
 
-# In[26]:
+# In[ ]:
 
 
 df_df.head()
@@ -52,7 +52,7 @@ df_df.head()
 # df_df_all[(df_df_all['protocol'] == 'app_name') & (df_df_all['date'] == '2023-01-27')]
 
 
-# In[27]:
+# In[ ]:
 
 
 # display(df_df_all)
@@ -63,7 +63,7 @@ df_df['usd_value'] = df_df['usd_value'].astype('float64')
 # display(df_df_all2)
 
 
-# In[28]:
+# In[ ]:
 
 
 #create an extra day to handle for tokens dropping to 0
@@ -76,7 +76,7 @@ df_df_shift['usd_value'] = 0.0
 
 #merge back in
 df_df = pd.concat([df_df,df_df_shift])
-df_df_shift = [] #free up memory
+df_df_shift = None #Free Up memory
 # print(df_df_all.dtypes)
 
 df_df = df_df[df_df['date'] <= pd.to_datetime("today") ]
@@ -88,13 +88,13 @@ df_df_all = df_df.groupby(['date','token','chain','protocol','name','category','
 df_df = df_df.reset_index()
 
 
-# In[29]:
+# In[ ]:
 
 
 print("done api")
 
 
-# In[30]:
+# In[ ]:
 
 
 #filter down a bit so we can do trailing comparisons w/o doing every row
@@ -107,11 +107,11 @@ df_df = df_df[df_df['date'].dt.date >= start_date ]
 # display(df_df[df_df['protocol'] == 'velodrome'])
 
 
-# In[31]:
+# In[ ]:
 
 
 data_df = df_df.copy()
-df_df = [] # Free Up Memory
+df_df = None # Free up memory
 data_df = data_df.sort_values(by='date')
 
 # price = usd value / num tokens
@@ -126,7 +126,7 @@ data_df['price_usd'] = data_df[['price_usd','last_price_usd']].bfill(axis=1).ilo
 data_df.sample(10)
 
 
-# In[32]:
+# In[ ]:
 
 
 # Find what is the latest token price. This sometimes gets skewed if tokens disappear or supply locked goes to 0
@@ -137,9 +137,9 @@ data_df['token_rank_desc'] = data_df.groupby(['chain','token'])['date'].\
 data_df['token_rank_desc_prot'] = data_df.groupby(['chain','token','protocol'])['date'].\
                             rank(method='dense',ascending=False).astype(int)
 # Token's recency rank by chain & app if > 0 - For calculating prices
-data_df['token_rank_desc_prot_gt0'] = data_df.query('token_value > 0')\
+data_df['token_rank_desc_prot_gt0'] = data_df[data_df['token_value'] > 0]\
                                     .groupby(['chain', 'token', 'protocol'])['date']\
-                                    .rank(method='first', ascending=False)
+                                    .rank(method='first', ascending=False).astype(int)
 
 # get latest price either by protocol or in aggregate
 # if we don't have a match by protocol, then select in aggregate.
@@ -147,28 +147,28 @@ data_df['token_rank_desc_prot_gt0'] = data_df.query('token_value > 0')\
 prices_df = data_df[['chain','protocol','token']].drop_duplicates()
 
 
-latest_prices_df_raw_prot = data_df[~data_df['price_usd'].isna()][['token','chain','protocol','price_usd']][data_df['token_rank_desc_prot'] ==1]
+latest_prices_df_raw_prot = data_df.loc[~data_df['price_usd'].isna()][['token','chain','protocol','price_usd']][data_df['token_rank_desc_prot'] ==1]
 latest_prices_df_prot = latest_prices_df_raw_prot.groupby(['token','chain','protocol']).median('price_usd')
 latest_prices_df_prot = latest_prices_df_prot.rename(columns={'price_usd':'latest_price_usd_prot'})
 latest_prices_df_prot = latest_prices_df_prot.reset_index()
 prices_df = prices_df.merge(latest_prices_df_prot,on=['token','chain','protocol'], how='left')
-latest_prices_df_raw_prot = [] # Free up memory
+latest_prices_df_raw_prot = None # Free up memory
 print('done latest_prices_df_raw_prot')
 
-latest_prices_df_raw = data_df[~data_df['price_usd'].isna()][['token','chain','price_usd']][data_df['token_rank_desc'] ==1]
+latest_prices_df_raw = data_df.loc[~data_df['price_usd'].isna()][['token','chain','price_usd']][data_df['token_rank_desc'] ==1]
 latest_prices_df = latest_prices_df_raw.groupby(['token','chain']).median('price_usd')
 latest_prices_df = latest_prices_df.rename(columns={'price_usd':'latest_price_usd_raw'})
 latest_prices_df = latest_prices_df.reset_index()
 prices_df = prices_df.merge(latest_prices_df,on=['token','chain'], how='left')
-latest_prices_df = [] # Free up memory
+latest_prices_df = None # Free up memory
 print('done latest_prices_df')
 
-latest_prices_df_raw_prot_gt0 = data_df[~data_df['price_usd'].isna()][['token','chain','price_usd','protocol']][data_df['token_rank_desc_prot_gt0'] ==1]
+latest_prices_df_raw_prot_gt0 = data_df.loc[~data_df['price_usd'].isna()][['token','chain','price_usd','protocol']][data_df['token_rank_desc_prot_gt0'] ==1]
 latest_prices_df_prot_gt0 = latest_prices_df_raw_prot_gt0.groupby(['token','chain','protocol']).median('price_usd')
 latest_prices_df_prot_gt0 = latest_prices_df_prot_gt0.rename(columns={'price_usd':'latest_price_usd_prot_gt0'})
 latest_prices_df_prot_gt0 = latest_prices_df_prot_gt0.reset_index()
 prices_df = prices_df.merge(latest_prices_df_prot_gt0,on=['token','chain','protocol'], how='left')
-latest_prices_df_prot_gt0 = [] # Free up memory
+latest_prices_df_prot_gt0 = None # Free up memory
 print('done latest_prices_df_prot_gt0')
 
 
@@ -204,11 +204,11 @@ prices_df = prices_df[~prices_df['latest_price_usd'].isna()]
 
 #Merge back in to the data dataframe
 data_df = data_df.merge(prices_df,on=['token','chain','protocol'], how='left')
-prices_df = [] #Free Up Memory
+prices_df = None #Free Up memory
 print("prices map done")
 
 
-# In[33]:
+# In[ ]:
 
 
 # Sort in date order
@@ -227,7 +227,7 @@ data_df = data_df[abs(data_df['net_dollar_flow']) < 50_000_000_000] #50 bil erro
 data_df = data_df[~data_df['net_dollar_flow'].isna()]
 
 
-# In[34]:
+# In[ ]:
 
 
 # Handle for errors where a token price went to zero (i.e. magpie ANKRBNB 2023-01-27)
@@ -236,14 +236,14 @@ data_df['net_dollar_flow_latest_price'] = np.where(
 )
 
 
-# In[35]:
+# In[ ]:
 
 
 # Get net flows by protocol
 
 netdf_df = data_df[['date','protocol','chain','name','category','parent_protocol','net_dollar_flow','usd_value','net_dollar_flow_latest_price']]
 
-data_df = [] #Free Up memory
+data_df = None #Free Up memory
 
 netdf_df = netdf_df.fillna(0)
 netdf_df = netdf_df.sort_values(by='date',ascending=True)
@@ -264,7 +264,7 @@ except:
 
 
 
-# In[36]:
+# In[ ]:
 
 
 #get latest
@@ -288,7 +288,7 @@ netdf_df = netdf_df[  #( netdf_df['rank_desc'] == 1 ) &\
 # display(netdf_df[netdf_df['protocol']=='makerdao'])
 
 
-# In[37]:
+# In[ ]:
 
 
 # netdf_df.columns
@@ -302,7 +302,7 @@ for i in ('svg','png','html'):
                 os.mkdir(dir_path)
 
 
-# In[38]:
+# In[ ]:
 
 
 summary_df = netdf_df.copy()
@@ -361,7 +361,7 @@ os.makedirs('img_outputs/html', exist_ok=True)
 final_summary_df.to_csv('csv_outputs/latest_tvl_app_trends.csv', mode='w', index=False, encoding='utf-8')
 
 
-# In[39]:
+# In[ ]:
 
 
 print("starting chart outputs")
@@ -434,7 +434,7 @@ for i in drange:
 # fig.update_layout(tickprefix = '$')
 
 
-# In[40]:
+# In[ ]:
 
 
 # ! jupyter nbconvert --to python total_app_net_flows_async.ipynb
