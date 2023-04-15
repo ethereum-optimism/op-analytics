@@ -32,8 +32,6 @@ jobs:
           python-version: '3.11'
         # Set max space to see if this helps with timeouts
         env:
-          NODE_OPTIONS: '--max-old-space-size=4096'
-        # Update the Node.js version to 16
           node-version: '16'
 
 
