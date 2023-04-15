@@ -34,8 +34,8 @@ print(start_date)
 # In[ ]:
 
 
-#get all apps > 5 m tvl
-min_tvl = 5_000_000
+#get all apps > 10 m tvl
+min_tvl = 10_000_000
 
 # if TVL by token is not available, do we fallback on raw TVL (sensitive to token prices)?
 is_fallback_on_raw_tvl = True#False
@@ -137,9 +137,9 @@ data_df['token_rank_desc'] = data_df.groupby(['chain','token'])['date'].\
 data_df['token_rank_desc_prot'] = data_df.groupby(['chain','token','protocol'])['date'].\
                             rank(method='dense',ascending=False).astype(int)
 # Token's recency rank by chain & app if > 0 - For calculating prices
-data_df['token_rank_desc_prot_gt0'] = data_df[data_df['token_value'] > 0]\
-                                    .groupby(['chain', 'token', 'protocol'])['date']\
-                                    .rank(method='first', ascending=False).astype(int)
+# data_df['token_rank_desc_prot_gt0'] = data_df[data_df['token_value'] > 0]\
+#                                     .groupby(['chain', 'token', 'protocol'])['date']\
+#                                     .rank(method='first', ascending=False).astype(int)
 
 # get latest price either by protocol or in aggregate
 # if we don't have a match by protocol, then select in aggregate.
@@ -163,13 +163,17 @@ prices_df = prices_df.merge(latest_prices_df,on=['token','chain'], how='left')
 latest_prices_df = None # Free up memory
 print('done latest_prices_df')
 
-latest_prices_df_raw_prot_gt0 = data_df.loc[~data_df['price_usd'].isna()][['token','chain','price_usd','protocol']][data_df['token_rank_desc_prot_gt0'] ==1]
-latest_prices_df_prot_gt0 = latest_prices_df_raw_prot_gt0.groupby(['token','chain','protocol']).median('price_usd')
-latest_prices_df_prot_gt0 = latest_prices_df_prot_gt0.rename(columns={'price_usd':'latest_price_usd_prot_gt0'})
-latest_prices_df_prot_gt0 = latest_prices_df_prot_gt0.reset_index()
-prices_df = prices_df.merge(latest_prices_df_prot_gt0,on=['token','chain','protocol'], how='left')
-latest_prices_df_prot_gt0 = None # Free up memory
-print('done latest_prices_df_prot_gt0')
+prices_df['latest_price_usd_prot_gt0'] = 0
+# latest_prices_df_raw_prot_gt0 = data_df.loc[~data_df['price_usd'].isna()][['token','chain','price_usd','protocol']][data_df['token_rank_desc_prot_gt0'] ==1]
+# latest_prices_df_prot_gt0 = latest_prices_df_raw_prot_gt0.groupby(['token','chain','protocol']).median('price_usd')
+# latest_prices_df_prot_gt0 = latest_prices_df_prot_gt0.rename(columns={'price_usd':'latest_price_usd_prot_gt0'})
+# latest_prices_df_prot_gt0 = latest_prices_df_prot_gt0.reset_index()
+# prices_df = prices_df.merge(latest_prices_df_prot_gt0,on=['token','chain','protocol'], how='left')
+# latest_prices_df_prot_gt0 = None # Free up memory
+# print('done latest_prices_df_prot_gt0')
+
+
+# In[ ]:
 
 
 # prices_df['latest_price_usd'] = \
