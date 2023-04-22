@@ -640,7 +640,7 @@ for d in date_cols:
 # In[ ]:
 
 
-# display(netdf_df[netdf_df['protocol'].str.contains('velodr')])
+# display(netdf_df[netdf_df['protocol'].str.contains('velodr')].sort_values(by='date',ascending=True).iloc[:, :15])
 
 
 # In[ ]:
