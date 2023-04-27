@@ -87,6 +87,10 @@ jobs:
       
       # Commit and push output images
       # https://github.com/orgs/community/discussions/26672
+      - name: Pull changes
+        run: |
+          git pull origin main
+          
       - name: Commit files
         id: commit
         run: |
