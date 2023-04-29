@@ -5,6 +5,7 @@ import dotenv
 import os
 from loguru import logger
 import argparse
+import requests as r
 
 from dune_client.types import QueryParameter
 from dune_client.client import DuneClient
@@ -12,7 +13,7 @@ from dune_client.query import Query
 
 
 def get_dune_data(
-    query_id: int, name: str = "my_query_results", path: str = "csv_outputs"
+    query_id: int, name: str = "my_query_results", path: str = "csv_outputs", performance: str = "medium"
 ) -> pd.DataFrame:
     """
     Get data via Dune API.
@@ -26,6 +27,7 @@ def get_dune_data(
     dotenv.load_dotenv()
     dune = DuneClient(os.environ["DUNE_API_KEY"])
     results = dune.refresh(query)
+    performance = performance
 
     df = pd.DataFrame(results.result.rows)
     df["last_updated"] = results.times.submitted_at
@@ -41,6 +43,30 @@ def get_dune_data(
 
     return df
 
+def get_dune_data_raw(query_id, perf_var = "medium"):
+    dotenv.load_dotenv()
+    # authentiction with api key
+    api_key = os.environ["DUNE_API_KEY"]
+    headers = {"X-Dune-API-Key": api_key}
+    base_url = f"https://api.dune.com/api/v1/query/{query_id}/execute"
+    params = {
+        "performance": perf_var,
+    }
+
+
+    api_url = f"https://api.dune.com/api/v1/query/{query_id}/results?api_key={dune_api_key}"
+    df = pd.DataFrame(r.get(api_url).json()['rows'])
+    df = df.iloc[df.index.get_loc('rows')]
+    updated_at = df.iloc[0]['execution_ended_at']
+    df = df[['result']]
+    return df
+    # get API key
+    
+    
+
+    query_id = 1252207
+    
+    result_response = requests.request("POST", base_url, headers=headers, params=params)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
