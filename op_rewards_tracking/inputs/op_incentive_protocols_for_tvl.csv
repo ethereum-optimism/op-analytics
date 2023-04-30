@@ -51,7 +51,9 @@ include_in_summary,slug,num_op_override,num_op,start_date,end_date,name,op_sourc
 1,synthetix,,,9/27/22,,ETH/sETH: Velodrome,Governance - Phase 0,pool-subgraph-velodrome,['0xfd7fddfc0a729ecf45fb6b12fa3b71a575e1966f'],velodrome,,1
 1,synthetix,,,9/27/22,,USDC/SNX: Velodrome,Governance - Phase 0,pool-subgraph-velodrome,['0x9056eb7ca982a5dd65a584189994e6a27318067d'],velodrome,,1
 1,synthetix,,,9/27/22,,USDC/sUSD: Velodrome,Governance - Phase 0,pool-subgraph-velodrome,['0xd16232ad60188b68076a235c65d692090caba155'],velodrome,,1
+0,synthetix,,,10/25/22,,All Synthetix Hop Pools,Governance - Phase 0,pool-defillama-hop,"['SNX','SUSD']",hop,,1
 1,synthetix,,,10/25/22,,SNX Bridge: Hop,Governance - Phase 0,pool-defillama-hop,['SNX'],hop,,1
+1,synthetix,,,4/10/23,,sUSD Bridge: Hop,Governance - Phase 0,pool-defillama-hop,['SUSD'],hop,,1
 1,thales,,900000,7/15/22,,,Governance - Phase 0,defillama,,,,
 0,uniswap-v3,50000,50000,10/26/22,11/21/22,Uniswap LM - Phase 1,Governance - Phase 0,defillama,,,uniswap,
 0,uniswap-v3,100000,100000,1/16/23,2/8/23,Uniswap LM - Phase 2,Governance - Phase 0,defillama,,,uniswap,
