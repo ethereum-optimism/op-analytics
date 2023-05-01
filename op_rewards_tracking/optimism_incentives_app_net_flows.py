@@ -72,7 +72,7 @@ join_cols = [
 
 # Protocol Incentive Start Dates
 # Eventually, move this to its own file / csv
-protocols = pd.read_csv("inputs/" + "op_incentive_protocols.csv")
+protocols = pd.read_csv("inputs/" + "op_incentive_protocols_for_tvl.csv")
 # evaluate arrays as array
 protocols["contracts"] = protocols["contracts"].apply(pu.str_to_list)
 protocols["is_external_dex_bridge_pool"] = protocols[
