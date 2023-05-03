@@ -83,7 +83,7 @@ jobs:
              # echo "::set-output name=push::false"
              echo "push=false" >> $GITHUB_OUTPUT
           else
-             git commit -m "GH Action Update" -a
+             git commit -m "GH Action Update - Value Locked Flows" -a
              # echo "::set-output name=push::true"
              echo "push=true" >> $GITHUB_OUTPUT
           fi
