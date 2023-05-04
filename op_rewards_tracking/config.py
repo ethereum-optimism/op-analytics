@@ -4,7 +4,7 @@ LAST_N_DAYS = 30
 
 COL_NAMES_TO_INCLUDE = [
     "# OP Allocated",
-    "app_name",
+    "app_name_a",
     "app_name_join",
     "op_source",
     "category",
