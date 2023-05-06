@@ -6,13 +6,17 @@
 
 import pandas as pd
 import numpy as np
+
 from functools import reduce
 from pandas.api.types import CategoricalDtype
 from datetime import datetime, timedelta
 from utils import format_number
-from IPython.display import display #So that display is recognized in .py files
+from IPython.display import display  # So that display is recognized in .py files
 
 from config import LAST_N_DAYS, COL_NAMES_TO_INCLUDE
+
+import plotly.express as px
+import plotly.graph_objects as go
 
 pd.options.display.float_format = "{:,.2f}".format
 pd.set_option("display.max_columns", None)
@@ -206,7 +210,7 @@ df_usage = pd.read_csv("csv_outputs/" + "dune_op_program_performance_summary" + 
 df_usage["start_date"] = pd.to_datetime(df_usage["start_date"])
 df_usage["end_date"] = pd.to_datetime(df_usage["end_date"])
 
-df_usage["app_name_join"] = df_usage["app_name"].apply(cleanup_string)
+df_usage["app_name_join"] = df_usage["app_name_a"].apply(cleanup_string)
 df_usage["duration_days"] = (
     df_usage["end_date"].fillna(datetime.now()) - df_usage["start_date"]
 ).dt.days + 1  # if start and end date is the same, add 1 to include that day
@@ -271,6 +275,8 @@ locals().update(summary_dfs)
 # df_op_distribution_summary_app
 
 
+# ### By App
+
 # In[9]:
 
 
@@ -286,6 +292,7 @@ df_combined_app = merge_dfs(
 # mask = df_combined_app['op_deployed'] > df_combined_app['# OP Allocated']
 # df_combined_app.loc[mask, 'op_deployed'] = df_combined_app.loc[mask, '# OP Allocated']
 
+df_combined_app = df_combined_app.dropna(subset=["# OP Allocated"])
 
 # calculate metrics
 result_app = calculate_metrics(
@@ -293,38 +300,13 @@ result_app = calculate_metrics(
 )  # by app use op_deployed
 # display(result_app)
 
-
-# ### By App
 
 # In[10]:
 
 
-# by app
-df_combined_app = merge_dfs(
-    df_usage=df_usage,
-    df_tvl_summary_app=df_tvl_summary_app,
-    df_choice_summary_app=df_choice_summary_app,
-    df_op_distribution_summary_app=df_op_distribution_summary_app,
-)
-
-# # if op_deployed higher than op allocated, set to op allocated value
-# mask = df_combined_app['op_deployed'] > df_combined_app['# OP Allocated']
-# df_combined_app.loc[mask, 'op_deployed'] = df_combined_app.loc[mask, '# OP Allocated']
-
-
-# calculate metrics
-result_app = calculate_metrics(
-    df_combined_app, op="op_deployed"
-)  # by app use op_deployed
-# display(result_app)
-
-
-# In[11]:
-
-
 # sort by tvl
 cols = [
-    "app_name",
+    "app_name_a",
     "# OP Allocated",
     "op_deployed",
     "cumul_last_price_net_dollar_flow",
@@ -338,12 +320,12 @@ display(
 )
 
 
-# In[12]:
+# In[11]:
 
 
 # sort by txs
 txs_cols = [
-    "app_name",
+    "app_name_a",
     "# OP Allocated",
     "op_deployed",
     "incremental_txs_per_day",
@@ -370,12 +352,12 @@ display(
 )
 
 
-# In[13]:
+# In[12]:
 
 
 # sort by gas
 gas_cols = [
-    "app_name",
+    "app_name_a",
     "# OP Allocated",
     "op_deployed",
     "incremental_gas_fee_eth_per_day",
@@ -408,7 +390,7 @@ display(
 
 # ### By Fund Source
 
-# In[14]:
+# In[13]:
 
 
 agg_dict = {
@@ -424,7 +406,7 @@ agg_dict = {
 }
 
 
-# In[15]:
+# In[14]:
 
 
 result_app["op_source_length"] = result_app["op_source"].str.split(",").apply(len)
@@ -447,9 +429,236 @@ result_source.sort_values("op_source_map").reset_index()
 display(result_source)
 
 
-# In[16]:
+# 
+
+# In[15]:
 
 
 # convert results to csv
 result_app.to_csv("csv_outputs/final_incentive_program_summary_by_app.csv")
+
+
+# ### Benchmark
+
+# In[16]:
+
+
+def plot_benchmark(
+    df,
+    layout_settings,
+    x="incremental_txs_per_day",
+    y="incremental_txs_annualized_per_op",
+    size="op_deployed",
+):
+    fig = px.scatter(
+        df, x=x, y=y, size=size, hover_name="app_name_a", color="op_source_map"
+    )
+
+    # calculate percentiles for incremental_txs_annualized_per_op
+    p25 = df[y].quantile(0.25)
+    p50 = df[y].quantile(0.50)
+    p75 = df[y].quantile(0.75)
+
+    x_range = [df[x].min(), df[x].max()]
+
+    # add vertical lines for percentiles
+    fig.add_trace(
+        go.Scatter(x=x_range, y=[p25, p25], mode="lines", name="25th percentile")
+    )
+    fig.add_trace(
+        go.Scatter(x=x_range, y=[p50, p50], mode="lines", name="50th percentile")
+    )
+    fig.add_trace(
+        go.Scatter(x=x_range, y=[p75, p75], mode="lines", name="75th percentile")
+    )
+
+    fig.update_layout(layout_settings)
+
+    fig.show()
+
+
+def cleanup_data(
+    df=result_app,
+    subset=[
+        "op_deployed",
+        "incremental_txs_annualized_per_op",
+        "incremental_txs_per_day",
+    ],
+    excl_partnerfund=True,
+):
+    df = result_app.dropna(subset=subset)
+    df = df.replace([np.inf, -np.inf], np.nan).dropna(
+        subset=subset
+    )  # remove rows with infinity values
+
+    if excl_partnerfund:
+        # drop anything with Partner Fund from df
+        df = df[~df["op_source"].str.contains("Partner Fund")]
+
+    df[subset] = df[subset].apply(pd.to_numeric, errors="coerce")
+
+    return df
+
+
+# ### Transactions Benchmark
+
+# In[17]:
+
+
+layout_settings = {
+    "title": "Incremental Txs Performance Benchmark (All Programs)",
+    "xaxis_title": "Incremental Transactions per Day",
+    "yaxis_title": "Annualized Incremental Transactions per OP",
+    "legend_title": "Op Source",
+}
+
+df = cleanup_data()
+
+plot_benchmark(
+    df,
+    x="incremental_txs_per_day",
+    y="incremental_txs_annualized_per_op",
+    size="op_deployed",
+    layout_settings=layout_settings,
+)
+
+
+# In[18]:
+
+
+layout_settings = {
+    "title": "Incremental Txs Performance Benchmark (Completed Programs)",
+    "xaxis_title": "Incremental Transactions per Day",
+    "yaxis_title": "Annualized Incremental Transactions per OP",
+    "legend_title": "Op Source",
+}
+
+df = cleanup_data(
+    subset=[
+        "op_deployed",
+        "incremental_txs_per_day_after",
+        "incremental_txs_after_annualized_per_op",
+    ],
+)
+
+plot_benchmark(
+    df,
+    x="incremental_txs_per_day_after",
+    y="incremental_txs_after_annualized_per_op",
+    size="op_deployed",
+    layout_settings=layout_settings,
+)
+
+
+# ### TVL Benchmark
+
+# In[19]:
+
+
+layout_settings = {
+    "title": "Incremental TVL Performance Benchmark (All Programs)",
+    "xaxis_title": "Incremental TVL",
+    "yaxis_title": "Incremental TVL per OP",
+    "legend_title": "Op Source",
+}
+
+df = cleanup_data(
+    subset=[
+        "op_deployed",
+        "net_tvl_per_op",
+        "cumul_last_price_net_dollar_flow",
+    ]
+)
+
+plot_benchmark(
+    df,
+    x="cumul_last_price_net_dollar_flow",
+    y="net_tvl_per_op",
+    size="op_deployed",
+    layout_settings=layout_settings,
+)
+
+
+# In[20]:
+
+
+layout_settings = {
+    "title": "Incremental TVL Performance Benchmark (Completed Programs)",
+    "xaxis_title": "Incremental TVL",
+    "yaxis_title": "Incremental TVL per OP",
+    "legend_title": "Op Source",
+}
+
+df = cleanup_data(
+    subset=[
+        "op_deployed",
+        "net_tvl_per_op",
+        "cumul_last_price_net_dollar_flow",
+        "incremental_txs_per_day_after",  # used for filtering completed programs only
+    ]
+)
+
+plot_benchmark(
+    df,
+    x="cumul_last_price_net_dollar_flow",
+    y="net_tvl_per_op",
+    size="op_deployed",
+    layout_settings=layout_settings,
+)
+
+
+# ### Fee Benchmark
+
+# In[21]:
+
+
+layout_settings = {
+    "title": "Incremental Fee Performance Benchmark (All Programs)",
+    "xaxis_title": "Incremental Fee per Day",
+    "yaxis_title": "Annualized Incremental Fee per OP",
+    "legend_title": "Op Source",
+}
+
+df = cleanup_data(
+    subset=[
+        "op_deployed",
+        "incremental_gas_fee_eth_per_day",
+        "incremental_gas_fee_eth_annualized_per_op",
+    ]
+)
+
+plot_benchmark(
+    df,
+    x="incremental_gas_fee_eth_per_day",
+    y="incremental_gas_fee_eth_annualized_per_op",
+    size="op_deployed",
+    layout_settings=layout_settings,
+)
+
+
+# In[22]:
+
+
+layout_settings = {
+    "title": "Incremental Fee Performance Benchmark (Completed Programs)",
+    "xaxis_title": "Incremental Fee per Day",
+    "yaxis_title": "Annualized Incremental Fee per OP",
+    "legend_title": "Op Source",
+}
+
+df = cleanup_data(
+    subset=[
+        "op_deployed",
+        "incremental_gas_fee_eth_per_day_after",
+        "incremental_gas_fee_eth_after_annualized_per_op",
+    ]
+)
+
+plot_benchmark(
+    df,
+    x="incremental_gas_fee_eth_per_day_after",
+    y="incremental_gas_fee_eth_after_annualized_per_op",
+    size="op_deployed",
+    layout_settings=layout_settings,
+)
 

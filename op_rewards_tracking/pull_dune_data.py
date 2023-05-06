@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import sys
@@ -12,7 +12,7 @@ import os
 import duneapi_utils as d
 
 
-# In[2]:
+# In[ ]:
 
 
 # add any data to pull here
@@ -23,7 +23,7 @@ data = {
 }
 
 
-# In[3]:
+# In[ ]:
 
 
 for query_id, csv_name in data.items():
