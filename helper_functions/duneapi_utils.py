@@ -34,8 +34,8 @@ def get_dune_data(
 
     if not os.path.exists(path):
         os.makedirs(path)
-
-    df.to_csv(f"{path}/{name}.csv")
+    # display(df)
+    df.to_csv(f"{path}/{name}.csv", escapechar='\\')
 
     logger.info(
         f"✨ Results saved as {path}/{name}.csv, with {len(df)} rows and {len(df.columns)} columns."
