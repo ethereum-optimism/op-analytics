@@ -24,7 +24,7 @@ jobs:
       - name: Set up Python and Node.js
         uses: actions/setup-python@v2
         with:
-          python-version: '3.11'
+          python-version: '3.10.9'
         # Set max space to see if this helps with timeouts
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
@@ -54,7 +54,9 @@ jobs:
   # OP App Flows
       - name: Update OP App Net Flows
         working-directory: op_rewards_tracking
-        run: pipenv run python optimism_incentives_app_net_flows.py
+        run: |
+          pipenv run python optimism_incentives_app_net_flows.py
+          pipenv run jupyter nbconvert --to notebook --execute op_incentive_program_summary.ipynb
   
   # Dune Data
       - name: Pull OP Usage Data in Dune

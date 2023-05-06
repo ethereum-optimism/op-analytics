@@ -1,19 +1,39 @@
 include_in_summary,slug,num_op_override,num_op,start_date,end_date,name,op_source,data_source,contracts,source_slug,parent_protocol,is_external_dex_bridge_pool
+1,layer2dao,,,7/20/22,8/22/22,L2DAO/OP: Velodrome,Governance - Phase 0,pool-subgraph-velodrome,['0xfc77e39de40e54f820e313039207dc850e4c9e60'],velodrome,,1
+1,aelin,,900000,9/12/22,9/14/22,,Governance - Phase 0,defillama,,,,
+1,aave-v3,,5000000,8/4/22,11/4/22,Aave - Liquidity Mining,Partner Fund,defillama,,,,
+1,pooltogether,450000,450000,7/22/22,11/15/22,PoolTogether #1,Partner Fund,defillama,,,,
+1,velodrome,3000000,3000000,7/13/22,11/17/22,Velodrome #1 ,Partner Fund,defillama,,,,
+1,arrakis-finance,16667,16667,10/26/22,11/21/22,Uniswap LM - Phase 1,Governance - Phase 0,defillama,,,uniswap,
+1,gamma,16667,16667,10/26/22,11/21/22,Uniswap LM - Phase 1,Governance - Phase 0,defillama,,,uniswap,
+0,uniswap-v3,50000,50000,10/26/22,11/21/22,Uniswap LM - Phase 1,Governance - Phase 0,defillama,,,uniswap,
+1,xtoken,16667,16667,10/26/22,11/21/22,Uniswap LM - Phase 1,Governance - Phase 0,defillama,,,uniswap,
+1,wepiggy,,300000,8/3/22,2/6/23,,Governance - Phase 0,defillama,,,,
+1,arrakis-finance,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Governance - Phase 0,defillama,,,uniswap,
+1,defiedge,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Governance - Phase 0,defillama,,,uniswap,
+1,gamma,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Governance - Phase 0,defillama,,,uniswap,
+0,uniswap-v3,100000,100000,1/16/23,2/8/23,Uniswap LM - Phase 2,Governance - Phase 0,defillama,,,uniswap,
+1,xtoken,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Governance - Phase 0,defillama,,,uniswap,
+1,rocket-pool,,,11/9/22,2/8/23,sWETH/rETH: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0x69f795e2d9249021798645d784229e5bec2a5a25'],velodrome,,1
+1,rubicon,,900000,7/15/22,2/10/23,,Governance - Phase 0,defillama,,,,
+1,revert-compoundor,,240000,11/3/22,3/6/23,,Governance - Season 2,defillama,,,,
+1,xtoken,,900000,9/19/22,3/21/23,,Governance - Season 1,defillama,,,,
+1,pooltogether,550000,550000,11/15/22,3/28/23,PoolTogether #2,Governance - Season 2,defillama,,,,
+1,arrakis-finance,67500,67500,3/22/23,4/12/23,OP Uniswap LM - Phase 1,Partner Fund,defillama,,,uniswap,
+1,gamma,67500,67500,3/22/23,4/12/23,OP Uniswap LM - Phase 1,Partner Fund,defillama,,,uniswap,
+0,uniswap-v3,135000,135000,3/22/23,4/12/23,OP Uniswap LM - Phase 1,Partner Fund,defillama,,,uniswap,
 1,arrakis-finance,162500,162500,5/3/23,7/23/23,Uniswap LM - Phase 3,Governance - Phase 0,defillama,,,uniswap,
 1,defiedge,162500,162500,5/3/23,7/23/23,Uniswap LM - Phase 3,Governance - Phase 0,defillama,,,uniswap,
 1,gamma,162500,162500,5/3/23,7/23/23,Uniswap LM - Phase 3,Governance - Phase 0,defillama,,,uniswap,
 0,uniswap-v3,650000,650000,5/3/23,7/23/23,Uniswap LM - Phase 3,Governance - Phase 0,defillama,,,uniswap,
 1,xtoken,162500,162500,5/3/23,7/23/23,Uniswap LM - Phase 3,Governance - Phase 0,defillama,,,uniswap,
-0,lido,,,4/14/23,4/14/23,All Lido Curve Pools,Partner Fund,pool-subgraph-curve,['0xB90B9B1F91a01Ea22A182CD84C1E22222e39B415'],curve,,1
-1,lido,,,4/14/23,4/14/23,wstETHCRV: Curve,Partner Fund,pool-subgraph-curve,['0xB90B9B1F91a01Ea22A182CD84C1E22222e39B415'],curve,,1
+0,lido,,,4/14/23,,All Lido Curve Pools,Partner Fund,pool-subgraph-curve,['0xB90B9B1F91a01Ea22A182CD84C1E22222e39B415'],curve,,1
+1,lido,,,4/14/23,,wstETHCRV: Curve,Partner Fund,pool-subgraph-curve,['0xB90B9B1F91a01Ea22A182CD84C1E22222e39B415'],curve,,1
 1,synthetix,,,4/10/23,,sUSD Bridge: Hop,Governance - Phase 0,pool-defillama-hop,['SUSD'],hop,,1
-0,lido,,,4/7/23,4/7/23,All Lido Velo Pools,Partner Fund,pool-subgraph-velodrome,"['0x794299137282e5d3af56616624ab918d1b2becf3','0xc6c1e8399c1c33a3f1959f2f77349d74a373345c','0x3905870e647c97cb9c8d99db24384f480531b5b9']",velodrome,,1
-1,lido,,,4/7/23,4/7/23,wstETH/OP: Velodrome,Partner Fund,pool-subgraph-velodrome,['0x3905870e647c97cb9c8d99db24384f480531b5b9'],velodrome,,1
-1,lido,,,4/7/23,4/7/23,wstETH/USDC: Velodrome,Partner Fund,pool-subgraph-velodrome,['0x794299137282e5d3af56616624ab918d1b2becf3'],velodrome,,1
-1,lido,,,4/7/23,4/7/23,wstETH/WETH: Velodrome,Partner Fund,pool-subgraph-velodrome,['0xc6c1e8399c1c33a3f1959f2f77349d74a373345c'],velodrome,,1
-1,arrakis-finance,67500,67500,3/22/23,4/12/23,OP Uniswap LM - Phase 1,Partner Fund,defillama,,,uniswap,
-1,gamma,67500,67500,3/22/23,4/12/23,OP Uniswap LM - Phase 1,Partner Fund,defillama,,,uniswap,
-0,uniswap-v3,135000,135000,3/22/23,4/12/23,OP Uniswap LM - Phase 1,Partner Fund,defillama,,,uniswap,
+0,lido,,,4/7/23,,All Lido Velo Pools,Partner Fund,pool-subgraph-velodrome,"['0x794299137282e5d3af56616624ab918d1b2becf3','0xc6c1e8399c1c33a3f1959f2f77349d74a373345c','0x3905870e647c97cb9c8d99db24384f480531b5b9']",velodrome,,1
+1,lido,,,4/7/23,,wstETH/OP: Velodrome,Partner Fund,pool-subgraph-velodrome,['0x3905870e647c97cb9c8d99db24384f480531b5b9'],velodrome,,1
+1,lido,,,4/7/23,,wstETH/USDC: Velodrome,Partner Fund,pool-subgraph-velodrome,['0x794299137282e5d3af56616624ab918d1b2becf3'],velodrome,,1
+1,lido,,,4/7/23,,wstETH/WETH: Velodrome,Partner Fund,pool-subgraph-velodrome,['0xc6c1e8399c1c33a3f1959f2f77349d74a373345c'],velodrome,,1
 1,sushi-trident,,504000,3/3/23,,,Governance - Season 1,defillama,,,,
 1,angle,,,2/20/23,,agEUR/MAI: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0x389d9aea762fd5f9fbd4434d8e11295f15097b67'],velodrome,,1
 1,angle,,,2/20/23,,OP/agEUR: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0xbda45a58bac8b327d02798a9184a850ceed9a477'],velodrome,,1
@@ -23,11 +43,6 @@ include_in_summary,slug,num_op_override,num_op,start_date,end_date,name,op_sourc
 1,overnight,,,1/30/23,,USD+/DOLA: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0xa99817d2d286c894f8f3888096a5616d06f20d46'],velodrome,,1
 1,overnight,,,1/30/23,,USD+/LUSD: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0x8a9cd3dce710e90177b4332c108e159a15736a0f'],velodrome,,1
 1,clipper,,300000,1/23/23,,,Governance - Phase 0,defillama,,,,
-1,arrakis-finance,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Governance - Phase 0,defillama,,,uniswap,
-1,defiedge,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Governance - Phase 0,defillama,,,uniswap,
-1,gamma,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Governance - Phase 0,defillama,,,uniswap,
-0,uniswap-v3,100000,100000,1/16/23,2/8/23,Uniswap LM - Phase 2,Governance - Phase 0,defillama,,,uniswap,
-1,xtoken,25000,25000,1/16/23,2/8/23,Uniswap LM - Phase 2,Governance - Phase 0,defillama,,,uniswap,
 1,overnight,,,1/10/23,,BPT-USD+: Beethoven X,Governance - Season 1,pool-subgraph-messari,['0xb1c9ac57594e9b1ec0f3787d9f6744ef4cb0a024'],beethoven-x,,1
 1,overnight,,,1/10/23,,USD+/USDC: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0x67124355cce2ad7a8ea283e990612ebe12730175'],velodrome,,1
 1,alchemix,,,1/8/23,,alETH/WETH: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0x6fd5bee1ddb4dbbb0b7368b080ab99b8ba765902'],velodrome,,1
@@ -35,14 +50,7 @@ include_in_summary,slug,num_op_override,num_op,start_date,end_date,name,op_sourc
 1,dforce,,300000,11/30/22,,,Governance - Season 1,defillama,,,,
 1,hundred-finance,,300000,11/28/22,,,Governance - Season 1,defillama,,,,
 1,velodrome,,4000000,11/24/22,,Velodrome #2 (Tour de OP),Governance - Season 2,defillama,,,,
-1,pooltogether,550000,550000,11/15/22,,PoolTogether #2,Governance - Season 2,defillama,,,,
-1,rocket-pool,,,11/9/22,2/8/23,sWETH/rETH: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0x69f795e2d9249021798645d784229e5bec2a5a25'],velodrome,,1
 1,rocket-pool,,,11/9/22,,WETH/rETH: Beethoven X,Governance - Season 1,pool-subgraph-messari,['0x4fd63966879300cafafbb35d157dc5229278ed23'],beethoven-x,,1
-1,revert-compoundor,,240000,11/3/22,3/6/23,,Governance - Season 2,defillama,,,,
-1,arrakis-finance,16667,16667,10/26/22,11/21/22,Uniswap LM - Phase 1,Governance - Phase 0,defillama,,,uniswap,
-1,gamma,16667,16667,10/26/22,11/21/22,Uniswap LM - Phase 1,Governance - Phase 0,defillama,,,uniswap,
-0,uniswap-v3,50000,50000,10/26/22,11/21/22,Uniswap LM - Phase 1,Governance - Phase 0,defillama,,,uniswap,
-1,xtoken,16667,16667,10/26/22,11/21/22,Uniswap LM - Phase 1,Governance - Phase 0,defillama,,,uniswap,
 0,synthetix,,,10/25/22,,All Synthetix Hop Pools,Governance - Phase 0,pool-defillama-hop,"['SNX','SUSD']",hop,,1
 1,synthetix,,,10/25/22,,SNX Bridge: Hop,Governance - Phase 0,pool-defillama-hop,['SNX'],hop,,1
 1,beefy,,325000,10/24/22,,,Governance - Season 1,defillama,,,,
@@ -52,11 +60,9 @@ include_in_summary,slug,num_op_override,num_op,start_date,end_date,name,op_sourc
 1,synthetix,,,9/27/22,,USDC/SNX: Velodrome,Governance - Phase 0,pool-subgraph-velodrome,['0x9056eb7ca982a5dd65a584189994e6a27318067d'],velodrome,,1
 1,synthetix,,,9/27/22,,USDC/sUSD: Velodrome,Governance - Phase 0,pool-subgraph-velodrome,['0xd16232ad60188b68076a235c65d692090caba155'],velodrome,,1
 1,hop-protocol,,1000000,9/22/22,,,Governance - Phase 0,defillama,,,,
-1,xtoken,,900000,9/19/22,3/21/23,,Governance - Season 1,defillama,,,,
 1,polynomial-protocol,,900000,9/14/22,,,Governance - Phase 0,defillama,,,,
 1,beefy,,,9/13/22,,BIFI/OP: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0x81f638e5d063618fc5f6a976e48e9b803b3240c0'],velodrome,,1
 1,beefy,,,9/13/22,,BIFI/WETH: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0x17d99c78F1AA7870ab30FB3E93b2fE9F6502d192'],velodrome,,1
-1,aelin,,900000,9/12/22,9/14/22,,Governance - Phase 0,defillama,,,,
 1,pickle,,200000,9/9/22,,Pickle Finance,Governance - Season 1,defillama,,,,
 1,pika-protocol,,900000,8/29/22,,,Governance - Phase 0,defillama,,,,
 1,qidao,,,8/26/22,,sUSDC/MAI: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0xd62c9d8a3d4fd98b27caaefe3571782a3af0a737'],velodrome,,1
@@ -66,12 +72,6 @@ include_in_summary,slug,num_op_override,num_op,start_date,end_date,name,op_sourc
 1,synthetix,,,8/25/22,,sUSD-3Crv: Curve,Governance - Phase 0,pool-subgraph-curve,['0x061b87122ed14b9526a813209c8a59a633257bab'],curve,,1
 1,cbridge,,300000,8/13/22,,Celer,Governance - Phase 0,defillama,,,,
 1,stargate,,1000000,8/5/22,,,Governance - Phase 0,defillama,,,,
-1,aave-v3,,5000000,8/4/22,11/4/22,Aave - Liquidity Mining,Partner Fund,defillama,,,,
-1,wepiggy,,300000,8/3/22,2/6/23,,Governance - Phase 0,defillama,,,,
 1,lyra,,3000000,8/2/22,,,Governance - Phase 0,defillama,,,,
-1,pooltogether,450000,450000,7/22/22,11/15/22,PoolTogether #1,Partner Fund,defillama,,,,
-1,layer2dao,,,7/20/22,8/22/22,L2DAO/OP: Velodrome,Governance - Phase 0,pool-subgraph-velodrome,['0xfc77e39de40e54f820e313039207dc850e4c9e60'],velodrome,,1
-1,rubicon,,900000,7/15/22,2/10/23,,Governance - Phase 0,defillama,,,,
 1,thales,,900000,7/15/22,,,Governance - Phase 0,defillama,,,,
 1,perpetual-protocol,,9000000,7/14/22,,,Governance - Phase 0,defillama,,,,
-1,velodrome,3000000,3000000,7/13/22,11/17/22,Velodrome #1 ,Partner Fund,defillama,,,,

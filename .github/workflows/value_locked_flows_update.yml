@@ -29,7 +29,7 @@ jobs:
       - name: Set up Python and Node.js
         uses: actions/setup-python@v2
         with:
-          python-version: '3.11'
+          python-version: '3.10.9'
         # Set max space to see if this helps with timeouts
         env:
           node-version: '16'
