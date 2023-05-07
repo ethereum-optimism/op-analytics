@@ -6,6 +6,7 @@
 
 import pandas as pd
 import numpy as np
+import os
 
 from functools import reduce
 from pandas.api.types import CategoricalDtype
@@ -23,6 +24,17 @@ pd.set_option("display.max_columns", None)
 
 
 # In[2]:
+
+
+pwd = os.getcwd()
+# Verify that our path is right
+if "op_rewards_tracking" in pwd:
+    prepend = ""
+else:
+    prepend = "op_rewards_tracking/"
+
+
+# In[3]:
 
 
 def extract_source(source_string):
@@ -64,6 +76,9 @@ def calculate_metrics(df, op="op_deployed"):
         }
     )
     df["net_tvl_per_op"] = df["cumul_last_price_net_dollar_flow"] / df[op]
+    df["net_tvl_per_op_during"] = (
+        df["cumul_last_price_net_dollar_flow_at_program_end"] / df[op]
+    )
 
     return df
 
@@ -71,7 +86,7 @@ def calculate_metrics(df, op="op_deployed"):
 # # Incentive Program Summary
 # Status of programs live, completed and to be announced by season.
 
-# In[3]:
+# In[4]:
 
 
 df_info = pd.read_csv("inputs/" + "op_incentive_program_info" + ".csv")
@@ -93,7 +108,7 @@ df_info["app_name_join"] = df_info["App Name Map Override"].fillna(df_info["App 
 df_info["app_name_join"] = df_info["app_name_join"].apply(cleanup_string)
 
 
-# In[4]:
+# In[5]:
 
 
 for i in ["GovFund", "GovFund Growth Experiments", "All Programs"]:
@@ -174,7 +189,7 @@ for i in ["GovFund", "GovFund Growth Experiments", "All Programs"]:
     print()
 
 
-# In[5]:
+# In[6]:
 
 
 # display new programs in last 30 days
@@ -186,7 +201,7 @@ if not df_new_programs.empty:
     display(df_new_programs.drop("app_name_join", axis=1))
 
 
-# In[6]:
+# In[7]:
 
 
 # display completed programs in last 30 days
@@ -201,7 +216,7 @@ if not df_completed.empty:
 # # Usage and TVL Attribution
 # To combine all sources of data together
 
-# In[7]:
+# In[8]:
 
 
 # read in input data
@@ -237,7 +252,7 @@ condition = (df_choice["Incentive / Growth Program Included?"] == "Yes") & (
 df_choice = df_choice[condition]
 
 
-# In[8]:
+# In[9]:
 
 
 df_to_summarize = {
@@ -277,7 +292,7 @@ locals().update(summary_dfs)
 
 # ### By App
 
-# In[9]:
+# In[10]:
 
 
 # by app
@@ -301,7 +316,7 @@ result_app = calculate_metrics(
 # display(result_app)
 
 
-# In[10]:
+# In[11]:
 
 
 # sort by tvl
@@ -320,7 +335,7 @@ display(
 )
 
 
-# In[11]:
+# In[12]:
 
 
 # sort by txs
@@ -352,7 +367,7 @@ display(
 )
 
 
-# In[12]:
+# In[13]:
 
 
 # sort by gas
@@ -390,7 +405,7 @@ display(
 
 # ### By Fund Source
 
-# In[13]:
+# In[14]:
 
 
 agg_dict = {
@@ -403,10 +418,11 @@ agg_dict = {
     # "incremental_addr_per_day_after": "sum",
     "incremental_gas_fee_eth_per_day_after": "sum",
     "cumul_last_price_net_dollar_flow": "sum",
+    "cumul_last_price_net_dollar_flow_at_program_end": "sum",
 }
 
 
-# In[14]:
+# In[15]:
 
 
 result_app["op_source_length"] = result_app["op_source"].str.split(",").apply(len)
@@ -431,7 +447,7 @@ display(result_source)
 
 # 
 
-# In[15]:
+# In[16]:
 
 
 # convert results to csv
@@ -440,7 +456,7 @@ result_app.to_csv("csv_outputs/final_incentive_program_summary_by_app.csv")
 
 # ### Benchmark
 
-# In[16]:
+# In[17]:
 
 
 def plot_benchmark(
@@ -451,7 +467,12 @@ def plot_benchmark(
     size="op_deployed",
 ):
     fig = px.scatter(
-        df, x=x, y=y, size=size, hover_name="app_name_a", color="op_source_map"
+        df,
+        x=x,
+        y=y,
+        size=size,
+        hover_name="app_name_a",
+        color="op_source_map",
     )
 
     # calculate percentiles for incremental_txs_annualized_per_op
@@ -474,6 +495,12 @@ def plot_benchmark(
 
     fig.update_layout(layout_settings)
 
+    fig.write_image(prepend + f"img_outputs/benchmark/svg/{y}.svg")
+    fig.write_image(prepend + f"img_outputs/benchmark/png/{y}.png")
+    fig.write_html(
+        prepend + f"img_outputs/benchmark/html/{y}.html", include_plotlyjs="cdn"
+    )
+
     fig.show()
 
 
@@ -484,7 +511,7 @@ def cleanup_data(
         "incremental_txs_annualized_per_op",
         "incremental_txs_per_day",
     ],
-    excl_partnerfund=True,
+    excl_partnerfund=False,
 ):
     df = result_app.dropna(subset=subset)
     df = df.replace([np.inf, -np.inf], np.nan).dropna(
@@ -502,11 +529,11 @@ def cleanup_data(
 
 # ### Transactions Benchmark
 
-# In[17]:
+# In[18]:
 
 
 layout_settings = {
-    "title": "Incremental Txs Performance Benchmark (All Programs)",
+    "title": "Incremental Txs Performance Benchmark (All Programs)<br><sup>Cutoff at Program End Date (Latest Date if still Live).</sup>",
     "xaxis_title": "Incremental Transactions per Day",
     "yaxis_title": "Annualized Incremental Transactions per OP",
     "legend_title": "Op Source",
@@ -523,11 +550,11 @@ plot_benchmark(
 )
 
 
-# In[18]:
+# In[19]:
 
 
 layout_settings = {
-    "title": "Incremental Txs Performance Benchmark (Completed Programs)",
+    "title": "Incremental Txs Performance Benchmark (Completed Programs)<br><sup>Cutoff at Program End Date + 30 days (Latest Date if not yet reached 30 days).</sup>",
     "xaxis_title": "Incremental Transactions per Day",
     "yaxis_title": "Annualized Incremental Transactions per OP",
     "legend_title": "Op Source",
@@ -552,11 +579,11 @@ plot_benchmark(
 
 # ### TVL Benchmark
 
-# In[19]:
+# In[20]:
 
 
 layout_settings = {
-    "title": "Incremental TVL Performance Benchmark (All Programs)",
+    "title": "Incremental TVL Performance Benchmark (All Programs)<br><sup>Cutoff at Program End Date (Latest Date if still Live).</sup>",
     "xaxis_title": "Incremental TVL",
     "yaxis_title": "Incremental TVL per OP",
     "legend_title": "Op Source",
@@ -565,25 +592,25 @@ layout_settings = {
 df = cleanup_data(
     subset=[
         "op_deployed",
-        "net_tvl_per_op",
-        "cumul_last_price_net_dollar_flow",
+        "net_tvl_per_op_during",
+        "cumul_last_price_net_dollar_flow_at_program_end",
     ]
 )
 
 plot_benchmark(
     df,
-    x="cumul_last_price_net_dollar_flow",
-    y="net_tvl_per_op",
+    x="cumul_last_price_net_dollar_flow_at_program_end",
+    y="net_tvl_per_op_during",
     size="op_deployed",
     layout_settings=layout_settings,
 )
 
 
-# In[20]:
+# In[21]:
 
 
 layout_settings = {
-    "title": "Incremental TVL Performance Benchmark (Completed Programs)",
+    "title": "Incremental TVL Performance Benchmark (Completed Programs) <br><sup>Cutoff at Program End Date + 30 days (Latest Date if not yet reached 30 days).</sup>",
     "xaxis_title": "Incremental TVL",
     "yaxis_title": "Incremental TVL per OP",
     "legend_title": "Op Source",
@@ -609,12 +636,12 @@ plot_benchmark(
 
 # ### Fee Benchmark
 
-# In[21]:
+# In[22]:
 
 
 layout_settings = {
-    "title": "Incremental Fee Performance Benchmark (All Programs)",
-    "xaxis_title": "Incremental Fee per Day",
+    "title": "Incremental ETH Fee Performance Benchmark (All Programs) <br><sup>Cutoff at Program End Date (Latest Date if still Live).</sup>",
+    "xaxis_title": "Incremental ETH Fee per Day",
     "yaxis_title": "Annualized Incremental Fee per OP",
     "legend_title": "Op Source",
 }
@@ -636,12 +663,12 @@ plot_benchmark(
 )
 
 
-# In[22]:
+# In[23]:
 
 
 layout_settings = {
-    "title": "Incremental Fee Performance Benchmark (Completed Programs)",
-    "xaxis_title": "Incremental Fee per Day",
+    "title": "Incremental ETH Fee Performance Benchmark (Completed Programs) <br><sup>Cutoff at Program End Date + 30 days (Latest Date if not yet reached 30 days).</sup>",
+    "xaxis_title": "Incremental ETH Fee per Day",
     "yaxis_title": "Annualized Incremental Fee per OP",
     "legend_title": "Op Source",
 }
