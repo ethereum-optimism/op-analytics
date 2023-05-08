@@ -82,9 +82,9 @@ def write_dune_api_from_csv(data, table_name, table_description):
 
 def write_dune_api_from_pandas(df, table_name, table_description):
     #clean column names (replace spaces with _, force lowercase, remove quotes and other characters)
-    # df = df.rename(columns=lambda x: x.lower().replace(' ', '_').replace('"', ''))
     df = df.rename(columns=lambda x: re.sub(r'\W+', '_', x.lower()))
-    data = df.to_csv() #convert pandas dataframe to csv
+    data = df.to_csv(index=False) #convert pandas dataframe to csv
+    # print(data)
     # Write to Dune
     write_dune_api_from_csv(data, table_name, table_description)
     
