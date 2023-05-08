@@ -8,6 +8,7 @@ import argparse
 import requests as r
 import re
 import json
+import numpy as np
 
 from dune_client.types import QueryParameter
 from dune_client.client import DuneClient
@@ -84,9 +85,15 @@ def write_dune_api_from_pandas(df, table_name, table_description):
     #clean column names (replace spaces with _, force lowercase, remove quotes and other characters)
     df = df.rename(columns=lambda x: re.sub(r'\W+', '_', x.lower()))
 
+    #iterate over columns and convert any columns containing hex values to strings
+    for col in df.columns:
+        if df[col].dtype == 'O' and df[col].str.startswith('0x').any():
+            df[col] = df[col].astype(str).str.lower()
+            df[col] = df[col].replace('nan', np.nan)
+
     #convert pandas dataframe to csv
     data = df.to_csv(index=False)
-    # print(data)
+    print(data)
     # Write to Dune
     write_dune_api_from_csv(data, table_name, table_description)
     
