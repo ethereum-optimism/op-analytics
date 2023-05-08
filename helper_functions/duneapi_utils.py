@@ -6,6 +6,8 @@ import os
 from loguru import logger
 import argparse
 import requests as r
+import re
+import json
 
 from dune_client.types import QueryParameter
 from dune_client.client import DuneClient
@@ -60,13 +62,33 @@ def get_dune_data_raw(query_id, perf_var = "medium"):
     updated_at = df.iloc[0]['execution_ended_at']
     df = df[['result']]
     return df
-    # get API key
+
+
+def write_dune_api_from_csv(data, table_name, table_description):
+    headers = {'X-Dune-Api-Key': os.environ["DUNE_API_KEY"]}
+    # Define the HTTP endpoint URL and data to send
+    url = 'https://api.dune.com/api/v1/table/upload/csv'
+
+    payload = {
+        "table_name": table_name,
+        "description": table_description,
+        "data": str(data)
+    }
     
+    response = r.post(url, data=json.dumps(payload), headers=headers)
+
+    print('Response status code:', response.status_code)
+    print('Response content:', response.content)
+
+def write_dune_api_from_pandas(df, table_name, table_description):
+    #clean column names (replace spaces with _, force lowercase, remove quotes and other characters)
+    # df = df.rename(columns=lambda x: x.lower().replace(' ', '_').replace('"', ''))
+    df = df.rename(columns=lambda x: re.sub(r'\W+', '_', x.lower()))
+    data = df.to_csv() #convert pandas dataframe to csv
+    # Write to Dune
+    write_dune_api_from_csv(data, table_name, table_description)
     
 
-    query_id = 1252207
-    
-    result_response = requests.request("POST", base_url, headers=headers, params=params)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
