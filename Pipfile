@@ -15,6 +15,7 @@ subgrounds = "*"
 aiohttp_retry = "2.8.3"
 kaleido = "*"
 airtable = "*"
+notion-client = "*"
 
 [dev-packages]
 
