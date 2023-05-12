@@ -10,6 +10,11 @@ import re
 import json
 import numpy as np
 
+import sys
+sys.path.append("../helper_functions")
+import pandas_utils as pu
+sys.path.pop()
+
 from dune_client.types import QueryParameter
 from dune_client.client import DuneClient
 from dune_client.query import Query
@@ -83,7 +88,7 @@ def write_dune_api_from_csv(data, table_name, table_description):
 
 def write_dune_api_from_pandas(df, table_name, table_description):
     #clean column names (replace spaces with _, force lowercase, remove quotes and other characters)
-    df = df.rename(columns=lambda x: re.sub(r'\W+', '_', x.lower()))
+    df = pu.formatted_columns_to_csv_format(df)
 
     #iterate over columns and convert any columns containing hex values to strings
     for col in df.columns:

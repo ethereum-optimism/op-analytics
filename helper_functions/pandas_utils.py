@@ -3,6 +3,10 @@ import datetime
 import ast
 import requests as r
 import json
+import re
+from datetime import date
+import os
+from datetime import datetime
 
 def api_json_to_df(api_url):
     inf = pd.DataFrame( r.get(api_url).json() )
@@ -123,3 +127,32 @@ def str_to_list(s):
         return None
     else:
         return ast.literal_eval(s)
+
+def formatted_columns_to_csv_format(df):
+    df.rename(columns=lambda x: re.sub(r'\W+', '_', x.lower()))
+    return df
+
+def csv_columns_to_formatted(df):
+    new_columns = []
+    for column in df.columns:
+        new_column = column.replace('_', ' ').title()
+        new_columns.append(new_column)
+    df.columns = new_columns
+    return df
+
+def get_datestring_from_datetime(datestring):
+    try:
+        date_string = datestring.strftime('%Y-%m-%d')
+    except:
+        date_string = datestring[:10]
+    return date_string
+
+def get_today_as_string():
+    today = date.today()
+    date_string = get_datestring_from_datetime(today)
+    return date_string
+
+
+def mkdir_if_not_exists(dir):
+    if not os.path.exists(dir):
+        os.mkdir(dir)
