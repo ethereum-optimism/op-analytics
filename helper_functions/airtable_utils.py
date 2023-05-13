@@ -25,28 +25,66 @@ def is_get_successful(at, table_name):
     except airtable.AirtableError:
         return False
 
+def get_linked_record_id(at, table_name, field_name, value):
+	formula = "lower({@field_name@})=lower('@value@')"
+	formula = formula.replace('@field_name@',field_name)
+	formula = formula.replace('@value@',value)
+	#If does not exist, create it
+	try: 
+		result = [] #{ "records": [] }
+		for r in at.iterate(table_name, filter_by_formula = formula):
+			result.append(r['id'])
+	except:
+		print('create')
+		record_field = {field_name:value}
+		print(record_field)
+		at.create(table_name, record_field, True)
+		for r in at.iterate(table_name, filter_by_formula = formula):
+			result.append(r['id'])
+		
+	return result
+
 def upsert_record_dt_contract_creator(at, table_name, record):
     # Search for a matching record
 	# Build the formula to filter the records
-	formula = "AND(LEFT(dt,10)='{dt}', contract_address='{contract_address}', creator_address='{creator_address}')".format(
-		dt=record['fields']['dt'][:10], 
-		contract_address=record['fields']['contract_address'], 
-		creator_address=record['fields']['creator_address']
-		)
+	dt_date = record['fields']['Date'][:10]
+	contract_address =record['fields']['Contract Address']
+	creator_address =record['fields']['Creator Address']
+
+	linked_field_name = 'Team Name'
+
+	# Generate Search Query
+	formula = "AND(LEFT(Date,10)='@Date@', {Contract Address}='@contract_address@', {Creator Address}='@creator_address@')"
+	formula = formula.replace('@Date@',dt_date)
+	formula = formula.replace('@contract_address@',contract_address)
+	formula = formula.replace('@creator_address@',creator_address)
+
+	# Get Linked Team Name
+	if (record['fields']['Team'] != '') and (record['fields']['Team'] is not None):
+		linked_id = get_linked_record_id(at,'Teams',linked_field_name, record['fields']['Team'])
+		record['fields'][linked_field_name] = linked_id
+
+	# Check if we update
 	for existing_record in at.iterate(table_name,
 				   filter_by_formula = formula
 				   ):
 		# print(existing_record)
-		if (existing_record['fields']['dt'][:10] == record['fields']['dt'][:10] and
-			existing_record['fields']['contract_address'] == record['fields']['contract_address'] and
-			existing_record['fields']['creator_address'] == record['fields']['creator_address']):
+		if (existing_record['fields']['Date'][:10] == record['fields']['Date'][:10] and
+			existing_record['fields']['Contract Address'] == record['fields']['Contract Address'] and
+			existing_record['fields']['Creator Address'] == record['fields']['Creator Address']):
 			# Update the matching record
 			print('update existing row')
+
+			print(record['fields'])
 			at.update(table_name, existing_record['id'], record['fields'])
+
 			return
+		
     # If no matching record was found, create a new one
 	print('add new record')
-	# at.create(table_name, record['fields'])
+	# print(record['fields'])
+	
+	at.create(table_name, record['fields'])
 
 
 def update_database(at_base_id, table_name, df):
@@ -67,7 +105,6 @@ def update_database(at_base_id, table_name, df):
 	# Replace NaN with None in the dataframe
     # Iterate through the DataFrame rows and upsert each record to Airtable
 	for _, row in df.iterrows():
-
 		# Convert the row to an Airtable record
 		record = {'fields': row.to_dict()}
 		# print(record)
