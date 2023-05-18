@@ -94,13 +94,13 @@ def get_velodrome_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
 def get_curve_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
         curve = create_sg('https://api.thegraph.com/subgraphs/name/convex-community/volume-optimism')
         q1 = curve.Query.dailyPoolSnapshots(
-        orderBy=curve.Query.dailyPoolSnapshot.timestamp,
+        orderBy=curve.Query.timestamp,
         orderDirection='desc',
         first=max_ts*max_ts, #arbitrarily large number so we pull everything
                 where=[
                 curve.Query.pool == pid,
-                curve.Query.dailyPoolSnapshot.timestamp > min_ts,
-                curve.Query.dailyPoolSnapshot.timestamp <= max_ts,
+                curve.Query.timestamp > min_ts,
+                curve.Query.timestamp <= max_ts,
                 ]
         )
         curve_tvl = sg.query_df([
