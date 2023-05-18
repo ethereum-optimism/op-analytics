@@ -99,8 +99,8 @@ def get_curve_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
         first=max_ts*max_ts, #arbitrarily large number so we pull everything
                 where=[
                 curve.Query.pool == pid,
-                curve.Query.timestamp > min_ts,
-                curve.Query.timestamp <= max_ts,
+                curve.Query.dailyPoolSnapshot.timestamp > min_ts,
+                curve.Query.dailyPoolSnapshot.timestamp <= max_ts,
                 ]
         )
         curve_tvl = sg.query_df([
