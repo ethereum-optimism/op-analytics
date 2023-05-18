@@ -1,3 +1,4 @@
+# https://909613235-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FS3V2Pnr0gJCi6qOnph2I%2Fuploads%2Fw47UOsfUiuQq7Vn42dhj%2FSubgrounds%20Workshop%20%231%20Under%20the%20Hood.pdf?alt=media&token=0819617a-a0a6-4aad-9104-443e2cf5ea6d
 
 from subgrounds.subgrounds import Subgrounds
 from subgrounds.pagination import ShallowStrategy, LegacyStrategy
@@ -94,11 +95,11 @@ def get_velodrome_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
 def get_curve_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
         curve = create_sg('https://api.thegraph.com/subgraphs/name/convex-community/volume-optimism')
         q1 = curve.Query.dailyPoolSnapshots(
-        orderBy=curve.Query.dailyPoolSnapshot.timestamp,
+        orderBy= curve.Query.dailyPoolSnapshot.timestamp,
         orderDirection='desc',
         first=max_ts*max_ts, #arbitrarily large number so we pull everything
                 where=[
-                curve.Query.pool == pid,
+                curve.Query.dailyPoolSnapshot.pool == pid,
                 curve.Query.dailyPoolSnapshot.timestamp > min_ts,
                 curve.Query.dailyPoolSnapshot.timestamp <= max_ts,
                 ]
