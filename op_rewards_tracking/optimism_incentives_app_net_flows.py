@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 # THIS IS WIP / EXPERIMENTAL
@@ -14,7 +14,7 @@
 # ! pip freeze = requirements.txt
 
 
-# In[2]:
+# In[ ]:
 
 
 import pandas as pd
@@ -35,7 +35,7 @@ import defillama_utils as dfl
 import pandas_utils as pu
 
 
-# In[3]:
+# In[ ]:
 
 
 pwd = os.getcwd()
@@ -67,7 +67,7 @@ join_cols = [
 ]
 
 
-# In[4]:
+# In[ ]:
 
 
 # Protocol Incentive Start Dates
@@ -136,7 +136,7 @@ protocols = protocols.sort_values(by="start_date", ascending=True)
 
 
 
-# In[5]:
+# In[ ]:
 
 
 # Pull Data
@@ -154,14 +154,14 @@ df_dfl = dfl.get_range(
 df_dfl["is_raw_tvl"] = np.where(df_dfl["slug"].str.endswith("*"), 1, 0)
 
 
-# In[6]:
+# In[ ]:
 
 
 # display(df_dfl[df_dfl['protocol'].str.contains('arrakis')])
 # display(df_dfl)
 
 
-# In[7]:
+# In[ ]:
 
 
 # Format Columns
@@ -213,13 +213,13 @@ df_dfl = df_dfl[
 ]
 
 
-# In[8]:
+# In[ ]:
 
 
 # display(df_dfl)
 
 
-# In[9]:
+# In[ ]:
 
 
 subg_protocols = protocols[protocols["data_source"].str.contains("pool-")].copy()
@@ -235,7 +235,7 @@ subg_protocols["og_parent_protocol"] = protocols["parent_protocol"]
 # display(subg_protocols)
 
 
-# In[10]:
+# In[ ]:
 
 
 # display(df_dfl)
@@ -277,14 +277,14 @@ df_df_sub = pd.concat(dfs_sub)
 # display(df_df_sub[df_df_sub['program_name'].str.contains('Velo')])
 
 
-# In[11]:
+# In[ ]:
 
 
 # display(df_df_sub.sort_values(by='date'))
 # display(df_dfl[df_dfl['protocol']=='defiedge'])
 
 
-# In[12]:
+# In[ ]:
 
 
 df_df_comb = pd.concat([df_dfl, df_df_sub])
@@ -355,7 +355,7 @@ df_df = (
 #         )
 
 
-# In[13]:
+# In[ ]:
 
 
 # display(
@@ -363,7 +363,7 @@ df_df = (
 #         )
 
 
-# In[14]:
+# In[ ]:
 
 
 data_df = df_df.copy()  # merge(cg_df, on=['date','token'],how='inner')
@@ -388,7 +388,7 @@ last_df = last_df[["token", "protocol", "program_name", "last_price_usd"]]
 # display(last_df)
 
 
-# In[15]:
+# In[ ]:
 
 
 data_df = data_df.merge(last_df, on=["token", "protocol", "program_name"], how="left")
@@ -426,7 +426,7 @@ data_df["net_price_stock_change"] = (
 # display(data_df)
 
 
-# In[16]:
+# In[ ]:
 
 
 # filter before start date
@@ -440,7 +440,7 @@ if not os.path.exists(prepend + "csv_outputs"):
 data_df.to_csv(prepend + "csv_outputs/" + "tvl_flows_by_token.csv")
 
 
-# In[17]:
+# In[ ]:
 
 
 # data_df[data_df['protocol']=='perpetual-protocol'].sort_values(by='date')
@@ -449,13 +449,13 @@ data_df.to_csv(prepend + "csv_outputs/" + "tvl_flows_by_token.csv")
 # data_df[(data_df['protocol'] == 'pooltogether') & (data_df['date'] >= '2022-10-06') & (data_df['date'] <= '2022-10-12')].tail(10)
 
 
-# In[18]:
+# In[ ]:
 
 
 # display(data_df)
 
 
-# In[19]:
+# In[ ]:
 
 
 # ---
@@ -534,13 +534,13 @@ protocols = pd.concat(
 # display(data_df)
 
 
-# In[20]:
+# In[ ]:
 
 
 #
 
 
-# In[21]:
+# In[ ]:
 
 
 netdf_df = data_df[
@@ -637,13 +637,13 @@ for d in date_cols:
 # display(netdf_df[netdf_df['protocol'] == 'velodrome'])
 
 
-# In[22]:
+# In[ ]:
 
 
 # display(netdf_df[netdf_df['protocol'].str.contains('velodr')].sort_values(by='date',ascending=True).iloc[:, :15])
 
 
-# In[23]:
+# In[ ]:
 
 
 summary_cols = [
@@ -696,14 +696,14 @@ for s in summary_cols:
 # display(netdf_df[netdf_df['protocol'] == 'hundred-finance'].sort_values(by='program_rank_desc'))
 
 
-# In[24]:
+# In[ ]:
 
 
 # netdf_df[(netdf_df['date'] >= '2022-10-06') & (netdf_df['date'] <= '2022-10-12')].tail(10)
 # netdf_df[netdf_df['protocol'].str.contains('velodr')]
 
 
-# In[25]:
+# In[ ]:
 
 
 during_str = "During Program"
@@ -725,7 +725,7 @@ netdf_df = netdf_df.sort_values(
 # print(netdf_df.columns)
 
 
-# In[26]:
+# In[ ]:
 
 
 latest_data_df = netdf_df[netdf_df["program_rank_desc"] == 1]
@@ -745,7 +745,7 @@ latest_data_df = latest_data_df.sort_values(by="start_date", ascending=False)
 # display(latest_data_df)
 
 
-# In[27]:
+# In[ ]:
 
 
 # Generate agg summary df
@@ -765,7 +765,7 @@ season_summary_completed_raw = season_summary_pds[
 ]  # only ended summaries
 
 
-# In[28]:
+# In[ ]:
 
 
 # SEASON SUMMARY
@@ -802,14 +802,14 @@ season_summary_completed.reset_index(inplace=True)
 # season_summary.head()
 
 
-# In[29]:
+# In[ ]:
 
 
 # print(latest_data_df.columns)
 # print(season_summary.columns)
 
 
-# In[30]:
+# In[ ]:
 
 
 df_list = [latest_data_df, season_summary, season_summary_completed]
@@ -844,7 +844,7 @@ for df in df_list:
     )
 
 
-# In[31]:
+# In[ ]:
 
 
 for df in df_list:
@@ -1051,7 +1051,7 @@ for df in df_list:
     )
 
 
-# In[32]:
+# In[ ]:
 
 
 # Filter for Charts
@@ -1060,7 +1060,7 @@ netdf_df = netdf_df[netdf_df["date"] < pd.to_datetime("today").floor("d")]
 # netdf_df = netdf_df[netdf_df['include_in_summary'] == 1]
 
 
-# In[33]:
+# In[ ]:
 
 
 fig = px.line(
@@ -1137,7 +1137,7 @@ fig_last.write_html(
 # cumul_fig.show()
 
 
-# In[34]:
+# In[ ]:
 
 
 # Program-Specific Charts
@@ -1223,14 +1223,14 @@ for val in value_list:
         # cumul_fig_app.show()
 
 
-# In[35]:
+# In[ ]:
 
 
 fig_last.show()
 print("yay")
 
 
-# In[36]:
+# In[ ]:
 
 
 # ! jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb
