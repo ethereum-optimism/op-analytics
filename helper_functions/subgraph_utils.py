@@ -1,15 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
-# ! jupyter nbconvert --to python subgraph_utils.ipynb
-# This notebook seres for testing functions that we can then export to a .py file
-
-
-# In[ ]:
-
 
 from subgrounds.subgrounds import Subgrounds
 from subgrounds.pagination import ShallowStrategy, LegacyStrategy
@@ -31,15 +19,9 @@ sg = Subgrounds()
 # display(sgs)
 
 
-# In[ ]:
-
-
 def create_sg(tg_api):
         csg = sg.load_subgraph(tg_api)
         return csg
-
-
-# In[ ]:
 
 
 def get_velodrome_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
@@ -107,16 +89,6 @@ def get_velodrome_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
 
         return velo_tvl
 
-
-# In[ ]:
-
-
-# def get_uniswap_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
-#     uni = create_sg('https://api.thegraph.com/subgraphs/name/ianlapham/optimism-post-regenesis')
-
-
-
-# In[ ]:
 
 
 def get_curve_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
@@ -257,9 +229,6 @@ def get_curve_pool_tvl_and_volume(chain, min_tvl = 10000, min_ts = 0, max_ts = 9
         return grp
 
 
-# In[ ]:
-
-
 def get_messari_format_pool_tvl(slug, pool_id, chain = 'optimism', min_ts = 0, max_ts = 99999999999999):
         msr_dfs = []
         # print(slug)
@@ -348,8 +317,6 @@ def get_messari_format_pool_tvl(slug, pool_id, chain = 'optimism', min_ts = 0, m
         return data_df
 
 
-# In[ ]:
-
 
 def get_hop_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
     prot_str = 'hop-protocol'
@@ -359,10 +326,6 @@ def get_hop_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
     hop['protocol'] = 'Hop' #rename to match func
     hop.reset_index(inplace=True,drop=True)
     return hop
-
-
-# In[ ]:
-
 
 # Note, this is not in TVL tracking format - maybe we split this to a new file ~eventually
 def get_messari_sg_pool_snapshots(slug, chains = ['optimism'], min_ts = 0, max_ts = 99999999999999):
@@ -431,44 +394,3 @@ def get_messari_sg_pool_snapshots(slug, chains = ['optimism'], min_ts = 0, max_t
         msr_daily = msr_daily[msr_daily['pool_id'] != 0] #weird....
         # display(msr_daily[msr_daily['id']=='0x445fe580ef8d70ff569ab36e80c647af338db351-19258'])
         return pd.DataFrame(msr_daily)
-
-
-# In[ ]:
-
-
-# pdf = get_curve_pool_tvl('0x061b87122ed14b9526a813209c8a59a633257bab')
-# vdf = get_velodrome_pool_tvl('0xfc77e39de40e54f820e313039207dc850e4c9e60')
-# get_hop_pool_tvl('SNX')
-# display(vdf)
-
-
-# In[ ]:
-
-
-# pd.
-# df = get_curve_pool_tvl_and_volume('optimism')
-# print(df.columns)
-# display(df.head())
-# msr = get_messari_sg_pool_snapshots('curve-finance',['polygon'])
-# display(msr)
-
-# print(msr['dailyVolumeUSD'].mean())
-# 
-
-
-# In[ ]:
-
-
-# df = get_messari_format_pool_tvl('beethoven-x', '0xb1c9ac57594e9b1ec0f3787d9f6744ef4cb0a024')
-# df = get_messari_format_pool_tvl('beethoven-x', '0x4fd63966879300cafafbb35d157dc5229278ed23')
-# df = get_curve_pool_tvl_and_volume('optimism')
-# display(df)
-# messari - beethoven-x - 0xb1c9ac57594e9b1ec0f3787d9f6744ef4cb0a024
-# display(df)/
-
-
-# In[ ]:
-
-
-# ! jupyter nbconvert --to python subgraph_utils.ipynb
-
