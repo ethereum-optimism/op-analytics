@@ -11,7 +11,7 @@ dune-client = "*"
 python-dotenv = "*"
 loguru = "*"
 plotly = "*"
-subgrounds = "*"
+subgrounds = "1.0.3"
 aiohttp_retry = "2.8.3"
 kaleido = "*"
 airtable = "*"
@@ -20,7 +20,7 @@ notion-client = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.10.9"
+python_version = "3.11"
 
 [pipenv]
 allow_prereleases = false
