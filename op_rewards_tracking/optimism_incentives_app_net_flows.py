@@ -254,10 +254,13 @@ for index, program in subg_protocols.iterrows():
             )
         # subgraph specific
         elif df_source == "curve":
+            print(df_source + '-' + c.lower())
             sdf = subg.get_curve_pool_tvl(c.lower(), min_ts=min_tsmp)
         elif df_source == "velodrome":
+            print(df_source + '-' + c.lower())
             sdf = subg.get_velodrome_pool_tvl(c.lower(), min_ts=min_tsmp)
         elif df_source == "hop":
+            print(df_source + '-' + c.lower())
             sdf = subg.get_hop_pool_tvl(c, min_ts=min_tsmp)
 
         sdf["start_date"] = program["start_date"]
@@ -1230,7 +1233,7 @@ fig_last.show()
 print("yay")
 
 
-# In[ ]:
+# In[73]:
 
 
 # ! jupyter nbconvert --to python optimism_incentives_app_net_flows.ipynb
