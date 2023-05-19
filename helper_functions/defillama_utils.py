@@ -360,3 +360,27 @@ def get_historical_defillama_prices(token_list_api, chain = 'optimism', min_ts =
                                                 'price','date','chain'])
 
         return result
+
+def get_todays_tvl():
+        api_string =' https://api.llama.fi/protocols'
+        tvltoday = r.get(api_string,headers=header).json()
+
+        # Extract relevant data from JSON
+        df_data = []
+        meta_cols = ['name', 'category','slug','url','description','twitter','forkedFrom','oracles','tvl']
+        for entry in tvltoday:
+                arr = []
+                for col in meta_cols:
+                        try:
+                                arr.append(entry[col])
+                        except:
+                                arr.append('')
+                chain_tvls = entry['chainTvls']
+                for chain, chain_tvl in chain_tvls.items():
+                        df_data.append(arr + [chain, chain_tvl])
+
+        # Create DataFrame
+        # columns = ['Name', 'Category', 'Chain', 'Slug', 'TVL', 'ChainTVL']
+        df = pd.DataFrame(df_data, columns= meta_cols + ['chain','chainTVL'])
+        # Display the DataFrame
+        return df

@@ -49,6 +49,7 @@ jobs:
         working-directory: value_locked_flows
         run: |
           pipenv run jupyter nbconvert --to python total_app_net_flows_async.ipynb
+          pipenv run jupyter nbconvert --to python pull_todays_tvl.ipynb
 
     # Runs a single command using the runners shell
 
@@ -56,7 +57,11 @@ jobs:
       - name: Update Value Flows
         working-directory: value_locked_flows
         run: pipenv run python total_app_net_flows_async.py
-
+    
+    # Today's TVL
+      - name: Pull today's TVL
+        working-directory: value_locked_flows
+        run: pipenv run python pull_todays_tvl.py
 
 
     # commit_results:
