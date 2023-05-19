@@ -15,18 +15,18 @@ sgs = pd.DataFrame(
         ]
         ,columns = ['dfl_id','subgraph_url','query']
 )
-sg = Subgrounds()
 # curve_op = sg.load_subgraph("https://api.thegraph.com/subgraphs/name/messari/velodrome-optimism")
 # display(sgs)
 
 
-def create_sg(tg_api):
+def create_sg(tg_api, sg):
         csg = sg.load_subgraph(tg_api)
         return csg
 
 
 def get_velodrome_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
-        velo = create_sg('https://api.thegraph.com/subgraphs/name/messari/velodrome-optimism')
+        sg = Subgrounds()
+        velo = create_sg('https://api.thegraph.com/subgraphs/name/messari/velodrome-optimism', sg)
         q1 = velo.Query.liquidityPoolDailySnapshots(
         orderDirection='desc',
         first=max_ts*max_ts, #arbitrarily large number so we pull everything
@@ -93,16 +93,17 @@ def get_velodrome_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
 
 
 def get_curve_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
-        curve = create_sg('https://api.thegraph.com/subgraphs/name/convex-community/volume-optimism')
+        sg = Subgrounds()
+        curve = create_sg('https://api.thegraph.com/subgraphs/name/convex-community/volume-optimism', sg)
         q1 = curve.Query.dailyPoolSnapshots(
-        orderBy= curve.Query.dailyPoolSnapshot.timestamp,
-        orderDirection='desc',
-        first=max_ts*max_ts, #arbitrarily large number so we pull everything
-                where=[
-                curve.Query.dailyPoolSnapshot.pool == pid,
-                curve.Query.dailyPoolSnapshot.timestamp > min_ts,
-                curve.Query.dailyPoolSnapshot.timestamp <= max_ts,
-                ]
+                orderBy= curve.DailyPoolSnapshot.timestamp,
+                orderDirection='desc',
+                first=max_ts*max_ts, #arbitrarily large number so we pull everything
+                        where=[
+                        curve.DailyPoolSnapshot.pool == pid,
+                        curve.DailyPoolSnapshot.timestamp > min_ts,
+                        curve.DailyPoolSnapshot.timestamp <= max_ts,
+                        ]
         )
         curve_tvl = sg.query_df([
                 q1.id,
@@ -163,8 +164,9 @@ def get_curve_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
         return curve_tvl
 
 def get_curve_pool_tvl_and_volume(chain, min_tvl = 10000, min_ts = 0, max_ts = 99999999999999):
+        sg = Subgrounds()
         # Playground: https://thegraph.com/hosted-service/subgraph/convex-community/volume-optimism
-        curve = create_sg('https://api.thegraph.com/subgraphs/name/convex-community/volume-' + str.lower(chain))
+        curve = create_sg('https://api.thegraph.com/subgraphs/name/convex-community/volume-' + str.lower(chain), sg)
         q1 = curve.Query.dailyPoolSnapshots(
         orderBy=curve.Query.dailyPoolSnapshot.tvl,
         orderDirection='desc',
@@ -231,9 +233,10 @@ def get_curve_pool_tvl_and_volume(chain, min_tvl = 10000, min_ts = 0, max_ts = 9
 
 
 def get_messari_format_pool_tvl(slug, pool_id, chain = 'optimism', min_ts = 0, max_ts = 99999999999999):
+        sg = Subgrounds()
         msr_dfs = []
         # print(slug)
-        sg_query = create_sg('https://api.thegraph.com/subgraphs/name/messari/' + slug + '-' + chain).Query
+        sg_query = create_sg('https://api.thegraph.com/subgraphs/name/messari/' + slug + '-' + chain, sg).Query
         # Get Query
         pool_info = sg_query.liquidityPools(
         # orderBy=sg_query.liquidityPools.timestamp,
@@ -330,13 +333,14 @@ def get_hop_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
 
 # Note, this is not in TVL tracking format - maybe we split this to a new file ~eventually
 def get_messari_sg_pool_snapshots(slug, chains = ['optimism'], min_ts = 0, max_ts = 99999999999999):
+        sg = Subgrounds()
         msr_dfs = []
         print(slug)
         for c in chains:
                 print(c)
                 try:
                         # Set Chain
-                        curve = create_sg('https://api.thegraph.com/subgraphs/name/messari/' + slug + '-' + c)
+                        curve = create_sg('https://api.thegraph.com/subgraphs/name/messari/' + slug + '-' + c, sg)
                         # Get Query
                         q1 = curve.Query.liquidityPoolDailySnapshots(
                         orderBy=curve.Query.liquidityPoolDailySnapshot.timestamp,
