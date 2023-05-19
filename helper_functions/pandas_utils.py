@@ -147,6 +147,34 @@ def get_datestring_from_datetime(datestring):
         date_string = datestring[:10]
     return date_string
 
+def convert_text_timestamp_to_int(text_timestamp):
+    try:
+        datetime_obj = datetime.strptime(text_timestamp, "%Y-%m-%d %H:%M:%S")
+        timestamp = int(datetime_obj.timestamp())
+        return timestamp
+    except ValueError:
+        print("Invalid timestamp format. Expected format: YYYY-MM-DD HH:MM:SS")
+        return None
+    
+def get_datetime_from_input(input_value):
+    if isinstance(input_value, str):
+        try:
+            datetime_obj = datetime.strptime(input_value, "%Y-%m-%d %H:%M:%S")
+            return datetime_obj
+        except ValueError:
+            print("Invalid date string format. Expected format: YYYY-MM-DD HH:MM:SS")
+            return None
+    elif isinstance(input_value, int):
+        try:
+            datetime_obj = datetime.fromtimestamp(input_value)
+            return datetime_obj
+        except OSError:
+            print("Invalid timestamp value.")
+            return None
+    else:
+        print("Invalid input type. Expected string or integer.")
+        return None
+
 def get_today_as_string():
     today = date.today()
     date_string = get_datestring_from_datetime(today)
