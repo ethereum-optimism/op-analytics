@@ -168,13 +168,13 @@ def get_curve_pool_tvl_and_volume(chain, min_tvl = 10000, min_ts = 0, max_ts = 9
         # Playground: https://thegraph.com/hosted-service/subgraph/convex-community/volume-optimism
         curve = create_sg('https://api.thegraph.com/subgraphs/name/convex-community/volume-' + str.lower(chain), sg)
         q1 = curve.Query.dailyPoolSnapshots(
-        orderBy=curve.Query.dailyPoolSnapshot.tvl,
+        orderBy=curve.DailyPoolSnapshot.tvl,
         orderDirection='desc',
         first=max_ts*max_ts, #arbitrarily large number so we pull everything
                 where=[
-                curve.Query.dailyPoolSnapshot.timestamp > min_ts,
-                curve.Query.dailyPoolSnapshot.timestamp <= max_ts,
-                curve.Query.dailyPoolSnapshot.tvl >= min_tvl,
+                curve.DailyPoolSnapshot.timestamp > min_ts,
+                curve.DailyPoolSnapshot.timestamp <= max_ts,
+                curve.DailyPoolSnapshot.tvl >= min_tvl,
                 ]
         )
         curve_tvl = sg.query_df([
@@ -245,17 +245,17 @@ def get_messari_format_pool_tvl(slug, pool_id, chain = 'optimism', min_ts = 0, m
                 where=[
                 # sg_query.liquidityPools.timestamp > min_ts,
                 # sg_query.liquidityPools.timestamp <= max_ts,
-                sg_query.liquidityPools.id == pool_id
+                sg_query.liquidityPool.id == pool_id
                 ]
         )
         snapshots = sg_query.liquidityPoolDailySnapshots(
-        orderBy= sg_query.liquidityPoolDailySnapshots.timestamp,
+        orderBy= sg_query.liquidityPoolDailySnapshot.timestamp,
         orderDirection='desc',
         first=10000,#max_ts*max_ts, #arbitrarily large number so we pull everything
                 where=[
-                sg_query.liquidityPoolDailySnapshots.timestamp > min_ts,
-                sg_query.liquidityPoolDailySnapshots.timestamp <= max_ts,
-                sg_query.liquidityPoolDailySnapshots.pool == pool_id
+                sg_query.liquidityPoolDailySnapshot.timestamp > min_ts,
+                sg_query.liquidityPoolDailySnapshot.timestamp <= max_ts,
+                sg_query.liquidityPoolDailySnapshot.pool == pool_id
                 ]
         )
         # Pull Fields
@@ -282,7 +282,7 @@ def get_messari_format_pool_tvl(slug, pool_id, chain = 'optimism', min_ts = 0, m
         # print(msr_daily)
         # msr_daily = pd.concat(snap_lst)
         #fix up column names
-        
+
         snap_lst.columns = snap_lst.columns.str.replace('liquidityPoolDailySnapshots_', '')
         snap_lst = snap_lst.rename(columns={'id':'pool_date_id'})
         
