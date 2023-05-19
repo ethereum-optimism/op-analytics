@@ -367,20 +367,31 @@ def get_todays_tvl():
 
         # Extract relevant data from JSON
         df_data = []
-        meta_cols = ['name', 'category','slug','url','description','twitter','forkedFrom','oracles','tvl']
+        meta_cols = ['name', 'parentProtocol', 'category','slug','url','description','twitter','forkedFrom','oracles','tvl']
         for entry in tvltoday:
                 arr = []
                 for col in meta_cols:
                         try:
-                                arr.append(entry[col])
+                                value = entry[col]
                         except:
-                                arr.append('')
+                                value = ''
+                                
+                        arr.append(value)
+
+
                 chain_tvls = entry['chainTvls']
                 for chain, chain_tvl in chain_tvls.items():
                         df_data.append(arr + [chain, chain_tvl])
 
-        # Create DataFrame
-        # columns = ['Name', 'Category', 'Chain', 'Slug', 'TVL', 'ChainTVL']
-        df = pd.DataFrame(df_data, columns= meta_cols + ['chain','chainTVL'])
-        # Display the DataFrame
+        exp_cols = meta_cols  + ['chain','chainTVL']
+
+        df = pd.DataFrame(df_data, columns= exp_cols)
+        
+        df['parent_slug'] = df['parentProtocol'].str.replace("parent#", "")
+        df['parent_name'] = df['parent_slug'].str.replace("_", " ").str.title()
+
+        # Drop helper columns
+        columns_to_drop = ['parent_slug', 'parentProtocol']
+        df = df.drop(columns_to_drop, axis=1)
+        
         return df
