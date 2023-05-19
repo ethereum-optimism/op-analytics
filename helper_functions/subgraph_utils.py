@@ -31,9 +31,9 @@ def get_velodrome_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
         orderDirection='desc',
         first=max_ts*max_ts, #arbitrarily large number so we pull everything
                 where=[
-                velo.Query.liquidityPoolDailySnapshot.pool == pid,
-                velo.Query.liquidityPoolDailySnapshot.timestamp > min_ts,
-                velo.Query.liquidityPoolDailySnapshot.timestamp <= max_ts,
+                velo.LiquidityPoolDailySnapshot.pool == pid,
+                velo.LiquidityPoolDailySnapshot.timestamp > min_ts,
+                velo.LiquidityPoolDailySnapshot.timestamp <= max_ts,
                 ]
         )
         velo_tvl = sg.query_df([
@@ -236,26 +236,26 @@ def get_messari_format_pool_tvl(slug, pool_id, chain = 'optimism', min_ts = 0, m
         sg = Subgrounds()
         msr_dfs = []
         # print(slug)
-        sg_query = create_sg('https://api.thegraph.com/subgraphs/name/messari/' + slug + '-' + chain, sg).Query
+        sg_query = create_sg('https://api.thegraph.com/subgraphs/name/messari/' + slug + '-' + chain, sg)
         # Get Query
-        pool_info = sg_query.liquidityPools(
+        pool_info = sg_query.Query.liquidityPools(
         # orderBy=sg_query.liquidityPools.timestamp,
         # orderDirection='desc',
         first=10000,#max_ts*max_ts, #arbitrarily large number so we pull everything
                 where=[
                 # sg_query.liquidityPools.timestamp > min_ts,
                 # sg_query.liquidityPools.timestamp <= max_ts,
-                sg_query.liquidityPool.id == pool_id
+                sg_query.LiquidityPool.id == pool_id
                 ]
         )
-        snapshots = sg_query.liquidityPoolDailySnapshots(
-        orderBy= sg_query.liquidityPoolDailySnapshot.timestamp,
+        snapshots = sg_query.Query.liquidityPoolDailySnapshots(
+        orderBy= sg_query.LiquidityPoolDailySnapshot.timestamp,
         orderDirection='desc',
         first=10000,#max_ts*max_ts, #arbitrarily large number so we pull everything
                 where=[
-                sg_query.liquidityPoolDailySnapshot.timestamp > min_ts,
-                sg_query.liquidityPoolDailySnapshot.timestamp <= max_ts,
-                sg_query.liquidityPoolDailySnapshot.pool == pool_id
+                sg_query.LiquidityPoolDailySnapshot.timestamp > min_ts,
+                sg_query.LiquidityPoolDailySnapshot.timestamp <= max_ts,
+                sg_query.LiquidityPoolDailySnapshot.pool == pool_id
                 ]
         )
         # Pull Fields
@@ -343,13 +343,13 @@ def get_messari_sg_pool_snapshots(slug, chains = ['optimism'], min_ts = 0, max_t
                         curve = create_sg('https://api.thegraph.com/subgraphs/name/messari/' + slug + '-' + c, sg)
                         # Get Query
                         q1 = curve.Query.liquidityPoolDailySnapshots(
-                        orderBy=curve.Query.liquidityPoolDailySnapshot.timestamp,
+                        orderBy=curve.LiquidityPoolDailySnapshot.timestamp,
                         orderDirection='desc',
                         first=100000,#max_ts*max_ts, #arbitrarily large number so we pull everything
                                 where=[
-                                curve.Query.liquidityPoolDailySnapshot.timestamp > min_ts,
-                                curve.Query.liquidityPoolDailySnapshot.timestamp <= max_ts,
-                                curve.Query.liquidityPoolDailySnapshot.pool == '0xfb6fe7802ba9290ef8b00ca16af4bc26eb663a28'
+                                curve.LiquidityPoolDailySnapshot.timestamp > min_ts,
+                                curve.LiquidityPoolDailySnapshot.timestamp <= max_ts,
+                                curve.LiquidityPoolDailySnapshot.pool == '0xfb6fe7802ba9290ef8b00ca16af4bc26eb663a28'
                                 ]
                         )
                         # Pull Fields
