@@ -7,6 +7,7 @@ import re
 from datetime import date
 import os
 from datetime import datetime
+from datetime import datetime, timezone
 
 def api_json_to_df(api_url):
     inf = pd.DataFrame( r.get(api_url).json() )
@@ -150,7 +151,8 @@ def get_datestring_from_datetime(datestring):
 def convert_text_timestamp_to_int(text_timestamp):
     try:
         datetime_obj = datetime.strptime(text_timestamp, "%Y-%m-%d %H:%M:%S")
-        timestamp = int(datetime_obj.timestamp())
+        datetime_obj_utc = datetime_obj.replace(tzinfo=timezone.utc)
+        timestamp = int(datetime_obj_utc.timestamp())
         return timestamp
     except ValueError:
         print("Invalid timestamp format. Expected format: YYYY-MM-DD HH:MM:SS")
