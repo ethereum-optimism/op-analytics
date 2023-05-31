@@ -12,12 +12,24 @@ def get_duration_dict(num_periods, time_granularity):
                 raise ValueError('Invalid time granularity')
         return duration
 
-def getLatestBlockTimestamp(endpoint):
+def getLatestBlock(endpoint):
     w3_conn = Web3(Web3.HTTPProvider(endpoint))
     latestBlock = w3_conn.eth.get_block('latest')
+
+    return latestBlock
+
+def getLatestBlockTimestamp(endpoint):
+    latestBlock = getLatestBlock(endpoint)
     latestBlockTimestamp = latestBlock.timestamp
 
     return latestBlockTimestamp
+
+def getLatestBlockNumber(endpoint):
+    latestBlock = getLatestBlock(endpoint)
+    latestBlockNumber = latestBlock.number
+
+    return latestBlockNumber
+
 
 def getAverageBlockTime(endpoint, trailing_num_blocks = 500):
     w3_conn = Web3(Web3.HTTPProvider(endpoint))
