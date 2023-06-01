@@ -17,9 +17,9 @@ WITH tx_data AS (
         INNER JOIN public.blocks b
             ON b.number = t.block_number
             AND b.timestamp = t.block_timestamp
-            AND b.timestamp > CURRENT_TIMESTAMP - interval '1' day - interval '240' second
-    -- filter to the last day & add a 240 second buffer since we look at trailing 120 blocks
-    WHERE t.block_timestamp > CURRENT_TIMESTAMP - interval '1' day - interval '240' second
+            AND b.timestamp > CURRENT_TIMESTAMP - interval '1' day - interval '1' minute
+    -- filter to the last day & add a 1 minute buffer since we look at trailing 30 blocks (1 minute)
+    WHERE t.block_timestamp > CURRENT_TIMESTAMP - interval '1' day - interval '1' minute
     ) a
  )
    
@@ -44,18 +44,18 @@ WITH tx_data AS (
       block_number, block_timestamp
       , DENSE_RANK() OVER (ORDER BY block_number ASC) AS asc_block_number_rank
       , FIRST_VALUE(base_fee_per_gas_gwei) OVER (ORDER BY block_number DESC) AS last_base_fee_per_gas_gwei
-      , AVG(base_fee_per_gas_gwei) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 119 FOLLOWING) AS trailing_avg_base_fee_per_gas_gwei
+      , AVG(base_fee_per_gas_gwei) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 29 FOLLOWING) AS trailing_avg_base_fee_per_gas_gwei
 
-      , AVG(priority_fee_paid_per_gas_gwei_1pct) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 119 FOLLOWING) AS trailing_avg_priority_fee_paid_per_gas_gwei_1pct
-      , AVG(priority_fee_paid_per_gas_gwei_25pct) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 119 FOLLOWING) AS trailing_avg_priority_fee_paid_per_gas_gwei_25pct
-      , AVG(priority_fee_paid_per_gas_gwei_50pct) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 119 FOLLOWING) AS trailing_avg_priority_fee_paid_per_gas_gwei_50pct
-      , AVG(priority_fee_paid_per_gas_gwei_75pct) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 119 FOLLOWING) AS trailing_avg_priority_fee_paid_per_gas_gwei_75pct
-      , AVG(priority_fee_paid_per_gas_gwei_99pct) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 119 FOLLOWING) AS trailing_avg_priority_fee_paid_per_gas_gwei_99pct
+      , AVG(priority_fee_paid_per_gas_gwei_1pct) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 29 FOLLOWING) AS trailing_avg_priority_fee_paid_per_gas_gwei_1pct
+      , AVG(priority_fee_paid_per_gas_gwei_25pct) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 29 FOLLOWING) AS trailing_avg_priority_fee_paid_per_gas_gwei_25pct
+      , AVG(priority_fee_paid_per_gas_gwei_50pct) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 29 FOLLOWING) AS trailing_avg_priority_fee_paid_per_gas_gwei_50pct
+      , AVG(priority_fee_paid_per_gas_gwei_75pct) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 29 FOLLOWING) AS trailing_avg_priority_fee_paid_per_gas_gwei_75pct
+      , AVG(priority_fee_paid_per_gas_gwei_99pct) OVER (ORDER BY block_number DESC ROWS BETWEEN CURRENT ROW AND 29 FOLLOWING) AS trailing_avg_priority_fee_paid_per_gas_gwei_99pct
 
       FROM block_data
       WHERE num_user_transactions > 0
       ) a
-  --filter out blocks where we didn't pull full 120 block data
-  WHERE asc_block_number_rank >= 120
+  --filter out blocks where we didn't pull full 30 block data
+  WHERE asc_block_number_rank >= 30
   
   ORDER BY block_number DESC
