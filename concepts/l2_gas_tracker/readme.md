@@ -7,4 +7,4 @@ This uses an ethereum-etl fork (WIP - normal ethereum-etl will also work) to str
 - `gas_tracker_query.sql`: SQL query that pulls the last day of data and creates rolling gas price estimates. The most recent block in the result is the "current" recommendation.
 - `l2_gas_estimator_output.csv`: Results of `gas_tracker_query.sql` in a csv.
 
-This script also references [`ethereumetl_utils.py`](https://github.com/ethereum-optimism/op-analytics/blob/main/helper_functions/ethereumetl_utils.py) which can be found in op-analytics/helper-functions.
+This script also references `ethereumetl_utils.py` and `web3py_utils.py` which can be found in [op-analytics/helper-functions](https://github.com/ethereum-optimism/op-analytics/tree/main/helper_functions).
