@@ -20,7 +20,7 @@ include_in_summary,slug,num_op_override,num_op,start_date,end_date,name,op_sourc
 1,arrakis-finance,67500,67500,5/3/23,5/31/23,OP Uniswap LM - Phase 2,Partner Fund,defillama,,,uniswap,
 1,gamma,67500,67500,4/28/23,5/31/23,OP Uniswap LM - Phase 2,Partner Fund,defillama,,,uniswap,
 0,uniswap-v3,135000,135000,4/28/23,5/31/23,OP Uniswap LM - Phase 2,Partner Fund,defillama,,,uniswap,
-1,gamma,,300000,5/31/23,11/31/23,,Governance - Season 1,defillama,,,,
+1,gamma,,300000,5/31/23,11/30/23,,Governance - Season 1,defillama,,,,
 1,angle,,,2/20/23,,OP/agEUR: Velodrome,Governance - Season 1,pool-subgraph-velodrome,['0xbda45a58bac8b327d02798a9184a850ceed9a477'],velodrome,,1
 1,pickle,,200000,9/9/22,,Pickle Finance,Governance - Season 1,defillama,,,,
 1,pooltogether,450000,450000,7/22/22,11/15/22,PoolTogether #1,Partner Fund,defillama,,,,
