@@ -29,11 +29,8 @@ def get_eth_etl_receipts(output_folder, uri):
         subprocess.run(command_r, shell=True)
 
 # https://github.com/blockchain-etl/ethereum-etl/blob/develop/docs/commands.md#stream
-def stream_eth_etl(start_block = 0, output_folder = "tx_stream_outputs", uri = '', includes = 'block,transaction,log,token_transfer,trace,contract,token', \
-                        pg_user = '', pg_pw = '', pg_host = '', pg_port = '', pg_db_name = '',\
-                                max_w = '8'):
-        blocks_output = 'downloads/' + output_folder + '/blocks.csv'
-        transactions_output = 'downloads/' + output_folder + '/transactions.csv'
+def stream_eth_etl(start_block = 0, uri = '', includes = 'block,transaction,log,token_transfer,trace,contract,token', \
+                        pg_user = '', pg_pw = '', pg_host = '', pg_port = '', pg_db_name = ''):
 
         # Check if last_synced_block.txt exists
         if os.path.exists('last_synced_block.txt'):
