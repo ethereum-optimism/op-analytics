@@ -66,3 +66,15 @@ def get_blockrange_by_timedelta(endpoint,num_periods, time_granularity):
         starting_block_number = getBlockByTimestamp(w3_conn, block_timestamp)
 
         return [starting_block_number, latest_block_number]
+
+def get_block_receipt(endpoint,block_number):
+       # Connect to the Ethereum mainnet
+        w3 = Web3(Web3.HTTPProvider(endpoint))
+
+        # Retrieve the block information
+        block = w3.eth.getBlock(block_number)
+
+        # # Get the block receipt
+        # receipt = w3.eth.getTransactionReceipt(block['hash'])
+
+        print(block)
