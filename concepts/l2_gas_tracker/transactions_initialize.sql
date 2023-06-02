@@ -24,7 +24,7 @@ create table transactions
     receipt_l1_fee bigint,
     receipt_l1_gas_used bigint,
     receipt_l1_gas_price bigint,
-    receipt_l1_fee_scalar bigint
+    receipt_l1_fee_scalar double precision
 );
 
 alter table transactions add constraint transactions_pk primary key (hash);
