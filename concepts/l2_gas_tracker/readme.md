@@ -13,5 +13,4 @@ This script also references `ethereumetl_utils.py` and `web3py_utils.py` which c
 
 **Notes:**
 - With ethereum-etl, we could also pull logs, token transfers, etc. But for the gas tracker, we only need blocks and transactions.
-- Some of the L2-specific fields aren't pulling in to the streaming database. This isn't a blocker, and we have a question out to ethereum-etl on this.
 
