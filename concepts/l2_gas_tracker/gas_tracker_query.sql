@@ -14,7 +14,7 @@ WITH tx_data AS (
     , b.base_fee_per_gas, t.max_fee_per_gas, t.max_priority_fee_per_gas
     , t.gas_price - b.base_fee_per_gas AS priority_fee_paid_per_gas
     , t.receipt_l1_gas_price AS l1_gas_price
-    , CASE WHEN transaction_type = 126 THEN 1 ELSE 0 END AS is_system_tx
+    , CASE WHEN transaction_type = 126 OR t.gas_price = 0 THEN 1 ELSE 0 END AS is_system_tx
 	FROM public.transactions t
         INNER JOIN public.blocks b
             ON b.number = t.block_number
