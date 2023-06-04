@@ -186,3 +186,12 @@ def get_today_as_string():
 def mkdir_if_not_exists(dir):
     if not os.path.exists(dir):
         os.mkdir(dir)
+
+def format_datetime_columns(df, format='%Y-%m-%dT%H:%M:%S.%fZ'):
+    for column in df.columns:
+        if df[column].dtype == 'object':
+            try:
+                df[column] = pd.to_datetime(df[column], format=format).dt.strftime(format)
+            except ValueError:
+                pass
+    return df
