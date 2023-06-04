@@ -393,7 +393,7 @@ for i in drange:
                 titleval_app = "App Net Flows Change by App -> Chain - Last " + str(i) + \
                                 " Days - (Apps with > $" + str(min_tvl/1e6) + "M TVL Shown)" + titleval_append
         if is_fallback_on_raw_tvl:
-                subtitle = "<br><sup>*For apps where DefiLlama didn't have flows by token, we use their total change in TVL (including token price change)</sup>"
+                subtitle = "<br><sup>Source: DefiLlama API | *For apps where DefiLlama didn't have flows by token, we use their total change in TVL (including token price change)</sup>"
         else:
                 subtitle = ""
 
