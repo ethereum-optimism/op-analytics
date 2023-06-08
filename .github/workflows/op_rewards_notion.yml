@@ -51,7 +51,7 @@ jobs:
         working-directory: op_rewards_tracking
         run: pipenv run python pull_notion_data.py
         env:
-          NOTION_API_TOKEN: ${{ secrets.NOTION_API_TOKEN }}
+          DUNE_API_KEY: ${{ secrets.NOTION_API_TOKEN }}
         
   # commit_results:
     # if: ${{ always() }} #Always runs even if prior jobs fail - so that one bad job doesn't f everything up.
