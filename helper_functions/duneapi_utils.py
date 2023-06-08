@@ -98,7 +98,8 @@ def write_dune_api_from_pandas(df, table_name, table_description):
 
     #convert pandas dataframe to csv
     data = df.to_csv(index=False)
-    print(data)
+    # print(data)
+    print("table at: dune_upload."+table_name)
     # Write to Dune
     write_dune_api_from_csv(data, table_name, table_description)
     
