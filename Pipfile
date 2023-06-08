@@ -17,7 +17,7 @@ aiohttp_retry = "2.8.3"
 kaleido = "*"
 airtable = "*"
 notion-client = "*"
-notion_df = "*"
+notion-df = "*"
 
 [dev-packages]
 
