@@ -2,7 +2,7 @@ name: Run OP Rewards Notion API
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule - Once per day at 12:01 pm
+  # Run on a schedule - Run Sundays at 12:01 pm
   schedule:
       - cron: '10 12 * * 0'
   # Allows you to run this workflow manually from the Actions tab
