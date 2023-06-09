@@ -32,6 +32,17 @@ def is_get_successful(at, table_name):
     except airtable.AirtableError:
         return False
 
+def create_new_record_id(at, table_name, field_name, value, result, formula):
+	to_append = ''
+	print('create')
+	record_field = {field_name:value}
+	print(record_field)
+	at.create(table_name, record_field)#, True)
+	for r in at.iterate(table_name, filter_by_formula = formula):
+		to_append = r['id']
+		result.append(r['id'])
+	return to_append
+
 def get_linked_record_id(at, table_name, field_name, value):
 	formula = "lower({@field_name@})=lower('@value@')"
 	formula = formula.replace('@field_name@',field_name)
@@ -41,14 +52,16 @@ def get_linked_record_id(at, table_name, field_name, value):
 		result = [] #{ "records": [] }
 		for r in at.iterate(table_name, filter_by_formula = formula):
 			result.append(r['id'])
-	except:
-		print('create')
-		record_field = {field_name:value}
-		print(record_field)
-		at.create(table_name, record_field, True)
-		for r in at.iterate(table_name, filter_by_formula = formula):
-			result.append(r['id'])
 		
+	except:
+		to_append = create_new_record_id(at, table_name, field_name, value, result, formula)
+		result.append(to_append)
+
+	if not result: #empty string
+		to_append = create_new_record_id(at, table_name, field_name, value, result, formula)
+		result.append(to_append)
+	result = list(set(result)) #remove duplicates
+	print(result)
 	return result
 
 def upsert_record_dt_contract_creator(at, table_name, record):
@@ -58,7 +71,7 @@ def upsert_record_dt_contract_creator(at, table_name, record):
 	contract_address =record['fields']['Contract Address']
 	creator_address = record['fields']['Creator Address']
 	if creator_address is None:
-    		creator_address = ""
+		creator_address = ''
 
 	linked_field_name = 'Team Name'
 
