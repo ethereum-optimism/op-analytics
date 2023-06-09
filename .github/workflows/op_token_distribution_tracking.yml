@@ -57,6 +57,8 @@ jobs:
         run: |
           pipenv run python optimism_incentives_app_net_flows.py
           pipenv run jupyter nbconvert --to notebook --execute op_incentive_program_summary.ipynb
+        env:
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
   
   # Dune Data
       - name: Pull OP Usage Data in Dune
