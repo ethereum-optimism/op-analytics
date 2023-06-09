@@ -5,7 +5,7 @@
 
 
 import sys
-from IPython.display import display #So that display is recognized in .py files
+from IPython.display import display  # So that display is recognized in .py files
 
 sys.path.append("../helper_functions")
 import os
