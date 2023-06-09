@@ -12,13 +12,18 @@ at_api_key = os.environ["AIRTABLE_API_TOKEN"]
 
 # Read an airtable database in to a pandas dataframe
 def get_dataframe_from_airtable_database(at_base_id, base_name):
-        at = airtable.Airtable(at_base_id, at_api_key)
-        data = at.get(base_name)
-        df = pd.json_normalize(data, record_path='records')
-        # Rename all columns that start with 'fields.'
-        df.rename(columns=lambda x: x.replace('fields.', ''), inplace=True)
+	at = airtable.Airtable(at_base_id, at_api_key)
+	data = at.get(base_name)
+	df = pd.json_normalize(data, record_path='records')
+	# Rename all columns that start with 'fields.'
+	df.rename(columns=lambda x: x.replace('fields.', ''), inplace=True)
+	# Convert timestamp columns to string representation
+	timestamp_columns = ['Date']  # Add more columns if needed
+	for col in timestamp_columns:
+		if col in df.columns and pd.api.types.is_datetime64_any_dtype(df[col]):
+			df[col] = df[col].dt.strftime('%Y-%m-%d %H:%M:%S')
 
-        return df
+	return df
 
 def is_get_successful(at, table_name):
     try:
