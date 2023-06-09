@@ -27,12 +27,13 @@ import os
 import time
 import sys
 import shutil
-from IPython.display import display #So that display is recognized in .py files
+from IPython.display import display  # So that display is recognized in .py files
 
 sys.path.append("../helper_functions")
 import subgraph_utils as subg
 import defillama_utils as dfl
 import pandas_utils as pu
+import duneapi_utils as du
 
 
 # In[ ]:
@@ -133,7 +134,8 @@ protocols = protocols.sort_values(by="start_date", ascending=True)
 # In[ ]:
 
 
-
+# Write Protocols to Dune
+du.write_dune_api_from_pandas(protocols, "op_rewards_tvl_flow_protocols_input","Table containing input parameters for OP Rewards TVL Flows")
 
 
 # In[ ]:
@@ -936,6 +938,9 @@ for df in df_list:
         os.mkdir(prepend + "img_outputs/overall/svg")
         os.mkdir(prepend + "img_outputs/overall/html")
     df_format.to_csv(prepend + "csv_outputs/" + html_name + ".csv", index=False)
+    if html_name == 'op_summer_latest_stats':
+        # Write Output to Dune
+        du.write_dune_api_from_pandas(df_format, "op_summer_latest_stats","Table containing outputs for OP Rewards TVL Flows")
 
     format_cols = [
         "cumul_flows_per_op_at_program_end",
@@ -1149,16 +1154,15 @@ fig_last.write_html(
 value_list = ["cumul_net_dollar_flow", "cumul_last_price_net_dollar_flow"]
 
 for val in value_list:
-
     if val == "cumul_last_price_net_dollar_flow":
         postpend = " - At Last Price"
         folder_path = "/last_price"
     else:
         postpend = ""
         folder_path = "/daily_price"
-    
+
     # Clean Folders
-    for ftype in ('','/svg','/png'):
+    for ftype in ("", "/svg", "/png"):
         path_fld = prepend + "img_outputs/app" + folder_path + ftype
         if os.path.exists(path_fld):
             shutil.rmtree(path_fld)

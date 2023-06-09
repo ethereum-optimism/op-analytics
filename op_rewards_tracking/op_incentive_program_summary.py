@@ -48,7 +48,7 @@ def extract_source(source_string):
 
 
 def cleanup_string(source_string):
-    return source_string.replace(" ", "").lower()
+    return str(source_string).replace(" ", "").lower()
 
 
 def remove_brackets(x):
@@ -108,7 +108,7 @@ df_info["app_name_join"] = df_info["App Name Map Override"].fillna(df_info["App 
 df_info["app_name_join"] = df_info["app_name_join"].apply(cleanup_string)
 
 
-# In[5]:
+# In[ ]:
 
 
 for i in ["GovFund", "GovFund Growth Experiments", "All Programs"]:
@@ -189,7 +189,7 @@ for i in ["GovFund", "GovFund Growth Experiments", "All Programs"]:
     print()
 
 
-# In[6]:
+# In[ ]:
 
 
 # display new programs in last 30 days
@@ -201,7 +201,7 @@ if not df_new_programs.empty:
     display(df_new_programs.drop("app_name_join", axis=1))
 
 
-# In[7]:
+# In[ ]:
 
 
 # display completed programs in last 30 days
@@ -216,7 +216,7 @@ if not df_completed.empty:
 # # Usage and TVL Attribution
 # To combine all sources of data together
 
-# In[8]:
+# In[ ]:
 
 
 # read in input data
@@ -252,7 +252,7 @@ condition = (df_choice["Incentive / Growth Program Included?"] == "Yes") & (
 df_choice = df_choice[condition]
 
 
-# In[9]:
+# In[ ]:
 
 
 df_to_summarize = {
@@ -292,7 +292,7 @@ locals().update(summary_dfs)
 
 # ### By App
 
-# In[10]:
+# In[ ]:
 
 
 # by app
@@ -316,7 +316,7 @@ result_app = calculate_metrics(
 # display(result_app)
 
 
-# In[11]:
+# In[ ]:
 
 
 # sort by tvl
@@ -335,7 +335,7 @@ display(
 )
 
 
-# In[12]:
+# In[ ]:
 
 
 # sort by txs
@@ -367,7 +367,7 @@ display(
 )
 
 
-# In[13]:
+# In[ ]:
 
 
 # sort by gas
@@ -405,7 +405,7 @@ display(
 
 # ### By Fund Source
 
-# In[14]:
+# In[ ]:
 
 
 agg_dict = {
@@ -422,7 +422,7 @@ agg_dict = {
 }
 
 
-# In[15]:
+# In[ ]:
 
 
 result_app["op_source_length"] = result_app["op_source"].str.split(",").apply(len)
@@ -447,7 +447,7 @@ display(result_source)
 
 # 
 
-# In[16]:
+# In[ ]:
 
 
 # convert results to csv
@@ -456,7 +456,7 @@ result_app.to_csv("csv_outputs/final_incentive_program_summary_by_app.csv")
 
 # ### Benchmark
 
-# In[17]:
+# In[ ]:
 
 
 def plot_benchmark(
@@ -529,7 +529,7 @@ def cleanup_data(
 
 # ### Transactions Benchmark
 
-# In[18]:
+# In[ ]:
 
 
 layout_settings = {
@@ -550,7 +550,7 @@ plot_benchmark(
 )
 
 
-# In[19]:
+# In[ ]:
 
 
 layout_settings = {
@@ -579,7 +579,7 @@ plot_benchmark(
 
 # ### TVL Benchmark
 
-# In[20]:
+# In[ ]:
 
 
 layout_settings = {
@@ -606,7 +606,7 @@ plot_benchmark(
 )
 
 
-# In[21]:
+# In[ ]:
 
 
 layout_settings = {
@@ -636,7 +636,7 @@ plot_benchmark(
 
 # ### Fee Benchmark
 
-# In[22]:
+# In[ ]:
 
 
 layout_settings = {
@@ -663,7 +663,7 @@ plot_benchmark(
 )
 
 
-# In[23]:
+# In[ ]:
 
 
 layout_settings = {
