@@ -1,6 +1,9 @@
 from airtable import airtable
 from collections import OrderedDict
 
+from datetime import datetime
+import json
+
 import pandas as pd
 import numpy as np
 
@@ -64,6 +67,17 @@ def get_linked_record_id(at, table_name, field_name, value):
 	print(result)
 	return result
 
+def convert_timestamps_to_strings(data):
+    converted_data = {}
+    for key, value in data.items():
+        if isinstance(value, datetime):
+            converted_data[key] = value.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(value, dict):
+            converted_data[key] = convert_timestamps_to_strings(value)
+        else:
+            converted_data[key] = value
+    return converted_data
+
 def upsert_record_dt_contract_creator(at, table_name, record):
     # Search for a matching record
 	# Build the formula to filter the records
@@ -86,6 +100,9 @@ def upsert_record_dt_contract_creator(at, table_name, record):
 		linked_id = get_linked_record_id(at,'Teams',linked_field_name, record['fields']['Team'])
 		record['fields'][linked_field_name] = linked_id
 
+	#Handle for timestamps
+	record = convert_timestamps_to_strings(record)
+	
 	# Check if we update
 	for existing_record in at.iterate(table_name,
 				   filter_by_formula = formula
@@ -101,10 +118,10 @@ def upsert_record_dt_contract_creator(at, table_name, record):
 			at.update(table_name, existing_record['id'], record['fields'])
 
 			return
-		
+	
     # If no matching record was found, create a new one
 	print('add new record')
-	# print(record['fields'])
+	print(record['fields'])
 	
 	at.create(table_name, record['fields'])
 
