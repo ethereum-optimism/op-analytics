@@ -9,6 +9,7 @@ import requests as r
 import re
 import json
 import numpy as np
+from datetime import datetime, timedelta
 
 import sys
 sys.path.append("../helper_functions")
@@ -21,7 +22,7 @@ from dune_client.query import Query
 
 
 def get_dune_data(
-    query_id: int, name: str = "my_query_results", path: str = "csv_outputs", performance: str = "medium"
+    query_id: int, name: str = "my_query_results", path: str = "csv_outputs", num_hours_to_rerun = 4, performance: str = "medium"
 ) -> pd.DataFrame:
     """
     Get data via Dune API.
@@ -29,15 +30,33 @@ def get_dune_data(
     query = Query(
         name=name,
         query_id=query_id,
+        # performance = performance
     )
     logger.info(f"Results available at {query.url()}")
 
     dotenv.load_dotenv()
     dune = DuneClient(os.environ["DUNE_API_KEY"])
-    results = dune.refresh(query)
-    performance = performance
+    # get latest 
+    try:
+        results = dune.get_latest_result(query_id)
+        submitted_at = results.times.submitted_at
+        # execution_started_at = latest.times.execution_started_at
+        # execution_ended_at = latest.times.execution_ended_at
+    except:
+        submitted_at = 0
+    # Get the current time in the same timezone as submitted_at
+    current_time = datetime.now(submitted_at.tzinfo)
+    # print(current_time)
+    # Calculate the time difference between the current time and submitted_at
+    time_difference = current_time - submitted_at
 
-    df = pd.DataFrame(results.result.rows)
+    # if data is recent, pull that
+    if time_difference <= timedelta(hours=num_hours_to_rerun):
+        df = pd.DataFrame(results.result.rows)
+    else:
+        results = dune.refresh(query)
+        df = pd.DataFrame(results.result.rows)
+    
     df["last_updated"] = results.times.submitted_at
 
     if not os.path.exists(path):
