@@ -72,10 +72,10 @@ jobs:
         working-directory: op_rewards_tracking
         run: pipenv run python op_incentives_program_attribution.py
   
-  # Incentives Program Summary
-      - name: Update OP Incentives Summary
-        working-directory: op_rewards_tracking
-        run: pipenv run python op_incentive_program_summary.py
+  # # Incentives Program Summary #Already run in Update OP App Net Flows
+  #     - name: Update OP Incentives Summary
+  #       working-directory: op_rewards_tracking
+  #       run: pipenv run python op_incentive_program_summary.py
  
         
   # commit_results:
