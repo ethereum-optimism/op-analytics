@@ -89,7 +89,7 @@ def calculate_metrics(df, op="op_deployed"):
 # In[4]:
 
 
-df_info = pd.read_csv("inputs/" + "op_incentive_program_info" + ".csv")
+df_info = pd.read_csv("csv_outputs/" + "notion_automation_test" + ".csv")
 
 # convert to datetime
 df_info["start_date"] = pd.to_datetime(

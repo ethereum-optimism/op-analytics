@@ -91,6 +91,7 @@ protocol_name_mapping = pd.DataFrame(
         ["pickle", "pickle finance"],
         ["stargate", "stargate finance"],
         ["sushi-trident", "sushi"],
+        ["yearn-finance", "yearn"],
     ],
     columns=["slug", "app_name"],
 )
@@ -135,7 +136,11 @@ protocols = protocols.sort_values(by="start_date", ascending=True)
 
 
 # Write Protocols to Dune
-du.write_dune_api_from_pandas(protocols, "op_rewards_tvl_flow_protocols_input","Table containing input parameters for OP Rewards TVL Flows")
+du.write_dune_api_from_pandas(
+    protocols,
+    "op_rewards_tvl_flow_protocols_input",
+    "Table containing input parameters for OP Rewards TVL Flows",
+)
 
 
 # In[ ]:
@@ -938,9 +943,13 @@ for df in df_list:
         os.mkdir(prepend + "img_outputs/overall/svg")
         os.mkdir(prepend + "img_outputs/overall/html")
     df_format.to_csv(prepend + "csv_outputs/" + html_name + ".csv", index=False)
-    if html_name == 'op_summer_latest_stats':
+    if html_name == "op_summer_latest_stats":
         # Write Output to Dune
-        du.write_dune_api_from_pandas(df_format, "op_summer_latest_stats","Table containing outputs for OP Rewards TVL Flows")
+        du.write_dune_api_from_pandas(
+            df_format,
+            "op_summer_latest_stats",
+            "Table containing outputs for OP Rewards TVL Flows",
+        )
 
     format_cols = [
         "cumul_flows_per_op_at_program_end",
