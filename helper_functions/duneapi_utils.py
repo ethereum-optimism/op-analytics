@@ -51,14 +51,14 @@ def get_dune_data(
 
         # Get the current time in the same timezone as submitted_at
         current_time = datetime.now(submitted_at.tzinfo)
+
+        # Calculate the time difference between the current time and submitted_at
+        time_difference = current_time - submitted_at
     except:
         submitted_at = 0
-        # Get the current time in UTC
-        current_time = datetime.now(timezone.utc)
+        time_difference = timedelta(hours=num_hours_to_rerun + 1)
 
     # print(current_time)
-    # Calculate the time difference between the current time and submitted_at
-    time_difference = current_time - submitted_at
 
     # if data is recent, pull that
     if time_difference <= timedelta(hours=num_hours_to_rerun):
