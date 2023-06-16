@@ -78,3 +78,15 @@ def get_block_receipt(endpoint,block_number):
         # receipt = w3.eth.getTransactionReceipt(block['hash'])
 
         print(block)
+
+def get_eth_balance_by_block(endpoint, block_number, address):
+        # Connect to an Ethereum node (or Optimism)
+        w3_conn = Web3(Web3.HTTPProvider(endpoint))
+
+        # Get the ETH balance at a specific block
+        balance = w3_conn.eth.getBalance(address, block_identifier=block_number)
+
+        # Convert balance from Wei to Ether
+        balance_eth = w3_conn.fromWei(balance, 'ether')
+
+        return balance_eth
