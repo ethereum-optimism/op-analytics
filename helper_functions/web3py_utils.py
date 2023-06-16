@@ -1,5 +1,7 @@
 import datetime
 from web3 import Web3
+import requests as r
+import json
 
 def get_duration_dict(num_periods, time_granularity):
         if time_granularity == 'hours':
@@ -79,14 +81,34 @@ def get_block_receipt(endpoint,block_number):
 
         print(block)
 
-def get_eth_balance_by_block(endpoint, block_number, address):
-        # Connect to an Ethereum node (or Optimism)
-        w3_conn = Web3(Web3.HTTPProvider(endpoint))
+def alchemy_get_eth_balance_by_block(endpoint, block_number, address):
+        # # Connect to an Ethereum node (or Optimism)
+        # w3_conn = Web3(Web3.HTTPProvider(endpoint))
 
-        # Get the ETH balance at a specific block
-        balance = w3_conn.eth.getBalance(address, block_identifier=block_number)
+        # # Get the ETH balance at a specific block
+        # balance = w3_conn.eth.getBalance(address, block_identifier=block_number)
 
-        # Convert balance from Wei to Ether
-        balance_eth = w3_conn.fromWei(balance, 'ether')
+        # # Convert balance from Wei to Ether
+        # balance_eth = w3_conn.fromWei(balance, 'ether')
+
+        # return balance_eth
+
+        url = endpoint
+
+        payload = {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "params": [address, block_number],
+        "method": "eth_getBalance"
+        }
+        headers = {
+        "accept": "application/json",
+        "content-type": "application/json"
+        }
+
+        response = r.post(url, json=payload, headers=headers)
+        balance = json.loads(response.text)['result']
+        balance_wei = int(balance, 16)
+        balance_eth = balance_wei / 1e18
 
         return balance_eth
