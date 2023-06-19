@@ -335,9 +335,9 @@ def get_hop_pool_tvl(pid, min_ts = 0, max_ts = 99999999999999):
 def get_messari_sg_pool_snapshots(slug, chains = ['optimism'], min_ts = 0, max_ts = 99999999999999):
         sg = Subgrounds()
         msr_dfs = []
-        print(slug)
+        # print(slug)
         for c in chains:
-                print(c)
+                # print(c)
                 try:
                         # Set Chain
                         curve = create_sg('https://api.thegraph.com/subgraphs/name/messari/' + slug + '-' + c, sg)
@@ -385,7 +385,7 @@ def get_messari_sg_pool_snapshots(slug, chains = ['optimism'], min_ts = 0, max_t
         msr_daily.columns = msr_daily.columns.str.replace('liquidityPoolDailySnapshots_', '')
         
         col_list = msr_daily.columns.to_list()
-        print(col_list)
+        # print(col_list)
         col_list.remove('pool_inputTokens_id') # we want to group by everything else 
         
         msr_daily = msr_daily.fillna(0)
