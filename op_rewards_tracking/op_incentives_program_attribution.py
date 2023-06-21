@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 # STILL WIP
@@ -14,7 +14,7 @@
 # Join these datasets together on program & associate anything else to the generalized programs
 
 
-# In[2]:
+# In[ ]:
 
 
 import pandas as pd
@@ -23,7 +23,7 @@ import datetime
 from IPython.display import display #So that display is recognized in .py files
 
 
-# In[3]:
+# In[ ]:
 
 
 tvl = pd.read_csv("csv_outputs/op_summer_latest_stats.csv")
@@ -32,7 +32,7 @@ program_df = pd.read_csv("inputs/op_incentive_program_info.csv")
 app_df = pd.read_csv("csv_outputs/dune_usage_by_app.csv")
 
 
-# In[4]:
+# In[ ]:
 
 
 # Filter TVL DF
@@ -43,7 +43,7 @@ tvl["join_key"] = tvl["top_level_name"].str.replace(
 # display(tvl)
 
 
-# In[5]:
+# In[ ]:
 
 
 op_token_columns = [
@@ -55,7 +55,7 @@ op_token_columns = [
 ]
 
 
-# In[6]:
+# In[ ]:
 
 
 # Set up Distributions for Mapping
@@ -85,7 +85,7 @@ sum_distrib_df["join_key"] = np.where(
 # display(sum_distrib_df[sum_distrib_df['join_key'].str.contains('elodr')])
 
 
-# In[7]:
+# In[ ]:
 
 
 # lowercase joinkeys
@@ -96,7 +96,7 @@ df = sum_distrib_df.merge(tvl, on="join_key", how="outer")
 # display(df[df['join_key'].str.contains('velodr')])
 
 
-# In[8]:
+# In[ ]:
 
 
 # Overrides as needed
@@ -115,7 +115,7 @@ overrides = {
 df = replace_program_names(df, overrides)
 
 
-# In[9]:
+# In[ ]:
 
 
 # Create the aggregate app name field
@@ -124,7 +124,7 @@ df = df.fillna(0)  # Fill NA with 0
 # display(df)
 
 
-# In[10]:
+# In[ ]:
 
 
 # Now union back again
@@ -154,7 +154,7 @@ sum_distrib_df = df[select_cols].groupby(group_cols).sum()
 sum_distrib_df.reset_index(inplace=True)
 
 
-# In[11]:
+# In[ ]:
 
 
 # Get the rank by start_date of each program
@@ -201,7 +201,7 @@ sum_distrib_df.drop("row_num", axis=1, inplace=True)
 # display(sum_distrib_df[sum_distrib_df['agg_app_name'].str.contains('rrakis')])
 
 
-# In[12]:
+# In[ ]:
 
 
 # Now do the algorithmic overrides - where we want to redistirbute deployed OP across specific programs (i.e. Uniswap LM w/ Partners)
@@ -222,14 +222,14 @@ sum_distrib_df["op_deployed"] = np.where(
 )
 
 
-# In[13]:
+# In[ ]:
 
 
 # #Select all except the last 4 rows
 sum_distrib_df = sum_distrib_df.iloc[:, :-4]
 
 
-# In[14]:
+# In[ ]:
 
 
 # latest tvl metrics
@@ -272,7 +272,7 @@ sum_distrib_df["cumul_last_price_net_dollar_flow_live"] = np.where(
 )
 
 
-# In[15]:
+# In[ ]:
 
 
 # Get App Name Mappings from Notion
@@ -295,13 +295,13 @@ display(sum_distrib_df_export)
 # display(sum_distrib_df[sum_distrib_df['agg_app_name'].str.contains('rrakis')])
 
 
-# In[16]:
+# In[ ]:
 
 
 # sum_distrib_df_grouped = sum_distrib_df
 
 
-# In[17]:
+# In[ ]:
 
 
 # assuming your dataframe is named `df`
@@ -352,7 +352,7 @@ print(sum_distrib_df_grouped["op_net_deployed"].sum())
 print(sum_distrib_df_grouped.columns)
 
 
-# In[18]:
+# In[ ]:
 
 
 joined_df = sum_distrib_df_grouped.merge(
@@ -361,7 +361,7 @@ joined_df = sum_distrib_df_grouped.merge(
 display(joined_df)
 
 
-# In[19]:
+# In[ ]:
 
 
 app_cols = [
@@ -381,7 +381,7 @@ app_df_sm["app_name"] = app_df_sm["app_name"].str.lower()
 app_df_sm = app_df_sm.rename(columns={"app_name": "App Name Map"})
 
 
-# In[20]:
+# In[ ]:
 
 
 joined_df = joined_df.merge(app_df_sm, on="App Name Map", how="outer")
