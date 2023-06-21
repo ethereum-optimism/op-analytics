@@ -247,45 +247,64 @@ subg_protocols["og_parent_protocol"] = protocols["parent_protocol"]
 
 # display(df_dfl)
 dfs_sub = []
+fails = []
 for index, program in subg_protocols.iterrows():
     min_tsmp = int(pd.to_datetime(program["start_date"]).timestamp())
     min_tsmp = min_tsmp - 1000  # add some buffer
     source_slug = program["source_slug"]
     df_source = program["df_source"]
     for c in program["contracts"]:
-        # print(df_source + ' - ' +source_slug + ' - ' + c)
-        # messari generalized
-        if df_source == "messari":
-            # print(df_source)
-            sdf = subg.get_messari_format_pool_tvl(
-                source_slug, c.lower(), min_ts=min_tsmp
-            )
-        # subgraph specific
-        elif df_source == "curve":
-            # print(df_source)
-            sdf = subg.get_curve_pool_tvl(c.lower(), min_ts=min_tsmp)
-        elif df_source == "velodrome":
-            # print(df_source)
-            sdf = subg.get_velodrome_pool_tvl(c.lower(), min_ts=min_tsmp)
-        elif df_source == "hop":
-            # print(df_source)
-            sdf = subg.get_hop_pool_tvl(c, min_ts=min_tsmp)
+        try:
+            # print(df_source + ' - ' +source_slug + ' - ' + c)
+            # messari generalized
+            if df_source == "messari":
+                # print(df_source)
+                sdf = subg.get_messari_format_pool_tvl(
+                    source_slug, c.lower(), min_ts=min_tsmp
+                )
+            # subgraph specific
+            elif df_source == "curve":
+                # print(df_source)
+                sdf = subg.get_curve_pool_tvl(c.lower(), min_ts=min_tsmp)
+            elif df_source == "velodrome":
+                # print(df_source)
+                sdf = subg.get_velodrome_pool_tvl(c.lower(), min_ts=min_tsmp)
+            elif df_source == "hop":
+                # print(df_source)
+                sdf = subg.get_hop_pool_tvl(c, min_ts=min_tsmp)
 
-        sdf["start_date"] = program["start_date"]
-        sdf["end_date"] = program["end_date"]
-        sdf["program_name"] = program["program_name"]
-        sdf["protocol"] = program["og_protocol"]
-        sdf["app_name"] = program["og_app_name"]
-        sdf["top_level_name"] = program["og_top_level_name"]
-        sdf["parent_protocol"] = program["og_parent_protocol"]
-        sdf["include_in_summary"] = program["og_include_in_summary"]
-        sdf["is_external_dex_bridge_pool"] = program["og_is_external_dex_bridge_pool"]
+            sdf["start_date"] = program["start_date"]
+            sdf["end_date"] = program["end_date"]
+            sdf["program_name"] = program["program_name"]
+            sdf["protocol"] = program["og_protocol"]
+            sdf["app_name"] = program["og_app_name"]
+            sdf["top_level_name"] = program["og_top_level_name"]
+            sdf["parent_protocol"] = program["og_parent_protocol"]
+            sdf["include_in_summary"] = program["og_include_in_summary"]
+            sdf["is_external_dex_bridge_pool"] = program["og_is_external_dex_bridge_pool"]
 
-        sdf["token_value"] = sdf["token_value"].fillna(0)
-        sdf["usd_value"] = sdf["usd_value"].fillna(0)
-        dfs_sub.append(sdf)
+            sdf["token_value"] = sdf["token_value"].fillna(0)
+            sdf["usd_value"] = sdf["usd_value"].fillna(0)
+            dfs_sub.append(sdf)
+        except:
+            fails.append([df_source, source_slug, c.lower()])
+            continue
 df_df_sub = pd.concat(dfs_sub)
 # display(df_df_sub[df_df_sub['program_name'].str.contains('Velo')])
+
+
+# In[ ]:
+
+
+# Print Fails
+fail_df = pd.DataFrame(fails)
+
+if not os.path.exists(prepend + 'observability_outputs'):
+    os.mkdir(prepend + 'observability_outputs')
+
+fail_df.to_csv('observability_outputs/subgraph_errors.csv')
+for a in fails:
+    print('Fail: ' + a[0] + ' - ' + a[1] + ' - ' + a[2])
 
 
 # In[ ]:

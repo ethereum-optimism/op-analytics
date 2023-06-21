@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import pandas as pd
@@ -23,7 +23,7 @@ pd.options.display.float_format = "{:,.2f}".format
 pd.set_option("display.max_columns", None)
 
 
-# In[2]:
+# In[ ]:
 
 
 pwd = os.getcwd()
@@ -34,7 +34,7 @@ else:
     prepend = "op_rewards_tracking/"
 
 
-# In[3]:
+# In[ ]:
 
 
 def extract_source(source_string):
@@ -86,7 +86,7 @@ def calculate_metrics(df, op="op_deployed"):
 # # Incentive Program Summary
 # Status of programs live, completed and to be announced by season.
 
-# In[4]:
+# In[ ]:
 
 
 df_info = pd.read_csv("csv_outputs/" + "notion_automation_test" + ".csv")
@@ -115,10 +115,10 @@ for i in ["GovFund", "GovFund Growth Experiments", "All Programs"]:
     # Assign the filters
     if i == "GovFund":
         filter_name = " - GovFund Only"
-        df_choice = df_info[df_info["Source"] != "Partner Fund"].copy()
+        df_choice = df_info[df_info["Source"] != "['Partner Fund']"].copy()
     elif i == "GovFund Growth Experiments":
         filter_name = " - GovFund Growth Exp."
-        df_choice = df_info[df_info["Source"] != "Partner Fund"].copy()
+        df_choice = df_info[df_info["Source"] != "['Partner Fund']"].copy()
         df_choice = df_choice[
             df_choice["Incentive / Growth Program Included?"] == "Yes"
         ]
@@ -139,6 +139,10 @@ for i in ["GovFund", "GovFund Growth Experiments", "All Programs"]:
             "Incentive / Growth Program Included?",
         ]
     ]
+
+    # remove square brackets and quotation marks from strings
+    df_choice["Source"] = df_choice["Source"].str.replace(r"[\[\]']", "", regex=True)
+
     summary = pd.pivot_table(
         df_choice,
         values=["# OP Allocated", "App Name"],
@@ -297,7 +301,7 @@ locals().update(summary_dfs)
 
 # by app
 df_combined_app = merge_dfs(
-    df_usage=df_usage,
+    df_usage = df_usage.loc[:, ~df_usage.columns.isin(['cumul_last_price_net_dollar_flow'])], # we get cumul_last_price_net_dollar_flow from TVl, since the Dune run has previous data
     df_tvl_summary_app=df_tvl_summary_app,
     df_choice_summary_app=df_choice_summary_app,
     df_op_distribution_summary_app=df_op_distribution_summary_app,
