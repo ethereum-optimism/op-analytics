@@ -78,6 +78,13 @@ def convert_timestamps_to_strings(data):
             converted_data[key] = value
     return converted_data
 
+def replace_nans(record):
+    record_fields = record['fields']
+    for key, value in record_fields.items():
+        if value == 'NaN': #value is None or 
+            record_fields[key] = 0
+    return record
+
 def upsert_record_dt_contract_creator(at, table_name, record):
     # Search for a matching record
 	# Build the formula to filter the records
@@ -102,6 +109,8 @@ def upsert_record_dt_contract_creator(at, table_name, record):
 
 	#Handle for timestamps
 	record = convert_timestamps_to_strings(record)
+	#Handle for nulls
+	record = replace_nans(record)
 	
 	# Check if we update
 	for existing_record in at.iterate(table_name,
@@ -121,7 +130,7 @@ def upsert_record_dt_contract_creator(at, table_name, record):
 	
     # If no matching record was found, create a new one
 	print('add new record')
-	print(record['fields'])
+	# print(record['fields'])
 	
 	at.create(table_name, record['fields'])
 
