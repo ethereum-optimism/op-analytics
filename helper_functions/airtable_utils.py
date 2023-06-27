@@ -81,7 +81,7 @@ def convert_timestamps_to_strings(data):
 def replace_nans(record):
     record_fields = record['fields']
     for key, value in record_fields.items():
-        if value is None or value == 'NaN':
+        if value == 'NaN': #value is None or 
             record_fields[key] = 0
     return record
 
