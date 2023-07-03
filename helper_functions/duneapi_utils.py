@@ -61,11 +61,20 @@ def get_dune_data(
     # print(current_time)
 
     # if data is recent, pull that
+    to_rerun = 0
     if time_difference <= timedelta(hours=num_hours_to_rerun):
-        df = pd.DataFrame(results.result.rows)
+        try:
+            df = pd.DataFrame(results.result.rows)
+        except:
+            to_rerun = 1
     else:
+        pass
+
+    if (time_difference > timedelta(hours=num_hours_to_rerun)) or (to_rerun == 1):
         results = dune.refresh(query)
         df = pd.DataFrame(results.result.rows)
+    else:
+        pass
 
     df["last_updated"] = results.times.submitted_at
 
