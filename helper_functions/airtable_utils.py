@@ -12,12 +12,20 @@ import os
 dotenv.load_dotenv()
 
 at_api_key = os.environ["AIRTABLE_API_TOKEN"]
+# https://github.com/josephbestjames/airtable.py#get
 
 # Read an airtable database in to a pandas dataframe
-def get_dataframe_from_airtable_database(at_base_id, base_name):
+def get_dataframe_from_airtable_database(at_base_id, base_name, filter='1'):
+
 	at = airtable.Airtable(at_base_id, at_api_key)
-	data = at.get(base_name)
+	data_iter = at.iterate(base_name, batch_size=100, filter_by_formula = '1=' + filter)
+	# example with similar results of at.get
+	data = { "records": [] }
+	for r in data_iter:
+		data["records"].append(r)
+
 	df = pd.json_normalize(data, record_path='records')
+
 	# Rename all columns that start with 'fields.'
 	df.rename(columns=lambda x: x.replace('fields.', ''), inplace=True)
 	# Convert timestamp columns to string representation
