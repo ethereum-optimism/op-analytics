@@ -160,7 +160,7 @@ def upsert_record_dt_team(at, table_name, record):
 	# formula = formula.replace('@creator_address@',creator_address)
 
 	# Get Linked Team Name
-	if (record['fields']['Team'] != '') and (record['fields']['Team'] is not None):
+	if (record['fields']['Team'] != '') and (record['fields']['Team'] is not None and (record['fields']['Team'] != 'Unmapped Address') ):
 		linked_id = get_linked_record_id(at,'Teams',linked_field_name, record['fields']['Team'])
 		record['fields'][linked_field_name] = linked_id
 
