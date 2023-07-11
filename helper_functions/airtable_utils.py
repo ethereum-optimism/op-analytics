@@ -142,6 +142,56 @@ def upsert_record_dt_contract_creator(at, table_name, record):
 	
 	at.create(table_name, record['fields'])
 
+def upsert_record_dt_team(at, table_name, record):
+    # Search for a matching record
+	# Build the formula to filter the records
+	dt_date = record['fields']['Date'][:10]
+	team =record['fields']['Team']
+	# creator_address = record['fields']['Creator Address']
+	if (team is None) or (team == 'Unmapped Address'):
+		team = ''
+
+	linked_field_name = 'Team Name'
+
+	# Generate Search Query
+	formula = "AND(LEFT(Date,10)='@Date@', {Team}='@team@')"
+	formula = formula.replace('@Date@',dt_date)
+	formula = formula.replace('@team@',team)
+	# formula = formula.replace('@creator_address@',creator_address)
+
+	# Get Linked Team Name
+	if (record['fields']['Team'] != '') and (record['fields']['Team'] is not None):
+		linked_id = get_linked_record_id(at,'Teams',linked_field_name, record['fields']['Team'])
+		record['fields'][linked_field_name] = linked_id
+
+	#Handle for timestamps
+	record = convert_timestamps_to_strings(record)
+	#Handle for nulls
+	record = replace_nans(record)
+	
+	# Check if we update
+	for existing_record in at.iterate(table_name,
+				   filter_by_formula = formula
+				   ):
+		# print(existing_record)
+		if (existing_record['fields']['Date'][:10] == record['fields']['Date'][:10] and
+			existing_record['fields']['Team'] == record['fields']['Team']
+			# and existing_record['fields']['Creator Address'] == record['fields']['Creator Address']
+			):
+			# Update the matching record
+			print('update existing row')
+
+			print(record['fields'])
+			at.update(table_name, existing_record['id'], record['fields'])
+
+			return
+	
+    # If no matching record was found, create a new one
+	print('add new record')
+	# print(record['fields'])
+	
+	at.create(table_name, record['fields'])
+
 
 def update_database(at_base_id, table_name, df):
     # Create an instance of the Airtable class
@@ -165,7 +215,10 @@ def update_database(at_base_id, table_name, df):
 		record = {'fields': row.to_dict()}
 		# print(record)
 		# Upsert the record to Airtable
-		upsert_record_dt_contract_creator(at, table_name, record)
+		if table_name == 'OP Deployer Data':
+			upsert_record_dt_contract_creator(at, table_name, record)
+		elif table_name == 'OP Project Data':
+			upsert_record_dt_team(at, table_name, record)
 
 def delete_all_records(at_base_id, table_name):
 	remaining = 1
