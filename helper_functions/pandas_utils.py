@@ -6,8 +6,7 @@ import json
 import re
 from datetime import date
 import os
-from datetime import datetime
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 def api_json_to_df(api_url):
     inf = pd.DataFrame( r.get(api_url).json() )
@@ -111,10 +110,10 @@ def format_pct(x):
 #ChatGPT wrote this lol
 def get_unix_timestamp(trailing_days):
     # get the current date at the start of the day
-    today_start = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
 
     # calculate the date for the trailing_days ago
-    trailing_date = today_start - datetime.timedelta(days=trailing_days)
+    trailing_date = today_start - timedelta(days=trailing_days)
 
     # calculate the Unix timestamp for the trailing date
     unix_timestamp = int(trailing_date.timestamp())

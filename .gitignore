@@ -8,3 +8,4 @@ op_rewards_tracking/csv_outputs/tvl_flows_by_token.csv
 __pycache__/
 helper_functions/get_op_chain_addresses_from_repo_ms_copy.ipynb
 l2_economics/downloads
+misc_analysis/downloads/
