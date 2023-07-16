@@ -215,7 +215,7 @@ def update_database(at_base_id, table_name, df):
 		record = {'fields': row.to_dict()}
 		# print(record)
 		# Upsert the record to Airtable
-		if table_name == 'OP Deployer Data':
+		if table_name == 'OP Contract Data':
 			upsert_record_dt_contract_creator(at, table_name, record)
 		elif table_name == 'OP Project Data':
 			upsert_record_dt_team(at, table_name, record)
