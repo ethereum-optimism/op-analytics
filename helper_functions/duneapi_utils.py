@@ -11,6 +11,8 @@ import json
 import numpy as np
 from datetime import datetime, timedelta, timezone
 
+import time
+
 import sys
 
 sys.path.append("../helper_functions")
@@ -36,7 +38,7 @@ def get_dune_data(
     query = Query(
         name=name,
         query_id=query_id,
-        # performance = performance
+        performance = performance
     )
     logger.info(f"Results available at {query.url()}")
 
@@ -147,6 +149,16 @@ def write_dune_api_from_pandas(df, table_name, table_description):
     # Write to Dune
     write_dune_api_from_csv(data, table_name, table_description)
 
+def cancel_query(execution_id):
+    # get API key
+    api_key = os.environ["DUNE_API_KEY"]
+    # authentiction with api key
+    headers = {"X-Dune-API-Key": api_key}
+    execution_id = str(execution_id)
+    base_url = f"https://api.dune.com/api/v1/execution/{execution_id}/cancel"
+    print(base_url)
+    result_response = r.request("POST", base_url, headers=headers)
+    print(result_response)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
