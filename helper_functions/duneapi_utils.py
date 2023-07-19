@@ -38,7 +38,7 @@ def get_dune_data(
     query = Query(
         name=name,
         query_id=query_id,
-        performance = performance
+        # performance = performance
     )
     logger.info(f"Results available at {query.url()}")
 
