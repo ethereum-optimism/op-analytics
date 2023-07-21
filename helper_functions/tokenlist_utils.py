@@ -11,7 +11,7 @@ def generate_table_from_tokenlist(data):
                         'name': token['name'],
                         'symbol': token['symbol'],
                         'decimals': token['decimals'],
-                        **{f'extensions_{k}': v for k, v in token['extensions'].items()}  # Add the extensions as separate columns
+                        # **{f'extensions_{k}': v for k, v in token['extensions'].items()}  # Add the extensions as separate columns
                 }
                 # print(token_dict)
                 tokens_list.append(token_dict)
