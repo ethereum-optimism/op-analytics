@@ -9,3 +9,4 @@ __pycache__/
 helper_functions/get_op_chain_addresses_from_repo_ms_copy.ipynb
 l2_economics/downloads
 misc_analysis/downloads/
+l1_base_fees/csv_inputs/
