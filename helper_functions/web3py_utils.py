@@ -111,36 +111,32 @@ def alchemy_get_block_by_number(endpoint, block_number):
         return response['result']['number']
        
 
-def alchemy_get_eth_balance_by_block(endpoint, block_number_hash, address):
-        # # Connect to an Ethereum node (or Optimism)
-        # w3_conn = Web3(Web3.HTTPProvider(endpoint))
+def get_eth_balance_by_block(endpoint, address, block_number):
+       w3_conn = Web3(Web3.HTTPProvider(endpoint))
+       bal = w3_conn.eth.get_balance(address, block_identifier=block_number)
+       bal_eth = bal/1e18
+       return bal_eth
 
-        # # Get the ETH balance at a specific block
-        # balance = w3_conn.eth.getBalance(address, block_identifier=block_number)
+# ALCHEMY'S API CALL DOES NOT SUPPORT BLOCK NUMBERS - DISREGARD
+# def alchemy_get_eth_balance_by_block(endpoint, block_number_hash, address):
+#         url = endpoint
 
-        # # Convert balance from Wei to Ether
-        # balance_eth = w3_conn.fromWei(balance, 'ether')
+#         payload = {
+#         "id": 1,
+#         "jsonrpc": "2.0",
+#         "params": [address, block_number_hash],
+#         "method": "eth_getBalance"
+#         }
+#         headers = {
+#         "accept": "application/json",
+#         "content-type": "application/json"
+#         }
 
-        # return balance_eth
+#         response = r.post(url, json=payload, headers=headers)
 
-        url = endpoint
+#         balance = json.loads(response.text)['result']
 
-        payload = {
-        "id": 1,
-        "jsonrpc": "2.0",
-        "params": [address, block_number_hash],
-        "method": "eth_getBalance"
-        }
-        headers = {
-        "accept": "application/json",
-        "content-type": "application/json"
-        }
+#         balance_wei = int(balance, 16)
+#         balance_eth = balance_wei / 1e18
 
-        response = r.post(url, json=payload, headers=headers)
-
-        balance = json.loads(response.text)['result']
-
-        balance_wei = int(balance, 16)
-        balance_eth = balance_wei / 1e18
-
-        return balance_eth
+#         return balance_eth
