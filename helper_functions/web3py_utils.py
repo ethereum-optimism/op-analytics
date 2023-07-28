@@ -1,5 +1,6 @@
 import datetime
 from web3 import Web3
+import pandas_utils as pu
 import requests as r
 import json
 
@@ -40,8 +41,18 @@ def getAverageBlockTime(endpoint, trailing_num_blocks = 500):
 
     return float((currentBlock.timestamp - thenBlock.timestamp) / (trailing_num_blocks*1.0))
 
+def getBlockByTimestamp(etherscan_api, timestamp):
+        timestamp_convert = pu.datetime_to_unix_timestamp(timestamp)
 
-def getBlockByTimestamp(endpoint,timestamp):
+        url = 'https://api-optimistic.etherscan.io/api?module=block&action=getblocknobytime&timestamp={}&closest=before&apikey={}'.format(timestamp_convert, etherscan_api)
+
+        res = r.get(url).json()['result']
+        
+        return res
+
+
+def getBlockByTimestamp_approx(endpoint,timestamp):
+    # Approximates based on avg block time, likely error prone pre-bedrock
     latestBlockTimestamp = getLatestBlockTimestamp(endpoint)
     
     average_time = latestBlockTimestamp - timestamp
@@ -65,7 +76,7 @@ def get_blockrange_by_timedelta(endpoint,num_periods, time_granularity):
         time_st = datetime.datetime.now() - duration
         block_timestamp = int(time_st.timestamp())
         print(block_timestamp)
-        starting_block_number = getBlockByTimestamp(w3_conn, block_timestamp)
+        starting_block_number = getBlockByTimestamp_approx(w3_conn, block_timestamp)
 
         return [starting_block_number, latest_block_number]
 
@@ -81,7 +92,26 @@ def get_block_receipt(endpoint,block_number):
 
         print(block)
 
-def alchemy_get_eth_balance_by_block(endpoint, block_number, address):
+def alchemy_get_block_by_number(endpoint, block_number):
+        url = endpoint
+
+        payload = {
+                "id": block_number,
+                "jsonrpc": "2.0",
+                "method": "eth_getBlockByNumber",
+                "params": ["finalized", False]
+        }
+        headers = {
+                "accept": "application/json",
+                "content-type": "application/json"
+        }
+       
+        response = r.post(url, json=payload, headers=headers).json()
+
+        return response['result']['number']
+       
+
+def alchemy_get_eth_balance_by_block(endpoint, block_number_hash, address):
         # # Connect to an Ethereum node (or Optimism)
         # w3_conn = Web3(Web3.HTTPProvider(endpoint))
 
@@ -98,7 +128,7 @@ def alchemy_get_eth_balance_by_block(endpoint, block_number, address):
         payload = {
         "id": 1,
         "jsonrpc": "2.0",
-        "params": [address, block_number],
+        "params": [address, block_number_hash],
         "method": "eth_getBalance"
         }
         headers = {
@@ -107,7 +137,9 @@ def alchemy_get_eth_balance_by_block(endpoint, block_number, address):
         }
 
         response = r.post(url, json=payload, headers=headers)
+
         balance = json.loads(response.text)['result']
+
         balance_wei = int(balance, 16)
         balance_eth = balance_wei / 1e18
 
