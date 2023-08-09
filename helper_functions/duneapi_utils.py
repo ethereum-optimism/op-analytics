@@ -35,7 +35,7 @@ def get_dune_data(
     """
     Get data via Dune API.
     """
-    query = Query(
+    query = QueryBase(
         name=name,
         query_id=query_id,
         # performance = performance
