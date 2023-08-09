@@ -22,7 +22,7 @@ sys.path.pop()
 
 from dune_client.types import QueryParameter
 from dune_client.client import DuneClient
-from dune_client.query import Query
+from dune_client.query import QueryBase
 
 
 def get_dune_data(
