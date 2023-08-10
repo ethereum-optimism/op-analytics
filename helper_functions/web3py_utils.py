@@ -4,6 +4,43 @@ import pandas_utils as pu
 import requests as r
 import json
 
+
+OPCODES = {
+    "STOP": "00",
+    "ADD": "01",
+    "MUL": "02",
+    "SUB": "03",
+    # ... (add all opcodes here)
+    "PUSH1": "60",
+    "PUSH2": "61",
+    "PUSH3": "62",
+    "PUSH4": "63",
+    # ... (continue for other PUSH opcodes and other opcodes)
+    "LOG0": "a0",
+    "LOG1": "a1",
+    # ... (and so on)
+}
+def get_opcode(name):
+    """Retrieve the opcode for a given mnemonic."""
+    return OPCODES.get(name.upper())
+
+def get_bytecode_pattern(endpoint, function_signature, opcode):
+    w3_conn = Web3(Web3.HTTPProvider(endpoint))
+    """
+    Generate the bytecode pattern we're looking for in contracts.
+
+    :param function_signature: Function signature string, e.g., "test(uint256)".
+    :return: Bytecode pattern string.
+    """
+    # Compute function signature hash
+    hashed = w3_conn.keccak(text=function_signature)
+    # Extract the first 4 bytes
+    selector = hashed[:4].hex()[2:]
+    # Combine with PUSH4 opcode
+    pattern = '0x' + get_opcode(opcode) + selector
+    
+    return pattern
+
 def get_duration_dict(num_periods, time_granularity):
         if time_granularity == 'hours':
                 duration = datetime.timedelta(hours=num_periods)
@@ -116,27 +153,3 @@ def get_eth_balance_by_block(endpoint, address, block_number):
        bal = w3_conn.eth.get_balance(address, block_identifier=block_number)
        bal_eth = bal/1e18
        return bal_eth
-
-# ALCHEMY'S API CALL DOES NOT SUPPORT BLOCK NUMBERS - DISREGARD
-# def alchemy_get_eth_balance_by_block(endpoint, block_number_hash, address):
-#         url = endpoint
-
-#         payload = {
-#         "id": 1,
-#         "jsonrpc": "2.0",
-#         "params": [address, block_number_hash],
-#         "method": "eth_getBalance"
-#         }
-#         headers = {
-#         "accept": "application/json",
-#         "content-type": "application/json"
-#         }
-
-#         response = r.post(url, json=payload, headers=headers)
-
-#         balance = json.loads(response.text)['result']
-
-#         balance_wei = int(balance, 16)
-#         balance_eth = balance_wei / 1e18
-
-#         return balance_eth
