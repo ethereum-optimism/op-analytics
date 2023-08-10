@@ -22,7 +22,7 @@ OPCODES = {
 }
 def get_opcode(name):
     """Retrieve the opcode for a given mnemonic."""
-    return OPCODES.get(name.upper())
+    return OPCODES.get(name.upper(), '')
 
 def get_bytecode_pattern(endpoint, function_signature, opcode):
     w3_conn = Web3(Web3.HTTPProvider(endpoint))
