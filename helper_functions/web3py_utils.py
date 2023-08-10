@@ -153,3 +153,10 @@ def get_eth_balance_by_block(endpoint, address, block_number):
        bal = w3_conn.eth.get_balance(address, block_identifier=block_number)
        bal_eth = bal/1e18
        return bal_eth
+
+def get_implementation_contract(w3_conn, proxy_address, proxy_abi):
+
+        proxy_contract = w3_conn.eth.contract(address=proxy_address, abi=proxy_abi)
+        implementation_address = proxy_contract.functions.implementation().call()
+
+        return implementation_address
