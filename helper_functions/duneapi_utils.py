@@ -29,6 +29,7 @@ def get_dune_data(
     query_id: int,
     name: str = "my_query_results",
     path: str = "csv_outputs",
+    params: list = None,
     num_hours_to_rerun=4,
     performance: str = "medium",
 ) -> pd.DataFrame:
@@ -38,6 +39,7 @@ def get_dune_data(
     query = QueryBase(
         name=name,
         query_id=query_id,
+        params=params,
         # performance = performance
     )
     logger.info(f"Results available at {query.url()}")
@@ -90,6 +92,17 @@ def get_dune_data(
     )
 
     return df
+
+def generate_query_parameter(input, field_name, dtype):
+    if dtype == 'text':
+        par = QueryParameter.text_type(name=field_name, value=input)
+    if dtype == 'number':
+        par = QueryParameter.number_type(name=field_name, value=input)
+    if dtype == 'date':
+        par = QueryParameter.date_type(name=field_name, value=input)
+    if dtype == 'list':
+        par = QueryParameter.enum_type(name=field_name, value=input)
+    return par
 
 
 def get_dune_data_raw(query_id, perf_var="medium"):
