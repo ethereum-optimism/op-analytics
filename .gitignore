@@ -11,3 +11,4 @@ l2_economics/downloads
 misc_analysis/downloads/
 l1_base_fees/csv_inputs/
 op_chains_tracking/outputs/
+misc_analysis/derive_l2_tx_hash_WIP.ipynb
