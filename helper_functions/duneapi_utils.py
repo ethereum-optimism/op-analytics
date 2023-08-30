@@ -39,8 +39,7 @@ def get_dune_data(
     query = QueryBase(
         name=name,
         query_id=query_id,
-        params=params,
-        performance = performance
+        params=params
     )
     logger.info(f"Results available at {query.url()}")
 
@@ -75,7 +74,7 @@ def get_dune_data(
         pass
 
     if (time_difference > timedelta(hours=num_hours_to_rerun)) or (to_rerun == 1):
-        results = dune.refresh(query)
+        results = dune.refresh(query, performance = performance)
         df = pd.DataFrame(results.result.rows)
     else:
         pass
