@@ -160,3 +160,13 @@ def get_implementation_contract(w3_conn, proxy_address, proxy_abi):
         implementation_address = proxy_contract.functions.implementation().call()
 
         return implementation_address
+
+def generate_ethereum_event_signature_hash(event_signature):
+    # Remove spaces
+    formatted_signature = event_signature.replace(" ", "")
+    # Convert to bytes
+    signature_bytes = formatted_signature.encode()
+    # Get Keccak-256 hash using web3.py
+    hash_result = Web3.keccak(signature_bytes)
+    # Return the hash as a hex string
+    return hash_result.hex()
