@@ -1,0 +1,7 @@
+chain_name, rpc_url, gas_token, da_layer, superchain_registry
+op mainnet, https://mainnet.optimism.io, ETH, ethereum, yes
+base, https://mainnet.base.org/, ETH, ethereum, yes
+zora network, https://rpc.zora.energy/, ETH, ethereum, yes
+public goods network, https://rpc.publicgoods.network/, ETH, ethereum, yes
+aevo network, https://api.aevo.xyz, ETH, ethereum, no
+opbnb, https://opbnb-mainnet-rpc.bnbchain.org, BNB, bnb, no
