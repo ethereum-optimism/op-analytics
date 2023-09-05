@@ -50,9 +50,9 @@ jobs:
         run: |
           pipenv run jupyter nbconvert --to python l2_revenue_tracking.ipynb
 
-      - name: Run Notebook
+      - name: Run File
         working-directory: op_chains_tracking
-        run: pipenv run python l2_revenue_tracking.ipynb
+        run: pipenv run python l2_revenue_tracking.py
 
 
     # commit_results:
@@ -79,7 +79,7 @@ jobs:
              # echo "::set-output name=push::false"
              echo "push=false" >> $GITHUB_OUTPUT
           else
-             git commit -m "GH Action Update - Value Locked Flows" -a
+             git commit -m "GH Action Update - OP Chain Revenue Tracking" -a
              # echo "::set-output name=push::true"
              echo "push=true" >> $GITHUB_OUTPUT
           fi
