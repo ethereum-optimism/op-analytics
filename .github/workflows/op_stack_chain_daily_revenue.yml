@@ -2,9 +2,9 @@ name: OP Stack Chain Daily Revenue Pulls
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule - Once per day at 12:01 am
+  # Run on a schedule - Once per day at 11:59 pm
   schedule:
-      - cron: '1 0 * * *'
+      - cron: '59 11 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
