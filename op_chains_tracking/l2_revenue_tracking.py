@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 # Get L2 Revenue and post it to a database (csv in github for now)
@@ -16,13 +16,10 @@ from web3 import Web3
 from datetime import datetime
 sys.path.pop()
 
-import dotenv
 import os
-dotenv.load_dotenv()
-op_node = os.environ["OP_NODE"]
 
 
-# In[2]:
+# In[ ]:
 
 
 # https://github.com/ethereum-optimism/optimism/blob/b86522036ad11a91de1d1dadb6805167add83326/specs/predeploys.md?plain=1#L50
@@ -48,7 +45,7 @@ chains_rpcs = pd.read_csv('inputs/chain_metadata.csv').values.tolist()
 print(chains_rpcs)
 
 
-# In[3]:
+# In[ ]:
 
 
 # Calculate the method signature hash (this step is optional if you already know the hash)
@@ -60,7 +57,7 @@ print(f"Method ID: {method_id}")
 block_number = 1 # replace with your desired block number
 
 
-# In[4]:
+# In[ ]:
 
 
 data_arr = []
@@ -114,7 +111,7 @@ for chain in chains_rpcs:
 data_df = pd.concat(data_arr)
 
 
-# In[5]:
+# In[ ]:
 
 
 # display(data_df)
@@ -131,14 +128,14 @@ else:
     data_df.to_csv(file_path, mode='w', header=True, index=False)
 
 
-# In[6]:
+# In[ ]:
 
 
 # Write to Dune Table
 
 dune_df = pd.read_csv(file_path)
 
-display(dune_df)
+print(dune_df.sample(5))
 
 # Write to Dune
 du.write_dune_api_from_pandas(dune_df, 'op_stack_chains_daily_cumulative_revenue',\
