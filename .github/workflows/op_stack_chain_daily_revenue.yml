@@ -53,6 +53,8 @@ jobs:
       - name: Run File
         working-directory: op_chains_tracking
         run: pipenv run python l2_revenue_tracking.py
+        env:
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
 
 
     # commit_results:
