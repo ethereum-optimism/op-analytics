@@ -44,10 +44,15 @@ jobs:
         run: |
           pipenv install --dev
     # Runs a single command using the runners shell
+      # Generate .py files for each notebook
+      - name: Generate py files
+        working-directory: op_chains_tracking
+        run: |
+          pipenv run jupyter nbconvert --to python l2_revenue_tracking.ipynb
 
       - name: Run Notebook
         working-directory: op_chains_tracking
-        run: pipenv run jupyter l2_revenue_tracking.ipynb
+        run: pipenv run python l2_revenue_tracking.ipynb
 
 
     # commit_results:
