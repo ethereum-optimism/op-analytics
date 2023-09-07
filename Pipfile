@@ -18,6 +18,7 @@ kaleido = "0.2.1"
 airtable = "*"
 notion-client = "*"
 notion-df = "*"
+web3 = "*"
 
 [dev-packages]
 
