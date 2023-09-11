@@ -121,6 +121,6 @@ dune_df = pd.read_csv(file_path)
 
 print(dune_df.sample(5))
 
-du.write_dune_api_from_pandas(dune_df, 'op_stack_chains_daily_cumulative_revenue',\
-                             'All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs')
+du.write_dune_api_from_pandas(dune_df, 'op_stack_chains_cumulative_revenue_snapshots',\
+                             'Snapshots of All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs')
 
