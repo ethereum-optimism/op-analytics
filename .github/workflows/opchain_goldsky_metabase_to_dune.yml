@@ -55,9 +55,9 @@ jobs:
                 pipenv run python mb_gs_op_chain_daily_usage_to_dune.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
-          METABASE_NAME: ${{ secrets.MS_METABASE_NAME }}
-          METABASE_PW: ${{ secrets.MS_METABASE_PW }}
-          METABASE_SESSION_ID: ${{ secrets.MS_METABASE_SESSION_ID }}
+          MS_METABASE_NAME: ${{ secrets.MS_METABASE_NAME }}
+          MS_METABASE_PW: ${{ secrets.MS_METABASE_PW }}
+          MS_METABASE_SESSION_ID: ${{ secrets.MS_METABASE_SESSION_ID }}
         
   # commit_results:
     # if: ${{ always() }} #Always runs even if prior jobs fail - so that one bad job doesn't f everything up.
