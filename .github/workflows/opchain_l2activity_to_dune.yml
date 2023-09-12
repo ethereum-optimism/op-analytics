@@ -1,4 +1,4 @@
-name: Run OP Chain Goldsky/Metabase -> Dune
+name: Run L2 Chains Data -> Dune
 
 # Controls when the workflow will run
 on:
@@ -42,22 +42,17 @@ jobs:
 
   # Generate .py files for each notebook
       - name: Generate py files
-        working-directory: op_chains_tracking
+        working-directory: l2_chains_tracking
         run: |
-                pipenv run jupyter nbconvert --to python mb_gs_active_devs_to_dune.ipynb    
-                pipenv run jupyter nbconvert --to python mb_gs_op_chain_daily_usage_to_dune.ipynb    
+                pipenv run jupyter nbconvert --to python pull_l2_activity.ipynb     
 
   # Run py
       - name: Run py
-        working-directory: op_chains_tracking
+        working-directory: l2_chains_tracking
         run: |
-                pipenv run python mb_gs_active_devs_to_dune.py
-                pipenv run python mb_gs_op_chain_daily_usage_to_dune.py
+                pipenv run python pull_l2_activity.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
-          METABASE_NAME: ${{ secrets.MS_METABASE_NAME }}
-          METABASE_PW: ${{ secrets.MS_METABASE_PW }}
-          METABASE_SESSION_ID: ${{ secrets.MS_METABASE_SESSION_ID }}
         
   # commit_results:
     # if: ${{ always() }} #Always runs even if prior jobs fail - so that one bad job doesn't f everything up.
