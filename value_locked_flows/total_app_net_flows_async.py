@@ -19,7 +19,7 @@ import defillama_utils as dfl
 
 
 # date ranges to build charts for
-drange = [7, 30, 90, 180, 365]
+drange = [7, 14, 30, 90, 180, 365]
 # Do we count net flows marked at the lastest token price (1) or the price on each day (0)
 # By default, we opt to 1, so that price movement isn't accidentally counted as + or - flow remainder
 mark_at_latest_price = 1 #some errors with missing token prices we need to find solves for first
@@ -27,11 +27,11 @@ mark_at_latest_price = 1 #some errors with missing token prices we need to find 
 trailing_num_days = max(drange)
 # print(trailing_num_days)
 
-start_date = date.today()-timedelta(days=trailing_num_days +1)
+start_date = datetime.utcnow().date()-timedelta(days=trailing_num_days +1)
 print(start_date)
 
 
-# In[ ]:
+# In[3]:
 
 
 #get all apps > 10 m tvl
