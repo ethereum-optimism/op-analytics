@@ -1,5 +1,5 @@
 # L2 Gas Price Tracker - Proof of Concept
-This uses an ethereum-etl fork (WIP - normal ethereum-etl will also work) to stream transactions and blocks to a local postgres database. There is then a query that interprets this data to show the latest base fee, and create slow, medium, fast estimates for prioritiy fees. This output can then be shown in a regularly updating dashboard or frontend site.
+This uses an ethereum-etl fork (WIP - normal ethereum-etl will also work) to stream transactions and blocks to a local postgres database. There is then a query that interprets this data to show the latest base fee, and create slow, medium, fast estimates for priority fees. This output can then be shown in a regularly updating dashboard or frontend site.
 
 - `transactions_initialize.sql`: SQL for generating the transactions table in postgres
 - `blocks_initialize.sql`: SQL for generating the blocks table in postgres
