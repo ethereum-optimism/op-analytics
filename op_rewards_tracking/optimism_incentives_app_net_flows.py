@@ -92,6 +92,7 @@ protocol_name_mapping = pd.DataFrame(
         ["stargate", "stargate finance"],
         ["sushi-trident", "sushi"],
         ["yearn-finance", "yearn"],
+        ["lyra", "lyra finance"],
     ],
     columns=["slug", "app_name"],
 )

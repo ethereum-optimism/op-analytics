@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
@@ -15,11 +15,11 @@ sys.path.append('../helper_functions')
 import defillama_utils as dfl
 
 
-# In[ ]:
+# In[2]:
 
 
 # date ranges to build charts for
-drange = [7, 30, 90, 180, 365]
+drange = [7, 14, 30, 90, 180, 365]
 # Do we count net flows marked at the lastest token price (1) or the price on each day (0)
 # By default, we opt to 1, so that price movement isn't accidentally counted as + or - flow remainder
 mark_at_latest_price = 1 #some errors with missing token prices we need to find solves for first
@@ -27,11 +27,11 @@ mark_at_latest_price = 1 #some errors with missing token prices we need to find 
 trailing_num_days = max(drange)
 # print(trailing_num_days)
 
-start_date = date.today()-timedelta(days=trailing_num_days +1)
+start_date = datetime.utcnow().date()-timedelta(days=trailing_num_days +1)
 print(start_date)
 
 
-# In[ ]:
+# In[3]:
 
 
 #get all apps > 10 m tvl
@@ -43,7 +43,7 @@ is_fallback_on_raw_tvl = True#False
 df_df = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl, is_fallback_on_raw_tvl)
 
 
-# In[ ]:
+# In[4]:
 
 
 df_df.head()
@@ -52,7 +52,7 @@ df_df.head()
 # df_df_all[(df_df_all['protocol'] == 'app_name') & (df_df_all['date'] == '2023-01-27')]
 
 
-# In[ ]:
+# In[5]:
 
 
 # display(df_df_all)
@@ -63,7 +63,7 @@ df_df['usd_value'] = df_df['usd_value'].astype('float64')
 # display(df_df_all2)
 
 
-# In[ ]:
+# In[6]:
 
 
 #create an extra day to handle for tokens dropping to 0
@@ -88,13 +88,13 @@ df_df_all = df_df.groupby(['date','token','chain','protocol','name','category','
 df_df = df_df.reset_index()
 
 
-# In[ ]:
+# In[7]:
 
 
 print("done api")
 
 
-# In[ ]:
+# In[8]:
 
 
 #filter down a bit so we can do trailing comparisons w/o doing every row
@@ -107,7 +107,7 @@ df_df = df_df[df_df['date'].dt.date >= start_date ]
 # display(df_df[df_df['protocol'] == 'velodrome'])
 
 
-# In[ ]:
+# In[9]:
 
 
 data_df = df_df.copy()
@@ -126,7 +126,7 @@ data_df['price_usd'] = data_df[['price_usd','last_price_usd']].bfill(axis=1).ilo
 data_df.sample(10)
 
 
-# In[ ]:
+# In[10]:
 
 
 # Find what is the latest token price. This sometimes gets skewed if tokens disappear or supply locked goes to 0
@@ -173,7 +173,7 @@ prices_df['latest_price_usd_prot_gt0'] = 0
 # print('done latest_prices_df_prot_gt0')
 
 
-# In[ ]:
+# In[11]:
 
 
 # prices_df['latest_price_usd'] = \
@@ -212,7 +212,7 @@ prices_df = None #Free Up memory
 print("prices map done")
 
 
-# In[ ]:
+# In[12]:
 
 
 # Sort in date order
@@ -231,7 +231,7 @@ data_df = data_df[abs(data_df['net_dollar_flow']) < 50_000_000_000] #50 bil erro
 data_df = data_df[~data_df['net_dollar_flow'].isna()]
 
 
-# In[ ]:
+# In[13]:
 
 
 # Handle for errors where a token price went to zero (i.e. magpie ANKRBNB 2023-01-27)
@@ -240,7 +240,7 @@ data_df['net_dollar_flow_latest_price'] = np.where(
 )
 
 
-# In[ ]:
+# In[14]:
 
 
 # Get net flows by protocol
@@ -268,7 +268,7 @@ except:
 
 
 
-# In[ ]:
+# In[15]:
 
 
 #get latest
@@ -292,7 +292,7 @@ netdf_df = netdf_df[  #( netdf_df['rank_desc'] == 1 ) &\
 # display(netdf_df[netdf_df['protocol']=='makerdao'])
 
 
-# In[ ]:
+# In[16]:
 
 
 # netdf_df.columns
@@ -306,7 +306,7 @@ for i in ('svg','png','html'):
                 os.mkdir(dir_path)
 
 
-# In[ ]:
+# In[17]:
 
 
 summary_df = netdf_df.copy()
@@ -365,7 +365,7 @@ os.makedirs('img_outputs/html', exist_ok=True)
 final_summary_df.to_csv('csv_outputs/latest_tvl_app_trends.csv', mode='w', index=False, encoding='utf-8')
 
 
-# In[ ]:
+# In[18]:
 
 
 print("starting chart outputs")
@@ -438,7 +438,7 @@ for i in drange:
 # fig.update_layout(tickprefix = '$')
 
 
-# In[ ]:
+# In[19]:
 
 
 # ! jupyter nbconvert --to python total_app_net_flows_async.ipynb

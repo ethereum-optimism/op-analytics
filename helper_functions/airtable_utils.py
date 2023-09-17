@@ -148,7 +148,7 @@ def upsert_record_dt_team(at, table_name, record):
 	dt_date = record['fields']['Date'][:10]
 	team =record['fields']['Team']
 	# creator_address = record['fields']['Creator Address']
-	if (team is None) or (team == 'Unmapped Address'):
+	if (team is None):
 		team = ''
 
 	linked_field_name = 'Team Name'

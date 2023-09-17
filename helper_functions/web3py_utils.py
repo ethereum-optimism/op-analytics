@@ -1,7 +1,45 @@
 import datetime
 from web3 import Web3
+import pandas_utils as pu
 import requests as r
 import json
+
+
+OPCODES = {
+    "STOP": "00",
+    "ADD": "01",
+    "MUL": "02",
+    "SUB": "03",
+    # ... (add all opcodes here)
+    "PUSH1": "60",
+    "PUSH2": "61",
+    "PUSH3": "62",
+    "PUSH4": "63",
+    # ... (continue for other PUSH opcodes and other opcodes)
+    "LOG0": "a0",
+    "LOG1": "a1",
+    # ... (and so on)
+}
+def get_opcode(name):
+    """Retrieve the opcode for a given mnemonic."""
+    return OPCODES.get(name.upper(), '')
+
+def get_bytecode_pattern(endpoint, function_signature, opcode):
+    w3_conn = Web3(Web3.HTTPProvider(endpoint))
+    """
+    Generate the bytecode pattern we're looking for in contracts.
+
+    :param function_signature: Function signature string, e.g., "test(uint256)".
+    :return: Bytecode pattern string.
+    """
+    # Compute function signature hash
+    hashed = w3_conn.keccak(text=function_signature)
+    # Extract the first 4 bytes
+    selector = hashed[:4].hex()[2:]
+    # Combine with PUSH4 opcode
+    pattern = '0x' + get_opcode(opcode) + selector
+    
+    return pattern
 
 def get_duration_dict(num_periods, time_granularity):
         if time_granularity == 'hours':
@@ -40,8 +78,18 @@ def getAverageBlockTime(endpoint, trailing_num_blocks = 500):
 
     return float((currentBlock.timestamp - thenBlock.timestamp) / (trailing_num_blocks*1.0))
 
+def getBlockByTimestamp(etherscan_api, timestamp):
+        timestamp_convert = pu.datetime_to_unix_timestamp(timestamp)
 
-def getBlockByTimestamp(endpoint,timestamp):
+        url = 'https://api-optimistic.etherscan.io/api?module=block&action=getblocknobytime&timestamp={}&closest=before&apikey={}'.format(timestamp_convert, etherscan_api)
+
+        res = r.get(url).json()['result']
+        
+        return res
+
+
+def getBlockByTimestamp_approx(endpoint,timestamp):
+    # Approximates based on avg block time, likely error prone pre-bedrock
     latestBlockTimestamp = getLatestBlockTimestamp(endpoint)
     
     average_time = latestBlockTimestamp - timestamp
@@ -65,7 +113,7 @@ def get_blockrange_by_timedelta(endpoint,num_periods, time_granularity):
         time_st = datetime.datetime.now() - duration
         block_timestamp = int(time_st.timestamp())
         print(block_timestamp)
-        starting_block_number = getBlockByTimestamp(w3_conn, block_timestamp)
+        starting_block_number = getBlockByTimestamp_approx(w3_conn, block_timestamp)
 
         return [starting_block_number, latest_block_number]
 
@@ -81,34 +129,44 @@ def get_block_receipt(endpoint,block_number):
 
         print(block)
 
-def alchemy_get_eth_balance_by_block(endpoint, block_number, address):
-        # # Connect to an Ethereum node (or Optimism)
-        # w3_conn = Web3(Web3.HTTPProvider(endpoint))
-
-        # # Get the ETH balance at a specific block
-        # balance = w3_conn.eth.getBalance(address, block_identifier=block_number)
-
-        # # Convert balance from Wei to Ether
-        # balance_eth = w3_conn.fromWei(balance, 'ether')
-
-        # return balance_eth
-
+def alchemy_get_block_by_number(endpoint, block_number):
         url = endpoint
 
         payload = {
-        "id": 1,
-        "jsonrpc": "2.0",
-        "params": [address, block_number],
-        "method": "eth_getBalance"
+                "id": block_number,
+                "jsonrpc": "2.0",
+                "method": "eth_getBlockByNumber",
+                "params": ["finalized", False]
         }
         headers = {
-        "accept": "application/json",
-        "content-type": "application/json"
+                "accept": "application/json",
+                "content-type": "application/json"
         }
+       
+        response = r.post(url, json=payload, headers=headers).json()
 
-        response = r.post(url, json=payload, headers=headers)
-        balance = json.loads(response.text)['result']
-        balance_wei = int(balance, 16)
-        balance_eth = balance_wei / 1e18
+        return response['result']['number']
+       
 
-        return balance_eth
+def get_eth_balance_by_block(endpoint, address, block_number):
+       w3_conn = Web3(Web3.HTTPProvider(endpoint))
+       bal = w3_conn.eth.get_balance(address, block_identifier=block_number)
+       bal_eth = bal/1e18
+       return bal_eth
+
+def get_implementation_contract(w3_conn, proxy_address, proxy_abi):
+
+        proxy_contract = w3_conn.eth.contract(address=proxy_address, abi=proxy_abi)
+        implementation_address = proxy_contract.functions.implementation().call()
+
+        return implementation_address
+
+def generate_ethereum_event_signature_hash(event_signature):
+    # Remove spaces
+    formatted_signature = event_signature.replace(" ", "")
+    # Convert to bytes
+    signature_bytes = formatted_signature.encode()
+    # Get Keccak-256 hash using web3.py
+    hash_result = Web3.keccak(signature_bytes)
+    # Return the hash as a hex string
+    return hash_result.hex()

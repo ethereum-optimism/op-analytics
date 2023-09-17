@@ -22,23 +22,24 @@ sys.path.pop()
 
 from dune_client.types import QueryParameter
 from dune_client.client import DuneClient
-from dune_client.query import Query
+from dune_client.query import QueryBase
 
 
 def get_dune_data(
     query_id: int,
     name: str = "my_query_results",
     path: str = "csv_outputs",
+    params: list = None,
     num_hours_to_rerun=4,
     performance: str = "medium",
 ) -> pd.DataFrame:
     """
     Get data via Dune API.
     """
-    query = Query(
+    query = QueryBase(
         name=name,
         query_id=query_id,
-        # performance = performance
+        params=params
     )
     logger.info(f"Results available at {query.url()}")
 
@@ -73,7 +74,7 @@ def get_dune_data(
         pass
 
     if (time_difference > timedelta(hours=num_hours_to_rerun)) or (to_rerun == 1):
-        results = dune.refresh(query)
+        results = dune.refresh(query, performance = performance)
         df = pd.DataFrame(results.result.rows)
     else:
         pass
@@ -90,6 +91,17 @@ def get_dune_data(
     )
 
     return df
+
+def generate_query_parameter(input, field_name, dtype):
+    if dtype == 'text':
+        par = QueryParameter.text_type(name=field_name, value=input)
+    if dtype == 'number':
+        par = QueryParameter.number_type(name=field_name, value=input)
+    if dtype == 'date':
+        par = QueryParameter.date_type(name=field_name, value=input)
+    if dtype == 'list':
+        par = QueryParameter.enum_type(name=field_name, value=input)
+    return par
 
 
 def get_dune_data_raw(query_id, perf_var="medium"):

@@ -395,3 +395,10 @@ def get_todays_tvl():
         df = df.drop(columns_to_drop, axis=1)
         
         return df
+
+def get_historical_chain_tvl(chain_name):
+        api_string = 'https://api.llama.fi/v2/historicalChainTvl/' + chain_name
+        tvl = r.get(api_string,headers=header).json()
+        df = pd.DataFrame(tvl)
+        df['date'] = pd.to_datetime(df['date'], unit='s')
+        return df

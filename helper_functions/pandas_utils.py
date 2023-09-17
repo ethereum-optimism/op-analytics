@@ -157,6 +157,16 @@ def convert_text_timestamp_to_int(text_timestamp):
         print("Invalid timestamp format. Expected format: YYYY-MM-DD HH:MM:SS")
         return None
     
+def datetime_to_unix_timestamp(input_value):
+    try:
+        # Attempt to parse the input_value as a datetime object
+        dt = datetime.strptime(input_value, '%Y-%m-%d %H:%M:%S')
+        # Convert the datetime object to a Unix timestamp
+        return int(dt.timestamp())
+    except ValueError:
+        # If the parsing fails, assume input_value is already a Unix timestamp
+        return int(input_value)
+       
 def get_datetime_from_input(input_value):
     if isinstance(input_value, str):
         try:
