@@ -1,4 +1,5 @@
 import requests as r
+import time
 
 def get_mb_session_key(url_base, name, pw):
         url = url_base + "/api/session"
@@ -14,7 +15,7 @@ def get_mb_session_key(url_base, name, pw):
         response = r.post(url, json=payload, headers=headers)
         return response.json()['id']
 
-def get_mb_query_response(url_base, session, card_id):
+def get_mb_query_response(url_base, session, card_id, num_retries=3):
         url = f"{url_base}/api/card/{card_id}/query/json"
 
         headers = {
@@ -22,10 +23,16 @@ def get_mb_query_response(url_base, session, card_id):
                 "X-Metabase-Session": session
         }
 
-        try:
-                response = r.post(url, headers=headers)
-                response.raise_for_status()  # Check if the request was successful
-                return response.json()  # Parse and return the JSON response
-        except requests.exceptions.RequestException as e:
-                print(f"An error occurred: {e}")
-                return None
+        for retry in range(num_retries):
+                try:
+                        response = r.post(url, headers=headers)
+                        response.raise_for_status()  # Check if the request was successful
+                        return response.json()  # Parse and return the JSON response
+                except r.exceptions.RequestException as e:
+                        print(f"An error occurred: {e}")
+                if retry < num_retries - 1:
+                        print(f"Retrying in 1 second (Retry {retry + 1}/{num_retries})...")
+                        time.sleep(1)
+                else:
+                        print(f"Maximum number of retries ({num_retries}) reached. Giving up.")
+                        return None
