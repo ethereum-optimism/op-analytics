@@ -18,7 +18,7 @@ Simplified address list for unclaimed Airdrop #1 distribution (Sep 2023). This w
 ## Airdrop 2 
 
 #### op_airdrop2_simple_list.csv
-Simplified Airdrop #2 (Feb 2023) address list with total OP eligible to claim. See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-2/) for explanations.
+Simplified Airdrop #2 (Feb 2023) address list with total OP eligible to claim (this was distributed directly to wallets, and distribution has completed). See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-2/) for explanations.
 - `address`: User address
 - `total_op`: Total OP the address received in human readable form (i.e. already decimal adjusted)
 - **Dashboards**
@@ -27,7 +27,7 @@ Simplified Airdrop #2 (Feb 2023) address list with total OP eligible to claim. S
   - [@oplabspbc on Dune / OP Airdrop #2 Distributions](https://dune.com/oplabspbc/op-airdrop-2-distributions)
 
 #### op_airdrop_2_addresses_detailed_list.csv
-Airdrop #2 (Feb 2023) address lists, category eligibility, and total OP received (this was distributed directly to wallets, and distribution is completed). See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-2/) for explanations.
+Airdrop #2 (Feb 2023) address lists, category eligibility, and total OP received (this was distributed directly to wallets, and distribution has completed). See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-2/) for explanations.
 - `address`: User address
 - `total_op_eligible_to_claim`: Total OP the address received. *Note: These numbers need to be divided by 10^18 to get to the # of OP (they are in raw form, not decimal adjusted)*
 - Additional field descriptions are available in [Optimism Airdrop #2 Docs](https://community.optimism.io/docs/governance/airdrop-2/).
@@ -35,7 +35,7 @@ Airdrop #2 (Feb 2023) address lists, category eligibility, and total OP received
 ## Airdrop 3
 
 #### op_airdrop_3_simple_list.csv
-Simplified address list for Airdrop #3 distribution (Sep 2023). This was distributed directly to wallets, and distribution is *ongoing*. See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-3/).
+Simplified address list for Airdrop #3 distribution (Sep 2023). This was distributed directly to wallets, and distribution has completed. See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-3/).
 - `address`: User address
 - `total_op`: Total OP the address received in human readable form (i.e. already decimal adjusted)
 
