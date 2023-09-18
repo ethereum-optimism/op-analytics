@@ -2,9 +2,9 @@ name: Run OP Chain Goldsky/Metabase -> Dune
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule - Every day at 12:03 AM
+  # Run on a schedule - Every day at 12:01 AM
   schedule:
-      - cron: '3 0 * * *'
+      - cron: '1 0 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
