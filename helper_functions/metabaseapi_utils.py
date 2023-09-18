@@ -26,7 +26,12 @@ def get_mb_query_response(url_base, session, card_id, num_retries=3):
         for retry in range(num_retries):
                 try:
                         response = r.post(url, headers=headers)
+                        print(response)
                         response.raise_for_status()  # Check if the request was successful
+                        print(response.raise_for_status())
+                        response_content = response.json()
+                        print(str(response_content)[:100])
+                        
                         return response.json()  # Parse and return the JSON response
                 except r.exceptions.RequestException as e:
                         print(f"An error occurred: {e}")
