@@ -11,9 +11,10 @@ Onchain Data, Utilities, References, and other Analytics on Optimism. Join the c
 ## I'm Looking for Data About:
 A select list of Optimism data dashboards:
 
-### Network Usage
-- [Optimism Protocol Metrics (i.e. transactions, fees, onchain value)](https://dune.com/optimismfnd/Optimism)
-- [Popular Apps on Optimism and Project Usage Trends](https://dune.com/optimismfnd/Optimism-Project-Usage-Trends)
+### Optimism Network Actiity
+- [OP Stack Chains - L1 Mainnet Activity & Fees Paid, L2 OP Chain Activity](https://dune.com/oplabspbc/op-stack-chains-l1-activity)
+- [OP Mainnet Protocol Metrics (i.e. transactions, fees, onchain value)](https://dune.com/optimismfnd/Optimism)
+- [Popular Apps on OP Mainnet and Project Usage Trends](https://dune.com/optimismfnd/Optimism-Project-Usage-Trends)
 
 ### Token House & Citizen's House Governance
 - [OP Token House Delegates](https://dune.com/optimismfnd/optimism-op-token-house)
@@ -35,9 +36,11 @@ A select list of Optimism data dashboards:
 - [DEX Trade Volume (by Defillama)](https://defillama.com/dexs/chains/optimism)
 - TVL Flows Between Apps and Chains: [Last 7 Days](https://static.optimism.io/op-analytics/value_locked_flows/img_outputs/html/net_app_flows_7d.html), [30 Days](https://static.optimism.io/op-analytics/value_locked_flows/img_outputs/html/net_app_flows_30d.html), [90 Days](https://static.optimism.io/op-analytics/value_locked_flows/img_outputs/html/net_app_flows_90d.html), [180 Days](https://static.optimism.io/op-analytics/value_locked_flows/img_outputs/html/net_app_flows_180d.html), [365 Days](https://static.optimism.io/op-analytics/value_locked_flows/img_outputs/html/net_app_flows_365d.html) (From Defillama API)
 
-### NFTs
+### Consumer
 - [NFT Marketplaces and Collection Volume](https://dune.com/oplabspbc/optimism-nft-secondary-marketplaces)
 - [L1<>L2 NFT Bridge](https://dune.com/chuxin/optimism-nft-bridge?L1+NFT+Contract+Address_t4e85b=0x5180db8f5c931aae63c74266b211f580155ecac8)
+- [App Growth on Optimism After Quests](https://dune.com/oplabspbc/optimism-quests-project-usage-growth)
+- [CEX & On/Off-Ramp Usage](https://dune.com/oplabspbc/optimism-onoff-ramp-usage)
 
 ### Protocol Economics
 - [L2 Transaction Fees, L1 Security Costs, Sequencer Fees](https://dune.com/optimismfnd/optimism-l1-batch-submission-fees-security-costs)
@@ -46,9 +49,6 @@ A select list of Optimism data dashboards:
 ### Transaction Costs
 - [Transaction Fee Savings Calculator](https://dune.com/optimismfnd/How-Much-Could-You-Save-on-Optimism-Fee-Savings-Calculator)
 
-### User Onboarding
-- [CEX & On/Off-Ramp Usage](https://dune.com/oplabspbc/optimism-onoff-ramp-usage)
-- [App Growth on Optimism After Quests](https://dune.com/oplabspbc/optimism-quests-project-usage-growth)
 
 ## Select Optimism Data Abstractions
 **[Dune Spellbook](https://github.com/duneanalytics/spellbook/tree/main/models)**: *Tables can be used in [Dune Analytics](https://dune.com/browse/dashboards)*
