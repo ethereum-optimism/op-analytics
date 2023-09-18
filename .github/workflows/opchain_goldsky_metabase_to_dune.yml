@@ -2,9 +2,9 @@ name: Run OP Chain Goldsky/Metabase -> Dune
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule - Every day at 12:02 AM
+  # Run on a schedule - Every day at 12:01 AM
   schedule:
-      - cron: '2 0 * * *'
+      - cron: '1 0 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -26,6 +26,10 @@ jobs:
         with:
           python-version: '3.10.9'
         # Set max space to see if this helps with timeouts
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
+        # Update the Node.js version to 16
+          node-version: '16'
 
       - name: Install pipenv
         run: |
