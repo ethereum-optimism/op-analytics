@@ -11,9 +11,10 @@ Onchain Data, Utilities, References, and other Analytics on Optimism. Join the c
 ## I'm Looking for Data About:
 A select list of Optimism data dashboards:
 
-### Optimism Network Actiity
+### Optimism Network Activity
 - [OP Stack Chains - L1 Mainnet Activity & Fees Paid, L2 OP Chain Activity](https://dune.com/oplabspbc/op-stack-chains-l1-activity)
 - [OP Mainnet Protocol Metrics (i.e. transactions, fees, onchain value)](https://dune.com/optimismfnd/Optimism)
+- [Active Developer Metrics](https://dune.com/oplabspbc/developer-metrics-sploring)
 - [Popular Apps on OP Mainnet and Project Usage Trends](https://dune.com/optimismfnd/Optimism-Project-Usage-Trends)
 
 ### Token House & Citizen's House Governance
