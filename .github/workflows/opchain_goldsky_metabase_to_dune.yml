@@ -58,42 +58,39 @@ jobs:
           MS_METABASE_NAME: ${{ secrets.MS_METABASE_NAME }}
           MS_METABASE_PW: ${{ secrets.MS_METABASE_PW }}
           MS_METABASE_SESSION_ID: ${{ secrets.MS_METABASE_SESSION_ID }}
-        
-  # commit_results:
-    # if: ${{ always() }} #Always runs even if prior jobs fail - so that one bad job doesn't f everything up.
-    # needs: build #[build, app_fees, op_summer, total_tvl_flow]
-    # runs-on: ubuntu-latest
-    # steps:
-      # Runs a set of commands using the runners shell
-      # - name: Run a multi-line script
-      #  run: |
-      #    echo Add other actions to build,
-      #    echo test, and deploy your project.
-      
-      # Commit and push output images
-      # https://github.com/orgs/community/discussions/26672
-#       - name: Pull changes
-#         run: |
-#           git pull origin main
-          
-#       - name: Commit files
-#         id: commit
-#         run: |
-#           git config --local user.email "action@github.com"
-#           git config --local user.name "github-actions"
-#           git add --all
-#           # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
-#           if [-z "$(git status --porcelain)"]; then
-#              # echo "::set-output name=push::false"
-#              echo "push=false" >> $GITHUB_OUTPUT
-#           else
-#              git commit -m "GH Action Update - Rewards Tracking" -a
-#              # echo "::set-output name=push::true"
-#              echo "push=true" >> $GITHUB_OUTPUT
-#           fi
-#         shell: bash
-#       - name: Push changes
-#         if: steps.commit.outputs.push == 'true'
-#         uses: ad-m/github-push-action@master
-#         with:
-#            github_token: ${{ secrets.GITHUB_TOKEN }}
+
+
+    # commit_results:
+      # if: ${{ always() }} #Always runs even if prior jobs fail - so that one bad job doesn't f everything up.
+      # needs: build #[build, app_fees, op_summer, total_tvl_flow]
+      # runs-on: ubuntu-latest
+      # steps:
+        # Runs a set of commands using the runners shell
+        # - name: Run a multi-line script
+        #  run: |
+        #    echo Add other actions to build,
+        #    echo test, and deploy your project.
+
+        # Commit and push output images
+        # https://github.com/orgs/community/discussions/26672
+      - name: Commit files
+        id: commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions"
+          git add --all
+          # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
+          if [-z "$(git status --porcelain)"]; then
+              # echo "::set-output name=push::false"
+              echo "push=false" >> $GITHUB_OUTPUT
+          else
+              git commit -m "GH Action Update - GS MB API" -a
+              # echo "::set-output name=push::true"
+              echo "push=true" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+      - name: Push changes
+        if: steps.commit.outputs.push == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
