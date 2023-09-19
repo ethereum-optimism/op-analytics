@@ -62,7 +62,40 @@ resp = mb.get_mb_query_response(mb_url_base, session_id, 20, num_retries = 3)
 # In[ ]:
 
 
-data_df = pd.DataFrame(resp)
+try:
+    data_df = pd.DataFrame(resp)
+except ValueError as e:
+    print(f"Error in creating DataFrame: {e}")
+
+print("Type of response:", type(resp))
+
+if resp:
+    print("First element of the list:", resp[0])
+else:
+    print("The list is empty")
+
+keys_set = {frozenset(d.keys()) for d in resp if isinstance(d, dict)}
+if len(keys_set) > 1:
+    print("Dictionaries have different sets of keys.")
+else:
+    print("All dictionaries have the same set of keys.")
+
+standard_keys = set(resp[0].keys())
+
+for i, dic in enumerate(resp):
+    # Get the set of keys of the current dictionary
+    current_keys = set(dic.keys())
+    
+    # Check if the current set of keys matches the standard set of keys
+    if current_keys != standard_keys:
+        print(f"Dictionary at index {i} does not have the standard set of keys.")
+        print(f"Dictionary keys: {current_keys}")
+        print(f"Standard keys:   {standard_keys}")
+        print(f"Dictionary content: {dic}")
+
+
+# In[ ]:
+
 
 data_df['chain'] = data_df['chain'].replace(chain_mappings)
 
