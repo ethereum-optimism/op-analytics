@@ -80,7 +80,7 @@ jobs:
           git config --local user.name "github-actions"
           git add --all
           # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
-          if [-z "$(git status --porcelain)"]; then
+          if [ -z "$(git status --porcelain)"]; then
               # echo "::set-output name=push::false"
               echo "push=false" >> $GITHUB_OUTPUT
           else
