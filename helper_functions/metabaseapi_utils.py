@@ -28,20 +28,31 @@ def get_mb_query_response(url_base, session, card_id, num_retries=3):
             response = r.post(url, headers=headers)
             print(response)
             response.raise_for_status()  # Check if the request was successful
+            print(response.json()[:100])
             response_content = response.json()
-            print(response_content[0])
-            
-            # Check for 'status' in the response and whether its value is 'failed'
-            if 'status' in response_content and response_content['status'] == 'failed':
-                if retry < num_retries - 1:
-                    print(f"'Failed' status detected. Retrying in 10 seconds (Retry {retry + 1}/{num_retries})...")
-                    time.sleep(10)
-                    continue  # Continue to the next loop iteration
-                else:
-                    print(f"Maximum number of retries ({num_retries}) reached with 'failed' status. Giving up.")
-                    return None
 
-            return response_content  # If 'status' is not 'failed', return the JSON response
+            # Check the type of response_content
+            if isinstance(response_content, list) and len(response_content) > 0:
+                # It's a list with at least one element
+                print(response_content[0])
+                # Rest of your code to handle the response
+                return response_content  # If it's a list, return the JSON response
+
+            elif isinstance(response_content, dict) and 'status' in response_content:
+                # It's a dictionary with a 'status' key
+                if response_content['status'] == 'failed':
+                    # Handle 'failed' status
+                    if retry < num_retries - 1:
+                        print(f"'Failed' status detected. Retrying in 10 seconds (Retry {retry + 1}/{num_retries})...")
+                        time.sleep(10)
+                        continue
+                    else:
+                        print(f"Maximum number of retries ({num_retries}) reached with 'failed' status. Giving up.")
+                        return None
+
+            else:
+                print("Unexpected response content format:", response_content)
+                # Handle unexpected format here
 
         except r.exceptions.RequestException as e:
             print(f"An error occurred: {e}")
