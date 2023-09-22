@@ -19,7 +19,6 @@ airtable = "*"
 notion-client = "*"
 notion-df = "*"
 web3 = "*"
-json = "*
 
 [dev-packages]
 
