@@ -28,7 +28,7 @@ def get_mb_query_response(url_base, session, card_id, num_retries=3):
             response = r.post(url, headers=headers)
             print(response)
             response.raise_for_status()  # Check if the request was successful
-            print(response.json()[:100])
+            print(response.json()[:10])
             response_content = response.json()
 
             # Check the type of response_content
