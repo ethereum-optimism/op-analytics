@@ -1,5 +1,6 @@
 import requests as r
 import time
+import json
 
 def get_mb_session_key(url_base, name, pw):
         url = url_base + "/api/session"
@@ -28,8 +29,9 @@ def get_mb_query_response(url_base, session, card_id, num_retries=3):
             response = r.post(url, headers=headers)
             print(response)
             response.raise_for_status()  # Check if the request was successful
-            print(response.json()[:10])
             response_content = response.json()
+            response_content_str = json.dumps(response_content)
+            print(response_content_str[:100])
 
             # Check the type of response_content
             if isinstance(response_content, list) and len(response_content) > 0:
