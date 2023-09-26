@@ -59,8 +59,8 @@ def get_mb_query_response(url_base, session, card_id, num_retries=3):
         except r.exceptions.RequestException as e:
             print(f"An error occurred: {e}")
             if retry < num_retries - 1:
-                print(f"Retrying in 1 second due to exception (Retry {retry + 1}/{num_retries})...")
-                time.sleep(1)
+                print(f"Retrying in 10 seconds due to exception (Retry {retry + 1}/{num_retries})...")
+                time.sleep(10)
             else:
                 print(f"Maximum number of retries ({num_retries}) reached due to exception. Giving up.")
                 return None
