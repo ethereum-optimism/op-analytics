@@ -45,8 +45,8 @@ def get_mb_query_response(url_base, session, card_id, num_retries=3):
                 if response_content['status'] == 'failed':
                     # Handle 'failed' status
                     if retry < num_retries - 1:
-                        print(f"'Failed' status detected. Retrying in 10 seconds (Retry {retry + 1}/{num_retries})...")
-                        time.sleep(10)
+                        print(f"'Failed' status detected. Retrying in 60 seconds (Retry {retry + 1}/{num_retries})...")
+                        time.sleep(60)
                         continue
                     else:
                         print(f"Maximum number of retries ({num_retries}) reached with 'failed' status. Giving up.")
