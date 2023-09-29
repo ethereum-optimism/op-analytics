@@ -31,7 +31,7 @@ def get_mb_query_response(url_base, session, card_id, num_retries=3):
             response.raise_for_status()  # Check if the request was successful
             response_content = response.json()
             response_content_str = json.dumps(response_content)
-            print(response_content_str[:100])
+            print(response_content_str[:250])
 
             # Check the type of response_content
             if isinstance(response_content, list) and len(response_content) > 0:
@@ -45,8 +45,8 @@ def get_mb_query_response(url_base, session, card_id, num_retries=3):
                 if response_content['status'] == 'failed':
                     # Handle 'failed' status
                     if retry < num_retries - 1:
-                        print(f"'Failed' status detected. Retrying in 60 seconds (Retry {retry + 1}/{num_retries})...")
-                        time.sleep(60)
+                        print(f"'Failed' status detected. Retrying in 10 seconds (Retry {retry + 1}/{num_retries})...")
+                        time.sleep(10)
                         continue
                     else:
                         print(f"Maximum number of retries ({num_retries}) reached with 'failed' status. Giving up.")
