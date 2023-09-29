@@ -45,7 +45,8 @@ jobs:
         working-directory: op_chains_tracking
         run: |
                 pipenv run jupyter nbconvert --to python mb_gs_op_chain_daily_usage_to_dune.ipynb  
-                pipenv run jupyter nbconvert --to python mb_gs_active_devs_to_dune.ipynb    
+                pipenv run jupyter nbconvert --to python mb_gs_active_devs_to_dune.ipynb
+                pipenv run jupyter nbconvert --to python mb_gs_used_contracts_to_dune.ipynb    
                   
 
   # Run py
@@ -54,6 +55,7 @@ jobs:
         run: |
                 pipenv run python mb_gs_op_chain_daily_usage_to_dune.py
                 pipenv run python mb_gs_active_devs_to_dune.py
+                pipenv run python mb_gs_used_contracts_to_dune.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           MS_METABASE_NAME: ${{ secrets.MS_METABASE_NAME }}
