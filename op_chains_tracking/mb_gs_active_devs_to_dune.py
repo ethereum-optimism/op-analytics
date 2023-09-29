@@ -45,8 +45,12 @@ try: #do you already have a session
 except: #if not, make one
         print('creating new session')
         session_id = mb.get_mb_session_key(mb_url_base,mb_name,mb_pw)
-# print(session_id)
 
+
+# In[ ]:
+
+
+# print(session_id)
 
 
 # In[ ]:
