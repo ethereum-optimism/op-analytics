@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 import requests as r
@@ -25,7 +25,7 @@ mb_url_base = "https://dash.goldsky.com"
 # https://goldsky.notion.site/SHARED-Lightweight-API-Documentation-for-Goldsky-Dashboarding-5cde15ba222844f485c31a4426f6ed53
 
 
-# In[ ]:
+# In[2]:
 
 
 # Map Chain Names
@@ -36,7 +36,7 @@ chain_mappings = {
 }
 
 
-# In[ ]:
+# In[3]:
 
 
 try: #do you already have a session
@@ -44,11 +44,15 @@ try: #do you already have a session
 except: #if not, make one
         print('creating new session')
         session_id = mb.get_mb_session_key(mb_url_base,mb_name,mb_pw)
+
+
+# In[4]:
+
+
 # print(session_id)
 
 
-
-# In[ ]:
+# In[5]:
 
 
 # Run Query
