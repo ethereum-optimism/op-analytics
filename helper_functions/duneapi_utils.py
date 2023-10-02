@@ -147,12 +147,15 @@ def write_dune_api_from_pandas(df, table_name, table_description):
 
     # iterate over columns and convert any columns containing hex values to strings
     for col in df.columns:
-        if (
-            df[col].dtype == "O"
-            and df[col].apply(lambda x: isinstance(x, str) and x.startswith("0x")).any()
-        ):
-            df[col] = df[col].astype(str).str.lower()
-            df[col] = df[col].replace("nan", np.nan)
+        try:
+            if (
+                df[col].dtype == "O"
+                and df[col].apply(lambda x: isinstance(x, str) and x.startswith("0x")).any()
+            ):
+                df[col] = df[col].astype(str).str.lower()
+                df[col] = df[col].replace("nan", np.nan)
+        except:
+            continue
 
     # convert pandas dataframe to csv
     data = df.to_csv(index=False)
