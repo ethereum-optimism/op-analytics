@@ -59,7 +59,9 @@ except: #if not, make one
 # Run Query
 
 #https://dash.goldsky.com/question/20-get-kr1-active-developers
-resp = mb.get_mb_query_response(mb_url_base, session_id, 20, num_retries = 3)
+query_num = 20
+print(query_num)
+resp = mb.get_mb_query_response(mb_url_base, session_id, query_num, num_retries = 3)
 # print(resp)
 
 

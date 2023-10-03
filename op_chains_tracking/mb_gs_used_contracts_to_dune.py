@@ -59,7 +59,9 @@ except: #if not, make one
 # Run Query
 
 #https://dash.goldsky.com/question/35-kr2-intermediate-get-daily-is-used-contracts
-resp = mb.get_mb_query_response(mb_url_base, session_id, 35, num_retries = 3)
+query_num = 35
+print(query_num)
+resp = mb.get_mb_query_response(mb_url_base, session_id, query_num, num_retries = 3)
 # print(resp)
 
 
