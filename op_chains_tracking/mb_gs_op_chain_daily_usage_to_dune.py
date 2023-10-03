@@ -58,7 +58,9 @@ except: #if not, make one
 # Run Query
 
 #21-op-chains-activity-by-day
-resp = mb.get_mb_query_response(mb_url_base, session_id, 21, num_retries = 3)
+query_num = 21
+print(query_num)
+resp = mb.get_mb_query_response(mb_url_base, session_id, query_num, num_retries = 3)
 # print(resp)
 
 
@@ -72,7 +74,7 @@ data_df['chain'] = data_df['chain'].replace(chain_mappings)
 print(data_df.columns)
 # print(data_df.dtypes)
 
-print(data_df.sample(5))
+print(data_df.head(5))
 
 
 # In[ ]:
