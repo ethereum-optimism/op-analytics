@@ -11,3 +11,4 @@ l2_economics/downloads
 misc_analysis/downloads/
 l1_base_fees/csv_inputs/
 misc_analysis/derive_l2_tx_hash_WIP.ipynb
+contracts_tracking/inputs/*.csv
