@@ -1,6 +1,9 @@
 import requests as r
 import time
 import json
+import os
+import dotenv
+dotenv.load_dotenv()
 
 def get_mb_session_key(url_base, name, pw):
         url = url_base + "/api/session"
@@ -64,3 +67,16 @@ def get_mb_query_response(url_base, session, card_id, num_retries=3):
             else:
                 print(f"Maximum number of retries ({num_retries}) reached due to exception. Giving up.")
                 return None
+
+def get_session_id(mb_url_base, mb_name, mb_pw):
+    try: #do you already have a session
+        session_id = os.environ["MS_METABASE_SESSION_ID"]
+        # Test if session ID works
+        resp = get_mb_query_response(mb_url_base, session_id, 42, num_retries = 1)
+        if resp is None:
+            raise ValueError("Response is None")
+    except: #if not, make one
+        print('creating new session')
+        session_id = get_mb_session_key(mb_url_base,mb_name,mb_pw)
+    
+    return session_id
