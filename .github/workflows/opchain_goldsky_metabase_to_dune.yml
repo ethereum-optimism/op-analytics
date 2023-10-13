@@ -61,6 +61,7 @@ jobs:
           MS_METABASE_NAME: ${{ secrets.MS_METABASE_NAME }}
           MS_METABASE_PW: ${{ secrets.MS_METABASE_PW }}
           MS_METABASE_SESSION_ID: ${{ secrets.MS_METABASE_SESSION_ID }}
+          IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
 
 
     # commit_results:
