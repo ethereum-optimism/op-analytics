@@ -39,17 +39,20 @@ chain_mappings = {
 # In[3]:
 
 
-try: #do you already have a session
-        session_id = os.environ["MS_METABASE_SESSION_ID"]
-except: #if not, make one
-        print('creating new session')
-        session_id = mb.get_mb_session_key(mb_url_base,mb_name,mb_pw)
+session_id = mb.get_session_id(mb_url_base, mb_name, mb_pw)
+
+# try: #do you already have a session
+#         session_id = os.environ["MS_METABASE_SESSION_ID"]
+# except: #if not, make one
+#         print('creating new session')
+#         session_id = mb.get_mb_session_key(mb_url_base,mb_name,mb_pw)
 
 
 # In[4]:
 
 
-# print(session_id)
+if (os.environ["IS_RUNNING_LOCAL"]):
+        print(session_id)
 
 
 # In[5]:
@@ -64,20 +67,23 @@ resp = mb.get_mb_query_response(mb_url_base, session_id, query_num, num_retries 
 # print(resp)
 
 
-# In[ ]:
+# In[6]:
 
 
 data_df = pd.DataFrame(resp)
 
 data_df['chain'] = data_df['chain'].replace(chain_mappings)
+# data_df['dt'] = pd.to_datetime(data_df['dt'])
 
 print(data_df.columns)
 # print(data_df.dtypes)
 
+data_df = data_df.sort_values(by='dt',ascending=False)
+
 print(data_df.head(5))
 
 
-# In[ ]:
+# In[7]:
 
 
 # Post to Dune API

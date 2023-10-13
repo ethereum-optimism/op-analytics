@@ -40,11 +40,13 @@ chain_mappings = {
 # In[ ]:
 
 
-try: #do you already have a session
-        session_id = os.environ["MS_METABASE_SESSION_ID"]
-except: #if not, make one
-        print('creating new session')
-        session_id = mb.get_mb_session_key(mb_url_base,mb_name,mb_pw)
+session_id = mb.get_session_id(mb_url_base, mb_name, mb_pw)
+
+# try: #do you already have a session
+#         session_id = os.environ["MS_METABASE_SESSION_ID"]
+# except: #if not, make one
+#         print('creating new session')
+#         session_id = mb.get_mb_session_key(mb_url_base,mb_name,mb_pw)
 
 
 # In[ ]:
