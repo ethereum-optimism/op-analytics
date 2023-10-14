@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 # Get L2 Revenue and post it to a database (csv in github for now)
@@ -19,7 +19,7 @@ sys.path.pop()
 import os
 
 
-# In[ ]:
+# In[2]:
 
 
 # https://github.com/ethereum-optimism/optimism/blob/b86522036ad11a91de1d1dadb6805167add83326/specs/predeploys.md?plain=1#L50
@@ -32,11 +32,14 @@ fee_vaults = [
 ]
 
 # Aiming to eventually read from superchain-resitry + some non-superchain static adds
-chains_rpcs = pd.read_csv('inputs/chain_metadata.csv').values.tolist()
+chains_rpcs = pd.read_csv('inputs/chain_metadata.csv')
+# print(chains_rpcs.columns)
+chains_rpcs = chains_rpcs[~(chains_rpcs['rpc_url'] == ' ') & ~(chains_rpcs['op_based_version'].str.contains('legacy'))]
+# chains_rpcs = chains_rpcs.values.tolist()
 print(chains_rpcs)
 
 
-# In[ ]:
+# In[3]:
 
 
 # Calculate the method signature hash
@@ -46,17 +49,18 @@ method_id = Web3.keccak(text=method_signature)[:4].hex()
 print(f"Method ID: {method_id}")
 
 
-# In[ ]:
+# In[4]:
 
 
 data_arr = []
 
-for chain in chains_rpcs:
-    chain_name = chain[0]
-    rpc = chain[1]
-    gas_token = chain[2]
-    da_layer = chain[3]
-    is_superchain_registry = chain[4]
+for index, chain in chains_rpcs.iterrows():
+    chain_name = chain['chain_name']
+    print(chain_name)
+    rpc = chain['rpc_url']
+    # gas_token = chain['gas_token']
+    # da_layer = chain['da_layer']
+    # is_superchain_registry = chain['superchain_registry']
 
     try:
         w3_conn = Web3(Web3.HTTPProvider(rpc))
@@ -87,8 +91,8 @@ for chain in chains_rpcs:
                 )
             
             tmp = pd.DataFrame(
-                    [[block_time, block_number, chain_name, vault_name, vault_address, alltime_revenue_native, gas_token, da_layer, is_superchain_registry]]
-                    ,columns =['block_time','block_number','chain_name','vault_name','vault_address','alltime_revenue_native','gas_token','da_layer','is_superchain_registry']
+                    [[block_time, block_number, chain_name, vault_name, vault_address, alltime_revenue_native]]#, gas_token, da_layer, is_superchain_registry]]
+                    ,columns =['block_time','block_number','chain_name','vault_name','vault_address','alltime_revenue_native']#,'gas_token','da_layer','is_superchain_registry']
                     )
             data_arr.append(tmp)
             time.sleep(1)
@@ -98,7 +102,7 @@ for chain in chains_rpcs:
 data_df = pd.concat(data_arr)
 
 
-# In[ ]:
+# In[5]:
 
 
 file_path = 'outputs/all_time_revenue_data.csv'
@@ -112,7 +116,7 @@ else:
     data_df.to_csv(file_path, mode='w', header=True, index=False)
 
 
-# In[ ]:
+# In[6]:
 
 
 # Write to Dune Table
@@ -122,5 +126,7 @@ dune_df = pd.read_csv(file_path)
 print(dune_df.sample(5))
 
 du.write_dune_api_from_pandas(dune_df, 'op_stack_chains_cumulative_revenue_snapshots',\
-                             'Snapshots of All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs')
+                             'Snapshots of All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs - metadata in op_stack_chains_chain_rpc_metdata')
+du.write_dune_api_from_pandas(chains_rpcs, 'op_stack_chains_chain_rpc_metdata',\
+                             'Chain metadata - used to join with op_stack_chains_cumulative_revenue_snapshots')
 
