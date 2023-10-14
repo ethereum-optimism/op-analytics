@@ -8,7 +8,7 @@ opbnb, bedrock, yes, https://opbnb-mainnet-rpc.bnbchain.org, BNB, bnb, no
 manta pacific, bedrock, yes, https://pacific-rpc.manta.network/http, ETH, celestia, no
 loot chain, bedrock, yes, https://rpc.lootchain.com/http, ETH, polygon, no
 kroma network, bedrock, yes, https://api.kroma.network/, ETH, ethereum, no
-vienna, bedrock, yes, https://vienna.calderachain.xyz/http, ETH, ethereum, no
+vienna, bedrock, yes, https://vienna.calderachain.xyz/http, ETH, unknown, no
 orderly network, bedrock,  no, , ETH, ethereum, no
 mantle network, legacy ovm, yes,  , ETH, ethereum, no
 metis andromeda, legacy ovm, yes,  , ETH, alt-da, no
