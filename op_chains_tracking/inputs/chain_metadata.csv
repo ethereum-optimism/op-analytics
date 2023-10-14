@@ -1,4 +1,4 @@
-chain_name, op_based_version, has_mods, is_law_of_chains, raas_deployer,  rpc_url,  product_website, gas_token, da_layer, superchain_registry
+chain_name,op_based_version,has_mods,is_law_of_chains,raas_deployer,rpc_url,product_website,gas_token,da_layer,superchain_registry
 op mainnet, bedrock, no, yes, , https://mainnet.optimism.io, https://optimism.io, ETH, ethereum, yes
 base, bedrock, no, yes, , https://mainnet.base.org/, https://base.org, ETH, ethereum, yes
 zora network, bedrock, no, no, conduit, https://rpc.zora.energy/, https://zora.energy, ETH, ethereum, yes
@@ -10,8 +10,8 @@ loot chain, bedrock, yes, no, caldera, https://rpc.lootchain.com/http, https://a
 kroma network, bedrock, yes, no, , https://api.kroma.network/, https://kroma.network/, ETH, ethereum, no
 vienna, bedrock, yes, no, caldera, https://vienna.calderachain.xyz/http, https://vienna.caldera.dev/, ETH, unknown, no
 orderly network, bedrock, no, no, conduit, , https://orderly.network/, ETH, ethereum, no
-mantle network, legacy ovm, yes, no, ,  , https://mantle.xyz, ETH, ethereum, no
-metis andromeda, legacy ovm, yes, no, ,  , https://www.metis.io/, ETH, alt-da, no
-boba network, legacy ovm, yes, no, ,  , https://boba.network/, ETH, ethereum, no
-curio, unknown, yes, no, caldera,  , https://www.curio.gg/, unknown, unknown, no
-giant leap gaming / underverse, unknown, yes, no, caldera,  , https://giantleap.gg/underverse, unknown, unknown, no
+mantle network, legacy ovm, yes, no, , , https://mantle.xyz, ETH, ethereum, no
+metis andromeda, legacy ovm, yes, no, , , https://www.metis.io/, ETH, alt-da, no
+boba network, legacy ovm, yes, no, , , https://boba.network/, ETH, ethereum, no
+curio, unknown, yes, no, caldera, , https://www.curio.gg/, unknown, unknown, no
+giant leap gaming / underverse, unknown, yes, no, caldera, , https://giantleap.gg/underverse, unknown, unknown, no
