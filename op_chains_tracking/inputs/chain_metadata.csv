@@ -1,7 +1,7 @@
-chain_name,	op_based_version,	has_mods,	is_law_of_chains,	raas_deployer,	rpc_url,	product_website,	gas_token,	da_layer,	superchain_registry
+chain_name, op_based_version, has_mods, is_law_of_chains, raas_deployer,  rpc_url,  product_website,	gas_token,	da_layer,	superchain_registry
 op mainnet,	bedrock, no, yes, , https://mainnet.optimism.io, https://optimism.io, ETH, ethereum, yes
 base,	bedrock, no, yes, , https://mainnet.base.org/, https://base.org, ETH, ethereum, yes
-zora network,	bedrock, no, no, conduit, https://rpc.zora.energy/, https://zora,energy, ETH, ethereum, yes
+zora network,	bedrock, no, no, conduit, https://rpc.zora.energy/, https://zora.energy, ETH, ethereum, yes
 public goods network,	bedrock, no, no, conduit, https://rpc.publicgoods.network/, https://publicgoods.network/, ETH, ethereum, yes
 aevo network,	legacy bedrock, yes, no, conduit, https://api.aevo.xyz, https://www.aevo.xyz/, ETH, ethereum, no
 opbnb,	bedrock, yes, no, , https://opbnb-mainnet-rpc.bnbchain.org, https://opbnb.bnbchain.org/en, BNB, bnb, no
