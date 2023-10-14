@@ -10,7 +10,7 @@ loot chain, bedrock, yes, no, caldera, https://rpc.lootchain.com/http, https://a
 kroma network, bedrock, yes, no, , https://api.kroma.network/, https://kroma.network/, ETH, ethereum, no
 vienna, bedrock, yes, no, caldera, https://vienna.calderachain.xyz/http, https://vienna.caldera.dev/, ETH, unknown, no
 orderly network, bedrock, no, no, conduit, , https://orderly.network/, ETH, ethereum, no
-mantle network, legacy ovm, yes, no, , , https://mantle.xyz, ETH, ethereum, no
+mantle network, legacy ovm, yes, no, , , https://mantle.xyz, MNT, ethereum, no
 metis andromeda, legacy ovm, yes, no, , , https://www.metis.io/, ETH, alt-da, no
 boba network, legacy ovm, yes, no, , , https://boba.network/, ETH, ethereum, no
 curio, unknown, yes, no, caldera, , https://www.curio.gg/, unknown, unknown, no
