@@ -14,7 +14,7 @@ mantle network, legacy ovm, yes, no, , , https://mantle.xyz, MNT, ethereum, no
 metis andromeda, legacy ovm, yes, no, , , https://www.metis.io/, ETH, alt-da, no
 boba network, legacy ovm, yes, no, , , https://boba.network/, ETH, ethereum, no
 curio, unknown, yes, no, caldera, , https://www.curio.gg/, unknown, unknown, no
-giant leap gaming / underverse, unknown, yes, no, caldera, , https://giantleap.gg/underverse, unknown, unknown, no
+giant leap gaming / underverse, , yes, no, caldera, , https://giantleap.gg/underverse, unknown, unknown, no
 kinto, unknown, unknown, no, unknown, , https://kinto.xyz/, unknown, unkonwn, no
 lyra chain, bedrock, no, no, conduit, , https://www.lyra.finance/, ETH, ethereum, no
 ancient 8 chain, bedrock, no, no, conduit, , https://ancient8.gg/, ETH, ethereum, no
