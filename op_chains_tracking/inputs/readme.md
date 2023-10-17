@@ -1,6 +1,9 @@
 ## *Note: This is NOT an "offical" registry.*
 
-All definitions are attributions are WIP and Subject to Change. Please PR to fix any inaccuracies!
+This aims to capture all OP Chains & OP Stack Forks. See [Key Definitions for Chain Segments](https://community.optimism.io/docs/contribute/important-terms/#the-superchain)
+
+
+Please PR to fix any inaccuracies!
 
 
 ---
