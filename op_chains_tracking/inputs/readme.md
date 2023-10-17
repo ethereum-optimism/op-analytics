@@ -14,6 +14,7 @@ Fork the repo, make your changes, then submit a PR and tag @msilb7. Adding missi
 - [L2Beat List](https://l2beat.com/scaling/summary)
 - [Conduit Optimism Repo](https://github.com/conduitxyz/optimism/tree/develop)
 - [Caldera Blog](https://blog.caldera.xyz/)
+- [superchain.eco](https://www.superchain.eco/ecosystem/chains)
 
 
 ### Updates Spec:
