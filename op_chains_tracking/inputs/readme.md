@@ -2,9 +2,8 @@
 
 All definitions are attributions are WIP and Subject to Change. Please PR to fix any inaccuracies!
 
-This list is currently used in [l2_revenue_tracking.ipynb](https://github.com/ethereum-optimism/op-analytics/blob/main/op_chains_tracking/l2_revenue_tracking.ipynb) - hourly pulls of fee vaults pushed to `dune.oplabspbc.dataset_op_stack_chains_cumulative_revenue_snapshots` in Dune.
-
 ### How can I make Updates?
+
 Fork the repo, make your changes, then submit a PR and tag @msilb7. Adding missing chains, filling in "unknowns", and adding mainnet RPCs for chains is most valuable right now.
 
 ### Info Sources:
@@ -18,3 +17,6 @@ Fork the repo, make your changes, then submit a PR and tag @msilb7. Adding missi
 - Re-configure as a yml, or some format that's easier to edit and handle for "flexibility" (i.e. unique attributes & config changes)
 - Core unit is ecosystem, versus chain (i.e. Base Ecosystem, Zora Ecosystem)
 - Allow for multiple chains within one ecosystem (i.e. multiple mainnets, multiple testnets)
+
+### Current Use:
+- [l2_revenue_tracking.ipynb](https://github.com/ethereum-optimism/op-analytics/blob/main/op_chains_tracking/l2_revenue_tracking.ipynb) - hourly pulls of fee vaults pushed to `dune.oplabspbc.dataset_op_stack_chains_cumulative_revenue_snapshots` in Dune.
