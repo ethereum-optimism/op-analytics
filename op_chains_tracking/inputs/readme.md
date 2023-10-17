@@ -13,7 +13,7 @@ Fork the repo, make your changes, then submit a PR and tag @msilb7. Adding missi
 - [Caldera Blog](https://blog.caldera.xyz/)
 
 
-### Updates Spec**:
+### Updates Spec:
 - Re-configure as a yml, or some format that's easier to edit and handle for "flexibility" (i.e. unique attributes & config changes)
 - Core unit is ecosystem, versus chain (i.e. Base Ecosystem, Zora Ecosystem)
 - Allow for multiple chains within one ecosystem (i.e. multiple mainnets, multiple testnets)
