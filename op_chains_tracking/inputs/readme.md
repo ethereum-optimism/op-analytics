@@ -1,6 +1,7 @@
-# *Note: This is NOT an "offical" registry.*
+*Note: This is NOT an "offical" registry.*
 
 All definitions are attributions are WIP and Subject to Change. Please PR to fix any inaccuracies!
+
 
 ---
 
