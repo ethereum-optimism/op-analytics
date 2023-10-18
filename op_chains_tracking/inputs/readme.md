@@ -3,7 +3,7 @@
 This aims to capture all OP Chains & OP Stack Forks. See [Key Definitions for Chain Segments](https://community.optimism.io/docs/contribute/important-terms/#the-superchain)
 
 
-Please PR to fix any inaccuracies!
+Please PR to fix any inaccuracies! *Add ideas to this [GitHub Issue](https://github.com/ethereum-optimism/op-analytics/issues/249).*
 
 
 ---
