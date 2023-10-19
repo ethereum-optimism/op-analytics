@@ -4,6 +4,8 @@ import pandas as pd
 api_string = 'https://api.l2beat.com/api/'
 # https://api.l2beat.com/api/tvl
 # https://api.l2beat.com/api/activity
+# https://l2beat.com/api/tvl/scaling.json
+# https://l2beat.com/api/tvl/optimism.json
 
 def get_l2beat_activity_data():
         api_url = api_string + 'activity'
