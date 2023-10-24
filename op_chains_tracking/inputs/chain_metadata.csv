@@ -1,23 +1,23 @@
-chain_name,op_based_version,has_mods,is_law_of_chains,raas_deployer,rpc_url,product_website,gas_token,da_layer,superchain_registry
-op mainnet, bedrock, no, yes, , https://mainnet.optimism.io, https://optimism.io, ETH, ethereum, yes
-base, bedrock, no, yes, , https://mainnet.base.org/, https://base.org, ETH, ethereum, yes
-zora, bedrock, no, no, conduit, https://rpc.zora.energy/, https://zora.energy, ETH, ethereum, yes
-public goods network, bedrock, no, no, conduit, https://rpc.publicgoods.network/, https://publicgoods.network/, ETH, ethereum, yes
-aevo network, legacy bedrock, yes, no, conduit, https://api.aevo.xyz, https://www.aevo.xyz/, ETH, ethereum, no
-opbnb, bedrock, yes, no, , https://opbnb-mainnet-rpc.bnbchain.org, https://opbnb.bnbchain.org/en, BNB, bnb, no
-manta pacific, bedrock, yes, no, caldera, https://pacific-rpc.manta.network/http, https://pacific.manta.network/, ETH, celestia, no
-loot chain, bedrock, yes, no, caldera, https://rpc.lootchain.com/http, https://adventuregold.org/, ETH, polygon, no
-kroma network, bedrock, yes, no, , https://api.kroma.network/, https://kroma.network/, ETH, ethereum, no
-vienna, bedrock, yes, no, caldera, https://vienna.calderachain.xyz/http, https://vienna.caldera.dev/, ETH, unknown, no
-orderly network, bedrock, no, no, conduit, , https://orderly.network/, ETH, ethereum, no
-mantle network, legacy ovm, yes, no, , , https://mantle.xyz, MNT, ethereum, no
-metis andromeda, legacy ovm, yes, no, , , https://www.metis.io/, ETH, alt-da, no
-boba network, legacy ovm, yes, no, , , https://boba.network/, ETH, ethereum, no
-curio, unknown, yes, no, caldera, , https://www.curio.gg/, unknown, unknown, no
-giant leap gaming / underverse, unknown, yes, no, caldera, , https://giantleap.gg/underverse, unknown, unknown, no
-kinto, unknown, unknown, no, , , https://kinto.xyz/, ETH, ethereum, no
-lyra chain, bedrock, no, no, conduit, , https://www.lyra.finance/, ETH, ethereum, no
-ancient 8 chain, bedrock, no, no, conduit, , https://ancient8.gg/, ETH, ethereum, no
-debank chain, bedrock, yes, no, , , https://debank.com/, unknown, unknown, no
-rollux, unknown, yes, no, , https://rpc.rollux.com, https://rollux.com/, SYS, bitcoin, no
-unidex magma, unknown, unknown, no, , , https://www.unidex.exchange/, unknown, unknown, no
+chain_name,mainnet_chain_id,op_based_version,has_mods,is_law_of_chains,raas_deployer,rpc_url,product_website,gas_token,da_layer,superchain_registry
+op mainnet, 10, bedrock, no, yes, , https://mainnet.optimism.io, https://optimism.io, ETH, ethereum, yes
+base, 8453, bedrock, no, yes, , https://mainnet.base.org/, https://base.org, ETH, ethereum, yes
+zora, 7777777, bedrock, no, no, conduit, https://rpc.zora.energy/, https://zora.energy, ETH, ethereum, yes
+public goods network, 424, bedrock, no, no, conduit, https://rpc.publicgoods.network/, https://publicgoods.network/, ETH, ethereum, yes
+aevo network, , legacy bedrock, yes, no, conduit, https://api.aevo.xyz, https://www.aevo.xyz/, ETH, ethereum, no
+opbnb, 204, bedrock, yes, no, , https://opbnb-mainnet-rpc.bnbchain.org, https://opbnb.bnbchain.org/en, BNB, bnb, no
+manta pacific, 169, bedrock, yes, no, caldera, https://pacific-rpc.manta.network/http, https://pacific.manta.network/, ETH, celestia, no
+loot chain, , bedrock, yes, no, caldera, https://rpc.lootchain.com/http, https://adventuregold.org/, ETH, polygon, no
+kroma network, 255, bedrock, yes, no, , https://api.kroma.network/, https://kroma.network/, ETH, ethereum, no
+vienna, , bedrock, yes, no, caldera, https://vienna.calderachain.xyz/http, https://vienna.caldera.dev/, ETH, unknown, no
+orderly network, 291, bedrock, no, no, conduit, https://rpc.orderly.network, https://orderly.network/, ETH, ethereum, no
+mantle network, 5000, legacy ovm, yes, no, , https://rpc.mantle.xyz, https://mantle.xyz, MNT, ethereum, no
+metis andromeda, 1088, legacy ovm, yes, no, , https://andromeda.metis.io/?owner=1088, https://www.metis.io/, ETH, alt-da, no
+boba network, 288, legacy ovm, yes, no, , https://mainnet.boba.network, https://boba.network/, ETH, ethereum, no
+curio, , unknown, yes, no, caldera, , https://www.curio.gg/, unknown, unknown, no
+giant leap gaming / underverse, , unknown, yes, no, caldera, , https://giantleap.gg/underverse, unknown, unknown, no
+kinto, , unknown, unknown, no, , , https://kinto.xyz/, ETH, ethereum, no
+lyra chain, , bedrock, no, no, conduit, , https://www.lyra.finance/, ETH, ethereum, no
+ancient 8 chain, , bedrock, no, no, conduit, , https://ancient8.gg/, ETH, ethereum, no
+debank chain, 116, bedrock, yes, no, , , https://debank.com/, unknown, unknown, no
+rollux, 570, unknown, yes, no, , https://rpc.rollux.com, https://rollux.com/, SYS, bitcoin, no
+unidex magma, , unknown, unknown, no, , , https://www.unidex.exchange/, unknown, unknown, no
