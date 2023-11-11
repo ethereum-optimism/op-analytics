@@ -30,7 +30,7 @@ mb_url_base = "https://dash.goldsky.com"
 
 # Map Chain Names
 chain_mappings = {
-    'zora': 'Zora Network',
+    'zora': 'Zora',
     'pgn': 'Public Goods Network',
     'base': 'Base Mainnet'
     # Add more mappings as needed
