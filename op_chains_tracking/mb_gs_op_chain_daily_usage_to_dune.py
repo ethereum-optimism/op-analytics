@@ -30,7 +30,7 @@ mb_url_base = "https://dash.goldsky.com"
 
 # Map Chain Names
 chain_mappings = {
-    'zora': 'Zora Network',
+    'zora': 'Zora',
     'pgn': 'Public Goods Network',
     # Add more mappings as needed
 }
@@ -48,9 +48,10 @@ session_id = mb.get_session_id(mb_url_base, mb_name, mb_pw)
 #         session_id = mb.get_mb_session_key(mb_url_base,mb_name,mb_pw)
 
 
-# In[4]:
+# In[1]:
 
 
+# print(session_id)
 if (os.environ["IS_RUNNING_LOCAL"]):
         print(session_id)
 
