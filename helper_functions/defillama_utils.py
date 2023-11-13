@@ -243,7 +243,7 @@ def get_single_tvl(prot, chains, header = header, statuses = statuses, fallback_
         p_df = pd.concat(prod)
         return p_df
 
-def get_protocols_by_chain(chain_name, exclude_cex = True, exclude_chain = True):
+def get_protocols_by_chain(chain_name, exclude_cex = True, exclude_chain = True, return_cols = ''):
         protos = 'https://api.llama.fi/protocols'
 
         category_excludes = []
@@ -267,7 +267,9 @@ def get_protocols_by_chain(chain_name, exclude_cex = True, exclude_chain = True)
         # filter where we have a match on cats
         proto_list = proto_list[proto_list['contains_cats'] == True]
         # clean up
-        proto_list = proto_list[['slug']]
+        if return_cols != '':
+                # proto_list = proto_list[['slug']]
+                proto_list = proto_list[return_cols]
         proto_list = proto_list.reset_index(drop=True)
         # boom
         return proto_list
