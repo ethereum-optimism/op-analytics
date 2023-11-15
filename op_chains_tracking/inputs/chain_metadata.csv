@@ -16,7 +16,7 @@ boba network, 288, legacy ovm, yes, no, , https://mainnet.boba.network, https://
 curio, , unknown, yes, no, caldera, , https://www.curio.gg/, , , unknown, unknown, no
 giant leap gaming / underverse, , unknown, yes, no, caldera, , https://giantleap.gg/underverse, , , unknown, unknown, no
 kinto, , unknown, unknown, no, , , https://kinto.xyz/, , kinto, ETH, ethereum, no
-lyra, 957, bedrock, yes, no, conduit, , https://www.lyra.finance/, , lyrafinance, ETH, ethereum, no
+lyra, 957, bedrock, no, no, conduit, , https://www.lyra.finance/, , lyrafinance, ETH, ethereum, no
 mode network, , bedrock, no, no, conduit, , https://www.mode.network/, , mode, ETH, ethereum, no
 ancient 8 chain, , bedrock, no, no, conduit, , https://ancient8.gg/, , , ETH, ethereum, no
 debank chain, 116, bedrock, yes, no, , , https://debank.com/, , , unknown, unknown, no
