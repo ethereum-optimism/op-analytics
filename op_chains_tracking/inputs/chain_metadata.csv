@@ -1,4 +1,4 @@
-chain_name,mainnet_chain_id,op_based_version,has_mods,is_law_of_chains,raas_deployer,rpc_url,product_website,defillama_slug,l2beat_slug,gas_token,da_layer,superchain_registry
+chain_name,mainnet_chain_id,op_based_version,has_mods,is_law_of_chains,raas_deployer,rpc_url,product_website,defillama_slug,l2beat_slug,gas_token,da_layer,is_in_superchain_registry_repo
 op mainnet, 10, bedrock, no, yes, , https://mainnet.optimism.io, https://optimism.io, Optimism, optimism, ETH, ethereum, yes
 base, 8453, bedrock, no, yes, , https://mainnet.base.org/, https://base.org, Base, base, ETH, ethereum, yes
 zora, 7777777, bedrock, no, , conduit, https://rpc.zora.energy/, https://zora.energy, Zora, zora, ETH, ethereum, yes
@@ -10,7 +10,7 @@ loot chain, , bedrock, yes, , caldera, https://rpc.lootchain.com/http, https://a
 kroma network, 255, bedrock, yes, , , https://api.kroma.network/, https://kroma.network/, Kroma, kroma, ETH, ethereum, no
 vienna, , bedrock, yes, , caldera, https://vienna.calderachain.xyz/http, https://vienna.caldera.dev/, , , ETH, unknown, no
 orderly network, 291, bedrock, no, , conduit, https://rpc.orderly.network, https://orderly.network/, , , ETH, ethereum, no
-mantle network, 5000, legacy ovm, yes, , , https://rpc.mantle.xyz, https://mantle.xyz, Mantle , mantle, MNT, ethereum, no
+mantle network, 5000, legacy ovm, yes, , , https://rpc.mantle.xyz, https://mantle.xyz, Mantle , mantle, MNT, eigenda, no
 metis andromeda, 1088, legacy ovm, yes, , , https://andromeda.metis.io/?owner=1088, https://www.metis.io/, Metis, metis, ETH, alt-da, no
 boba network, 288, legacy ovm, yes, , , https://mainnet.boba.network, https://boba.network/, Boba, bobanetwork, ETH, ethereum, no
 curio, , unknown, yes, , caldera, , https://www.curio.gg/, , , unknown, unknown, no
@@ -24,3 +24,4 @@ rollux, 570, bedrock, yes, , , https://rpc.rollux.com, https://rollux.com/, Roll
 unidex magma, , unknown, unknown, , , , https://www.unidex.exchange/, , , unknown, unknown, no
 stealthchain, , unknown, unknown, , , , stealthchain.org, , stealthchain, unknown, unknown, no
 redstone, , bedrock, yes, , , , https://redstone.xyz/, , , unknown, plasma, no
+celo, , bedrock, yes, no, , , https://celo.org/, , , CELO, eigenda, no
