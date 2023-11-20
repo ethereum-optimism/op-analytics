@@ -18,6 +18,7 @@ Fork the repo, make your changes, then submit a PR and tag @msilb7. Adding missi
 - [Conduit Optimism Repo](https://github.com/conduitxyz/optimism/tree/develop)
 - [Caldera Blog](https://blog.caldera.xyz/)
 - [superchain.eco](https://www.superchain.eco/ecosystem/chains)
+- [Monorepo - Deploy Configs](https://github.com/ethereum-optimism/optimism/tree/develop/packages/contracts-bedrock/deploy-config)
 
 
 ### Updates Spec:
