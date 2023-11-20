@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import requests as r
@@ -25,7 +25,7 @@ mb_url_base = "https://dash.goldsky.com"
 # https://goldsky.notion.site/SHARED-Lightweight-API-Documentation-for-Goldsky-Dashboarding-5cde15ba222844f485c31a4426f6ed53
 
 
-# In[2]:
+# In[ ]:
 
 
 # Map Chain Names
@@ -36,7 +36,7 @@ chain_mappings = {
 }
 
 
-# In[3]:
+# In[ ]:
 
 
 session_id = mb.get_session_id(mb_url_base, mb_name, mb_pw)
@@ -48,7 +48,7 @@ session_id = mb.get_session_id(mb_url_base, mb_name, mb_pw)
 #         session_id = mb.get_mb_session_key(mb_url_base,mb_name,mb_pw)
 
 
-# In[1]:
+# In[ ]:
 
 
 # print(session_id)
@@ -56,7 +56,7 @@ if (os.environ["IS_RUNNING_LOCAL"]):
         print(session_id)
 
 
-# In[5]:
+# In[ ]:
 
 
 # Run Query
@@ -68,7 +68,7 @@ resp = mb.get_mb_query_response(mb_url_base, session_id, query_num, num_retries 
 # print(resp)
 
 
-# In[6]:
+# In[ ]:
 
 
 data_df = pd.DataFrame(resp)
@@ -84,7 +84,7 @@ data_df = data_df.sort_values(by='dt',ascending=False)
 print(data_df.head(5))
 
 
-# In[7]:
+# In[ ]:
 
 
 # Post to Dune API
