@@ -1,0 +1,4 @@
+# -*- coding: utf-8 -*-
+QUORUM = 17
+MIN_AMOUNT = 1500
+TOTAL_AMOUNT = 30000000
