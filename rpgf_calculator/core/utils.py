@@ -26,13 +26,32 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def expand_json(row, idx) -> List:
+def safe_json_loads(s):
     """
-    Normalize and Expand the JSON-like strings.
+    Safely loads a JSON string, replacing single quotes with double quotes, and returns a JSON string.
     """
-    expanded = pd.json_normalize(json.loads(row))
-    expanded["original_index"] = idx
+    try:
+        # Convert to valid JSON format and parse
+        parsed = json.loads(s.replace("'", '"'))
+        return json.dumps(parsed)  # Convert back to JSON string
+    except json.JSONDecodeError:
+        # Handle or log the error if needed
+        return json.dumps([])  # Return an empty JSON array as a string
 
+
+def expand_json(row, idx):
+    """
+    Normalize and Expand the JSON-like strings or already parsed JSON.
+    """
+    if isinstance(row, str):
+        parsed_row = json.loads(row)
+    elif isinstance(row, list):
+        parsed_row = row
+    else:
+        parsed_row = []
+
+    expanded = pd.json_normalize(parsed_row)
+    expanded["original_index"] = idx
     return expanded
 
 
