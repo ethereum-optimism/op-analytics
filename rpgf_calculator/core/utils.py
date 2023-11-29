@@ -86,6 +86,6 @@ class ProjectAllocator:
         scale_factor = self.total_amount / df["median_amount"].sum()
         df["scaled_amount"] = df["median_amount"] * scale_factor
 
-        df = df[df["scaled_amount"] > self.min_amount]
+        df = df[df["scaled_amount"] >= self.min_amount]
 
         return df
