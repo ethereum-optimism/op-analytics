@@ -73,10 +73,12 @@ class ProjectAllocator:
             votes_count=("voter_address", "count"), median_amount=("amount", "median")
         )
 
-        # filter out projects that do not meet the quorum
-        return project_allocation[
+        # if the number of votes is less than the quorum, the project is not eligible
+        project_allocation["is_eligible"] = (
             project_allocation["votes_count"] >= self.quorum
-        ].sort_values("median_amount", ascending=False)
+        )
+
+        return project_allocation.sort_values("median_amount", ascending=False)
 
     # scaling the total to RPGF OP total by project and filter out those with < min OP requirement
     def scale_allocations(self, df) -> pd.DataFrame:
