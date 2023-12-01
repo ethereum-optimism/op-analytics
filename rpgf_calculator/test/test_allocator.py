@@ -22,7 +22,7 @@ def test_calculate_initial_allocation():
     assert result.loc["A", "votes_count"] == 3
     assert result.loc["A", "median_amount"] == 200
     assert result.loc["B", "median_amount"] == 350
-    assert not "C" in result.index
+    assert result.loc["C", "is_eligible"] == False
 
 
 def test_scale_allocations():
