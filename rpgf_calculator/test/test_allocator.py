@@ -58,4 +58,4 @@ def test_scale_allocations_oneby():
 
     assert len(result) == 3
     assert not "D" in result.index
-    assert result.loc["B", "scaled_amount"] == 4000
+    assert result.loc["C", "scaled_amount"] == 1000
