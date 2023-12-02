@@ -98,8 +98,10 @@ class ProjectAllocator:
         """
         amount_eligible = df["median_amount"].sum()
         scale_factor = self.total_amount / amount_eligible
-        print("amount eligible: " + str(amount_eligible))
-        print("scale factor: " + str(scale_factor))
+
+        print("Original Amount Eligible: " + str(amount_eligible))
+        print("Scale Factor: " + str(scale_factor))
+
         df["scaled_amount"] = df["median_amount"] * scale_factor
 
         to_cut = (
@@ -111,7 +113,7 @@ class ProjectAllocator:
         # Print the project_id of the project to cut
         # Since project_id is the index, use index[0] to access it
         try:
-            print("project cut below minimum OP: " + str(to_cut.index[0]))
+            print("Project cut below minimum OP: " + str(to_cut.index[0]))
         except:
             print("No projects below minimum OP")
 
