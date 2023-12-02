@@ -105,7 +105,7 @@ class ProjectAllocator:
         df["scaled_amount"] = df["median_amount"] * scale_factor
 
         to_cut = (
-            df[df["scaled_amount"] <= self.min_amount]
+            df[df["scaled_amount"] < self.min_amount]
             .sort_values(by="scaled_amount")
             .head(1)
         )
@@ -114,9 +114,8 @@ class ProjectAllocator:
         # Since project_id is the index, use index[0] to access it
         try:
             print("Project cut below minimum OP: " + str(to_cut.index[0]))
-        except:
+            df = df[~df.index.isin(to_cut.index)]
+        except to_cut.empty:
             print("No projects below minimum OP")
-
-        df = df[~df.index.isin(to_cut.index)]
 
         return df
