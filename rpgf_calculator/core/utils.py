@@ -91,25 +91,29 @@ class ProjectAllocator:
         df = df[df["scaled_amount"] >= self.min_amount]
 
         return df
-    
+
     def scale_allocations_oneby(self, df) -> pd.DataFrame:
         """
         Scale the allocations to the total amount of OP and filter out those with less than 1500 OP.
         """
         amount_eligible = df["median_amount"].sum()
         scale_factor = self.total_amount / amount_eligible
-        print('amount eligible: ' + str(amount_eligible))
-        print('scale factor: ' + str(scale_factor))
+        print("amount eligible: " + str(amount_eligible))
+        print("scale factor: " + str(scale_factor))
         df["scaled_amount"] = df["median_amount"] * scale_factor
 
-        to_cut = df[df["scaled_amount"] <= self.min_amount].sort_values(by="scaled_amount").head(1)
+        to_cut = (
+            df[df["scaled_amount"] <= self.min_amount]
+            .sort_values(by="scaled_amount")
+            .head(1)
+        )
 
         # Print the project_id of the project to cut
         # Since project_id is the index, use index[0] to access it
         try:
-            print('project cut below minimum OP: ' + str(to_cut.index[0]))
+            print("project cut below minimum OP: " + str(to_cut.index[0]))
         except:
-            print('No projects below minimum OP')
+            print("No projects below minimum OP")
 
         df = df[~df.index.isin(to_cut.index)]
 
