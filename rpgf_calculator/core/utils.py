@@ -96,11 +96,13 @@ class ProjectAllocator:
         """
         Scale the allocations to the total amount of OP and filter out those with less than 1500 OP.
         """
+        log = get_logger()
+
         amount_eligible = df["median_amount"].sum()
         scale_factor = self.total_amount / amount_eligible
 
-        print("Original Amount Eligible: " + str(amount_eligible))
-        print("Scale Factor: " + str(scale_factor))
+        log.info("Check - Original Amount Eligible: " + str(amount_eligible))
+        log.info("Check - Scale Factor: " + str(scale_factor))
 
         df["scaled_amount"] = df["median_amount"] * scale_factor
 
@@ -112,10 +114,10 @@ class ProjectAllocator:
 
         # Print the project_id of the project to cut
         # Since project_id is the index, use index[0] to access it
-        try:
-            print("Project cut below minimum OP: " + str(to_cut.index[0]))
+        if to_cut.empty:
+            log.info("Check - No projects below minimum OP")
+        else:
+            log.info("Check - Project cut below minimum OP: " + str(to_cut.index[0]))
             df = df[~df.index.isin(to_cut.index)]
-        except to_cut.empty:
-            print("No projects below minimum OP")
 
         return df
