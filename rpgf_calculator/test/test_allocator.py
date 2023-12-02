@@ -41,3 +41,21 @@ def test_scale_allocations():
     assert len(result) == 1
     assert not "A" in result.index
     assert result.loc["B", "scaled_amount"] == 4000
+
+
+def test_scale_allocations_oneby():
+    allocator = ProjectAllocator(total_amount=8200, min_amount=2000, quorum=3)
+
+    data = {
+        "project_id": ["A", "B", "C", "D"],
+        "median_amount": [1500, 2000, 500, 100],
+        "votes_count": [3, 3, 4, 3],
+    }
+
+    initial_allocation = pd.DataFrame(data).set_index("project_id")
+
+    result = allocator.scale_allocations_oneby(initial_allocation)
+
+    assert len(result) == 3
+    assert not "D" in result.index
+    assert result.loc["B", "scaled_amount"] == 4000
