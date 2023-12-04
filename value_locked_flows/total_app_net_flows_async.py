@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import pandas as pd
@@ -15,7 +15,7 @@ sys.path.append('../helper_functions')
 import defillama_utils as dfl
 
 
-# In[2]:
+# In[ ]:
 
 
 # date ranges to build charts for
@@ -31,7 +31,7 @@ start_date = datetime.utcnow().date()-timedelta(days=trailing_num_days +1)
 print(start_date)
 
 
-# In[3]:
+# In[ ]:
 
 
 #get all apps > 10 m tvl
@@ -43,7 +43,7 @@ is_fallback_on_raw_tvl = True#False
 df_df = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl, is_fallback_on_raw_tvl)
 
 
-# In[4]:
+# In[ ]:
 
 
 df_df.head()
@@ -52,7 +52,13 @@ df_df.head()
 # df_df_all[(df_df_all['protocol'] == 'app_name') & (df_df_all['date'] == '2023-01-27')]
 
 
-# In[5]:
+# In[ ]:
+
+
+# df_df[(df_df['protocol'] == 'blast')].sort_values(by='date',ascending=False).head(10)
+
+
+# In[ ]:
 
 
 # display(df_df_all)
@@ -63,12 +69,21 @@ df_df['usd_value'] = df_df['usd_value'].astype('float64')
 # display(df_df_all2)
 
 
-# In[6]:
+# In[ ]:
+
+
+# df_df[(df_df['protocol'] == 'blast')].sort_values(by='date',ascending=False).head(15)
+df_backup = df_df.copy()
+# df_df = df_backup.copy()
+
+
+# In[ ]:
 
 
 #create an extra day to handle for tokens dropping to 0
 
 df_df = df_df.fillna(0)
+df_df['token'] = df_df['token'].str.strip()
 df_df_shift = df_df.copy()
 df_df_shift['date'] = df_df_shift['date'] + timedelta(days=1)
 df_df_shift['token_value'] = 0.0
@@ -82,19 +97,22 @@ df_df_shift = None #Free Up memory
 df_df = df_df[df_df['date'] <= pd.to_datetime("today") ]
 
 df_df['token_value'] = df_df['token_value'].fillna(0)
-df_df_all = df_df.groupby(['date','token','chain','protocol','name','category','parent_protocol']).sum(['usd_value','token_value'])
+df_df = df_df.groupby(['date','token','chain','protocol','name','category','parent_protocol']).sum(['usd_value','token_value'])
 
 
 df_df = df_df.reset_index()
 
 
-# In[7]:
+# In[ ]:
 
 
 print("done api")
+# df_df_all = df_df_all.reset_index()
+# df_df_all.head(15)
+# df_df[(df_df['protocol'] == 'blast')].sort_values(by='date',ascending=False).head(15)
 
 
-# In[8]:
+# In[ ]:
 
 
 #filter down a bit so we can do trailing comparisons w/o doing every row
@@ -104,10 +122,15 @@ df_df = df_df[df_df['date'].dt.date >= start_date-timedelta(days=1) ]
 df_df['last_token_value'] = df_df.groupby(['token','protocol','chain'])['token_value'].shift(1)
 #now actually filter
 df_df = df_df[df_df['date'].dt.date >= start_date ]
-# display(df_df[df_df['protocol'] == 'velodrome'])
 
 
-# In[9]:
+# In[ ]:
+
+
+# display(df_df[df_df['protocol'] == 'blast'])
+
+
+# In[ ]:
 
 
 data_df = df_df.copy()
@@ -126,7 +149,7 @@ data_df['price_usd'] = data_df[['price_usd','last_price_usd']].bfill(axis=1).ilo
 data_df.sample(10)
 
 
-# In[10]:
+# In[ ]:
 
 
 # Find what is the latest token price. This sometimes gets skewed if tokens disappear or supply locked goes to 0
@@ -173,7 +196,7 @@ prices_df['latest_price_usd_prot_gt0'] = 0
 # print('done latest_prices_df_prot_gt0')
 
 
-# In[11]:
+# In[ ]:
 
 
 # prices_df['latest_price_usd'] = \
@@ -212,7 +235,7 @@ prices_df = None #Free Up memory
 print("prices map done")
 
 
-# In[12]:
+# In[ ]:
 
 
 # Sort in date order
@@ -231,7 +254,7 @@ data_df = data_df[abs(data_df['net_dollar_flow']) < 50_000_000_000] #50 bil erro
 data_df = data_df[~data_df['net_dollar_flow'].isna()]
 
 
-# In[13]:
+# In[ ]:
 
 
 # Handle for errors where a token price went to zero (i.e. magpie ANKRBNB 2023-01-27)
@@ -240,7 +263,7 @@ data_df['net_dollar_flow_latest_price'] = np.where(
 )
 
 
-# In[14]:
+# In[ ]:
 
 
 # Get net flows by protocol
@@ -268,7 +291,7 @@ except:
 
 
 
-# In[15]:
+# In[ ]:
 
 
 #get latest
@@ -292,7 +315,7 @@ netdf_df = netdf_df[  #( netdf_df['rank_desc'] == 1 ) &\
 # display(netdf_df[netdf_df['protocol']=='makerdao'])
 
 
-# In[16]:
+# In[ ]:
 
 
 # netdf_df.columns
@@ -306,7 +329,7 @@ for i in ('svg','png','html'):
                 os.mkdir(dir_path)
 
 
-# In[17]:
+# In[ ]:
 
 
 summary_df = netdf_df.copy()
@@ -365,7 +388,7 @@ os.makedirs('img_outputs/html', exist_ok=True)
 final_summary_df.to_csv('csv_outputs/latest_tvl_app_trends.csv', mode='w', index=False, encoding='utf-8')
 
 
-# In[18]:
+# In[ ]:
 
 
 print("starting chart outputs")
@@ -438,7 +461,7 @@ for i in drange:
 # fig.update_layout(tickprefix = '$')
 
 
-# In[19]:
+# In[ ]:
 
 
 # ! jupyter nbconvert --to python total_app_net_flows_async.ipynb
