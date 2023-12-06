@@ -26,9 +26,10 @@ mark_at_latest_price = 1 #some errors with missing token prices we need to find 
 
 trailing_num_days = max(drange)
 # print(trailing_num_days)
-
-start_date = datetime.utcnow().date()-timedelta(days=trailing_num_days +1)
+last_date = datetime.utcnow().date()-timedelta(days=1)
+start_date = last_date-timedelta(days=trailing_num_days)
 print(start_date)
+print(last_date)
 
 
 # In[ ]:
@@ -46,7 +47,7 @@ df_df = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl, is_fallback_on_raw
 # In[ ]:
 
 
-df_df.head()
+df_df.tail()
 
 # Test for errors
 # df_df_all[(df_df_all['protocol'] == 'app_name') & (df_df_all['date'] == '2023-01-27')]
@@ -72,8 +73,15 @@ df_df['usd_value'] = df_df['usd_value'].astype('float64')
 # In[ ]:
 
 
+last_date_timestamp = pd.Timestamp(last_date)
+df_df = df_df[df_df['date'] <= last_date_timestamp] #filter out if date carries over too far
+
+
+# In[ ]:
+
+
 # df_df[(df_df['protocol'] == 'blast')].sort_values(by='date',ascending=False).head(15)
-df_backup = df_df.copy()
+# df_backup = df_df.copy()
 # df_df = df_backup.copy()
 
 
@@ -86,6 +94,8 @@ df_df = df_df.fillna(0)
 df_df['token'] = df_df['token'].str.strip()
 df_df_shift = df_df.copy()
 df_df_shift['date'] = df_df_shift['date'] + timedelta(days=1)
+last_date_timestamp = pd.Timestamp(last_date)
+df_df_shift = df_df_shift[df_df_shift['date'] <= last_date_timestamp] #filter out if date carries over too far
 df_df_shift['token_value'] = 0.0
 df_df_shift['usd_value'] = 0.0
 
@@ -127,7 +137,9 @@ df_df = df_df[df_df['date'].dt.date >= start_date ]
 # In[ ]:
 
 
-# display(df_df[df_df['protocol'] == 'blast'])
+# df_df[df_df['date'] == '2023-12-05']
+
+# print(df_df[df_df['date'] == '2023-12-05'].sum())
 
 
 # In[ ]:
@@ -146,7 +158,7 @@ data_df['last_price_usd'] = data_df[['last_price_usd', 'price_usd']].bfill(axis=
 #Forward fill if token drops off
 data_df['price_usd'] = data_df[['price_usd','last_price_usd']].bfill(axis=1).iloc[:, 0]
 
-data_df.sample(10)
+# data_df.sample(10)
 
 
 # In[ ]:
