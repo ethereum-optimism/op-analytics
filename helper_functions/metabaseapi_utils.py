@@ -2,7 +2,9 @@ import requests as r
 import time
 import json
 import os
+import pandas as pd
 import dotenv
+import duneapi_utils as d
 dotenv.load_dotenv()
 
 def get_mb_session_key(url_base, name, pw):
@@ -78,5 +80,58 @@ def get_session_id(mb_url_base, mb_name, mb_pw):
     except: #if not, make one
         print('creating new session')
         session_id = get_mb_session_key(mb_url_base,mb_name,mb_pw)
-    
+    # print(session_id)
+    if (os.environ["IS_RUNNING_LOCAL"]):
+            print(session_id)
     return session_id
+
+def query_response_to_dune(session_id, mb_url_base, query_num, dune_table_name, dune_table_description):
+    # Map Chain Names
+    chain_mappings = {
+        'zora': 'Zora',
+        'pgn': 'Public Goods Network',
+        'base': 'Base Mainnet'
+        # Add more mappings as needed
+    }
+    print('query number: ' + str(query_num))
+
+    resp = get_mb_query_response(mb_url_base, session_id, query_num, num_retries = 3)
+
+    try:
+        data_df = pd.DataFrame(resp)
+    except ValueError as e:
+        print(f"Error in creating DataFrame: {e}")
+
+    print("Type of response:", type(resp))
+
+    if resp:
+        print("First element of the list:", resp[0])
+    else:
+        print("The list is empty")
+
+    keys_set = {frozenset(d.keys()) for d in resp if isinstance(d, dict)}
+    if len(keys_set) > 1:
+        print("Dictionaries have different sets of keys.")
+    else:
+        print("All dictionaries have the same set of keys.")
+
+    standard_keys = set(resp[0].keys())
+
+    for i, dic in enumerate(resp):
+        # Get the set of keys of the current dictionary
+        current_keys = set(dic.keys())
+        
+        # Check if the current set of keys matches the standard set of keys
+        if current_keys != standard_keys:
+            print(f"Dictionary at index {i} does not have the standard set of keys.")
+            print(f"Dictionary keys: {current_keys}")
+            print(f"Standard keys:   {standard_keys}")
+            print(f"Dictionary content: {dic}")
+
+    data_df['chain'] = data_df['chain'].replace(chain_mappings)
+
+    print(data_df.columns)
+
+    print(data_df.sample(5))
+    # Post to Dune API
+    d.write_dune_api_from_pandas(data_df, dune_table_name,dune_table_description)
