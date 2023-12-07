@@ -132,6 +132,6 @@ def query_response_to_dune(session_id, mb_url_base, query_num, dune_table_name, 
 
     print(data_df.columns)
 
-    print(data_df.sample(5))
+    # print(data_df.sample(5))
     # Post to Dune API
     d.write_dune_api_from_pandas(data_df, dune_table_name,dune_table_description)
