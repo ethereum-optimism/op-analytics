@@ -55,6 +55,7 @@ jobs:
         run: pipenv run python read_op_chain_metadata_airtable.py
         env:
           AIRTABLE_DEVREL_BASE_ID: ${{ secrets.AIRTABLE_DEVREL_BASE_ID }}
+          AIRTABLE_API_TOKEN: ${{ secrets.AIRTABLE_API_TOKEN }}
 
 
     # commit_results:
