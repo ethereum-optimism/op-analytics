@@ -1,4 +1,4 @@
-name: OP Stack Metadata Uploads
+name: Airtable->csv&Dune OP Stack Metadata Uploads
 
 # Controls when the workflow will run
 on:
