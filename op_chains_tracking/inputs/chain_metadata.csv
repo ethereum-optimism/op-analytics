@@ -3,7 +3,7 @@ op mainnet, 10, bedrock, no, yes, yes, , https://mainnet.optimism.io, https://op
 base, 8453, bedrock, no, yes, yes, , https://mainnet.base.org/, https://base.org, Base, base, Base, ETH, ethereum, yes
 zora, 7777777, bedrock, no, ,yes, conduit, https://rpc.zora.energy/, https://zora.energy, Zora, zora, Zora, ETH, ethereum, yes
 public goods network, 424, bedrock, no, , yes, conduit, https://rpc.publicgoods.network/, https://publicgoods.network/,  , publicgoodsnetwork, Public Goods Network, ETH, ethereum, yes
-aevo network, , legacy bedrock, yes, , no, conduit, https://api.aevo.xyz, https://www.aevo.xyz/, protocols/Aevo, aevo, , ETH, ethereum, no
+aevo network, , legacy bedrock, yes, , no, conduit, https://api.aevo.xyz, https://www.aevo.xyz/, protocols/aevo, aevo, , ETH, ethereum, no
 opbnb, 204, bedrock, yes, , no, , https://opbnb-mainnet-rpc.bnbchain.org, https://opbnb.bnbchain.org/en, opBNB, opbnb, , BNB, bnb, no
 manta pacific, 169, bedrock, yes, , no, caldera, https://pacific-rpc.manta.network/http, https://pacific.manta.network/, Manta, mantapacific, , ETH, celestia, no
 loot chain, , bedrock, yes, , no, caldera, https://rpc.lootchain.com/http, https://adventuregold.org/,  , , , ETH, polygon, no
