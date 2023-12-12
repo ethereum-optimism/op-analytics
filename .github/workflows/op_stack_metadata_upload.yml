@@ -1,4 +1,4 @@
-name: OP Stack Metadata Uploads
+name: Run OP Stack Metadata Airtable -> csv and Dune
 
 # Controls when the workflow will run
 on:
@@ -56,6 +56,7 @@ jobs:
         env:
           AIRTABLE_DEVREL_BASE_ID: ${{ secrets.AIRTABLE_DEVREL_BASE_ID }}
           AIRTABLE_API_TOKEN: ${{ secrets.AIRTABLE_API_TOKEN }}
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
 
 
     # commit_results:
