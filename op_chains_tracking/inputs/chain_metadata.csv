@@ -6,7 +6,7 @@ public goods network, Public Goods Network, 424, bedrock, no, , yes, conduit, ht
 aevo network, Aevo, , legacy bedrock, yes, , no, conduit, https://api.aevo.xyz, https://www.aevo.xyz/, protocols/aevo, aevo, , ETH, ethereum, no
 opbnb, opBNB, 204, bedrock, yes, , no, , https://opbnb-mainnet-rpc.bnbchain.org, https://opbnb.bnbchain.org/en, opBNB, opbnb, , BNB, bnb, no
 manta pacific, Manta Pacific, 169, bedrock, yes, , no, caldera, https://pacific-rpc.manta.network/http, https://pacific.manta.network/, Manta, mantapacific, , ETH, celestia, no
-loot chain, Loot Chain, bedrock, yes, , no, caldera, https://rpc.lootchain.com/http, https://adventuregold.org/,  , , , ETH, polygon, no
+loot chain, Loot Chain, , bedrock, yes, , no, caldera, https://rpc.lootchain.com/http, https://adventuregold.org/,  , , , ETH, polygon, no
 kroma network, Kroma, 255, bedrock, yes, , no, , https://api.kroma.network/, https://kroma.network/, Kroma, kroma, , ETH, ethereum, no
 vienna, Vienna, , bedrock, yes, , no, caldera, https://vienna.calderachain.xyz/http, https://vienna.caldera.dev/, , , , ETH, unknown, no
 orderly network, Orderly, 291, bedrock, no, , no, conduit, https://rpc.orderly.network, https://orderly.network/, , , , ETH, ethereum, no
