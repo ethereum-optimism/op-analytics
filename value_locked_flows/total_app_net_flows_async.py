@@ -92,8 +92,19 @@ df_df = df_df[df_df['date'] <= last_date_timestamp] #filter out if date carries 
 
 df_df = df_df.fillna(0)
 df_df['token'] = df_df['token'].str.strip()
-df_df_shift = df_df.copy()
-df_df_shift['date'] = df_df_shift['date'] + timedelta(days=1)
+df_df_shift_fwd = df_df.copy()
+# df_df_shift_bwd = df_df.copy()
+df_df_shift_fwd['date'] = df_df_shift_fwd['date'] + timedelta(days=1)
+# df_df_shift_bwd['date'] = df_df_shift_bwd['date'] - timedelta(days=1)
+df_df_shift = df_df_shift_fwd.copy()#pd.concat([df_df_shift_fwd,df_df_shift_bwd])
+
+df_df_shift_fwd = None #Free Up memory
+# df_df_shift_bwd = None #Free Up memory
+
+
+# In[ ]:
+
+
 last_date_timestamp = pd.Timestamp(last_date)
 df_df_shift = df_df_shift[df_df_shift['date'] <= last_date_timestamp] #filter out if date carries over too far
 df_df_shift['token_value'] = 0.0
@@ -119,7 +130,7 @@ df_df = df_df.reset_index()
 print("done api")
 # df_df_all = df_df_all.reset_index()
 # df_df_all.head(15)
-# df_df[(df_df['protocol'] == 'blast')].sort_values(by='date',ascending=False).head(15)
+# df_df[(df_df['protocol'] == 'uniswap-v3')].sort_values(by='date',ascending=False).head(15)
 
 
 # In[ ]:
@@ -250,9 +261,17 @@ print("prices map done")
 # In[ ]:
 
 
+
+
+
+# In[ ]:
+
+
 # Sort in date order
 
 data_df.sort_values(by='date',inplace=True)
+
+data_df['multiple_ratio'] = data_df[['price_usd', 'last_price_usd']].max(axis=1) / data_df[['price_usd', 'last_price_usd']].min(axis=1)
 
 # get net token change
 data_df['net_token_flow'] = data_df['token_value'] - data_df['last_token_value']
@@ -263,7 +282,22 @@ data_df['net_dollar_flow_latest_price'] = data_df['net_token_flow'] * data_df['l
 
 #Filter out weird errors and things
 data_df = data_df[abs(data_df['net_dollar_flow']) < 50_000_000_000] #50 bil error bar for bad prices
+data_df = data_df[data_df['multiple_ratio'] < 1000] #1000x error bar for bad prices
 data_df = data_df[~data_df['net_dollar_flow'].isna()]
+
+
+# In[ ]:
+
+
+# data_df[(data_df['protocol'] == 'uniswap-v3')].sort_values(by=['date','net_dollar_flow_latest_price'],ascending=[False,False]).head(50)
+# data_df
+# data_df[ (data_df['protocol'] == 'uniswap-v3') & (data_df['date'] == '2023-12-11') ].sort_values(by='net_dollar_flow_latest_price',ascending=False)
+
+
+# In[ ]:
+
+
+# data_df[(data_df['protocol'] == 'uniswap-v3')].groupby(['date','chain']).sum().tail(20)
 
 
 # In[ ]:
@@ -301,6 +335,12 @@ except:
         pass
 # display(netdf_df[netdf_df['protocol']=='makerdao'])
 
+
+
+# In[ ]:
+
+
+# netdf_df[(netdf_df['protocol'] == 'uniswap-v3') & (netdf_df['chain'] == 'Ethereum')].tail(20)
 
 
 # In[ ]:
