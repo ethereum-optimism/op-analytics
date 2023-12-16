@@ -38,3 +38,8 @@ Our goal is to generate metrics comparable to what appears on [this OP Chains da
 - **L2 Fees - L2 Base Fee:** `gas_used` * `base_fee_per_gas`
 - **L2 Fees - L2 Priority Fee:** `gas_used` * (`gas_price`-`base_fee_per_gas`)
 - **L2 Fees - Total:** `l1_fee` + (`gas_used`*`gas_price`)
+
+### Later Versions
+- Aggregate Contract Usage Table: # Transactions, Traces, Logs, Gas Used by contract x day
+- Actively Deploying Developers: Unique Deployer Addresses (given spam/noise filters)
+- All Contract Creation Traces + Script to rebuild a version of our [Contract Mapping model in Dune Spellbook](https://github.com/duneanalytics/spellbook/tree/main/models/_sector/contracts/optimism)
