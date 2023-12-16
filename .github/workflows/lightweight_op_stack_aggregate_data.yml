@@ -1,0 +1,32 @@
+name: Install cryo_python
+
+on:
+  push:
+    branches:
+      - main  # You can change this to your desired branch
+
+jobs:
+  install-cryo-python:
+    runs-on: ubuntu-latest  # You can choose a different OS if needed
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x  # Replace '3.x' with the Python version you want to use
+
+      - name: Install Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          export PATH="$HOME/.cargo/bin:$PATH"
+          source $HOME/.cargo/env
+        # The above commands install Rust using rustup. You can adjust the version or use a different method if necessary.
+
+      - name: Install maturin
+        run: pip install maturin
+
+      - name: Install cryo_python
+        run: pip install cryo_python
