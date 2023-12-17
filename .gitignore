@@ -15,3 +15,4 @@ contracts_tracking/inputs/*.csv
 
 op_chains_tracking/lightweight_chain_tracker/.cryo/reports/*
 op_chains_tracking/lightweight_chain_tracker/lyra_output/*
+*.parquet
