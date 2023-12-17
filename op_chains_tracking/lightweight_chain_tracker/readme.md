@@ -16,7 +16,7 @@ Our goal is to generate metrics comparable to what appears on [this OP Chains da
 - **Avg Block Time**: Average time between blocks in seconds (standard config for OP Stack is 2s).
 
 ### L2 Execution Gas (in wei units)
-- **L2 Gas Used by User Transactions**: `gas_used` in `User Transactions`
+- **L2 Gas Used by User Transactions**: `gas_used` in `User Transactions` (also per block)
 - **L2 Gas Used by System Transactions**: `gas_used` in `System Transactions`
 - **L2 Gas Used by Deposit Transactions**: `gas_used` in `Deposit Transactions`
 
