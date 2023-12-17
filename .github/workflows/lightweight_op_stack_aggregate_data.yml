@@ -1,0 +1,31 @@
+name: Install Package from Source
+
+on:
+  push:
+    branches:
+      - main  # Adjust to your main branch name
+
+jobs:
+  install_package:
+    runs-on: ubuntu-latest  # Use an appropriate runner
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+
+    - name: Install the package from source
+      run: |
+        git clone https://github.com/paradigmxyz/cryo
+        cd cryo
+        cargo install --path ./crates/cli
+      env:
+        CARGO_TERM_COLOR: always
+
+    - name: Use the installed package
+      run: |
+        cryo --help
