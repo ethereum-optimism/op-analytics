@@ -176,6 +176,7 @@ data_df['price_usd'] = data_df[['price_usd','last_price_usd']].bfill(axis=1).ilo
 
 
 # Find what is the latest token price. This sometimes gets skewed if tokens disappear or supply locked goes to 0
+
 # Token's recency rank by chain - For calculating prices
 data_df['token_rank_desc'] = data_df.groupby(['chain','token'])['date'].\
                             rank(method='dense',ascending=False).astype(int)
@@ -190,6 +191,11 @@ data_df['token_rank_desc_prot'] = data_df.groupby(['chain','token','protocol'])[
 # get latest price either by protocol or in aggregate
 # if we don't have a match by protocol, then select in aggregate.
 # This section is messy
+
+
+# In[ ]:
+
+
 prices_df = data_df[['chain','protocol','token']].drop_duplicates()
 
 
@@ -232,6 +238,7 @@ prices_df['latest_price_usd_prot_gt0'] = 0
 # Chat GPT did this logic
 # Define the conditions and choices for the numpy.select() function
 conditions = [
+    
     prices_df['latest_price_usd_prot'] > 0,
     prices_df['latest_price_usd_raw'] > 0,
 ]
@@ -245,7 +252,12 @@ default_choice = prices_df['latest_price_usd_prot_gt0']
 
 # Use numpy.select() to select the latest price
 prices_df['latest_price_usd'] = np.select(conditions, choices, default_choice)
+
+# if Latest price is way larger or smaller than last price, fall back on last price (likely token symbol dupes)
+
 print("done price choice")
+
+
 
 #Filter down
 prices_df = prices_df[['chain','protocol','token','latest_price_usd']]
@@ -261,7 +273,13 @@ print("prices map done")
 # In[ ]:
 
 
+# Fix Price Choice Errors
 
+data_df['price_multiple_ratio'] = data_df[['latest_price_usd', 'last_price_usd']].max(axis=1) / data_df[['latest_price_usd', 'last_price_usd']].min(axis=1)
+
+data_df['latest_price_usd'] = np.where(data_df['price_multiple_ratio'] > 1000,  #1000x error bar for bad price
+                                         data_df['last_price_usd'], 
+                                         data_df['latest_price_usd'])
 
 
 # In[ ]:
@@ -289,9 +307,15 @@ data_df = data_df[~data_df['net_dollar_flow'].isna()]
 # In[ ]:
 
 
+# data_df[ (data_df['protocol'] == 'sushi-bentobox') & (data_df['date'] >= '2023-09-10') & (data_df['chain'] == 'Ethereum') & (data_df['token'] == 'VOLT') ]#.sort_values(by='net_dollar_flow_latest_price',ascending=True)
+
+
+# In[ ]:
+
+
 # data_df[(data_df['protocol'] == 'uniswap-v3')].sort_values(by=['date','net_dollar_flow_latest_price'],ascending=[False,False]).head(50)
-# data_df
-# data_df[ (data_df['protocol'] == 'uniswap-v3') & (data_df['date'] == '2023-12-11') ].sort_values(by='net_dollar_flow_latest_price',ascending=False)
+# # data_df
+# data_df[ (data_df['protocol'] == 'sushi-bentobox') & (data_df['date'] == '2023-09-11') & (data_df['chain'] == 'Ethereum') ].sort_values(by='net_dollar_flow_latest_price',ascending=True)
 
 
 # In[ ]:
@@ -340,7 +364,7 @@ except:
 # In[ ]:
 
 
-# netdf_df[(netdf_df['protocol'] == 'uniswap-v3') & (netdf_df['chain'] == 'Ethereum')].tail(20)
+netdf_df[(netdf_df['protocol'] == 'sushi-bentobox') & (netdf_df['chain'] == 'Ethereum')].tail(90).sort_values(by='net_dollar_flow_latest_price', ascending=True)
 
 
 # In[ ]:
