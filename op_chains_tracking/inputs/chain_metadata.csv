@@ -25,5 +25,5 @@ stealthchain, StealthChain, , unknown, unknown, , no, , , stealthchain.org, , st
 redstone, Redstone, , bedrock, yes, , no, , , https://redstone.xyz/, , , , unknown, plasma, no
 celo, Celo, , bedrock, yes, no, no, , , https://celo.org/, , , , CELO, eigenda, no
 swanchain, SwanChain, , bedrock, unknown, no, no, , , https://swanchain.io/, , , , unknown, unknown, no
-hypr network, Hypr, , unknown, yes, no, no, , , https://www.hypr.network/, , , , unknown, celestia, no
+hypr network, Hypr, 1206, unknown, yes, no, no, , https://mainnet-proposer.hypr.network, https://www.hypr.network/, , , , unknown, celestia, no
 metal, Metal, , bedrock, unknown, no, no, , , https://metall2.com/, , metal, , unknown, unknown, no
