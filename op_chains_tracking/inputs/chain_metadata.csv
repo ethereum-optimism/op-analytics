@@ -26,5 +26,5 @@ redstone, Redstone, , bedrock, yes, , no, , , https://redstone.xyz/, , , , unkno
 celo, Celo, , bedrock, yes, , no, , , https://celo.org/, , , , CELO, eigenda, no
 swanchain, SwanChain, , bedrock, unknown, , no, , , https://swanchain.io/, , , , unknown, unknown, no
 hypr network, Hypr, 1206, bedrock develop, yes, , no, , https://mainnet-proposer.hypr.network, https://www.hypr.network/, , , , ETH, celestia, no
-metal, Metal, , bedrock, unknown, no, , , , https://metall2.com/, , metal, , unknown, unknown, no
+metal, Metal, , bedrock, unknown, , no, , , https://metall2.com/, , metal, , unknown, unknown, no
 lisk, Lisk, , bedrock, no, , yes, gelato, , https://lisk.com/, , , , ETH, ethereum, no
