@@ -28,3 +28,4 @@ swanchain, SwanChain, , bedrock, unknown, , no, , , https://swanchain.io/, , , ,
 hypr network, Hypr, 1206, bedrock develop, yes, , no, , https://mainnet-proposer.hypr.network, https://www.hypr.network/, , , , ETH, celestia, no
 metal, Metal, , bedrock, unknown, , no, , , https://metall2.com/, , metal, , unknown, unknown, no
 lisk, Lisk, , bedrock, no, , yes, gelato, , https://lisk.com/, , , , ETH, ethereum, no
+build on bitcoin, BOB, , , yes, , , , , https://www.gobob.xyz/, , , , unknown, ethereum bitcoin, no
