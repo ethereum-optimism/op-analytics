@@ -3,29 +3,30 @@ op mainnet, OP Mainnet, 10, bedrock, no, yes, yes, , https://mainnet.optimism.io
 base, Base, 8453, bedrock, no, yes, yes, , https://mainnet.base.org/, https://base.org, Base, base, Base, ETH, ethereum, yes
 zora, ZORA, 7777777, bedrock, no, ,yes, conduit, https://rpc.zora.energy/, https://zora.energy, Zora, zora, Zora, ETH, ethereum, yes
 public goods network, Public Goods Network, 424, bedrock, no, , yes, conduit, https://rpc.publicgoods.network/, https://publicgoods.network/,  , publicgoodsnetwork, Public Goods Network, ETH, ethereum, yes
-aevo network, Aevo, , legacy bedrock, yes, , no, conduit, https://api.aevo.xyz, https://www.aevo.xyz/, protocols/aevo, aevo, , ETH, ethereum, no
-opbnb, opBNB, 204, bedrock, yes, , no, , https://opbnb-mainnet-rpc.bnbchain.org, https://opbnb.bnbchain.org/en, opBNB, opbnb, , BNB, bnb, no
-manta pacific, Manta Pacific, 169, bedrock, yes, , no, caldera, https://pacific-rpc.manta.network/http, https://pacific.manta.network/, Manta, mantapacific, , ETH, celestia, no
-loot chain, Loot Chain, , bedrock, yes, , no, caldera, https://rpc.lootchain.com/http, https://adventuregold.org/,  , , , ETH, polygon, no
-kroma network, Kroma, 255, bedrock, yes, , no, , https://api.kroma.network/, https://kroma.network/, Kroma, kroma, , ETH, ethereum, no
-vienna, Vienna, , bedrock, yes, , no, caldera, https://vienna.calderachain.xyz/http, https://vienna.caldera.dev/, , , , ETH, unknown, no
+aevo network, Aevo, , legacy bedrock, yes, , , conduit, https://api.aevo.xyz, https://www.aevo.xyz/, protocols/aevo, aevo, , ETH, ethereum, no
+opbnb, opBNB, 204, bedrock, yes, , , , https://opbnb-mainnet-rpc.bnbchain.org, https://opbnb.bnbchain.org/en, opBNB, opbnb, , BNB, bnb, no
+manta pacific, Manta Pacific, 169, bedrock, yes, , , caldera, https://pacific-rpc.manta.network/http, https://pacific.manta.network/, Manta, mantapacific, , ETH, celestia, no
+loot chain, Loot Chain, , bedrock, yes, , , caldera, https://rpc.lootchain.com/http, https://adventuregold.org/,  , , , ETH, polygon, no
+kroma network, Kroma, 255, bedrock, yes, , , , https://api.kroma.network/, https://kroma.network/, Kroma, kroma, , ETH, ethereum, no
+vienna, Vienna, , bedrock, yes, , , caldera, https://vienna.calderachain.xyz/http, https://vienna.caldera.dev/, , , , ETH, unknown, no
 orderly network, Orderly, 291, bedrock, no, , yes, conduit, https://rpc.orderly.network, https://orderly.network/, , , , ETH, ethereum, no
-mantle network, Mantle, 5000, legacy ovm, yes, , no, , https://rpc.mantle.xyz, https://mantle.xyz, Mantle , mantle, , MNT, eigenda, no
-metis andromeda, Metis, 1088, legacy ovm, yes, , no, , https://andromeda.metis.io/?owner=1088, https://www.metis.io/, Metis, metis, , ETH, alt-da, no
-boba network, Boba, 288, legacy ovm, yes, , no, , https://mainnet.boba.network, https://boba.network/, Boba, bobanetwork, , ETH, ethereum, no
-curio, Curio, , unknown, yes, , no, caldera, , https://www.curio.gg/, , , , unknown, unknown, no
+mantle network, Mantle, 5000, legacy ovm, yes, , , , https://rpc.mantle.xyz, https://mantle.xyz, Mantle , mantle, , MNT, eigenda, no
+metis andromeda, Metis, 1088, legacy ovm, yes, , , , https://andromeda.metis.io/?owner=1088, https://www.metis.io/, Metis, metis, , ETH, alt-da, no
+boba network, Boba, 288, legacy ovm, yes, , , , https://mainnet.boba.network, https://boba.network/, Boba, bobanetwork, , ETH, ethereum, no
+curio, Curio, , unknown, yes, , , caldera, , https://www.curio.gg/, , , , unknown, unknown, no
 giant leap gaming / underverse, Giant Leap, , unknown, yes, , no, caldera, , https://giantleap.gg/underverse, , , , unknown, unknown, no
-lyra, Lyra, 957, bedrock, no, , yes, conduit, https://rpc.lyra.finance/, https://www.lyra.finance/, , lyrafinance, , ETH, ethereum, no
+lyra, Lyra, 957, bedrock, no, , , conduit, https://rpc.lyra.finance/, https://www.lyra.finance/, , lyrafinance, , ETH, ethereum celestia, no
 mode network, Mode, 34443, bedrock, no, , yes, conduit, https://mainnet.mode.network, https://www.mode.network/, Mode, mode, , ETH, ethereum, no
-ancient 8 chain, Ancient 8, , bedrock, no, , no, conduit, , https://ancient8.gg/, , , , ETH, ethereum, no
-debank chain, DeBank, 116, bedrock, yes, , no, , , https://debank.com/, , , , unknown, unknown, no
-rollux, Rollux, 570, bedrock, yes, , no, , https://rpc.rollux.com, https://rollux.com/, Rollux, , , SYS, bitcoin, no
-unidex magma, UniDex, , unknown, unknown, , no, , , https://www.unidex.exchange/, , , , unknown, unknown, no
-stealthchain, StealthChain, , unknown, unknown, , no, , , stealthchain.org, , stealthchain, , unknown, unknown, no
-redstone, Redstone, , bedrock, yes, , no, , , https://redstone.xyz/, , , , unknown, plasma, no
-celo, Celo, , bedrock, yes, , no, , , https://celo.org/, , , , CELO, eigenda, no
-swanchain, SwanChain, , bedrock, unknown, , no, , , https://swanchain.io/, , , , unknown, unknown, no
-hypr network, Hypr, 1206, bedrock develop, yes, , no, , https://mainnet-proposer.hypr.network, https://www.hypr.network/, , , , ETH, celestia, no
-metal, Metal, , bedrock, unknown, , no, , , https://metall2.com/, , metal, , unknown, unknown, no
-lisk, Lisk, , bedrock, no, , yes, gelato, , https://lisk.com/, , , , ETH, ethereum, no
-build on bitcoin, BOB, , , yes, , , , , https://www.gobob.xyz/, , , , unknown, ethereum bitcoin, no
+ancient8 chain, Ancient8, , bedrock, no, , , conduit, , https://ancient8.gg/, , ancient, , ETH, ethereum, no
+debank chain, DeBank, 116, bedrock, yes, , , , , https://debank.com/, , debank, , unknown, unknown, no
+rollux, Rollux, 570, bedrock, yes, , , , https://rpc.rollux.com, https://rollux.com/, Rollux, , , SYS, bitcoin, no
+unidex molten, Molten Network, , unknown, unknown, , , caldera, , https://www.unidex.exchange/molten-network, , , , unknown, unknown, no
+stealthchain, StealthChain, , unknown, unknown, , , , , stealthchain.org, , stealthchain, , unknown, unknown, no
+redstone, Redstone, , bedrock, yes, , , , , https://redstone.xyz/, , , , unknown, plasma, no
+celo, Celo, , bedrock, yes, , , , , https://celo.org/, , , , CELO, eigenda, no
+swanchain, SwanChain, , bedrock, unknown, , , , , https://swanchain.io/, , , , unknown, unknown, no
+hypr network, Hypr, 1206, bedrock develop, yes, , , , https://mainnet-proposer.hypr.network, https://www.hypr.network/, , hypr, , ETH, celestia, no
+metal, Metal, , bedrock, unknown, , , , , https://metall2.com/, , metal, , unknown, unknown, no
+lisk, Lisk, , bedrock, no, , yes, gelato, , https://lisk.com/, , lisk, , ETH, ethereum, no
+build on bitcoin, BOB, , , yes, , , , , https://www.gobob.xyz/, , bob, , unknown, ethereum bitcoin, no
+mint blockchain, Mint Blockchain, , , , , , , , https://www.mintchain.io/, , mint, , unknown, unknown, no
