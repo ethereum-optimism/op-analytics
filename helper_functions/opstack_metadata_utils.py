@@ -4,7 +4,7 @@ import numpy as np
 def generate_alignment_column(df):
         conditions = [
         df['is_op_chain'] == 'yes',
-        (df['is_op_chain'] == 'no'),
+        (df['is_op_chain'] != 'yes'),
         df['is_op_chain'].isna()
         ]
 
