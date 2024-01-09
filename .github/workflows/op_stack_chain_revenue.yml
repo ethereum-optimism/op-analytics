@@ -52,7 +52,27 @@ jobs:
 
       - name: Run File
         working-directory: op_chains_tracking
-        run: pipenv run python l2_revenue_tracking.py
+        run: |
+          max_attempts=3
+          attempt=1
+          success=false
+          
+          while [ $attempt -le $max_attempts ]; do
+            echo "Attempt $attempt of $max_attempts:"
+            if pipenv run python l2_revenue_tracking.py; then
+              success=true
+              break
+            else
+              echo "Attempt $attempt failed. Retrying..."
+              attempt=$((attempt+1))
+              sleep 5 # Wait for 5 seconds before retrying
+            fi
+          done
+
+          if [ "$success" = false ]; then
+            echo "All attempts failed."
+            exit 1
+          fi
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
 
