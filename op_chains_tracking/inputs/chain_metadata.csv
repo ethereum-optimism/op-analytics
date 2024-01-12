@@ -17,7 +17,7 @@ curio, Curio, , unknown, yes, , , caldera, , https://www.curio.gg/, , , , unknow
 giant leap gaming / underverse, Giant Leap, , unknown, yes, , no, caldera, , https://giantleap.gg/underverse, , , , unknown, unknown, no
 lyra, Lyra, 957, bedrock, no, , , conduit, https://rpc.lyra.finance/, https://www.lyra.finance/, , lyrafinance, , ETH, ethereum celestia, no
 mode network, Mode, 34443, bedrock, no, , yes, conduit, https://mainnet.mode.network, https://www.mode.network/, Mode, mode, , ETH, ethereum, no
-ancient8 chain, Ancient8, , bedrock, no, , , conduit, , https://ancient8.gg/, , ancient, , ETH, ethereum, no
+ancient8 chain, Ancient8, , bedrock, yes, , , conduit, , https://ancient8.gg/, , ancient, , ETH, celestia, no
 debank chain, DeBank, 116, bedrock, yes, , , , , https://debank.com/, , debank, , unknown, unknown, no
 rollux, Rollux, 570, bedrock, yes, , , , https://rpc.rollux.com, https://rollux.com/, Rollux, , , SYS, bitcoin, no
 unidex molten, Molten Network, , unknown, unknown, , , caldera, , https://www.unidex.exchange/molten-network, , , , unknown, unknown, no
