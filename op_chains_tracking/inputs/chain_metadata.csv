@@ -9,7 +9,7 @@ manta pacific, Manta Pacific, 169, bedrock, yes, , , caldera, https://pacific-rp
 loot chain, Loot Chain, , bedrock, yes, , , caldera, https://rpc.lootchain.com/http, https://adventuregold.org/,  , , , ETH, polygon, no
 kroma network, Kroma, 255, bedrock, yes, , , , https://api.kroma.network/, https://kroma.network/, Kroma, kroma, , ETH, ethereum, no
 vienna, Vienna, , bedrock, yes, , , caldera, https://vienna.calderachain.xyz/http, https://vienna.caldera.dev/, , , , ETH, unknown, no
-orderly network, Orderly, 291, bedrock, no, , yes, conduit, https://rpc.orderly.network, https://orderly.network/, , , , ETH, ethereum, no
+orderly network, Orderly, 291, bedrock, no, , , conduit, https://rpc.orderly.network, https://orderly.network/, , , , ETH, alt-da unknown, no
 mantle network, Mantle, 5000, legacy ovm, yes, , , , https://rpc.mantle.xyz, https://mantle.xyz, Mantle , mantle, , MNT, eigenda, no
 metis andromeda, Metis, 1088, legacy ovm, yes, , , , https://andromeda.metis.io/?owner=1088, https://www.metis.io/, Metis, metis, , ETH, alt-da, no
 boba network, Boba, 288, legacy ovm, yes, , , , https://mainnet.boba.network, https://boba.network/, Boba, bobanetwork, , ETH, ethereum, no
