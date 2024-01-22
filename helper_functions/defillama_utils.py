@@ -5,6 +5,7 @@ import asyncio, aiohttp, nest_asyncio
 from aiohttp_retry import RetryClient, ExponentialRetry
 import requests as r
 import numpy as np
+import json
 import time
 nest_asyncio.apply()
 
@@ -236,8 +237,11 @@ def get_single_tvl(prot, chains, header = header, statuses = statuses, fallback_
                                 # ad['date'] = ad['date'] - timedelta(days=1) #change to eod vs sod
                                 prod.append(ad)
                                 # print(ad)
+        except json.JSONDecodeError as e:
+                raise Exception(f"Error decoding JSON for protocol {prot}: {e}")
         except Exception as e:
-                raise Exception("Could not convert json")
+                raise Exception(f"An unexpected error occurred for protocol {prot}: {e}")
+
         # retry_client.close()
         # print(prod)
         p_df = pd.concat(prod)
