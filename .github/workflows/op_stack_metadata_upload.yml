@@ -56,9 +56,9 @@ jobs:
           pipenv run jupyter nbconvert --to python read_op_chain_metadata_airtable.ipynb
           pipenv run jupyter nbconvert --to python upload_op_stack_forks_to_dune.ipynb
       - name: Generate Chain Metadata
-        working-directory: op_chains_tracking
+        working-directory: op_chains_tracking/inputs
         run: |
-          pipenv run python inputs/clean_chain_metadata.py
+          pipenv run python clean_chain_metadata.py
 
       - name: Run Files
         working-directory: op_chains_tracking
