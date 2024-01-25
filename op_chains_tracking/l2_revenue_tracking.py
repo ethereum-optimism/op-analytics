@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 # Get L2 Revenue and post it to a database (csv in github for now)
@@ -19,7 +19,7 @@ sys.path.pop()
 import os
 
 
-# In[2]:
+# In[ ]:
 
 
 # https://github.com/ethereum-optimism/optimism/blob/b86522036ad11a91de1d1dadb6805167add83326/specs/predeploys.md?plain=1#L50
@@ -32,14 +32,14 @@ fee_vaults = [
 ]
 
 # Aiming to eventually read from superchain-resitry + some non-superchain static adds
-chains_rpcs = pd.read_csv('inputs/chain_metadata.csv')
+chains_rpcs = pd.read_csv('outputs/chain_metadata.csv', na_filter=False)
 # print(chains_rpcs.columns)
-chains_rpcs = chains_rpcs[~(chains_rpcs['rpc_url'] == ' ') & ~(chains_rpcs['op_based_version'].str.contains('legacy'))]
+chains_rpcs = chains_rpcs[~(chains_rpcs['rpc_url'] == '') & ~(chains_rpcs['op_based_version'].str.contains('legacy'))]
 # chains_rpcs = chains_rpcs.values.tolist()
 print(chains_rpcs)
 
 
-# In[3]:
+# In[ ]:
 
 
 # Calculate the method signature hash
@@ -49,7 +49,7 @@ method_id = Web3.keccak(text=method_signature)[:4].hex()
 print(f"Method ID: {method_id}")
 
 
-# In[4]:
+# In[ ]:
 
 
 data_arr = []
@@ -102,7 +102,7 @@ for index, chain in chains_rpcs.iterrows():
 data_df = pd.concat(data_arr)
 
 
-# In[5]:
+# In[ ]:
 
 
 file_path = 'outputs/all_time_revenue_data.csv'
@@ -116,7 +116,7 @@ else:
     data_df.to_csv(file_path, mode='w', header=True, index=False)
 
 
-# In[6]:
+# In[ ]:
 
 
 # Write to Dune Table
