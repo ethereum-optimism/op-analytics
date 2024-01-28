@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 # In[ ]:
 
@@ -14,6 +14,7 @@ import shutil
 
 sys.path.append("../helper_functions")
 import defillama_utils as dfl
+import duneapi_utils as d
 
 
 # In[ ]:
@@ -31,6 +32,10 @@ trailing_num_days = max(drange)
 # print(trailing_num_days)
 last_date = datetime.utcnow().date() - timedelta(days=1)
 start_date = last_date - timedelta(days=trailing_num_days)
+# Convert to Pandas Timestamp
+last_date = pd.to_datetime(last_date)
+start_date = pd.to_datetime(start_date)
+
 print(start_date)
 print(last_date)
 
@@ -38,8 +43,8 @@ print(last_date)
 # In[ ]:
 
 
-# get all apps > 10 m tvl
-min_tvl = 10_000_000
+# get all apps > x m tvl
+min_tvl = 10 * 1e6
 
 # if TVL by token is not available, do we fallback on raw TVL (sensitive to token prices)?
 is_fallback_on_raw_tvl = True  # False
@@ -52,6 +57,7 @@ df_df = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl, is_fallback_on_raw
 
 df_df.tail()
 
+df_df.columns
 # Test for errors
 # df_df_all[(df_df_all['protocol'] == 'app_name') & (df_df_all['date'] == '2023-01-27')]
 
@@ -65,21 +71,23 @@ df_df.tail()
 # In[ ]:
 
 
-# display(df_df_all)
+df_df['date'] = pd.to_datetime(df_df['date'])
 
-# df_df_all2['token_value'] = df_df_all2['token_value'].fillna(0)
-df_df["token_value"] = df_df["token_value"].astype("float64")
-df_df["usd_value"] = df_df["usd_value"].astype("float64")
-# display(df_df_all2)
+df_df = df_df[
+    (df_df['date'] <= last_date) # filter out if date carries over too far
+    & (df_df['date'] >= start_date - timedelta(days=1)) # filter down a bit so we can do trailing comparisons w/o doing every row
+]  
 
 
 # In[ ]:
 
 
-last_date_timestamp = pd.Timestamp(last_date)
-df_df = df_df[
-    df_df["date"] <= last_date_timestamp
-]  # filter out if date carries over too far
+# display(df_df_all)
+
+# df_df_all2['token_value'] = df_df_all2['token_value'].fillna(0)
+df_df['token_value'] = df_df['token_value'].astype("float64")
+df_df['usd_value'] = df_df['usd_value'].astype("float64")
+# display(df_df_all2)
 
 
 # In[ ]:
@@ -99,7 +107,7 @@ df_df = df_df.fillna(0)
 df_df["token"] = df_df["token"].str.strip()
 df_df_shift_fwd = df_df.copy()
 # df_df_shift_bwd = df_df.copy()
-df_df_shift_fwd["date"] = df_df_shift_fwd["date"] + timedelta(days=1)
+df_df_shift_fwd['date'] = df_df_shift_fwd['date'] + timedelta(days=1)
 # df_df_shift_bwd['date'] = df_df_shift_bwd['date'] - timedelta(days=1)
 df_df_shift = df_df_shift_fwd.copy()  # pd.concat([df_df_shift_fwd,df_df_shift_bwd])
 
@@ -110,9 +118,8 @@ df_df_shift_fwd = None  # Free Up memory
 # In[ ]:
 
 
-last_date_timestamp = pd.Timestamp(last_date)
 df_df_shift = df_df_shift[
-    df_df_shift["date"] <= last_date_timestamp
+    df_df_shift['date'] <= last_date
 ]  # filter out if date carries over too far
 df_df_shift["token_value"] = 0.0
 df_df_shift["usd_value"] = 0.0
@@ -122,11 +129,11 @@ df_df = pd.concat([df_df, df_df_shift])
 df_df_shift = None  # Free Up memory
 # print(df_df_all.dtypes)
 
-df_df = df_df[df_df["date"] <= pd.to_datetime("today")]
+df_df = df_df[df_df['date'] <= pd.to_datetime("today")]
 
 df_df["token_value"] = df_df["token_value"].fillna(0)
 df_df = df_df.groupby(
-    ["date", "token", "chain", "protocol", "name", "category", "parent_protocol"]
+    ['date', "token", "chain", "protocol", "name", "category", "parent_protocol"]
 ).sum(["usd_value", "token_value"])
 
 
@@ -145,15 +152,12 @@ print("done api")
 # In[ ]:
 
 
-# filter down a bit so we can do trailing comparisons w/o doing every row
-df_df = df_df[df_df["date"].dt.date >= start_date - timedelta(days=1)]
-
 # trailing comparison
 df_df["last_token_value"] = df_df.groupby(["token", "protocol", "chain"])[
     "token_value"
 ].shift(1)
 # now actually filter
-df_df = df_df[df_df["date"].dt.date >= start_date]
+df_df = df_df[df_df['date'] >= start_date]
 
 
 # In[ ]:
@@ -169,7 +173,7 @@ df_df = df_df[df_df["date"].dt.date >= start_date]
 
 data_df = df_df.copy()
 df_df = None  # Free up memory
-data_df = data_df.sort_values(by="date")
+data_df = data_df.sort_values(by='date')
 
 # price = usd value / num tokens
 data_df["price_usd"] = data_df["usd_value"] / data_df["token_value"]
@@ -194,13 +198,13 @@ data_df["price_usd"] = data_df[["price_usd", "last_price_usd"]].bfill(axis=1).il
 
 # Token's recency rank by chain - For calculating prices
 data_df["token_rank_desc"] = (
-    data_df.groupby(["chain", "token"])["date"]
+    data_df.groupby(["chain", "token"])['date']
     .rank(method="dense", ascending=False)
     .astype(int)
 )
 # Token's recency rank by chain & app - For calculating prices
 data_df["token_rank_desc_prot"] = (
-    data_df.groupby(["chain", "token", "protocol"])["date"]
+    data_df.groupby(["chain", "token", "protocol"])['date']
     .rank(method="dense", ascending=False)
     .astype(int)
 )
@@ -322,7 +326,7 @@ data_df["latest_price_usd"] = np.where(
 
 # Sort in date order
 
-data_df.sort_values(by="date", inplace=True)
+data_df.sort_values(by='date', inplace=True)
 
 data_df["multiple_ratio"] = data_df[["price_usd", "last_price_usd"]].max(
     axis=1
@@ -381,7 +385,7 @@ data_df["net_dollar_flow_latest_price"] = np.where(
 
 netdf_df = data_df[
     [
-        "date",
+        'date',
         "protocol",
         "chain",
         "name",
@@ -396,16 +400,16 @@ netdf_df = data_df[
 data_df = None  # Free Up memory
 
 netdf_df = netdf_df.fillna(0)
-netdf_df = netdf_df.sort_values(by="date", ascending=True)
+netdf_df = netdf_df.sort_values(by='date', ascending=True)
 netdf_df = netdf_df.groupby(
-    ["date", "protocol", "chain", "name", "category", "parent_protocol"]
+    ['date', "protocol", "chain", "name", "category", "parent_protocol"]
 ).sum(
     ["net_dollar_flow", "usd_value", "net_dollar_flow_latest_price"]
 )  ##agg by app
 
 # usd_value is the TVL on a given day
 netdf_df = netdf_df.groupby(
-    ["date", "protocol", "chain", "usd_value", "name", "category", "parent_protocol"]
+    ['date', "protocol", "chain", "usd_value", "name", "category", "parent_protocol"]
 ).sum(["net_dollar_flow", "net_dollar_flow_latest_price"])
 
 netdf_df.reset_index(inplace=True)
@@ -432,7 +436,7 @@ netdf_df[
 
 # get latest
 netdf_df["rank_desc"] = (
-    netdf_df.groupby(["protocol", "chain"])["date"]
+    netdf_df.groupby(["protocol", "chain"])['date']
     .rank(method="dense", ascending=False)
     .astype(int)
 )
@@ -473,7 +477,7 @@ for i in ("svg", "png", "html"):
 
 summary_df = netdf_df.copy()
 
-summary_df = summary_df.sort_values(by="date", ascending=True)
+summary_df = summary_df.sort_values(by='date', ascending=True)
 
 # Mark at latest price if chosen
 if mark_at_latest_price == 1:
@@ -529,7 +533,7 @@ for i in drange:
 summary_df["pct_of_tvl"] = 100 * summary_df["net_dollar_flow"] / summary_df["usd_value"]
 final_summary_df = summary_df[
     (summary_df["rank_desc"] == 1)
-    & (summary_df["date"] >= pd.to_datetime("today") - timedelta(days=7))
+    & (summary_df['date'] >= pd.to_datetime("today") - timedelta(days=7))
 ]
 final_summary_df = final_summary_df[
     final_summary_df["cumul_net_dollar_flow"] < 1e20
@@ -545,7 +549,15 @@ os.makedirs("img_outputs/html", exist_ok=True)
 final_summary_df.to_csv(
     "csv_outputs/latest_tvl_app_trends.csv", mode="w", index=False, encoding="utf-8"
 )
-d.write_dune_api_from_pandas(final_summary_df, "defillama_app_net_flows", "")
+
+
+# In[ ]:
+
+
+# upload to dune
+d.write_dune_api_from_pandas(final_summary_df, "defillama_app_net_flows"
+                                , "Defillama Net App Flows, apps with > $" + str(min_tvl/1e6) + "M TVL currently.")
+
 
 # In[ ]:
 
@@ -660,3 +672,4 @@ for i in drange:
 
 
 # ! jupyter nbconvert --to python total_app_net_flows_async.ipynb
+
