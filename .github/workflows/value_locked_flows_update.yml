@@ -57,6 +57,8 @@ jobs:
       - name: Update Value Flows
         working-directory: value_locked_flows
         run: pipenv run python total_app_net_flows_async.py
+        env:
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
     
     # Today's TVL
       - name: Pull today's TVL
