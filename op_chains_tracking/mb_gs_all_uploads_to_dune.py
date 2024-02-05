@@ -51,6 +51,13 @@ query_nums = [
         #         ,'Daily Contract Usage Data for PGN - > 1 Tx per Day (from Goldsky)']     #https://dash.goldsky.com/question/118-pgn-usage-by-contract-by-day-t365d-gt-1-tx
         ,[244, 'mode_chain_activity_by_day_gs'
                 ,'Basic Daily Activity for OP Chains - Mode (from Goldsky)']    #https://dash.goldsky.com/question/244-mode-activity-by-day
+        ,[247,'mode_usage_by_contract_by_month'
+                ,'Monthly Contract Usage Data for Mode (from Goldsky)']     #https://dash.goldsky.com/question/247-mode-usage-by-contract-by-month
+        ,[248,'mode_usage_by_contract_7_vs_30'
+                ,'Contract Usage Data for Mode - Last 7 days vs prior 30 (from Goldsky)']     #https://dash.goldsky.com/question/248-mode-usage-by-contract-7-vs-30
+        ,[245,'mode_usage_by_contract_by_day_gt_1_tx'
+                ,'Daily Contract Usage Data for Mode - > 1 Tx per Day (from Goldsky)']     #https://dash.goldsky.com/question/245-mode-usage-by-contract-by-day-t365d-gt-1-tx
+
         # ,[78,'opchain_fee_gen_contracts_dev_creators_t365d_gs'
         #         ,'Basic Fee Generating Contracts & Developer Methodology (T365D) for PGN (from Goldsky)']     #https://dash.goldsky.com/question/78-daily-used-contracts-with-traces-logs
         # ,[20,'opchain_active_dev_creators_gs'
