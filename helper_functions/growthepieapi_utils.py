@@ -29,13 +29,15 @@ def get_growthepie_api_data():
             rows = []
             
             # Loop through the data and create a row for each date and chain
-            for chain, chain_data in data['data']['chains'].items():
+            for chain_data in data['data']['chains'].items():
+                chain_origin_key = chain_data[0]
                 chain_name = chain_data['chain_name']
                 types = chain_data['daily']['types'][1:]
                 for daily_data in chain_data['daily']['data']:
+                    print(daily_data)
                     unix_timestamp, *values = daily_data
                     date = pd.to_datetime(unix_timestamp, unit='ms')
-                    row = {'chain_name': chain_name, 'date': date}
+                    row = {'chain_origin_key': chain_origin_key, 'chain_name': chain_name, 'date': date}
                     for i, value in enumerate(values):
                         suffix = f"_{types[i]}" if len(values) > 1 else ''
                         row[f"{metric_name}{suffix}"] = value
