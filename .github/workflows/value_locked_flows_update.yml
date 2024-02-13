@@ -2,9 +2,9 @@ name: Value Locked Flows Update
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule - Once per day at 03:00 am
+  # Run on a schedule - Once per day at 06:00 am
   schedule:
-      - cron: '0 3 * * *'
+      - cron: '0 6 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
