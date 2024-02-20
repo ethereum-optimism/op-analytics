@@ -40,7 +40,21 @@ Simplified address list for Airdrop #3 distribution (Sep 2023). This was distrib
 - `total_op`: Total OP the address received in human readable form (i.e. already decimal adjusted)
 
 #### op_airdrop_3_addresses_detailed_list.csv
-Airdrop #2 (Feb 2023) address lists, category eligibility, and total OP received.  (Sep 2023). This was distributed directly to wallets, and distribution is *ongoing*. See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-3/).
+Airdrop #3 address lists, category eligibility, and total OP received. This was distributed directly to wallets, and distribution is *completed*. See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-3/).
 - `address`: User address
 - `op_amount_decimal_adjusted`: Total OP the address received in human readable form (i.e. already decimal adjusted)
+- `op_amount_raw`: Total OP the address received. *Note: These numbers need to be divided by 10^18 to get to the # of OP (they are in raw form, not decimal adjusted)*
+
+## Airdrop 4
+
+#### op_airdrop_4_simple_list.csv
+Simplified address list for Airdrop #4 distribution (Feb 2024). Claims were available at [optimism.io](https://app.optimism.io/airdrops/4). See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-4/).
+- `address`: User address
+- `total_op`: Total OP the address received in human readable form (i.e. already decimal adjusted)
+
+#### op_airdrop_4_addresses_detailed_list.csv
+Airdrop #4 (Feb 2024) address lists, category eligibility, and total OP received. Claims were available at [optimism.io](https://app.optimism.io/airdrops/4). See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-4/).
+- `address`: User address
+- `is_eligible_...` & `a_`,`b_`,`c_`,`..._`: True/False if the address was eligible for the category.
+- `multiplier`: The address' multiplier bonus, if qualified
 - `op_amount_raw`: Total OP the address received. *Note: These numbers need to be divided by 10^18 to get to the # of OP (they are in raw form, not decimal adjusted)*
