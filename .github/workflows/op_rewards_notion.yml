@@ -77,18 +77,18 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "github-actions"
           git add --all
-          # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
-          if [-z "$(git status --porcelain)"]; then
-             # echo "::set-output name=push::false"
-             echo "push=false" >> $GITHUB_OUTPUT
+          # Correctly checking if there are no changes (note the space after the bracket and before the semicolon)
+          if [ -z "$(git status --porcelain)" ]; then
+             echo "No changes to commit"
+             echo "push=false" >> $GITHUB_ENV
           else
-             git commit -m "GH Action Update - Rewards Tracking" -a
-             # echo "::set-output name=push::true"
-             echo "push=true" >> $GITHUB_OUTPUT
+             git commit -m "GH Action Update - Rewards Tracking"
+             echo "push=true" >> $GITHUB_ENV
           fi
         shell: bash
+
       - name: Push changes
-        if: steps.commit.outputs.push == 'true'
+        if: env.push == 'true'
         uses: ad-m/github-push-action@master
         with:
-           github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
