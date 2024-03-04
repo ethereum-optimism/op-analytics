@@ -42,15 +42,15 @@ jobs:
 
   # Generate .py files for each notebook
       - name: Generate py files
-        working-directory: reference_data
+        working-directory: reference_data/market_data
         run: |
-                pipenv run jupyter nbconvert --to python market_data/get_market_data.ipynb
+                pipenv run jupyter nbconvert --to python get_market_data.ipynb
                   
   # Run py
       - name: Run py
-        working-directory: reference_data
+        working-directory: reference_data/market_data
         run: |
-                pipenv run python market_data/get_market_data.py
+                pipenv run python get_market_data.py
         env:
           L1_ETHERSCAN_API: ${{ secrets.L1_ETHERSCAN_API }}
 
