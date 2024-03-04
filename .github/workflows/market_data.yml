@@ -2,9 +2,9 @@ name: Run Market Data Updates
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule - Every 30 mins
+  # Run on a schedule - Every 5 mins
   schedule:
-      - cron: '1,31 * * * *'
+      - cron: '*/5 * * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -83,7 +83,7 @@ jobs:
               # echo "::set-output name=push::false"
               echo "push=false" >> $GITHUB_OUTPUT
           else
-              git commit -m "GH Action Update - GS MB API" -a
+              git commit -m "GH Action Update - Update Market Data" -a
               # echo "::set-output name=push::true"
               echo "push=true" >> $GITHUB_OUTPUT
           fi
