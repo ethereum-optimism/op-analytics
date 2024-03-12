@@ -41,12 +41,14 @@ query_nums = [
                 ,'PGN All-Time Contracts Created(from Goldsky)']     #https://dash.goldsky.com/question/86-pgn-num-alltime-contracts-created
         ,[21,'opchain_activity_by_day_gs'
                 ,'Basic Daily Activity for OP Chains - Zora & PGN (from Goldsky)']     #https://dash.goldsky.com/question/21-op-chains-activity-by-day
-        # ,[129, 'lyra_chain_activity_by_day_gs'
-        #         ,'Basic Daily Activity for OP Chains - Lyra (from Goldsky)']    #https://dash.goldsky.com/question/129-lyra-activity-by-day
-        # ,[107,'pgn_usage_by_contract_by_month'
-        #         ,'Monthly Contract Usage Data for PGN (from Goldsky)']     #https://dash.goldsky.com/question/107-pgn-usage-by-contract-by-month
-        # ,[106,'pgn_usage_by_contract_7_vs_30'
-        #         ,'Contract Usage Data for PGN - Last 7 days vs prior 30 (from Goldsky)']     #https://dash.goldsky.com/question/106-pgn-usage-by-contract-7-vs-30
+        ,[379, 'pgn_chain_activity_by_day_gs'
+                ,'Basic Daily Activity for OP Chains - PGN (from Goldsky)']    #https://dash.goldsky.com/question/379-lyra-activity-by-day
+        ,[129, 'lyra_chain_activity_by_day_gs'
+                ,'Basic Daily Activity for OP Chains - Lyra (from Goldsky)']    #https://dash.goldsky.com/question/129-lyra-activity-by-day
+        ,[107,'pgn_usage_by_contract_by_month'
+                ,'Monthly Contract Usage Data for PGN (from Goldsky)']     #https://dash.goldsky.com/question/107-pgn-usage-by-contract-by-month
+        ,[106,'pgn_usage_by_contract_7_vs_30'
+                ,'Contract Usage Data for PGN - Last 7 days vs prior 30 (from Goldsky)']     #https://dash.goldsky.com/question/106-pgn-usage-by-contract-7-vs-30
         # ,[118,'pgn_usage_by_contract_by_day_gt_1_tx'
         #         ,'Daily Contract Usage Data for PGN - > 1 Tx per Day (from Goldsky)']     #https://dash.goldsky.com/question/118-pgn-usage-by-contract-by-day-t365d-gt-1-tx
         ,[244, 'mode_chain_activity_by_day_gs'
