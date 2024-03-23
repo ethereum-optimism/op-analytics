@@ -404,8 +404,12 @@ def get_todays_tvl():
         return df
 
 def get_historical_chain_tvl(chain_name):
+        df = pd.DataFrame()
         api_string = 'https://api.llama.fi/v2/historicalChainTvl/' + chain_name
-        tvl = r.get(api_string,headers=header).json()
-        df = pd.DataFrame(tvl)
-        df['date'] = pd.to_datetime(df['date'], unit='s')
+        try:
+                tvl = r.get(api_string,headers=header).json()
+                df = pd.DataFrame(tvl)
+                df['date'] = pd.to_datetime(df['date'], unit='s')
+        except:
+                print('error - historicalChainTvl api')
         return df
