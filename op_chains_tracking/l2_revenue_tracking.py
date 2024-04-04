@@ -107,6 +107,10 @@ data_df = pd.concat(data_arr)
 
 file_path = 'outputs/all_time_revenue_data.csv'
 
+
+# In[ ]:
+
+
 # Check if the file exists
 if os.path.exists(file_path):
     # If file exists, append without writing the header
