@@ -20,6 +20,7 @@ notion-client = "*"
 notion-df = "*"
 web3 = "*"
 pytest = "*"
+dataclasses_json = "*"
 
 [dev-packages]
 
