@@ -9,7 +9,7 @@ def get_growthepie_api_data():
     ###
     # Tx Data
     ###
-    data_url = url_base + 'v1/fundamentals.json'
+    data_url = url_base + 'v1/fundamentals_full.json'
     # Make an HTTP GET request to the URL
     response = requests.get(data_url)
 
