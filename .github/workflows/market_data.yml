@@ -8,69 +8,49 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       
-      # Set up Python and Node.js
-      - name: Set up Python and Node.js
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.10.11'
-        # Set max space to see if this helps with timeouts
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
-        # Update the Node.js version to 16
-          node-version: '16'
 
       - name: Install pipenv
-        run: |
-          python -m pip install pipenv
+        run: python -m pip install pipenv
 
-      # Add any missing dependencied to pipfile
       - name: Install Dependencies
-        run: |
-          pipenv install --dev
+        run: pipenv install --dev
 
-  # Generate .py files for each notebook
-      - name: Generate py files
+      - name: Generate .py files
         working-directory: reference_data/market_data
-        run: |
-                pipenv run jupyter nbconvert --to python get_market_data.ipynb
+        run: pipenv run jupyter nbconvert --to python get_market_data.ipynb
                   
-  # Run py
       - name: Run py
         working-directory: reference_data/market_data
-        run: |
-                pipenv run python get_market_data.py
+        run: pipenv run python get_market_data.py
         env:
           L1_ETHERSCAN_API: ${{ secrets.L1_ETHERSCAN_API }}
 
+      # Handle unstaged changes before pulling
+      - name: Stash changes before pulling
+        run: git stash --include-untracked
 
-    # commit_results:
-      # if: ${{ always() }} #Always runs even if prior jobs fail - so that one bad job doesn't f everything up.
-      # needs: build #[build, app_fees, op_summer, total_tvl_flow]
-      # runs-on: ubuntu-latest
-      # steps:
-        # Runs a set of commands using the runners shell
-        # - name: Run a multi-line script
-        #  run: |
-        #    echo Add other actions to build,
-        #    echo test, and deploy your project.
+      - name: Pull changes with rebase
+        run: git pull --rebase origin main
 
-        # Commit and push output images
-        # https://github.com/orgs/community/discussions/26672
-      - name: Pull changes
-        run: |
-          git pull --rebase origin main
+      - name: Apply stashed changes
+        run: git stash pop || true  # Ignore conflicts
 
       - name: Commit files
         id: commit
@@ -78,18 +58,17 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "github-actions"
           git add --all
-          CHANGED=$(git status --porcelain)
-          if [ -n "$CHANGED" ]; then
+          if git diff --staged --quiet; then
+              echo "No changes to commit."
+              echo "push=false" >> $GITHUB_ENV
+          else
               git commit -m "GH Action Update - Update Market Data"
               echo "push=true" >> $GITHUB_ENV
-          else
-              echo "No changes to commit"
-              echo "push=false" >> $GITHUB_ENV
+          fi
         shell: bash
 
       - name: Push changes
         if: env.push == 'true'
-        run: |
-          git push origin main
+        run: git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
