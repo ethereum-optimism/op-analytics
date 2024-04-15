@@ -52,19 +52,7 @@ def get_all_l2beat_data(granularity='daily'):
 
         return combined_df
 
-# Function to extract data using regular expressions
-def extract_data(text, pattern):
-    match = re.search(pattern, text)
-    return match.group(1) if match else None
 
-# Function to safely get file content, returns None if URL is invalid
-def safe_get_content(url):
-    if url:
-        try:
-            return r.get(url).text
-        except r.exceptions.MissingSchema:
-            print(f"Invalid URL: {url}")
-    return None
 
 def get_l2beat_metadata():
         df = pd.DataFrame(columns=['layer', 'name', 'chainId', 'explorerUrl', 'category', 'slug'])
@@ -82,7 +70,31 @@ def get_l2beat_metadata():
                 'explorerUrl': r"explorerUrl: '([^']+)'",
                 'category': r"display: {[^}]*category: '([^']+)'",
                 'slug': r"slug: '([^']+)'",
+                'imports': r"import {([^}]+)} from"
         }
+        
+        # Function to extract data using regular expressions
+        def extract_data(text, pattern):
+                match = re.search(pattern, text)
+                return match.group(1) if match else None
+        
+        # Function to safely get file content, returns None if URL is invalid
+        def safe_get_content(url):
+                if url:
+                        try:
+                                return r.get(url).text
+                        except r.exceptions.MissingSchema:
+                                print(f"Invalid URL: {url}")
+                return None
+        def extract_imports(text):
+                matches = re.findall(patterns['imports'], text, re.DOTALL)
+                imports = set()
+                for match in matches:
+                        # Split multiple imports in one line and strip whitespace
+                        items = match.split(',')
+                        items = [item.strip() for item in items]
+                        imports.update(items)
+                return list(imports)
 
         # Navigate through the folders
         for folder in folders:
