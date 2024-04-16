@@ -40,76 +40,77 @@
 38,layer2,HYCHAIN,,,Optimium,hychain,hychain
 39,layer2,Hypr,,,,hypr,hypr
 40,layer2,Immutable X,,,Validium,immutablex,immutablex
-41,layer2,Karak,,,,karak,karak
-42,layer2,Kinto,,,,kinto,kinto
-43,layer2,Kroma,255,https://kromascan.com,Optimistic Rollup,kroma,kroma
-44,layer2,Layer2.Finance,,,Optimistic Rollup,layer2finance,layer2finance
-45,layer2,L2.Finance-zk,,,Validium,layer2financezk,layer2financezk
-46,layer2,LightLink,,,Optimium,lightlink,lightlink
-47,layer2,Linea,59144,https://lineascan.build,ZK Rollup,linea,linea
-48,layer2,Lisk,,,Optimistic Rollup,lisk,lisk
-49,layer2,Loopring,,,ZK Rollup,loopring,loopring
-50,layer2,Lyra,957,https://explorer.lyra.finance,,lyra,lyra
-51,layer2,Manta Pacific,169,https://pacific-explorer.manta.network,,mantapacific,mantapacific
-52,layer2,MantleDA,5000,https://explorer.mantle.xyz/,,mantle,mantle
-53,layer2,Metal,,,Optimistic Rollup,metal,metal
-54,layer2,Metis Andromeda,,,Optimium,metis,metis
-55,layer2,Mint,,,Optimistic Rollup,mint,mint
-56,layer2,Mode Network,34443,https://explorer.mode.network,,mode,mode
-57,layer2,Molten Network,,,Optimistic Rollup,molten,molten
-58,layer2,Morph,,,Optimistic Rollup,morph,morph
-59,layer2,Myria,,,Validium,myria,myria
-60,layer2,=nil;,,,ZK Rollup,nil,nil
-61,layer2,Arbitrum Nova,,,Optimium,nova,nova
-62,layer2,OEV Network,,,Validium,oev,oev
-63,layer2,Ola,,,ZK Rollup,ola,ola
-64,layer2,OMG Network,,,Plasma,omgnetwork,omgnetwork
-65,layer2,OP Mainnet,10,https://optimistic.etherscan.io,,optimism,optimism
-66,layer2,Orderly Network,,,,orderly,orderly
-67,layer2,Palm,,,Validium,palm,palm
-68,layer2,Paradex,,,ZK Rollup,paradex,paradex
-69,layer2,Parallel,,,,parallel,parallel
-70,layer2,Polygon Miden,,,ZK Rollup,polygon-miden,polygon-miden
-71,layer2,Polygon PoS 2.0,,,Validium,polygon-pos-2,polygon-pos-2
-72,layer2,Polygon zkEVM,1101,https://zkevm.polygonscan.com,,polygonzkevm,polygonzkevm
-73,layer2,Public Goods Network,,,,publicgoodsnetwork,publicgoodsnetwork
-74,layer2,ReddioEx,,,Validium,reddioex,reddioex
-75,layer2,Reddio zkVM,,,ZK Rollup,reddiozkvm,reddiozkvm
-76,layer2,rhino.fi,,,Validium,rhinofi,rhinofi
-77,layer2,RSS3 Value Sublayer,12553,https://scan.rss3.io/,,rss3,rss3
-78,layer2,Scroll,,,ZK Rollup,scroll,scroll
-79,layer2,Sorare,,,Validium,sorare,sorare
-80,layer2,Specular,,,Optimistic Rollup,specular,specular
-81,layer2,Starknet,,,ZK Rollup,starknet,starknet
-82,layer2,StealthChain,,,Optimistic Rollup,stealthchain,stealthchain
-83,layer2,Swell,,,Validium,swell,swell
-84,layer2,Taiko,,,ZK Rollup,taiko,taiko
-85,layer2,tanX,,,Validium,tanx,tanx
-86,layer2,Ten,,,Optimistic Rollup,ten,ten
-87,layer2,Term Structure,,,ZK Rollup,termstructure,termstructure
-88,layer2,Tradable,,,ZK Rollup,tradable,tradable
-89,layer2,X1,,,Validium,x1,x1
-90,layer2,XCHAIN,,,Validium,xchain,xchain
-91,layer2,Zentachain,,,Optimistic Rollup,zentachain,zentachain
-92,layer2,Zircuit,,,ZK Rollup,zircuit,zircuit
-93,layer2,zkCandy,,,Validium,zkcandy,zkcandy
-94,layer2,ZKFair,42766,https://scan.zkfair.io/,Validium,zkfair,zkfair
-95,layer2,zkLighter,,,Validium,zklighter,zklighter
-96,layer2,ZKSpace,,,ZK Rollup,zkspace,zkspace
-97,layer2,ZKSwap 1.0,,,ZK Rollup,zkswap,zkswap
-98,layer2,ZKSwap 2.0,,,ZK Rollup,zkswap2,zkswap2
-99,layer2,zkSync Era,324,https://explorer.zksync.io/,,zksync-era,zksync-era
-100,layer2,zkSync Lite,,,ZK Rollup,zksync-lite,zksync-lite
-101,layer2,Zora,,,,zora,zora
-102,layer3,Bugless,,,Optimistic Rollup,bugless,bugless
-103,layer3,DCA.Monster,,,Optimistic Rollup,dcamonster,dcamonster
-104,layer3,Degen Chain,,,,degen,degen
-105,layer3,Deri,,,,deri,deri
-106,layer3,MXC zkEVM,,,ZK Rollup,mxc,mxc
-107,layer3,ORB3,,,Optimium,orb3,orb3
-108,layer3,Proof of Play Apex,,,,popapex,popapex
-109,layer3,RARI Chain,,,,rari,rari
-110,layer3,Stack,,,,stack,stack
-111,layer3,Syndicate Frame Chain,,,Optimium,syndicateframe,syndicateframe
-112,layer3,Xai,,,,xai,xai
-113,layer3,zkLink Nova,,,Validium,zklinknova,zklinknova
+41,layer2,Kakarot zkEVM,,,ZK Rollup,kakarotzkevm,kakarotzkevm
+42,layer2,Karak,,,,karak,karak
+43,layer2,Kinto,,,,kinto,kinto
+44,layer2,Kroma,255,https://kromascan.com,Optimistic Rollup,kroma,kroma
+45,layer2,Layer2.Finance,,,Optimistic Rollup,layer2finance,layer2finance
+46,layer2,L2.Finance-zk,,,Validium,layer2financezk,layer2financezk
+47,layer2,LightLink,,,Optimium,lightlink,lightlink
+48,layer2,Linea,59144,https://lineascan.build,ZK Rollup,linea,linea
+49,layer2,Lisk,,,Optimistic Rollup,lisk,lisk
+50,layer2,Loopring,,,ZK Rollup,loopring,loopring
+51,layer2,Lyra,957,https://explorer.lyra.finance,,lyra,lyra
+52,layer2,Manta Pacific,169,https://pacific-explorer.manta.network,,mantapacific,mantapacific
+53,layer2,MantleDA,5000,https://explorer.mantle.xyz/,,mantle,mantle
+54,layer2,Metal,,,Optimistic Rollup,metal,metal
+55,layer2,Metis Andromeda,,,Optimium,metis,metis
+56,layer2,Mint,,,Optimistic Rollup,mint,mint
+57,layer2,Mode Network,34443,https://explorer.mode.network,,mode,mode
+58,layer2,Molten Network,,,Optimistic Rollup,molten,molten
+59,layer2,Morph,,,Optimistic Rollup,morph,morph
+60,layer2,Myria,,,Validium,myria,myria
+61,layer2,=nil;,,,ZK Rollup,nil,nil
+62,layer2,Arbitrum Nova,,,Optimium,nova,nova
+63,layer2,OEV Network,,,Validium,oev,oev
+64,layer2,Ola,,,ZK Rollup,ola,ola
+65,layer2,OMG Network,,,Plasma,omgnetwork,omgnetwork
+66,layer2,OP Mainnet,10,https://optimistic.etherscan.io,,optimism,optimism
+67,layer2,Orderly Network,,,,orderly,orderly
+68,layer2,Palm,,,Validium,palm,palm
+69,layer2,Paradex,,,ZK Rollup,paradex,paradex
+70,layer2,Parallel,,,,parallel,parallel
+71,layer2,Polygon Miden,,,ZK Rollup,polygon-miden,polygon-miden
+72,layer2,Polygon PoS 2.0,,,Validium,polygon-pos-2,polygon-pos-2
+73,layer2,Polygon zkEVM,1101,https://zkevm.polygonscan.com,,polygonzkevm,polygonzkevm
+74,layer2,Public Goods Network,,,,publicgoodsnetwork,publicgoodsnetwork
+75,layer2,ReddioEx,,,Validium,reddioex,reddioex
+76,layer2,Reddio zkVM,,,ZK Rollup,reddiozkvm,reddiozkvm
+77,layer2,rhino.fi,,,Validium,rhinofi,rhinofi
+78,layer2,RSS3 Value Sublayer,12553,https://scan.rss3.io/,,rss3,rss3
+79,layer2,Scroll,,,ZK Rollup,scroll,scroll
+80,layer2,Sorare,,,Validium,sorare,sorare
+81,layer2,Specular,,,Optimistic Rollup,specular,specular
+82,layer2,Starknet,,,ZK Rollup,starknet,starknet
+83,layer2,StealthChain,,,Optimistic Rollup,stealthchain,stealthchain
+84,layer2,Swell,,,Validium,swell,swell
+85,layer2,Taiko,,,ZK Rollup,taiko,taiko
+86,layer2,tanX,,,Validium,tanx,tanx
+87,layer2,Ten,,,Optimistic Rollup,ten,ten
+88,layer2,Term Structure,,,ZK Rollup,termstructure,termstructure
+89,layer2,Tradable,,,ZK Rollup,tradable,tradable
+90,layer2,X1,,,Validium,x1,x1
+91,layer2,XCHAIN,,,Validium,xchain,xchain
+92,layer2,Zentachain,,,Optimistic Rollup,zentachain,zentachain
+93,layer2,Zircuit,,,ZK Rollup,zircuit,zircuit
+94,layer2,zkCandy,,,Validium,zkcandy,zkcandy
+95,layer2,ZKFair,42766,https://scan.zkfair.io/,Validium,zkfair,zkfair
+96,layer2,zkLighter,,,Validium,zklighter,zklighter
+97,layer2,ZKSpace,,,ZK Rollup,zkspace,zkspace
+98,layer2,ZKSwap 1.0,,,ZK Rollup,zkswap,zkswap
+99,layer2,ZKSwap 2.0,,,ZK Rollup,zkswap2,zkswap2
+100,layer2,zkSync Era,324,https://explorer.zksync.io/,,zksync-era,zksync-era
+101,layer2,zkSync Lite,,,ZK Rollup,zksync-lite,zksync-lite
+102,layer2,Zora,,,,zora,zora
+103,layer3,Bugless,,,Optimistic Rollup,bugless,bugless
+104,layer3,DCA.Monster,,,Optimistic Rollup,dcamonster,dcamonster
+105,layer3,Degen Chain,,,,degen,degen
+106,layer3,Deri,,,,deri,deri
+107,layer3,MXC zkEVM,,,ZK Rollup,mxc,mxc
+108,layer3,ORB3,,,Optimium,orb3,orb3
+109,layer3,Proof of Play Apex,,,,popapex,popapex
+110,layer3,RARI Chain,,,,rari,rari
+111,layer3,Stack,,,,stack,stack
+112,layer3,Syndicate Frame Chain,,,Optimium,syndicateframe,syndicateframe
+113,layer3,Xai,,,,xai,xai
+114,layer3,zkLink Nova,,,Validium,zklinknova,zklinknova
