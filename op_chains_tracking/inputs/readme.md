@@ -5,6 +5,8 @@ This aims to capture all OP Chains & OP Stack Forks. See [Key Definitions for Ch
 
 Please PR to fix any inaccuracies! *Add ideas to this [GitHub Issue](https://github.com/ethereum-optimism/op-analytics/issues/249).*
 
+- chain_name: superchain-registry file name (if listed), or an otherwise arbitrary identifier.
+
 
 ---
 
