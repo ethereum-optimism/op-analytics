@@ -45,12 +45,14 @@ jobs:
         working-directory: op_chains_tracking
         run: |
                 pipenv run jupyter nbconvert --to python mb_gs_all_uploads_from_api.ipynb
+                pipenv run jupyter nbconvert unify_daily_chain_data.ipynb
                   
   # Run py
       - name: Run py
         working-directory: op_chains_tracking
         run: |
                 pipenv run python mb_gs_all_uploads_from_api.py
+                pipenv run python unify_daily_chain_data.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           MS_METABASE_NAME: ${{ secrets.MS_METABASE_NAME }}
