@@ -32,16 +32,16 @@ def get_mb_query_response(url_base, session, card_id, num_retries=3):
     for retry in range(num_retries):
         try:
             response = r.post(url, headers=headers)
-            print(response)
+            # print(response)
             response.raise_for_status()  # Check if the request was successful
             response_content = response.json()
             response_content_str = json.dumps(response_content)
-            print(response_content_str[:250])
+            # print(response_content_str[:250])
 
             # Check the type of response_content
             if isinstance(response_content, list) and len(response_content) > 0:
                 # It's a list with at least one element
-                print(response_content[0])
+                # print(response_content[0])
                 # Rest of your code to handle the response
                 return response_content  # If it's a list, return the JSON response
 
@@ -85,15 +85,7 @@ def get_session_id(mb_url_base, mb_name, mb_pw):
             print(session_id)
     return session_id
 
-def query_response_to_dune(session_id, mb_url_base, query_num, dune_table_name, dune_table_description):
-    # Map Chain Names
-    chain_mappings = {
-        'zora': 'Zora',
-        'pgn': 'Public Goods Network',
-        'base': 'Base Mainnet'
-        # Add more mappings as needed
-    }
-    print('query number: ' + str(query_num))
+def query_response_to_df(session_id,mb_url_base, query_num):
 
     resp = get_mb_query_response(mb_url_base, session_id, query_num, num_retries = 3)
 
@@ -101,37 +93,18 @@ def query_response_to_dune(session_id, mb_url_base, query_num, dune_table_name, 
         data_df = pd.DataFrame(resp)
     except ValueError as e:
         print(f"Error in creating DataFrame: {e}")
+    
+    # print("Type of response:", type(resp))
 
-    print("Type of response:", type(resp))
+    return data_df
 
-    if resp:
-        print("First element of the list:", resp[0])
-    else:
-        print("The list is empty")
+def query_response_to_dune(session_id, mb_url_base, query_num, dune_table_name, dune_table_description):
+    # Map Chain Names
+    
+    print('query number: ' + str(query_num))
 
-    keys_set = {frozenset(d.keys()) for d in resp if isinstance(d, dict)}
-    if len(keys_set) > 1:
-        print("Dictionaries have different sets of keys.")
-    else:
-        print("All dictionaries have the same set of keys.")
-
-    standard_keys = set(resp[0].keys())
-
-    for i, dic in enumerate(resp):
-        # Get the set of keys of the current dictionary
-        current_keys = set(dic.keys())
-        
-        # Check if the current set of keys matches the standard set of keys
-        if current_keys != standard_keys:
-            print(f"Dictionary at index {i} does not have the standard set of keys.")
-            print(f"Dictionary keys: {current_keys}")
-            print(f"Standard keys:   {standard_keys}")
-            print(f"Dictionary content: {dic}")
-
-    data_df['chain'] = data_df['chain'].replace(chain_mappings)
-
-    print(data_df.columns)
-
+    data_df = query_response_to_df(session_id,mb_url_base, query_num)
+    
     # print(data_df.sample(5))
     # Post to Dune API
     d.write_dune_api_from_pandas(data_df, dune_table_name,dune_table_description)
