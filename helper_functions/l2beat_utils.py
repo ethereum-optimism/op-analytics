@@ -64,19 +64,22 @@ def get_l2beat_metadata():
         folders = ["chains", "layer2s", "layer3s"]
 
         # Regular expression patterns for parsing TypeScript files
+        # Regular expression patterns for parsing TypeScript files
         patterns = {
                 'name': r"name: '([^']+)'",
                 'chainId': r"chainId: (\d+)",
                 'explorerUrl': r"explorerUrl: '([^']+)'",
-                'category': r"display: {[^}]*category: '([^']+)'",
+                # Improved patterns to match multiline and nested structures
+                'category': r"display:.*?category: '([^']+)'",
                 'slug': r"slug: '([^']+)'",
-                'imports': r"import {([^}]+)} from"
+                'imports': r"import {([^}]+)} from",
+                'provider': r"display:.*?provider: '([^']+)'",  # Updated to handle multiline and nested content
         }
         
         # Function to extract data using regular expressions
         def extract_data(text, pattern):
-                match = re.search(pattern, text)
-                return match.group(1) if match else None
+                match = re.search(pattern, text, re.DOTALL)  # re.DOTALL allows '.' to match newlines
+                return match.group(1).strip() if match else None
         
         # Function to safely get file content, returns None if URL is invalid
         def safe_get_content(url):
@@ -92,10 +95,16 @@ def get_l2beat_metadata():
                 for match in matches:
                         # Split multiple imports in one line and strip whitespace
                         items = match.split(',')
-                        items = [item.strip() for item in items]
+                        items = [item.strip() for item in items if item.strip()]
                         imports.update(items)
                 return list(imports)
-
+        # Function to check if any config item contains the word 'upcoming'
+        def check_upcoming(configs):
+                return any('upcoming' in config.lower() for config in configs)
+        def determine_provider(file_content):
+                if 'opStackL2' in file_content:
+                        return 'OP Stack'
+                return extract_data(file_content, patterns['provider'])
         # Navigate through the folders
         for folder in folders:
         # Request the content of the folder
@@ -113,6 +122,10 @@ def get_l2beat_metadata():
                         file_content = safe_get_content(file['download_url'])
                         if file_content is None:  # Skip if content couldn't be retrieved
                                 continue
+
+                        # Extract imports and check for upcoming keyword
+                        configs = extract_imports(file_content)
+                        is_upcoming = check_upcoming(configs)
                         
                         # Prepare data with extracted values or defaults where necessary
                         data = {
@@ -122,6 +135,9 @@ def get_l2beat_metadata():
                                 'explorerUrl': extract_data(file_content, patterns['explorerUrl']),
                                 'category': extract_data(file_content, patterns['category']) if folder in ['layer2s', 'layer3s'] else None,
                                 'slug': extract_data(file_content, patterns['slug']) or file['name'].replace('.ts', ''),  # Filename as fallback slug
+                                'provider': determine_provider(file_content),  # Determine provider with custom logic
+                                # 'configs': configs,  # Extract imports as a list
+                                'is_upcoming': is_upcoming
                         }
                         
                         # Add the data dictionary to our list
