@@ -74,7 +74,7 @@ def get_session_id(mb_url_base, mb_name, mb_pw):
     try: #do you already have a session
         session_id = os.environ["MS_METABASE_SESSION_ID"]
         # Test if session ID works
-        resp = get_mb_query_response(mb_url_base, session_id, 42, num_retries = 1)
+        resp = get_mb_query_response(mb_url_base, session_id, 42, num_retries = 3)
         if resp is None:
             raise ValueError("Response is None")
     except: #if not, make one
