@@ -17655,7 +17655,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-15 00:00:00,5046709632.3649645,BNB,L1,BSC,chain,,,,Other EVMs,
 2024-04-16 00:00:00,5588513491.939549,BNB,L1,BSC,chain,,,,Other EVMs,
 2024-04-17 00:00:00,5765428415.637326,BNB,L1,BSC,chain,,,,Other EVMs,
-2024-04-18 00:00:00,5962166063.428877,BNB,L1,BSC,chain,,,,Other EVMs,
+2024-04-18 00:00:00,5947427786.854897,BNB,L1,BSC,chain,,,,Other EVMs,
+2024-04-19 00:00:00,5918060374.101561,BNB,L1,BSC,chain,,,,Other EVMs,
 2024-03-25 00:00:00,532062.2195272484,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
 2024-03-26 00:00:00,516165.4531483556,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
 2024-03-27 00:00:00,530467.4176572746,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
