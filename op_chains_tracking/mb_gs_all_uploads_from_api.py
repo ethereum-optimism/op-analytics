@@ -13,6 +13,7 @@ import duneapi_utils as d
 import metabaseapi_utils as mb
 sys.path.pop()
 
+import time
 import os
 import dotenv
 
@@ -49,9 +50,9 @@ session_id = mb.get_session_id(mb_url_base, mb_name, mb_pw)
 
 query_nums = [
         ### Chain, Daily-Level
-         [21,'opchain_activity_by_day_gs'
-                ,'Basic Daily Activity for OP Chains - Zora & PGN (from Goldsky)']     #https://dash.goldsky.com/question/21-op-chains-activity-by-day
-        ,[544, 'base_chain_activity_by_day_gs'
+        #  [21,'opchain_activity_by_day_gs'
+        #         ,'Basic Daily Activity for OP Chains - Zora & PGN (from Goldsky)']     #https://dash.goldsky.com/question/21-op-chains-activity-by-day
+        [544, 'base_chain_activity_by_day_gs'
                 ,'Basic Daily Activity for OP Chains - Base (from Goldsky)']    #https://dash.goldsky.com/question/544-base-activity-by-day
         ,[545, 'zora_chain_activity_by_day_gs'
                 ,'Basic Daily Activity for OP Chains - Zora (from Goldsky)']    #https://dash.goldsky.com/question/544-base-activity-by-day
@@ -90,39 +91,37 @@ query_nums = [
 
 
 for q in query_nums:
-        # try: #don't break if one query fails
-        query_num = q[0]
-        table_name = q[1]
-        table_description = q[2]
+        try: #don't break if one query fails
+                query_num = q[0]
+                table_name = q[1]
+                table_description = q[2]
 
-        print(str(query_num) + ' : ' + table_name)
-        
-        df = mb.query_response_to_df(session_id, mb_url_base, query_num)
+                print(str(query_num) + ' : ' + table_name)
+                
+                df = mb.query_response_to_df(session_id, mb_url_base, query_num)
 
-        # Re-Format MB Dates if necessary
-        try:
-                df['dt'] = pd.to_datetime(df['dt'], format='%B %d, %Y, %H:%M')
+                # Re-Format MB Dates if necessary
+                if 'dt' in df.columns:
+                        df['dt'] = pd.to_datetime(df['dt'], format='%B %d, %Y, %H:%M')
+
+                # Write to csv
+                df.to_csv('outputs/chain_data' + q[1] + '.csv', index=False)
+                
+                # Write to Dune
+                df['chain_raw'] = df['chain']
+                df['chain'] = df['chain'].replace(chain_mappings)
+                d.write_dune_api_from_pandas(df, table_name,table_description)
+
+                df = None #Free memory
+                
+                time.sleep(3)
+
         except:
                 continue
-
-        # Write to csv
-        df.to_csv('outputs/' + q[1] + '.csv', index=False)
-        
-        # Write to Dune
-        df['chain_raw'] = df['chain']
-        df['chain'] = df['chain'].replace(chain_mappings)
-        d.write_dune_api_from_pandas(df, table_name,table_description)
-
-        # except:
-        #         continue
 
 
 # In[ ]:
 
 
-# Testing
-# df = pd.read_csv('outputs/pgn_chain_activity_by_day_gs.csv')
-# df['dt'] = pd.to_datetime(df['dt'], format='%B %d, %Y, %H:%M')
-# df.dtypes
-# df.sample(5)
+print('done mb')
 
