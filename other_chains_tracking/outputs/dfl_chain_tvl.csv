@@ -1010,7 +1010,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,850957129.0276127,OP Mainnet,L2,Optimism,chain,yes,10.0,modern,OP Chain,op
 2024-04-17,837336053.5250852,OP Mainnet,L2,Optimism,chain,yes,10.0,modern,OP Chain,op
 2024-04-18,859699100.0499724,OP Mainnet,L2,Optimism,chain,yes,10.0,modern,OP Chain,op
-2024-04-19,875235735.6712358,OP Mainnet,L2,Optimism,chain,yes,10.0,modern,OP Chain,op
+2024-04-19,876879131.3291659,OP Mainnet,L2,Optimism,chain,yes,10.0,modern,OP Chain,op
+2024-04-20,897990463.9614456,OP Mainnet,L2,Optimism,chain,yes,10.0,modern,OP Chain,op
 2023-06-15,0.0,Base,L2,Base,chain,yes,8453.0,modern,OP Chain,base
 2023-06-16,0.0,Base,L2,Base,chain,yes,8453.0,modern,OP Chain,base
 2023-06-17,0.0,Base,L2,Base,chain,yes,8453.0,modern,OP Chain,base
@@ -1320,7 +1321,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,1485042726.774851,Base,L2,Base,chain,yes,8453.0,modern,OP Chain,base
 2024-04-17,1476898717.1103094,Base,L2,Base,chain,yes,8453.0,modern,OP Chain,base
 2024-04-18,1535776171.1268857,Base,L2,Base,chain,yes,8453.0,modern,OP Chain,base
-2024-04-19,1556614708.0119152,Base,L2,Base,chain,yes,8453.0,modern,OP Chain,base
+2024-04-19,1607152563.3325236,Base,L2,Base,chain,yes,8453.0,modern,OP Chain,base
+2024-04-20,1608795602.4771764,Base,L2,Base,chain,yes,8453.0,modern,OP Chain,base
 2021-08-16,0.0,Arbitrum,L2,Arbitrum,chain,,,,Other EVMs,
 2021-08-17,0.0,Arbitrum,L2,Arbitrum,chain,,,,Other EVMs,
 2021-08-18,0.0,Arbitrum,L2,Arbitrum,chain,,,,Other EVMs,
@@ -2298,7 +2300,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,2578694181.746579,Arbitrum,L2,Arbitrum,chain,,,,Other EVMs,
 2024-04-17,2534675575.9407244,Arbitrum,L2,Arbitrum,chain,,,,Other EVMs,
 2024-04-18,2583007167.6694164,Arbitrum,L2,Arbitrum,chain,,,,Other EVMs,
-2024-04-19,2644120887.6101356,Arbitrum,L2,Arbitrum,chain,,,,Other EVMs,
+2024-04-19,2656466162.452772,Arbitrum,L2,Arbitrum,chain,,,,Other EVMs,
+2024-04-20,2696432357.827371,Arbitrum,L2,Arbitrum,chain,,,,Other EVMs,
 2022-05-11,0.0,ZkSync Era,L2,ZkSync Era,chain,,,,Other EVMs,
 2022-05-12,0.0,ZkSync Era,L2,ZkSync Era,chain,,,,Other EVMs,
 2022-05-13,0.0,ZkSync Era,L2,ZkSync Era,chain,,,,Other EVMs,
@@ -3008,7 +3011,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,155611668.86649078,ZkSync Era,L2,ZkSync Era,chain,,,,Other EVMs,
 2024-04-17,156208648.49541554,ZkSync Era,L2,ZkSync Era,chain,,,,Other EVMs,
 2024-04-18,158607463.0645429,ZkSync Era,L2,ZkSync Era,chain,,,,Other EVMs,
-2024-04-19,158747164.7501597,ZkSync Era,L2,ZkSync Era,chain,,,,Other EVMs,
+2024-04-19,158255293.31300095,ZkSync Era,L2,ZkSync Era,chain,,,,Other EVMs,
+2024-04-20,159854012.46041453,ZkSync Era,L2,ZkSync Era,chain,,,,Other EVMs,
 2023-03-27,114582.1781261249,Polygon zkEVM,L2,Polygon zkEVM,chain,,,,Other EVMs,
 2023-03-28,120249.14345115492,Polygon zkEVM,L2,Polygon zkEVM,chain,,,,Other EVMs,
 2023-03-29,200468.07406138803,Polygon zkEVM,L2,Polygon zkEVM,chain,,,,Other EVMs,
@@ -3398,7 +3402,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,10422836.53652703,Polygon zkEVM,L2,Polygon zkEVM,chain,,,,Other EVMs,
 2024-04-17,10323949.571198843,Polygon zkEVM,L2,Polygon zkEVM,chain,,,,Other EVMs,
 2024-04-18,10556717.886433847,Polygon zkEVM,L2,Polygon zkEVM,chain,,,,Other EVMs,
-2024-04-19,10582015.960573979,Polygon zkEVM,L2,Polygon zkEVM,chain,,,,Other EVMs,
+2024-04-19,10519469.844547145,Polygon zkEVM,L2,Polygon zkEVM,chain,,,,Other EVMs,
+2024-04-20,10772402.218486095,Polygon zkEVM,L2,Polygon zkEVM,chain,,,,Other EVMs,
 2022-12-07,26504.80918828469,Starknet,L2,Starknet,chain,,,,Other EVMs,
 2022-12-08,334555.9187821416,Starknet,L2,Starknet,chain,,,,Other EVMs,
 2022-12-09,336560.8726747218,Starknet,L2,Starknet,chain,,,,Other EVMs,
@@ -3898,7 +3903,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,241801583.41468665,Starknet,L2,Starknet,chain,,,,Other EVMs,
 2024-04-17,240992042.18494928,Starknet,L2,Starknet,chain,,,,Other EVMs,
 2024-04-18,240473751.39852494,Starknet,L2,Starknet,chain,,,,Other EVMs,
-2024-04-19,246259515.17206603,Starknet,L2,Starknet,chain,,,,Other EVMs,
+2024-04-19,239974600.52671316,Starknet,L2,Starknet,chain,,,,Other EVMs,
+2024-04-20,255130847.4232635,Starknet,L2,Starknet,chain,,,,Other EVMs,
 2023-07-18,3140875.706269202,Linea,L2,Linea,chain,,,,Other EVMs,
 2023-07-19,4255243.320090373,Linea,L2,Linea,chain,,,,Other EVMs,
 2023-07-20,5923805.823043093,Linea,L2,Linea,chain,,,,Other EVMs,
@@ -4175,7 +4181,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,223420464.23657098,Linea,L2,Linea,chain,,,,Other EVMs,
 2024-04-17,224408571.08036965,Linea,L2,Linea,chain,,,,Other EVMs,
 2024-04-18,235033596.79809377,Linea,L2,Linea,chain,,,,Other EVMs,
-2024-04-19,240009282.00531793,Linea,L2,Linea,chain,,,,Other EVMs,
+2024-04-19,241400760.6129239,Linea,L2,Linea,chain,,,,Other EVMs,
+2024-04-20,244881220.0952782,Linea,L2,Linea,chain,,,,Other EVMs,
 2023-07-16,32414.631684530246,Mantle,L2,Mantle,chain,,5000.0,legacy ovm,OP Stack Fork,mantle network
 2023-07-17,89608.91712718387,Mantle,L2,Mantle,chain,,5000.0,legacy ovm,OP Stack Fork,mantle network
 2023-07-18,341102.4243787531,Mantle,L2,Mantle,chain,,5000.0,legacy ovm,OP Stack Fork,mantle network
@@ -4454,7 +4461,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,331337926.6971019,Mantle,L2,Mantle,chain,,5000.0,legacy ovm,OP Stack Fork,mantle network
 2024-04-17,341789004.0560055,Mantle,L2,Mantle,chain,,5000.0,legacy ovm,OP Stack Fork,mantle network
 2024-04-18,325542872.25263965,Mantle,L2,Mantle,chain,,5000.0,legacy ovm,OP Stack Fork,mantle network
-2024-04-19,312404527.3008026,Mantle,L2,Mantle,chain,,5000.0,legacy ovm,OP Stack Fork,mantle network
+2024-04-19,308854318.902839,Mantle,L2,Mantle,chain,,5000.0,legacy ovm,OP Stack Fork,mantle network
+2024-04-20,314182048.5717813,Mantle,L2,Mantle,chain,,5000.0,legacy ovm,OP Stack Fork,mantle network
 2023-10-10,86739.96599104765,Scroll,L2,Scroll,chain,,,,Other EVMs,
 2023-10-11,90056.10843412003,Scroll,L2,Scroll,chain,,,,Other EVMs,
 2023-10-12,198744.53300202344,Scroll,L2,Scroll,chain,,,,Other EVMs,
@@ -4647,7 +4655,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,57345358.497770526,Scroll,L2,Scroll,chain,,,,Other EVMs,
 2024-04-17,58923065.001797505,Scroll,L2,Scroll,chain,,,,Other EVMs,
 2024-04-18,60242652.41446224,Scroll,L2,Scroll,chain,,,,Other EVMs,
-2024-04-19,61026853.75523026,Scroll,L2,Scroll,chain,,,,Other EVMs,
+2024-04-19,61579850.63143307,Scroll,L2,Scroll,chain,,,,Other EVMs,
+2024-04-20,62015410.83582233,Scroll,L2,Scroll,chain,,,,Other EVMs,
 2021-11-05,2411118.963008488,Boba,L2,Boba,chain,,288.0,legacy ovm,OP Stack Fork,boba network
 2021-11-06,2509517.507413348,Boba,L2,Boba,chain,,288.0,legacy ovm,OP Stack Fork,boba network
 2021-11-07,3203456.966921229,Boba,L2,Boba,chain,,288.0,legacy ovm,OP Stack Fork,boba network
@@ -5544,7 +5553,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,5463539.38373744,Boba,L2,Boba,chain,,288.0,legacy ovm,OP Stack Fork,boba network
 2024-04-17,5691766.193446608,Boba,L2,Boba,chain,,288.0,legacy ovm,OP Stack Fork,boba network
 2024-04-18,5790952.427898846,Boba,L2,Boba,chain,,288.0,legacy ovm,OP Stack Fork,boba network
-2024-04-19,5827377.6865321025,Boba,L2,Boba,chain,,288.0,legacy ovm,OP Stack Fork,boba network
+2024-04-19,5884541.424709062,Boba,L2,Boba,chain,,288.0,legacy ovm,OP Stack Fork,boba network
+2024-04-20,6020892.351012894,Boba,L2,Boba,chain,,288.0,legacy ovm,OP Stack Fork,boba network
 2021-11-30,399654.2575622118,Metis,L2,Metis,chain,,1088.0,legacy ovm,OP Stack Fork,metis andromeda
 2021-12-01,382360.25797525246,Metis,L2,Metis,chain,,1088.0,legacy ovm,OP Stack Fork,metis andromeda
 2021-12-02,337769.7971080234,Metis,L2,Metis,chain,,1088.0,legacy ovm,OP Stack Fork,metis andromeda
@@ -6416,7 +6426,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,61440791.288284175,Metis,L2,Metis,chain,,1088.0,legacy ovm,OP Stack Fork,metis andromeda
 2024-04-17,61912377.06359125,Metis,L2,Metis,chain,,1088.0,legacy ovm,OP Stack Fork,metis andromeda
 2024-04-18,63980876.0588051,Metis,L2,Metis,chain,,1088.0,legacy ovm,OP Stack Fork,metis andromeda
-2024-04-19,64558804.54598887,Metis,L2,Metis,chain,,1088.0,legacy ovm,OP Stack Fork,metis andromeda
+2024-04-19,66950319.769548066,Metis,L2,Metis,chain,,1088.0,legacy ovm,OP Stack Fork,metis andromeda
+2024-04-20,66745827.8628852,Metis,L2,Metis,chain,,1088.0,legacy ovm,OP Stack Fork,metis andromeda
 2023-08-15,1504004.932207404,opBNB,L2,opBNB,chain,,204.0,modern,OP Stack Fork,opbnb
 2023-08-16,1245384.9847668833,opBNB,L2,opBNB,chain,,204.0,modern,OP Stack Fork,opbnb
 2023-08-17,1957689.577136253,opBNB,L2,opBNB,chain,,204.0,modern,OP Stack Fork,opbnb
@@ -6665,7 +6676,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,23265554.12202596,opBNB,L2,opBNB,chain,,204.0,modern,OP Stack Fork,opbnb
 2024-04-17,23460217.30778047,opBNB,L2,opBNB,chain,,204.0,modern,OP Stack Fork,opbnb
 2024-04-18,23807507.410801664,opBNB,L2,opBNB,chain,,204.0,modern,OP Stack Fork,opbnb
-2024-04-19,24273625.933438838,opBNB,L2,opBNB,chain,,204.0,modern,OP Stack Fork,opbnb
+2024-04-19,24314670.763534825,opBNB,L2,opBNB,chain,,204.0,modern,OP Stack Fork,opbnb
+2024-04-20,24492338.438919455,opBNB,L2,opBNB,chain,,204.0,modern,OP Stack Fork,opbnb
 2023-06-29,263826.26002135675,Rollux,L2,Rollux,chain,,570.0,modern,OP Stack Fork,rollux
 2023-06-30,275660.17239283776,Rollux,L2,Rollux,chain,,570.0,modern,OP Stack Fork,rollux
 2023-07-01,315847.82129170577,Rollux,L2,Rollux,chain,,570.0,modern,OP Stack Fork,rollux
@@ -6961,7 +6973,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,1094564.2976082868,Rollux,L2,Rollux,chain,,570.0,modern,OP Stack Fork,rollux
 2024-04-17,1053491.7402996412,Rollux,L2,Rollux,chain,,570.0,modern,OP Stack Fork,rollux
 2024-04-18,1112366.642096295,Rollux,L2,Rollux,chain,,570.0,modern,OP Stack Fork,rollux
-2024-04-19,1204376.8477751492,Rollux,L2,Rollux,chain,,570.0,modern,OP Stack Fork,rollux
+2024-04-19,1250863.2403684189,Rollux,L2,Rollux,chain,,570.0,modern,OP Stack Fork,rollux
+2024-04-20,1178081.1312383413,Rollux,L2,Rollux,chain,,570.0,modern,OP Stack Fork,rollux
 2023-09-14,4.01656824386728,Manta,L2,Manta,chain,,169.0,modern,OP Stack Fork,manta pacific
 2023-09-15,15.606449810821639,Manta,L2,Manta,chain,,169.0,modern,OP Stack Fork,manta pacific
 2023-09-16,36.089332710781974,Manta,L2,Manta,chain,,169.0,modern,OP Stack Fork,manta pacific
@@ -7180,7 +7193,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,187407137.43927807,Manta,L2,Manta,chain,,169.0,modern,OP Stack Fork,manta pacific
 2024-04-17,179490926.70417506,Manta,L2,Manta,chain,,169.0,modern,OP Stack Fork,manta pacific
 2024-04-18,184102203.62281832,Manta,L2,Manta,chain,,169.0,modern,OP Stack Fork,manta pacific
-2024-04-19,184590893.49245432,Manta,L2,Manta,chain,,169.0,modern,OP Stack Fork,manta pacific
+2024-04-19,182846356.40638947,Manta,L2,Manta,chain,,169.0,modern,OP Stack Fork,manta pacific
+2024-04-20,187448263.07107407,Manta,L2,Manta,chain,,169.0,modern,OP Stack Fork,manta pacific
 2023-09-15,52.0551866676223,Kroma,L2,Kroma,chain,,255.0,modern,OP Stack Fork,kroma network
 2023-09-16,51.86698550214171,Kroma,L2,Kroma,chain,,255.0,modern,OP Stack Fork,kroma network
 2023-09-17,88.91432620812745,Kroma,L2,Kroma,chain,,255.0,modern,OP Stack Fork,kroma network
@@ -7397,7 +7411,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,712203.8107370324,Kroma,L2,Kroma,chain,,255.0,modern,OP Stack Fork,kroma network
 2024-04-17,708494.5151542798,Kroma,L2,Kroma,chain,,255.0,modern,OP Stack Fork,kroma network
 2024-04-18,708933.3452448938,Kroma,L2,Kroma,chain,,255.0,modern,OP Stack Fork,kroma network
-2024-04-19,703068.6184495166,Kroma,L2,Kroma,chain,,255.0,modern,OP Stack Fork,kroma network
+2024-04-19,706648.391712415,Kroma,L2,Kroma,chain,,255.0,modern,OP Stack Fork,kroma network
+2024-04-20,706266.1080885557,Kroma,L2,Kroma,chain,,255.0,modern,OP Stack Fork,kroma network
 2022-08-25,343232.6604299781,Arbitrum Nova,L2,Arbitrum%20Nova,chain,,,,Other EVMs,
 2022-08-26,453865.22560355585,Arbitrum Nova,L2,Arbitrum%20Nova,chain,,,,Other EVMs,
 2022-08-27,453043.138431072,Arbitrum Nova,L2,Arbitrum%20Nova,chain,,,,Other EVMs,
@@ -8001,7 +8016,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16,2006407.4502740912,Arbitrum Nova,L2,Arbitrum%20Nova,chain,,,,Other EVMs,
 2024-04-17,1998549.456421398,Arbitrum Nova,L2,Arbitrum%20Nova,chain,,,,Other EVMs,
 2024-04-18,2011135.8744473427,Arbitrum Nova,L2,Arbitrum%20Nova,chain,,,,Other EVMs,
-2024-04-19,1950973.0314390347,Arbitrum Nova,L2,Arbitrum%20Nova,chain,,,,Other EVMs,
+2024-04-19,1985298.4224597667,Arbitrum Nova,L2,Arbitrum%20Nova,chain,,,,Other EVMs,
+2024-04-20,1985298.4224597667,Arbitrum Nova,L2,Arbitrum%20Nova,chain,,,,Other EVMs,
 2018-04-26,404077.85880970507,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
 2018-04-27,400585.0992127101,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
 2018-04-28,429213.9332003989,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
@@ -9073,22 +9089,22 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2021-03-29,44815712796.77439,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
 2021-03-30,46884281282.53984,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
 2021-03-31,46980943096.169914,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-01,48267319969.40748,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-02,50519208955.876526,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-03,55188639513.94469,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-04,56102641200.80594,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-05,56890133290.942726,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-06,57548989549.83541,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-07,53528699686.95565,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-08,55434712054.742455,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-09,56095747748.40946,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-10,57228211253.59385,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-11,56924411987.123405,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-12,57617279720.6455,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-13,59743476435.205055,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-14,62648446041.90711,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-15,64290234930.070206,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2021-04-16,64516748885.92698,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-01 00:00:00,48267319969.40748,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-02 00:00:00,50519208955.876526,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-03 00:00:00,55188639513.94469,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-04 00:00:00,56102641200.80594,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-05 00:00:00,56890133290.942726,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-06 00:00:00,57548989549.83541,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-07 00:00:00,53528699686.95565,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-08 00:00:00,55434712054.742455,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-09 00:00:00,56095747748.40946,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-10 00:00:00,57228211253.59385,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-11 00:00:00,56924411987.123405,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-12 00:00:00,57617279720.6455,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-13 00:00:00,59743476435.205055,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-14 00:00:00,62648446041.90711,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-15 00:00:00,64290234930.070206,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2021-04-16 00:00:00,64516748885.92698,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
 2021-04-17 00:00:00,64273931465.10623,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
 2021-04-18 00:00:00,59380079107.65394,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
 2021-04-19 00:00:00,59804028889.0714,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
@@ -10187,7 +10203,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16 00:00:00,49258516102.12957,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
 2024-04-17 00:00:00,49024629844.60704,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
 2024-04-18 00:00:00,50794389114.41585,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
-2024-04-19 00:00:00,50793553045.17249,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2024-04-19 00:00:00,50908842192.11781,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
+2024-04-20 00:00:00,51995490134.71825,Ethereum,L1,Ethereum,chain,,,,Other EVMs,
 2021-02-26 00:00:00,598082.5243401506,Fantom,L1,Fantom,chain,,,,Other EVMs,
 2021-02-27 00:00:00,598082.5243401506,Fantom,L1,Fantom,chain,,,,Other EVMs,
 2021-02-28 00:00:00,598082.5243401506,Fantom,L1,Fantom,chain,,,,Other EVMs,
@@ -11336,7 +11353,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16 00:00:00,109259423.59771697,Fantom,L1,Fantom,chain,,,,Other EVMs,
 2024-04-17 00:00:00,111512426.29414828,Fantom,L1,Fantom,chain,,,,Other EVMs,
 2024-04-18 00:00:00,129846107.60623638,Fantom,L1,Fantom,chain,,,,Other EVMs,
-2024-04-19 00:00:00,192992675.5698744,Fantom,L1,Fantom,chain,,,,Other EVMs,
+2024-04-19 00:00:00,120291678.7252454,Fantom,L1,Fantom,chain,,,,Other EVMs,
+2024-04-20 00:00:00,127565711.33905762,Fantom,L1,Fantom,chain,,,,Other EVMs,
 2021-02-02 00:00:00,124.42210586124264,Avalanche,L1,Avalanche,chain,,,,Other EVMs,
 2021-02-03 00:00:00,3612845.876971287,Avalanche,L1,Avalanche,chain,,,,Other EVMs,
 2021-02-04 00:00:00,4860422.805771543,Avalanche,L1,Avalanche,chain,,,,Other EVMs,
@@ -12509,7 +12527,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16 00:00:00,937232166.8394296,Avalanche,L1,Avalanche,chain,,,,Other EVMs,
 2024-04-17 00:00:00,935604773.2465408,Avalanche,L1,Avalanche,chain,,,,Other EVMs,
 2024-04-18 00:00:00,950325700.9735475,Avalanche,L1,Avalanche,chain,,,,Other EVMs,
-2024-04-19 00:00:00,960281185.8370425,Avalanche,L1,Avalanche,chain,,,,Other EVMs,
+2024-04-19 00:00:00,967504524.1485772,Avalanche,L1,Avalanche,chain,,,,Other EVMs,
+2024-04-20 00:00:00,1005647219.5838007,Avalanche,L1,Avalanche,chain,,,,Other EVMs,
 2021-02-16 00:00:00,65.29729145294509,Gnosis,L1,Gnosis,chain,,,,Other EVMs,
 2021-02-17 00:00:00,65.46769187930617,Gnosis,L1,Gnosis,chain,,,,Other EVMs,
 2021-02-18 00:00:00,115.31135952002876,Gnosis,L1,Gnosis,chain,,,,Other EVMs,
@@ -13668,7 +13687,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16 00:00:00,296910188.60107964,Gnosis,L1,Gnosis,chain,,,,Other EVMs,
 2024-04-17 00:00:00,294817230.8651481,Gnosis,L1,Gnosis,chain,,,,Other EVMs,
 2024-04-18 00:00:00,299484423.6467213,Gnosis,L1,Gnosis,chain,,,,Other EVMs,
-2024-04-19 00:00:00,298484119.03407425,Gnosis,L1,Gnosis,chain,,,,Other EVMs,
+2024-04-19 00:00:00,298921446.2533598,Gnosis,L1,Gnosis,chain,,,,Other EVMs,
+2024-04-20 00:00:00,303056534.3419529,Gnosis,L1,Gnosis,chain,,,,Other EVMs,
 2020-05-21 00:00:00,93528762.50572006,Celo,L1,Celo,chain,,,,Other EVMs,
 2020-05-22 00:00:00,97339661.00547807,Celo,L1,Celo,chain,,,,Other EVMs,
 2020-05-23 00:00:00,112578214.3394542,Celo,L1,Celo,chain,,,,Other EVMs,
@@ -15098,7 +15118,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16 00:00:00,125876738.21956159,Celo,L1,Celo,chain,,,,Other EVMs,
 2024-04-17 00:00:00,125538022.9537117,Celo,L1,Celo,chain,,,,Other EVMs,
 2024-04-18 00:00:00,131080997.4705686,Celo,L1,Celo,chain,,,,Other EVMs,
-2024-04-19 00:00:00,133845158.98408112,Celo,L1,Celo,chain,,,,Other EVMs,
+2024-04-19 00:00:00,131925515.10701309,Celo,L1,Celo,chain,,,,Other EVMs,
+2024-04-20 00:00:00,137174799.5081471,Celo,L1,Celo,chain,,,,Other EVMs,
 2020-10-08 00:00:00,2495.3418139221267,Polygon,L1,Polygon,chain,,,,Other EVMs,
 2020-10-09 00:00:00,48671.79240777189,Polygon,L1,Polygon,chain,,,,Other EVMs,
 2020-10-10 00:00:00,142895.41101674622,Polygon,L1,Polygon,chain,,,,Other EVMs,
@@ -16388,7 +16409,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16 00:00:00,899899107.7379166,Polygon,L1,Polygon,chain,,,,Other EVMs,
 2024-04-17 00:00:00,890063554.083224,Polygon,L1,Polygon,chain,,,,Other EVMs,
 2024-04-18 00:00:00,906683403.5855124,Polygon,L1,Polygon,chain,,,,Other EVMs,
-2024-04-19 00:00:00,909947471.9043365,Polygon,L1,Polygon,chain,,,,Other EVMs,
+2024-04-19 00:00:00,926344726.7124918,Polygon,L1,Polygon,chain,,,,Other EVMs,
+2024-04-20 00:00:00,935356034.4980447,Polygon,L1,Polygon,chain,,,,Other EVMs,
 2020-10-30 00:00:00,12873961.84,BNB,L1,BSC,chain,,,,Other EVMs,
 2020-10-31 00:00:00,12873961.84,BNB,L1,BSC,chain,,,,Other EVMs,
 2020-11-01 00:00:00,13037818.91,BNB,L1,BSC,chain,,,,Other EVMs,
@@ -17656,7 +17678,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16 00:00:00,5588513491.939549,BNB,L1,BSC,chain,,,,Other EVMs,
 2024-04-17 00:00:00,5765428415.637326,BNB,L1,BSC,chain,,,,Other EVMs,
 2024-04-18 00:00:00,5917558486.401446,BNB,L1,BSC,chain,,,,Other EVMs,
-2024-04-19 00:00:00,5982879822.883138,BNB,L1,BSC,chain,,,,Other EVMs,
+2024-04-19 00:00:00,6087068261.395771,BNB,L1,BSC,chain,,,,Other EVMs,
+2024-04-20 00:00:00,6119149911.562029,BNB,L1,BSC,chain,,,,Other EVMs,
 2024-03-25 00:00:00,532062.2195272484,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
 2024-03-26 00:00:00,516165.4531483556,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
 2024-03-27 00:00:00,530467.4176572746,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
@@ -17682,7 +17705,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16 00:00:00,2412929.0307098934,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
 2024-04-17 00:00:00,2300533.7044871454,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
 2024-04-18 00:00:00,2308701.7192445174,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
-2024-04-19 00:00:00,2175413.854155894,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
+2024-04-19 00:00:00,2234829.914077211,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
+2024-04-20 00:00:00,2234829.914077211,Zora,L2,Zora,chain,yes,7777777.0,modern,OP Chain,zora
 2023-11-22 00:00:00,6576.721850799984,Mode,L2,Mode,chain,yes,34443.0,modern,OP Chain,mode
 2023-11-23 00:00:00,11557.918479673943,Mode,L2,Mode,chain,yes,34443.0,modern,OP Chain,mode
 2023-11-24 00:00:00,10335.63565313991,Mode,L2,Mode,chain,yes,34443.0,modern,OP Chain,mode
@@ -17832,7 +17856,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16 00:00:00,197839608.5925774,Mode,L2,Mode,chain,yes,34443.0,modern,OP Chain,mode
 2024-04-17 00:00:00,206353533.43596268,Mode,L2,Mode,chain,yes,34443.0,modern,OP Chain,mode
 2024-04-18 00:00:00,244907300.32227352,Mode,L2,Mode,chain,yes,34443.0,modern,OP Chain,mode
-2024-04-19 00:00:00,264501915.16849536,Mode,L2,Mode,chain,yes,34443.0,modern,OP Chain,mode
+2024-04-19 00:00:00,266182852.30498585,Mode,L2,Mode,chain,yes,34443.0,modern,OP Chain,mode
+2024-04-20 00:00:00,269692397.4603753,Mode,L2,Mode,chain,yes,34443.0,modern,OP Chain,mode
 2024-02-24 00:00:00,0.0,Blast,L2,Blast,chain,,81457.0,modern,OP Stack Fork,blast
 2024-02-25 00:00:00,0.0,Blast,L2,Blast,chain,,81457.0,modern,OP Stack Fork,blast
 2024-02-26 00:00:00,0.0,Blast,L2,Blast,chain,,81457.0,modern,OP Stack Fork,blast
@@ -17888,7 +17913,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16 00:00:00,1424640234.4329374,Blast,L2,Blast,chain,,81457.0,modern,OP Stack Fork,blast
 2024-04-17 00:00:00,1408926889.904994,Blast,L2,Blast,chain,,81457.0,modern,OP Stack Fork,blast
 2024-04-18 00:00:00,1432400445.2783856,Blast,L2,Blast,chain,,81457.0,modern,OP Stack Fork,blast
-2024-04-19 00:00:00,1442333106.9231799,Blast,L2,Blast,chain,,81457.0,modern,OP Stack Fork,blast
+2024-04-19 00:00:00,1481393621.6606965,Blast,L2,Blast,chain,,81457.0,modern,OP Stack Fork,blast
+2024-04-20 00:00:00,1481388689.8931375,Blast,L2,Blast,chain,,81457.0,modern,OP Stack Fork,blast
 2024-03-07 00:00:00,481438.5057719784,Fraxtal,L2,Fraxtal,chain,yes,252.0,modern,OP Chain,fraxtal
 2024-03-08 00:00:00,611124.2883508205,Fraxtal,L2,Fraxtal,chain,yes,252.0,modern,OP Chain,fraxtal
 2024-03-09 00:00:00,1161898.4560181408,Fraxtal,L2,Fraxtal,chain,yes,252.0,modern,OP Chain,fraxtal
@@ -17932,7 +17958,8 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-16 00:00:00,17126440.366764504,Fraxtal,L2,Fraxtal,chain,yes,252.0,modern,OP Chain,fraxtal
 2024-04-17 00:00:00,16979938.006232403,Fraxtal,L2,Fraxtal,chain,yes,252.0,modern,OP Chain,fraxtal
 2024-04-18 00:00:00,17453671.231632024,Fraxtal,L2,Fraxtal,chain,yes,252.0,modern,OP Chain,fraxtal
-2024-04-19 00:00:00,17596193.007743634,Fraxtal,L2,Fraxtal,chain,yes,252.0,modern,OP Chain,fraxtal
+2024-04-19 00:00:00,17722900.08644905,Fraxtal,L2,Fraxtal,chain,yes,252.0,modern,OP Chain,fraxtal
+2024-04-20 00:00:00,17722900.086449046,Fraxtal,L2,Fraxtal,chain,yes,252.0,modern,OP Chain,fraxtal
 2020-08-29 00:00:00,16911034.8041,Loopring,L2,protocols/loopring,protocol,,,,Other EVMs,
 2020-08-30 00:00:00,18748444.80699,Loopring,L2,protocols/loopring,protocol,,,,Other EVMs,
 2020-08-31 00:00:00,19167426.86281,Loopring,L2,protocols/loopring,protocol,,,,Other EVMs,
@@ -23995,3 +24022,5 @@ date,tvl,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based
 2024-04-19 00:00:00,39255441.4987,ImmutableX,L2,protocols/immutablex,protocol,,,,Other EVMs,
 2024-04-19 00:00:00,105848798.0767,Loopring,L2,protocols/loopring,protocol,,,,Other EVMs,
 2024-04-19 00:00:00,10360975.40278,Lyra V2,L2,protocols/lyra-v2,protocol,,957.0,modern,OP Stack Fork,lyra
+2024-04-19 23:34:35,40759928.73279,ImmutableX,L2,protocols/immutablex,protocol,,,,Other EVMs,
+2024-04-20 00:00:00,334113238.97618,Dydx,L2,protocols/dydx,protocol,,,,Other EVMs,
