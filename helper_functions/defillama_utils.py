@@ -33,13 +33,15 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
                         except: # if not, then use the name
                                 parent_prot_name = prot_name 
                         prot_req = prot_req['chainTvls']
-                        print(prot_req)
+                        prot_chains = list(prot_req.keys())
 
-                        # chain_list = has_overlap(chains
+                        if chains == '':
+                                chain_list = chains
+                        else:
+                                chain_list = [key for key in prot_chains if key in chains]
 
                         for ch in chain_list:
                                 ad = pd.json_normalize( prot_req[ch]['tokens'] )
-                                print(ad)
                                 ad_usd = pd.json_normalize( prot_req[ch]['tokensInUsd'] )
                                 if (ad_usd.empty) & (fallback_on_raw_tvl == True):
                                         ad = pd.DataFrame( prot_req[ch]['tvl'] )
