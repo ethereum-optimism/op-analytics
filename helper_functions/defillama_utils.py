@@ -14,7 +14,10 @@ statuses = {x for x in range(100, 600)}
 statuses.remove(200)
 statuses.remove(429)
 
-async def get_tvl(apistring, header, statuses, chains, prot, prot_name, fallback_on_raw_tvl = False, fallback_indicator = '*'):
+def has_overlap(a, b):
+    return not set(a).isdisjoint(b)
+
+async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses = statuses, fallback_on_raw_tvl = False, fallback_indicator = '*'):
         prod = []
         retry_client = RetryClient()
 
@@ -30,8 +33,13 @@ async def get_tvl(apistring, header, statuses, chains, prot, prot_name, fallback
                         except: # if not, then use the name
                                 parent_prot_name = prot_name 
                         prot_req = prot_req['chainTvls']
-                        for ch in chains:
+                        print(prot_req)
+
+                        # chain_list = has_overlap(chains
+
+                        for ch in chain_list:
                                 ad = pd.json_normalize( prot_req[ch]['tokens'] )
+                                print(ad)
                                 ad_usd = pd.json_normalize( prot_req[ch]['tokensInUsd'] )
                                 if (ad_usd.empty) & (fallback_on_raw_tvl == True):
                                         ad = pd.DataFrame( prot_req[ch]['tvl'] )
@@ -45,7 +53,7 @@ async def get_tvl(apistring, header, statuses, chains, prot, prot_name, fallback
                                         # print(ad_tvl)
                                 except:
                                         continue
-                        #             ad = ad.merge(how='left')
+                                     # ad = ad.merge(how='left')
                                 if not ad.empty:
                                         ad = pd.melt(ad,id_vars = ['date'])
                                         ad = ad.rename(columns={'variable':'token','value':'token_value'})
@@ -81,7 +89,6 @@ async def get_tvl(apistring, header, statuses, chains, prot, prot_name, fallback
                 except Exception as e:
                         raise Exception("Could not convert json")
         await retry_client.close()
-        # print(prod)
         return prod
 
 def get_range(protocols, chains = '', fallback_on_raw_tvl = False, fallback_indicator = '*', header = header, statuses = statuses):
@@ -123,7 +130,7 @@ def get_range(protocols, chains = '', fallback_on_raw_tvl = False, fallback_indi
                 except:
                         chains = og_chains
                 apic = api_str + prot
-                tasks.append( get_tvl(apic, header, statuses, chains, prot, prot_name, fallback_on_raw_tvl, fallback_indicator) )
+                tasks.append( get_tvl(apic, chains, prot, prot_name, fallback_on_raw_tvl, fallback_indicator) )
 
         data_dfs = loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
 
@@ -288,13 +295,22 @@ def get_protocol_names_by_flag(check_flag):
         protocol_names = [element['name'] for element in protocols]
         return protocol_names
 
-
-def get_protocol_tvls(min_tvl = 0, excluded_cats = ['CEX','Chain']): #,excluded_flags = ['staking','pool2']):
+def get_protocol_tvls(min_tvl = 0, excluded_cats = ['CEX','Chain'], chains = ''): #,excluded_flags = ['staking','pool2']):
         all_api = 'https://api.llama.fi/protocols'
         resp = pd.DataFrame( r.get(all_api, headers=header).json() )
-        resp = resp[resp['tvl'] > min_tvl ] ##greater than X
+        resp = resp[resp['tvl'] >= min_tvl ] ##greater than equal to X
         if excluded_cats != []: #If we have cagtegories to exclude
                 resp = resp[~resp['category'].isin(excluded_cats)]
+        
+        # Check Cain List
+        if isinstance(chains, list):
+                og_chains = chains #get starting value
+        elif chains == '':
+                og_chains = chains
+                return resp # Return if chain list is null
+        else:
+                og_chains = [chains] #make it a list
+        resp = resp[resp['chains'].apply(lambda x: has_overlap(x, og_chains))]
         # Get Other Flags -- not working right now?
         # doublecounts = get_protocol_names_by_flag('doublecounted')
         # liqstakes = get_protocol_names_by_flag('liquidstaking')
@@ -305,14 +321,14 @@ def get_protocol_tvls(min_tvl = 0, excluded_cats = ['CEX','Chain']): #,excluded_
         #                 resp = resp[resp[flg] != True]
         return resp
 
-def get_all_protocol_tvls_by_chain_and_token(min_tvl = 0, fallback_on_raw_tvl = False, fallback_indicator='*', excluded_cats = ['CEX','Chain']):
-        res = get_protocol_tvls(min_tvl)
+def get_all_protocol_tvls_by_chain_and_token(min_tvl = 0, chains = '', fallback_on_raw_tvl = False, fallback_indicator='*', excluded_cats = ['CEX','Chain']):
+        res = get_protocol_tvls(min_tvl, excluded_cats = excluded_cats, chains = chains)
         protocols = res[['slug','name','category','parentProtocol','chainTvls']]
         res = [] #Free up memory
 
         protocols['parentProtocol'] = protocols['parentProtocol'].combine_first(protocols['name'])
         protocols['chainTvls'] = protocols['chainTvls'].apply(lambda x: list(x.keys()) )
-        df_df = get_range(protocols, '', fallback_on_raw_tvl, fallback_indicator)
+        df_df = get_range(protocols, chains, fallback_on_raw_tvl, fallback_indicator)
         protocols = [] #Free up memory
 
         # Get Other Flags -- not working right now?
@@ -413,3 +429,7 @@ def get_historical_chain_tvl(chain_name):
         except:
                 print('error - historicalChainTvl api')
         return df
+
+
+def get_historical_app_tvl_by_chain(chain_name):
+        p = get_protocol_tvls()
