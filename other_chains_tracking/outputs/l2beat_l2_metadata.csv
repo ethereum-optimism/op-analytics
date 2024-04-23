@@ -16,7 +16,7 @@ layer2,Zk.Money v2 (Aztec Connect),,,ZK Rollup,aztecconnect,,False,aztecconnect
 layer2,Base,8453,https://basescan.org,,base,OP Stack,False,base
 layer2,Blast,81457,https://blastscan.io/,,blast,OP Stack,False,blast
 layer2,BOB,,,Optimistic Rollup,bob,OP Stack,True,bob
-layer2,Boba Network,,,Optimistic Rollup,bobanetwork,OVM,False,bobanetwork
+layer2,Boba Network,288,https://eth.bobascan.com/,,bobanetwork,OP Stack,False,bobanetwork
 layer2,Canto,,,ZK Rollup,canto,Polygon,True,canto
 layer2,Canvas Connect,,,Validium,canvasconnect,StarkEx,False,canvasconnect
 layer2,Capx,,,ZK Rollup,capx,Polygon,True,capx
@@ -31,7 +31,7 @@ layer2,dYdX v3,,,ZK Rollup,dydx,StarkEx,False,dydx
 layer2,Eclipse,,,Optimistic Rollup,eclipse,,True,eclipse
 layer2,Edgeless,,,Optimium,edgeless,Arbitrum,False,edgeless
 layer2,Frame,,,Optimistic Rollup,frame,Arbitrum,True,frame
-layer2,FraxtalDA,,,,fraxtal,OP Stack,False,fraxtal
+layer2,FraxtalDA,252,https://fraxscan.com/,,fraxtal,OP Stack,False,fraxtal
 layer2,Fuel,,,Optimistic Rollup,fuel,,True,fuel
 layer2,Fuel v1,,,Optimistic Rollup,fuelv1,,False,fuelv1
 layer2,Gluon,,,Plasma,gluon,,False,gluon
@@ -78,6 +78,7 @@ layer2,Public Goods Network,,,,publicgoodsnetwork,OP Stack,False,publicgoodsnetw
 layer2,ReddioEx,,,Validium,reddioex,StarkEx,False,reddioex
 layer2,Reddio zkVM,,,ZK Rollup,reddiozkvm,Starknet,True,reddiozkvm
 layer2,rhino.fi,,,Validium,rhinofi,StarkEx,False,rhinofi
+layer2,RISE,,,Optimistic Rollup,rise,OP Stack,True,rise
 layer2,RSS3 Value Sublayer,12553,https://scan.rss3.io/,,rss3,OP Stack,False,rss3
 layer2,Scroll,,,ZK Rollup,scroll,,False,scroll
 layer2,Sorare,,,Validium,sorare,StarkEx,False,sorare
