@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import sys
@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 
 
-# In[2]:
+# In[ ]:
 
 
 # # # Usage
@@ -24,7 +24,7 @@ gtp_api = gtp.get_growthepie_api_data()
 gtp_meta_api = gtp.get_growthepie_api_meta()
 
 
-# In[3]:
+# In[ ]:
 
 
 l2beat_df = ltwo.get_all_l2beat_data()
@@ -33,33 +33,33 @@ l2beat_meta['chain'] = l2beat_meta['slug']
 print(l2beat_meta.sample(5))
 
 
-# In[4]:
+# In[ ]:
 
 
 # display(l2beat_meta[l2beat_meta['layer']=='layer2'].sample(10))
 
 
-# In[5]:
+# In[ ]:
 
 
 # display(l2beat_meta.sample(5))
 
 
-# In[6]:
+# In[ ]:
 
 
 combined_l2b_df = l2beat_df.merge(l2beat_meta[['chain','layer','chainId','provider','category','is_upcoming']], on='chain',how='left')
 # combined_l2b_df.tail(5)
 
 
-# In[7]:
+# In[ ]:
 
 
 combined_gtp_df = gtp_api.merge(gtp_meta_api[['origin_key','chain_name']], on='origin_key',how='left')
 # combined_gtp_df.sample(5)
 
 
-# In[8]:
+# In[ ]:
 
 
 # Check Columns
@@ -77,7 +77,7 @@ for col in column_names:
             combined_gtp_df[new_col_name] = np.nan
 
 
-# In[9]:
+# In[ ]:
 
 
 # print(combined_gtp_df.dtypes)
@@ -85,7 +85,7 @@ for col in column_names:
 # combined_gtp_df.sample(5)
 
 
-# In[10]:
+# In[ ]:
 
 
 # export
