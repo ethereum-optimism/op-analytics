@@ -435,3 +435,39 @@ def get_historical_chain_tvl(chain_name):
 
 def get_historical_app_tvl_by_chain(chain_name):
         p = get_protocol_tvls()
+
+def generate_flows_column(df):
+
+        try: 
+                df['price_usd'] = df['usd_value'] / df['token_value']
+                
+                # Sort the DataFrame by date
+                df.sort_values(by='date', ascending=True, inplace=True)
+
+                # Get Prior Values to Diff
+                df['prior_price_usd'] = df.groupby(['token', 'protocol', 'chain'])['price_usd'].shift(1)
+                df['prior_token_value'] = df.groupby(['token', 'protocol', 'chain'])['token_value'].shift(1)
+
+                # Back/Front Fill values in case no diff
+                df['prior_price_usd'] = (df[['prior_price_usd', 'price_usd']].bfill(axis=1).iloc[:, 0])
+                df['prior_token_value'] = (df[['prior_token_value', 'token_value']].bfill(axis=1).iloc[:, 0])
+                
+                df['latest_price_usd'] = df.groupby(['token', 'protocol', 'chain'])['price_usd'].transform('first')
+                
+                # Fill Gaps
+                df = df.fillna(0)
+                # Get Differences
+                df['price_usd_change'] = df['price_usd'] - df['prior_price_usd']
+                df['token_value_change'] = df['token_value'] - df['prior_token_value']
+                # Get Flows
+                df['token_value_flow'] = df['token_value'] - df['prior_token_value']
+                df['token_value_usd_flow'] = df['token_value_flow'] * df['price_usd']
+                df['price_usd_flow'] = df['price_usd_change'] * df['prior_token_value']
+                
+                # Drop the unnecessary columns
+                df.drop(['prior_price_usd', 'prior_token_value'], axis=1, inplace=True)
+
+        except KeyError as e:
+                print(f"Error: {e} column not found.")
+
+        return df
