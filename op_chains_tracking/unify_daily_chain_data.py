@@ -3,7 +3,7 @@
 
 # ### Unify CSVs
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
@@ -11,7 +11,15 @@ import os
 print('unify start')
 
 
-# In[ ]:
+# In[2]:
+
+
+opstack_metadata = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv')
+meta_columns = ['alignment', 'display_name', 'mainnet_chain_id','op_based_version','is_op_chain']
+# opstack_metadata
+
+
+# In[3]:
 
 
 # Directory containing your CSV files
@@ -38,7 +46,7 @@ print('All CSVs have been combined and saved.')
 # print(combined_df.columns)
 
 
-# In[ ]:
+# In[4]:
 
 
 # Join to Defillama
@@ -47,6 +55,7 @@ print('start dfl merge')
 tvl_data_path = '../other_chains_tracking/outputs/dfl_chain_tvl.csv'
 tvl_df = pd.read_csv(tvl_data_path)
 tvl_df = tvl_df.rename(columns={'date':'dt','chain':'chain_dfl'})
+tvl_df = tvl_df[tvl_df['defillama_slug'].isin(opstack_metadata['defillama_slug'])]
 # Remove Partial Days
 tvl_df['dt'] = pd.to_datetime(tvl_df['dt'])
 # tvl_df = tvl_df[tvl_df['dt'].dt.time == pd.Timestamp('00:00:00').time()]
@@ -54,20 +63,29 @@ tvl_df['dt'] = pd.to_datetime(tvl_df['dt'])
 # tvl_df['dt'] = tvl_df['dt'].dt.date
 # print(tvl_df.columns)
 
+# Drop Dupe metadata columns
+tvl_df = tvl_df.drop(columns=meta_columns, errors='ignore')
+
+# tvl_df
 
 
-# In[ ]:
+# In[5]:
 
 
-print(combined_df[['chain_gs','chain_name','dt','num_raw_txs']].sample(1))
-print(tvl_df[['chain_dfl','chain_name','dt','tvl']].sample(1))
+print(combined_df[['chain_gs','chain_name','dt','num_raw_txs']].sample(3))
+print(tvl_df[['chain_dfl','chain_name','dt','tvl']].sample(3))
 
 
-# In[ ]:
+# In[6]:
 
 
 # Perform a left join on 'chain_name' and 'dt'
-merged_df = pd.merge(combined_df, tvl_df, on=['chain_name','dt'], how='left')
+merged_df = pd.merge(combined_df, tvl_df, on=['chain_name','dt'], how='outer')
+merged_df = merged_df.merge(opstack_metadata[meta_columns + ['chain_name']], on=['chain_name'], how='left')
+
+
+# In[7]:
+
 
 # Save the merged DataFrame to a new CSV file
 output_path = 'outputs/all_chain_data_by_day_combined.csv'
@@ -78,14 +96,14 @@ print('Merged data has been saved to:', output_path)
 
 # ### Import to GSheets
 
-# In[ ]:
+# In[8]:
 
 
 # import gspread
 # from oauth2client.service_account import ServiceAccountCredentials
 
 
-# In[ ]:
+# In[9]:
 
 
 # # Google Sheets credentials and scope
