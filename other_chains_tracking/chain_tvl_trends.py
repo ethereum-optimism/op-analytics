@@ -22,6 +22,12 @@ print(current_utc_date)
 # In[ ]:
 
 
+min_tvl_to_count_apps = 0
+
+
+# In[ ]:
+
+
 # OPStack Metadata will auto pull, but we can also add curated protocols here (we handle for dupes)
 curated_chains = [
     #L2s
@@ -107,6 +113,31 @@ for index, row in opstack_protocols.iterrows():
 # In[ ]:
 
 
+chain_name_list = [sublist[0] for sublist in chains]
+
+
+# In[ ]:
+
+
+p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, chains = chain_name_list)
+
+# p = dfl.get_tvl(apistring= 'https://api.llama.fi/protocol/veldrome', chains = chain_name_list, prot = 'velodrome',prot_name='Velodrome')
+
+# Aggregate data
+app_dfl_list = p.groupby(['chain', 'date']).agg(
+    distinct_protocol=pd.NamedAgg(column='protocol', aggfunc=pd.Series.nunique),
+    distinct_parent_protocol=pd.NamedAgg(column='parent_protocol', aggfunc=pd.Series.nunique),
+#     sum_usd_value=pd.NamedAgg(column='usd_value', aggfunc='sum')
+)
+app_dfl_list = app_dfl_list.reset_index()
+app_dfl_list = app_dfl_list.rename(columns={'chain':'defillama_slug'})
+
+# app_dfl_list
+
+
+# In[ ]:
+
+
 p_agg = []
 for p in protocols:
     try:
@@ -149,6 +180,7 @@ for c in chains:
                 d['layer'] = c[1]
                 d['defillama_slug'] = c[0]
                 d['source'] = 'chain'
+                
                 c_agg.append(d)
         except Exception as e:
                 print(f"An unexpected error occurred for {c}: {e}")
@@ -174,6 +206,13 @@ df['date'] = pd.to_datetime(df['date']) - timedelta(days=1) #map to the prior da
 # In[ ]:
 
 
+df = df.merge(app_dfl_list, on =['defillama_slug','date'], how='left')
+df.sample(5)
+
+
+# In[ ]:
+
+
 # Add Metadata
 meta_cols = ['defillama_slug', 'is_op_chain','mainnet_chain_id','op_based_version', 'alignment','chain_name']
 
@@ -185,7 +224,7 @@ df['alignment'] = df['alignment'].fillna('Other EVMs')
 # In[ ]:
 
 
-# df
+df[df['chain'] == 'Ethereum'].tail(5)
 
 
 # In[ ]:
