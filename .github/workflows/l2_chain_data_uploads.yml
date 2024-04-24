@@ -14,6 +14,9 @@ jobs:
   general-l2:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    container:
+      image: python:3.10.11
+      options: --cpus 2 --memory 4G
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -25,11 +28,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.10.11'
-        # Set max space to see if this helps with timeouts
-        env:
-          NODE_OPTIONS: '--max-old-space-size=4096'
-        # Update the Node.js version to 16
-          node-version: '16'
 
       - name: Install pipenv
         run: |
