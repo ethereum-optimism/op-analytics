@@ -4,6 +4,7 @@
 # In[ ]:
 
 
+print('start tvl trends')
 import pandas as pd
 import sys
 import numpy as np
@@ -119,19 +120,38 @@ chain_name_list = [sublist[0] for sublist in chains]
 # In[ ]:
 
 
-p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, chains = chain_name_list)
+print('get tvls')
+p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, chains = chain_name_list, do_aggregate = 'Yes')
 
-# p = dfl.get_tvl(apistring= 'https://api.llama.fi/protocol/veldrome', chains = chain_name_list, prot = 'velodrome',prot_name='Velodrome')
+
+# In[ ]:
+
+
+# p
+# print('gen flows')
+# p = dfl.generate_flows_column(p)
+# p = dfl.get_tvl(apistring= 'https://api.llama.fi/protocol/velodrome', chains = chain_name_list, prot = 'velodrome',prot_name='Velodrome')
+
+
+# In[ ]:
+
 
 # Aggregate data
 app_dfl_list = p.groupby(['chain', 'date']).agg(
     distinct_protocol=pd.NamedAgg(column='protocol', aggfunc=pd.Series.nunique),
     distinct_parent_protocol=pd.NamedAgg(column='parent_protocol', aggfunc=pd.Series.nunique),
-#     sum_usd_value=pd.NamedAgg(column='usd_value', aggfunc='sum')
+    sum_token_value_usd_flow=pd.NamedAgg(column='sum_token_value_usd_flow', aggfunc='sum'),
+    sum_price_usd_flow=pd.NamedAgg(column='sum_price_usd_flow', aggfunc='sum'),
+    sum_usd_value_check=pd.NamedAgg(column='sum_usd_value_check', aggfunc='sum')
 )
+
+p = None #Clear Memory
+
 app_dfl_list = app_dfl_list.reset_index()
 app_dfl_list = app_dfl_list.rename(columns={'chain':'defillama_slug'})
 
+
+# display(app_dfl_list)
 # app_dfl_list
 
 
