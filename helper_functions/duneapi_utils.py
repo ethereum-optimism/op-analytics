@@ -95,12 +95,16 @@ def get_dune_data(
 def generate_query_parameter(input, field_name, dtype):
     if dtype == 'text':
         par = QueryParameter.text_type(name=field_name, value=input)
-    if dtype == 'number':
+    elif dtype == 'number':
         par = QueryParameter.number_type(name=field_name, value=input)
-    if dtype == 'date':
+    elif dtype == 'date':
         par = QueryParameter.date_type(name=field_name, value=input)
-    if dtype == 'list':
+    elif dtype == 'list':
         par = QueryParameter.enum_type(name=field_name, value=input)
+    else:
+        print('invalid datatype: ' + dtype)
+        par = None
+        print(par)
     return par
 
 

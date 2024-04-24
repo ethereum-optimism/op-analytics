@@ -1,0 +1,362 @@
+dt,dune_schema,has_eth_tfer,has_eth_tfer_desc,has_event_log,has_event_log_desc,has_rev_dev,has_rev_dev_desc,is_contract_tx,is_contract_tx_desc,num_raw_transactions,sum_gas_used,tx_success,tx_success_desc,last_updated
+2023-12-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,True,revdev,True,contract tx,4683373,1481569310307,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,True,revdev,True,contract tx,603778,92618625264,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,11029,231609000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,1649,198229154,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,True,revdev,True,contract tx,1658518,353302372816,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,10384,1129015794,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,1,21000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,10349,217329000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,False,not revdev,True,contract tx,1695,1098077182,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,19474,411787385,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,168769,3560610286,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,704,14784000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,False,not revdev,True,contract tx,90555,7386631187,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,9761991,690680254471,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,3822,80262000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,False,not revdev,True,contract tx,608280,190699457339,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,4310,325248389,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,76588,1673309719,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,6593,138453000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,163554,14958368499,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,182915,30780287021,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,49642,1910533232,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,4024862,84522102000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,True,revdev,True,contract tx,651794,108333288903,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,9888,348210336,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,606805,12742905000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,828,17388000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,161,253857937,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,17,1056104,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,27330,6107972604,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,7044,294022370,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,7526,158046000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,113989,2393769000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,635,114496521,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,840795,163766016534,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,True,revdev,True,contract tx,7042498,3779578358035,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,1864526,39155046000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,109212,11811214671,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,1958,219592597,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,15,315000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,False,not revdev,True,contract tx,27551,5198097043,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,2109464,44298744000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,9493,2124971241,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,True,revdev,True,contract tx,2123093,688685312094,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,9631,2478907066,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,236,4956000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,654,13734000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,1152,138759332,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,183,113453913,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,31,758315,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,14249,1758717914,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,56143,22081551405,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,True,revdev,True,contract tx,1041728,213644948583,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,False,not revdev,True,contract tx,6473,1897914964,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,False,not revdev,True,contract tx,17620,856272378,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,245384,5245599222,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,False,not revdev,True,contract tx,2452,594904421,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,1646560,34577760000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,19576,52774938520,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,True,revdev,True,contract tx,16882644,3102726461761,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,170039,3839267331,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,13007,273147000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,False,non-contract tx,1,21000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,134,13188098,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,127857,20990425895,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,True,revdev,True,contract tx,1557329,506635576325,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,59718,19145126053,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,350637,73859104218,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,True,revdev,True,contract tx,5068991,1621657808359,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,9848926,815007978038,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,False,not revdev,True,contract tx,1308756,79066555770,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,6,126000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,60544,39115204283,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,19513,4570056637,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,False,not revdev,True,contract tx,53781,2269065430,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,3,63000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,572,97247584,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,14,294000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,False,not revdev,True,contract tx,3706,868718466,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,False,not revdev,True,contract tx,4794,336594410,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,False,not revdev,True,contract tx,75455,8130773375,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,569399,11957379000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,False,not revdev,True,contract tx,64545,2883949227,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,196315,68920120563,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,1,21000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,1258884,26436564000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,38,798000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,28,588000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,True,revdev,True,contract tx,566139,102444790566,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,23652,961566192,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,849072,17830512000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,5955,462119500,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,2,42000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,4302,498264395,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,True,revdev,True,contract tx,1555176,496347301046,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,534533,86235697636,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,49,1029000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,False,not revdev,True,contract tx,2930,323866928,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,10,210000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,False,not revdev,True,contract tx,1706,175320216,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,2324,48804000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,False,not revdev,True,contract tx,16246,1940458560,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,12529,3994410037,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,True,revdev,True,contract tx,1805362,634589328081,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,False,not revdev,True,contract tx,8765,1954801946,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,2097,184773249,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,574,25001773,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,26,4703815,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,10460,805987335,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,620477,51120906184,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,1417725,31200169145,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,52217,6960178492,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,1,21000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,1,21000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,66224,9271397752,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,199,4179000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,179737,10098909283,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,20,420000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,61503,5607405082,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,32,672000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,True,revdev,True,contract tx,4080362,6104472559642,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,107230,2251830000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,26974,566454000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,1130457,24980871862,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,230957,4850097000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,68146,20583737654,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,True,revdev,True,contract tx,1557036,566621298698,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,True,revdev,True,contract tx,8749592,5181607924481,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,False,not revdev,True,contract tx,300697,67641192608,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,2662969,570842535344,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,2433925,111063138037,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,144,161200372,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,116,259116242,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,False,not revdev,True,contract tx,824631,46954958259,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,8293,496864976,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,97719,2197408502,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,273,11825488,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,27,567000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,29,609000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,False,not revdev,True,contract tx,52261,2210260736,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,20143,1594031009,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,False,not revdev,True,contract tx,14882,2994677808,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,12390,260190000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,64087,22491022930,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,207120,4349520000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,26,4211458,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,77,1617000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,78397,1758579694,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,True,revdev,True,contract tx,845808,140193398763,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,18128,1617376236,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,226884,17139411640,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,True,revdev,True,contract tx,636048,111835077371,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,1,21000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,15945,640016441,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,10,210000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,2784,96738351,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,147436,9174684590,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,1513973,206129630996,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,6,126000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,5,105000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,15,315000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,16393,1607461897,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,True,revdev,True,contract tx,2047758,597888297590,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,False,not revdev,True,contract tx,15353,2001359700,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,43009,12459146688,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,119,2499000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,True,revdev,True,contract tx,5248372,5528341537141,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,72527,11817588256,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,False,not revdev,True,contract tx,813740,44232306639,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,88197,6345782122,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,65,1365000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,584,12264000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,True,revdev,True,contract tx,815290,124471071520,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,False,not revdev,True,contract tx,21129,2012887887,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,79,65774913,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,1136,186848422,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,12942,271782000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,59,1239000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,5634659,118327839000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,21995,2354804226,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,6,126000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,True,revdev,True,contract tx,6838300,1980313876256,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,12,252000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,True,revdev,True,contract tx,4251471,5768603450616,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,327874,66848243088,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,15,315000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,2693146,56556066000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,387,8127000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,447,16292683,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,True,revdev,True,contract tx,607102,86881949545,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,10525,969869129,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,31237,655977000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,261,54607850,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,105,2205000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,True,revdev,True,contract tx,5051157,6011453296557,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,True,revdev,True,contract tx,564913,108657544234,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,14,294000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,95215,31016049293,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,26,546000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,3952,82992000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,23,483000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,58911,20433737071,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,8163,2673285668,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,34037,6433210523,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,749,15729000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,True,revdev,True,contract tx,1605700,528774307375,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,23,483000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,4451,358289651,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,79,118855637,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,284,5964000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,29,609000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,18082,77620001616,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,240277,7472699719,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,30,630000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,155698,24659921695,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,True,revdev,True,contract tx,14571448,2858905318714,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,11175,1271560268,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,97634,2166652265,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,True,revdev,True,contract tx,3188475,1100531449643,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,True,revdev,True,contract tx,448615,70161063971,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,1,21000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,15879,5404669760,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,False,not revdev,True,contract tx,157279,7086332249,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,1,21000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,3703,6464211891,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,71466,1682242637,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,True,revdev,True,contract tx,1353115,226505636934,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,251281,69136062269,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,33,1973433,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,3,63000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,3,63000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,25150,2114204611,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,1948789,40924569000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,630,13230000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,False,not revdev,True,contract tx,2413,234216728,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,703649,14776629000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,127121,4760487964,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,2639,73250545,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,46858,984018000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,11647,3796153704,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,2,42000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,358,12606279,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,10,210000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,4,84000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,1112180,23355780000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,True,revdev,True,contract tx,1906162,887309447078,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,3070,64470000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,19,2159107,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,6261,216867446,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,247,5187000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,2,42000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,124057,14951817947,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,12536,4273905159,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,4,84000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,1673786,247991309852,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,9622,255983753,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,257213,80156974636,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,1865,3510856406,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,276,24485241,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,5,105000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,False,not revdev,True,contract tx,2019,199694113,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,36883,1364719656,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,53,1113000,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,593,33033688,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,27,1289106,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,False,not revdev,True,contract tx,1007264,53363248279,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,225499,35711922842,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,True,revdev,True,contract tx,5457694,5935520076520,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,False,not revdev,True,contract tx,73689,3166521015,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,10574,349371705,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,72131,1514751000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,True,revdev,True,contract tx,1187852,182489302609,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,4775,6965108720,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,16935,1818553792,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,236907,5982415602,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,354223,68660159619,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,False,non-contract tx,151,3171000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,122412,28867311869,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,True,revdev,True,contract tx,1565044,546012655370,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,332,715729322,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,False,not revdev,True,contract tx,883331,48720078799,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,6904,159282574,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,True,revdev,True,contract tx,2715447,1168225398949,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,21493,2826218693,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,12745,45647078204,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,447,9387000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,True,revdev,True,contract tx,7879068,1812113497181,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,4672,351538087,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,5871,2706750016,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,False,not revdev,True,contract tx,91381,14163582530,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,False,not revdev,True,contract tx,1460396,87068840894,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,104165,47110326757,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,False,not revdev,True,contract tx,3236,273140332,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,84625,4509917740,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,218633,6915141036,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,17022,42688778316,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,19847,2411916395,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,59,69004946,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,106196,23774517913,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,268,87749743,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,1308225,27472725000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,262,42524114,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,155,3255000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,False,not revdev,True,contract tx,14328,2583429483,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,7877,290299315,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,2,42000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,False,not revdev,True,contract tx,102099,4594596350,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,True,revdev,True,contract tx,25329157,4641502532880,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,17735,1491604459,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,128337,31737727999,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,True,contract tx,169,7826537,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,1,21000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,253388,80157357563,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,False,not revdev,True,contract tx,71343,7892661841,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,67,2889631,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,True,contract tx,1003,54266169,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,80,1680000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,False,non-contract tx,261,5481000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,False,not revdev,True,contract tx,12744,2014321938,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,1200182,54349094095,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,20462,3033963061,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,False,not revdev,True,contract tx,136127,13605893833,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,891103,18713163000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,7105,149205000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,14938,986764476,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,False,no eth tfer,True,has event,False,not revdev,True,contract tx,1081603,58184707599,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,130313,2736573000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,24969,3174468850,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,True,contract tx,61,73549051,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,True,revdev,True,contract tx,4296598,1860523716237,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,True,eth tfer,True,has event,True,revdev,True,contract tx,1133343,176586442960,True,success,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,76706,19800515631,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,10172,23461198589,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,1141154,63209594413,True,success,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,True,eth tfer,False,no events,True,revdev,True,contract tx,790620,108427088801,False,failed,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,False,no eth tfer,True,has event,True,revdev,True,contract tx,5809875,4449422869658,True,success,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,202870,4260270000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,optimism,True,eth tfer,True,has event,False,not revdev,True,contract tx,11265,1846152132,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,40703,4308573418,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,True,revdev,True,contract tx,5681,705273241,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-04-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,285171,73601440173,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,238,34717298,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,776329,164673195096,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,9673,16842854137,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,5603,117663000,True,success,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,True,contract tx,66712,24240688948,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,True,contract tx,102667,16675695119,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,True,revdev,True,contract tx,48720,1882803770,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,True,revdev,True,contract tx,1637173,705601698462,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,True,eth tfer,True,has event,False,not revdev,True,contract tx,43631,1904794365,True,success,2024-04-24 20:44:13.185413+00:00
+2023-10-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,True,revdev,True,contract tx,1800622,108425881700,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-02-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,1,21000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,zora,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,586,12306000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,base,False,no eth tfer,False,no events,False,not revdev,False,non-contract tx,20101,422121000,True,success,2024-04-24 20:44:13.185413+00:00
+2023-11-01 00:00:00.000 UTC,zora,False,no eth tfer,True,has event,False,not revdev,True,contract tx,2211,1058724659,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,zora,True,eth tfer,False,no events,False,not revdev,False,non-contract tx,1,21000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,19516,2296417257,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-03-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,True,revdev,False,non-contract tx,19,399000,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,True,revdev,True,contract tx,197260,12972394706,True,success,2024-04-24 20:44:13.185413+00:00
+2023-12-01 00:00:00.000 UTC,optimism,True,eth tfer,False,no events,False,not revdev,True,contract tx,247,55355991,False,failed,2024-04-24 20:44:13.185413+00:00
+2024-01-01 00:00:00.000 UTC,optimism,False,no eth tfer,False,no events,False,not revdev,True,contract tx,15198,2866694838,True,success,2024-04-24 20:44:13.185413+00:00
