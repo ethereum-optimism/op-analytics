@@ -139,7 +139,6 @@ def get_range(protocols, chains = '', fallback_on_raw_tvl = False, fallback_indi
 
 		data_dfs = loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
 
-		print('data dfs done')
 		df_list = []
 		for dat in data_dfs:
 				# print(type(dat))
@@ -445,7 +444,8 @@ def get_historical_app_tvl_by_chain(chain_name):
 def generate_flows_column(df):
 
 		try: 
-				df['price_usd'] = np.where(df['token_value'] != 0, df['usd_value'] / df['token_value'], np.nan)
+				df['token_value'] = df['token_value'].replace(0, np.nan) #Prever divide by 0
+				df['price_usd'] = df['usd_value'] / df['token_value']
 				
 				# Sort the DataFrame by date
 				df.sort_values(by='date', ascending=True, inplace=True)
