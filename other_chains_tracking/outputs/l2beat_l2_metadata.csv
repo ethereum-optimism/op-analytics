@@ -80,7 +80,7 @@ layer2,Reddio zkVM,,,ZK Rollup,reddiozkvm,Starknet,True,reddiozkvm
 layer2,rhino.fi,,,Validium,rhinofi,StarkEx,False,rhinofi
 layer2,RISE,,,Optimistic Rollup,rise,OP Stack,True,rise
 layer2,RSS3 Value Sublayer,12553,https://scan.rss3.io/,,rss3,OP Stack,False,rss3
-layer2,Scroll,,,ZK Rollup,scroll,,False,scroll
+layer2,Scroll,534352,https://scrollscan.com/,ZK Rollup,scroll,,False,scroll
 layer2,Sorare,,,Validium,sorare,StarkEx,False,sorare
 layer2,Specular,,,Optimistic Rollup,specular,,True,specular
 layer2,Starknet,,,ZK Rollup,starknet,Starknet,False,starknet
