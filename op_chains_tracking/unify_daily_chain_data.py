@@ -3,7 +3,7 @@
 
 # ### Unify CSVs
 
-# In[1]:
+# In[ ]:
 
 
 import pandas as pd
@@ -11,7 +11,7 @@ import os
 print('unify start')
 
 
-# In[2]:
+# In[ ]:
 
 
 opstack_metadata = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv')
@@ -19,7 +19,7 @@ meta_columns = ['alignment', 'display_name', 'mainnet_chain_id','op_based_versio
 # opstack_metadata
 
 
-# In[3]:
+# In[ ]:
 
 
 # Directory containing your CSV files
@@ -46,7 +46,7 @@ print('All CSVs have been combined and saved.')
 # print(combined_df.columns)
 
 
-# In[4]:
+# In[ ]:
 
 
 # Join to Defillama
@@ -69,22 +69,52 @@ tvl_df = tvl_df.drop(columns=meta_columns, errors='ignore')
 # tvl_df
 
 
-# In[5]:
+# In[ ]:
+
+
+print('start l2b merge')
+l2b_df = pd.read_csv('../other_chains_tracking/outputs/l2beat_l2_activity.csv')
+l2b_df = l2b_df.rename(columns={'timestamp':'dt','chain':'chain_l2b'})
+l2b_df['l2beat_slug'] = l2b_df['chain_l2b']
+l2b_df = l2b_df.merge(opstack_metadata[['l2beat_slug','chain_name']], on=['l2beat_slug'], how='inner')
+l2b_df['dt'] = pd.to_datetime(l2b_df['dt'])
+l2b_df = l2b_df.drop(columns=meta_columns, errors='ignore')
+#Drop NaN
+l2b_df.dropna(subset=['valueUsd'], inplace=True)
+
+value_cols = ['valueUsd','cbvUsd','ebvUsd','nmvUsd','valueEth', 'cbvEth', 'ebvEth', 'nmvEth','transactions']
+
+# Update column names and value_cols list
+updated_value_cols = []
+for col in value_cols:
+        new_col_name = col + '_l2b'
+        l2b_df.rename(columns={col: new_col_name}, inplace=True)
+        updated_value_cols.append(new_col_name)
+
+value_cols = updated_value_cols
+
+l2b_df = l2b_df[['dt','chain_l2b','chain_name'] + value_cols ]
+
+
+# In[ ]:
 
 
 print(combined_df[['chain_gs','chain_name','dt','num_raw_txs']].sample(3))
 print(tvl_df[['chain_dfl','chain_name','dt','tvl']].sample(3))
+print(l2b_df[['chain_l2b','chain_name','dt','valueUsd_l2b']].sample(3))
 
 
-# In[6]:
+# In[ ]:
 
 
 # Perform a left join on 'chain_name' and 'dt'
 merged_df = pd.merge(combined_df, tvl_df, on=['chain_name','dt'], how='outer')
+merged_df = pd.merge(merged_df, l2b_df, on=['chain_name','dt'], how='outer')
+
 merged_df = merged_df.merge(opstack_metadata[meta_columns + ['chain_name']], on=['chain_name'], how='left')
 
 
-# In[7]:
+# In[ ]:
 
 
 # Save the merged DataFrame to a new CSV file
@@ -96,14 +126,14 @@ print('Merged data has been saved to:', output_path)
 
 # ### Import to GSheets
 
-# In[8]:
+# In[ ]:
 
 
 # import gspread
 # from oauth2client.service_account import ServiceAccountCredentials
 
 
-# In[9]:
+# In[ ]:
 
 
 # # Google Sheets credentials and scope
