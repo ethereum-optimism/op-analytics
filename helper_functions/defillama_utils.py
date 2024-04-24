@@ -17,7 +17,7 @@ statuses.remove(429)
 def has_overlap(a, b):
 	return not set(a).isdisjoint(b)
 
-async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses = statuses, fallback_on_raw_tvl = False, fallback_indicator = '*'):
+async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses = statuses, do_aggregate = 'No', fallback_on_raw_tvl = False, fallback_indicator = '*'):
 		prod = []
 		retry_client = RetryClient()
 
@@ -84,9 +84,19 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 										ad['category'] = cats
 										ad['name'] = prot_name
 										ad['parent_protocol'] = parent_prot_name
+
+										if do_aggregate == 'Yes':
+											ad = generate_flows_column(ad)
+											ad = ad.groupby(['chain', 'date','protocol','parent_protocol']).agg(
+												sum_token_value_usd_flow=pd.NamedAgg(column='token_value_usd_flow', aggfunc='sum'),
+												sum_price_usd_flow=pd.NamedAgg(column='price_usd_flow', aggfunc='sum'),
+												sum_usd_value_check=pd.NamedAgg(column='usd_value', aggfunc='sum')
+											)
+											ad = ad.reset_index()
 								#		 ad['start_date'] = pd.to_datetime(prot[1])
 										# ad['date'] = ad['date'] - timedelta(days=1) #change to eod vs sod
 										prod.append(ad)
+										ad = None #clear memory
 										# print(ad)
 				except Exception as e:
 						raise Exception("Could not convert json")
@@ -96,7 +106,7 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 		await retry_client.close()
 		return prod
 
-def get_range(protocols, chains = '', fallback_on_raw_tvl = False, fallback_indicator = '*', header = header, statuses = statuses):
+def get_range(protocols, chains = '', do_aggregate = 'No', fallback_on_raw_tvl = False, fallback_indicator = '*', header = header, statuses = statuses):
 		data_dfs = []
 		fee_df = []
 		if isinstance(chains, list):
@@ -135,7 +145,7 @@ def get_range(protocols, chains = '', fallback_on_raw_tvl = False, fallback_indi
 				except:
 						chains = og_chains
 				apic = api_str + prot
-				tasks.append( get_tvl(apic, chains, prot, prot_name, fallback_on_raw_tvl, fallback_indicator) )
+				tasks.append( get_tvl(apic, chains, prot, prot_name, do_aggregate = do_aggregate, fallback_on_raw_tvl = fallback_on_raw_tvl, fallback_indicator = fallback_indicator, header = header, statuses = statuses) )
 
 		data_dfs = loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
 
@@ -328,14 +338,14 @@ def get_protocol_tvls(min_tvl = 0, excluded_cats = ['CEX','Chain'], chains = '')
 		#				 resp = resp[resp[flg] != True]
 		return resp
 
-def get_all_protocol_tvls_by_chain_and_token(min_tvl = 0, chains = '', fallback_on_raw_tvl = False, fallback_indicator='*', excluded_cats = ['CEX','Chain']):
+def get_all_protocol_tvls_by_chain_and_token(min_tvl = 0, chains = '', do_aggregate='No',fallback_on_raw_tvl = False, fallback_indicator='*', excluded_cats = ['CEX','Chain']):
 		res = get_protocol_tvls(min_tvl, excluded_cats = excluded_cats, chains = chains)
 		protocols = res[['slug','name','category','parentProtocol','chainTvls']]
 		res = [] #Free up memory
 
 		protocols['parentProtocol'] = protocols['parentProtocol'].combine_first(protocols['name'])
 		protocols['chainTvls'] = protocols['chainTvls'].apply(lambda x: list(x.keys()) )
-		df_df = get_range(protocols, chains, fallback_on_raw_tvl, fallback_indicator)
+		df_df = get_range(protocols, chains, do_aggregate = do_aggregate, fallback_on_raw_tvl = fallback_on_raw_tvl, fallback_indicator = fallback_indicator)
 		protocols = [] #Free up memory
 
 		# Get Other Flags -- not working right now?
