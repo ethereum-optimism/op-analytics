@@ -4,6 +4,7 @@
 # In[ ]:
 
 
+print('start l2 activity')
 import sys
 sys.path.append("../helper_functions")
 import duneapi_utils as d
@@ -30,7 +31,7 @@ gtp_meta_api = gtp.get_growthepie_api_meta()
 l2beat_df = ltwo.get_all_l2beat_data()
 l2beat_meta = ltwo.get_l2beat_metadata()
 l2beat_meta['chain'] = l2beat_meta['slug']
-print(l2beat_meta.sample(5))
+# print(l2beat_meta.sample(5))
 
 
 # In[ ]:
