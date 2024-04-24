@@ -444,8 +444,9 @@ def get_historical_app_tvl_by_chain(chain_name):
 def generate_flows_column(df):
 
 		try: 
-				df['token_value'] = df['token_value'].replace(0, np.nan) #Prever divide by 0
+				df['token_value'] = df['token_value'].replace(0, np.nan) #Never divide by 0
 				df['price_usd'] = df['usd_value'] / df['token_value']
+				df['token_value'] = df['token_value'].fillna(0) #Fill back 0s
 				
 				# Sort the DataFrame by date
 				df.sort_values(by='date', ascending=True, inplace=True)
