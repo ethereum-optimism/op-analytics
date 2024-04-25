@@ -39,7 +39,7 @@ for filename in os.listdir(directory):
         temp_df = None # Free up Memory
 
 # Save the combined DataFrame to a single CSV file
-combined_df['dt'] = pd.to_datetime(combined_df['dt'])
+combined_df['dt'] = pd.to_datetime(combined_df['dt']).dt.strftime('%Y-%m-%d')
 combined_df = combined_df.rename(columns={'chain':'chain_gs'})
 combined_df.to_csv(output_file, index=False)
 print('All CSVs have been combined and saved.')
@@ -57,7 +57,7 @@ tvl_df = pd.read_csv(tvl_data_path)
 tvl_df = tvl_df.rename(columns={'date':'dt','chain':'chain_dfl'})
 tvl_df = tvl_df[tvl_df['defillama_slug'].isin(opstack_metadata['defillama_slug'])]
 # Remove Partial Days
-tvl_df['dt'] = pd.to_datetime(tvl_df['dt'])
+tvl_df['dt'] = pd.to_datetime(tvl_df['dt']).dt.strftime('%Y-%m-%d')
 # tvl_df = tvl_df[tvl_df['dt'].dt.time == pd.Timestamp('00:00:00').time()]
 # # Cast to date format
 # tvl_df['dt'] = tvl_df['dt'].dt.date
@@ -77,7 +77,7 @@ l2b_df = pd.read_csv('../other_chains_tracking/outputs/l2beat_l2_activity.csv')
 l2b_df = l2b_df.rename(columns={'timestamp':'dt','chain':'chain_l2b'})
 l2b_df['l2beat_slug'] = l2b_df['chain_l2b']
 l2b_df = l2b_df.merge(opstack_metadata[['l2beat_slug','chain_name']], on=['l2beat_slug'], how='inner')
-l2b_df['dt'] = pd.to_datetime(l2b_df['dt'])
+l2b_df['dt'] = pd.to_datetime(l2b_df['dt']).dt.strftime('%Y-%m-%d')
 l2b_df = l2b_df.drop(columns=meta_columns, errors='ignore')
 #Drop NaN
 l2b_df.dropna(subset=['valueUsd'], inplace=True)
@@ -99,9 +99,30 @@ l2b_df = l2b_df[['dt','chain_l2b','chain_name'] + value_cols ]
 # In[ ]:
 
 
+print('start dune merge')
+dune_df = pd.read_csv('../op_chains_tracking/outputs/l2_transaction_qualification.csv')
+#filters
+dune_df = dune_df[(dune_df['tx_success'] == True) & (dune_df['is_contract_tx'] == True) & (dune_df['has_event_log'] == True) & (dune_df['has_rev_dev'] == True)]
+dune_df = dune_df.rename(columns={'num_raw_transactions':'qualified_transactions','sum_gas_used':'qualified_sum_gas_used'})
+dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.strftime('%Y-%m-%d')
+
+dune_df = dune_df.groupby(['dune_schema','dt',]).agg({
+                                'qualified_transactions': 'sum'
+                                , 'qualified_sum_gas_used': 'sum'
+                                })
+dune_df.reset_index(inplace=True)
+dune_df = dune_df.merge(opstack_metadata[['dune_schema','chain_name']], on=['dune_schema'], how='inner')
+
+dune_df = dune_df[['dune_schema','chain_name','dt','qualified_transactions','qualified_sum_gas_used']]
+
+
+# In[ ]:
+
+
 print(combined_df[['chain_gs','chain_name','dt','num_raw_txs']].sample(3))
 print(tvl_df[['chain_dfl','chain_name','dt','tvl']].sample(3))
 print(l2b_df[['chain_l2b','chain_name','dt','valueUsd_l2b']].sample(3))
+print(dune_df[['dune_schema','chain_name','dt','qualified_transactions']].sample(3))
 
 
 # In[ ]:
@@ -110,8 +131,11 @@ print(l2b_df[['chain_l2b','chain_name','dt','valueUsd_l2b']].sample(3))
 # Perform a left join on 'chain_name' and 'dt'
 merged_df = pd.merge(combined_df, tvl_df, on=['chain_name','dt'], how='outer')
 merged_df = pd.merge(merged_df, l2b_df, on=['chain_name','dt'], how='outer')
+merged_df = pd.merge(merged_df, dune_df, on=['chain_name','dt'], how='outer')
 
 merged_df = merged_df.merge(opstack_metadata[meta_columns + ['chain_name']], on=['chain_name'], how='left')
+
+merged_df[merged_df['chain_name']=='zora'].head(25)
 
 
 # In[ ]:
