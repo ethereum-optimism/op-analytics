@@ -54,7 +54,7 @@ layer2,Loopring,,,ZK Rollup,loopring,Loopring,False,loopring
 layer2,Lyra,957,https://explorer.lyra.finance,,lyra,OP Stack,False,lyra
 layer2,Manta Pacific,169,https://pacific-explorer.manta.network,,mantapacific,OP Stack,False,mantapacific
 layer2,MantleDA,5000,https://explorer.mantle.xyz/,,mantle,OP Stack,False,mantle
-layer2,Metal,,,Optimistic Rollup,metal,OP Stack,True,metal
+layer2,Metal,,,Optimistic Rollup,metal,,False,metal
 layer2,Metis Andromeda,,,Optimium,metis,OVM,False,metis
 layer2,Mint,,,Optimistic Rollup,mint,OP Stack,True,mint
 layer2,Mode Network,34443,https://explorer.mode.network,,mode,OP Stack,False,mode
@@ -92,8 +92,8 @@ layer2,Ten,,,Optimistic Rollup,ten,,True,ten
 layer2,Term Structure,,,ZK Rollup,termstructure,zkSync Lite,True,termstructure
 layer2,Tradable,,,ZK Rollup,tradable,ZK Stack,True,tradable
 layer2,World Chain,,,Optimistic Rollup,world,OP Stack,True,world
-layer2,X1,,,Validium,x1,Polygon,True,x1
 layer2,XCHAIN,,,Validium,xchain,Polygon,True,xchain
+layer2,DAC,,,,xlayer,,False,xlayer
 layer2,Zentachain,,,Optimistic Rollup,zentachain,OP Stack,True,zentachain
 layer2,Zircuit,,,ZK Rollup,zircuit,,True,zircuit
 layer2,zkCandy,,,Validium,zkcandy,ZK Stack,True,zkcandy
