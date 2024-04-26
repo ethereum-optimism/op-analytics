@@ -21,7 +21,7 @@ import duneapi_utils as d
 
 
 # date ranges to build charts for
-drange = [7, 14, 30, 90, 180, 365]
+drange = [1, 3, 7, 14, 30, 90, 180, 365]
 # Do we count net flows marked at the lastest token price (1) or the price on each day (0)
 # By default, we opt to 1, so that price movement isn't accidentally counted as + or - flow remainder
 mark_at_latest_price = (
