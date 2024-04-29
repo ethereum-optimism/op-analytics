@@ -17,6 +17,7 @@ layer2,Base,8453,https://basescan.org,,base,OP Stack,False,base
 layer2,Blast,81457,https://blastscan.io/,,blast,OP Stack,False,blast
 layer2,BOB,,,Optimistic Rollup,bob,OP Stack,True,bob
 layer2,Boba Network,288,https://eth.bobascan.com/,,bobanetwork,OP Stack,False,bobanetwork
+layer2,Camp,,,Optimium,camp,OP Stack,True,camp
 layer2,Canto,,,ZK Rollup,canto,Polygon,True,canto
 layer2,Canvas Connect,,,Validium,canvasconnect,StarkEx,False,canvasconnect
 layer2,Capx,,,ZK Rollup,capx,Polygon,True,capx
@@ -85,6 +86,7 @@ layer2,Sorare,,,Validium,sorare,StarkEx,False,sorare
 layer2,Specular,,,Optimistic Rollup,specular,,True,specular
 layer2,Starknet,,,ZK Rollup,starknet,Starknet,False,starknet
 layer2,StealthChain,,,Optimistic Rollup,stealthchain,OP Stack,True,stealthchain
+layer2,Superseed,,,Optimistic Rollup,superseed,OP Stack,True,superseed
 layer2,Swell,,,Validium,swell,Polygon,True,swell
 layer2,Taiko,,,ZK Rollup,taiko,,True,taiko
 layer2,tanX,,,Validium,tanx,StarkEx,False,tanx
