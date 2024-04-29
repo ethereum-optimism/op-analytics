@@ -104,6 +104,7 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 					await retry_client.close()
 		
 		await retry_client.close()
+		
 		return prod
 
 def get_range(protocols, chains = '', do_aggregate = 'No', fallback_on_raw_tvl = False, fallback_indicator = '*', header = header, statuses = statuses):
