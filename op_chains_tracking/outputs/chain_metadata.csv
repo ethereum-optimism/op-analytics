@@ -23,7 +23,7 @@ rollux,Rollux,570.0,6/29/23,modern,yes,,,,https://rpc.rollux.com,https://rollux.
 unidex molten,Molten Network,,,,unknown,,,caldera,,https://www.unidex.exchange/molten-network,,,,,,unknown,L2,unknown,unknown,no,,,,,,,OP Stack Fork
 stealthchain,StealthChain,,,,unknown,,,,,stealthchain.org,,stealthchain,,,,unknown,L2,unknown,unknown,no,,,,,,,OP Stack Fork
 redstone,Redstone,,,modern,yes,,,,,https://redstone.xyz/,,,,,,unknown,L2,op-plasma,unknown,no,,,,,,,OP Stack Fork
-celo,Celo,,,modern,yes,,,,,https://celo.org/,,,,,,CELO,L2,eigenda,unknown,no,,,,,,,OP Stack Fork
+celo,Celo,,,modern,yes,,,,,https://celo.org/,,,,,,CELO,L2,eigenda,ethereum,no,,,,,,,OP Stack Fork
 swanchain,SwanChain,,,modern,unknown,,,,,https://swanchain.io/,,,,,,unknown,L2,unknown,unknown,no,,,,,,,OP Stack Fork
 hypr network,Hypr,881.0,1/17/23,modern develop,yes,,,,https://rpc.hypr.network,https://www.hypr.network/,,hypr,,,,ETH,L2,celestia,ethereum,no,0x994c288de8418c8D3c5a4D21A69f35bF9641781C,0x0C57B7f3bAc278bE091431B52470fBAdBc4240E6,0xeF2169180a2eda91B695eA5e5C4f4547C013840c,0x3E4F4Eb77a9c1f88c0e1F5aDCc9d3521Ce157FdD,0x1bBde518ad01BaABFE30020407A7630FB17B545d,0xBB08cf90DEb93492b463f1Ee5DA9453e51643586,OP Stack Fork
 metal,Metal,,,modern,no,,,,,https://metall2.com/,,metal,,,,ETH,L2,ethereum,ethereum,no,,,,,,,OP Stack Fork
@@ -41,3 +41,4 @@ goldchain,Gold,4653.0,2/26/24,modern,yes,,,,https://chain-rpc.gold.dev,https://w
 superlumio,SuperLumio,8866.0,2/28/24,modern,unknown,,,conduit,https://mainnet.lumio.io/,https://lumio.io/,,,,,,ETH,L2,ethereum,ethereum,no,0x5c53f2fF1030C7fbC0616fD5B8fC6bE97aa27e00,0x5c53f2fF1030C7fbC0616fD5B8fC6bE97aa27e00,0xb6E2Eee22b684f6AAb2083097F7E874994bA930e,0xffB004874CbBF8692B5f397B602f4B8a630aeD59,0xdB5C6b73CB1c5875995a42D64C250BF8BC69a8bc,0xFb252d6199AEfeE6938a1c57213AAd96ecD2650c,OP Stack Fork
 karak,Karak,2410.0,2/27/24,modern,yes,,,,https://rpc.karak.network,https://karak.network/,,karak,,,,ETH,L2,celestia,ethereum,no,0x84BdFb21ed7C8B332a42bFD595744a84F3101e4E,0xff00000000000000000000000000000000002410,0x4179f43f3b994e97090557363b09F403138a729e,0x0a23342520Aa8Ca963c4201801F4D3E95e731637,0xBA61F25dd9f2d5f02D01B1C2c1c5F0B14c4B48A3,0x622333688CC1878C7ff4205c89bDe051798788A7,OP Stack Fork
 campaign,Camp Network,,,modern,yes,,,conduit,,https://www.campnetwork.xyz/,,,,,,ETH,L2,op-plasma,ethereum,no,,,,,,,OP Stack Fork
+ethxy,EthXY,,,unknown,unknown,,,,,https://ethxy.com/,,,,,,unknown,L3,unknown,base,no,,,,,,,OP Stack Fork
