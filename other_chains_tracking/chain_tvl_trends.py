@@ -179,14 +179,20 @@ for p in protocols:
 df = pd.concat(p_agg)
 df = df.fillna(0)
 # prob use total_app_tvl since it has more history and we're not yet doing flows
-df_sum = df.groupby(['date', 'chain_prot', 'layer', 'defillama_slug', 'source','total_app_tvl']).agg({'usd_value':'sum'}).reset_index()
+df_sum = df.groupby(['date', 'chain_prot', 'layer', 'defillama_slug', 'source']).agg({'usd_value':'sum'}).reset_index()
 # print(df_sum.columns)
-# display(df_sum)
 
-df_sum = df_sum[['date', 'total_app_tvl', 'chain_prot', 'layer', 'defillama_slug', 'source']]
-df_sum = df_sum.rename(columns={'chain_prot': 'chain', 'total_app_tvl': 'tvl'})
+df_sum = df_sum[['date', 'usd_value', 'chain_prot', 'layer', 'defillama_slug', 'source']]
+df_sum = df_sum.rename(columns={'chain_prot': 'chain', 'usd_value': 'tvl'})
 
 # print(df_sum.tail(5))
+
+
+# In[ ]:
+
+
+# display(df_sum[df_sum['chain']=='Aevo'])
+# display(df_sum)
 
 
 # In[ ]:
