@@ -22,7 +22,7 @@ debank chain,DeBank,116,,modern,yes,,,,,https://debank.com/,,debank,,,,unknown,L
 rollux,Rollux,570,6/29/23,modern,yes,,,,https://rpc.rollux.com,https://rollux.com/,Rollux,,,,,SYS,L2,syscoin,unknown,no,,,,,,
 unidex molten,Molten Network,,,unknown,unknown,,,caldera,,https://www.unidex.exchange/molten-network,,,,,,unknown,L2,unknown,unknown,no,,,,,,
 stealthchain,StealthChain,,,unknown,unknown,,,,,stealthchain.org,,stealthchain,,,,unknown,L2,unknown,unknown,no,,,,,,
-redstone,Redstone,,,modern,yes,,,,,https://redstone.xyz/,,,,,,unknown,L2,op-plasma,unknown,no,,,,,,
+redstone,Redstone,690,5/1/24,modern,yes,,,,https://rpc.redstonechain.com,https://redstone.xyz/,,redstone,,,,ETH,L2,op-plasma,ethereum,no,0xA31cb9Bc414601171D4537580f98F66C03aECd43,0xff00000000000000000000000000000000000690,,0xa426A052f657AEEefc298b3B5c35a470e4739d69,0xc473ca7E02af24c129c2eEf51F2aDf0411c1Df69,0x8f2428F7189c0d92D1c4a5358903A8c80Ec6a69D
 celo,Celo,,,modern,yes,,,,,https://celo.org/,,,,,,CELO,L2,eigenda,ethereum,no,,,,,,
 swanchain,SwanChain,,,modern,unknown,,,,,https://swanchain.io/,,,,,,unknown,L2,unknown,unknown,no,,,,,,
 hypr network,Hypr,881,1/17/23,modern develop,yes,,,,https://rpc.hypr.network,https://www.hypr.network/,,hypr,,,,ETH,L2,celestia,ethereum,no,0x994c288de8418c8D3c5a4D21A69f35bF9641781C,0x0C57B7f3bAc278bE091431B52470fBAdBc4240E6,0xeF2169180a2eda91B695eA5e5C4f4547C013840c,0x3E4F4Eb77a9c1f88c0e1F5aDCc9d3521Ce157FdD,0x1bBde518ad01BaABFE30020407A7630FB17B545d,0xBB08cf90DEb93492b463f1Ee5DA9453e51643586
