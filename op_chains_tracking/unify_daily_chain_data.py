@@ -135,7 +135,7 @@ merged_df = pd.merge(merged_df, dune_df, on=['chain_name','dt'], how='outer')
 
 merged_df = merged_df.merge(opstack_metadata[meta_columns + ['chain_name']], on=['chain_name'], how='left')
 
-merged_df[merged_df['chain_name']=='zora'].head(25)
+# merged_df[merged_df['chain_name']=='zora'].head(5)
 
 
 # In[ ]:
