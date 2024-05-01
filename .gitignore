@@ -17,3 +17,4 @@ op_chains_tracking/lightweight_chain_tracker/.cryo/reports/*
 op_chains_tracking/lightweight_chain_tracker/lyra_output/*
 *.parquet
 /op_chains_tracking/lightweight_chain_tracker/outputs
+/op_chains_tracking/lightweight_chain_tracker/cryo_outputs/.cryo
