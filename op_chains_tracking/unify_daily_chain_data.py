@@ -133,7 +133,9 @@ merged_df = pd.merge(combined_df, tvl_df, on=['chain_name','dt'], how='outer')
 merged_df = pd.merge(merged_df, l2b_df, on=['chain_name','dt'], how='outer')
 merged_df = pd.merge(merged_df, dune_df, on=['chain_name','dt'], how='outer')
 
-merged_df = merged_df.merge(opstack_metadata[meta_columns + ['chain_name']], on=['chain_name'], how='left')
+meta_df_columns = meta_columns + ['chain_name']
+
+merged_df = merged_df.merge(opstack_metadata[meta_df_columns], on=['chain_name'], how='left')
 
 # merged_df[merged_df['chain_name']=='zora'].head(5)
 
