@@ -55,7 +55,7 @@ layer2,Loopring,,,ZK Rollup,loopring,Loopring,False,loopring
 layer2,Lyra,957,https://explorer.lyra.finance,,lyra,OP Stack,False,lyra
 layer2,Manta Pacific,169,https://pacific-explorer.manta.network,,mantapacific,OP Stack,False,mantapacific
 layer2,MantleDA,5000,https://explorer.mantle.xyz/,,mantle,OP Stack,False,mantle
-layer2,Metal,,,Optimistic Rollup,metal,,False,metal
+layer2,Metal,,,,metal,OP Stack,False,metal
 layer2,Metis Andromeda,,,Optimium,metis,OVM,False,metis
 layer2,Mint,,,Optimistic Rollup,mint,OP Stack,True,mint
 layer2,Mode Network,34443,https://explorer.mode.network,,mode,OP Stack,False,mode
