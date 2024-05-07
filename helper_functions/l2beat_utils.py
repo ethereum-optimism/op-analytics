@@ -115,33 +115,37 @@ def get_l2beat_metadata():
                 
                 # Iterate through each file in the folder
                 for file in response:
-                        if file['name'] in ['index.ts', 'index.test.ts'] or 'download_url' not in file or file['download_url'] is None:
-                                continue  # Skip these files
-                        
-                        # Get the content of the file safely
-                        file_content = safe_get_content(file['download_url'])
-                        if file_content is None:  # Skip if content couldn't be retrieved
-                                continue
+                        if isinstance(response, list):
+                                if file['name'] in ['index.ts', 'index.test.ts'] or 'download_url' not in file or file['download_url'] is None:
+                                        continue  # Skip these files
+                                
+                                # Get the content of the file safely
+                                file_content = safe_get_content(file['download_url'])
+                                if file_content is None:  # Skip if content couldn't be retrieved
+                                        continue
 
-                        # Extract imports and check for upcoming keyword
-                        configs = extract_imports(file_content)
-                        is_upcoming = check_upcoming(configs)
-                        
-                        # Prepare data with extracted values or defaults where necessary
-                        data = {
-                                'layer': folder[:-1],  # Dynamically set the layer based on folder name
-                                'name': extract_data(file_content, patterns['name']),
-                                'chainId': extract_data(file_content, patterns['chainId']),
-                                'explorerUrl': extract_data(file_content, patterns['explorerUrl']),
-                                'category': extract_data(file_content, patterns['category']) if folder in ['layer2s', 'layer3s'] else None,
-                                'slug': extract_data(file_content, patterns['slug']) or file['name'].replace('.ts', ''),  # Filename as fallback slug
-                                'provider': determine_provider(file_content),  # Determine provider with custom logic
-                                # 'configs': configs,  # Extract imports as a list
-                                'is_upcoming': is_upcoming
-                        }
-                        
-                        # Add the data dictionary to our list
-                        data_list.append(data)
+                                # Extract imports and check for upcoming keyword
+                                configs = extract_imports(file_content)
+                                is_upcoming = check_upcoming(configs)
+                                
+                                # Prepare data with extracted values or defaults where necessary
+                                data = {
+                                        'layer': folder[:-1],  # Dynamically set the layer based on folder name
+                                        'name': extract_data(file_content, patterns['name']),
+                                        'chainId': extract_data(file_content, patterns['chainId']),
+                                        'explorerUrl': extract_data(file_content, patterns['explorerUrl']),
+                                        'category': extract_data(file_content, patterns['category']) if folder in ['layer2s', 'layer3s'] else None,
+                                        'slug': extract_data(file_content, patterns['slug']) or file['name'].replace('.ts', ''),  # Filename as fallback slug
+                                        'provider': determine_provider(file_content),  # Determine provider with custom logic
+                                        # 'configs': configs,  # Extract imports as a list
+                                        'is_upcoming': is_upcoming
+                                }
+                                
+                                # Add the data dictionary to our list
+                                data_list.append(data)
+                        else:
+                                print(f"{base_url}/{folder}")
+                                print(file + " Response is not in the expected format.")
                 
                 # Convert the list of dictionaries to a DataFrame and concatenate with the main DataFrame
                 df = pd.concat([df, pd.DataFrame(data_list)], ignore_index=True)
