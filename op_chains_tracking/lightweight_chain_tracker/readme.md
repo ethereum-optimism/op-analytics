@@ -1,6 +1,7 @@
 # Lightweight OP Stack Aggregate Data
 
 See [Cryo Python Example](https://docs.chainstack.com/docs/cryo-with-chainstack-and-python#basic-usage-of-cryo_python)
+- [Polars EVM](https://github.com/sslivkoff/polars_evm)
 
 ## Problem
 There are (and likely will be) a countless amount of OP Stack Chains, and traditional methods of data analysis; like storing all transactions, traces, logs, etc in a database; may not be feasible. So, we're exploring "non-database" methods of querying blockchain data, starting with basic aggregate stats to answer the question "how much activity is this chain producing?" A subset of the highest volume chains may then be worth spinning up comprehensive databases for.
