@@ -134,6 +134,7 @@ jobs:
         run: |
                 pipenv run jupyter nbconvert --to python mb_gs_all_uploads_from_api.ipynb
                 pipenv run jupyter nbconvert --to python read_l2_transaction_qualification.ipynb
+                pipenv run jupyter nbconvert --to python gcs_uploads_from_bq.ipynb
                 
                   
   # Run py
@@ -142,11 +143,13 @@ jobs:
         run: |
                 pipenv run python mb_gs_all_uploads_from_api.py
                 pipenv run python read_l2_transaction_qualification.py
+                pipenv run python gcs_uploads_from_bq.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           MS_METABASE_NAME: ${{ secrets.MS_METABASE_NAME }}
           MS_METABASE_PW: ${{ secrets.MS_METABASE_PW }}
           MS_METABASE_SESSION_ID: ${{ secrets.MS_METABASE_SESSION_ID }}
+          BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
           IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
 
 
