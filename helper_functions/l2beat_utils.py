@@ -58,10 +58,10 @@ def get_l2beat_metadata():
         df = pd.DataFrame(columns=['layer', 'name', 'chainId', 'explorerUrl', 'category', 'slug'])
 
         # GitHub API URL for the specified repository and directory
-        base_url = "https://api.github.com/repos/l2beat/l2beat/contents/packages/config/src/projects"
+        base_url = "https://api.github.com/repos/l2beat/l2beat/contents/packages/config/src"
 
         # Folders to navigate
-        folders = ["layer2s", "layer3s"] # "chains"
+        folders = ["projects/layer2s", "projects/layer3s", "chains"] # "chains"
 
         # Regular expression patterns for parsing TypeScript files
         # Regular expression patterns for parsing TypeScript files
