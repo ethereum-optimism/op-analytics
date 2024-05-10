@@ -114,6 +114,15 @@ def get_l2beat_metadata():
                                 return 'ZK Stack'
                         else:
                                 return extract_data(file_content, patterns['provider'])
+        def determine_layer(folder_name):
+                if folder_name == 'chain':
+                        return 'L1'
+                elif 'layer2' in folder_name:
+                        return 'L2'
+                elif 'layer3' in folder_name:
+                        return 'L3'
+                else:
+                        return folder_name
         # Navigate through the folders
         for folder in folders:
         # Request the content of the folder
@@ -138,13 +147,14 @@ def get_l2beat_metadata():
                                 configs = extract_imports(file_content)
                                 is_upcoming = check_upcoming(configs)
                                 
+                                layer_name = determine_layer(folder_name)
                                 # Prepare data with extracted values or defaults where necessary
                                 data = {
-                                        'layer': folder_name,  # Dynamically set the layer based on folder name
+                                        'layer': layer_name,  # Dynamically set the layer based on folder name
                                         'name': extract_data(file_content, patterns['name']),
                                         'chainId': extract_data(file_content, patterns['chainId']),
                                         'explorerUrl': extract_data(file_content, patterns['explorerUrl']),
-                                        'category': extract_data(file_content, patterns['category']) if folder_name in ['layer2s', 'layer3s'] else None,
+                                        'category': extract_data(file_content, patterns['category']) if layer_name in ['L2', 'L3'] else None,
                                         'slug': extract_data(file_content, patterns['slug']) or file['name'].replace('.ts', ''),  # Filename as fallback slug
                                         'provider': determine_provider(file_content),  # Determine provider with custom logic
                                         # 'configs': configs,  # Extract imports as a list
