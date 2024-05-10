@@ -117,6 +117,7 @@ def get_l2beat_metadata():
         # Navigate through the folders
         for folder in folders:
         # Request the content of the folder
+                folder_name = folder.split("/")[-1]
                 response = r.get(f"{base_url}/{folder}").json()
                 
                 # Initialize a list to collect data dictionaries before appending to DataFrame
@@ -139,11 +140,11 @@ def get_l2beat_metadata():
                                 
                                 # Prepare data with extracted values or defaults where necessary
                                 data = {
-                                        'layer': folder[:-1],  # Dynamically set the layer based on folder name
+                                        'layer': folder_name,  # Dynamically set the layer based on folder name
                                         'name': extract_data(file_content, patterns['name']),
                                         'chainId': extract_data(file_content, patterns['chainId']),
                                         'explorerUrl': extract_data(file_content, patterns['explorerUrl']),
-                                        'category': extract_data(file_content, patterns['category']) if folder in ['layer2s', 'layer3s'] else None,
+                                        'category': extract_data(file_content, patterns['category']) if folder_name in ['layer2s', 'layer3s'] else None,
                                         'slug': extract_data(file_content, patterns['slug']) or file['name'].replace('.ts', ''),  # Filename as fallback slug
                                         'provider': determine_provider(file_content),  # Determine provider with custom logic
                                         # 'configs': configs,  # Extract imports as a list
