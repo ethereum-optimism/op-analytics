@@ -74,6 +74,11 @@ def get_l2beat_metadata():
                 'slug': r"slug: '([^']+)'",
                 'imports': r"import {([^}]+)} from",
                 'provider': r"display:.*?provider: '([^']+)'",  # Updated to handle multiline and nested content
+                'hostChain': r"hostChain: ProjectId\('(\w+)'\)",
+                'websites': r"websites: \[([^\]]+)\]",
+                'documentation': r"documentation: \[([^\]]+)\]",
+                'repositories': r"repositories: \[([^\]]+)\]",
+                'rpcUrl': r"rpcUrl: '([^']+)'",
         }
         
         # Function to extract data using regular expressions
@@ -98,15 +103,15 @@ def get_l2beat_metadata():
                         items = [item.strip() for item in items if item.strip()]
                         imports.update(items)
                 return list(imports)
-        # Function to check if any config item contains the word 'upcoming'
+        # Function to check if any config item contains the word 'UpcomingL'
         def check_upcoming(configs):
-                return any('upcoming' in config.lower() for config in configs)
+                return any('upcomingl' in config.lower() for config in configs)
         def determine_provider(file_content):
-                        if 'opStackL2' in file_content:
+                        if 'opStackL' in file_content: #opStackL2 or opStackL3
                                 return 'OP Stack'
                         elif 'polygonCDKStack' in file_content:
                                 return 'Polygon CDK'
-                        elif 'orbitStackL3' in file_content:
+                        elif 'orbitStackL' in file_content: #orbitStackL2 or orbitStackL3
                                 return 'Arbitrum Orbit'
                         elif "'zkSync Lite'" in file_content:
                                 return 'ZKSync Lite'
@@ -114,6 +119,15 @@ def get_l2beat_metadata():
                                 return 'ZK Stack'
                         else:
                                 return extract_data(file_content, patterns['provider'])
+        def determine_layer(folder_name):
+                if 'chain' in folder_name:
+                        return 'L1'
+                elif 'layer2' in folder_name:
+                        return 'L2'
+                elif 'layer3' in folder_name:
+                        return 'L3'
+                else:
+                        return folder_name
         # Navigate through the folders
         for folder in folders:
         # Request the content of the folder
@@ -138,17 +152,23 @@ def get_l2beat_metadata():
                                 configs = extract_imports(file_content)
                                 is_upcoming = check_upcoming(configs)
                                 
+                                layer_name = determine_layer(folder_name)
                                 # Prepare data with extracted values or defaults where necessary
                                 data = {
-                                        'layer': folder_name,  # Dynamically set the layer based on folder name
+                                        'layer': layer_name,  # Dynamically set the layer based on folder name
                                         'name': extract_data(file_content, patterns['name']),
                                         'chainId': extract_data(file_content, patterns['chainId']),
                                         'explorerUrl': extract_data(file_content, patterns['explorerUrl']),
-                                        'category': extract_data(file_content, patterns['category']) if folder_name in ['layer2s', 'layer3s'] else None,
+                                        'category': extract_data(file_content, patterns['category']) if layer_name in ['L2', 'L3'] else None,
                                         'slug': extract_data(file_content, patterns['slug']) or file['name'].replace('.ts', ''),  # Filename as fallback slug
                                         'provider': determine_provider(file_content),  # Determine provider with custom logic
+                                        'hostChain': extract_data(file_content, patterns['hostChain']),
+                                        'is_upcoming': is_upcoming,
+                                        'websites': extract_data(file_content, patterns['websites']),
+                                        'documentation': extract_data(file_content, patterns['documentation']),
+                                        'repositories': extract_data(file_content, patterns['repositories']),
+                                        'rpcUrl': extract_data(file_content, patterns['rpcUrl'])
                                         # 'configs': configs,  # Extract imports as a list
-                                        'is_upcoming': is_upcoming
                                 }
                                 
                                 # Add the data dictionary to our list
