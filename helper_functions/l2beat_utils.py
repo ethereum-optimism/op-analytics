@@ -156,18 +156,18 @@ def get_l2beat_metadata():
                                 # Prepare data with extracted values or defaults where necessary
                                 data = {
                                         'layer': layer_name,  # Dynamically set the layer based on folder name
-                                        'name': extract_data(file_content, patterns['name']),
-                                        'chainId': extract_data(file_content, patterns['chainId']),
-                                        'explorerUrl': extract_data(file_content, patterns['explorerUrl']),
-                                        'category': extract_data(file_content, patterns['category']) if layer_name in ['L2', 'L3'] else None,
                                         'slug': extract_data(file_content, patterns['slug']) or file['name'].replace('.ts', ''),  # Filename as fallback slug
+                                        'chainId': extract_data(file_content, patterns['chainId']),
+                                        'name': extract_data(file_content, patterns['name']),
+                                        'explorerUrl': extract_data(file_content, patterns['explorerUrl']),
+                                        'rpcUrl': extract_data(file_content, patterns['rpcUrl']),
+                                        'category': extract_data(file_content, patterns['category']) if layer_name in ['L2', 'L3'] else None,
                                         'provider': determine_provider(file_content),  # Determine provider with custom logic
                                         'hostChain': extract_data(file_content, patterns['hostChain']),
                                         'is_upcoming': is_upcoming,
                                         'websites': extract_data(file_content, patterns['websites']),
                                         'documentation': extract_data(file_content, patterns['documentation']),
-                                        'repositories': extract_data(file_content, patterns['repositories']),
-                                        'rpcUrl': extract_data(file_content, patterns['rpcUrl'])
+                                        'repositories': extract_data(file_content, patterns['repositories'])
                                         # 'configs': configs,  # Extract imports as a list
                                 }
                                 
