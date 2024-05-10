@@ -31,13 +31,14 @@ gtp_meta_api = gtp.get_growthepie_api_meta()
 l2beat_df = ltwo.get_all_l2beat_data()
 l2beat_meta = ltwo.get_l2beat_metadata()
 l2beat_meta['chain'] = l2beat_meta['slug']
-# print(l2beat_meta.sample(5))
 
 
 # In[ ]:
 
 
-# display(l2beat_meta[l2beat_meta['layer']=='layer2'].sample(10))
+# print(l2beat_df[l2beat_df['chain']=='degen'].sample(5))
+# print(l2beat_meta[l2beat_meta['layer']=='layer2'].sample(5))
+# print(l2beat_meta[l2beat_meta['layer']=='layer3'].sample(5))
 
 
 # In[ ]:
@@ -49,7 +50,7 @@ l2beat_meta['chain'] = l2beat_meta['slug']
 # In[ ]:
 
 
-combined_l2b_df = l2beat_df.merge(l2beat_meta[['chain','layer','chainId','provider','category','is_upcoming']], on='chain',how='left')
+combined_l2b_df = l2beat_df.merge(l2beat_meta[['chain','name','layer','chainId','provider','category','is_upcoming']], on='chain',how='left')
 # combined_l2b_df.tail(5)
 
 
