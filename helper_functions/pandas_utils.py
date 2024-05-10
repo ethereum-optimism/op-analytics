@@ -204,3 +204,11 @@ def format_datetime_columns(df, format='%Y-%m-%dT%H:%M:%S.%fZ'):
             except ValueError:
                 pass
     return df
+
+def float_format_func(x):
+    if isinstance(x, (int, float)):
+        x_str = '{:.18f}'.format(x)
+        decimal_places = len(re.search(r'\.(\d+?)0*$', x_str).group(1))
+        return '{:,.{}f}'.format(x, min(decimal_places, 18))
+    else:
+        return str(x)

@@ -29,6 +29,8 @@ df = pd.read_csv('chain_metadata_raw.csv')
 # Trim columns
 df.columns = df.columns.str.replace(" ", "").str.strip()
 df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+# Datetime
+df['public_mainnet_launch_date'] = pd.to_datetime(df['public_mainnet_launch_date'], errors='coerce')
 #Generate Alignment Column
 df = ops.generate_alignment_column(df)
 

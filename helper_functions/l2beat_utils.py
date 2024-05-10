@@ -58,10 +58,10 @@ def get_l2beat_metadata():
         df = pd.DataFrame(columns=['layer', 'name', 'chainId', 'explorerUrl', 'category', 'slug'])
 
         # GitHub API URL for the specified repository and directory
-        base_url = "https://api.github.com/repos/l2beat/l2beat/contents/packages/config/src"
+        base_url = "https://api.github.com/repos/l2beat/l2beat/contents/packages/config/src/projects"
 
         # Folders to navigate
-        folders = ["chains", "layer2s", "layer3s"]
+        folders = ["layer2s", "layer3s"] # "chains"
 
         # Regular expression patterns for parsing TypeScript files
         # Regular expression patterns for parsing TypeScript files
@@ -102,9 +102,18 @@ def get_l2beat_metadata():
         def check_upcoming(configs):
                 return any('upcoming' in config.lower() for config in configs)
         def determine_provider(file_content):
-                if 'opStackL2' in file_content:
-                        return 'OP Stack'
-                return extract_data(file_content, patterns['provider'])
+                        if 'opStackL2' in file_content:
+                                return 'OP Stack'
+                        elif 'polygonCDKStack' in file_content:
+                                return 'Polygon CDK'
+                        elif 'orbitStackL3' in file_content:
+                                return 'Arbitrum Orbit'
+                        elif "'zkSync Lite'" in file_content:
+                                return 'ZKSync Lite'
+                        elif "'ZK Stack'" in file_content:
+                                return 'ZK Stack'
+                        else:
+                                return extract_data(file_content, patterns['provider'])
         # Navigate through the folders
         for folder in folders:
         # Request the content of the folder
