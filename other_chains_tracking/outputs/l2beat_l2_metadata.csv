@@ -1,121 +1,121 @@
 layer,name,chainId,explorerUrl,category,slug,provider,is_upcoming,chain
 layer2s,Aevo,2999,https://explorer.aevo.xyz,,aevo,OP Stack,False,aevo
 layer2s,Ancient8,,,,ancient,OP Stack,False,ancient
-layer2s,ApeX,,,,apex,StarkEx,False,apex
-layer2s,Arbitrum One,42161,https://arbiscan.io,,arbitrum,Arbitrum,False,arbitrum
+layer2s,ApeX,,,Validium,apex,StarkEx,False,apex
+layer2s,Arbitrum One,42161,https://arbiscan.io,Optimistic Rollup,arbitrum,Arbitrum,False,arbitrum
 layer2s,DAC,,,,astarzkevm,Polygon CDK,False,astarzkevm
-layer2s,Zk.Money v1 (Aztec v1),,,,aztecv1,,False,aztecv1
-layer2s,Aztec,,,,aztec,,True,aztec
-layer2s,Zk.Money v2 (Aztec Connect),,,,aztecconnect,,False,aztecconnect
+layer2s,Zk.Money v1 (Aztec v1),,,ZK Rollup,aztecv1,,False,aztecv1
+layer2s,Aztec,,,ZK Rollup,aztec,,True,aztec
+layer2s,Zk.Money v2 (Aztec Connect),,,ZK Rollup,aztecconnect,,False,aztecconnect
 layer2s,Base,8453,https://basescan.org,,base,OP Stack,False,base
 layer2s,Blast,81457,https://blastscan.io/,,blast,OP Stack,False,blast
-layer2s,BOB,,,,bob,OP Stack,True,bob
+layer2s,BOB,,,Optimistic Rollup,bob,OP Stack,True,bob
 layer2s,Boba Network,288,https://eth.bobascan.com/,,bobanetwork,OP Stack,False,bobanetwork
-layer2s,Camp,,,,camp,OP Stack,True,camp
-layer2s,Canto,,,,canto,Polygon,True,canto
-layer2s,Canvas Connect,,,,canvasconnect,StarkEx,False,canvasconnect
-layer2s,Capx,,,,capx,Polygon,True,capx
-layer2s,Coti,,,,coti,,True,coti
-layer2s,Cronos zkEVM,,,,cronos,ZK Stack,True,cronos
-layer2s,Cyber,,,,cyberconnect,OP Stack,True,cyberconnect
-layer2s,Debank Chain,,,,debank,OP Stack,True,debank
-layer2s,DeGate Legacy,,,,degate,Loopring,False,degate
-layer2s,DeGate V1 Legacy,,,,degate2,Loopring,False,degate2
-layer2s,DeGate V1,,,,degate3,Loopring,False,degate3
-layer2s,dYdX v3,,,,dydx,StarkEx,False,dydx
-layer2s,Eclipse,,,,eclipse,,True,eclipse
-layer2s,Edgeless,,,,edgeless,Arbitrum,False,edgeless
-layer2s,Frame,,,,frame,Arbitrum,True,frame
+layer2s,Camp,,,Optimium,camp,OP Stack,True,camp
+layer2s,Canto,,,ZK Rollup,canto,Polygon,True,canto
+layer2s,Canvas Connect,,,Validium,canvasconnect,StarkEx,False,canvasconnect
+layer2s,Capx,,,ZK Rollup,capx,Polygon,True,capx
+layer2s,Coti,,,Optimistic Rollup,coti,,True,coti
+layer2s,Cronos zkEVM,,,ZK Rollup,cronos,ZK Stack,True,cronos
+layer2s,Cyber,,,Optimium,cyberconnect,OP Stack,True,cyberconnect
+layer2s,Debank Chain,,,Optimistic Rollup,debank,OP Stack,True,debank
+layer2s,DeGate Legacy,,,ZK Rollup,degate,Loopring,False,degate
+layer2s,DeGate V1 Legacy,,,ZK Rollup,degate2,Loopring,False,degate2
+layer2s,DeGate V1,,,ZK Rollup,degate3,Loopring,False,degate3
+layer2s,dYdX v3,,,ZK Rollup,dydx,StarkEx,False,dydx
+layer2s,Eclipse,,,Optimistic Rollup,eclipse,,True,eclipse
+layer2s,Edgeless,,,Optimium,edgeless,Arbitrum,False,edgeless
+layer2s,Frame,,,Optimistic Rollup,frame,Arbitrum,True,frame
 layer2s,FraxtalDA,252,https://fraxscan.com/,,fraxtal,OP Stack,False,fraxtal
-layer2s,Fuel,,,,fuel,,True,fuel
-layer2s,Fuel v1,,,,fuelv1,,False,fuelv1
-layer2s,Gluon,,,,gluon,,False,gluon
-layer2s,GRVT,,,,grvt,ZK Stack,True,grvt
-layer2s,Polygon Hermez,,,,hermez,Polygon,False,hermez
-layer2s,Honeypot (Cartesi),,,,cartesi-honeypot,,False,cartesi-honeypot
-layer2s,HYCHAIN,,,,hychain,Arbitrum,False,hychain
+layer2s,Fuel,,,Optimistic Rollup,fuel,,True,fuel
+layer2s,Fuel v1,,,Optimistic Rollup,fuelv1,,False,fuelv1
+layer2s,Gluon,,,Plasma,gluon,,False,gluon
+layer2s,GRVT,,,Validium,grvt,ZK Stack,True,grvt
+layer2s,Polygon Hermez,,,ZK Rollup,hermez,Polygon,False,hermez
+layer2s,Honeypot (Cartesi),,,Optimistic Rollup,cartesi-honeypot,,False,cartesi-honeypot
+layer2s,HYCHAIN,,,Optimium,hychain,Arbitrum,False,hychain
 layer2s,Hypr,,,,hypr,OP Stack,False,hypr
-layer2s,Immutable X,,,,immutablex,StarkEx,False,immutablex
-layer2s,Kakarot zkEVM,,,,kakarotzkevm,,True,kakarotzkevm
+layer2s,Immutable X,,,Validium,immutablex,StarkEx,False,immutablex
+layer2s,Kakarot zkEVM,,,ZK Rollup,kakarotzkevm,,True,kakarotzkevm
 layer2s,Karak,,,,karak,OP Stack,False,karak
 layer2s,Kinto,,,,kinto,,False,kinto
-layer2s,Kroma,255,https://kromascan.com,,kroma,OP Stack,False,kroma
-layer2s,Layer2.Finance,,,,layer2finance,,False,layer2finance
-layer2s,L2.Finance-zk,,,,layer2financezk,StarkEx,False,layer2financezk
-layer2s,LightLink,,,,lightlink,,True,lightlink
-layer2s,Linea,59144,https://lineascan.build,,linea,,False,linea
-layer2s,Lisk,,,,lisk,OP Stack,True,lisk
-layer2s,Loopring,,,,loopring,Loopring,False,loopring
+layer2s,Kroma,255,https://kromascan.com,Optimistic Rollup,kroma,OP Stack,False,kroma
+layer2s,Layer2.Finance,,,Optimistic Rollup,layer2finance,,False,layer2finance
+layer2s,L2.Finance-zk,,,Validium,layer2financezk,StarkEx,False,layer2financezk
+layer2s,LightLink,,,Optimium,lightlink,,True,lightlink
+layer2s,Linea,59144,https://lineascan.build,ZK Rollup,linea,,False,linea
+layer2s,Lisk,,,Optimistic Rollup,lisk,OP Stack,True,lisk
+layer2s,Loopring,,,ZK Rollup,loopring,Loopring,False,loopring
 layer2s,Lyra,957,https://explorer.lyra.finance,,lyra,OP Stack,False,lyra
 layer2s,Manta Pacific,169,https://pacific-explorer.manta.network,,mantapacific,OP Stack,False,mantapacific
 layer2s,MantleDA,5000,https://explorer.mantle.xyz/,,mantle,OP Stack,False,mantle
 layer2s,Metal,,,,metal,OP Stack,False,metal
-layer2s,Metis Andromeda,,,,metis,OVM,False,metis
-layer2s,Mint,,,,mint,OP Stack,True,mint
+layer2s,Metis Andromeda,,,Optimium,metis,OVM,False,metis
+layer2s,Mint,,,Optimistic Rollup,mint,OP Stack,True,mint
 layer2s,Mode Network,34443,https://explorer.mode.network,,mode,OP Stack,False,mode
-layer2s,Molten Network,,,,molten,OP Stack,True,molten
-layer2s,Morph,,,,morph,,True,morph
-layer2s,Myria,,,,myria,StarkEx,False,myria
-layer2s,=nil;,,,,nil,,True,nil
-layer2s,Arbitrum Nova,,,,nova,Arbitrum,False,nova
-layer2s,OEV Network,,,,oev,Polygon,True,oev
-layer2s,Ola,,,,ola,,True,ola
-layer2s,OMG Network,,,,omgnetwork,,False,omgnetwork
+layer2s,Molten Network,,,Optimistic Rollup,molten,OP Stack,True,molten
+layer2s,Morph,,,Optimistic Rollup,morph,,True,morph
+layer2s,Myria,,,Validium,myria,StarkEx,False,myria
+layer2s,=nil;,,,ZK Rollup,nil,,True,nil
+layer2s,Arbitrum Nova,,,Optimium,nova,Arbitrum,False,nova
+layer2s,OEV Network,,,Validium,oev,Polygon,True,oev
+layer2s,Ola,,,ZK Rollup,ola,,True,ola
+layer2s,OMG Network,,,Plasma,omgnetwork,,False,omgnetwork
 layer2s,OP Mainnet,10,https://optimistic.etherscan.io,,optimism,OP Stack,False,optimism
 layer2s,Orderly Network,,,,orderly,OP Stack,False,orderly
-layer2s,Palm,,,,palm,Polygon,True,palm
-layer2s,Paradex,,,,paradex,Starknet,False,paradex
+layer2s,Palm,,,Validium,palm,Polygon,True,palm
+layer2s,Paradex,,,ZK Rollup,paradex,Starknet,False,paradex
 layer2s,Parallel,,,,parallel,,False,parallel
-layer2s,PlayChain,,,,playchain,ZK Stack,True,playchain
-layer2s,Polygon Miden,,,,polygon-miden,Polygon,True,polygon-miden
-layer2s,Polygon PoS 2.0,,,,polygon-pos-2,Polygon,True,polygon-pos-2
+layer2s,PlayChain,,,ZK Rollup,playchain,ZK Stack,True,playchain
+layer2s,Polygon Miden,,,ZK Rollup,polygon-miden,Polygon,True,polygon-miden
+layer2s,Polygon PoS 2.0,,,Validium,polygon-pos-2,Polygon,True,polygon-pos-2
 layer2s,Polygon zkEVM,1101,https://zkevm.polygonscan.com,,polygonzkevm,Polygon CDK,False,polygonzkevm
 layer2s,Public Goods Network,,,,publicgoodsnetwork,OP Stack,False,publicgoodsnetwork
-layer2s,ReddioEx,,,,reddioex,StarkEx,False,reddioex
-layer2s,Reddio zkVM,,,,reddiozkvm,Starknet,True,reddiozkvm
-layer2s,Redstone,,,,redstone,OP Stack,False,redstone
+layer2s,ReddioEx,,,Validium,reddioex,StarkEx,False,reddioex
+layer2s,Reddio zkVM,,,ZK Rollup,reddiozkvm,Starknet,True,reddiozkvm
+layer2s,Redstone,,,Funds can be stolen if,redstone,OP Stack,False,redstone
 layer2s,Reya,1729,https://explorer.aevo.xyz,,reya,,False,reya
-layer2s,rhino.fi,,,,rhinofi,StarkEx,False,rhinofi
-layer2s,RISE,,,,rise,OP Stack,True,rise
+layer2s,rhino.fi,,,Validium,rhinofi,StarkEx,False,rhinofi
+layer2s,RISE,,,Optimistic Rollup,rise,OP Stack,True,rise
 layer2s,RSS3 Value Sublayer,12553,https://scan.rss3.io/,,rss3,OP Stack,False,rss3
-layer2s,Scroll,534352,https://scrollscan.com/,,scroll,,False,scroll
-layer2s,Sorare,,,,sorare,StarkEx,False,sorare
-layer2s,Specular,,,,specular,,True,specular
-layer2s,Starknet,,,,starknet,Starknet,False,starknet
-layer2s,StealthChain,,,,stealthchain,OP Stack,True,stealthchain
-layer2s,Superseed,,,,superseed,OP Stack,True,superseed
-layer2s,Swell,,,,swell,Polygon,True,swell
-layer2s,Taiko,,,,taiko,,True,taiko
-layer2s,tanX,,,,tanx,StarkEx,False,tanx
-layer2s,Ten,,,,ten,,True,ten
-layer2s,Term Structure,,,,termstructure,ZKSync Lite,True,termstructure
-layer2s,Tradable,,,,tradable,ZK Stack,True,tradable
-layer2s,World Chain,,,,world,OP Stack,True,world
-layer2s,XCHAIN,,,,xchain,Polygon,True,xchain
+layer2s,Scroll,534352,https://scrollscan.com/,ZK Rollup,scroll,,False,scroll
+layer2s,Sorare,,,Validium,sorare,StarkEx,False,sorare
+layer2s,Specular,,,Optimistic Rollup,specular,,True,specular
+layer2s,Starknet,,,ZK Rollup,starknet,Starknet,False,starknet
+layer2s,StealthChain,,,Optimistic Rollup,stealthchain,OP Stack,True,stealthchain
+layer2s,Superseed,,,Optimistic Rollup,superseed,OP Stack,True,superseed
+layer2s,Swell,,,Validium,swell,Polygon,True,swell
+layer2s,Taiko,,,ZK Rollup,taiko,,True,taiko
+layer2s,tanX,,,Validium,tanx,StarkEx,False,tanx
+layer2s,Ten,,,Optimistic Rollup,ten,,True,ten
+layer2s,Term Structure,,,ZK Rollup,termstructure,ZKSync Lite,True,termstructure
+layer2s,Tradable,,,ZK Rollup,tradable,ZK Stack,True,tradable
+layer2s,World Chain,,,Optimistic Rollup,world,OP Stack,True,world
+layer2s,XCHAIN,,,Validium,xchain,Polygon,True,xchain
 layer2s,DAC,,,,xlayer,Polygon CDK,False,xlayer
-layer2s,Zentachain,,,,zentachain,OP Stack,True,zentachain
-layer2s,Zircuit,,,,zircuit,,True,zircuit
-layer2s,zkCandy,,,,zkcandy,ZK Stack,True,zkcandy
-layer2s,ZKFair,42766,https://scan.zkfair.io/,,zkfair,Polygon,False,zkfair
-layer2s,zkLighter,,,,zklighter,ZK Stack,True,zklighter
-layer2s,ZKSpace,,,,zkspace,ZKSync Lite,False,zkspace
-layer2s,ZKSwap 1.0,,,,zkswap,ZKSync Lite,False,zkswap
-layer2s,ZKSwap 2.0,,,,zkswap2,ZKSync Lite,False,zkswap2
-layer2s,zkSync Era,324,https://explorer.zksync.io/,,zksync-era,ZK Stack,False,zksync-era
-layer2s,zkSync Lite,,,,zksync-lite,ZKSync Lite,False,zksync-lite
+layer2s,Zentachain,,,Optimistic Rollup,zentachain,OP Stack,True,zentachain
+layer2s,Zircuit,,,ZK Rollup,zircuit,,True,zircuit
+layer2s,zkCandy,,,Validium,zkcandy,ZK Stack,True,zkcandy
+layer2s,ZKFair,42766,https://scan.zkfair.io/,Validium,zkfair,Polygon,False,zkfair
+layer2s,zkLighter,,,Validium,zklighter,ZK Stack,True,zklighter
+layer2s,ZKSpace,,,ZK Rollup,zkspace,ZKSync Lite,False,zkspace
+layer2s,ZKSwap 1.0,,,ZK Rollup,zkswap,ZKSync Lite,False,zkswap
+layer2s,ZKSwap 2.0,,,ZK Rollup,zkswap2,ZKSync Lite,False,zkswap2
+layer2s,zkSync Era,324,https://explorer.zksync.io/,ZK Rollup,zksync-era,ZK Stack,False,zksync-era
+layer2s,zkSync Lite,,,ZK Rollup,zksync-lite,ZKSync Lite,False,zksync-lite
 layer2s,Zora,,,,zora,OP Stack,False,zora
-layer3s,Bugless,,,,bugless,Cartesi Rollups,False,bugless
-layer3s,DCA.Monster,,,,dcamonster,Cartesi Rollups,True,dcamonster
+layer3s,Bugless,,,Optimistic Rollup,bugless,Cartesi Rollups,False,bugless
+layer3s,DCA.Monster,,,Optimistic Rollup,dcamonster,Cartesi Rollups,True,dcamonster
 layer3s,Degen Chain,,,,degen,Arbitrum Orbit,False,degen
 layer3s,Deri,,,,deri,Arbitrum Orbit,False,deri
-layer3s,MXC zkEVM,,,,mxc,Taiko,False,mxc
-layer3s,ORB3,,,,orb3,Arbitrum,False,orb3
+layer3s,MXC zkEVM,,,ZK Rollup,mxc,Taiko,False,mxc
+layer3s,ORB3,,,Optimium,orb3,Arbitrum,False,orb3
 layer3s,Proof of Play Apex,,,,popapex,Arbitrum Orbit,False,popapex
 layer3s,RARI Chain,,,,rari,Arbitrum Orbit,False,rari
 layer3s,Stack,,,,stack,,False,stack
 layer3s,Syndicate Frame Chain,,,,syndicateframe,,False,syndicateframe
-layer3s,Xai,,,,xai,Arbitrum Orbit,False,xai
-layer3s,zkLink Nova,,,,zklinknova,zkLink Nexus,False,zklinknova
+layer3s,Xai,,,Funds can be stolen if,xai,Arbitrum Orbit,False,xai
+layer3s,zkLink Nova,,,Validium,zklinknova,zkLink Nexus,False,zklinknova
 chains,avalanche,43114,https://snowtrace.io,,avalanche,,False,avalanche
 chains,bsc,56,https://bscscan.com,,bsc,,False,bsc
 chains,celo,42220,https://celoscan.io,,celo,,False,celo
