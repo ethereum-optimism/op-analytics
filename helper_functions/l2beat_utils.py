@@ -115,7 +115,7 @@ def get_l2beat_metadata():
                         else:
                                 return extract_data(file_content, patterns['provider'])
         def determine_layer(folder_name):
-                if folder_name == 'chain':
+                if 'chain' in folder_name:
                         return 'L1'
                 elif 'layer2' in folder_name:
                         return 'L2'
