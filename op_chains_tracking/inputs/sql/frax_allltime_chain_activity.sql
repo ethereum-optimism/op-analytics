@@ -3,6 +3,7 @@ WITH chain_data AS (
         DATE_TRUNC(block_timestamp, DAY) AS dt,
         chain,
         network,
+        gas_token_symbol,
         COUNT(*) AS num_raw_txs,
         SUM(CASE WHEN gas_price = 0 AND to_address = '0x4200000000000000000000000000000000000015' THEN 1 ELSE 0 END) AS l2_num_attr_deposit_txs_per_day,
         SUM(CASE WHEN gas_price = 0 AND to_address = '0x4200000000000000000000000000000000000007' THEN 1 ELSE 0 END) AS l2_num_user_deposit_txs_per_day,
@@ -55,11 +56,12 @@ WITH chain_data AS (
             SELECT 'frax' as chain, 'mainnet' as network, block_timestamp, block_number, `hash`, to_address, from_address, gas_price, max_priority_fee_per_gas, receipt_status
               , receipt_gas_used, receipt_l1_gas_price, receipt_l1_gas_used, receipt_l1_fee, LENGTH(SUBSTR(input, 3)) / 2 AS input_bytes
               , receipt_l1_fee_scalar, receipt_l1_blob_base_fee, receipt_l1_blob_base_fee_scalar, receipt_l1_base_fee_scalar
+              , 'frxETH' as gas_token_symbol
               FROM `opensource-observer.superchain.frax_transactions` 
               -- WHERE block_timestamp >= CURRENT_TIMESTAMP() - interval '365' day
         ) txs
     GROUP BY
-        1, 2, 3
+        1, 2, 3, 4
 )
 
 SELECT *
