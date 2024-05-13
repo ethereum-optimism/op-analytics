@@ -24,6 +24,7 @@ dataclasses_json = "*"
 google-cloud-bigquery = "*"
 db-dtypes = "*"
 pandas-gbq = "*"
+google-auth = "*"
 
 [dev-packages]
 
