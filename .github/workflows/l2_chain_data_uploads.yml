@@ -235,6 +235,7 @@ jobs:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           MS_METABASE_NAME: ${{ secrets.MS_METABASE_NAME }}
           BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
+          PATH_TO_BQ_CREDS: ${{ secrets.PATH_TO_BQ_CREDS }}
           IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
 
 
