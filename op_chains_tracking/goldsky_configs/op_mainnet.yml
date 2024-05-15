@@ -1,0 +1,159 @@
+sources:
+  - referenceName: optimism.raw_blocks
+    version: 1.0.0
+    type: dataset
+    startAt: earliest
+    description: >-
+      Metadata for each block on the chain including hashes, transaction count,
+      difficulty, and gas used.
+  - referenceName: optimism.raw_logs
+    version: 1.0.0
+    type: dataset
+    startAt: earliest
+    description: >-
+      Raw logs for events emitted from contracts. Contains the contract address,
+      data, topics, and metadata for blocks and transactions.
+  - referenceName: optimism.transaction_receipts
+    version: 1.0.0
+    type: dataset
+    startAt: earliest
+    description: >-
+      Transaction data including input, value, from and to address, and metadata
+      for the block, gas, and receipts.
+  - referenceName: optimism.raw_traces
+    version: 1.0.0
+    type: dataset
+    startAt: earliest
+    description: >-
+      Traces of all function calls made on the chain including metadata for
+      block, trace, transaction, and gas.
+transforms:
+  - type: sql
+    referenceName: op_blocks
+    primaryKey: id
+    sql: |
+      select
+        *
+        ,'op' as chain
+        ,'mainnet' as network
+      from
+        optimism.raw_blocks
+  - type: sql
+    referenceName: op_raw_logs
+    primaryKey: id
+    sql: |
+      select
+        *
+        ,'op' as chain
+        ,'mainnet' as network
+      from
+        optimism.raw_logs
+  - type: sql
+    referenceName: op_raw_traces
+    primaryKey: id
+    sql: |
+      select
+        *
+        ,'op' as chain
+        ,'mainnet' as network
+      from
+        optimism.raw_traces
+  - type: sql
+    referenceName: op_transactions
+    primaryKey: id
+    sql: |
+      select
+         *
+        ,'op' as chain
+        ,'mainnet' as network
+      from
+        optimism.transaction_receipts
+sinks:
+  - secretName: OP_DEMO_CLICKHOUSE
+    type: clickHouse
+    table: op_blocks
+    batchSize: 100000
+    description: ClickHouse sink from optimism.raw_blocks to op_blocks
+    flushInterval: '10000'
+    referenceName: clickhouse_optimism.raw_blocks
+    appendOnlyMode: true
+    schemaOverride:
+      hash: FixedString(66)
+      number: UInt64 CODEC(Delta, ZSTD)
+      timestamp: DateTime CODEC(Delta, ZSTD)
+    sourceStreamName: op_blocks
+  - secretName: OP_DEMO_CLICKHOUSE
+    type: clickHouse
+    table: op_logs
+    batchSize: 100000
+    description: ClickHouse sink from optimism.raw_logs to op_logs
+    flushInterval: '10000'
+    referenceName: clickhouse_optimism.raw_logs
+    appendOnlyMode: true
+    schemaOverride:
+      address: FixedString(42)
+      log_index: UInt64
+      block_hash: FixedString(66)
+      block_number: UInt64 CODEC(Delta, ZSTD)
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      transaction_hash: FixedString(66)
+      transaction_index: UInt64
+    sourceStreamName: op_raw_logs
+  - secretName: OP_DEMO_CLICKHOUSE
+    type: clickHouse
+    table: op_transactions
+    batchSize: 100000
+    description: ClickHouse sink from optimism.transaction_receipts to op_transactions
+    flushInterval: '10000'
+    referenceName: clickhouse_optimism.transaction_receipts
+    appendOnlyMode: true
+    schemaOverride:
+      gas: UInt128
+      nonce: UInt64
+      value: UInt256
+      gas_price: UInt128
+      block_hash: FixedString(66)
+      to_address: FixedString(42)
+      block_number: UInt64 CODEC(Delta, ZSTD)
+      from_address: FixedString(42)
+      receipt_l1_fee: Nullable(UInt128)
+      receipt_status: UInt8
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      max_fee_per_gas: UInt128
+      receipt_gas_used: UInt128
+      hash: FixedString(66)
+      transaction_type: UInt8
+      transaction_index: UInt64
+      receipt_l1_gas_used: Nullable(UInt128)
+      receipt_l1_gas_price: Nullable(UInt128)
+      receipt_l1_blob_base_fee: Nullable(UInt128)
+      receipt_l1_fee_scalar: Nullable(Float64)
+      receipt_l1_base_fee_scalar: Nullable(Float64)
+      receipt_l1_blob_base_fee_scalar: Nullable(Float64)
+      receipt_l1_block_number: Nullable(Int64)
+      max_priority_fee_per_gas: UInt128
+      receipt_cumulative_gas_used: UInt128
+      receipt_effective_gas_price: UInt128
+    sourceStreamName: op_transactions
+  - secretName: OP_DEMO_CLICKHOUSE
+    type: clickHouse
+    table: op_traces
+    batchSize: 100000
+    description: ClickHouse sink from optimism.raw_traces to traces
+    flushInterval: '10000'
+    referenceName: clickhouse_optimism.raw_traces
+    appendOnlyMode: true
+    schemaOverride:
+      gas: UInt128
+      value: UInt256
+      status: UInt8
+      gas_used: UInt128
+      subtraces: UInt256
+      block_hash: FixedString(66)
+      to_address: FixedString(42)
+      block_number: UInt64 CODEC(Delta(4), ZSTD)
+      from_address: FixedString(42)
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      transaction_hash: FixedString(66)
+      transaction_index: UInt64
+    sourceStreamName: op_raw_traces
