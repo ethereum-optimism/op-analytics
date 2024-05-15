@@ -21,8 +21,9 @@ notion-df = "*"
 web3 = "*"
 pytest = "*"
 dataclasses_json = "*"
-google-cloud-bigquery = "*"
 db-dtypes = "*"
+clickhouse-connect = "*"
+
 
 [dev-packages]
 
