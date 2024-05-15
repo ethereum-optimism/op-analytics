@@ -1,0 +1,86 @@
+sources:
+  - referenceName: ethereum.raw_blocks
+    version: 1.0.0
+    type: dataset
+    startAt: earliest
+    description: >-
+      Metadata for each block on the chain including hashes, transaction count,
+      difficulty, and gas used.
+  - referenceName: ethereum.raw_transactions
+    version: 1.0.0
+    type: dataset
+    startAt: earliest
+    description: >-
+      Transaction data including input, value, from and to address, and metadata
+      for the block, gas, and receipts.
+transforms:
+  - type: sql
+    referenceName: ethereum_blocks
+    primaryKey: id
+    sql: |
+      select
+        *
+        ,'ethereum' as chain
+        ,'mainnet' as network
+      from
+        ethereum.raw_blocks
+  - type: sql
+    referenceName: ethereum_transactions
+    primaryKey: id
+    sql: |
+      select
+         *
+        ,'ethereum' as chain
+        ,'mainnet' as network
+      from
+        ethereum.raw_transactions
+sinks:
+  - secretName: OP_DEMO_CLICKHOUSE
+    type: clickHouse
+    table: ethereum_blocks
+    batchSize: 100000
+    description: ClickHouse sink from ethereum.raw_blocks to ethereum_blocks
+    flushInterval: '10000'
+    referenceName: clickhouse_ethereum.raw_blocks
+    appendOnlyMode: true
+    schemaOverride:
+      hash: FixedString(66)
+      number: UInt64 CODEC(Delta, ZSTD)
+      timestamp: DateTime CODEC(Delta, ZSTD)
+    sourceStreamName: ethereum_blocks
+  - secretName: OP_DEMO_CLICKHOUSE
+    type: clickHouse
+    table: ethereum_transactions
+    batchSize: 100000
+    description: ClickHouse sink from ethereum.raw_transactions to ethereum_transactions
+    flushInterval: '10000'
+    referenceName: clickhouse_ethereum.raw_transactions
+    appendOnlyMode: true
+    schemaOverride:
+      gas: UInt128
+      nonce: UInt64
+      value: UInt256
+      gas_price: UInt128
+      block_hash: FixedString(66)
+      to_address: FixedString(42)
+      block_number: UInt64 CODEC(Delta, ZSTD)
+      from_address: FixedString(42)
+      receipt_l1_fee: Nullable(UInt128)
+      receipt_status: UInt8
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      max_fee_per_gas: UInt128
+      receipt_gas_used: UInt128
+      hash: FixedString(66)
+      transaction_type: UInt8
+      transaction_index: UInt64
+      receipt_l1_gas_used: Nullable(UInt128)
+      receipt_l1_gas_price: Nullable(UInt128)
+      receipt_l1_blob_base_fee: Nullable(UInt128)
+      receipt_l1_fee_scalar: Nullable(Float64)
+      receipt_l1_base_fee_scalar: Nullable(Float64)
+      receipt_l1_blob_base_fee_scalar: Nullable(Float64)
+      receipt_l1_block_number: Nullable(Int64)
+      max_priority_fee_per_gas: UInt128
+      receipt_cumulative_gas_used: UInt128
+      receipt_effective_gas_price: UInt128
+    sourceStreamName: ethereum_transactions
