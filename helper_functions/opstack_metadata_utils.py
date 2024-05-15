@@ -2,9 +2,13 @@ import pandas as pd
 import numpy as np
 
 def generate_alignment_column(df):
+
+        # Create 'is_op_chain' column
+        df['is_op_chain'] = df['chain_type'].notnull().astype(bool)
+
         conditions = [
-        df['is_op_chain'] == 'yes',
-        (df['is_op_chain'] != 'yes'),
+        df['is_op_chain'] == True,
+        (df['is_op_chain'] == False),
         df['is_op_chain'].isna()
         ]
 
