@@ -28,17 +28,18 @@ client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 # In[2]:
 
 
-chain_mappings = {
-        # CH Schema Name, Display Name
-        # 'zora': 'Zora',
-        # 'pgn': 'Public Goods Network',
-        # 'base': 'Base',
-        # 'mode': 'Mode',
-        # 'metal': 'Metal',
-        'fraxtal': 'Fraxtal',
-        # 'bob':'BOB',
-        # Add more mappings as needed
-    }
+chain_mappings_list = [
+    # {'schema_name': 'zora', 'display_name': 'Zora', 'has_blob_fields': False},
+    # {'schema_name': 'pgn', 'display_name': 'Public Goods Network', 'has_blob_fields': False},
+    # {'schema_name': 'base', 'display_name': 'Base', 'has_blob_fields': False},
+    {'schema_name': 'mode', 'display_name': 'Mode', 'has_blob_fields': False},
+    {'schema_name': 'metal', 'display_name': 'Metal', 'has_blob_fields': False},
+    {'schema_name': 'fraxtal', 'display_name': 'Fraxtal', 'has_blob_fields': True},
+    {'schema_name': 'bob', 'display_name': 'BOB (Build on Bitcoin)', 'has_blob_fields': False},
+    # Add more mappings as needed
+]
+chain_mappings_dict = {item['schema_name']: item['display_name'] for item in chain_mappings_list}
+
 block_time_sec = 2
 
 trailing_days = 9999
@@ -67,9 +68,10 @@ table_name = 'op_ch_allltime_chain_activity'
 
 
 for qn in query_names:
-        for key, value in chain_mappings.items():
-                chain_schema = key
-                display_name = value
+        for mapping in chain_mappings_list:
+                chain_schema = mapping['schema_name']
+                display_name = mapping['display_name']
+                has_blob_fields = mapping['has_blob_fields']
                 # If we can do it programmatically from UI saved queries
                 # query = client.get_job(query_name)
                 # Read the SQL query from file
@@ -84,6 +86,10 @@ for qn in query_names:
                 query = query.replace("@block_time_sec@", str(block_time_sec))
                 query = query.replace("@max_execution_secs@", str(max_execution_secs))
 
+                if ~has_blob_fields:
+                        query = query.replace("receipt_l1_blob_base_fee_scalar", 'cast(NULL as Nullable(Float64))')
+                        query = query.replace("receipt_l1_blob_base_fee", 'cast(NULL as Nullable(Float64))')
+                        query = query.replace("receipt_l1_base_fee_scalar", 'toInt64(NULL)')
                 # Execute the query
                 result_df = client.query_df(query)
         #         # Write to csv
@@ -92,7 +98,7 @@ for qn in query_names:
         #         time.sleep(1)
                 
                 result_df['chain_raw'] = result_df['chain']
-                result_df['chain'] = result_df['chain'].replace(chain_mappings)
+                result_df['chain'] = result_df['chain'].replace(chain_mappings_dict)
                 unified_dfs.append(result_df)
 
         write_df = pd.concat(unified_dfs)
@@ -102,7 +108,13 @@ for qn in query_names:
         # # # Print the results
 
 
-# In[6]:
+# In[12]:
+
+
+print(write_df['chain'].unique())
+
+
+# In[9]:
 
 
 write_df.sample(5)
