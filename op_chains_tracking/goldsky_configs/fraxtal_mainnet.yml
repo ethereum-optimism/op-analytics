@@ -1,0 +1,159 @@
+sources:
+  - referenceName: frax.raw_blocks
+    version: 1.0.0
+    type: dataset
+    startAt: earliest
+    description: >-
+      Metadata for each block on the chain including hashes, transaction count,
+      difficulty, and gas used.
+  - referenceName: frax.raw_logs
+    version: 1.0.0
+    type: dataset
+    startAt: earliest
+    description: >-
+      Raw logs for events emitted from contracts. Contains the contract address,
+      data, topics, and metadata for blocks and transactions.
+  - referenceName: frax.transaction_receipts
+    version: 1.0.0
+    type: dataset
+    startAt: earliest
+    description: >-
+      Transaction data including input, value, from and to address, and metadata
+      for the block, gas, and receipts.
+  - referenceName: frax.raw_traces
+    version: 1.0.0
+    type: dataset
+    startAt: earliest
+    description: >-
+      Traces of all function calls made on the chain including metadata for
+      block, trace, transaction, and gas.
+transforms:
+  - type: sql
+    referenceName: fraxtal_blocks
+    primaryKey: id
+    sql: |
+      select
+        *
+        ,'fraxtal' as chain
+        ,'mainnet' as network
+      from
+        frax.raw_blocks
+  - type: sql
+    referenceName: fraxtal_raw_logs
+    primaryKey: id
+    sql: |
+      select
+        *
+        ,'fraxtal' as chain
+        ,'mainnet' as network
+      from
+        frax.raw_logs
+  - type: sql
+    referenceName: fraxtal_raw_traces
+    primaryKey: id
+    sql: |
+      select
+        *
+        ,'fraxtal' as chain
+        ,'mainnet' as network
+      from
+        frax.raw_traces
+  - type: sql
+    referenceName: fraxtal_transactions
+    primaryKey: id
+    sql: |
+      select
+         *
+        ,'fraxtal' as chain
+        ,'mainnet' as network
+      from
+        frax.transaction_receipts
+sinks:
+  - secretName: OP_DEMO_CLICKHOUSE
+    type: clickHouse
+    table: fraxtal_blocks
+    batchSize: 100000
+    description: ClickHouse sink from frax.raw_blocks to fraxtal_blocks
+    flushInterval: '10000'
+    referenceName: clickhouse_frax.raw_blocks
+    appendOnlyMode: true
+    schemaOverride:
+      hash: FixedString(66)
+      number: UInt64 CODEC(Delta, ZSTD)
+      timestamp: DateTime CODEC(Delta, ZSTD)
+    sourceStreamName: fraxtal_blocks
+  - secretName: OP_DEMO_CLICKHOUSE
+    type: clickHouse
+    table: fraxtal_logs
+    batchSize: 100000
+    description: ClickHouse sink from frax.raw_logs to fraxtal_logs
+    flushInterval: '10000'
+    referenceName: clickhouse_frax.raw_logs
+    appendOnlyMode: true
+    schemaOverride:
+      address: FixedString(42)
+      log_index: UInt64
+      block_hash: FixedString(66)
+      block_number: UInt64 CODEC(Delta, ZSTD)
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      transaction_hash: FixedString(66)
+      transaction_index: UInt64
+    sourceStreamName: fraxtal_raw_logs
+  - secretName: OP_DEMO_CLICKHOUSE
+    type: clickHouse
+    table: fraxtal_transactions
+    batchSize: 100000
+    description: ClickHouse sink from frax.transaction_receipts to fraxtal_transactions
+    flushInterval: '10000'
+    referenceName: clickhouse_frax.transaction_receipts
+    appendOnlyMode: true
+    schemaOverride:
+      gas: UInt128
+      nonce: UInt64
+      value: UInt256
+      gas_price: UInt128
+      block_hash: FixedString(66)
+      to_address: FixedString(42)
+      block_number: UInt64 CODEC(Delta, ZSTD)
+      from_address: FixedString(42)
+      receipt_l1_fee: Nullable(UInt128)
+      receipt_status: UInt8
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      max_fee_per_gas: UInt128
+      receipt_gas_used: UInt128
+      hash: FixedString(66)
+      transaction_type: UInt8
+      transaction_index: UInt64
+      receipt_l1_gas_used: Nullable(UInt128)
+      receipt_l1_gas_price: Nullable(UInt128)
+      receipt_l1_blob_base_fee: Nullable(UInt128)
+      receipt_l1_fee_scalar: Nullable(Float64)
+      receipt_l1_base_fee_scalar: Nullable(Float64)
+      receipt_l1_blob_base_fee_scalar: Nullable(Float64)
+      receipt_l1_block_number: Nullable(Int64)
+      max_priority_fee_per_gas: UInt128
+      receipt_cumulative_gas_used: UInt128
+      receipt_effective_gas_price: UInt128
+    sourceStreamName: fraxtal_transactions
+  - secretName: OP_DEMO_CLICKHOUSE
+    type: clickHouse
+    table: fraxtal_traces
+    batchSize: 100000
+    description: ClickHouse sink from frax.raw_traces to traces
+    flushInterval: '10000'
+    referenceName: clickhouse_frax.raw_traces
+    appendOnlyMode: true
+    schemaOverride:
+      gas: UInt128
+      value: UInt256
+      status: UInt8
+      gas_used: UInt128
+      subtraces: UInt256
+      block_hash: FixedString(66)
+      to_address: FixedString(42)
+      block_number: UInt64 CODEC(Delta(4), ZSTD)
+      from_address: FixedString(42)
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      transaction_hash: FixedString(66)
+      transaction_index: UInt64
+    sourceStreamName: fraxtal_raw_traces
