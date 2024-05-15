@@ -189,7 +189,7 @@ jobs:
         with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
 
-  gs-gcs:
+  gs-ch:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     strategy:
@@ -223,20 +223,20 @@ jobs:
       - name: Generate py files
         working-directory: op_chains_tracking
         run: |
-                pipenv run jupyter nbconvert --to python gcs_uploads_from_bq.ipynb
+                pipenv run jupyter nbconvert --to python ch_gs_uploads.ipynb
                 
                   
   # Run py
       - name: Run py
         working-directory: op_chains_tracking
         run: |
-                pipenv run python gcs_uploads_from_bq.py
+                pipenv run python ch_gs_uploads.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
-          MS_METABASE_NAME: ${{ secrets.MS_METABASE_NAME }}
-          BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
-          PATH_TO_BQ_CREDS: ${{ secrets.PATH_TO_BQ_CREDS }}
-          IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
+          OP_CLICKHOUSE_HOST: ${{ secrets.OP_CLICKHOUSE_HOST }}
+          OP_CLICKHOUSE_USER: ${{ secrets.OP_CLICKHOUSE_USER }}
+          OP_CLICKHOUSE_PW: ${{ secrets.OP_CLICKHOUSE_PW }}
+          OP_CLICKHOUSE_PORT: ${{ secrets.OP_CLICKHOUSE_PORT }}
 
 
     # commit_results:
@@ -283,7 +283,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-    needs: [general-l2, gs-dune-mb] #, gs-gcs]
+    needs: [general-l2, gs-dune-mb, gs-ch]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
