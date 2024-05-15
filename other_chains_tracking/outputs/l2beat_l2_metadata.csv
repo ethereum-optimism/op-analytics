@@ -13,7 +13,7 @@ L2,Aztec,,,ZK Rollup,aztec,,,,True,'https://aztec.network/','https://docs.aztec.
 L2,Zk.Money v2 (Aztec Connect),,,ZK Rollup,aztecconnect,,,,False,'https://aztec.network/','https://developers.aztec.network/','https://github.com/AztecProtocol/aztec-connect',aztecconnect
 L2,Base,8453,https://basescan.org,,base,https://developer-access-mainnet.base.org,OP Stack,,False,'https://base.org/',"'https://docs.base.org/', 'https://stack.optimism.io/'",'https://github.com/base-org',base
 L2,Blast,81457,https://blastscan.io/,,blast,https://rpc.blast.io/,OP Stack,,False,'https://blast.io/en','https://docs.blast.io/about-blast',,blast
-L2,BOB,,,Optimistic Rollup,bob,,OP Stack,,True,'https://gobob.xyz','https://docs.gobob.xyz','https://github.com/bob-collective',bob
+L2,BOB,60808,https://explorer.gobob.xyz,,bob,https://rpc.gobob.xyz/,OP Stack,,False,'https://gobob.xyz','https://docs.gobob.xyz','https://github.com/bob-collective',bob
 L2,Boba Network,288,https://eth.bobascan.com/,,bobanetwork,https://mainnet.boba.network/,OP Stack,,False,'https://boba.network','https://docs.boba.network/','https://github.com/bobanetwork/boba',bobanetwork
 L2,Camp,,,Optimium,camp,,OP Stack,,True,'https://campnetwork.xyz/','https://campaign-1.gitbook.io/camp-technical-docs',,camp
 L2,Canto,,,ZK Rollup,canto,,Polygon,,True,'https://canto.io','https://docs.canto.io',,canto
