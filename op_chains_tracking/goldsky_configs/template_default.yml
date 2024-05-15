@@ -1,26 +1,26 @@
 sources:
-  - referenceName: chain-name.raw_blocks
+  - referenceName: chain-db-name.raw_blocks
     version: 1.0.0
     type: dataset
     startAt: earliest
     description: >-
       Metadata for each block on the chain including hashes, transaction count,
       difficulty, and gas used.
-  - referenceName: chain-name.raw_logs
+  - referenceName: chain-db-name.raw_logs
     version: 1.0.0
     type: dataset
     startAt: earliest
     description: >-
       Raw logs for events emitted from contracts. Contains the contract address,
       data, topics, and metadata for blocks and transactions.
-  - referenceName: chain-name.transaction_receipts
+  - referenceName: chain-db-name.transaction_receipts
     version: 1.0.0
     type: dataset
     startAt: earliest
     description: >-
       Transaction data including input, value, from and to address, and metadata
       for the block, gas, and receipts.
-  - referenceName: chain-name.raw_traces
+  - referenceName: chain-db-name.raw_traces
     version: 1.0.0
     type: dataset
     startAt: earliest
@@ -37,7 +37,7 @@ transforms:
         ,'chain-name' as chain
         ,'network-name' as network
       from
-        chain-name.raw_blocks
+        chain-db-name.raw_blocks
   - type: sql
     referenceName: chain-name_raw_logs
     primaryKey: id
@@ -47,7 +47,7 @@ transforms:
         ,'chain-name' as chain
         ,'network-name' as network
       from
-        chain-name.raw_logs
+        chain-db-name.raw_logs
   - type: sql
     referenceName: chain-name_raw_traces
     primaryKey: id
@@ -57,7 +57,7 @@ transforms:
         ,'chain-name' as chain
         ,'network-name' as network
       from
-        chain-name.raw_traces
+        chain-db-name.raw_traces
   - type: sql
     referenceName: chain-name_transactions
     primaryKey: id
@@ -67,15 +67,15 @@ transforms:
         ,'chain-name' as chain
         ,'network-name' as network
       from
-        chain-name.transaction_receipts
+        chain-db-name.transaction_receipts
 sinks:
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
     table: chain-name_blocks
     batchSize: 100000
-    description: ClickHouse sink from chain-name.raw_blocks to chain-name_blocks
+    description: ClickHouse sink from chain-db-name.raw_blocks to chain-name_blocks
     flushInterval: '10000'
-    referenceName: clickhouse_chain-name.raw_blocks
+    referenceName: clickhouse_chain-db-name.raw_blocks
     appendOnlyMode: true
     schemaOverride:
       hash: FixedString(66)
@@ -86,9 +86,9 @@ sinks:
     type: clickHouse
     table: chain-name_logs
     batchSize: 100000
-    description: ClickHouse sink from chain-name.raw_logs to chain-name_logs
+    description: ClickHouse sink from chain-db-name.raw_logs to chain-name_logs
     flushInterval: '10000'
-    referenceName: clickhouse_chain-name.raw_logs
+    referenceName: clickhouse_chain-db-name.raw_logs
     appendOnlyMode: true
     schemaOverride:
       address: FixedString(42)
@@ -103,9 +103,9 @@ sinks:
     type: clickHouse
     table: chain-name_transactions
     batchSize: 100000
-    description: ClickHouse sink from chain-name.transaction_receipts to chain-name_transactions
+    description: ClickHouse sink from chain-db-name.transaction_receipts to chain-name_transactions
     flushInterval: '10000'
-    referenceName: clickhouse_chain-name.transaction_receipts
+    referenceName: clickhouse_chain-db-name.transaction_receipts
     appendOnlyMode: true
     schemaOverride:
       gas: UInt128
@@ -139,9 +139,9 @@ sinks:
     type: clickHouse
     table: chain-name_traces
     batchSize: 100000
-    description: ClickHouse sink from chain-name.raw_traces to traces
+    description: ClickHouse sink from chain-db-name.raw_traces to traces
     flushInterval: '10000'
-    referenceName: clickhouse_chain-name.raw_traces
+    referenceName: clickhouse_chain-db-name.raw_traces
     appendOnlyMode: true
     schemaOverride:
       gas: UInt128
