@@ -19,6 +19,7 @@ WITH chain_data AS (
         SUM(CASE WHEN gas_price > 0 THEN receipt_l1_gas_used * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar) ELSE 0 END) AS l1_gas_paid_user_txs,
         SUM(CASE WHEN gas_price > 0 THEN receipt_l1_gas_used * receipt_l1_blob_base_fee_scalar ELSE 0 END) AS blob_gas_paid_user_txs,
         
+        
         SUM(CASE WHEN gas_price > 0 THEN receipt_l1_gas_used ELSE 0 END) AS l1_gas_used_user_txs_l2_per_day,
         -- SUM(CASE WHEN gas_price > 0 THEN (LENGTH(unhex(input))-1) ELSE 0 END) AS calldata_bytes_user_txs_l2_per_day,
         SUM(CASE WHEN gas_price > 0 THEN input_bytes ELSE 0 END) AS calldata_bytes_user_txs_l2_per_day,
