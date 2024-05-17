@@ -1,26 +1,28 @@
 dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,mainnet_chain_id,op_based_version,alignment,chain_name,display_name
-2024-05-17,zora,L2,41895.0,dune,zora,True,7777777.0,modern,OP Chain,zora,Zora
-2024-05-17,zksync,L2,522847.0,dune,zksync era,False,,,Other EVMs,,zkSync Era
-2024-05-17,scroll,L2,174775.0,dune,scroll,False,,,Other EVMs,,Scroll
-2024-05-17,polygon,L1,2735125.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
-2024-05-17,optimism,L2,220423.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-17,zora,L2,68468.0,dune,zora,True,7777777.0,modern,OP Chain,zora,Zora
+2024-05-17,zksync,L2,673868.0,dune,zksync era,False,,,Other EVMs,,zkSync Era
+2024-05-17,scroll,L2,224072.0,dune,scroll,False,,,Other EVMs,,Scroll
+2024-05-17,polygon,L1,3403771.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
+2024-05-17,optimism,L2,295221.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-17,mode,L2,62431.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-17,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
-2024-05-17,gnosis,L1,67089.0,dune,gnosis,False,,,Other EVMs,,Gnosis
-2024-05-17,fraxtal,L2,8518.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
-2024-05-17,fantom,L1,54530.0,dune,fantom,False,,,Other EVMs,,Fantom
-2024-05-17,ethereum,L1,379166.0,dune,ethereum,False,,,Other EVMs,,Ethereum
-2024-05-17,celo,L1,468320.0,dune,celo,True,,modern,OP Chain,celo,Celo
-2024-05-17,bob,L2,28264.0,goldsky,bob (build on bitcoin),True,60808.0,modern,OP Chain,bob,BOB (Build on Bitcoin)
-2024-05-17,bnb,L1,1716935.0,dune,bnb,False,,,Other EVMs,,BNB
-2024-05-17,blast,L2,313326.0,flipside,blast,False,81457.0,modern,OP Stack Fork,blast,Blast
-2024-05-17,base,L2,747247.0,dune,base,True,8453.0,modern,OP Chain,base,Base
-2024-05-17,avalanche_c,L1,78242.0,dune,avalanche c-chain,False,,,Other EVMs,,Avalanche C-Chain
-2024-05-17,arbitrum,L2,1205400.0,dune,arbitrum one,False,,,Other EVMs,,Arbitrum One
+2024-05-17,gnosis,L1,92194.0,dune,gnosis,False,,,Other EVMs,,Gnosis
+2024-05-17,fraxtal,L2,11550.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
+2024-05-17,fantom,L1,72183.0,dune,fantom,False,,,Other EVMs,,Fantom
+2024-05-17,ethereum,L1,502375.0,dune,ethereum,False,,,Other EVMs,,Ethereum
+2024-05-17,celo,L1,522998.0,dune,celo,True,,modern,OP Chain,celo,Celo
+2024-05-17,bob,L2,49316.0,goldsky,bob (build on bitcoin),True,60808.0,modern,OP Chain,bob,BOB (Build on Bitcoin)
+2024-05-17,bnb,L1,2185822.0,dune,bnb,False,,,Other EVMs,,BNB
+2024-05-17,blast,L2,440760.0,flipside,blast,False,81457.0,modern,OP Stack Fork,blast,Blast
+2024-05-17,base,L2,993115.0,dune,base,True,8453.0,modern,OP Chain,base,Base
+2024-05-17,avalanche_c,L1,104483.0,dune,avalanche c-chain,False,,,Other EVMs,,Avalanche C-Chain
+2024-05-17,arbitrum,L2,1635342.0,dune,arbitrum one,False,,,Other EVMs,,Arbitrum One
 2024-05-16,zora,L2,63281.0,dune,zora,True,7777777.0,modern,OP Chain,zora,Zora
 2024-05-16,zksync,L2,760410.0,dune,zksync era,False,,,Other EVMs,,zkSync Era
 2024-05-16,scroll,L2,251701.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-16,polygon,L1,4272368.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-16,optimism,L2,397130.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-16,mode,L2,71971.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-16,metal,L2,2.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-05-16,gnosis,L1,134103.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-16,fraxtal,L2,8450.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -38,6 +40,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-15,scroll,L2,254646.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-15,polygon,L1,4045438.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-15,optimism,L2,397376.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-15,mode,L2,54096.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-15,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-05-15,gnosis,L1,122943.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-15,fraxtal,L2,7829.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -55,6 +58,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-14,scroll,L2,255198.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-14,polygon,L1,3997596.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-14,optimism,L2,341775.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-14,mode,L2,52553.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-14,gnosis,L1,138211.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-14,fraxtal,L2,7839.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-14,fantom,L1,85155.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -71,6 +75,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-13,scroll,L2,244614.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-13,polygon,L1,4011908.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-13,optimism,L2,356410.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-13,mode,L2,54717.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-13,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-05-13,gnosis,L1,125158.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-13,fraxtal,L2,7873.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -88,6 +93,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-12,scroll,L2,264759.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-12,polygon,L1,3699017.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-12,optimism,L2,279514.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-12,mode,L2,50397.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-12,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-05-12,gnosis,L1,124221.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-12,fraxtal,L2,7952.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -105,6 +111,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-11,scroll,L2,222429.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-11,polygon,L1,3697979.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-11,optimism,L2,295493.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-11,mode,L2,45264.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-11,gnosis,L1,116906.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-11,fraxtal,L2,8053.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-11,fantom,L1,93669.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -121,6 +128,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-10,scroll,L2,352165.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-10,polygon,L1,4181777.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-10,optimism,L2,367466.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-10,mode,L2,109407.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-10,metal,L2,7.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-05-10,gnosis,L1,122995.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-10,fraxtal,L2,8364.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -138,6 +146,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-09,scroll,L2,415232.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-09,polygon,L1,4205454.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-09,optimism,L2,372971.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-09,mode,L2,131157.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-09,metal,L2,3.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-05-09,gnosis,L1,128284.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-09,fraxtal,L2,8305.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -155,6 +164,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-08,scroll,L2,313933.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-08,polygon,L1,4185015.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-08,optimism,L2,376543.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-08,mode,L2,182171.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-08,gnosis,L1,93864.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-08,fraxtal,L2,8542.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-08,fantom,L1,87597.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -171,6 +181,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-07,scroll,L2,378496.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-07,polygon,L1,3835189.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-07,optimism,L2,369939.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-07,mode,L2,331629.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-07,gnosis,L1,107039.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-07,fraxtal,L2,8063.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-07,fantom,L1,89883.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -187,6 +198,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-06,scroll,L2,265535.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-06,polygon,L1,3863079.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-06,optimism,L2,381709.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-06,mode,L2,109904.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-06,gnosis,L1,113379.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-06,fraxtal,L2,8499.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-06,fantom,L1,87322.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -203,6 +215,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-05,scroll,L2,258450.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-05,polygon,L1,3504857.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-05,optimism,L2,304960.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-05,mode,L2,109432.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-05,gnosis,L1,116126.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-05,fraxtal,L2,8254.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-05,fantom,L1,52906.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -219,6 +232,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-04,scroll,L2,297815.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-04,polygon,L1,3499664.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-04,optimism,L2,322110.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-04,mode,L2,158943.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-04,gnosis,L1,105765.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-04,fraxtal,L2,7948.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-04,fantom,L1,80414.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -235,6 +249,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-03,scroll,L2,311287.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-03,polygon,L1,3846697.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-03,optimism,L2,362443.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-03,mode,L2,222405.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-03,gnosis,L1,141307.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-03,fraxtal,L2,8322.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-03,fantom,L1,86476.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -251,6 +266,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-02,scroll,L2,311083.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-02,polygon,L1,4000538.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-02,optimism,L2,399235.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-02,mode,L2,132139.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-02,gnosis,L1,156070.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-02,fraxtal,L2,8515.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-02,fantom,L1,96632.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -267,6 +283,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-01,scroll,L2,212185.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-01,polygon,L1,4277344.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-01,optimism,L2,491831.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-01,mode,L2,126653.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-01,gnosis,L1,163002.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-01,fraxtal,L2,8944.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-01,fantom,L1,99380.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -283,6 +300,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-30,scroll,L2,255773.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-30,polygon,L1,4463082.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-30,optimism,L2,512018.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-30,mode,L2,89934.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-30,gnosis,L1,172381.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-30,fraxtal,L2,8694.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-30,fantom,L1,103986.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -299,6 +317,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-29,scroll,L2,247089.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-29,polygon,L1,4126245.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-29,optimism,L2,457443.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-29,mode,L2,87869.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-29,gnosis,L1,146932.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-29,fraxtal,L2,8590.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-29,fantom,L1,99010.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -315,6 +334,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-28,scroll,L2,212954.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-28,polygon,L1,3827402.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-28,optimism,L2,454503.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-28,mode,L2,102573.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-28,gnosis,L1,143129.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-28,fraxtal,L2,8963.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-28,fantom,L1,105963.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -331,6 +351,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-27,scroll,L2,201681.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-27,polygon,L1,4052506.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-27,optimism,L2,469203.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-27,mode,L2,100979.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-27,gnosis,L1,162871.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-27,fraxtal,L2,8781.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-27,fantom,L1,103849.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -347,6 +368,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-26,scroll,L2,198996.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-26,polygon,L1,4113219.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-26,optimism,L2,464039.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-26,mode,L2,213100.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-26,metal,L2,2.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-26,gnosis,L1,145862.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-26,fraxtal,L2,8757.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -364,6 +386,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-25,scroll,L2,167572.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-25,polygon,L1,4138958.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-25,optimism,L2,466898.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-25,mode,L2,113786.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-25,metal,L2,3.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-25,gnosis,L1,173900.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-25,fraxtal,L2,9466.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -381,6 +404,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-24,scroll,L2,155338.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-24,polygon,L1,4017293.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-24,optimism,L2,463122.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-24,mode,L2,120500.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-24,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-24,gnosis,L1,166281.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-24,fraxtal,L2,10289.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -398,6 +422,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-23,scroll,L2,159076.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-23,polygon,L1,4348149.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-23,optimism,L2,459903.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-23,mode,L2,97679.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-23,gnosis,L1,137112.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-23,fraxtal,L2,8959.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-23,fantom,L1,102752.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -414,6 +439,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-22,scroll,L2,180560.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-22,polygon,L1,4419272.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-22,optimism,L2,434895.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-22,mode,L2,96063.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-22,gnosis,L1,154104.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-22,fraxtal,L2,8837.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-22,fantom,L1,123259.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -430,6 +456,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-21,scroll,L2,228834.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-21,polygon,L1,4060633.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-21,optimism,L2,413596.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-21,mode,L2,82250.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-21,gnosis,L1,151324.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-21,fraxtal,L2,9058.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-21,fantom,L1,127892.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -446,6 +473,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-20,scroll,L2,224563.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-20,polygon,L1,4417033.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-20,optimism,L2,405310.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-20,mode,L2,95451.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-20,gnosis,L1,133541.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-20,fraxtal,L2,8425.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-20,fantom,L1,98620.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -462,6 +490,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-19,scroll,L2,189073.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-19,polygon,L1,4311398.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-19,optimism,L2,470733.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-19,mode,L2,81736.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-19,metal,L2,2.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-19,gnosis,L1,157835.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-19,fraxtal,L2,8524.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -479,6 +508,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-18,scroll,L2,208296.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-18,polygon,L1,4313714.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-18,optimism,L2,442727.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-18,mode,L2,73829.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-18,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-18,gnosis,L1,146861.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-18,fraxtal,L2,8656.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -496,6 +526,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-17,scroll,L2,215228.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-17,polygon,L1,4224108.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-17,optimism,L2,443189.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-17,mode,L2,106815.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-17,gnosis,L1,156375.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-17,fraxtal,L2,8971.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-17,fantom,L1,112835.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -512,6 +543,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-16,scroll,L2,246566.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-16,polygon,L1,4156528.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-16,optimism,L2,474185.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-16,mode,L2,138620.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-16,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-16,gnosis,L1,142466.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-16,fraxtal,L2,9096.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -529,6 +561,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-15,scroll,L2,242330.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-15,polygon,L1,4114638.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-15,optimism,L2,469036.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-15,mode,L2,125538.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-15,gnosis,L1,129069.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-15,fraxtal,L2,9260.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-15,fantom,L1,123594.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -545,6 +578,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-14,scroll,L2,265612.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-14,polygon,L1,4270887.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-14,optimism,L2,464141.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-14,mode,L2,132573.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-14,gnosis,L1,150566.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-14,fraxtal,L2,10038.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-14,fantom,L1,95481.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -560,6 +594,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-13,scroll,L2,173076.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-13,polygon,L1,4200381.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-13,optimism,L2,479023.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-13,mode,L2,134680.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-13,gnosis,L1,140060.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-13,fraxtal,L2,10050.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-13,fantom,L1,137645.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -575,6 +610,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-12,scroll,L2,182934.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-12,polygon,L1,3971970.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-12,optimism,L2,462661.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-12,mode,L2,160280.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-12,gnosis,L1,127040.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-12,fraxtal,L2,10302.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-12,fantom,L1,109748.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -591,6 +627,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-11,scroll,L2,212726.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-11,polygon,L1,4285439.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-11,optimism,L2,484867.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-11,mode,L2,155605.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-11,gnosis,L1,139007.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-11,fraxtal,L2,8782.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-11,fantom,L1,124685.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -607,6 +644,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-10,scroll,L2,215918.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-10,polygon,L1,4144694.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-10,optimism,L2,484950.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-10,mode,L2,171235.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-10,gnosis,L1,155590.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-10,fraxtal,L2,9110.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-10,fantom,L1,121476.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -622,6 +660,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-09,scroll,L2,209412.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-09,polygon,L1,4300553.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-09,optimism,L2,462261.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-09,mode,L2,176298.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-09,gnosis,L1,147891.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-09,fraxtal,L2,8994.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-09,fantom,L1,136198.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -637,6 +676,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-08,scroll,L2,220126.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-08,polygon,L1,4241101.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-08,optimism,L2,457886.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-08,mode,L2,190859.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-08,gnosis,L1,161607.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-08,fraxtal,L2,9606.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-08,fantom,L1,107571.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -652,6 +692,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-07,scroll,L2,232774.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-07,polygon,L1,4054224.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-07,optimism,L2,414630.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-07,mode,L2,177483.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-07,metal,L2,2.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-07,gnosis,L1,141649.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-07,fraxtal,L2,9388.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -668,6 +709,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-06,scroll,L2,241994.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-06,polygon,L1,4187612.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-06,optimism,L2,379220.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-06,mode,L2,145213.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-06,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-06,gnosis,L1,143548.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-06,fraxtal,L2,8889.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -684,6 +726,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-05,scroll,L2,196688.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-05,polygon,L1,4145792.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-05,optimism,L2,415492.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-05,mode,L2,127660.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-05,gnosis,L1,139845.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-05,fraxtal,L2,9222.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-04-05,fantom,L1,86058.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -699,6 +742,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-04,scroll,L2,176383.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-04,polygon,L1,4029958.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-04,optimism,L2,433859.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-04,mode,L2,81800.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-04,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-04,gnosis,L1,134622.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-04,fraxtal,L2,9233.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -715,6 +759,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-03,scroll,L2,173013.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-03,polygon,L1,4062549.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-03,optimism,L2,401089.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-03,mode,L2,52690.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-03,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-03,gnosis,L1,141518.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-03,fraxtal,L2,8604.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -731,6 +776,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-02,scroll,L2,180922.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-02,polygon,L1,4050762.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-02,optimism,L2,427110.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-02,mode,L2,57804.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-02,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-02,gnosis,L1,150586.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-02,fraxtal,L2,8639.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -747,6 +793,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-04-01,scroll,L2,236755.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-04-01,polygon,L1,4002785.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-04-01,optimism,L2,414800.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-04-01,mode,L2,73408.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-04-01,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-04-01,gnosis,L1,154947.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-04-01,fraxtal,L2,9256.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -763,6 +810,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-31,scroll,L2,309535.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-31,polygon,L1,3921750.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-31,optimism,L2,448868.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-31,mode,L2,86923.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-31,gnosis,L1,165281.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-31,fraxtal,L2,9050.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-31,fantom,L1,77417.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -778,6 +826,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-30,scroll,L2,349041.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-30,polygon,L1,4148868.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-30,optimism,L2,452905.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-30,mode,L2,77832.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-30,metal,L2,3.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-03-30,gnosis,L1,148597.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-30,fraxtal,L2,8783.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -794,6 +843,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-29,scroll,L2,353910.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-29,polygon,L1,4415368.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-29,optimism,L2,495019.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-29,mode,L2,78747.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-29,metal,L2,4.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-03-29,gnosis,L1,156914.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-29,fraxtal,L2,9807.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -810,6 +860,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-28,scroll,L2,302700.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-28,polygon,L1,4597858.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-28,optimism,L2,551235.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-28,mode,L2,75306.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-28,metal,L2,2.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-03-28,gnosis,L1,158304.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-28,fraxtal,L2,8563.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -826,6 +877,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-27,scroll,L2,307075.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-27,polygon,L1,4582616.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-27,optimism,L2,581590.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-27,mode,L2,104989.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-27,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
 2024-03-27,gnosis,L1,162645.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-27,fraxtal,L2,8830.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
@@ -842,6 +894,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-26,scroll,L2,309142.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-26,polygon,L1,4652410.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-26,optimism,L2,519281.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-26,mode,L2,89388.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-26,gnosis,L1,163479.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-26,fraxtal,L2,8713.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-26,fantom,L1,116348.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -857,6 +910,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-25,scroll,L2,328266.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-25,polygon,L1,4413871.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-25,optimism,L2,476805.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-25,mode,L2,102410.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-25,gnosis,L1,150650.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-25,fraxtal,L2,8944.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-25,fantom,L1,123766.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -872,6 +926,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-24,scroll,L2,317004.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-24,polygon,L1,4194562.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-24,optimism,L2,394547.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-24,mode,L2,108222.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-24,gnosis,L1,148274.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-24,fraxtal,L2,10308.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-24,fantom,L1,157063.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -887,6 +942,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-23,scroll,L2,332209.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-23,polygon,L1,4251460.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-23,optimism,L2,402717.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-23,mode,L2,98934.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-23,gnosis,L1,162963.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-23,fraxtal,L2,8836.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-23,fantom,L1,131514.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -902,6 +958,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-22,scroll,L2,293650.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-22,polygon,L1,4509319.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-22,optimism,L2,441558.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-22,mode,L2,105621.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-22,gnosis,L1,160632.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-22,fraxtal,L2,8936.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-22,fantom,L1,124481.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -917,6 +974,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-21,scroll,L2,291865.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-21,polygon,L1,4432849.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-21,optimism,L2,432264.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-21,mode,L2,88264.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-21,gnosis,L1,124303.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-21,fraxtal,L2,9660.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-21,fantom,L1,113862.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -932,6 +990,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-20,scroll,L2,241433.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-20,polygon,L1,4498076.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-20,optimism,L2,492956.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-20,mode,L2,104299.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-20,gnosis,L1,167661.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-20,fraxtal,L2,8531.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-20,fantom,L1,145551.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -947,6 +1006,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-19,scroll,L2,209280.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-19,polygon,L1,4642536.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-19,optimism,L2,497277.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-19,mode,L2,106705.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-19,gnosis,L1,170974.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-19,fraxtal,L2,8829.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-19,fantom,L1,161161.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -962,6 +1022,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-18,scroll,L2,245020.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-18,polygon,L1,4517304.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-18,optimism,L2,443097.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-18,mode,L2,97807.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-18,gnosis,L1,123385.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-18,fraxtal,L2,8898.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-18,fantom,L1,133667.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -977,6 +1038,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-17,scroll,L2,303158.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-17,polygon,L1,4236424.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-17,optimism,L2,372662.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-17,mode,L2,87804.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-17,gnosis,L1,160150.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-17,fraxtal,L2,8805.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-17,fantom,L1,106912.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -992,6 +1054,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-16,scroll,L2,225953.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-16,polygon,L1,4711774.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-16,optimism,L2,379915.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-16,mode,L2,64309.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-16,gnosis,L1,163497.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-16,fraxtal,L2,8273.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-16,fantom,L1,121704.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1007,6 +1070,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-15,scroll,L2,166387.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-15,polygon,L1,4853697.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-15,optimism,L2,433413.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-15,mode,L2,67722.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-15,gnosis,L1,190872.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-15,fraxtal,L2,8403.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-15,fantom,L1,112922.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1022,6 +1086,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-14,scroll,L2,137727.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-14,polygon,L1,4664963.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-14,optimism,L2,352468.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-14,mode,L2,64622.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-14,gnosis,L1,161207.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-14,fraxtal,L2,8875.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-14,fantom,L1,130738.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1037,6 +1102,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-13,scroll,L2,121276.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-13,polygon,L1,4874669.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-13,optimism,L2,215487.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-13,mode,L2,36021.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-13,gnosis,L1,173752.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-13,fraxtal,L2,7676.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-13,fantom,L1,119639.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1052,6 +1118,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-12,scroll,L2,141112.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-12,polygon,L1,4884933.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-12,optimism,L2,231235.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-12,mode,L2,41581.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-12,gnosis,L1,178461.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-12,fraxtal,L2,7705.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-12,fantom,L1,120003.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1067,6 +1134,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-11,scroll,L2,144044.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-11,polygon,L1,5118075.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-11,optimism,L2,240639.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-11,mode,L2,28998.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-11,gnosis,L1,185621.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-11,fraxtal,L2,9638.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-11,fantom,L1,130516.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1082,6 +1150,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-10,scroll,L2,173241.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-10,polygon,L1,4973232.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-10,optimism,L2,217412.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-10,mode,L2,37422.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-10,gnosis,L1,143894.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-10,fraxtal,L2,10502.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-10,fantom,L1,133565.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1097,6 +1166,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-09,scroll,L2,169152.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-09,polygon,L1,4796452.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-09,optimism,L2,283797.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-09,mode,L2,31402.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-09,gnosis,L1,159941.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-09,fraxtal,L2,12803.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-09,fantom,L1,136534.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1112,6 +1182,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-08,scroll,L2,123817.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-08,polygon,L1,5066547.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-08,optimism,L2,256205.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-08,mode,L2,26515.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-08,gnosis,L1,153771.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-08,fraxtal,L2,14510.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-08,fantom,L1,148421.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1127,6 +1198,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-07,scroll,L2,118931.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-07,polygon,L1,5056520.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-07,optimism,L2,258418.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-07,mode,L2,28785.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-07,gnosis,L1,138024.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-07,fraxtal,L2,9782.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-07,fantom,L1,155469.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1142,6 +1214,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-06,scroll,L2,98129.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-06,polygon,L1,4727727.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-06,optimism,L2,274554.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-06,mode,L2,23217.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-06,gnosis,L1,147080.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-06,fraxtal,L2,10183.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-06,fantom,L1,129577.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1157,6 +1230,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-05,scroll,L2,107395.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-05,polygon,L1,4563322.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-05,optimism,L2,313443.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-05,mode,L2,26714.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-05,gnosis,L1,146068.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-05,fraxtal,L2,9631.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-05,fantom,L1,133882.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1172,6 +1246,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-04,scroll,L2,111564.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-04,polygon,L1,4635025.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-04,optimism,L2,250575.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-04,mode,L2,28337.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-04,gnosis,L1,128929.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-04,fraxtal,L2,12382.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-04,fantom,L1,120422.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1187,6 +1262,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-03,scroll,L2,219198.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-03,polygon,L1,4551154.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-03,optimism,L2,256347.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-03,mode,L2,37417.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-03,gnosis,L1,158018.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-03,fraxtal,L2,9768.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-03,fantom,L1,139618.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1202,6 +1278,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-02,scroll,L2,192409.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-02,polygon,L1,4661782.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-02,optimism,L2,263200.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-02,mode,L2,37741.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-02,gnosis,L1,158093.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-02,fraxtal,L2,10565.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-02,fantom,L1,130436.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1217,6 +1294,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-03-01,scroll,L2,136769.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-03-01,polygon,L1,4579686.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-03-01,optimism,L2,268789.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-03-01,mode,L2,31552.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-03-01,gnosis,L1,133270.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-03-01,fraxtal,L2,9380.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-03-01,fantom,L1,129712.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1232,6 +1310,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-02-29,scroll,L2,259093.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-02-29,polygon,L1,4669851.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-02-29,optimism,L2,327243.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-02-29,mode,L2,28516.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-02-29,gnosis,L1,164923.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-02-29,fraxtal,L2,9623.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-02-29,fantom,L1,110144.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1247,6 +1326,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-02-28,scroll,L2,224711.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-02-28,polygon,L1,4503888.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-02-28,optimism,L2,327568.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-02-28,mode,L2,26954.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-02-28,gnosis,L1,146721.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-02-28,fraxtal,L2,9187.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-02-28,fantom,L1,142221.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1262,6 +1342,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-02-27,scroll,L2,223397.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-02-27,polygon,L1,4436902.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-02-27,optimism,L2,310521.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-02-27,mode,L2,29711.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-02-27,gnosis,L1,159542.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-02-27,fraxtal,L2,8936.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-02-27,fantom,L1,107658.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1277,6 +1358,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-02-26,scroll,L2,290630.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-02-26,polygon,L1,4466849.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-02-26,optimism,L2,295034.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-02-26,mode,L2,35443.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-02-26,gnosis,L1,144533.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-02-26,fraxtal,L2,9242.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-02-26,fantom,L1,94468.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1292,6 +1374,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-02-25,scroll,L2,348761.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-02-25,polygon,L1,4190137.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-02-25,optimism,L2,270335.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-02-25,mode,L2,45455.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-02-25,gnosis,L1,145002.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-02-25,fraxtal,L2,9424.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-02-25,fantom,L1,106538.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1307,6 +1390,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-02-24,scroll,L2,311560.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-02-24,polygon,L1,4210721.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-02-24,optimism,L2,280849.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-02-24,mode,L2,38550.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-02-24,gnosis,L1,143996.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-02-24,fraxtal,L2,8840.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-02-24,fantom,L1,96389.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1321,6 +1405,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-02-23,scroll,L2,231824.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-02-23,polygon,L1,4232386.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-02-23,optimism,L2,278313.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-02-23,mode,L2,41760.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-02-23,gnosis,L1,135781.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-02-23,fraxtal,L2,8969.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-02-23,fantom,L1,129167.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1335,7 +1420,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-02-22,scroll,L2,204695.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-02-22,polygon,L1,4475630.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-02-22,optimism,L2,301803.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
-2024-02-22,mode,L2,7361.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
+2024-02-22,mode,L2,35216.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-02-22,gnosis,L1,137358.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-02-22,fraxtal,L2,8528.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-02-22,fantom,L1,103094.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1350,7 +1435,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-02-21,scroll,L2,215272.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-02-21,polygon,L1,4461661.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-02-21,optimism,L2,305315.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
-2024-02-21,mode,L2,25159.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
+2024-02-21,mode,L2,31848.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-02-21,gnosis,L1,140587.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-02-21,fraxtal,L2,8743.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-02-21,fantom,L1,110783.0,dune,fantom,False,,,Other EVMs,,Fantom
@@ -1365,7 +1450,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-02-20,scroll,L2,202518.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-02-20,polygon,L1,4135791.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-02-20,optimism,L2,310926.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
-2024-02-20,mode,L2,35925.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
+2024-02-20,mode,L2,35965.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-02-20,gnosis,L1,153994.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-02-20,fraxtal,L2,9424.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-02-20,fantom,L1,134945.0,dune,fantom,False,,,Other EVMs,,Fantom
