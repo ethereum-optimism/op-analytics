@@ -48,6 +48,7 @@ jobs:
         run: |
           pipenv run jupyter nbconvert --to python chain_tvl_trends.ipynb   
           pipenv run jupyter nbconvert --to python pull_l2_activity.ipynb   
+          pipenv run jupyter nbconvert --to python get_qualified_txs.ipynb   
                
   # Run py files
       - name: Run L2 Uploads
@@ -55,9 +56,11 @@ jobs:
         run: |
           pipenv run python chain_tvl_trends.py
           pipenv run python pull_l2_activity.py
+          pipenv run python get_qualified_txs.py
         
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+          FLIPSIDE_API_KEY: ${{ secrets.FLIPSIDE_API_KEY }}
         
     # commit_results:
       # if: ${{ always() }} #Always runs even if prior jobs fail - so that one bad job doesn't f everything up.
