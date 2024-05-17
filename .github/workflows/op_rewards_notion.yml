@@ -3,8 +3,8 @@ name: Run OP Rewards Notion API
 # Controls when the workflow will run
 on:
   # Run on a schedule - Run Sundays at 12:01 pm
-  schedule:
-      - cron: '10 12 * * 0'
+  # schedule:
+      # - cron: '10 12 * * 0'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -39,6 +39,8 @@ jobs:
       - name: Install Dependencies
         run: |
           pipenv install --dev
+          pip install notion-df
+          pip install notion-client
 
   # Generate .py files for each notebook
       - name: Generate py files
