@@ -23,6 +23,7 @@ pytest = "*"
 dataclasses_json = "*"
 db-dtypes = "*"
 clickhouse-connect = "*"
+flipside = "*"
 
 
 [dev-packages]
