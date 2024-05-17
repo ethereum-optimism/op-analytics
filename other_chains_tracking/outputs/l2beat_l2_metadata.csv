@@ -1,7 +1,7 @@
 layer,name,chainId,explorerUrl,category,slug,file_name,rpcUrl,provider,hostChain,is_upcoming,websites,documentation,repositories,provider_entity,chain
 L2,Aevo,2999,https://explorer.aevo.xyz,,aevo,aevo,,OP Stack,,False,'https://aevo.xyz/','https://docs.aevo.xyz/','https://github.com/aevoxyz',Optimism: OP Stack,aevo
 L2,Ancient8,,,,ancient,ancient,https://rpc.ancient8.gg/,OP Stack,,False,'https://ancient8.gg/','https://docs.ancient8.gg/',,Optimism: OP Stack,ancient
-L2,ApeX,,,Validium,apex,apex,,StarkEx,,False,'https://apex.exchange/','https://apex-pro.gitbook.io/apex-pro?lang=en-US','https://github.com/ApeX-Protocol/core',StarkEx,apex
+L2,ApeX,,,Validium,apex,apex,,StarkEx,,False,'https://apex.exchange/','https://apex-pro.gitbook.io/apex-pro?lang=en-US','https://github.com/ApeX-Protocol/core',Starkware: Starknet Stack,apex
 L2,Arbitrum One,42161,https://arbiscan.io,Optimistic Rollup,arbitrum,arbitrum,,Arbitrum,,False,"'https://arbitrum.io/', 'https://arbitrum.foundation/'",'https://developer.arbitrum.io/',"'https://github.com/ArbitrumFoundation/docs',
         'https://github.com/ArbitrumFoundation/governance',
         'https://github.com/OffchainLabs/arbitrum',
@@ -18,7 +18,7 @@ L2,BOB,60808,https://explorer.gobob.xyz,,bob,bob,https://rpc.gobob.xyz/,OP Stack
 L2,Boba Network,288,https://eth.bobascan.com/,,bobanetwork,bobanetwork,https://mainnet.boba.network/,OP Stack,,False,'https://boba.network','https://docs.boba.network/','https://github.com/bobanetwork/boba',Optimism: OP Stack,bobanetwork
 L2,Camp,,,Optimium,camp,camp,,OP Stack,,True,'https://campnetwork.xyz/','https://campaign-1.gitbook.io/camp-technical-docs',,Optimism: OP Stack,camp
 L2,Canto,,,ZK Rollup,canto,canto,,Polygon,,True,'https://canto.io','https://docs.canto.io',,Polygon: CDK,canto
-L2,Canvas Connect,,,Validium,canvasconnect,canvasconnect,,StarkEx,,False,'https://canvas.co/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',StarkEx,canvasconnect
+L2,Canvas Connect,,,Validium,canvasconnect,canvasconnect,,StarkEx,,False,'https://canvas.co/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',Starkware: Starknet Stack,canvasconnect
 L2,Capx,,,ZK Rollup,capx,capx,,Polygon,,True,'https://capx.fi/','https://capx.gitbook.io/docs',,Polygon: CDK,capx
 L2,Coti,,,Optimistic Rollup,coti,coti,,,,True,'https://coti.io/',"'https://medium.com/cotinetwork/how-coti-is-gearing-up-for-2024-and-beyond-e0d465794767',",'https://github.com/coti-io',,coti
 L2,Cronos zkEVM,,,ZK Rollup,cronos,cronos,,ZK Stack,,True,'https://cronos.org/','https://docs.cronos.org/',,zkSync: ZK Stack,cronos
@@ -30,7 +30,7 @@ L2,DeGate V1,,,ZK Rollup,degate3,degate3,,Loopring,,False,'https://degate.com/',
 L2,dYdX v3,,,ZK Rollup,dydx,dydx,,StarkEx,,False,'https://dydx.exchange/',"'https://docs.starkware.co/starkex/',
         'https://docs.dydx.exchange/',
         'https://docs.dydx.community/dydx-governance/',","'https://github.com/starkware-libs/starkex-contracts',
-        'https://github.com/dydxprotocol/',",StarkEx,dydx
+        'https://github.com/dydxprotocol/',",Starkware: Starknet Stack,dydx
 L2,Eclipse,,,Optimistic Rollup,eclipse,eclipse,,,,True,'https://eclipse.builders/','https://docs.eclipse.builders/',,,eclipse
 L2,Edgeless,,,Optimium,edgeless,edgeless,,Arbitrum,,False,'https://edgeless.network/','https://docs.edgeless.network/','https://github.com/edgelessNetwork',Arbitrum: Orbit,edgeless
 L2,Frame,,,Optimistic Rollup,frame,frame,,Arbitrum,,True,'https://frame.xyz/','https://docs.frame.xyz/','https://github.com/frame-network',Arbitrum: Orbit,frame
@@ -47,7 +47,7 @@ L2,Polygon Hermez,,,ZK Rollup,hermez,hermez,,Polygon,,False,'https://hermez.io/'
 L2,Honeypot (Cartesi),,,Optimistic Rollup,honeypot,honeypot,,,,False,'https://cartesi.io/','https://docs.cartesi.io/cartesi-rollups/','https://github.com/cartesi/honeypot',,honeypot
 L2,HYCHAIN,,,Optimium,hychain,hychain,,Arbitrum,,False,'https://hychain.com','https://docs.hychain.com','https://github.com/kintoxyz',Arbitrum: Orbit,hychain
 L2,Hypr,,,,hypr,hypr,https://rpc.hypr.network,OP Stack,,False,'https://hypr.network/','https://docs.hypr.network',,Optimism: OP Stack,hypr
-L2,Immutable X,,,Validium,immutablex,immutablex,,StarkEx,,False,'https://immutable.com/',"'https://docs.starkware.co/starkex/perpetual/perpetual_overview.html',",'https://github.com/starkware-libs/starkex-contracts',StarkEx,immutablex
+L2,Immutable X,,,Validium,immutablex,immutablex,,StarkEx,,False,'https://immutable.com/',"'https://docs.starkware.co/starkex/perpetual/perpetual_overview.html',",'https://github.com/starkware-libs/starkex-contracts',Starkware: Starknet Stack,immutablex
 L2,Kakarot zkEVM,,,ZK Rollup,kakarotzkevm,kakarotzkevm,,,,True,'https://kakarot.org/','https://docs.kakarot.org/',,,kakarotzkevm
 L2,Karak,,,,karak,karak,https://rpc.karak.network/,OP Stack,,False,'https://karak.network/',"'https://docs.karak.network/karak/general/karak-overview',",,Optimism: OP Stack,karak
 L2,Kinto,,,,kinto,kinto,,Arbitrum Orbit,,False,'https://kinto.xyz','https://docs.kinto.xyz','https://github.com/kintoxyz',Arbitrum: Orbit,kinto
@@ -55,7 +55,7 @@ L2,Kroma,255,https://kromascan.com,Optimistic Rollup,kroma,kroma,,OP Stack,,Fals
         'https://specs.kroma.network/',",'https://github.com/kroma-network/',Optimism: OP Stack,kroma
 L2,Layer2.Finance,,,Optimistic Rollup,layer2finance,layer2finance,,,,False,'https://layer2.finance/','https://docs.l2.finance/',"'https://github.com/celer-network/layer2-finance-contracts',",,layer2finance
 L2,L2.Finance-zk,,,Validium,layer2financezk,layer2financezk,,StarkEx,,False,'https://layer2.finance/',,"'https://github.com/starkware-libs/starkex-contracts',
-        'https://github.com/celer-network/defi-pooling-broker-contracts',",StarkEx,layer2financezk
+        'https://github.com/celer-network/defi-pooling-broker-contracts',",Starkware: Starknet Stack,layer2financezk
 L2,LightLink,,,Optimium,lightlink,lightlink,,,,True,'https://lightlink.io','https://docs.lightlink.io','https://github.com/lightlink-network',,lightlink
 L2,Linea,59144,https://lineascan.build,ZK Rollup,linea,linea,,,,False,'https://linea.build/','https://docs.linea.build/',,,linea
 L2,Lisk,,,Optimistic Rollup,lisk,lisk,,OP Stack,,True,'https://lisk.com/','https://lisk.com/documentation/','https://github.com/LiskHQ',Optimism: OP Stack,lisk
@@ -69,7 +69,7 @@ L2,Mint,,,Optimistic Rollup,mint,mint,,OP Stack,,True,'https://mintchain.io/',,,
 L2,Mode Network,34443,https://explorer.mode.network,,mode,mode,https://mainnet.mode.network/,OP Stack,,False,'https://mode.network/','https://docs.mode.network/',,Optimism: OP Stack,mode
 L2,Molten Network,,,Optimistic Rollup,molten,molten,,OP Stack,,True,'https://unidex.exchange/molten-network','https://docs.unidex.exchange/appchain/markdown',,Optimism: OP Stack,molten
 L2,Morph,,,Optimistic Rollup,morph,morph,,,,True,'https://morphl2.io','https://docs.morphl2.io','https://github.com/morph-l2',,morph
-L2,Myria,,,Validium,myria,myria,,StarkEx,,False,'https://myria.com/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',StarkEx,myria
+L2,Myria,,,Validium,myria,myria,,StarkEx,,False,'https://myria.com/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',Starkware: Starknet Stack,myria
 L2,=nil;,,,ZK Rollup,nil,nil,,,,True,'https://nil.foundation/','https://docs.nil.foundation/nil/',,,nil
 L2,Arbitrum Nova,,,,nova,nova,https://nova.arbitrum.io/rpc,Arbitrum Orbit,,False,"'https://nova.arbitrum.io/',
         'https://arbitrum.io/',
@@ -91,14 +91,14 @@ L2,Polygon PoS 2.0,,,Validium,polygon-pos-2,polygonpos2,,Polygon,,True,'https://
 L2,Polygon zkEVM,1101,https://zkevm.polygonscan.com,,polygonzkevm,polygonzkevm,,Polygon CDK,,False,'https://polygon.technology/polygon-zkevm',"'https://wiki.polygon.technology/docs/zkEVM/introduction',",'https://github.com/0xPolygonHermez',Polygon: CDK,polygonzkevm
 L2,Public Goods Network,,,,publicgoodsnetwork,publicgoodsnetwork,https://rpc.publicgoods.network,OP Stack,,False,'https://publicgoods.network/','https://docs.publicgoods.network/',"'https://github.com/supermodularxyz/pgn-monorepo',
         'https://github.com/supermodularxyz/pgn-docs',",Optimism: OP Stack,publicgoodsnetwork
-L2,ReddioEx,,,Validium,reddioex,reddioex,,StarkEx,,False,'https://reddio.com/','https://docs.reddio.com/','https://github.com/reddio-com/starkex-contracts-source',StarkEx,reddioex
+L2,ReddioEx,,,Validium,reddioex,reddioex,,StarkEx,,False,'https://reddio.com/','https://docs.reddio.com/','https://github.com/reddio-com/starkex-contracts-source',Starkware: Starknet Stack,reddioex
 L2,Reddio zkVM,,,ZK Rollup,reddiozkvm,reddiozkvm,,Starknet,,False,'https://reddio.com',"'https://docs.reddio.com/guide/starknet/smart-contracts/overview.html',",'https://github.com/reddio-com/starknet-appchain-utils',Starkware: Starknet Stack,reddiozkvm
 L2,Redstone,,,Funds can be stolen if,redstone,redstone,https://rpc.redstonechain.com,OP Stack,,False,'https://redstone.xyz/','https://redstone.xyz/docs','https://github.com/latticexyz/redstone',Optimism: OP Stack,redstone
 L2,Reya,1729,https://explorer.aevo.xyz,,reya,reya,,Arbitrum Orbit,,False,'https://reya.network/','https://docs.reya.network/','https://github.com/Reya-Labs',Arbitrum: Orbit,reya
 L2,rhino.fi,,,Validium,deversifi,rhinofi,,StarkEx,,False,'https://rhino.fi/',"'https://docs.rhino.fi/',
         'https://support.rhino.fi/en/',
         'https://docs.starkware.co/starkex/index.html',","'https://github.com/starkware-libs/starkex-contracts',
-        'https://github.com/rhinofi',",StarkEx,deversifi
+        'https://github.com/rhinofi',",Starkware: Starknet Stack,deversifi
 L2,RISE,,,Optimistic Rollup,rise,rise,,OP Stack,,True,'https://riselabs.xyz/','https://riselabs.xyz/','https://github.com/risechain',Optimism: OP Stack,rise
 L2,RSS3 Value Sublayer,12553,https://scan.rss3.io/,,rss3,rss3,https://rpc.rss3.io/,OP Stack,,False,'https://rss3.io','https://docs.rss3.io','https://github.com/rss3-network',Optimism: OP Stack,rss3
 L2,Scroll,534352,https://scrollscan.com/,ZK Rollup,scroll,scroll,,,,False,'https://scroll.io','https://docs.scroll.io/en/home/',"'https://github.com/scroll-tech/scroll',
@@ -110,7 +110,7 @@ L2,Scroll,534352,https://scrollscan.com/,ZK Rollup,scroll,scroll,,,,False,'https
         'https://github.com/scroll-tech/frontends',
         'https://github.com/scroll-tech/scroll-contract-deploy-demo',
         'https://github.com/scroll-tech',",,scroll
-L2,Sorare,,,Validium,sorare,sorare,,StarkEx,,False,'https://sorare.com/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',StarkEx,sorare
+L2,Sorare,,,Validium,sorare,sorare,,StarkEx,,False,'https://sorare.com/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',Starkware: Starknet Stack,sorare
 L2,Specular,,,Optimistic Rollup,specular,specular,,,,True,'https://specular.network/','https://docs.specular.network/overview/welcome','https://github.com/SpecularL2/',,specular
 L2,Starknet,,,ZK Rollup,starknet,starknet,,Starknet,,False,"'https://starknet.io/',
         'https://starkware.co/starknet/',
@@ -120,7 +120,7 @@ L2,StealthChain,,,Optimistic Rollup,stealthchain,stealthchain,,OP Stack,,True,'h
 L2,Superseed,,,Optimistic Rollup,superseed,superseed,,OP Stack,,True,'https://superseed.xyz/','https://docs.superseed.xyz/',,Optimism: OP Stack,superseed
 L2,Swell,,,Validium,swell,swell,,Polygon,,True,'https://swellnetwork.io/','https://docs.swellnetwork.io/','https://github.com/SwellNetwork',Polygon: CDK,swell
 L2,Taiko,,,ZK Rollup,taiko,taiko,,,,True,'https://taiko.xyz','https://docs.taiko.xyz/','https://github.com/taikoxyz',,taiko
-L2,tanX,,,Validium,brine,tanx,,StarkEx,,False,'https://tanx.fi/','https://docs.tanx.fi/',,StarkEx,brine
+L2,tanX,,,Validium,brine,tanx,,StarkEx,,False,'https://tanx.fi/','https://docs.tanx.fi/',,Starkware: Starknet Stack,brine
 L2,Ten,,,Optimistic Rollup,ten,ten,,,,True,'https://ten.xyz',"'https://docs.ten.xyz',
         'https://ten.xyz/litepaper',
         'https://whitepaper.ten.xyz',","'https://github.com/ten-protocol',

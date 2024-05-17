@@ -191,7 +191,7 @@ def get_l2beat_metadata():
                 df.loc[df['provider'].isin(['OP Stack', 'OVM']), 'provider_entity'] = 'Optimism: OP Stack'
                 df.loc[df['provider'].str.contains('Polygon', case=False, na=False), 'provider_entity'] = 'Polygon: CDK'
                 df.loc[df['provider'].str.contains('zkSync', case=False, na=False) | df['provider'].str.contains('ZK Stack', case=False, na=False), 'provider_entity'] = 'zkSync: ZK Stack'
-                df.loc[df['provider'].isin(['Starkware', 'Starknet']), 'provider_entity'] = 'Starkware: Starknet Stack'
+                df.loc[df['provider'].isin(['Starkware', 'Starknet','StarkEx']), 'provider_entity'] = 'Starkware: Starknet Stack'
 
         return df
 
