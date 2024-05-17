@@ -8,6 +8,7 @@ L2,Arbitrum One,42161,https://arbiscan.io,Optimistic Rollup,arbitrum,,Arbitrum,,
         'https://github.com/OffchainLabs/nitro',
         'https://github.com/OffchainLabs/arb-os',",arbitrum
 L2,DAC,,,,astarzkevm,https://evm.astar.network,Polygon CDK,,False,'https://astar.network/astar2','https://docs.astar.network/docs/build/zkEVM/',,astarzkevm
+L2,Axonum,,,Optimistic Rollup,axonum,,OP Stack,,True,'https://axonum.io','https://docs.axonum.io','https://github.com/axonum',axonum
 L2,Zk.Money v1 (Aztec v1),,,ZK Rollup,aztecv1,,,,False,'https://aztec.network/','https://developers.aztec.network/','https://github.com/AztecProtocol/aztec-2-bug-bounty',aztecv1
 L2,Aztec,,,ZK Rollup,aztec,,,,True,'https://aztec.network/','https://docs.aztec.network/','https://github.com/AztecProtocol/aztec-packages',aztec
 L2,Zk.Money v2 (Aztec Connect),,,ZK Rollup,aztecconnect,,,,False,'https://aztec.network/','https://developers.aztec.network/','https://github.com/AztecProtocol/aztec-connect',aztecconnect
@@ -21,7 +22,7 @@ L2,Canvas Connect,,,Validium,canvasconnect,,StarkEx,,False,'https://canvas.co/',
 L2,Capx,,,ZK Rollup,capx,,Polygon,,True,'https://capx.fi/','https://capx.gitbook.io/docs',,capx
 L2,Coti,,,Optimistic Rollup,coti,,,,True,'https://coti.io/',"'https://medium.com/cotinetwork/how-coti-is-gearing-up-for-2024-and-beyond-e0d465794767',",'https://github.com/coti-io',coti
 L2,Cronos zkEVM,,,ZK Rollup,cronos,,ZK Stack,,True,'https://cronos.org/','https://docs.cronos.org/',,cronos
-L2,Cyber,,,Optimium,cyberconnect,,OP Stack,,True,'https://cyber.co/','https://docs.cyber.co/','https://github.com/cyberconnecthq',cyberconnect
+L2,Cyber,,,Funds can be stolen if,cyber,https://cyber.alt.technology/,OP Stack,,False,'https://cyber.co/','https://docs.cyber.co/','https://github.com/cyberconnecthq',cyber
 L2,Debank Chain,,,Optimistic Rollup,debank,,OP Stack,,True,'https://debank.com/account',,'https://github.com/DeBankDeFi/DeBankChain',debank
 L2,DeGate Legacy,,,ZK Rollup,degate,,Loopring,,False,'https://degate.com/','https://docs.degate.com/','https://github.com/degatedev/protocols',degate
 L2,DeGate V1 Legacy,,,ZK Rollup,degate2,,Loopring,,False,'https://degate.com/','https://docs.degate.com/','https://github.com/degatedev/protocols',degate2
@@ -70,7 +71,7 @@ L2,Molten Network,,,Optimistic Rollup,molten,,OP Stack,,True,'https://unidex.exc
 L2,Morph,,,Optimistic Rollup,morph,,,,True,'https://morphl2.io','https://docs.morphl2.io','https://github.com/morph-l2',morph
 L2,Myria,,,Validium,myria,,StarkEx,,False,'https://myria.com/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',myria
 L2,=nil;,,,ZK Rollup,nil,,,,True,'https://nil.foundation/','https://docs.nil.foundation/nil/',,nil
-L2,Arbitrum Nova,,,Optimium,nova,,Arbitrum,,False,"'https://nova.arbitrum.io/',
+L2,Arbitrum Nova,,,,nova,https://nova.arbitrum.io/rpc,Arbitrum Orbit,,False,"'https://nova.arbitrum.io/',
         'https://arbitrum.io/',
         'https://arbitrum.foundation/',","'https://developer.arbitrum.io/',
         'https://developer.arbitrum.io/inside-arbitrum-nitro/#inside-anytrust',","'https://github.com/ArbitrumFoundation/docs',
