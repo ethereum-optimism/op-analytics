@@ -4,6 +4,7 @@
 # In[ ]:
 
 
+print('start ch uploads')
 #Clickhouse db w/ Goldsky
 # https://clickhouse.com/docs/en/integrations/python
 
