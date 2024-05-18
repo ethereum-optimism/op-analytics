@@ -21,7 +21,8 @@ pytest = "*"
 dataclasses_json = "*"
 db-dtypes = "*"
 clickhouse-connect = "*"
-flipside = ">=2.0.8"
+flipside = "*"
+tzlocal = "*"
 
 
 [dev-packages]
