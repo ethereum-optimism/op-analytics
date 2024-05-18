@@ -22,6 +22,10 @@ sys.path.pop()
 
 import time
 
+
+# In[ ]:
+
+
 client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 # client.close()
 
