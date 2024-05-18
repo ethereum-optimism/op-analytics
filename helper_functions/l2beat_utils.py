@@ -79,6 +79,7 @@ def get_l2beat_metadata():
                 'documentation': r"documentation: \[([^\]]+)\]",
                 'repositories': r"repositories: \[([^\]]+)\]",
                 'rpcUrl': r"rpcUrl: '([^']+)'",
+                'project_discovery': r"const discovery = new ProjectDiscovery\('([^']+)'\)"
         }
         
         # Function to extract data using regular expressions
@@ -107,18 +108,16 @@ def get_l2beat_metadata():
         def check_upcoming(configs):
                 return any('upcomingl' in config.lower() for config in configs)
         def determine_provider(file_content):
-                        if 'opStackL' in file_content: #opStackL2 or opStackL3
-                                return 'OP Stack'
-                        elif 'polygonCDKStack' in file_content:
-                                return 'Polygon CDK'
-                        elif 'orbitStackL' in file_content: #orbitStackL2 or orbitStackL3
-                                return 'Arbitrum Orbit'
-                        elif "'zkSync Lite'" in file_content:
-                                return 'ZKSync Lite'
-                        elif "'ZK Stack'" in file_content:
-                                return 'ZK Stack'
-                        else:
-                                return extract_data(file_content, patterns['provider'])
+                if 'opStackL' in file_content:  # opStackL2 or opStackL3
+                        return 'OP Stack'
+                elif 'polygonCDKStack' in file_content:
+                        return 'Polygon CDK'
+                elif 'orbitStackL' in file_content:  # orbitStackL2 or orbitStackL3
+                        return 'Arbitrum Orbit'
+                elif ("'zkSync'" in file_content) or ("'ZK Stack'" in file_content):
+                        return 'ZK Stack'
+                else:
+                        return extract_data(file_content, patterns['provider'])
         def determine_layer(folder_name):
                 if 'chain' in folder_name:
                         return 'L1'
@@ -154,9 +153,14 @@ def get_l2beat_metadata():
                                 
                                 layer_name = determine_layer(folder_name)
                                 # Prepare data with extracted values or defaults where necessary
+                                slug = extract_data(file_content, patterns['project_discovery'])
+                                if not slug:  # If project_discovery is not found, use slug pattern
+                                        slug = extract_data(file_content, patterns['slug'])
+                                # Prepare data with extracted values or defaults where necessary
                                 data = {
                                         'layer': layer_name,  # Dynamically set the layer based on folder name
-                                        'slug': extract_data(file_content, patterns['slug']) or file['name'].replace('.ts', ''),  # Filename as fallback slug
+                                        'slug': slug or file['name'].replace('.ts', ''),  # Filename as fallback slug
+                                        'file_name': file['name'].replace('.ts', ''),  # Filename as fallback slug
                                         'chainId': extract_data(file_content, patterns['chainId']),
                                         'name': extract_data(file_content, patterns['name']),
                                         'explorerUrl': extract_data(file_content, patterns['explorerUrl']),
@@ -179,6 +183,15 @@ def get_l2beat_metadata():
                 
                 # Convert the list of dictionaries to a DataFrame and concatenate with the main DataFrame
                 df = pd.concat([df, pd.DataFrame(data_list)], ignore_index=True)
+
+                # Map sub-providers to the top-level entity
+                df['provider_entity'] = df['provider']  # Initialize with provider values
+                
+                df.loc[df['provider'].str.contains('Arbitrum', case=False, na=False), 'provider_entity'] = 'Arbitrum: Orbit'
+                df.loc[df['provider'].isin(['OP Stack', 'OVM']), 'provider_entity'] = 'Optimism: OP Stack'
+                df.loc[df['provider'].str.contains('Polygon', case=False, na=False), 'provider_entity'] = 'Polygon: CDK'
+                df.loc[df['provider'].str.contains('zkSync', case=False, na=False) | df['provider'].str.contains('ZK Stack', case=False, na=False), 'provider_entity'] = 'zkSync: ZK Stack'
+                df.loc[df['provider'].isin(['Starkware', 'Starknet','StarkEx']), 'provider_entity'] = 'Starkware: Starknet Stack'
 
         return df
 

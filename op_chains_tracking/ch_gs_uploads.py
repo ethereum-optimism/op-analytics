@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 #Clickhouse db w/ Goldsky
@@ -25,7 +25,7 @@ client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 # client.close()
 
 
-# In[2]:
+# In[ ]:
 
 
 chain_mappings_list = [
@@ -46,7 +46,7 @@ trailing_days = 9999
 max_execution_secs = 3000
 
 
-# In[3]:
+# In[ ]:
 
 
 sql_directory = "inputs/sql/"
@@ -57,14 +57,14 @@ query_names = [
 ]
 
 
-# In[4]:
+# In[ ]:
 
 
 unified_dfs = []
 table_name = 'op_ch_allltime_chain_activity'
 
 
-# In[5]:
+# In[ ]:
 
 
 for qn in query_names:
@@ -108,13 +108,13 @@ for qn in query_names:
         # # # Print the results
 
 
-# In[12]:
+# In[ ]:
 
 
 print(write_df['chain'].unique())
 
 
-# In[9]:
+# In[ ]:
 
 
 write_df.sample(5)

@@ -6,6 +6,8 @@ from aiohttp_retry import RetryClient, ExponentialRetry
 import requests as r
 import numpy as np
 import json
+import re
+from collections import defaultdict
 import time
 nest_asyncio.apply()
 
@@ -320,7 +322,7 @@ def get_protocol_tvls(min_tvl = 0, excluded_cats = ['CEX','Chain'], chains = '')
 		if excluded_cats != []: #If we have cagtegories to exclude
 				resp = resp[~resp['category'].isin(excluded_cats)]
 		
-		# Check Cain List
+		# Check Chain List
 		if isinstance(chains, list):
 				og_chains = chains #get starting value
 		elif chains == '':
@@ -329,14 +331,7 @@ def get_protocol_tvls(min_tvl = 0, excluded_cats = ['CEX','Chain'], chains = '')
 		else:
 				og_chains = [chains] #make it a list
 		resp = resp[resp['chains'].apply(lambda x: has_overlap(x, og_chains))]
-		# Get Other Flags -- not working right now?
-		# doublecounts = get_protocol_names_by_flag('doublecounted')
-		# liqstakes = get_protocol_names_by_flag('liquidstaking')
-		# resp = resp.assign(is_doubelcount = resp['name'].isin(doublecounts))
-		# resp = resp.assign(is_liqstake = resp['name'].isin(liqstakes))
-		# if excluded_flags != []: #If we have cagtegories to exclude
-		#		 for flg in excluded_flags:
-		#				 resp = resp[resp[flg] != True]
+
 		return resp
 
 def get_all_protocol_tvls_by_chain_and_token(min_tvl = 0, chains = '', do_aggregate='No',fallback_on_raw_tvl = False, fallback_indicator='*', excluded_cats = ['CEX','Chain']):
@@ -494,3 +489,97 @@ def generate_flows_column(df):
 				print(f"Error: {e} column not found.")
 
 		return df
+
+
+def get_chain_category_data():
+
+	# Step 1: Download the TypeScript file content
+	url = "https://raw.githubusercontent.com/DefiLlama/defillama-server/master/defi/src/adaptors/data/helpers/chains/index.ts"
+	response = r.get(url)
+	ts_content = response.text
+
+	# Step 2: Extract JSON-like part from the TypeScript content
+	start_index = ts_content.find("export default {") + len("export default ")
+	end_index = ts_content.find("} as unknown as") + 1
+	json_like_content = ts_content[start_index:end_index].strip()
+
+	# Step 3: Clean and convert JSON-like string to a proper JSON string
+	# Add quotes around keys
+	json_like_content = re.sub(r'(\w+):', r'"\1":', json_like_content)
+
+	# Step 4: Remove comments, except for URLs
+	# json_like_content = re.sub(r'(?<!http:)(?<!https:)//.*', '', json_like_content)
+	json_like_content = re.sub(r'(?<!:)//(?!/?/).*$', '', json_like_content, flags=re.MULTILINE)
+
+	# Step 5: Replace single quotes with double quotes
+	json_like_content = json_like_content.replace("'", '"')
+
+	# Step 6: Replace `None` with `null`
+	json_like_content = json_like_content.replace("None", "null")
+
+	# Step 7: Remove trailing commas before closing braces
+	json_like_content = re.sub(r',\s*([}\]])', r'\1', json_like_content)
+	json_like_content = json_like_content.replace('""https":', '"https:')
+
+
+	# Step 8: Ensure the content is wrapped in curly braces
+	json_like_content = f"{{{json_like_content.strip()[1:-1]}}}"
+
+	# Step 9: Convert JSON-like string to a Python dictionary
+	try:
+		data_dict = json.loads(json_like_content)
+	except json.JSONDecodeError as e:
+		print(f"Error decoding JSON: {e}")
+		print(json_like_content)
+		raise
+
+	# Step 10: Prepare data for the DataFrame
+	data = defaultdict(list)
+
+	for chain, attributes in data_dict.items():
+		data['chain'].append(chain)
+		data['geckoId'].append(attributes.get('geckoId'))
+		data['symbol'].append(attributes.get('symbol'))
+		data['cmcId'].append(attributes.get('cmcId'))
+		data['categories'].append(attributes.get('categories'))
+		data['chainId'].append(attributes.get('chainId'))
+		parent = attributes.get('parent', {})
+		data['parent_chain'].append(parent.get('chain'))
+		data['parent_types'].append(parent.get('types'))
+
+	# Step 11: Create DataFrame
+	df = pd.DataFrame(data)
+
+	return df
+
+def get_config():
+	# Fetch JSON data from the API
+	url = "https://api.llama.fi/config"
+	response = r.get(url)
+	data = response.json()
+	return data
+
+def get_protocols_config():
+	data = get_config()
+	protocols_data = data["protocols"]
+
+	# Create pandas dataframe for protocols
+	protocols_df = pd.DataFrame(protocols_data)
+	return protocols_df
+
+def get_chains_config():
+	data = get_config()
+	chains_data = data["chainCoingeckoIds"]
+	
+	# Create pandas dataframe for chains
+	chains_df = pd.DataFrame(chains_data)
+	# Transpose the chains dataframe
+	chains_df = chains_df.transpose()
+	# Combine the two "chainId" fields into one
+	chains_df['chainId'].fillna(chains_df['chainid'], inplace=True)
+	chains_df.drop(columns=['chainid'], inplace=True)
+	# Reset index and rename index column
+	chains_df.reset_index(inplace=True)
+	chains_df.rename(columns={'index': 'chain'}, inplace=True)
+
+	return chains_df
