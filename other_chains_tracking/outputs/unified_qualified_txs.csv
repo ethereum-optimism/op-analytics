@@ -4,15 +4,15 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-18,scroll,L2,2246.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-18,polygon,L1,50231.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-18,optimism,L2,5572.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
-2024-05-18,mode,L2,3529.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
+2024-05-18,mode,L2,5641.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-18,gnosis,L1,1558.0,dune,gnosis,False,,,Other EVMs,,Gnosis
-2024-05-18,fraxtal,L2,1062.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
+2024-05-18,fraxtal,L2,1547.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-18,fantom,L1,1622.0,dune,fantom,False,,,Other EVMs,,Fantom
 2024-05-18,ethereum,L1,9524.0,dune,ethereum,False,,,Other EVMs,,Ethereum
 2024-05-18,celo,L1,3572.0,dune,celo,True,,modern,OP Chain,celo,Celo
-2024-05-18,bob,L2,3037.0,goldsky,bob (build on bitcoin),True,60808.0,modern,OP Chain,bob,BOB (Build on Bitcoin)
+2024-05-18,bob,L2,4518.0,goldsky,bob (build on bitcoin),True,60808.0,modern,OP Chain,bob,BOB (Build on Bitcoin)
 2024-05-18,bnb,L1,37603.0,dune,bnb,False,,,Other EVMs,,BNB
-2024-05-18,blast,L2,20663.0,flipside,blast,False,81457.0,modern,OP Stack Fork,blast,Blast
+2024-05-18,blast,L2,36436.0,flipside,blast,False,81457.0,modern,OP Stack Fork,blast,Blast
 2024-05-18,base,L2,18463.0,dune,base,True,8453.0,modern,OP Chain,base,Base
 2024-05-18,avalanche_c,L1,1922.0,dune,avalanche c-chain,False,,,Other EVMs,,Avalanche C-Chain
 2024-05-18,arbitrum,L2,36350.0,dune,arbitrum one,False,,,Other EVMs,,Arbitrum One

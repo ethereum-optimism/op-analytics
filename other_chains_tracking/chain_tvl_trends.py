@@ -9,6 +9,7 @@ import pandas as pd
 import sys
 import numpy as np
 import json
+
 from datetime import datetime, timedelta
 sys.path.append("../helper_functions")
 import defillama_utils as dfl
@@ -17,7 +18,7 @@ import opstack_metadata_utils as ops
 sys.path.pop()
 
 current_utc_date = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
-print(current_utc_date)
+# print(current_utc_date)
 
 
 # In[ ]:
@@ -182,7 +183,7 @@ existing_chains = set(chains_df['chain'])
 to_append = considered_chains[~considered_chains['chain'].isin(existing_chains)]
 
 # Append the selected rows to chains_df
-chains_df = chains_df.append(to_append, ignore_index=True)
+chains_df = pd.concat([chains_df, to_append], ignore_index=True)
 
 # merged_chains_df.sort_values(by='chain').head(20)
 
