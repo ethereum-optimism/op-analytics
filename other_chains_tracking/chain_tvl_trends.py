@@ -23,6 +23,63 @@ print(current_utc_date)
 # In[ ]:
 
 
+categorized_chains = dfl.get_chains_config()
+
+
+# In[ ]:
+
+
+# Convert float values in 'parent' column to dictionaries
+categorized_chains['parent'] = categorized_chains['parent'].apply(lambda x: {} if pd.isna(x) else x)
+
+# Check if the chain belongs to EVM category
+categorized_chains['is_EVM'] = categorized_chains['categories'].apply(lambda x: isinstance(x, list) and 'EVM' in x)
+
+# Check if the chain belongs to Rollup category or L2 is in parent_types
+def is_rollup(row):
+    categories = row['categories']
+    parent = row.get('parent')
+    parent_types = parent.get('types') if parent else []
+    
+    if isinstance(categories, list) and 'Rollup' in categories:
+        return True
+    if 'L2' in parent_types:
+        return True
+    
+    return False
+
+def extract_layer(row):
+    parent = row.get('parent')
+    parent_types = parent.get('types') if parent else []
+    
+    if 'L2' in parent_types:
+        return 'L2'
+    elif 'L3' in parent_types:
+        return 'L3'
+    
+    return 'L1'
+
+categorized_chains['is_Rollup'] = categorized_chains.apply(is_rollup, axis=1)
+categorized_chains['layer'] = categorized_chains.apply(extract_layer, axis=1)
+
+#Replace opBNB
+categorized_chains['chain'] = categorized_chains['chain'].replace('Op_Bnb', 'opBNB')
+
+considered_chains = categorized_chains[categorized_chains['is_EVM']]
+considered_chains = considered_chains[['chain','layer','is_EVM','is_Rollup']]
+
+# considered_chains
+
+
+# In[ ]:
+
+
+considered_chains
+
+
+# In[ ]:
+
+
 min_tvl_to_count_apps = 0
 
 
@@ -35,7 +92,7 @@ curated_chains = [
      ['Optimism', 'L2']
     ,['Base', 'L2']
     ,['Arbitrum', 'L2']
-    #non-dune L2s
+    #non-dune L2s - Check L2Beat for comprehensiveness
     ,['ZkSync Era', 'L2']
     ,['Polygon zkEVM', 'L2']
     ,['Starknet', 'L2']
@@ -48,7 +105,7 @@ curated_chains = [
     ,['Rollux', 'L2']
     ,['Manta', 'L2']
     ,['Kroma','L2']
-    ,['Arbitrum%20Nova','L2']
+    ,['Arbitrum Nova','L2']
     #L1
     ,['Ethereum', 'L1']
     #Others
@@ -79,9 +136,10 @@ opstack_metadata = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv
 #filter to defillama chains
 tvl_opstack_metadata = opstack_metadata[~opstack_metadata['defillama_slug'].isna()].copy()
 # opstack_chains
-tvl_opstack_metadata = tvl_opstack_metadata[['defillama_slug','chain_layer']]
+tvl_opstack_metadata = tvl_opstack_metadata[['defillama_slug','chain_layer','chain_type']]
 
 opstack_chains = tvl_opstack_metadata[~tvl_opstack_metadata['defillama_slug'].str.contains('protocols/')].copy()
+op_superchain_chains = tvl_opstack_metadata[tvl_opstack_metadata['chain_type'].notna()].copy()
 opstack_protocols = tvl_opstack_metadata[tvl_opstack_metadata['defillama_slug'].str.contains('protocols/')].copy()
 #clean column
 opstack_protocols['defillama_slug'] = opstack_protocols['defillama_slug'].str.replace('protocols/','')
@@ -92,7 +150,7 @@ opstack_protocols['chain_list'] = opstack_protocols.apply(lambda x: ['ethereum']
 # In[ ]:
 
 
-# print(opstack_chains)
+print(op_superchain_chains)
 
 
 # In[ ]:
@@ -114,14 +172,33 @@ for index, row in opstack_protocols.iterrows():
 # In[ ]:
 
 
-chain_name_list = [sublist[0] for sublist in chains]
+chains_df = pd.DataFrame(chains, columns = ['chain','layer'])
+chains_df['is_EVM'] = True
+chains_df['is_Rollup'] = True
+# Get the chains already present in chains_df
+existing_chains = set(chains_df['chain'])
+
+# Filter out the chains from considered_chains that are not in chains_df
+to_append = considered_chains[~considered_chains['chain'].isin(existing_chains)]
+
+# Append the selected rows to chains_df
+chains_df = chains_df.append(to_append, ignore_index=True)
+
+# merged_chains_df.sort_values(by='chain').head(20)
+
+
+# In[ ]:
+
+
+chain_name_list = chains_df['chain'].unique().tolist()
+get_app_list = op_superchain_chains['defillama_slug'].unique().tolist()
 
 
 # In[ ]:
 
 
 print('get tvls')
-p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, chains = chain_name_list, do_aggregate = 'Yes')
+p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, chains = get_app_list, do_aggregate = 'Yes')
 
 
 # In[ ]:
@@ -137,6 +214,8 @@ p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, 
 
 
 # Aggregate data
+# TODO: Try to use config API to get Apps by Chain, since this only shows TVLs
+
 app_dfl_list = p.groupby(['chain', 'date']).agg(
     distinct_protocol=pd.NamedAgg(column='protocol', aggfunc=pd.Series.nunique),
     distinct_parent_protocol=pd.NamedAgg(column='parent_protocol', aggfunc=pd.Series.nunique),
@@ -225,6 +304,8 @@ df.loc[df['chain'] == 'Immutablex', 'chain'] = 'ImmutableX'
 
 
 df = df[df['date'] <= current_utc_date ] #rm dupes at current datetime
+df['tvl'] = df['tvl'].fillna(0)
+df['tvl'] = df['tvl'].replace('', 0)
 
 df['date'] = pd.to_datetime(df['date']) - timedelta(days=1) #map to the prior day, since dfl adds an extra day
 
@@ -233,6 +314,11 @@ df['date'] = pd.to_datetime(df['date']) - timedelta(days=1) #map to the prior da
 
 
 df = df.merge(app_dfl_list, on =['defillama_slug','date'], how='left')
+
+
+# In[ ]:
+
+
 df.sample(5)
 
 
@@ -240,17 +326,52 @@ df.sample(5)
 
 
 # Add Metadata
-meta_cols = ['defillama_slug', 'is_op_chain','mainnet_chain_id','op_based_version', 'alignment','chain_name']
+meta_cols = ['defillama_slug', 'is_op_chain','mainnet_chain_id','op_based_version', 'alignment','chain_name','display_name']
 
 df = df.merge(opstack_metadata[meta_cols], on='defillama_slug', how = 'left')
 
 df['alignment'] = df['alignment'].fillna('Other EVMs')
+df['is_op_chain'] = df['is_op_chain'].fillna(False)
 
 
 # In[ ]:
 
 
-df[df['chain'] == 'Ethereum'].tail(5)
+cutoff_date = pd.Timestamp.now() - pd.Timedelta(days=365)
+# Filter the DataFrame to the last 365 days
+df_365 = df[df['date'] >= cutoff_date]
+
+df_365.sample(5)
+
+
+# In[ ]:
+
+
+#  Define aggregation functions for each column
+aggregations = {
+    'tvl': ['min', 'last', 'mean'],
+    'distinct_protocol': ['min', 'last', 'mean'],
+    'distinct_parent_protocol': ['min', 'last', 'mean'],
+    'sum_token_value_usd_flow': 'sum',
+    'sum_price_usd_flow': 'sum',
+    'sum_usd_value_check': 'sum'
+}
+
+# Group by month, chain, layer, and other specified columns and apply aggregations
+df_monthly = df.groupby([pd.Grouper(key='date', freq='MS', closed='left'), 'chain', 'layer', 'defillama_slug', 'source', 'is_op_chain', 'mainnet_chain_id', 'op_based_version', 'alignment', 'chain_name','display_name'], dropna=False).agg(aggregations).reset_index()
+
+# Flatten the hierarchical column index and concatenate aggregation function names with column names
+df_monthly.columns = [f'{col}_{func}' if func != '' else col for col, func in df_monthly.columns]
+
+# Rename the 'date' column
+df_monthly.rename(columns={'date': 'month'}, inplace=True)
+
+
+# In[ ]:
+
+
+# df[df['chain'] == 'Ethereum'].tail(5)
+df_monthly.sample(10)
 
 
 # In[ ]:
@@ -259,7 +380,11 @@ df[df['chain'] == 'Ethereum'].tail(5)
 # export
 folder = 'outputs/'
 df.to_csv(folder + 'dfl_chain_tvl.csv', index = False)
+df_365.to_csv(folder + 'dfl_chain_tvl_t365d.csv', index = False)
+df_monthly.to_csv(folder + 'dfl_chain_tvl_monthly.csv', index = False)
 # Write to Dune
 du.write_dune_api_from_pandas(df, 'dfl_chain_tvl',\
                              'TVL for select chains from DefiLlama')
+du.write_dune_api_from_pandas(df_monthly, 'dfl_chain_tv_monthly',\
+                             'Monthly TVL for select chains from DefiLlama')
 
