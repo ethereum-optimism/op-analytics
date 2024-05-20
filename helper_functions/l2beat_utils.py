@@ -55,7 +55,7 @@ def get_all_l2beat_data(granularity='daily'):
 
 
 def get_l2beat_metadata():
-        df = pd.DataFrame(columns=['layer', 'name', 'chainId', 'explorerUrl', 'category', 'slug'])
+        df = pd.DataFrame(columns=['layer', 'name', 'chainId', 'explorerUrl', 'category', 'slug','isArchived'])
 
         # GitHub API URL for the specified repository and directory
         base_url = "https://api.github.com/repos/l2beat/l2beat/contents/packages/config/src"
@@ -79,7 +79,8 @@ def get_l2beat_metadata():
                 'documentation': r"documentation: \[([^\]]+)\]",
                 'repositories': r"repositories: \[([^\]]+)\]",
                 'rpcUrl': r"rpcUrl: '([^']+)'",
-                'project_discovery': r"const discovery = new ProjectDiscovery\('([^']+)'\)"
+                'project_discovery': r"const discovery = new ProjectDiscovery\('([^']+)'\)",
+                'isArchived': r"isArchived: (true|false)"
         }
         
         # Function to extract data using regular expressions
@@ -156,6 +157,13 @@ def get_l2beat_metadata():
                                 slug = extract_data(file_content, patterns['project_discovery'])
                                 if not slug:  # If project_discovery is not found, use slug pattern
                                         slug = extract_data(file_content, patterns['slug'])
+                                
+                                is_archived = extract_data(file_content, patterns['isArchived'])
+                                is_archived = True if is_archived == 'true' else False
+
+                                # Combine to find what chains we care about for charts
+                                is_current_chain = not is_upcoming and not is_archived
+
                                 # Prepare data with extracted values or defaults where necessary
                                 data = {
                                         'layer': layer_name,  # Dynamically set the layer based on folder name
@@ -169,6 +177,8 @@ def get_l2beat_metadata():
                                         'provider': determine_provider(file_content),  # Determine provider with custom logic
                                         'hostChain': extract_data(file_content, patterns['hostChain']),
                                         'is_upcoming': is_upcoming,
+                                        'is_archived': is_archived,
+                                        'is_current_chain': is_current_chain,
                                         'websites': extract_data(file_content, patterns['websites']),
                                         'documentation': extract_data(file_content, patterns['documentation']),
                                         'repositories': extract_data(file_content, patterns['repositories'])
