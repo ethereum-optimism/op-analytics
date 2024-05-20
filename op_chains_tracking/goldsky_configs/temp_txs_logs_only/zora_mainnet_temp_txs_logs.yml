@@ -1,12 +1,12 @@
 sources:
-  - referenceName: base.raw_transactions
+  - referenceName: zora.receipt_transactions
     version: 1.1.0
     type: dataset
     startAt: earliest
     description: >-
       Transaction data including input, value, from and to address, and metadata
       for the block, gas, and receipts.
-  - referenceName: base.raw_logs
+  - referenceName: zora.raw_logs
     version: 1.0.0
     type: dataset
     startAt: earliest
@@ -15,33 +15,33 @@ sources:
       data, topics, and metadata for blocks and transactions.
 transforms:
   - type: sql
-    referenceName: base_transactions
+    referenceName: zora_transactions
     primaryKey: id
     sql: |
       select
          *
-        ,'base' as chain
+        ,'zora' as chain
         ,'mainnet' as network
       from
-        base.raw_transactions
+        zora.receipt_transactions
   - type: sql
-    referenceName: base_raw_logs
+    referenceName: zora_raw_logs
     primaryKey: id
     sql: |
       select
         *
-        ,'base' as chain
+        ,'zora' as chain
         ,'mainnet' as network
       from
-        base.raw_logs
+        zora.raw_logs
 sinks:
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: base_transactions
+    table: zora_transactions
     batchSize: 100000
-    description: ClickHouse sink from base.raw_transactions to base_transactions
+    description: ClickHouse sink from zora.receipt_transactions to zora_transactions
     flushInterval: '10000'
-    referenceName: clickhouse_base.raw_transactions
+    referenceName: clickhouse_zora.receipt_transactions
     appendOnlyMode: true
     schemaOverride:
       gas: UInt128
@@ -70,14 +70,14 @@ sinks:
       max_priority_fee_per_gas: UInt128
       receipt_cumulative_gas_used: UInt128
       receipt_effective_gas_price: UInt128
-    sourceStreamName: base_transactions
+    sourceStreamName: zora_transactions
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: base_logs
+    table: zora_logs
     batchSize: 100000
-    description: ClickHouse sink from base.raw_logs to base_logs
+    description: ClickHouse sink from zora.raw_logs to zora_logs
     flushInterval: '10000'
-    referenceName: clickhouse_base.raw_logs
+    referenceName: clickhouse_zora.raw_logs
     appendOnlyMode: true
     schemaOverride:
       address: FixedString(42)
@@ -87,4 +87,4 @@ sinks:
       block_timestamp: DateTime CODEC(Delta, ZSTD)
       transaction_hash: FixedString(66)
       transaction_index: UInt64
-    sourceStreamName: base_raw_logs
+    sourceStreamName: zora_raw_logs

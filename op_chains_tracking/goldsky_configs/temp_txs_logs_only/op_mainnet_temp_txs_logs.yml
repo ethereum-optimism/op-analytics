@@ -1,13 +1,13 @@
 sources:
-  - referenceName: base.raw_transactions
+  - referenceName: optimism.receipt_transactions
     version: 1.1.0
     type: dataset
     startAt: earliest
     description: >-
       Transaction data including input, value, from and to address, and metadata
       for the block, gas, and receipts.
-  - referenceName: base.raw_logs
-    version: 1.0.0
+  - referenceName: optimism.raw_logs
+    version: 1.1.0
     type: dataset
     startAt: earliest
     description: >-
@@ -15,33 +15,33 @@ sources:
       data, topics, and metadata for blocks and transactions.
 transforms:
   - type: sql
-    referenceName: base_transactions
+    referenceName: op_transactions
     primaryKey: id
     sql: |
       select
          *
-        ,'base' as chain
+        ,'op' as chain
         ,'mainnet' as network
       from
-        base.raw_transactions
+        optimism.receipt_transactions
   - type: sql
-    referenceName: base_raw_logs
+    referenceName: op_raw_logs
     primaryKey: id
     sql: |
       select
         *
-        ,'base' as chain
+        ,'op' as chain
         ,'mainnet' as network
       from
-        base.raw_logs
+        optimism.raw_logs
 sinks:
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: base_transactions
+    table: op_transactions
     batchSize: 100000
-    description: ClickHouse sink from base.raw_transactions to base_transactions
+    description: ClickHouse sink from optimism.receipt_transactions to op_transactions
     flushInterval: '10000'
-    referenceName: clickhouse_base.raw_transactions
+    referenceName: clickhouse_optimism.receipt_transactions
     appendOnlyMode: true
     schemaOverride:
       gas: UInt128
@@ -70,14 +70,14 @@ sinks:
       max_priority_fee_per_gas: UInt128
       receipt_cumulative_gas_used: UInt128
       receipt_effective_gas_price: UInt128
-    sourceStreamName: base_transactions
+    sourceStreamName: op_transactions
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: base_logs
+    table: op_logs
     batchSize: 100000
-    description: ClickHouse sink from base.raw_logs to base_logs
+    description: ClickHouse sink from optimism.raw_logs to op_logs
     flushInterval: '10000'
-    referenceName: clickhouse_base.raw_logs
+    referenceName: clickhouse_optimism.raw_logs
     appendOnlyMode: true
     schemaOverride:
       address: FixedString(42)
@@ -87,4 +87,4 @@ sinks:
       block_timestamp: DateTime CODEC(Delta, ZSTD)
       transaction_hash: FixedString(66)
       transaction_index: UInt64
-    sourceStreamName: base_raw_logs
+    sourceStreamName: op_raw_logs
