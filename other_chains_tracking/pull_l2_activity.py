@@ -21,7 +21,6 @@ import pandas as pd
 
 # # # Usage
 gtp_api = gtp.get_growthepie_api_data()
-# # print(merged_df.sample(5))
 gtp_meta_api = gtp.get_growthepie_api_meta()
 
 
@@ -36,21 +35,16 @@ l2beat_meta['chain'] = l2beat_meta['slug']
 # In[ ]:
 
 
-l2beat_meta[l2beat_meta['slug'].str.contains('zksync')]
+# l2beat_meta[l2beat_meta['slug'].str.contains('zksync')]
 
 
 # In[ ]:
 
 
-# print(l2beat_df[l2beat_df['chain']=='degen'].sample(5))
-# print(l2beat_meta[l2beat_meta['layer']=='layer2'].sample(5))
-# print(l2beat_meta[l2beat_meta['layer']=='layer3'].sample(5))
-
-
-# In[ ]:
-
-
-combined_l2b_df = l2beat_df.merge(l2beat_meta[['chain','name','layer','chainId','provider','provider_entity','category','is_upcoming']], on='chain',how='outer')
+combined_l2b_df = l2beat_df.merge(l2beat_meta[
+        ['chain','name','layer','chainId','provider','provider_entity','category',\
+         'is_upcoming','is_archived','is_current_chain']
+        ], on='chain',how='outer')
 # combined_l2b_df.tail(5)
 
 
@@ -85,7 +79,6 @@ for col in column_names:
 # print(combined_gtp_df.dtypes)
 # print(l2beat_df.dtypes)
 # combined_gtp_df.sample(5)
-combined_l2b_df[combined_l2b_df['chain']=='zksync'].sample(5)
 
 
 # In[ ]:
