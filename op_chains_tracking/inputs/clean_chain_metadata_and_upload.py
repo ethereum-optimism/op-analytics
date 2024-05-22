@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[4]:
 
 
 import pandas as pd
@@ -16,14 +16,14 @@ import os
 dotenv.load_dotenv()
 
 
-# In[ ]:
+# In[5]:
 
 
 # Read the CSV file
 df = pd.read_csv('chain_metadata_raw.csv')
 
 
-# In[ ]:
+# In[6]:
 
 
 # Trim columns
@@ -31,6 +31,8 @@ df.columns = df.columns.str.replace(" ", "").str.strip()
 df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 # Datetime
 df['public_mainnet_launch_date'] = pd.to_datetime(df['public_mainnet_launch_date'], errors='coerce')
+# ChainID
+df['mainnet_chain_id'] = pd.to_numeric(df['mainnet_chain_id'], errors='coerce')
 #Generate Alignment Column
 df = ops.generate_alignment_column(df)
 
@@ -42,13 +44,13 @@ df[object_columns] = df[object_columns].fillna('')
 df.to_csv('../outputs/chain_metadata.csv', index=False)
 
 
-# In[ ]:
+# In[7]:
 
 
 # df
 
 
-# In[ ]:
+# In[8]:
 
 
 # Post to Dune API
