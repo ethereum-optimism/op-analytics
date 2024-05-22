@@ -106,17 +106,35 @@ aggregations = {
     'ebvUsd': ['min', 'last', 'mean'],
     'nmvUsd': ['min', 'last', 'mean'],
 }
+# Function to perform aggregation based on frequency
+def aggregate_data(df, freq, date_col='timestamp', groupby_cols=None, aggs=None):
+    if groupby_cols is None:
+        groupby_cols = ['chain', 'layer', 'is_op_chain', 'mainnet_chain_id', 'op_based_version', 'alignment', 'chain_name', 'display_name', 'provider', 'is_upcoming','is_archived','is_current_chain']
+    if aggs is None:
+        aggs = aggregations
 
-# Group by month, chain, layer, and other specified columns and apply aggregations
-l2b_monthly_df = l2b_enriched_df.groupby([pd.Grouper(key='timestamp', freq='MS'), 'chain', 'layer', 'is_op_chain', 'mainnet_chain_id', 'op_based_version', 'alignment', 'chain_name','display_name','provider','is_upcoming'], dropna=False).agg(aggregations).reset_index()
+    # Group by the specified frequency and other columns, then apply aggregations
+    df_agg = df.groupby([pd.Grouper(key=date_col, freq=freq)] + groupby_cols, dropna=False).agg(aggs).reset_index()
 
-# Flatten the hierarchical column index and concatenate aggregation function names with column names
-l2b_monthly_df.columns = [f'{col}_{func}' if func != '' else col for col, func in l2b_monthly_df.columns]
-# Rename the 'date' column
-l2b_monthly_df.rename(columns={'timestamp': 'month'}, inplace=True)
-# Group by 'chain' and rank the rows within each group based on the 'date' column
-l2b_monthly_df['months_live'] = l2b_monthly_df.groupby('chain')['month'].rank(method='min')
-l2b_monthly_df.sample(5)
+    # Flatten the hierarchical column index and concatenate aggregation function names with column names
+    df_agg.columns = ['_'.join(filter(None, col)).rstrip('_') for col in df_agg.columns]
+
+    # Rename the 'timestamp' column based on the frequency
+    date_col_name = 'month' if freq == 'MS' else 'week'
+    df_agg.rename(columns={date_col: date_col_name}, inplace=True)
+
+    # Group by 'chain' and rank the rows within each group based on the date column
+    df_agg[f'{date_col_name}s_live'] = df_agg.groupby('chain')[date_col_name].rank(method='min')
+
+    return df_agg
+
+# Perform monthly aggregation
+l2b_monthly_df = aggregate_data(l2b_enriched_df, freq='MS')
+# Perform weekly aggregation
+l2b_weekly_df = aggregate_data(l2b_enriched_df, freq='W-MON')
+
+# Sample output
+# l2b_weekly_df.sample(5)
 
 
 # In[ ]:
@@ -129,6 +147,7 @@ gtp_meta_api.to_csv(folder + 'growthepie_l2_metadata.csv', index = False)
 l2b_enriched_df.to_csv(folder + 'l2beat_l2_activity.csv', index = False)
 l2beat_meta.to_csv(folder + 'l2beat_l2_metadata.csv', index = False)
 l2b_monthly_df.to_csv(folder + 'l2beat_l2_activity_monthly.csv', index = False)
+l2b_weekly_df.to_csv(folder + 'l2beat_l2_activity_weekly.csv', index = False)
 # Post to Dune API
 d.write_dune_api_from_pandas(combined_gtp_df, 'growthepie_l2_activity',\
                              'L2 Usage Activity from GrowThePie')
@@ -138,6 +157,8 @@ d.write_dune_api_from_pandas(l2b_enriched_df, 'l2beat_l2_activity',\
                              'L2 Usage Activity from L2Beat')
 d.write_dune_api_from_pandas(l2b_monthly_df, 'l2beat_l2_activity_monthly',\
                              'Monthly L2 Usage Activity from L2Beat')
+d.write_dune_api_from_pandas(l2b_weekly_df, 'l2beat_l2_activity_weekly',\
+                             'Weekly L2 Usage Activity from L2Beat')
 d.write_dune_api_from_pandas(l2beat_meta, 'l2beat_l2_metadata',\
                              'L2 Metadata from L2Beat')
 
