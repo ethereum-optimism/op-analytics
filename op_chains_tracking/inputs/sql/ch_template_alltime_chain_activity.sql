@@ -43,6 +43,12 @@ FROM (
         SUM(CASE WHEN gas_price > 0 THEN t.receipt_gas_used ELSE 0 END) AS l2_gas_used_user_txs_per_day,
 
         SUM(CAST(gas_price * t.receipt_gas_used + receipt_l1_fee AS Nullable(Float64)) / 1e18) AS l2_eth_fees_per_day,
+        median(
+                CASE WHEN gas_price > 0 THEN 
+                CAST(gas_price * t.receipt_gas_used + receipt_l1_fee AS Nullable(Float64)) / 1e18
+                ELSE NULL END
+            ) AS median_l2_eth_fees_per_tx,
+
         SUM(CAST(receipt_l1_fee AS Nullable(Float64)) / 1e18) AS l1_contrib_l2_eth_fees_per_day,
         SUM(CAST(gas_price * t.receipt_gas_used AS Nullable(Float64)) / 1e18) AS l2_contrib_l2_eth_fees_per_day,
 
