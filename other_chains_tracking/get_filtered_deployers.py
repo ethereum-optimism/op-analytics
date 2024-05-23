@@ -189,7 +189,7 @@ for single_date in date_range:
     results.append(pd.DataFrame({
         'blockchain': ['all'],
         'name': ['All'],
-        'layer': ['EVMs'],
+        'layer': ['Aggregate'],
         'creator_address': [all_count],
         'date': [single_date]
     }))
@@ -201,7 +201,7 @@ for single_date in date_range:
         results.append(pd.DataFrame({
             'blockchain': [i.lower()],
             'name': [i + 's'],
-            'layer': [i],
+            'layer': ['Aggregate'],
             'creator_address': [l_count],
             'date': [single_date]
         }))
@@ -211,7 +211,7 @@ for single_date in date_range:
     results.append(pd.DataFrame({
         'blockchain': ['op chains'],
         'name': ['OP Chains'],
-        'layer': ['L2'],
+        'layer': ['Aggregate'],
         'creator_address': [op_count],
         'date': [single_date]
     }))
