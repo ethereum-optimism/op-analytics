@@ -3,9 +3,9 @@
 
 **Todos:**
 1. Understand the average estimatedSize per transaction for the higher volume chains
-  i. Pull transactions from Goldsky/Clickhouse by chain -> RLP-Econde transaction input data (count bytes) -> run through FastLZ (count bytes)
+  - Pull transactions from Goldsky/Clickhouse by chain -> RLP-Econde transaction input data (count bytes) -> run through FastLZ (count bytes)
 2. Approximate accuracy by comparing total estimatedSize on L2 vs blobgas used on L1 (and gas if calldata for chains that may use calldata)
-  i. This should be a bit of an underestimate, since we'll have brotli compression in Fjord. We ~could handle for this by assuming some extra compression? But v1 likely should not mess with this.
+  - This should be a bit of an underestimate, since we'll have brotli compression in Fjord. We ~could handle for this by assuming some extra compression? But v1 likely should not mess with this.
 
 - (1) and (2) are inputs to the Fee Scalar Recommendation logic :squidward_dab:
 
