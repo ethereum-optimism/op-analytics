@@ -56,6 +56,7 @@ L2,Kroma,255,https://kromascan.com,Optimistic Rollup,kroma,,kroma,,OP Stack,,Fal
 L2,Layer2.Finance,,,Optimistic Rollup,layer2finance,,layer2finance,,,,False,True,False,'https://layer2.finance/','https://docs.l2.finance/',"'https://github.com/celer-network/layer2-finance-contracts',",,layer2finance
 L2,L2.Finance-zk,,,Validium,layer2financezk,,layer2financezk,,StarkEx,,False,True,False,'https://layer2.finance/',,"'https://github.com/starkware-libs/starkex-contracts',
         'https://github.com/celer-network/defi-pooling-broker-contracts',",Starkware: Starknet Stack,layer2financezk
+L2,Lens,,,Validium,lens,,lens,,ZK Stack,,True,False,False,'https://lens.xyz','https://docs.lens.xyz','https://github.com/lens-protocol',zkSync: ZK Stack,lens
 L2,LightLink,,,Optimium,lightlink,,lightlink,,,,True,False,False,'https://lightlink.io','https://docs.lightlink.io','https://github.com/lightlink-network',,lightlink
 L2,Linea,59144,https://lineascan.build,ZK Rollup,linea,,linea,,,,False,False,True,'https://linea.build/','https://docs.linea.build/',,,linea
 L2,Lisk,,,Optimistic Rollup,lisk,,lisk,,OP Stack,,True,False,False,'https://lisk.com/','https://lisk.com/documentation/','https://github.com/LiskHQ',Optimism: OP Stack,lisk
@@ -109,6 +110,7 @@ L2,Scroll,534352,https://scrollscan.com/,ZK Rollup,scroll,,scroll,,,,False,False
         'https://github.com/scroll-tech/frontends',
         'https://github.com/scroll-tech/scroll-contract-deploy-demo',
         'https://github.com/scroll-tech',",,scroll
+L2,Sophon,,,Validium,sophon,,sophon,,ZK Stack,,True,False,False,'https://sophon.xyz/',,,zkSync: ZK Stack,sophon
 L2,Sorare,,,Validium,sorare,,sorare,,StarkEx,,False,False,True,'https://sorare.com/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',Starkware: Starknet Stack,sorare
 L2,Specular,,,Optimistic Rollup,specular,,specular,,,,True,False,False,'https://specular.network/','https://docs.specular.network/overview/welcome','https://github.com/SpecularL2/',,specular
 L2,Starknet,,,ZK Rollup,starknet,,starknet,,Starknet,,False,False,True,"'https://starknet.io/',
@@ -154,7 +156,7 @@ L3,RARI Chain,,,,rari,,rari,https://mainnet.rpc.rarichain.org/http,Arbitrum Orbi
 L3,Stack,,,,stack,,stack,https://rpc.stack.so,OP Stack,base,False,False,True,'https://stack.so/','https://docs.stack.so','https://github.com/stack-so/protocol-interfaces',Optimism: OP Stack,stack
 L3,Syndicate Frame Chain,,,,syndicateframe,,syndicateframe,https://rpc-frame.syndicate.io,OP Stack,base,False,False,True,'https://syndicate.io/blog/syndicate-frame-chain','https://docs.syndicate.io/get-started/introduction',"'https://github.com/WillPapper/syndicate-farcaster-frame-starter',",Optimism: OP Stack,syndicateframe
 L3,Xai,,,Funds can be stolen if,xai,,xai,https://xai-chain.net/rpc,Arbitrum Orbit,arbitrum,False,False,True,'https://xai.games/','https://xai-foundation.gitbook.io/xai-network/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,xai
-L3,zkLink Nova,,,Validium,zklinknova,,zkLinkNova,,zkLink Nexus,linea,False,False,True,'https://zk.link','https://docs.zk.link','https://github.com/zkLinkProtocol',zkLink Nexus,zklinknova
+L3,zkLink Nova,810180,https://explorer.zklink.io,Validium,zklinknova,,zklinknova,https://rpc.zklink.io,zkLink Nexus,linea,False,False,True,"'https://zklink.io', 'https://zk.link'",'https://docs.zklink.io','https://github.com/zkLinkProtocol',zkLink Nexus,zklinknova
 L1,avalanche,43114,https://snowtrace.io,,avalanche,,avalanche,,,,False,False,True,,,,,avalanche
 L1,bsc,56,https://bscscan.com,,bsc,,bsc,,,,False,False,True,,,,,bsc
 L1,celo,42220,https://celoscan.io,,celo,,celo,,,,False,False,True,,,,,celo
