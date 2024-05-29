@@ -121,7 +121,7 @@ L2,StealthChain,,,Optimistic Rollup,stealthchain,,stealthchain,,OP Stack,,True,F
 L2,Superseed,,,Optimistic Rollup,superseed,,superseed,,OP Stack,,True,False,False,'https://superseed.xyz/','https://docs.superseed.xyz/',,Optimism: OP Stack,superseed
 L2,Swell,,,Validium,swell,,swell,,Polygon,,True,False,False,'https://swellnetwork.io/','https://docs.swellnetwork.io/','https://github.com/SwellNetwork',Polygon: CDK,swell
 L2,Space and Time,,,ZK Rollup,sxt,,sxt,,ZK Stack,,True,False,False,'https://spaceandtime.io','https://docs.spaceandtime.io','https://github.com/spaceandtimelabs',zkSync: ZK Stack,sxt
-L2,Taiko,,,ZK Rollup,taiko,,taiko,,,,True,False,False,'https://taiko.xyz','https://docs.taiko.xyz/','https://github.com/taikoxyz',,taiko
+L2,Taiko,167000,https://taikoscan.io,ZK Rollup,taiko,,taiko,,,,False,False,True,'https://taiko.xyz','https://docs.taiko.xyz/','https://github.com/taikoxyz',,taiko
 L2,tanX,,,Validium,brine,,tanx,,StarkEx,,False,False,True,'https://tanx.fi/','https://docs.tanx.fi/',,Starkware: Starknet Stack,brine
 L2,Ten,,,Optimistic Rollup,ten,,ten,,,,True,False,False,'https://ten.xyz',"'https://docs.ten.xyz',
         'https://ten.xyz/litepaper',
@@ -155,6 +155,7 @@ L3,MXC zkEVM,,,ZK Rollup,mxc,,mxc,https://rpc.mxc.com,Taiko,arbitrum,False,False
 L3,ORB3,,,Optimium,orb3,,orb3,https://rpc.orb3.tech,Arbitrum,arbitrum,False,False,True,'https://orb3.tech/','https://docs.orb3.tech/','https://github.com/orb3-protocol',Arbitrum: Orbit,orb3
 L3,Proof of Play Apex,,,,popapex,,popapex,,Arbitrum Orbit,arbitrum,False,False,True,'https://proofofplay.gg',,'https://github.com/proofofplay',Arbitrum: Orbit,popapex
 L3,RARI Chain,,,,rari,,rari,https://mainnet.rpc.rarichain.org/http,Arbitrum Orbit,arbitrum,False,False,True,'https://rarichain.org/','https://rari.docs.caldera.dev/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,rari
+L3,Sanko,,,,sanko,,sanko,https://mainnet.sanko.xyz,Arbitrum Orbit,arbitrum,False,False,True,'https://sanko.xyz/','https://sanko-1.gitbook.io/sanko-mainnet-docs/',,Arbitrum: Orbit,sanko
 L3,Stack,,,,stack,,stack,https://rpc.stack.so,OP Stack,base,False,False,True,'https://stack.so/','https://docs.stack.so','https://github.com/stack-so/protocol-interfaces',Optimism: OP Stack,stack
 L3,Syndicate Frame Chain,,,,syndicateframe,,syndicateframe,https://rpc-frame.syndicate.io,OP Stack,base,False,False,True,'https://syndicate.io/blog/syndicate-frame-chain','https://docs.syndicate.io/get-started/introduction',"'https://github.com/WillPapper/syndicate-farcaster-frame-starter',",Optimism: OP Stack,syndicateframe
 L3,Xai,,,Funds can be stolen if,xai,,xai,https://xai-chain.net/rpc,Arbitrum Orbit,arbitrum,False,False,True,'https://xai.games/','https://xai-foundation.gitbook.io/xai-network/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,xai
