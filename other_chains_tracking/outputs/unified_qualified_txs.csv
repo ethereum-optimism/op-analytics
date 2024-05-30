@@ -1,23 +1,40 @@
 dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,mainnet_chain_id,op_based_version,alignment,chain_name,display_name
-2024-05-29,zora,L2,798.0,dune,zora,True,7777777.0,modern,OP Chain,zora,Zora
-2024-05-29,zksync,L2,3530.0,dune,zksync era,False,,,Other EVMs,,zkSync Era
-2024-05-29,scroll,L2,2388.0,dune,scroll,False,,,Other EVMs,,Scroll
-2024-05-29,polygon,L1,50921.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
-2024-05-29,optimism,L2,5502.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
-2024-05-29,mode,L2,1164.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
-2024-05-29,gnosis,L1,1054.0,dune,gnosis,False,,,Other EVMs,,Gnosis
-2024-05-29,fraxtal,L2,251.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
-2024-05-29,fantom,L1,1652.0,dune,fantom,False,,,Other EVMs,,Fantom
-2024-05-29,ethereum,L1,9601.0,dune,ethereum,False,,,Other EVMs,,Ethereum
-2024-05-29,celo,L1,4797.0,dune,celo,False,,,Other EVMs,,Celo
-2024-05-29,bob,L2,981.0,goldsky,bob (build on bitcoin),False,60808.0,modern,OP Stack Fork,bob,BOB (Build on Bitcoin)
-2024-05-29,bnb,L1,47015.0,dune,bnb,False,,,Other EVMs,,BNB
-2024-05-29,blast,L2,3787.0,flipside,blast,False,81457.0,modern,OP Stack Fork,blast,Blast
-2024-05-29,base,L2,18759.0,dune,base,True,8453.0,modern,OP Chain,base,Base
-2024-05-29,avalanche_c,L1,1895.0,dune,avalanche c-chain,False,,,Other EVMs,,Avalanche C-Chain
-2024-05-29,arbitrum,L2,32759.0,dune,arbitrum one,False,,,Other EVMs,,Arbitrum One
+2024-05-30,zora,L2,1247.0,dune,zora,True,7777777.0,modern,OP Chain,zora,Zora
+2024-05-30,zksync,L2,4053.0,dune,zksync era,False,,,Other EVMs,,zkSync Era
+2024-05-30,scroll,L2,3522.0,dune,scroll,False,,,Other EVMs,,Scroll
+2024-05-30,polygon,L1,103308.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
+2024-05-30,optimism,L2,10410.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-30,mode,L2,1399.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
+2024-05-30,gnosis,L1,1191.0,dune,gnosis,False,,,Other EVMs,,Gnosis
+2024-05-30,fantom,L1,3071.0,dune,fantom,False,,,Other EVMs,,Fantom
+2024-05-30,ethereum,L1,14745.0,dune,ethereum,False,,,Other EVMs,,Ethereum
+2024-05-30,celo,L1,5852.0,dune,celo,False,,,Other EVMs,,Celo
+2024-05-30,bob,L2,1179.0,goldsky,bob (build on bitcoin),False,60808.0,modern,OP Stack Fork,bob,BOB (Build on Bitcoin)
+2024-05-30,bnb,L1,73501.0,dune,bnb,False,,,Other EVMs,,BNB
+2024-05-30,blast,L2,5021.0,flipside,blast,False,81457.0,modern,OP Stack Fork,blast,Blast
+2024-05-30,base,L2,33820.0,dune,base,True,8453.0,modern,OP Chain,base,Base
+2024-05-30,avalanche_c,L1,2921.0,dune,avalanche c-chain,False,,,Other EVMs,,Avalanche C-Chain
+2024-05-30,arbitrum,L2,36829.0,dune,arbitrum one,False,,,Other EVMs,,Arbitrum One
+2024-05-29,zora,L2,72322.0,dune,zora,True,7777777.0,modern,OP Chain,zora,Zora
+2024-05-29,zksync,L2,660642.0,dune,zksync era,False,,,Other EVMs,,zkSync Era
+2024-05-29,scroll,L2,224992.0,dune,scroll,False,,,Other EVMs,,Scroll
+2024-05-29,polygon,L1,4511837.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
+2024-05-29,optimism,L2,395959.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
+2024-05-29,mode,L2,43504.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
+2024-05-29,metal,L2,3.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
+2024-05-29,gnosis,L1,62843.0,dune,gnosis,False,,,Other EVMs,,Gnosis
+2024-05-29,fraxtal,L2,6501.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
+2024-05-29,fantom,L1,97076.0,dune,fantom,False,,,Other EVMs,,Fantom
+2024-05-29,ethereum,L1,645217.0,dune,ethereum,False,,,Other EVMs,,Ethereum
+2024-05-29,celo,L1,612967.0,dune,celo,False,,,Other EVMs,,Celo
+2024-05-29,bob,L2,49909.0,goldsky,bob (build on bitcoin),False,60808.0,modern,OP Stack Fork,bob,BOB (Build on Bitcoin)
+2024-05-29,bnb,L1,2613727.0,dune,bnb,False,,,Other EVMs,,BNB
+2024-05-29,blast,L2,453779.0,flipside,blast,False,81457.0,modern,OP Stack Fork,blast,Blast
+2024-05-29,base,L2,1348127.0,dune,base,True,8453.0,modern,OP Chain,base,Base
+2024-05-29,avalanche_c,L1,115862.0,dune,avalanche c-chain,False,,,Other EVMs,,Avalanche C-Chain
+2024-05-29,arbitrum,L2,1915952.0,dune,arbitrum one,False,,,Other EVMs,,Arbitrum One
 2024-05-28,zora,L2,71372.0,dune,zora,True,7777777.0,modern,OP Chain,zora,Zora
-2024-05-28,zksync,L2,625182.0,dune,zksync era,False,,,Other EVMs,,zkSync Era
+2024-05-28,zksync,L2,628470.0,dune,zksync era,False,,,Other EVMs,,zkSync Era
 2024-05-28,scroll,L2,207094.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-05-28,polygon,L1,4289561.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-05-28,optimism,L2,376420.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
@@ -93,7 +110,7 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2024-05-24,optimism,L2,370124.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
 2024-05-24,mode,L2,51526.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-05-24,metal,L2,1.0,goldsky,metal,True,1750.0,modern,OP Chain,metal,Metal
-2024-05-24,gnosis,L1,132120.0,dune,gnosis,False,,,Other EVMs,,Gnosis
+2024-05-24,gnosis,L1,132129.0,dune,gnosis,False,,,Other EVMs,,Gnosis
 2024-05-24,fraxtal,L2,13755.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-05-24,fantom,L1,86902.0,dune,fantom,False,,,Other EVMs,,Fantom
 2024-05-24,ethereum,L1,618485.0,dune,ethereum,False,,,Other EVMs,,Ethereum
@@ -5053,13 +5070,3 @@ dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,main
 2023-05-31,bnb,L1,2794838.0,dune,bnb,False,,,Other EVMs,,BNB
 2023-05-31,avalanche_c,L1,414104.0,dune,avalanche c-chain,False,,,Other EVMs,,Avalanche C-Chain
 2023-05-31,arbitrum,L2,616239.0,dune,arbitrum one,False,,,Other EVMs,,Arbitrum One
-2023-05-30,zksync,L2,509671.0,dune,zksync era,False,,,Other EVMs,,zkSync Era
-2023-05-30,polygon,L1,2633491.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
-2023-05-30,optimism,L2,240869.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
-2023-05-30,gnosis,L1,62051.0,dune,gnosis,False,,,Other EVMs,,Gnosis
-2023-05-30,fantom,L1,113023.0,dune,fantom,False,,,Other EVMs,,Fantom
-2023-05-30,ethereum,L1,637549.0,dune,ethereum,False,,,Other EVMs,,Ethereum
-2023-05-30,celo,L1,152898.0,dune,celo,False,,,Other EVMs,,Celo
-2023-05-30,bnb,L1,2812600.0,dune,bnb,False,,,Other EVMs,,BNB
-2023-05-30,avalanche_c,L1,431272.0,dune,avalanche c-chain,False,,,Other EVMs,,Avalanche C-Chain
-2023-05-30,arbitrum,L2,668703.0,dune,arbitrum one,False,,,Other EVMs,,Arbitrum One
