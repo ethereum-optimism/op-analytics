@@ -122,7 +122,7 @@ L2,StealthChain,,,Optimistic Rollup,stealthchain,,stealthchain,,OP Stack,,True,F
 L2,Superseed,,,Optimistic Rollup,superseed,,superseed,,OP Stack,,True,False,False,'https://superseed.xyz/','https://docs.superseed.xyz/',,Optimism: OP Stack,superseed
 L2,Swell,,,Validium,swell,,swell,,Polygon,,True,False,False,'https://swellnetwork.io/','https://docs.swellnetwork.io/','https://github.com/SwellNetwork',Polygon: CDK,swell
 L2,Space and Time,,,ZK Rollup,sxt,,sxt,,ZK Stack,,True,False,False,'https://spaceandtime.io','https://docs.spaceandtime.io','https://github.com/spaceandtimelabs',zkSync: ZK Stack,sxt
-L2,Taiko,167000,https://taikoscan.io,ZK Rollup,taiko,,taiko,,,,False,False,True,'https://taiko.xyz','https://docs.taiko.xyz/','https://github.com/taikoxyz',,taiko
+L2,Taiko,167000,https://taikoscan.io,Optimistic Rollup,taiko,,taiko,,,,False,False,True,'https://taiko.xyz','https://docs.taiko.xyz/','https://github.com/taikoxyz',,taiko
 L2,tanX,,,Validium,brine,,tanx,,StarkEx,,False,False,True,'https://tanx.fi/','https://docs.tanx.fi/',,Starkware: Starknet Stack,brine
 L2,Ten,,,Optimistic Rollup,ten,,ten,,,,True,False,False,'https://ten.xyz',"'https://docs.ten.xyz',
         'https://ten.xyz/litepaper',
@@ -151,7 +151,7 @@ L3,Bugless,,,Optimistic Rollup,bugless,,bugless,,Cartesi Rollups,optimism,False,
 L3,DCA.Monster,,,Optimistic Rollup,dcamonster,,dcamonster,,Cartesi Rollups,,True,False,False,'https://dca.monster',"'https://github.com/dcamonster/cartesi-defi-modular-components/blob/master/readme.md',",'https://github.com/dcamonster',Cartesi Rollups,dcamonster
 L3,Degen Chain,,,,degen,,degen,,Arbitrum Orbit,base,False,False,True,'https://syndicate.io/blog/degen-chain','https://docs.syndicate.io/get-started/introduction',,Arbitrum: Orbit,degen
 L3,Deri,,,,deri,,deri,,Arbitrum Orbit,arbitrum,False,False,True,'https://deri.io/','https://docs.deri.io/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,deri
-L3,Molten Network,,,,molten,,molten,,Arbitrum Orbit,arbitrum,False,False,True,'https://unidex.exchange/molten-network','https://docs.unidex.exchange/appchain/markdown',,Arbitrum: Orbit,molten
+L3,Molten Network,,,,molten,,molten,https://molten.calderachain.xyz/http,Arbitrum Orbit,arbitrum,False,False,True,'https://moltennetwork.com/','https://docs.unidex.exchange/appchain/markdown',,Arbitrum: Orbit,molten
 L3,MXC zkEVM,,,ZK Rollup,mxc,,mxc,https://rpc.mxc.com,Taiko,arbitrum,False,False,True,'https://mxc.org/','https://doc.mxc.com/','https://github.com/MXCzkEVM',Taiko,mxc
 L3,ORB3,,,Optimium,orb3,,orb3,https://rpc.orb3.tech,Arbitrum,arbitrum,False,False,True,'https://orb3.tech/','https://docs.orb3.tech/','https://github.com/orb3-protocol',Arbitrum: Orbit,orb3
 L3,Proof of Play Apex,,,,popapex,,popapex,,Arbitrum Orbit,arbitrum,False,False,True,'https://proofofplay.gg',,'https://github.com/proofofplay',Arbitrum: Orbit,popapex
