@@ -22,6 +22,7 @@ l1Cost = estimatedSize * l1FeeScaled / 1e12
 - [Fjord Specs](https://github.com/ethereum-optimism/specs/blob/main/specs/fjord/exec-engine.md#fjord-l1-cost-fee-changes-fastlz-estimator)
 
 - [New Fjord Data Fee Cost Func](https://github.com/ethereum-optimism/op-geth/blob/966c43537e49f7936bb57a426079fb0da9baf03b/core/types/rollup_cost.go#L356)
+    - [FastLz Fjord Implementation](https://github.com/ethereum-optimism/op-geth/blob/966c43537e49f7936bb57a426079fb0da9baf03b/core/types/rollup_cost.go#L399)
 
 - [Legacy Ecotone Data Fee Cost Func](https://github.com/ethereum-optimism/op-geth/blob/966c43537e49f7936bb57a426079fb0da9baf03b/core/types/rollup_cost.go#L214)
 
