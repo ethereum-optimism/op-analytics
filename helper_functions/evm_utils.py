@@ -1,5 +1,9 @@
 import numpy as np
 
+from eth_utils import to_bytes, to_int, to_hex
+from eth_rlp import transactions
+from rlp import encode
+
 def count_calldata_gas(input_data):
     # Remove the '0x' prefix
     input_data = input_data[2:]
