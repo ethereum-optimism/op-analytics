@@ -1,10 +1,9 @@
 import os
 import dotenv
+import json
 from google.cloud import bigquery
 from google.oauth2 import service_account
 
-import os
-import dotenv
 dotenv.load_dotenv()
 
 def connect_bq_client():
@@ -22,7 +21,7 @@ def connect_bq_client():
         else: #Can't get the Github Action version to work
                 print('not running local')
                 # Set the Google Cloud service account key from GitHub secret
-                service_account_key = os.getenv("BQ_APPLICATION_CREDENTIALS")
+                service_account_key = json.loads( os.getenv("BQ_APPLICATION_CREDENTIALS") )
                 credentials = service_account.Credentials.from_service_account_info(service_account_key)
                 # Set the environment variable to the path of your service account key file
                 # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = service_account_key
