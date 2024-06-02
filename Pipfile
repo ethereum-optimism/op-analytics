@@ -24,6 +24,8 @@ clickhouse-connect = "*"
 flipside = "*"
 tzlocal = "*"
 hexbytes = "*"
+google.cloud ="*"
+google.oauth2 ="*"
 
 
 [dev-packages]

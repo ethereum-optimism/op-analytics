@@ -60,6 +60,8 @@ jobs:
 
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+          IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
+          BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
     
     # Today's TVL
       - name: Pull today's TVL
