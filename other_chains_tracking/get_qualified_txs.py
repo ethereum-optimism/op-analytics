@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 print('get qualified txs')
@@ -10,6 +10,8 @@ sys.path.append("../helper_functions")
 import duneapi_utils as d
 import flipside_utils as f
 import clickhouse_utils as ch
+import csv_utils as cu
+import google_bq_utils as bqu
 sys.path.pop()
 
 import numpy as np
@@ -18,13 +20,15 @@ import os
 import clickhouse_connect as cc
 
 
-# In[ ]:
+# In[2]:
 
 
 ch_client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 
+query_name = 'daily_evms_qualified_txs_counts'
 
-# In[ ]:
+
+# In[3]:
 
 
 flipside_configs = [
@@ -38,7 +42,7 @@ clickhouse_configs = [
 ]
 
 
-# In[ ]:
+# In[4]:
 
 
 # Run Flipside
@@ -66,21 +70,22 @@ flip['dt'] = pd.to_datetime(flip['dt']).dt.tz_localize(None)
 flip = flip[['dt','blockchain','name','layer','num_qualified_txs','source']]
 
 
-# In[ ]:
+# In[5]:
 
 
 # Run Dune
 print('     dune runs')
 dune_df = d.get_dune_data(query_id = 3740822, #https://dune.com/queries/3740822
     name = "dune_evms_qualified_txs",
-    path = "outputs"
+    path = "outputs",
+    performance="large"
 )
 dune_df['source'] = 'dune'
 dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
 dune_df = dune_df[['dt','blockchain','name','layer','num_qualified_txs','source']]
 
 
-# In[ ]:
+# In[6]:
 
 
 # Run Clickhouse
@@ -108,7 +113,7 @@ ch['dt'] = pd.to_datetime(ch['dt']).dt.tz_localize(None)
 ch = ch[['dt','blockchain','name','layer','num_qualified_txs','source']]
 
 
-# In[ ]:
+# In[7]:
 
 
 # Step 1: Filter dune_df for chains not in flip
@@ -122,7 +127,7 @@ final_df = pd.concat([combined_flip_dune, filtered_ch])
 # final_df
 
 
-# In[ ]:
+# In[8]:
 
 
 opstack_metadata = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv')
@@ -140,10 +145,17 @@ final_enriched_df['display_name'] = final_enriched_df['display_name'].fillna(fin
 final_enriched_df = final_enriched_df.drop(columns=['name'])
 
 
-# In[ ]:
+# In[9]:
 
 
 final_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
 
-final_enriched_df.to_csv('outputs/unified_qualified_txs.csv', index=False)
+final_enriched_df.to_csv('outputs/'+query_name+'.csv', index=False)
+
+
+# In[10]:
+
+
+#BQ Upload
+bqu.write_df_to_bq_table(final_enriched_df, query_name)
 

@@ -18,6 +18,8 @@ sys.path.append("../helper_functions")
 import duneapi_utils as d
 import pandas_utils as p
 import clickhouse_utils as ch
+import csv_utils as cu
+import google_bq_utils as bqu
 sys.path.pop()
 
 import time
@@ -28,6 +30,8 @@ import time
 
 client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 # client.close()
+
+table_name = 'daily_aggegate_l2_chain_usage_goldsky'
 
 
 # In[ ]:
@@ -66,7 +70,6 @@ query_names = [
 
 
 unified_dfs = []
-table_name = 'op_ch_allltime_chain_activity'
 
 
 # In[ ]:
@@ -83,7 +86,7 @@ for qn in query_names:
                 with open(os.path.join(sql_directory, f"{qn}.sql"), "r") as file:
                         query = file.read()
                 print(qn + ' - ' + chain_schema)
-                table_name = qn
+                dune_table_name = qn
 
                 #Pass in Params to the query
                 query = query.replace("@chain_db_name@", chain_schema)
@@ -107,8 +110,8 @@ for qn in query_names:
                 unified_dfs.append(result_df)
 
         write_df = pd.concat(unified_dfs)
-        write_df.to_csv('outputs/chain_data/' + table_name + '.csv', index=False)
-        d.write_dune_api_from_pandas(write_df, table_name,table_description = table_name)
+        write_df.to_csv('outputs/chain_data/' + dune_table_name + '.csv', index=False)
+        d.write_dune_api_from_pandas(write_df, dune_table_name,table_description = dune_table_name)
         
         # # # Print the results
 
@@ -116,11 +119,6 @@ for qn in query_names:
 # In[ ]:
 
 
-print(write_df['chain'].unique())
-
-
-# In[ ]:
-
-
-write_df.sample(5)
+#BQ Upload
+bqu.write_df_to_bq_table(write_df, table_name)
 
