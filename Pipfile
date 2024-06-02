@@ -24,8 +24,9 @@ clickhouse-connect = "*"
 flipside = "*"
 tzlocal = "*"
 hexbytes = "*"
-google.cloud ="*"
-google.oauth2 ="*"
+google-cloud = "*"
+google-cloud-bigquery = "*"
+google-oauth2 = "*"
 
 
 [dev-packages]
