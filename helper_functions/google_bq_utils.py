@@ -41,6 +41,7 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads', write_d
         if 'dt' in df.columns:
                 schema.append(bigquery.SchemaField("dt", "DATETIME"))
 
+        # print(schema)
         # Create a job configuration to overwrite the table
         job_config = bigquery.LoadJobConfig(
                 write_disposition=write_disposition_in,
