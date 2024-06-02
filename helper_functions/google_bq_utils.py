@@ -31,7 +31,9 @@ def connect_bq_client():
         return client
 
 def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads', write_disposition_in = "WRITE_TRUNCATE"):
-
+        # Reset the index of the DataFrame to remove the index column
+        df = df.reset_index(drop=True)
+        
         # Create a job configuration to overwrite the table
         job_config = bigquery.LoadJobConfig(
                 write_disposition=write_disposition_in
