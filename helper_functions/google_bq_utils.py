@@ -16,7 +16,7 @@ def connect_bq_client():
         if is_running_local: #GH Action was weird with this, so forcing the datatype here
                 print("Running locally")
                 # Path to your local service account key file
-                service_account_key_path = os.getenv("PATH_TO_BQ_CREDS")
+                service_account_key_path = os.getenv("BQ_APPLICATION_CREDENTIALS")
                 credentials = service_account.Credentials.from_service_account_file(service_account_key_path)
                 # pandas_gbq.context.credentials = service_account.Credentials.from_service_account_file(os.getenv("PATH_TO_BQ_CREDS"))
         else: #Can't get the Github Action version to work
