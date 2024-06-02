@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 print('start tvl trends')
@@ -15,19 +15,21 @@ sys.path.append("../helper_functions")
 import defillama_utils as dfl
 import duneapi_utils as du
 import opstack_metadata_utils as ops
+import csv_utils as cu
+import google_bq_utils as bqu
 sys.path.pop()
 
 current_utc_date = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
 # print(current_utc_date)
 
 
-# In[2]:
+# In[ ]:
 
 
 categorized_chains = dfl.get_chains_config()
 
 
-# In[3]:
+# In[ ]:
 
 
 # Convert float values in 'parent' column to dictionaries
@@ -72,19 +74,19 @@ considered_chains = considered_chains[['chain','layer','is_EVM','is_Rollup']]
 # considered_chains
 
 
-# In[4]:
+# In[ ]:
 
 
 considered_chains
 
 
-# In[5]:
+# In[ ]:
 
 
 min_tvl_to_count_apps = 0
 
 
-# In[6]:
+# In[ ]:
 
 
 # OPStack Metadata will auto pull, but we can also add curated protocols here (we handle for dupes)
@@ -130,7 +132,7 @@ curated_protocols = [
     ]
 
 
-# In[7]:
+# In[ ]:
 
 
 opstack_metadata = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv')
@@ -148,13 +150,13 @@ opstack_protocols['defillama_slug'] = opstack_protocols['defillama_slug'].str.re
 opstack_protocols['chain_list'] = opstack_protocols.apply(lambda x: ['ethereum'], axis=1) #guess, we can manually override if not
 
 
-# In[8]:
+# In[ ]:
 
 
 print(op_superchain_chains)
 
 
-# In[9]:
+# In[ ]:
 
 
 # Create new lists
@@ -170,7 +172,7 @@ for index, row in opstack_protocols.iterrows():
         protocols.append([row['defillama_slug'], row['chain_layer'],row['chain_list']])
 
 
-# In[10]:
+# In[ ]:
 
 
 chains_df = pd.DataFrame(chains, columns = ['chain','layer'])
@@ -188,21 +190,21 @@ chains_df = pd.concat([chains_df, to_append], ignore_index=True)
 # merged_chains_df.sort_values(by='chain').head(20)
 
 
-# In[11]:
+# In[ ]:
 
 
 chain_name_list = chains_df['chain'].unique().tolist()
 get_app_list = op_superchain_chains['defillama_slug'].unique().tolist()
 
 
-# In[12]:
+# In[ ]:
 
 
 print('get tvls')
 p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, chains = get_app_list, do_aggregate = 'Yes')
 
 
-# In[13]:
+# In[ ]:
 
 
 # p
@@ -211,7 +213,7 @@ p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, 
 # p = dfl.get_tvl(apistring= 'https://api.llama.fi/protocol/velodrome', chains = chain_name_list, prot = 'velodrome',prot_name='Velodrome')
 
 
-# In[14]:
+# In[ ]:
 
 
 # Aggregate data
@@ -235,7 +237,7 @@ app_dfl_list = app_dfl_list.rename(columns={'chain':'defillama_slug'})
 # app_dfl_list
 
 
-# In[15]:
+# In[ ]:
 
 
 p_agg = []
@@ -268,14 +270,14 @@ df_sum = df_sum.rename(columns={'chain_prot': 'chain', 'usd_value': 'tvl'})
 # print(df_sum.tail(5))
 
 
-# In[16]:
+# In[ ]:
 
 
 # display(df_sum[df_sum['chain']=='Aevo'])
 # display(df_sum)
 
 
-# In[17]:
+# In[ ]:
 
 
 c_agg = []
@@ -311,19 +313,19 @@ df['tvl'] = df['tvl'].replace('', 0)
 df['date'] = pd.to_datetime(df['date']) - timedelta(days=1) #map to the prior day, since dfl adds an extra day
 
 
-# In[18]:
+# In[ ]:
 
 
 df = df.merge(app_dfl_list, on =['defillama_slug','date'], how='left')
 
 
-# In[19]:
+# In[ ]:
 
 
 df.sample(5)
 
 
-# In[20]:
+# In[ ]:
 
 
 # Add Metadata
@@ -335,7 +337,7 @@ df['alignment'] = df['alignment'].fillna('Other EVMs')
 df['is_op_chain'] = df['is_op_chain'].fillna(False)
 
 
-# In[21]:
+# In[ ]:
 
 
 cutoff_date = pd.Timestamp.now() - pd.Timedelta(days=365)
@@ -345,7 +347,7 @@ df_365 = df[df['date'] >= cutoff_date]
 df_365.sample(5)
 
 
-# In[22]:
+# In[ ]:
 
 
 #  Define aggregation functions for each column
@@ -383,7 +385,7 @@ df_weekly = aggregate_data(df, freq='W-MON')
 # Now df_monthly and df_weekly contain the aggregated data
 
 
-# In[23]:
+# In[ ]:
 
 
 # df[df['chain'] == 'Ethereum'].tail(5)
@@ -391,7 +393,7 @@ df_weekly = aggregate_data(df, freq='W-MON')
 # df_weekly.sample(10)
 
 
-# In[24]:
+# In[ ]:
 
 
 # export
@@ -407,4 +409,13 @@ du.write_dune_api_from_pandas(df_monthly, 'dfl_chain_tv_monthly',\
                              'Monthly TVL for select chains from DefiLlama')
 du.write_dune_api_from_pandas(df_weekly, 'dfl_chain_tv_weekly',\
                              'Weekly TVL for select chains from DefiLlama')
+
+
+# In[ ]:
+
+
+#BQ Upload
+bqu.write_df_to_bq_table(df, 'daily_defillama_chain_tvl')
+bqu.write_df_to_bq_table(df_monthly, 'monthly_defillama_chain_tvl')
+bqu.write_df_to_bq_table(df_weekly, 'weekly_defillama_chain_tvl')
 
