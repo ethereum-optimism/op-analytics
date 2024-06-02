@@ -10,6 +10,8 @@ sys.path.append("../helper_functions")
 import duneapi_utils as d
 import growthepieapi_utils as gtp
 import l2beat_utils as ltwo
+import csv_utils as cu
+import google_bq_utils as bqu
 sys.path.pop()
 
 import numpy as np
@@ -161,4 +163,16 @@ d.write_dune_api_from_pandas(l2b_weekly_df, 'l2beat_l2_activity_weekly',\
                              'Weekly L2 Usage Activity from L2Beat')
 d.write_dune_api_from_pandas(l2beat_meta, 'l2beat_l2_metadata',\
                              'L2 Metadata from L2Beat')
+
+
+# In[ ]:
+
+
+#BQ Upload
+bqu.write_df_to_bq_table(combined_gtp_df, 'daily_growthepie_l2_activity')
+bqu.write_df_to_bq_table(gtp_meta_api, 'growthepie_l2_metadata')
+bqu.write_df_to_bq_table(l2b_enriched_df, 'daily_l2beat_l2_activity')
+bqu.write_df_to_bq_table(l2b_monthly_df, 'monthly_l2beat_l2_activity')
+bqu.write_df_to_bq_table(l2b_weekly_df, 'weekly_l2beat_l2_activity')
+bqu.write_df_to_bq_table(l2beat_meta, 'l2beat_l2_metadata')
 

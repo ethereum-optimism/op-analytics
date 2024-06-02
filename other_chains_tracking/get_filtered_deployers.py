@@ -10,6 +10,8 @@ sys.path.append("../helper_functions")
 import duneapi_utils as d
 import flipside_utils as f
 import clickhouse_utils as ch
+import csv_utils as cu
+import google_bq_utils as bqu
 sys.path.pop()
 
 import numpy as np
@@ -23,6 +25,8 @@ import clickhouse_connect as cc
 
 
 ch_client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
+
+query_name = 'daily_evms_filtered_deployers_counts'
 
 
 # In[ ]:
@@ -72,13 +76,25 @@ clickhouse_configs = [
 
 # Run Dune
 print('     dune runs')
-dune_df = d.get_dune_data(query_id = 3753590, #https://dune.com/queries/3753590
-    name = "dune_evms_qualified_txs",
+deploy_dune_df = d.get_dune_data(query_id = 3753590, #https://dune.com/queries/3753590
+    name = "daily_evms_filtered_deployers_dune",
+    path = "outputs",
+    performance="large"
+)
+revdev_dune_df = d.get_dune_data(query_id = 3329567, #https://dune.com/queries/3329567
+    name = "daily_evms_revdevs_dune",
     path = "outputs"
 )
-dune_df['source'] = 'dune'
-dune_df['created_dt'] = pd.to_datetime(dune_df['created_dt']).dt.tz_localize(None)
-dune_df = dune_df[['created_dt','blockchain','creator_address']]
+
+deploy_dune_df['source'] = 'dune'
+revdev_dune_df['source'] = 'dune'
+
+deploy_dune_df['created_dt'] = pd.to_datetime(deploy_dune_df['created_dt']).dt.tz_localize(None)
+revdev_dune_df['dt'] = pd.to_datetime(revdev_dune_df['dt']).dt.tz_localize(None)
+revdev_dune_df = revdev_dune_df.rename(columns={'chain':'blockchain'})
+
+# deploy_dune_df = deploy_dune_df[['created_dt','blockchain','creator_address']]
+# revdev_dune_df = revdev_dune_df[['created_dt','blockchain','creator_address']]
 
 
 # In[ ]:
@@ -90,9 +106,10 @@ dune_meta_df = d.get_dune_data(query_id = 3445473, #https://dune.com/queries/344
     num_hours_to_rerun = 12
 )
 cols = ['blockchain','name','layer']
-dune_df = dune_df.merge(dune_meta_df[cols], on='blockchain',how='inner')
+deploy_dune_df = deploy_dune_df.merge(dune_meta_df[cols], on='blockchain',how='inner')
+revdev_dune_df = revdev_dune_df.merge(dune_meta_df[cols], on='blockchain',how='inner')
 
-dune_df.sample(5)
+deploy_dune_df.sample(5)
 
 
 # In[ ]:
@@ -135,7 +152,8 @@ dune_df.sample(5)
 # # Step 4: Union the result with filtered_ch
 # final_df = pd.concat([combined_flip_dune, filtered_ch])
 # # final_df
-unified_deployers_df = dune_df
+unified_deployers_df = deploy_dune_df
+unified_revdev_df = revdev_dune_df
 
 
 # In[ ]:
@@ -239,18 +257,43 @@ final_df['display_name_lower'] = final_df['name'].str.lower()
 
 meta_cols = ['is_op_chain','mainnet_chain_id','op_based_version', 'alignment','chain_name', 'display_name','display_name_lower']
 
-final_enriched_df = final_df.merge(opstack_metadata[meta_cols], on='display_name_lower', how = 'left')
-final_enriched_df['alignment'] = final_enriched_df['alignment'].fillna('Other EVMs')
-final_enriched_df['is_op_chain'] = final_enriched_df['is_op_chain'].fillna(False)
-final_enriched_df['display_name'] = final_enriched_df['display_name'].fillna(final_enriched_df['name'])
+deployer_enriched_df = final_df.merge(opstack_metadata[meta_cols], on='display_name_lower', how = 'left')
+deployer_enriched_df['alignment'] = deployer_enriched_df['alignment'].fillna('Other EVMs')
+deployer_enriched_df['is_op_chain'] = deployer_enriched_df['is_op_chain'].fillna(False)
+deployer_enriched_df['display_name'] = deployer_enriched_df['display_name'].fillna(deployer_enriched_df['name'])
 
-final_enriched_df = final_enriched_df.drop(columns=['name'])
+deployer_enriched_df = deployer_enriched_df.drop(columns=['name'])
 
 
 # In[ ]:
 
 
-final_enriched_df.sort_values(by=['date','blockchain'], ascending =[False, False], inplace = True)
+unified_revdev_df['display_name_lower'] = unified_revdev_df['name'].str.lower()
+unified_revdev_df = unified_revdev_df.drop(['is_op_chain','chain_name'],axis=1)
 
-final_enriched_df.to_csv('outputs/filter_deployer_counts.csv', index=False)
+
+revdev_enriched_df = unified_revdev_df.merge(opstack_metadata[meta_cols], on='display_name_lower', how = 'left')
+revdev_enriched_df['alignment'] = revdev_enriched_df['alignment'].fillna('Other EVMs')
+revdev_enriched_df['is_op_chain'] = revdev_enriched_df['is_op_chain'].fillna(False)
+revdev_enriched_df['display_name'] = revdev_enriched_df['display_name'].fillna(revdev_enriched_df['name'])
+
+revdev_enriched_df = revdev_enriched_df.drop(columns=['name'])
+
+
+# In[ ]:
+
+
+deployer_enriched_df.sort_values(by=['date','blockchain'], ascending =[False, False], inplace = True)
+deployer_enriched_df.to_csv('outputs/daily_filter_deployer_counts.csv', index=False)
+
+revdev_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
+revdev_enriched_df.to_csv('outputs/daily_revdev_counts.csv', index=False)
+
+
+# In[ ]:
+
+
+#BQ Upload
+bqu.write_df_to_bq_table(deployer_enriched_df, 'daily_filter_deployer_counts')
+bqu.write_df_to_bq_table(revdev_enriched_df, 'daily_revdev_counts')
 
