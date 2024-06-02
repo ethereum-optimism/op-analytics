@@ -23,6 +23,7 @@ db-dtypes = "*"
 clickhouse-connect = "*"
 flipside = "*"
 tzlocal = "*"
+hexbytes = "*"
 
 
 [dev-packages]
