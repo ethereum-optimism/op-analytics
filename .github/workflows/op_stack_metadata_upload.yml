@@ -61,6 +61,8 @@ jobs:
           pipenv run python clean_chain_metadata_and_upload.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+          IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
+          BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
 
 
 # commit_results:
