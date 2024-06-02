@@ -26,7 +26,7 @@ tzlocal = "*"
 hexbytes = "*"
 google-cloud = "*"
 google-cloud-bigquery = "*"
-google-oauth2 = "*"
+google-auth = "*"
 
 
 [dev-packages]
