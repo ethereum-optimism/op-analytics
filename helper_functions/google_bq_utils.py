@@ -31,12 +31,20 @@ def connect_bq_client():
         return client
 
 def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads', write_disposition_in = "WRITE_TRUNCATE"):
+        schema = []
         # Reset the index of the DataFrame to remove the index column
         df = df.reset_index(drop=True)
-        
+
+        # Check if the 'date' column exists in the DataFrame
+        if 'date' in df.columns:
+                schema.append(bigquery.SchemaField("date", "DATETIME"))
+        if 'dt' in df.columns:
+                schema.append(bigquery.SchemaField("dt", "DATETIME"))
+
         # Create a job configuration to overwrite the table
         job_config = bigquery.LoadJobConfig(
-                write_disposition=write_disposition_in
+                write_disposition=write_disposition_in,
+                schema=schema
         )
         client = connect_bq_client()
         # Load the DataFrame into BigQuery
