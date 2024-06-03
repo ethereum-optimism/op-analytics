@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 # Get L2 Revenue and post it to a database (csv in github for now)
+# TODO - Integrate with BQ upload
 import pandas as pd
 import sys
 import time
