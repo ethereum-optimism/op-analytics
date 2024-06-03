@@ -79,7 +79,9 @@ def get_dune_data(
     else:
         pass
 
-    df["last_updated"] = results.times.submitted_at
+    df["last_updated"] = pd.to_datetime(results.times.submitted_at)
+    df["last_updated"] = df["last_updated"].dt.tz_localize(None)
+    df["last_updated"] = df["last_updated"].dt.tz_localize("UTC").dt.tz_convert(None)
 
     if not os.path.exists(path):
         os.makedirs(path)
