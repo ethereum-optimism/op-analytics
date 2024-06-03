@@ -59,11 +59,16 @@ jobs:
           git config --local user.name "github-actions"
           git add --all
           if git diff --staged --quiet; then
+            echo "No changes to commit."
+            echo "push=false" >> $GITHUB_ENV
+          else
+            git commit -m "GH Action Update - Update Market Data" || true
+            if [ $? -eq 0 ]; then
+              echo "push=true" >> $GITHUB_ENV
+            else
               echo "No changes to commit."
               echo "push=false" >> $GITHUB_ENV
-          else
-              git commit -m "GH Action Update - Update Market Data"
-              echo "push=true" >> $GITHUB_ENV
+            fi
           fi
         shell: bash
 
