@@ -212,3 +212,12 @@ def float_format_func(x):
         return '{:,.{}f}'.format(x, min(decimal_places, 18))
     else:
         return str(x)
+    
+def flatten_nested_data(df, column_name):
+    # Check if the column contains dictionaries or arrays
+    if df[column_name].apply(lambda x: isinstance(x, dict) or isinstance(x, list)).any():
+        flat_df = pd.json_normalize(df[column_name].apply(lambda x: x if isinstance(x, dict) else {}))
+        flat_df = flat_df.add_prefix(f"{column_name}_")
+        return pd.concat([df.drop(column_name, axis=1), flat_df], axis=1)
+    else:
+        return df
