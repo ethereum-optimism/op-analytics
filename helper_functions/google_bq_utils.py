@@ -35,11 +35,23 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads', write_d
         # Reset the index of the DataFrame to remove the index column
         df = df.reset_index(drop=True)
 
-        # Check if the 'date' column exists in the DataFrame
-        if 'date' in df.columns:
-                schema.append(bigquery.SchemaField("date", "DATETIME"))
-        if 'dt' in df.columns:
-                schema.append(bigquery.SchemaField("dt", "DATETIME"))
+        for column_name, column_type in df.dtypes.items():
+                # Map pandas data types to BigQuery data types
+                if column_type == 'float64':
+                        bq_data_type = 'FLOAT64'
+                elif column_type == 'int64':
+                        bq_data_type = 'INTEGER'
+                elif column_type == 'datetime64[ns]':
+                        bq_data_type = 'DATETIME'
+                elif column_type == 'bool':  # Add this condition
+                        bq_data_type = 'BOOL'
+                elif column_type == 'string':
+                        bq_data_type = 'STRING'
+                
+                else:
+                        bq_data_type = 'STRING'
+
+                schema.append(bigquery.SchemaField(column_name, bq_data_type))
 
         # print(schema)
         # Create a job configuration to overwrite the table
