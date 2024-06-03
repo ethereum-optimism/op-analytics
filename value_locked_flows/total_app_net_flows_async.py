@@ -15,6 +15,8 @@ import shutil
 sys.path.append("../helper_functions")
 import defillama_utils as dfl
 import duneapi_utils as d
+import csv_utils as cu
+import google_bq_utils as bqu
 
 
 # In[ ]:
@@ -671,5 +673,6 @@ for i in drange:
 # In[ ]:
 
 
-# ! jupyter nbconvert --to python total_app_net_flows_async.ipynb
+#BQ Upload
+bqu.write_df_to_bq_table(final_summary_df, 'latest_defillama_tvl_app_trends')
 
