@@ -12,6 +12,7 @@ import growthepieapi_utils as gtp
 import l2beat_utils as ltwo
 import csv_utils as cu
 import google_bq_utils as bqu
+import pandas_utils as pu
 sys.path.pop()
 
 import numpy as np
@@ -30,8 +31,14 @@ gtp_meta_api = gtp.get_growthepie_api_meta()
 
 
 l2beat_df = ltwo.get_all_l2beat_data()
+
+
+# In[ ]:
+
+
 l2beat_meta = ltwo.get_l2beat_metadata()
 l2beat_meta['chain'] = l2beat_meta['slug']
+l2beat_meta['is_upcoming'] = l2beat_meta['is_upcoming'].fillna(False)
 
 
 # In[ ]:
@@ -54,6 +61,7 @@ combined_l2b_df = l2beat_df.merge(l2beat_meta[
 
 
 combined_gtp_df = gtp_api.merge(gtp_meta_api[['origin_key','chain_name']], on='origin_key',how='left')
+combined_gtp_df["date"] = pd.to_datetime(combined_gtp_df["date"], errors='coerce')
 # combined_gtp_df.sample(5)
 
 
@@ -94,7 +102,18 @@ meta_cols = ['l2beat_slug', 'is_op_chain','mainnet_chain_id','op_based_version',
 l2b_enriched_df = combined_l2b_df.merge(opstack_metadata[meta_cols], on='l2beat_slug', how = 'left')
 
 l2b_enriched_df['alignment'] = l2b_enriched_df['alignment'].fillna('Other EVMs')
-l2b_enriched_df['is_op_chain'] = l2b_enriched_df['is_op_chain'].fillna(False)
+
+
+# In[ ]:
+
+
+boolean_columns = ['is_op_chain', 'is_upcoming', 'is_archived', 'is_current_chain']
+dfs = [l2b_enriched_df, l2beat_meta]
+
+for df in dfs:
+    for column in boolean_columns:
+        if column in df.columns:
+            df[column] = df[column].fillna(False)
 
 
 # In[ ]:
@@ -168,6 +187,49 @@ d.write_dune_api_from_pandas(l2beat_meta, 'l2beat_l2_metadata',\
 # In[ ]:
 
 
+# l2beat_meta_copy = l2beat_meta.copy()
+
+# print(l2beat_meta.dtypes)
+# display(l2beat_meta.sample(5))
+
+
+# In[ ]:
+
+
+# # l2beat_meta
+
+# # Check for any flattens to do
+# def mock_flatten_nested_data(df, column_name):
+#     # Check if the column contains dictionaries or arrays
+#     if df[column_name].apply(lambda x: isinstance(x, dict) or isinstance(x, list)).any():
+#         flat_df = pd.json_normalize(df[column_name].apply(lambda x: x if isinstance(x, dict) else {}))
+#         flat_df = flat_df.add_prefix(f"{column_name}_")
+#         return pd.concat([df.drop(column_name, axis=1), flat_df], axis=1)
+#     else:
+#         return df
+
+# for column_name, column_type in l2beat_meta_copy.dtypes.items():
+#         if column_type == 'object':
+#                 # Attempt to flatten nested data if the column contains arrays or dictionaries
+#                 try:
+#                         l2beat_meta_copy = mock_flatten_nested_data(l2beat_meta_copy, column_name)
+#                         continue  # Skip adding the original column to the schema
+#                 except ValueError:
+#                         l2beat_meta_copy = l2beat_meta_copy
+#                         continue
+
+# # display(l2beat_meta_copy.sample(5))
+
+
+# In[ ]:
+
+
+# l2b_enriched_df.sample(5)
+
+
+# In[ ]:
+
+
 #BQ Upload
 bqu.write_df_to_bq_table(combined_gtp_df, 'daily_growthepie_l2_activity')
 bqu.write_df_to_bq_table(gtp_meta_api, 'growthepie_l2_metadata')
@@ -175,4 +237,15 @@ bqu.write_df_to_bq_table(l2b_enriched_df, 'daily_l2beat_l2_activity')
 bqu.write_df_to_bq_table(l2b_monthly_df, 'monthly_l2beat_l2_activity')
 bqu.write_df_to_bq_table(l2b_weekly_df, 'weekly_l2beat_l2_activity')
 bqu.write_df_to_bq_table(l2beat_meta, 'l2beat_l2_metadata')
+
+
+# In[ ]:
+
+
+# bqu.delete_bq_table('api_table_uploads','daily_growthepie_l2_activity')
+# bqu.delete_bq_table('api_table_uploads','growthepie_l2_metadata')
+# bqu.delete_bq_table('api_table_uploads','daily_l2beat_l2_activity')
+# bqu.delete_bq_table('api_table_uploads','monthly_l2beat_l2_activity')
+# bqu.delete_bq_table('api_table_uploads','weekly_l2beat_l2_activity')
+# bqu.delete_bq_table('api_table_uploads','l2beat_l2_metadata')
 

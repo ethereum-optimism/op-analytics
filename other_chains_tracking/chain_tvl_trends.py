@@ -335,6 +335,7 @@ df = df.merge(opstack_metadata[meta_cols], on='defillama_slug', how = 'left')
 
 df['alignment'] = df['alignment'].fillna('Other EVMs')
 df['is_op_chain'] = df['is_op_chain'].fillna(False)
+df['date'] = pd.to_datetime(df['date'])
 
 
 # In[ ]:
@@ -343,8 +344,7 @@ df['is_op_chain'] = df['is_op_chain'].fillna(False)
 cutoff_date = pd.Timestamp.now() - pd.Timedelta(days=365)
 # Filter the DataFrame to the last 365 days
 df_365 = df[df['date'] >= cutoff_date]
-
-df_365.sample(5)
+# df_365.sample(5)
 
 
 # In[ ]:
@@ -373,7 +373,8 @@ def aggregate_data(df, freq, date_col='date', groupby_cols=None, aggs=None):
     # Rename the 'date' column based on the frequency
     date_col_name = 'month' if freq == 'MS' else 'week'
     df_agg.rename(columns={f'{date_col}_': date_col_name}, inplace=True)
-
+    df_agg['date'] = pd.to_datetime(df_agg['date'])
+    
     return df_agg
 
 # Perform monthly aggregation
