@@ -45,12 +45,14 @@ jobs:
         working-directory: op_governance_data
         run: |
                 pipenv run jupyter nbconvert --to python op_circulating_supply.ipynb
+                pipenv run jupyter nbconvert --to python op_votable_supply.ipynb
                   
   # Run py
       - name: Run py
         working-directory: op_governance_data
         run: |
                 pipenv run python op_circulating_supply.py
+                pipenv run python op_votable_supply.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
 
