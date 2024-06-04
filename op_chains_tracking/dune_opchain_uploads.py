@@ -11,7 +11,7 @@ import os
 
 import sys
 sys.path.append("../helper_functions")
-import duneapi_utils as d
+import duneapi_utils as du
 import pandas_utils as p
 import google_bq_utils as bqu
 sys.path.pop()
@@ -24,16 +24,22 @@ import time
 
 table_name = 'daily_opchain_aggregate_stats_dune'
 
+trailing_days = 365
+
 
 # In[ ]:
 
 
 # Run Dune
 print('     dune runs')
-dune_df = d.get_dune_data(query_id = 2453515, #https://dune.com/queries/2453515
+par_pd = du.generate_query_parameter(input= trailing_days, field_name= 'Trailing Num Days', dtype= 'number')
+
+dune_df = du.get_dune_data(query_id = 2453515, #https://dune.com/queries/2453515
     name = "dune_" + table_name,
     path = "outputs",
-    performance="large"
+    # performance="large",
+    params = [par_pd],
+    num_hours_to_rerun = 0, #always rerun because of param
 )
 dune_df['source'] = 'dune'
 dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
@@ -50,7 +56,7 @@ dune_df = dune_df.replace(['inf', 'NaN'], 0)
 # In[ ]:
 
 
-dune_df.dtypes
+# dune_df.dtypes
 
 
 # In[ ]:
