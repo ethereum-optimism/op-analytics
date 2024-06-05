@@ -33,6 +33,8 @@ L2,dYdX v3,,,ZK Rollup,dydx,,dydx,,StarkEx,,False,False,True,'https://dydx.excha
         'https://github.com/dydxprotocol/',",Starkware: Starknet Stack,dydx
 L2,Eclipse,,,Optimistic Rollup,eclipse,,eclipse,,,,True,False,False,'https://eclipse.builders/','https://docs.eclipse.builders/',,,eclipse
 L2,Edgeless,,,Optimium,edgeless,,edgeless,,Arbitrum,,False,False,True,'https://edgeless.network/','https://docs.edgeless.network/','https://github.com/edgelessNetwork',Arbitrum: Orbit,edgeless
+L2,Everclear,,,Optimium,everclear,,everclear,,Arbitrum,,True,False,False,'https://everclear.org','https://docs.everclear.org',,Arbitrum: Orbit,everclear
+L2,Form,,,Optimistic Rollup,form,,form,,OP Stack,,True,False,False,'https://form.network','https://docs.form.network',,Optimism: OP Stack,form
 L2,Frame,,,Optimistic Rollup,frame,,frame,,Arbitrum,,True,False,False,'https://frame.xyz/','https://docs.frame.xyz/','https://github.com/frame-network',Arbitrum: Orbit,frame
 L2,FraxtalDA,252,https://fraxscan.com/,,fraxtal,,fraxtal,https://rpc.frax.com,OP Stack,,False,False,True,'https://frax.com/','https://docs.frax.com/','https://github.com/FraxFinance',Optimism: OP Stack,fraxtal
 L2,Fuel,,,Optimistic Rollup,fuel,,fuel,,,,True,False,False,'https://fuel.network/','https://docs.fuel.network/','https://github.com/FuelLabs/',,fuel
@@ -130,7 +132,7 @@ L2,Ten,,,Optimistic Rollup,ten,,ten,,,,True,False,False,'https://ten.xyz',"'http
         'https://github.com/ten-protocol/go-ten',
         'https://github.com/ten-protocol/tutorial',
         'https://github.com/ten-protocol/sample-applications',",,ten
-L2,Term Structure,,,ZK Rollup,termstructure,,termstructure,,zkSync Lite,,True,False,False,'https://ts.finance/','https://docs.ts.finance/','https://github.com/term-structure/',zkSync: ZK Stack,termstructure
+L2,Term Structure,,,ZK Rollup,termstructure,,termstructure,,zkSync Lite,,False,False,True,'https://ts.finance/','https://docs.ts.finance/','https://github.com/term-structure/',zkSync: ZK Stack,termstructure
 L2,Tradable,,,ZK Rollup,tradable,,tradable,,ZK Stack,,True,False,False,'https://tradable.xyz/',,,zkSync: ZK Stack,tradable
 L2,World Chain,,,Optimistic Rollup,world,,world,,OP Stack,,True,False,False,'https://worldcoin.org/world-chain','https://docs.worldcoin.org/','https://github.com/worldcoin',Optimism: OP Stack,world
 L2,XCHAIN,,,Validium,xchain,,xchain,,Polygon,,True,False,False,'https://idex.io/',"'https://medium.com/idex/the-all-new-idex-a-quick-recap-b27df4cd981b',",,Polygon: CDK,xchain

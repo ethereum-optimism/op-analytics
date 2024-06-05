@@ -8,8 +8,8 @@ print('get filtered deployers')
 import sys
 sys.path.append("../helper_functions")
 import duneapi_utils as d
-import flipside_utils as f
-import clickhouse_utils as ch
+# import flipside_utils as f
+# import clickhouse_utils as ch
 import csv_utils as cu
 import google_bq_utils as bqu
 sys.path.pop()
@@ -18,13 +18,13 @@ import numpy as np
 import pandas as pd
 from datetime import timedelta
 import os
-import clickhouse_connect as cc
+# import clickhouse_connect as cc
 
 
 # In[ ]:
 
 
-ch_client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
+# ch_client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 
 query_name = 'daily_evms_filtered_deployers_counts'
 
@@ -107,7 +107,7 @@ dune_meta_df = d.get_dune_data(query_id = 3445473, #https://dune.com/queries/344
 )
 cols = ['blockchain','name','layer']
 deploy_dune_df = deploy_dune_df.merge(dune_meta_df[cols], on='blockchain',how='inner')
-revdev_dune_df = revdev_dune_df.merge(dune_meta_df[cols], on='blockchain',how='inner')
+revdev_dune_df = revdev_dune_df.merge(dune_meta_df[cols], on='blockchain',how='left')
 
 deploy_dune_df.sample(5)
 
