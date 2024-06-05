@@ -49,7 +49,7 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads', write_d
                         bq_data_type = 'DATETIME' #Handle for datefields
                 elif column_type == 'float64':
                         bq_data_type = 'FLOAT64'
-                elif column_type == 'int64':
+                elif column_type == 'int64' or column_type == 'uint64':
                         bq_data_type = 'INTEGER'
                 elif column_type == 'datetime64[ns]':
                         bq_data_type = 'DATETIME'
