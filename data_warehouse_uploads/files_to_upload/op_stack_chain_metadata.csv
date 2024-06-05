@@ -46,3 +46,4 @@ cyberconnect,CyberConnect,7560.0,2024-05-15,modern,frontier,yes,,altlayer,https:
 rise,RISE,,,unknown,,unknown,,,,https://www.riselabs.xyz/,,rise,,,,,unknown,L2,unknown,ethereum,no,,,,,,,False,OP Stack Fork
 superseed,SuperSeed,5330.0,,unknown,,unknown,,,https://mainnet.superseed.xyz,https://www.superseed.xyz/,,superseed,,,,,ETH,L2,unknown,ethereum,no,,,,,,,False,OP Stack Fork
 worldchain,World Chain,,,modern,standard,unknown,,,,https://worldcoin.org/world-chain,,world,,,,,ETH,L2,ethereum,ethereum,no,,,,,,,True,OP Chain
+ham chain,Ham Chain,,,modern,,yes,,syndicate,,https://ham.fun/,,,,,,,ETH,L3,celestia,base,no,,,,,,,False,OP Stack Fork
