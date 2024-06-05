@@ -17,7 +17,7 @@ SELECT *
 FROM (
     SELECT
         DATE_TRUNC('day', toDateTime(block_timestamp)) AS dt,
-        chain, network, @block_time_sec@ AS block_time_sec,
+        chain, network, cast(@block_time_sec@ as Float64) AS block_time_sec,
 
         COUNT(*) AS num_raw_txs,
         COUNT(DISTINCT block_number) AS num_blocks,
