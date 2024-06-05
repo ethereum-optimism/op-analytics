@@ -55,6 +55,7 @@ jobs:
                 pipenv run python op_votable_supply.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+          BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
 
 
     # commit_results:
