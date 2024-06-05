@@ -30,7 +30,7 @@ FROM (
         COUNT(DISTINCT from_address) AS num_senders_per_day,
 
         SUM(t.receipt_gas_used) AS l2_gas_used,
-        SUM(receipt_l1_gas_used) AS l1_gas_used_on_l2,
+        SUM(cast(receipt_l1_gas_used as UInt64) ) AS l1_gas_used_on_l2,
         SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar)) AS l1_gas_paid,
         SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar) AS blob_gas_paid,
         SUM((length(unhex(input)) - 1)) AS calldata_bytes_l2_per_day,
