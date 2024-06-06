@@ -109,7 +109,7 @@ cols = ['blockchain','name','layer']
 deploy_dune_df = deploy_dune_df.merge(dune_meta_df[cols], on='blockchain',how='inner')
 revdev_dune_df = revdev_dune_df.merge(dune_meta_df[cols], on='blockchain',how='left')
 
-deploy_dune_df.sample(5)
+# deploy_dune_df.sample(5)
 
 
 # In[ ]:

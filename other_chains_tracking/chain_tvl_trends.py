@@ -10,6 +10,8 @@ import sys
 import numpy as np
 import json
 
+import time
+
 from datetime import datetime, timedelta
 sys.path.append("../helper_functions")
 import defillama_utils as dfl
@@ -336,6 +338,7 @@ df = df.merge(opstack_metadata[meta_cols], on='defillama_slug', how = 'left')
 df['alignment'] = df['alignment'].fillna('Other EVMs')
 df['is_op_chain'] = df['is_op_chain'].fillna(False)
 df['date'] = pd.to_datetime(df['date'])
+df['tvl'].fillna(0, inplace=True)  # Or use an appropriate default value
 
 
 # In[ ]:
@@ -417,6 +420,8 @@ du.write_dune_api_from_pandas(df_weekly, 'dfl_chain_tv_weekly',\
 
 #BQ Upload
 bqu.write_df_to_bq_table(df, 'daily_defillama_chain_tvl')
+time.sleep(1)
 bqu.write_df_to_bq_table(df_monthly, 'monthly_defillama_chain_tvl')
+time.sleep(1)
 bqu.write_df_to_bq_table(df_weekly, 'weekly_defillama_chain_tvl')
 
