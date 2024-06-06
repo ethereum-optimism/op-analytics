@@ -35,7 +35,7 @@ blast,Blast,81457,2/29/24,modern,,yes,,,https://rpc.blast.io/,https://blast.io/,
 rss3,RSS3 Value Sublayer,12553,3/12/24,unknown,,yes,,,https://rpc.rss3.io,https://rss3.io/,,rss3,,,,,unknown,L2,celestia,unknown,no,,,,,,
 zentachain,Zentachain,,,unknown,,unknown,,,,https://zentachain.io/,,zentachain,,,,,unknown,L2,unknown,unknown,no,,,,,,
 syndicate frame chain,Syndicate Frame Chain,5101,2/16/24,modern,,yes,,syndicate,https://rpc-frame.syndicate.io,https://frame.syndicate.io/,,syndicateframe,,,,,ETH,L3,celestia,base,no,,,,,,
-fraxtal,Fraxtal,252,3/11/24,modern,non-standard,yes,,self-hosted,https://rpc.frax.com,https://www.frax.com/,Fraxtal,fraxtal,,,,,frxETH,L2,fraxtalda,ethereum,no,0x6017f75108f251a488B045A7ce2a7C15b179d1f2,0xfF000000000000000000000000000000000420fC,0xFb90465f3064fF63FC460F01A6307eC73d64bc50,0x66CC916Ed5C6C2FA97014f7D1cD141528Ae171e4,0x34C0bD5877A5Ee7099D0f5688D65F4bB9158BDE2,0x34a9f273cbD847d49c3De015FC26c3E66825f8b2
+fraxtal,Fraxtal,252,3/11/24,modern,non-standard,yes,,self-hosted,https://rpc.frax.com,https://www.frax.com/,Fraxtal,fraxtal,,frax,fraxtal,,frxETH,L2,fraxtalda,ethereum,no,0x6017f75108f251a488B045A7ce2a7C15b179d1f2,0xfF000000000000000000000000000000000420fC,0xFb90465f3064fF63FC460F01A6307eC73d64bc50,0x66CC916Ed5C6C2FA97014f7D1cD141528Ae171e4,0x34C0bD5877A5Ee7099D0f5688D65F4bB9158BDE2,0x34a9f273cbD847d49c3De015FC26c3E66825f8b2
 zircuit,Zircuit,48899,,unknown,,yes,,,https://zircuit1.p2pify.com/,https://www.zircuit.com/,,,,,,,ETH Sepolia,L2,ethereum sepolia,unknown,no,,,,,,
 goldchain,Gold,4653,2/26/24,modern,,yes,,syndicate,https://chain-rpc.gold.dev,https://www.gold.dev/,,,,,,,ETH,L3,celestia,base,no,,,,,,
 pontem,Pontem,8866,2/28/24,modern,standard,unknown,,conduit,https://mainnet.lumio.io/,https://lumio.io/,,,,,,,ETH,L2,ethereum,ethereum,no,0x5c53f2fF1030C7fbC0616fD5B8fC6bE97aa27e00,0x5c53f2fF1030C7fbC0616fD5B8fC6bE97aa27e00,0xb6E2Eee22b684f6AAb2083097F7E874994bA930e,0xffB004874CbBF8692B5f397B602f4B8a630aeD59,0xdB5C6b73CB1c5875995a42D64C250BF8BC69a8bc,0xFb252d6199AEfeE6938a1c57213AAd96ecD2650c
@@ -47,4 +47,3 @@ rise,RISE,,,unknown,,unknown,,,,https://www.riselabs.xyz/,,rise,,,,,unknown,L2,u
 superseed,SuperSeed,5330,,unknown,,unknown,,,https://mainnet.superseed.xyz,https://www.superseed.xyz/,,superseed,,,,,ETH,L2,unknown,ethereum,no,,,,,,
 worldchain,World Chain,,,modern,standard,unknown,,,,https://worldcoin.org/world-chain,,world,,,,,ETH,L2,ethereum,ethereum,no,,,,,,
 xterio,Xterio,,,modern,standard,no,,altlayer,,https://xter.io/,,,,,,,ETH,L2,ethereum,ethereum,no,,,,,,
-ham chain,Ham Chain,,,modern,,yes,,syndicate,,https://ham.fun/,,,,,,,ETH,L3,celestia,base,no,,,,,,
