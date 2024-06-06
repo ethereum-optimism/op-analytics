@@ -17,14 +17,11 @@ def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
                 # Path to your local service account key file
                 service_account_key_path = os.getenv("BQ_APPLICATION_CREDENTIALS")
                 credentials = service_account.Credentials.from_service_account_file(service_account_key_path)
-                # pandas_gbq.context.credentials = service_account.Credentials.from_service_account_file(os.getenv("PATH_TO_BQ_CREDS"))
         else: #Can't get the Github Action version to work
                 print('not running local')
                 # Set the Google Cloud service account key from GitHub secret
                 service_account_key = json.loads( os.getenv("BQ_APPLICATION_CREDENTIALS") )
                 credentials = service_account.Credentials.from_service_account_info(service_account_key)
-                # Set the environment variable to the path of your service account key file
-                # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = service_account_key
 
         client = bigquery.Client(credentials=credentials, project=project_id)
         return client
