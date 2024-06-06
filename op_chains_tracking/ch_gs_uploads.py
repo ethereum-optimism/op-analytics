@@ -119,6 +119,13 @@ for qn in query_names:
 # In[ ]:
 
 
+# write_df.dtypes
+
+
+# In[ ]:
+
+
 #BQ Upload
+time.sleep(1)
 bqu.write_df_to_bq_table(write_df, table_name)
 
