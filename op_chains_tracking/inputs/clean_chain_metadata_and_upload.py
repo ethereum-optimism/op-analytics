@@ -35,7 +35,8 @@ df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 # Datetime
 df['public_mainnet_launch_date'] = pd.to_datetime(df['public_mainnet_launch_date'], errors='coerce')
 # ChainID
-df['mainnet_chain_id'] = pd.to_numeric(df['mainnet_chain_id'], errors='coerce')
+df['mainnet_chain_id'] = pd.to_numeric(df['mainnet_chain_id'], errors='coerce')#.astype(int)
+# df['mainnet_chain_id'] = int(df['mainnet_chain_id'])
 #Generate Alignment Column
 df = ops.generate_alignment_column(df)
 
