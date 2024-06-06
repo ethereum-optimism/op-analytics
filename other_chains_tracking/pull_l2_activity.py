@@ -17,6 +17,7 @@ sys.path.pop()
 
 import numpy as np
 import pandas as pd
+import time
 
 
 # In[ ]:
@@ -232,10 +233,15 @@ d.write_dune_api_from_pandas(l2beat_meta, 'l2beat_l2_metadata',\
 
 #BQ Upload
 bqu.write_df_to_bq_table(combined_gtp_df, 'daily_growthepie_l2_activity')
+time.sleep(1)
 bqu.write_df_to_bq_table(gtp_meta_api, 'growthepie_l2_metadata')
+time.sleep(1)
 bqu.write_df_to_bq_table(l2b_enriched_df, 'daily_l2beat_l2_activity')
+time.sleep(1)
 bqu.write_df_to_bq_table(l2b_monthly_df, 'monthly_l2beat_l2_activity')
+time.sleep(1)
 bqu.write_df_to_bq_table(l2b_weekly_df, 'weekly_l2beat_l2_activity')
+time.sleep(1)
 bqu.write_df_to_bq_table(l2beat_meta, 'l2beat_l2_metadata')
 
 

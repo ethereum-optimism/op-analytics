@@ -14,6 +14,8 @@ import csv_utils as cu
 import google_bq_utils as bqu
 sys.path.pop()
 
+import time
+
 import numpy as np
 import pandas as pd
 import os
