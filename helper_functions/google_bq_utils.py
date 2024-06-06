@@ -43,24 +43,20 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads', write_d
         for column_name, column_type in df.dtypes.items():
                 # Map pandas data types to BigQuery data types
                 if (column_name == 'date' or column_name == 'dt' or column_name.endswith('_dt') or column_name.startswith('dt_')):
-                        bq_data_type = 'DATETIME' #Handle for datefields
+                        bq_data_type = 'DATETIME'  # Handle for date fields
                 elif column_type == 'float64':
                         bq_data_type = 'FLOAT64'
                 elif column_type == 'int64' or column_type == 'uint64':
                         bq_data_type = 'INTEGER'
+                elif column_type == 'Int64' or column_type == 'UInt64':  # Handle nullable integer type
+                        bq_data_type = 'FLOAT64'  # Or convert to INTEGER if no nulls
+                        df[column_name] = df[column_name].astype('float64')  # Convert to float64
                 elif column_type == 'datetime64[ns]':
                         bq_data_type = 'DATETIME'
-                elif column_type == 'bool':  # Add this condition
+                elif column_type == 'bool':
                         bq_data_type = 'BOOL'
                 elif column_type == 'string':
                         bq_data_type = 'STRING'
-                # elif column_type == 'object':
-                #         # Attempt to flatten nested data if the column contains arrays or dictionaries
-                #         try:
-                #                 df = pu.flatten_nested_data(df, column_name)
-                #                 continue  # Skip adding the original column to the schema
-                #         except ValueError:
-                #                 bq_data_type = 'STRING'
                 else:
                         bq_data_type = 'STRING'
 
