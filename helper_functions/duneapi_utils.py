@@ -24,6 +24,21 @@ from dune_client.types import QueryParameter
 from dune_client.client import DuneClient
 from dune_client.query import QueryBase
 
+def get_dune_data_crud(query_name, query_str, query_params = None, query_is_private = False):
+    dotenv.load_dotenv()
+    dune = DuneClient(os.environ["DUNE_API_KEY"])
+
+    query = dune.create_query(
+    name=query_name,
+    query_sql=query_str,
+    # Optional fields
+    params=query_params,
+    is_private=query_is_private
+    )
+    query_id = query.base.query_id
+    print(f"Created query with id {query.base.query_id}")
+
+    get_dune_data(query_id = query_id, name = query_name, params = query_params)
 
 def get_dune_data(
     query_id: int,
