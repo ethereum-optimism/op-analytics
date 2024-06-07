@@ -1,18 +1,21 @@
 dt,blockchain,layer,num_qualified_txs,source,display_name_lower,is_op_chain,mainnet_chain_id,op_based_version,alignment,chain_name,display_name
+2024-06-07,mode,L2,421.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
+2024-06-07,fraxtal,L2,88.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
+2024-06-07,bob,L2,148.0,goldsky,bob (build on bitcoin),False,60808.0,modern,OP Stack Fork,bob,BOB (Build on Bitcoin)
 2024-06-06,zora,L2,65390.0,dune,zora,True,7777777.0,modern,OP Chain,zora,Zora
 2024-06-06,zksync,L2,469951.0,dune,zksync era,False,,,Other EVMs,,zkSync Era
 2024-06-06,scroll,L2,172151.0,dune,scroll,False,,,Other EVMs,,Scroll
 2024-06-06,polygon,L1,3425507.0,dune,polygon pos,False,,,Other EVMs,,Polygon PoS
 2024-06-06,optimism,L2,321873.0,dune,op mainnet,True,10.0,modern,OP Chain,op,OP Mainnet
-2024-06-06,mode,L2,33776.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
+2024-06-06,mode,L2,37935.0,goldsky,mode,True,34443.0,modern,OP Chain,mode,Mode
 2024-06-06,gnosis,L1,67384.0,dune,gnosis,False,,,Other EVMs,,Gnosis
-2024-06-06,fraxtal,L2,7178.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
+2024-06-06,fraxtal,L2,8190.0,goldsky,fraxtal,True,252.0,modern,OP Chain,fraxtal,Fraxtal
 2024-06-06,fantom,L1,68110.0,dune,fantom,False,,,Other EVMs,,Fantom
 2024-06-06,ethereum,L1,545068.0,dune,ethereum,False,,,Other EVMs,,Ethereum
 2024-06-06,celo,L1,563806.0,dune,celo,False,,,Other EVMs,,Celo
-2024-06-06,bob,L2,26050.0,goldsky,bob (build on bitcoin),False,60808.0,modern,OP Stack Fork,bob,BOB (Build on Bitcoin)
+2024-06-06,bob,L2,27756.0,goldsky,bob (build on bitcoin),False,60808.0,modern,OP Stack Fork,bob,BOB (Build on Bitcoin)
 2024-06-06,bnb,L1,2930013.0,dune,bnb,False,,,Other EVMs,,BNB
-2024-06-06,blast,L2,613666.0,flipside,blast,False,81457.0,modern,OP Stack Fork,blast,Blast
+2024-06-06,blast,L2,704224.0,flipside,blast,False,81457.0,modern,OP Stack Fork,blast,Blast
 2024-06-06,base,L2,1548861.0,dune,base,True,8453.0,modern,OP Chain,base,Base
 2024-06-06,avalanche_c,L1,100457.0,dune,avalanche c-chain,False,,,Other EVMs,,Avalanche C-Chain
 2024-06-06,arbitrum,L2,1407800.0,dune,arbitrum one,False,,,Other EVMs,,Arbitrum One
