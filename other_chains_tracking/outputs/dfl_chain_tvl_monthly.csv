@@ -63,7 +63,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2021-02-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,387682251.8057554,1962442803.256047,1216998265.1005292,,,,,,,0.0,0.0,0.0
 2021-02-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,324468679.25296366,449301805.3264612,465728988.34348434,,,,,,,0.0,0.0,0.0
 2021-02-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2021-02-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,28627330078.541077,37824657436.527214,40278049268.68056,,,,,,,0.0,0.0,0.0
+2021-02-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,28627330078.541077,37824657436.52723,40278049268.68056,,,,,,,0.0,0.0,0.0
 2021-02-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,598082.5243401506,598082.5243401506,598082.5243401506,,,,,,,0.0,0.0,0.0
 2021-02-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,65.29729145294509,32065.61538349775,6319.296147072775,,,,,,,0.0,0.0,0.0
 2021-02-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
@@ -72,7 +72,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2021-03-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,2033947669.5225778,5516901929.903488,3337261223.5899205,,,,,,,0.0,0.0,0.0
 2021-03-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,410682656.36534995,533935667.4098716,458185003.89506876,,,,,,,0.0,0.0,0.0
 2021-03-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2021-03-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,40197399669.81382,46980930327.21992,43302811059.50853,,,,,,,0.0,0.0,0.0
+2021-03-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,40197399669.81382,46980930327.21994,43302811059.50853,,,,,,,0.0,0.0,0.0
 2021-03-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,625169.457895352,1824070.7554567214,794952.1928361139,,,,,,,0.0,0.0,0.0
 2021-03-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,35464.93955570136,27646965.025199376,7269048.787221612,,,,,,,0.0,0.0,0.0
 2021-03-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
@@ -81,7 +81,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2021-04-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,6158867231.589831,18942896228.659126,11533166223.485806,,,,,,,0.0,0.0,0.0
 2021-04-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,449002604.25171053,670453443.2036983,564945102.6582685,,,,,,,0.0,0.0,0.0
 2021-04-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2021-04-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,48267307214.637474,67892078375.38246,59716606972.468185,,,,,,,0.0,0.0,0.0
+2021-04-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,48267307214.637474,67892078375.382416,59716606972.468185,,,,,,,0.0,0.0,0.0
 2021-04-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,2184277.8444951423,39798788.76106976,10011241.65803378,,,,,,,0.0,0.0,0.0
 2021-04-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,27791284.264525082,45441043.54234863,41521656.81216314,,,,,,,0.0,0.0,0.0
 2021-04-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
@@ -90,7 +90,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2021-05-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,9020413916.696695,10098610091.006437,15642438398.389719,,,,,,,0.0,0.0,0.0
 2021-05-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,294459793.76239294,396884019.21978587,534697966.1920083,,,,,,,0.0,0.0,0.0
 2021-05-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2021-05-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,50350711839.57046,60172844894.156166,69559606394.8311,,,,,,,0.0,0.0,0.0
+2021-05-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,50350711839.570465,60172844894.156166,69559606394.8311,,,,,,,0.0,0.0,0.0
 2021-05-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,52401770.917986125,138084909.8694327,183305526.0644188,,,,,,,0.0,0.0,0.0
 2021-05-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,27371203.05303288,29324432.028088905,38878714.04652388,,,,,,,0.0,0.0,0.0
 2021-05-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
@@ -100,7 +100,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2021-06-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,9596125862.364874,10487317487.471504,10766333615.398346,,,,,,,0.0,0.0,0.0
 2021-06-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,212130401.50712237,363595486.4473561,334905612.69582313,,,,,,,0.0,0.0,0.0
 2021-06-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2021-06-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,50405443491.61285,56348154894.5107,58896835278.7023,,,,,,,0.0,0.0,0.0
+2021-06-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,50405443491.61285,56348154894.51071,58896835278.7023,,,,,,,0.0,0.0,0.0
 2021-06-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,108612607.78241475,162512705.08737737,134207711.46291243,,,,,,,0.0,0.0,0.0
 2021-06-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,21466455.1217691,27174726.41712319,28592887.018219676,,,,,,,0.0,0.0,0.0
 2021-06-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
@@ -110,7 +110,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2021-07-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,9718474314.320087,11876155074.609852,11137023296.622665,,,,,,,0.0,0.0,0.0
 2021-07-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,267283206.8601796,339225489.97567886,330039188.7609238,,,,,,,0.0,0.0,0.0
 2021-07-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2021-07-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,53377400198.21682,65649561305.02445,58317748793.53957,,,,,,,0.0,0.0,0.0
+2021-07-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,53377400198.21684,65649561305.0245,58317748793.53958,,,,,,,0.0,0.0,0.0
 2021-07-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,194082869.97500813,257204743.9410239,230415710.07582334,,,,,,,0.0,0.0,0.0
 2021-07-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,25339709.095243756,41239700.57116395,30478669.57618938,,,,,,,0.0,0.0,0.0
 2021-07-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
@@ -122,7 +122,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2021-08-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,11109915513.761755,14900365626.858442,13860544956.816107,,,,,,,0.0,0.0,0.0
 2021-08-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,326446770.46042985,800415277.7116352,411579680.97695714,,,,,,,0.0,0.0,0.0
 2021-08-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2021-08-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,65133945048.66592,83065810885.01678,75346572592.78645,,,,,,,0.0,0.0,0.0
+2021-08-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,65133945048.66589,83065810885.01685,75346572592.78647,,,,,,,0.0,0.0,0.0
 2021-08-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,252700007.55656913,619840958.1825283,350320809.9278679,,,,,,,0.0,0.0,0.0
 2021-08-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,38367294.52118442,45394828.28765061,43078493.121503554,,,,,,,0.0,0.0,0.0
 2021-08-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
@@ -134,7 +134,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2021-09-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,11599146346.792337,12286359529.557625,13291646242.829243,,,,,,,0.0,0.0,0.0
 2021-09-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,554058469.9004586,883050690.9840727,761904256.4189186,,,,,,,0.0,0.0,0.0
 2021-09-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2021-09-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,72448300808.62886,77010068628.5948,80401309287.91821,,,,,,,0.0,0.0,0.0
+2021-09-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,72448300808.62886,77010068628.59486,80401309287.91823,,,,,,,0.0,0.0,0.0
 2021-09-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,708799866.6515982,1129089609.3247395,976924991.6737021,,,,,,,0.0,0.0,0.0
 2021-09-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,44216957.26432817,50642290.95120955,47558537.70520421,,,,,,,0.0,0.0,0.0
 2021-09-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,3417644.83888,4842750.91396,3802204.5026441664,,,,,,,0.0,0.0,0.0
@@ -147,7 +147,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2021-10-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,12532258238.500994,14499327379.456202,13952110446.026901,,,,,,,0.0,0.0,0.0
 2021-10-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,807211087.3026419,1008678495.6826422,947896123.1484313,,,,,,,0.0,0.0,0.0
 2021-10-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2021-10-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,80669673717.1288,94981800524.23454,90284108655.33073,,,,,,,0.0,0.0,0.0
+2021-10-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,80669673717.12875,94981800524.23454,90284108655.33073,,,,,,,0.0,0.0,0.0
 2021-10-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,1179347159.6373258,4396527800.20989,3758968087.3197722,,,,,,,0.0,0.0,0.0
 2021-10-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,48159246.859415896,57951603.16498286,54391842.570779584,,,,,,,0.0,0.0,0.0
 2021-10-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,5501752.71799,93664078.68205,24894517.41859968,,,,,,,0.0,0.0,0.0
@@ -161,7 +161,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2021-11-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,2411118.963008488,447250396.92725873,291628217.0364463,,,,,,,0.0,0.0,0.0
 2021-11-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,769908875.6865132,824102330.862744,947494982.3200223,,,,,,,0.0,0.0,0.0
 2021-11-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2021-11-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,96376041054.92926,105918416479.07724,103076426249.43416,,,,,,,0.0,0.0,0.0
+2021-11-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,96376041054.92923,105918416479.07706,103076426249.43414,,,,,,,0.0,0.0,0.0
 2021-11-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,3279083015.179881,3518007953.6416416,3908340551.015686,,,,,,,0.0,0.0,0.0
 2021-11-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,53965434.44387592,68969158.87334836,59453214.725696184,,,,,,,0.0,0.0,0.0
 2021-11-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,78575366.86768001,128400273.9887,97798145.84082334,,,,,,,0.0,0.0,0.0
@@ -176,7 +176,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2021-12-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,148946727.81763998,150501425.04284307,215528172.8379563,,,,,,,0.0,0.0,0.0
 2021-12-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,539318316.4001186,731574824.9890363,646610144.9151183,,,,,,,0.0,0.0,0.0
 2021-12-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2021-12-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,91166131414.27753,93377372122.15157,96458418292.72011,,,,,,,0.0,0.0,0.0
+2021-12-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,91166131414.27753,93377372122.1516,96458418292.7201,,,,,,,0.0,0.0,0.0
 2021-12-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,2766427249.109989,3767326932.9031954,3197793011.9394107,,,,,,,0.0,0.0,0.0
 2021-12-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,66304057.95209682,115689696.2706626,82926022.71357639,,,,,,,0.0,0.0,0.0
 2021-12-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,93898805.52823,93898805.52823,121124447.81623709,,,,,,,0.0,0.0,0.0
@@ -191,7 +191,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-01-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,74582833.48236549,84842419.76872076,96296626.20263153,,,,,,,0.0,0.0,0.0
 2022-01-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,458984269.59883684,483408740.82314956,628088962.9201663,,,,,,,0.0,0.0,0.0
 2022-01-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-01-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,68133556310.299416,71401862194.69064,83403553137.10374,,,,,,,0.0,0.0,0.0
+2022-01-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,68133556310.2994,71401862194.69066,83403553137.10373,,,,,,,0.0,0.0,0.0
 2022-01-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,3949138616.837777,5972814394.471561,5307294609.949322,,,,,,,0.0,0.0,0.0
 2022-01-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,115710368.65190764,125853545.84301373,121940175.70792817,,,,,,,0.0,0.0,0.0
 2022-01-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,54911542.30764,211086358.73019,94213134.07266161,,,,,,,0.0,0.0,0.0
@@ -206,7 +206,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-02-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,55485723.39068161,55485723.39068161,79408309.06110941,,,,,,,0.0,0.0,0.0
 2022-02-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,329426345.2231096,381067028.27734226,429425432.08760303,,,,,,,0.0,0.0,0.0
 2022-02-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-02-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,68972970526.77386,73311512817.15747,74866994176.10944,,,,,,,0.0,0.0,0.0
+2022-02-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,68972970526.7739,73311512817.15746,74866994176.10945,,,,,,,0.0,0.0,0.0
 2022-02-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,5410196889.855569,7682499098.812189,6073529979.138675,,,,,,,0.0,0.0,0.0
 2022-02-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,125608267.70476899,178480968.15019006,153408802.35615206,,,,,,,0.0,0.0,0.0
 2022-02-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,124026387.66778,153872079.35057,180338211.54467392,,,,,,,0.0,0.0,0.0
@@ -221,7 +221,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-03-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,42720048.102254584,45098781.295044065,46029798.54332921,,,,,,,0.0,0.0,0.0
 2022-03-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,350173098.4535026,457461621.1917794,402075998.24053574,,,,,,,0.0,0.0,0.0
 2022-03-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-03-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,67841410199.06273,78013589026.64381,73647889471.48056,,,,,,,0.0,0.0,0.0
+2022-03-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,67841410199.06271,78013589026.64378,73647889471.48056,,,,,,,0.0,0.0,0.0
 2022-03-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,4340965700.321397,4845032549.824915,5061113252.356903,,,,,,,0.0,0.0,0.0
 2022-03-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,134822791.2844963,164769099.34421209,175109785.89698657,,,,,,,0.0,0.0,0.0
 2022-03-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,110976997.33544001,120658293.10643,124282938.86276227,,,,,,,0.0,0.0,0.0
@@ -236,7 +236,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-04-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,48785267.85548078,51685730.95096987,55199027.8330654,,,,,,,0.0,0.0,0.0
 2022-04-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,310923516.15961087,310923516.15961087,433570612.0645573,,,,,,,0.0,0.0,0.0
 2022-04-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-04-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,68307207081.35503,68307207081.35503,74882782427.16273,,,,,,,0.0,0.0,0.0
+2022-04-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,68307207081.35501,68307207081.35501,74882782427.16275,,,,,,,0.0,0.0,0.0
 2022-04-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,2840226477.572846,2840226477.572846,4251554251.9495945,,,,,,,0.0,0.0,0.0
 2022-04-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,169930865.5876219,199853718.73369512,190108063.29624444,,,,,,,0.0,0.0,0.0
 2022-04-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,81779580.14388,81779580.14388,107331919.35856867,,,,,,,0.0,0.0,0.0
@@ -251,7 +251,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-05-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,32689948.206620585,33224328.432768933,40805455.426497154,,,,,,,0.0,0.0,0.0
 2022-05-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,181607317.51294926,210227203.96544465,235754084.02988076,,,,,,,0.0,0.0,0.0
 2022-05-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-05-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,43279080385.16719,46428635259.009964,52255244754.130135,,,,,,,0.0,0.0,0.0
+2022-05-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,43279080385.16721,46428635259.00995,52255244754.13013,,,,,,,0.0,0.0,0.0
 2022-05-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,1078269941.4304276,1176860211.6826355,1781660637.4820411,,,,,,,0.0,0.0,0.0
 2022-05-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,75192910.53917941,110019109.59464245,131362424.44205907,,,,,,,0.0,0.0,0.0
 2022-05-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,50230716.671069995,60093746.70246,66142903.185661614,,,,,,,0.0,0.0,0.0
@@ -267,13 +267,13 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-06-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,10445369.65319907,10445369.65319907,16806897.89654192,,,,,,,0.0,0.0,0.0
 2022-06-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,121575353.28607136,127861314.06396595,152017026.18800354,,,,,,,0.0,0.0,0.0
 2022-06-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-06-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,28285050558.84302,29292869227.757584,35595022731.69759,,,,,,,0.0,0.0,0.0
+2022-06-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,28285050558.843006,29292869227.7576,35595022731.69759,,,,,,,0.0,0.0,0.0
 2022-06-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,584477627.4647077,584477627.4647077,847819369.2338675,,,,,,,0.0,0.0,0.0
 2022-06-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,96008470.5826268,111088182.37236995,114123143.84720595,,,,,,,0.0,0.0,0.0
 2022-06-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,36259349.088410005,42614250.31501,47807342.221163005,,,,,,,0.0,0.0,0.0
 2022-06-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,133017841.04137999,161916937.41166,178882827.65182897,,,,,,,0.0,0.0,0.0
 2022-06-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,28853555.05003216,29099771.04178178,35706304.71393814,,,,,,,0.0,0.0,0.0
-2022-06-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,222668173.36505347,270793502.0766116,297457686.6129049,41.0,47.0,44.766666666666666,41.0,47.0,44.766666666666666,28913659.467593007,-60812482.83960303,8140383053.95453
+2022-06-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,222668173.36505347,270793502.0766116,297457686.6129049,41.0,47.0,44.766666666666666,41.0,47.0,44.766666666666666,28913659.467593003,-60812482.83960303,8140383053.95453
 2022-06-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,1334386762.5690815,1344743229.5159457,1667221986.8563643,,,,,,,0.0,0.0,0.0
 2022-06-01,ZkSync Era,L2,ZkSync Era,chain,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
 2022-07-01,Arbitrum,L2,Arbitrum,chain,False,,,Other EVMs,,,569538705.3272593,753550605.2889411,647248551.3952545,,,,,,,0.0,0.0,0.0
@@ -283,7 +283,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-07-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,6553914.236588398,7487872.852324231,8843748.625345593,,,,,,,0.0,0.0,0.0
 2022-07-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,124297784.54044126,148061863.07288817,137504513.54544294,,,,,,,0.0,0.0,0.0
 2022-07-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-07-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,28324887004.38116,34994827581.28157,31828676985.627495,,,,,,,0.0,0.0,0.0
+2022-07-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,28324887004.38115,34994827581.28158,31828676985.627495,,,,,,,0.0,0.0,0.0
 2022-07-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,529608681.84068835,585325331.3427424,568949164.212502,,,,,,,0.0,0.0,0.0
 2022-07-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,107092315.50277029,140861052.51506132,122279596.79793857,,,,,,,0.0,0.0,0.0
 2022-07-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,41654544.23736,56527202.22202,53988086.70232742,,,,,,,0.0,0.0,0.0
@@ -300,7 +300,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-08-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,5918715.893810257,6034443.652636431,6954156.949405014,,,,,,,0.0,0.0,0.0
 2022-08-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,119506728.99215892,130572883.52041994,144062181.6306227,,,,,,,0.0,0.0,0.0
 2022-08-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-08-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,30980510045.956944,31901222579.519985,34425809997.79055,,,,,,,0.0,0.0,0.0
+2022-08-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,30980510045.956924,31901222579.519974,34425809997.79055,,,,,,,0.0,0.0,0.0
 2022-08-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,485522418.3184063,488816113.8811064,542557421.9858427,,,,,,,0.0,0.0,0.0
 2022-08-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,136023805.28399968,144038436.62259942,145257714.31091243,,,,,,,0.0,0.0,0.0
 2022-08-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,48421806.59065,48421806.59065,55960773.4692842,,,,,,,0.0,0.0,0.0
@@ -317,7 +317,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-09-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,3684002.262294883,3783845.6867657886,4701770.630733741,,,,,,,0.0,0.0,0.0
 2022-09-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,119499382.97309692,130567502.1515358,130368181.3009339,,,,,,,0.0,0.0,0.0
 2022-09-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-09-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,27721213082.911503,29496190483.957596,30359475044.518124,,,,,,,0.0,0.0,0.0
+2022-09-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,27721213082.91148,29496190483.95758,30359475044.518124,,,,,,,0.0,0.0,0.0
 2022-09-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,400704272.13435507,400704272.13435507,446456168.7207091,,,,,,,0.0,0.0,0.0
 2022-09-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,118172579.05084513,137812255.23131818,140240819.74903604,,,,,,,0.0,0.0,0.0
 2022-09-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,44673007.722990006,46634394.69797,47895227.40546,,,,,,,0.0,0.0,0.0
@@ -334,7 +334,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-10-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,3626031.55097726,5104984.815056454,4146156.7810543925,,,,,,,0.0,0.0,0.0
 2022-10-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,105422760.72300762,124082338.33110544,118833809.4507395,,,,,,,0.0,0.0,0.0
 2022-10-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-10-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,28446846224.49005,30658006176.948544,29596585469.429142,,,,,,,0.0,0.0,0.0
+2022-10-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,28446846224.49005,30658006176.948555,29596585469.429142,,,,,,,0.0,0.0,0.0
 2022-10-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,389095960.25377375,443897584.1216298,423509507.10703796,,,,,,,0.0,0.0,0.0
 2022-10-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,87941535.3960486,87941535.3960486,110480265.7146602,,,,,,,0.0,0.0,0.0
 2022-10-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,42719953.561869994,48805953.46467,45590188.18446097,,,,,,,0.0,0.0,0.0
@@ -351,7 +351,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-11-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,3511647.2512587383,4269773.193716747,4114580.9075791896,,,,,,,0.0,0.0,0.0
 2022-11-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,74966503.16319759,104660654.04782268,95793259.15366007,,,,,,,0.0,0.0,0.0
 2022-11-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-11-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,22533368158.319817,23594470024.454315,25364925393.046494,,,,,,,0.0,0.0,0.0
+2022-11-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,22533368158.319813,23594470024.454315,25364925393.046494,,,,,,,0.0,0.0,0.0
 2022-11-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,344844266.39075255,395392923.80315423,383814216.2672028,,,,,,,0.0,0.0,0.0
 2022-11-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,51714310.33562243,53355034.65663631,63152862.744444504,,,,,,,0.0,0.0,0.0
 2022-11-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,33311899.691320002,39737004.66931,42346938.65906767,,,,,,,0.0,0.0,0.0
@@ -368,7 +368,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2022-12-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,3937281.281887177,4119703.451914039,4136466.225362645,,,,,,,0.0,0.0,0.0
 2022-12-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,87096272.23147145,87851220.84300838,98259250.75457734,,,,,,,0.0,0.0,0.0
 2022-12-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2022-12-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,22173786507.848,22173786507.848,22998817885.341476,,,,,,,0.0,0.0,0.0
+2022-12-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,22173786507.847977,22173786507.847977,22998817885.341476,,,,,,,0.0,0.0,0.0
 2022-12-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,349512131.1218097,352905546.6210339,378747435.3546315,,,,,,,0.0,0.0,0.0
 2022-12-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,46521593.09413678,50358814.67243432,50533564.40020749,,,,,,,0.0,0.0,0.0
 2022-12-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,32313136.835490003,32383428.51162,36961386.92660484,,,,,,,0.0,0.0,0.0
@@ -386,7 +386,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-01-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,4115501.2096607247,4277300.634690643,4428574.962543125,,,,,,,0.0,0.0,0.0
 2023-01-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,89462746.98657337,140077371.97412226,119309598.4036116,,,,,,,0.0,0.0,0.0
 2023-01-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-01-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,22110147330.174454,27251304150.35654,25384501903.895977,,,,,,,0.0,0.0,0.0
+2023-01-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,22110147330.17446,27251304150.35654,25384501903.895977,,,,,,,0.0,0.0,0.0
 2023-01-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,350340071.8593756,483557025.69369835,402751594.5774061,,,,,,,0.0,0.0,0.0
 2023-01-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,50557044.45220778,60312328.72996802,54380542.64987003,,,,,,,0.0,0.0,0.0
 2023-01-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,32296920.076290004,36496588.37836,37607797.5760271,,,,,,,0.0,0.0,0.0
@@ -404,13 +404,13 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-02-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,4231137.238441363,4231137.238441363,4459297.492872021,,,,,,,0.0,0.0,0.0
 2023-02-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,137704259.90136677,141776359.71611473,148562445.8865332,,,,,,,0.0,0.0,0.0
 2023-02-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-02-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,26688763309.567577,28447353964.35561,28175471810.59211,,,,,,,0.0,0.0,0.0
+2023-02-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,26688763309.56753,28447353964.355618,28175471810.59211,,,,,,,0.0,0.0,0.0
 2023-02-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,411408450.2229257,418081901.9713134,453828931.8601867,,,,,,,0.0,0.0,0.0
 2023-02-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,60688289.08875239,62539435.705622986,63191651.1969741,,,,,,,0.0,0.0,0.0
 2023-02-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,35948082.56053,37867627.57662,38853431.68292678,,,,,,,0.0,0.0,0.0
 2023-02-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,107511306.54827,111751139.85099,121963688.44720142,,,,,,,0.0,0.0,0.0
 2023-02-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,47061343.536846586,51902331.164765984,51202347.702528454,,,,,,,0.0,0.0,0.0
-2023-02-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,736774017.9072008,961006730.9993901,822195568.5829086,99.0,106.0,101.10714285714286,97.0,102.0,98.57142857142857,226190747.22291315,63123361.275176875,26296977454.43431
+2023-02-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,736774017.9072008,961006730.9993901,822195568.5829086,99.0,106.0,101.10714285714286,97.0,102.0,98.57142857142857,226190747.22291312,63123361.275176875,26296977454.43431
 2023-02-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,1076274857.7993066,1092897724.605649,1129668983.9542444,,,,,,,0.0,0.0,0.0
 2023-02-01,Starknet,L2,Starknet,chain,False,,,Other EVMs,,,1115781.4623557213,1448918.688530824,1286512.2928642442,,,,,,,0.0,0.0,0.0
 2023-02-01,ZkSync Era,L2,ZkSync Era,chain,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
@@ -422,13 +422,13 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-03-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,3609400.520273328,3657656.3318781536,3844833.797551971,,,,,,,0.0,0.0,0.0
 2023-03-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,102646437.7546468,130327485.52233504,122751222.75887805,,,,,,,0.0,0.0,0.0
 2023-03-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-03-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,25539658075.279327,28857800343.572556,28066519542.375095,,,,,,,0.0,0.0,0.0
+2023-03-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,25539658075.279324,28857800343.572563,28066519542.375095,,,,,,,0.0,0.0,0.0
 2023-03-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,318953547.3857448,390821893.4059183,386460884.64122796,,,,,,,0.0,0.0,0.0
 2023-03-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,58637582.552027166,68070657.22383042,65212265.71126289,,,,,,,0.0,0.0,0.0
 2023-03-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,33435160.351529997,34745890.0546,35664079.27870806,,,,,,,0.0,0.0,0.0
 2023-03-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,91636674.96422999,119136785.85158,109533176.07658097,,,,,,,0.0,0.0,0.0
 2023-03-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,39036864.467031635,41579730.69762394,44327157.10520083,,,,,,,0.0,0.0,0.0
-2023-03-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,733759308.5000806,918115527.9049361,930166762.979632,106.0,120.0,113.03225806451613,101.0,113.0,107.87096774193549,-52654015.8424571,-2899611.647772922,32906803325.244
+2023-03-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,733759308.5000806,918115527.9049361,930166762.979632,106.0,120.0,113.03225806451613,101.0,113.0,107.87096774193549,-52654015.84245711,-2899611.647772922,32906803325.244
 2023-03-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,900950488.8067579,1047332717.0363383,1025554566.5719156,,,,,,,0.0,0.0,0.0
 2023-03-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,114582.1781261249,569966.6780133843,278295.1045924536,,,,,,,0.0,0.0,0.0
 2023-03-01,Starknet,L2,Starknet,chain,False,,,Other EVMs,,,1493960.3433442507,4327319.599346875,2256124.6846292517,,,,,,,0.0,0.0,0.0
@@ -443,13 +443,13 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-04-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,3522130.204954037,3566284.7390823644,3690422.28533091,,,,,,,0.0,0.0,0.0
 2023-04-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,117107432.82853971,117595228.11903024,126278903.24438366,,,,,,,0.0,0.0,0.0
 2023-04-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-04-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,27857846108.627518,27989165797.079998,29319915811.832024,,,,,,,0.0,0.0,0.0
+2023-04-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,27857846108.627472,27989165797.079987,29319915811.832024,,,,,,,0.0,0.0,0.0
 2023-04-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,366570279.17860705,369362028.01195735,392670358.75122696,,,,,,,0.0,0.0,0.0
 2023-04-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,69099460.63764805,69123863.79835922,74740897.98092405,,,,,,,0.0,0.0,0.0
 2023-04-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,30749694.505349997,32096126.37391,33503610.55607867,,,,,,,0.0,0.0,0.0
 2023-04-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,112551010.38822,113975853.73741001,119917213.640237,,,,,,,0.0,0.0,0.0
 2023-04-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,40457349.18637487,44055625.154733986,44065046.976412855,,,,,,,0.0,0.0,0.0
-2023-04-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,904865670.9263153,910686187.4536545,929806882.5246627,118.0,125.0,123.1,109.0,117.0,114.3,28243074.2704572,-13374464.9494472,31888580289.82407
+2023-04-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,904865670.9263153,910686187.4536545,929806882.5246627,118.0,125.0,123.1,109.0,117.0,114.3,28243074.270457212,-13374464.9494472,31888580289.82407
 2023-04-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,1011464993.0239018,1036596670.7767087,1057263305.3955094,,,,,,,0.0,0.0,0.0
 2023-04-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,678957.5548208795,2444653.92360951,1705160.0969379097,,,,,,,0.0,0.0,0.0
 2023-04-01,Starknet,L2,Starknet,chain,False,,,Other EVMs,,,4561076.8428652175,9248777.705817157,7142171.2368425755,,,,,,,0.0,0.0,0.0
@@ -464,7 +464,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-05-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,3109946.659247906,3169570.542304905,3290993.6733905156,,,,,,,0.0,0.0,0.0
 2023-05-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,90388834.41007107,90405223.57081363,95380766.11885697,,,,,,,0.0,0.0,0.0
 2023-05-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-05-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,26495143276.044952,26665112400.11065,27196770944.325985,,,,,,,0.0,0.0,0.0
+2023-05-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,26495143276.044975,26665112400.110653,27196770944.325985,,,,,,,0.0,0.0,0.0
 2023-05-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,221104463.27026805,221104463.27026805,296024708.9078976,,,,,,,0.0,0.0,0.0
 2023-05-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,59263112.53105525,65145645.6287806,66533191.50124682,,,,,,,0.0,0.0,0.0
 2023-05-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,27867522.98577,27867522.98577,31195665.316799033,,,,,,,0.0,0.0,0.0
@@ -486,7 +486,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-06-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,2858185.2518304666,3051395.758078515,3031031.417580322,,,,,,,0.0,0.0,0.0
 2023-06-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,80122842.7161684,85316990.1670666,85135072.33207986,,,,,,,0.0,0.0,0.0
 2023-06-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-06-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,23956004430.55468,26972053628.896553,25780987980.83641,,,,,,,0.0,0.0,0.0
+2023-06-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,23956004430.554695,26972053628.896553,25780987980.836407,,,,,,,0.0,0.0,0.0
 2023-06-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,178879894.8157273,201482829.31852734,195698135.58830962,,,,,,,0.0,0.0,0.0
 2023-06-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,61241717.97209238,74550653.8206439,68852196.74872872,,,,,,,0.0,0.0,0.0
 2023-06-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,25894571.46903,27955561.422179997,27600825.391119666,,,,,,,0.0,0.0,0.0
@@ -509,7 +509,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-07-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,2377193.3865654278,2487072.1123866686,2543901.6833610777,,,,,,,0.0,0.0,0.0
 2023-07-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,87967401.1940335,98262079.42373148,93156854.46997392,,,,,,,0.0,0.0,0.0
 2023-07-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-07-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,23025619046.980885,23025619046.980885,25929493861.869423,,,,,,,0.0,0.0,0.0
+2023-07-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,23025619046.98086,23025619046.98086,25929493861.869423,,,,,,,0.0,0.0,0.0
 2023-07-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,61468862.284450054,61468862.284450054,109149863.79426141,,,,,,,0.0,0.0,0.0
 2023-07-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,72355966.82365449,76160734.34911816,75205432.89686508,,,,,,,0.0,0.0,0.0
 2023-07-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,27278278.834140003,28350479.74233,28140331.020362258,,,,,,,0.0,0.0,0.0
@@ -517,7 +517,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-07-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,86981484.72284,87167844.49958001,90641505.93833001,,,,,,,0.0,0.0,0.0
 2023-07-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,32414.631684530246,38206131.109376594,7021181.402567075,,,,,,,0.0,0.0,0.0
 2023-07-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,34669073.40631023,34669073.40631023,38162028.25217825,,,,,,,0.0,0.0,0.0
-2023-07-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,808092194.1870365,872218515.4479995,860652467.8484337,150.0,156.0,152.3548387096774,137.0,141.0,138.83870967741936,28434952.907455154,53890888.42675483,31247221423.57177
+2023-07-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,808092194.1870365,872218515.4479995,860652467.8484337,150.0,156.0,152.3548387096774,137.0,141.0,138.83870967741936,28434952.907455146,53890888.42675483,31247221423.57177
 2023-07-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,893279047.7354844,893279047.7354844,978143573.4222903,,,,,,,0.0,0.0,0.0
 2023-07-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,27722747.715652872,33513809.61595134,31855280.760056887,,,,,,,0.0,0.0,0.0
 2023-07-01,Rollux,L2,Rollux,chain,False,570.0,modern,OP Stack Fork,rollux,Rollux,315847.82129170577,667608.959155811,730197.1105931607,,,,,,,0.0,0.0,0.0
@@ -530,11 +530,11 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-08-01,Avalanche,L1,Avalanche,chain,False,,,Other EVMs,,,511889630.6128615,511889630.6128615,577296671.2623434,,,,,,,0.0,0.0,0.0
 2023-08-01,Aztec,L2,protocols/aztec,protocol,False,,,Other EVMs,,,7406898.19327,7406898.19327,7978811.580153871,,,,,,,0.0,0.0,0.0
 2023-08-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,2837062139.6637087,2858380396.412171,3014271370.0945406,,,,,,,0.0,0.0,0.0
-2023-08-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,8497227.720418563,350663065.28804564,133999648.31439526,11.0,98.0,56.064516129032256,11.0,88.0,51.32258064516129,157730864.5142779,-10283959.434817899,4124847327.79971
+2023-08-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,8497227.720418563,350663065.28804564,133999648.31439526,11.0,98.0,56.064516129032256,11.0,88.0,51.32258064516129,157730864.5142779,-10283959.434817897,4124847327.79971
 2023-08-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,1910587.4412960177,1914488.890356124,2275022.619513872,,,,,,,0.0,0.0,0.0
 2023-08-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,86133620.04957823,88505965.06597051,91768315.36952226,,,,,,,0.0,0.0,0.0
 2023-08-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-08-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,21865896957.30053,22061794659.931908,23145493422.812252,,,,,,,0.0,0.0,0.0
+2023-08-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,21865896957.3005,22061794659.931923,23145493422.81226,,,,,,,0.0,0.0,0.0
 2023-08-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,53868269.37777905,53868269.37777905,67545772.47376949,,,,,,,0.0,0.0,0.0
 2023-08-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,47874495.13656042,62428263.162553646,66944640.68549906,,,,,,,0.0,0.0,0.0
 2023-08-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,28069817.40146,36682319.98691,31727771.36118903,,,,,,,0.0,0.0,0.0
@@ -542,7 +542,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-08-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,76224481.2986,92641074.0209,88265851.51474,,,,,,,0.0,0.0,0.0
 2023-08-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,34726950.44314894,36170375.65404557,38844570.083565004,,,,,,,0.0,0.0,0.0
 2023-08-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,24474085.55368513,24474085.55368513,29889773.213733923,,,,,,,0.0,0.0,0.0
-2023-08-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,668162243.0414797,668162243.0414797,784710761.007634,154.0,165.0,160.48387096774192,140.0,150.0,145.70967741935485,-56323423.36875212,-140686608.0797779,28585075610.43256
+2023-08-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,668162243.0414797,668162243.0414797,784710761.007634,154.0,165.0,160.48387096774192,140.0,150.0,145.70967741935485,-56323423.368752114,-140686608.0797779,28585075610.43256
 2023-08-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,785329460.6149493,785329460.6149493,848028833.1766582,,,,,,,0.0,0.0,0.0
 2023-08-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,21105788.579840295,21105788.579840295,28454091.90433856,,,,,,,0.0,0.0,0.0
 2023-08-01,Rollux,L2,Rollux,chain,False,570.0,modern,OP Stack Fork,rollux,Rollux,529186.2251806802,571414.3071675686,1045152.43435127,,,,,,,0.0,0.0,0.0
@@ -556,11 +556,11 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-09-01,Avalanche,L1,Avalanche,chain,False,,,Other EVMs,,,478217861.74149454,497089054.5670105,498200968.5560631,,,,,,,0.0,0.0,0.0
 2023-09-01,Aztec,L2,protocols/aztec,protocol,False,,,Other EVMs,,,6822137.451249999,7129154.4365300005,7046781.471059667,,,,,,,0.0,0.0,0.0
 2023-09-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,2780342395.025676,2848886532.502066,2855740834.033877,,,,,,,0.0,0.0,0.0
-2023-09-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,334308899.7994713,352623674.03029996,369719642.4891079,98.0,127.0,117.26666666666667,88.0,115.0,105.86666666666666,138296582.35930106,-11592766.298391042,11900565622.86201
+2023-09-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,334308899.7994713,352623674.03029996,369719642.4891079,98.0,127.0,117.26666666666667,88.0,115.0,105.86666666666666,138296582.35930106,-11592766.29839104,11900565622.862011
 2023-09-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,1790058.8888719026,1831088.1955954074,1862974.2500117584,,,,,,,0.0,0.0,0.0
 2023-09-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,84266314.0584458,90166472.39829412,88306085.22650959,,,,,,,0.0,0.0,0.0
 2023-09-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-09-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,20758577705.366432,21480047052.447968,21445501870.426884,,,,,,,0.0,0.0,0.0
+2023-09-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,20758577705.366447,21480047052.447998,21445501870.426888,,,,,,,0.0,0.0,0.0
 2023-09-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,49087217.46298281,52089837.889533184,51109643.17221372,,,,,,,0.0,0.0,0.0
 2023-09-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,61449324.96906888,72208312.48980144,71573479.64998032,,,,,,,0.0,0.0,0.0
 2023-09-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,32360077.33589,33677419.57813,33958944.93637834,,,,,,,0.0,0.0,0.0
@@ -570,7 +570,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-09-01,Manta,L2,Manta,chain,False,169.0,modern,OP Stack Fork,manta pacific,Manta Pacific,4.01656824386728,1341436.3647687908,298937.81011194456,,,,,,,0.0,0.0,0.0
 2023-09-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,33307488.64511743,37901503.654600866,36361803.43049463,,,,,,,0.0,0.0,0.0
 2023-09-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,22392914.00349459,25244622.565100614,23716105.781838134,,,,,,,0.0,0.0,0.0
-2023-09-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,623742976.1198592,650173929.4301922,643781486.3548081,164.0,172.0,168.96666666666667,149.0,157.0,153.96666666666667,-53190706.55636471,-4739713.655775292,22986394416.51125
+2023-09-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,623742976.1198592,650173929.4301922,643781486.3548081,164.0,172.0,168.96666666666667,149.0,157.0,153.96666666666667,-53190706.55636471,-4739713.655775288,22986394416.51125
 2023-09-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,774261308.1729758,793703126.7910609,790276653.0103242,,,,,,,0.0,0.0,0.0
 2023-09-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,18240322.128226936,18710486.189662244,18849944.7458663,,,,,,,0.0,0.0,0.0
 2023-09-01,Rollux,L2,Rollux,chain,False,570.0,modern,OP Stack Fork,rollux,Rollux,525291.3440514221,547042.4334830593,857583.4383541058,,,,,,,0.0,0.0,0.0
@@ -588,7 +588,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-10-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,1849468.559731045,2138205.425284454,2031594.7055123374,,,,,,,0.0,0.0,0.0
 2023-10-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,84966548.24773896,96317583.70817265,89731870.17008235,,,,,,,0.0,0.0,0.0
 2023-10-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-10-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,19588601198.45882,23006413222.161476,21295646014.081356,,,,,,,0.0,0.0,0.0
+2023-10-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,19588601198.45881,23006413222.161476,21295646014.081356,,,,,,,0.0,0.0,0.0
 2023-10-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,39225103.342808284,49620612.27125169,46864098.986657575,,,,,,,0.0,0.0,0.0
 2023-10-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,70815350.70627202,173745978.1860053,127469592.95051898,,,,,,,0.0,0.0,0.0
 2023-10-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,33966810.276580006,35611784.71086,34902108.07007516,,,,,,,0.0,0.0,0.0
@@ -598,7 +598,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-10-01,Manta,L2,Manta,chain,False,169.0,modern,OP Stack Fork,manta pacific,Manta Pacific,1350713.2450513132,8964457.769413928,6712126.345742486,,,,,,,0.0,0.0,0.0
 2023-10-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,33310202.39297303,50459166.72255894,40435223.63930165,,,,,,,0.0,0.0,0.0
 2023-10-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,22547522.29798859,23404393.84316885,23901165.186132785,,,,,,,0.0,0.0,0.0
-2023-10-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,577470762.6473486,642019028.9447917,616494409.1664531,169.0,179.0,172.09677419354838,155.0,163.0,157.61290322580646,78104802.67770123,-81822235.56610122,22626726642.28199
+2023-10-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,577470762.6473486,642019028.9447917,616494409.1664531,169.0,179.0,172.09677419354838,155.0,163.0,157.61290322580646,78104802.67770123,-81822235.56610124,22626726642.28199
 2023-10-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,693834873.1269909,767319156.5802068,755373289.3090006,,,,,,,0.0,0.0,0.0
 2023-10-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,18454978.893893063,22135088.02127446,20124425.745774582,,,,,,,0.0,0.0,0.0
 2023-10-01,Rollux,L2,Rollux,chain,False,570.0,modern,OP Stack Fork,rollux,Rollux,497750.7853418016,800452.4128633962,908098.2833227197,,,,,,,0.0,0.0,0.0
@@ -613,15 +613,15 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-11-01,Avalanche,L1,Avalanche,chain,False,,,Other EVMs,,,545588003.8219547,665043856.04069,614846943.1350868,,,,,,,0.0,0.0,0.0
 2023-11-01,Aztec,L2,protocols/aztec,protocol,False,,,Other EVMs,,,7122507.8681499995,7621251.18253,7542947.770055,,,,,,,0.0,0.0,0.0
 2023-11-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,2825315895.917804,2969346982.1506324,2950792673.112392,,,,,,,0.0,0.0,0.0
-2023-11-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,279931437.76813364,298067286.17416257,291316708.5376064,161.0,185.0,171.86666666666667,148.0,171.0,158.43333333333334,-37062715.97083001,26648044.25277002,8276058509.94733
+2023-11-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,279931437.76813364,298067286.17416257,291316708.5376064,161.0,185.0,171.86666666666667,148.0,171.0,158.43333333333334,-37062715.97083001,26648044.252770018,8276058509.94733
 2023-11-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,2168040.839462789,3652101.387496104,2801918.412638957,,,,,,,0.0,0.0,0.0
 2023-11-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,98798400.25061026,104173759.6825794,103923166.93883246,,,,,,,0.0,0.0,0.0
 2023-11-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-11-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,23065532530.162697,27097066573.04619,25505398800.87141,,,,,,,0.0,0.0,0.0
+2023-11-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,23065532530.162697,27097066573.046204,25505398800.871414,,,,,,,0.0,0.0,0.0
 2023-11-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,49836519.34037891,61045742.113005824,57935075.0968818,,,,,,,0.0,0.0,0.0
 2023-11-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,170581600.17510983,233432823.57582363,217120622.93991125,,,,,,,0.0,0.0,0.0
 2023-11-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,32101039.33842,34437644.93065,34408569.06466033,,,,,,,0.0,0.0,0.0
-2023-11-01,Kroma,L2,Kroma,chain,True,255.0,modern,OP Chain,kroma network,Kroma,1979.611303065715,103120.73958594965,6162.934282322616,1.0,1.0,1.0,1.0,1.0,1.0,535.3186210272553,171.31905897274459,82519.16313
+2023-11-01,Kroma,L2,Kroma,chain,True,255.0,modern,OP Chain,kroma network,Kroma,1979.611303065715,103120.73958594965,6162.934282322616,1.0,1.0,1.0,1.0,1.0,1.0,535.3186210272553,171.3190589727446,82519.16313
 2023-11-01,Linea,L2,Linea,chain,False,,,Other EVMs,,,26082917.62900187,35486091.46225593,30388307.59596879,,,,,,,0.0,0.0,0.0
 2023-11-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,88241469.11816,93525085.43822,96400643.035878,,,,,,,0.0,0.0,0.0
 2023-11-01,Manta,L2,Manta,chain,False,169.0,modern,OP Stack Fork,manta pacific,Manta Pacific,9237987.39421009,25396576.917291984,15914707.971717361,,,,,,,0.0,0.0,0.0
@@ -643,15 +643,15 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-12-01,Avalanche,L1,Avalanche,chain,False,,,Other EVMs,,,662743991.4615958,887347883.8355283,873281695.8117574,,,,,,,0.0,0.0,0.0
 2023-12-01,Aztec,L2,protocols/aztec,protocol,False,,,Other EVMs,,,7550094.6475100005,7733148.8448,7907615.186892258,,,,,,,0.0,0.0,0.0
 2023-12-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,2972017684.554331,3487472490.743776,3183772156.5597277,,,,,,,0.0,0.0,0.0
-2023-12-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,305504557.52914524,437186474.687866,390804560.69459873,184.0,198.0,195.0,170.0,181.0,178.8709677419355,128768971.01237296,27310908.999897048,12312862578.46764
+2023-12-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,305504557.52914524,437186474.687866,390804560.69459873,184.0,198.0,195.0,170.0,181.0,178.8709677419355,128768971.01237296,27310908.99989705,12312862578.46764
 2023-12-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,2625760.492305849,4146089.561461961,3594479.895547141,,,,,,,0.0,0.0,0.0
 2023-12-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,104188266.08112173,131960929.85154147,117579108.04564168,,,,,,,0.0,0.0,0.0
 2023-12-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2023-12-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,27314346841.645992,30042266623.26471,29066715679.91096,,,,,,,0.0,0.0,0.0
+2023-12-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,27314346841.64597,30042266623.264633,29066715679.91096,,,,,,,0.0,0.0,0.0
 2023-12-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,63021538.99302938,87467012.23282869,79288125.24241534,,,,,,,0.0,0.0,0.0
 2023-12-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,225116425.51346478,226509329.3493668,236760058.20533776,,,,,,,0.0,0.0,0.0
 2023-12-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,34950575.79602,38486793.78381,38015355.02440517,,,,,,,0.0,0.0,0.0
-2023-12-01,Kroma,L2,Kroma,chain,True,255.0,modern,OP Chain,kroma network,Kroma,103195.7461466673,123672.9400677648,112649.88375652433,1.0,1.0,1.0,1.0,1.0,1.0,112905.38163457521,5510.173285424771,3361275.48796
+2023-12-01,Kroma,L2,Kroma,chain,True,255.0,modern,OP Chain,kroma network,Kroma,103195.7461466673,123672.9400677648,112649.88375652433,1.0,1.0,1.0,1.0,1.0,1.0,112905.38163457521,5510.17328542477,3361275.48796
 2023-12-01,Linea,L2,Linea,chain,False,,,Other EVMs,,,36245145.85790057,53363430.06810893,52398174.8822499,,,,,,,0.0,0.0,0.0
 2023-12-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,97617000.62769,125448147.18101004,115319231.56265707,,,,,,,0.0,0.0,0.0
 2023-12-01,Lyra V2,L2,protocols/lyra-v2,protocol,False,957.0,modern,OP Stack Fork,lyra,Lyra,1011968.43702,1909100.1841,1571912.93558,,,,,,,0.0,0.0,0.0
@@ -659,7 +659,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2023-12-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,97773040.0814204,121521399.68979776,118971893.61178921,,,,,,,0.0,0.0,0.0
 2023-12-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,27962964.648889087,60478128.991389886,38704844.83774935,,,,,,,0.0,0.0,0.0
 2023-12-01,Mode,L2,Mode,chain,True,34443.0,modern,OP Chain,mode,Mode,2650.663930986852,5689.947756124356,5808.27557839589,2.0,3.0,2.6129032258064515,2.0,3.0,2.6129032258064515,-6217.771905109533,1408.0981751095326,189867.55936
-2023-12-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,767105145.160072,892740032.1282803,838245990.0189989,181.0,192.0,189.16129032258064,165.0,175.0,172.80645161290323,13243283.942457283,124574527.91575271,30813720090.40899
+2023-12-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,767105145.160072,892740032.1282803,838245990.0189989,181.0,192.0,189.16129032258064,165.0,175.0,172.80645161290323,13243283.942457283,124574527.91575272,30813720090.40899
 2023-12-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,818868480.500837,895720212.3784626,870029813.8738899,,,,,,,0.0,0.0,0.0
 2023-12-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,20812267.738835894,21300311.119775802,21613763.10799121,,,,,,,0.0,0.0,0.0
 2023-12-01,Rollux,L2,Rollux,chain,False,570.0,modern,OP Stack Fork,rollux,Rollux,845069.1017588725,927302.599162427,961868.2236215933,,,,,,,0.0,0.0,0.0
@@ -674,15 +674,15 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2024-01-01,Avalanche,L1,Avalanche,chain,False,,,Other EVMs,,,741941014.2218819,798629846.1055549,844683033.4063199,,,,,,,0.0,0.0,0.0
 2024-01-01,Aztec,L2,protocols/aztec,protocol,False,,,Other EVMs,,,7355538.434210001,7497521.48061,7878862.613221614,,,,,,,0.0,0.0,0.0
 2024-01-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,3288208262.5485325,3526230323.717484,3541097969.755779,,,,,,,0.0,0.0,0.0
-2024-01-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,371102782.43463594,378565291.0988444,411348861.1714884,193.0,209.0,203.80645161290323,177.0,192.0,186.83870967741936,-63024656.38359521,3798430.5749551933,13136143354.22027
+2024-01-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,371102782.43463594,378565291.0988444,411348861.1714884,193.0,209.0,203.80645161290323,177.0,192.0,186.83870967741936,-63024656.38359521,3798430.574955198,13136143354.22027
 2024-01-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,3733315.008280998,4044368.2933682613,4042495.010866235,,,,,,,0.0,0.0,0.0
 2024-01-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,112484049.67270827,118551490.24854405,126157256.20074195,,,,,,,0.0,0.0,0.0
 2024-01-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2024-01-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,29453416176.78834,30886504088.546143,31601224230.783825,,,,,,,0.0,0.0,0.0
+2024-01-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,29453416176.788372,30886504088.546143,31601224230.783833,,,,,,,0.0,0.0,0.0
 2024-01-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,61087070.270718515,63108903.82783965,71806391.76277222,,,,,,,0.0,0.0,0.0
 2024-01-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,220682785.71482325,223783484.43082687,228591882.3605495,,,,,,,0.0,0.0,0.0
 2024-01-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,34009293.54703,36860144.79665,36584197.77690516,,,,,,,0.0,0.0,0.0
-2024-01-01,Kroma,L2,Kroma,chain,True,255.0,modern,OP Chain,kroma network,Kroma,124708.89828927393,1033456.7315406909,563810.482703524,1.0,2.0,1.7741935483870968,1.0,2.0,1.7741935483870968,872573.4526091317,2611.2424708683297,16201842.81743
+2024-01-01,Kroma,L2,Kroma,chain,True,255.0,modern,OP Chain,kroma network,Kroma,124708.89828927393,1033456.7315406909,563810.482703524,1.0,2.0,1.7741935483870968,1.0,2.0,1.7741935483870968,872573.4526091317,2611.2424708683325,16201842.81743
 2024-01-01,Linea,L2,Linea,chain,False,,,Other EVMs,,,52932738.178834945,62213615.05886245,60198243.60287141,,,,,,,0.0,0.0,0.0
 2024-01-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,101290448.53133999,102994158.88469003,110920175.45767225,,,,,,,0.0,0.0,0.0
 2024-01-01,Lyra V2,L2,protocols/lyra-v2,protocol,False,957.0,modern,OP Stack Fork,lyra,Lyra,1966517.71181,7115984.01971,5185238.248594516,,,,,,,0.0,0.0,0.0
@@ -690,7 +690,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2024-01-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,118613058.60671657,138097159.43886316,135073767.91965783,,,,,,,0.0,0.0,0.0
 2024-01-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,62864990.75151579,63324291.26560688,69866400.22323996,,,,,,,0.0,0.0,0.0
 2024-01-01,Mode,L2,Mode,chain,True,34443.0,modern,OP Chain,mode,Mode,2872.679996029224,8119207.781260805,277516.5346999056,3.0,5.0,3.774193548387097,3.0,4.0,3.193548387096774,99531.95090258963,280.7361874103558,479818.81122000003
-2024-01-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,751623791.883667,751623791.883667,843570056.2569361,185.0,197.0,197.06451612903226,169.0,182.0,180.32258064516128,-58177555.64437829,-80718787.7092717,30310608219.37481
+2024-01-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,751623791.883667,751623791.883667,843570056.2569361,185.0,197.0,197.06451612903226,169.0,182.0,180.32258064516128,-58177555.64437829,-80718787.70927171,30310608219.37481
 2024-01-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,790106374.398823,815009601.9973543,850951742.3096273,,,,,,,0.0,0.0,0.0
 2024-01-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,13952570.889230333,14256479.608359851,15989878.397524593,,,,,,,0.0,0.0,0.0
 2024-01-01,Rollux,L2,Rollux,chain,False,570.0,modern,OP Stack Fork,rollux,Rollux,849993.0929824375,875670.1718920054,934947.5208528923,,,,,,,0.0,0.0,0.0
@@ -705,12 +705,12 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2024-02-01,Avalanche,L1,Avalanche,chain,False,,,Other EVMs,,,776950719.0248895,1012357737.5871845,886836288.6416906,,,,,,,0.0,0.0,0.0
 2024-02-01,Aztec,L2,protocols/aztec,protocol,False,,,Other EVMs,,,7521640.24304,9669558.09539,8525304.85515793,,,,,,,0.0,0.0,0.0
 2024-02-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,3542645020.322948,4895869884.620557,3988087805.4812326,,,,,,,0.0,0.0,0.0
-2024-02-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,373595394.2915716,481117184.24967617,402693750.0257768,210.0,217.0,214.44827586206895,193.0,198.0,197.0344827586207,-33494912.346679907,93045349.82542992,11743336214.7348
+2024-02-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,373595394.2915716,481117184.24967617,402693750.0257768,210.0,217.0,214.44827586206895,193.0,198.0,197.0344827586207,-33494912.34667991,93045349.82542992,11743336214.7348
 2024-02-01,Blast,L2,Blast,chain,False,81457.0,modern,OP Stack Fork,blast,Blast,0.0,134717768.2728529,22620920.57593009,,,,,,,0.0,0.0,0.0
 2024-02-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,4119657.2764484966,4966706.656866317,4533441.206794961,,,,,,,0.0,0.0,0.0
 2024-02-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,124646772.05437681,189766258.14056882,142129568.39421576,,,,,,,0.0,0.0,0.0
 2024-02-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2024-02-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,31436498719.164577,48789705960.038284,40285967124.036865,,,,,,,0.0,0.0,0.0
+2024-02-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,31436498719.16454,48789705960.03836,40285967124.036865,,,,,,,0.0,0.0,0.0
 2024-02-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,66035279.37752116,81416965.65174724,72881462.22762135,,,,,,,0.0,0.0,0.0
 2024-02-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,226207039.5479222,289092746.4083492,250474811.62035877,,,,,,,0.0,0.0,0.0
 2024-02-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,36609703.88573,52651268.93361001,45035296.05314517,,,,,,,0.0,0.0,0.0
@@ -722,7 +722,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2024-02-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,140789335.9092856,234338970.15558577,185110888.8292441,,,,,,,0.0,0.0,0.0
 2024-02-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,60067922.39297578,84213739.15485518,68864931.24230333,,,,,,,0.0,0.0,0.0
 2024-02-01,Mode,L2,Mode,chain,True,34443.0,modern,OP Chain,mode,Mode,19749177.73176055,78253561.86629589,44932895.8693171,5.0,15.0,11.137931034482758,4.0,13.0,9.379310344827585,62220275.542066984,10747505.138533019,1202113202.83977
-2024-02-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,754467197.1250263,947161215.5800388,838180774.808121,200.0,206.0,204.51724137931035,185.0,189.0,188.13793103448276,33664346.724374294,166088502.34112567,28050714437.32016
+2024-02-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,754467197.1250263,947161215.5800388,838180774.808121,200.0,206.0,204.51724137931035,185.0,189.0,188.13793103448276,33664346.72437431,166088502.34112567,28050714437.32016
 2024-02-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,818104640.119635,1037567942.3611571,928321124.5190517,,,,,,,0.0,0.0,0.0
 2024-02-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,13679350.911498098,14104357.007227944,14250623.673925478,,,,,,,0.0,0.0,0.0
 2024-02-01,Rollux,L2,Rollux,chain,False,570.0,modern,OP Stack Fork,rollux,Rollux,851169.2198625193,1145541.8937328886,1146575.432926077,,,,,,,0.0,0.0,0.0
@@ -742,9 +742,9 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2024-03-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,5072895.491050844,6893558.286422178,6571093.26062411,,,,,,,0.0,0.0,0.0
 2024-03-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,175768567.2770412,205663360.44420433,200575182.85662696,,,,,,,0.0,0.0,0.0
 2024-03-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2024-03-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,47277781784.59927,54525926439.395805,53007467486.39737,,,,,,,0.0,0.0,0.0
+2024-03-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,47277781784.59928,54525926439.39578,53007467486.39738,,,,,,,0.0,0.0,0.0
 2024-03-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,84096208.24599276,127953552.50981803,124073853.94152321,,,,,,,0.0,0.0,0.0
-2024-03-01,Fraxtal,L2,Fraxtal,chain,True,252.0,modern,OP Chain,fraxtal,Fraxtal,481438.5057719784,15176733.558967734,10525760.649089538,2.0,3.0,2.4166666666666665,2.0,3.0,2.4166666666666665,15515258.05064844,-928033.0676084392,246848207.42778
+2024-03-01,Fraxtal,L2,Fraxtal,chain,True,252.0,modern,OP Chain,fraxtal,Fraxtal,481438.5057719784,15176733.558967734,10525760.649089538,2.0,3.0,2.4166666666666665,2.0,3.0,2.4166666666666665,15515258.05064844,-928033.0676084391,246848207.42778
 2024-03-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,274930934.21545845,318821384.27362245,303710279.42859846,,,,,,,0.0,0.0,0.0
 2024-03-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,44864688.69105,48856463.11044,52118990.4583729,,,,,,,0.0,0.0,0.0
 2024-03-01,Kroma,L2,Kroma,chain,True,255.0,modern,OP Chain,kroma network,Kroma,768745.6066821702,779086.3605926465,786173.2698522338,3.0,3.0,3.0,3.0,3.0,3.0,-3787916.7088363767,249497.8455663763,489999846.76954997
@@ -755,7 +755,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2024-03-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,230343811.8133461,300533741.46444696,267066803.94794783,,,,,,,0.0,0.0,0.0
 2024-03-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,68389921.56080742,81622681.36905205,80633402.54538059,,,,,,,0.0,0.0,0.0
 2024-03-01,Mode,L2,Mode,chain,True,34443.0,modern,OP Chain,mode,Mode,85689445.55480982,168715401.5469278,116175628.29712513,15.0,26.0,19.580645161290324,13.0,23.0,17.032258064516128,150780366.62122226,-1567399.5121822448,4384287965.95985
-2024-03-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,886763045.9017866,1005036321.0554404,995200518.026686,201.0,218.0,209.61290322580646,183.0,198.0,191.09677419354838,-44072425.45328046,79036886.13319051,33669418660.48351
+2024-03-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,886763045.9017866,1005036321.0554404,995200518.026686,201.0,218.0,209.61290322580646,183.0,198.0,191.09677419354838,-44072425.45328044,79036886.1331905,33669418660.48351
 2024-03-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,968125536.8094571,1074588948.977621,1088877792.8176157,,,,,,,0.0,0.0,0.0
 2024-03-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,11522673.538486028,11522673.538486028,13121352.761094611,,,,,,,0.0,0.0,0.0
 2024-03-01,Rollux,L2,Rollux,chain,False,570.0,modern,OP Stack Fork,rollux,Rollux,1128098.8815519097,1358117.250489554,1345918.5162986794,,,,,,,0.0,0.0,0.0
@@ -776,7 +776,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2024-04-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,5089881.598812627,5089881.598812627,6090679.338501861,,,,,,,0.0,0.0,0.0
 2024-04-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,107145569.11454637,107145569.11454637,143969864.2495878,,,,,,,0.0,0.0,0.0
 2024-04-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2024-04-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,49276966329.32596,49936004603.094635,52841848281.09102,,,,,,,0.0,0.0,0.0
+2024-04-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,49276966329.32594,49936004603.09459,52841848281.09103,,,,,,,0.0,0.0,0.0
 2024-04-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,105123739.55435672,105123739.55435672,122764280.81012806,,,,,,,0.0,0.0,0.0
 2024-04-01,Fraxtal,L2,Fraxtal,chain,True,252.0,modern,OP Chain,fraxtal,Fraxtal,14964623.88015487,20985433.045459785,18284337.580030333,3.0,5.0,4.033333333333333,3.0,5.0,4.033333333333333,7604543.250530605,-4448012.741310606,545242102.38376
 2024-04-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,282991658.1663502,282991658.1663502,306080709.5537066,,,,,,,0.0,0.0,0.0
@@ -788,7 +788,7 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2024-04-01,Manta,L2,Manta,chain,False,169.0,modern,OP Stack Fork,manta pacific,Manta Pacific,167494307.8052957,167494307.8052957,199934778.79744056,,,,,,,0.0,0.0,0.0
 2024-04-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,280831363.1323966,280831363.1323966,326439904.4159536,,,,,,,0.0,0.0,0.0
 2024-04-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,60846597.38760356,61692250.72625968,70453837.67103735,,,,,,,0.0,0.0,0.0
-2024-04-01,Mode,L2,Mode,chain,True,34443.0,modern,OP Chain,mode,Mode,161423141.01630363,344981977.27590895,243247112.68954292,26.0,30.0,28.433333333333334,23.0,26.0,24.666666666666668,266795188.19633076,-34234788.61381077,10995488615.53391
+2024-04-01,Mode,L2,Mode,chain,True,34443.0,modern,OP Chain,mode,Mode,161423141.01630363,344981977.27590895,243247112.68954292,26.0,30.0,28.433333333333334,23.0,26.0,24.666666666666668,266795188.19633076,-34234788.61381078,10995488615.533909
 2024-04-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,834543862.8438743,846268551.359041,917555682.3438563,217.0,224.0,220.6,198.0,204.0,200.9,54095714.91124258,-200392561.96542257,31439965481.8031
 2024-04-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,851945140.6424549,851945140.6424549,958000445.9921578,,,,,,,0.0,0.0,0.0
 2024-04-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,9496149.681011364,9496149.681011364,10717524.650078261,,,,,,,0.0,0.0,0.0
@@ -806,14 +806,14 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2024-05-01,Aztec,L2,protocols/aztec,protocol,False,,,Other EVMs,,,7363305.43635,9499459.610100001,8372989.64262,,,,,,,0.0,0.0,0.0
 2024-05-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,4938102456.660565,5298963266.532009,5290073132.48794,,,,,,,0.0,0.0,0.0
 2024-05-01,BOB,L2,BOB,chain,False,60808.0,modern,OP Stack Fork,bob,BOB (Build on Bitcoin),2604939.2435111986,45599478.24603006,35308053.01865817,,,,,,,0.0,0.0,0.0
-2024-05-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,1424466263.3615384,1744568402.343036,1609236320.9854069,263.0,281.0,270.4516129032258,242.0,258.0,249.25806451612902,53459630.11386891,94746994.59899108,52564734664.12855
+2024-05-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,1424466263.3615384,1744568402.343036,1609236320.9854069,263.0,281.0,270.4516129032258,242.0,258.0,249.25806451612902,53459630.11386891,94746994.59899107,52564734664.12855
 2024-05-01,Blast,L2,Blast,chain,False,81457.0,modern,OP Stack Fork,blast,Blast,1528872017.1215098,2256615085.541222,1869426790.8311045,,,,,,,0.0,0.0,0.0
 2024-05-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,5220701.280206859,6065592.8386831535,5712211.860565655,,,,,,,0.0,0.0,0.0
 2024-05-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,110653508.48802118,143506789.6622027,133543258.71068212,,,,,,,0.0,0.0,0.0
 2024-05-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2024-05-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,51391547681.26082,65474069694.220375,57868770650.78205,,,,,,,0.0,0.0,0.0
+2024-05-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,51391547681.2608,65474069694.2205,57868770650.78204,,,,,,,0.0,0.0,0.0
 2024-05-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,111095491.68115406,125332789.25752339,136112959.79291633,,,,,,,0.0,0.0,0.0
-2024-05-01,Fraxtal,L2,Fraxtal,chain,True,252.0,modern,OP Chain,fraxtal,Fraxtal,21266765.475830667,26725369.229515523,24072145.81344282,5.0,7.0,6.0,5.0,6.0,5.225806451612903,8863107.639230112,-2623308.2623201115,764189532.27325
+2024-05-01,Fraxtal,L2,Fraxtal,chain,True,252.0,modern,OP Chain,fraxtal,Fraxtal,21266765.475830667,26725369.229515523,24072145.81344282,5.0,7.0,6.0,5.0,6.0,5.225806451612903,8863107.639230112,-2623308.262320112,764189532.27325
 2024-05-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,275560886.1745965,314940131.82228756,299374708.11403626,,,,,,,0.0,0.0,0.0
 2024-05-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,38072285.62307,43744590.70136,41164396.9544929,,,,,,,0.0,0.0,0.0
 2024-05-01,Kroma,L2,Kroma,chain,True,255.0,modern,OP Chain,kroma network,Kroma,677437.7517397646,3308228.6423515743,1038873.8830606043,3.0,5.0,3.096774193548387,3.0,5.0,3.096774193548387,1465238.0618662494,-1337442.47029625,232576346.45266
@@ -823,48 +823,48 @@ date,chain,layer,defillama_slug,source,is_op_chain,mainnet_chain_id,op_based_ver
 2024-05-01,Manta,L2,Manta,chain,False,169.0,modern,OP Stack Fork,manta pacific,Manta Pacific,62406995.840554655,62406995.840554655,132918542.28644004,,,,,,,0.0,0.0,0.0
 2024-05-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,256522865.77764058,453134554.22080374,324367845.2193324,,,,,,,0.0,0.0,0.0
 2024-05-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,60861977.024426475,76246198.2052593,68961427.96273763,,,,,,,0.0,0.0,0.0
-2024-05-01,Mode,L2,Mode,chain,True,34443.0,modern,OP Chain,mode,Mode,349352424.61132663,563508489.073012,517011512.39491874,31.0,43.0,36.54838709677419,27.0,39.0,32.54838709677419,117463921.36487667,81197740.25156334,19720789439.69859
-2024-05-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,766803547.2140677,849351415.8001928,846449728.4613581,224.0,228.0,225.93548387096774,204.0,208.0,206.70967741935485,-85086205.21344127,32610193.510331232,29403070918.49897
+2024-05-01,Mode,L2,Mode,chain,True,34443.0,modern,OP Chain,mode,Mode,349352424.61132663,563508489.073012,517011512.39491874,31.0,43.0,36.54838709677419,27.0,39.0,32.54838709677419,117463921.36487664,81197740.25156333,19720789439.69859
+2024-05-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,766803547.2140677,849351415.8001928,846449728.4613581,224.0,228.0,225.93548387096774,204.0,208.0,206.70967741935485,-85086205.21344127,32610193.510331236,29403070918.49897
 2024-05-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,862498208.0368986,938565667.1682569,918496753.3463455,,,,,,,0.0,0.0,0.0
 2024-05-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,9712654.437667739,12944570.260289397,11095258.502180915,,,,,,,0.0,0.0,0.0
 2024-05-01,Rollux,L2,Rollux,chain,False,570.0,modern,OP Stack Fork,rollux,Rollux,271779.70908426365,3749777.156531586,1566962.3490200578,,,,,,,0.0,0.0,0.0
 2024-05-01,Scroll,L2,Scroll,chain,False,,,Other EVMs,,,78057043.23949912,142610682.96499357,99623301.90679543,,,,,,,0.0,0.0,0.0
 2024-05-01,Starknet,L2,Starknet,chain,False,,,Other EVMs,,,230311220.25102076,291951070.73998976,266632726.02015013,,,,,,,0.0,0.0,0.0
 2024-05-01,ZkSync Era,L2,ZkSync Era,chain,False,,,Other EVMs,,,138122389.45885894,153370617.7400571,148852601.93190873,,,,,,,0.0,0.0,0.0
-2024-05-01,Zora,L2,Zora,chain,True,7777777.0,modern,OP Chain,zora,Zora,1728863.0994132292,2123631.9442033195,2026538.3753504,3.0,4.0,3.967741935483871,3.0,4.0,3.967741935483871,119564.33976559076,-216177.89327559085,62620610.92422
+2024-05-01,Zora,L2,Zora,chain,True,7777777.0,modern,OP Chain,zora,Zora,1728863.0994132292,2123631.9442033195,2026538.3753504,3.0,4.0,3.967741935483871,3.0,4.0,3.967741935483871,119564.33976559078,-216177.89327559085,62620610.92422
 2024-05-01,opBNB,L2,opBNB,chain,False,204.0,modern,OP Stack Fork,opbnb,opBNB,24641045.068781942,25449324.621390317,26257092.82926135,,,,,,,0.0,0.0,0.0
-2024-06-01,Aevo,L2,protocols/aevo,protocol,False,,legacy bedrock,OP Stack Fork,aevo,Aevo,73885506.55908,74469152.57778999,74307746.96521668,,,,,,,0.0,0.0,0.0
-2024-06-01,Apex Protocol,L2,protocols/apex-protocol,protocol,False,,,Other EVMs,,,90331950.04945001,90470915.96277,90505163.23618667,,,,,,,0.0,0.0,0.0
-2024-06-01,Arbitrum,L2,Arbitrum,chain,False,,,Other EVMs,,,3089892750.3749304,3176636231.5527544,3134541006.3239408,,,,,,,0.0,0.0,0.0
-2024-06-01,Arbitrum Nova,L2,Arbitrum Nova,chain,False,,,Other EVMs,,,1988450.1573109294,1988450.1573109294,2000834.8873362113,,,,,,,0.0,0.0,0.0
-2024-06-01,Avalanche,L1,Avalanche,chain,False,,,Other EVMs,,,892352121.585109,893441636.8853264,901438128.8069395,,,,,,,0.0,0.0,0.0
-2024-06-01,Aztec,L2,protocols/aztec,protocol,False,,,Other EVMs,,,9332999.91048,9489040.8818,9459670.036164999,,,,,,,0.0,0.0,0.0
-2024-06-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,5303127902.508423,5799278916.981132,5571450825.139747,,,,,,,0.0,0.0,0.0
-2024-06-01,BOB,L2,BOB,chain,False,60808.0,modern,OP Stack Fork,bob,BOB (Build on Bitcoin),43274382.02312898,69926108.73560247,50101495.07254857,,,,,,,0.0,0.0,0.0
-2024-06-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,1744161973.832174,1749133008.4567294,1753011695.6551137,281.0,282.0,281.6,259.0,259.0,259.0,32663217.62591857,18059536.33541148,9076373504.95733
-2024-06-01,Blast,L2,Blast,chain,False,81457.0,modern,OP Stack Fork,blast,Blast,2248916807.8861113,2267558501.631463,2266577630.257533,,,,,,,0.0,0.0,0.0
-2024-06-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,5775511.977138712,5974113.678463524,5879101.824129069,,,,,,,0.0,0.0,0.0
-2024-06-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,140358019.80663985,140358019.80663985,143212031.80361846,,,,,,,0.0,0.0,0.0
+2024-06-01,Aevo,L2,protocols/aevo,protocol,False,,legacy bedrock,OP Stack Fork,aevo,Aevo,73885506.55908,74366696.38660999,74290670.93335333,,,,,,,0.0,0.0,0.0
+2024-06-01,Apex Protocol,L2,protocols/apex-protocol,protocol,False,,,Other EVMs,,,90331950.04945001,90562589.81774,90513367.03355144,,,,,,,0.0,0.0,0.0
+2024-06-01,Arbitrum,L2,Arbitrum,chain,False,,,Other EVMs,,,3089892750.3749304,3118932162.9112854,3138640576.1998563,,,,,,,0.0,0.0,0.0
+2024-06-01,Arbitrum Nova,L2,Arbitrum Nova,chain,False,,,Other EVMs,,,1932903.2855075141,1932903.2855075141,1990636.4152967774,,,,,,,0.0,0.0,0.0
+2024-06-01,Avalanche,L1,Avalanche,chain,False,,,Other EVMs,,,846882068.6465906,846882068.6465906,889215851.980321,,,,,,,0.0,0.0,0.0
+2024-06-01,Aztec,L2,protocols/aztec,protocol,False,,,Other EVMs,,,9332999.91048,9403490.455059998,9445411.631708333,,,,,,,0.0,0.0,0.0
+2024-06-01,BNB,L1,BSC,chain,False,,,Other EVMs,,,5303127902.508423,5572117277.609654,5588013933.389003,,,,,,,0.0,0.0,0.0
+2024-06-01,BOB,L2,BOB,chain,False,60808.0,modern,OP Stack Fork,bob,BOB (Build on Bitcoin),43274382.02312898,70142808.33954324,55678746.082365535,,,,,,,0.0,0.0,0.0
+2024-06-01,Base,L2,Base,chain,True,8453.0,modern,OP Chain,base,Base,1693749732.6940343,1693749732.6940343,1743881219.0292819,281.0,283.0,281.85714285714283,259.0,260.0,259.14285714285717,41945028.06588818,-11589640.040008178,12786396543.17435
+2024-06-01,Blast,L2,Blast,chain,False,81457.0,modern,OP Stack Fork,blast,Blast,2214098461.7765794,2214098461.7765794,2257051870.2506523,,,,,,,0.0,0.0,0.0
+2024-06-01,Boba,L2,Boba,chain,False,288.0,legacy ovm,OP Stack Fork,boba network,Boba,5775511.977138712,5806608.498651409,5868778.652483798,,,,,,,0.0,0.0,0.0
+2024-06-01,Celo,L1,Celo,chain,False,,,Other EVMs,,,133843875.50855455,133843875.50855455,140999280.4487178,,,,,,,0.0,0.0,0.0
 2024-06-01,Dydx,L2,protocols/dydx,protocol,False,,,Other EVMs,,,0.0,0.0,0.0,,,,,,,0.0,0.0,0.0
-2024-06-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,65193354711.703384,66303186059.5617,65863427980.6371,,,,,,,0.0,0.0,0.0
-2024-06-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,125768489.77507149,127677890.56268963,129780505.64828865,,,,,,,0.0,0.0,0.0
-2024-06-01,Fraxtal,L2,Fraxtal,chain,True,252.0,modern,OP Chain,fraxtal,Fraxtal,27585274.973491974,28027911.04578239,27930799.807905268,7.0,7.0,7.0,6.0,6.0,6.0,1244892.4346543225,-432047.948504322,143147752.16704
-2024-06-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,313675567.43447906,316751189.16104823,315675521.54099655,,,,,,,0.0,0.0,0.0
-2024-06-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,42509042.60046,43035937.685880005,42978921.83473167,,,,,,,0.0,0.0,0.0
-2024-06-01,Kroma,L2,Kroma,chain,True,255.0,modern,OP Chain,kroma network,Kroma,3304182.5082017966,3326986.934929814,3320240.6702037985,5.0,5.0,5.0,5.0,5.0,5.0,92962.16072659545,411002.30708340596,46023789.85008
-2024-06-01,Linea,L2,Linea,chain,False,,,Other EVMs,,,621224208.7910922,661503257.494911,633111234.081069,,,,,,,0.0,0.0,0.0
-2024-06-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,108749307.81026004,111088444.38081999,110280634.89128004,,,,,,,0.0,0.0,0.0
-2024-06-01,Lyra V2,L2,protocols/lyra-v2,protocol,False,957.0,modern,OP Stack Fork,lyra,Lyra,22509039.970769998,25391534.43676,23506984.75272833,,,,,,,0.0,0.0,0.0
-2024-06-01,Manta,L2,Manta,chain,False,169.0,modern,OP Stack Fork,manta pacific,Manta Pacific,60799564.15353535,60799564.15353535,61621951.50148226,,,,,,,0.0,0.0,0.0
-2024-06-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,446944953.2837458,458844281.1718846,453886399.70629597,,,,,,,0.0,0.0,0.0
-2024-06-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,74117110.47147296,74674789.67631978,74727260.89865594,,,,,,,0.0,0.0,0.0
-2024-06-01,Mode,L2,Mode,chain,True,34443.0,modern,OP Chain,mode,Mode,561164362.6284567,571321169.1673832,568294451.983217,43.0,43.0,43.0,39.0,39.0,39.0,-13771550.546791967,16450941.32096199,3494509035.24196
-2024-06-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,825606569.2123119,837273851.4791597,833325808.9025776,225.0,228.0,226.4,207.0,208.0,207.6,6632906.152878523,5053627.755031498,4660473309.69276
-2024-06-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,927687418.0233153,977581246.4961282,949246706.0433309,,,,,,,0.0,0.0,0.0
-2024-06-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,12866013.67404508,12866013.67404508,12927715.42550685,,,,,,,0.0,0.0,0.0
-2024-06-01,Rollux,L2,Rollux,chain,False,570.0,modern,OP Stack Fork,rollux,Rollux,985343.8602512628,1002965.6961599983,2080719.1911991965,,,,,,,0.0,0.0,0.0
-2024-06-01,Scroll,L2,Scroll,chain,False,,,Other EVMs,,,150494195.4182262,157403535.8933083,154837472.3920183,,,,,,,0.0,0.0,0.0
-2024-06-01,Starknet,L2,Starknet,chain,False,,,Other EVMs,,,295149197.77792734,304720231.175062,300292655.9625638,,,,,,,0.0,0.0,0.0
-2024-06-01,ZkSync Era,L2,ZkSync Era,chain,False,,,Other EVMs,,,142740269.6409233,142740269.6409233,143915796.7655557,,,,,,,0.0,0.0,0.0
-2024-06-01,Zora,L2,Zora,chain,True,7777777.0,modern,OP Chain,zora,Zora,1704639.1105040794,1704639.1105040794,1985827.7619163808,3.0,4.0,3.6,3.0,4.0,3.6,-43933.231541636174,-119161.15272836392,6510131.34174
-2024-06-01,opBNB,L2,opBNB,chain,False,204.0,modern,OP Stack Fork,opbnb,opBNB,25671229.100475647,25676796.505929045,25882761.531044893,,,,,,,0.0,0.0,0.0
+2024-06-01,Ethereum,L1,Ethereum,chain,False,,,Other EVMs,,,64482847553.75229,64482847553.75229,65758291031.30536,,,,,,,0.0,0.0,0.0
+2024-06-01,Fantom,L1,Fantom,chain,False,,,Other EVMs,,,117822996.93885475,117822996.93885475,126834523.4683408,,,,,,,0.0,0.0,0.0
+2024-06-01,Fraxtal,L2,Fraxtal,chain,True,252.0,modern,OP Chain,fraxtal,Fraxtal,27585274.973491974,27816293.394195355,27945917.619886823,7.0,7.0,7.0,6.0,6.0,6.0,2024003.6438971623,-1280556.4515471612,202015617.7268
+2024-06-01,Gnosis,L1,Gnosis,chain,False,,,Other EVMs,,,313091547.67996335,313091547.67996335,315961225.35705894,,,,,,,0.0,0.0,0.0
+2024-06-01,ImmutableX,L2,protocols/immutablex,protocol,False,,,Other EVMs,,,42509042.60046,42760765.46301,42933059.79758667,,,,,,,0.0,0.0,0.0
+2024-06-01,Kroma,L2,Kroma,chain,True,255.0,modern,OP Chain,kroma network,Kroma,3239296.0964515237,3239296.0964515237,3303047.7211588,5.0,5.0,5.0,5.0,5.0,5.0,86541.65259344521,72906.47102655476,64441775.7139
+2024-06-01,Linea,L2,Linea,chain,False,,,Other EVMs,,,621224208.7910922,655173156.3608551,634815601.9602091,,,,,,,0.0,0.0,0.0
+2024-06-01,Loopring,L2,protocols/loopring,protocol,False,,,Other EVMs,,,97715146.77016997,97715146.77016997,108182343.9552929,,,,,,,0.0,0.0,0.0
+2024-06-01,Lyra V2,L2,protocols/lyra-v2,protocol,False,957.0,modern,OP Stack Fork,lyra,Lyra,22509039.970769998,25744707.86321,23812450.20113143,,,,,,,0.0,0.0,0.0
+2024-06-01,Manta,L2,Manta,chain,False,169.0,modern,OP Stack Fork,manta pacific,Manta Pacific,58323070.10523156,58323070.10523156,61001480.37269118,,,,,,,0.0,0.0,0.0
+2024-06-01,Mantle,L2,Mantle,chain,False,5000.0,legacy ovm,OP Stack Fork,mantle network,Mantle,446944953.2837458,447930864.7551376,452930246.9198775,,,,,,,0.0,0.0,0.0
+2024-06-01,Metis,L2,Metis,chain,False,1088.0,legacy ovm,OP Stack Fork,metis andromeda,Metis,69925663.63234961,69925663.63234961,73524356.77164057,,,,,,,0.0,0.0,0.0
+2024-06-01,Mode,L2,Mode,chain,True,34443.0,modern,OP Chain,mode,Mode,557589877.0304507,557589877.0304507,566884300.2899582,43.0,44.0,43.142857142857146,39.0,40.0,39.142857142857146,-17191216.02538256,14788577.001962572,4905639568.6253
+2024-06-01,OP Mainnet,L2,Optimism,chain,True,10.0,modern,OP Chain,op,OP Mainnet,798379509.033455,798379509.033455,826691968.5470153,225.0,229.0,227.0,207.0,210.0,208.0,5228417.45106194,3150998.0307680583,6612619929.18128
+2024-06-01,Polygon,L1,Polygon,chain,False,,,Other EVMs,,,927687418.0233153,941544874.3218671,946231081.1493417,,,,,,,0.0,0.0,0.0
+2024-06-01,Polygon zkEVM,L2,Polygon zkEVM,chain,False,,,Other EVMs,,,12456875.281073617,12456875.281073617,12826323.669273516,,,,,,,0.0,0.0,0.0
+2024-06-01,Rollux,L2,Rollux,chain,False,570.0,modern,OP Stack Fork,rollux,Rollux,950622.5099795104,950622.5099795104,1757787.6811073013,,,,,,,0.0,0.0,0.0
+2024-06-01,Scroll,L2,Scroll,chain,False,,,Other EVMs,,,149522302.38891405,149522302.38891405,153640561.57140878,,,,,,,0.0,0.0,0.0
+2024-06-01,Starknet,L2,Starknet,chain,False,,,Other EVMs,,,293108348.19049233,293108348.19049233,299069830.688384,,,,,,,0.0,0.0,0.0
+2024-06-01,ZkSync Era,L2,ZkSync Era,chain,False,,,Other EVMs,,,139363208.79559967,139363208.79559967,142998136.16770428,,,,,,,0.0,0.0,0.0
+2024-06-01,Zora,L2,Zora,chain,True,7777777.0,modern,OP Chain,zora,Zora,1666507.145847784,1666507.145847784,1896663.8802290468,3.0,4.0,3.7142857142857144,3.0,4.0,3.7142857142857144,-226198.95509445848,-183912.9960155416,9835278.64422
+2024-06-01,opBNB,L2,opBNB,chain,False,204.0,modern,OP Stack Fork,opbnb,opBNB,25671229.100475647,25760616.07329189,25914678.126693994,,,,,,,0.0,0.0,0.0

@@ -155,7 +155,7 @@ L3,DCA.Monster,,,Optimistic Rollup,dcamonster,,dcamonster,,Cartesi Rollups,,True
 L3,Degen Chain,,,,degen,,degen,,Arbitrum Orbit,base,False,False,True,'https://syndicate.io/blog/degen-chain','https://docs.syndicate.io/get-started/introduction',,Arbitrum: Orbit,degen
 L3,Deri,,,,deri,,deri,,Arbitrum Orbit,arbitrum,False,False,True,'https://deri.io/','https://docs.deri.io/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,deri
 L3,Molten Network,,,,molten,,molten,https://molten.calderachain.xyz/http,Arbitrum Orbit,arbitrum,False,False,True,'https://moltennetwork.com/','https://docs.unidex.exchange/appchain/markdown',,Arbitrum: Orbit,molten
-L3,MXC zkEVM,,,ZK Rollup,mxc,,mxc,https://rpc.mxc.com,Taiko,arbitrum,False,False,True,'https://mxc.org/','https://doc.mxc.com/','https://github.com/MXCzkEVM',Taiko,mxc
+L3,MXC Moonchain zkEVM,,,ZK Rollup,mxc,,mxc,,Taiko,arbitrum,False,False,True,'https://mxc.org/','https://doc.mxc.com','https://github.com/MXCzkEVM',Taiko,mxc
 L3,ORB3,,,Optimium,orb3,,orb3,https://rpc.orb3.tech,Arbitrum,arbitrum,False,False,True,'https://orb3.tech/','https://docs.orb3.tech/','https://github.com/orb3-protocol',Arbitrum: Orbit,orb3
 L3,Proof of Play Apex,,,,popapex,,popapex,,Arbitrum Orbit,arbitrum,False,False,True,'https://proofofplay.gg',,'https://github.com/proofofplay',Arbitrum: Orbit,popapex
 L3,RARI Chain,,,,rari,,rari,https://mainnet.rpc.rarichain.org/http,Arbitrum Orbit,arbitrum,False,False,True,'https://rarichain.org/','https://rari.docs.caldera.dev/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,rari
