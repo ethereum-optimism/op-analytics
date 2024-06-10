@@ -71,6 +71,7 @@ L2,Metis Andromeda,,,Optimium,metis,,metis,,OVM,,False,False,True,'https://metis
 L2,Mint,185,https://explorer.mintchain.io,,mint,,mint,,OP Stack,,False,False,True,'https://mintchain.io/','https://docs.mintchain.io/','https://github.com/Mint-Blockchain',Optimism: OP Stack,mint
 L2,Mode Network,34443,https://explorer.mode.network,,mode,,mode,https://mainnet.mode.network/,OP Stack,,False,False,True,'https://mode.network/','https://docs.mode.network/',,Optimism: OP Stack,mode
 L2,Morph,,,Optimistic Rollup,morph,,morph,,,,True,False,False,'https://morphl2.io','https://docs.morphl2.io','https://github.com/morph-l2',,morph
+L2,Move,,,Optimium,move,,move,,,,True,False,False,'https://movementlabs.xyz','https://docs.movementlabs.xyz/',,,move
 L2,Myria,,,Validium,myria,,myria,,StarkEx,,False,False,True,'https://myria.com/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',Starkware: Starknet Stack,myria
 L2,MyShell L2,,,Optimium,myshell,,myshell,,OP Stack,,True,False,False,'https://myshell.ai/','https://docs.myshell.ai/',,Optimism: OP Stack,myshell
 L2,=nil;,,,ZK Rollup,nil,,nil,,,,True,False,False,'https://nil.foundation/','https://docs.nil.foundation/nil/',,,nil
