@@ -1,0 +1,3 @@
+index,chain_id,chain_name,display_name,average_len_encoded_transaction,average_estimatedSize,average_blobgas_per_l2_tx,average_daily_l1_blobgas_purchased_inbox,average_daily_transaction_count,start_dt,end_dt
+0,34443.0,mode,Mode,222.31996076508094,127.50049178323047,100.70923655386628,21121316.57142857,209725.7142857143,2024-05-10,2024-06-06
+1,7777777.0,zora,Zora,457.9926047159854,160.0278467146131,125.24709298822268,11506249.142857144,91868.39285714286,2024-05-10,2024-06-06
