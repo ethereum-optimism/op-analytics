@@ -84,7 +84,7 @@ L2,Arbitrum Nova,,,,nova,,nova,https://nova.arbitrum.io/rpc,Arbitrum Orbit,,Fals
 L2,OEV Network,,,Validium,oev,,oev,,Polygon,,True,False,False,'https://api3.org/',"'https://medium.com/api3/oracle-extractable-value-oev-13c1b6d53c5b',",,Polygon: CDK,oev
 L2,Ola,,,ZK Rollup,ola,,ola,,,,True,False,False,'https://olavm.org/','https://ola-2.gitbook.io/ola-developer-documents/','https://github.com/Sin7Y',,ola
 L2,OMG Network,,,Plasma,omgnetwork,,omgnetwork,,,,False,True,False,'https://omg.network','https://docs.omg.network/','https://github.com/omgnetwork/plasma-contracts',,omgnetwork
-L2,OP Mainnet,10,https://optimistic.etherscan.io,,optimism,,optimism,,OP Stack,,False,False,True,'https://optimism.io/','https://community.optimism.io','https://github.com/ethereum-optimism/optimism',Optimism: OP Stack,optimism
+L2,OP Mainnet,10,https://optimistic.etherscan.io,Optimistic Rollup,optimism,,optimism,,OP Stack,,False,False,True,'https://optimism.io/','https://community.optimism.io','https://github.com/ethereum-optimism/optimism',Optimism: OP Stack,optimism
 L2,Orderly Network,,,,orderly,,orderly,https://rpc.orderly.network,OP Stack,,False,False,True,'https://orderly.network/',"'https://orderly.network/docs/build-on-evm/building-on-evm',",,Optimism: OP Stack,orderly
 L2,Palm,,,Validium,palm,,palm,,Polygon,,True,False,False,'https://palm.network/','https://docs.palm.io/',,Polygon: CDK,palm
 L2,Paradex,,,ZK Rollup,paradex,,paradex,,Starknet,,False,False,True,'https://paradex.trade/','https://docs.paradex.trade/','https://github.com/tradeparadex',Starkware: Starknet Stack,paradex

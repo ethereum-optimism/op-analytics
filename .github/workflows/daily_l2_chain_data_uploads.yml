@@ -51,6 +51,7 @@ jobs:
           pipenv run jupyter nbconvert --to python pull_l2_activity.ipynb   
           pipenv run jupyter nbconvert --to python get_filtered_deployers.ipynb   
           pipenv run jupyter nbconvert --to python get_ethereum_chain_list.ipynb
+          pipenv run jupyter nbconvert --to python get_dune_evms_info.ipynb
           
           
                
@@ -63,6 +64,7 @@ jobs:
           pipenv run python pull_l2_activity.py
           pipenv run python get_filtered_deployers.py
           pipenv run python get_ethereum_chain_list.py
+          pipenv run python get_dune_evms_info.py
         
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
