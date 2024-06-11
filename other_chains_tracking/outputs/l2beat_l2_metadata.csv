@@ -59,7 +59,7 @@ L2,Layer2.Finance,,,Optimistic Rollup,layer2finance,,layer2finance,,,,False,True
 L2,L2.Finance-zk,,,Validium,layer2financezk,,layer2financezk,,StarkEx,,False,True,False,'https://layer2.finance/',,"'https://github.com/starkware-libs/starkex-contracts',
         'https://github.com/celer-network/defi-pooling-broker-contracts',",Starkware: Starknet Stack,layer2financezk
 L2,Lens,,,Validium,lens,,lens,,ZK Stack,,True,False,False,'https://lens.xyz','https://docs.lens.xyz','https://github.com/lens-protocol',zkSync: ZK Stack,lens
-L2,LightLink,,,Optimium,lightlink,,lightlink,,,,True,False,False,'https://lightlink.io','https://docs.lightlink.io','https://github.com/lightlink-network',,lightlink
+L2,LightLink,1890,https://phoenix.lightlink.io,Optimium,lightlink,,lightlink,,,,False,False,True,'https://lightlink.io','https://docs.lightlink.io','https://github.com/lightlink-network',,lightlink
 L2,Linea,59144,https://lineascan.build,ZK Rollup,linea,,linea,,,,False,False,True,'https://linea.build/','https://docs.linea.build/',,,linea
 L2,Lisk,,,Optimistic Rollup,lisk,,lisk,,OP Stack,,True,False,False,'https://lisk.com/','https://lisk.com/documentation/','https://github.com/LiskHQ',Optimism: OP Stack,lisk
 L2,Loopring,,,ZK Rollup,loopring,,loopring,,Loopring,,False,False,True,'https://loopring.org',"'https://github.com/Loopring/protocols/blob/master/packages/loopring_v3/DESIGN.md',",'https://github.com/Loopring/protocols',Loopring,loopring
@@ -84,7 +84,7 @@ L2,Arbitrum Nova,,,,nova,,nova,https://nova.arbitrum.io/rpc,Arbitrum Orbit,,Fals
 L2,OEV Network,,,Validium,oev,,oev,,Polygon,,True,False,False,'https://api3.org/',"'https://medium.com/api3/oracle-extractable-value-oev-13c1b6d53c5b',",,Polygon: CDK,oev
 L2,Ola,,,ZK Rollup,ola,,ola,,,,True,False,False,'https://olavm.org/','https://ola-2.gitbook.io/ola-developer-documents/','https://github.com/Sin7Y',,ola
 L2,OMG Network,,,Plasma,omgnetwork,,omgnetwork,,,,False,True,False,'https://omg.network','https://docs.omg.network/','https://github.com/omgnetwork/plasma-contracts',,omgnetwork
-L2,OP Mainnet,10,https://optimistic.etherscan.io,,optimism,,optimism,,OP Stack,,False,False,True,'https://optimism.io/','https://community.optimism.io','https://github.com/ethereum-optimism/optimism',Optimism: OP Stack,optimism
+L2,OP Mainnet,10,https://optimistic.etherscan.io,Optimistic Rollup,optimism,,optimism,,OP Stack,,False,False,True,'https://optimism.io/','https://community.optimism.io','https://github.com/ethereum-optimism/optimism',Optimism: OP Stack,optimism
 L2,Orderly Network,,,,orderly,,orderly,https://rpc.orderly.network,OP Stack,,False,False,True,'https://orderly.network/',"'https://orderly.network/docs/build-on-evm/building-on-evm',",,Optimism: OP Stack,orderly
 L2,Palm,,,Validium,palm,,palm,,Polygon,,True,False,False,'https://palm.network/','https://docs.palm.io/',,Polygon: CDK,palm
 L2,Paradex,,,ZK Rollup,paradex,,paradex,,Starknet,,False,False,True,'https://paradex.trade/','https://docs.paradex.trade/','https://github.com/tradeparadex',Starkware: Starknet Stack,paradex
@@ -128,13 +128,14 @@ L2,Swell,,,Validium,swell,,swell,,Polygon,,True,False,False,'https://swellnetwor
 L2,Space and Time,,,ZK Rollup,sxt,,sxt,,ZK Stack,,True,False,False,'https://spaceandtime.io','https://docs.spaceandtime.io','https://github.com/spaceandtimelabs',zkSync: ZK Stack,sxt
 L2,Taiko,167000,https://taikoscan.io,Optimistic Rollup,taiko,,taiko,,,,False,False,True,'https://taiko.xyz','https://docs.taiko.xyz/','https://github.com/taikoxyz',,taiko
 L2,tanX,,,Validium,brine,,tanx,,StarkEx,,False,False,True,'https://tanx.fi/','https://docs.tanx.fi/',,Starkware: Starknet Stack,brine
+L2,Telos zkEVM,,,ZK Rollup,telos,,telos,,,,True,False,False,'https://zkevm.telos.net/',"'https://docs.telos.net/overview/what-is-telos/introduction/',",'https://github.com/telosnetwork',,telos
 L2,Ten,,,Optimistic Rollup,ten,,ten,,,,True,False,False,'https://ten.xyz',"'https://docs.ten.xyz',
         'https://ten.xyz/litepaper',
         'https://whitepaper.ten.xyz',","'https://github.com/ten-protocol',
         'https://github.com/ten-protocol/go-ten',
         'https://github.com/ten-protocol/tutorial',
         'https://github.com/ten-protocol/sample-applications',",,ten
-L2,Term Structure,,,ZK Rollup,termstructure,,termstructure,,zkSync Lite,,False,False,True,'https://ts.finance/','https://docs.ts.finance/','https://github.com/term-structure/',zkSync: ZK Stack,termstructure
+L2,Term Structure,,,ZK Rollup,termstructure,,termstructure,,ZKsync Lite,,False,False,True,'https://ts.finance/','https://docs.ts.finance/','https://github.com/term-structure/',zkSync: ZK Stack,termstructure
 L2,Tradable,,,ZK Rollup,tradable,,tradable,,ZK Stack,,True,False,False,'https://tradable.xyz/',,,zkSync: ZK Stack,tradable
 L2,World Chain,,,Optimistic Rollup,world,,world,,OP Stack,,True,False,False,'https://worldcoin.org/world-chain','https://docs.worldcoin.org/','https://github.com/worldcoin',Optimism: OP Stack,world
 L2,XCHAIN,,,Validium,xchain,,xchain,,Polygon,,True,False,False,'https://idex.io/',"'https://medium.com/idex/the-all-new-idex-a-quick-recap-b27df4cd981b',",,Polygon: CDK,xchain
@@ -145,11 +146,11 @@ L2,Zircuit,,,ZK Rollup,zircuit,,zircuit,,,,True,False,False,'https://zircuit.com
 L2,zkCandy,,,Validium,zkcandy,,zkcandy,,ZK Stack,,True,False,False,"'https://zkcandy.io', 'https://icandy.io/'",,,zkSync: ZK Stack,zkcandy
 L2,ZKFair,42766,https://scan.zkfair.io/,Validium,zkfair,,zkfair,,Polygon,,False,False,True,'https://zkfair.io/','https://docs.zkfair.io/','https://github.com/ZKFair',Polygon: CDK,zkfair
 L2,zkLighter,,,Validium,zklighter,,zklighter,,ZK Stack,,True,False,False,'https://zk.lighter.xyz','https://zk.lighter.xyz/developers',,zkSync: ZK Stack,zklighter
-L2,ZKSpace,,,ZK Rollup,zkspace,,zkspace,,zkSync Lite,,False,False,True,'https://zks.org/','https://en.wiki.zks.org/','https://github.com/l2labs/zkswap-contracts',zkSync: ZK Stack,zkspace
-L2,ZKSwap 1.0,,,ZK Rollup,zkswap,,zkswap,,zkSync Lite,,False,True,False,'https://zks.org/','https://en.wiki.zks.org/','https://github.com/l2labs/zkswap-contracts',zkSync: ZK Stack,zkswap
-L2,ZKSwap 2.0,,,ZK Rollup,zkswap2,,zkswap2,,zkSync Lite,,False,True,False,'https://zks.org/','https://en.wiki.zks.org/','https://github.com/l2labs/zkswap-contracts',zkSync: ZK Stack,zkswap2
-L2,zkSync Era,324,https://explorer.zksync.io/,ZK Rollup,zksync2,,zksyncera,,ZK Stack,,False,False,True,"'https://zksync.io/', 'https://ecosystem.zksync.io/'",'https://era.zksync.io/docs/','https://github.com/matter-labs/zksync-era',zkSync: ZK Stack,zksync2
-L2,zkSync Lite,,,ZK Rollup,zksync,,zksynclite,,zkSync Lite,,False,False,True,'https://zksync.io/','https://docs.lite.zksync.io/dev/','https://github.com/matter-labs/zksync',zkSync: ZK Stack,zksync
+L2,ZKSpace,,,ZK Rollup,zkspace,,zkspace,,ZKsync Lite,,False,False,True,'https://zks.org/','https://en.wiki.zks.org/','https://github.com/l2labs/zkswap-contracts',zkSync: ZK Stack,zkspace
+L2,ZKSwap 1.0,,,ZK Rollup,zkswap,,zkswap,,ZKsync Lite,,False,True,False,'https://zks.org/','https://en.wiki.zks.org/','https://github.com/l2labs/zkswap-contracts',zkSync: ZK Stack,zkswap
+L2,ZKSwap 2.0,,,ZK Rollup,zkswap2,,zkswap2,,ZKsync Lite,,False,True,False,'https://zks.org/','https://en.wiki.zks.org/','https://github.com/l2labs/zkswap-contracts',zkSync: ZK Stack,zkswap2
+L2,ZKsync Era,324,https://explorer.zksync.io/,ZK Rollup,zksync2,,zksyncera,,ZK Stack,,False,False,True,"'https://zksync.io/', 'https://zksync.dappradar.com/'",'https://docs.zksync.io/','https://github.com/matter-labs/zksync-era',zkSync: ZK Stack,zksync2
+L2,ZKsync Lite,,,ZK Rollup,zksync,,zksynclite,,ZKsync Lite,,False,False,True,'https://zksync.io/','https://docs.lite.zksync.io/dev/','https://github.com/matter-labs/zksync',zkSync: ZK Stack,zksync
 L2,Zora,,,,zora,,zora,https://rpc.zora.co,OP Stack,,False,False,True,"'https://zora.energy/', 'https://zora.co/'",'https://docs.zora.co/docs/zora-network/intro','https://github.com/ourzora/optimism',Optimism: OP Stack,zora
 L3,Bugless,,,Optimistic Rollup,bugless,,bugless,,Cartesi Rollups,optimism,False,False,True,,"'https://github.com/crypto-bug-hunters/bugless/blob/main/README.md',",'https://github.com/crypto-bug-hunters/bugless',Cartesi Rollups,bugless
 L3,DCA.Monster,,,Optimistic Rollup,dcamonster,,dcamonster,,Cartesi Rollups,,True,False,False,'https://dca.monster',"'https://github.com/dcamonster/cartesi-defi-modular-components/blob/master/readme.md',",'https://github.com/dcamonster',Cartesi Rollups,dcamonster
