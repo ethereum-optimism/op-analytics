@@ -1,4 +1,4 @@
-chain,geckoId,symbol,cmcId,categories,chainId,github,twitter,url,parent,governanceID
+defillama_slug,geckoId,symbol,cmcId,categories,chainId,github,twitter,url,parent,governanceID
 Ethereum,ethereum,ETH,1027,['EVM'],1,"['ethereum', 'NethermindEth', 'ConsenSys', 'openethereum', 'hyperledger', 'ledgerwatch', 'sigp', 'chainsafe', 'status-im', 'prysmaticlabs']",ethereum,https://ethereum.foundation/,,
 Arbitrum,arbitrum,ARB,11841,"['EVM', 'Rollup']",42161,['OffchainLabs'],arbitrum,https://arbitrum.io/,"{'chain': 'Ethereum', 'types': ['L2', 'gas']}",['snapshot:arbitrumfoundation.eth']
 Palm,,,,['EVM'],11297108109,,,,,

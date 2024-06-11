@@ -580,6 +580,6 @@ def get_chains_config():
 	chains_df.drop(columns=['chainid'], inplace=True)
 	# Reset index and rename index column
 	chains_df.reset_index(inplace=True)
-	chains_df.rename(columns={'index': 'chain'}, inplace=True)
+	chains_df.rename(columns={'index': 'defillama_slug'}, inplace=True)
 
 	return chains_df
