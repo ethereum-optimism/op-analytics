@@ -18,3 +18,6 @@ op_chains_tracking/lightweight_chain_tracker/lyra_output/*
 *.parquet
 /op_chains_tracking/lightweight_chain_tracker/outputs
 /op_chains_tracking/lightweight_chain_tracker/cryo_outputs/.cryo
+misc_analysis/csv_outputs/base_14.csv
+misc_analysis/csv_outputs/optimism_14.csv
+misc_analysis/clickhouse
