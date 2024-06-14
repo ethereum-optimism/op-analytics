@@ -13,8 +13,8 @@ sources:
     description: >-
       Raw logs for events emitted from contracts. Contains the contract address,
       data, topics, and metadata for blocks and transactions.
-  - referenceName: zora.transaction_receipts
-    version: 1.0.0
+  - referenceName: zora.receipt_transactions
+    version: 1.2.0
     type: dataset
     startAt: earliest
     description: >-
@@ -67,7 +67,7 @@ transforms:
         ,'zora' as chain
         ,'mainnet' as network
       from
-        zora.transaction_receipts
+        zora.receipt_transactions
 sinks:
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
@@ -103,9 +103,9 @@ sinks:
     type: clickHouse
     table: zora_transactions
     batchSize: 100000
-    description: ClickHouse sink from zora.transaction_receipts to zora_transactions
+    description: ClickHouse sink from zora.receipt_transactions to zora_transactions
     flushInterval: '10000'
-    referenceName: clickhouse_zora.transaction_receipts
+    referenceName: clickhouse_zora.receipt_transactions
     appendOnlyMode: true
     schemaOverride:
       gas: UInt128
