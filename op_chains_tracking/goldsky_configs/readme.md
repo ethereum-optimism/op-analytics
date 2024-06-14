@@ -11,6 +11,7 @@ tl;dr: We set up a unique pipeline for each chain / network combination (i.e. fr
 - `chain-db-name`: Name of Goldsky database (i.e. `frax`)
 - `chain-name`: Name we want to use for the chain, ideally 1:1 with the superchain registry (i.e. `fraxtal`)
 - `network-name`: Network type, ideally 1:1 with the superchain registry (i.e. `mainnet`)
+- Check if your config is pointing at the correct version (i.e. 1.2.0) as shown in Goldsky UI, so that we get the schema we expect.
 *We don’t include `chain_id` here, but could in future versions. The reason to not include it now, is to protect against any changes, and if we ingest before the chain is listed in [ethereum-lists](https://github.com/ethereum-lists/chains). We will have a reference table to join `chain_name & network` to `chain_id` and other fields.*
 
 4. Execute the pipeline creation:
