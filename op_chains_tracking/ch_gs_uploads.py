@@ -45,6 +45,7 @@ chain_mappings_list = [
     {'schema_name': 'metal', 'display_name': 'Metal', 'has_blob_fields': False},
     {'schema_name': 'fraxtal', 'display_name': 'Fraxtal', 'has_blob_fields': True},
     {'schema_name': 'bob', 'display_name': 'BOB (Build on Bitcoin)', 'has_blob_fields': False},
+    {'schema_name': 'cyber', 'display_name': 'Cyber', 'has_blob_fields': False},
     # Add more mappings as needed
 ]
 chain_mappings_dict = {item['schema_name']: item['display_name'] for item in chain_mappings_list}
