@@ -14,7 +14,7 @@ def generate_alignment_column(df):
 
         choices = [
         'OP Chain',
-        'OP Stack Fork',
+        'OP Stack fork',
         'Other EVMs'
         ]
 
