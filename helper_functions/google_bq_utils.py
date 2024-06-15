@@ -26,7 +26,20 @@ def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
         client = bigquery.Client(credentials=credentials, project=project_id)
         return client
 
-def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads', write_disposition_in = "WRITE_TRUNCATE", project_id = os.getenv("BQ_PROJECT_ID")):
+def check_table_exists(client, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID")):
+    table_ref = f"{project_id}.{dataset_id}.{table_id}"
+    try:
+        client.get_table(table_ref)
+        return True
+    except Exception as e:
+        if 'Not found' in str(e):
+            return False
+        else:
+            raise e
+        
+def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
+                         , append_or_update='update' #'append' 'update'
+                         , project_id = os.getenv("BQ_PROJECT_ID")):
         schema = []
         # Reset the index of the DataFrame to remove the index column
         df = df.reset_index(drop=True)
@@ -62,9 +75,16 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads', write_d
 
                 schema.append(bigquery.SchemaField(column_name, bq_data_type))
 
+        # Set the write disposition based on the append_or_update parameter
+        if append_or_update == 'append':
+                write_disposition = 'WRITE_APPEND'
+        elif append_or_update == 'update':
+                write_disposition = 'WRITE_TRUNCATE'
+        else:
+                raise ValueError("Invalid value for append_or_update parameter. Must be 'append' or 'update'.")
         # Create a job configuration to overwrite the table
         job_config = bigquery.LoadJobConfig(
-                write_disposition=write_disposition_in,
+                write_disposition=write_disposition,
                 schema=schema
         )
         client = connect_bq_client(project_id)
@@ -78,6 +98,41 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads', write_d
 
         print(f"Data loaded successfully to {dataset_id}.{table_id}")
 
+def upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain_id', 'dt']):
+    staging_table_id = f"{table_id}_staging"
+    
+    write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
+    
+    client = connect_bq_client(project_id)
+    table_ref = f"{project_id}.{dataset_id}.{table_id}"
+    staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
+
+    merge_query = f"""
+    MERGE `{table_ref}` T
+    USING `{staging_table_ref}` S
+    ON {" AND ".join([f"T.{key} = S.{key}" for key in unique_keys])}
+    WHEN MATCHED THEN
+      UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in df.columns if col not in unique_keys])}
+    WHEN NOT MATCHED THEN
+      INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f"S.{col}" for col in df.columns])})
+    """
+    query_job = client.query(merge_query)
+    query_job.result()
+    print(f"Upsert to {dataset_id}.{table_id} completed successfully")
+
+def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'dt']):
+    client = connect_bq_client(project_id)
+    
+    # Check if the table exists
+    if check_table_exists(client, table_id, dataset_id, project_id):
+        # Append data to the main table
+        write_df_to_bq_table(df, table_id, dataset_id, write_mode='append', project_id=project_id)
+        
+        # Perform upsert to clean up duplicates
+        upsert_df_to_bq_table(df, table_id, dataset_id, project_id, unique_keys)
+    else:
+        # If the table doesn't exist, just create it by writing the data
+        write_df_to_bq_table(df, table_id, dataset_id, write_mode='overwrite', project_id=project_id)
 
 # WARNING THE DELETES TABLES
 def delete_bq_table(dataset_id, table_id, project_id=os.getenv("BQ_PROJECT_ID")):
