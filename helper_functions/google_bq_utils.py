@@ -38,7 +38,7 @@ def check_table_exists(client, table_id, dataset_id='api_table_uploads', project
             raise e
         
 def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
-                         , append_or_update='update' #'append' 'update'
+                         ,  write_mode='overwrite'
                          , project_id = os.getenv("BQ_PROJECT_ID")):
         schema = []
         # Reset the index of the DataFrame to remove the index column
@@ -76,12 +76,10 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
                 schema.append(bigquery.SchemaField(column_name, bq_data_type))
 
         # Set the write disposition based on the append_or_update parameter
-        if append_or_update == 'append':
-                write_disposition = 'WRITE_APPEND'
-        elif append_or_update == 'update':
-                write_disposition = 'WRITE_TRUNCATE'
+        if write_mode == 'append':
+                write_disposition = bigquery.WriteDisposition.WRITE_APPEND
         else:
-                raise ValueError("Invalid value for append_or_update parameter. Must be 'append' or 'update'.")
+                write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
         # Create a job configuration to overwrite the table
         job_config = bigquery.LoadJobConfig(
                 write_disposition=write_disposition,
@@ -98,40 +96,69 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
 
         print(f"Data loaded successfully to {dataset_id}.{table_id}")
 
-def upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain_id', 'dt']):
-    staging_table_id = f"{table_id}_staging"
+# def upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain_id', 'dt']):
+#     staging_table_id = f"{table_id}_staging"
     
-    write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
+#     write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
     
-    client = connect_bq_client(project_id)
-    table_ref = f"{project_id}.{dataset_id}.{table_id}"
-    staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
+#     client = connect_bq_client(project_id)
+#     table_ref = f"{project_id}.{dataset_id}.{table_id}"
+#     staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
 
-    merge_query = f"""
-    MERGE `{table_ref}` T
-    USING `{staging_table_ref}` S
-    ON {" AND ".join([f"T.{key} = S.{key}" for key in unique_keys])}
-    WHEN MATCHED THEN
-      UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in df.columns if col not in unique_keys])}
-    WHEN NOT MATCHED THEN
-      INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f"S.{col}" for col in df.columns])})
-    """
-    query_job = client.query(merge_query)
-    query_job.result()
-    print(f"Upsert to {dataset_id}.{table_id} completed successfully")
+#     merge_query = f"""
+#     MERGE `{table_ref}` T
+#     USING `{staging_table_ref}` S
+#     ON {" AND ".join([f"T.{key} = S.{key}" for key in unique_keys])}
+#     WHEN MATCHED THEN
+#       UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in df.columns if col not in unique_keys])}
+#     WHEN NOT MATCHED THEN
+#       INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f"S.{col}" for col in df.columns])})
+#     """
+#     query_job = client.query(merge_query)
+#     query_job.result()
+#     print(f"Upsert to {dataset_id}.{table_id} completed successfully")
+
+#     # Drop the staging table to clean up
+#     client.delete_table(staging_table_ref)
+#     print(f"Staging table {staging_table_ref} deleted.")
+
 
 def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'dt']):
     client = connect_bq_client(project_id)
+    table_ref = f"{project_id}.{dataset_id}.{table_id}"
     
     # Check if the table exists
     if check_table_exists(client, table_id, dataset_id, project_id):
-        # Append data to the main table
-        write_df_to_bq_table(df, table_id, dataset_id, write_mode='append', project_id=project_id)
+        # Create staging table for upsert
+        staging_table_id = f"{table_id}_staging"
+        staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
         
-        # Perform upsert to clean up duplicates
-        upsert_df_to_bq_table(df, table_id, dataset_id, project_id, unique_keys)
+        # Write data to staging table (overwrite mode)
+        write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
+        
+        # Perform upsert from staging table to main table
+        merge_query = f"""
+        MERGE `{table_ref}` T
+        USING `{staging_table_ref}` S
+        ON {" AND ".join([f"T.{key} = S.{key}" for key in unique_keys])}
+        WHEN MATCHED THEN
+          UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in df.columns if col not in unique_keys])}
+        WHEN NOT MATCHED THEN
+          INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f'S.{col}' for col in df.columns])})
+        """
+        
+        # Execute the merge query
+        query_job = client.query(merge_query)
+        query_job.result()
+        
+        print(f"Append and upsert to {dataset_id}.{table_id} completed successfully")
+        
+        # Clean up staging table
+        client.delete_table(staging_table_ref)
+        print(f"Staging table {staging_table_ref} deleted.")
+        
     else:
-        # If the table doesn't exist, just create it by writing the data
+        # If the table doesn't exist, just create it by writing the data (overwrite mode)
         write_df_to_bq_table(df, table_id, dataset_id, write_mode='overwrite', project_id=project_id)
 
 # WARNING THE DELETES TABLES
@@ -183,3 +210,50 @@ def run_query_and_save_csv(query, destination_file, project_id=os.getenv("BQ_PRO
     # Save the DataFrame to a CSV file
     results.to_csv(destination_file, index=False)
     print(f"Query results saved to {destination_file}")
+
+
+def remove_duplicates(table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'date']):
+    client = connect_bq_client(project_id)
+    table_ref = f"{project_id}.{dataset_id}.{table_id}"
+
+    # Create a temporary table to hold the deduplicated data
+    temp_table_id = f"{table_id}_deduped_temp"
+    temp_table_ref = f"{project_id}.{dataset_id}.{temp_table_id}"
+
+    # SQL query to remove duplicates
+    dedup_query = f"""
+    CREATE OR REPLACE TABLE `{temp_table_ref}` AS
+    SELECT
+        {', '.join([f'{col}' for col in client.get_table(table_ref).schema if col.name != 'row_num_dedup'])}
+    FROM (
+        SELECT
+            *,
+            ROW_NUMBER() OVER (PARTITION BY {', '.join(unique_keys)} ORDER BY {unique_keys[0]}) AS row_num_dedup
+        FROM
+            `{table_ref}`
+    )
+    WHERE
+        row_num_dedup = 1
+    """
+
+    # Execute the deduplication query
+    dedup_job = client.query(dedup_query)
+    dedup_job.result()
+    print(f"Temporary deduplicated table {temp_table_ref} created.")
+
+    # Replace the original table with the deduplicated table
+    replace_query = f"""
+    CREATE OR REPLACE TABLE `{table_ref}` AS
+    SELECT
+        *
+    FROM
+        `{temp_table_ref}`
+    """
+
+    replace_job = client.query(replace_query)
+    replace_job.result()
+    print(f"Original table {table_ref} replaced with deduplicated data.")
+
+    # Drop the temporary table
+    client.delete_table(temp_table_ref)
+    print(f"Temporary table {temp_table_ref} deleted.")
