@@ -58,6 +58,7 @@ jobs:
   # Run py files
       - name: Run L2 Uploads
         working-directory: other_chains_tracking
+        continue-on-error: true  # Continue to the next step even if a command fails
         run: |
           pipenv run python get_qualified_txs.py
           pipenv run python chain_tvl_trends.py
@@ -65,7 +66,6 @@ jobs:
           pipenv run python get_filtered_deployers.py
           pipenv run python get_ethereum_chain_list.py
           pipenv run python get_dune_evms_info.py
-        
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           FLIPSIDE_API_KEY: ${{ secrets.FLIPSIDE_API_KEY }}
