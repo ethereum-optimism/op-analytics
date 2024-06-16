@@ -36,6 +36,7 @@ transforms:
         *
         ,'mode' as chain
         ,'mainnet' as network
+        ,34443 as chain_id
       from
         mode.raw_blocks
   - type: sql
@@ -46,6 +47,7 @@ transforms:
         *
         ,'mode' as chain
         ,'mainnet' as network
+        ,34443 as chain_id
       from
         mode.raw_logs
   - type: sql
@@ -56,6 +58,7 @@ transforms:
         *
         ,'mode' as chain
         ,'mainnet' as network
+        ,34443 as chain_id
       from
         mode.raw_traces
   - type: sql
@@ -66,6 +69,7 @@ transforms:
          *
         ,'mode' as chain
         ,'mainnet' as network
+        ,34443 as chain_id
       from
         mode.transaction_receipts
 sinks:

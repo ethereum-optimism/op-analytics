@@ -36,6 +36,7 @@ transforms:
         *
         ,'fraxtal' as chain
         ,'mainnet' as network
+        ,252 as chain_id
       from
         frax.raw_blocks
   - type: sql
@@ -46,6 +47,7 @@ transforms:
         *
         ,'fraxtal' as chain
         ,'mainnet' as network
+        ,252 as chain_id
       from
         frax.raw_logs
   - type: sql
@@ -56,6 +58,7 @@ transforms:
         *
         ,'fraxtal' as chain
         ,'mainnet' as network
+        ,252 as chain_id
       from
         frax.raw_traces
   - type: sql
@@ -66,6 +69,7 @@ transforms:
          *
         ,'fraxtal' as chain
         ,'mainnet' as network
+        ,252 as chain_id
       from
         frax.transaction_receipts
 sinks:
