@@ -27,6 +27,7 @@ sources:
     description: >-
       Traces of all function calls made on the chain including metadata for
       block, trace, transaction, and gas.
+  
 transforms:
   - type: sql
     referenceName: zora_blocks
@@ -36,6 +37,7 @@ transforms:
         *
         ,'zora' as chain
         ,'mainnet' as network
+        ,7777777 as chain_id
       from
         zora.raw_blocks
   - type: sql
@@ -46,6 +48,7 @@ transforms:
         *
         ,'zora' as chain
         ,'mainnet' as network
+        ,7777777 as chain_id
       from
         zora.raw_logs
   - type: sql
@@ -56,6 +59,7 @@ transforms:
         *
         ,'zora' as chain
         ,'mainnet' as network
+        ,7777777 as chain_id
       from
         zora.raw_traces
   - type: sql
@@ -66,6 +70,7 @@ transforms:
          *
         ,'zora' as chain
         ,'mainnet' as network
+        ,7777777 as chain_id
       from
         zora.receipt_transactions
 sinks:

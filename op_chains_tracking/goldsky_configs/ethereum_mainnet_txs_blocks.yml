@@ -22,6 +22,7 @@ transforms:
         *
         ,'ethereum' as chain
         ,'mainnet' as network
+        ,1 as chain_id
       from
         ethereum.raw_blocks
   - type: sql
@@ -32,6 +33,7 @@ transforms:
          *
         ,'ethereum' as chain
         ,'mainnet' as network
+        ,1 as chain_id
       from
         ethereum.raw_transactions
 sinks:
