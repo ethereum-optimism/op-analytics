@@ -38,7 +38,27 @@ jobs:
                   
       - name: Run py
         working-directory: reference_data/market_data
-        run: pipenv run python get_market_data.py
+        run: |
+          max_attempts=3
+          attempt=1
+          success=false
+          
+          while [ $attempt -le $max_attempts ]; do
+            echo "Attempt $attempt of $max_attempts:"
+            if pipenv run python get_market_data.py; then
+              success=true
+              break
+            else
+              echo "Attempt $attempt failed. Retrying..."
+              attempt=$((attempt+1))
+              sleep 5 # Wait for 5 seconds before retrying
+            fi
+          done
+
+          if [ "$success" = false ]; then
+            echo "All attempts failed."
+            exit 1
+          fi
         env:
           L1_ETHERSCAN_API: ${{ secrets.L1_ETHERSCAN_API }}
 
