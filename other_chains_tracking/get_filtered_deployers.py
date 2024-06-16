@@ -32,14 +32,17 @@ query_name = 'daily_evms_filtered_deployers_counts'
 # In[ ]:
 
 
+trailing_days = 28 #Per Chain for Deployers
+
 flipside_configs = [
-        {'blockchain': 'blast', 'name': 'Blast', 'layer': 'L2', 'trailing_days': 365}
+        {'blockchain': 'blast', 'name': 'Blast', 'layer': 'L2'}
 ]
 clickhouse_configs = [
-        {'blockchain': 'metal', 'name': 'Metal', 'layer': 'L2', 'trailing_days': 365},
-        {'blockchain': 'mode', 'name': 'Mode', 'layer': 'L2', 'trailing_days': 365},
-        {'blockchain': 'bob', 'name': 'BOB (Build on Bitcoin)', 'layer': 'L2', 'trailing_days': 365},
-        {'blockchain': 'fraxtal', 'name': 'Fraxtal', 'layer': 'L2', 'trailing_days': 365},
+        {'blockchain': 'metal', 'name': 'Metal', 'layer': 'L2'},
+        {'blockchain': 'mode', 'name': 'Mode', 'layer': 'L2'},
+        {'blockchain': 'bob', 'name': 'BOB (Build on Bitcoin)', 'layer': 'L2'},
+        {'blockchain': 'fraxtal', 'name': 'Fraxtal', 'layer': 'L2'},
+        {'blockchain': 'cyber', 'name': 'Cyber', 'layer': 'L2'},
 ]
 
 
@@ -59,7 +62,7 @@ clickhouse_configs = [
 #         query = query.replace("@blockchain@", chain['blockchain'])
 #         query = query.replace("@name@", chain['name'])
 #         query = query.replace("@layer@", chain['layer'])
-#         query = query.replace("@trailing_days@", str(chain['trailing_days']))
+#         query = query.replace("@trailing_days@", str(trailing_days))
         
 #         df = f.query_to_df(query)
 
@@ -76,14 +79,17 @@ clickhouse_configs = [
 
 # Run Dune
 print('     dune runs')
+days_param = d.generate_query_parameter(input=trailing_days,field_name='trailing_days',dtype='number')
 deploy_dune_df = d.get_dune_data(query_id = 3753590, #https://dune.com/queries/3753590
     name = "daily_evms_filtered_deployers_dune",
     path = "outputs",
-    performance="large"
+    performance="large",
+    # params = [days_param]
 )
 revdev_dune_df = d.get_dune_data(query_id = 3329567, #https://dune.com/queries/3329567
     name = "daily_evms_revdevs_dune",
-    path = "outputs"
+    path = "outputs"#,
+    # parameters = [days_param]
 )
 
 deploy_dune_df['source'] = 'dune'
@@ -100,11 +106,18 @@ revdev_dune_df = revdev_dune_df.rename(columns={'chain':'blockchain'})
 # In[ ]:
 
 
+# deploy_dune_df
+
+
+# In[ ]:
+
+
 dune_meta_df = d.get_dune_data(query_id = 3445473, #https://dune.com/queries/3445473
     name = "dune_evms_info",
     path = "outputs",
     num_hours_to_rerun = 12
 )
+dune_meta_df = dune_meta_df.rename(columns={'dune_schema':'blockchain'})
 cols = ['blockchain','name','layer']
 deploy_dune_df = deploy_dune_df.merge(dune_meta_df[cols], on='blockchain',how='inner')
 revdev_dune_df = revdev_dune_df.merge(dune_meta_df[cols], on='blockchain',how='left')
@@ -128,7 +141,7 @@ revdev_dune_df = revdev_dune_df.merge(dune_meta_df[cols], on='blockchain',how='l
 #         query = query.replace("@blockchain@", chain['blockchain'])
 #         query = query.replace("@name@", chain['name'])
 #         query = query.replace("@layer@", chain['layer'])
-#         query = query.replace("@trailing_days@", str(chain['trailing_days']))
+#         query = query.replace("@trailing_days@", str(trailing_days))
         
 #         df = ch_client.query_df(query)
 
@@ -294,6 +307,8 @@ revdev_enriched_df.to_csv('outputs/daily_revdev_counts.csv', index=False)
 
 
 #BQ Upload
-bqu.write_df_to_bq_table(deployer_enriched_df, 'daily_filter_deployer_counts')
-bqu.write_df_to_bq_table(revdev_enriched_df, 'daily_revdev_counts')
+bqu.append_and_upsert_df_to_bq_table(deployer_enriched_df, 'daily_filter_deployer_counts',unique_keys=['date','blockchain'])
+bqu.append_and_upsert_df_to_bq_table(revdev_enriched_df, 'daily_revdev_counts',unique_keys=['dt','blockchain'])
+# Raw Deployer Address Data
+bqu.append_and_upsert_df_to_bq_table(unified_deployers_df, 'daily_filter_deployer_address_list', unique_keys = ['blockchain','created_dt','creator_address'])
 
