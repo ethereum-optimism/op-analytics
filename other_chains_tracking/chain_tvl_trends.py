@@ -34,6 +34,12 @@ categorized_chains = dfl.get_chains_config()
 # In[ ]:
 
 
+categorized_chains.to_csv('outputs/dfl_categorized_chains.csv', index=False)
+
+
+# In[ ]:
+
+
 # Convert float values in 'parent' column to dictionaries
 categorized_chains['parent'] = categorized_chains['parent'].apply(lambda x: {} if pd.isna(x) else x)
 
@@ -68,18 +74,12 @@ categorized_chains['is_Rollup'] = categorized_chains.apply(is_rollup, axis=1)
 categorized_chains['layer'] = categorized_chains.apply(extract_layer, axis=1)
 
 #Replace opBNB
-categorized_chains['chain'] = categorized_chains['chain'].replace('Op_Bnb', 'opBNB')
+categorized_chains['defillama_slug'] = categorized_chains['defillama_slug'].replace('Op_Bnb', 'opBNB')
 
 considered_chains = categorized_chains[categorized_chains['is_EVM']]
-considered_chains = considered_chains[['chain','layer','is_EVM','is_Rollup']]
+considered_chains = considered_chains[['defillama_slug','layer','is_EVM','is_Rollup','chainId']]
 
 # considered_chains
-
-
-# In[ ]:
-
-
-considered_chains
 
 
 # In[ ]:
@@ -98,7 +98,7 @@ curated_chains = [
     ,['Base', 'L2']
     ,['Arbitrum', 'L2']
     #non-dune L2s - Check L2Beat for comprehensiveness
-    ,['ZkSync Era', 'L2']
+    ,['zkSync Era', 'L2']
     ,['Polygon zkEVM', 'L2']
     ,['Starknet', 'L2']
     ,['Linea', 'L2']
@@ -162,12 +162,12 @@ print(op_superchain_chains)
 
 
 # Create new lists
-chains = curated_chains.copy()
+curated_chains_tmp = curated_chains.copy()
 protocols = curated_protocols.copy()
 # Iterate through the DataFrame and append data to 'chains'
 for index, row in opstack_chains.iterrows():
-    if all(row['defillama_slug'] != item[0] for item in chains):
-        chains.append([row['defillama_slug'], row['chain_layer']])
+    if all(row['defillama_slug'] != item[0] for item in curated_chains_tmp):
+        curated_chains_tmp.append([row['defillama_slug'], row['chain_layer']])
 # Iterate through the DataFrame and append data to 'chains'
 for index, row in opstack_protocols.iterrows():
     if all(row['defillama_slug'] != item[0] for item in protocols):
@@ -177,17 +177,30 @@ for index, row in opstack_protocols.iterrows():
 # In[ ]:
 
 
-chains_df = pd.DataFrame(chains, columns = ['chain','layer'])
-chains_df['is_EVM'] = True
-chains_df['is_Rollup'] = True
+raw_chains_df = pd.DataFrame(curated_chains_tmp, columns = ['defillama_slug','layer'])
+chains_df = raw_chains_df.merge(considered_chains, on = ['defillama_slug','layer'], how = 'left')
+chains_df.fillna({'is_EVM':True}, inplace = True)
+chains_df.fillna({'is_Rollup':True}, inplace = True)
+
+
+# In[ ]:
+
+
+# chains_df
+
+
+# In[ ]:
+
+
 # Get the chains already present in chains_df
-existing_chains = set(chains_df['chain'])
+existing_chains = set(chains_df['defillama_slug'])
 
 # Filter out the chains from considered_chains that are not in chains_df
-to_append = considered_chains[~considered_chains['chain'].isin(existing_chains)]
+to_append = considered_chains[~considered_chains['defillama_slug'].isin(existing_chains)]
 
 # Append the selected rows to chains_df
 chains_df = pd.concat([chains_df, to_append], ignore_index=True)
+
 
 # merged_chains_df.sort_values(by='chain').head(20)
 
@@ -195,7 +208,7 @@ chains_df = pd.concat([chains_df, to_append], ignore_index=True)
 # In[ ]:
 
 
-chain_name_list = chains_df['chain'].unique().tolist()
+chain_name_list = chains_df['defillama_slug'].unique().tolist()
 get_app_list = op_superchain_chains['defillama_slug'].unique().tolist()
 
 
@@ -283,7 +296,7 @@ df_sum = df_sum.rename(columns={'chain_prot': 'chain', 'usd_value': 'tvl'})
 
 
 c_agg = []
-for c in chains:
+for c in curated_chains_tmp:
         try:
                 d = dfl.get_historical_chain_tvl(c[0])
                 d['chain'] = c[0]
@@ -324,7 +337,7 @@ df = df.merge(app_dfl_list, on =['defillama_slug','date'], how='left')
 # In[ ]:
 
 
-df.sample(5)
+# df.sample(5)
 
 
 # In[ ]:
@@ -339,6 +352,24 @@ df['alignment'] = df['alignment'].fillna('Other EVMs')
 df['is_op_chain'] = df['is_op_chain'].fillna(False)
 df['date'] = pd.to_datetime(df['date'])
 df['tvl'].fillna(0, inplace=True)  # Or use an appropriate default value
+
+#DFL Metadata cols
+df = df.merge(chains_df, on = ['defillama_slug'], how = 'left')
+
+# Coalesce layer_x and layer_y into a new column layer
+df['layer'] = df['layer_x'].combine_first(df['layer_y'])
+
+# Drop the original layer_x and layer_y columns
+df.drop(['layer_x', 'layer_y'], axis=1, inplace=True)
+
+
+# In[ ]:
+
+
+# Convert the column to string
+df['is_EVM'] = df['is_EVM'].astype(str)
+df['is_Rollup'] = df['is_Rollup'].astype(str)
+df['chainId'] = df['chainId'].fillna(-1).astype(int)
 
 
 # In[ ]:
@@ -365,7 +396,7 @@ aggregations = {
 # Function to perform aggregation based on frequency
 def aggregate_data(df, freq, date_col='date', groupby_cols=None, aggs=None):
     if groupby_cols is None:
-        groupby_cols = ['chain', 'layer', 'defillama_slug', 'source', 'is_op_chain', 'mainnet_chain_id', 'op_based_version', 'alignment', 'chain_name', 'display_name']
+        groupby_cols = ['chain', 'layer', 'defillama_slug', 'source', 'is_op_chain', 'mainnet_chain_id', 'op_based_version', 'alignment', 'chain_name', 'display_name', 'chainId']
     if aggs is None:
         aggs = aggregations
 

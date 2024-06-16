@@ -4,17 +4,17 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-16,scroll,L2,534352,197446.0,192321.0,164285.0,dune,False,,Other EVMs,,Scroll
 2024-06-16,polygon,L1,137,2621112.0,2509988.0,2622267.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-16,optimism,L2,10,266390.0,257496.0,214424.0,dune,True,modern,OP Chain,op,OP Mainnet
-2024-06-16,mode,L2,34443,151204.0,149835.0,43331.0,goldsky,True,modern,OP Chain,mode,Mode
+2024-06-16,mode,L2,34443,153641.0,152251.0,43951.0,goldsky,True,modern,OP Chain,mode,Mode
 2024-06-16,metal,L2,1750,1.0,1.0,1.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-16,gnosis,L1,100,42418.0,41082.0,32793.0,dune,False,,Other EVMs,,Gnosis
-2024-06-16,fraxtal,L2,252,4485.0,4406.0,8343.0,goldsky,True,modern,OP Chain,fraxtal,Fraxtal
+2024-06-16,fraxtal,L2,252,4542.0,4463.0,8479.0,goldsky,True,modern,OP Chain,fraxtal,Fraxtal
 2024-06-16,fantom,L1,250,162048.0,139818.0,62431.0,dune,False,,Other EVMs,,Fantom
 2024-06-16,ethereum,L1,1,748738.0,734333.0,478362.0,dune,False,,Other EVMs,,Ethereum
-2024-06-16,cyber,L2,7560,156651.0,156579.0,138735.0,goldsky,True,modern,OP Chain,cyber,Cyber
+2024-06-16,cyber,L2,7560,158550.0,158478.0,140401.0,goldsky,True,modern,OP Chain,cyber,Cyber
 2024-06-16,celo,L1,42220,346760.0,336746.0,307477.0,dune,False,,Other EVMs,,Celo
-2024-06-16,bob,L2,60808,27774.0,27213.0,19108.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
+2024-06-16,bob,L2,60808,28045.0,27478.0,19302.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-16,bnb,L1,56,2002063.0,1865140.0,1776658.0,dune,False,,Other EVMs,,BNB
-2024-06-16,blast,L2,238,698905.0,671497.0,558464.0,flipside,False,,Other EVMs,,Blast
+2024-06-16,blast,L2,238,720268.0,690778.0,573947.0,flipside,False,,Other EVMs,,Blast
 2024-06-16,base,L2,8453,1910502.0,1832116.0,1271792.0,dune,True,modern,OP Chain,base,Base
 2024-06-16,avalanche_c,L1,43114,74023.0,71458.0,55074.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-16,arbitrum,L2,42161,1286704.0,1238039.0,950809.0,dune,False,,Other EVMs,,Arbitrum One
