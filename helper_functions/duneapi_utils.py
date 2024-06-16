@@ -180,7 +180,7 @@ def create_dune_table(data_for_schema, namespace, table_name, table_description,
     )
     
     # print("Response status code:", table.status_code)
-    print("Response content:", table)
+    # print("Response content:", table)
 
 
 def insert_dune_api_from_csv(data, table_name, namespace):
