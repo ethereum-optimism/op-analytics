@@ -1,7 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
+
+
+# ! pip install --upgrade dune-client
+# ! pip show dune-client
+
+
+# In[ ]:
 
 
 # Get L2 Revenue and post it to a database (csv in github for now)
@@ -11,8 +18,9 @@ import sys
 import time
 import json
 sys.path.append("../helper_functions")
-import web3py_utils as w3py
+# import web3py_utils as w3py
 import duneapi_utils as du
+import google_bq_utils as bqu
 from web3 import Web3
 from datetime import datetime
 sys.path.pop()
@@ -37,7 +45,11 @@ chains_rpcs = pd.read_csv('outputs/chain_metadata.csv', na_filter=False)
 # print(chains_rpcs.columns)
 chains_rpcs = chains_rpcs[~(chains_rpcs['rpc_url'] == '') & ~(chains_rpcs['op_based_version'].str.contains('legacy'))]
 # chains_rpcs = chains_rpcs.values.tolist()
-print(chains_rpcs)
+# print(chains_rpcs.sample(5))
+
+# # Temp
+# chains_rpcs = chains_rpcs.head(1)
+# chains_rpcs
 
 
 # In[ ]:
@@ -53,11 +65,28 @@ print(f"Method ID: {method_id}")
 # In[ ]:
 
 
+df_columns = [
+    'block_time', 'block_number', 'chain_name', 'vault_name', 
+    'vault_address', 'alltime_revenue_native', 'chain_id'
+    # 'gas_token', 'da_layer', 'is_superchain_registry' # Uncomment these if needed
+]
+
+
+# In[ ]:
+
+
 data_arr = []
 
 for index, chain in chains_rpcs.iterrows():
     chain_name = chain['chain_name']
-    print(chain_name)
+    chain_id = chain['mainnet_chain_id']
+
+    # if chain_id:  # Check if chain_id is not empty
+    #     chain_id = int(float(chain_id))  # Convert to float first, then to int
+    # else:
+    #     chain_id = None  # or keep it as an empty string or any default value you prefer
+        
+    print(chain_name + ' - ' + str(chain_id))
     rpc = chain['rpc_url']
     # gas_token = chain['gas_token']
     # da_layer = chain['da_layer']
@@ -92,8 +121,8 @@ for index, chain in chains_rpcs.iterrows():
                 )
             
             tmp = pd.DataFrame(
-                    [[block_time, block_number, chain_name, vault_name, vault_address, alltime_revenue_native]]#, gas_token, da_layer, is_superchain_registry]]
-                    ,columns =['block_time','block_number','chain_name','vault_name','vault_address','alltime_revenue_native']#,'gas_token','da_layer','is_superchain_registry']
+                    [[block_time, block_number, chain_name, vault_name, vault_address, alltime_revenue_native, chain_id]]#, gas_token, da_layer, is_superchain_registry]]
+                    ,columns =df_columns
                     )
             data_arr.append(tmp)
             time.sleep(1)
@@ -108,13 +137,20 @@ data_df = pd.concat(data_arr)
 
 file_path = 'outputs/all_time_revenue_data.csv'
 
+data_df.sample(3)
+
 
 # In[ ]:
 
 
 # Check if the file exists
 if os.path.exists(file_path):
-    # If file exists, append without writing the header
+    # Read the existing CSV file
+    existing_df = pd.read_csv(file_path)
+    # Ensure the existing file has the same columns
+    existing_df = existing_df.reindex(columns=df_columns)
+    data_df = data_df.reindex(columns=df_columns)
+    # Append without writing the header
     data_df.to_csv(file_path, mode='a', header=False, index=False)
 else:
     # If file doesn't exist, create it and write the header
@@ -124,14 +160,62 @@ else:
 # In[ ]:
 
 
-# Write to Dune Table
+# # Overwrite to Dune Table
+# dune_df = pd.read_csv(file_path)
+# print(dune_df.sample(5))
+# du.write_dune_api_from_pandas(dune_df, 'op_stack_chains_cumulative_revenue_snapshots',\
+#                              'Snapshots of All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs - metadata in op_stack_chains_chain_rpc_metdata')
 
-dune_df = pd.read_csv(file_path)
 
-print(dune_df.sample(5))
+# In[ ]:
 
-du.write_dune_api_from_pandas(dune_df, 'op_stack_chains_cumulative_revenue_snapshots',\
-                             'Snapshots of All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs - metadata in op_stack_chains_chain_rpc_metdata')
+
+#Insert Updates to Dune Table
+create_namespace = 'oplabspbc'
+create_table_name = 'op_stack_chains_cumulative_revenue_snapshots'
+create_table_description = 'Snapshots of All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs - metadata in op_stack_chains_chain_rpc_metdata'
+# try:
+# du.create_dune_table(data_df, namespace = create_namespace
+#                         , table_name = create_table_name
+#                         , table_description = create_table_description)
+
+# except:
+        # print('error creating')
+du.insert_dune_api_from_pandas(data_df, namespace = create_namespace,table_name = create_table_name)
+
 du.write_dune_api_from_pandas(chains_rpcs, 'op_stack_chains_chain_rpc_metdata',\
                              'Chain metadata - used to join with op_stack_chains_cumulative_revenue_snapshots')
+
+
+# In[ ]:
+
+
+bq_cols = ['block_time','block_number','chain_name','vault_name','vault_address','alltime_revenue_native','chain_id']
+
+
+# In[ ]:
+
+
+# dune_df.sample(5)
+
+
+# In[ ]:
+
+
+data_df['chain_id'] = data_df['chain_id'].astype(float)
+# data_df.dtypes
+
+
+# In[ ]:
+
+
+dataset_name = 'rpc_table_uploads'
+table_name = 'hourly_cumulative_l2_revenue_snapshots'
+
+# Write All to BQ Table
+# bqu.write_df_to_bq_table(df = dune_df[bq_cols], table_id = table_name, dataset_id = dataset_name)
+
+# Write Updates to BQ Table
+unique_cols = ['block_time', 'chain_name', 'chain_id', 'vault_name']
+bqu.write_df_to_bq_table(df = data_df[bq_cols], table_id = table_name, dataset_id = dataset_name, write_mode='append')
 
