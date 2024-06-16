@@ -78,8 +78,10 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
         # Set the write disposition based on the append_or_update parameter
         if write_mode == 'append':
                 write_disposition = bigquery.WriteDisposition.WRITE_APPEND
-        else:
+        elif write_mode == 'overwrite':
                 write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+        else:
+              print('Error: Must be append or overwrite')
         # Create a job configuration to overwrite the table
         job_config = bigquery.LoadJobConfig(
                 write_disposition=write_disposition,
