@@ -57,6 +57,8 @@ combined_l2b_df = l2beat_df.merge(l2beat_meta[
         ], on='chain',how='outer')
 # combined_l2b_df.tail(5)
 
+combined_l2b_df['chainId'] = combined_l2b_df['chainId'].astype('Int64')
+
 
 # In[ ]:
 
@@ -131,7 +133,7 @@ aggregations = {
 # Function to perform aggregation based on frequency
 def aggregate_data(df, freq, date_col='timestamp', groupby_cols=None, aggs=None):
     if groupby_cols is None:
-        groupby_cols = ['chain', 'layer', 'is_op_chain', 'mainnet_chain_id', 'op_based_version', 'alignment', 'chain_name', 'display_name', 'provider', 'is_upcoming','is_archived','is_current_chain']
+        groupby_cols = ['chain', 'chainId', 'layer', 'is_op_chain', 'mainnet_chain_id', 'op_based_version', 'alignment', 'chain_name', 'display_name', 'provider', 'is_upcoming','is_archived','is_current_chain']
     if aggs is None:
         aggs = aggregations
 
