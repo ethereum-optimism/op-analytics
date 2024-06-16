@@ -83,7 +83,7 @@ dune_df["chain_type"] = dune_df["chain_type"].astype('string')
 
 
 #BQ Upload
-bqu.write_df_to_bq_table(dune_df, table_name)
+bqu.append_and_upsert_df_to_bq_table(dune_df, table_name, unique_keys = ['dt','name'])
 
 
 # In[ ]:

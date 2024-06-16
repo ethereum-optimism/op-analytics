@@ -22,7 +22,7 @@ sys.path.append("../helper_functions")
 import duneapi_utils as du
 import google_bq_utils as bqu
 from web3 import Web3
-from datetime import datetime
+from datetime import datetime, timezone
 sys.path.pop()
 
 import os
@@ -98,7 +98,8 @@ for index, chain in chains_rpcs.iterrows():
         block_timestamp = w3_conn.eth.get_block('latest').timestamp
         block_number = w3_conn.eth.get_block('latest').number
         # Convert the UNIX timestamp to a human-readable format
-        block_time = datetime.utcfromtimestamp(block_timestamp).strftime('%Y-%m-%d %H:%M:%S')
+        block_datetime = datetime.fromtimestamp(block_timestamp, tz=timezone.utc)
+        block_time = block_datetime.strftime('%Y-%m-%d %H:%M:%S')
 
         for vault in fee_vaults:
             vault_name = vault[0]
@@ -130,6 +131,7 @@ for index, chain in chains_rpcs.iterrows():
         continue
 
 data_df = pd.concat(data_arr)
+data_df['block_time'] = pd.to_datetime(data_df['block_time'])
 
 
 # In[ ]:
@@ -161,7 +163,7 @@ else:
 
 
 # # Overwrite to Dune Table
-# dune_df = pd.read_csv(file_path)
+dune_df = pd.read_csv(file_path)
 # print(dune_df.sample(5))
 # du.write_dune_api_from_pandas(dune_df, 'op_stack_chains_cumulative_revenue_snapshots',\
 #                              'Snapshots of All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs - metadata in op_stack_chains_chain_rpc_metdata')
@@ -203,7 +205,9 @@ bq_cols = ['block_time','block_number','chain_name','vault_name','vault_address'
 
 
 data_df['chain_id'] = data_df['chain_id'].astype(float)
-# data_df.dtypes
+data_df['block_time'] = pd.to_datetime(data_df['block_time'])
+# dune_df['block_time'] = pd.to_datetime(dune_df['block_time'])
+data_df.dtypes
 
 
 # In[ ]:
