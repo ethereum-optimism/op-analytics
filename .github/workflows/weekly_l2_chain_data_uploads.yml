@@ -63,6 +63,7 @@ jobs:
           OP_CLICKHOUSE_PORT: ${{ secrets.OP_CLICKHOUSE_PORT }}
           IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
           BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
+          BQ_PROJECT_ID: ${{ secrets.BQ_PROJECT_ID }}
         
     # commit_results:
       # if: ${{ always() }} #Always runs even if prior jobs fail - so that one bad job doesn't f everything up.

@@ -56,6 +56,7 @@ jobs:
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
+          BQ_PROJECT_ID: ${{ secrets.BQ_PROJECT_ID }}
 
 
     # commit_results:
