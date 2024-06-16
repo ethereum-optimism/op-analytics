@@ -9,7 +9,6 @@ import sys
 sys.path.append("../../helper_functions")
 import opstack_metadata_utils as ops
 import duneapi_utils as d
-import csv_utils as cu
 sys.path.pop()
 
 import dotenv
@@ -60,12 +59,4 @@ df.to_csv('../outputs/chain_metadata.csv', index=False)
 # Post to Dune API
 d.write_dune_api_from_pandas(df, table_name + '_info_tracking',\
                              'Basic Info & Metadata about OP Stack Chains, including forks')
-
-
-# In[ ]:
-
-
-# table_name
-#Set up in BQ Upload
-cu.df_to_warehouse_uploads_csv(df, table_name)
 
