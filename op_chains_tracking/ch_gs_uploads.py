@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[10]:
 
 
 print('start ch uploads')
@@ -25,7 +25,7 @@ sys.path.pop()
 import time
 
 
-# In[ ]:
+# In[11]:
 
 
 client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
@@ -34,29 +34,30 @@ client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 table_name = 'daily_aggegate_l2_chain_usage_goldsky'
 
 
-# In[ ]:
+# In[12]:
 
 
 chain_mappings_list = [
     # {'schema_name': 'zora', 'display_name': 'Zora', 'has_blob_fields': False},
     # {'schema_name': 'pgn', 'display_name': 'Public Goods Network', 'has_blob_fields': False},
     # {'schema_name': 'base', 'display_name': 'Base', 'has_blob_fields': False},
+    # {'schema_name': 'op', 'display_name': 'OP Mainnet', 'has_blob_fields': True},
     {'schema_name': 'mode', 'display_name': 'Mode', 'has_blob_fields': False},
     {'schema_name': 'metal', 'display_name': 'Metal', 'has_blob_fields': False},
     {'schema_name': 'fraxtal', 'display_name': 'Fraxtal', 'has_blob_fields': True},
     {'schema_name': 'bob', 'display_name': 'BOB (Build on Bitcoin)', 'has_blob_fields': False},
-    {'schema_name': 'cyber', 'display_name': 'Cyber', 'has_blob_fields': False},
+    {'schema_name': 'cyber', 'display_name': 'Cyber', 'has_blob_fields': True},
     # Add more mappings as needed
 ]
 chain_mappings_dict = {item['schema_name']: item['display_name'] for item in chain_mappings_list}
 
 block_time_sec = 2
 
-trailing_days = 9999
+trailing_days = 180
 max_execution_secs = 3000
 
 
-# In[ ]:
+# In[13]:
 
 
 sql_directory = "inputs/sql/"
@@ -67,13 +68,13 @@ query_names = [
 ]
 
 
-# In[ ]:
+# In[14]:
 
 
 unified_dfs = []
 
 
-# In[ ]:
+# In[15]:
 
 
 for qn in query_names:
@@ -84,9 +85,13 @@ for qn in query_names:
                 # If we can do it programmatically from UI saved queries
                 # query = client.get_job(query_name)
                 # Read the SQL query from file
-                with open(os.path.join(sql_directory, f"{qn}.sql"), "r") as file:
+                if has_blob_fields:
+                        qn_map=qn+ '_updated'
+                else:
+                        qn_map =qn
+                with open(os.path.join(sql_directory, f"{qn_map}.sql"), "r") as file:
                         query = file.read()
-                print(qn + ' - ' + chain_schema)
+                print(qn_map + ' - ' + chain_schema)
                 dune_table_name = qn
 
                 #Pass in Params to the query
@@ -95,7 +100,7 @@ for qn in query_names:
                 query = query.replace("@block_time_sec@", str(block_time_sec))
                 query = query.replace("@max_execution_secs@", str(max_execution_secs))
 
-                if ~has_blob_fields:
+                if not has_blob_fields:
                         query = query.replace("receipt_l1_blob_base_fee_scalar", 'cast(NULL as Nullable(Float64))')
                         query = query.replace("receipt_l1_blob_base_fee", 'cast(NULL as Nullable(Float64))')
                         query = query.replace("receipt_l1_base_fee_scalar", 'toInt64(NULL)')
@@ -120,7 +125,7 @@ for qn in query_names:
 # In[ ]:
 
 
-# write_df.dtypes
+write_df.dtypes
 
 
 # In[ ]:
@@ -128,5 +133,5 @@ for qn in query_names:
 
 #BQ Upload
 time.sleep(1)
-bqu.write_df_to_bq_table(write_df, table_name)
+bqu.append_and_upsert_df_to_bq_table(write_df, table_name, unique_keys = ['dt','chain','network'])
 
