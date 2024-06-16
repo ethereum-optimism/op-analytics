@@ -27,7 +27,6 @@ hexbytes = "*"
 google-cloud = "*"
 google-cloud-bigquery = "*"
 google-auth = "*"
-numpy="*"
 
 
 [dev-packages]
