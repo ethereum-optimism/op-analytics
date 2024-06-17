@@ -24,7 +24,8 @@ import time
 
 table_name = 'daily_opchain_aggregate_stats_dune'
 
-trailing_days = 365
+trailing_days = 180
+min_txs_per_day = 0
 
 
 # In[ ]:
@@ -33,12 +34,13 @@ trailing_days = 365
 # Run Dune
 print('     dune runs')
 par_pd = du.generate_query_parameter(input= trailing_days, field_name= 'Trailing Num Days', dtype= 'number')
+txs_pd = du.generate_query_parameter(input= min_txs_per_day, field_name= 'Min Transactions per Day', dtype= 'number')
 
 dune_df = du.get_dune_data(query_id = 2453515, #https://dune.com/queries/2453515
     name = "dune_" + table_name,
     path = "outputs",
     # performance="large",
-    params = [par_pd],
+    params = [par_pd,txs_pd],
     num_hours_to_rerun = 0, #always rerun because of param
 )
 dune_df['source'] = 'dune'
@@ -63,11 +65,35 @@ dune_df = dune_df.replace(['inf', 'NaN'], 0)
 
 
 dune_df['dt_by_day'] = pd.to_datetime(dune_df['dt_by_day'])
-dune_df["avg_l1_calldata_gas_price_on_l1_inbox"] = dune_df["avg_l1_calldata_gas_price_on_l1_inbox"].astype('float64')
-dune_df["avg_l1_calldata_gas_price_on_l1_inbox_by_day"] = dune_df["avg_l1_calldata_gas_price_on_l1_inbox_by_day"].astype('float64')
-dune_df["source"] = dune_df["source"].astype('string')
-dune_df["chain_layer"] = dune_df["chain_layer"].astype('string')
-dune_df["chain_type"] = dune_df["chain_type"].astype('string')
+
+# List of words to check in column names
+keywords = ['_ratio', 'pct_', 'per_tx', 'per_100k_txs', 'avg_']
+# Cast columns to float if their name contains any of the keywords
+for col in dune_df.columns:
+    if any(keyword in col for keyword in keywords):
+        try:
+            dune_df[col] = dune_df[col].astype('float64')
+        except:
+            print('error: ' + col)
+            continue
+
+columns_to_string = [
+    'source','chain_layer','chain_type'
+]
+# Cast each column in the list to int64
+for col in columns_to_string:
+    dune_df[col] = dune_df[col].astype('string')
+
+# List of columns to cast to int64
+columns_to_int64 = [
+    'active_secs_per_day',
+    'l1_gas_used_on_l2','l1_gas_used_user_txs_l2_per_day',
+    'l2_gas_used','l2_gas_used_user_txs_per_day','l2_gas_used_by_day',
+    'total_available_l2_gas_target'
+]
+# Cast each column in the list to int64
+for col in columns_to_int64:
+    dune_df[col] = dune_df[col].astype('int64')
 
 # # dune_df.dtypes
 # with pd.option_context('display.max_rows', None, 'display.max_columns', None):
