@@ -195,7 +195,7 @@ Rangers,rangers-protocol-gas,RPG,12221,['EVM'],,,,,,['snapshot:rangersprotocolda
 Lung,,,,['EVM'],78887,,,,,
 Loop,loopnetwork,LOOP,18761,['EVM'],,,,,,
 Bone,,BONE,,['EVM'],,,,,,
-zkSync Era,,,,"['EVM', 'Rollup']",324,['matter-labs'],zksync,https://zksync.io/,"{'chain': 'Ethereum', 'types': ['L2', 'gas']}",
+zkSync Era,zksync,ZK,24091,"['EVM', 'Rollup']",324,['matter-labs'],zksync,https://zksync.io/,"{'chain': 'Ethereum', 'types': ['L2', 'gas']}",
 Polygon zkEVM,,,,"['EVM', 'Rollup']",1101,['maticnetwork'],0xPolygon,https://polygon.technology/,"{'chain': 'Ethereum', 'types': ['L2', 'gas']}",
 Meta,metadium,META,3418,['EVM'],,['METADIUM'],,,,
 Equilibrium,equilibrium-token,EQ,6780,['Parachain'],,['equilibrium-eosdt'],EquilibriumDeFi,https://eq.finance/,"{'chain': 'Polkadot', 'types': ['parachain']}",
@@ -318,6 +318,8 @@ Lukso,lukso-token-2,LYX,27622,['EVM'],42,['lukso-network'],lukso_io,https://www.
 Joltify,joltify,JOLT,19855,"['EVM', 'Cosmos']",,['joltify-finance'],joltify_finance,https://joltify.io/,,
 IOTA EVM,,,,"['EVM', 'Rollup']",8822,,iota,https://blog.iota.org/iotas-evm-mainnet-launch/,"{'chain': 'Ethereum', 'types': ['L2']}",
 Ham,,,,"['EVM', 'Arbitrum Orbit']",5112,,HamOnWarpcast,https://ham.fun,"{'chain': 'Arbitrum', 'types': ['L3']}",
+Sanko,dream-machine-token,DMT,25653,"['EVM', 'Arbitrum Orbit']",1996,,SankoGameCorp,https://sanko.xyz/,"{'chain': 'Arbitrum', 'types': ['L3']}",
+Rari,,,,"['EVM', 'Arbitrum Orbit']",1380012617,,RariChain,https://rarichain.org/,"{'chain': 'Arbitrum', 'types': ['L3']}",
 xDai,gnosis,GNO,1659,['EVM'],100,['gnosis'],gnosischain,https://www.gnosis.io/,,['snapshot:xdaistake.eth']
 Binance,binancecoin,BNB,1839,['EVM'],56,['bnb-chain'],BNBCHAIN,https://www.bnbchain.org/en,,
 Kucoin,kucoin-shares,KCS,2087,['EVM'],321,['kcc-community'],KCCOfficialTW,https://www.kcc.io/,,['snapshot:kcc.eth']

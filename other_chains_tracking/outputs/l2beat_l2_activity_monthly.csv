@@ -4,7 +4,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2019-11-01,gluon,,L2,False,,,Other EVMs,,,,False,True,False,1847.88,2206.17,2375.4925,0.0,,1847.88,2206.17,2375.4925,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2019-11-01,layer2,,,False,,,Other EVMs,,,,False,False,False,1847.88,2206.17,2375.4925,0.0,,1847.88,2206.17,2375.4925,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2019-11-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,1.0
-2019-11-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,1.0
+2019-11-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,1.0
 2019-11-01,polygonzkevm,1101,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,1.0
 2019-11-01,xdai,,,False,,,Other EVMs,,,,False,False,False,0.0,0.0,0.0,0.0,,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2019-12-01,astarzkevm,,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,2.0
@@ -13,7 +13,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2019-12-01,layer2,,,False,,,Other EVMs,,,,False,False,False,1253.86,26149.31,6984.033548387097,0.0,,1253.86,26149.31,6984.033548387097,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2019-12-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,0.0,23504.86,5774.650384615385,0.0,,0.0,23504.86,5774.650384615385,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2019-12-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,2.0
-2019-12-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,2.0
+2019-12-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,2.0
 2019-12-01,polygonzkevm,1101,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,2.0
 2019-12-01,xdai,,,False,,,Other EVMs,,,,False,False,False,0.0,36478.8,7005.785161290323,0.0,,0.0,36478.8,7005.785161290323,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2020-01-01,astarzkevm,,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,3.0
@@ -22,7 +22,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-01-01,layer2,,,False,,,Other EVMs,,,,False,False,False,26579.54,298921.98,237248.1858064516,0.0,,26579.54,298921.98,237248.1858064516,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2020-01-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,9854.75,12832.38,15104.772258064517,0.0,,9854.75,12832.38,15104.772258064517,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2020-01-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,3.0
-2020-01-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,3.0
+2020-01-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,3.0
 2020-01-01,polygonzkevm,1101,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,3.0
 2020-01-01,xdai,,,False,,,Other EVMs,,,,False,False,False,36056.37,37925.87,37201.47612903226,0.0,,36056.37,37925.87,37201.47612903226,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2020-02-01,astarzkevm,,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,4.0
@@ -31,7 +31,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-02-01,layer2,,,False,,,Other EVMs,,,,False,False,False,296040.44,328364.91,328248.13482758624,0.0,,296040.44,328364.91,328248.13482758624,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2020-02-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,12650.46,21185.87,17292.79275862069,0.0,,12650.46,21185.87,17292.79275862069,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2020-02-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,4.0
-2020-02-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,4.0
+2020-02-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,4.0
 2020-02-01,polygonzkevm,1101,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,4.0
 2020-02-01,xdai,,,False,,,Other EVMs,,,,False,False,False,37158.56,39411.53,38493.06206896552,0.0,,37158.56,39411.53,38493.06206896552,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2020-03-01,astarzkevm,,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,5.0
@@ -40,7 +40,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-03-01,layer2,,,False,,,Other EVMs,,,,False,False,False,81807.48,592457.28,330857.1138709677,0.0,,81807.48,592457.28,330857.1138709677,0.0,0.0,0.0,0.0,0.0,0.0,5.0
 2020-03-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,26519.77,564530.32,165286.71935483871,0.0,,26519.77,564530.32,165286.71935483871,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2020-03-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,5.0
-2020-03-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,5.0
+2020-03-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,5.0
 2020-03-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,0.0,801.23,431.73999999999995,0.0,,0.0,801.23,431.73999999999995,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2020-03-01,polygonzkevm,1101,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,5.0
 2020-03-01,xdai,,,False,,,Other EVMs,,,,False,False,False,39251.31,40728.57,40683.83741935484,0.0,,39251.31,40728.57,40683.83741935484,0.0,0.0,0.0,0.0,0.0,0.0,5.0
@@ -50,7 +50,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-04-01,layer2,,,False,,,Other EVMs,,,,False,False,False,335841.05,425524.16,591510.9636666666,0.0,,335841.05,425524.16,591510.9636666666,0.0,0.0,0.0,0.0,0.0,0.0,6.0
 2020-04-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,299549.21,386827.42,558760.026,0.0,,299549.21,386827.42,558760.026,0.0,0.0,0.0,0.0,0.0,0.0,5.0
 2020-04-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,6.0
-2020-04-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,6.0
+2020-04-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,6.0
 2020-04-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,805.04,1283.69,981.4696666666666,0.0,,805.04,1283.69,981.4696666666666,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2020-04-01,polygonzkevm,1101,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,6.0
 2020-04-01,xdai,,,False,,,Other EVMs,,,,False,False,False,53.99,101.3,132.14033333333333,0.0,,53.99,101.3,132.14033333333333,0.0,0.0,0.0,0.0,0.0,0.0,6.0
@@ -61,7 +61,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-05-01,layer2,,,False,,,Other EVMs,,,,False,False,False,262781.26,388285.43,359496.315483871,0.0,,262781.26,388285.43,359496.315483871,0.0,0.0,0.0,0.0,0.0,0.0,7.0
 2020-05-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,224265.45,245156.02,289272.4590322581,0.0,,224265.45,245156.02,289272.4590322581,0.0,0.0,0.0,0.0,0.0,0.0,6.0
 2020-05-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,7.0
-2020-05-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,7.0
+2020-05-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,7.0
 2020-05-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,1115.55,1894.86,1446.5522580645163,0.0,,1115.55,1894.86,1446.5522580645163,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2020-05-01,polygon-plasma,,,False,,,Other EVMs,,,,False,False,False,0.19,0.19,0.19,0.0,,0.19,0.19,0.19,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2020-05-01,polygonzkevm,1101,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,7.0
@@ -73,7 +73,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-06-01,layer2,,,False,,,Other EVMs,,,,False,False,False,393347.82,1500885.61,1814972.0450000002,0.0,,393347.82,1500885.61,1814972.0450000002,0.0,0.0,0.0,0.0,0.0,0.0,8.0
 2020-06-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,201011.34,207237.05,231870.58833333335,0.0,,201011.34,207237.05,231870.58833333335,0.0,0.0,0.0,0.0,0.0,0.0,7.0
 2020-06-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,8.0
-2020-06-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,8.0
+2020-06-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,8.0
 2020-06-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,1816.63,8097.78,6079.397333333333,0.0,,1816.63,8097.78,6079.397333333333,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2020-06-01,polygon-plasma,,,False,,,Other EVMs,,,,False,False,False,0.15,12.11,3.5343333333333335,0.0,,0.15,12.11,3.5343333333333335,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2020-06-01,polygonzkevm,1101,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,8.0
@@ -86,7 +86,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-07-01,layer2,,,False,,,Other EVMs,,,,False,False,False,2524778.9,2588252.03,3000380.021935484,0.0,,2524778.9,2588252.03,3000380.021935484,0.0,0.0,0.0,0.0,0.0,0.0,9.0
 2020-07-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,205229.53,225833.37,237178.675483871,0.0,,205229.53,225833.37,237178.675483871,0.0,0.0,0.0,0.0,0.0,0.0,8.0
 2020-07-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,9.0
-2020-07-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,9.0
+2020-07-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,9.0
 2020-07-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,22768.49,29911.72,25522.525806451613,0.0,,22768.49,29911.72,25522.525806451613,0.0,0.0,0.0,0.0,0.0,0.0,5.0
 2020-07-01,polygon-plasma,,,False,,,Other EVMs,,,,False,False,False,13.68,1913.48,383.7658064516129,0.0,,13.68,1913.48,383.7658064516129,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2020-07-01,polygonzkevm,1101,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,0.0,0.0,,,,,,,,,,9.0
@@ -99,7 +99,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-08-01,layer2,,,False,,,Other EVMs,,,,False,False,False,2280465.93,6933458.4,3467424.7487096777,0.0,,2280465.93,6933458.4,3467424.7487096777,0.0,0.0,0.0,0.0,0.0,0.0,10.0
 2020-08-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,219592.75,335210.79,272749.50064516126,0.0,,219592.75,335210.79,272749.50064516126,0.0,0.0,0.0,0.0,0.0,0.0,9.0
 2020-08-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,10.0
-2020-08-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,10.0
+2020-08-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,10.0
 2020-08-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,15424.54,3074376.47,427158.9929032258,0.0,,15424.54,3074376.47,427158.9929032258,0.0,0.0,0.0,0.0,0.0,0.0,6.0
 2020-08-01,omni,,,False,,,Other EVMs,,,,False,False,False,0.0,216243.5,12728.362592592592,0.0,,0.0,216243.5,12728.362592592592,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2020-08-01,polygon-plasma,,,False,,,Other EVMs,,,,False,False,False,2376.07,45618.85,30081.85451612903,0.0,,2376.07,45618.85,30081.85451612903,0.0,0.0,0.0,0.0,0.0,0.0,4.0
@@ -114,7 +114,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-09-01,layer2,,,False,,,Other EVMs,,,,False,False,False,6427253.77,7875938.2,6956585.212666666,0.0,,6427253.77,7875938.2,6956585.212666666,0.0,0.0,0.0,0.0,0.0,0.0,11.0
 2020-09-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,274608.61,286154.23,306298.055,0.0,,274608.61,286154.23,306298.055,0.0,0.0,0.0,0.0,0.0,0.0,10.0
 2020-09-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,11.0
-2020-09-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,11.0
+2020-09-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,11.0
 2020-09-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3036554.5,3051582.96,3053570.2516666665,0.0,,3036554.5,3051582.96,3053570.2516666665,0.0,0.0,0.0,0.0,0.0,0.0,7.0
 2020-09-01,omni,,,False,,,Other EVMs,,,,False,False,False,19577.38,52517.0,50517.17166666666,0.0,,19577.38,52517.0,50517.17166666666,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2020-09-01,polygon-plasma,,,False,,,Other EVMs,,,,False,False,False,23492.78,44878.35,32473.408333333333,0.0,,23492.78,44878.35,32473.408333333333,0.0,0.0,0.0,0.0,0.0,0.0,5.0
@@ -132,7 +132,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-10-01,layer2,,,False,,,Other EVMs,,,,False,False,False,7031891.9,7512786.33,7378175.080645162,0.0,,7031891.9,7512786.33,7378175.080645162,0.0,0.0,0.0,0.0,0.0,0.0,12.0
 2020-10-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,140946.5,140946.5,215860.9241935484,0.0,,140946.5,140946.5,215860.9241935484,0.0,0.0,0.0,0.0,0.0,0.0,11.0
 2020-10-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,12.0
-2020-10-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,12.0
+2020-10-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,12.0
 2020-10-01,multichain,,,False,,,Other EVMs,,,,False,False,False,23.88,184.87,112.48666666666668,0.0,,23.88,184.87,112.48666666666668,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2020-10-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3026995.69,3026995.69,3041436.2154838713,0.0,,3026995.69,3026995.69,3041436.2154838713,0.0,0.0,0.0,0.0,0.0,0.0,8.0
 2020-10-01,omni,,,False,,,Other EVMs,,,,False,False,False,48775.9,763414.87,445201.6080645161,0.0,,48775.9,763414.87,445201.6080645161,0.0,0.0,0.0,0.0,0.0,0.0,3.0
@@ -152,7 +152,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-11-01,layer2,,,False,,,Other EVMs,,,,False,False,False,7460197.67,27624871.81,9571152.364666667,0.0,,7460197.67,27624871.81,9571152.364666667,0.0,0.0,0.0,0.0,0.0,0.0,13.0
 2020-11-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,108098.54,18676638.9,1575435.8630000001,4720.0,944.0,108098.54,18676638.9,1575435.8630000001,0.0,0.0,0.0,0.0,0.0,0.0,12.0
 2020-11-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,13.0
-2020-11-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,13.0
+2020-11-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,13.0
 2020-11-01,multichain,,,False,,,Other EVMs,,,,False,False,False,289.49,23976.43,16823.881,0.0,,289.49,23976.43,16823.881,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2020-11-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3016002.32,3049290.71,3033640.7286666664,0.0,,3016002.32,3049290.71,3033640.7286666664,0.0,0.0,0.0,0.0,0.0,0.0,9.0
 2020-11-01,omni,,,False,,,Other EVMs,,,,False,False,False,783270.24,1900542.35,1513565.1623333332,0.0,,783270.24,1900542.35,1513565.1623333332,0.0,0.0,0.0,0.0,0.0,0.0,4.0
@@ -172,7 +172,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2020-12-01,layer2,,,False,,,Other EVMs,,,,False,False,False,28865956.88,48880755.01,41214978.574838705,0.0,,28865956.88,48880755.01,41214978.574838705,0.0,0.0,0.0,0.0,0.0,0.0,14.0
 2020-12-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,20017457.71,36981092.07,30423641.200322583,66274.0,2137.8709677419356,20017457.71,36981092.07,30423641.200322583,0.0,0.0,0.0,0.0,0.0,0.0,13.0
 2020-12-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,14.0
-2020-12-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,14.0
+2020-12-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,14.0
 2020-12-01,multichain,,,False,,,Other EVMs,,,,False,False,False,24108.85,220495.95,326411.5629032258,0.0,,24108.85,220495.95,326411.5629032258,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2020-12-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3022671.83,3039726.12,3031918.38483871,0.0,,3022671.83,3039726.12,3031918.38483871,0.0,0.0,0.0,0.0,0.0,0.0,10.0
 2020-12-01,omni,,,False,,,Other EVMs,,,,False,False,False,1037102.45,1585551.9,1358874.729032258,0.0,,1037102.45,1585551.9,1358874.729032258,0.0,0.0,0.0,0.0,0.0,0.0,5.0
@@ -192,7 +192,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-01-01,layer2,,,False,,,Other EVMs,,,,False,False,False,48894421.6,280972625.52,143497721.5967742,0.0,,48894421.6,280972625.52,143497721.5967742,0.0,0.0,0.0,0.0,0.0,0.0,15.0
 2021-01-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,35700311.92,152601967.87,93246690.13,316113.0,10197.193548387097,35700311.92,152601967.87,93246690.13,0.0,0.0,0.0,0.0,0.0,0.0,14.0
 2021-01-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,15.0
-2021-01-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,15.0
+2021-01-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,15.0
 2021-01-01,multichain,,,False,,,Other EVMs,,,,False,False,False,173930.99,205671.18,211212.4606451613,0.0,,173930.99,205671.18,211212.4606451613,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2021-01-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,2957741.69,3028815.54,3040437.75516129,0.0,,2957741.69,3028815.54,3040437.75516129,0.0,0.0,0.0,0.0,0.0,0.0,11.0
 2021-01-01,omni,,,False,,,Other EVMs,,,,False,False,False,1549776.36,5086602.22,3335811.448387097,0.0,,1549776.36,5086602.22,3335811.448387097,0.0,0.0,0.0,0.0,0.0,0.0,6.0
@@ -217,7 +217,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-02-01,layer2,,,False,,,Other EVMs,,,,False,False,False,276013199.16,458418223.12,439081299.25214285,0.0,,276013199.16,458418223.12,439081299.25214285,0.0,0.0,0.0,0.0,0.0,0.0,16.0
 2021-02-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,149774728.54,188660553.75,211737890.26571432,502911.0,17961.10714285714,149774728.54,188660553.75,211737890.26571432,0.0,0.0,0.0,0.0,0.0,0.0,15.0
 2021-02-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,16.0
-2021-02-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,16.0
+2021-02-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,16.0
 2021-02-01,multichain,,,False,,,Other EVMs,,,,False,False,False,202442.41,1197823.78,346536.93071428576,0.0,,202442.41,1197823.78,346536.93071428576,0.0,0.0,0.0,0.0,0.0,0.0,5.0
 2021-02-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3022863.56,3030586.68,3057632.6825,0.0,,3022863.56,3030586.68,3057632.6825,0.0,0.0,0.0,0.0,0.0,0.0,12.0
 2021-02-01,omni,,,False,,,Other EVMs,,,,False,False,False,5047100.88,9396405.11,6974198.846785715,0.0,,5047100.88,9396405.11,6974198.846785715,0.0,0.0,0.0,0.0,0.0,0.0,7.0
@@ -247,7 +247,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-03-01,layer2,,,False,,,Other EVMs,,,,False,False,False,412001995.31,666330055.96,776609551.8193549,0.0,,412001995.31,666330055.96,776609551.8193549,0.0,0.0,0.0,0.0,0.0,0.0,17.0
 2021-03-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,152289753.44,175827222.76,184970760.80419356,268460.0,8660.0,152289753.44,175827222.76,184970760.80419356,0.0,0.0,0.0,0.0,0.0,0.0,16.0
 2021-03-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,17.0
-2021-03-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,17.0
+2021-03-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,17.0
 2021-03-01,multichain,,,False,,,Other EVMs,,,,False,False,False,1192353.09,30391865.33,5925303.61483871,0.0,,1192353.09,30391865.33,5925303.61483871,0.0,0.0,0.0,0.0,0.0,0.0,6.0
 2021-03-01,near,,,False,,,Other EVMs,,,,False,False,False,0.5,8933.77,5206.235625,0.0,,0.5,8933.77,5206.235625,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2021-03-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3048077.21,3075256.06,3068705.773870968,0.0,,3048077.21,3075256.06,3068705.773870968,0.0,0.0,0.0,0.0,0.0,0.0,13.0
@@ -279,7 +279,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-04-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,700.35,60251.98,64731.86888888889,0.0,,700.35,60251.98,64731.86888888889,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2021-04-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,179527698.05,223446633.94,200694031.065,309465.0,10315.5,179527698.05,223446633.94,200694031.065,0.0,0.0,0.0,0.0,0.0,0.0,17.0
 2021-04-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,18.0
-2021-04-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,18.0
+2021-04-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,18.0
 2021-04-01,multichain,,,False,,,Other EVMs,,,,False,False,False,23491249.53,110948946.6,65751037.677,0.0,,23491249.53,110948946.6,65751037.677,0.0,0.0,0.0,0.0,0.0,0.0,7.0
 2021-04-01,near,,,False,,,Other EVMs,,,,False,False,False,9425.36,675472.97,438419.25566666666,0.0,,9425.36,675472.97,438419.25566666666,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2021-04-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3055505.12,3083797.77,3079523.658333333,0.0,,3055505.12,3083797.77,3079523.658333333,0.0,0.0,0.0,0.0,0.0,0.0,14.0
@@ -312,7 +312,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-05-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,2544.86,202251.59,141216.0483870968,0.0,,2544.86,202251.59,141216.0483870968,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2021-05-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,147427895.29,154210011.06,224955708.70935482,358119.0,11552.225806451614,147427895.29,154210011.06,224955708.70935482,0.0,0.0,0.0,0.0,0.0,0.0,18.0
 2021-05-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,19.0
-2021-05-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,19.0
+2021-05-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,19.0
 2021-05-01,multichain,,,False,,,Other EVMs,,,,False,False,False,106001890.07,106001890.07,206127312.78225806,0.0,,106001890.07,106001890.07,206127312.78225806,0.0,0.0,0.0,0.0,0.0,0.0,8.0
 2021-05-01,near,,,False,,,Other EVMs,,,,False,False,False,679005.74,721408.74,758692.8977419354,0.0,,679005.74,721408.74,758692.8977419354,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2021-05-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3047851.91,3079220.26,3097960.757741935,0.0,,3047851.91,3079220.26,3097960.757741935,0.0,0.0,0.0,0.0,0.0,0.0,15.0
@@ -347,7 +347,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-06-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,202270.79,252970.15,221970.981,0.0,,202270.79,252970.15,221970.981,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2021-06-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,118189031.36,149625055.99,150083639.56033334,159409.0,5313.633333333333,118189031.36,149625055.99,150083639.56033334,0.0,0.0,0.0,0.0,0.0,0.0,19.0
 2021-06-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,20.0
-2021-06-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,20.0
+2021-06-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,20.0
 2021-06-01,multichain,,,False,,,Other EVMs,,,,False,False,False,81385796.31,105720374.04,97307332.70666666,0.0,,81385796.31,105720374.04,97307332.70666666,0.0,0.0,0.0,0.0,0.0,0.0,9.0
 2021-06-01,near,,,False,,,Other EVMs,,,,False,False,False,749656.35,759278.87,836372.1316666666,0.0,,749656.35,759278.87,836372.1316666666,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2021-06-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3042317.5,3059748.69,3069118.5646666666,0.0,,3042317.5,3059748.69,3069118.5646666666,0.0,0.0,0.0,0.0,0.0,0.0,16.0
@@ -383,7 +383,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-07-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,251736.34,255669.64,262515.9480645161,0.0,,251736.34,255669.64,262515.9480645161,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2021-07-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,96454586.73,130573878.13,121464284.03451614,144945.0,4675.645161290323,96454586.73,130573878.13,121464284.03451614,0.0,0.0,0.0,0.0,0.0,0.0,20.0
 2021-07-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,21.0
-2021-07-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,21.0
+2021-07-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,21.0
 2021-07-01,multichain,,,False,,,Other EVMs,,,,False,False,False,8600074.99,95737151.25,102413170.54483871,0.0,,8600074.99,95737151.25,102413170.54483871,0.0,0.0,0.0,0.0,0.0,0.0,10.0
 2021-07-01,near,,,False,,,Other EVMs,,,,False,False,False,782432.44,2086435.51,1022528.6083870968,0.0,,782432.44,2086435.51,1022528.6083870968,0.0,0.0,0.0,0.0,0.0,0.0,5.0
 2021-07-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3045291.01,3077054.56,3061288.5622580647,0.0,,3045291.01,3077054.56,3061288.5622580647,0.0,0.0,0.0,0.0,0.0,0.0,17.0
@@ -423,7 +423,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-08-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,252947.79,253533.96,254312.45741935482,0.0,,252947.79,253533.96,254312.45741935482,0.0,0.0,0.0,0.0,0.0,0.0,5.0
 2021-08-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,125828763.67,164172826.39,143156186.61161292,282547.0,9114.41935483871,125828763.67,164172826.39,143156186.61161292,0.0,0.0,0.0,0.0,0.0,0.0,21.0
 2021-08-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,22.0
-2021-08-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,22.0
+2021-08-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,22.0
 2021-08-01,multichain,,,False,,,Other EVMs,,,,False,False,False,95494486.69,260343120.35,142115376.9048387,0.0,,95494486.69,260343120.35,142115376.9048387,0.0,0.0,0.0,0.0,0.0,0.0,11.0
 2021-08-01,near,,,False,,,Other EVMs,,,,False,False,False,2010206.58,2506272.23,2109544.318064516,0.0,,2010206.58,2506272.23,2109544.318064516,0.0,0.0,0.0,0.0,0.0,0.0,6.0
 2021-08-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3045793.45,3078164.4,3077599.026451613,0.0,,3045793.45,3078164.4,3077599.026451613,0.0,0.0,0.0,0.0,0.0,0.0,18.0
@@ -464,7 +464,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-09-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,253303.35,259721.53,258131.77933333334,0.0,,253303.35,259721.53,258131.77933333334,0.0,0.0,0.0,0.0,0.0,0.0,6.0
 2021-09-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,111701949.51,112658961.42,137091839.49866667,176025.0,5867.5,111701949.51,112658961.42,137091839.49866667,0.0,0.0,0.0,0.0,0.0,0.0,22.0
 2021-09-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,23.0
-2021-09-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,23.0
+2021-09-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,23.0
 2021-09-01,multichain,,,False,,,Other EVMs,,,,False,False,False,287015594.14,784826332.21,608049223.075,0.0,,287015594.14,784826332.21,608049223.075,0.0,0.0,0.0,0.0,0.0,0.0,12.0
 2021-09-01,near,,,False,,,Other EVMs,,,,False,False,False,2258968.69,11578939.3,11147288.408666667,0.0,,2258968.69,11578939.3,11147288.408666667,0.0,0.0,0.0,0.0,0.0,0.0,7.0
 2021-09-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3066822.82,3098714.65,3094793.7893333337,0.0,,3066822.82,3098714.65,3094793.7893333337,0.0,0.0,0.0,0.0,0.0,0.0,19.0
@@ -508,7 +508,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-10-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,259180.23,270434.93,268229.88096774195,0.0,,259180.23,270434.93,268229.88096774195,0.0,0.0,0.0,0.0,0.0,0.0,7.0
 2021-10-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,116162407.37,154097829.48,131615155.59451613,129704.0,4184.0,116162407.37,154097829.48,131615155.59451613,0.0,0.0,0.0,0.0,0.0,0.0,23.0
 2021-10-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,24.0
-2021-10-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,24.0
+2021-10-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,,,,0.0,0.0,,,,,,,,,,24.0
 2021-10-01,multichain,,,False,,,Other EVMs,,,,False,False,False,747398596.17,3364775744.54,3098756370.924516,0.0,,747398596.17,3364775744.54,3098756370.924516,0.0,0.0,0.0,0.0,0.0,0.0,13.0
 2021-10-01,near,,,False,,,Other EVMs,,,,False,False,False,11524627.15,21313079.38,14599173.353870967,0.0,,11524627.15,21313079.38,14599173.353870967,0.0,0.0,0.0,0.0,0.0,0.0,8.0
 2021-10-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3099714.1,3128562.54,3120742.646129032,0.0,,3099714.1,3128562.54,3120742.646129032,0.0,0.0,0.0,0.0,0.0,0.0,20.0
@@ -557,7 +557,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-11-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,279235.18,320865.64,486255.25566666666,0.0,,279235.18,320865.64,486255.25566666666,0.0,0.0,0.0,0.0,0.0,0.0,8.0
 2021-11-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,165331909.58,700949635.22,502039374.6,427042.0,14234.733333333334,165331909.58,700949635.22,502039374.6,0.0,0.0,0.0,0.0,0.0,0.0,24.0
 2021-11-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,25.0
-2021-11-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,0.0,71089192.62,24216551.702857144,18376.0,612.5333333333333,0.0,71089192.62,24216551.702857144,0.0,0.0,0.0,0.0,0.0,0.0,25.0
+2021-11-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,0.0,71089192.62,24216551.702857144,18376.0,612.5333333333333,0.0,71089192.62,24216551.702857144,0.0,0.0,0.0,0.0,0.0,0.0,25.0
 2021-11-01,multichain,,,False,,,Other EVMs,,,,False,False,False,2939257556.03,3056139133.78,3097267445.9086666,0.0,,2939257556.03,3056139133.78,3097267445.9086666,0.0,0.0,0.0,0.0,0.0,0.0,14.0
 2021-11-01,near,,,False,,,Other EVMs,,,,False,False,False,20680805.4,9935095620.63,4906764945.206667,0.0,,20680805.4,9935095620.63,4906764945.206667,0.0,0.0,0.0,0.0,0.0,0.0,9.0
 2021-11-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3100209.02,3108205.63,3127849.7136666668,0.0,,3100209.02,3108205.63,3127849.7136666668,0.0,0.0,0.0,0.0,0.0,0.0,21.0
@@ -610,7 +610,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2021-12-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,320353.65,324799.68,322983.9787096774,0.0,,320353.65,324799.68,322983.9787096774,0.0,0.0,0.0,0.0,0.0,0.0,9.0
 2021-12-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,531210654.61,541235038.29,589513899.0412903,479213.0,15458.483870967742,531210654.61,541235038.29,589513899.0412903,0.0,0.0,0.0,0.0,0.0,0.0,25.0
 2021-12-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,26.0
-2021-12-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,47703027.78,300170296.61,82964375.2016129,124747.0,4024.0967741935483,47703027.78,300170296.61,82964375.2016129,0.0,0.0,0.0,0.0,0.0,0.0,26.0
+2021-12-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,47703027.78,300170296.61,82964375.2016129,124747.0,4024.0967741935483,47703027.78,300170296.61,82964375.2016129,0.0,0.0,0.0,0.0,0.0,0.0,26.0
 2021-12-01,multichain,,,False,,,Other EVMs,,,,False,False,False,3046066274.35,3239647079.93,3177560764.2680645,0.0,,3046066274.35,3239647079.93,3177560764.2680645,0.0,0.0,0.0,0.0,0.0,0.0,15.0
 2021-12-01,near,,,False,,,Other EVMs,,,,False,False,False,8792198320.47,20314919919.22,12707690224.768711,0.0,,8792198320.47,20314919919.22,12707690224.768711,0.0,0.0,0.0,0.0,0.0,0.0,10.0
 2021-12-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,3080231.39,3091312.52,3096790.188387097,0.0,,3080231.39,3091312.52,3096790.188387097,0.0,0.0,0.0,0.0,0.0,0.0,22.0
@@ -664,7 +664,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-01-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,323781.18,395032.69,374209.1274193548,0.0,,323781.18,395032.69,374209.1274193548,0.0,0.0,0.0,0.0,0.0,0.0,10.0
 2022-01-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,274956435.68,342899519.07,419690961.45419353,306559.0,9889.0,274956435.68,342899519.07,419690961.45419353,0.0,0.0,0.0,0.0,0.0,0.0,26.0
 2022-01-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,27.0
-2022-01-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,243457246.27,400033127.41,384730486.25258064,576997.0,18612.8064516129,243457246.27,400033127.41,384730486.25258064,0.0,0.0,0.0,0.0,0.0,0.0,27.0
+2022-01-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,243457246.27,400033127.41,384730486.25258064,576997.0,18612.8064516129,243457246.27,400033127.41,384730486.25258064,0.0,0.0,0.0,0.0,0.0,0.0,27.0
 2022-01-01,multichain,,,False,,,Other EVMs,,,,False,False,False,3219468205.51,6193093885.37,4811874451.735162,0.0,,3219468205.51,6193093885.37,4811874451.735162,0.0,0.0,0.0,0.0,0.0,0.0,16.0
 2022-01-01,near,,,False,,,Other EVMs,,,,False,False,False,11850902673.17,13547095571.89,21968573487.00839,0.0,,11850902673.17,13547095571.89,21968573487.00839,0.0,0.0,0.0,0.0,0.0,0.0,11.0
 2022-01-01,nomad,,,False,,,Other EVMs,,,,False,False,False,1100833.41,41448689.62,43798715.945,0.0,,1100833.41,41448689.62,43798715.945,0.0,0.0,0.0,0.0,0.0,0.0,1.0
@@ -720,7 +720,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-02-01,layer2financezk,,L2,False,,,Other EVMs,,,StarkEx,False,True,False,0.0,0.0,0.0,0.0,,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2022-02-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,280973757.1,280973757.1,327648134.3489286,205647.0,7344.535714285715,280973757.1,280973757.1,327648134.3489286,0.0,0.0,0.0,0.0,0.0,0.0,27.0
 2022-02-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,28.0
-2022-02-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,353297543.21,353385752.67,461227484.0096429,341239.0,12187.107142857143,353297543.21,353385752.67,461227484.0096429,0.0,0.0,0.0,0.0,0.0,0.0,28.0
+2022-02-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,353297543.21,353385752.67,461227484.0096429,341239.0,12187.107142857143,353297543.21,353385752.67,461227484.0096429,0.0,0.0,0.0,0.0,0.0,0.0,28.0
 2022-02-01,multichain,,,False,,,Other EVMs,,,,False,False,False,5195524963.08,6584823391.16,5786670907.8550005,0.0,,5195524963.08,6584823391.16,5786670907.8550005,0.0,0.0,0.0,0.0,0.0,0.0,17.0
 2022-02-01,near,,,False,,,Other EVMs,,,,False,False,False,8419904484.45,8419904484.45,11671408499.806072,0.0,,8419904484.45,8419904484.45,11671408499.806072,0.0,0.0,0.0,0.0,0.0,0.0,12.0
 2022-02-01,nomad,,,False,,,Other EVMs,,,,False,False,False,41121050.01,44922023.83,43142423.41428571,0.0,,41121050.01,44922023.83,43142423.41428571,0.0,0.0,0.0,0.0,0.0,0.0,2.0
@@ -779,7 +779,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-03-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,275253080.36,440973607.72,324783652.6051613,306869.0,9899.0,275253080.36,440973607.72,324783652.6051613,0.0,0.0,0.0,0.0,0.0,0.0,28.0
 2022-03-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,97609766.67,412010769.93,254960298.09285715,0.0,,97609766.67,412010769.93,254960298.09285715,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2022-03-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,29.0
-2022-03-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,389167060.97,596188175.01,607760131.2403226,973966.0,31418.25806451613,389167060.97,596188175.01,607760131.2403226,0.0,0.0,0.0,0.0,0.0,0.0,29.0
+2022-03-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,389167060.97,596188175.01,607760131.2403226,973966.0,31418.25806451613,389167060.97,596188175.01,607760131.2403226,0.0,0.0,0.0,0.0,0.0,0.0,29.0
 2022-03-01,multichain,,,False,,,Other EVMs,,,,False,False,False,4635090334.66,4845587168.02,5343118213.387096,0.0,,4635090334.66,4845587168.02,5343118213.387096,0.0,0.0,0.0,0.0,0.0,0.0,18.0
 2022-03-01,near,,,False,,,Other EVMs,,,,False,False,False,7440945592.76,10210851603.19,8448163387.022258,0.0,,7440945592.76,10210851603.19,8448163387.022258,0.0,0.0,0.0,0.0,0.0,0.0,13.0
 2022-03-01,nomad,,,False,,,Other EVMs,,,,False,False,False,34271506.21,36711200.51,38952248.520967744,0.0,,34271506.21,36711200.51,38952248.520967744,0.0,0.0,0.0,0.0,0.0,0.0,3.0
@@ -839,7 +839,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-04-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,294660142.12,294660142.12,355783314.167,366382.0,12212.733333333334,294660142.12,294660142.12,355783314.167,0.0,0.0,0.0,0.0,0.0,0.0,29.0
 2022-04-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,107956851.92,107956851.92,254000989.42066666,0.0,,107956851.92,107956851.92,254000989.42066666,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2022-04-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,30.0
-2022-04-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,249970072.5,249970072.5,379186152.29466665,447425.0,14914.166666666666,249970072.5,249970072.5,379186152.29466665,0.0,0.0,0.0,0.0,0.0,0.0,30.0
+2022-04-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,249970072.5,249970072.5,379186152.29466665,447425.0,14914.166666666666,249970072.5,249970072.5,379186152.29466665,0.0,0.0,0.0,0.0,0.0,0.0,30.0
 2022-04-01,multichain,,,False,,,Other EVMs,,,,False,False,False,3854663971.6,3854663971.6,4369279476.801333,0.0,,3854663971.6,3854663971.6,4369279476.801333,0.0,0.0,0.0,0.0,0.0,0.0,19.0
 2022-04-01,near,,,False,,,Other EVMs,,,,False,False,False,9419236174.5,9419236174.5,11702520520.053,0.0,,9419236174.5,9419236174.5,11702520520.053,0.0,0.0,0.0,0.0,0.0,0.0,14.0
 2022-04-01,nomad,,,False,,,Other EVMs,,,,False,False,False,39629397.97,62556432.45,47938390.49033333,0.0,,39629397.97,62556432.45,47938390.49033333,0.0,0.0,0.0,0.0,0.0,0.0,4.0
@@ -900,7 +900,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-05-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,182119680.75,243012607.34,234779576.28677422,719897.0,23222.483870967742,182119680.75,243012607.34,234779576.28677422,0.0,0.0,0.0,0.0,0.0,0.0,30.0
 2022-05-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,58359112.87,58376983.28,76918194.95548387,0.0,,58359112.87,58376983.28,76918194.95548387,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2022-05-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,31.0
-2022-05-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,123376661.38,136945511.11,181541163.22354838,311260.0,10040.645161290322,123376661.38,136945511.11,181541163.22354838,0.0,0.0,0.0,0.0,0.0,0.0,31.0
+2022-05-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,123376661.38,136945511.11,181541163.22354838,311260.0,10040.645161290322,123376661.38,136945511.11,181541163.22354838,0.0,0.0,0.0,0.0,0.0,0.0,31.0
 2022-05-01,multichain,,,False,,,Other EVMs,,,,False,False,False,2412489104.16,2439199040.87,2885999149.3690324,0.0,,2412489104.16,2439199040.87,2885999149.3690324,0.0,0.0,0.0,0.0,0.0,0.0,20.0
 2022-05-01,near,,,False,,,Other EVMs,,,,False,False,False,3724420379.71,4129226820.54,5962141518.474516,0.0,,3724420379.71,4129226820.54,5962141518.474516,0.0,0.0,0.0,0.0,0.0,0.0,15.0
 2022-05-01,nomad,,,False,,,Other EVMs,,,,False,False,False,46415037.29,48902930.87,55541807.48322581,0.0,,46415037.29,48902930.87,55541807.48322581,0.0,0.0,0.0,0.0,0.0,0.0,5.0
@@ -962,7 +962,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-06-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,144446521.67,168097093.59,188828541.61633334,680498.0,22683.266666666666,144446521.67,168097093.59,188828541.61633334,0.0,0.0,0.0,0.0,0.0,0.0,31.0
 2022-06-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,39902482.24,39902482.24,47825318.93466666,0.0,,39902482.24,39902482.24,47825318.93466666,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2022-06-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,32.0
-2022-06-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,90557041.24,92148773.17,107577861.33299999,191041.0,6368.033333333334,90557041.24,92148773.17,107577861.33299999,0.0,0.0,0.0,0.0,0.0,0.0,32.0
+2022-06-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,90557041.24,92148773.17,107577861.33299999,191041.0,6368.033333333334,90557041.24,92148773.17,107577861.33299999,0.0,0.0,0.0,0.0,0.0,0.0,32.0
 2022-06-01,multichain,,,False,,,Other EVMs,,,,False,False,False,1807616029.7,1807951373.0,2124587757.7153332,0.0,,1807616029.7,1807951373.0,2124587757.7153332,0.0,0.0,0.0,0.0,0.0,0.0,21.0
 2022-06-01,near,,,False,,,Other EVMs,,,,False,False,False,1751623458.04,1751623458.04,2465291710.663333,0.0,,1751623458.04,1751623458.04,2465291710.663333,0.0,0.0,0.0,0.0,0.0,0.0,16.0
 2022-06-01,nomad,,,False,,,Other EVMs,,,,False,False,False,48288048.98,139202575.76,77378207.43766667,0.0,,48288048.98,139202575.76,77378207.43766667,0.0,0.0,0.0,0.0,0.0,0.0,6.0
@@ -1026,7 +1026,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-07-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,163603467.34,203564768.56,181868004.0948387,911601.0,29406.483870967742,163603467.34,203564768.56,181868004.0948387,0.0,0.0,0.0,0.0,0.0,0.0,32.0
 2022-07-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,35274495.3,45448634.65,40208358.09387097,0.0,,35274495.3,45448634.65,40208358.09387097,0.0,0.0,0.0,0.0,0.0,0.0,5.0
 2022-07-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,33.0
-2022-07-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,89115667.68,134763731.92,106790172.24064516,185569.0,5986.096774193548,89115667.68,134763731.92,106790172.24064516,0.0,0.0,0.0,0.0,0.0,0.0,33.0
+2022-07-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,89115667.68,134763731.92,106790172.24064516,185569.0,5986.096774193548,89115667.68,134763731.92,106790172.24064516,0.0,0.0,0.0,0.0,0.0,0.0,33.0
 2022-07-01,multichain,,,False,,,Other EVMs,,,,False,False,False,1681165629.16,1706010776.66,1721620124.6451614,0.0,,1681165629.16,1706010776.66,1721620124.6451614,0.0,0.0,0.0,0.0,0.0,0.0,22.0
 2022-07-01,near,,,False,,,Other EVMs,,,,False,False,False,1684650131.02,2100453926.6,1972322473.5612903,0.0,,1684650131.02,2100453926.6,1972322473.5612903,0.0,0.0,0.0,0.0,0.0,0.0,17.0
 2022-07-01,nomad,,,False,,,Other EVMs,,,,False,False,False,137720400.42,170777908.41,157723772.64225805,0.0,,137720400.42,170777908.41,157723772.64225805,0.0,0.0,0.0,0.0,0.0,0.0,7.0
@@ -1091,7 +1091,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-08-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,161458967.72,168518844.04,192429649.18129033,602031.0,19420.354838709678,161458967.72,168518844.04,192429649.18129033,0.0,0.0,0.0,0.0,0.0,0.0,33.0
 2022-08-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,34650695.09,73928972.02,55643153.23870967,0.0,,34650695.09,73928972.02,55643153.23870967,0.0,0.0,0.0,0.0,0.0,0.0,6.0
 2022-08-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,34.0
-2022-08-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,132179599.99,135000706.65,154841005.16225806,325421.0,10497.451612903225,132179599.99,135000706.65,154841005.16225806,0.0,0.0,0.0,0.0,0.0,0.0,34.0
+2022-08-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,132179599.99,135000706.65,154841005.16225806,325421.0,10497.451612903225,132179599.99,135000706.65,154841005.16225806,0.0,0.0,0.0,0.0,0.0,0.0,34.0
 2022-08-01,multichain,,,False,,,Other EVMs,,,,False,False,False,1538851620.81,1552722732.2,1587928250.0335484,0.0,,1538851620.81,1552722732.2,1587928250.0335484,0.0,0.0,0.0,0.0,0.0,0.0,23.0
 2022-08-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,0.0,34192.69,5000.0653571428575,468273.0,16147.344827586207,0.0,34192.69,5000.0653571428575,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2022-08-01,near,,,False,,,Other EVMs,,,,False,False,False,1496620437.12,1541676911.22,1945175147.7235484,0.0,,1496620437.12,1541676911.22,1945175147.7235484,0.0,0.0,0.0,0.0,0.0,0.0,18.0
@@ -1157,7 +1157,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-09-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,139886895.34,143969144.46,156057694.79866666,520518.0,17350.6,139886895.34,143969144.46,156057694.79866666,0.0,0.0,0.0,0.0,0.0,0.0,34.0
 2022-09-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,53536951.31,54215073.45,63418790.067666665,0.0,,53536951.31,54215073.45,63418790.067666665,0.0,0.0,0.0,0.0,0.0,0.0,7.0
 2022-09-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,35.0
-2022-09-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,113122937.53,118016412.5,125150543.02733333,195386.0,6512.866666666667,113122937.53,118016412.5,125150543.02733333,0.0,0.0,0.0,0.0,0.0,0.0,35.0
+2022-09-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,113122937.53,118016412.5,125150543.02733333,195386.0,6512.866666666667,113122937.53,118016412.5,125150543.02733333,0.0,0.0,0.0,0.0,0.0,0.0,35.0
 2022-09-01,multichain,,,False,,,Other EVMs,,,,False,False,False,1451909682.86,1464014359.19,1497977324.161,0.0,,1451909682.86,1464014359.19,1497977324.161,0.0,0.0,0.0,0.0,0.0,0.0,24.0
 2022-09-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,40236.74,53882.81,54006.34333333334,81339.0,2711.3,40236.74,53882.81,54006.34333333334,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2022-09-01,near,,,False,,,Other EVMs,,,,False,False,False,1375928057.01,1375928057.01,1523627508.3233333,0.0,,1375928057.01,1375928057.01,1523627508.3233333,0.0,0.0,0.0,0.0,0.0,0.0,19.0
@@ -1225,7 +1225,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-10-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,114115876.32,129137967.47,128424092.3332258,541512.0,17468.129032258064,114115876.32,129137967.47,128424092.3332258,0.0,0.0,0.0,0.0,0.0,0.0,35.0
 2022-10-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,44966289.05,52300542.81,50811600.28193548,0.0,,44966289.05,52300542.81,50811600.28193548,0.0,0.0,0.0,0.0,0.0,0.0,8.0
 2022-10-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,36.0
-2022-10-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,114524905.92,138688936.28,129318177.09709679,224676.0,7247.612903225807,114524905.92,138688936.28,129318177.09709679,0.0,0.0,0.0,0.0,0.0,0.0,36.0
+2022-10-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,114524905.92,138688936.28,129318177.09709679,224676.0,7247.612903225807,114524905.92,138688936.28,129318177.09709679,0.0,0.0,0.0,0.0,0.0,0.0,36.0
 2022-10-01,multichain,,,False,,,Other EVMs,,,,False,False,False,971595630.71,975125810.47,1348122170.8067744,0.0,,971595630.71,975125810.47,1348122170.8067744,0.0,0.0,0.0,0.0,0.0,0.0,25.0
 2022-10-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,51541.15,68137.02,63561.20741935484,25353.0,817.8387096774194,51541.15,68137.02,63561.20741935484,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2022-10-01,near,,,False,,,Other EVMs,,,,False,False,False,993060010.89,993060010.89,1197066132.1019356,0.0,,993060010.89,993060010.89,1197066132.1019356,0.0,0.0,0.0,0.0,0.0,0.0,20.0
@@ -1294,7 +1294,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-11-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,84328792.03,89953855.23,111754806.16566665,478001.0,15933.366666666667,84328792.03,89953855.23,111754806.16566665,0.0,0.0,0.0,0.0,0.0,0.0,36.0
 2022-11-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,37613031.5,44870920.35,45490524.901,0.0,,37613031.5,44870920.35,45490524.901,0.0,0.0,0.0,0.0,0.0,0.0,9.0
 2022-11-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,37.0
-2022-11-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,89821167.71,90652395.2,107730471.174,204503.0,6816.766666666666,89821167.71,90652395.2,107730471.174,0.0,0.0,0.0,0.0,0.0,0.0,37.0
+2022-11-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,89821167.71,90652395.2,107730471.174,204503.0,6816.766666666666,89821167.71,90652395.2,107730471.174,0.0,0.0,0.0,0.0,0.0,0.0,37.0
 2022-11-01,multichain,,,False,,,Other EVMs,,,,False,False,False,783090786.14,805519202.95,850259537.0263333,0.0,,783090786.14,805519202.95,850259537.0263333,0.0,0.0,0.0,0.0,0.0,0.0,26.0
 2022-11-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,51420.97,58703.34,61103.21366666666,28002.0,933.4,51420.97,58703.34,61103.21366666666,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2022-11-01,near,,,False,,,Other EVMs,,,,False,False,False,563662263.34,563662263.34,742862003.975,0.0,,563662263.34,563662263.34,742862003.975,0.0,0.0,0.0,0.0,0.0,0.0,21.0
@@ -1365,7 +1365,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2022-12-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,78879518.67,78879518.67,88267566.47064516,298334.0,9623.677419354839,78879518.67,78879518.67,88267566.47064516,0.0,0.0,0.0,0.0,0.0,0.0,37.0
 2022-12-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,36863108.36,37990923.91,40958633.89419355,0.0,,36863108.36,37990923.91,40958633.89419355,0.0,0.0,0.0,0.0,0.0,0.0,10.0
 2022-12-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,38.0
-2022-12-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,84064057.68,84064057.68,88897231.31838709,132864.0,4285.935483870968,84064057.68,84064057.68,88897231.31838709,0.0,0.0,0.0,0.0,0.0,0.0,38.0
+2022-12-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,84064057.68,84064057.68,88897231.31838709,132864.0,4285.935483870968,84064057.68,84064057.68,88897231.31838709,0.0,0.0,0.0,0.0,0.0,0.0,38.0
 2022-12-01,multichain,,,False,,,Other EVMs,,,,False,False,False,590665930.74,608503413.72,730035104.8209678,0.0,,590665930.74,608503413.72,730035104.8209678,0.0,0.0,0.0,0.0,0.0,0.0,27.0
 2022-12-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,57240.55,57337.62,60706.36419354839,633774.0,20444.322580645163,57240.55,57337.62,60706.36419354839,0.0,0.0,0.0,0.0,0.0,0.0,5.0
 2022-12-01,near,,,False,,,Other EVMs,,,,False,False,False,333453966.34,333453966.34,464018764.5209677,0.0,,333453966.34,333453966.34,464018764.5209677,0.0,0.0,0.0,0.0,0.0,0.0,22.0
@@ -1436,7 +1436,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-01-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,78681370.1,110885640.48,98241205.9932258,228519.0,7371.580645161291,78681370.1,110885640.48,98241205.9932258,0.0,0.0,0.0,0.0,0.0,0.0,38.0
 2023-01-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,37305350.23,60755897.84,49259558.94322581,0.0,,37305350.23,60755897.84,49259558.94322581,0.0,0.0,0.0,0.0,0.0,0.0,11.0
 2023-01-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,39.0
-2023-01-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,83283533.36,133956118.48,101284982.09677419,315152.0,10166.193548387097,83283533.36,133956118.48,101284982.09677419,0.0,0.0,0.0,0.0,0.0,0.0,39.0
+2023-01-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,83283533.36,133956118.48,101284982.09677419,315152.0,10166.193548387097,83283533.36,133956118.48,101284982.09677419,0.0,0.0,0.0,0.0,0.0,0.0,39.0
 2023-01-01,multichain,,,False,,,Other EVMs,,,,False,False,False,452460868.68,452460868.68,586401428.428387,0.0,,452460868.68,452460868.68,586401428.428387,0.0,0.0,0.0,0.0,0.0,0.0,28.0
 2023-01-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,57342.12,74982.97,69603.14516129032,11185.0,360.80645161290323,57342.12,74982.97,69603.14516129032,0.0,0.0,0.0,0.0,0.0,0.0,6.0
 2023-01-01,near,,,False,,,Other EVMs,,,,False,False,False,324887883.04,396336456.47,360374073.39741933,0.0,,324887883.04,396336456.47,360374073.39741933,0.0,0.0,0.0,0.0,0.0,0.0,23.0
@@ -1508,7 +1508,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-02-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,113163357.77,120766063.45,128112498.8382143,237156.0,8469.857142857143,113163357.77,120766063.45,128112498.8382143,0.0,0.0,0.0,0.0,0.0,0.0,39.0
 2023-02-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,63909019.39,116569672.01,95330014.77892856,0.0,,63909019.39,116569672.01,95330014.77892856,0.0,0.0,0.0,0.0,0.0,0.0,12.0
 2023-02-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,40.0
-2023-02-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,128711255.22,139586060.64,146086418.72142857,374317.0,13368.464285714286,128711255.22,139586060.64,146086418.72142857,0.0,0.0,0.0,0.0,0.0,0.0,40.0
+2023-02-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,128711255.22,139586060.64,146086418.72142857,374317.0,13368.464285714286,128711255.22,139586060.64,146086418.72142857,0.0,0.0,0.0,0.0,0.0,0.0,40.0
 2023-02-01,multichain,,,False,,,Other EVMs,,,,False,False,False,355532501.35,391411802.73,395909963.7485714,0.0,,355532501.35,391411802.73,395909963.7485714,0.0,0.0,0.0,0.0,0.0,0.0,29.0
 2023-02-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,75596.72,83678.44,81895.94321428573,3100.0,110.71428571428571,75596.72,83678.44,81895.94321428573,0.0,0.0,0.0,0.0,0.0,0.0,7.0
 2023-02-01,near,,,False,,,Other EVMs,,,,False,False,False,393678239.13,404285976.9,430532519.8535714,0.0,,393678239.13,404285976.9,430532519.8535714,0.0,0.0,0.0,0.0,0.0,0.0,24.0
@@ -1583,7 +1583,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-03-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,97350609.63,123309822.36,115401742.03967743,261515.0,8435.967741935483,97350609.63,123309822.36,115401742.03967743,0.0,0.0,0.0,0.0,0.0,0.0,40.0
 2023-03-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,66181459.55,71841681.04,79882435.10548387,0.0,,66181459.55,71841681.04,79882435.10548387,0.0,0.0,0.0,0.0,0.0,0.0,13.0
 2023-03-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,41.0
-2023-03-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,110424228.2,113553724.32,124263687.23096773,273226.0,8813.741935483871,110424228.2,113553724.32,124263687.23096773,0.0,0.0,0.0,0.0,0.0,0.0,41.0
+2023-03-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,110424228.2,113553724.32,124263687.23096773,273226.0,8813.741935483871,110424228.2,113553724.32,124263687.23096773,0.0,0.0,0.0,0.0,0.0,0.0,41.0
 2023-03-01,multichain,,,False,,,Other EVMs,,,,False,False,False,313340038.62,343611548.9,353257909.5832258,0.0,,313340038.62,343611548.9,353257909.5832258,0.0,0.0,0.0,0.0,0.0,0.0,30.0
 2023-03-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,74659.96,99613.82,89411.03709677419,6435.0,207.58064516129033,74659.96,99613.82,89411.03709677419,0.0,0.0,0.0,0.0,0.0,0.0,8.0
 2023-03-01,near,,,False,,,Other EVMs,,,,False,False,False,292929812.67,297978863.09,353852921.97193545,0.0,,292929812.67,297978863.09,353852921.97193545,0.0,0.0,0.0,0.0,0.0,0.0,25.0
@@ -1659,7 +1659,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-04-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,119815140.18,122775566.64,127155755.35033335,227266.0,7575.533333333334,119815140.18,122775566.64,127155755.35033335,0.0,0.0,0.0,0.0,0.0,0.0,41.0
 2023-04-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,74672295.48,87543434.72,84928790.65966667,0.0,,74672295.48,87543434.72,84928790.65966667,0.0,0.0,0.0,0.0,0.0,0.0,14.0
 2023-04-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,42.0
-2023-04-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,112855093.62,122990321.58,125938747.33733334,299739.0,9991.3,112855093.62,122990321.58,125938747.33733334,0.0,0.0,0.0,0.0,0.0,0.0,42.0
+2023-04-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,112855093.62,122990321.58,125938747.33733334,299739.0,9991.3,112855093.62,122990321.58,125938747.33733334,0.0,0.0,0.0,0.0,0.0,0.0,42.0
 2023-04-01,multichain,,,False,,,Other EVMs,,,,False,False,False,319392569.68,333814678.48,337856856.67266667,0.0,,319392569.68,333814678.48,337856856.67266667,0.0,0.0,0.0,0.0,0.0,0.0,31.0
 2023-04-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,99374.35,103285.61,106366.80166666667,60409.0,2013.6333333333334,99374.35,103285.61,106366.80166666667,0.0,0.0,0.0,0.0,0.0,0.0,9.0
 2023-04-01,near,,,False,,,Other EVMs,,,,False,False,False,267071993.67,273187796.45,298627300.1013333,0.0,,267071993.67,273187796.45,298627300.1013333,0.0,0.0,0.0,0.0,0.0,0.0,26.0
@@ -1735,7 +1735,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-05-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,107696573.74,110950773.97,112440031.54129033,156901.0,5061.322580645161,107696573.74,110950773.97,112440031.54129033,0.0,0.0,0.0,0.0,0.0,0.0,42.0
 2023-05-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,72242561.72,87090666.03,78907651.78258066,0.0,,72242561.72,87090666.03,78907651.78258066,0.0,0.0,0.0,0.0,0.0,0.0,15.0
 2023-05-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,,,,0.0,0.0,,,,,,,,,,43.0
-2023-05-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,101921266.95,105606319.88,111922222.63225806,427242.0,13782.0,101921266.95,105606319.88,111922222.63225806,0.0,0.0,0.0,0.0,0.0,0.0,43.0
+2023-05-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,101921266.95,105606319.88,111922222.63225806,427242.0,13782.0,101921266.95,105606319.88,111922222.63225806,0.0,0.0,0.0,0.0,0.0,0.0,43.0
 2023-05-01,multichain,,,False,,,Other EVMs,,,,False,False,False,241433874.61,241433874.61,321650784.7887097,0.0,,241433874.61,241433874.61,321650784.7887097,0.0,0.0,0.0,0.0,0.0,0.0,32.0
 2023-05-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,98126.16,106522.54,101841.95032258064,190086.0,6131.806451612903,98126.16,106522.54,101841.95032258064,0.0,0.0,0.0,0.0,0.0,0.0,10.0
 2023-05-01,near,,,False,,,Other EVMs,,,,False,False,False,215230807.71,225981331.55,243732694.17225808,0.0,,215230807.71,225981331.55,243732694.17225808,0.0,0.0,0.0,0.0,0.0,0.0,27.0
@@ -1813,7 +1813,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-06-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,88944411.19,94747494.84,97355299.63299999,119004.0,3966.8,88944411.19,94747494.84,97355299.63299999,0.0,0.0,0.0,0.0,0.0,0.0,43.0
 2023-06-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,66906164.65,73096922.24,74872722.99466667,0.0,,66906164.65,73096922.24,74872722.99466667,0.0,0.0,0.0,0.0,0.0,0.0,16.0
 2023-06-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,44.0
-2023-06-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,92443654.03,97442310.92,97980436.34266666,760475.0,25349.166666666668,92443654.03,97442310.92,97980436.34266666,0.0,0.0,0.0,0.0,0.0,0.0,44.0
+2023-06-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,92443654.03,97442310.92,97980436.34266666,760475.0,25349.166666666668,92443654.03,97442310.92,97980436.34266666,0.0,0.0,0.0,0.0,0.0,0.0,44.0
 2023-06-01,multichain,,,False,,,Other EVMs,,,,False,False,False,156040624.17,167411627.46,173167155.57166666,0.0,,156040624.17,167411627.46,173167155.57166666,0.0,0.0,0.0,0.0,0.0,0.0,33.0
 2023-06-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,88234.08,98829.21,98635.77533333332,3809062.0,126968.73333333334,88234.08,98829.21,98635.77533333332,0.0,0.0,0.0,0.0,0.0,0.0,11.0
 2023-06-01,near,,,False,,,Other EVMs,,,,False,False,False,198930791.8,202536958.64,207712825.746,0.0,,198930791.8,202536958.64,207712825.746,0.0,0.0,0.0,0.0,0.0,0.0,28.0
@@ -1895,7 +1895,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-07-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,93922807.11,95257333.12,97562096.35967742,124336.0,4010.8387096774195,93922807.11,95257333.12,97562096.35967742,0.0,0.0,0.0,0.0,0.0,0.0,44.0
 2023-07-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,75166220.74,82041279.12,82490874.57967742,0.0,,75166220.74,82041279.12,82490874.57967742,0.0,0.0,0.0,0.0,0.0,0.0,17.0
 2023-07-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,0.0,44748337.99,12596753.356451614,446960.0,14418.064516129032,0.0,44748337.99,12596753.356451614,0.0,0.0,0.0,0.0,0.0,0.0,45.0
-2023-07-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,83219244.38,85080524.46,89620653.52419356,924795.0,29832.09677419355,83219244.38,85080524.46,89620653.52419356,0.0,0.0,0.0,0.0,0.0,0.0,45.0
+2023-07-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,83219244.38,85080524.46,89620653.52419356,924795.0,29832.09677419355,83219244.38,85080524.46,89620653.52419356,0.0,0.0,0.0,0.0,0.0,0.0,45.0
 2023-07-01,multichain,,,False,,,Other EVMs,,,,False,False,False,20285248.94,20563072.57,51005646.895483874,0.0,,20285248.94,20563072.57,51005646.895483874,0.0,0.0,0.0,0.0,0.0,0.0,34.0
 2023-07-01,mxc,,L3,False,,,Other EVMs,,,Taiko,False,False,True,8475992.76,8720211.46,9809309.456315791,14173.0,708.65,8475992.76,8720211.46,9809309.456315791,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2023-07-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,99051.82,100066.05,101765.71516129033,444931.0,14352.612903225807,99051.82,100066.05,101765.71516129033,0.0,0.0,0.0,0.0,0.0,0.0,12.0
@@ -1981,7 +1981,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-08-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,81771062.74,101298145.7,94324498.82645161,125354.0,4043.6774193548385,81771062.74,101298145.7,94324498.82645161,0.0,0.0,0.0,0.0,0.0,0.0,45.0
 2023-08-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,81786637.37,85872025.75,88667101.05419354,0.0,,81786637.37,85872025.75,88667101.05419354,0.0,0.0,0.0,0.0,0.0,0.0,18.0
 2023-08-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,71719991.05,89813075.64,87817173.40903226,3652129.0,117810.6129032258,71719991.05,89813075.64,87817173.40903226,0.0,0.0,0.0,0.0,0.0,0.0,46.0
-2023-08-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,66511369.04,66511369.04,75718357.73774193,726617.0,23439.25806451613,66511369.04,66511369.04,75718357.73774193,0.0,0.0,0.0,0.0,0.0,0.0,46.0
+2023-08-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,66511369.04,66511369.04,75718357.73774193,726617.0,23439.25806451613,66511369.04,66511369.04,75718357.73774193,0.0,0.0,0.0,0.0,0.0,0.0,46.0
 2023-08-01,multichain,,,False,,,Other EVMs,,,,False,False,False,18858640.98,19259962.34,19895661.49935484,0.0,,18858640.98,19259962.34,19895661.49935484,0.0,0.0,0.0,0.0,0.0,0.0,35.0
 2023-08-01,mxc,,L3,False,,,Other EVMs,,,Taiko,False,False,True,7004297.8,7332973.18,8212456.617419355,48994.0,1580.4516129032259,7004297.8,7332973.18,8212456.617419355,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2023-08-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,87176.59,91134.2,94189.69967741935,489429.0,15788.032258064517,87176.59,91134.2,94189.69967741935,0.0,0.0,0.0,0.0,0.0,0.0,13.0
@@ -2072,7 +2072,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-09-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,68477241.62,75648674.27,76130509.603,0.0,,68477241.62,75648674.27,76130509.603,0.0,0.0,0.0,0.0,0.0,0.0,19.0
 2023-09-01,mantapacific,169,L2,False,169.0,modern,OP Stack fork,manta pacific,Manta Pacific,OP Stack,False,False,True,2150.58,2127014.79,464104.79571428575,52388.0,2381.2727272727275,2150.58,2127014.79,464104.79571428575,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2023-09-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,85605227.66,89350546.09,87844366.987,7115577.0,237185.9,85605227.66,89350546.09,87844366.987,0.0,0.0,0.0,0.0,0.0,0.0,47.0
-2023-09-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,57261921.02,67410856.84,63565573.026,452322.0,15077.4,57261921.02,67410856.84,63565573.026,0.0,0.0,0.0,0.0,0.0,0.0,47.0
+2023-09-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,57261921.02,67410856.84,63565573.026,452322.0,15077.4,57261921.02,67410856.84,63565573.026,0.0,0.0,0.0,0.0,0.0,0.0,47.0
 2023-09-01,multichain,,,False,,,Other EVMs,,,,False,False,False,18479747.46,19831055.21,19294172.507666666,0.0,,18479747.46,19831055.21,19294172.507666666,0.0,0.0,0.0,0.0,0.0,0.0,36.0
 2023-09-01,mxc,,L3,False,,,Other EVMs,,,Taiko,False,False,True,7134459.76,8469860.23,9107994.844,166098.0,5536.6,7134459.76,8469860.23,9107994.844,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2023-09-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,83283.24,89641.5,86911.082,642777.0,21425.9,83283.24,89641.5,86911.082,0.0,0.0,0.0,0.0,0.0,0.0,14.0
@@ -2163,7 +2163,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-10-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,67890280.23,87118490.58,75601428.74548388,0.0,,67890280.23,87118490.58,75601428.74548388,0.0,0.0,0.0,0.0,0.0,0.0,20.0
 2023-10-01,mantapacific,169,L2,False,169.0,modern,OP Stack fork,manta pacific,Manta Pacific,OP Stack,False,False,True,2370719.55,13736733.65,10453038.696451612,645895.0,20835.322580645163,2370719.55,13736733.65,10453038.696451612,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2023-10-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,87675817.98,138027894.39,118920572.95612903,7385862.0,238253.61290322582,87675817.98,138027894.39,118920572.95612903,0.0,0.0,0.0,0.0,0.0,0.0,48.0
-2023-10-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,60429149.9,65546074.29,63848775.268387094,345605.0,11148.548387096775,60429149.9,65546074.29,63848775.268387094,0.0,0.0,0.0,0.0,0.0,0.0,48.0
+2023-10-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,60429149.9,65546074.29,63848775.268387094,345605.0,11148.548387096775,60429149.9,65546074.29,63848775.268387094,0.0,0.0,0.0,0.0,0.0,0.0,48.0
 2023-10-01,multichain,,,False,,,Other EVMs,,,,False,False,False,18884457.62,21383482.55,19804453.738064516,0.0,,18884457.62,21383482.55,19804453.738064516,0.0,0.0,0.0,0.0,0.0,0.0,37.0
 2023-10-01,mxc,,L3,False,,,Other EVMs,,,Taiko,False,False,True,6330589.16,6883207.63,7242218.442903225,228862.0,7382.645161290323,6330589.16,6883207.63,7242218.442903225,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2023-10-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,82488.14,113210.59,89508.2093548387,645717.0,20829.58064516129,82488.14,113210.59,89508.2093548387,0.0,0.0,0.0,0.0,0.0,0.0,15.0
@@ -2260,7 +2260,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-11-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,81479594.92,98202880.99,95465587.72199999,0.0,,81479594.92,98202880.99,95465587.72199999,0.0,0.0,0.0,0.0,0.0,0.0,21.0
 2023-11-01,mantapacific,169,L2,False,169.0,modern,OP Stack fork,manta pacific,Manta Pacific,OP Stack,False,False,True,13816061.41,33247575.3,26118416.47233333,1500577.0,50019.23333333333,13816061.41,31469675.25,25201953.06466667,0.0,1777900.05,916463.4076666667,0.0,0.0,0.0,3.0
 2023-11-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,138355845.19,219354092.06,159926409.1743333,5424255.0,180808.5,138355845.19,219354092.06,159926409.1743333,0.0,0.0,0.0,0.0,0.0,0.0,49.0
-2023-11-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,65411945.61,80804168.75,79192877.58833334,375386.0,12512.866666666667,65411945.61,80804168.75,79192877.58833334,0.0,0.0,0.0,0.0,0.0,0.0,49.0
+2023-11-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,65411945.61,80804168.75,79192877.58833334,375386.0,12512.866666666667,65411945.61,80804168.75,79192877.58833334,0.0,0.0,0.0,0.0,0.0,0.0,49.0
 2023-11-01,mode,34443,L2,True,34443.0,modern,OP Chain,mode,Mode,OP Stack,False,False,True,391.85,40120.47,17018.305,2601.0,173.4,391.85,40120.47,17018.305,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2023-11-01,multichain,,,False,,,Other EVMs,,,,False,False,False,19844988.15,21579627.71,21208188.04566667,0.0,,19844988.15,21579627.71,21208188.04566667,0.0,0.0,0.0,0.0,0.0,0.0,38.0
 2023-11-01,mxc,,L3,False,,,Other EVMs,,,Taiko,False,False,True,11986347.82,12276264.14,13069705.696,118734.0,3957.8,11986347.82,12276264.14,13069705.696,0.0,0.0,0.0,0.0,0.0,0.0,5.0
@@ -2345,7 +2345,6 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-12-01,hermez,,L2,False,,,Other EVMs,,,Polygon,False,True,False,257906.58,285175.29,273306.49838709674,0.0,,257906.58,285175.29,273306.49838709674,0.0,0.0,0.0,0.0,0.0,0.0,34.0
 2023-12-01,honeypot,,L2,False,,,Other EVMs,,,,False,False,True,10647.4,20240.4,14990.684516129033,0.0,,10647.4,20240.4,14990.684516129033,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2023-12-01,hop,,,False,,,Other EVMs,,,,False,False,False,38458218.78,41598785.6,40852788.47677419,0.0,,38458218.78,41598785.6,40852788.47677419,0.0,0.0,0.0,0.0,0.0,0.0,31.0
-2023-12-01,hychain,,L2,False,,,Other EVMs,,,Arbitrum,False,False,True,0.0,0.0,0.0,0.0,,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2023-12-01,hyphen,,,False,,,Other EVMs,,,,False,False,False,67447.21,67447.21,170317.99096774193,0.0,,67447.21,67447.21,170317.99096774193,0.0,0.0,0.0,0.0,0.0,0.0,22.0
 2023-12-01,immutablex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,180884215.89,207594205.95,220835369.75935483,7259587.0,234180.2258064516,180884215.89,207594205.95,220835369.75935483,0.0,0.0,0.0,0.0,0.0,0.0,34.0
 2023-12-01,immutablezkevm,,,False,,,Other EVMs,,,,False,False,False,2298.82,2481.83,2599.1691666666666,0.0,,2298.82,2481.83,2599.1691666666666,0.0,0.0,0.0,0.0,0.0,0.0,1.0
@@ -2363,7 +2362,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2023-12-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,98713369.86,533362612.01,198712294.72225806,0.0,,98713369.86,533362612.01,198712294.72225806,0.0,0.0,0.0,0.0,0.0,0.0,22.0
 2023-12-01,mantapacific,169,L2,False,169.0,modern,OP Stack fork,manta pacific,Manta Pacific,OP Stack,False,False,True,33214678.11,571872253.59,134456642.34451613,3383135.0,109133.3870967742,19515071.09,162037521.62,44466843.00064516,1317544.94,409834731.97,89989799.34387097,0.0,0.0,0.0,4.0
 2023-12-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,222483097.79,342086336.12,289582243.5293548,12770123.0,411939.4516129032,222483097.79,342086336.12,289582243.5293548,0.0,0.0,0.0,0.0,0.0,0.0,50.0
-2023-12-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,85945433.09,657374311.6,235177381.10258067,843529.0,27210.612903225807,85945433.09,657374311.6,235177381.10258067,0.0,0.0,0.0,0.0,0.0,0.0,50.0
+2023-12-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,85945433.09,657374311.6,235177381.10258067,843529.0,27210.612903225807,85945433.09,657374311.6,235177381.10258067,0.0,0.0,0.0,0.0,0.0,0.0,50.0
 2023-12-01,mode,34443,L2,True,34443.0,modern,OP Chain,mode,Mode,OP Stack,False,False,True,41301.39,54803.69,50649.34064516129,1622.0,52.32258064516129,41301.39,54803.69,50649.34064516129,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2023-12-01,multichain,,,False,,,Other EVMs,,,,False,False,False,21658318.4,23557212.16,23218380.147419356,0.0,,21658318.4,23557212.16,23218380.147419356,0.0,0.0,0.0,0.0,0.0,0.0,39.0
 2023-12-01,mxc,,L3,False,,,Other EVMs,,,Taiko,False,False,True,12241393.09,17936332.61,14847959.27548387,188767.0,6089.258064516129,12241393.09,17936332.61,14847959.27548387,0.0,0.0,0.0,0.0,0.0,0.0,6.0
@@ -2451,7 +2450,6 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-01-01,hermez,,L2,False,,,Other EVMs,,,Polygon,False,True,False,282128.23,286335.4,290398.1912903226,0.0,,282128.23,286335.4,290398.1912903226,0.0,0.0,0.0,0.0,0.0,0.0,35.0
 2024-01-01,honeypot,,L2,False,,,Other EVMs,,,,False,False,True,19892.27,35622.96,25131.294193548387,0.0,,19892.27,35622.96,25131.294193548387,0.0,0.0,0.0,0.0,0.0,0.0,5.0
 2024-01-01,hop,,,False,,,Other EVMs,,,,False,False,False,38130543.87,39622596.69,41011299.36032258,0.0,,38130543.87,39622596.69,41011299.36032258,0.0,0.0,0.0,0.0,0.0,0.0,32.0
-2024-01-01,hychain,,L2,False,,,Other EVMs,,,Arbitrum,False,False,True,0.0,0.0,0.0,0.0,,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2024-01-01,hyphen,,,False,,,Other EVMs,,,,False,False,False,54202.53,183197.28,146140.39838709676,0.0,,54202.53,183197.28,146140.39838709676,0.0,0.0,0.0,0.0,0.0,0.0,23.0
 2024-01-01,hypr,,L2,False,881.0,modern develop,OP Stack fork,hypr network,Hypr,OP Stack,False,False,True,0.0,994465.64,591779.4714285714,0.0,,0.0,994465.64,591779.4714285714,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2024-01-01,immutablex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,162745192.35,190645943.32,185771416.45225808,6777862.0,218640.70967741936,162745192.35,190645943.32,185771416.45225808,0.0,0.0,0.0,0.0,0.0,0.0,35.0
@@ -2470,7 +2468,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-01-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,567279430.2,752956851.37,721561959.8393549,0.0,,567279430.2,752956851.37,721561959.8393549,0.0,0.0,0.0,0.0,0.0,0.0,23.0
 2024-01-01,mantapacific,169,L2,False,169.0,modern,OP Stack fork,manta pacific,Manta Pacific,OP Stack,False,False,True,619983767.75,1707081800.55,1145846743.3096774,4989693.0,160957.83870967742,172568960.27,227824562.54,215425615.63548386,447414807.48,637736561.58,602244895.2354839,0.0,841520676.43,328176232.4387097,5.0
 2024-01-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,333683505.05,424010332.76,393184949.8145161,15104802.0,487251.67741935485,333683505.05,424010332.76,393184949.8145161,0.0,0.0,0.0,0.0,0.0,0.0,51.0
-2024-01-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,595728520.92,711795269.98,750149477.9345162,2633225.0,84942.74193548386,595728520.92,711795269.98,750149477.9345162,0.0,0.0,0.0,0.0,0.0,0.0,51.0
+2024-01-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,595728520.92,711795269.98,750149477.9345162,2633225.0,84942.74193548386,595728520.92,711795269.98,750149477.9345162,0.0,0.0,0.0,0.0,0.0,0.0,51.0
 2024-01-01,mode,34443,L2,True,34443.0,modern,OP Chain,mode,Mode,OP Stack,False,False,True,53175.06,449221.41,88051.8535483871,47163.0,1521.3870967741937,53175.06,449221.41,88051.8535483871,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2024-01-01,multichain,,,False,,,Other EVMs,,,,False,False,False,21658815.55,22943739.08,22752161.66129032,0.0,,21658815.55,22943739.08,22752161.66129032,0.0,0.0,0.0,0.0,0.0,0.0,40.0
 2024-01-01,mxc,,L3,False,,,Other EVMs,,,Taiko,False,False,True,16962189.23,26421392.63,22521657.30548387,293789.0,9477.064516129032,16962189.23,26421392.63,22521657.30548387,0.0,0.0,0.0,0.0,0.0,0.0,7.0
@@ -2562,7 +2560,6 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-02-01,hermez,,L2,False,,,Other EVMs,,,Polygon,False,True,False,277032.46,328665.59,303425.54827586206,0.0,,277032.46,328665.59,303425.54827586206,0.0,0.0,0.0,0.0,0.0,0.0,36.0
 2024-02-01,honeypot,,L2,False,,,Other EVMs,,,,False,False,True,32592.28,80245.93,48679.41068965517,0.0,,32592.28,80245.93,48679.41068965517,0.0,0.0,0.0,0.0,0.0,0.0,6.0
 2024-02-01,hop,,,False,,,Other EVMs,,,,False,False,False,38574757.19,51196109.32,43312345.93344827,0.0,,38574757.19,51196109.32,43312345.93344827,0.0,0.0,0.0,0.0,0.0,0.0,33.0
-2024-02-01,hychain,,L2,False,,,Other EVMs,,,Arbitrum,False,False,True,0.0,0.0,0.0,0.0,,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2024-02-01,hyphen,,,False,,,Other EVMs,,,,False,False,False,103778.79,152044.53,141476.5855172414,0.0,,103778.79,152044.53,141476.5855172414,0.0,0.0,0.0,0.0,0.0,0.0,24.0
 2024-02-01,hypr,,L2,False,881.0,modern develop,OP Stack fork,hypr network,Hypr,OP Stack,False,False,True,842021.29,1263876.79,1042377.4365517241,0.0,,842021.29,1263876.79,1042377.4365517241,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2024-02-01,immutablex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,185273445.96,317103508.48,265503402.0375862,5742502.0,198017.3103448276,185273445.96,317103508.48,265503402.0375862,0.0,0.0,0.0,0.0,0.0,0.0,36.0
@@ -2581,7 +2578,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-02-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,734769523.11,1087910085.13,877590313.5403447,0.0,,734769523.11,1087910085.13,877590313.5403447,0.0,0.0,0.0,0.0,0.0,0.0,24.0
 2024-02-01,mantapacific,169,L2,False,169.0,modern,OP Stack fork,manta pacific,Manta Pacific,OP Stack,False,False,True,1520544223.79,1888967966.82,1728125910.9203448,1625445.0,56049.8275862069,224759582.17,269299306.76,244185383.64724138,623577808.6,943342651.28,750689185.1527586,648642311.07,676326008.78,733251342.1203449,6.0
 2024-02-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,420287131.14,773983568.12,589727128.2024138,6714197.0,231524.0344827586,420287131.14,773983568.12,589727128.2024138,0.0,0.0,0.0,0.0,0.0,0.0,52.0
-2024-02-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,605390293.72,891231971.98,728039521.015862,1226022.0,42276.620689655174,605390293.72,891231971.98,728039521.015862,0.0,0.0,0.0,0.0,0.0,0.0,52.0
+2024-02-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,605390293.72,891231971.98,728039521.015862,1226022.0,42276.620689655174,605390293.72,891231971.98,728039521.015862,0.0,0.0,0.0,0.0,0.0,0.0,52.0
 2024-02-01,mode,34443,L2,True,34443.0,modern,OP Chain,mode,Mode,OP Stack,False,False,True,26511143.74,121645221.68,84904789.77310345,3005973.0,103654.24137931035,26511143.74,121645221.68,84904789.77310345,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2024-02-01,multichain,,,False,,,Other EVMs,,,,False,False,False,22235770.33,27682819.49,24444865.46448276,0.0,,22235770.33,27682819.49,24444865.46448276,0.0,0.0,0.0,0.0,0.0,0.0,41.0
 2024-02-01,mxc,,L3,False,,,Other EVMs,,,Taiko,False,False,True,25433420.68,71748567.53,29149857.20137931,99775.0,3440.5172413793102,25433420.68,71748567.53,29149857.20137931,0.0,0.0,0.0,0.0,0.0,0.0,8.0
@@ -2677,7 +2674,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-03-01,hermez,,L2,False,,,Other EVMs,,,Polygon,False,True,False,323332.87,329303.92,342574.17838709673,0.0,,323332.87,329303.92,342574.17838709673,0.0,0.0,0.0,0.0,0.0,0.0,37.0
 2024-03-01,honeypot,,L2,False,,,Other EVMs,,,,False,False,True,65324.64,81806.34,77507.22935483871,0.0,,65324.64,81806.34,77507.22935483871,0.0,0.0,0.0,0.0,0.0,0.0,7.0
 2024-03-01,hop,,,False,,,Other EVMs,,,,False,False,False,47071947.93,49808486.84,52799217.53903226,0.0,,47071947.93,49808486.84,52799217.53903226,0.0,0.0,0.0,0.0,0.0,0.0,34.0
-2024-03-01,hychain,,L2,False,,,Other EVMs,,,Arbitrum,False,False,True,0.0,1892213.67,1573149.1958064516,214885.0,7958.7037037037035,0.0,1892213.67,1573149.1958064516,0.0,0.0,0.0,0.0,0.0,0.0,4.0
+2024-03-01,hychain,,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,0.75,1892213.67,1875677.8873076923,214885.0,7958.7037037037035,0.75,1892213.67,1875677.8873076923,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2024-03-01,hyphen,,,False,,,Other EVMs,,,,False,False,False,150332.52,176382.29,225146.61967741937,0.0,,150332.52,176382.29,225146.61967741937,0.0,0.0,0.0,0.0,0.0,0.0,25.0
 2024-03-01,hypr,,L2,False,881.0,modern develop,OP Stack fork,hypr network,Hypr,OP Stack,False,False,True,645274.87,645898.78,1049806.610967742,0.0,,645274.87,645898.78,1049806.610967742,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2024-03-01,immutablex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,228525076.77,284976332.16,285912173.7496774,7619109.0,245777.70967741936,228525076.77,284976332.16,285912173.7496774,0.0,0.0,0.0,0.0,0.0,0.0,37.0
@@ -2697,7 +2694,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-03-01,mantapacific,169,L2,False,169.0,modern,OP Stack fork,manta pacific,Manta Pacific,OP Stack,False,False,True,1402925715.89,1402925715.89,2021868217.3387096,1675666.0,54053.74193548387,262448530.49,262448530.49,288438091.1032258,407653585.4,407653585.4,940522631.7435484,668275203.86,732823600.0,792907494.4919355,7.0
 2024-03-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,764459511.5,993641911.85,889061171.6658064,6970085.0,224841.4516129032,764459511.5,993618290.33,889055439.3483871,0.0,23621.52,5732.317419354838,0.0,0.0,0.0,53.0
 2024-03-01,metal,,L2,True,1750.0,modern,OP Chain,metal,Metal,OP Stack,False,False,True,700.77,1575.35,1296.905,21.0,4.2,700.77,1575.35,1296.905,0.0,0.0,0.0,0.0,0.0,0.0,1.0
-2024-03-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,737367879.69,788287302.52,861590211.2116129,1784910.0,57577.74193548387,737367879.69,788287302.52,861590211.2116129,0.0,0.0,0.0,0.0,0.0,0.0,53.0
+2024-03-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,737367879.69,788287302.52,861590211.2116129,1784910.0,57577.74193548387,737367879.69,788287302.52,861590211.2116129,0.0,0.0,0.0,0.0,0.0,0.0,53.0
 2024-03-01,mode,34443,L2,True,34443.0,modern,OP Chain,mode,Mode,OP Stack,False,False,True,124536897.1,247193362.99,175651422.69419357,3097635.0,99923.70967741935,124536897.1,144398257.55,142880782.62580645,0.0,102795105.44,32770640.0683871,0.0,0.0,0.0,5.0
 2024-03-01,multichain,,,False,,,Other EVMs,,,,False,False,False,27994477.88,31392211.94,31234864.79064516,0.0,,27994477.88,31392211.94,31234864.79064516,0.0,0.0,0.0,0.0,0.0,0.0,42.0
 2024-03-01,mxc,,L3,False,,,Other EVMs,,,Taiko,False,False,True,56793281.28,84328883.03,80613179.8583871,106983.0,3451.064516129032,56793281.28,84328883.03,80613179.8583871,0.0,0.0,0.0,0.0,0.0,0.0,9.0
@@ -2726,7 +2723,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-03-01,publicgoodsnetwork,,L2,False,424.0,modern,OP Stack fork,pgn,Public Goods Network,OP Stack,False,False,True,1183555.24,1280326.12,1357834.5887096773,26660.0,860.0,1183555.24,1280326.12,1357834.5887096773,0.0,0.0,0.0,0.0,0.0,0.0,9.0
 2024-03-01,pulseChain,,,False,,,Other EVMs,,,,False,False,False,116687054.32,119203786.0,128043307.23193549,0.0,,116687054.32,119203786.0,128043307.23193549,0.0,0.0,0.0,0.0,0.0,0.0,11.0
 2024-03-01,rari,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,536236.39,594910.97,605928.9564516129,81429.0,2626.7419354838707,536236.39,594910.97,605928.9564516129,0.0,0.0,0.0,0.0,0.0,0.0,3.0
-2024-03-01,real,111188,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,0.0,0.0,0.0,660.0,41.25,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0
+2024-03-01,real,111188,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,,,,660.0,41.25,,,,,,,,,,1.0
 2024-03-01,reddioex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,1772.74,1998.53,1858.0635483870967,0.0,,1772.74,1998.53,1858.0635483870967,0.0,0.0,0.0,0.0,0.0,0.0,19.0
 2024-03-01,reya,1729,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,427.63,1250.89,1107.29,0.0,,427.63,1250.89,1107.29,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2024-03-01,ronin,,,False,,,Other EVMs,,,,False,False,False,1074599697.18,1266506984.67,1262993896.7151613,0.0,,1074599697.18,1266506984.67,1262993896.7151613,0.0,0.0,0.0,0.0,0.0,0.0,39.0
@@ -2801,7 +2798,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-04-01,hermez,,L2,False,,,Other EVMs,,,Polygon,False,True,False,312428.24,326012.66,329911.7793333333,0.0,,312428.24,326012.66,329911.7793333333,0.0,0.0,0.0,0.0,0.0,0.0,38.0
 2024-04-01,honeypot,,L2,False,,,Other EVMs,,,,False,False,True,55906.59,69715.91,72367.80166666667,0.0,,55906.59,69715.91,72367.80166666667,0.0,0.0,0.0,0.0,0.0,0.0,8.0
 2024-04-01,hop,,,False,,,Other EVMs,,,,False,False,False,42919218.58,45714360.72,46597175.21633334,0.0,,42919218.58,45714360.72,46597175.21633334,0.0,0.0,0.0,0.0,0.0,0.0,35.0
-2024-04-01,hychain,,L2,False,,,Other EVMs,,,Arbitrum,False,False,True,1469138.8,1613102.89,2249686.569666667,392060.0,13068.666666666666,1469138.8,1613102.89,2249686.569666667,0.0,0.0,0.0,0.0,0.0,0.0,5.0
+2024-04-01,hychain,,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,1469138.8,1613102.89,2249686.569666667,392060.0,13068.666666666666,1469138.8,1613102.89,2249686.569666667,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2024-04-01,hyphen,,,False,,,Other EVMs,,,,False,False,False,89426.73,103934.5,160347.37966666665,0.0,,89426.73,103934.5,160347.37966666665,0.0,0.0,0.0,0.0,0.0,0.0,26.0
 2024-04-01,hypr,,L2,False,881.0,modern develop,OP Stack fork,hypr network,Hypr,OP Stack,False,False,True,89481.97,89481.97,324388.6373333333,0.0,,89481.97,89481.97,324388.6373333333,0.0,0.0,0.0,0.0,0.0,0.0,4.0
 2024-04-01,immutablex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,168503830.29,190623994.72,214210202.02233332,7182712.0,239423.73333333334,168503830.29,190623994.72,214210202.02233332,0.0,0.0,0.0,0.0,0.0,0.0,38.0
@@ -2821,7 +2818,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-04-01,mantapacific,169,L2,False,169.0,modern,OP Stack fork,manta pacific,Manta Pacific,OP Stack,False,False,True,875997246.82,883114061.62,1072982598.703,1886368.0,62878.933333333334,175261607.96,181254030.03,200400967.55866668,250841260.34,250841260.34,306015074.401,436130446.2,451018771.25,566566556.7433333,8.0
 2024-04-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,1038400654.27,1241441966.38,1277887071.2519999,8609075.0,286969.1666666667,993084239.26,1046578586.75,1096856949.0223334,23656.71,194863379.63,181030122.22966668,0.0,0.0,0.0,54.0
 2024-04-01,metal,,L2,True,1750.0,modern,OP Chain,metal,Metal,OP Stack,False,False,True,1520.12,2543.12,2175.686,31.0,1.0333333333333334,1520.12,2543.12,2175.686,0.0,0.0,0.0,0.0,0.0,0.0,2.0
-2024-04-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,483634240.48,536429343.78,617402509.6536667,1181293.0,39376.433333333334,483634240.48,536429343.78,617402509.6536667,0.0,0.0,0.0,0.0,0.0,0.0,54.0
+2024-04-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,483634240.48,536429343.78,617402509.6536667,1181293.0,39376.433333333334,483634240.48,536429343.78,617402509.6536667,0.0,0.0,0.0,0.0,0.0,0.0,54.0
 2024-04-01,mode,34443,L2,True,34443.0,modern,OP Chain,mode,Mode,OP Stack,False,False,True,240514576.78,471831200.68,329439284.91233337,5541991.0,184733.03333333333,135344008.24,165256869.08,147148246.85966668,102437375.97,306574331.6,182291038.05266666,0.0,0.0,0.0,6.0
 2024-04-01,molten,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,366.59,45420.2,28019.362142857142,332466.0,11464.344827586207,366.59,45420.2,28019.362142857142,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2024-04-01,multichain,,,False,,,Other EVMs,,,,False,False,False,24520540.37,26434974.82,27869754.497333333,0.0,,24520540.37,26434974.82,27869754.497333333,0.0,0.0,0.0,0.0,0.0,0.0,43.0
@@ -2851,7 +2848,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-04-01,publicgoodsnetwork,,L2,False,424.0,modern,OP Stack fork,pgn,Public Goods Network,OP Stack,False,False,True,1072265.72,1141848.53,1165243.9376666667,14368.0,478.93333333333334,1072265.72,1141848.53,1165243.9376666667,0.0,0.0,0.0,0.0,0.0,0.0,10.0
 2024-04-01,pulseChain,,,False,,,Other EVMs,,,,False,False,False,99017313.88,99017313.88,106884932.38666667,0.0,,99017313.88,99017313.88,106884932.38666667,0.0,0.0,0.0,0.0,0.0,0.0,12.0
 2024-04-01,rari,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,518640.69,551664.78,562994.3156666666,76659.0,2555.3,518640.69,551664.78,562994.3156666666,0.0,0.0,0.0,0.0,0.0,0.0,4.0
-2024-04-01,real,111188,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,0.0,0.0,0.0,49281.0,1642.7,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2.0
+2024-04-01,real,111188,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,,,,49281.0,1642.7,,,,,,,,,,2.0
 2024-04-01,reddioex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,1987.58,2313.08,2047.2333333333333,0.0,,1987.58,2313.08,2047.2333333333333,0.0,0.0,0.0,0.0,0.0,0.0,20.0
 2024-04-01,redstone,,L2,True,690.0,modern,OP Chain,redstone,Redstone,OP Stack,False,False,True,0.0,31768.31,10921.031481481481,66299.0,2367.8214285714284,0.0,31768.31,10921.031481481481,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2024-04-01,reya,1729,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,1168.42,73467388.46,16162726.202666666,0.0,,1168.42,67202.42,24031.768,0.0,73400186.04,16138694.434666667,0.0,0.0,0.0,2.0
@@ -2902,7 +2899,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-05-01,blast,81457,L2,False,81457.0,modern,OP Stack fork,blast,Blast,OP Stack,False,False,True,2575588911.29,3372065527.41,2935577491.592258,19411041.0,626162.6129032258,1903387222.54,2435570693.83,2141607160.8296773,611829464.35,833273915.45,701631862.3132257,40208608.79,103220918.13,92338468.44935483,7.0
 2024-05-01,bob,60808,L2,False,60808.0,modern,OP Stack fork,bob,BOB (Build on Bitcoin),OP Stack,False,False,True,330069.96,137017586.38,124911698.92741935,1350876.0,43576.645161290326,330069.96,137017586.38,124911698.92741935,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2024-05-01,bobanetwork,288,L2,False,288.0,legacy ovm,OP Stack fork,boba network,Boba,OP Stack,False,False,True,17521898.47,19296693.27,19098207.46419355,9549.0,308.03225806451616,17451021.79,19225880.29,19027377.58935484,0.0,0.0,0.0,70025.6,70812.98,70829.87483870969,34.0
-2024-05-01,bridge,,,False,,,Other EVMs,,,,False,False,False,8275573798.05,9338897740.72,8939763783.773226,0.0,,8275573798.05,9338897740.72,8939763783.773226,0.0,0.0,0.0,0.0,0.0,0.0,55.0
+2024-05-01,bridge,,,False,,,Other EVMs,,,,False,False,False,8275573798.05,9396569996.65,8944742998.01516,0.0,,8275573798.05,9396569996.65,8944742998.01516,0.0,0.0,0.0,0.0,0.0,0.0,55.0
 2024-05-01,brine,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,1340709.63,1557534.1,1479884.1283870966,1809500.0,58370.967741935485,1340709.63,1557534.1,1479884.1283870966,0.0,0.0,0.0,0.0,0.0,0.0,23.0
 2024-05-01,canvasconnect,,L2,False,,,Other EVMs,,,StarkEx,False,True,False,14143.26,18188.82,16019.745161290322,0.0,,14143.26,18188.82,16019.745161290322,0.0,0.0,0.0,0.0,0.0,0.0,16.0
 2024-05-01,cbridge,,,False,,,Other EVMs,,,,False,False,False,72461577.64,77816432.22,75279705.83290324,0.0,,72461577.64,77816432.22,75279705.83290324,0.0,0.0,0.0,0.0,0.0,0.0,30.0
@@ -2927,7 +2924,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-05-01,hermez,,L2,False,,,Other EVMs,,,Polygon,False,True,False,308880.78,347083.46,330267.15741935483,0.0,,308880.78,347083.46,330267.15741935483,0.0,0.0,0.0,0.0,0.0,0.0,39.0
 2024-05-01,honeypot,,L2,False,,,Other EVMs,,,,False,False,True,70412.61,117919.98,91196.67870967742,0.0,,70412.61,117919.98,91196.67870967742,0.0,0.0,0.0,0.0,0.0,0.0,9.0
 2024-05-01,hop,,,False,,,Other EVMs,,,,False,False,False,40794587.84,51217308.31,46016758.70451613,0.0,,40794587.84,51217308.31,46016758.70451613,0.0,0.0,0.0,0.0,0.0,0.0,36.0
-2024-05-01,hychain,,L2,False,,,Other EVMs,,,Arbitrum,False,False,True,1347586.94,3171715.1,2255308.9041935485,463489.0,14951.258064516129,1347586.94,3171715.1,2255308.9041935485,0.0,0.0,0.0,0.0,0.0,0.0,6.0
+2024-05-01,hychain,,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,1347586.94,3171715.1,2255308.9041935485,463489.0,14951.258064516129,1347586.94,3171715.1,2255308.9041935485,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2024-05-01,hyphen,,,False,,,Other EVMs,,,,False,False,False,78498.73,301239.74,200343.90451612903,0.0,,78498.73,301239.74,200343.90451612903,0.0,0.0,0.0,0.0,0.0,0.0,27.0
 2024-05-01,hypr,,L2,False,881.0,modern develop,OP Stack fork,hypr network,Hypr,OP Stack,False,False,True,74159.81,93062.44,84967.07258064517,0.0,,74159.81,93062.44,84967.07258064517,0.0,0.0,0.0,0.0,0.0,0.0,5.0
 2024-05-01,immutablex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,176590358.82,189014645.34,198451090.0703226,6759338.0,218043.16129032258,176590358.82,189014645.34,198451090.0703226,0.0,0.0,0.0,0.0,0.0,0.0,39.0
@@ -2935,7 +2932,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-05-01,karak,,L2,False,2410.0,modern,OP Stack fork,karak,Karak,OP Stack,False,False,True,84911147.99,106445387.93,95800605.24935484,14117.0,455.38709677419354,84911147.99,106445387.93,95800605.24935484,0.0,0.0,0.0,0.0,0.0,0.0,6.0
 2024-05-01,kinto,7887,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,11719900.83,22536761.32,19988928.64580645,44019.0,1419.967741935484,204278.64,285816.6,12615771.484193549,0.0,22250944.72,7373157.161612903,0.0,0.0,0.0,6.0
 2024-05-01,kroma,255,L2,True,255.0,modern,OP Chain,kroma network,Kroma,OP Stack,False,False,True,13348410.52,17680425.56,15583073.829032257,2828372.0,91237.80645161291,6357736.18,11689637.83,8722986.526129032,5990787.73,5990787.73,6860087.302903226,0.0,0.0,0.0,9.0
-2024-05-01,layer2,,,False,,,Other EVMs,,,,False,False,False,38014446487.78,46925559460.79,42000097147.57161,0.0,,22690470098.26,27829833123.75,25018438794.84,3186925007.77,4449427792.5,3806020280.9058065,11883414017.18,14646298544.54,13175638071.825806,55.0
+2024-05-01,layer2,,,False,,,Other EVMs,,,,False,False,False,38014446486.24,46924286110.64,41999438455.44161,0.0,,22690470096.72,27828559773.6,25017780102.71,3186925007.77,4449427792.5,3806020280.9058065,11883414017.18,14646298544.54,13175638071.825806,55.0
 2024-05-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,167853.39,168157.49,168085.28096774194,0.0,,167853.39,168157.49,168085.28096774194,0.0,0.0,0.0,0.0,0.0,0.0,38.0
 2024-05-01,layer2financezk,,L2,False,,,Other EVMs,,,StarkEx,False,True,False,4823.21,5543.42,5155.892903225807,0.0,,4823.21,5543.42,5155.892903225807,0.0,0.0,0.0,0.0,0.0,0.0,28.0
 2024-05-01,layer3,,,False,,,Other EVMs,,,,False,False,False,14794118.66,19051066.25,17821655.845806453,0.0,,14794118.66,19051066.25,17821655.845806453,0.0,0.0,0.0,0.0,0.0,0.0,11.0
@@ -2947,7 +2944,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-05-01,mantapacific,169,L2,False,169.0,modern,OP Stack fork,manta pacific,Manta Pacific,OP Stack,False,False,True,709152478.48,994284719.92,801679648.7032257,2245069.0,72421.58064516129,161367912.19,205246052.24,182372216.3283871,102588152.95,223099179.59,181291965.2767742,361697689.85,565939488.09,438015467.09806454,9.0
 2024-05-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,1118429435.96,1250263139.8,1206640518.1670969,9037052.0,291517.8064516129,948969616.31,1100506644.28,1040241420.3651613,149756495.52,149756495.52,166399097.80193546,0.0,0.0,0.0,55.0
 2024-05-01,metal,,L2,True,1750.0,modern,OP Chain,metal,Metal,OP Stack,False,False,True,2358.78,4838.49,3448.9387096774194,121.0,3.903225806451613,2358.78,4838.49,3448.9387096774194,0.0,0.0,0.0,0.0,0.0,0.0,3.0
-2024-05-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,451756680.84,619223067.12,538850773.0029032,615705.0,19861.451612903227,451756680.84,619223067.12,538850773.0029032,0.0,0.0,0.0,0.0,0.0,0.0,55.0
+2024-05-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,451756680.84,619223067.12,538850773.0029032,615705.0,19861.451612903227,451756680.84,619223067.12,538850773.0029032,0.0,0.0,0.0,0.0,0.0,0.0,55.0
 2024-05-01,mint,185,L2,True,185.0,modern,OP Chain,mint,Mint,OP Stack,False,False,True,589.41,535651.8,282021.24388888886,258457.0,13603.0,589.41,535651.8,282021.24388888886,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2024-05-01,mode,34443,L2,True,34443.0,modern,OP Chain,mode,Mode,OP Stack,False,False,True,443300688.35,711609361.07,660079029.5616128,7298778.0,235444.4516129032,137320748.15,140157763.67,149981670.7587097,287076687.12,526212165.56,468030531.01193553,0.0,45239431.84,42066827.79096774,7.0
 2024-05-01,molten,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,44508.66,71670.13,65751.96161290322,698448.0,22530.58064516129,44508.66,71670.13,65751.96161290322,0.0,0.0,0.0,0.0,0.0,0.0,2.0
@@ -2978,7 +2975,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-05-01,publicgoodsnetwork,,L2,False,424.0,modern,OP Stack fork,pgn,Public Goods Network,OP Stack,False,False,True,980899.43,1126894.57,1095554.8106451614,6112.0,197.16129032258064,980899.43,1126894.57,1095554.8106451614,0.0,0.0,0.0,0.0,0.0,0.0,11.0
 2024-05-01,pulseChain,,,False,,,Other EVMs,,,,False,False,False,93210671.02,94737125.82,95185013.10258064,0.0,,93210671.02,94737125.82,95185013.10258064,0.0,0.0,0.0,0.0,0.0,0.0,13.0
 2024-05-01,rari,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,480304.12,577427.5,533075.9074193549,46279.0,1492.8709677419354,480304.12,577427.5,533075.9074193549,0.0,0.0,0.0,0.0,0.0,0.0,5.0
-2024-05-01,real,111188,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,0.0,1273350.15,658692.13,76295.0,2461.1290322580644,0.0,1273350.15,658692.13,0.0,0.0,0.0,0.0,0.0,0.0,3.0
+2024-05-01,real,111188,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,,,,76295.0,2461.1290322580644,,,,,,,,,,3.0
 2024-05-01,reddioex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,2283.67,2752.43,2561.688387096774,0.0,,2283.67,2752.43,2561.688387096774,0.0,0.0,0.0,0.0,0.0,0.0,21.0
 2024-05-01,redstone,,L2,True,690.0,modern,OP Chain,redstone,Redstone,OP Stack,False,False,True,47895.71,2616326.97,2075953.676451613,2275756.0,73411.48387096774,47895.71,2616326.97,2075953.676451613,0.0,0.0,0.0,0.0,0.0,0.0,2.0
 2024-05-01,reya,1729,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,67200664.09,67200664.09,79210477.41741936,0.0,,63102.93,302391.16,184808.29903225804,66898272.93,66898272.93,79025669.1183871,0.0,0.0,0.0,3.0
@@ -2993,6 +2990,7 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-05-01,sorare,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,20633287.19,26293235.81,23190578.509677418,1352284.0,43622.06451612903,20633287.19,26293235.81,23190578.509677418,0.0,0.0,0.0,0.0,0.0,0.0,35.0
 2024-05-01,stack,,L3,False,,,Other EVMs,,,OP Stack,False,False,True,954.33,2335.07,1406.256129032258,435901.0,14061.322580645161,954.33,2335.07,1406.256129032258,0.0,0.0,0.0,0.0,0.0,0.0,3.0
 2024-05-01,stargate,,,False,,,Other EVMs,,,,False,False,False,30261955.22,30261955.22,51755007.80580645,0.0,,30261955.22,30261955.22,51755007.80580645,0.0,0.0,0.0,0.0,0.0,0.0,27.0
+2024-05-01,stargatev2,,,False,,,Other EVMs,,,,False,False,False,0.0,57672255.93,38588910.375,0.0,,0.0,57672255.93,38588910.375,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 2024-05-01,starknet,,L2,False,,,Other EVMs,,,Starknet,False,False,True,924536661.31,1055723691.83,1027503464.9974192,2732485.0,88144.67741935483,924536661.31,1055723691.83,1027503464.9974192,0.0,0.0,0.0,0.0,0.0,0.0,31.0
 2024-05-01,sygma,,,False,,,Other EVMs,,,,False,False,False,121736809.55,134986571.5,137078327.14225805,0.0,,121736809.55,134986571.5,137078327.14225805,0.0,0.0,0.0,0.0,0.0,0.0,12.0
 2024-05-01,symbiosis,,,False,,,Other EVMs,,,,False,False,False,3206478.27,3435396.65,3476238.5451612906,0.0,,3206478.27,3435396.65,3476238.5451612906,0.0,0.0,0.0,0.0,0.0,0.0,19.0
@@ -3012,132 +3010,133 @@ month,chain,chainId,layer,is_op_chain,mainnet_chain_id,op_based_version,alignmen
 2024-05-01,zksync,,L2,False,,,Other EVMs,,,ZKsync Lite,False,False,True,74577622.96,92133582.09,83023272.35032259,211112.0,6810.064516129032,74577622.96,92133582.09,83023272.35032259,0.0,0.0,0.0,0.0,0.0,0.0,48.0
 2024-05-01,zksync2,324,L2,False,,,Other EVMs,,,ZK Stack,False,False,True,795525592.47,864672513.66,847103195.9161291,24108408.0,777690.5806451613,736670376.48,795194450.78,779760963.1451613,0.0,0.0,0.0,57518733.08,69478062.88,67342232.77096775,16.0
 2024-05-01,zora,,L2,True,7777777.0,modern,OP Chain,zora,Zora,OP Stack,False,False,True,26293070.43,32432369.37,30435089.37387097,3014437.0,97239.90322580645,26293070.43,32432369.37,30435089.37387097,0.0,0.0,0.0,0.0,0.0,0.0,12.0
-2024-06-01,across-v3,,,False,,,Other EVMs,,,,False,False,False,120645609.04,127095869.18,124425018.9775,0.0,,120645609.04,127095869.18,124425018.9775,0.0,0.0,0.0,0.0,0.0,0.0,26.0
-2024-06-01,aevo,2999,L2,False,,legacy bedrock,OP Stack fork,aevo,Aevo,OP Stack,False,False,True,73353529.02,75664347.94,74491824.21375,18756.0,1172.25,29348231.91,30467476.23,30365371.4475,43094815.05,45196871.71,44126452.76625,0.0,0.0,0.0,16.0
-2024-06-01,allbridge,,,False,,,Other EVMs,,,,False,False,False,1243524.81,1243524.81,1281396.764375,0.0,,1243524.81,1243524.81,1281396.764375,0.0,0.0,0.0,0.0,0.0,0.0,32.0
-2024-06-01,amarok,,,False,,,Other EVMs,,,,False,False,False,1070859969.83,1106059594.23,1133842742.0618749,0.0,,1070859969.83,1106059594.23,1133842742.0618749,0.0,0.0,0.0,0.0,0.0,0.0,19.0
-2024-06-01,ancient,,L2,False,888888888.0,modern,OP Stack fork,ancient8 chain,Ancient8,OP Stack,False,False,True,778322.63,793924.24,832385.825625,235552.0,14722.0,778322.63,793924.24,832385.825625,0.0,0.0,0.0,0.0,0.0,0.0,6.0
-2024-06-01,ankr,,,False,,,Other EVMs,,,,False,False,False,4885004.04,5000681.76,5212653.665,0.0,,4885004.04,5000681.76,5212653.665,0.0,0.0,0.0,0.0,0.0,0.0,28.0
-2024-06-01,apex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,86842317.22,86853411.34,89762143.674375,2824050.0,176503.125,86842317.22,86853411.34,89762143.674375,0.0,0.0,0.0,0.0,0.0,0.0,23.0
-2024-06-01,aptos,,,False,,,Other EVMs,,,,False,False,False,19504368.56,23132086.72,20620916.026875,0.0,,19504368.56,23132086.72,20620916.026875,0.0,0.0,0.0,0.0,0.0,0.0,21.0
-2024-06-01,arbitrum,42161,L2,False,,,Other EVMs,,,Arbitrum,False,False,True,17710467786.37,17986639119.83,18882416086.906876,30968509.0,1935531.8125,11246828684.02,11449100408.54,11745154521.42375,1693802889.06,1723710550.86,1858377570.348125,4769836213.29,4813828160.43,5278883995.135,38.0
-2024-06-01,astarzkevm,,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,79197.0,4949.8125,,,,,,,,,,56.0
-2024-06-01,avalanche,43114,L1,False,,,Other EVMs,,,,False,False,True,265807589.53,267654157.37,277315256.93875,0.0,,265807589.53,267654157.37,277315256.93875,0.0,0.0,0.0,0.0,0.0,0.0,33.0
-2024-06-01,aztec,,L2,False,,,Other EVMs,,,,False,True,False,4289233.0,4394818.41,4531858.773125,0.0,,4289233.0,4394818.41,4531858.773125,0.0,0.0,0.0,0.0,0.0,0.0,79.0
-2024-06-01,aztec,,L2,False,,,Other EVMs,,,,True,False,False,4289233.0,4394818.41,4531858.773125,0.0,,4289233.0,4394818.41,4531858.773125,0.0,0.0,0.0,0.0,0.0,0.0,79.0
-2024-06-01,aztecconnect,,L2,False,,,Other EVMs,,,,False,True,False,4138470.22,4240009.85,4386963.839375,0.0,,4138470.22,4240009.85,4386963.839375,0.0,0.0,0.0,0.0,0.0,0.0,25.0
-2024-06-01,base,8453,L2,True,8453.0,modern,OP Chain,base,Base,OP Stack,False,False,True,7177336773.03,7446304419.42,7630833834.1206255,43777009.0,2736063.0625,2045108592.95,2101182719.49,2130086703.344375,13453236.58,14120812.18,14425433.79625,5034384919.49,5331000887.75,5486321696.98,13.0
+2024-06-01,across-v3,,,False,,,Other EVMs,,,,False,False,False,120645609.04,128178090.01,124645787.86176471,0.0,,120645609.04,128178090.01,124645787.86176471,0.0,0.0,0.0,0.0,0.0,0.0,26.0
+2024-06-01,aevo,2999,L2,False,,legacy bedrock,OP Stack fork,aevo,Aevo,OP Stack,False,False,True,73353529.02,76687163.11,74620961.79588234,22005.0,1294.4117647058824,29348231.91,30640862.28,30381576.790588234,43094815.05,46046300.83,44239385.00529412,0.0,0.0,0.0,16.0
+2024-06-01,allbridge,,,False,,,Other EVMs,,,,False,False,False,1243524.81,1246196.17,1279326.1411764706,0.0,,1243524.81,1246196.17,1279326.1411764706,0.0,0.0,0.0,0.0,0.0,0.0,32.0
+2024-06-01,amarok,,,False,,,Other EVMs,,,,False,False,False,1070859969.83,1120729305.39,1133071363.4341178,0.0,,1070859969.83,1120729305.39,1133071363.4341178,0.0,0.0,0.0,0.0,0.0,0.0,19.0
+2024-06-01,ancient,,L2,False,888888888.0,modern,OP Stack fork,ancient8 chain,Ancient8,OP Stack,False,False,True,778322.63,806374.5,830855.7476470589,248619.0,14624.64705882353,778322.63,806374.5,830855.7476470589,0.0,0.0,0.0,0.0,0.0,0.0,6.0
+2024-06-01,ankr,,,False,,,Other EVMs,,,,False,False,False,4885004.04,5238635.4,5214182.002352942,0.0,,4885004.04,5238635.4,5214182.002352942,0.0,0.0,0.0,0.0,0.0,0.0,28.0
+2024-06-01,apex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,86842317.22,86887345.29,89593037.88705882,3000046.0,176473.29411764705,86842317.22,86887345.29,89593037.88705882,0.0,0.0,0.0,0.0,0.0,0.0,23.0
+2024-06-01,aptos,,,False,,,Other EVMs,,,,False,False,False,19504368.56,19892016.12,20578039.561764706,0.0,,19504368.56,19892016.12,20578039.561764706,0.0,0.0,0.0,0.0,0.0,0.0,21.0
+2024-06-01,arbitrum,42161,L2,False,,,Other EVMs,,,Arbitrum,False,False,True,17710467786.37,18157615069.29,18839780732.929413,32923809.0,1936694.6470588236,11246828684.02,11575226236.91,11735158739.981766,1693802889.06,1729812269.12,1850814905.57,4769836213.29,4852576563.26,5253807087.377647,38.0
+2024-06-01,astarzkevm,,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,85413.0,5024.294117647059,,,,,,,,,,56.0
+2024-06-01,avalanche,43114,L1,False,,,Other EVMs,,,,False,False,True,265807589.53,268848590.37,276817217.72882354,0.0,,265807589.53,268848590.37,276817217.72882354,0.0,0.0,0.0,0.0,0.0,0.0,33.0
+2024-06-01,aztec,,L2,False,,,Other EVMs,,,,False,True,False,4289233.0,4459967.36,4527629.866470588,0.0,,4289233.0,4459967.36,4527629.866470588,0.0,0.0,0.0,0.0,0.0,0.0,79.0
+2024-06-01,aztec,,L2,False,,,Other EVMs,,,,True,False,False,4289233.0,4459967.36,4527629.866470588,0.0,,4289233.0,4459967.36,4527629.866470588,0.0,0.0,0.0,0.0,0.0,0.0,79.0
+2024-06-01,aztecconnect,,L2,False,,,Other EVMs,,,,False,True,False,4138470.22,4302119.32,4381972.985294118,0.0,,4138470.22,4302119.32,4381972.985294118,0.0,0.0,0.0,0.0,0.0,0.0,25.0
+2024-06-01,base,8453,L2,True,8453.0,modern,OP Chain,base,Base,OP Stack,False,False,True,7177336773.03,7645887496.92,7631719343.69706,46793268.0,2752545.1764705884,2045108592.95,2130899406.24,2130134509.3970587,13453236.58,14361180.15,14421654.17,5034384919.49,5500626910.53,5487163180.13,13.0
 2024-06-01,beamer-bridge-v2,,,False,,,Other EVMs,,,,False,False,False,0.0,0.0,0.0,0.0,,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,16.0
-2024-06-01,blast,81457,L2,False,81457.0,modern,OP Stack fork,blast,Blast,OP Stack,False,False,True,3048477889.81,3133192973.3,3259922876.955,13241919.0,827619.9375,2159530728.1,2220815831.92,2320011039.735625,822463727.38,842671825.7,845040476.71625,66483434.33,69705315.68,94871360.503125,8.0
-2024-06-01,bob,60808,L2,False,60808.0,modern,OP Stack fork,bob,BOB (Build on Bitcoin),OP Stack,False,False,True,126697777.69,127087051.67,136242902.32,608684.0,38042.75,126697777.69,127087051.67,136242902.32,0.0,0.0,0.0,0.0,0.0,0.0,3.0
-2024-06-01,bobanetwork,288,L2,False,288.0,legacy ovm,OP Stack fork,boba network,Boba,OP Stack,False,False,True,17067733.51,17067733.51,18328929.933125,9015.0,563.4375,16996955.26,16996955.26,18258106.1325,0.0,0.0,0.0,70675.13,70778.25,70823.800625,35.0
-2024-06-01,bridge,,,False,,,Other EVMs,,,,False,False,False,8723317489.74,8867166240.87,9236618453.490625,0.0,,8723317489.74,8867166240.87,9236618453.490625,0.0,0.0,0.0,0.0,0.0,0.0,56.0
-2024-06-01,brine,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,1443224.59,1456413.0,1509411.993125,955500.0,59718.75,1443224.59,1456413.0,1509411.993125,0.0,0.0,0.0,0.0,0.0,0.0,24.0
-2024-06-01,canvasconnect,,L2,False,,,Other EVMs,,,StarkEx,False,True,False,16920.26,17339.07,17884.374375,0.0,,16920.26,17339.07,17884.374375,0.0,0.0,0.0,0.0,0.0,0.0,17.0
-2024-06-01,cbridge,,,False,,,Other EVMs,,,,False,False,False,68340347.52,68536508.08,72112940.028125,0.0,,68340347.52,68536508.08,72112940.028125,0.0,0.0,0.0,0.0,0.0,0.0,31.0
-2024-06-01,chainport,,,False,,,Other EVMs,,,,False,False,False,193599408.0,193599408.0,211974651.2,0.0,,193599408.0,193599408.0,211974651.2,0.0,0.0,0.0,0.0,0.0,0.0,36.0
-2024-06-01,connext,,,False,,,Other EVMs,,,,False,False,False,5869.23,5869.8,5871.085625,0.0,,5869.23,5869.8,5871.085625,0.0,0.0,0.0,0.0,0.0,0.0,32.0
-2024-06-01,cyber,,L2,False,,,Other EVMs,,,OP Stack,False,False,True,489121.66,1318736.85,616579.56375,1322397.0,82649.8125,489121.66,1318736.85,616579.56375,0.0,0.0,0.0,0.0,0.0,0.0,3.0
-2024-06-01,debridge,,,False,,,Other EVMs,,,,False,False,False,343363.24,348996.45,349975.188125,0.0,,343363.24,348996.45,349975.188125,0.0,0.0,0.0,0.0,0.0,0.0,32.0
+2024-06-01,blast,81457,L2,False,81457.0,modern,OP Stack fork,blast,Blast,OP Stack,False,False,True,3048477889.81,3170033332.75,3254635256.707647,14232419.0,837201.1176470588,2159530728.1,2253349589.26,2316089777.942941,822463727.38,847148909.9,845164502.1976471,66483434.33,69534833.59,93380976.56705883,8.0
+2024-06-01,bob,60808,L2,False,60808.0,modern,OP Stack fork,bob,BOB (Build on Bitcoin),OP Stack,False,False,True,126697777.69,127247773.07,135713777.07,646386.0,38022.705882352944,126697777.69,127247773.07,135713777.07,0.0,0.0,0.0,0.0,0.0,0.0,3.0
+2024-06-01,bobanetwork,288,L2,False,288.0,legacy ovm,OP Stack fork,boba network,Boba,OP Stack,False,False,True,17067733.51,17354844.15,18271630.769411765,10015.0,589.1176470588235,16996955.26,17284053.85,18200808.939411767,0.0,0.0,0.0,70675.13,70790.3,70821.83,35.0
+2024-06-01,bridge,,,False,,,Other EVMs,,,,False,False,False,8815796960.39,9014353185.61,9299916704.545294,0.0,,8815796960.39,9014353185.61,9299916704.545294,0.0,0.0,0.0,0.0,0.0,0.0,56.0
+2024-06-01,brine,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,1443224.59,1462605.8,1506658.6876470589,1015000.0,59705.882352941175,1443224.59,1462605.8,1506658.6876470589,0.0,0.0,0.0,0.0,0.0,0.0,24.0
+2024-06-01,canvasconnect,,L2,False,,,Other EVMs,,,StarkEx,False,True,False,16920.26,17596.5,17867.440588235295,0.0,,16920.26,17596.5,17867.440588235295,0.0,0.0,0.0,0.0,0.0,0.0,17.0
+2024-06-01,cbridge,,,False,,,Other EVMs,,,,False,False,False,68340347.52,68762100.52,71915831.82176471,0.0,,68340347.52,68762100.52,71915831.82176471,0.0,0.0,0.0,0.0,0.0,0.0,31.0
+2024-06-01,chainport,,,False,,,Other EVMs,,,,False,False,False,193599408.0,194161967.49,210926846.27588236,0.0,,193599408.0,194161967.49,210926846.27588236,0.0,0.0,0.0,0.0,0.0,0.0,36.0
+2024-06-01,connext,,,False,,,Other EVMs,,,,False,False,False,5869.23,5870.32,5871.040588235294,0.0,,5869.23,5870.32,5871.040588235294,0.0,0.0,0.0,0.0,0.0,0.0,32.0
+2024-06-01,cyber,,L2,False,,,Other EVMs,,,OP Stack,False,False,True,489121.66,1487994.02,667839.2376470588,1453410.0,85494.70588235294,489121.66,1487994.02,667839.2376470588,0.0,0.0,0.0,0.0,0.0,0.0,3.0
+2024-06-01,debridge,,,False,,,Other EVMs,,,,False,False,False,343363.24,352419.79,350118.9882352941,0.0,,343363.24,352419.79,350118.9882352941,0.0,0.0,0.0,0.0,0.0,0.0,32.0
 2024-06-01,degate,,L2,False,,,Other EVMs,,,Loopring,False,True,False,0.0,0.0,0.0,0.0,,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,15.0
-2024-06-01,degate2,,L2,False,,,Other EVMs,,,Loopring,False,True,False,59742.04,78138.09,79450.605,0.0,,59742.04,78138.09,79450.605,0.0,0.0,0.0,0.0,0.0,0.0,11.0
-2024-06-01,degate3,,L2,False,,,Other EVMs,,,Loopring,False,False,True,61770600.3,63440367.7,62931590.139375,35157.0,2197.3125,61770600.3,63440367.7,62931590.139375,0.0,0.0,0.0,0.0,0.0,0.0,8.0
-2024-06-01,degen,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,6524974.44,6524974.44,8944596.673125,9408138.0,588008.625,6524974.44,6524974.44,8944596.673125,0.0,0.0,0.0,0.0,0.0,0.0,4.0
-2024-06-01,deri,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,19822.82,20334.58,21000.87,0.0,,19822.82,20334.58,21000.87,0.0,0.0,0.0,0.0,0.0,0.0,8.0
-2024-06-01,deversifi,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,42817699.51,43488361.39,45098973.45375,372986.0,23311.625,42817699.51,43488361.39,45098973.45375,0.0,0.0,0.0,0.0,0.0,0.0,50.0
-2024-06-01,dydx,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,307595310.12,307595310.12,325744870.31625,1072158.0,67009.875,307595310.12,307595310.12,325744870.31625,0.0,0.0,0.0,0.0,0.0,0.0,41.0
-2024-06-01,edgeless,,L2,False,,,Other EVMs,,,Arbitrum,False,False,True,74791.39,76880.35,79226.696875,19.0,1.1875,74791.39,76880.35,79226.696875,0.0,0.0,0.0,0.0,0.0,0.0,4.0
-2024-06-01,fraxferry,,,False,,,Other EVMs,,,,False,False,False,32621731.01,39399307.09,40145920.08625,0.0,,32621731.01,39399307.09,40145920.08625,0.0,0.0,0.0,0.0,0.0,0.0,20.0
-2024-06-01,fraxtal,252,L2,True,252.0,modern,OP Chain,fraxtal,Fraxtal,OP Stack,False,False,True,63031132.92,64718725.43,64329423.4875,71040.0,4440.0,62978961.65,64638436.59,64264971.08625,52061.6,80288.84,64452.40125,0.0,0.0,0.0,5.0
-2024-06-01,fuelv1,,L2,False,,,Other EVMs,,,,False,False,True,891.12,913.65,943.006875,0.0,,891.12,913.65,943.006875,0.0,0.0,0.0,0.0,0.0,0.0,41.0
-2024-06-01,gluon,,L2,False,,,Other EVMs,,,,False,True,False,35999.31,36580.77,37359.37375,0.0,,35999.31,36580.77,37359.37375,0.0,0.0,0.0,0.0,0.0,0.0,56.0
-2024-06-01,gravity,,,False,,,Other EVMs,,,,False,False,False,16404531.58,16568673.71,17152215.804375,0.0,,16404531.58,16568673.71,17152215.804375,0.0,0.0,0.0,0.0,0.0,0.0,31.0
-2024-06-01,harmony,,,False,,,Other EVMs,,,,False,False,False,414467.76,423145.41,436631.5075,0.0,,414467.76,423145.41,436631.5075,0.0,0.0,0.0,0.0,0.0,0.0,45.0
-2024-06-01,hermez,,L2,False,,,Other EVMs,,,Polygon,False,True,False,336905.88,348469.12,347778.45625,0.0,,336905.88,348469.12,347778.45625,0.0,0.0,0.0,0.0,0.0,0.0,40.0
-2024-06-01,honeypot,,L2,False,,,Other EVMs,,,,False,False,True,109586.19,109586.19,120870.198125,0.0,,109586.19,109586.19,120870.198125,0.0,0.0,0.0,0.0,0.0,0.0,10.0
-2024-06-01,hop,,,False,,,Other EVMs,,,,False,False,False,47320651.51,48813860.59,50122131.418125,0.0,,47320651.51,48813860.59,50122131.418125,0.0,0.0,0.0,0.0,0.0,0.0,37.0
-2024-06-01,hychain,,L2,False,,,Other EVMs,,,Arbitrum,False,False,True,2387915.22,2475135.54,2654307.9925,227646.0,14227.875,2387915.22,2475135.54,2654307.9925,0.0,0.0,0.0,0.0,0.0,0.0,7.0
-2024-06-01,hyphen,,,False,,,Other EVMs,,,,False,False,False,231756.23,247759.01,278593.744375,0.0,,231756.23,247759.01,278593.744375,0.0,0.0,0.0,0.0,0.0,0.0,28.0
-2024-06-01,hypr,,L2,False,881.0,modern develop,OP Stack fork,hypr network,Hypr,OP Stack,False,False,True,86777.37,89297.72,93982.71375,0.0,,86777.37,89297.72,93982.71375,0.0,0.0,0.0,0.0,0.0,0.0,6.0
-2024-06-01,immutablex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,152338692.58,152758940.61,176463946.530625,2405759.0,150359.9375,152338692.58,152758940.61,176463946.530625,0.0,0.0,0.0,0.0,0.0,0.0,40.0
-2024-06-01,immutablezkevm,,,False,,,Other EVMs,,,,False,False,False,32547589.85,32814900.82,39767948.640625,0.0,,32547589.85,32814900.82,39767948.640625,0.0,0.0,0.0,0.0,0.0,0.0,7.0
-2024-06-01,karak,,L2,False,2410.0,modern,OP Stack fork,karak,Karak,OP Stack,False,False,True,86520053.79,87405079.7,99030213.80125,5084.0,317.75,86520053.79,87405079.7,99030213.80125,0.0,0.0,0.0,0.0,0.0,0.0,7.0
-2024-06-01,kinto,7887,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,19999033.6,20923327.92,21417292.754375,7371.0,460.6875,291170.61,307207.51,306695.855625,19705969.59,20616120.41,21110596.89875,0.0,0.0,0.0,7.0
-2024-06-01,kroma,255,L2,True,255.0,modern,OP Chain,kroma network,Kroma,OP Stack,False,False,True,15321024.18,15612884.6,17177074.85375,1863934.0,116495.875,10397313.81,10653730.91,11516306.220625,4814200.17,4959153.69,5660768.633125,0.0,0.0,0.0,10.0
-2024-06-01,layer2,,,False,,,Other EVMs,,,,False,False,False,43658136431.05,44347703150.15,46403344426.718124,0.0,,26081862367.97,26533285770.68,27451766269.9275,4257247252.03,4343325666.77,4458721075.043125,13319026811.05,13471091712.7,14492857081.7475,56.0
-2024-06-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,167216.04,167753.31,167926.089375,0.0,,167216.04,167753.31,167926.089375,0.0,0.0,0.0,0.0,0.0,0.0,39.0
-2024-06-01,layer2financezk,,L2,False,,,Other EVMs,,,StarkEx,False,True,False,5323.61,5396.92,5491.603125,0.0,,5323.61,5396.92,5491.603125,0.0,0.0,0.0,0.0,0.0,0.0,29.0
-2024-06-01,layer3,,,False,,,Other EVMs,,,,False,False,False,14844307.62,14878865.87,18067161.2875,0.0,,14844307.62,14878865.87,18067161.2875,0.0,0.0,0.0,0.0,0.0,0.0,12.0
-2024-06-01,lightlink,,,False,,,Other EVMs,,,,False,False,False,38260994.08,39808542.05,51921205.85625,0.0,,38260994.08,39808542.05,51921205.85625,0.0,0.0,0.0,0.0,0.0,0.0,11.0
-2024-06-01,linea,59144,L2,False,,,Other EVMs,,,,False,False,True,1189988776.97,1227858718.67,1249299896.06375,9582742.0,598921.375,770934460.01,798351390.4,810619601.611875,306735561.56,350318109.95,333378958.711875,79189218.32,79189218.32,105301335.74,12.0
-2024-06-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,75285453.06,75285453.06,93813064.845,46220.0,2888.75,75285453.06,75285453.06,93813064.845,0.0,0.0,0.0,0.0,0.0,0.0,55.0
-2024-06-01,lyra,957,L2,False,957.0,modern,OP Stack fork,lyra,Lyra,OP Stack,False,False,True,27271360.13,43307550.61,32397922.24125,49912.0,3119.5,127439.39,138326.71,134636.8025,27143920.74,43169223.9,32263285.43875,0.0,0.0,0.0,8.0
-2024-06-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,498353614.78,521861764.2,529236804.9025,0.0,,498353614.78,521861764.2,529236804.9025,0.0,0.0,0.0,0.0,0.0,0.0,28.0
-2024-06-01,mantapacific,169,L2,False,169.0,modern,OP Stack fork,manta pacific,Manta Pacific,OP Stack,False,False,True,780501247.0,797946382.6,923617403.7787501,965245.0,60327.8125,188040374.03,191549554.33,200033372.54,186408893.37,191561986.82,206203712.615,405784832.12,414834841.45,517380318.62375003,10.0
-2024-06-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,1193957346.46,1228825517.91,1242371066.610625,7665895.0,479118.4375,1027749857.22,1063346881.67,1084539756.445625,150738545.44,165478636.24,157831310.165,0.0,0.0,0.0,56.0
-2024-06-01,metal,,L2,True,1750.0,modern,OP Chain,metal,Metal,OP Stack,False,False,True,4732.62,6647.76,5303.370625,39.0,2.4375,4732.62,6647.76,5303.370625,0.0,0.0,0.0,0.0,0.0,0.0,4.0
-2024-06-01,metis,,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,486210549.23,499258139.63,562628877.385625,225462.0,14091.375,486210549.23,499258139.63,562628877.385625,0.0,0.0,0.0,0.0,0.0,0.0,56.0
-2024-06-01,mint,185,L2,True,185.0,modern,OP Chain,mint,Mint,OP Stack,False,False,True,538903.94,576963.05,566850.495625,61773.0,3860.8125,538903.94,576963.05,566850.495625,0.0,0.0,0.0,0.0,0.0,0.0,2.0
-2024-06-01,mode,34443,L2,True,34443.0,modern,OP Chain,mode,Mode,OP Stack,False,False,True,640822734.47,650257645.54,686554925.51625,3041640.0,190102.5,121776918.13,124565453.62,131234810.164375,486959518.08,494601753.9,514456348.468125,31090438.02,31090438.02,40863766.88375,8.0
-2024-06-01,molten,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,45365.68,45365.68,59123.503125,2339122.0,146195.125,45365.68,45365.68,59123.503125,0.0,0.0,0.0,0.0,0.0,0.0,3.0
-2024-06-01,multichain,,,False,,,Other EVMs,,,,False,False,False,24719467.53,24933202.42,26910839.699375,0.0,,24719467.53,24933202.42,26910839.699375,0.0,0.0,0.0,0.0,0.0,0.0,45.0
-2024-06-01,mxc,,L3,False,,,Other EVMs,,,Taiko,False,False,True,48604362.15,49572041.16,59259328.560625,55988.0,3499.25,48604362.15,49572041.16,59259328.560625,0.0,0.0,0.0,0.0,0.0,0.0,12.0
-2024-06-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,204263.48,209501.24,216632.33,153079.0,9567.4375,204263.48,209501.24,216632.33,0.0,0.0,0.0,0.0,0.0,0.0,23.0
-2024-06-01,near,,,False,,,Other EVMs,,,,False,False,False,246445387.32,250342456.74,267737364.915625,0.0,,246445387.32,250342456.74,267737364.915625,0.0,0.0,0.0,0.0,0.0,0.0,40.0
-2024-06-01,nomad,,,False,,,Other EVMs,,,,False,False,False,5979.35,6059.43,6137.001875,0.0,,5979.35,6059.43,6137.001875,0.0,0.0,0.0,0.0,0.0,0.0,30.0
-2024-06-01,nova,,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,50305622.7,51575437.2,53067065.4125,1716848.0,107303.0,50305622.7,51575437.2,53067065.4125,0.0,0.0,0.0,0.0,0.0,0.0,25.0
-2024-06-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,72574.22,74157.74,76548.396875,0.0,,72574.22,74157.74,76548.396875,0.0,0.0,0.0,0.0,0.0,0.0,52.0
-2024-06-01,omni,,,False,,,Other EVMs,,,,False,False,False,609006858.64,624867255.52,639634089.15125,0.0,,609006858.64,624867255.52,639634089.15125,0.0,0.0,0.0,0.0,0.0,0.0,47.0
-2024-06-01,opticsV1,,,False,,,Other EVMs,,,,False,False,False,583886.15,590981.96,603839.2631249999,0.0,,583886.15,590981.96,603839.2631249999,0.0,0.0,0.0,0.0,0.0,0.0,34.0
-2024-06-01,opticsV2,,,False,,,Other EVMs,,,,False,False,False,1490910.29,1516255.14,1559000.22375,0.0,,1490910.29,1516255.14,1559000.22375,0.0,0.0,0.0,0.0,0.0,0.0,32.0
-2024-06-01,optimism,10,L2,True,10.0,modern,OP Chain,op,OP Mainnet,OP Stack,False,False,True,6881420759.09,7037000942.82,7374064154.21,7823995.0,488999.6875,4307677108.85,4363642186.12,4488380973.224375,9460573.2,9563732.63,11019357.1625,2554828382.49,2663795024.07,2874663823.823125,42.0
+2024-06-01,degate2,,L2,False,,,Other EVMs,,,Loopring,False,True,False,59742.04,76882.37,79299.53235294118,0.0,,59742.04,76882.37,79299.53235294118,0.0,0.0,0.0,0.0,0.0,0.0,11.0
+2024-06-01,degate3,,L2,False,,,Other EVMs,,,Loopring,False,False,True,61770600.3,63021140.4,62936857.801764704,37129.0,2184.0588235294117,61770600.3,63021140.4,62936857.801764704,0.0,0.0,0.0,0.0,0.0,0.0,8.0
+2024-06-01,degen,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,6028414.53,6028414.53,8773056.547058824,9426146.0,554479.1764705882,6028414.53,6028414.53,8773056.547058824,0.0,0.0,0.0,0.0,0.0,0.0,4.0
+2024-06-01,deri,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,19822.82,20648.95,20980.168823529413,0.0,,19822.82,20648.95,20980.168823529413,0.0,0.0,0.0,0.0,0.0,0.0,8.0
+2024-06-01,deversifi,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,42817699.51,43836959.46,45024737.33647059,401359.0,23609.352941176472,42817699.51,43836959.46,45024737.33647059,0.0,0.0,0.0,0.0,0.0,0.0,50.0
+2024-06-01,dydx,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,306861251.82,306861251.82,324634069.2282353,1142988.0,67234.58823529411,306861251.82,306861251.82,324634069.2282353,0.0,0.0,0.0,0.0,0.0,0.0,41.0
+2024-06-01,edgeless,,L2,False,,,Other EVMs,,,Arbitrum,False,False,True,74791.39,78135.66,79162.51823529412,21.0,1.2352941176470589,74791.39,78135.66,79162.51823529412,0.0,0.0,0.0,0.0,0.0,0.0,4.0
+2024-06-01,fraxferry,,,False,,,Other EVMs,,,,False,False,False,32621731.01,39588957.78,40113157.597647056,0.0,,32621731.01,39588957.78,40113157.597647056,0.0,0.0,0.0,0.0,0.0,0.0,20.0
+2024-06-01,fraxtal,252,L2,True,252.0,modern,OP Chain,fraxtal,Fraxtal,OP Stack,False,False,True,63031132.92,65214517.27,64381487.82764705,82750.0,4867.64705882353,62978961.65,65134344.18,64316110.68,52061.6,80173.09,65377.147647058824,0.0,0.0,0.0,5.0
+2024-06-01,fuelv1,,L2,False,,,Other EVMs,,,,False,False,True,891.12,927.51,942.095294117647,0.0,,891.12,927.51,942.095294117647,0.0,0.0,0.0,0.0,0.0,0.0,41.0
+2024-06-01,gluon,,L2,False,,,Other EVMs,,,,False,True,False,35999.31,36940.68,37334.74470588235,0.0,,35999.31,36940.68,37334.74470588235,0.0,0.0,0.0,0.0,0.0,0.0,56.0
+2024-06-01,gravity,,,False,,,Other EVMs,,,,False,False,False,16287774.2,16287774.2,17101366.298235293,0.0,,16287774.2,16287774.2,17101366.298235293,0.0,0.0,0.0,0.0,0.0,0.0,31.0
+2024-06-01,harmony,,,False,,,Other EVMs,,,,False,False,False,414467.76,428269.51,436139.62529411766,0.0,,414467.76,428269.51,436139.62529411766,0.0,0.0,0.0,0.0,0.0,0.0,45.0
+2024-06-01,hermez,,L2,False,,,Other EVMs,,,Polygon,False,True,False,336905.88,351670.04,348007.37294117647,0.0,,336905.88,351670.04,348007.37294117647,0.0,0.0,0.0,0.0,0.0,0.0,40.0
+2024-06-01,honeypot,,L2,False,,,Other EVMs,,,,False,False,True,109586.19,111063.87,120293.35529411765,0.0,,109586.19,111063.87,120293.35529411765,0.0,0.0,0.0,0.0,0.0,0.0,10.0
+2024-06-01,hop,,,False,,,Other EVMs,,,,False,False,False,47320651.51,49456048.92,50082950.09470588,0.0,,47320651.51,49456048.92,50082950.09470588,0.0,0.0,0.0,0.0,0.0,0.0,37.0
+2024-06-01,hychain,,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,2387915.22,2510137.72,2645827.3882352943,241686.0,14216.823529411764,2387915.22,2510137.72,2645827.3882352943,0.0,0.0,0.0,0.0,0.0,0.0,4.0
+2024-06-01,hyphen,,,False,,,Other EVMs,,,,False,False,False,231756.23,254591.43,277181.84352941177,0.0,,231756.23,254591.43,277181.84352941177,0.0,0.0,0.0,0.0,0.0,0.0,28.0
+2024-06-01,hypr,,L2,False,881.0,modern develop,OP Stack fork,hypr network,Hypr,OP Stack,False,False,True,86777.37,90400.24,93771.98,0.0,,86777.37,90400.24,93771.98,0.0,0.0,0.0,0.0,0.0,0.0,6.0
+2024-06-01,immutablex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,151003162.11,151003162.11,174966253.32941175,2533695.0,149040.88235294117,151003162.11,151003162.11,174966253.32941175,0.0,0.0,0.0,0.0,0.0,0.0,40.0
+2024-06-01,immutablezkevm,,,False,,,Other EVMs,,,,False,False,False,32544291.62,32544291.62,39343027.63941176,0.0,,32544291.62,32544291.62,39343027.63941176,0.0,0.0,0.0,0.0,0.0,0.0,7.0
+2024-06-01,karak,,L2,False,2410.0,modern,OP Stack fork,karak,Karak,OP Stack,False,False,True,86520053.79,88310680.6,98399653.02470589,5361.0,315.3529411764706,86520053.79,88310680.6,98399653.02470589,0.0,0.0,0.0,0.0,0.0,0.0,7.0
+2024-06-01,kinto,7887,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,19999033.6,21148347.41,21401472.44,7549.0,444.05882352941177,291170.61,311967.72,307005.96529411763,19705969.59,20836379.69,21094466.474705882,0.0,0.0,0.0,7.0
+2024-06-01,kroma,255,L2,True,255.0,modern,OP Chain,kroma network,Kroma,OP Stack,False,False,True,15321024.18,15845529.62,17098748.66352941,2097750.0,123397.05882352941,10397313.81,10998045.46,11485820.293529412,4814200.17,4847484.16,5612928.37,0.0,0.0,0.0,10.0
+2024-06-01,layer2,,,False,,,Other EVMs,,,,False,False,False,43657133957.95,44902404325.22,46313976810.48942,0.0,,26080859894.87,26849839397.45,27415281784.81765,4257247252.03,4373395037.2,4453701896.346471,13319026811.05,13679169890.57,14444993129.325294,56.0
+2024-06-01,layer2finance,,L2,False,,,Other EVMs,,,,False,True,False,167216.04,167315.48,167890.17117647058,0.0,,167216.04,167315.48,167890.17117647058,0.0,0.0,0.0,0.0,0.0,0.0,39.0
+2024-06-01,layer2financezk,,L2,False,,,Other EVMs,,,StarkEx,False,True,False,5323.61,5443.12,5488.751176470589,0.0,,5323.61,5443.12,5488.751176470589,0.0,0.0,0.0,0.0,0.0,0.0,29.0
+2024-06-01,layer3,,,False,,,Other EVMs,,,,False,False,False,14499589.01,14499589.01,17857304.094705883,0.0,,14499589.01,14499589.01,17857304.094705883,0.0,0.0,0.0,0.0,0.0,0.0,12.0
+2024-06-01,lightlink,,,False,,,Other EVMs,,,,False,False,False,37700164.88,37700164.88,51084674.03411765,0.0,,37700164.88,37700164.88,51084674.03411765,0.0,0.0,0.0,0.0,0.0,0.0,11.0
+2024-06-01,linea,59144,L2,False,,,Other EVMs,,,,False,False,True,1189988776.97,1253039980.71,1249519901.042941,9994936.0,587937.4117647059,770934460.01,814245018.46,810832861.4264706,306735561.56,358086827.91,334832362.7823529,79189218.32,80708134.34,103854676.83411765,12.0
+2024-06-01,loopring,,L2,False,,,Other EVMs,,,Loopring,False,False,True,75285453.06,75860836.44,92757051.40941177,48457.0,2850.4117647058824,75285453.06,75860836.44,92757051.40941177,0.0,0.0,0.0,0.0,0.0,0.0,55.0
+2024-06-01,lyra,957,L2,False,957.0,modern,OP Stack fork,lyra,Lyra,OP Stack,False,False,True,27271360.13,44361456.36,33101659.542352945,53168.0,3127.529411764706,127439.39,140463.77,134979.56529411764,27143920.74,44220992.59,32966679.977058824,0.0,0.0,0.0,8.0
+2024-06-01,lzomnichain,,,False,,,Other EVMs,,,,False,False,False,498353614.78,529025288.09,529224362.7370589,0.0,,498353614.78,529025288.09,529224362.7370589,0.0,0.0,0.0,0.0,0.0,0.0,28.0
+2024-06-01,mantapacific,169,L2,False,169.0,modern,OP Stack fork,manta pacific,Manta Pacific,OP Stack,False,False,True,780501247.0,807008890.73,916758079.4817648,1020624.0,60036.705882352944,188040374.03,194477649.73,199706565.31588235,186408893.37,193684723.64,205467301.49882352,405784832.12,418846517.36,511584212.6670588,10.0
+2024-06-01,mantle,5000,L2,False,5000.0,legacy ovm,OP Stack fork,mantle network,Mantle,OP Stack,False,False,True,1193957346.46,1240577333.95,1242265552.924706,8346536.0,490972.70588235295,1027749857.22,1075489794.93,1084007405.7682354,150738545.44,165087539.02,158258147.15647057,0.0,0.0,0.0,56.0
+2024-06-01,metal,,L2,True,1750.0,modern,OP Chain,metal,Metal,OP Stack,False,False,True,4732.62,6749.14,5388.4158823529415,41.0,2.411764705882353,4732.62,6749.14,5388.4158823529415,0.0,0.0,0.0,0.0,0.0,0.0,4.0
+2024-06-01,metis,1088,L2,False,1088.0,legacy ovm,OP Stack fork,metis andromeda,Metis,OVM,False,False,True,486210549.23,498637468.26,558864676.8488235,239906.0,14112.117647058823,486210549.23,498637468.26,558864676.8488235,0.0,0.0,0.0,0.0,0.0,0.0,56.0
+2024-06-01,mint,185,L2,True,185.0,modern,OP Chain,mint,Mint,OP Stack,False,False,True,538903.94,604695.42,569076.6676470588,64044.0,3767.294117647059,538903.94,604695.42,569076.6676470588,0.0,0.0,0.0,0.0,0.0,0.0,2.0
+2024-06-01,mode,34443,L2,True,34443.0,modern,OP Chain,mode,Mode,OP Stack,False,False,True,640822734.47,650226240.93,684417944.07,3216648.0,189214.58823529413,121776918.13,125773957.26,130913583.52294117,486959518.08,494250180.09,513267750.32823527,30202103.58,30202103.58,40236610.21882353,8.0
+2024-06-01,molten,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,45365.68,45383.16,58315.24764705882,2581370.0,151845.29411764705,45365.68,45383.16,58315.24764705882,0.0,0.0,0.0,0.0,0.0,0.0,3.0
+2024-06-01,multichain,,,False,,,Other EVMs,,,,False,False,False,24719467.53,25202381.42,26810342.153529413,0.0,,24719467.53,25202381.42,26810342.153529413,0.0,0.0,0.0,0.0,0.0,0.0,45.0
+2024-06-01,mxc,,L3,False,,,Other EVMs,,,Taiko,False,False,True,48312912.42,48312912.42,58615421.72882353,59186.0,3481.529411764706,48312912.42,48312912.42,58615421.72882353,0.0,0.0,0.0,0.0,0.0,0.0,12.0
+2024-06-01,myria,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,204263.48,212740.19,216403.38058823528,162852.0,9579.529411764706,204263.48,212740.19,216403.38058823528,0.0,0.0,0.0,0.0,0.0,0.0,23.0
+2024-06-01,near,,,False,,,Other EVMs,,,,False,False,False,246445387.32,248790108.06,266622820.3947059,0.0,,246445387.32,248790108.06,266622820.3947059,0.0,0.0,0.0,0.0,0.0,0.0,40.0
+2024-06-01,nomad,,,False,,,Other EVMs,,,,False,False,False,5979.35,6095.55,6134.563529411765,0.0,,5979.35,6095.55,6134.563529411765,0.0,0.0,0.0,0.0,0.0,0.0,30.0
+2024-06-01,nova,,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,50305622.7,52348639.56,53024805.06823529,1746294.0,102723.17647058824,50305622.7,52348639.56,53024805.06823529,0.0,0.0,0.0,0.0,0.0,0.0,25.0
+2024-06-01,omgnetwork,,L2,False,,,Other EVMs,,,,False,True,False,72574.22,75095.78,76462.94882352941,0.0,,72574.22,75095.78,76462.94882352941,0.0,0.0,0.0,0.0,0.0,0.0,52.0
+2024-06-01,omni,,,False,,,Other EVMs,,,,False,False,False,609006858.64,636270079.78,639436206.2470589,0.0,,609006858.64,636270079.78,639436206.2470589,0.0,0.0,0.0,0.0,0.0,0.0,47.0
+2024-06-01,opticsV1,,,False,,,Other EVMs,,,,False,False,False,583886.15,595109.92,603325.7723529411,0.0,,583886.15,595109.92,603325.7723529411,0.0,0.0,0.0,0.0,0.0,0.0,34.0
+2024-06-01,opticsV2,,,False,,,Other EVMs,,,,False,False,False,1490910.29,1533046.19,1557473.5158823528,0.0,,1490910.29,1533046.19,1557473.5158823528,0.0,0.0,0.0,0.0,0.0,0.0,32.0
+2024-06-01,optimism,10,L2,True,10.0,modern,OP Chain,op,OP Mainnet,OP Stack,False,False,True,6881420759.09,7083767016.33,7356987851.981765,8358931.0,491701.82352941175,4307677108.85,4415961848.37,4484121024.703529,9437652.04,9437652.04,10926315.684705881,2554828382.49,2658367515.92,2861940511.593529,42.0
 2024-06-01,orb3,,L3,False,,,Other EVMs,,,Arbitrum,False,False,True,,,,0.0,0.0,,,,,,,,,,7.0
-2024-06-01,orbit,,,False,,,Other EVMs,,,,False,False,False,13206709.77,13277988.5,13484009.455625,0.0,,13206709.77,13277988.5,13484009.455625,0.0,0.0,0.0,0.0,0.0,0.0,45.0
-2024-06-01,orbiter,,,False,,,Other EVMs,,,,False,False,False,751021.34,751021.34,1065821.73125,0.0,,751021.34,751021.34,1065821.73125,0.0,0.0,0.0,0.0,0.0,0.0,33.0
-2024-06-01,orderly,,L2,False,291.0,modern,OP Stack fork,orderly,Orderly,OP Stack,False,False,True,831034.54,953329.54,900497.06,783135.0,48945.9375,831034.54,953329.54,900497.06,0.0,0.0,0.0,0.0,0.0,0.0,9.0
-2024-06-01,pNetwork,,,False,,,Other EVMs,,,,False,False,False,3330112.29,3330112.29,4014941.971875,0.0,,3330112.29,3330112.29,4014941.971875,0.0,0.0,0.0,0.0,0.0,0.0,38.0
-2024-06-01,paradex,,L2,False,,,Other EVMs,,,Starknet,False,False,True,11743520.76,14295315.09,12866610.821875,0.0,,11743520.76,14295315.09,12866610.821875,0.0,0.0,0.0,0.0,0.0,0.0,11.0
-2024-06-01,parallel,,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,194284.37,199834.39,205577.9925,178664.0,11166.5,194284.37,199834.39,205577.9925,0.0,0.0,0.0,0.0,0.0,0.0,6.0
-2024-06-01,polygon-plasma,,,False,,,Other EVMs,,,,False,False,False,823387959.46,856848904.82,921231073.233125,0.0,,823387959.46,856848904.82,921231073.233125,0.0,0.0,0.0,0.0,0.0,0.0,50.0
-2024-06-01,polygon-pos,,,False,,,Other EVMs,,,,False,False,False,2678803740.98,2699017955.49,2762805446.12875,0.0,,2678803740.98,2699017955.49,2762805446.12875,0.0,0.0,0.0,0.0,0.0,0.0,47.0
-2024-06-01,polygonzkevm,1101,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,145611647.44,149318999.38,157820567.540625,294370.0,18398.125,142354446.47,146016265.89,154424336.06875,0.0,0.0,0.0,3257200.97,3302733.49,3396231.4718750003,56.0
-2024-06-01,polynetwork,,,False,,,Other EVMs,,,,False,False,False,2411484.45,2441965.5,2606100.185,0.0,,2411484.45,2441965.5,2606100.185,0.0,0.0,0.0,0.0,0.0,0.0,46.0
-2024-06-01,popapex,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,540429.98,663898.82,589140.764375,15862391.0,991399.4375,540429.98,663898.82,589140.764375,0.0,0.0,0.0,0.0,0.0,0.0,5.0
-2024-06-01,portal,,,False,,,Other EVMs,,,,False,False,False,552472059.45,556466107.64,582885191.176875,0.0,,552472059.45,556466107.64,582885191.176875,0.0,0.0,0.0,0.0,0.0,0.0,34.0
-2024-06-01,publicgoodsnetwork,,L2,False,424.0,modern,OP Stack fork,pgn,Public Goods Network,OP Stack,False,False,True,1010060.32,1031418.78,1093868.33375,2072.0,129.5,1010060.32,1031418.78,1093868.33375,0.0,0.0,0.0,0.0,0.0,0.0,12.0
-2024-06-01,pulseChain,,,False,,,Other EVMs,,,,False,False,False,92327960.31,93488206.6,94699143.88875,0.0,,92327960.31,93488206.6,94699143.88875,0.0,0.0,0.0,0.0,0.0,0.0,14.0
-2024-06-01,rari,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,541075.14,555541.11,569143.73125,32189.0,2011.8125,541075.14,555541.11,569143.73125,0.0,0.0,0.0,0.0,0.0,0.0,6.0
-2024-06-01,real,111188,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,997182.72,1004499.74,1144335.899375,32282.0,2017.625,997182.72,1004499.74,1144335.899375,0.0,0.0,0.0,0.0,0.0,0.0,4.0
-2024-06-01,reddioex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,2692.27,2711.63,2737.969375,0.0,,2692.27,2711.63,2737.969375,0.0,0.0,0.0,0.0,0.0,0.0,22.0
-2024-06-01,redstone,,L2,True,690.0,modern,OP Chain,redstone,Redstone,OP Stack,False,False,True,2369723.31,2433138.91,2528996.531875,271919.0,16994.9375,2369723.31,2433138.91,2528996.531875,0.0,0.0,0.0,0.0,0.0,0.0,3.0
-2024-06-01,reya,1729,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,60629141.22,60629141.22,63327415.8925,0.0,,280627.71,287908.25,297193.384375,60341232.97,60341232.97,63030222.508125,0.0,0.0,0.0,4.0
-2024-06-01,ronin,,,False,,,Other EVMs,,,,False,False,False,847360371.83,860546664.28,948833839.304375,0.0,,847360371.83,860546664.28,948833839.304375,0.0,0.0,0.0,0.0,0.0,0.0,42.0
-2024-06-01,rss3,12553,L2,False,12553.0,unknown,OP Stack fork,rss3,RSS3 Value Sublayer,OP Stack,False,False,True,157894589.47,169918654.93,172353145.71125,88472.0,5529.5,157894589.47,169918654.93,172353145.71125,0.0,0.0,0.0,0.0,0.0,0.0,4.0
-2024-06-01,sanko,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,11533659.83,17881088.68,14478981.669374999,244332.0,15270.75,11533659.83,17881088.68,14478981.669374999,0.0,0.0,0.0,0.0,0.0,0.0,11.0
-2024-06-01,satellite,,,False,,,Other EVMs,,,,False,False,False,113709381.43,113709381.43,119194918.351875,0.0,,113709381.43,113709381.43,119194918.351875,0.0,0.0,0.0,0.0,0.0,0.0,33.0
-2024-06-01,scroll,534352,L2,False,,,Other EVMs,,,,False,False,True,653313355.54,726406440.44,686299109.7268751,4705562.0,294097.625,318804793.7,349471073.47,334566981.313125,334508561.84,376935366.97,351732128.41375,0.0,0.0,0.0,9.0
-2024-06-01,skale-ima,,,False,,,Other EVMs,,,,False,False,False,3069113.33,3069113.33,3242828.86,0.0,,3069113.33,3069113.33,3242828.86,0.0,0.0,0.0,0.0,0.0,0.0,36.0
-2024-06-01,socket,,,False,,,Other EVMs,,,,False,False,False,71879566.2,87379700.44,77636855.560625,0.0,,71879566.2,87379700.44,77636855.560625,0.0,0.0,0.0,0.0,0.0,0.0,8.0
-2024-06-01,sollet,,,False,,,Other EVMs,,,,False,False,False,4521.84,4637.07,4787.4625,0.0,,4521.84,4637.07,4787.4625,0.0,0.0,0.0,0.0,0.0,0.0,46.0
-2024-06-01,sorare,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,22739293.37,23333986.96,24870739.388125,587402.0,36712.625,22739293.37,23333986.96,24870739.388125,0.0,0.0,0.0,0.0,0.0,0.0,36.0
-2024-06-01,stack,,L3,False,,,Other EVMs,,,OP Stack,False,False,True,2165.72,2221.63,2294.4275,45450.0,2840.625,2165.72,2221.63,2294.4275,0.0,0.0,0.0,0.0,0.0,0.0,4.0
-2024-06-01,stargate,,,False,,,Other EVMs,,,,False,False,False,26469233.18,38555663.6,31597443.450625002,0.0,,26469233.18,38555663.6,31597443.450625002,0.0,0.0,0.0,0.0,0.0,0.0,28.0
-2024-06-01,starknet,,L2,False,,,Other EVMs,,,Starknet,False,False,True,887769555.07,887769555.07,1022917007.0275,1114809.0,69675.5625,887769555.07,887769555.07,1022917007.0275,0.0,0.0,0.0,0.0,0.0,0.0,32.0
-2024-06-01,sygma,,,False,,,Other EVMs,,,,False,False,False,113780620.57,114928282.84,131643864.1525,0.0,,113780620.57,114928282.84,131643864.1525,0.0,0.0,0.0,0.0,0.0,0.0,13.0
-2024-06-01,symbiosis,,,False,,,Other EVMs,,,,False,False,False,3291201.93,3411578.9,3503978.42,0.0,,3291201.93,3411578.9,3503978.42,0.0,0.0,0.0,0.0,0.0,0.0,20.0
-2024-06-01,synapse,,,False,,,Other EVMs,,,,False,False,False,22280613.95,23446496.76,24054689.150625,0.0,,22280613.95,23446496.76,24054689.150625,0.0,0.0,0.0,0.0,0.0,0.0,35.0
-2024-06-01,syndicateframe,,L3,False,5101.0,modern,OP Stack fork,syndicate frame chain,Syndicate Frame Chain,OP Stack,False,False,True,21837.59,22401.36,23135.046875,1013.0,63.3125,21837.59,22401.36,23135.046875,0.0,0.0,0.0,0.0,0.0,0.0,5.0
-2024-06-01,taiko,167000,L2,False,,,Other EVMs,,,,False,False,True,10639737.38,134527735.13,117071461.704375,5960263.0,372516.4375,10639737.38,134527735.13,117071461.704375,0.0,0.0,0.0,0.0,0.0,0.0,2.0
-2024-06-01,termstructure,,L2,False,,,Other EVMs,,,ZKsync Lite,False,False,True,20361.29,398893.17,172639.100625,0.0,,20361.29,398893.17,172639.100625,0.0,0.0,0.0,0.0,0.0,0.0,2.0
-2024-06-01,wormholeV1,,,False,,,Other EVMs,,,,False,False,False,465808.69,471753.5,482559.02125,0.0,,465808.69,471753.5,482559.02125,0.0,0.0,0.0,0.0,0.0,0.0,42.0
-2024-06-01,xai,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,1340497.67,1340497.67,1932039.455625,30335061.0,1895941.3125,1340497.67,1340497.67,1932039.455625,0.0,0.0,0.0,0.0,0.0,0.0,6.0
-2024-06-01,xdai,,,False,,,Other EVMs,,,,False,False,False,728088.09,1149846.05,976817.83375,0.0,,728088.09,1149846.05,976817.83375,0.0,0.0,0.0,0.0,0.0,0.0,56.0
-2024-06-01,xlayer,,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,562162.0,35135.125,,,,,,,,,,4.0
-2024-06-01,zkfair,42766,L2,False,,,Other EVMs,,,Polygon,False,False,True,44022267.36,44643264.26,52785773.4125,368470.0,23029.375,27549942.62,27895678.67,28931068.32,0.0,0.0,0.0,16472324.74,16747585.59,23854705.0925,7.0
-2024-06-01,zklinknova,810180,L3,False,,,Other EVMs,,,zkLink Nexus,False,False,True,,,,2800378.0,175023.625,,,,,,,,,,4.0
-2024-06-01,zkspace,,L2,False,,,Other EVMs,,,ZKsync Lite,False,False,True,3652526.8,3653406.49,3780886.085625,0.0,,3652526.8,3653406.49,3780886.085625,0.0,0.0,0.0,0.0,0.0,0.0,31.0
-2024-06-01,zkswap,,L2,False,,,Other EVMs,,,ZKsync Lite,False,True,False,3938912.17,3983752.63,4105456.32625,0.0,,3938912.17,3983752.63,4105456.32625,0.0,0.0,0.0,0.0,0.0,0.0,41.0
-2024-06-01,zkswap2,,L2,False,,,Other EVMs,,,ZKsync Lite,False,True,False,268726.67,271639.47,278545.853125,0.0,,268726.67,271639.47,278545.853125,0.0,0.0,0.0,0.0,0.0,0.0,36.0
-2024-06-01,zksync,,L2,False,,,Other EVMs,,,ZKsync Lite,False,False,True,84913258.26,86464134.01,90315320.21,168492.0,10530.75,84913258.26,86464134.01,90315320.21,0.0,0.0,0.0,0.0,0.0,0.0,49.0
-2024-06-01,zksync2,324,L2,False,,,Other EVMs,,,ZK Stack,False,False,True,727554260.21,752191398.84,820412594.703125,8893849.0,555865.5625,682056164.04,704664669.19,753163571.009375,0.0,0.0,0.0,44925940.01,47526729.65,67249023.69375,17.0
-2024-06-01,zora,,L2,True,7777777.0,modern,OP Chain,zora,Zora,OP Stack,False,False,True,26935667.87,27727394.68,29737024.204375,1755014.0,109688.375,26935667.87,27727394.68,29737024.204375,0.0,0.0,0.0,0.0,0.0,0.0,13.0
+2024-06-01,orbit,,,False,,,Other EVMs,,,,False,False,False,13206709.77,13328320.72,13474851.294705883,0.0,,13206709.77,13328320.72,13474851.294705883,0.0,0.0,0.0,0.0,0.0,0.0,45.0
+2024-06-01,orbiter,,,False,,,Other EVMs,,,,False,False,False,751021.34,1282548.86,1078570.385882353,0.0,,751021.34,1282548.86,1078570.385882353,0.0,0.0,0.0,0.0,0.0,0.0,33.0
+2024-06-01,orderly,,L2,False,291.0,modern,OP Stack fork,orderly,Orderly,OP Stack,False,False,True,831034.54,968068.29,904471.8382352941,870354.0,51197.294117647056,831034.54,968068.29,904471.8382352941,0.0,0.0,0.0,0.0,0.0,0.0,9.0
+2024-06-01,pNetwork,,,False,,,Other EVMs,,,,False,False,False,3330112.29,3349767.19,3975814.0435294113,0.0,,3330112.29,3349767.19,3975814.0435294113,0.0,0.0,0.0,0.0,0.0,0.0,38.0
+2024-06-01,paradex,,L2,False,,,Other EVMs,,,Starknet,False,False,True,11743520.76,14321002.72,12952163.286470588,0.0,,11743520.76,14321002.72,12952163.286470588,0.0,0.0,0.0,0.0,0.0,0.0,11.0
+2024-06-01,parallel,,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,194284.37,202953.06,205423.58470588236,189025.0,11119.117647058823,194284.37,202953.06,205423.58470588236,0.0,0.0,0.0,0.0,0.0,0.0,6.0
+2024-06-01,polygon-plasma,,,False,,,Other EVMs,,,,False,False,False,823387959.46,861323243.48,917707083.247647,0.0,,823387959.46,861323243.48,917707083.247647,0.0,0.0,0.0,0.0,0.0,0.0,50.0
+2024-06-01,polygon-pos,,,False,,,Other EVMs,,,,False,False,False,2678803740.98,2714412982.89,2759958830.6441174,0.0,,2678803740.98,2714412982.89,2759958830.6441174,0.0,0.0,0.0,0.0,0.0,0.0,47.0
+2024-06-01,polygonzkevm,1101,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,145611647.44,150412909.62,157384822.95705882,313488.0,18440.470588235294,142354446.47,147083104.23,153992498.9017647,0.0,0.0,0.0,3257200.97,3329805.39,3392324.0552941174,56.0
+2024-06-01,polynetwork,,,False,,,Other EVMs,,,,False,False,False,2411484.45,2447694.87,2596782.2252941174,0.0,,2411484.45,2447694.87,2596782.2252941174,0.0,0.0,0.0,0.0,0.0,0.0,46.0
+2024-06-01,popapex,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,540429.98,695649.03,595405.9564705882,17374898.0,1022052.8235294118,540429.98,695649.03,595405.9564705882,0.0,0.0,0.0,0.0,0.0,0.0,5.0
+2024-06-01,portal,,,False,,,Other EVMs,,,,False,False,False,552472059.45,561095194.33,581603426.6564705,0.0,,552472059.45,561095194.33,581603426.6564705,0.0,0.0,0.0,0.0,0.0,0.0,34.0
+2024-06-01,publicgoodsnetwork,,L2,False,424.0,modern,OP Stack fork,pgn,Public Goods Network,OP Stack,False,False,True,1010060.32,1044981.12,1090992.6152941177,2264.0,133.1764705882353,1010060.32,1044981.12,1090992.6152941177,0.0,0.0,0.0,0.0,0.0,0.0,12.0
+2024-06-01,pulseChain,,,False,,,Other EVMs,,,,False,False,False,92327960.31,93563220.72,94632324.87882353,0.0,,92327960.31,93563220.72,94632324.87882353,0.0,0.0,0.0,0.0,0.0,0.0,14.0
+2024-06-01,rari,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,541075.14,564017.31,568842.1770588235,34358.0,2021.0588235294117,541075.14,564017.31,568842.1770588235,0.0,0.0,0.0,0.0,0.0,0.0,6.0
+2024-06-01,real,111188,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,,,,34385.0,2022.6470588235295,,,,,,,,,,4.0
+2024-06-01,reddioex,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,2692.27,2724.09,2737.1529411764704,0.0,,2692.27,2724.09,2737.1529411764704,0.0,0.0,0.0,0.0,0.0,0.0,22.0
+2024-06-01,redstone,,L2,True,690.0,modern,OP Chain,redstone,Redstone,OP Stack,False,False,True,2369723.31,2481540.15,2526204.9800000004,289452.0,17026.58823529412,2369723.31,2481540.15,2526204.9800000004,0.0,0.0,0.0,0.0,0.0,0.0,3.0
+2024-06-01,reya,1729,L2,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,60629141.22,60640245.92,63169347.07058824,0.0,,280627.71,292370.26,296909.6711764706,60341232.97,60347875.66,62872437.39941176,0.0,0.0,0.0,4.0
+2024-06-01,ronin,,,False,,,Other EVMs,,,,False,False,False,847360371.83,856809174.12,943420623.7052941,0.0,,847360371.83,856809174.12,943420623.7052941,0.0,0.0,0.0,0.0,0.0,0.0,42.0
+2024-06-01,rss3,12553,L2,False,12553.0,unknown,OP Stack fork,rss3,RSS3 Value Sublayer,OP Stack,False,False,True,157894589.47,170286519.78,172231579.48,89051.0,5238.294117647059,157894589.47,170286519.78,172231579.48,0.0,0.0,0.0,0.0,0.0,0.0,4.0
+2024-06-01,sanko,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,11533659.83,23798944.31,15027214.765882352,263037.0,15472.764705882353,11533659.83,23798944.31,15027214.765882352,0.0,0.0,0.0,0.0,0.0,0.0,11.0
+2024-06-01,satellite,,,False,,,Other EVMs,,,,False,False,False,113709381.43,114245910.91,118903800.26705882,0.0,,113709381.43,114245910.91,118903800.26705882,0.0,0.0,0.0,0.0,0.0,0.0,33.0
+2024-06-01,scroll,534352,L2,False,,,Other EVMs,,,,False,False,True,653313355.54,744663904.65,689732332.9576471,4971433.0,292437.23529411765,318804793.7,359517355.34,336034650.37352943,334508561.84,385146549.31,353697682.58411765,0.0,0.0,0.0,9.0
+2024-06-01,skale-ima,,,False,,,Other EVMs,,,,False,False,False,3022572.14,3022572.14,3229872.582352941,0.0,,3022572.14,3022572.14,3229872.582352941,0.0,0.0,0.0,0.0,0.0,0.0,36.0
+2024-06-01,socket,,,False,,,Other EVMs,,,,False,False,False,71879566.2,88623384.28,78283121.95588236,0.0,,71879566.2,88623384.28,78283121.95588236,0.0,0.0,0.0,0.0,0.0,0.0,8.0
+2024-06-01,sollet,,,False,,,Other EVMs,,,,False,False,False,4521.84,4707.95,4782.785294117647,0.0,,4521.84,4707.95,4782.785294117647,0.0,0.0,0.0,0.0,0.0,0.0,46.0
+2024-06-01,sorare,,L2,False,,,Other EVMs,,,StarkEx,False,False,True,22739293.37,23711569.73,24802552.93764706,619974.0,36469.05882352941,22739293.37,23711569.73,24802552.93764706,0.0,0.0,0.0,0.0,0.0,0.0,36.0
+2024-06-01,stack,,L3,False,,,Other EVMs,,,OP Stack,False,False,True,2165.72,2255.98,2292.165882352941,45810.0,2694.705882352941,2165.72,2255.98,2292.165882352941,0.0,0.0,0.0,0.0,0.0,0.0,4.0
+2024-06-01,stargate,,,False,,,Other EVMs,,,,False,False,False,26469233.18,38462353.49,32001261.688235298,0.0,,26469233.18,38462353.49,32001261.688235298,0.0,0.0,0.0,0.0,0.0,0.0,28.0
+2024-06-01,stargatev2,,,False,,,Other EVMs,,,,False,False,False,63292033.02,91706743.34,81767192.89117648,0.0,,63292033.02,91706743.34,81767192.89117648,0.0,0.0,0.0,0.0,0.0,0.0,2.0
+2024-06-01,starknet,,L2,False,,,Other EVMs,,,Starknet,False,False,True,887769555.07,894778248.02,1015379432.9682353,1269530.0,74678.23529411765,887769555.07,894778248.02,1015379432.9682353,0.0,0.0,0.0,0.0,0.0,0.0,32.0
+2024-06-01,sygma,,,False,,,Other EVMs,,,,False,False,False,113780620.57,117060922.22,130786044.03882352,0.0,,113780620.57,117060922.22,130786044.03882352,0.0,0.0,0.0,0.0,0.0,0.0,13.0
+2024-06-01,symbiosis,,,False,,,Other EVMs,,,,False,False,False,3291201.93,3383691.23,3496902.7029411765,0.0,,3291201.93,3383691.23,3496902.7029411765,0.0,0.0,0.0,0.0,0.0,0.0,20.0
+2024-06-01,synapse,,,False,,,Other EVMs,,,,False,False,False,22280613.95,23746375.03,24036553.025882352,0.0,,22280613.95,23746375.03,24036553.025882352,0.0,0.0,0.0,0.0,0.0,0.0,35.0
+2024-06-01,syndicateframe,,L3,False,5101.0,modern,OP Stack fork,syndicate frame chain,Syndicate Frame Chain,OP Stack,False,False,True,21837.59,22748.42,23112.304117647058,1013.0,59.588235294117645,21837.59,22748.42,23112.304117647058,0.0,0.0,0.0,0.0,0.0,0.0,5.0
+2024-06-01,taiko,167000,L2,False,,,Other EVMs,,,,False,False,True,10639737.38,145231504.76,118727934.82529412,6880478.0,404734.0,10639737.38,145231504.76,118727934.82529412,0.0,0.0,0.0,0.0,0.0,0.0,2.0
+2024-06-01,termstructure,,L2,False,,,Other EVMs,,,ZKsync Lite,False,False,True,20361.29,402159.89,186140.32352941178,0.0,,20361.29,402159.89,186140.32352941178,0.0,0.0,0.0,0.0,0.0,0.0,2.0
+2024-06-01,wormholeV1,,,False,,,Other EVMs,,,,False,False,False,465808.69,475429.89,482139.6605882353,0.0,,465808.69,475429.89,482139.6605882353,0.0,0.0,0.0,0.0,0.0,0.0,42.0
+2024-06-01,xai,,L3,False,,,Other EVMs,,,Arbitrum Orbit,False,False,True,1340497.67,1381670.58,1899664.815882353,40230409.0,2366494.6470588236,1340497.67,1381670.58,1899664.815882353,0.0,0.0,0.0,0.0,0.0,0.0,6.0
+2024-06-01,xdai,,,False,,,Other EVMs,,,,False,False,False,728088.09,911549.02,972978.4917647059,0.0,,728088.09,911549.02,972978.4917647059,0.0,0.0,0.0,0.0,0.0,0.0,56.0
+2024-06-01,xlayer,,L2,False,,,Other EVMs,,,Polygon CDK,False,False,True,,,,590943.0,34761.35294117647,,,,,,,,,,4.0
+2024-06-01,zkfair,42766,L2,False,,,Other EVMs,,,Polygon,False,False,True,44022267.36,44267280.88,52284685.61647059,393559.0,23150.529411764706,27549942.62,27937765.21,28872638.725294117,0.0,0.0,0.0,16329515.67,16329515.67,23412046.89117647,7.0
+2024-06-01,zklinknova,810180,L3,False,,,Other EVMs,,,zkLink Nexus,False,False,True,,,,2958540.0,174031.76470588235,,,,,,,,,,4.0
+2024-06-01,zkspace,,L2,False,,,Other EVMs,,,ZKsync Lite,False,False,True,3652526.8,3664292.31,3774027.628235294,0.0,,3652526.8,3664292.31,3774027.628235294,0.0,0.0,0.0,0.0,0.0,0.0,31.0
+2024-06-01,zkswap,,L2,False,,,Other EVMs,,,ZKsync Lite,False,True,False,3938912.17,4011496.36,4099929.2694117646,0.0,,3938912.17,4011496.36,4099929.2694117646,0.0,0.0,0.0,0.0,0.0,0.0,41.0
+2024-06-01,zkswap2,,L2,False,,,Other EVMs,,,ZKsync Lite,False,True,False,268726.67,273674.19,278259.28470588237,0.0,,268726.67,273674.19,278259.28470588237,0.0,0.0,0.0,0.0,0.0,0.0,36.0
+2024-06-01,zksync,,L2,False,,,Other EVMs,,,ZKsync Lite,False,False,True,84913258.26,87289926.24,90137355.85882352,197808.0,11635.764705882353,84913258.26,87289926.24,90137355.85882352,0.0,0.0,0.0,0.0,0.0,0.0,49.0
+2024-06-01,zksync2,324,L2,False,,,Other EVMs,,,ZK Stack,False,False,True,727554260.21,765856485.74,817203411.8229412,10751388.0,632434.5882352941,682056164.04,717279285.11,751052730.6623529,0.0,0.0,0.0,44925940.01,48577200.63,66150681.160588235,17.0
+2024-06-01,zora,,L2,True,7777777.0,modern,OP Chain,zora,Zora,OP Stack,False,False,True,26935667.87,28245506.44,29649287.865294117,1896950.0,111585.29411764706,26935667.87,28245506.44,29649287.865294117,0.0,0.0,0.0,0.0,0.0,0.0,13.0

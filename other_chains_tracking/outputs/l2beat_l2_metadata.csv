@@ -48,7 +48,7 @@ L2,GRVT,,,Validium,grvt,,grvt,,ZK Stack,,True,False,False,'https://grvt.io','htt
 L2,Polygon Hermez,,,ZK Rollup,hermez,,hermez,,Polygon,,False,True,False,'https://hermez.io/',"'https://docs.hermez.io/',
         'https://hermez.io/polygon-hermez-whitepaper.pdf',",'https://github.com/0xpolygonhermez',Polygon: CDK,hermez
 L2,Honeypot (Cartesi),,,Optimistic Rollup,honeypot,,honeypot,,,,False,False,True,'https://cartesi.io/','https://docs.cartesi.io/cartesi-rollups/','https://github.com/cartesi/honeypot',,honeypot
-L2,HYCHAIN,,,Optimium,hychain,,hychain,,Arbitrum,,False,False,True,'https://hychain.com','https://docs.hychain.com','https://github.com/kintoxyz',Arbitrum: Orbit,hychain
+L2,HYCHAIN,,,,hychain,,hychain,https://rpc.hychain.com/http,Arbitrum Orbit,,False,False,True,'https://hychain.com','https://docs.hychain.com','https://github.com/kintoxyz',Arbitrum: Orbit,hychain
 L2,Hypr,,,,hypr,,hypr,https://rpc.hypr.network,OP Stack,,False,False,True,'https://hypr.network/','https://docs.hypr.network',,Optimism: OP Stack,hypr
 L2,Immutable X,,,Validium,immutablex,,immutablex,,StarkEx,,False,False,True,'https://immutable.com/',"'https://docs.starkware.co/starkex/perpetual/perpetual_overview.html',",'https://github.com/starkware-libs/starkex-contracts',Starkware: Starknet Stack,immutablex
 L2,Kakarot zkEVM,,,ZK Rollup,kakarotzkevm,,kakarotzkevm,,,,True,False,False,'https://kakarot.org/','https://docs.kakarot.org/',,,kakarotzkevm
@@ -69,7 +69,7 @@ L2,Lyra,957,https://explorer.lyra.finance,,lyra,,lyra,https://rpc.lyra.finance,O
 L2,Manta Pacific,169,https://pacific-explorer.manta.network,,mantapacific,,mantapacific,https://pacific-rpc.manta.network/http,OP Stack,,False,False,True,'https://pacific.manta.network/','https://docs.manta.network/','https://github.com/Manta-Network',Optimism: OP Stack,mantapacific
 L2,MantleDA,5000,https://explorer.mantle.xyz/,,mantle,,mantle,https://rpc.mantle.xyz,OP Stack,,False,False,True,'https://mantle.xyz/','https://docs-v2.mantle.xyz/','https://github.com/mantlenetworkio',Optimism: OP Stack,mantle
 L2,Metal,,,,metal,,metal,https://rpc.metall2.com,OP Stack,,False,False,True,'https://metall2.com/',,,Optimism: OP Stack,metal
-L2,Metis Andromeda,,,Optimium,metis,,metis,,OVM,,False,False,True,'https://metis.io','https://docs.metis.io','https://github.com/MetisProtocol',Optimism: OP Stack,metis
+L2,Metis Andromeda,1088,https://explorer.metis.io,Optimium,metis,,metis,,OVM,,False,False,True,'https://metis.io','https://docs.metis.io','https://github.com/MetisProtocol',Optimism: OP Stack,metis
 L2,Mint,185,https://explorer.mintchain.io,,mint,,mint,,OP Stack,,False,False,True,'https://mintchain.io/','https://docs.mintchain.io/','https://github.com/Mint-Blockchain',Optimism: OP Stack,mint
 L2,Mode Network,34443,https://explorer.mode.network,,mode,,mode,https://mainnet.mode.network/,OP Stack,,False,False,True,'https://mode.network/','https://docs.mode.network/',,Optimism: OP Stack,mode
 L2,Morph,,,Optimistic Rollup,morph,,morph,,,,True,False,False,'https://morphl2.io','https://docs.morphl2.io','https://github.com/morph-l2',,morph
@@ -160,6 +160,7 @@ L3,Degen Chain,,,,degen,,degen,,Arbitrum Orbit,base,False,False,True,'https://sy
 L3,Deri,,,,deri,,deri,,Arbitrum Orbit,arbitrum,False,False,True,'https://deri.io/','https://docs.deri.io/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,deri
 L3,L3X,,,Optimium,l3x,,l3x,,Arbitrum,arbitrum,False,False,True,'https://l3x.com/','https://docs.l3x.com/',,Arbitrum: Orbit,l3x
 L3,Molten Network,,,,molten,,molten,https://molten.calderachain.xyz/http,Arbitrum Orbit,arbitrum,False,False,True,'https://moltennetwork.com/','https://docs.unidex.exchange/appchain/markdown',,Arbitrum: Orbit,molten
+L3,Muster,,,Optimium,muster,,muster,https://api.muster-marketplace.cometh.io/v1,Arbitrum,arbitrum,False,False,True,'https://cometh.io/','https://docs.cometh.io/marketplace','https://github.com/cometh-hq',Arbitrum: Orbit,muster
 L3,MXC Moonchain zkEVM,,,ZK Rollup,mxc,,mxc,,Taiko,arbitrum,False,False,True,'https://mxc.org/','https://doc.mxc.com','https://github.com/MXCzkEVM',Taiko,mxc
 L3,ORB3,,,Optimium,orb3,,orb3,https://rpc.orb3.tech,Arbitrum,arbitrum,False,False,True,'https://orb3.tech/','https://docs.orb3.tech/','https://github.com/orb3-protocol',Arbitrum: Orbit,orb3
 L3,Proof of Play Apex,,,,popapex,,popapex,,Arbitrum Orbit,arbitrum,False,False,True,'https://proofofplay.gg',,'https://github.com/proofofplay',Arbitrum: Orbit,popapex
