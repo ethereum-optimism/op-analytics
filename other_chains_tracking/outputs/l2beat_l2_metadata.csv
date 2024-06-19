@@ -56,6 +56,7 @@ L2,Karak,,,,karak,,karak,https://rpc.karak.network/,OP Stack,,False,False,True,'
 L2,Kinto,7887,https://explorer.kinto.xyz,,kinto,,kinto,,Arbitrum Orbit,,False,False,True,'https://kinto.xyz','https://docs.kinto.xyz','https://github.com/kintoxyz',Arbitrum: Orbit,kinto
 L2,Kroma,255,https://kromascan.com,Optimistic Rollup,kroma,,kroma,,OP Stack,,False,False,True,'https://kroma.network/',"'https://docs.kroma.network/',
         'https://specs.kroma.network/',",'https://github.com/kroma-network/',Optimism: OP Stack,kroma
+L2,Lambda Chain,56026,https://scan.lambda.im,,lambda,,lambda,https://nrpc.lambda.im,OP Stack,,False,False,True,'https://lambda.im/',"'https://docs.lambda.im/', 'https://docs.optimism.io/'",'https://github.com/LambdaIM',Optimism: OP Stack,lambda
 L2,Layer2.Finance,,,Optimistic Rollup,layer2finance,,layer2finance,,,,False,True,False,'https://layer2.finance/','https://docs.l2.finance/',"'https://github.com/celer-network/layer2-finance-contracts',",,layer2finance
 L2,L2.Finance-zk,,,Validium,layer2financezk,,layer2financezk,,StarkEx,,False,True,False,'https://layer2.finance/',,"'https://github.com/starkware-libs/starkex-contracts',
         'https://github.com/celer-network/defi-pooling-broker-contracts',",Starkware: Starknet Stack,layer2financezk
@@ -73,7 +74,7 @@ L2,Metis Andromeda,1088,https://explorer.metis.io,Optimium,metis,,metis,,OVM,,Fa
 L2,Mint,185,https://explorer.mintchain.io,,mint,,mint,,OP Stack,,False,False,True,'https://mintchain.io/','https://docs.mintchain.io/','https://github.com/Mint-Blockchain',Optimism: OP Stack,mint
 L2,Mode Network,34443,https://explorer.mode.network,,mode,,mode,https://mainnet.mode.network/,OP Stack,,False,False,True,'https://mode.network/','https://docs.mode.network/',,Optimism: OP Stack,mode
 L2,Morph,,,Optimistic Rollup,morph,,morph,,,,True,False,False,'https://morphl2.io','https://docs.morphl2.io','https://github.com/morph-l2',,morph
-L2,Move,,,Optimium,move,,move,,,,True,False,False,'https://movementlabs.xyz','https://docs.movementlabs.xyz/',,,move
+L2,M2,,,Optimistic Rollup,move,,move,,,,True,False,False,'https://movementlabs.xyz','https://docs.movementlabs.xyz/',,,move
 L2,Myria,,,Validium,myria,,myria,,StarkEx,,False,False,True,'https://myria.com/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',Starkware: Starknet Stack,myria
 L2,MyShell L2,,,Optimium,myshell,,myshell,,OP Stack,,True,False,False,'https://myshell.ai/','https://docs.myshell.ai/',,Optimism: OP Stack,myshell
 L2,=nil;,,,ZK Rollup,nil,,nil,,,,True,False,False,'https://nil.foundation/','https://docs.nil.foundation/nil/',,,nil
@@ -91,6 +92,7 @@ L2,Orderly Network,,,,orderly,,orderly,https://rpc.orderly.network,OP Stack,,Fal
 L2,Palm,,,Validium,palm,,palm,,Polygon,,True,False,False,'https://palm.network/','https://docs.palm.io/',,Polygon: CDK,palm
 L2,Paradex,,,ZK Rollup,paradex,,paradex,,Starknet,,False,False,True,'https://paradex.trade/','https://docs.paradex.trade/','https://github.com/tradeparadex',Starkware: Starknet Stack,paradex
 L2,Parallel,,,,parallel,,parallel,,Arbitrum Orbit,,False,False,True,'https://parallel.fi','https://docs.parallel.fi/parallel-chain/overview',,Arbitrum: Orbit,parallel
+L2,Payy,,,ZK Rollup,payy,,payy,,,,True,False,False,'https://payy.network/','https://payy.network/docs','https://github.com/polybase/payy',,payy
 L2,PlayChain,,,Validium,playchain,,playchain,,ZK Stack,,True,False,False,'https://playfi.ai/','https://docs.playfi.ai/','https://github.com/playFi-Labs',zkSync: ZK Stack,playchain
 L2,Polygon Miden,,,ZK Rollup,polygon-miden,,polygonmiden,,Polygon,,True,False,False,'https://polygon.technology/polygon-miden',"'https://0xpolygonmiden.github.io/miden-base/introduction.html',",'https://github.com/0xPolygonMiden',Polygon: CDK,polygon-miden
 L2,Polygon PoS 2.0,,,Validium,polygon-pos-2,,polygonpos2,,Polygon,,True,False,False,'https://polygon.technology','https://wiki.polygon.technology/','https://github.com/maticnetwork/',Polygon: CDK,polygon-pos-2
