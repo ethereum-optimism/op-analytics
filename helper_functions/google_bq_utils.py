@@ -97,7 +97,6 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
         )
         client = connect_bq_client(project_id)
         # Load the DataFrame into BigQuery
-        print(df.info)
         job = client.load_table_from_dataframe(
                 df, f"{dataset_id}.{table_id}", job_config=job_config
         )
