@@ -7,18 +7,25 @@ import pandas_utils as pu
 
 dotenv.load_dotenv()
 
+import logging
+
+# Setup logging configuration
+logging.basicConfig(level=logging.INFO)  # Set logging level to INFO
+logger = logging.getLogger(__name__)  # Create logger instance for this module
+
+
 def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
         # Check if running locally
         is_running_local = os.environ.get("IS_RUNNING_LOCAL", "False").lower() == "true"
 
         # Set the environment variable to the path of your service account key file
         if is_running_local: #GH Action was weird with this, so forcing the datatype here
-                print("Running locally")
+                # print("Running locally")
                 # Path to your local service account key file
                 service_account_key_path = os.getenv("BQ_APPLICATION_CREDENTIALS")
                 credentials = service_account.Credentials.from_service_account_file(service_account_key_path)
         else: #Can't get the Github Action version to work
-                print('not running local')
+                # print('not running local')
                 # Set the Google Cloud service account key from GitHub secret
                 service_account_key = json.loads( os.getenv("BQ_APPLICATION_CREDENTIALS") )
                 credentials = service_account.Credentials.from_service_account_info(service_account_key)
@@ -40,6 +47,7 @@ def check_table_exists(client, table_id, dataset_id='api_table_uploads', project
 def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
                          ,  write_mode='overwrite'
                          , project_id = os.getenv("BQ_PROJECT_ID")):
+        print(f"Start Writing {dataset_id}.{table_id}")
         schema = []
         # Reset the index of the DataFrame to remove the index column
         df = df.reset_index(drop=True)
@@ -89,14 +97,19 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
         )
         client = connect_bq_client(project_id)
         # Load the DataFrame into BigQuery
+        print(df.info)
         job = client.load_table_from_dataframe(
                 df, f"{dataset_id}.{table_id}", job_config=job_config
         )
 
         # Wait for the job to complete
-        job.result()
-
-        print(f"Data loaded successfully to {dataset_id}.{table_id}")
+        try:
+                job.result()  # Wait for the job to complete
+                print(f"Data loaded successfully to {dataset_id}.{table_id}")
+        except Exception as e:
+                print(f"Error loading data to BigQuery: {e}")
+                # Log more details if needed
+                raise  # Re-raise the exception for higher-level error handling
 
 # def upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain_id', 'dt']):
 #     staging_table_id = f"{table_id}_staging"
@@ -129,39 +142,44 @@ def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads
     client = connect_bq_client(project_id)
     table_ref = f"{project_id}.{dataset_id}.{table_id}"
     
-    # Check if the table exists
-    if check_table_exists(client, table_id, dataset_id, project_id):
-        # Create staging table for upsert
-        staging_table_id = f"{table_id}_staging"
-        staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
-        
-        # Write data to staging table (overwrite mode)
-        write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
-        
-        # Perform upsert from staging table to main table
-        merge_query = f"""
-        MERGE `{table_ref}` T
-        USING `{staging_table_ref}` S
-        ON {" AND ".join([f"T.{key} = S.{key}" for key in unique_keys])}
-        WHEN MATCHED THEN
-          UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in df.columns if col not in unique_keys])}
-        WHEN NOT MATCHED THEN
-          INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f'S.{col}' for col in df.columns])})
-        """
-        
-        # Execute the merge query
-        query_job = client.query(merge_query)
-        query_job.result()
-        
-        print(f"Append and upsert to {dataset_id}.{table_id} completed successfully")
-        
-        # Clean up staging table
-        client.delete_table(staging_table_ref)
-        print(f"Staging table {staging_table_ref} deleted.")
-        
-    else:
-        # If the table doesn't exist, just create it by writing the data (overwrite mode)
-        write_df_to_bq_table(df, table_id, dataset_id, write_mode='overwrite', project_id=project_id)
+    try:
+        # Check if the table exists
+        if check_table_exists(client, table_id, dataset_id, project_id):
+            # Create staging table for upsert
+            staging_table_id = f"{table_id}_staging"
+            staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
+            
+            # Write data to staging table (overwrite mode)
+            write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
+            
+            # Perform upsert from staging table to main table
+            merge_query = f"""
+            MERGE `{table_ref}` T
+            USING `{staging_table_ref}` S
+            ON {" AND ".join([f"T.{key} = S.{key}" for key in unique_keys])}
+            WHEN MATCHED THEN
+              UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in df.columns if col not in unique_keys])}
+            WHEN NOT MATCHED THEN
+              INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f'S.{col}' for col in df.columns])})
+            """
+            
+            # Execute the merge query
+            query_job = client.query(merge_query)
+            query_job.result()
+            
+            logger.info(f"Append and upsert to {dataset_id}.{table_id} completed successfully")
+            
+            # Clean up staging table
+            client.delete_table(staging_table_ref)
+            logger.info(f"Staging table {staging_table_ref} deleted.")
+            
+        else:
+            # If the table doesn't exist, just create it by writing the data (overwrite mode)
+            write_df_to_bq_table(df, table_id, dataset_id, write_mode='overwrite', project_id=project_id)
+    
+    except Exception as e:
+        logger.error(f"Error during append_and_upsert_df_to_bq_table: {e}")
+        raise  # Re-raise the exception for higher-level error handling
 
 # WARNING THE DELETES TABLES
 def delete_bq_table(dataset_id, table_id, project_id=os.getenv("BQ_PROJECT_ID")):
