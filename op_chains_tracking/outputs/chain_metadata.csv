@@ -47,6 +47,8 @@ rise,RISE,,,unknown,,unknown,,,,https://www.riselabs.xyz/,,rise,,,,unknown,L2,un
 superseed,SuperSeed,5330.0,,unknown,,unknown,,,https://mainnet.superseed.xyz,https://www.superseed.xyz/,,superseed,,,,ETH,L2,unknown,ethereum,,no,,,,,,,False,OP Stack fork
 worldchain,World Chain,,,modern,standard,unknown,,,,https://worldcoin.org/world-chain,,world,,,,ETH,L2,ethereum,ethereum,,no,,,,,,,True,OP Chain
 xterio,Xterio,,,modern,standard,no,,altlayer,,https://xter.io/,,,,,,ETH,L2,ethereum,ethereum,,no,,,,,,,True,OP Chain
-axonum,Axonum,,,,,,,,,https://www.axonum.io/,,axonum,,,,,,,,,,,,,,,,False,OP Stack fork
-form,Form,,,,,,,,,https://form.network/,,form,,,,,,,,,,,,,,,,False,OP Stack fork
-myshell,MyShell,,,,,,,,,https://myshell.ai/,,myshell,,,,,,,,,,,,,,,,False,OP Stack fork
+axonum,Axonum,,,,,,,,,https://www.axonum.io/,,axonum,,,,,L2,,,,,,,,,,,False,OP Stack fork
+form,Form,,,,,,,,,https://form.network/,,form,,,,,L2,,,,,,,,,,,False,OP Stack fork
+myshell,MyShell,,,,,,,,,https://myshell.ai/,,myshell,,,,,L2,,,,,,,,,,,False,OP Stack fork
+allo,Allo,,,,,,,,,https://allo.xyz/,,,,,,,L2,ethereum,ethereum,,,,,,,,,False,OP Stack fork
+ham,Ham,5112.0,2024-06-05,modern,non-standard,yes,,syndicate,https://rpc.ham.fun,https://ham.fun/,,,,,,ETH,L3,unknown,base,,,,,,,,,True,OP Chain
