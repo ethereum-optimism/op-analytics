@@ -124,11 +124,11 @@ for df in dfs:
 
 #  Define aggregation functions for each column
 aggregations = {
-    'valueUsd': ['min', 'last', 'mean'],
+    'totalUsd': ['min', 'last', 'mean'], #valueUsd
     'transactions': ['sum', 'mean'],
-    'cbvUsd': ['min', 'last', 'mean'],
-    'ebvUsd': ['min', 'last', 'mean'],
-    'nmvUsd': ['min', 'last', 'mean'],
+    'canonicalUsd': ['min', 'last', 'mean'], #cbvUsd
+    'externalUsd': ['min', 'last', 'mean'], #ebvUsd
+    'nativeUsd': ['min', 'last', 'mean'], #nmvUsd
 }
 # Function to perform aggregation based on frequency
 def aggregate_data(df, freq, date_col='timestamp', groupby_cols=None, aggs=None):
