@@ -2,9 +2,9 @@ name: Run Market Data Updates
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule - Every 5 mins
+  # Run on a schedule - Every 15 mins
   schedule:
-      - cron: '*/5 * * * *'
+      - cron: '*/15 * * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
