@@ -144,7 +144,7 @@ ICP,internet-computer,ICP,8916,,,['dfinity'],dfinity,https://internetcomputer.or
 Nova Network,supernova,SNT,15399,['EVM'],87,['nova-network-inc'],,,,['snapshot:novanetwork.eth']
 Kintsugi,kintsugi,KINT,13675,['Parachain'],,['interlay'],kintsugi_btc,https://www.interlay.io/,"{'chain': 'Kusama', 'types': ['parachain']}",
 Filecoin,filecoin,FIL,2280,['EVM'],,['filecoin-project'],Filecoin,https://filecoin.io/,,
-Flow,flow,FLOW,4558,,,['onflow'],https://flow.com/,flow_blockchain,,
+Flow,flow,FLOW,4558,,,['onflow'],flow_blockchain,https://flow.com/,,
 Kujira,kujira,KUJI,15185,['Cosmos'],,['Team-Kujira'],TeamKujira,https://kujira.network/,,
 Heiko,,HKO,,['Parachain'],,['parallelchain-io'],ParallelFi,https://parallel.fi/,"{'chain': 'Kusama', 'types': ['parachain']}",
 Dogechain,dogechain,DG,,['EVM'],,['dogechain-lab'],DogechainFamily,https://dogechain.dog/,,
@@ -320,6 +320,7 @@ IOTA EVM,,,,"['EVM', 'Rollup']",8822,,iota,https://blog.iota.org/iotas-evm-mainn
 Ham,,,,"['EVM', 'Arbitrum Orbit']",5112,,HamOnWarpcast,https://ham.fun,"{'chain': 'Arbitrum', 'types': ['L3']}",
 Sanko,dream-machine-token,DMT,25653,"['EVM', 'Arbitrum Orbit']",1996,,SankoGameCorp,https://sanko.xyz/,"{'chain': 'Arbitrum', 'types': ['L3']}",
 Rari,,,,"['EVM', 'Arbitrum Orbit']",1380012617,,RariChain,https://rarichain.org/,"{'chain': 'Arbitrum', 'types': ['L3']}",
+Massa,,,,['Cosmos'],,,massalabs,https://massa.net,,
 xDai,gnosis,GNO,1659,['EVM'],100,['gnosis'],gnosischain,https://www.gnosis.io/,,['snapshot:xdaistake.eth']
 Binance,binancecoin,BNB,1839,['EVM'],56,['bnb-chain'],BNBCHAIN,https://www.bnbchain.org/en,,
 Kucoin,kucoin-shares,KCS,2087,['EVM'],321,['kcc-community'],KCCOfficialTW,https://www.kcc.io/,,['snapshot:kcc.eth']

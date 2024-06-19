@@ -84,7 +84,7 @@ deploy_dune_df = d.get_dune_data(query_id = 3753590, #https://dune.com/queries/3
     name = "daily_evms_filtered_deployers_dune",
     path = "outputs",
     performance="large",
-    # params = [days_param]
+    params = [days_param]
 )
 revdev_dune_df = d.get_dune_data(query_id = 3329567, #https://dune.com/queries/3329567
     name = "daily_evms_revdevs_dune",
@@ -118,11 +118,17 @@ dune_meta_df = d.get_dune_data(query_id = 3445473, #https://dune.com/queries/344
     num_hours_to_rerun = 12
 )
 dune_meta_df = dune_meta_df.rename(columns={'dune_schema':'blockchain'})
-cols = ['blockchain','name','layer']
-deploy_dune_df = deploy_dune_df.merge(dune_meta_df[cols], on='blockchain',how='inner')
-revdev_dune_df = revdev_dune_df.merge(dune_meta_df[cols], on='blockchain',how='left')
+cols = ['name','layer','chain_id']
+deploy_dune_df = deploy_dune_df.merge(dune_meta_df[cols], on='chain_id',how='inner')
+revdev_dune_df = revdev_dune_df.merge(dune_meta_df[cols], on='chain_id',how='left')
 
 # deploy_dune_df.sample(5)
+
+
+# In[ ]:
+
+
+# revdev_dune_df.head()
 
 
 # In[ ]:
@@ -185,6 +191,12 @@ op_chains
 # In[ ]:
 
 
+unified_deployers_df.sample(5)
+
+
+# In[ ]:
+
+
 # Ensure created_dt is in datetime format
 unified_deployers_df['created_dt'] = pd.to_datetime(unified_deployers_df['created_dt'])
 
@@ -210,8 +222,8 @@ for single_date in date_range:
     ]
     
     # Group by blockchain and count unique creator_addresses
-    unique_counts = window_df.groupby(['blockchain','name','layer'])['creator_address'].nunique().reset_index()
-    unique_counts['date'] = single_date
+    unique_counts = window_df.groupby(['blockchain','name','layer','chain_id'])['creator_address'].nunique().reset_index()
+    unique_counts['dt'] = single_date
     # Append the individual blockchain results
     results.append(unique_counts)
 
@@ -221,8 +233,9 @@ for single_date in date_range:
         'blockchain': ['all'],
         'name': ['All'],
         'layer': ['Aggregate'],
+        'chain_id': [None],
         'creator_address': [all_count],
-        'date': [single_date]
+        'dt': [single_date]
     }))
     # Calculate the 'OP Chains' unique count
     layers = ['L1','L2','L3']
@@ -233,8 +246,9 @@ for single_date in date_range:
             'blockchain': [i.lower()],
             'name': [i + 's'],
             'layer': ['Aggregate'],
+            'chain_id': [None],
             'creator_address': [l_count],
-            'date': [single_date]
+            'dt': [single_date]
         }))
     # Calculate the 'OP Chains' unique count
     op_window_df = window_df[window_df['blockchain'].isin(op_chains)]
@@ -243,8 +257,9 @@ for single_date in date_range:
         'blockchain': ['op chains'],
         'name': ['OP Chains'],
         'layer': ['Aggregate'],
+        'chain_id': [None],
         'creator_address': [op_count],
-        'date': [single_date]
+        'dt': [single_date]
     }))
 
 # Concatenate all results into a single DataFrame
@@ -265,13 +280,28 @@ final_df.sample(5)
 # In[ ]:
 
 
-opstack_metadata['display_name_lower'] = opstack_metadata['display_name'].str.lower()
-final_df['display_name_lower'] = final_df['name'].str.lower()
+meta_cols = ['is_op_chain','mainnet_chain_id','op_based_version', 'alignment','chain_name', 'display_name']
+opstack_metadata_map = opstack_metadata[meta_cols]
+opstack_metadata_map = opstack_metadata_map.rename(columns={'mainnet_chain_id':'chain_id'})
 
-meta_cols = ['is_op_chain','mainnet_chain_id','op_based_version', 'alignment','chain_name', 'display_name','display_name_lower']
+opstack_metadata_map = opstack_metadata_map[opstack_metadata_map['chain_id'].notnull()]
+opstack_metadata_map.sample(5)
 
-deployer_enriched_df = final_df.merge(opstack_metadata[meta_cols], on='display_name_lower', how = 'left')
+
+# In[ ]:
+
+
+# final_df
+
+
+# In[ ]:
+
+
+deployer_enriched_df = final_df.merge(opstack_metadata_map, on='chain_id', how = 'left')
+
 deployer_enriched_df['alignment'] = deployer_enriched_df['alignment'].fillna('Other EVMs')
+deployer_enriched_df.loc[deployer_enriched_df['layer'] == 'Aggregate', 'alignment'] = 'Aggregate'
+
 deployer_enriched_df['is_op_chain'] = deployer_enriched_df['is_op_chain'].fillna(False)
 deployer_enriched_df['display_name'] = deployer_enriched_df['display_name'].fillna(deployer_enriched_df['name'])
 
@@ -281,22 +311,47 @@ deployer_enriched_df = deployer_enriched_df.drop(columns=['name'])
 # In[ ]:
 
 
-unified_revdev_df['display_name_lower'] = unified_revdev_df['name'].str.lower()
+deployer_enriched_df.sample(5)
+
+
+# In[ ]:
+
+
 unified_revdev_df = unified_revdev_df.drop(['is_op_chain','chain_name'],axis=1)
 
-
-revdev_enriched_df = unified_revdev_df.merge(opstack_metadata[meta_cols], on='display_name_lower', how = 'left')
+revdev_enriched_df = unified_revdev_df.merge(opstack_metadata_map, on='chain_id', how = 'left')
 revdev_enriched_df['alignment'] = revdev_enriched_df['alignment'].fillna('Other EVMs')
 revdev_enriched_df['is_op_chain'] = revdev_enriched_df['is_op_chain'].fillna(False)
 revdev_enriched_df['display_name'] = revdev_enriched_df['display_name'].fillna(revdev_enriched_df['name'])
-
 revdev_enriched_df = revdev_enriched_df.drop(columns=['name'])
 
 
 # In[ ]:
 
 
-deployer_enriched_df.sort_values(by=['date','blockchain'], ascending =[False, False], inplace = True)
+# List of DataFrames
+dataframes = [deployer_enriched_df, revdev_enriched_df, unified_deployers_df]
+
+# Process each DataFrame
+for df in dataframes:
+    df['blockchain'] = df['blockchain'].astype(str).fillna('-').str.strip()
+    df['chain_id'] = df['chain_id'].fillna(-1)
+    df.reset_index(drop=True, inplace=True)
+
+
+# In[ ]:
+
+
+# Check DataFrame information to verify data types and non-null counts
+# print(deployer_enriched_df.info())
+# print(revdev_enriched_df.info())
+# print(unified_deployers_df.info())
+
+
+# In[ ]:
+
+
+deployer_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
 deployer_enriched_df.to_csv('outputs/daily_filter_deployer_counts.csv', index=False)
 
 revdev_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
@@ -306,8 +361,20 @@ revdev_enriched_df.to_csv('outputs/daily_revdev_counts.csv', index=False)
 # In[ ]:
 
 
+# print(revdev_enriched_df.dtypes)
+
+
+# In[ ]:
+
+
+# revdev_enriched_df.info()
+
+
+# In[ ]:
+
+
 #BQ Upload
-bqu.append_and_upsert_df_to_bq_table(deployer_enriched_df, 'daily_filter_deployer_counts',unique_keys=['date','blockchain'])
+bqu.append_and_upsert_df_to_bq_table(deployer_enriched_df, 'daily_filter_deployer_counts',unique_keys=['dt','blockchain'])
 bqu.append_and_upsert_df_to_bq_table(revdev_enriched_df, 'daily_revdev_counts',unique_keys=['dt','blockchain'])
 # Raw Deployer Address Data
 bqu.append_and_upsert_df_to_bq_table(unified_deployers_df, 'daily_filter_deployer_address_list', unique_keys = ['blockchain','created_dt','creator_address'])
