@@ -53,3 +53,4 @@ myshell,MyShell,,,,,,,,,https://myshell.ai/,,myshell,,,,,L2,,,,,,,,,,,False,OP S
 allo,Allo,,,,,,,,,https://allo.xyz/,,,,,,,L2,ethereum,ethereum,,,,,,,,,False,OP Stack fork
 ham,Ham,5112.0,2024-06-05,modern,non-standard,yes,,syndicate,https://rpc.ham.fun,https://ham.fun/,Ham,,,,,ETH,L3,unknown,base,,,,,,,,,True,OP Chain
 stack,Stack,78225.0,2024-03-11,,,,,,https://rpc.stack.so,https://www.stack.so/,,,,,,ETH,L3,celestia,base,,,,,,,,,False,OP Stack fork
+gameswift,GameSwift,,,modern,non-standard,yes,,,,https://gameswift.io/,,,,,,GSWIFT,L2,,ethereum,,,,,,,,,True,OP Chain
