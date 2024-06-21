@@ -20,6 +20,7 @@ L2,Camp,,,Optimium,camp,,camp,,OP Stack,,True,False,False,'https://campnetwork.x
 L2,Canto,,,ZK Rollup,canto,,canto,,Polygon,,True,False,False,'https://canto.io','https://docs.canto.io',,Polygon: CDK,canto
 L2,Canvas Connect,,,Validium,canvasconnect,,canvasconnect,,StarkEx,,False,True,False,'https://canvas.co/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',Starkware: Starknet Stack,canvasconnect
 L2,Capx,,,ZK Rollup,capx,,capx,,Polygon,,True,False,False,'https://capx.fi/','https://capx.gitbook.io/docs',,Polygon: CDK,capx
+L2,Celo,,,Optimium,celo,,celo,,OP Stack,,True,False,False,'https://celo.org/','https://docs.celo.org/','https://github.com/celo-org',Optimism: OP Stack,celo
 L2,Coti,,,Optimistic Rollup,coti,,coti,,,,True,False,False,'https://coti.io/',"'https://medium.com/cotinetwork/how-coti-is-gearing-up-for-2024-and-beyond-e0d465794767',",'https://github.com/coti-io',,coti
 L2,Cronos zkEVM,,,ZK Rollup,cronos,,cronos,,ZK Stack,,True,False,False,'https://cronos.org/','https://docs.cronos.org/',,zkSync: ZK Stack,cronos
 L2,Cyber,,,Funds can be stolen if,cyber,,cyber,https://cyber.alt.technology/,OP Stack,,False,False,True,'https://cyber.co/','https://docs.cyber.co/','https://github.com/cyberconnecthq',Optimism: OP Stack,cyber
@@ -74,7 +75,7 @@ L2,Metis Andromeda,1088,https://explorer.metis.io,Optimium,metis,,metis,,OVM,,Fa
 L2,Mint,185,https://explorer.mintchain.io,,mint,,mint,,OP Stack,,False,False,True,'https://mintchain.io/','https://docs.mintchain.io/','https://github.com/Mint-Blockchain',Optimism: OP Stack,mint
 L2,Mode Network,34443,https://explorer.mode.network,,mode,,mode,https://mainnet.mode.network/,OP Stack,,False,False,True,'https://mode.network/','https://docs.mode.network/',,Optimism: OP Stack,mode
 L2,Morph,,,Optimistic Rollup,morph,,morph,,,,True,False,False,'https://morphl2.io','https://docs.morphl2.io','https://github.com/morph-l2',,morph
-L2,M2,,,Optimistic Rollup,move,,move,,,,True,False,False,'https://movementlabs.xyz','https://docs.movementlabs.xyz/',,,move
+L2,M2,,,Validium,move,,move,,,,True,False,False,'https://movementlabs.xyz','https://docs.movementlabs.xyz/',,,move
 L2,Myria,,,Validium,myria,,myria,,StarkEx,,False,False,True,'https://myria.com/','https://docs.starkware.co/starkex/index.html','https://github.com/starkware-libs/starkex-contracts',Starkware: Starknet Stack,myria
 L2,MyShell L2,,,Optimium,myshell,,myshell,,OP Stack,,True,False,False,'https://myshell.ai/','https://docs.myshell.ai/',,Optimism: OP Stack,myshell
 L2,=nil;,,,ZK Rollup,nil,,nil,,,,True,False,False,'https://nil.foundation/','https://docs.nil.foundation/nil/',,,nil
