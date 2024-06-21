@@ -21,3 +21,4 @@ op_chains_tracking/lightweight_chain_tracker/lyra_output/*
 misc_analysis/csv_outputs/base_14.csv
 misc_analysis/csv_outputs/optimism_14.csv
 misc_analysis/clickhouse
+misc_analysis/csv_outputs/tokens_by_type_base_opm.csv
