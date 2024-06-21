@@ -53,7 +53,7 @@ def get_all_l2beat_data(granularity='daily'):
 
         return combined_df
 
-def get_daily_aop_by_token():
+def get_daily_aoc_by_token():
         api_url = 'https://api.l2beat.com/api/tvl'
         response = r.get(api_url)
         response.raise_for_status()
