@@ -1,6 +1,7 @@
 import requests as r
 import pandas as pd
 import re
+from datetime import datetime, timezone
 
 api_string = 'https://api.l2beat.com/api/'
 # https://api.l2beat.com/api/tvl
@@ -46,12 +47,40 @@ def get_l2beat_activity_data(data='activity',granularity='daily'):
 
 def get_all_l2beat_data(granularity='daily'):
         activity_df = get_l2beat_activity_data('activity',granularity)
-        tvl_df = get_l2beat_activity_data('tvl',granularity)
+        aop_df = get_l2beat_activity_data('tvl',granularity)
 
-        combined_df = tvl_df.merge(activity_df, on=['timestamp','chain'],how='outer')
+        combined_df = aop_df.merge(activity_df, on=['timestamp','chain'],how='outer')
 
         return combined_df
 
+def get_daily_aop_by_token():
+        api_url = 'https://api.l2beat.com/api/tvl'
+        response = r.get(api_url)
+        response.raise_for_status()
+        data = response.json()
+
+        rows = []
+        # timestamp = datetime.fromtimestamp(data['timestamp'] / 1000).strftime('%Y-%m-%d')
+        # Use today's date in UTC
+        timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+
+        for project_name, project_data in data['projects'].items():
+                for token_type, tokens in project_data['tokens'].items():
+                        for token in tokens:
+                                rows.append({
+                                'dt': timestamp,
+                                'project': project_name,
+                                'token_type': token_type,
+                                'asset_id': token['assetId'],
+                                'address': token['address'],
+                                'source_chain': token['chain'],
+                                'source_chain_id': token['chainId'],
+                                'source': token['source'],
+                                'usd_value': token['usdValue']
+                                })
+        df = pd.DataFrame(rows)
+        df["dt"] = pd.to_datetime(df["dt"], errors='coerce')
+        return df
 
 
 def get_l2beat_metadata():
