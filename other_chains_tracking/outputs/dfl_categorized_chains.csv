@@ -189,7 +189,7 @@ Persistence,persistence,XPRT,7281,['Cosmos'],,['persistenceOne'],PersistenceOne,
 ENULS,,,,['EVM'],,['nuls-io'],Nuls,https://nuls.io/,,
 Oraichain,oraichain-token,ORAI,7533,['Cosmos'],,['oraichain'],oraichain,https://orai.io/,,
 Goerli,goerli-eth,GETH,23669,['EVM'],,,,,,
-Europa,,,,['EVM'],,['patractlabs'],,,,
+SKALE Europa,,,,['EVM'],,['patractlabs'],,,,
 CORE,coredaoorg,CORE,23254,"['EVM', 'Bitcoin Sidechains']",,['coredao-org'],Coredao_Org,https://coredao.org/,,
 Rangers,rangers-protocol-gas,RPG,12221,['EVM'],,,,,,['snapshot:rangersprotocoldao.eth']
 Lung,,,,['EVM'],78887,,,,,
@@ -337,3 +337,4 @@ WEMIX,wemix-token,WEMIX,7548,['EVM'],,['wemixarchive'],WemixNetwork,https://www.
 Umee,umee,UX,16389,['Cosmos'],,['umee-network'],,,,
 TomoChain,tomochain,VIC,2570,['EVM'],88,"['tomochain', 'BuildOnViction']",BuildOnViction,https://viction.xyz/,,
 zkLink,zklink,ZKL,,['EVM'],810180,['zkLinkProtocol'],zkLink_Official,https://zk.link,,
+Europa,,,,['EVM'],,['patractlabs'],,,,

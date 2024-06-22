@@ -31,6 +31,14 @@ gtp_meta_api = gtp.get_growthepie_api_meta()
 # In[ ]:
 
 
+l2beat_aoc = ltwo.get_daily_aoc_by_token()
+
+# l2beat_aoc
+
+
+# In[ ]:
+
+
 l2beat_df = ltwo.get_all_l2beat_data()
 
 
@@ -172,6 +180,7 @@ l2b_enriched_df.to_csv(folder + 'l2beat_l2_activity.csv', index = False)
 l2beat_meta.to_csv(folder + 'l2beat_l2_metadata.csv', index = False)
 l2b_monthly_df.to_csv(folder + 'l2beat_l2_activity_monthly.csv', index = False)
 l2b_weekly_df.to_csv(folder + 'l2beat_l2_activity_weekly.csv', index = False)
+l2beat_aoc.to_csv(folder + 'l2beat_aoc_by_token.csv', index = False)
 # Post to Dune API
 d.write_dune_api_from_pandas(combined_gtp_df, 'growthepie_l2_activity',\
                              'L2 Usage Activity from GrowThePie')
@@ -245,6 +254,8 @@ time.sleep(1)
 bqu.write_df_to_bq_table(l2b_weekly_df, 'weekly_l2beat_l2_activity')
 time.sleep(1)
 bqu.write_df_to_bq_table(l2beat_meta, 'l2beat_l2_metadata')
+time.sleep(1)
+bqu.append_and_upsert_df_to_bq_table(l2beat_aoc, 'daily_l2beat_aoc_by_token', unique_keys=['dt','project','token_type','asset_id','chain','address'])
 
 
 # In[ ]:
