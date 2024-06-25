@@ -71,6 +71,8 @@ FROM (
         SUM(CASE WHEN gas_price > 0 THEN receipt_l1_gas_used / 16 ELSE 0 END) AS compressedtxsize_approx_user_txs_l2_per_day,
 
         SUM((CAST(receipt_l1_gas_price AS Nullable(Float64)) / CAST(1e9 AS Nullable(Float64))) * CAST(receipt_l1_gas_used AS Nullable(Float64))) / SUM(CAST(receipt_l1_gas_used AS Nullable(Float64))) AS avg_l1_gas_price_on_l2,
+
+        SUM((CAST(receipt_l1_blob_base_fee AS Nullable(Float64)) / CAST(1e9 AS Nullable(Float64))) * CAST(receipt_l1_gas_used AS Nullable(Float64))) / SUM(CAST(receipt_l1_gas_used AS Nullable(Float64))) AS avg_blob_base_fee_on_l2,
         
         SUM(CASE WHEN gas_price > 0 THEN CAST(t.receipt_gas_used * gas_price AS Nullable(Float64)) / 1e9 ELSE NULL END)
         / SUM(CASE WHEN gas_price > 0 THEN t.receipt_gas_used ELSE NULL END) AS avg_l2_gas_price, -- if not free
