@@ -62,13 +62,14 @@ def get_daily_aoc_by_token():
         rows = []
         # timestamp = datetime.fromtimestamp(data['timestamp'] / 1000).strftime('%Y-%m-%d')
         # Use today's date in UTC
-        timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+        timestamp = datetime.now(timezone.utc)
+        timestamp_date = timestamp.strftime('%Y-%m-%d')
 
         for project_name, project_data in data['projects'].items():
                 for token_type, tokens in project_data['tokens'].items():
                         for token in tokens:
                                 rows.append({
-                                'dt': timestamp,
+                                'dt': timestamp_date,
                                 'project': project_name,
                                 'token_type': token_type,
                                 'asset_id': token['assetId'],
@@ -76,7 +77,8 @@ def get_daily_aoc_by_token():
                                 'source_chain': token['chain'],
                                 'source_chain_id': token['chainId'],
                                 'source': token['source'],
-                                'usd_value': token['usdValue']
+                                'usd_value': token['usdValue'],
+                                'dt_updated': timestamp
                                 })
         df = pd.DataFrame(rows)
         df["dt"] = pd.to_datetime(df["dt"], errors='coerce')

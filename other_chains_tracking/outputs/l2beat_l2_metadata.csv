@@ -36,6 +36,7 @@ L2,Eclipse,,,Optimistic Rollup,eclipse,,eclipse,,,,True,False,False,'https://ecl
 L2,Edgeless,,,Optimium,edgeless,,edgeless,,Arbitrum,,False,False,True,'https://edgeless.network/','https://docs.edgeless.network/','https://github.com/edgelessNetwork',Arbitrum: Orbit,edgeless
 L2,Ethernity,,,Optimistic Rollup,ethernity,,ethernity,,OP Stack,,True,False,False,'https://ethernity.io/',"'https://drive.google.com/file/d/1o74ZBmYMIUa8QUwvLOK7KhoXP9-LCsPf/view',",,Optimism: OP Stack,ethernity
 L2,Everclear,,,Optimium,everclear,,everclear,,Arbitrum,,True,False,False,'https://everclear.org','https://docs.everclear.org',,Arbitrum: Orbit,everclear
+L2,Fhenix,,,Optimistic Rollup,fhenix,,fhenix,,Arbitrum,,True,False,False,'https://fhenix.io/',"'https://fhenix.io/fhe-rollups-scaling-confidential-smart-contracts-on-ethereum-and-beyond-whitepaper/',",'https://github.com/orgs/FhenixProtocol/',Arbitrum: Orbit,fhenix
 L2,Form,,,Optimistic Rollup,form,,form,,OP Stack,,True,False,False,'https://form.network','https://docs.form.network',,Optimism: OP Stack,form
 L2,Frame,,,Optimistic Rollup,frame,,frame,,Arbitrum,,True,False,False,'https://frame.xyz/','https://docs.frame.xyz/','https://github.com/frame-network',Arbitrum: Orbit,frame
 L2,FraxtalDA,252,https://fraxscan.com/,,fraxtal,,fraxtal,https://rpc.frax.com,OP Stack,,False,False,True,'https://frax.com/','https://docs.frax.com/','https://github.com/FraxFinance',Optimism: OP Stack,fraxtal
@@ -44,6 +45,7 @@ L2,Fuel v1,,,Optimistic Rollup,fuelv1,,fuelv1,,,,False,False,True,'https://fuel.
         'https://github.com/FuelLabs/fuels-rs',
         'https://github.com/FuelLabs/fuels-ts',
         'https://github.com/FuelLabs/fuel-v1-contracts',",,fuelv1
+L2,Gravity,,,Optimium,galxegravity,,galxegravity,,Arbitrum,,True,False,False,'https://gravity.xyz',,,Arbitrum: Orbit,galxegravity
 L2,Gluon,,,Plasma,gluon,,gluon,,,,False,True,False,"'https://gluon.network/', 'https://leverj.io/'",'https://leverj.io/assets/documents/Gluon-Layer2.pdf',,,gluon
 L2,GRVT,,,Validium,grvt,,grvt,,ZK Stack,,True,False,False,'https://grvt.io','https://docs.grvt.io',,zkSync: ZK Stack,grvt
 L2,Polygon Hermez,,,ZK Rollup,hermez,,hermez,,Polygon,,False,True,False,'https://hermez.io/',"'https://docs.hermez.io/',
@@ -95,6 +97,7 @@ L2,Paradex,,,ZK Rollup,paradex,,paradex,,Starknet,,False,False,True,'https://par
 L2,Parallel,,,,parallel,,parallel,,Arbitrum Orbit,,False,False,True,'https://parallel.fi','https://docs.parallel.fi/parallel-chain/overview',,Arbitrum: Orbit,parallel
 L2,Payy,,,ZK Rollup,payy,,payy,,,,True,False,False,'https://payy.network/','https://payy.network/docs','https://github.com/polybase/payy',,payy
 L2,PlayChain,,,Validium,playchain,,playchain,,ZK Stack,,True,False,False,'https://playfi.ai/','https://docs.playfi.ai/','https://github.com/playFi-Labs',zkSync: ZK Stack,playchain
+L2,Plume Network,,,Optimistic Rollup,plumenetwork,,plumenetwork,,Arbitrum,,True,False,False,'https://plumenetwork.xyz/','https://docs.plumenetwork.xyz/plume',,Arbitrum: Orbit,plumenetwork
 L2,Polygon Miden,,,ZK Rollup,polygon-miden,,polygonmiden,,Polygon,,True,False,False,'https://polygon.technology/polygon-miden',"'https://0xpolygonmiden.github.io/miden-base/introduction.html',",'https://github.com/0xPolygonMiden',Polygon: CDK,polygon-miden
 L2,Polygon PoS 2.0,,,Validium,polygon-pos-2,,polygonpos2,,Polygon,,True,False,False,'https://polygon.technology','https://wiki.polygon.technology/','https://github.com/maticnetwork/',Polygon: CDK,polygon-pos-2
 L2,Polygon zkEVM,1101,https://zkevm.polygonscan.com,Funds can be lost if,polygonzkevm,,polygonzkevm,,Polygon CDK,,False,False,True,'https://polygon.technology/polygon-zkevm',"'https://wiki.polygon.technology/docs/zkEVM/introduction',",'https://github.com/0xPolygonHermez',Polygon: CDK,polygonzkevm
@@ -161,6 +164,7 @@ L3,Bugless,,,Optimistic Rollup,bugless,,bugless,,Cartesi Rollups,optimism,False,
 L3,DCA.Monster,,,Optimistic Rollup,dcamonster,,dcamonster,,Cartesi Rollups,,True,False,False,'https://dca.monster',"'https://github.com/dcamonster/cartesi-defi-modular-components/blob/master/readme.md',",'https://github.com/dcamonster',Cartesi Rollups,dcamonster
 L3,Degen Chain,,,,degen,,degen,,Arbitrum Orbit,base,False,False,True,'https://syndicate.io/blog/degen-chain','https://docs.syndicate.io/get-started/introduction',,Arbitrum: Orbit,degen
 L3,Deri,,,,deri,,deri,,Arbitrum Orbit,arbitrum,False,False,True,'https://deri.io/','https://docs.deri.io/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,deri
+L3,DODOchain,,,Optimium,dodochain,,dodochain,,Arbitrum,arbitrum,False,False,True,'https://dodochain.com/','https://docs.dodochain.com/en/dodochain','https://github.com/DODOEX',Arbitrum: Orbit,dodochain
 L3,L3X,,,Optimium,l3x,,l3x,,Arbitrum,arbitrum,False,False,True,'https://l3x.com/','https://docs.l3x.com/',,Arbitrum: Orbit,l3x
 L3,Molten Network,,,,molten,,molten,https://molten.calderachain.xyz/http,Arbitrum Orbit,arbitrum,False,False,True,'https://moltennetwork.com/','https://docs.unidex.exchange/appchain/markdown',,Arbitrum: Orbit,molten
 L3,Muster,,,Optimium,muster,,muster,https://api.muster-marketplace.cometh.io/v1,Arbitrum,arbitrum,False,False,True,'https://cometh.io/','https://docs.cometh.io/marketplace','https://github.com/cometh-hq',Arbitrum: Orbit,muster
