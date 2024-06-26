@@ -308,7 +308,7 @@ Bitlayer,,,,"['Bitcoin Sidechains', 'EVM']",200901,['bitlayer-org'],BitlayerLabs
 Endurance,endurance,ACE,28674,['EVM'],648,,fusionistio,https://ace.fusionist.io/,,
 DFS Network,,,,,,,dfsdeveloper,https://twitter.com/dfsdeveloper,,
 Cyber,,,,"['EVM', 'Rollup']",7560,['cyberconnecthq'],BuildOnCyber,https://cyber.co/,"{'chain': 'Ethereum', 'types': ['L2']}",
-BounceBit,BB,bouncebit,30746,"['EVM', 'Bitcoin Sidechains']",6001,,bounce_bit,https://bouncebit.io/,,
+BounceBit,bouncebit,BB,30746,"['EVM', 'Bitcoin Sidechains']",6001,,bounce_bit,https://bouncebit.io/,,
 re.al,,,,['EVM'],111188,['re-al-Foundation'],real_rwa,https://www.re.al,,
 Taiko,,,,"['EVM', 'Rollup']",167000,,taikoxyz,https://taiko.xyz,"{'chain': 'Ethereum', 'types': ['L2']}",
 Genesys,genesys,GSYS,27940,['EVM'],16507,['GENESYSBLOCKCHAIN'],GenesysChain,https://genesys.network/,,
@@ -321,6 +321,9 @@ Ham,,,,"['EVM', 'Arbitrum Orbit']",5112,,HamOnWarpcast,https://ham.fun,"{'chain'
 Sanko,dream-machine-token,DMT,25653,"['EVM', 'Arbitrum Orbit']",1996,,SankoGameCorp,https://sanko.xyz/,"{'chain': 'Arbitrum', 'types': ['L3']}",
 Rari,,,,"['EVM', 'Arbitrum Orbit']",1380012617,,RariChain,https://rarichain.org/,"{'chain': 'Arbitrum', 'types': ['L3']}",
 Massa,,,,['Cosmos'],,,massalabs,https://massa.net,,
+AILayer,,,,"['EVM', 'Bitcoin Sidechains']",2649,,AILayerXYZ,https://anvm.io/,,
+Mint,,,,"['EVM', 'Rollup']",185,,Mint_Blockchain,https://www.mintchain.io/,"{'chain': 'Ethereum', 'types': ['L2']}",
+OXFUN,ox-fun,OX,29530,['EVM'],6699,,OXFUNHQ,https://ox.fun/en,"{'chain': 'Base', 'types': ['L3']}",
 xDai,gnosis,GNO,1659,['EVM'],100,['gnosis'],gnosischain,https://www.gnosis.io/,,['snapshot:xdaistake.eth']
 Binance,binancecoin,BNB,1839,['EVM'],56,['bnb-chain'],BNBCHAIN,https://www.bnbchain.org/en,,
 Kucoin,kucoin-shares,KCS,2087,['EVM'],321,['kcc-community'],KCCOfficialTW,https://www.kcc.io/,,['snapshot:kcc.eth']
