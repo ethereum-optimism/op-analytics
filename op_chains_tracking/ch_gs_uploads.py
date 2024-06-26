@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[10]:
+# In[1]:
 
 
 print('start ch uploads')
@@ -25,7 +25,7 @@ sys.path.pop()
 import time
 
 
-# In[11]:
+# In[2]:
 
 
 client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
@@ -34,16 +34,16 @@ client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 table_name = 'daily_aggegate_l2_chain_usage_goldsky'
 
 
-# In[12]:
+# In[3]:
 
 
 chain_mappings_list = [
-    # {'schema_name': 'zora', 'display_name': 'Zora', 'has_blob_fields': False},
-    # {'schema_name': 'pgn', 'display_name': 'Public Goods Network', 'has_blob_fields': False},
+    # {'schema_name': 'zora', 'display_name': 'Zora', 'has_blob_fields': True},
+    # {'schema_name': 'pgn', 'display_name': 'Public Goods Network', 'has_blob_fields': True},
     # {'schema_name': 'base', 'display_name': 'Base', 'has_blob_fields': False},
     # {'schema_name': 'op', 'display_name': 'OP Mainnet', 'has_blob_fields': True},
-    {'schema_name': 'mode', 'display_name': 'Mode', 'has_blob_fields': False},
-    {'schema_name': 'metal', 'display_name': 'Metal', 'has_blob_fields': False},
+    {'schema_name': 'mode', 'display_name': 'Mode', 'has_blob_fields': True},
+    {'schema_name': 'metal', 'display_name': 'Metal', 'has_blob_fields': True},
     {'schema_name': 'fraxtal', 'display_name': 'Fraxtal', 'has_blob_fields': True},
     {'schema_name': 'bob', 'display_name': 'BOB (Build on Bitcoin)', 'has_blob_fields': False},
     {'schema_name': 'cyber', 'display_name': 'Cyber', 'has_blob_fields': True},
@@ -57,7 +57,7 @@ trailing_days = 180
 max_execution_secs = 3000
 
 
-# In[13]:
+# In[4]:
 
 
 sql_directory = "inputs/sql/"
@@ -68,13 +68,13 @@ query_names = [
 ]
 
 
-# In[14]:
+# In[5]:
 
 
 unified_dfs = []
 
 
-# In[15]:
+# In[6]:
 
 
 for qn in query_names:
@@ -122,13 +122,13 @@ for qn in query_names:
         # # # Print the results
 
 
-# In[ ]:
+# In[7]:
 
 
 write_df.dtypes
 
 
-# In[ ]:
+# In[8]:
 
 
 #BQ Upload
