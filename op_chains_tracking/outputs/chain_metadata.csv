@@ -40,12 +40,12 @@ zircuit,Zircuit,48899.0,,unknown,,yes,,,https://zircuit1.p2pify.com/,https://www
 goldchain,Gold,4653.0,2024-02-26,modern,,yes,,syndicate,https://chain-rpc.gold.dev,https://www.gold.dev/,,,,,,ETH,L3,celestia,base,,no,,,,,,,False,OP Stack fork
 pontem,Pontem,8866.0,2024-02-28,modern,standard,unknown,,conduit,https://mainnet.lumio.io/,https://lumio.io/,,,,,,ETH,L2,ethereum,ethereum,0xFb252d6199AEfeE6938a1c57213AAd96ecD2650c,no,,0x5c53f2fF1030C7fbC0616fD5B8fC6bE97aa27e00,0x5c53f2fF1030C7fbC0616fD5B8fC6bE97aa27e00,0xb6E2Eee22b684f6AAb2083097F7E874994bA930e,0xffB004874CbBF8692B5f397B602f4B8a630aeD59,0xdB5C6b73CB1c5875995a42D64C250BF8BC69a8bc,True,OP Chain
 karak,Karak,2410.0,2024-02-27,modern,,yes,,,https://rpc.karak.network,https://karak.network/,Karak Network,karak,,,,ETH,L2,celestia,ethereum,0x622333688CC1878C7ff4205c89bDe051798788A7,no,,0x84BdFb21ed7C8B332a42bFD595744a84F3101e4E,0xff00000000000000000000000000000000002410,0x4179f43f3b994e97090557363b09F403138a729e,0x0a23342520Aa8Ca963c4201801F4D3E95e731637,0xBA61F25dd9f2d5f02D01B1C2c1c5F0B14c4B48A3,False,OP Stack fork
-campaign,Camp Network,,,modern,standard,yes,,conduit,,https://www.campnetwork.xyz/,,camp,,,,ETH,L2,op-plasma,ethereum,,no,,,,,,,True,OP Chain
+campaign,Camp Network,,,modern,standard,yes,,unknown,,https://www.campnetwork.xyz/,,camp,,,,ETH,L2,op-plasma,ethereum,,no,,,,,,,True,OP Chain
 ethxy,EthXY,,,unknown,,unknown,,,,https://ethxy.com/,,,,,,unknown,L3,celestia,base,,no,,,,,,,False,OP Stack fork
 cyber,Cyber,7560.0,2024-05-15,modern,non-standard,yes,,altlayer,https://cyber.alt.technology/,https://cyber.co/,Cyber,cyberconnect,,cyber,,ETH,L2,eigenda,ethereum,0x5D1F4bbaF6D484fA9D5D9705f92dE6063bff6055,no,cyber,0xf0748C52EDC23135d9845CDFB91279Cf61ee14b4,0xfF00000000000000000000000000000000001d88,0xF2987f0A626c8D29dFB2E0A21144ca3026d6F1E1,0xa669A743b065828682eE16109273F5CFeF5e676d,0x12a580c05466eefb2c467C6b115844cDaF55B255,True,OP Chain
 rise,RISE,,,unknown,,unknown,,,,https://www.riselabs.xyz/,,rise,,,,unknown,L2,unknown,ethereum,,no,,,,,,,False,OP Stack fork
 superseed,SuperSeed,5330.0,,unknown,,unknown,,,https://mainnet.superseed.xyz,https://www.superseed.xyz/,,superseed,,,,ETH,L2,unknown,ethereum,,no,,,,,,,False,OP Stack fork
-worldchain,World Chain,,,modern,standard,unknown,,,,https://worldcoin.org/world-chain,,world,,,,ETH,L2,ethereum,ethereum,,no,,,,,,,True,OP Chain
+worldchain,World Chain,,,modern,standard,unknown,,alchemy,,https://worldcoin.org/world-chain,,world,,,,ETH,L2,ethereum,ethereum,,no,,,,,,,True,OP Chain
 xterio,Xterio,,,modern,standard,no,,altlayer,,https://xter.io/,,,,,,ETH,L2,ethereum,ethereum,,no,,,,,,,True,OP Chain
 axonum,Axonum,,,,,,,,,https://www.axonum.io/,,axonum,,,,,L2,,,,,,,,,,,False,OP Stack fork
 form,Form,,,,,,,,,https://form.network/,,form,,,,,L2,,,,,,,,,,,False,OP Stack fork
@@ -54,3 +54,4 @@ allo,Allo,,,,,,,,,https://allo.xyz/,,,,,,,L2,ethereum,ethereum,,,,,,,,,False,OP 
 ham,Ham,5112.0,2024-06-05,modern,non-standard,yes,,syndicate,https://rpc.ham.fun,https://ham.fun/,Ham,,,,,ETH,L3,unknown,base,,,,,,,,,True,OP Chain
 stack,Stack,78225.0,2024-03-11,,,,,,https://rpc.stack.so,https://www.stack.so/,,,,,,ETH,L3,celestia,base,,,,,,,,,False,OP Stack fork
 gameswift,GameSwift,,,modern,non-standard,yes,,,,https://gameswift.io/,,,,,,GSWIFT,L2,,ethereum,,,,,,,,,True,OP Chain
+lambda,Lambda Chain,56026.0,,,,unknown,,,https://nrpc.lambda.im/,https://lambda.im/,,lambda,,,,ETH,L2,ethereum,ethereum,0xae809d42f861A6381b0DFCf7216556e95362a7a8,,,0xDeC273BF31AD79ad00D619c52662f724176A12Fb,0xfF00000000000000000000000000000000056026,0xC16EAEDaB78E033B555c9eF3C326c07B49F21907,0x2297eB8DC91f532C91c57b3fb33C06b782e9594A,0xEEBd256da18d0BF20c3CEb785a0946D41A7F408F,False,OP Stack fork
