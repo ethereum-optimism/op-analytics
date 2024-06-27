@@ -43,6 +43,25 @@ def check_table_exists(client, table_id, dataset_id='api_table_uploads', project
             return False
         else:
             raise e
+
+def get_bq_type(column_name, column_type):
+    if (column_name == 'date' or column_name == 'dt' or 
+        column_name.endswith('_dt') or column_name.startswith('dt_')):
+        return 'DATETIME'
+    elif column_type == 'float64':
+        return 'FLOAT64'
+    elif column_type in ['int64', 'uint64']:
+        return 'INTEGER'
+    elif column_type in ['Int64', 'UInt64']:
+        return 'FLOAT64'  # Or 'INTEGER' if you prefer
+    elif column_type == 'datetime64[ns]':
+        return 'DATETIME'
+    elif column_type == 'bool':
+        return 'BOOL'
+    elif column_type == 'string':
+        return 'STRING'
+    else:
+        return 'STRING'
         
 def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
                          ,  write_mode='overwrite'
@@ -63,23 +82,7 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
                                 continue
         for column_name, column_type in df.dtypes.items():
                 # Map pandas data types to BigQuery data types
-                if (column_name == 'date' or column_name == 'dt' or column_name.endswith('_dt') or column_name.startswith('dt_')):
-                        bq_data_type = 'DATETIME'  # Handle for date fields
-                elif column_type == 'float64':
-                        bq_data_type = 'FLOAT64'
-                elif column_type == 'int64' or column_type == 'uint64':
-                        bq_data_type = 'INTEGER'
-                elif column_type == 'Int64' or column_type == 'UInt64':  # Handle nullable integer type
-                        bq_data_type = 'FLOAT64'  # Or convert to INTEGER if no nulls
-                        df[column_name] = df[column_name].astype('float64')  # Convert to float64
-                elif column_type == 'datetime64[ns]':
-                        bq_data_type = 'DATETIME'
-                elif column_type == 'bool':
-                        bq_data_type = 'BOOL'
-                elif column_type == 'string':
-                        bq_data_type = 'STRING'
-                else:
-                        bq_data_type = 'STRING'
+                bq_data_type = get_bq_type(column_name, column_type)
 
                 schema.append(bigquery.SchemaField(column_name, bq_data_type))
 
@@ -110,33 +113,6 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
                 # Log more details if needed
                 raise  # Re-raise the exception for higher-level error handling
 
-# def upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain_id', 'dt']):
-#     staging_table_id = f"{table_id}_staging"
-    
-#     write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
-    
-#     client = connect_bq_client(project_id)
-#     table_ref = f"{project_id}.{dataset_id}.{table_id}"
-#     staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
-
-#     merge_query = f"""
-#     MERGE `{table_ref}` T
-#     USING `{staging_table_ref}` S
-#     ON {" AND ".join([f"T.{key} = S.{key}" for key in unique_keys])}
-#     WHEN MATCHED THEN
-#       UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in df.columns if col not in unique_keys])}
-#     WHEN NOT MATCHED THEN
-#       INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f"S.{col}" for col in df.columns])})
-#     """
-#     query_job = client.query(merge_query)
-#     query_job.result()
-#     print(f"Upsert to {dataset_id}.{table_id} completed successfully")
-
-#     # Drop the staging table to clean up
-#     client.delete_table(staging_table_ref)
-#     print(f"Staging table {staging_table_ref} deleted.")
-
-
 def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'dt']):
     client = connect_bq_client(project_id)
     table_ref = f"{project_id}.{dataset_id}.{table_id}"
@@ -144,6 +120,24 @@ def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads
     try:
         # Check if the table exists
         if check_table_exists(client, table_id, dataset_id, project_id):
+            # Get the existing table schema
+            table = client.get_table(table_ref)
+            existing_columns = set(field.name for field in table.schema)
+            
+            # Identify new columns
+            new_columns = set(df.columns) - existing_columns
+            
+            # If there are new columns, alter the table
+            if new_columns:
+                new_schema = table.schema[:]
+                for new_col in new_columns:
+                    bq_data_type = get_bq_type(new_col, str(df[new_col].dtype))
+                    new_schema.append(bigquery.SchemaField(new_col, bq_data_type))
+                
+                table.schema = new_schema
+                client.update_table(table, ['schema'])
+                logger.info(f"Added new columns to {table_id}: {', '.join(new_columns)}")
+                
             # Create staging table for upsert
             staging_table_id = f"{table_id}_staging"
             staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
