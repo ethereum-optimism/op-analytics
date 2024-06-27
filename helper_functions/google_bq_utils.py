@@ -14,24 +14,20 @@ logging.basicConfig(level=logging.INFO)  # Set logging level to INFO
 logger = logging.getLogger(__name__)  # Create logger instance for this module
 
 
-def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
-        # Check if running locally
-        is_running_local = os.environ.get("IS_RUNNING_LOCAL", "False").lower() == "true"
-
-        # Set the environment variable to the path of your service account key file
-        if is_running_local: #GH Action was weird with this, so forcing the datatype here
-                # print("Running locally")
-                # Path to your local service account key file
-                service_account_key_path = os.getenv("BQ_APPLICATION_CREDENTIALS")
-                credentials = service_account.Credentials.from_service_account_file(service_account_key_path)
-        else: #Can't get the Github Action version to work
-                # print('not running local')
-                # Set the Google Cloud service account key from GitHub secret
-                service_account_key = json.loads( os.getenv("BQ_APPLICATION_CREDENTIALS") )
-                credentials = service_account.Credentials.from_service_account_info(service_account_key)
-
-        client = bigquery.Client(credentials=credentials, project=project_id)
-        return client
+def connect_bq_client(project_id=os.getenv("BQ_PROJECT_ID")):
+    # Check if running locally
+    is_running_local = os.environ.get("IS_RUNNING_LOCAL", "False").lower() == "true"
+    # Set the environment variable to the path of your service account key file
+    if is_running_local:
+        # Path to your local service account key file
+        service_account_key_path = os.getenv("BQ_APPLICATION_CREDENTIALS")
+        credentials = service_account.Credentials.from_service_account_file(service_account_key_path)
+    else:
+        # Set the Google Cloud service account key from GitHub secret
+        service_account_key = json.loads(os.getenv("BQ_APPLICATION_CREDENTIALS"))
+        credentials = service_account.Credentials.from_service_account_info(service_account_key)
+    client = bigquery.Client(credentials=credentials, project=project_id)
+    return client
 
 def check_table_exists(client, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID")):
     table_ref = f"{project_id}.{dataset_id}.{table_id}"
@@ -43,99 +39,73 @@ def check_table_exists(client, table_id, dataset_id='api_table_uploads', project
             return False
         else:
             raise e
-        
-def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
-                         ,  write_mode='overwrite'
-                         , project_id = os.getenv("BQ_PROJECT_ID")):
-        print(f"Start Writing {dataset_id}.{table_id}")
-        schema = []
-        # Reset the index of the DataFrame to remove the index column
-        df = df.reset_index(drop=True)
 
-        # Check for any flattens to do
-        for column_name, column_type in df.dtypes.items():
-                if column_type == 'object':
-                        # Attempt to flatten nested data if the column contains arrays or dictionaries
-                        try:
-                                df = pu.flatten_nested_data(df, column_name)
-                                continue  # Skip adding the original column to the schema
-                        except ValueError:
-                                continue
-        for column_name, column_type in df.dtypes.items():
-                # Map pandas data types to BigQuery data types
-                if (column_name == 'date' or column_name == 'dt' or column_name.endswith('_dt') or column_name.startswith('dt_')):
-                        bq_data_type = 'DATETIME'  # Handle for date fields
-                elif column_type == 'float64':
-                        bq_data_type = 'FLOAT64'
-                elif column_type == 'int64' or column_type == 'uint64':
-                        bq_data_type = 'INTEGER'
-                elif column_type == 'Int64' or column_type == 'UInt64':  # Handle nullable integer type
-                        bq_data_type = 'FLOAT64'  # Or convert to INTEGER if no nulls
-                        df[column_name] = df[column_name].astype('float64')  # Convert to float64
-                elif column_type == 'datetime64[ns]':
-                        bq_data_type = 'DATETIME'
-                elif column_type == 'bool':
-                        bq_data_type = 'BOOL'
-                elif column_type == 'string':
-                        bq_data_type = 'STRING'
-                else:
-                        bq_data_type = 'STRING'
-
-                schema.append(bigquery.SchemaField(column_name, bq_data_type))
-
-        # Set the write disposition based on the append_or_update parameter
-        if write_mode == 'append':
-                write_disposition = bigquery.WriteDisposition.WRITE_APPEND
-        elif write_mode == 'overwrite':
-                write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', write_mode='overwrite', project_id=os.getenv("BQ_PROJECT_ID")):
+    print(f"Start Writing {dataset_id}.{table_id}")
+    schema = []
+    # Reset the index of the DataFrame to remove the index column
+    df = df.reset_index(drop=True)
+    # Check for any flattens to do
+    for column_name, column_type in df.dtypes.items():
+        if column_type == 'object':
+            # Attempt to flatten nested data if the column contains arrays or dictionaries
+            try:
+                df = pu.flatten_nested_data(df, column_name)
+                continue  # Skip adding the original column to the schema
+            except ValueError:
+                continue
+    for column_name, column_type in df.dtypes.items():
+        # Map pandas data types to BigQuery data types
+        if (column_name == 'date' or column_name == 'dt' or column_name.endswith('_dt') or column_name.startswith('dt_')):
+            bq_data_type = 'DATETIME'  # Handle for date fields
+        elif column_type == 'float64':
+            bq_data_type = 'FLOAT64'
+        elif column_type == 'int64' or column_type == 'uint64':
+            bq_data_type = 'INTEGER'
+        elif column_type == 'Int64' or column_type == 'UInt64':  # Handle nullable integer type
+            bq_data_type = 'FLOAT64'  # Or convert to INTEGER if no nulls
+            df[column_name] = df[column_name].astype('float64')  # Convert to float64
+        elif column_type == 'datetime64[ns]':
+            bq_data_type = 'DATETIME'
+        elif column_type == 'bool':
+            bq_data_type = 'BOOL'
+        elif column_type == 'string':
+            bq_data_type = 'STRING'
         else:
-              print('Error: Must be append or overwrite')
-        # Create a job configuration to overwrite the table
-        job_config = bigquery.LoadJobConfig(
-                write_disposition=write_disposition,
-                schema=schema
-        )
-        client = connect_bq_client(project_id)
-        # Load the DataFrame into BigQuery
-        job = client.load_table_from_dataframe(
-                df, f"{dataset_id}.{table_id}", job_config=job_config
-        )
+            bq_data_type = 'STRING'
+        schema.append(bigquery.SchemaField(column_name, bq_data_type))
+    # Set the write disposition based on the append_or_update parameter
+    if write_mode == 'append':
+        write_disposition = bigquery.WriteDisposition.WRITE_APPEND
+    elif write_mode == 'overwrite':
+        write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+    else:
+        print('Error: Must be append or overwrite')
+    # Create a job configuration to overwrite the table
+    job_config = bigquery.LoadJobConfig(write_disposition=write_disposition, schema=schema)
+    client = connect_bq_client(project_id)
+    # Load the DataFrame into BigQuery
+    job = client.load_table_from_dataframe(df, f"{dataset_id}.{table_id}", job_config=job_config)
+    # Wait for the job to complete
+    try:
+        job.result()  # Wait for the job to complete
+        print(f"Data loaded successfully to {dataset_id}.{table_id}")
+    except Exception as e:
+        print(f"Error loading data to BigQuery: {e}")
+        # Log more details if needed
+        raise  # Re-raise the exception for higher-level error handling
 
-        # Wait for the job to complete
-        try:
-                job.result()  # Wait for the job to complete
-                print(f"Data loaded successfully to {dataset_id}.{table_id}")
-        except Exception as e:
-                print(f"Error loading data to BigQuery: {e}")
-                # Log more details if needed
-                raise  # Re-raise the exception for higher-level error handling
-
-# def upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain_id', 'dt']):
-#     staging_table_id = f"{table_id}_staging"
-    
-#     write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
-    
-#     client = connect_bq_client(project_id)
-#     table_ref = f"{project_id}.{dataset_id}.{table_id}"
-#     staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
-
-#     merge_query = f"""
-#     MERGE `{table_ref}` T
-#     USING `{staging_table_ref}` S
-#     ON {" AND ".join([f"T.{key} = S.{key}" for key in unique_keys])}
-#     WHEN MATCHED THEN
-#       UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in df.columns if col not in unique_keys])}
-#     WHEN NOT MATCHED THEN
-#       INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f"S.{col}" for col in df.columns])})
-#     """
-#     query_job = client.query(merge_query)
-#     query_job.result()
-#     print(f"Upsert to {dataset_id}.{table_id} completed successfully")
-
-#     # Drop the staging table to clean up
-#     client.delete_table(staging_table_ref)
-#     print(f"Staging table {staging_table_ref} deleted.")
-
+def get_bq_type(pandas_dtype):
+    if pandas_dtype == 'float64':
+        return 'FLOAT64'
+    elif pandas_dtype == 'int64':
+        return 'INT64'
+    elif pandas_dtype == 'bool':
+        return 'BOOL'
+    elif pandas_dtype == 'datetime64[ns]':
+        return 'DATETIME'
+    else:
+        return 'STRING'
 
 def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'dt']):
     client = connect_bq_client(project_id)
@@ -144,6 +114,64 @@ def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads
     try:
         # Check if the table exists
         if check_table_exists(client, table_id, dataset_id, project_id):
+            # Get the existing table schema
+            table = client.get_table(table_ref)
+            existing_schema = {field.name: field.field_type for field in table.schema}
+            
+            # Identify new columns and columns with mismatched types
+            new_schema = []
+            columns_to_update = []
+            for col, dtype in df.dtypes.items():
+                bq_type = get_bq_type(dtype)
+                if col not in existing_schema:
+                    new_schema.append(bigquery.SchemaField(col, bq_type))
+                elif existing_schema[col] != bq_type:
+                    columns_to_update.append((col, bq_type))
+            
+            # Add new columns
+            if new_schema:
+                table.schema = list(table.schema) + new_schema
+                client.update_table(table, ['schema'])
+                logger.info(f"Added new columns to {table_id}: {', '.join([field.name for field in new_schema])}")
+            
+            # Handle columns with mismatched types
+            if columns_to_update:
+                temp_table_id = f"{table_id}_temp"
+                temp_table_ref = f"{project_id}.{dataset_id}.{temp_table_id}"
+                
+                # Create a new table with the updated schema
+                new_schema = [
+                    bigquery.SchemaField(
+                        field.name,
+                        get_bq_type(df[field.name].dtype) if field.name in df.columns else field.field_type
+                    ) for field in table.schema
+                ]
+                temp_table = bigquery.Table(temp_table_ref, schema=new_schema)
+                client.create_table(temp_table)
+                
+                # Copy data from the original table to the temp table, casting as necessary
+                cast_expressions = []
+                for col in existing_schema.keys():
+                    if any(col == updated_col for updated_col, _ in columns_to_update):
+                        new_type = next(new_type for updated_col, new_type in columns_to_update if updated_col == col)
+                        cast_expressions.append(f"CAST({col} AS {new_type}) AS {col}")
+                    else:
+                        cast_expressions.append(col)
+                
+                copy_query = f"""
+                INSERT INTO `{temp_table_ref}`
+                SELECT {', '.join(cast_expressions)}
+                FROM `{table_ref}`
+                """
+                client.query(copy_query).result()
+                
+                # Delete the original table and rename the temp table
+                client.delete_table(table_ref)
+                temp_table.table_id = table_id
+                client.update_table(temp_table, ['table_id'])
+                
+                logger.info(f"Updated column types in {table_id}: {', '.join([f'{col} to {type}' for col, type in columns_to_update])}")
+            
             # Create staging table for upsert
             staging_table_id = f"{table_id}_staging"
             staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
