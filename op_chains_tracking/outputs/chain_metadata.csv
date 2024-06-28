@@ -52,6 +52,7 @@ form,Form,,,,,,,,,https://form.network/,,form,,,,,L2,,,,,,,,,,,,False,OP Stack f
 myshell,MyShell,,,,,,,,,https://myshell.ai/,,myshell,,,,,L2,,,,,,,,,,,,False,OP Stack fork
 allo,Allo,,,,,,,,,https://allo.xyz/,,,,,,,L2,ethereum,ethereum,,,,,,,,,,False,OP Stack fork
 ham,Ham,5112.0,2024-06-05,modern,non-standard,yes,,syndicate,https://rpc.ham.fun,https://ham.fun/,Ham,,,,,ETH,L3,unknown,base,,,,,,,,,,True,OP Chain
-stack,Stack,78225.0,2024-03-11,,,,,,https://rpc.stack.so,https://www.stack.so/,,,,,,ETH,L3,celestia,base,,,,,,,,,,False,OP Stack fork
+stack,Stack,78225.0,2024-03-11,,,,,,https://rpc.stack.so,https://www.stack.so/,,stack,,,,ETH,L3,celestia,base,,,,,,,,,,False,OP Stack fork
 gameswift,GameSwift,,,modern,non-standard,yes,,,,https://gameswift.io/,,,,,,GSWIFT,L2,,ethereum,,,,,,,,,,True,OP Chain
 lambda,Lambda Chain,56026.0,,,,unknown,,,https://nrpc.lambda.im/,https://lambda.im/,,lambda,,,,ETH,L2,ethereum,ethereum,0xae809d42f861A6381b0DFCf7216556e95362a7a8,,,0xDeC273BF31AD79ad00D619c52662f724176A12Fb,0xfF00000000000000000000000000000000056026,0xC16EAEDaB78E033B555c9eF3C326c07B49F21907,0x2297eB8DC91f532C91c57b3fb33C06b782e9594A,0xEEBd256da18d0BF20c3CEb785a0946D41A7F408F,,False,OP Stack fork
+ethernity,Ethernity,,,,,,,,,https://www.ethernity.io/,,ethernity,,,,,,,ethereum,,,,,,,,,,False,OP Stack fork
