@@ -24,7 +24,7 @@ import time
 
 table_name = 'daily_opchain_aggregate_stats_dune'
 
-trailing_days = 180
+trailing_days = 90
 min_txs_per_day = 0
 
 
@@ -89,11 +89,22 @@ columns_to_int64 = [
     'active_secs_per_day',
     'l1_gas_used_on_l2','l1_gas_used_user_txs_l2_per_day',
     'l2_gas_used','l2_gas_used_user_txs_per_day','l2_gas_used_by_day',
-    'total_available_l2_gas_target'
+    'total_available_l2_gas_target','calldata_bytes_l2_per_day'
 ]
 # Cast each column in the list to int64
 for col in columns_to_int64:
-    dune_df[col] = dune_df[col].astype('int64')
+    dune_df[col] = dune_df[col].fillna(0).astype('int64')
+
+# List of columns to cast to float64
+columns_to_float64 = [
+    'avg_blob_base_fee_pct_margin','avg_l1_gas_price_on_l2_by_day',
+    'avg_blob_base_fee_pct_margin_by_day','avg_blob_gas_price_on_l2_by_day',
+    'avg_l1_gas_price_fee_pct_margin','avg_l1_gas_price_fee_pct_margin_by_day'
+
+]
+# Cast each column in the list to int64
+for col in columns_to_float64:
+    dune_df[col] = dune_df[col].astype('float64')
 
 # # dune_df.dtypes
 # with pd.option_context('display.max_rows', None, 'display.max_columns', None):
@@ -103,6 +114,12 @@ for col in columns_to_int64:
 
 # print(dune_df["chain_layer"].unique())
 # print(dune_df["chain_layer"].dtypes)
+
+
+# In[ ]:
+
+
+dune_df['calldata_bytes_l2_per_day'].dtypes
 
 
 # In[ ]:
