@@ -5,17 +5,17 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-28,scroll,L2,534352,294769,287209,247717,dune,False,,Other EVMs,,Scroll
 2024-06-28,polygon,L1,137,3502297,3221613,3504160,dune,False,,Other EVMs,,Polygon PoS
 2024-06-28,optimism,L2,10,349923,332379,280884,dune,True,modern,OP Chain,op,OP Mainnet
-2024-06-28,mode,L2,34443,101080,99726,32962,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-28,metal,L2,1750,77,77,63,goldsky,True,modern,OP Chain,metal,Metal
+2024-06-28,mode,L2,34443,114941,113407,37065,goldsky,True,modern,OP Chain,mode,Mode
+2024-06-28,metal,L2,1750,79,79,65,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-28,mantle,L2,5000,422033,416343,385149,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-28,linea,L2,59144,381150,377824,318597,dune,False,,Other EVMs,,Linea
 2024-06-28,gnosis,L1,100,82055,77000,44412,dune,False,,Other EVMs,,Gnosis
-2024-06-28,fraxtal,L2,252,2061,2009,6338,goldsky,True,modern,OP Chain,fraxtal,Fraxtal
+2024-06-28,fraxtal,L2,252,2496,2436,7359,goldsky,True,modern,OP Chain,fraxtal,Fraxtal
 2024-06-28,fantom,L1,250,225757,204827,98913,dune,False,,Other EVMs,,Fantom
 2024-06-28,ethereum,L1,1,896412,880779,550493,dune,False,,Other EVMs,,Ethereum
-2024-06-28,cyber,L2,7560,58499,58470,36660,goldsky,True,modern,OP Chain,cyber,Cyber
+2024-06-28,cyber,L2,7560,61388,61350,38602,goldsky,True,modern,OP Chain,cyber,Cyber
 2024-06-28,celo,L1,42220,688825,673395,635193,dune,False,,Other EVMs,,Celo
-2024-06-28,bob,L2,60808,17799,17478,11619,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
+2024-06-28,bob,L2,60808,19384,19043,12589,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-28,bnb,L1,56,2297553,2180849,2148206,dune,False,,Other EVMs,,BNB
 2024-06-28,blast,L2,81457,661707,646755,526995,dune,False,modern,OP Stack fork,blast,Blast
 2024-06-28,base,L2,8453,2698487,2598132,1838891,dune,True,modern,OP Chain,base,Base

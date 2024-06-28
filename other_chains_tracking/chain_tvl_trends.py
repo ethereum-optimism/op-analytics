@@ -255,6 +255,12 @@ app_dfl_list = app_dfl_list.rename(columns={'chain':'defillama_slug'})
 # In[ ]:
 
 
+# display(app_dfl_list[app_dfl_list['defillama_slug']=='Mode'])
+
+
+# In[ ]:
+
+
 p_agg = []
 for p in protocols:
     try:
@@ -337,7 +343,7 @@ df = df.merge(app_dfl_list, on =['defillama_slug','date'], how='left')
 # In[ ]:
 
 
-# df.sample(5)
+# display(df[df['chain']=='Mode'])
 
 
 # In[ ]:

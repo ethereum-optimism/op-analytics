@@ -32,6 +32,13 @@ gtp_api = gtp_api.rename(columns={'date':'dt'})
 # In[ ]:
 
 
+# gtp_meta_api.sample(10)
+# gtp_meta_api.dtypes
+
+
+# In[ ]:
+
+
 l2beat_aoc = ltwo.get_daily_aoc_by_token()
 l2beat_aoc = l2beat_aoc.rename(columns={'project':'chain','date':'dt'})
 
