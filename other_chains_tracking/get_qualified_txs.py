@@ -58,30 +58,37 @@ clickhouse_configs = [
 # In[ ]:
 
 
-# Run Flipside
 print('     flipside runs')
 flip_dfs = []
 with open(os.path.join("inputs/sql/flipside_bychain.sql"), "r") as file:
-                        og_query = file.read()
+    og_query = file.read()
 
 for chain in flipside_configs:
-        print(     'flipside: ' + chain['blockchain'])
-        query = og_query
-        #Pass in Params to the query
-        query = query.replace("@blockchain@", chain['blockchain'])
-        query = query.replace("@chain_id@", str(chain['chain_id']))
-        query = query.replace("@name@", chain['name'])
-        query = query.replace("@layer@", chain['layer'])
-        query = query.replace("@trailing_days@", str(trailing_days))
-        
+    print('     flipside: ' + chain['blockchain'])
+    query = og_query
+    # Pass in Params to the query
+    query = query.replace("@blockchain@", chain['blockchain'])
+    query = query.replace("@chain_id@", str(chain['chain_id']))
+    query = query.replace("@name@", chain['name'])
+    query = query.replace("@layer@", chain['layer'])
+    query = query.replace("@trailing_days@", str(trailing_days))
+    
+    try:
         df = f.query_to_df(query)
-
         flip_dfs.append(df)
+    except Exception as e:  # Use FlipsideError if available instead of Exception
+        print(f"Error querying Flipside for {chain['blockchain']}: {str(e)}")
+        print("Skipping this chain due to API credit limitation or other issues.")
+        continue
 
-flip = pd.concat(flip_dfs)
-flip['source'] = 'flipside'
-flip['dt'] = pd.to_datetime(flip['dt']).dt.tz_localize(None)
-flip = flip[col_list]
+if flip_dfs:
+    flip = pd.concat(flip_dfs)
+    flip['source'] = 'flipside'
+    flip['dt'] = pd.to_datetime(flip['dt']).dt.tz_localize(None)
+    flip = flip[col_list]
+else:
+    print("No data was retrieved from Flipside. The resulting DataFrame will be empty.")
+    flip = pd.DataFrame(columns=col_list)
 
 
 # In[ ]:
@@ -176,6 +183,16 @@ final_enriched_df = final_enriched_df.drop(columns=['name'])
 final_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
 
 final_enriched_df.to_csv('outputs/'+query_name+'.csv', index=False)
+
+
+# In[ ]:
+
+
+final_enriched_df['chain_id'] = final_enriched_df['chain_id'].astype(int)
+final_enriched_df['num_raw_txs'] = final_enriched_df['num_raw_txs'].astype(int)
+final_enriched_df['num_success_txs'] = final_enriched_df['num_success_txs'].astype(int)
+final_enriched_df['num_qualified_txs'] = final_enriched_df['num_qualified_txs'].astype(int)
+# final_enriched_df.dtypes
 
 
 # In[ ]:
