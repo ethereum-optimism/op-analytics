@@ -1,5 +1,1 @@
-<<<<<<< Updated upstream
 0.0000000080
-=======
-0.0000000090
->>>>>>> Stashed changes
