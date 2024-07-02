@@ -1,5 +1,6 @@
 layer,name,chainId,explorerUrl,category,slug,isArchived,file_name,rpcUrl,provider,hostChain,is_upcoming,is_archived,is_current_chain,websites,documentation,repositories,provider_entity,chain
 L2,Aevo,2999,https://explorer.aevo.xyz,,aevo,,aevo,,OP Stack,,False,False,True,'https://aevo.xyz/','https://docs.aevo.xyz/','https://github.com/aevoxyz',Optimism: OP Stack,aevo
+L2,AlienX,,,Optimium,alienx,,alienx,https://rpc.alienxchain.io/http,Arbitrum,,False,False,True,'https://alienxchain.io/','https://docs.alienxchain.io',,Arbitrum: Orbit,alienx
 L2,Ancient8,,,,ancient,,ancient,https://rpc.ancient8.gg/,OP Stack,,False,False,True,'https://ancient8.gg/','https://docs.ancient8.gg/',,Optimism: OP Stack,ancient
 L2,ApeX,,,Validium,apex,,apex,,StarkEx,,False,False,True,'https://apex.exchange/','https://apex-pro.gitbook.io/apex-pro?lang=en-US','https://github.com/ApeX-Protocol/core',Starkware: Starknet Stack,apex
 L2,Arbitrum One,42161,https://arbiscan.io,Optimistic Rollup,arbitrum,,arbitrum,,Arbitrum,,False,False,True,"'https://arbitrum.io/', 'https://arbitrum.foundation/'",'https://developer.arbitrum.io/',"'https://github.com/ArbitrumFoundation/docs',
@@ -50,7 +51,7 @@ L2,Gluon,,,Plasma,gluon,,gluon,,,,False,True,False,"'https://gluon.network/', 'h
 L2,GRVT,,,Validium,grvt,,grvt,,ZK Stack,,True,False,False,'https://grvt.io','https://docs.grvt.io',,zkSync: ZK Stack,grvt
 L2,Polygon Hermez,,,ZK Rollup,hermez,,hermez,,Polygon,,False,True,False,'https://hermez.io/',"'https://docs.hermez.io/',
         'https://hermez.io/polygon-hermez-whitepaper.pdf',",'https://github.com/0xpolygonhermez',Polygon: CDK,hermez
-L2,Honeypot (Cartesi),,,Optimistic Rollup,honeypot,,honeypot,,,,False,False,True,'https://cartesi.io/','https://docs.cartesi.io/cartesi-rollups/','https://github.com/cartesi/honeypot',,honeypot
+L2,Honeypot (Cartesi),,,Optimistic Rollup,honeypot,,honeypot,,Cartesi Rollups,,False,False,True,'https://cartesi.io/','https://docs.cartesi.io/cartesi-rollups/','https://github.com/cartesi/honeypot',Cartesi Rollups,honeypot
 L2,HYCHAIN,,,,hychain,,hychain,https://rpc.hychain.com/http,Arbitrum Orbit,,False,False,True,'https://hychain.com','https://docs.hychain.com','https://github.com/kintoxyz',Arbitrum: Orbit,hychain
 L2,Hypr,,,,hypr,,hypr,https://rpc.hypr.network,OP Stack,,False,False,True,'https://hypr.network/','https://docs.hypr.network',,Optimism: OP Stack,hypr
 L2,Immutable X,,,Validium,immutablex,,immutablex,,StarkEx,,False,False,True,'https://immutable.com/',"'https://docs.starkware.co/starkex/perpetual/perpetual_overview.html',",'https://github.com/starkware-libs/starkex-contracts',Starkware: Starknet Stack,immutablex
