@@ -293,7 +293,7 @@ Degen,degen-base,DEGEN,,['EVM'],666666666,,degentokenbase,https://www.degen.tips
 HAQQ,,,,['EVM'],11235,['haqq-network'],The_HaqqNetwork,https://haqq.network/,,
 SatoshiVM,,,,"['EVM', 'Bitcoin Sidechains']",3109,['SatoshiVM'],satoshivm,https://www.satoshivm.io/,,
 Venom,venom,VENOM,22059,,,['venom-blockchain'],VenomFoundation,https://venom.foundation/,,
-Karak Network,,,,['EVM'],2410,,Karak_Network,https://karak.network/,,
+K2,,,,['EVM'],2410,,Karak_Network,https://karak.network/,,
 Bitkub Chain,bitkub-coin,KUB,16093,['EVM'],96,['bitkub-chain'],bitkubchain,https://www.bitkubchain.com,,
 Ancient8,,,,['EVM'],888888888,,Ancient8_gg,https://ancient8.gg/,"{'chain': 'Optimism', 'types': ['L3']}",
 Hyperliquid,,,,['Cosmos'],,,HyperliquidX,https://hyperliquid.xyz/,,

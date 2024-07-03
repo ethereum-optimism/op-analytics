@@ -1,6 +1,7 @@
 layer,name,chainId,explorerUrl,category,slug,isArchived,file_name,rpcUrl,provider,hostChain,is_upcoming,is_archived,is_current_chain,websites,documentation,repositories,provider_entity,chain
 L2,Aevo,2999,https://explorer.aevo.xyz,,aevo,,aevo,,OP Stack,,False,False,True,'https://aevo.xyz/','https://docs.aevo.xyz/','https://github.com/aevoxyz',Optimism: OP Stack,aevo
 L2,AlienX,,,Optimium,alienx,,alienx,https://rpc.alienxchain.io/http,Arbitrum,,False,False,True,'https://alienxchain.io/','https://docs.alienxchain.io',,Arbitrum: Orbit,alienx
+L2,Align Network,,,Optimium,align,,align,,Arbitrum,,True,False,False,'https://align.network/','https://docs.align.network/docs/getting-started',,Arbitrum: Orbit,align
 L2,Ancient8,,,,ancient,,ancient,https://rpc.ancient8.gg/,OP Stack,,False,False,True,'https://ancient8.gg/','https://docs.ancient8.gg/',,Optimism: OP Stack,ancient
 L2,ApeX,,,Validium,apex,,apex,,StarkEx,,False,False,True,'https://apex.exchange/','https://apex-pro.gitbook.io/apex-pro?lang=en-US','https://github.com/ApeX-Protocol/core',Starkware: Starknet Stack,apex
 L2,Arbitrum One,42161,https://arbiscan.io,Optimistic Rollup,arbitrum,,arbitrum,,Arbitrum,,False,False,True,"'https://arbitrum.io/', 'https://arbitrum.foundation/'",'https://developer.arbitrum.io/',"'https://github.com/ArbitrumFoundation/docs',
@@ -8,6 +9,7 @@ L2,Arbitrum One,42161,https://arbiscan.io,Optimistic Rollup,arbitrum,,arbitrum,,
         'https://github.com/OffchainLabs/arbitrum',
         'https://github.com/OffchainLabs/nitro',
         'https://github.com/OffchainLabs/arb-os',",Arbitrum: Orbit,arbitrum
+L2,Arcology Network,,,Optimistic Rollup,arcology,,arcology,,,,True,False,False,'https://arcology.network/','https://doc.arcology.network/main','https://github.com/arcology-network',,arcology
 L2,DAC,,,,astarzkevm,,astarzkevm,https://evm.astar.network,Polygon CDK,,False,False,True,'https://astar.network/astar2','https://docs.astar.network/docs/build/zkEVM/',,Polygon: CDK,astarzkevm
 L2,Axonum,,,Optimistic Rollup,axonum,,axonum,,OP Stack,,True,False,False,'https://axonum.io','https://docs.axonum.io','https://github.com/axonum',Optimism: OP Stack,axonum
 L2,Zk.Money v1 (Aztec v1),,,ZK Rollup,aztec,,aztecV1,,,,False,True,False,'https://aztec.network/','https://developers.aztec.network/','https://github.com/AztecProtocol/aztec-2-bug-bounty',,aztec
@@ -146,6 +148,7 @@ L2,Ten,,,Optimistic Rollup,ten,,ten,,,,True,False,False,'https://ten.xyz',"'http
         'https://github.com/ten-protocol/sample-applications',",,ten
 L2,Term Structure,,,ZK Rollup,termstructure,,termstructure,,ZKsync Lite,,False,False,True,'https://ts.finance/','https://docs.ts.finance/','https://github.com/term-structure/',zkSync: ZK Stack,termstructure
 L2,Tradable,,,ZK Rollup,tradable,,tradable,,ZK Stack,,True,False,False,'https://tradable.xyz/',,,zkSync: ZK Stack,tradable
+L2,Treasure Chain,,,Optimium,treasure,,treasure,,Arbitrum,,True,False,False,'https://treasure.lol/',,,Arbitrum: Orbit,treasure
 L2,World Chain,,,Optimistic Rollup,world,,world,,OP Stack,,True,False,False,'https://worldcoin.org/world-chain','https://docs.worldcoin.org/','https://github.com/worldcoin',Optimism: OP Stack,world
 L2,XCHAIN,,,Validium,xchain,,xchain,,Polygon,,True,False,False,'https://idex.io/',"'https://medium.com/idex/the-all-new-idex-a-quick-recap-b27df4cd981b',",,Polygon: CDK,xchain
 L2,DAC,,,,xlayer,,xlayer,https://rpc.xlayer.tech,Polygon CDK,,False,False,True,'https://okx.com/x1','https://okx.com/xlayer/docs',,Polygon: CDK,xlayer
@@ -161,11 +164,15 @@ L2,ZKSwap 2.0,,,ZK Rollup,zkswap2,,zkswap2,,ZKsync Lite,,False,True,False,'https
 L2,ZKsync Era,324,https://explorer.zksync.io/,ZK Rollup,zksync2,,zksyncera,,ZK Stack,,False,False,True,"'https://zksync.io/', 'https://zksync.dappradar.com/'",'https://docs.zksync.io/','https://github.com/matter-labs/zksync-era',zkSync: ZK Stack,zksync2
 L2,ZKsync Lite,,,ZK Rollup,zksync,,zksynclite,,ZKsync Lite,,False,False,True,'https://zksync.io/','https://docs.lite.zksync.io/dev/','https://github.com/matter-labs/zksync',zkSync: ZK Stack,zksync
 L2,Zora,,,,zora,,zora,https://rpc.zora.co,OP Stack,,False,False,True,"'https://zora.energy/', 'https://zora.co/'",'https://docs.zora.co/docs/zora-network/intro','https://github.com/ourzora/optimism',Optimism: OP Stack,zora
+L3,Anomaly Network,,,Optimium,anomaly,,anomaly,,Arbitrum,arbitrum,True,False,False,'https://anomalygames.ai/',,,Arbitrum: Orbit,anomaly
+L3,ApeChain,,,Optimium,apechain,,apechain,,Arbitrum,arbitrum,True,False,False,'https://apecoin.com/',,,Arbitrum: Orbit,apechain
+L3,Avive World,,,Optimium,avive-world,,aviveworld,,Arbitrum,arbitrum,True,False,False,'https://avive.world/',,,Arbitrum: Orbit,avive-world
 L3,Bugless,,,Optimistic Rollup,bugless,,bugless,,Cartesi Rollups,optimism,False,False,True,,"'https://github.com/crypto-bug-hunters/bugless/blob/main/README.md',",'https://github.com/crypto-bug-hunters/bugless',Cartesi Rollups,bugless
 L3,DCA.Monster,,,Optimistic Rollup,dcamonster,,dcamonster,,Cartesi Rollups,,True,False,False,'https://dca.monster',"'https://github.com/dcamonster/cartesi-defi-modular-components/blob/master/readme.md',",'https://github.com/dcamonster',Cartesi Rollups,dcamonster
 L3,Degen Chain,,,,degen,,degen,,Arbitrum Orbit,base,False,False,True,'https://syndicate.io/blog/degen-chain','https://docs.syndicate.io/get-started/introduction',,Arbitrum: Orbit,degen
 L3,Deri,,,,deri,,deri,,Arbitrum Orbit,arbitrum,False,False,True,'https://deri.io/','https://docs.deri.io/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,deri
 L3,DODOchain,,,Optimium,dodochain,,dodochain,,Arbitrum,arbitrum,False,False,True,'https://dodochain.com/','https://docs.dodochain.com/en/dodochain','https://github.com/DODOEX',Arbitrum: Orbit,dodochain
+L3,Hook,,,Optimistic Rollup,hook,,hook,https://hook.calderachain.xyz/http,Arbitrum,arbitrum,False,False,True,'https://hook.xyz/','https://odysseydocumentation.hook.xyz/',,Arbitrum: Orbit,hook
 L3,L3X,,,Optimium,l3x,,l3x,,Arbitrum,arbitrum,False,False,True,'https://l3x.com/','https://docs.l3x.com/',,Arbitrum: Orbit,l3x
 L3,Molten Network,,,,molten,,molten,https://molten.calderachain.xyz/http,Arbitrum Orbit,arbitrum,False,False,True,'https://moltennetwork.com/','https://docs.unidex.exchange/appchain/markdown',,Arbitrum: Orbit,molten
 L3,Muster,,,Optimium,muster,,muster,https://api.muster-marketplace.cometh.io/v1,Arbitrum,arbitrum,False,False,True,'https://cometh.io/','https://docs.cometh.io/marketplace','https://github.com/cometh-hq',Arbitrum: Orbit,muster
