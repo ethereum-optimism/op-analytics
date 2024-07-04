@@ -325,6 +325,7 @@ AILayer,,,,"['EVM', 'Bitcoin Sidechains']",2649,,AILayerXYZ,https://anvm.io/,,
 Mint,,,,"['EVM', 'Rollup']",185,,Mint_Blockchain,https://www.mintchain.io/,"{'chain': 'Ethereum', 'types': ['L2']}",
 OXFUN,ox-fun,OX,29530,['EVM'],6699,,OXFUNHQ,https://ox.fun/en,"{'chain': 'Base', 'types': ['L3']}",
 Etherlink,,,,['EVM'],42793,,etherlink,https://www.etherlink.com,,
+Noble,,,,['Cosmos'],,['noble-assets'],noble_xyz,https://x.com/noble_xyz,,
 xDai,gnosis,GNO,1659,['EVM'],100,['gnosis'],gnosischain,https://www.gnosis.io/,,['snapshot:xdaistake.eth']
 Binance,binancecoin,BNB,1839,['EVM'],56,['bnb-chain'],BNBCHAIN,https://www.bnbchain.org/en,,
 Kucoin,kucoin-shares,KCS,2087,['EVM'],321,['kcc-community'],KCCOfficialTW,https://www.kcc.io/,,['snapshot:kcc.eth']

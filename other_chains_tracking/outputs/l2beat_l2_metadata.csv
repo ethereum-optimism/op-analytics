@@ -180,7 +180,7 @@ L3,MXC Moonchain zkEVM,,,ZK Rollup,mxc,,mxc,,Taiko,arbitrum,False,False,True,'ht
 L3,ORB3,,,Optimium,orb3,,orb3,https://rpc.orb3.tech,Arbitrum,arbitrum,False,False,True,'https://orb3.tech/','https://docs.orb3.tech/','https://github.com/orb3-protocol',Arbitrum: Orbit,orb3
 L3,Proof of Play Apex,,,,popapex,,popapex,,Arbitrum Orbit,arbitrum,False,False,True,'https://proofofplay.gg',,'https://github.com/proofofplay',Arbitrum: Orbit,popapex
 L3,RARI Chain,,,,rari,,rari,https://mainnet.rpc.rarichain.org/http,Arbitrum Orbit,arbitrum,False,False,True,'https://rarichain.org/','https://rari.docs.caldera.dev/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,rari
-L3,Sanko,,,,sanko,,sanko,https://mainnet.sanko.xyz,Arbitrum Orbit,arbitrum,False,False,True,'https://sanko.xyz/','https://sanko-1.gitbook.io/sanko-mainnet-docs/',,Arbitrum: Orbit,sanko
+L3,Sanko,1996,https://explorer.sanko.xyz/,,sanko,,sanko,https://mainnet.sanko.xyz,Arbitrum Orbit,arbitrum,False,False,True,'https://sanko.xyz/','https://sanko-1.gitbook.io/sanko-mainnet-docs/',,Arbitrum: Orbit,sanko
 L3,Stack,,,,stack,,stack,https://rpc.stack.so,OP Stack,base,False,False,True,'https://stack.so/','https://docs.stack.so','https://github.com/stack-so/protocol-interfaces',Optimism: OP Stack,stack
 L3,Syndicate Frame Chain,,,,syndicateframe,,syndicateframe,https://rpc-frame.syndicate.io,OP Stack,base,False,False,True,'https://syndicate.io/blog/syndicate-frame-chain','https://docs.syndicate.io/get-started/introduction',"'https://github.com/WillPapper/syndicate-farcaster-frame-starter',",Optimism: OP Stack,syndicateframe
 L3,Teva Chain,,,ZK Rollup,teva,,teva,,ZK Stack,zksync2,False,False,True,'https://tevaera.com/tevachain','','',zkSync: ZK Stack,teva
