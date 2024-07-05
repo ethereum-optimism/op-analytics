@@ -172,6 +172,8 @@ L3,DCA.Monster,,,Optimistic Rollup,dcamonster,,dcamonster,,Cartesi Rollups,,True
 L3,Degen Chain,,,,degen,,degen,,Arbitrum Orbit,base,False,False,True,'https://syndicate.io/blog/degen-chain','https://docs.syndicate.io/get-started/introduction',,Arbitrum: Orbit,degen
 L3,Deri,,,,deri,,deri,,Arbitrum Orbit,arbitrum,False,False,True,'https://deri.io/','https://docs.deri.io/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,deri
 L3,DODOchain,,,Optimium,dodochain,,dodochain,,Arbitrum,arbitrum,False,False,True,'https://dodochain.com/','https://docs.dodochain.com/en/dodochain','https://github.com/DODOEX',Arbitrum: Orbit,dodochain
+L3,EDU,,,Optimium,edu-chain,,educhain,,Arbitrum,arbitrum,True,False,False,'https://opencampus.xyz/',,,Arbitrum: Orbit,edu-chain
+L3,Fiefdom,,,Optimium,fiefdom,,fiefdom,,Arbitrum,arbitrum,True,False,False,'https://fief.gg/fiefdom',,,Arbitrum: Orbit,fiefdom
 L3,Hook,,,Optimistic Rollup,hook,,hook,https://hook.calderachain.xyz/http,Arbitrum,arbitrum,False,False,True,'https://hook.xyz/','https://odysseydocumentation.hook.xyz/',,Arbitrum: Orbit,hook
 L3,L3X,,,Optimium,l3x,,l3x,,Arbitrum,arbitrum,False,False,True,'https://l3x.com/','https://docs.l3x.com/',,Arbitrum: Orbit,l3x
 L3,Molten Network,,,,molten,,molten,https://molten.calderachain.xyz/http,Arbitrum Orbit,arbitrum,False,False,True,'https://moltennetwork.com/','https://docs.unidex.exchange/appchain/markdown',,Arbitrum: Orbit,molten
@@ -182,7 +184,9 @@ L3,Proof of Play Apex,,,,popapex,,popapex,,Arbitrum Orbit,arbitrum,False,False,T
 L3,RARI Chain,,,,rari,,rari,https://mainnet.rpc.rarichain.org/http,Arbitrum Orbit,arbitrum,False,False,True,'https://rarichain.org/','https://rari.docs.caldera.dev/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,rari
 L3,Sanko,1996,https://explorer.sanko.xyz/,,sanko,,sanko,https://mainnet.sanko.xyz,Arbitrum Orbit,arbitrum,False,False,True,'https://sanko.xyz/','https://sanko-1.gitbook.io/sanko-mainnet-docs/',,Arbitrum: Orbit,sanko
 L3,Stack,,,,stack,,stack,https://rpc.stack.so,OP Stack,base,False,False,True,'https://stack.so/','https://docs.stack.so','https://github.com/stack-so/protocol-interfaces',Optimism: OP Stack,stack
+L3,Superposition,,,Optimium,superposition,,superposition,,Arbitrum,arbitrum,True,False,False,'https://superposition.so/',,,Arbitrum: Orbit,superposition
 L3,Syndicate Frame Chain,,,,syndicateframe,,syndicateframe,https://rpc-frame.syndicate.io,OP Stack,base,False,False,True,'https://syndicate.io/blog/syndicate-frame-chain','https://docs.syndicate.io/get-started/introduction',"'https://github.com/WillPapper/syndicate-farcaster-frame-starter',",Optimism: OP Stack,syndicateframe
+L3,Syndr,,,Optimium,syndr,,syndr,,Arbitrum,arbitrum,True,False,False,'https://syndr.com/',,,Arbitrum: Orbit,syndr
 L3,Teva Chain,,,ZK Rollup,teva,,teva,,ZK Stack,zksync2,False,False,True,'https://tevaera.com/tevachain','','',zkSync: ZK Stack,teva
 L3,Xai,,,Funds can be stolen if,xai,,xai,https://xai-chain.net/rpc,Arbitrum Orbit,arbitrum,False,False,True,'https://xai.games/','https://xai-foundation.gitbook.io/xai-network/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,xai
 L3,zkLink Nova,810180,https://explorer.zklink.io,Validium,zklinknova,,zklinknova,https://rpc.zklink.io,zkLink Nexus,linea,False,False,True,"'https://zklink.io', 'https://zk.link'",'https://docs.zklink.io','https://github.com/zkLinkProtocol',zkLink Nexus,zklinknova
