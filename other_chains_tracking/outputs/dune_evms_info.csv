@@ -1,18 +1,18 @@
 chain_id,chain_type,codebase,data_availability,dune_schema,explorer_link,first_block_time,layer,name,native_token_symbol,placeholder,rollup_type,last_updated
-1,Layer 1,,,ethereum,https://etherscan.io/,2015-07-30 15:26:00,L1,Ethereum,ETH,All,,2024-07-08 00:40:01.830190
-43114,Layer 1,,,avalanche_c,https://snowtrace.io/,2020-09-23 11:02:00,L1,Avalanche C-Chain,AVAX,All,,2024-07-08 00:40:01.830190
-42161,Layer 2,Arbitrum,Ethereum Blobs,arbitrum,https://arbiscan.io/,2021-05-29 00:35:00,L2,Arbitrum One,ETH,All,Optimistic Rollup,2024-07-08 00:40:01.830190
-10,Layer 2,OP Stack,Ethereum Blobs,optimism,https://explorer.optimism.io/,2021-11-11 21:16:00,L2,OP Mainnet,ETH,All,Optimistic Rollup,2024-07-08 00:40:01.830190
-100,Layer 1,,,gnosis,https://gnosisscan.io/,2018-10-08 18:43:00,L1,Gnosis,xDAI,All,,2024-07-08 00:40:01.830190
-137,Layer 1,,,polygon,https://polygonscan.com/,2020-05-30 16:30:00,L1,Polygon PoS,MATIC,All,,2024-07-08 00:40:01.830190
-250,Layer 1,,,fantom,https://ftmscan.com/,2019-12-27 03:56:00,L1,Fantom,FTM,All,,2024-07-08 00:40:01.830190
-56,Layer 1,,,bnb,https://bscscan.com/,2020-08-29 03:24:00,L1,BNB,BNB,All,,2024-07-08 00:40:01.830190
-42220,Layer 1,,,celo,https://celoscan.io/,2020-04-22 16:00:00,L1,Celo,CELO,All,,2024-07-08 00:40:01.830190
-8453,Layer 2,OP Stack,Ethereum Blobs,base,https://basescan.org/,2023-06-15 00:35:00,L2,Base,ETH,All,Optimistic Rollup,2024-07-08 00:40:01.830190
-7777777,Layer 2,OP Stack,Ethereum Blobs,zora,https://explorer.zora.energy/,2023-06-14 00:03:00,L2,ZORA,ETH,All,Optimistic Rollup,2024-07-08 00:40:01.830190
-534352,Layer 2,Scroll,Ethereum Blobs,scroll,https://scrollscan.com/,2023-10-10 06:00:00,L2,Scroll,ETH,All,ZK Rollup,2024-07-08 00:40:01.830190
-324,Layer 2,zkSync,Ethereum Blobs,zksync,https://explorer.zksync.io/,2023-02-14 15:22:00,L2,zkSync Era,ETH,All,ZK Rollup,2024-07-08 00:40:01.830190
-1101,Layer 2,Polygon,Ethereum,zkevm,https://zkevm.polygonscan.com/,2023-03-24 05:30:00,L2,Polygon zkEVM,ETH,All,ZK Rollup,2024-07-08 00:40:01.830190
-5000,Layer 2,Optimistic Virtual Machine,Ethereum,mantle,https://explorer.mantle.xyz/,2023-07-02 18:21:00,L2,Mantle,MNT,All,Optimistic Rollup,2024-07-08 00:40:01.830190
-59144,Layer 2,,Ethereum Blobs,linea,https://lineascan.build/,2023-07-06 13:15:00,L2,Linea,ETH,All,ZK Rollup,2024-07-08 00:40:01.830190
-81457,Layer 2,,Ethereum,blast,https://blastscan.io/,2024-02-24 09:23:35,L2,Blast,ETH,All,Optimistic Rollup,2024-07-08 00:40:01.830190
+1,Layer 1,,,ethereum,https://etherscan.io/,2015-07-30 15:26:00,L1,Ethereum,ETH,All,,2024-07-08 20:01:58.401767
+43114,Layer 1,,,avalanche_c,https://snowtrace.io/,2020-09-23 11:02:00,L1,Avalanche C-Chain,AVAX,All,,2024-07-08 20:01:58.401767
+42161,Layer 2,Arbitrum,Ethereum Blobs,arbitrum,https://arbiscan.io/,2021-05-29 00:35:00,L2,Arbitrum One,ETH,All,Optimistic Rollup,2024-07-08 20:01:58.401767
+10,Layer 2,OP Stack,Ethereum Blobs,optimism,https://explorer.optimism.io/,2021-11-11 21:16:00,L2,OP Mainnet,ETH,All,Optimistic Rollup,2024-07-08 20:01:58.401767
+100,Layer 1,,,gnosis,https://gnosisscan.io/,2018-10-08 18:43:00,L1,Gnosis,xDAI,All,,2024-07-08 20:01:58.401767
+137,Layer 1,,,polygon,https://polygonscan.com/,2020-05-30 16:30:00,L1,Polygon PoS,MATIC,All,,2024-07-08 20:01:58.401767
+250,Layer 1,,,fantom,https://ftmscan.com/,2019-12-27 03:56:00,L1,Fantom,FTM,All,,2024-07-08 20:01:58.401767
+56,Layer 1,,,bnb,https://bscscan.com/,2020-08-29 03:24:00,L1,BNB,BNB,All,,2024-07-08 20:01:58.401767
+42220,Layer 1,,,celo,https://celoscan.io/,2020-04-22 16:00:00,L1,Celo,CELO,All,,2024-07-08 20:01:58.401767
+8453,Layer 2,OP Stack,Ethereum Blobs,base,https://basescan.org/,2023-06-15 00:35:00,L2,Base,ETH,All,Optimistic Rollup,2024-07-08 20:01:58.401767
+7777777,Layer 2,OP Stack,Ethereum Blobs,zora,https://explorer.zora.energy/,2023-06-14 00:03:00,L2,ZORA,ETH,All,Optimistic Rollup,2024-07-08 20:01:58.401767
+534352,Layer 2,Scroll,Ethereum Blobs,scroll,https://scrollscan.com/,2023-10-10 06:00:00,L2,Scroll,ETH,All,ZK Rollup,2024-07-08 20:01:58.401767
+324,Layer 2,zkSync,Ethereum Blobs,zksync,https://explorer.zksync.io/,2023-02-14 15:22:00,L2,zkSync Era,ETH,All,ZK Rollup,2024-07-08 20:01:58.401767
+1101,Layer 2,Polygon,Ethereum,zkevm,https://zkevm.polygonscan.com/,2023-03-24 05:30:00,L2,Polygon zkEVM,ETH,All,ZK Rollup,2024-07-08 20:01:58.401767
+5000,Layer 2,Optimistic Virtual Machine,Ethereum,mantle,https://explorer.mantle.xyz/,2023-07-02 18:21:00,L2,Mantle,MNT,All,Optimistic Rollup,2024-07-08 20:01:58.401767
+59144,Layer 2,,Ethereum Blobs,linea,https://lineascan.build/,2023-07-06 13:15:00,L2,Linea,ETH,All,ZK Rollup,2024-07-08 20:01:58.401767
+81457,Layer 2,,Ethereum,blast,https://blastscan.io/,2024-02-24 09:23:35,L2,Blast,ETH,All,Optimistic Rollup,2024-07-08 20:01:58.401767
