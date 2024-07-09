@@ -1,52 +1,31 @@
 dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,source,is_op_chain,op_based_version,alignment,chain_name,display_name
-2024-07-09,zora,L2,7777777,103644.0,103304.0,90097.0,dune,True,modern,OP Chain,zora,Zora
-2024-07-09,zksync,L2,324,328182.0,314594.0,328209.0,dune,False,,Other EVMs,,zkSync Era
-2024-07-09,zkevm,L2,1101,14086.0,13465.0,10071.0,dune,False,,Other EVMs,,Polygon zkEVM
-2024-07-09,scroll,L2,534352,313271.0,305047.0,272458.0,dune,False,,Other EVMs,,Scroll
-2024-07-09,polygon,L1,137,3649739.0,3357346.0,3651995.0,dune,False,,Other EVMs,,Polygon PoS
-2024-07-09,optimism,L2,10,456820.0,428537.0,386265.0,dune,True,modern,OP Chain,op,OP Mainnet
-2024-07-09,mode,L2,34443,112248.0,110105.0,42197.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-07-09,mint,L2,185,2311.0,2306.0,1401.0,goldsky,True,modern,OP Chain,mint,Mint
-2024-07-09,metal,L2,1750,55.0,55.0,40.0,goldsky,True,modern,OP Chain,metal,Metal
-2024-07-09,mantle,L2,5000,357843.0,341449.0,316595.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
-2024-07-09,linea,L2,59144,1278515.0,1268532.0,1207639.0,dune,False,,Other EVMs,,Linea
-2024-07-09,gnosis,L1,100,81647.0,79402.0,57522.0,dune,False,,Other EVMs,,Gnosis
-2024-07-09,fraxtal,L2,252,5778.0,5702.0,9167.0,goldsky,True,modern,OP Chain,fraxtal,Fraxtal
-2024-07-09,fantom,L1,250,197566.0,182327.0,86343.0,dune,False,,Other EVMs,,Fantom
-2024-07-09,ethereum,L1,1,1068058.0,1046611.0,666450.0,dune,False,,Other EVMs,,Ethereum
-2024-07-09,cyber,L2,7560,59265.0,59239.0,50455.0,goldsky,True,modern,OP Chain,cyber,Cyber
-2024-07-09,celo,L1,42220,881052.0,803657.0,754590.0,dune,False,,Other EVMs,,Celo
-2024-07-09,bob,L2,60808,17832.0,17497.0,11421.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
-2024-07-09,bnb,L1,56,2672088.0,2549135.0,2146425.0,dune,False,,Other EVMs,,BNB
-2024-07-09,blast,L2,238,489838.0,473363.0,277316.0,flipside,False,,Other EVMs,,Blast
-2024-07-09,blast,L2,81457,488723.0,472280.0,336995.0,dune,False,modern,OP Stack fork,blast,Blast
-2024-07-09,base,L2,8453,3092825.0,2938426.0,2016773.0,dune,True,modern,OP Chain,base,Base
-2024-07-09,avalanche_c,L1,43114,143847.0,135715.0,108609.0,dune,False,,Other EVMs,,Avalanche C-Chain
-2024-07-09,arbitrum,L2,42161,2039066.0,1819753.0,1581349.0,dune,False,,Other EVMs,,Arbitrum One
-2024-07-08,zora,L2,7777777,99799.0,99407.0,86216.0,dune,True,modern,OP Chain,zora,Zora
-2024-07-08,zksync,L2,324,383333.0,363571.0,383333.0,dune,False,,Other EVMs,,zkSync Era
-2024-07-08,zkevm,L2,1101,17385.0,15728.0,12004.0,dune,False,,Other EVMs,,Polygon zkEVM
-2024-07-08,scroll,L2,534352,320966.0,310763.0,275372.0,dune,False,,Other EVMs,,Scroll
-2024-07-08,polygon,L1,137,3962098.0,3599223.0,3964189.0,dune,False,,Other EVMs,,Polygon PoS
-2024-07-08,optimism,L2,10,510770.0,460062.0,402447.0,dune,True,modern,OP Chain,op,OP Mainnet
+2024-07-09,mode,L2,34443,1099.0,1095.0,302.0,goldsky,True,modern,OP Chain,mode,Mode
+2024-07-09,fraxtal,L2,252,24.0,24.0,97.0,goldsky,True,modern,OP Chain,fraxtal,Fraxtal
+2024-07-09,cyber,L2,7560,784.0,784.0,694.0,goldsky,True,modern,OP Chain,cyber,Cyber
+2024-07-09,bob,L2,60808,104.0,102.0,72.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
+2024-07-08,zora,L2,7777777,83398.0,83044.0,71957.0,dune,True,modern,OP Chain,zora,Zora
+2024-07-08,zksync,L2,324,333224.0,314779.0,333262.0,dune,False,,Other EVMs,,zkSync Era
+2024-07-08,zkevm,L2,1101,14987.0,13472.0,10424.0,dune,False,,Other EVMs,,Polygon zkEVM
+2024-07-08,scroll,L2,534352,271330.0,262377.0,231657.0,dune,False,,Other EVMs,,Scroll
+2024-07-08,polygon,L1,137,3396541.0,3082572.0,3398644.0,dune,False,,Other EVMs,,Polygon PoS
+2024-07-08,optimism,L2,10,436046.0,390383.0,341073.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-07-08,mode,L2,34443,132615.0,129113.0,49229.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-07-08,mint,L2,185,2457.0,2449.0,1439.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-07-08,metal,L2,1750,22.0,22.0,19.0,goldsky,True,modern,OP Chain,metal,Metal
-2024-07-08,mantle,L2,5000,332054.0,315177.0,290453.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
-2024-07-08,linea,L2,59144,1081547.0,1067973.0,991053.0,dune,False,,Other EVMs,,Linea
-2024-07-08,gnosis,L1,100,107354.0,101552.0,59102.0,dune,False,,Other EVMs,,Gnosis
+2024-07-08,mantle,L2,5000,283510.0,267770.0,246492.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
+2024-07-08,linea,L2,59144,906596.0,894330.0,826316.0,dune,False,,Other EVMs,,Linea
+2024-07-08,gnosis,L1,100,95539.0,89901.0,50513.0,dune,False,,Other EVMs,,Gnosis
 2024-07-08,fraxtal,L2,252,3943.0,3825.0,9119.0,goldsky,True,modern,OP Chain,fraxtal,Fraxtal
-2024-07-08,fantom,L1,250,341134.0,320389.0,119430.0,dune,False,,Other EVMs,,Fantom
-2024-07-08,ethereum,L1,1,1136589.0,1118362.0,718399.0,dune,False,,Other EVMs,,Ethereum
+2024-07-08,fantom,L1,250,277763.0,259736.0,88386.0,dune,False,,Other EVMs,,Fantom
+2024-07-08,ethereum,L1,1,931947.0,916967.0,587280.0,dune,False,,Other EVMs,,Ethereum
 2024-07-08,cyber,L2,7560,63380.0,63321.0,47224.0,goldsky,True,modern,OP Chain,cyber,Cyber
-2024-07-08,celo,L1,42220,826493.0,745916.0,681872.0,dune,False,,Other EVMs,,Celo
+2024-07-08,celo,L1,42220,726477.0,666845.0,611396.0,dune,False,,Other EVMs,,Celo
 2024-07-08,bob,L2,60808,18350.0,18070.0,11739.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
-2024-07-08,bnb,L1,56,3104058.0,2887337.0,2629951.0,dune,False,,Other EVMs,,BNB
-2024-07-08,blast,L2,238,534994.0,511415.0,294425.0,flipside,False,,Other EVMs,,Blast
-2024-07-08,blast,L2,81457,534762.0,511185.0,377474.0,dune,False,modern,OP Stack fork,blast,Blast
-2024-07-08,base,L2,8453,3212348.0,3012178.0,2060128.0,dune,True,modern,OP Chain,base,Base
-2024-07-08,avalanche_c,L1,43114,174357.0,163903.0,131937.0,dune,False,,Other EVMs,,Avalanche C-Chain
-2024-07-08,arbitrum,L2,42161,2253029.0,1931787.0,1707245.0,dune,False,,Other EVMs,,Arbitrum One
+2024-07-08,bnb,L1,56,2714537.0,2520516.0,2287619.0,dune,False,,Other EVMs,,BNB
+2024-07-08,blast,L2,238,529600.0,506125.0,292010.0,flipside,False,,Other EVMs,,Blast
+2024-07-08,blast,L2,81457,445763.0,424377.0,318597.0,dune,False,modern,OP Stack fork,blast,Blast
+2024-07-08,base,L2,8453,2610363.0,2440291.0,1684874.0,dune,True,modern,OP Chain,base,Base
+2024-07-08,avalanche_c,L1,43114,148910.0,139572.0,112330.0,dune,False,,Other EVMs,,Avalanche C-Chain
+2024-07-08,arbitrum,L2,42161,1931901.0,1648784.0,1460856.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-07,zora,L2,7777777,113018.0,112676.0,98570.0,dune,True,modern,OP Chain,zora,Zora
 2024-07-07,zksync,L2,324,334593.0,328568.0,334594.0,dune,False,,Other EVMs,,zkSync Era
 2024-07-07,zkevm,L2,1101,16265.0,15264.0,10601.0,dune,False,,Other EVMs,,Polygon zkEVM
@@ -54,7 +33,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-07,polygon,L1,137,3685074.0,3413909.0,3687079.0,dune,False,,Other EVMs,,Polygon PoS
 2024-07-07,optimism,L2,10,370736.0,349054.0,300761.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-07-07,mode,L2,34443,123251.0,121794.0,36790.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-07-07,mint,L2,185,3451.0,3388.0,2012.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-07-07,metal,L2,1750,36.0,36.0,28.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-07-07,mantle,L2,5000,283665.0,279560.0,255430.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-07-07,linea,L2,59144,618892.0,614061.0,571664.0,dune,False,,Other EVMs,,Linea
@@ -78,7 +56,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-06,polygon,L1,137,3763444.0,3468699.0,3764668.0,dune,False,,Other EVMs,,Polygon PoS
 2024-07-06,optimism,L2,10,408068.0,387914.0,330687.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-07-06,mode,L2,34443,114600.0,113179.0,37380.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-07-06,mint,L2,185,3979.0,3869.0,2280.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-07-06,metal,L2,1750,30.0,30.0,24.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-07-06,mantle,L2,5000,288616.0,284512.0,262811.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-07-06,linea,L2,59144,772040.0,765818.0,710557.0,dune,False,,Other EVMs,,Linea
@@ -102,7 +79,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-05,polygon,L1,137,4153241.0,3692016.0,4155506.0,dune,False,,Other EVMs,,Polygon PoS
 2024-07-05,optimism,L2,10,566577.0,509598.0,421061.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-07-05,mode,L2,34443,118372.0,115102.0,53398.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-07-05,mint,L2,185,2802.0,2722.0,1777.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-07-05,metal,L2,1750,116.0,116.0,96.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-07-05,mantle,L2,5000,336367.0,323307.0,284280.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-07-05,linea,L2,59144,1297328.0,1279474.0,1195116.0,dune,False,,Other EVMs,,Linea
@@ -126,7 +102,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-04,polygon,L1,137,4139146.0,3765868.0,4141834.0,dune,False,,Other EVMs,,Polygon PoS
 2024-07-04,optimism,L2,10,494739.0,461317.0,392332.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-07-04,mode,L2,34443,117031.0,113185.0,55720.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-07-04,mint,L2,185,5841.0,5622.0,3764.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-07-04,metal,L2,1750,229.0,229.0,215.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-07-04,mantle,L2,5000,554488.0,544169.0,498561.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-07-04,linea,L2,59144,1449906.0,1436322.0,1357372.0,dune,False,,Other EVMs,,Linea
@@ -150,7 +125,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-03,polygon,L1,137,3781037.0,3494481.0,3783892.0,dune,False,,Other EVMs,,Polygon PoS
 2024-07-03,optimism,L2,10,450769.0,431973.0,375832.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-07-03,mode,L2,34443,125337.0,124100.0,38613.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-07-03,mint,L2,185,6642.0,6584.0,3879.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-07-03,metal,L2,1750,252.0,251.0,66.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-07-03,mantle,L2,5000,574359.0,569039.0,538124.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-07-03,linea,L2,59144,918779.0,912030.0,840204.0,dune,False,,Other EVMs,,Linea
@@ -174,7 +148,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-02,polygon,L1,137,4276773.0,4004366.0,4280986.0,dune,False,,Other EVMs,,Polygon PoS
 2024-07-02,optimism,L2,10,438990.0,426746.0,374674.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-07-02,mode,L2,34443,124837.0,123542.0,37498.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-07-02,mint,L2,185,5990.0,5972.0,3839.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-07-02,metal,L2,1750,388.0,387.0,165.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-07-02,mantle,L2,5000,570404.0,565768.0,527397.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-07-02,linea,L2,59144,1019469.0,1014986.0,925261.0,dune,False,,Other EVMs,,Linea
@@ -198,7 +171,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-01,polygon,L1,137,4152306.0,3844117.0,4154699.0,dune,False,,Other EVMs,,Polygon PoS
 2024-07-01,optimism,L2,10,421878.0,404482.0,346741.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-07-01,mode,L2,34443,126605.0,124841.0,38989.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-07-01,mint,L2,185,6190.0,6171.0,3986.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-07-01,metal,L2,1750,104.0,104.0,87.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-07-01,mantle,L2,5000,525151.0,519755.0,484578.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-07-01,linea,L2,59144,670255.0,665509.0,587509.0,dune,False,,Other EVMs,,Linea
@@ -222,7 +194,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-30,polygon,L1,137,3849989.0,3608148.0,3851540.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-30,optimism,L2,10,409872.0,392314.0,335900.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-30,mode,L2,34443,119992.0,118540.0,41911.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-30,mint,L2,185,6295.0,6222.0,4342.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-30,metal,L2,1750,4.0,4.0,4.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-30,mantle,L2,5000,556390.0,552428.0,522787.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-30,linea,L2,59144,406310.0,403066.0,349779.0,dune,False,,Other EVMs,,Linea
@@ -246,7 +217,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-29,polygon,L1,137,3906860.0,3686771.0,3909027.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-29,optimism,L2,10,400781.0,387530.0,332903.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-29,mode,L2,34443,126332.0,124832.0,36953.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-29,mint,L2,185,4239.0,4205.0,2698.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-29,metal,L2,1750,19.0,19.0,20.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-29,mantle,L2,5000,392220.0,389003.0,370380.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-29,linea,L2,59144,410179.0,407000.0,343325.0,dune,False,,Other EVMs,,Linea
@@ -270,7 +240,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-28,polygon,L1,137,4178361.0,3852196.0,4180517.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-28,optimism,L2,10,444265.0,419215.0,357017.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-28,mode,L2,34443,130666.0,128975.0,41162.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-28,mint,L2,185,4952.0,4917.0,3357.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-28,metal,L2,1750,85.0,85.0,71.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-28,mantle,L2,5000,512541.0,506339.0,471921.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-28,linea,L2,59144,442534.0,438435.0,369178.0,dune,False,,Other EVMs,,Linea
@@ -294,7 +263,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-27,polygon,L1,137,4661587.0,4179842.0,4663780.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-27,optimism,L2,10,458691.0,436150.0,373626.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-27,mode,L2,34443,131654.0,129699.0,40815.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-27,mint,L2,185,5667.0,5625.0,3486.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-27,metal,L2,1750,61.0,61.0,47.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-27,mantle,L2,5000,543893.0,535571.0,505251.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-27,linea,L2,59144,499193.0,495245.0,397542.0,dune,False,,Other EVMs,,Linea
@@ -318,7 +286,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-26,polygon,L1,137,4402137.0,4100043.0,4404527.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-26,optimism,L2,10,428707.0,411987.0,340049.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-26,mode,L2,34443,132222.0,130544.0,42112.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-26,mint,L2,185,5874.0,5792.0,3825.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-26,metal,L2,1750,10198.0,10198.0,10194.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-26,mantle,L2,5000,564596.0,557027.0,538051.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-26,linea,L2,59144,481490.0,476737.0,416426.0,dune,False,,Other EVMs,,Linea
@@ -342,7 +309,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-25,polygon,L1,137,4139496.0,3883541.0,4141945.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-25,optimism,L2,10,451710.0,436008.0,359497.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-25,mode,L2,34443,89824.0,88016.0,41958.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-25,mint,L2,185,4563.0,4535.0,3112.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-25,metal,L2,1750,30.0,30.0,15.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-25,mantle,L2,5000,514537.0,505146.0,478687.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-25,linea,L2,59144,485881.0,480754.0,418611.0,dune,False,,Other EVMs,,Linea
@@ -366,7 +332,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-24,polygon,L1,137,4266179.0,3921148.0,4268463.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-24,optimism,L2,10,520446.0,488649.0,410853.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-24,mode,L2,34443,131955.0,127638.0,45640.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-24,mint,L2,185,7563.0,7475.0,5219.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-24,metal,L2,1750,9.0,9.0,13.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-24,mantle,L2,5000,571555.0,557660.0,530327.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-24,linea,L2,59144,467281.0,458973.0,403975.0,dune,False,,Other EVMs,,Linea
@@ -390,7 +355,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-23,polygon,L1,137,4020574.0,3815994.0,4022689.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-23,optimism,L2,10,469011.0,456140.0,373534.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-23,mode,L2,34443,128514.0,126202.0,38797.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-23,mint,L2,185,7386.0,7309.0,4789.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-23,metal,L2,1750,1.0,1.0,18.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-23,mantle,L2,5000,598230.0,588364.0,573435.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-23,linea,L2,59144,456525.0,452817.0,378228.0,dune,False,,Other EVMs,,Linea
@@ -414,7 +378,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-22,polygon,L1,137,4222742.0,4042085.0,4224615.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-22,optimism,L2,10,492295.0,480676.0,386219.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-22,mode,L2,34443,129451.0,128427.0,40156.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-22,mint,L2,185,3651.0,3640.0,2594.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-22,metal,L2,1750,12.0,12.0,12.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-22,mantle,L2,5000,550314.0,543590.0,524451.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-22,linea,L2,59144,492291.0,488912.0,428865.0,dune,False,,Other EVMs,,Linea
@@ -438,7 +401,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-21,polygon,L1,137,4347446.0,4083025.0,4349113.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-21,optimism,L2,10,685850.0,648047.0,535445.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-21,mode,L2,34443,139256.0,137666.0,47643.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-21,mint,L2,185,2056.0,2053.0,1252.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-21,metal,L2,1750,67.0,67.0,54.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-21,mantle,L2,5000,521035.0,511037.0,482604.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-21,linea,L2,59144,514121.0,509063.0,449667.0,dune,False,,Other EVMs,,Linea
@@ -462,7 +424,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-20,polygon,L1,137,4231096.0,3954503.0,4232798.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-20,optimism,L2,10,816979.0,768712.0,635228.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-20,mode,L2,34443,149375.0,147894.0,41597.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-20,mint,L2,185,1471.0,1468.0,848.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-20,metal,L2,1750,9.0,9.0,12.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-20,mantle,L2,5000,565544.0,554677.0,527899.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-20,linea,L2,59144,470986.0,466439.0,406711.0,dune,False,,Other EVMs,,Linea
@@ -486,7 +447,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-19,polygon,L1,137,4146941.0,3861592.0,4148672.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-19,optimism,L2,10,468569.0,442892.0,369543.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-19,mode,L2,34443,176016.0,173827.0,40924.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-19,mint,L2,185,2045.0,2041.0,1098.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-19,metal,L2,1750,2.0,2.0,2.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-19,mantle,L2,5000,610192.0,598420.0,565251.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-19,linea,L2,59144,423500.0,418051.0,362922.0,dune,False,,Other EVMs,,Linea
@@ -510,7 +470,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-18,polygon,L1,137,4153329.0,3792754.0,4155844.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-18,optimism,L2,10,553512.0,510815.0,429876.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-18,mode,L2,34443,172704.0,170906.0,39035.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-18,mint,L2,185,2605.0,2593.0,1710.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-18,metal,L2,1750,8.0,8.0,5.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-18,mantle,L2,5000,696632.0,678091.0,634035.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-18,linea,L2,59144,422689.0,415454.0,363431.0,dune,False,,Other EVMs,,Linea
@@ -534,7 +493,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-17,polygon,L1,137,3990028.0,3697385.0,3991965.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-17,optimism,L2,10,521236.0,490914.0,433207.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-17,mode,L2,34443,173495.0,172126.0,39033.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-17,mint,L2,185,2285.0,2276.0,1204.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-17,metal,L2,1750,2.0,2.0,2.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-17,mantle,L2,5000,676240.0,662991.0,615812.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-17,linea,L2,59144,411603.0,407312.0,360973.0,dune,False,,Other EVMs,,Linea
@@ -558,7 +516,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-16,polygon,L1,137,3565270.0,3390483.0,3567496.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-16,optimism,L2,10,414698.0,400607.0,340230.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-16,mode,L2,34443,197115.0,195404.0,53877.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-16,mint,L2,185,4030.0,3770.0,1968.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-16,metal,L2,1750,1.0,1.0,1.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-16,mantle,L2,5000,676012.0,668828.0,608557.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-16,linea,L2,59144,346781.0,343982.0,299445.0,dune,False,,Other EVMs,,Linea
@@ -582,7 +539,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-15,polygon,L1,137,3682767.0,3475392.0,3684280.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-15,optimism,L2,10,495262.0,479178.0,418493.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-15,mode,L2,34443,176937.0,175894.0,40995.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-15,mint,L2,185,1912.0,1907.0,998.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-15,metal,L2,1750,1.0,1.0,3.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-15,mantle,L2,5000,614299.0,606650.0,555106.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-15,linea,L2,59144,391786.0,388718.0,332605.0,dune,False,,Other EVMs,,Linea
@@ -606,7 +562,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-14,polygon,L1,137,4131769.0,3832827.0,4135337.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-14,optimism,L2,10,518216.0,488412.0,417976.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-14,mode,L2,34443,181498.0,179727.0,40057.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-14,mint,L2,185,1520.0,1514.0,818.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-14,metal,L2,1750,7.0,7.0,4.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-14,mantle,L2,5000,618790.0,606866.0,533238.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-14,linea,L2,59144,441545.0,436871.0,350541.0,dune,False,,Other EVMs,,Linea
@@ -630,7 +585,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-13,polygon,L1,137,4397774.0,4115950.0,4399856.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-13,optimism,L2,10,540218.0,510809.0,436714.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-13,mode,L2,34443,206531.0,205028.0,34617.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-13,mint,L2,185,2148.0,2148.0,1139.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-13,metal,L2,1750,3.0,3.0,4.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-13,mantle,L2,5000,747392.0,736452.0,586941.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-13,linea,L2,59144,530053.0,524133.0,440494.0,dune,False,,Other EVMs,,Linea
@@ -654,7 +608,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-12,polygon,L1,137,4407619.0,4117229.0,4409681.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-12,optimism,L2,10,549072.0,518021.0,442899.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-12,mode,L2,34443,214865.0,213248.0,36118.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-12,mint,L2,185,2170.0,2164.0,988.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-12,metal,L2,1750,9.0,9.0,5.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-12,mantle,L2,5000,593668.0,580715.0,511147.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-12,linea,L2,59144,455783.0,449438.0,386444.0,dune,False,,Other EVMs,,Linea
@@ -678,7 +631,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-11,polygon,L1,137,4242494.0,3921835.0,4245403.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-11,optimism,L2,10,522599.0,490058.0,417350.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-11,mode,L2,34443,211180.0,209141.0,33923.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-11,mint,L2,185,1976.0,1971.0,918.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-11,metal,L2,1750,1.0,1.0,1.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-11,mantle,L2,5000,631012.0,615485.0,533272.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-11,linea,L2,59144,417071.0,409980.0,341299.0,dune,False,,Other EVMs,,Linea
@@ -702,7 +654,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-10,polygon,L1,137,3811435.0,3614505.0,3813000.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-10,optimism,L2,10,486829.0,471962.0,390640.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-10,mode,L2,34443,209975.0,208766.0,33926.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-10,mint,L2,185,2480.0,2478.0,1463.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-10,mantle,L2,5000,607818.0,600819.0,448235.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-10,linea,L2,59144,429246.0,425605.0,367050.0,dune,False,,Other EVMs,,Linea
 2024-06-10,gnosis,L1,100,96325.0,91897.0,65169.0,dune,False,,Other EVMs,,Gnosis
@@ -725,7 +676,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-09,polygon,L1,137,3763579.0,3508012.0,3764985.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-09,optimism,L2,10,396628.0,390118.0,322792.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-09,mode,L2,34443,204808.0,203465.0,43030.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-09,mint,L2,185,2222.0,2219.0,1331.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-09,mantle,L2,5000,532119.0,526862.0,374377.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-09,linea,L2,59144,449506.0,446457.0,403718.0,dune,False,,Other EVMs,,Linea
 2024-06-09,gnosis,L1,100,96116.0,94055.0,80980.0,dune,False,,Other EVMs,,Gnosis
@@ -748,7 +698,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-08,polygon,L1,137,3740387.0,3511396.0,3741299.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-08,optimism,L2,10,430434.0,420262.0,335311.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-08,mode,L2,34443,147009.0,145571.0,36202.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-08,mint,L2,185,2505.0,2503.0,1415.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-08,metal,L2,1750,1.0,1.0,1.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-08,mantle,L2,5000,394715.0,389751.0,338939.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-08,linea,L2,59144,454863.0,450295.0,400502.0,dune,False,,Other EVMs,,Linea
@@ -772,7 +721,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-07,polygon,L1,137,3945884.0,3707132.0,3948008.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-07,optimism,L2,10,498141.0,476335.0,392438.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-07,mode,L2,34443,154780.0,152439.0,46663.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-07,mint,L2,185,1868.0,1863.0,989.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-07,metal,L2,1750,10.0,10.0,5.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-07,mantle,L2,5000,372745.0,358533.0,306834.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-07,linea,L2,59144,525258.0,518408.0,458415.0,dune,False,,Other EVMs,,Linea
@@ -796,7 +744,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-06,polygon,L1,137,3775475.0,3563456.0,3777343.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-06,optimism,L2,10,506967.0,492249.0,381716.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-06,mode,L2,34443,195899.0,194494.0,37935.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-06,mint,L2,185,3265.0,3253.0,1728.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-06,mantle,L2,5000,331565.0,325700.0,270295.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-06,linea,L2,59144,603255.0,595712.0,497175.0,dune,False,,Other EVMs,,Linea
 2024-06-06,gnosis,L1,100,103870.0,100851.0,85834.0,dune,False,,Other EVMs,,Gnosis
@@ -819,7 +766,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-05,polygon,L1,137,3617952.0,3407114.0,3619970.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-05,optimism,L2,10,472368.0,457847.0,371656.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-05,mode,L2,34443,197424.0,196033.0,38099.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-05,mint,L2,185,5246.0,5223.0,2177.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-05,metal,L2,1750,1.0,1.0,1.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-06-05,mantle,L2,5000,348381.0,335871.0,274875.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-05,linea,L2,59144,648631.0,637888.0,556932.0,dune,False,,Other EVMs,,Linea
@@ -843,7 +789,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-04,polygon,L1,137,3895412.0,3697560.0,3897168.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-04,optimism,L2,10,525107.0,510182.0,421348.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-04,mode,L2,34443,198223.0,196934.0,36544.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-04,mint,L2,185,7589.0,7575.0,3075.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-04,mantle,L2,5000,281463.0,274033.0,243896.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-04,linea,L2,59144,1101663.0,1076769.0,973324.0,dune,False,,Other EVMs,,Linea
 2024-06-04,gnosis,L1,100,90545.0,86745.0,68947.0,dune,False,,Other EVMs,,Gnosis
@@ -866,7 +811,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-03,polygon,L1,137,4012977.0,3751146.0,4014582.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-03,optimism,L2,10,509147.0,492653.0,400433.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-03,mode,L2,34443,179551.0,178169.0,37563.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-03,mint,L2,185,5649.0,5642.0,2108.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-03,mantle,L2,5000,282699.0,274599.0,237280.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-03,linea,L2,59144,1100040.0,1076693.0,982395.0,dune,False,,Other EVMs,,Linea
 2024-06-03,gnosis,L1,100,105139.0,102352.0,83036.0,dune,False,,Other EVMs,,Gnosis
@@ -889,7 +833,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-02,polygon,L1,137,3952144.0,3777694.0,3953230.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-02,optimism,L2,10,413834.0,400773.0,333979.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-02,mode,L2,34443,187392.0,186112.0,35894.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-02,mint,L2,185,4907.0,4900.0,1959.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-02,mantle,L2,5000,327617.0,321521.0,233268.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-02,linea,L2,59144,879911.0,858781.0,769081.0,dune,False,,Other EVMs,,Linea
 2024-06-02,gnosis,L1,100,77946.0,76238.0,60406.0,dune,False,,Other EVMs,,Gnosis
@@ -912,7 +855,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-01,polygon,L1,137,3650522.0,3489177.0,3651841.0,dune,False,,Other EVMs,,Polygon PoS
 2024-06-01,optimism,L2,10,437606.0,427403.0,360873.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-06-01,mode,L2,34443,191771.0,190681.0,35639.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-06-01,mint,L2,185,11010.0,11008.0,4897.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-06-01,mantle,L2,5000,333142.0,327533.0,264494.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-06-01,linea,L2,59144,808557.0,787255.0,724188.0,dune,False,,Other EVMs,,Linea
 2024-06-01,gnosis,L1,100,110585.0,108856.0,68719.0,dune,False,,Other EVMs,,Gnosis
@@ -935,7 +877,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-31,polygon,L1,137,4115967.0,3834748.0,4118352.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-31,optimism,L2,10,478671.0,458140.0,395372.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-31,mode,L2,34443,202161.0,199682.0,45444.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-31,mint,L2,185,6217.0,6214.0,2918.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-31,metal,L2,1750,13.0,13.0,14.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-05-31,mantle,L2,5000,362460.0,349539.0,277058.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-31,linea,L2,59144,1054204.0,1031464.0,967204.0,dune,False,,Other EVMs,,Linea
@@ -959,7 +900,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-30,polygon,L1,137,4332289.0,3963737.0,4334311.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-30,optimism,L2,10,515414.0,488479.0,426781.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-30,mode,L2,34443,189950.0,187905.0,41243.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-30,mint,L2,185,5501.0,5492.0,2572.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-30,metal,L2,1750,4.0,4.0,3.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-05-30,mantle,L2,5000,278620.0,262590.0,239302.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-30,linea,L2,59144,962058.0,945101.0,900217.0,dune,False,,Other EVMs,,Linea
@@ -983,7 +923,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-29,polygon,L1,137,4510100.0,4178428.0,4511837.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-29,optimism,L2,10,515671.0,491291.0,421812.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-29,mode,L2,34443,222867.0,221336.0,43504.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-29,mint,L2,185,5388.0,5386.0,2358.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-29,metal,L2,1750,4.0,4.0,3.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-05-29,mantle,L2,5000,263987.0,249677.0,237990.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-29,linea,L2,59144,1009181.0,992537.0,905783.0,dune,False,,Other EVMs,,Linea
@@ -1007,7 +946,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-28,polygon,L1,137,4286026.0,3955079.0,4289561.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-28,optimism,L2,10,509626.0,482358.0,400986.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-28,mode,L2,34443,229093.0,227473.0,46061.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-28,mint,L2,185,6066.0,6058.0,2919.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-28,metal,L2,1750,15.0,15.0,13.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-05-28,mantle,L2,5000,272617.0,258008.0,245596.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-28,linea,L2,59144,1020934.0,1003959.0,936870.0,dune,False,,Other EVMs,,Linea
@@ -1031,7 +969,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-27,polygon,L1,137,4176600.0,3883590.0,4178736.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-27,optimism,L2,10,492785.0,470976.0,382424.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-27,mode,L2,34443,231216.0,229024.0,45638.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-27,mint,L2,185,7505.0,7497.0,3380.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-27,mantle,L2,5000,260570.0,246822.0,236489.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-27,linea,L2,59144,879535.0,865874.0,790739.0,dune,False,,Other EVMs,,Linea
 2024-05-27,gnosis,L1,100,175620.0,165592.0,145086.0,dune,False,,Other EVMs,,Gnosis
@@ -1054,7 +991,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-26,polygon,L1,137,3849877.0,3584489.0,3851706.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-26,optimism,L2,10,455538.0,425126.0,354186.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-26,mode,L2,34443,229528.0,227788.0,43596.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-26,mint,L2,185,18879.0,18873.0,9644.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-26,metal,L2,1750,1.0,1.0,0.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-05-26,mantle,L2,5000,248830.0,238295.0,228255.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-26,linea,L2,59144,975602.0,962497.0,887215.0,dune,False,,Other EVMs,,Linea
@@ -1078,7 +1014,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-25,polygon,L1,137,3924212.0,3657836.0,3926332.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-25,optimism,L2,10,455126.0,434143.0,359537.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-25,mode,L2,34443,225102.0,223768.0,45453.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-25,mint,L2,185,23831.0,23762.0,16644.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-25,mantle,L2,5000,229119.0,218534.0,209562.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-25,linea,L2,59144,973143.0,961896.0,891950.0,dune,False,,Other EVMs,,Linea
 2024-05-25,gnosis,L1,100,157924.0,149189.0,133011.0,dune,False,,Other EVMs,,Gnosis
@@ -1101,7 +1036,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-24,polygon,L1,137,4211051.0,3915812.0,4213029.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-24,optimism,L2,10,522202.0,484893.0,394647.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-24,mode,L2,34443,219838.0,217224.0,51526.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-24,mint,L2,185,56572.0,56402.0,40011.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-24,mantle,L2,5000,266760.0,242287.0,229990.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-24,linea,L2,59144,946226.0,933406.0,874347.0,dune,False,,Other EVMs,,Linea
 2024-05-24,gnosis,L1,100,175574.0,163416.0,137154.0,dune,False,,Other EVMs,,Gnosis
@@ -1124,7 +1058,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-23,polygon,L1,137,4195377.0,3836500.0,4197298.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-23,optimism,L2,10,646020.0,570460.0,481143.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-23,mode,L2,34443,228824.0,224127.0,49509.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-23,mint,L2,185,42993.0,42950.0,23214.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-23,metal,L2,1750,3.0,3.0,2.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-05-23,mantle,L2,5000,326316.0,286317.0,266356.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-23,linea,L2,59144,1020294.0,1001883.0,848140.0,dune,False,,Other EVMs,,Linea
@@ -1148,7 +1081,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-22,polygon,L1,137,4144724.0,3870691.0,4146473.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-22,optimism,L2,10,621631.0,578719.0,435773.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-22,mode,L2,34443,212926.0,210879.0,41281.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-22,mint,L2,185,38020.0,38008.0,19901.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-22,metal,L2,1750,33.0,33.0,17.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-05-22,mantle,L2,5000,279115.0,252968.0,241100.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-22,linea,L2,59144,890506.0,878342.0,638207.0,dune,False,,Other EVMs,,Linea
@@ -1172,7 +1104,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-21,polygon,L1,137,4307225.0,3998012.0,4310114.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-21,optimism,L2,10,601089.0,546341.0,438726.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-21,mode,L2,34443,234642.0,231495.0,47736.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-21,mint,L2,185,19037.0,19005.0,11145.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-21,metal,L2,1750,3.0,3.0,3.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-05-21,mantle,L2,5000,274310.0,249945.0,235547.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-21,linea,L2,59144,474152.0,461015.0,401901.0,dune,False,,Other EVMs,,Linea
@@ -1196,7 +1127,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-20,polygon,L1,137,4278934.0,3962653.0,4280960.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-20,optimism,L2,10,513016.0,470662.0,390087.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-20,mode,L2,34443,219127.0,215699.0,50753.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-20,mint,L2,185,879.0,864.0,822.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-20,metal,L2,1750,9.0,9.0,4.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-05-20,mantle,L2,5000,263362.0,245849.0,231347.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-20,linea,L2,59144,401397.0,392276.0,311945.0,dune,False,,Other EVMs,,Linea
@@ -1220,7 +1150,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-19,polygon,L1,137,3460615.0,3272711.0,3461739.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-19,optimism,L2,10,352643.0,333387.0,278965.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-19,mode,L2,34443,213088.0,210135.0,73113.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-19,mint,L2,185,33.0,33.0,169.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-19,mantle,L2,5000,230900.0,224364.0,213748.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-19,linea,L2,59144,332127.0,326430.0,285755.0,dune,False,,Other EVMs,,Linea
 2024-05-19,gnosis,L1,100,131495.0,121138.0,96418.0,dune,False,,Other EVMs,,Gnosis
@@ -1243,7 +1172,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-18,polygon,L1,137,4098661.0,3872215.0,4099818.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-18,optimism,L2,10,370370.0,349822.0,290801.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-18,mode,L2,34443,229778.0,227183.0,74388.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-18,mint,L2,185,79.0,79.0,231.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-18,mantle,L2,5000,248125.0,241618.0,228379.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-18,linea,L2,59144,370300.0,365152.0,308421.0,dune,False,,Other EVMs,,Linea
 2024-05-18,gnosis,L1,100,145897.0,131326.0,106126.0,dune,False,,Other EVMs,,Gnosis
@@ -1266,7 +1194,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-17,polygon,L1,137,4031472.0,3776673.0,4033055.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-17,optimism,L2,10,462088.0,434326.0,372717.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-17,mode,L2,34443,226011.0,224110.0,64686.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-17,mint,L2,185,579.0,576.0,441.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-17,metal,L2,1750,2.0,2.0,1.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-05-17,mantle,L2,5000,252245.0,241703.0,231029.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-17,linea,L2,59144,439673.0,433140.0,351549.0,dune,False,,Other EVMs,,Linea
@@ -1290,7 +1217,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-16,polygon,L1,137,4270833.0,3956456.0,4272368.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-16,optimism,L2,10,529276.0,501064.0,427602.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-16,mode,L2,34443,214181.0,210957.0,71971.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-16,mint,L2,185,17275.0,17262.0,13226.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-16,metal,L2,1750,2.0,2.0,2.0,goldsky,True,modern,OP Chain,metal,Metal
 2024-05-16,mantle,L2,5000,248683.0,241561.0,230165.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-16,linea,L2,59144,403270.0,397996.0,325654.0,dune,False,,Other EVMs,,Linea
@@ -1314,7 +1240,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-15,polygon,L1,137,4043895.0,3817582.0,4045438.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-15,optimism,L2,10,549947.0,505274.0,427013.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-15,mode,L2,34443,204998.0,201838.0,54096.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-15,mint,L2,185,142.0,142.0,133.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-15,mantle,L2,5000,273080.0,261446.0,250702.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-15,linea,L2,59144,401423.0,393245.0,338701.0,dune,False,,Other EVMs,,Linea
 2024-05-15,gnosis,L1,100,191766.0,174993.0,127785.0,dune,False,,Other EVMs,,Gnosis
@@ -1337,7 +1262,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-14,polygon,L1,137,3995890.0,3776211.0,3997596.0,dune,False,,Other EVMs,,Polygon PoS
 2024-05-14,optimism,L2,10,473691.0,446083.0,364694.0,dune,True,modern,OP Chain,op,OP Mainnet
 2024-05-14,mode,L2,34443,204693.0,199623.0,52553.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-05-14,mint,L2,185,22.0,22.0,24.0,goldsky,True,modern,OP Chain,mint,Mint
 2024-05-14,mantle,L2,5000,262629.0,255145.0,247211.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
 2024-05-14,linea,L2,59144,367950.0,363424.0,311238.0,dune,False,,Other EVMs,,Linea
 2024-05-14,gnosis,L1,100,178778.0,171526.0,142139.0,dune,False,,Other EVMs,,Gnosis
@@ -2100,3 +2024,20 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-10,base,L2,8453,2911927.0,2369372.0,2013969.0,dune,True,modern,OP Chain,base,Base
 2024-04-10,avalanche_c,L1,43114,283594.0,265305.0,223630.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-10,arbitrum,L2,42161,1831116.0,1602328.0,1334914.0,dune,False,,Other EVMs,,Arbitrum One
+2024-04-09,zora,L2,7777777,1101900.0,1096089.0,202678.0,dune,True,modern,OP Chain,zora,Zora
+2024-04-09,zksync,L2,324,1077662.0,1063564.0,1077663.0,dune,False,,Other EVMs,,zkSync Era
+2024-04-09,zkevm,L2,1101,9275.0,9027.0,6149.0,dune,False,,Other EVMs,,Polygon zkEVM
+2024-04-09,scroll,L2,534352,295302.0,285455.0,254565.0,dune,False,,Other EVMs,,Scroll
+2024-04-09,polygon,L1,137,4297261.0,4095055.0,4300553.0,dune,False,,Other EVMs,,Polygon PoS
+2024-04-09,optimism,L2,10,636030.0,605065.0,494491.0,dune,True,modern,OP Chain,op,OP Mainnet
+2024-04-09,mantle,L2,5000,232732.0,217209.0,202161.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
+2024-04-09,linea,L2,59144,545391.0,540663.0,428739.0,dune,False,,Other EVMs,,Linea
+2024-04-09,gnosis,L1,100,210005.0,207581.0,150478.0,dune,False,,Other EVMs,,Gnosis
+2024-04-09,fantom,L1,250,317974.0,268564.0,153153.0,dune,False,,Other EVMs,,Fantom
+2024-04-09,ethereum,L1,1,1225686.0,1207628.0,788260.0,dune,False,,Other EVMs,,Ethereum
+2024-04-09,celo,L1,42220,240029.0,232671.0,216792.0,dune,False,,Other EVMs,,Celo
+2024-04-09,bnb,L1,56,4138564.0,3948849.0,3273012.0,dune,False,,Other EVMs,,BNB
+2024-04-09,blast,L2,81457,454908.0,445587.0,419459.0,dune,False,modern,OP Stack fork,blast,Blast
+2024-04-09,base,L2,8453,2950357.0,2300649.0,1996407.0,dune,True,modern,OP Chain,base,Base
+2024-04-09,avalanche_c,L1,43114,298916.0,274174.0,229089.0,dune,False,,Other EVMs,,Avalanche C-Chain
+2024-04-09,arbitrum,L2,42161,1770534.0,1571798.0,1311732.0,dune,False,,Other EVMs,,Arbitrum One
