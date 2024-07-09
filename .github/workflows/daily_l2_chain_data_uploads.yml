@@ -49,7 +49,6 @@ jobs:
           pipenv run jupyter nbconvert --to python get_qualified_txs.ipynb
           pipenv run jupyter nbconvert --to python chain_tvl_trends.ipynb   
           pipenv run jupyter nbconvert --to python pull_l2_activity.ipynb   
-          pipenv run jupyter nbconvert --to python get_filtered_deployers.ipynb   
           pipenv run jupyter nbconvert --to python get_ethereum_chain_list.ipynb
           pipenv run jupyter nbconvert --to python get_dune_evms_info.ipynb
           
@@ -62,7 +61,6 @@ jobs:
           pipenv run python get_qualified_txs.py
           pipenv run python chain_tvl_trends.py
           pipenv run python pull_l2_activity.py
-          pipenv run python get_filtered_deployers.py
           pipenv run python get_ethereum_chain_list.py
           pipenv run python get_dune_evms_info.py
         env:
