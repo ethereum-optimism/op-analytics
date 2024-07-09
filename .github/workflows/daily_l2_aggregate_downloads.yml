@@ -51,7 +51,7 @@ jobs:
           
                
   # Run py files
-      - name: Run L2 Uploads
+      - name: Run Downloads
         working-directory: op_chains_tracking
         run: |
           pipenv run python dune_opchain_uploads.py
