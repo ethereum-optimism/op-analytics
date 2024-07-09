@@ -12,7 +12,7 @@ WITH filtered_events AS (
 SELECT 
 DATE_TRUNC('day',block_timestamp) AS dt,
   chain AS blockchain,
-  chain_id,
+  chain_id, --db chain_id
   '@name@' as name,
   '@layer@' AS layer,
 COUNT(*) AS num_raw_txs,
@@ -27,7 +27,7 @@ GROUP BY 1,2,3,4,5
 , log_transactions AS (
 SELECT 
 DATE_TRUNC('day',block_timestamp) AS dt,
-  chain_id,
+  chain_id, --db chain_id
 COUNT(DISTINCT transaction_hash) AS num_qualified_txs
 
 FROM @blockchain@_logs
