@@ -91,8 +91,8 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 											ad = generate_flows_column(ad)
 											ad = ad.groupby(['chain', 'date','protocol','parent_protocol']).agg(
 												sum_token_value_usd_flow=pd.NamedAgg(column='token_value_usd_flow', aggfunc='sum'),
-												sum_price_usd_flow=pd.NamedAgg(column='price_usd_flow', aggfunc='sum'),
-												sum_usd_value_check=pd.NamedAgg(column='usd_value', aggfunc='sum')
+												sum_token_value_usd_price_change=pd.NamedAgg(column='token_value_usd_price_change', aggfunc='sum'),
+												sum_usd_value=pd.NamedAgg(column='usd_value', aggfunc='sum')
 											)
 											ad = ad.reset_index()
 								#		 ad['start_date'] = pd.to_datetime(prot[1])
@@ -477,10 +477,15 @@ def generate_flows_column(df):
 				# Get Differences
 				df['price_usd_change'] = df['price_usd'] - df['prior_price_usd']
 				df['token_value_change'] = df['token_value'] - df['prior_token_value']
-				# Get Flows
-				df['token_value_flow'] = df['token_value'] - df['prior_token_value']
-				df['token_value_usd_flow'] = df['token_value_flow'] * df['price_usd']
-				df['price_usd_flow'] = df['price_usd_change'] * df['prior_token_value']
+
+				# Calculate Token Value Flow USD and Token Value Price Change USD
+				df['token_value_usd_flow'] = df['token_value_change'] * df['price_usd']
+				df['token_value_usd_price_change'] = df['prior_token_value'] * df['price_usd_change']
+
+				# Apply the override: If token value goes to 0, make it all token value flow and 0 price change flow
+				mask = df['token_value'] == 0
+				df.loc[mask, 'token_value_usd_flow'] = -df.loc[mask, 'prior_token_value'] * df.loc[mask, 'prior_price_usd']
+				df.loc[mask, 'token_value_usd_price_change'] = 0
 				
 				# Drop the unnecessary columns
 				df.drop(['prior_price_usd', 'prior_token_value'], axis=1, inplace=True)
