@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 print('start ch uploads')
@@ -25,7 +25,7 @@ sys.path.pop()
 import time
 
 
-# In[2]:
+# In[ ]:
 
 
 client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
@@ -34,7 +34,7 @@ client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 table_name = 'daily_aggegate_l2_chain_usage_goldsky'
 
 
-# In[3]:
+# In[ ]:
 
 
 chain_mappings_list = [
@@ -47,6 +47,7 @@ chain_mappings_list = [
     {'schema_name': 'fraxtal', 'display_name': 'Fraxtal', 'has_blob_fields': True},
     {'schema_name': 'bob', 'display_name': 'BOB (Build on Bitcoin)', 'has_blob_fields': False},
     {'schema_name': 'cyber', 'display_name': 'Cyber', 'has_blob_fields': True},
+    {'schema_name': 'mint', 'display_name': 'Mint', 'has_blob_fields': True},
     # Add more mappings as needed
 ]
 chain_mappings_dict = {item['schema_name']: item['display_name'] for item in chain_mappings_list}
@@ -57,7 +58,7 @@ trailing_days = 180
 max_execution_secs = 3000
 
 
-# In[4]:
+# In[ ]:
 
 
 sql_directory = "inputs/sql/"
@@ -68,13 +69,13 @@ query_names = [
 ]
 
 
-# In[5]:
+# In[ ]:
 
 
 unified_dfs = []
 
 
-# In[6]:
+# In[ ]:
 
 
 for qn in query_names:
@@ -122,13 +123,13 @@ for qn in query_names:
         # # # Print the results
 
 
-# In[7]:
+# In[ ]:
 
 
 write_df.dtypes
 
 
-# In[8]:
+# In[ ]:
 
 
 #BQ Upload
