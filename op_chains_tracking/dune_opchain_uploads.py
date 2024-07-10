@@ -58,7 +58,7 @@ dune_df = dune_df.replace(['inf', 'NaN'], 0)
 # In[ ]:
 
 
-# dune_df.dtypes
+dune_df[['dt','name']].head(10)
 
 
 # In[ ]:
