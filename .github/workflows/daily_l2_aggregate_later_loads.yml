@@ -51,11 +51,13 @@ jobs:
           
           
                
-  # Run py files
+  # Run py files - navigate in to folders so we get the right granularity for imports
       - name: Run Downloads
         run: |
-          pipenv run python op_chains_tracking/dune_opchain_uploads.py
-          pipenv run python other_chains_tracking/get_filtered_deployers.py
+          cd op_chains_tracking
+          pipenv run python dune_opchain_uploads.py
+          cd ../other_chains_tracking
+          pipenv run python get_filtered_deployers.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           FLIPSIDE_API_KEY: ${{ secrets.FLIPSIDE_API_KEY }}
