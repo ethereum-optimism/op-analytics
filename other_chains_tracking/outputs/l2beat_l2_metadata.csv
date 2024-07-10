@@ -207,7 +207,7 @@ L3,Syndr,,,Optimium,syndr,,syndr,,Arbitrum,arbitrum,True,False,False,'https://sy
 L3,Teva Chain,,,ZK Rollup,teva,,teva,,ZK Stack,zksync2,False,False,True,'https://tevaera.com/tevachain','','',zkSync: ZK Stack,teva
 L3,WINR,,,Optimium,winr,,winr,,Arbitrum,arbitrum,True,False,False,'https://winr.games/',,,Arbitrum: Orbit,winr
 L3,Xai,,,Funds can be stolen if,xai,,xai,https://xai-chain.net/rpc,Arbitrum Orbit,arbitrum,False,False,True,'https://xai.games/','https://xai-foundation.gitbook.io/xai-network/','https://github.com/OffchainLabs/nitro',Arbitrum: Orbit,xai
-L3,zkLink Nova,810180,https://explorer.zklink.io,Validium,zklinknova,,zklinknova,https://rpc.zklink.io,zkLink Nexus,linea,False,False,True,"'https://zklink.io', 'https://zk.link'",'https://docs.zklink.io','https://github.com/zkLinkProtocol',zkLink Nexus,zklinknova
+L3,zkLink Nova,810180,https://explorer.zklink.io,Validium,zklinknova,,zklinknova,,zkLink Nexus,linea,False,False,True,"'https://zklink.io', 'https://zk.link'",'https://docs.zklink.io','https://github.com/zkLinkProtocol',zkLink Nexus,zklinknova
 L1,avalanche,43114,https://snowtrace.io,,avalanche,,avalanche,,,,False,False,True,,,,,avalanche
 L1,bsc,56,https://bscscan.com,,bsc,,bsc,,,,False,False,True,,,,,bsc
 L1,celo,42220,https://celoscan.io,,celo,,celo,,,,False,False,True,,,,,celo

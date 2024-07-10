@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 print('get qualified txs')
@@ -22,7 +22,7 @@ import os
 import clickhouse_connect as cc
 
 
-# In[ ]:
+# In[2]:
 
 
 ch_client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
@@ -30,7 +30,7 @@ ch_client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 query_name = 'daily_evms_qualified_txs_counts'
 
 
-# In[ ]:
+# In[3]:
 
 
 col_list = [
@@ -39,7 +39,7 @@ col_list = [
         ]
 
 
-# In[ ]:
+# In[16]:
 
 
 trailing_days = 90
@@ -52,10 +52,11 @@ clickhouse_configs = [
         {'blockchain': 'bob', 'chain_id': 60808,'name': 'BOB (Build on Bitcoin)', 'layer': 'L2'},
         {'blockchain': 'fraxtal', 'chain_id': 252,'name': 'Fraxtal', 'layer': 'L2'},
         {'blockchain': 'cyber', 'chain_id': 7560,'name': 'Cyber', 'layer': 'L2'},
+        {'blockchain': 'mint', 'chain_id': 185,'name': 'Mint', 'layer': 'L2'},
 ]
 
 
-# In[ ]:
+# In[5]:
 
 
 print('     flipside runs')
@@ -91,7 +92,7 @@ else:
     flip = pd.DataFrame(columns=col_list)
 
 
-# In[ ]:
+# In[6]:
 
 
 # Run Dune
@@ -109,7 +110,7 @@ dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
 dune_df = dune_df[col_list]
 
 
-# In[ ]:
+# In[17]:
 
 
 # Run Clickhouse
@@ -123,7 +124,9 @@ for chain in clickhouse_configs:
         query = og_query
         #Pass in Params to the query
         query = query.replace("@blockchain@", chain['blockchain'])
-        query = query.replace("@chain_id@", str(chain['chain_id']))
+        if chain['blockchain'] == 'bob':
+                query = query.replace("chain_id, --db chain_id", str(chain['chain_id']) + " as chain_id,")
+                # query = query.replace("@chain_id@", str(chain['chain_id']))
         query = query.replace("@name@", chain['name'])
         query = query.replace("@layer@", chain['layer'])
         query = query.replace("@trailing_days@", str(trailing_days))
@@ -138,7 +141,7 @@ ch['dt'] = pd.to_datetime(ch['dt']).dt.tz_localize(None)
 ch = ch[col_list]
 
 
-# In[ ]:
+# In[10]:
 
 
 # Step 1: Filter dune_df for chains not in flip
@@ -152,7 +155,7 @@ final_df = pd.concat([combined_flip_dune, filtered_ch])
 # final_df
 
 
-# In[ ]:
+# In[11]:
 
 
 opstack_metadata = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv')
@@ -166,7 +169,7 @@ print("Columns in opstack_metadata[meta_cols]:", opstack_metadata[meta_cols].col
 print("Columns in final_df:", final_df.columns)
 
 
-# In[ ]:
+# In[12]:
 
 
 final_enriched_df = final_df.merge(opstack_metadata[meta_cols], on='chain_id', how = 'left')
@@ -177,7 +180,7 @@ final_enriched_df['display_name'] = final_enriched_df['display_name'].fillna(fin
 final_enriched_df = final_enriched_df.drop(columns=['name'])
 
 
-# In[ ]:
+# In[13]:
 
 
 final_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
@@ -185,7 +188,7 @@ final_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False],
 final_enriched_df.to_csv('outputs/'+query_name+'.csv', index=False)
 
 
-# In[ ]:
+# In[14]:
 
 
 final_enriched_df['chain_id'] = final_enriched_df['chain_id'].astype(int)
@@ -195,7 +198,7 @@ final_enriched_df['num_qualified_txs'] = final_enriched_df['num_qualified_txs'].
 # final_enriched_df.dtypes
 
 
-# In[ ]:
+# In[15]:
 
 
 #BQ Upload

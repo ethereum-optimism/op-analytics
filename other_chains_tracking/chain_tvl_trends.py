@@ -222,6 +222,12 @@ p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, 
 # In[ ]:
 
 
+p.sample(5)
+
+
+# In[ ]:
+
+
 # p
 # print('gen flows')
 # p = dfl.generate_flows_column(p)
@@ -231,15 +237,38 @@ p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, 
 # In[ ]:
 
 
+#sort by date
+p = p.sort_values(by='date',ascending=True)
+
+
+# In[ ]:
+
+
 # Aggregate data
+
+app_level_dfl_list = p.groupby(['chain', 'date','parent_protocol','protocol']).agg(
+    sum_token_value_usd_flow=pd.NamedAgg(column='sum_token_value_usd_flow', aggfunc='sum'),
+    sum_token_value_usd_price_change=pd.NamedAgg(column='sum_token_value_usd_price_change', aggfunc='sum'),
+    avg_usd_tvl=pd.NamedAgg(column='sum_usd_value', aggfunc='mean')
+
+).reset_index()
+
+app_level_dfl_list = app_level_dfl_list.rename(columns={'date':'dt'})
+
+bqu.write_df_to_bq_table(app_level_dfl_list, 'daily_defillama_op_chain_app_tvl')
+
+
+# In[ ]:
+
+
 # TODO: Try to use config API to get Apps by Chain, since this only shows TVLs
 
 app_dfl_list = p.groupby(['chain', 'date']).agg(
     distinct_protocol=pd.NamedAgg(column='protocol', aggfunc=pd.Series.nunique),
     distinct_parent_protocol=pd.NamedAgg(column='parent_protocol', aggfunc=pd.Series.nunique),
     sum_token_value_usd_flow=pd.NamedAgg(column='sum_token_value_usd_flow', aggfunc='sum'),
-    sum_price_usd_flow=pd.NamedAgg(column='sum_price_usd_flow', aggfunc='sum'),
-    sum_usd_value_check=pd.NamedAgg(column='sum_usd_value_check', aggfunc='sum')
+    sum_token_value_usd_price_change=pd.NamedAgg(column='sum_token_value_usd_price_change', aggfunc='sum'),
+    avg_usd_tvl=pd.NamedAgg(column='sum_usd_value', aggfunc='mean')
 )
 
 p = None #Clear Memory
@@ -396,8 +425,7 @@ aggregations = {
     'distinct_protocol': ['min', 'last', 'mean'],
     'distinct_parent_protocol': ['min', 'last', 'mean'],
     'sum_token_value_usd_flow': 'sum',
-    'sum_price_usd_flow': 'sum',
-    'sum_usd_value_check': 'sum'
+    'sum_token_value_usd_price_change': 'sum'
 }
 # Function to perform aggregation based on frequency
 def aggregate_data(df, freq, date_col='date', groupby_cols=None, aggs=None):
