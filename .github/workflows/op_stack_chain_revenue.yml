@@ -2,7 +2,7 @@ name: OP Stack Chain Revenue Pulls
 
 on:
   schedule:
-      - cron: '24,54 * * * *'
+      - cron: '27,57 * * * *'
   workflow_dispatch:
 
 jobs:
