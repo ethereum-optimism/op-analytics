@@ -1,27 +1,26 @@
 name: OP Stack Chain Revenue Pulls
 
-# Controls when the workflow will run
 on:
-  # Run on a schedule - Twice per hour - few mins ahead for dependencies to install
   schedule:
-      - cron: '25,55 * * * *'
-  # Allows you to run this workflow manually from the Actions tab
+      - cron: '24,54 * * * *'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        python-version: [3.8, 3.9, 3.10]
 
     steps:
       - uses: actions/checkout@v3
       
+      - name: Display System Info
+        run: |
+          free -h
+          df -h
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.10.11'
 
       - name: Cache pipenv dependencies
         uses: actions/cache@v3
