@@ -43,6 +43,7 @@ clickhouse_configs = [
         {'blockchain': 'bob', 'name': 'BOB (Build on Bitcoin)', 'layer': 'L2'},
         {'blockchain': 'fraxtal', 'name': 'Fraxtal', 'layer': 'L2'},
         {'blockchain': 'cyber', 'name': 'Cyber', 'layer': 'L2'},
+        {'blockchain': 'mint', 'name': 'Mint', 'layer': 'L2'},
 ]
 
 
