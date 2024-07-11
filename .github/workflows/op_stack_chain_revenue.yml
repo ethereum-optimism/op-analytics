@@ -31,20 +31,6 @@ jobs:
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pipenv-
-      
-      - name: Check cache status
-        run: |
-          echo "Cache hit: ${{ steps.cache.outputs.cache-hit }}"
-
-      - name: Check for Pipfile.lock
-        run: |
-          if [ -f "Pipfile.lock" ]; then
-            echo "Pipfile.lock found"
-            cat Pipfile.lock
-          else
-            echo "Pipfile.lock not found"
-            ls -la
-          fi
 
       - name: Install pipenv
         run: |
@@ -53,10 +39,6 @@ jobs:
       - name: Install Dependencies
         run: |
           pipenv install --dev
-      
-      - name: Check virtualenv
-        run: |
-          pipenv --venv
 
       - name: Generate py files
         working-directory: op_chains_tracking
