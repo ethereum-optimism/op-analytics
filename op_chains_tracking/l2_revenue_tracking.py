@@ -19,7 +19,7 @@ import time
 import json
 sys.path.append("../helper_functions")
 # import web3py_utils as w3py
-import duneapi_utils as du
+# import duneapi_utils as du
 import google_bq_utils as bqu
 from web3 import Web3
 from datetime import datetime, timezone
@@ -172,21 +172,21 @@ dune_df = pd.read_csv(file_path)
 # In[ ]:
 
 
-#Insert Updates to Dune Table
-create_namespace = 'oplabspbc'
-create_table_name = 'op_stack_chains_cumulative_revenue_snapshots'
-create_table_description = 'Snapshots of All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs - metadata in op_stack_chains_chain_rpc_metdata'
-# try:
-# du.create_dune_table(data_df, namespace = create_namespace
-#                         , table_name = create_table_name
-#                         , table_description = create_table_description)
+# #Insert Updates to Dune Table
+# create_namespace = 'oplabspbc'
+# create_table_name = 'op_stack_chains_cumulative_revenue_snapshots'
+# create_table_description = 'Snapshots of All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs - metadata in op_stack_chains_chain_rpc_metdata'
+# # try:
+# # du.create_dune_table(data_df, namespace = create_namespace
+# #                         , table_name = create_table_name
+# #                         , table_description = create_table_description)
 
-# except:
-        # print('error creating')
-du.insert_dune_api_from_pandas(data_df, namespace = create_namespace,table_name = create_table_name)
+# # except:
+#         # print('error creating')
+# du.insert_dune_api_from_pandas(data_df, namespace = create_namespace,table_name = create_table_name)
 
-du.write_dune_api_from_pandas(chains_rpcs, 'op_stack_chains_chain_rpc_metdata',\
-                             'Chain metadata - used to join with op_stack_chains_cumulative_revenue_snapshots')
+# du.write_dune_api_from_pandas(chains_rpcs, 'op_stack_chains_chain_rpc_metdata',\
+#                              'Chain metadata - used to join with op_stack_chains_cumulative_revenue_snapshots')
 
 
 # In[ ]:
