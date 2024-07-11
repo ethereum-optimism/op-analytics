@@ -8,43 +8,39 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-  # The type of runner that the job will run on
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10]
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       
-      - name: Display System Info
-        run: |
-          free -h
-          df -h
-
-      # Set up Python and Node.js
-      - name: Set up Python and Node.js
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10.11'
-        # Set max space to see if this helps with timeouts
-        env:
-          node-version: '16'
+          python-version: ${{ matrix.python-version }}
 
+      - name: Cache pipenv dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
 
       - name: Install pipenv
         run: |
           python -m pip install pipenv
 
-      # Add any missing dependencied to pipfile
       - name: Install Dependencies
         run: |
           pipenv install --dev
-    # Runs a single command using the runners shell
-      # Generate .py files for each notebook
+
       - name: Generate py files
         working-directory: op_chains_tracking
         run: |
@@ -54,48 +50,15 @@ jobs:
         working-directory: op_chains_tracking
         run: |
           pipenv run python l2_revenue_tracking.py
-        # max_attempts=3
-        # attempt=1
-        # success=false
-        
-        # while [ $attempt -le $max_attempts ]; do
-        #   echo "Attempt $attempt of $max_attempts:"
-        #   if pipenv run python l2_revenue_tracking.py; then
-        #     success=true
-        #     break
-        #   else
-        #     echo "Attempt $attempt failed. Retrying..."
-        #     attempt=$((attempt+1))
-        #     sleep 5 # Wait for 5 seconds before retrying
-        #   fi
-        # done
-
-        # if [ "$success" = false ]; then
-        #   echo "All attempts failed."
-        #   exit 1
-        # fi
         env:
           IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
           BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
           BQ_PROJECT_ID: ${{ secrets.BQ_PROJECT_ID }}
 
-
-    # commit_results:
-      # if: ${{ always() }} #Always runs even if prior jobs fail - so that one bad job doesn't f everything up.
-      # needs: build #[build, app_fees, op_summer, total_tvl_flow]
-      # runs-on: ubuntu-latest
-      # steps:
-        # Runs a set of commands using the runners shell
-        # - name: Run a multi-line script
-        #  run: |
-        #    echo Add other actions to build,
-        #    echo test, and deploy your project.
-
-        # Commit and push output images
-        # https://github.com/orgs/community/discussions/26672
       - name: Pull changes
         run: |
           git pull origin main
+
       - name: Commit files
         id: commit
         run: |
@@ -110,6 +73,7 @@ jobs:
             echo "push=true" >> $GITHUB_OUTPUT
           fi
         shell: bash
+
       - name: Push changes
         if: steps.commit.outputs.push == 'true'
         uses: ad-m/github-push-action@master
