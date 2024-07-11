@@ -1,0 +1,67 @@
+name: Your Action Name
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10']
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache pipenv dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.local/share/virtualenvs
+        key: ${{ runner.os }}-pipenv-${{ matrix.python-version }}-${{ hashFiles('**/Pipfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pipenv-${{ matrix.python-version }}-
+    
+    - name: Check cache status
+        run: echo "Cache hit: ${{ steps.cache.outputs.cache-hit }}"
+
+    - name: Check for Pipfile.lock
+      run: |
+        if [ -f "Pipfile.lock" ]; then
+          echo "Pipfile.lock found"
+          cat Pipfile.lock
+        else
+          echo "Pipfile.lock not found"
+          ls -la
+        fi
+
+    - name: Install pipenv
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv
+
+    - name: Install dependencies
+      run: |
+        pipenv --python ${{ matrix.python-version }} install --dev
+    
+    - name: Check virtualenv
+        run: |
+          pipenv --venv
+
+    - name: Run your script or tests
+      run: |
+        pipenv run python your_script.py
+      # Or if you're running tests:
+      # run: |
+      #   pipenv run pytest
+
+    # Add any additional steps you need, like linting, building, deploying, etc.
