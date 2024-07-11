@@ -30,19 +30,6 @@ jobs:
         key: ${{ runner.os }}-pipenv-${{ matrix.python-version }}-${{ hashFiles('**/Pipfile.lock') }}
         restore-keys: |
           ${{ runner.os }}-pipenv-${{ matrix.python-version }}-
-    
-    - name: Check cache status
-        run: echo "Cache hit: ${{ steps.cache.outputs.cache-hit }}"
-
-    - name: Check for Pipfile.lock
-      run: |
-        if [ -f "Pipfile.lock" ]; then
-          echo "Pipfile.lock found"
-          cat Pipfile.lock
-        else
-          echo "Pipfile.lock not found"
-          ls -la
-        fi
 
     - name: Install pipenv
       run: |
@@ -52,10 +39,6 @@ jobs:
     - name: Install dependencies
       run: |
         pipenv --python ${{ matrix.python-version }} install --dev
-    
-    - name: Check virtualenv
-        run: |
-          pipenv --venv
 
     - name: Run your script or tests
       run: |
