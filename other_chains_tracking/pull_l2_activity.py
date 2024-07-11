@@ -71,7 +71,7 @@ combined_l2b_df['chainId'] = combined_l2b_df['chainId'].astype('Int64')
 # In[ ]:
 
 
-combined_gtp_df = gtp_api.merge(gtp_meta_api[['origin_key','chain_name']], on='origin_key',how='left')
+combined_gtp_df = gtp_api.merge(gtp_meta_api[['origin_key','chain_name','evm_chain_id']], on='origin_key',how='left')
 combined_gtp_df["dt"] = pd.to_datetime(combined_gtp_df["dt"], errors='coerce')
 
 combined_gtp_df = combined_gtp_df.drop(columns=('index'))
