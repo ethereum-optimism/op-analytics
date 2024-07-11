@@ -17,6 +17,7 @@ import pandas as pd
 import sys
 import time
 import json
+from concurrent.futures import ThreadPoolExecutor, as_completed
 sys.path.append("../helper_functions")
 # import web3py_utils as w3py
 # import duneapi_utils as du
@@ -77,15 +78,15 @@ df_columns = [
 
 data_arr = []
 
-for index, chain in chains_rpcs.iterrows():
+def process_chain(chain):
     chain_name = chain['chain_name']
     chain_id = chain['mainnet_chain_id']
 
-    # if chain_id:  # Check if chain_id is not empty
-    #     chain_id = int(float(chain_id))  # Convert to float first, then to int
-    # else:
-    #     chain_id = None  # or keep it as an empty string or any default value you prefer
-        
+    if chain_id:  # Check if chain_id is not empty
+        chain_id = int(float(chain_id))  # Convert to float first, then to int
+    else:
+        chain_id = None  # or keep it as an empty string or any default value you prefer
+
     print(chain_name + ' - ' + str(chain_id))
     rpc = chain['rpc_url']
     # gas_token = chain['gas_token']
@@ -113,22 +114,89 @@ for index, chain in chains_rpcs.iterrows():
             # Decode the result (assuming the function returns a uint256)
             proxy_processed_wei = Web3.to_int(hexstr=response.hex())
             
-            alltime_revenue_wei = proxy_processed_wei+wei_balance
-            alltime_revenue_native = alltime_revenue_wei/1e18
+            alltime_revenue_wei = proxy_processed_wei + wei_balance
+            alltime_revenue_native = alltime_revenue_wei / 1e18
 
             print(chain_name + ' | ' + vault_name + ': ' \
                 + str(proxy_processed_wei) + ' | bal: ' + str(wei_balance)\
-                + ' | total eth: ' + str( (alltime_revenue_native) )
+                + ' | total eth: ' + str(alltime_revenue_native)
                 )
             
             tmp = pd.DataFrame(
                     [[block_time, block_number, chain_name, vault_name, vault_address, alltime_revenue_native, chain_id]]#, gas_token, da_layer, is_superchain_registry]]
-                    ,columns =df_columns
+                    , columns=df_columns
                     )
             data_arr.append(tmp)
             time.sleep(1)
-    except:
-        continue
+    except Exception as e:
+        print(f"Error processing chain {chain_name}: {e}")
+
+# Use ThreadPoolExecutor to parallelize the API calls
+with ThreadPoolExecutor(max_workers=10) as executor:
+    futures = [executor.submit(process_chain, chain) for index, chain in chains_rpcs.iterrows()]
+    for future in as_completed(futures):
+        future.result()  # This will raise any exceptions caught during the execution
+
+
+# In[ ]:
+
+
+# for index, chain in chains_rpcs.iterrows():
+#     chain_name = chain['chain_name']
+#     chain_id = chain['mainnet_chain_id']
+
+#     # if chain_id:  # Check if chain_id is not empty
+#     #     chain_id = int(float(chain_id))  # Convert to float first, then to int
+#     # else:
+#     #     chain_id = None  # or keep it as an empty string or any default value you prefer
+        
+#     print(chain_name + ' - ' + str(chain_id))
+#     rpc = chain['rpc_url']
+#     # gas_token = chain['gas_token']
+#     # da_layer = chain['da_layer']
+#     # is_superchain_registry = chain['superchain_registry']
+
+#     try:
+#         w3_conn = Web3(Web3.HTTPProvider(rpc))
+#         # Get the timestamp of the latest block
+#         block_timestamp = w3_conn.eth.get_block('latest').timestamp
+#         block_number = w3_conn.eth.get_block('latest').number
+#         # Convert the UNIX timestamp to a human-readable format
+#         block_datetime = datetime.fromtimestamp(block_timestamp, tz=timezone.utc)
+#         block_time = block_datetime.strftime('%Y-%m-%d %H:%M:%S')
+
+#         for vault in fee_vaults:
+#             vault_name = vault[0]
+#             vault_address = vault[1]
+#             # Call the function directly using eth_call
+#             response = w3_conn.eth.call({
+#                 'to': vault_address,
+#                 'data': method_id
+#             })
+#             wei_balance = w3_conn.eth.get_balance(vault_address)
+#             # Decode the result (assuming the function returns a uint256)
+#             proxy_processed_wei = Web3.to_int(hexstr=response.hex())
+            
+#             alltime_revenue_wei = proxy_processed_wei+wei_balance
+#             alltime_revenue_native = alltime_revenue_wei/1e18
+
+#             print(chain_name + ' | ' + vault_name + ': ' \
+#                 + str(proxy_processed_wei) + ' | bal: ' + str(wei_balance)\
+#                 + ' | total eth: ' + str( (alltime_revenue_native) )
+#                 )
+            
+#             tmp = pd.DataFrame(
+#                     [[block_time, block_number, chain_name, vault_name, vault_address, alltime_revenue_native, chain_id]]#, gas_token, da_layer, is_superchain_registry]]
+#                     ,columns =df_columns
+#                     )
+#             data_arr.append(tmp)
+#             time.sleep(1)
+#     except:
+#         continue
+
+
+# In[ ]:
+
 
 data_df = pd.concat(data_arr)
 data_df['block_time'] = pd.to_datetime(data_df['block_time'])
