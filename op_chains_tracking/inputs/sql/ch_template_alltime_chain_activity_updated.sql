@@ -17,7 +17,7 @@ SELECT *
 FROM (
     SELECT
         DATE_TRUNC('day', toDateTime(t.block_timestamp)) AS dt,
-        chain, network, cast(@block_time_sec@ as Float64) AS block_time_sec,
+        chain, network, chain_id, cast(@block_time_sec@ as Float64) AS block_time_sec,
 
         COUNT(*) AS num_raw_txs,
         COUNT(DISTINCT t.block_number) AS num_blocks,
@@ -92,7 +92,7 @@ FROM (
         t.block_timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
         AND b.timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
     
-    GROUP BY 1,2,3,4
+    GROUP BY 1,2,3,4,5
     ) a
 
 SETTINGS max_execution_time = @max_execution_secs@;
