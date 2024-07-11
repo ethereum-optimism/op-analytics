@@ -117,10 +117,11 @@ def process_chain(chain):
             alltime_revenue_wei = proxy_processed_wei + wei_balance
             alltime_revenue_native = alltime_revenue_wei / 1e18
 
-            print(chain_name + ' | ' + vault_name + ': ' \
-                + str(proxy_processed_wei) + ' | bal: ' + str(wei_balance)\
-                + ' | total eth: ' + str(alltime_revenue_native)
-                )
+            # Debug - print response
+            # print(chain_name + ' | ' + vault_name + ': ' \
+            #     + str(proxy_processed_wei) + ' | bal: ' + str(wei_balance)\
+            #     + ' | total eth: ' + str(alltime_revenue_native)
+            #     )
             
             tmp = pd.DataFrame(
                     [[block_time, block_number, chain_name, vault_name, vault_address, alltime_revenue_native, chain_id]]#, gas_token, da_layer, is_superchain_registry]]
@@ -132,7 +133,7 @@ def process_chain(chain):
         print(f"Error processing chain {chain_name}: {e}")
 
 # Use ThreadPoolExecutor to parallelize the API calls
-with ThreadPoolExecutor(max_workers=10) as executor:
+with ThreadPoolExecutor(max_workers=99) as executor: # Max Workers can be big, since we only do 3 calls per RPC
     futures = [executor.submit(process_chain, chain) for index, chain in chains_rpcs.iterrows()]
     for future in as_completed(futures):
         future.result()  # This will raise any exceptions caught during the execution
@@ -207,7 +208,7 @@ data_df['block_time'] = pd.to_datetime(data_df['block_time'])
 
 file_path = 'outputs/all_time_revenue_data.csv'
 
-data_df.sample(3)
+data_df.sample(5)
 
 
 # In[ ]:
