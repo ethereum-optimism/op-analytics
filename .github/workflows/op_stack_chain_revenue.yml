@@ -4,7 +4,7 @@ name: OP Stack Chain Revenue Pulls
 on:
   # Run on a schedule - Twice per hour - few mins ahead for dependencies to install
   schedule:
-      - cron: '24,54 * * * *'
+      - cron: '25,55 * * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
