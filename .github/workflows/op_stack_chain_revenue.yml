@@ -33,7 +33,8 @@ jobs:
             ${{ runner.os }}-pipenv-
       
       - name: Check cache status
-        run: echo "Cache hit: ${{ steps.cache.outputs.cache-hit }}"
+        run: |
+          echo "Cache hit: ${{ steps.cache.outputs.cache-hit }}"
 
       - name: Check for Pipfile.lock
         run: |
