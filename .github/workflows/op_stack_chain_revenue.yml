@@ -4,7 +4,7 @@ name: OP Stack Chain Revenue Pulls
 on:
   # Run on a schedule - Twice per hour - few mins ahead for dependencies to install
   schedule:
-      - cron: '25,55 * * * *'
+      - cron: '24,54 * * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -75,7 +75,6 @@ jobs:
         #   exit 1
         # fi
         env:
-          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
           BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
           BQ_PROJECT_ID: ${{ secrets.BQ_PROJECT_ID }}
