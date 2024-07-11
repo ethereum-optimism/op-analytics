@@ -239,6 +239,7 @@ jobs:
         working-directory: op_chains_tracking
         run: |
                 pipenv run jupyter nbconvert --to python ch_gs_uploads.ipynb
+                pipenv run jupyter nbconvert --to python dune_op_stack_chains_l1_data.ipynb
                 
                   
   # Run py
@@ -246,6 +247,8 @@ jobs:
         working-directory: op_chains_tracking
         run: |
                 pipenv run python ch_gs_uploads.py
+                pipenv run python dune_op_stack_chains_l1_data.py
+
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           OP_CLICKHOUSE_HOST: ${{ secrets.OP_CLICKHOUSE_HOST }}
