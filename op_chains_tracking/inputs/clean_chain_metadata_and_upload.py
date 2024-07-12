@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
@@ -17,7 +17,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[ ]:
+# In[2]:
 
 
 # Read the CSV file
@@ -26,7 +26,7 @@ df = pd.read_csv('chain_metadata_raw.csv')
 table_name = 'op_stack_chain_metadata'
 
 
-# In[ ]:
+# In[3]:
 
 
 # Trim columns
@@ -48,13 +48,13 @@ df[object_columns] = df[object_columns].fillna('')
 df.to_csv('../outputs/chain_metadata.csv', index=False)
 
 
-# In[ ]:
+# In[4]:
 
 
 # df
 
 
-# In[ ]:
+# In[5]:
 
 
 # Post to Dune API
