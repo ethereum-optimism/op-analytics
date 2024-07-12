@@ -1,913 +1,897 @@
 blockchain,layer,chain_id,creator_address,dt,is_op_chain,op_based_version,alignment,chain_name,display_name
-zora,L2,7777777,33,2024-07-11,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1807,2024-07-11,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,499,2024-07-11,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,2927,2024-07-11,False,,Aggregate,,OP Chains
+zora,L2,7777777,34,2024-07-11,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1818,2024-07-11,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,500,2024-07-11,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,2930,2024-07-11,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-07-11,False,,Aggregate,,L3s
-l2,Aggregate,-1,3861,2024-07-11,False,,Aggregate,,L2s
-l1,Aggregate,-1,6498,2024-07-11,False,,Aggregate,,L1s
-gnosis,L1,100,127,2024-07-11,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,3866,2024-07-11,False,,Aggregate,,L2s
+l1,Aggregate,-1,6519,2024-07-11,False,,Aggregate,,L1s
+gnosis,L1,100,128,2024-07-11,False,,Other EVMs,,Gnosis
 fantom,L1,250,134,2024-07-11,False,,Other EVMs,,Fantom
-ethereum,L1,1,2363,2024-07-11,False,,Other EVMs,,Ethereum
-celo,L1,42220,84,2024-07-11,False,,Other EVMs,,Celo
-bnb,L1,56,2469,2024-07-11,False,,Other EVMs,,BNB
-base,L2,8453,2623,2024-07-11,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,348,2024-07-11,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1288,2024-07-11,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,9701,2024-07-11,False,,Aggregate,,All
-zora,L2,7777777,35,2024-07-10,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1862,2024-07-10,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,519,2024-07-10,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3027,2024-07-10,False,,Aggregate,,OP Chains
+ethereum,L1,1,2373,2024-07-11,False,,Other EVMs,,Ethereum
+celo,L1,42220,85,2024-07-11,False,,Other EVMs,,Celo
+bnb,L1,56,2472,2024-07-11,False,,Other EVMs,,BNB
+base,L2,8453,2625,2024-07-11,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,349,2024-07-11,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1291,2024-07-11,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,9726,2024-07-11,False,,Aggregate,,All
+zora,L2,7777777,36,2024-07-10,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1871,2024-07-10,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,520,2024-07-10,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3030,2024-07-10,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-07-10,False,,Aggregate,,L3s
-l2,Aggregate,-1,3985,2024-07-10,False,,Aggregate,,L2s
-l1,Aggregate,-1,6665,2024-07-10,False,,Aggregate,,L1s
-gnosis,L1,100,132,2024-07-10,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,3990,2024-07-10,False,,Aggregate,,L2s
+l1,Aggregate,-1,6684,2024-07-10,False,,Aggregate,,L1s
+gnosis,L1,100,133,2024-07-10,False,,Other EVMs,,Gnosis
 fantom,L1,250,140,2024-07-10,False,,Other EVMs,,Fantom
-ethereum,L1,1,2421,2024-07-10,False,,Other EVMs,,Ethereum
-celo,L1,42220,85,2024-07-10,False,,Other EVMs,,Celo
-bnb,L1,56,2531,2024-07-10,False,,Other EVMs,,BNB
-base,L2,8453,2709,2024-07-10,True,modern,OP Chain,base,Base
+ethereum,L1,1,2431,2024-07-10,False,,Other EVMs,,Ethereum
+celo,L1,42220,86,2024-07-10,False,,Other EVMs,,Celo
+bnb,L1,56,2534,2024-07-10,False,,Other EVMs,,BNB
+base,L2,8453,2711,2024-07-10,True,modern,OP Chain,base,Base
 avalanche_c,L1,43114,358,2024-07-10,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1327,2024-07-10,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,9964,2024-07-10,False,,Aggregate,,All
-zora,L2,7777777,36,2024-07-09,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1902,2024-07-09,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,513,2024-07-09,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3063,2024-07-09,False,,Aggregate,,OP Chains
+arbitrum,L2,42161,1330,2024-07-10,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,9987,2024-07-10,False,,Aggregate,,All
+zora,L2,7777777,37,2024-07-09,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1907,2024-07-09,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,514,2024-07-09,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3065,2024-07-09,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-07-09,False,,Aggregate,,L3s
-l2,Aggregate,-1,4023,2024-07-09,False,,Aggregate,,L2s
-l1,Aggregate,-1,6740,2024-07-09,False,,Aggregate,,L1s
-gnosis,L1,100,129,2024-07-09,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4026,2024-07-09,False,,Aggregate,,L2s
+l1,Aggregate,-1,6748,2024-07-09,False,,Aggregate,,L1s
+gnosis,L1,100,130,2024-07-09,False,,Other EVMs,,Gnosis
 fantom,L1,250,138,2024-07-09,False,,Other EVMs,,Fantom
-ethereum,L1,1,2439,2024-07-09,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2441,2024-07-09,False,,Other EVMs,,Ethereum
 celo,L1,42220,88,2024-07-09,False,,Other EVMs,,Celo
-bnb,L1,56,2554,2024-07-09,False,,Other EVMs,,BNB
+bnb,L1,56,2556,2024-07-09,False,,Other EVMs,,BNB
 base,L2,8453,2745,2024-07-09,True,modern,OP Chain,base,Base
 avalanche_c,L1,43114,359,2024-07-09,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1335,2024-07-09,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,10078,2024-07-09,False,,Aggregate,,All
-zora,L2,7777777,38,2024-07-08,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1905,2024-07-08,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,512,2024-07-08,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3046,2024-07-08,False,,Aggregate,,OP Chains
+arbitrum,L2,42161,1337,2024-07-09,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,10088,2024-07-09,False,,Aggregate,,All
+zora,L2,7777777,39,2024-07-08,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1910,2024-07-08,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,513,2024-07-08,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3048,2024-07-08,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-07-08,False,,Aggregate,,L3s
-l2,Aggregate,-1,4000,2024-07-08,False,,Aggregate,,L2s
-l1,Aggregate,-1,6742,2024-07-08,False,,Aggregate,,L1s
-gnosis,L1,100,131,2024-07-08,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4003,2024-07-08,False,,Aggregate,,L2s
+l1,Aggregate,-1,6749,2024-07-08,False,,Aggregate,,L1s
+gnosis,L1,100,132,2024-07-08,False,,Other EVMs,,Gnosis
 fantom,L1,250,142,2024-07-08,False,,Other EVMs,,Fantom
-ethereum,L1,1,2432,2024-07-08,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2435,2024-07-08,False,,Other EVMs,,Ethereum
 celo,L1,42220,87,2024-07-08,False,,Other EVMs,,Celo
-bnb,L1,56,2550,2024-07-08,False,,Other EVMs,,BNB
+bnb,L1,56,2551,2024-07-08,False,,Other EVMs,,BNB
 base,L2,8453,2728,2024-07-08,True,modern,OP Chain,base,Base
 avalanche_c,L1,43114,360,2024-07-08,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1329,2024-07-08,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,10053,2024-07-08,False,,Aggregate,,All
-zora,L2,7777777,41,2024-07-07,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1906,2024-07-07,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,506,2024-07-07,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3128,2024-07-07,False,,Aggregate,,OP Chains
+arbitrum,L2,42161,1331,2024-07-08,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,10062,2024-07-08,False,,Aggregate,,All
+zora,L2,7777777,42,2024-07-07,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1909,2024-07-07,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,508,2024-07-07,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3130,2024-07-07,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-07-07,False,,Aggregate,,L3s
-l2,Aggregate,-1,4077,2024-07-07,False,,Aggregate,,L2s
-l1,Aggregate,-1,6733,2024-07-07,False,,Aggregate,,L1s
-gnosis,L1,100,131,2024-07-07,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4080,2024-07-07,False,,Aggregate,,L2s
+l1,Aggregate,-1,6738,2024-07-07,False,,Aggregate,,L1s
+gnosis,L1,100,132,2024-07-07,False,,Other EVMs,,Gnosis
 fantom,L1,250,148,2024-07-07,False,,Other EVMs,,Fantom
-ethereum,L1,1,2398,2024-07-07,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2401,2024-07-07,False,,Other EVMs,,Ethereum
 celo,L1,42220,86,2024-07-07,False,,Other EVMs,,Celo
-bnb,L1,56,2562,2024-07-07,False,,Other EVMs,,BNB
-base,L2,8453,2816,2024-07-07,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,359,2024-07-07,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1323,2024-07-07,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,10121,2024-07-07,False,,Aggregate,,All
-zora,L2,7777777,42,2024-07-06,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1921,2024-07-06,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,502,2024-07-06,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3232,2024-07-06,False,,Aggregate,,OP Chains
+bnb,L1,56,2564,2024-07-07,False,,Other EVMs,,BNB
+base,L2,8453,2817,2024-07-07,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,360,2024-07-07,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1326,2024-07-07,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,10128,2024-07-07,False,,Aggregate,,All
+zora,L2,7777777,43,2024-07-06,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1924,2024-07-06,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,504,2024-07-06,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3234,2024-07-06,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-07-06,False,,Aggregate,,L3s
-l2,Aggregate,-1,4182,2024-07-06,False,,Aggregate,,L2s
-l1,Aggregate,-1,6770,2024-07-06,False,,Aggregate,,L1s
-gnosis,L1,100,131,2024-07-06,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4185,2024-07-06,False,,Aggregate,,L2s
+l1,Aggregate,-1,6774,2024-07-06,False,,Aggregate,,L1s
+gnosis,L1,100,132,2024-07-06,False,,Other EVMs,,Gnosis
 fantom,L1,250,151,2024-07-06,False,,Other EVMs,,Fantom
-ethereum,L1,1,2398,2024-07-06,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2400,2024-07-06,False,,Other EVMs,,Ethereum
 celo,L1,42220,85,2024-07-06,False,,Other EVMs,,Celo
-bnb,L1,56,2589,2024-07-06,False,,Other EVMs,,BNB
-base,L2,8453,2922,2024-07-06,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,354,2024-07-06,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1321,2024-07-06,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,10261,2024-07-06,False,,Aggregate,,All
-zora,L2,7777777,45,2024-07-05,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1968,2024-07-05,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,509,2024-07-05,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3310,2024-07-05,False,,Aggregate,,OP Chains
+bnb,L1,56,2591,2024-07-06,False,,Other EVMs,,BNB
+base,L2,8453,2923,2024-07-06,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,355,2024-07-06,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1324,2024-07-06,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,10267,2024-07-06,False,,Aggregate,,All
+zora,L2,7777777,46,2024-07-05,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1971,2024-07-05,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,511,2024-07-05,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3312,2024-07-05,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-07-05,False,,Aggregate,,L3s
-l2,Aggregate,-1,4273,2024-07-05,False,,Aggregate,,L2s
-l1,Aggregate,-1,6847,2024-07-05,False,,Aggregate,,L1s
-gnosis,L1,100,131,2024-07-05,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4276,2024-07-05,False,,Aggregate,,L2s
+l1,Aggregate,-1,6851,2024-07-05,False,,Aggregate,,L1s
+gnosis,L1,100,132,2024-07-05,False,,Other EVMs,,Gnosis
 fantom,L1,250,153,2024-07-05,False,,Other EVMs,,Fantom
-ethereum,L1,1,2404,2024-07-05,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2406,2024-07-05,False,,Other EVMs,,Ethereum
 celo,L1,42220,86,2024-07-05,False,,Other EVMs,,Celo
-bnb,L1,56,2613,2024-07-05,False,,Other EVMs,,BNB
-base,L2,8453,2996,2024-07-05,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,361,2024-07-05,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1342,2024-07-05,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,10424,2024-07-05,False,,Aggregate,,All
-zora,L2,7777777,44,2024-07-04,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2037,2024-07-04,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,513,2024-07-04,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3389,2024-07-04,False,,Aggregate,,OP Chains
+bnb,L1,56,2615,2024-07-05,False,,Other EVMs,,BNB
+base,L2,8453,2997,2024-07-05,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,362,2024-07-05,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1345,2024-07-05,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,10430,2024-07-05,False,,Aggregate,,All
+zora,L2,7777777,45,2024-07-04,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2039,2024-07-04,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,514,2024-07-04,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3390,2024-07-04,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-07-04,False,,Aggregate,,L3s
-l2,Aggregate,-1,4352,2024-07-04,False,,Aggregate,,L2s
-l1,Aggregate,-1,6953,2024-07-04,False,,Aggregate,,L1s
-gnosis,L1,100,128,2024-07-04,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4354,2024-07-04,False,,Aggregate,,L2s
+l1,Aggregate,-1,6956,2024-07-04,False,,Aggregate,,L1s
+gnosis,L1,100,129,2024-07-04,False,,Other EVMs,,Gnosis
 fantom,L1,250,155,2024-07-04,False,,Other EVMs,,Fantom
-ethereum,L1,1,2408,2024-07-04,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2410,2024-07-04,False,,Other EVMs,,Ethereum
 celo,L1,42220,86,2024-07-04,False,,Other EVMs,,Celo
-bnb,L1,56,2662,2024-07-04,False,,Other EVMs,,BNB
-base,L2,8453,3069,2024-07-04,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,362,2024-07-04,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1348,2024-07-04,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,10609,2024-07-04,False,,Aggregate,,All
-zora,L2,7777777,44,2024-07-03,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2074,2024-07-03,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,505,2024-07-03,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3489,2024-07-03,False,,Aggregate,,OP Chains
+bnb,L1,56,2664,2024-07-04,False,,Other EVMs,,BNB
+base,L2,8453,3070,2024-07-04,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,363,2024-07-04,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1351,2024-07-04,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,10613,2024-07-04,False,,Aggregate,,All
+zora,L2,7777777,45,2024-07-03,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2075,2024-07-03,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,506,2024-07-03,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3490,2024-07-03,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-07-03,False,,Aggregate,,L3s
-l2,Aggregate,-1,4459,2024-07-03,False,,Aggregate,,L2s
-l1,Aggregate,-1,7039,2024-07-03,False,,Aggregate,,L1s
-gnosis,L1,100,132,2024-07-03,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4461,2024-07-03,False,,Aggregate,,L2s
+l1,Aggregate,-1,7041,2024-07-03,False,,Aggregate,,L1s
+gnosis,L1,100,133,2024-07-03,False,,Other EVMs,,Gnosis
 fantom,L1,250,158,2024-07-03,False,,Other EVMs,,Fantom
-ethereum,L1,1,2415,2024-07-03,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2417,2024-07-03,False,,Other EVMs,,Ethereum
 celo,L1,42220,83,2024-07-03,False,,Other EVMs,,Celo
-bnb,L1,56,2707,2024-07-03,False,,Other EVMs,,BNB
-base,L2,8453,3168,2024-07-03,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,364,2024-07-03,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1348,2024-07-03,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,10793,2024-07-03,False,,Aggregate,,All
-zora,L2,7777777,43,2024-07-02,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2097,2024-07-02,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,509,2024-07-02,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3627,2024-07-02,False,,Aggregate,,OP Chains
+bnb,L1,56,2709,2024-07-03,False,,Other EVMs,,BNB
+base,L2,8453,3169,2024-07-03,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,365,2024-07-03,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1351,2024-07-03,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,10796,2024-07-03,False,,Aggregate,,All
+zora,L2,7777777,44,2024-07-02,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2098,2024-07-02,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,510,2024-07-02,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3628,2024-07-02,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-07-02,False,,Aggregate,,L3s
-l2,Aggregate,-1,4602,2024-07-02,False,,Aggregate,,L2s
-l1,Aggregate,-1,7078,2024-07-02,False,,Aggregate,,L1s
-gnosis,L1,100,128,2024-07-02,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4604,2024-07-02,False,,Aggregate,,L2s
+l1,Aggregate,-1,7080,2024-07-02,False,,Aggregate,,L1s
+gnosis,L1,100,129,2024-07-02,False,,Other EVMs,,Gnosis
 fantom,L1,250,160,2024-07-02,False,,Other EVMs,,Fantom
-ethereum,L1,1,2420,2024-07-02,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2422,2024-07-02,False,,Other EVMs,,Ethereum
 celo,L1,42220,80,2024-07-02,False,,Other EVMs,,Celo
-bnb,L1,56,2734,2024-07-02,False,,Other EVMs,,BNB
-base,L2,8453,3302,2024-07-02,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,369,2024-07-02,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1350,2024-07-02,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,10976,2024-07-02,False,,Aggregate,,All
-zora,L2,7777777,45,2024-07-01,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2125,2024-07-01,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,507,2024-07-01,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3719,2024-07-01,False,,Aggregate,,OP Chains
+bnb,L1,56,2736,2024-07-02,False,,Other EVMs,,BNB
+base,L2,8453,3303,2024-07-02,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,370,2024-07-02,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1353,2024-07-02,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,10979,2024-07-02,False,,Aggregate,,All
+zora,L2,7777777,46,2024-07-01,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2126,2024-07-01,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,508,2024-07-01,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3720,2024-07-01,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-07-01,False,,Aggregate,,L3s
-l2,Aggregate,-1,4696,2024-07-01,False,,Aggregate,,L2s
-l1,Aggregate,-1,7133,2024-07-01,False,,Aggregate,,L1s
-gnosis,L1,100,126,2024-07-01,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4698,2024-07-01,False,,Aggregate,,L2s
+l1,Aggregate,-1,7134,2024-07-01,False,,Aggregate,,L1s
+gnosis,L1,100,127,2024-07-01,False,,Other EVMs,,Gnosis
 fantom,L1,250,159,2024-07-01,False,,Other EVMs,,Fantom
-ethereum,L1,1,2432,2024-07-01,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2433,2024-07-01,False,,Other EVMs,,Ethereum
 celo,L1,42220,83,2024-07-01,False,,Other EVMs,,Celo
-bnb,L1,56,2757,2024-07-01,False,,Other EVMs,,BNB
-base,L2,8453,3389,2024-07-01,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,363,2024-07-01,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1351,2024-07-01,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11132,2024-07-01,False,,Aggregate,,All
-zora,L2,7777777,45,2024-06-30,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2121,2024-06-30,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,498,2024-06-30,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3811,2024-06-30,False,,Aggregate,,OP Chains
+bnb,L1,56,2758,2024-07-01,False,,Other EVMs,,BNB
+base,L2,8453,3390,2024-07-01,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,364,2024-07-01,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1354,2024-07-01,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11134,2024-07-01,False,,Aggregate,,All
+zora,L2,7777777,46,2024-06-30,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2122,2024-06-30,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,499,2024-06-30,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3812,2024-06-30,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-30,False,,Aggregate,,L3s
-l2,Aggregate,-1,4797,2024-06-30,False,,Aggregate,,L2s
-l1,Aggregate,-1,7079,2024-06-30,False,,Aggregate,,L1s
-gnosis,L1,100,123,2024-06-30,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4799,2024-06-30,False,,Aggregate,,L2s
+l1,Aggregate,-1,7080,2024-06-30,False,,Aggregate,,L1s
+gnosis,L1,100,124,2024-06-30,False,,Other EVMs,,Gnosis
 fantom,L1,250,154,2024-06-30,False,,Other EVMs,,Fantom
-ethereum,L1,1,2382,2024-06-30,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2383,2024-06-30,False,,Other EVMs,,Ethereum
 celo,L1,42220,85,2024-06-30,False,,Other EVMs,,Celo
-bnb,L1,56,2749,2024-06-30,False,,Other EVMs,,BNB
-base,L2,8453,3486,2024-06-30,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,357,2024-06-30,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1352,2024-06-30,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11186,2024-06-30,False,,Aggregate,,All
-zora,L2,7777777,44,2024-06-29,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2140,2024-06-29,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,498,2024-06-29,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3890,2024-06-29,False,,Aggregate,,OP Chains
+bnb,L1,56,2750,2024-06-30,False,,Other EVMs,,BNB
+base,L2,8453,3487,2024-06-30,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,358,2024-06-30,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1355,2024-06-30,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11188,2024-06-30,False,,Aggregate,,All
+zora,L2,7777777,45,2024-06-29,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2141,2024-06-29,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,499,2024-06-29,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3892,2024-06-29,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-29,False,,Aggregate,,L3s
-l2,Aggregate,-1,4879,2024-06-29,False,,Aggregate,,L2s
-l1,Aggregate,-1,7100,2024-06-29,False,,Aggregate,,L1s
-gnosis,L1,100,125,2024-06-29,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4882,2024-06-29,False,,Aggregate,,L2s
+l1,Aggregate,-1,7101,2024-06-29,False,,Aggregate,,L1s
+gnosis,L1,100,126,2024-06-29,False,,Other EVMs,,Gnosis
 fantom,L1,250,153,2024-06-29,False,,Other EVMs,,Fantom
-ethereum,L1,1,2373,2024-06-29,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2374,2024-06-29,False,,Other EVMs,,Ethereum
 celo,L1,42220,85,2024-06-29,False,,Other EVMs,,Celo
-bnb,L1,56,2756,2024-06-29,False,,Other EVMs,,BNB
-base,L2,8453,3562,2024-06-29,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,362,2024-06-29,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1351,2024-06-29,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11287,2024-06-29,False,,Aggregate,,All
-zora,L2,7777777,47,2024-06-28,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2182,2024-06-28,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,496,2024-06-28,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3965,2024-06-28,False,,Aggregate,,OP Chains
+bnb,L1,56,2757,2024-06-29,False,,Other EVMs,,BNB
+base,L2,8453,3564,2024-06-29,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,363,2024-06-29,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1354,2024-06-29,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11290,2024-06-29,False,,Aggregate,,All
+zora,L2,7777777,48,2024-06-28,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2183,2024-06-28,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,497,2024-06-28,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3967,2024-06-28,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-28,False,,Aggregate,,L3s
-l2,Aggregate,-1,4964,2024-06-28,False,,Aggregate,,L2s
-l1,Aggregate,-1,7191,2024-06-28,False,,Aggregate,,L1s
-gnosis,L1,100,127,2024-06-28,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,4967,2024-06-28,False,,Aggregate,,L2s
+l1,Aggregate,-1,7192,2024-06-28,False,,Aggregate,,L1s
+gnosis,L1,100,128,2024-06-28,False,,Other EVMs,,Gnosis
 fantom,L1,250,149,2024-06-28,False,,Other EVMs,,Fantom
-ethereum,L1,1,2383,2024-06-28,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2384,2024-06-28,False,,Other EVMs,,Ethereum
 celo,L1,42220,91,2024-06-28,False,,Other EVMs,,Celo
-bnb,L1,56,2782,2024-06-28,False,,Other EVMs,,BNB
-base,L2,8453,3645,2024-06-28,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,373,2024-06-28,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1366,2024-06-28,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11461,2024-06-28,False,,Aggregate,,All
-zora,L2,7777777,48,2024-06-27,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2264,2024-06-27,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,489,2024-06-27,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4023,2024-06-27,False,,Aggregate,,OP Chains
+bnb,L1,56,2783,2024-06-28,False,,Other EVMs,,BNB
+base,L2,8453,3647,2024-06-28,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,374,2024-06-28,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1369,2024-06-28,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11464,2024-06-28,False,,Aggregate,,All
+zora,L2,7777777,49,2024-06-27,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2265,2024-06-27,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,490,2024-06-27,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4025,2024-06-27,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-27,False,,Aggregate,,L3s
-l2,Aggregate,-1,5015,2024-06-27,False,,Aggregate,,L2s
-l1,Aggregate,-1,7277,2024-06-27,False,,Aggregate,,L1s
-gnosis,L1,100,124,2024-06-27,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,5018,2024-06-27,False,,Aggregate,,L2s
+l1,Aggregate,-1,7278,2024-06-27,False,,Aggregate,,L1s
+gnosis,L1,100,125,2024-06-27,False,,Other EVMs,,Gnosis
 fantom,L1,250,149,2024-06-27,False,,Other EVMs,,Fantom
-ethereum,L1,1,2382,2024-06-27,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2383,2024-06-27,False,,Other EVMs,,Ethereum
 celo,L1,42220,90,2024-06-27,False,,Other EVMs,,Celo
-bnb,L1,56,2788,2024-06-27,False,,Other EVMs,,BNB
-base,L2,8453,3706,2024-06-27,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,373,2024-06-27,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1353,2024-06-27,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11605,2024-06-27,False,,Aggregate,,All
-zora,L2,7777777,47,2024-06-26,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2285,2024-06-26,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,486,2024-06-26,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4043,2024-06-26,False,,Aggregate,,OP Chains
+bnb,L1,56,2789,2024-06-27,False,,Other EVMs,,BNB
+base,L2,8453,3708,2024-06-27,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,374,2024-06-27,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1356,2024-06-27,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11608,2024-06-27,False,,Aggregate,,All
+zora,L2,7777777,48,2024-06-26,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2286,2024-06-26,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,487,2024-06-26,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4045,2024-06-26,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-26,False,,Aggregate,,L3s
-l2,Aggregate,-1,5038,2024-06-26,False,,Aggregate,,L2s
-l1,Aggregate,-1,7324,2024-06-26,False,,Aggregate,,L1s
-gnosis,L1,100,130,2024-06-26,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,5041,2024-06-26,False,,Aggregate,,L2s
+l1,Aggregate,-1,7325,2024-06-26,False,,Aggregate,,L1s
+gnosis,L1,100,131,2024-06-26,False,,Other EVMs,,Gnosis
 fantom,L1,250,155,2024-06-26,False,,Other EVMs,,Fantom
-ethereum,L1,1,2374,2024-06-26,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2375,2024-06-26,False,,Other EVMs,,Ethereum
 celo,L1,42220,95,2024-06-26,False,,Other EVMs,,Celo
-bnb,L1,56,2804,2024-06-26,False,,Other EVMs,,BNB
-base,L2,8453,3726,2024-06-26,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,390,2024-06-26,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1353,2024-06-26,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11674,2024-06-26,False,,Aggregate,,All
-zora,L2,7777777,46,2024-06-25,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2315,2024-06-25,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,485,2024-06-25,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4068,2024-06-25,False,,Aggregate,,OP Chains
+bnb,L1,56,2805,2024-06-26,False,,Other EVMs,,BNB
+base,L2,8453,3728,2024-06-26,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,391,2024-06-26,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1355,2024-06-26,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11677,2024-06-26,False,,Aggregate,,All
+zora,L2,7777777,47,2024-06-25,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2316,2024-06-25,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,486,2024-06-25,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4070,2024-06-25,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-25,False,,Aggregate,,L3s
-l2,Aggregate,-1,5064,2024-06-25,False,,Aggregate,,L2s
-l1,Aggregate,-1,7336,2024-06-25,False,,Aggregate,,L1s
-gnosis,L1,100,128,2024-06-25,False,,Other EVMs,,Gnosis
+l2,Aggregate,-1,5067,2024-06-25,False,,Aggregate,,L2s
+l1,Aggregate,-1,7337,2024-06-25,False,,Aggregate,,L1s
+gnosis,L1,100,129,2024-06-25,False,,Other EVMs,,Gnosis
 fantom,L1,250,155,2024-06-25,False,,Other EVMs,,Fantom
-ethereum,L1,1,2338,2024-06-25,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2339,2024-06-25,False,,Other EVMs,,Ethereum
 celo,L1,42220,99,2024-06-25,False,,Other EVMs,,Celo
-bnb,L1,56,2822,2024-06-25,False,,Other EVMs,,BNB
-base,L2,8453,3749,2024-06-25,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,387,2024-06-25,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1349,2024-06-25,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11721,2024-06-25,False,,Aggregate,,All
-zora,L2,7777777,46,2024-06-24,True,modern,OP Chain,zora,Zora
+bnb,L1,56,2823,2024-06-25,False,,Other EVMs,,BNB
+base,L2,8453,3751,2024-06-25,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,388,2024-06-25,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1351,2024-06-25,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11724,2024-06-25,False,,Aggregate,,All
+zora,L2,7777777,47,2024-06-24,True,modern,OP Chain,zora,Zora
 polygon,L1,137,2333,2024-06-24,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,488,2024-06-24,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4081,2024-06-24,False,,Aggregate,,OP Chains
+optimism,L2,10,489,2024-06-24,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4083,2024-06-24,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-24,False,,Aggregate,,L3s
-l2,Aggregate,-1,5085,2024-06-24,False,,Aggregate,,L2s
+l2,Aggregate,-1,5088,2024-06-24,False,,Aggregate,,L2s
 l1,Aggregate,-1,7356,2024-06-24,False,,Aggregate,,L1s
-gnosis,L1,100,130,2024-06-24,False,,Other EVMs,,Gnosis
+gnosis,L1,100,131,2024-06-24,False,,Other EVMs,,Gnosis
 fantom,L1,250,159,2024-06-24,False,,Other EVMs,,Fantom
-ethereum,L1,1,2320,2024-06-24,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2321,2024-06-24,False,,Other EVMs,,Ethereum
 celo,L1,42220,97,2024-06-24,False,,Other EVMs,,Celo
-bnb,L1,56,2850,2024-06-24,False,,Other EVMs,,BNB
-base,L2,8453,3753,2024-06-24,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,387,2024-06-24,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1353,2024-06-24,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11758,2024-06-24,False,,Aggregate,,All
-zora,L2,7777777,46,2024-06-23,True,modern,OP Chain,zora,Zora
+bnb,L1,56,2851,2024-06-24,False,,Other EVMs,,BNB
+base,L2,8453,3755,2024-06-24,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,388,2024-06-24,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1355,2024-06-24,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11760,2024-06-24,False,,Aggregate,,All
+zora,L2,7777777,47,2024-06-23,True,modern,OP Chain,zora,Zora
 polygon,L1,137,2323,2024-06-23,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,478,2024-06-23,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4044,2024-06-23,False,,Aggregate,,OP Chains
+optimism,L2,10,479,2024-06-23,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4046,2024-06-23,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-23,False,,Aggregate,,L3s
-l2,Aggregate,-1,5026,2024-06-23,False,,Aggregate,,L2s
+l2,Aggregate,-1,5029,2024-06-23,False,,Aggregate,,L2s
 l1,Aggregate,-1,7276,2024-06-23,False,,Aggregate,,L1s
-gnosis,L1,100,127,2024-06-23,False,,Other EVMs,,Gnosis
+gnosis,L1,100,128,2024-06-23,False,,Other EVMs,,Gnosis
 fantom,L1,250,156,2024-06-23,False,,Other EVMs,,Fantom
-ethereum,L1,1,2292,2024-06-23,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2293,2024-06-23,False,,Other EVMs,,Ethereum
 celo,L1,42220,98,2024-06-23,False,,Other EVMs,,Celo
-bnb,L1,56,2804,2024-06-23,False,,Other EVMs,,BNB
-base,L2,8453,3721,2024-06-23,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,375,2024-06-23,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1322,2024-06-23,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11638,2024-06-23,False,,Aggregate,,All
-zora,L2,7777777,50,2024-06-22,True,modern,OP Chain,zora,Zora
+bnb,L1,56,2805,2024-06-23,False,,Other EVMs,,BNB
+base,L2,8453,3723,2024-06-23,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,376,2024-06-23,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1324,2024-06-23,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11640,2024-06-23,False,,Aggregate,,All
+zora,L2,7777777,51,2024-06-22,True,modern,OP Chain,zora,Zora
 polygon,L1,137,2335,2024-06-22,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,476,2024-06-22,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4069,2024-06-22,False,,Aggregate,,OP Chains
+optimism,L2,10,477,2024-06-22,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4071,2024-06-22,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-22,False,,Aggregate,,L3s
-l2,Aggregate,-1,5059,2024-06-22,False,,Aggregate,,L2s
+l2,Aggregate,-1,5063,2024-06-22,False,,Aggregate,,L2s
 l1,Aggregate,-1,7291,2024-06-22,False,,Aggregate,,L1s
-gnosis,L1,100,127,2024-06-22,False,,Other EVMs,,Gnosis
+gnosis,L1,100,128,2024-06-22,False,,Other EVMs,,Gnosis
 fantom,L1,250,156,2024-06-22,False,,Other EVMs,,Fantom
-ethereum,L1,1,2285,2024-06-22,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2286,2024-06-22,False,,Other EVMs,,Ethereum
 celo,L1,42220,96,2024-06-22,False,,Other EVMs,,Celo
-bnb,L1,56,2809,2024-06-22,False,,Other EVMs,,BNB
-base,L2,8453,3741,2024-06-22,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,378,2024-06-22,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1325,2024-06-22,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11682,2024-06-22,False,,Aggregate,,All
-zora,L2,7777777,49,2024-06-21,True,modern,OP Chain,zora,Zora
+bnb,L1,56,2810,2024-06-22,False,,Other EVMs,,BNB
+base,L2,8453,3743,2024-06-22,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,379,2024-06-22,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1328,2024-06-22,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11685,2024-06-22,False,,Aggregate,,All
+zora,L2,7777777,50,2024-06-21,True,modern,OP Chain,zora,Zora
 polygon,L1,137,2383,2024-06-21,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,484,2024-06-21,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4113,2024-06-21,False,,Aggregate,,OP Chains
+optimism,L2,10,485,2024-06-21,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4115,2024-06-21,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-21,False,,Aggregate,,L3s
-l2,Aggregate,-1,5117,2024-06-21,False,,Aggregate,,L2s
+l2,Aggregate,-1,5121,2024-06-21,False,,Aggregate,,L2s
 l1,Aggregate,-1,7384,2024-06-21,False,,Aggregate,,L1s
-gnosis,L1,100,130,2024-06-21,False,,Other EVMs,,Gnosis
+gnosis,L1,100,131,2024-06-21,False,,Other EVMs,,Gnosis
 fantom,L1,250,155,2024-06-21,False,,Other EVMs,,Fantom
-ethereum,L1,1,2306,2024-06-21,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2307,2024-06-21,False,,Other EVMs,,Ethereum
 celo,L1,42220,97,2024-06-21,False,,Other EVMs,,Celo
-bnb,L1,56,2838,2024-06-21,False,,Other EVMs,,BNB
-base,L2,8453,3783,2024-06-21,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,384,2024-06-21,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1340,2024-06-21,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11827,2024-06-21,False,,Aggregate,,All
-zora,L2,7777777,49,2024-06-20,True,modern,OP Chain,zora,Zora
+bnb,L1,56,2839,2024-06-21,False,,Other EVMs,,BNB
+base,L2,8453,3785,2024-06-21,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,385,2024-06-21,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1343,2024-06-21,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11830,2024-06-21,False,,Aggregate,,All
+zora,L2,7777777,50,2024-06-20,True,modern,OP Chain,zora,Zora
 polygon,L1,137,2379,2024-06-20,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,490,2024-06-20,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4119,2024-06-20,False,,Aggregate,,OP Chains
+optimism,L2,10,491,2024-06-20,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4121,2024-06-20,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-20,False,,Aggregate,,L3s
-l2,Aggregate,-1,5134,2024-06-20,False,,Aggregate,,L2s
+l2,Aggregate,-1,5137,2024-06-20,False,,Aggregate,,L2s
 l1,Aggregate,-1,7384,2024-06-20,False,,Aggregate,,L1s
-gnosis,L1,100,133,2024-06-20,False,,Other EVMs,,Gnosis
+gnosis,L1,100,134,2024-06-20,False,,Other EVMs,,Gnosis
 fantom,L1,250,155,2024-06-20,False,,Other EVMs,,Fantom
-ethereum,L1,1,2302,2024-06-20,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2303,2024-06-20,False,,Other EVMs,,Ethereum
 celo,L1,42220,96,2024-06-20,False,,Other EVMs,,Celo
-bnb,L1,56,2839,2024-06-20,False,,Other EVMs,,BNB
-base,L2,8453,3787,2024-06-20,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,382,2024-06-20,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1347,2024-06-20,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11842,2024-06-20,False,,Aggregate,,All
-zora,L2,7777777,50,2024-06-19,True,modern,OP Chain,zora,Zora
+bnb,L1,56,2840,2024-06-20,False,,Other EVMs,,BNB
+base,L2,8453,3789,2024-06-20,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,383,2024-06-20,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1349,2024-06-20,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11844,2024-06-20,False,,Aggregate,,All
+zora,L2,7777777,51,2024-06-19,True,modern,OP Chain,zora,Zora
 polygon,L1,137,2389,2024-06-19,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,480,2024-06-19,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4141,2024-06-19,False,,Aggregate,,OP Chains
+optimism,L2,10,481,2024-06-19,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4143,2024-06-19,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-19,False,,Aggregate,,L3s
-l2,Aggregate,-1,5158,2024-06-19,False,,Aggregate,,L2s
+l2,Aggregate,-1,5161,2024-06-19,False,,Aggregate,,L2s
 l1,Aggregate,-1,7449,2024-06-19,False,,Aggregate,,L1s
-gnosis,L1,100,131,2024-06-19,False,,Other EVMs,,Gnosis
+gnosis,L1,100,132,2024-06-19,False,,Other EVMs,,Gnosis
 fantom,L1,250,155,2024-06-19,False,,Other EVMs,,Fantom
-ethereum,L1,1,2327,2024-06-19,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2328,2024-06-19,False,,Other EVMs,,Ethereum
 celo,L1,42220,96,2024-06-19,False,,Other EVMs,,Celo
-bnb,L1,56,2863,2024-06-19,False,,Other EVMs,,BNB
-base,L2,8453,3811,2024-06-19,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,385,2024-06-19,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1334,2024-06-19,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11928,2024-06-19,False,,Aggregate,,All
-zora,L2,7777777,50,2024-06-18,True,modern,OP Chain,zora,Zora
+bnb,L1,56,2864,2024-06-19,False,,Other EVMs,,BNB
+base,L2,8453,3813,2024-06-19,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,386,2024-06-19,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1336,2024-06-19,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11930,2024-06-19,False,,Aggregate,,All
+zora,L2,7777777,51,2024-06-18,True,modern,OP Chain,zora,Zora
 polygon,L1,137,2424,2024-06-18,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,470,2024-06-18,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4136,2024-06-18,False,,Aggregate,,OP Chains
+optimism,L2,10,471,2024-06-18,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4138,2024-06-18,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-18,False,,Aggregate,,L3s
-l2,Aggregate,-1,5159,2024-06-18,False,,Aggregate,,L2s
+l2,Aggregate,-1,5162,2024-06-18,False,,Aggregate,,L2s
 l1,Aggregate,-1,7512,2024-06-18,False,,Aggregate,,L1s
-gnosis,L1,100,137,2024-06-18,False,,Other EVMs,,Gnosis
+gnosis,L1,100,138,2024-06-18,False,,Other EVMs,,Gnosis
 fantom,L1,250,156,2024-06-18,False,,Other EVMs,,Fantom
-ethereum,L1,1,2330,2024-06-18,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2331,2024-06-18,False,,Other EVMs,,Ethereum
 celo,L1,42220,96,2024-06-18,False,,Other EVMs,,Celo
-bnb,L1,56,2886,2024-06-18,False,,Other EVMs,,BNB
-base,L2,8453,3810,2024-06-18,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,393,2024-06-18,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1351,2024-06-18,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11980,2024-06-18,False,,Aggregate,,All
-zora,L2,7777777,50,2024-06-17,True,modern,OP Chain,zora,Zora
+bnb,L1,56,2887,2024-06-18,False,,Other EVMs,,BNB
+base,L2,8453,3812,2024-06-18,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,394,2024-06-18,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1353,2024-06-18,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11982,2024-06-18,False,,Aggregate,,All
+zora,L2,7777777,51,2024-06-17,True,modern,OP Chain,zora,Zora
 polygon,L1,137,2478,2024-06-17,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,464,2024-06-17,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4124,2024-06-17,False,,Aggregate,,OP Chains
+optimism,L2,10,465,2024-06-17,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4126,2024-06-17,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-17,False,,Aggregate,,L3s
-l2,Aggregate,-1,5142,2024-06-17,False,,Aggregate,,L2s
+l2,Aggregate,-1,5145,2024-06-17,False,,Aggregate,,L2s
 l1,Aggregate,-1,7544,2024-06-17,False,,Aggregate,,L1s
-gnosis,L1,100,138,2024-06-17,False,,Other EVMs,,Gnosis
+gnosis,L1,100,139,2024-06-17,False,,Other EVMs,,Gnosis
 fantom,L1,250,154,2024-06-17,False,,Other EVMs,,Fantom
-ethereum,L1,1,2307,2024-06-17,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2308,2024-06-17,False,,Other EVMs,,Ethereum
 celo,L1,42220,99,2024-06-17,False,,Other EVMs,,Celo
-bnb,L1,56,2894,2024-06-17,False,,Other EVMs,,BNB
-base,L2,8453,3796,2024-06-17,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,396,2024-06-17,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1347,2024-06-17,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11992,2024-06-17,False,,Aggregate,,All
-zora,L2,7777777,49,2024-06-16,True,modern,OP Chain,zora,Zora
+bnb,L1,56,2895,2024-06-17,False,,Other EVMs,,BNB
+base,L2,8453,3798,2024-06-17,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,397,2024-06-17,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1349,2024-06-17,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11994,2024-06-17,False,,Aggregate,,All
+zora,L2,7777777,50,2024-06-16,True,modern,OP Chain,zora,Zora
 polygon,L1,137,2489,2024-06-16,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,456,2024-06-16,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4060,2024-06-16,False,,Aggregate,,OP Chains
+optimism,L2,10,457,2024-06-16,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4062,2024-06-16,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-16,False,,Aggregate,,L3s
-l2,Aggregate,-1,5066,2024-06-16,False,,Aggregate,,L2s
+l2,Aggregate,-1,5069,2024-06-16,False,,Aggregate,,L2s
 l1,Aggregate,-1,7465,2024-06-16,False,,Aggregate,,L1s
-gnosis,L1,100,137,2024-06-16,False,,Other EVMs,,Gnosis
+gnosis,L1,100,138,2024-06-16,False,,Other EVMs,,Gnosis
 fantom,L1,250,152,2024-06-16,False,,Other EVMs,,Fantom
-ethereum,L1,1,2261,2024-06-16,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2262,2024-06-16,False,,Other EVMs,,Ethereum
 celo,L1,42220,97,2024-06-16,False,,Other EVMs,,Celo
-bnb,L1,56,2850,2024-06-16,False,,Other EVMs,,BNB
-base,L2,8453,3738,2024-06-16,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,388,2024-06-16,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1328,2024-06-16,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11846,2024-06-16,False,,Aggregate,,All
-zora,L2,7777777,48,2024-06-15,True,modern,OP Chain,zora,Zora
+bnb,L1,56,2851,2024-06-16,False,,Other EVMs,,BNB
+base,L2,8453,3740,2024-06-16,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,389,2024-06-16,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1330,2024-06-16,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11848,2024-06-16,False,,Aggregate,,All
+zora,L2,7777777,49,2024-06-15,True,modern,OP Chain,zora,Zora
 polygon,L1,137,2489,2024-06-15,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,454,2024-06-15,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4045,2024-06-15,False,,Aggregate,,OP Chains
+optimism,L2,10,455,2024-06-15,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4047,2024-06-15,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-15,False,,Aggregate,,L3s
-l2,Aggregate,-1,5058,2024-06-15,False,,Aggregate,,L2s
+l2,Aggregate,-1,5061,2024-06-15,False,,Aggregate,,L2s
 l1,Aggregate,-1,7456,2024-06-15,False,,Aggregate,,L1s
-gnosis,L1,100,135,2024-06-15,False,,Other EVMs,,Gnosis
+gnosis,L1,100,136,2024-06-15,False,,Other EVMs,,Gnosis
 fantom,L1,250,157,2024-06-15,False,,Other EVMs,,Fantom
-ethereum,L1,1,2239,2024-06-15,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2240,2024-06-15,False,,Other EVMs,,Ethereum
 celo,L1,42220,95,2024-06-15,False,,Other EVMs,,Celo
-bnb,L1,56,2863,2024-06-15,False,,Other EVMs,,BNB
-base,L2,8453,3728,2024-06-15,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,396,2024-06-15,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1332,2024-06-15,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11833,2024-06-15,False,,Aggregate,,All
-zora,L2,7777777,50,2024-06-14,True,modern,OP Chain,zora,Zora
+bnb,L1,56,2864,2024-06-15,False,,Other EVMs,,BNB
+base,L2,8453,3730,2024-06-15,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,397,2024-06-15,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1334,2024-06-15,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11835,2024-06-15,False,,Aggregate,,All
+zora,L2,7777777,51,2024-06-14,True,modern,OP Chain,zora,Zora
 polygon,L1,137,2566,2024-06-14,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,458,2024-06-14,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4046,2024-06-14,False,,Aggregate,,OP Chains
+optimism,L2,10,459,2024-06-14,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,4048,2024-06-14,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-14,False,,Aggregate,,L3s
-l2,Aggregate,-1,5059,2024-06-14,False,,Aggregate,,L2s
+l2,Aggregate,-1,5062,2024-06-14,False,,Aggregate,,L2s
 l1,Aggregate,-1,7553,2024-06-14,False,,Aggregate,,L1s
-gnosis,L1,100,135,2024-06-14,False,,Other EVMs,,Gnosis
+gnosis,L1,100,136,2024-06-14,False,,Other EVMs,,Gnosis
 fantom,L1,250,157,2024-06-14,False,,Other EVMs,,Fantom
-ethereum,L1,1,2242,2024-06-14,False,,Other EVMs,,Ethereum
+ethereum,L1,1,2243,2024-06-14,False,,Other EVMs,,Ethereum
 celo,L1,42220,96,2024-06-14,False,,Other EVMs,,Celo
-bnb,L1,56,2893,2024-06-14,False,,Other EVMs,,BNB
-base,L2,8453,3725,2024-06-14,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,401,2024-06-14,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1331,2024-06-14,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11928,2024-06-14,False,,Aggregate,,All
+bnb,L1,56,2894,2024-06-14,False,,Other EVMs,,BNB
+base,L2,8453,3727,2024-06-14,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,402,2024-06-14,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1333,2024-06-14,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11930,2024-06-14,False,,Aggregate,,All
 zora,L2,7777777,51,2024-06-13,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2603,2024-06-13,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,458,2024-06-13,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,4019,2024-06-13,False,,Aggregate,,OP Chains
+polygon,L1,137,2504,2024-06-13,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,443,2024-06-13,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3932,2024-06-13,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-13,False,,Aggregate,,L3s
-l2,Aggregate,-1,5023,2024-06-13,False,,Aggregate,,L2s
-l1,Aggregate,-1,7639,2024-06-13,False,,Aggregate,,L1s
-gnosis,L1,100,132,2024-06-13,False,,Other EVMs,,Gnosis
-fantom,L1,250,158,2024-06-13,False,,Other EVMs,,Fantom
-ethereum,L1,1,2251,2024-06-13,False,,Other EVMs,,Ethereum
-celo,L1,42220,99,2024-06-13,False,,Other EVMs,,Celo
-bnb,L1,56,2916,2024-06-13,False,,Other EVMs,,BNB
-base,L2,8453,3694,2024-06-13,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,408,2024-06-13,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1316,2024-06-13,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11981,2024-06-13,False,,Aggregate,,All
-zora,L2,7777777,47,2024-06-12,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2527,2024-06-12,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,442,2024-06-12,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3922,2024-06-12,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,4912,2024-06-13,False,,Aggregate,,L2s
+l1,Aggregate,-1,7340,2024-06-13,False,,Aggregate,,L1s
+gnosis,L1,100,131,2024-06-13,False,,Other EVMs,,Gnosis
+fantom,L1,250,153,2024-06-13,False,,Other EVMs,,Fantom
+ethereum,L1,1,2155,2024-06-13,False,,Other EVMs,,Ethereum
+celo,L1,42220,96,2024-06-13,False,,Other EVMs,,Celo
+bnb,L1,56,2810,2024-06-13,False,,Other EVMs,,BNB
+base,L2,8453,3618,2024-06-13,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,390,2024-06-13,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1283,2024-06-13,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11594,2024-06-13,False,,Aggregate,,All
+zora,L2,7777777,46,2024-06-12,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2428,2024-06-12,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,427,2024-06-12,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3834,2024-06-12,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-12,False,,Aggregate,,L3s
-l2,Aggregate,-1,4892,2024-06-12,False,,Aggregate,,L2s
-l1,Aggregate,-1,7395,2024-06-12,False,,Aggregate,,L1s
-gnosis,L1,100,129,2024-06-12,False,,Other EVMs,,Gnosis
-fantom,L1,250,154,2024-06-12,False,,Other EVMs,,Fantom
-ethereum,L1,1,2158,2024-06-12,False,,Other EVMs,,Ethereum
-celo,L1,42220,96,2024-06-12,False,,Other EVMs,,Celo
-bnb,L1,56,2830,2024-06-12,False,,Other EVMs,,BNB
-base,L2,8453,3611,2024-06-12,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,393,2024-06-12,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1269,2024-06-12,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11634,2024-06-12,False,,Aggregate,,All
-zora,L2,7777777,44,2024-06-11,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2467,2024-06-11,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,423,2024-06-11,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3824,2024-06-11,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,4780,2024-06-12,False,,Aggregate,,L2s
+l1,Aggregate,-1,7095,2024-06-12,False,,Aggregate,,L1s
+gnosis,L1,100,127,2024-06-12,False,,Other EVMs,,Gnosis
+fantom,L1,250,149,2024-06-12,False,,Other EVMs,,Fantom
+ethereum,L1,1,2062,2024-06-12,False,,Other EVMs,,Ethereum
+celo,L1,42220,93,2024-06-12,False,,Other EVMs,,Celo
+bnb,L1,56,2724,2024-06-12,False,,Other EVMs,,BNB
+base,L2,8453,3534,2024-06-12,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,375,2024-06-12,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1235,2024-06-12,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,11245,2024-06-12,False,,Aggregate,,All
+zora,L2,7777777,43,2024-06-11,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2368,2024-06-11,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,408,2024-06-11,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3735,2024-06-11,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-11,False,,Aggregate,,L3s
-l2,Aggregate,-1,4757,2024-06-11,False,,Aggregate,,L2s
-l1,Aggregate,-1,7194,2024-06-11,False,,Aggregate,,L1s
-gnosis,L1,100,124,2024-06-11,False,,Other EVMs,,Gnosis
-fantom,L1,250,147,2024-06-11,False,,Other EVMs,,Fantom
-ethereum,L1,1,2087,2024-06-11,False,,Other EVMs,,Ethereum
-celo,L1,42220,94,2024-06-11,False,,Other EVMs,,Celo
-bnb,L1,56,2759,2024-06-11,False,,Other EVMs,,BNB
-base,L2,8453,3528,2024-06-11,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,380,2024-06-11,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1222,2024-06-11,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,11331,2024-06-11,False,,Aggregate,,All
-zora,L2,7777777,41,2024-06-10,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2382,2024-06-10,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,414,2024-06-10,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3711,2024-06-10,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,4644,2024-06-11,False,,Aggregate,,L2s
+l1,Aggregate,-1,6892,2024-06-11,False,,Aggregate,,L1s
+gnosis,L1,100,122,2024-06-11,False,,Other EVMs,,Gnosis
+fantom,L1,250,142,2024-06-11,False,,Other EVMs,,Fantom
+ethereum,L1,1,1989,2024-06-11,False,,Other EVMs,,Ethereum
+celo,L1,42220,91,2024-06-11,False,,Other EVMs,,Celo
+bnb,L1,56,2652,2024-06-11,False,,Other EVMs,,BNB
+base,L2,8453,3450,2024-06-11,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,362,2024-06-11,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1187,2024-06-11,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,10940,2024-06-11,False,,Aggregate,,All
+zora,L2,7777777,40,2024-06-10,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2283,2024-06-10,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,399,2024-06-10,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3621,2024-06-10,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-10,False,,Aggregate,,L3s
-l2,Aggregate,-1,4615,2024-06-10,False,,Aggregate,,L2s
-l1,Aggregate,-1,6951,2024-06-10,False,,Aggregate,,L1s
-gnosis,L1,100,119,2024-06-10,False,,Other EVMs,,Gnosis
-fantom,L1,250,146,2024-06-10,False,,Other EVMs,,Fantom
-ethereum,L1,1,2005,2024-06-10,False,,Other EVMs,,Ethereum
-celo,L1,42220,88,2024-06-10,False,,Other EVMs,,Celo
-bnb,L1,56,2670,2024-06-10,False,,Other EVMs,,BNB
-base,L2,8453,3422,2024-06-10,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,369,2024-06-10,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1184,2024-06-10,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,10972,2024-06-10,False,,Aggregate,,All
-zora,L2,7777777,39,2024-06-09,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2328,2024-06-09,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,403,2024-06-09,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3558,2024-06-09,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,4501,2024-06-10,False,,Aggregate,,L2s
+l1,Aggregate,-1,6648,2024-06-10,False,,Aggregate,,L1s
+gnosis,L1,100,117,2024-06-10,False,,Other EVMs,,Gnosis
+fantom,L1,250,141,2024-06-10,False,,Other EVMs,,Fantom
+ethereum,L1,1,1907,2024-06-10,False,,Other EVMs,,Ethereum
+celo,L1,42220,85,2024-06-10,False,,Other EVMs,,Celo
+bnb,L1,56,2562,2024-06-10,False,,Other EVMs,,BNB
+base,L2,8453,3343,2024-06-10,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,351,2024-06-10,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1149,2024-06-10,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,10579,2024-06-10,False,,Aggregate,,All
+zora,L2,7777777,38,2024-06-09,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2229,2024-06-09,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,387,2024-06-09,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3466,2024-06-09,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-09,False,,Aggregate,,L3s
-l2,Aggregate,-1,4443,2024-06-09,False,,Aggregate,,L2s
-l1,Aggregate,-1,6774,2024-06-09,False,,Aggregate,,L1s
-gnosis,L1,100,118,2024-06-09,False,,Other EVMs,,Gnosis
-fantom,L1,250,141,2024-06-09,False,,Other EVMs,,Fantom
-ethereum,L1,1,1938,2024-06-09,False,,Other EVMs,,Ethereum
-celo,L1,42220,85,2024-06-09,False,,Other EVMs,,Celo
-bnb,L1,56,2611,2024-06-09,False,,Other EVMs,,BNB
-base,L2,8453,3278,2024-06-09,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,360,2024-06-09,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1157,2024-06-09,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,10640,2024-06-09,False,,Aggregate,,All
-zora,L2,7777777,36,2024-06-08,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2281,2024-06-08,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,399,2024-06-08,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3379,2024-06-08,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,4328,2024-06-09,False,,Aggregate,,L2s
+l1,Aggregate,-1,6470,2024-06-09,False,,Aggregate,,L1s
+gnosis,L1,100,116,2024-06-09,False,,Other EVMs,,Gnosis
+fantom,L1,250,136,2024-06-09,False,,Other EVMs,,Fantom
+ethereum,L1,1,1838,2024-06-09,False,,Other EVMs,,Ethereum
+celo,L1,42220,82,2024-06-09,False,,Other EVMs,,Celo
+bnb,L1,56,2503,2024-06-09,False,,Other EVMs,,BNB
+base,L2,8453,3198,2024-06-09,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,342,2024-06-09,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1122,2024-06-09,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,10245,2024-06-09,False,,Aggregate,,All
+zora,L2,7777777,35,2024-06-08,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2182,2024-06-08,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,382,2024-06-08,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3286,2024-06-08,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-08,False,,Aggregate,,L3s
-l2,Aggregate,-1,4240,2024-06-08,False,,Aggregate,,L2s
-l1,Aggregate,-1,6603,2024-06-08,False,,Aggregate,,L1s
-gnosis,L1,100,117,2024-06-08,False,,Other EVMs,,Gnosis
-fantom,L1,250,135,2024-06-08,False,,Other EVMs,,Fantom
-ethereum,L1,1,1877,2024-06-08,False,,Other EVMs,,Ethereum
-celo,L1,42220,84,2024-06-08,False,,Other EVMs,,Celo
-bnb,L1,56,2546,2024-06-08,False,,Other EVMs,,BNB
-base,L2,8453,3103,2024-06-08,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,356,2024-06-08,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1129,2024-06-08,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,10275,2024-06-08,False,,Aggregate,,All
-zora,L2,7777777,34,2024-06-07,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2238,2024-06-07,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,397,2024-06-07,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3234,2024-06-07,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,4124,2024-06-08,False,,Aggregate,,L2s
+l1,Aggregate,-1,6299,2024-06-08,False,,Aggregate,,L1s
+gnosis,L1,100,115,2024-06-08,False,,Other EVMs,,Gnosis
+fantom,L1,250,130,2024-06-08,False,,Other EVMs,,Fantom
+ethereum,L1,1,1777,2024-06-08,False,,Other EVMs,,Ethereum
+celo,L1,42220,81,2024-06-08,False,,Other EVMs,,Celo
+bnb,L1,56,2437,2024-06-08,False,,Other EVMs,,BNB
+base,L2,8453,3022,2024-06-08,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,337,2024-06-08,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1093,2024-06-08,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,9880,2024-06-08,False,,Aggregate,,All
+zora,L2,7777777,33,2024-06-07,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2139,2024-06-07,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,380,2024-06-07,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3141,2024-06-07,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-07,False,,Aggregate,,L3s
-l2,Aggregate,-1,4083,2024-06-07,False,,Aggregate,,L2s
-l1,Aggregate,-1,6446,2024-06-07,False,,Aggregate,,L1s
-gnosis,L1,100,116,2024-06-07,False,,Other EVMs,,Gnosis
-fantom,L1,250,129,2024-06-07,False,,Other EVMs,,Fantom
-ethereum,L1,1,1822,2024-06-07,False,,Other EVMs,,Ethereum
-celo,L1,42220,84,2024-06-07,False,,Other EVMs,,Celo
-bnb,L1,56,2484,2024-06-07,False,,Other EVMs,,BNB
-base,L2,8453,2959,2024-06-07,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,353,2024-06-07,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1112,2024-06-07,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,9975,2024-06-07,False,,Aggregate,,All
-zora,L2,7777777,30,2024-06-06,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2161,2024-06-06,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,380,2024-06-06,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,3098,2024-06-06,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,3967,2024-06-07,False,,Aggregate,,L2s
+l1,Aggregate,-1,6141,2024-06-07,False,,Aggregate,,L1s
+gnosis,L1,100,114,2024-06-07,False,,Other EVMs,,Gnosis
+fantom,L1,250,124,2024-06-07,False,,Other EVMs,,Fantom
+ethereum,L1,1,1722,2024-06-07,False,,Other EVMs,,Ethereum
+celo,L1,42220,81,2024-06-07,False,,Other EVMs,,Celo
+bnb,L1,56,2375,2024-06-07,False,,Other EVMs,,BNB
+base,L2,8453,2878,2024-06-07,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,334,2024-06-07,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1076,2024-06-07,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,9579,2024-06-07,False,,Aggregate,,All
+zora,L2,7777777,29,2024-06-06,True,modern,OP Chain,zora,Zora
+polygon,L1,137,2062,2024-06-06,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,363,2024-06-06,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,3005,2024-06-06,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-06,False,,Aggregate,,L3s
-l2,Aggregate,-1,3912,2024-06-06,False,,Aggregate,,L2s
-l1,Aggregate,-1,6210,2024-06-06,False,,Aggregate,,L1s
-gnosis,L1,100,112,2024-06-06,False,,Other EVMs,,Gnosis
-fantom,L1,250,126,2024-06-06,False,,Other EVMs,,Fantom
-ethereum,L1,1,1744,2024-06-06,False,,Other EVMs,,Ethereum
-celo,L1,42220,81,2024-06-06,False,,Other EVMs,,Celo
-bnb,L1,56,2396,2024-06-06,False,,Other EVMs,,BNB
-base,L2,8453,2834,2024-06-06,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,345,2024-06-06,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1064,2024-06-06,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,9594,2024-06-06,False,,Aggregate,,All
-zora,L2,7777777,30,2024-06-05,True,modern,OP Chain,zora,Zora
-polygon,L1,137,2031,2024-06-05,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,357,2024-06-05,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,2967,2024-06-05,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,3796,2024-06-06,False,,Aggregate,,L2s
+l1,Aggregate,-1,5904,2024-06-06,False,,Aggregate,,L1s
+gnosis,L1,100,110,2024-06-06,False,,Other EVMs,,Gnosis
+fantom,L1,250,121,2024-06-06,False,,Other EVMs,,Fantom
+ethereum,L1,1,1643,2024-06-06,False,,Other EVMs,,Ethereum
+celo,L1,42220,78,2024-06-06,False,,Other EVMs,,Celo
+bnb,L1,56,2287,2024-06-06,False,,Other EVMs,,BNB
+base,L2,8453,2753,2024-06-06,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,325,2024-06-06,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,1027,2024-06-06,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,9197,2024-06-06,False,,Aggregate,,All
+zora,L2,7777777,29,2024-06-05,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1930,2024-06-05,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,340,2024-06-05,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,2871,2024-06-05,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-05,False,,Aggregate,,L3s
-l2,Aggregate,-1,3753,2024-06-05,False,,Aggregate,,L2s
-l1,Aggregate,-1,5921,2024-06-05,False,,Aggregate,,L1s
-gnosis,L1,100,111,2024-06-05,False,,Other EVMs,,Gnosis
-fantom,L1,250,121,2024-06-05,False,,Other EVMs,,Fantom
-ethereum,L1,1,1668,2024-06-05,False,,Other EVMs,,Ethereum
-celo,L1,42220,77,2024-06-05,False,,Other EVMs,,Celo
-bnb,L1,56,2289,2024-06-05,False,,Other EVMs,,BNB
-base,L2,8453,2717,2024-06-05,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,330,2024-06-05,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,1022,2024-06-05,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,9175,2024-06-05,False,,Aggregate,,All
-zora,L2,7777777,30,2024-06-04,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1939,2024-06-04,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,339,2024-06-04,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,2844,2024-06-04,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,3634,2024-06-05,False,,Aggregate,,L2s
+l1,Aggregate,-1,5611,2024-06-05,False,,Aggregate,,L1s
+gnosis,L1,100,109,2024-06-05,False,,Other EVMs,,Gnosis
+fantom,L1,250,116,2024-06-05,False,,Other EVMs,,Fantom
+ethereum,L1,1,1565,2024-06-05,False,,Other EVMs,,Ethereum
+celo,L1,42220,74,2024-06-05,False,,Other EVMs,,Celo
+bnb,L1,56,2180,2024-06-05,False,,Other EVMs,,BNB
+base,L2,8453,2633,2024-06-05,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,310,2024-06-05,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,985,2024-06-05,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,8770,2024-06-05,False,,Aggregate,,All
+zora,L2,7777777,29,2024-06-04,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1838,2024-06-04,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,322,2024-06-04,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,2695,2024-06-04,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-04,False,,Aggregate,,L3s
-l2,Aggregate,-1,3600,2024-06-04,False,,Aggregate,,L2s
-l1,Aggregate,-1,5657,2024-06-04,False,,Aggregate,,L1s
-gnosis,L1,100,105,2024-06-04,False,,Other EVMs,,Gnosis
-fantom,L1,250,113,2024-06-04,False,,Other EVMs,,Fantom
-ethereum,L1,1,1588,2024-06-04,False,,Other EVMs,,Ethereum
-celo,L1,42220,76,2024-06-04,False,,Other EVMs,,Celo
-bnb,L1,56,2177,2024-06-04,False,,Other EVMs,,BNB
-base,L2,8453,2606,2024-06-04,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,316,2024-06-04,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,979,2024-06-04,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,8776,2024-06-04,False,,Aggregate,,All
-zora,L2,7777777,30,2024-06-03,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1867,2024-06-03,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,323,2024-06-03,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,2661,2024-06-03,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,3428,2024-06-04,False,,Aggregate,,L2s
+l1,Aggregate,-1,5343,2024-06-04,False,,Aggregate,,L1s
+gnosis,L1,100,102,2024-06-04,False,,Other EVMs,,Gnosis
+fantom,L1,250,108,2024-06-04,False,,Other EVMs,,Fantom
+ethereum,L1,1,1485,2024-06-04,False,,Other EVMs,,Ethereum
+celo,L1,42220,73,2024-06-04,False,,Other EVMs,,Celo
+bnb,L1,56,2065,2024-06-04,False,,Other EVMs,,BNB
+base,L2,8453,2469,2024-06-04,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,296,2024-06-04,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,942,2024-06-04,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,8314,2024-06-04,False,,Aggregate,,All
+zora,L2,7777777,29,2024-06-03,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1766,2024-06-03,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,306,2024-06-03,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,2495,2024-06-03,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-03,False,,Aggregate,,L3s
-l2,Aggregate,-1,3383,2024-06-03,False,,Aggregate,,L2s
-l1,Aggregate,-1,5418,2024-06-03,False,,Aggregate,,L1s
-gnosis,L1,100,101,2024-06-03,False,,Other EVMs,,Gnosis
-fantom,L1,250,109,2024-06-03,False,,Other EVMs,,Fantom
-ethereum,L1,1,1518,2024-06-03,False,,Other EVMs,,Ethereum
-celo,L1,42220,72,2024-06-03,False,,Other EVMs,,Celo
-bnb,L1,56,2067,2024-06-03,False,,Other EVMs,,BNB
-base,L2,8453,2434,2024-06-03,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,298,2024-06-03,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,929,2024-06-03,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,8348,2024-06-03,False,,Aggregate,,All
-zora,L2,7777777,26,2024-06-02,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1790,2024-06-02,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,313,2024-06-02,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,2464,2024-06-02,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,3192,2024-06-03,False,,Aggregate,,L2s
+l1,Aggregate,-1,5102,2024-06-03,False,,Aggregate,,L1s
+gnosis,L1,100,98,2024-06-03,False,,Other EVMs,,Gnosis
+fantom,L1,250,104,2024-06-03,False,,Other EVMs,,Fantom
+ethereum,L1,1,1414,2024-06-03,False,,Other EVMs,,Ethereum
+celo,L1,42220,69,2024-06-03,False,,Other EVMs,,Celo
+bnb,L1,56,1954,2024-06-03,False,,Other EVMs,,BNB
+base,L2,8453,2280,2024-06-03,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,278,2024-06-03,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,891,2024-06-03,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,7863,2024-06-03,False,,Aggregate,,All
+zora,L2,7777777,25,2024-06-02,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1689,2024-06-02,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,294,2024-06-02,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,2296,2024-06-02,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-02,False,,Aggregate,,L3s
-l2,Aggregate,-1,3153,2024-06-02,False,,Aggregate,,L2s
-l1,Aggregate,-1,5171,2024-06-02,False,,Aggregate,,L1s
-gnosis,L1,100,95,2024-06-02,False,,Other EVMs,,Gnosis
-fantom,L1,250,105,2024-06-02,False,,Other EVMs,,Fantom
-ethereum,L1,1,1439,2024-06-02,False,,Other EVMs,,Ethereum
-celo,L1,42220,66,2024-06-02,False,,Other EVMs,,Celo
-bnb,L1,56,1970,2024-06-02,False,,Other EVMs,,BNB
-base,L2,8453,2245,2024-06-02,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,287,2024-06-02,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,891,2024-06-02,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,7894,2024-06-02,False,,Aggregate,,All
-zora,L2,7777777,26,2024-06-01,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1751,2024-06-01,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,307,2024-06-01,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,2304,2024-06-01,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,2961,2024-06-02,False,,Aggregate,,L2s
+l1,Aggregate,-1,4852,2024-06-02,False,,Aggregate,,L1s
+gnosis,L1,100,92,2024-06-02,False,,Other EVMs,,Gnosis
+fantom,L1,250,100,2024-06-02,False,,Other EVMs,,Fantom
+ethereum,L1,1,1335,2024-06-02,False,,Other EVMs,,Ethereum
+celo,L1,42220,63,2024-06-02,False,,Other EVMs,,Celo
+bnb,L1,56,1855,2024-06-02,False,,Other EVMs,,BNB
+base,L2,8453,2091,2024-06-02,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,267,2024-06-02,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,852,2024-06-02,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,7406,2024-06-02,False,,Aggregate,,All
+zora,L2,7777777,25,2024-06-01,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1650,2024-06-01,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,288,2024-06-01,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,2136,2024-06-01,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-06-01,False,,Aggregate,,L3s
-l2,Aggregate,-1,2970,2024-06-01,False,,Aggregate,,L2s
-l1,Aggregate,-1,5015,2024-06-01,False,,Aggregate,,L1s
-gnosis,L1,100,95,2024-06-01,False,,Other EVMs,,Gnosis
-fantom,L1,250,103,2024-06-01,False,,Other EVMs,,Fantom
-ethereum,L1,1,1391,2024-06-01,False,,Other EVMs,,Ethereum
-celo,L1,42220,63,2024-06-01,False,,Other EVMs,,Celo
-bnb,L1,56,1903,2024-06-01,False,,Other EVMs,,BNB
-base,L2,8453,2089,2024-06-01,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,281,2024-06-01,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,863,2024-06-01,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,7568,2024-06-01,False,,Aggregate,,All
-zora,L2,7777777,26,2024-05-31,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1694,2024-05-31,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,302,2024-05-31,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,2162,2024-05-31,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,2777,2024-06-01,False,,Aggregate,,L2s
+l1,Aggregate,-1,4691,2024-06-01,False,,Aggregate,,L1s
+gnosis,L1,100,92,2024-06-01,False,,Other EVMs,,Gnosis
+fantom,L1,250,98,2024-06-01,False,,Other EVMs,,Fantom
+ethereum,L1,1,1285,2024-06-01,False,,Other EVMs,,Ethereum
+celo,L1,42220,60,2024-06-01,False,,Other EVMs,,Celo
+bnb,L1,56,1785,2024-06-01,False,,Other EVMs,,BNB
+base,L2,8453,1935,2024-06-01,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,261,2024-06-01,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,823,2024-06-01,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,7075,2024-06-01,False,,Aggregate,,All
+zora,L2,7777777,25,2024-05-31,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1593,2024-05-31,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,283,2024-05-31,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,1993,2024-05-31,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-31,False,,Aggregate,,L3s
-l2,Aggregate,-1,2814,2024-05-31,False,,Aggregate,,L2s
-l1,Aggregate,-1,4828,2024-05-31,False,,Aggregate,,L1s
-gnosis,L1,100,89,2024-05-31,False,,Other EVMs,,Gnosis
-fantom,L1,250,102,2024-05-31,False,,Other EVMs,,Fantom
-ethereum,L1,1,1332,2024-05-31,False,,Other EVMs,,Ethereum
-celo,L1,42220,62,2024-05-31,False,,Other EVMs,,Celo
-bnb,L1,56,1832,2024-05-31,False,,Other EVMs,,BNB
-base,L2,8453,1949,2024-05-31,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,271,2024-05-31,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,848,2024-05-31,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,7237,2024-05-31,False,,Aggregate,,All
-zora,L2,7777777,21,2024-05-30,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1608,2024-05-30,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,289,2024-05-30,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,2019,2024-05-30,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,2619,2024-05-31,False,,Aggregate,,L2s
+l1,Aggregate,-1,4501,2024-05-31,False,,Aggregate,,L1s
+gnosis,L1,100,86,2024-05-31,False,,Other EVMs,,Gnosis
+fantom,L1,250,97,2024-05-31,False,,Other EVMs,,Fantom
+ethereum,L1,1,1225,2024-05-31,False,,Other EVMs,,Ethereum
+celo,L1,42220,59,2024-05-31,False,,Other EVMs,,Celo
+bnb,L1,56,1713,2024-05-31,False,,Other EVMs,,BNB
+base,L2,8453,1794,2024-05-31,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,251,2024-05-31,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,807,2024-05-31,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,6740,2024-05-31,False,,Aggregate,,All
+zora,L2,7777777,20,2024-05-30,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1506,2024-05-30,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,270,2024-05-30,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,1850,2024-05-30,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-30,False,,Aggregate,,L3s
-l2,Aggregate,-1,2654,2024-05-30,False,,Aggregate,,L2s
-l1,Aggregate,-1,4570,2024-05-30,False,,Aggregate,,L1s
-gnosis,L1,100,85,2024-05-30,False,,Other EVMs,,Gnosis
-fantom,L1,250,99,2024-05-30,False,,Other EVMs,,Fantom
-ethereum,L1,1,1258,2024-05-30,False,,Other EVMs,,Ethereum
-celo,L1,42220,57,2024-05-30,False,,Other EVMs,,Celo
-bnb,L1,56,1734,2024-05-30,False,,Other EVMs,,BNB
-base,L2,8453,1816,2024-05-30,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,255,2024-05-30,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,817,2024-05-30,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,6836,2024-05-30,False,,Aggregate,,All
-zora,L2,7777777,20,2024-05-29,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1469,2024-05-29,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,279,2024-05-29,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,1877,2024-05-29,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,2455,2024-05-30,False,,Aggregate,,L2s
+l1,Aggregate,-1,4238,2024-05-30,False,,Aggregate,,L1s
+gnosis,L1,100,81,2024-05-30,False,,Other EVMs,,Gnosis
+fantom,L1,250,94,2024-05-30,False,,Other EVMs,,Fantom
+ethereum,L1,1,1149,2024-05-30,False,,Other EVMs,,Ethereum
+celo,L1,42220,53,2024-05-30,False,,Other EVMs,,Celo
+bnb,L1,56,1615,2024-05-30,False,,Other EVMs,,BNB
+base,L2,8453,1661,2024-05-30,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,235,2024-05-30,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,775,2024-05-30,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,6333,2024-05-30,False,,Aggregate,,All
+zora,L2,7777777,19,2024-05-29,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1365,2024-05-29,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,260,2024-05-29,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,1708,2024-05-29,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-29,False,,Aggregate,,L3s
-l2,Aggregate,-1,2489,2024-05-29,False,,Aggregate,,L2s
-l1,Aggregate,-1,4280,2024-05-29,False,,Aggregate,,L1s
-gnosis,L1,100,83,2024-05-29,False,,Other EVMs,,Gnosis
-fantom,L1,250,94,2024-05-29,False,,Other EVMs,,Fantom
-ethereum,L1,1,1193,2024-05-29,False,,Other EVMs,,Ethereum
-celo,L1,42220,55,2024-05-29,False,,Other EVMs,,Celo
-bnb,L1,56,1653,2024-05-29,False,,Other EVMs,,BNB
-base,L2,8453,1681,2024-05-29,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,240,2024-05-29,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,785,2024-05-29,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,6400,2024-05-29,False,,Aggregate,,All
-zora,L2,7777777,19,2024-05-28,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1367,2024-05-28,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,259,2024-05-28,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,1696,2024-05-28,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,2288,2024-05-29,False,,Aggregate,,L2s
+l1,Aggregate,-1,3945,2024-05-29,False,,Aggregate,,L1s
+gnosis,L1,100,79,2024-05-29,False,,Other EVMs,,Gnosis
+fantom,L1,250,89,2024-05-29,False,,Other EVMs,,Fantom
+ethereum,L1,1,1083,2024-05-29,False,,Other EVMs,,Ethereum
+celo,L1,42220,51,2024-05-29,False,,Other EVMs,,Celo
+bnb,L1,56,1532,2024-05-29,False,,Other EVMs,,BNB
+base,L2,8453,1526,2024-05-29,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,220,2024-05-29,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,742,2024-05-29,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,5889,2024-05-29,False,,Aggregate,,All
+zora,L2,7777777,18,2024-05-28,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1260,2024-05-28,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,239,2024-05-28,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,1524,2024-05-28,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-28,False,,Aggregate,,L3s
-l2,Aggregate,-1,2267,2024-05-28,False,,Aggregate,,L2s
-l1,Aggregate,-1,3982,2024-05-28,False,,Aggregate,,L1s
-gnosis,L1,100,78,2024-05-28,False,,Other EVMs,,Gnosis
-fantom,L1,250,84,2024-05-28,False,,Other EVMs,,Fantom
-ethereum,L1,1,1107,2024-05-28,False,,Other EVMs,,Ethereum
-celo,L1,42220,48,2024-05-28,False,,Other EVMs,,Celo
-bnb,L1,56,1532,2024-05-28,False,,Other EVMs,,BNB
-base,L2,8453,1513,2024-05-28,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,217,2024-05-28,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,727,2024-05-28,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,5911,2024-05-28,False,,Aggregate,,All
-zora,L2,7777777,18,2024-05-27,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1269,2024-05-27,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,231,2024-05-27,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,1561,2024-05-27,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,2060,2024-05-28,False,,Aggregate,,L2s
+l1,Aggregate,-1,3641,2024-05-28,False,,Aggregate,,L1s
+gnosis,L1,100,74,2024-05-28,False,,Other EVMs,,Gnosis
+fantom,L1,250,78,2024-05-28,False,,Other EVMs,,Fantom
+ethereum,L1,1,996,2024-05-28,False,,Other EVMs,,Ethereum
+celo,L1,42220,44,2024-05-28,False,,Other EVMs,,Celo
+bnb,L1,56,1409,2024-05-28,False,,Other EVMs,,BNB
+base,L2,8453,1355,2024-05-28,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,197,2024-05-28,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,680,2024-05-28,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,5391,2024-05-28,False,,Aggregate,,All
+zora,L2,7777777,17,2024-05-27,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1160,2024-05-27,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,211,2024-05-27,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,1388,2024-05-27,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-27,False,,Aggregate,,L3s
-l2,Aggregate,-1,2083,2024-05-27,False,,Aggregate,,L2s
-l1,Aggregate,-1,3696,2024-05-27,False,,Aggregate,,L1s
-gnosis,L1,100,72,2024-05-27,False,,Other EVMs,,Gnosis
-fantom,L1,250,76,2024-05-27,False,,Other EVMs,,Fantom
-ethereum,L1,1,1030,2024-05-27,False,,Other EVMs,,Ethereum
-celo,L1,42220,44,2024-05-27,False,,Other EVMs,,Celo
-bnb,L1,56,1407,2024-05-27,False,,Other EVMs,,BNB
-base,L2,8453,1394,2024-05-27,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,200,2024-05-27,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,659,2024-05-27,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,5471,2024-05-27,False,,Aggregate,,All
-zora,L2,7777777,18,2024-05-26,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1160,2024-05-26,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,211,2024-05-26,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,1443,2024-05-26,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,1875,2024-05-27,False,,Aggregate,,L2s
+l1,Aggregate,-1,3349,2024-05-27,False,,Aggregate,,L1s
+gnosis,L1,100,68,2024-05-27,False,,Other EVMs,,Gnosis
+fantom,L1,250,70,2024-05-27,False,,Other EVMs,,Fantom
+ethereum,L1,1,919,2024-05-27,False,,Other EVMs,,Ethereum
+celo,L1,42220,40,2024-05-27,False,,Other EVMs,,Celo
+bnb,L1,56,1280,2024-05-27,False,,Other EVMs,,BNB
+base,L2,8453,1235,2024-05-27,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,180,2024-05-27,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,612,2024-05-27,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,4945,2024-05-27,False,,Aggregate,,All
+zora,L2,7777777,17,2024-05-26,True,modern,OP Chain,zora,Zora
+polygon,L1,137,1048,2024-05-26,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,191,2024-05-26,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,1268,2024-05-26,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-26,False,,Aggregate,,L3s
-l2,Aggregate,-1,1927,2024-05-26,False,,Aggregate,,L2s
-l1,Aggregate,-1,3405,2024-05-26,False,,Aggregate,,L1s
-gnosis,L1,100,66,2024-05-26,False,,Other EVMs,,Gnosis
-fantom,L1,250,68,2024-05-26,False,,Other EVMs,,Fantom
-ethereum,L1,1,955,2024-05-26,False,,Other EVMs,,Ethereum
-celo,L1,42220,40,2024-05-26,False,,Other EVMs,,Celo
-bnb,L1,56,1291,2024-05-26,False,,Other EVMs,,BNB
-base,L2,8453,1289,2024-05-26,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,178,2024-05-26,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,608,2024-05-26,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,5055,2024-05-26,False,,Aggregate,,All
-zora,L2,7777777,17,2024-05-25,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1109,2024-05-25,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,206,2024-05-25,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,1351,2024-05-25,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,1713,2024-05-26,False,,Aggregate,,L2s
+l1,Aggregate,-1,3046,2024-05-26,False,,Aggregate,,L1s
+gnosis,L1,100,62,2024-05-26,False,,Other EVMs,,Gnosis
+fantom,L1,250,62,2024-05-26,False,,Other EVMs,,Fantom
+ethereum,L1,1,840,2024-05-26,False,,Other EVMs,,Ethereum
+celo,L1,42220,36,2024-05-26,False,,Other EVMs,,Celo
+bnb,L1,56,1159,2024-05-26,False,,Other EVMs,,BNB
+base,L2,8453,1128,2024-05-26,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,157,2024-05-26,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,557,2024-05-26,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,4513,2024-05-26,False,,Aggregate,,All
+zora,L2,7777777,16,2024-05-25,True,modern,OP Chain,zora,Zora
+polygon,L1,137,997,2024-05-25,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,186,2024-05-25,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,1176,2024-05-25,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-25,False,,Aggregate,,L3s
-l2,Aggregate,-1,1823,2024-05-25,False,,Aggregate,,L2s
-l1,Aggregate,-1,3258,2024-05-25,False,,Aggregate,,L1s
-gnosis,L1,100,64,2024-05-25,False,,Other EVMs,,Gnosis
-fantom,L1,250,64,2024-05-25,False,,Other EVMs,,Fantom
-ethereum,L1,1,904,2024-05-25,False,,Other EVMs,,Ethereum
-celo,L1,42220,37,2024-05-25,False,,Other EVMs,,Celo
-bnb,L1,56,1243,2024-05-25,False,,Other EVMs,,BNB
-base,L2,8453,1201,2024-05-25,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,173,2024-05-25,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,591,2024-05-25,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,4812,2024-05-25,False,,Aggregate,,All
-zora,L2,7777777,11,2024-05-24,True,modern,OP Chain,zora,Zora
-polygon,L1,137,1047,2024-05-24,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,194,2024-05-24,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,1250,2024-05-24,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,1609,2024-05-25,False,,Aggregate,,L2s
+l1,Aggregate,-1,2895,2024-05-25,False,,Aggregate,,L1s
+gnosis,L1,100,60,2024-05-25,False,,Other EVMs,,Gnosis
+fantom,L1,250,58,2024-05-25,False,,Other EVMs,,Fantom
+ethereum,L1,1,787,2024-05-25,False,,Other EVMs,,Ethereum
+celo,L1,42220,33,2024-05-25,False,,Other EVMs,,Celo
+bnb,L1,56,1110,2024-05-25,False,,Other EVMs,,BNB
+base,L2,8453,1040,2024-05-25,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,152,2024-05-25,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,540,2024-05-25,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,4266,2024-05-25,False,,Aggregate,,All
+zora,L2,7777777,10,2024-05-24,True,modern,OP Chain,zora,Zora
+polygon,L1,137,935,2024-05-24,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,174,2024-05-24,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,1073,2024-05-24,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-24,False,,Aggregate,,L3s
-l2,Aggregate,-1,1695,2024-05-24,False,,Aggregate,,L2s
-l1,Aggregate,-1,3069,2024-05-24,False,,Aggregate,,L1s
-gnosis,L1,100,63,2024-05-24,False,,Other EVMs,,Gnosis
-fantom,L1,250,61,2024-05-24,False,,Other EVMs,,Fantom
-ethereum,L1,1,842,2024-05-24,False,,Other EVMs,,Ethereum
-celo,L1,42220,35,2024-05-24,False,,Other EVMs,,Celo
-bnb,L1,56,1173,2024-05-24,False,,Other EVMs,,BNB
-base,L2,8453,1112,2024-05-24,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,165,2024-05-24,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,561,2024-05-24,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,4515,2024-05-24,False,,Aggregate,,All
-zora,L2,7777777,11,2024-05-23,True,modern,OP Chain,zora,Zora
-polygon,L1,137,947,2024-05-23,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,171,2024-05-23,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,1124,2024-05-23,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,1477,2024-05-24,False,,Aggregate,,L2s
+l1,Aggregate,-1,2705,2024-05-24,False,,Aggregate,,L1s
+gnosis,L1,100,59,2024-05-24,False,,Other EVMs,,Gnosis
+fantom,L1,250,55,2024-05-24,False,,Other EVMs,,Fantom
+ethereum,L1,1,724,2024-05-24,False,,Other EVMs,,Ethereum
+celo,L1,42220,31,2024-05-24,False,,Other EVMs,,Celo
+bnb,L1,56,1039,2024-05-24,False,,Other EVMs,,BNB
+base,L2,8453,950,2024-05-24,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,144,2024-05-24,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,508,2024-05-24,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,3966,2024-05-24,False,,Aggregate,,All
+zora,L2,7777777,10,2024-05-23,True,modern,OP Chain,zora,Zora
+polygon,L1,137,831,2024-05-23,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,151,2024-05-23,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,945,2024-05-23,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-23,False,,Aggregate,,L3s
-l2,Aggregate,-1,1540,2024-05-23,False,,Aggregate,,L2s
-l1,Aggregate,-1,2759,2024-05-23,False,,Aggregate,,L1s
-gnosis,L1,100,59,2024-05-23,False,,Other EVMs,,Gnosis
-fantom,L1,250,55,2024-05-23,False,,Other EVMs,,Fantom
-ethereum,L1,1,748,2024-05-23,False,,Other EVMs,,Ethereum
-celo,L1,42220,32,2024-05-23,False,,Other EVMs,,Celo
-bnb,L1,56,1048,2024-05-23,False,,Other EVMs,,BNB
-base,L2,8453,998,2024-05-23,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,151,2024-05-23,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,519,2024-05-23,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,4074,2024-05-23,False,,Aggregate,,All
-zora,L2,7777777,10,2024-05-22,True,modern,OP Chain,zora,Zora
-polygon,L1,137,862,2024-05-22,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,148,2024-05-22,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,1015,2024-05-22,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,1319,2024-05-23,False,,Aggregate,,L2s
+l1,Aggregate,-1,2386,2024-05-23,False,,Aggregate,,L1s
+gnosis,L1,100,55,2024-05-23,False,,Other EVMs,,Gnosis
+fantom,L1,250,49,2024-05-23,False,,Other EVMs,,Fantom
+ethereum,L1,1,628,2024-05-23,False,,Other EVMs,,Ethereum
+celo,L1,42220,28,2024-05-23,False,,Other EVMs,,Celo
+bnb,L1,56,912,2024-05-23,False,,Other EVMs,,BNB
+base,L2,8453,834,2024-05-23,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,129,2024-05-23,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,464,2024-05-23,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,3513,2024-05-23,False,,Aggregate,,All
+zora,L2,7777777,9,2024-05-22,True,modern,OP Chain,zora,Zora
+polygon,L1,137,742,2024-05-22,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,126,2024-05-22,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,833,2024-05-22,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-22,False,,Aggregate,,L3s
-l2,Aggregate,-1,1379,2024-05-22,False,,Aggregate,,L2s
-l1,Aggregate,-1,2464,2024-05-22,False,,Aggregate,,L1s
-gnosis,L1,100,51,2024-05-22,False,,Other EVMs,,Gnosis
-fantom,L1,250,50,2024-05-22,False,,Other EVMs,,Fantom
-ethereum,L1,1,654,2024-05-22,False,,Other EVMs,,Ethereum
-celo,L1,42220,28,2024-05-22,False,,Other EVMs,,Celo
-bnb,L1,56,928,2024-05-22,False,,Other EVMs,,BNB
-base,L2,8453,906,2024-05-22,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,135,2024-05-22,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,452,2024-05-22,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,3652,2024-05-22,False,,Aggregate,,All
-zora,L2,7777777,9,2024-05-21,True,modern,OP Chain,zora,Zora
-polygon,L1,137,761,2024-05-21,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,133,2024-05-21,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,869,2024-05-21,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,1151,2024-05-22,False,,Aggregate,,L2s
+l1,Aggregate,-1,2076,2024-05-22,False,,Aggregate,,L1s
+gnosis,L1,100,47,2024-05-22,False,,Other EVMs,,Gnosis
+fantom,L1,250,44,2024-05-22,False,,Other EVMs,,Fantom
+ethereum,L1,1,530,2024-05-22,False,,Other EVMs,,Ethereum
+celo,L1,42220,24,2024-05-22,False,,Other EVMs,,Celo
+bnb,L1,56,784,2024-05-22,False,,Other EVMs,,BNB
+base,L2,8453,740,2024-05-22,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,113,2024-05-22,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,392,2024-05-22,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,3067,2024-05-22,False,,Aggregate,,All
+zora,L2,7777777,8,2024-05-21,True,modern,OP Chain,zora,Zora
+polygon,L1,137,629,2024-05-21,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,110,2024-05-21,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,684,2024-05-21,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-21,False,,Aggregate,,L3s
-l2,Aggregate,-1,1179,2024-05-21,False,,Aggregate,,L2s
-l1,Aggregate,-1,2124,2024-05-21,False,,Aggregate,,L1s
-gnosis,L1,100,40,2024-05-21,False,,Other EVMs,,Gnosis
-fantom,L1,250,45,2024-05-21,False,,Other EVMs,,Fantom
-ethereum,L1,1,562,2024-05-21,False,,Other EVMs,,Ethereum
-celo,L1,42220,25,2024-05-21,False,,Other EVMs,,Celo
-bnb,L1,56,784,2024-05-21,False,,Other EVMs,,BNB
-base,L2,8453,772,2024-05-21,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,117,2024-05-21,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,382,2024-05-21,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,3138,2024-05-21,False,,Aggregate,,All
-zora,L2,7777777,8,2024-05-20,True,modern,OP Chain,zora,Zora
-polygon,L1,137,650,2024-05-20,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,117,2024-05-20,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,719,2024-05-20,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,945,2024-05-21,False,,Aggregate,,L2s
+l1,Aggregate,-1,1715,2024-05-21,False,,Aggregate,,L1s
+gnosis,L1,100,36,2024-05-21,False,,Other EVMs,,Gnosis
+fantom,L1,250,38,2024-05-21,False,,Other EVMs,,Fantom
+ethereum,L1,1,432,2024-05-21,False,,Other EVMs,,Ethereum
+celo,L1,42220,20,2024-05-21,False,,Other EVMs,,Celo
+bnb,L1,56,637,2024-05-21,False,,Other EVMs,,BNB
+base,L2,8453,604,2024-05-21,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,95,2024-05-21,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,319,2024-05-21,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,2529,2024-05-21,False,,Aggregate,,All
+zora,L2,7777777,7,2024-05-20,True,modern,OP Chain,zora,Zora
+polygon,L1,137,513,2024-05-20,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,90,2024-05-20,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,526,2024-05-20,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-20,False,,Aggregate,,L3s
-l2,Aggregate,-1,981,2024-05-20,False,,Aggregate,,L2s
-l1,Aggregate,-1,1777,2024-05-20,False,,Aggregate,,L1s
-gnosis,L1,100,29,2024-05-20,False,,Other EVMs,,Gnosis
-fantom,L1,250,39,2024-05-20,False,,Other EVMs,,Fantom
-ethereum,L1,1,453,2024-05-20,False,,Other EVMs,,Ethereum
-celo,L1,42220,20,2024-05-20,False,,Other EVMs,,Celo
-bnb,L1,56,651,2024-05-20,False,,Other EVMs,,BNB
-base,L2,8453,629,2024-05-20,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,94,2024-05-20,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,315,2024-05-20,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,2627,2024-05-20,False,,Aggregate,,All
-zora,L2,7777777,5,2024-05-19,True,modern,OP Chain,zora,Zora
-polygon,L1,137,514,2024-05-19,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,93,2024-05-19,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,601,2024-05-19,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,732,2024-05-20,False,,Aggregate,,L2s
+l1,Aggregate,-1,1350,2024-05-20,False,,Aggregate,,L1s
+gnosis,L1,100,25,2024-05-20,False,,Other EVMs,,Gnosis
+fantom,L1,250,32,2024-05-20,False,,Other EVMs,,Fantom
+ethereum,L1,1,318,2024-05-20,False,,Other EVMs,,Ethereum
+celo,L1,42220,15,2024-05-20,False,,Other EVMs,,Celo
+bnb,L1,56,496,2024-05-20,False,,Other EVMs,,BNB
+base,L2,8453,455,2024-05-20,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,71,2024-05-20,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,246,2024-05-20,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,1985,2024-05-20,False,,Aggregate,,All
+zora,L2,7777777,4,2024-05-19,True,modern,OP Chain,zora,Zora
+polygon,L1,137,366,2024-05-19,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,64,2024-05-19,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,403,2024-05-19,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-19,False,,Aggregate,,L3s
-l2,Aggregate,-1,808,2024-05-19,False,,Aggregate,,L2s
-l1,Aggregate,-1,1448,2024-05-19,False,,Aggregate,,L1s
-gnosis,L1,100,26,2024-05-19,False,,Other EVMs,,Gnosis
-fantom,L1,250,31,2024-05-19,False,,Other EVMs,,Fantom
-ethereum,L1,1,372,2024-05-19,False,,Other EVMs,,Ethereum
-celo,L1,42220,15,2024-05-19,False,,Other EVMs,,Celo
-bnb,L1,56,532,2024-05-19,False,,Other EVMs,,BNB
-base,L2,8453,529,2024-05-19,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,77,2024-05-19,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,251,2024-05-19,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,2156,2024-05-19,False,,Aggregate,,All
-zora,L2,7777777,4,2024-05-18,True,modern,OP Chain,zora,Zora
-polygon,L1,137,452,2024-05-18,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,81,2024-05-18,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,538,2024-05-18,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,547,2024-05-19,False,,Aggregate,,L2s
+l1,Aggregate,-1,996,2024-05-19,False,,Aggregate,,L1s
+gnosis,L1,100,22,2024-05-19,False,,Other EVMs,,Gnosis
+fantom,L1,250,24,2024-05-19,False,,Other EVMs,,Fantom
+ethereum,L1,1,234,2024-05-19,False,,Other EVMs,,Ethereum
+celo,L1,42220,10,2024-05-19,False,,Other EVMs,,Celo
+bnb,L1,56,369,2024-05-19,False,,Other EVMs,,BNB
+base,L2,8453,352,2024-05-19,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,52,2024-05-19,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,172,2024-05-19,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,1479,2024-05-19,False,,Aggregate,,All
+zora,L2,7777777,3,2024-05-18,True,modern,OP Chain,zora,Zora
+polygon,L1,137,298,2024-05-18,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,49,2024-05-18,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,332,2024-05-18,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-18,False,,Aggregate,,L3s
-l2,Aggregate,-1,724,2024-05-18,False,,Aggregate,,L2s
-l1,Aggregate,-1,1255,2024-05-18,False,,Aggregate,,L1s
-gnosis,L1,100,22,2024-05-18,False,,Other EVMs,,Gnosis
-fantom,L1,250,28,2024-05-18,False,,Other EVMs,,Fantom
-ethereum,L1,1,322,2024-05-18,False,,Other EVMs,,Ethereum
-celo,L1,42220,12,2024-05-18,False,,Other EVMs,,Celo
-bnb,L1,56,457,2024-05-18,False,,Other EVMs,,BNB
-base,L2,8453,477,2024-05-18,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,70,2024-05-18,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,224,2024-05-18,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,1890,2024-05-18,False,,Aggregate,,All
-zora,L2,7777777,3,2024-05-17,True,modern,OP Chain,zora,Zora
-polygon,L1,137,395,2024-05-17,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,69,2024-05-17,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,455,2024-05-17,False,,Aggregate,,OP Chains
+l2,Aggregate,-1,452,2024-05-18,False,,Aggregate,,L2s
+l1,Aggregate,-1,794,2024-05-18,False,,Aggregate,,L1s
+gnosis,L1,100,17,2024-05-18,False,,Other EVMs,,Gnosis
+fantom,L1,250,20,2024-05-18,False,,Other EVMs,,Fantom
+ethereum,L1,1,181,2024-05-18,False,,Other EVMs,,Ethereum
+celo,L1,42220,7,2024-05-18,False,,Other EVMs,,Celo
+bnb,L1,56,292,2024-05-18,False,,Other EVMs,,BNB
+base,L2,8453,294,2024-05-18,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,44,2024-05-18,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,141,2024-05-18,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,1194,2024-05-18,False,,Aggregate,,All
+zora,L2,7777777,2,2024-05-17,True,modern,OP Chain,zora,Zora
+polygon,L1,137,238,2024-05-17,False,,Other EVMs,,Polygon PoS
+optimism,L2,10,34,2024-05-17,True,modern,OP Chain,op,OP Mainnet
+op chains,Aggregate,-1,241,2024-05-17,False,,Aggregate,,OP Chains
 l3,Aggregate,-1,0,2024-05-17,False,,Aggregate,,L3s
-l2,Aggregate,-1,617,2024-05-17,False,,Aggregate,,L2s
-l1,Aggregate,-1,1041,2024-05-17,False,,Aggregate,,L1s
-gnosis,L1,100,16,2024-05-17,False,,Other EVMs,,Gnosis
-fantom,L1,250,18,2024-05-17,False,,Other EVMs,,Fantom
-ethereum,L1,1,266,2024-05-17,False,,Other EVMs,,Ethereum
-celo,L1,42220,11,2024-05-17,False,,Other EVMs,,Celo
-bnb,L1,56,368,2024-05-17,False,,Other EVMs,,BNB
-base,L2,8453,404,2024-05-17,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,57,2024-05-17,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,193,2024-05-17,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,1581,2024-05-17,False,,Aggregate,,All
-zora,L2,7777777,1,2024-05-16,True,modern,OP Chain,zora,Zora
-polygon,L1,137,214,2024-05-16,False,,Other EVMs,,Polygon PoS
-optimism,L2,10,42,2024-05-16,True,modern,OP Chain,op,OP Mainnet
-op chains,Aggregate,-1,257,2024-05-16,False,,Aggregate,,OP Chains
-l3,Aggregate,-1,0,2024-05-16,False,,Aggregate,,L3s
-l2,Aggregate,-1,357,2024-05-16,False,,Aggregate,,L2s
-l1,Aggregate,-1,594,2024-05-16,False,,Aggregate,,L1s
-gnosis,L1,100,9,2024-05-16,False,,Other EVMs,,Gnosis
-fantom,L1,250,9,2024-05-16,False,,Other EVMs,,Fantom
-ethereum,L1,1,160,2024-05-16,False,,Other EVMs,,Ethereum
-celo,L1,42220,6,2024-05-16,False,,Other EVMs,,Celo
-bnb,L1,56,205,2024-05-16,False,,Other EVMs,,BNB
-base,L2,8453,226,2024-05-16,True,modern,OP Chain,base,Base
-avalanche_c,L1,43114,37,2024-05-16,False,,Other EVMs,,Avalanche C-Chain
-arbitrum,L2,42161,120,2024-05-16,False,,Other EVMs,,Arbitrum One
-all,Aggregate,-1,908,2024-05-16,False,,Aggregate,,All
+l2,Aggregate,-1,330,2024-05-17,False,,Aggregate,,L2s
+l1,Aggregate,-1,563,2024-05-17,False,,Aggregate,,L1s
+gnosis,L1,100,11,2024-05-17,False,,Other EVMs,,Gnosis
+fantom,L1,250,10,2024-05-17,False,,Other EVMs,,Fantom
+ethereum,L1,1,121,2024-05-17,False,,Other EVMs,,Ethereum
+celo,L1,42220,5,2024-05-17,False,,Other EVMs,,Celo
+bnb,L1,56,195,2024-05-17,False,,Other EVMs,,BNB
+base,L2,8453,215,2024-05-17,True,modern,OP Chain,base,Base
+avalanche_c,L1,43114,28,2024-05-17,False,,Other EVMs,,Avalanche C-Chain
+arbitrum,L2,42161,103,2024-05-17,False,,Other EVMs,,Arbitrum One
+all,Aggregate,-1,854,2024-05-17,False,,Aggregate,,All

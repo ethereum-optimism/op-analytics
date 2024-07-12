@@ -156,7 +156,7 @@ L2,Ten,,,Optimistic Rollup,ten,,ten,,,,True,False,False,'https://ten.xyz',"'http
 L2,Term Structure,,,ZK Rollup,termstructure,,termstructure,,ZKsync Lite,,False,False,True,'https://ts.finance/','https://docs.ts.finance/','https://github.com/term-structure/',zkSync: ZK Stack,termstructure
 L2,Tradable,,,ZK Rollup,tradable,,tradable,,ZK Stack,,True,False,False,'https://tradable.xyz/',,,zkSync: ZK Stack,tradable
 L2,Treasure Chain,,,Optimium,treasure,,treasure,,Arbitrum,,True,False,False,'https://treasure.lol/',,,Arbitrum: Orbit,treasure
-L2,Pay Chain,,,Validium,wirex,,wirex,,Polygon,,True,False,False,'https://wirexpaychain.com/',,,Polygon: CDK,wirex
+L2,Pay Chain,,,Validium,wirex,,wirex,,Polygon,,False,False,True,'https://wirexpaychain.com/',,,Polygon: CDK,wirex
 L2,Witness Chain,,,Validium,witness,,witness,https://witnesschain-sequencer.eu-north-2.gateway.fm/,Polygon,,False,False,True,'https://witnesschain.com/','https://docs.witnesschain.com/','https://github.com/witnesschain-com',Polygon: CDK,witness
 L2,World Chain,,,Optimistic Rollup,world,,world,,OP Stack,,True,False,False,'https://worldcoin.org/world-chain','https://docs.worldcoin.org/','https://github.com/worldcoin',Optimism: OP Stack,world
 L2,XCHAIN,,,Validium,xchain,,xchain,,Polygon,,True,False,False,'https://idex.io/',"'https://medium.com/idex/the-all-new-idex-a-quick-recap-b27df4cd981b',",,Polygon: CDK,xchain

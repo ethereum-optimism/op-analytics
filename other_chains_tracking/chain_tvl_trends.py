@@ -9,8 +9,10 @@ import pandas as pd
 import sys
 import numpy as np
 import json
+import requests as r
 
 import time
+
 
 from datetime import datetime, timedelta
 sys.path.append("../helper_functions")
@@ -216,6 +218,7 @@ get_app_list = op_superchain_chains['defillama_slug'].unique().tolist()
 
 
 print('get tvls')
+
 p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, chains = get_app_list, do_aggregate = 'Yes')
 
 
