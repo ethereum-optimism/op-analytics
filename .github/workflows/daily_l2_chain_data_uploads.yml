@@ -52,8 +52,6 @@ jobs:
           pipenv run jupyter nbconvert --to python chain_tvl_trends.ipynb  
           pipenv run jupyter nbconvert --to python get_qualified_txs.ipynb
           
-          
-               
   # Run py files
       - name: Run L2 Uploads
         working-directory: other_chains_tracking

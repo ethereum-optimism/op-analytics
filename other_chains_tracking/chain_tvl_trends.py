@@ -9,8 +9,10 @@ import pandas as pd
 import sys
 import numpy as np
 import json
+import requests as r
 
 import time
+
 
 from datetime import datetime, timedelta
 sys.path.append("../helper_functions")
@@ -192,6 +194,7 @@ chains_df.fillna({'is_Rollup':True}, inplace = True)
 # In[ ]:
 
 
+
 # Get the chains already present in chains_df
 existing_chains = set(chains_df['defillama_slug'])
 
@@ -216,6 +219,7 @@ get_app_list = op_superchain_chains['defillama_slug'].unique().tolist()
 
 
 print('get tvls')
+
 p = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl=min_tvl_to_count_apps, chains = get_app_list, do_aggregate = 'Yes')
 
 
@@ -472,12 +476,9 @@ df_365.to_csv(folder + 'dfl_chain_tvl_t365d.csv', index = False)
 df_monthly.to_csv(folder + 'dfl_chain_tvl_monthly.csv', index = False)
 df_weekly.to_csv(folder + 'dfl_chain_tvl_weekly.csv', index = False)
 # Write to Dune
-du.write_dune_api_from_pandas(df, 'dfl_chain_tvl',\
-                             'TVL for select chains from DefiLlama')
-du.write_dune_api_from_pandas(df_monthly, 'dfl_chain_tv_monthly',\
-                             'Monthly TVL for select chains from DefiLlama')
-du.write_dune_api_from_pandas(df_weekly, 'dfl_chain_tv_weekly',\
-                             'Weekly TVL for select chains from DefiLlama')
+du.write_dune_api_from_pandas(df, 'dfl_chain_tvl',                             'TVL for select chains from DefiLlama')
+du.write_dune_api_from_pandas(df_monthly, 'dfl_chain_tv_monthly',                             'Monthly TVL for select chains from DefiLlama')
+du.write_dune_api_from_pandas(df_weekly, 'dfl_chain_tv_weekly',                             'Weekly TVL for select chains from DefiLlama')
 
 
 # In[ ]:
