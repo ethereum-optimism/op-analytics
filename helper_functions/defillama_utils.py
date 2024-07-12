@@ -12,10 +12,11 @@ import time
 import logging
 from typing import List, Union
 
-nest_asyncio.apply()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+nest_asyncio.apply()
 
 header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0'}
 statuses = {x for x in range(100, 600)}
@@ -325,11 +326,8 @@ def get_protocol_tvls(min_tvl: float = 0, excluded_cats: List[str] = ['CEX', 'Ch
     all_api = 'https://api.llama.fi/protocols'
     
     try:
-        response = r.get(all_api, headers=header, timeout=30)
+        response = r.get(all_api, headers=header)
         response.raise_for_status()  # Raise an exception for bad status codes
-        
-        logger.info(f"Response status code: {response.status_code}")
-        logger.info(f"Response headers: {response.headers}")
         
         try:
             data = response.json()
@@ -340,17 +338,12 @@ def get_protocol_tvls(min_tvl: float = 0, excluded_cats: List[str] = ['CEX', 'Ch
 
         resp = pd.DataFrame(data)
         
-        logger.info(f"Initial DataFrame shape: {resp.shape}")
-        logger.info(f"DataFrame columns: {resp.columns}")
-        
         # Filter by TVL
         resp = resp[resp['tvl'] >= min_tvl]
-        logger.info(f"DataFrame shape after TVL filter: {resp.shape}")
         
         # Filter by category
         if excluded_cats:
             resp = resp[~resp['category'].isin(excluded_cats)]
-            logger.info(f"DataFrame shape after category filter: {resp.shape}")
         
         # Filter by chains
         if isinstance(chains, list):
@@ -361,7 +354,6 @@ def get_protocol_tvls(min_tvl: float = 0, excluded_cats: List[str] = ['CEX', 'Ch
             og_chains = [chains]  # make it a list
         
         resp = resp[resp['chains'].apply(lambda x: has_overlap(x, og_chains))]
-        logger.info(f"Final DataFrame shape: {resp.shape}")
         
         return resp
 
