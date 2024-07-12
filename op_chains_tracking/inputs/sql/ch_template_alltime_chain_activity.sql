@@ -91,6 +91,7 @@ FROM (
     WHERE
         t.block_timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
         AND b.timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
+        AND is_deleted = 0 --not deleted
     
     GROUP BY 1,2,3,4,5
     ) a
