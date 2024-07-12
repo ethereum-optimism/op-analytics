@@ -69,4 +69,18 @@ def gen_chain_ids_list_for_param(df_col):
         chain_ids = df_col.astype(int).astype(str).tolist()
         chain_ids_string = ','.join(chain_ids)
         return chain_ids_string
-        
+
+def get_unique_chain_ids_from_dfs(dataframes):
+        unique_chain_list = set()
+        for df in dataframes:
+                if 'chain_id' in df.columns:
+                        # Convert to float to handle decimal numbers, then to set to get unique values
+                        chain_ids = set(df['chain_id'].astype(int).astype(str).dropna())
+                        unique_chain_list.update(chain_ids)
+                else:
+                        print(f"Warning: 'chain_id' column not found in one of the dataframes.")
+                chain_ids_string = ','.join(unique_chain_list)
+
+        print(chain_ids_string)
+        return chain_ids_string
+                
