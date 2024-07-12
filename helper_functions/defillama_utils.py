@@ -9,14 +9,8 @@ import json
 import re
 from collections import defaultdict
 import time
-import logging
-from typing import List, Union
-
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 nest_asyncio.apply()
+
 
 header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0'}
 statuses = {x for x in range(100, 600)}
@@ -174,7 +168,7 @@ def get_range(protocols, chains = '', do_aggregate = 'No', fallback_on_raw_tvl =
 								except:
 										continue
 		df_df_all = pd.concat(df_list)
-		df_df_all = df_df_all.fillna(0).infer_objects(copy=False)
+		df_df_all = df_df_all.fillna(0)
 		
 		data_dfs = [] #Free up Memory
 		
@@ -322,44 +316,24 @@ def get_protocol_names_by_flag(check_flag):
 		protocol_names = [element['name'] for element in protocols]
 		return protocol_names
 
-def get_protocol_tvls(min_tvl: float = 0, excluded_cats: List[str] = ['CEX', 'Chain'], chains: Union[str, List[str]] = '') -> pd.DataFrame:
-    all_api = 'https://api.llama.fi/protocols'
-    
-    try:
-        response = r.get(all_api, headers=header)
-        response.raise_for_status()  # Raise an exception for bad status codes
-        
-        try:
-            data = response.json()
-        except json.JSONDecodeError as json_err:
-            logger.error(f"JSONDecodeError: {json_err}")
-            logger.info(f"Response content (first 1000 chars): {response.text[:1000]}...")
-            raise
+def get_protocol_tvls(min_tvl = 0, excluded_cats = ['CEX','Chain'], chains = ''): #,excluded_flags = ['staking','pool2']):
+		all_api = 'https://api.llama.fi/protocols'
+		resp = pd.DataFrame( r.get(all_api, headers=header).json() )
+		resp = resp[resp['tvl'] >= min_tvl ] ##greater than equal to X
+		if excluded_cats != []: #If we have cagtegories to exclude
+				resp = resp[~resp['category'].isin(excluded_cats)]
+		
+		# Check Chain List
+		if isinstance(chains, list):
+				og_chains = chains #get starting value
+		elif chains == '':
+				og_chains = chains
+				return resp # Return if chain list is null
+		else:
+				og_chains = [chains] #make it a list
+		resp = resp[resp['chains'].apply(lambda x: has_overlap(x, og_chains))]
 
-        resp = pd.DataFrame(data)
-        
-        # Filter by TVL
-        resp = resp[resp['tvl'] >= min_tvl]
-        
-        # Filter by category
-        if excluded_cats:
-            resp = resp[~resp['category'].isin(excluded_cats)]
-        
-        # Filter by chains
-        if isinstance(chains, list):
-            og_chains = chains
-        elif chains == '':
-            return resp  # Return if chain list is null
-        else:
-            og_chains = [chains]  # make it a list
-        
-        resp = resp[resp['chains'].apply(lambda x: has_overlap(x, og_chains))]
-        
-        return resp
-
-    except r.exceptions.RequestException as req_err:
-        logger.error(f"Request failed: {req_err}")
-        raise
+		return resp
 
 def get_all_protocol_tvls_by_chain_and_token(min_tvl = 0, chains = '', do_aggregate='No',fallback_on_raw_tvl = False, fallback_indicator='*', excluded_cats = ['CEX','Chain']):
 		res = get_protocol_tvls(min_tvl, excluded_cats = excluded_cats, chains = chains)
@@ -471,8 +445,8 @@ def get_historical_chain_tvl(chain_name):
 		return df
 
 
-# def get_historical_app_tvl_by_chain(chain_name):
-# 		p = get_protocol_tvls()
+def get_historical_app_tvl_by_chain(chain_name):
+		p = get_protocol_tvls()
 
 def generate_flows_column(df):
 
