@@ -13,8 +13,8 @@ sources:
     description: >-
       Raw logs for events emitted from contracts. Contains the contract address,
       data, topics, and metadata for blocks and transactions.
-  - referenceName: base.transaction_receipts
-    version: 1.0.0
+  - referenceName: base.receipt_transactions
+    version: 1.2.0
     type: dataset
     startAt: earliest
     description: >-
@@ -71,7 +71,7 @@ transforms:
         ,'mainnet' as network
         ,8453 as chain_id
       from
-        base.transaction_receipts
+        base.receipt_transactions
 sinks:
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
@@ -107,9 +107,9 @@ sinks:
     type: clickHouse
     table: base_transactions
     batchSize: 100000
-    description: ClickHouse sink from base.transaction_receipts to base_transactions
+    description: ClickHouse sink from base.receipt_transactions to base_transactions
     flushInterval: '10000'
-    referenceName: clickhouse_base.transaction_receipts
+    referenceName: clickhouse_base.receipt_transactions
     appendOnlyMode: true
     schemaOverride:
       gas: UInt128

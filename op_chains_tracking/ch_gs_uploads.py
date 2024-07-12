@@ -45,7 +45,7 @@ chain_mappings_list = [
     {'schema_name': 'mode', 'display_name': 'Mode', 'has_blob_fields': True},
     {'schema_name': 'metal', 'display_name': 'Metal', 'has_blob_fields': True},
     {'schema_name': 'fraxtal', 'display_name': 'Fraxtal', 'has_blob_fields': True},
-    {'schema_name': 'bob', 'display_name': 'BOB (Build on Bitcoin)', 'has_blob_fields': False},
+    # {'schema_name': 'bob', 'display_name': 'BOB (Build on Bitcoin)', 'has_blob_fields': False},
     {'schema_name': 'cyber', 'display_name': 'Cyber', 'has_blob_fields': True},
     {'schema_name': 'mint', 'display_name': 'Mint', 'has_blob_fields': True},
     # Add more mappings as needed
@@ -126,7 +126,8 @@ for qn in query_names:
 # In[ ]:
 
 
-write_df.dtypes
+# write_df.dtypes
+write_df['chain_id'] = write_df['chain_id'].astype('int64')
 
 
 # In[ ]:
