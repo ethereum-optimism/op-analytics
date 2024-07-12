@@ -202,6 +202,14 @@ def delete_bq_table(dataset_id, table_id, project_id=os.getenv("BQ_PROJECT_ID"))
         print(f"Error deleting table '{table_id}' from dataset '{dataset_id}': {e}")
         return False
 
+def run_query_to_df(query, project_id=os.getenv("BQ_PROJECT_ID")):
+    client = connect_bq_client(project_id)
+    # Run the query and get the results as a pandas DataFrame
+    query_job = client.query(query)
+    results = query_job.result().to_dataframe()
+    return results
+     
+     
 def run_query_and_save_csv(query, destination_file, project_id=os.getenv("BQ_PROJECT_ID")):
     """
     Runs a BigQuery SQL query and saves the results to a CSV file.
@@ -214,11 +222,7 @@ def run_query_and_save_csv(query, destination_file, project_id=os.getenv("BQ_PRO
     Returns:
         None
     """
-    client = connect_bq_client(project_id)
-
-    # Run the query and get the results as a pandas DataFrame
-    query_job = client.query(query)
-    results = query_job.result().to_dataframe()
+    results = run_query_to_df(query, project_id)
 
     # Save the DataFrame to a CSV file
     results.to_csv(destination_file, index=False)
