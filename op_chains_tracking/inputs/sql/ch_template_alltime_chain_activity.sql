@@ -16,11 +16,11 @@ SELECT *
 
 FROM (
     SELECT
-        DATE_TRUNC('day', toDateTime(block_timestamp)) AS dt,
+        DATE_TRUNC('day', toDateTime(t.block_timestamp)) AS dt,
         chain, network, chain_id, cast(@block_time_sec@ as Float64) AS block_time_sec,
 
         COUNT(*) AS num_raw_txs,
-        COUNT(DISTINCT block_number) AS num_blocks,
+        COUNT(DISTINCT t.block_number) AS num_blocks,
 
         SUM(CASE WHEN gas_price = 0 AND to_address = '0x4200000000000000000000000000000000000015' THEN 1 ELSE 0 END) AS l2_num_attr_deposit_txs_per_day,
         SUM(CASE WHEN gas_price = 0 AND to_address = '0x4200000000000000000000000000000000000007' THEN 1 ELSE 0 END) AS l2_num_user_deposit_txs_per_day,
@@ -55,8 +55,8 @@ FROM (
         SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar) * cast(receipt_l1_gas_price AS Nullable(Float64)) / 1e18) AS l1_l1gas_contrib_l2_eth_fees_per_day,
         SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar * cast(receipt_l1_blob_base_fee AS Nullable(Float64)) / 1e18) AS l1_blobgas_contrib_l2_eth_fees_per_day,
 
-        SUM(CAST((gas_price - max_priority_fee_per_gas) * t.receipt_gas_used AS Nullable(Float64)) / 1e18) AS l2_contrib_l2_eth_fees_base_fee_per_day,
-        SUM(CAST(max_priority_fee_per_gas * t.receipt_gas_used AS Nullable(Float64)) / 1e18) AS l2_contrib_l2_eth_fees_priority_fee_per_day,
+        SUM(CAST((base_fee_per_gas) * t.receipt_gas_used AS Nullable(Float64)) / 1e18) AS l2_contrib_l2_eth_fees_base_fee_per_day,
+        SUM(CAST(gas_price - base_fee_per_gas * t.receipt_gas_used AS Nullable(Float64)) / 1e18) AS l2_contrib_l2_eth_fees_priority_fee_per_day,
 
         SUM(
             16 * (length(replace(toString(unhex(input)), '\0', '')) - 1)
@@ -71,13 +71,12 @@ FROM (
         SUM(CASE WHEN gas_price > 0 THEN receipt_l1_gas_used / 16 ELSE 0 END) AS compressedtxsize_approx_user_txs_l2_per_day,
 
         SUM((CAST(receipt_l1_gas_price AS Nullable(Float64)) / CAST(1e9 AS Nullable(Float64))) * CAST(receipt_l1_gas_used AS Nullable(Float64))) / SUM(CAST(receipt_l1_gas_used AS Nullable(Float64))) AS avg_l1_gas_price_on_l2,
-
         SUM((CAST(receipt_l1_blob_base_fee AS Nullable(Float64)) / CAST(1e9 AS Nullable(Float64))) * CAST(receipt_l1_gas_used AS Nullable(Float64))) / SUM(CAST(receipt_l1_gas_used AS Nullable(Float64))) AS avg_blob_base_fee_on_l2,
         
         SUM(CASE WHEN gas_price > 0 THEN CAST(t.receipt_gas_used * gas_price AS Nullable(Float64)) / 1e9 ELSE NULL END)
         / SUM(CASE WHEN gas_price > 0 THEN t.receipt_gas_used ELSE NULL END) AS avg_l2_gas_price, -- if not free
         
-        SUM(CASE WHEN gas_price > 0 THEN CAST(t.receipt_gas_used AS Nullable(Float64)) * CAST((gas_price - max_priority_fee_per_gas) AS Nullable(Float64)) / 1e9 ELSE NULL END)
+        SUM(CASE WHEN gas_price > 0 THEN CAST(t.receipt_gas_used AS Nullable(Float64)) * CAST((base_fee_per_gas) AS Nullable(Float64)) / 1e9 ELSE NULL END)
         / SUM(CASE WHEN gas_price > 0 THEN t.receipt_gas_used ELSE NULL END) AS base_fee_gwei, -- if not free
         
         SUM( CASE WHEN gas_price = 0 THEN 0 ELSE CAST(t.receipt_gas_used*receipt_l1_gas_price as Nullable(Float64)) END / 1e18) AS equivalent_l1_tx_fee,
@@ -86,7 +85,13 @@ FROM (
         coalesce( AVG(CASE WHEN gas_price > 0 THEN receipt_l1_blob_base_fee_scalar ELSE NULL END) ,0) AS avg_l1_blob_fee_scalar
         
     FROM @chain_db_name@_transactions t 
-    WHERE block_timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
+        INNER JOIN @chain_db_name@_blocks b 
+            ON t.block_number = b.number 
+            AND t.block_timestamp = b.timestamp
+    WHERE
+        t.block_timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
+        AND b.timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
+        AND is_deleted = 0 --not deleted
     
     GROUP BY 1,2,3,4,5
     ) a

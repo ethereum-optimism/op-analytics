@@ -21,6 +21,7 @@ COUNTIf(receipt_status = 1) AS num_success_txs
 FROM @blockchain@_transactions
 WHERE gas_price > 0
 AND block_timestamp >= DATE_TRUNC('day', NOW() - INTERVAL '@trailing_days@ days')
+AND is_deleted = 0 --not deleted
 GROUP BY 1,2,3,4,5
 )
 
@@ -33,6 +34,7 @@ COUNT(DISTINCT transaction_hash) AS num_qualified_txs
 FROM @blockchain@_logs
 WHERE substring(topics, 1, position(topics, ',') - 1) NOT IN (SELECT topic FROM filtered_events)
 AND block_timestamp >= DATE_TRUNC('day', NOW() - INTERVAL '@trailing_days@ days')
+AND is_deleted = 0 --not deleted
 GROUP BY 1,2
 )
 
