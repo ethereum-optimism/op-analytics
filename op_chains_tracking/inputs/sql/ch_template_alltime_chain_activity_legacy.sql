@@ -85,7 +85,7 @@ FROM (
         AVG(CASE WHEN gas_price > 0 THEN receipt_l1_fee_scalar ELSE NULL END) AS avg_l1_fee_scalar,
         coalesce( AVG(CASE WHEN gas_price > 0 THEN receipt_l1_blob_base_fee_scalar ELSE NULL END) ,0) AS avg_l1_blob_fee_scalar
         
-    FROM @chain_db_name@_transactions t 
+    FROM @chain_db_name@_transactions t final
     WHERE block_timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
     
     GROUP BY 1,2,3,4,5
