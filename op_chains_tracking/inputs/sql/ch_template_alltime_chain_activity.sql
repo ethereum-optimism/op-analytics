@@ -84,8 +84,8 @@ FROM (
         AVG(CASE WHEN gas_price > 0 THEN receipt_l1_fee_scalar ELSE NULL END) AS avg_l1_fee_scalar,
         coalesce( AVG(CASE WHEN gas_price > 0 THEN receipt_l1_blob_base_fee_scalar ELSE NULL END) ,0) AS avg_l1_blob_fee_scalar
         
-    FROM @chain_db_name@_transactions t 
-        INNER JOIN @chain_db_name@_blocks b 
+    FROM @chain_db_name@_transactions t final
+        INNER JOIN @chain_db_name@_blocks b final
             ON t.block_number = b.number 
             AND t.block_timestamp = b.timestamp
     WHERE
