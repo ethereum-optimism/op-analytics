@@ -18,7 +18,7 @@ DATE_TRUNC('day',block_timestamp) AS dt,
 COUNT(*) AS num_raw_txs,
 COUNTIf(receipt_status = 1) AS num_success_txs
 
-FROM @blockchain@_transactions
+FROM @blockchain@_transactions final
 WHERE gas_price > 0
 AND block_timestamp >= DATE_TRUNC('day', NOW() - INTERVAL '@trailing_days@ days')
 AND is_deleted = 0 --not deleted
@@ -31,7 +31,7 @@ DATE_TRUNC('day',block_timestamp) AS dt,
   chain_id, --db chain_id
 COUNT(DISTINCT transaction_hash) AS num_qualified_txs
 
-FROM @blockchain@_logs
+FROM @blockchain@_logs final
 WHERE substring(topics, 1, position(topics, ',') - 1) NOT IN (SELECT topic FROM filtered_events)
 AND block_timestamp >= DATE_TRUNC('day', NOW() - INTERVAL '@trailing_days@ days')
 AND is_deleted = 0 --not deleted
