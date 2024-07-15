@@ -56,7 +56,7 @@ col_list = [
 # In[ ]:
 
 
-trailing_days = 90
+trailing_days = 180
 
 flipside_configs = chain_configs[chain_configs['source'] == 'flipside']
 clickhouse_configs = chain_configs[chain_configs['source'] == 'oplabs']
@@ -209,6 +209,7 @@ final_enriched_df.to_csv('outputs/'+query_name+'.csv', index=False)
 final_enriched_df['chain_id'] = final_enriched_df['chain_id'].astype(int)
 final_enriched_df['num_raw_txs'] = final_enriched_df['num_raw_txs'].astype(int)
 final_enriched_df['num_success_txs'] = final_enriched_df['num_success_txs'].astype(int)
+final_enriched_df['num_qualified_txs'] = final_enriched_df['num_qualified_txs'].fillna(0)
 final_enriched_df['num_qualified_txs'] = final_enriched_df['num_qualified_txs'].astype(int)
 # final_enriched_df.dtypes
 
