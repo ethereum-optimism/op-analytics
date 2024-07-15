@@ -33,42 +33,75 @@ FROM (
         SUM(cast(receipt_l1_gas_used as Nullable(Int64)) ) AS l1_gas_used_on_l2,
         SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar)) AS l1_gas_paid,
         SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar) AS blob_gas_paid,
-        SUM((length(unhex(input)) - 1)) AS calldata_bytes_l2_per_day,
+        SUM(@byte_length_sql@) AS calldata_bytes_l2_per_day,
+
+        SUM(CASE WHEN gas_price > 0 THEN 
+            -- fjord formula: https://specs.optimism.io/fjord/exec-engine.html#fjord-l1-cost-fee-changes-fastlz-estimator
+            @estimated_size_sql@
+        ELSE 0 END) AS estimated_size_user_txs,
+
+        SUM( @estimated_size_sql@ * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar)) AS l1_gas_paid_fjord,
+        SUM( @estimated_size_sql@ * receipt_l1_blob_base_fee_scalar) AS blob_gas_paid_fjord,
 
         SUM(CASE WHEN gas_price > 0 THEN cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_fee_scalar ELSE 0 END) AS l1_gas_paid_user_txs,
         SUM(CASE WHEN gas_price > 0 THEN cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar ELSE 0 END) AS blob_gas_paid_user_txs,
 
         SUM(CASE WHEN gas_price > 0 THEN receipt_l1_gas_used ELSE 0 END) AS l1_gas_used_user_txs_l2_per_day,
-        SUM(CASE WHEN gas_price > 0 THEN (length(unhex(input)) - 1) ELSE 0 END) AS calldata_bytes_user_txs_l2_per_day,
+        SUM(CASE WHEN gas_price > 0 THEN @byte_length_sql@ ELSE 0 END) AS calldata_bytes_user_txs_l2_per_day,
         SUM(CASE WHEN gas_price > 0 THEN t.receipt_gas_used ELSE 0 END) AS l2_gas_used_user_txs_per_day,
 
-        SUM(CAST(gas_price * t.receipt_gas_used + receipt_l1_fee AS Nullable(Float64)) / 1e18) AS l2_eth_fees_per_day,
+        SUM(@gas_fee_sql@ / 1e18) AS l2_eth_fees_per_day,
         median(
                 CASE WHEN gas_price > 0 THEN 
-                CAST(gas_price * t.receipt_gas_used + receipt_l1_fee AS Nullable(Float64)) / 1e18
+                @gas_fee_sql@ / 1e18
                 ELSE NULL END
             ) AS median_l2_eth_fees_per_tx,
 
-        SUM(CAST(receipt_l1_fee AS Nullable(Float64)) / 1e18) AS l1_contrib_l2_eth_fees_per_day,
-        SUM(CAST(gas_price * t.receipt_gas_used AS Nullable(Float64)) / 1e18) AS l2_contrib_l2_eth_fees_per_day,
-
-        SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar) * cast(receipt_l1_gas_price AS Nullable(Float64)) / 1e18) AS l1_l1gas_contrib_l2_eth_fees_per_day,
-        SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar * cast(receipt_l1_blob_base_fee AS Nullable(Float64)) / 1e18) AS l1_blobgas_contrib_l2_eth_fees_per_day,
-
-        SUM(CAST((base_fee_per_gas) * t.receipt_gas_used AS Nullable(Float64)) / 1e18) AS l2_contrib_l2_eth_fees_base_fee_per_day,
-        SUM(CAST(gas_price - base_fee_per_gas * t.receipt_gas_used AS Nullable(Float64)) / 1e18) AS l2_contrib_l2_eth_fees_priority_fee_per_day,
+        SUM(
+            CASE WHEN gas_price > 0 THEN 
+            CAST(receipt_l1_fee AS Nullable(Float64)) / 1e18
+            ELSE 0 END
+            ) AS l1_contrib_l2_eth_fees_per_day,
+        SUM(
+            CASE WHEN gas_price > 0 THEN 
+            CAST(gas_price * t.receipt_gas_used AS Nullable(Float64)) / 1e18
+            ELSE 0 END
+            ) AS l2_contrib_l2_eth_fees_per_day,
 
         SUM(
-            16 * (length(replace(toString(unhex(input)), '\0', '')) - 1)
-            + 4 * ((length(unhex(input)) - 1) - (length(replace(toString(unhex(input)), '\0', '')) - 1))
+            CASE WHEN gas_price > 0 THEN 
+            cast(receipt_l1_gas_used as Nullable(Float64)) * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar) * cast(receipt_l1_gas_price AS Nullable(Float64)) / 1e18
+            ELSE 0 END
+            ) AS l1_l1gas_contrib_l2_eth_fees_per_day,
+        SUM(
+            CASE WHEN gas_price > 0 THEN 
+            cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar * cast(receipt_l1_blob_base_fee AS Nullable(Float64)) / 1e18
+            ELSE 0 END
+            ) AS l1_blobgas_contrib_l2_eth_fees_per_day,
+
+        SUM(
+            CASE WHEN gas_price > 0 THEN 
+            CAST((base_fee_per_gas) * t.receipt_gas_used AS Nullable(Float64)) / 1e18
+            ELSE 0 END
+            ) AS l2_contrib_l2_eth_fees_base_fee_per_day,
+        SUM(
+            CASE WHEN gas_price > 0 THEN 
+            CAST( (gas_price - base_fee_per_gas) * t.receipt_gas_used AS Nullable(Float64)) / 1e18
+            ELSE 0 END
+            ) AS l2_contrib_l2_eth_fees_priority_fee_per_day,
+
+        SUM(
+            @calldata_gas_sql@
         ) AS input_calldata_gas_l2_per_day,
         SUM(CASE WHEN gas_price > 0 THEN
-            16 * (length(replace(toString(unhex(input)), '\0', '')) - 1)
-            + 4 * ((length(unhex(input)) - 1) - (length(replace(toString(unhex(input)), '\0', '')) - 1))
+            @calldata_gas_sql@
             ELSE 0 END) AS input_calldata_gas_user_txs_l2_per_day,
 
-        SUM(receipt_l1_gas_used / 16) AS compressedtxsize_approx_l2_per_day,
-        SUM(CASE WHEN gas_price > 0 THEN receipt_l1_gas_used / 16 ELSE 0 END) AS compressedtxsize_approx_user_txs_l2_per_day,
+        SUM(receipt_l1_gas_used / 16) AS compressedtxsize_approx_l2_per_day_ecotone,
+        SUM(CASE WHEN gas_price > 0 THEN receipt_l1_gas_used / 16 ELSE 0 END) AS compressedtxsize_approx_user_txs_l2_per_day_ecotone,
+
+        SUM(receipt_l1_gas_used / 16) AS compressedtxsize_approx_l2_per_day_ecotone,
+        SUM(receipt_l1_gas_used / 16) AS compressedtxsize_approx_l2_per_day_ecotone,
 
         SUM((CAST(receipt_l1_gas_price AS Nullable(Float64)) / CAST(1e9 AS Nullable(Float64))) * CAST(receipt_l1_gas_used AS Nullable(Float64))) / SUM(CAST(receipt_l1_gas_used AS Nullable(Float64))) AS avg_l1_gas_price_on_l2,
         SUM((CAST(receipt_l1_blob_base_fee AS Nullable(Float64)) / CAST(1e9 AS Nullable(Float64))) * CAST(receipt_l1_gas_used AS Nullable(Float64))) / SUM(CAST(receipt_l1_gas_used AS Nullable(Float64))) AS avg_blob_base_fee_on_l2,
@@ -81,7 +114,7 @@ FROM (
         
         SUM( CASE WHEN gas_price = 0 THEN 0 ELSE CAST(t.receipt_gas_used*receipt_l1_gas_price as Nullable(Float64)) END / 1e18) AS equivalent_l1_tx_fee,
         
-        AVG(CASE WHEN gas_price > 0 THEN receipt_l1_fee_scalar ELSE NULL END) AS avg_l1_fee_scalar,
+        AVG(CASE WHEN gas_price > 0 THEN COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar) ELSE NULL END) AS avg_l1_fee_scalar,
         coalesce( AVG(CASE WHEN gas_price > 0 THEN receipt_l1_blob_base_fee_scalar ELSE NULL END) ,0) AS avg_l1_blob_fee_scalar
         
     FROM @chain_db_name@_transactions t final
