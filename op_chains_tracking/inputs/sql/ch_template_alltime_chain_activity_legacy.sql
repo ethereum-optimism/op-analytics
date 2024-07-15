@@ -55,8 +55,16 @@ FROM (
         SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar) * cast(receipt_l1_gas_price AS Nullable(Float64)) / 1e18) AS l1_l1gas_contrib_l2_eth_fees_per_day,
         SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar * cast(receipt_l1_blob_base_fee AS Nullable(Float64)) / 1e18) AS l1_blobgas_contrib_l2_eth_fees_per_day,
 
-        SUM(CAST((gas_price - max_priority_fee_per_gas) * t.receipt_gas_used AS Nullable(Float64)) / 1e18) AS l2_contrib_l2_eth_fees_base_fee_per_day,
-        SUM(CAST(max_priority_fee_per_gas * t.receipt_gas_used AS Nullable(Float64)) / 1e18) AS l2_contrib_l2_eth_fees_priority_fee_per_day,
+        SUM(
+            CASE WHEN gas_price = 0 THEN 
+                CAST((gas_price - max_priority_fee_per_gas) * t.receipt_gas_used AS Nullable(Float64)) / 1e18
+            ELSE NULL END
+            ) AS l2_contrib_l2_eth_fees_base_fee_per_day,
+        SUM(
+            CASE WHEN gas_price = 0 THEN 
+                CAST(max_priority_fee_per_gas * t.receipt_gas_used AS Nullable(Float64)) / 1e18
+            ELSE NULL END
+            ) AS l2_contrib_l2_eth_fees_priority_fee_per_day,
 
         SUM(
             16 * (length(replace(toString(unhex(input)), '\0', '')) - 1)
