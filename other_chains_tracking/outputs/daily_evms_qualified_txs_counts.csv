@@ -1,27 +1,51 @@
 dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,source,is_op_chain,op_based_version,alignment,chain_name,display_name
-2024-07-14,zora,L2,7777777.0,1883.0,1883.0,1578.0,goldsky,True,modern,OP Chain,zora,Zora
-2024-07-14,zksync,L2,324.0,1145.0,1106.0,1145.0,dune,False,,Other EVMs,,zkSync Era
-2024-07-14,zkevm,L2,1101.0,164.0,158.0,101.0,dune,False,,Other EVMs,,Polygon zkEVM
-2024-07-14,scroll,L2,534352.0,4375.0,4282.0,3992.0,dune,False,,Other EVMs,,Scroll
-2024-07-14,polygon,L1,137.0,70412.0,67450.0,70489.0,dune,False,,Other EVMs,,Polygon PoS
-2024-07-14,op,L2,10.0,7035.0,6464.0,5474.0,goldsky,True,modern,OP Chain,op,OP Mainnet
-2024-07-14,mode,L2,34443.0,1527.0,1527.0,263.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-07-14,mint,L2,185.0,10.0,10.0,7.0,goldsky,True,modern,OP Chain,mint,Mint
-2024-07-14,mantle,L2,5000.0,4992.0,4932.0,4685.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
-2024-07-14,linea,L2,59144.0,13469.0,13370.0,12834.0,dune,False,,Other EVMs,,Linea
-2024-07-14,gnosis,L1,100.0,1454.0,1415.0,1126.0,dune,False,,Other EVMs,,Gnosis
-2024-07-14,fraxtal,L2,252.0,83.0,83.0,165.0,goldsky,True,modern,OP Chain,fraxtal,Fraxtal
-2024-07-14,fantom,L1,250.0,4550.0,4351.0,2201.0,dune,False,,Other EVMs,,Fantom
-2024-07-14,ethereum,L1,1.0,16116.0,15541.0,10790.0,dune,False,,Other EVMs,,Ethereum
-2024-07-14,cyber,L2,7560.0,832.0,832.0,712.0,goldsky,True,modern,OP Chain,cyber,Cyber
-2024-07-14,celo,L1,42220.0,7598.0,7183.0,6266.0,dune,False,,Other EVMs,,Celo
-2024-07-14,bob,L2,60808.0,164.0,164.0,110.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
-2024-07-14,bnb,L1,56.0,43109.0,41102.0,35478.0,dune,False,,Other EVMs,,BNB
-2024-07-14,blast,L2,81457.0,4741.0,4659.0,2769.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-07-14,avalanche_c,L1,43114.0,1768.0,1717.0,1381.0,dune,False,,Other EVMs,,Avalanche C-Chain
-2024-07-14,arbitrum,L2,42161.0,20882.0,18961.0,16941.0,dune,False,,Other EVMs,,Arbitrum One
+2024-07-15,zora,L2,7777777.0,1768.0,1767.0,1468.0,goldsky,True,modern,OP Chain,zora,Zora
+2024-07-15,zksync,L2,324.0,1734.0,1641.0,1734.0,dune,False,,Other EVMs,,zkSync Era
+2024-07-15,zkevm,L2,1101.0,179.0,166.0,93.0,dune,False,,Other EVMs,,Polygon zkEVM
+2024-07-15,scroll,L2,534352.0,10379.0,10202.0,9804.0,dune,False,,Other EVMs,,Scroll
+2024-07-15,polygon,L1,137.0,127318.0,120097.0,129088.0,dune,False,,Other EVMs,,Polygon PoS
+2024-07-15,op,L2,10.0,5547.0,5054.0,4102.0,goldsky,True,modern,OP Chain,op,OP Mainnet
+2024-07-15,mode,L2,34443.0,1675.0,1653.0,279.0,goldsky,True,modern,OP Chain,mode,Mode
+2024-07-15,mint,L2,185.0,10.0,10.0,6.0,goldsky,True,modern,OP Chain,mint,Mint
+2024-07-15,mantle,L2,5000.0,6238.0,5868.0,5630.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
+2024-07-15,linea,L2,59144.0,10461.0,10321.0,9587.0,dune,False,,Other EVMs,,Linea
+2024-07-15,gnosis,L1,100.0,2730.0,2429.0,1327.0,dune,False,,Other EVMs,,Gnosis
+2024-07-15,fraxtal,L2,252.0,95.0,95.0,188.0,goldsky,True,modern,OP Chain,fraxtal,Fraxtal
+2024-07-15,fantom,L1,250.0,4552.0,4307.0,2055.0,dune,False,,Other EVMs,,Fantom
+2024-07-15,ethereum,L1,1.0,17782.0,17413.0,11734.0,dune,False,,Other EVMs,,Ethereum
+2024-07-15,cyber,L2,7560.0,638.0,637.0,474.0,goldsky,True,modern,OP Chain,cyber,Cyber
+2024-07-15,celo,L1,42220.0,9361.0,8949.0,8169.0,dune,False,,Other EVMs,,Celo
+2024-07-15,bob,L2,60808.0,202.0,198.0,114.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
+2024-07-15,bnb,L1,56.0,49422.0,47363.0,41569.0,dune,False,,Other EVMs,,BNB
+2024-07-15,blast,L2,81457.0,4858.0,4715.0,3222.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-15,base,L2,8453.0,49292.0,47407.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-07-15,avalanche_c,L1,43114.0,2449.0,2298.0,1973.0,dune,False,,Other EVMs,,Avalanche C-Chain
+2024-07-15,arbitrum,L2,42161.0,29057.0,25128.0,22198.0,dune,False,,Other EVMs,,Arbitrum One
+2024-07-14,zora,L2,7777777.0,105976.0,105349.0,81591.0,goldsky,True,modern,OP Chain,zora,Zora
+2024-07-14,zksync,L2,324.0,271413.0,267087.0,271417.0,dune,False,,Other EVMs,,zkSync Era
+2024-07-14,zkevm,L2,1101.0,13287.0,12877.0,9474.0,dune,False,,Other EVMs,,Polygon zkEVM
+2024-07-14,scroll,L2,534352.0,561936.0,534231.0,495189.0,dune,False,,Other EVMs,,Scroll
+2024-07-14,polygon,L1,137.0,3492279.0,3263380.0,3495039.0,dune,False,,Other EVMs,,Polygon PoS
+2024-07-14,op,L2,10.0,393757.0,371503.0,298849.0,goldsky,True,modern,OP Chain,op,OP Mainnet
+2024-07-14,mode,L2,34443.0,98017.0,95002.0,23852.0,goldsky,True,modern,OP Chain,mode,Mode
+2024-07-14,mint,L2,185.0,1494.0,1462.0,837.0,goldsky,True,modern,OP Chain,mint,Mint
+2024-07-14,metal,L2,1750.0,9.0,9.0,10.0,goldsky,True,modern,OP Chain,metal,Metal
+2024-07-14,mantle,L2,5000.0,367242.0,353697.0,332582.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
+2024-07-14,linea,L2,59144.0,939774.0,933790.0,863712.0,dune,False,,Other EVMs,,Linea
+2024-07-14,gnosis,L1,100.0,76766.0,74630.0,51361.0,dune,False,,Other EVMs,,Gnosis
+2024-07-14,fraxtal,L2,252.0,5493.0,5377.0,9983.0,goldsky,True,modern,OP Chain,fraxtal,Fraxtal
+2024-07-14,fantom,L1,250.0,311801.0,297553.0,142117.0,dune,False,,Other EVMs,,Fantom
+2024-07-14,ethereum,L1,1.0,1082017.0,1057144.0,689638.0,dune,False,,Other EVMs,,Ethereum
+2024-07-14,cyber,L2,7560.0,30710.0,30707.0,22109.0,goldsky,True,modern,OP Chain,cyber,Cyber
+2024-07-14,celo,L1,42220.0,733695.0,721169.0,670879.0,dune,False,,Other EVMs,,Celo
+2024-07-14,bob,L2,60808.0,21115.0,20784.0,13175.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
+2024-07-14,bnb,L1,56.0,2456708.0,2336576.0,2168629.0,dune,False,,Other EVMs,,BNB
+2024-07-14,blast,L2,81457.0,582140.0,574800.0,315276.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-14,base,L2,8453.0,3156440.0,3058173.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-07-14,avalanche_c,L1,43114.0,125615.0,119964.0,96092.0,dune,False,,Other EVMs,,Avalanche C-Chain
+2024-07-14,arbitrum,L2,42161.0,1694065.0,1577873.0,1345699.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-13,zora,L2,7777777.0,106601.0,103595.0,80428.0,goldsky,True,modern,OP Chain,zora,Zora
-2024-07-13,zksync,L2,324.0,270042.0,265880.0,270043.0,dune,False,,Other EVMs,,zkSync Era
+2024-07-13,zksync,L2,324.0,271984.0,267772.0,271985.0,dune,False,,Other EVMs,,zkSync Era
 2024-07-13,zkevm,L2,1101.0,13116.0,12726.0,9379.0,dune,False,,Other EVMs,,Polygon zkEVM
 2024-07-13,scroll,L2,534352.0,349378.0,341838.0,314013.0,dune,False,,Other EVMs,,Scroll
 2024-07-13,polygon,L1,137.0,3598765.0,3373367.0,3600161.0,dune,False,,Other EVMs,,Polygon PoS
@@ -40,6 +64,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-13,bob,L2,60808.0,18149.0,17844.0,11726.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-13,bnb,L1,56.0,2611356.0,2485950.0,2245382.0,dune,False,,Other EVMs,,BNB
 2024-07-13,blast,L2,81457.0,567903.0,560065.0,311096.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-13,base,L2,8453.0,3115997.0,3026197.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-13,avalanche_c,L1,43114.0,130308.0,124597.0,97845.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-13,arbitrum,L2,42161.0,1622461.0,1523161.0,1307052.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-12,zora,L2,7777777.0,107805.0,107510.0,80537.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -62,6 +87,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-12,bob,L2,60808.0,21107.0,20823.0,12907.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-12,bnb,L1,56.0,2961629.0,2819550.0,2537357.0,dune,False,,Other EVMs,,BNB
 2024-07-12,blast,L2,81457.0,554476.0,538871.0,305295.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-12,base,L2,8453.0,3182389.0,3051214.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-12,avalanche_c,L1,43114.0,144518.0,139303.0,109217.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-12,arbitrum,L2,42161.0,1890273.0,1732863.0,1506701.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-11,zora,L2,7777777.0,112836.0,112568.0,87582.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -84,6 +110,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-11,bob,L2,60808.0,18130.0,17801.0,10920.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-11,bnb,L1,56.0,2799553.0,2659450.0,2397208.0,dune,False,,Other EVMs,,BNB
 2024-07-11,blast,L2,81457.0,554415.0,540877.0,301101.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-11,base,L2,8453.0,3421498.0,3257141.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-11,avalanche_c,L1,43114.0,155948.0,149841.0,114412.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-11,arbitrum,L2,42161.0,2015389.0,1834227.0,1559382.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-10,zora,L2,7777777.0,109407.0,109119.0,86789.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -106,6 +133,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-10,bob,L2,60808.0,15146.0,14928.0,9498.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-10,bnb,L1,56.0,2776189.0,2661120.0,2287740.0,dune,False,,Other EVMs,,BNB
 2024-07-10,blast,L2,81457.0,508860.0,491866.0,289618.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-10,base,L2,8453.0,3276960.0,3124850.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-10,avalanche_c,L1,43114.0,145040.0,139204.0,111383.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-10,arbitrum,L2,42161.0,1972288.0,1777904.0,1548005.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-09,zora,L2,7777777.0,109700.0,109350.0,88434.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -128,6 +156,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-09,bob,L2,60808.0,18531.0,18128.0,11894.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-09,bnb,L1,56.0,2817587.0,2688186.0,2263321.0,dune,False,,Other EVMs,,BNB
 2024-07-09,blast,L2,81457.0,517901.0,500128.0,294702.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-09,base,L2,8453.0,3357510.0,3194865.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-09,avalanche_c,L1,43114.0,151704.0,143252.0,114728.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-09,arbitrum,L2,42161.0,2141038.0,1908314.0,1656014.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-08,zora,L2,7777777.0,100819.0,100423.0,79749.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -150,6 +179,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-08,bob,L2,60808.0,18350.0,18070.0,11739.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-08,bnb,L1,56.0,3104058.0,2887337.0,2629951.0,dune,False,,Other EVMs,,BNB
 2024-07-08,blast,L2,81457.0,534994.0,511415.0,294425.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-08,base,L2,8453.0,3246487.0,3045733.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-08,avalanche_c,L1,43114.0,174357.0,163903.0,131937.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-08,arbitrum,L2,42161.0,2253029.0,1931787.0,1707245.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-07,zora,L2,7777777.0,113979.0,113629.0,87890.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -172,6 +202,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-07,bob,L2,60808.0,13453.0,13233.0,8699.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-07,bnb,L1,56.0,2621495.0,2498770.0,2220003.0,dune,False,,Other EVMs,,BNB
 2024-07-07,blast,L2,81457.0,548209.0,511491.0,259913.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-07,base,L2,8453.0,2912097.0,2709284.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-07,avalanche_c,L1,43114.0,135360.0,128860.0,99721.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-07,arbitrum,L2,42161.0,1892665.0,1691641.0,1441288.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-06,zora,L2,7777777.0,111254.0,110963.0,85915.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -194,6 +225,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-06,bob,L2,60808.0,12447.0,12266.0,8061.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-06,bnb,L1,56.0,2661632.0,2542396.0,2178898.0,dune,False,,Other EVMs,,BNB
 2024-07-06,blast,L2,81457.0,548560.0,534732.0,276828.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-06,base,L2,8453.0,2911036.0,2713762.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-06,avalanche_c,L1,43114.0,140149.0,134377.0,107472.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-06,arbitrum,L2,42161.0,1719241.0,1553001.0,1311567.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-05,zora,L2,7777777.0,121550.0,121252.0,97345.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -216,6 +248,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-05,bob,L2,60808.0,20030.0,19823.0,11784.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-05,bnb,L1,56.0,3098439.0,2855884.0,2678285.0,dune,False,,Other EVMs,,BNB
 2024-07-05,blast,L2,81457.0,563543.0,540372.0,336261.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-05,base,L2,8453.0,3125820.0,2886498.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-05,avalanche_c,L1,43114.0,229148.0,210885.0,165416.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-05,arbitrum,L2,42161.0,2290663.0,1942782.0,1516830.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-04,zora,L2,7777777.0,181322.0,180964.0,154322.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -238,6 +271,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-04,bob,L2,60808.0,21118.0,20842.0,12766.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-04,bnb,L1,56.0,2813849.0,2634121.0,2648951.0,dune,False,,Other EVMs,,BNB
 2024-07-04,blast,L2,81457.0,600647.0,584680.0,348587.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-04,base,L2,8453.0,3234494.0,3056962.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-04,avalanche_c,L1,43114.0,184434.0,176096.0,131976.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-04,arbitrum,L2,42161.0,2328325.0,2032363.0,1409996.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-03,zora,L2,7777777.0,154526.0,154119.0,127320.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -260,6 +294,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-03,bob,L2,60808.0,19442.0,19278.0,12279.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-03,bnb,L1,56.0,2640625.0,2493350.0,2397674.0,dune,False,,Other EVMs,,BNB
 2024-07-03,blast,L2,81457.0,655002.0,639097.0,368413.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-03,base,L2,8453.0,3374928.0,3218877.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-03,avalanche_c,L1,43114.0,181377.0,174579.0,130446.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-03,arbitrum,L2,42161.0,1839796.0,1643025.0,1342921.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-02,zora,L2,7777777.0,179868.0,179307.0,141240.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -282,6 +317,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-02,bob,L2,60808.0,19545.0,19174.0,10524.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-02,bnb,L1,56.0,2600615.0,2478727.0,2291512.0,dune,False,,Other EVMs,,BNB
 2024-07-02,blast,L2,81457.0,714634.0,699034.0,515344.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-02,base,L2,8453.0,3111159.0,2995407.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-02,avalanche_c,L1,43114.0,164286.0,158681.0,122284.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-02,arbitrum,L2,42161.0,1780792.0,1689885.0,1392269.0,dune,False,,Other EVMs,,Arbitrum One
 2024-07-01,zora,L2,7777777.0,121220.0,120839.0,92886.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -304,6 +340,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-07-01,bob,L2,60808.0,20179.0,19794.0,12256.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-07-01,bnb,L1,56.0,2814985.0,2673103.0,2637691.0,dune,False,,Other EVMs,,BNB
 2024-07-01,blast,L2,81457.0,601377.0,591571.0,448301.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-07-01,base,L2,8453.0,3166685.0,3038386.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-07-01,avalanche_c,L1,43114.0,157784.0,151436.0,119259.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-07-01,arbitrum,L2,42161.0,1988241.0,1852036.0,1553791.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-30,zora,L2,7777777.0,124881.0,124385.0,97504.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -326,6 +363,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-30,bob,L2,60808.0,19339.0,18989.0,11002.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-30,bnb,L1,56.0,2604911.0,2479448.0,2405981.0,dune,False,,Other EVMs,,BNB
 2024-06-30,blast,L2,81457.0,525770.0,517286.0,342923.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-30,base,L2,8453.0,3006214.0,2863963.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-30,avalanche_c,L1,43114.0,142236.0,135987.0,106877.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-30,arbitrum,L2,42161.0,1770774.0,1645759.0,1397048.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-29,zora,L2,7777777.0,125974.0,125623.0,93617.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -348,6 +386,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-29,bob,L2,60808.0,15251.0,14982.0,8909.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-29,bnb,L1,56.0,2474784.0,2360636.0,2331285.0,dune,False,,Other EVMs,,BNB
 2024-06-29,blast,L2,81457.0,571946.0,560564.0,391916.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-29,base,L2,8453.0,3223656.0,3112698.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-29,avalanche_c,L1,43114.0,136463.0,132630.0,102085.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-29,arbitrum,L2,42161.0,1537889.0,1466706.0,1208628.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-28,zora,L2,7777777.0,125278.0,124891.0,98080.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -370,6 +409,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-28,bob,L2,60808.0,21242.0,20884.0,13529.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-28,bnb,L1,56.0,2759028.0,2612940.0,2608774.0,dune,False,,Other EVMs,,BNB
 2024-06-28,blast,L2,81457.0,824491.0,805390.0,579527.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-28,base,L2,8453.0,3500992.0,3365184.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-28,avalanche_c,L1,43114.0,168006.0,161087.0,125060.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-28,arbitrum,L2,42161.0,1992335.0,1806824.0,1495955.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-27,zora,L2,7777777.0,133637.0,133034.0,98997.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -392,6 +432,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-27,bob,L2,60808.0,22363.0,22011.0,14685.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-27,bnb,L1,56.0,2787000.0,2547041.0,2531533.0,dune,False,,Other EVMs,,BNB
 2024-06-27,blast,L2,81457.0,900389.0,874965.0,588209.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-27,base,L2,8453.0,3639143.0,3130404.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-27,avalanche_c,L1,43114.0,179320.0,171678.0,128179.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-27,arbitrum,L2,42161.0,2535084.0,2077778.0,1710882.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-26,zora,L2,7777777.0,147671.0,146954.0,106832.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -414,6 +455,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-26,bob,L2,60808.0,25488.0,24960.0,16428.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-26,bnb,L1,56.0,2714092.0,2581381.0,2527470.0,dune,False,,Other EVMs,,BNB
 2024-06-26,blast,L2,81457.0,870302.0,825783.0,560615.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-26,base,L2,8453.0,3437159.0,3206506.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-26,avalanche_c,L1,43114.0,176118.0,169561.0,128880.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-26,arbitrum,L2,42161.0,2262679.0,2101598.0,1609370.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-25,zora,L2,7777777.0,158899.0,158073.0,113973.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -436,6 +478,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-25,bob,L2,60808.0,31714.0,31351.0,22508.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-25,bnb,L1,56.0,2704987.0,2573526.0,2535740.0,dune,False,,Other EVMs,,BNB
 2024-06-25,blast,L2,81457.0,958823.0,915019.0,682363.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-25,base,L2,8453.0,3461838.0,3269627.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-25,avalanche_c,L1,43114.0,168352.0,162558.0,124935.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-25,arbitrum,L2,42161.0,2446046.0,2303279.0,1750446.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-24,zora,L2,7777777.0,119076.0,117962.0,93111.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -458,6 +501,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-24,bob,L2,60808.0,25522.0,25104.0,18542.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-24,bnb,L1,56.0,3087499.0,2811963.0,2804016.0,dune,False,,Other EVMs,,BNB
 2024-06-24,blast,L2,81457.0,933244.0,878107.0,716888.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-24,base,L2,8453.0,3307536.0,3076994.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-24,avalanche_c,L1,43114.0,213281.0,201324.0,152761.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-24,arbitrum,L2,42161.0,2569415.0,2343104.0,1775165.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-23,zora,L2,7777777.0,118713.0,118461.0,91747.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -480,6 +524,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-23,bob,L2,60808.0,16897.0,16588.0,12658.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-23,bnb,L1,56.0,2732449.0,2508097.0,2511030.0,dune,False,,Other EVMs,,BNB
 2024-06-23,blast,L2,81457.0,1039643.0,993673.0,772523.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-23,base,L2,8453.0,3077110.0,2916740.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-23,avalanche_c,L1,43114.0,173024.0,164775.0,123131.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-23,arbitrum,L2,42161.0,2028455.0,1958311.0,1548942.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-22,zora,L2,7777777.0,124205.0,122822.0,96826.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -502,6 +547,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-22,bob,L2,60808.0,17373.0,17110.0,11990.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-22,bnb,L1,56.0,2897282.0,2700123.0,2552320.0,dune,False,,Other EVMs,,BNB
 2024-06-22,blast,L2,81457.0,1084006.0,1038446.0,821374.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-22,base,L2,8453.0,2754661.0,2635518.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-22,avalanche_c,L1,43114.0,202622.0,190024.0,137949.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-22,arbitrum,L2,42161.0,2515646.0,2424434.0,1805681.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-21,zora,L2,7777777.0,123793.0,123505.0,98405.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -524,6 +570,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-21,bob,L2,60808.0,21749.0,21450.0,15488.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-21,bnb,L1,56.0,3419447.0,3174718.0,2813822.0,dune,False,,Other EVMs,,BNB
 2024-06-21,blast,L2,81457.0,1088033.0,1046574.0,837153.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-21,base,L2,8453.0,3206544.0,2898477.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-21,avalanche_c,L1,43114.0,225135.0,217387.0,162932.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-21,arbitrum,L2,42161.0,3176206.0,3026371.0,2340708.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-20,zora,L2,7777777.0,114409.0,111402.0,76603.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -546,6 +593,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-20,bob,L2,60808.0,26723.0,26089.0,18943.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-20,bnb,L1,56.0,4059799.0,3851348.0,3264911.0,dune,False,,Other EVMs,,BNB
 2024-06-20,blast,L2,81457.0,1110766.0,1071495.0,836788.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-20,base,L2,8453.0,3371875.0,3080722.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-20,avalanche_c,L1,43114.0,261219.0,251627.0,203080.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-20,arbitrum,L2,42161.0,3493999.0,3340347.0,2636111.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-19,zora,L2,7777777.0,147464.0,141507.0,84978.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -568,6 +616,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-19,bob,L2,60808.0,25583.0,25057.0,16660.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-19,bnb,L1,56.0,3209976.0,2951288.0,2767965.0,dune,False,,Other EVMs,,BNB
 2024-06-19,blast,L2,81457.0,1008634.0,977599.0,789863.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-19,base,L2,8453.0,3180439.0,2925852.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-19,avalanche_c,L1,43114.0,150762.0,143872.0,113631.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-19,arbitrum,L2,42161.0,2289169.0,2156057.0,1640390.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-18,zora,L2,7777777.0,147413.0,141899.0,91550.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -590,6 +639,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-18,bob,L2,60808.0,25590.0,25033.0,15294.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-18,bnb,L1,56.0,3446132.0,3139199.0,2962477.0,dune,False,,Other EVMs,,BNB
 2024-06-18,blast,L2,81457.0,964865.0,918611.0,737299.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-18,base,L2,8453.0,3161839.0,2745898.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-18,avalanche_c,L1,43114.0,183161.0,170062.0,136818.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-18,arbitrum,L2,42161.0,2190079.0,2020080.0,1603290.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-17,zora,L2,7777777.0,142313.0,139247.0,97579.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -612,6 +662,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-17,bob,L2,60808.0,36410.0,35917.0,23927.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-17,bnb,L1,56.0,3070598.0,2815801.0,2758562.0,dune,False,,Other EVMs,,BNB
 2024-06-17,blast,L2,81457.0,995035.0,929186.0,775082.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-17,base,L2,8453.0,3053922.0,2784075.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-17,avalanche_c,L1,43114.0,153894.0,144801.0,117318.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-17,arbitrum,L2,42161.0,1954428.0,1813084.0,1457234.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-16,zora,L2,7777777.0,128673.0,127721.0,94208.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -634,6 +685,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-16,bob,L2,60808.0,33831.0,33188.0,22767.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-16,bnb,L1,56.0,2718919.0,2517095.0,2471685.0,dune,False,,Other EVMs,,BNB
 2024-06-16,blast,L2,81457.0,953324.0,909649.0,753614.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-16,base,L2,8453.0,2845160.0,2732434.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-16,avalanche_c,L1,43114.0,110864.0,106970.0,83153.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-16,arbitrum,L2,42161.0,1781636.0,1700468.0,1298548.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-15,zora,L2,7777777.0,117486.0,115025.0,89713.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -656,6 +708,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-15,bob,L2,60808.0,37301.0,36613.0,24509.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-15,bnb,L1,56.0,2862328.0,2654928.0,2620669.0,dune,False,,Other EVMs,,BNB
 2024-06-15,blast,L2,81457.0,971722.0,939974.0,765261.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-15,base,L2,8453.0,2859640.0,2720314.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-15,avalanche_c,L1,43114.0,114927.0,111762.0,89204.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-15,arbitrum,L2,42161.0,1793796.0,1716168.0,1249923.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-14,zora,L2,7777777.0,114612.0,113751.0,90784.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -678,6 +731,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-14,bob,L2,60808.0,34462.0,33977.0,22693.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-14,bnb,L1,56.0,3166758.0,2934880.0,2883603.0,dune,False,,Other EVMs,,BNB
 2024-06-14,blast,L2,81457.0,909551.0,875778.0,710043.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-14,base,L2,8453.0,2925010.0,2760609.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-14,avalanche_c,L1,43114.0,158747.0,151047.0,124990.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-14,arbitrum,L2,42161.0,1974432.0,1861922.0,1490005.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-13,zora,L2,7777777.0,148223.0,147880.0,114956.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -700,6 +754,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-13,bob,L2,60808.0,29734.0,29352.0,18490.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-13,bnb,L1,56.0,3237538.0,2999288.0,2990275.0,dune,False,,Other EVMs,,BNB
 2024-06-13,blast,L2,81457.0,990466.0,951989.0,766477.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-13,base,L2,8453.0,3104603.0,2948218.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-13,avalanche_c,L1,43114.0,150605.0,143794.0,117276.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-13,arbitrum,L2,42161.0,2215573.0,2099782.0,1703689.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-12,zora,L2,7777777.0,144128.0,143668.0,110683.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -722,6 +777,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-12,bob,L2,60808.0,25804.0,24961.0,16528.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-12,bnb,L1,56.0,3184194.0,2983183.0,2963890.0,dune,False,,Other EVMs,,BNB
 2024-06-12,blast,L2,81457.0,852787.0,816279.0,662270.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-12,base,L2,8453.0,3100819.0,2861426.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-12,avalanche_c,L1,43114.0,168518.0,158924.0,128085.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-12,arbitrum,L2,42161.0,2064276.0,1945936.0,1582278.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-11,zora,L2,7777777.0,120790.0,120326.0,95669.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -744,6 +800,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-11,bob,L2,60808.0,22814.0,20816.0,13656.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-11,bnb,L1,56.0,3186726.0,3015857.0,2994477.0,dune,False,,Other EVMs,,BNB
 2024-06-11,blast,L2,81457.0,837667.0,805965.0,677981.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-11,base,L2,8453.0,2889404.0,2655372.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-11,avalanche_c,L1,43114.0,180420.0,170419.0,136800.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-11,arbitrum,L2,42161.0,2315309.0,2166552.0,1678174.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-10,zora,L2,7777777.0,110511.0,109976.0,87062.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -765,6 +822,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-10,bob,L2,60808.0,16131.0,13800.0,9713.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-10,bnb,L1,56.0,3063269.0,2909957.0,2943457.0,dune,False,,Other EVMs,,BNB
 2024-06-10,blast,L2,81457.0,859743.0,820753.0,694726.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-10,base,L2,8453.0,2784043.0,2603822.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-10,avalanche_c,L1,43114.0,144456.0,138148.0,114333.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-10,arbitrum,L2,42161.0,1714474.0,1626242.0,1241667.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-09,zora,L2,7777777.0,118183.0,117824.0,94078.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -786,6 +844,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-09,bob,L2,60808.0,13001.0,12466.0,8317.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-09,bnb,L1,56.0,2857030.0,2735239.0,2793200.0,dune,False,,Other EVMs,,BNB
 2024-06-09,blast,L2,81457.0,820958.0,788140.0,658737.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-09,base,L2,8453.0,2618414.0,2504053.0,0.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-09,avalanche_c,L1,43114.0,119642.0,116365.0,95682.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-09,arbitrum,L2,42161.0,2029921.0,1965374.0,1534309.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-08,zora,L2,7777777.0,110680.0,108309.0,84598.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -808,6 +867,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-08,bob,L2,60808.0,16440.0,16050.0,10187.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-08,bnb,L1,56.0,2870384.0,2735515.0,2790185.0,dune,False,,Other EVMs,,BNB
 2024-06-08,blast,L2,81457.0,790549.0,771469.0,590518.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-08,base,L2,8453.0,2473743.0,2291738.0,437595.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-08,avalanche_c,L1,43114.0,129674.0,125836.0,103899.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-08,arbitrum,L2,42161.0,1960498.0,1887807.0,1509083.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-07,zora,L2,7777777.0,108562.0,108005.0,85958.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -830,6 +890,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-07,bob,L2,60808.0,33163.0,32409.0,20162.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-07,bnb,L1,56.0,3591728.0,3399547.0,3336218.0,dune,False,,Other EVMs,,BNB
 2024-06-07,blast,L2,81457.0,875926.0,843852.0,692404.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-07,base,L2,8453.0,2891548.0,2719096.0,764878.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-07,avalanche_c,L1,43114.0,168373.0,158890.0,129467.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-07,arbitrum,L2,42161.0,1807487.0,1717735.0,1367569.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-06,zora,L2,7777777.0,95889.0,94978.0,74215.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -851,6 +912,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-06,bob,L2,60808.0,46881.0,45376.0,27756.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-06,bnb,L1,56.0,3705853.0,3526738.0,3410545.0,dune,False,,Other EVMs,,BNB
 2024-06-06,blast,L2,81457.0,905502.0,880282.0,710794.0,flipside,False,modern,OP Stack fork,blast,Blast
+2024-06-06,base,L2,8453.0,2927889.0,2680854.0,789031.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-06,avalanche_c,L1,43114.0,155269.0,149929.0,120667.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-06,arbitrum,L2,42161.0,2049110.0,1991541.0,1610823.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-05,zora,L2,7777777.0,86324.0,85011.0,62074.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -873,7 +935,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-05,bob,L2,60808.0,53622.0,49356.0,34486.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-05,bnb,L1,56.0,3680523.0,3414105.0,3164494.0,dune,False,,Other EVMs,,BNB
 2024-06-05,blast,L2,81457.0,790205.0,767833.0,617810.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-06-05,base,L2,8453.0,321134.0,289840.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-06-05,base,L2,8453.0,2929830.0,2628271.0,935470.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-05,avalanche_c,L1,43114.0,172239.0,165089.0,132172.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-05,arbitrum,L2,42161.0,1643701.0,1516347.0,1115520.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-04,zora,L2,7777777.0,89886.0,89028.0,67691.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -895,7 +957,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-04,bob,L2,60808.0,68269.0,62373.0,48719.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-04,bnb,L1,56.0,3341234.0,3128624.0,2926435.0,dune,False,,Other EVMs,,BNB
 2024-06-04,blast,L2,81457.0,740550.0,721446.0,582042.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-06-04,base,L2,8453.0,338348.0,314309.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-06-04,base,L2,8453.0,2706252.0,2509952.0,1142942.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-04,avalanche_c,L1,43114.0,153448.0,148105.0,120458.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-04,arbitrum,L2,42161.0,1895891.0,1816679.0,1346043.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-03,zora,L2,7777777.0,86995.0,86547.0,62776.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -917,7 +979,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-03,bob,L2,60808.0,58767.0,55977.0,43009.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-03,bnb,L1,56.0,3097403.0,2931956.0,2722433.0,dune,False,,Other EVMs,,BNB
 2024-06-03,blast,L2,81457.0,707880.0,670939.0,558488.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-06-03,base,L2,8453.0,316266.0,282122.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-06-03,base,L2,8453.0,2527644.0,2255126.0,1134285.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-03,avalanche_c,L1,43114.0,158717.0,152876.0,125494.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-03,arbitrum,L2,42161.0,1864448.0,1765393.0,1433407.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-02,zora,L2,7777777.0,89094.0,88536.0,62272.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -939,7 +1001,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-02,bob,L2,60808.0,59098.0,57467.0,49418.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-02,bnb,L1,56.0,2797548.0,2666992.0,2472481.0,dune,False,,Other EVMs,,BNB
 2024-06-02,blast,L2,81457.0,644603.0,621887.0,498755.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-06-02,base,L2,8453.0,512282.0,453728.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-06-02,base,L2,8453.0,2233869.0,1969565.0,1135363.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-02,avalanche_c,L1,43114.0,133765.0,128929.0,104965.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-02,arbitrum,L2,42161.0,2006598.0,1924529.0,1613601.0,dune,False,,Other EVMs,,Arbitrum One
 2024-06-01,zora,L2,7777777.0,87295.0,86899.0,61563.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -961,7 +1023,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-06-01,bob,L2,60808.0,59815.0,58706.0,48911.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-06-01,bnb,L1,56.0,2776671.0,2667404.0,2485046.0,dune,False,,Other EVMs,,BNB
 2024-06-01,blast,L2,81457.0,639008.0,616232.0,474093.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-06-01,base,L2,8453.0,950125.0,880492.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-06-01,base,L2,8453.0,2108022.0,1951480.0,1095446.0,goldsky,True,modern,OP Chain,base,Base
 2024-06-01,avalanche_c,L1,43114.0,130975.0,127484.0,104339.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-06-01,arbitrum,L2,42161.0,1909644.0,1833620.0,1427082.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-31,zora,L2,7777777.0,107463.0,106792.0,78096.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -984,7 +1046,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-31,bob,L2,60808.0,75621.0,74390.0,63001.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-31,bnb,L1,56.0,3088264.0,2961606.0,2695694.0,dune,False,,Other EVMs,,BNB
 2024-05-31,blast,L2,81457.0,662889.0,637104.0,483893.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-31,base,L2,8453.0,1754463.0,1580841.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-31,base,L2,8453.0,2279623.0,2055663.0,1207872.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-31,avalanche_c,L1,43114.0,175830.0,168951.0,138770.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-31,arbitrum,L2,42161.0,1952855.0,1851338.0,1453794.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-30,zora,L2,7777777.0,103587.0,102877.0,77689.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1007,7 +1069,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-30,bob,L2,60808.0,70917.0,68871.0,56335.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-30,bnb,L1,56.0,3453529.0,3307843.0,2976755.0,dune,False,,Other EVMs,,BNB
 2024-05-30,blast,L2,81457.0,674683.0,655854.0,493188.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-30,base,L2,8453.0,2163444.0,1985115.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-30,base,L2,8453.0,2269864.0,2083715.0,1210303.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-30,avalanche_c,L1,43114.0,175469.0,166440.0,135598.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-30,arbitrum,L2,42161.0,1845064.0,1727276.0,1427840.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-29,zora,L2,7777777.0,98146.0,96789.0,72322.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1030,7 +1092,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-29,bob,L2,60808.0,78374.0,74389.0,49909.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-29,bnb,L1,56.0,3195094.0,3049750.0,2764255.0,dune,False,,Other EVMs,,BNB
 2024-05-29,blast,L2,81457.0,615726.0,601256.0,453779.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-29,base,L2,8453.0,2186184.0,1975648.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-29,base,L2,8453.0,2186184.0,1975648.0,1092658.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-29,avalanche_c,L1,43114.0,162841.0,156244.0,125959.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-29,arbitrum,L2,42161.0,2568982.0,2460530.0,2133561.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-28,zora,L2,7777777.0,94911.0,94217.0,71372.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1053,7 +1115,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-28,bob,L2,60808.0,66972.0,63969.0,42910.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-28,bnb,L1,56.0,3009599.0,2879731.0,2704445.0,dune,False,,Other EVMs,,BNB
 2024-05-28,blast,L2,81457.0,608972.0,588133.0,445042.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-28,base,L2,8453.0,1930092.0,1751320.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-28,base,L2,8453.0,1930092.0,1751320.0,953551.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-28,avalanche_c,L1,43114.0,169145.0,162464.0,130281.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-28,arbitrum,L2,42161.0,1927317.0,1805424.0,1596141.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-27,zora,L2,7777777.0,73771.0,73138.0,57176.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1075,7 +1137,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-27,bob,L2,60808.0,101773.0,98845.0,61622.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-27,bnb,L1,56.0,3132064.0,3006973.0,2668738.0,dune,False,,Other EVMs,,BNB
 2024-05-27,blast,L2,81457.0,562982.0,544644.0,416020.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-27,base,L2,8453.0,1771684.0,1594085.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-27,base,L2,8453.0,1771684.0,1594085.0,890937.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-27,avalanche_c,L1,43114.0,153965.0,148476.0,118469.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-27,arbitrum,L2,42161.0,1986608.0,1839214.0,1596405.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-26,zora,L2,7777777.0,84739.0,84024.0,64691.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1098,7 +1160,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-26,bob,L2,60808.0,96958.0,95049.0,62823.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-26,bnb,L1,56.0,2668595.0,2556492.0,2453372.0,dune,False,,Other EVMs,,BNB
 2024-05-26,blast,L2,81457.0,526165.0,516376.0,390133.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-26,base,L2,8453.0,1858118.0,1648441.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-26,base,L2,8453.0,1858118.0,1648441.0,880003.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-26,avalanche_c,L1,43114.0,131026.0,127374.0,99504.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-26,arbitrum,L2,42161.0,1924653.0,1806161.0,1616383.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-25,zora,L2,7777777.0,91750.0,90984.0,70993.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1120,7 +1182,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-25,bob,L2,60808.0,63916.0,61912.0,40271.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-25,bnb,L1,56.0,2794400.0,2677222.0,2561555.0,dune,False,,Other EVMs,,BNB
 2024-05-25,blast,L2,81457.0,523587.0,511193.0,384024.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-25,base,L2,8453.0,1661477.0,1547051.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-25,base,L2,8453.0,1661477.0,1547051.0,882394.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-25,avalanche_c,L1,43114.0,135125.0,131320.0,102584.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-25,arbitrum,L2,42161.0,1970862.0,1857231.0,1648978.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-24,zora,L2,7777777.0,86496.0,85712.0,66057.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1142,7 +1204,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-24,bob,L2,60808.0,62974.0,60703.0,41165.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-24,bnb,L1,56.0,2958425.0,2807091.0,2636910.0,dune,False,,Other EVMs,,BNB
 2024-05-24,blast,L2,81457.0,560832.0,547161.0,424958.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-24,base,L2,8453.0,2017848.0,1822434.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-24,base,L2,8453.0,2017848.0,1822434.0,1060810.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-24,avalanche_c,L1,43114.0,169715.0,162781.0,129407.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-24,arbitrum,L2,42161.0,2534750.0,2360591.0,2130112.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-23,zora,L2,7777777.0,78465.0,78039.0,60908.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1165,7 +1227,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-23,bob,L2,60808.0,57602.0,55631.0,37221.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-23,bnb,L1,56.0,3384637.0,3187345.0,2964006.0,dune,False,,Other EVMs,,BNB
 2024-05-23,blast,L2,81457.0,579827.0,560290.0,447942.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-23,base,L2,8453.0,2237334.0,1936807.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-23,base,L2,8453.0,2237334.0,1936807.0,1195505.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-23,avalanche_c,L1,43114.0,201525.0,187862.0,150075.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-23,arbitrum,L2,42161.0,2449123.0,2052717.0,1793831.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-22,zora,L2,7777777.0,83480.0,83004.0,65923.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1188,7 +1250,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-22,bob,L2,60808.0,66438.0,64250.0,44201.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-22,bnb,L1,56.0,3143558.0,2941509.0,2651794.0,dune,False,,Other EVMs,,BNB
 2024-05-22,blast,L2,81457.0,578678.0,564391.0,432450.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-22,base,L2,8453.0,2130253.0,1860038.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-22,base,L2,8453.0,2130253.0,1860038.0,1158216.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-22,avalanche_c,L1,43114.0,188334.0,179100.0,140309.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-22,arbitrum,L2,42161.0,2053586.0,1919840.0,1699657.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-21,zora,L2,7777777.0,76541.0,76103.0,61031.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1211,7 +1273,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-21,bob,L2,60808.0,58967.0,57415.0,38471.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-21,bnb,L1,56.0,3325732.0,3095807.0,2906946.0,dune,False,,Other EVMs,,BNB
 2024-05-21,blast,L2,81457.0,623381.0,603276.0,470151.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-21,base,L2,8453.0,2110810.0,1795648.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-21,base,L2,8453.0,2110810.0,1795648.0,1121879.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-21,avalanche_c,L1,43114.0,205583.0,193673.0,152299.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-21,arbitrum,L2,42161.0,2310105.0,2123274.0,1869336.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-20,zora,L2,7777777.0,80717.0,79513.0,66447.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1234,7 +1296,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-20,bob,L2,60808.0,54306.0,52986.0,32204.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-20,bnb,L1,56.0,3206998.0,3020780.0,2785640.0,dune,False,,Other EVMs,,BNB
 2024-05-20,blast,L2,81457.0,636415.0,609491.0,471325.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-20,base,L2,8453.0,1992730.0,1803012.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-20,base,L2,8453.0,1992730.0,1803012.0,1086961.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-20,avalanche_c,L1,43114.0,172257.0,162206.0,131986.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-20,arbitrum,L2,42161.0,1923431.0,1779780.0,1563783.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-19,zora,L2,7777777.0,71524.0,71013.0,47512.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1256,7 +1318,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-19,bob,L2,60808.0,49296.0,48087.0,32966.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-19,bnb,L1,56.0,2723288.0,2636683.0,2371952.0,dune,False,,Other EVMs,,BNB
 2024-05-19,blast,L2,81457.0,634775.0,620200.0,451512.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-19,base,L2,8453.0,1712529.0,1591530.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-19,base,L2,8453.0,1712529.0,1591530.0,932907.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-19,avalanche_c,L1,43114.0,133289.0,128189.0,103017.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-19,arbitrum,L2,42161.0,3416922.0,3336004.0,3108121.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-18,zora,L2,7777777.0,84968.0,84238.0,60975.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1278,7 +1340,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-18,bob,L2,60808.0,59281.0,56999.0,40654.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-18,bnb,L1,56.0,2709394.0,2622329.0,2299572.0,dune,False,,Other EVMs,,BNB
 2024-05-18,blast,L2,81457.0,626317.0,612213.0,448357.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-18,base,L2,8453.0,1764017.0,1654285.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-18,base,L2,8453.0,1764017.0,1654285.0,948371.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-18,avalanche_c,L1,43114.0,161759.0,153110.0,122892.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-18,arbitrum,L2,42161.0,2732622.0,2656238.0,2359800.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-17,zora,L2,7777777.0,104540.0,102809.0,77888.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1301,7 +1363,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-17,bob,L2,60808.0,77375.0,72332.0,53732.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-17,bnb,L1,56.0,3025083.0,2918711.0,2629120.0,dune,False,,Other EVMs,,BNB
 2024-05-17,blast,L2,81457.0,642690.0,628851.0,478843.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-17,base,L2,8453.0,1816514.0,1720336.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-17,base,L2,8453.0,1816514.0,1720336.0,1090390.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-17,avalanche_c,L1,43114.0,172138.0,164763.0,135159.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-17,arbitrum,L2,42161.0,2718825.0,2606569.0,2246545.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-16,zora,L2,7777777.0,88032.0,87351.0,63281.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1324,7 +1386,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-16,bob,L2,60808.0,56098.0,53894.0,35721.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-16,bnb,L1,56.0,3207850.0,3077527.0,2732059.0,dune,False,,Other EVMs,,BNB
 2024-05-16,blast,L2,81457.0,628893.0,598164.0,452054.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-16,base,L2,8453.0,1880573.0,1760314.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-16,base,L2,8453.0,1880573.0,1760314.0,1116804.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-16,avalanche_c,L1,43114.0,192579.0,185326.0,151297.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-16,arbitrum,L2,42161.0,2539803.0,2438088.0,2115825.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-15,zora,L2,7777777.0,103207.0,102305.0,75693.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1346,7 +1408,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-15,bob,L2,60808.0,64146.0,57897.0,40667.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-15,bnb,L1,56.0,3126020.0,3003264.0,2671626.0,dune,False,,Other EVMs,,BNB
 2024-05-15,blast,L2,81457.0,635816.0,619864.0,477503.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-15,base,L2,8453.0,1896970.0,1803829.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-15,base,L2,8453.0,1896970.0,1803829.0,1134380.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-15,avalanche_c,L1,43114.0,174853.0,166160.0,136456.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-15,arbitrum,L2,42161.0,2126599.0,1991426.0,1628840.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-14,zora,L2,7777777.0,113701.0,113117.0,83442.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1368,7 +1430,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-14,bob,L2,60808.0,15819.0,15657.0,11136.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-14,bnb,L1,56.0,2977320.0,2863580.0,2535915.0,dune,False,,Other EVMs,,BNB
 2024-05-14,blast,L2,81457.0,605748.0,590819.0,454418.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-14,base,L2,8453.0,2051341.0,1793700.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-14,base,L2,8453.0,2051341.0,1793700.0,1102618.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-14,avalanche_c,L1,43114.0,161557.0,152540.0,125525.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-14,arbitrum,L2,42161.0,2272408.0,2179648.0,1814012.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-13,zora,L2,7777777.0,107111.0,106560.0,79059.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1390,7 +1452,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-13,bob,L2,60808.0,13809.0,13709.0,10236.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-13,bnb,L1,56.0,3025669.0,2899515.0,2586657.0,dune,False,,Other EVMs,,BNB
 2024-05-13,blast,L2,81457.0,574660.0,562531.0,422823.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-13,base,L2,8453.0,1991288.0,1787664.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-13,base,L2,8453.0,1991288.0,1787664.0,1092238.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-13,avalanche_c,L1,43114.0,169375.0,160669.0,131091.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-13,arbitrum,L2,42161.0,2170269.0,2072192.0,1733815.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-12,zora,L2,7777777.0,100599.0,100092.0,73831.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1411,7 +1473,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-12,bob,L2,60808.0,10159.0,10064.0,6084.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-12,bnb,L1,56.0,2945442.0,2852224.0,2351582.0,dune,False,,Other EVMs,,BNB
 2024-05-12,blast,L2,81457.0,520757.0,510834.0,385372.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-12,base,L2,8453.0,1900202.0,1803712.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-12,base,L2,8453.0,1900202.0,1803712.0,1110484.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-12,avalanche_c,L1,43114.0,125247.0,121089.0,99301.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-12,arbitrum,L2,42161.0,1632946.0,1591931.0,1203359.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-11,zora,L2,7777777.0,98997.0,98442.0,71771.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1432,7 +1494,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-11,bob,L2,60808.0,11157.0,11014.0,6587.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-11,bnb,L1,56.0,2700563.0,2617002.0,2281887.0,dune,False,,Other EVMs,,BNB
 2024-05-11,blast,L2,81457.0,498944.0,488421.0,369076.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-11,base,L2,8453.0,1954254.0,1865059.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-11,base,L2,8453.0,1954254.0,1865059.0,1164206.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-11,avalanche_c,L1,43114.0,138946.0,132465.0,107444.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-11,arbitrum,L2,42161.0,1496583.0,1448017.0,1132919.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-10,zora,L2,7777777.0,104084.0,103538.0,75050.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1454,7 +1516,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-10,bob,L2,60808.0,11233.0,11058.0,7932.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-10,bnb,L1,56.0,2983897.0,2871029.0,2534956.0,dune,False,,Other EVMs,,BNB
 2024-05-10,blast,L2,81457.0,662333.0,647313.0,483617.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-10,base,L2,8453.0,2202664.0,1955240.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-10,base,L2,8453.0,2202664.0,1955240.0,1289241.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-10,avalanche_c,L1,43114.0,210163.0,195832.0,165580.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-10,arbitrum,L2,42161.0,1948494.0,1851193.0,1509105.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-09,zora,L2,7777777.0,95746.0,95157.0,71060.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1475,7 +1537,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-09,bob,L2,60808.0,13053.0,12855.0,7259.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-09,bnb,L1,56.0,3119145.0,2995626.0,2593994.0,dune,False,,Other EVMs,,BNB
 2024-05-09,blast,L2,81457.0,696800.0,679335.0,530124.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-09,base,L2,8453.0,2537733.0,2046122.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-09,base,L2,8453.0,2537733.0,2046122.0,1382753.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-09,avalanche_c,L1,43114.0,204688.0,192787.0,163072.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-09,arbitrum,L2,42161.0,1694617.0,1620678.0,1283404.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-08,zora,L2,7777777.0,122170.0,121511.0,92745.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1497,7 +1559,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-08,bob,L2,60808.0,10691.0,10591.0,5541.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-08,bnb,L1,56.0,3074513.0,2950950.0,2594379.0,dune,False,,Other EVMs,,BNB
 2024-05-08,blast,L2,81457.0,720727.0,702817.0,520993.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-08,base,L2,8453.0,2256528.0,2070894.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-08,base,L2,8453.0,2256528.0,2070894.0,1381012.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-08,avalanche_c,L1,43114.0,194162.0,181896.0,147885.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-08,arbitrum,L2,42161.0,2239513.0,1869807.0,1510941.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-07,zora,L2,7777777.0,105009.0,104458.0,80457.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1518,7 +1580,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-07,bob,L2,60808.0,9891.0,9812.0,4775.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-07,bnb,L1,56.0,3232284.0,3100673.0,2716127.0,dune,False,,Other EVMs,,BNB
 2024-05-07,blast,L2,81457.0,672849.0,657042.0,488097.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-07,base,L2,8453.0,2607962.0,2140249.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-07,base,L2,8453.0,2607962.0,2140249.0,1427773.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-07,avalanche_c,L1,43114.0,168034.0,158473.0,130098.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-07,arbitrum,L2,42161.0,1687335.0,1599959.0,1276800.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-06,zora,L2,7777777.0,94780.0,94062.0,71288.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1540,7 +1602,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-06,bob,L2,60808.0,9702.0,9577.0,4851.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-06,bnb,L1,56.0,3060089.0,2950369.0,2598607.0,dune,False,,Other EVMs,,BNB
 2024-05-06,blast,L2,81457.0,733401.0,711191.0,541922.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-06,base,L2,8453.0,2448190.0,2170187.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-06,base,L2,8453.0,2448190.0,2170187.0,1456463.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-06,avalanche_c,L1,43114.0,183194.0,170663.0,141383.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-06,arbitrum,L2,42161.0,1508488.0,1408220.0,1151156.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-05,zora,L2,7777777.0,96556.0,95974.0,68008.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1561,7 +1623,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-05,bob,L2,60808.0,9032.0,8932.0,5141.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-05,bnb,L1,56.0,2726315.0,2609171.0,2324051.0,dune,False,,Other EVMs,,BNB
 2024-05-05,blast,L2,81457.0,672847.0,656192.0,506492.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-05,base,L2,8453.0,2307120.0,2085099.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-05,base,L2,8453.0,2307120.0,2085099.0,1389813.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-05,avalanche_c,L1,43114.0,154486.0,144975.0,117850.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-05,arbitrum,L2,42161.0,1383307.0,1310836.0,1058033.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-04,zora,L2,7777777.0,97448.0,97022.0,68926.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1582,7 +1644,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-04,bob,L2,60808.0,10101.0,9956.0,4618.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-04,bnb,L1,56.0,2774298.0,2643233.0,2366964.0,dune,False,,Other EVMs,,BNB
 2024-05-04,blast,L2,81457.0,692632.0,676500.0,533567.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-04,base,L2,8453.0,2420556.0,2140130.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-04,base,L2,8453.0,2420556.0,2140130.0,1480331.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-04,avalanche_c,L1,43114.0,174089.0,163785.0,132979.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-04,arbitrum,L2,42161.0,1298275.0,1237686.0,1010224.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-03,zora,L2,7777777.0,122345.0,119657.0,91039.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1604,7 +1666,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-03,bob,L2,60808.0,12832.0,12710.0,5994.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-03,bnb,L1,56.0,3056457.0,2912392.0,2523155.0,dune,False,,Other EVMs,,BNB
 2024-05-03,blast,L2,81457.0,613498.0,596559.0,455603.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-03,base,L2,8453.0,2695559.0,2295860.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-03,base,L2,8453.0,2695559.0,2295860.0,1617259.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-03,avalanche_c,L1,43114.0,188987.0,179869.0,146494.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-03,arbitrum,L2,42161.0,1478327.0,1387633.0,1118519.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-02,zora,L2,7777777.0,104674.0,104106.0,76027.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1625,7 +1687,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-02,bob,L2,60808.0,12829.0,12768.0,6367.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-02,bnb,L1,56.0,3208072.0,3070914.0,2612947.0,dune,False,,Other EVMs,,BNB
 2024-05-02,blast,L2,81457.0,651860.0,633006.0,464859.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-02,base,L2,8453.0,2482992.0,2125502.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-02,base,L2,8453.0,2482992.0,2125502.0,1429475.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-02,avalanche_c,L1,43114.0,193059.0,181675.0,146860.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-02,arbitrum,L2,42161.0,1483642.0,1388533.0,1120547.0,dune,False,,Other EVMs,,Arbitrum One
 2024-05-01,zora,L2,7777777.0,105278.0,104822.0,79297.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1646,7 +1708,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-05-01,bob,L2,60808.0,8401.0,8142.0,5288.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-05-01,bnb,L1,56.0,3446327.0,3270247.0,2841553.0,dune,False,,Other EVMs,,BNB
 2024-05-01,blast,L2,81457.0,705549.0,678731.0,508506.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-05-01,base,L2,8453.0,2345037.0,2145709.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-05-01,base,L2,8453.0,2345037.0,2145709.0,1509901.0,goldsky,True,modern,OP Chain,base,Base
 2024-05-01,avalanche_c,L1,43114.0,244540.0,223812.0,180957.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-05-01,arbitrum,L2,42161.0,1744510.0,1555318.0,1242589.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-30,zora,L2,7777777.0,131454.0,130549.0,99484.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1667,7 +1729,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-30,bob,L2,60808.0,1340.0,1337.0,713.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-30,bnb,L1,56.0,3560220.0,3400564.0,2964898.0,dune,False,,Other EVMs,,BNB
 2024-04-30,blast,L2,81457.0,496136.0,481421.0,422690.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-30,base,L2,8453.0,2480935.0,2224460.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-30,base,L2,8453.0,2480935.0,2224460.0,1512769.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-30,avalanche_c,L1,43114.0,255458.0,238291.0,198078.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-30,arbitrum,L2,42161.0,1729419.0,1573644.0,1275969.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-29,zora,L2,7777777.0,126345.0,124639.0,94065.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1688,7 +1750,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-29,bob,L2,60808.0,490.0,466.0,362.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-29,bnb,L1,56.0,3437623.0,3318860.0,2890474.0,dune,False,,Other EVMs,,BNB
 2024-04-29,blast,L2,81457.0,460285.0,453923.0,404870.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-29,base,L2,8453.0,2504995.0,2207766.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-29,base,L2,8453.0,2504995.0,2207766.0,1501713.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-29,avalanche_c,L1,43114.0,242500.0,226939.0,188166.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-29,arbitrum,L2,42161.0,1576220.0,1458386.0,1198750.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-28,zora,L2,7777777.0,144221.0,141185.0,106847.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1709,7 +1771,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-28,bob,L2,60808.0,180.0,180.0,166.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-28,bnb,L1,56.0,3015021.0,2907294.0,2556327.0,dune,False,,Other EVMs,,BNB
 2024-04-28,blast,L2,81457.0,451991.0,445197.0,398784.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-28,base,L2,8453.0,2413039.0,2138361.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-28,base,L2,8453.0,2413039.0,2138361.0,1454234.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-28,avalanche_c,L1,43114.0,218189.0,206483.0,173201.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-28,arbitrum,L2,42161.0,1553197.0,1450751.0,1216652.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-27,zora,L2,7777777.0,113914.0,113145.0,77733.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1730,7 +1792,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-27,bob,L2,60808.0,314.0,289.0,286.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-27,bnb,L1,56.0,3194552.0,3071282.0,2706714.0,dune,False,,Other EVMs,,BNB
 2024-04-27,blast,L2,81457.0,444712.0,438178.0,388829.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-27,base,L2,8453.0,2301402.0,2152276.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-27,base,L2,8453.0,2301402.0,2152276.0,1503006.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-27,avalanche_c,L1,43114.0,226475.0,211340.0,178342.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-27,arbitrum,L2,42161.0,1643041.0,1524283.0,1296256.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-26,zora,L2,7777777.0,123765.0,122500.0,86638.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1752,7 +1814,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-26,bob,L2,60808.0,369.0,361.0,316.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-26,bnb,L1,56.0,3508254.0,3386494.0,2884350.0,dune,False,,Other EVMs,,BNB
 2024-04-26,blast,L2,81457.0,445486.0,437529.0,377569.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-26,base,L2,8453.0,2621321.0,2213580.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-26,base,L2,8453.0,2621321.0,2213580.0,1627075.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-26,avalanche_c,L1,43114.0,239285.0,225854.0,193072.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-26,arbitrum,L2,42161.0,1698357.0,1590888.0,1347726.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-25,zora,L2,7777777.0,122969.0,122290.0,87887.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1774,7 +1836,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-25,bob,L2,60808.0,356.0,349.0,327.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-25,bnb,L1,56.0,3467878.0,3324217.0,2883548.0,dune,False,,Other EVMs,,BNB
 2024-04-25,blast,L2,81457.0,470452.0,461680.0,396884.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-25,base,L2,8453.0,2482849.0,2136329.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-25,base,L2,8453.0,2482849.0,2136329.0,1546920.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-25,avalanche_c,L1,43114.0,243622.0,227887.0,193486.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-25,arbitrum,L2,42161.0,1808776.0,1639063.0,1425868.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-24,zora,L2,7777777.0,127007.0,125966.0,89250.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1796,7 +1858,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-24,bob,L2,60808.0,193.0,178.0,146.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-24,bnb,L1,56.0,3595631.0,3441069.0,2971314.0,dune,False,,Other EVMs,,BNB
 2024-04-24,blast,L2,81457.0,449304.0,436522.0,377769.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-24,base,L2,8453.0,2787116.0,2199578.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-24,base,L2,8453.0,2787116.0,2199578.0,1521878.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-24,avalanche_c,L1,43114.0,250942.0,235045.0,197171.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-24,arbitrum,L2,42161.0,1691569.0,1568714.0,1346150.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-23,zora,L2,7777777.0,194325.0,192866.0,97695.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1818,7 +1880,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-23,bob,L2,60808.0,1785.0,1640.0,1365.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-23,bnb,L1,56.0,3705963.0,3529844.0,3065103.0,dune,False,,Other EVMs,,BNB
 2024-04-23,blast,L2,81457.0,418944.0,409269.0,352359.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-23,base,L2,8453.0,2758584.0,2292925.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-23,base,L2,8453.0,2758584.0,2292925.0,1609511.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-23,avalanche_c,L1,43114.0,229296.0,216792.0,184470.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-23,arbitrum,L2,42161.0,1476738.0,1393065.0,1206171.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-22,zora,L2,7777777.0,356229.0,355514.0,92232.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1840,7 +1902,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-22,bob,L2,60808.0,489.0,466.0,436.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-22,bnb,L1,56.0,3488695.0,3335690.0,2917854.0,dune,False,,Other EVMs,,BNB
 2024-04-22,blast,L2,81457.0,432878.0,423397.0,363700.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-22,base,L2,8453.0,2737000.0,2251234.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-22,base,L2,8453.0,2737000.0,2251234.0,1604291.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-22,avalanche_c,L1,43114.0,234706.0,218792.0,185291.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-22,arbitrum,L2,42161.0,1517355.0,1411071.0,1199885.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-21,zora,L2,7777777.0,269306.0,268609.0,90593.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1861,7 +1923,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-21,bob,L2,60808.0,154.0,154.0,149.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-21,bnb,L1,56.0,3537474.0,3396569.0,3003398.0,dune,False,,Other EVMs,,BNB
 2024-04-21,blast,L2,81457.0,417779.0,411043.0,355873.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-21,base,L2,8453.0,2524622.0,2131500.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-21,base,L2,8453.0,2524622.0,2131500.0,1497393.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-21,avalanche_c,L1,43114.0,198250.0,186633.0,157741.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-21,arbitrum,L2,42161.0,1380391.0,1296202.0,1097592.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-20,zora,L2,7777777.0,382674.0,382068.0,93804.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1881,7 +1943,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-20,bob,L2,60808.0,130.0,130.0,126.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-20,bnb,L1,56.0,4193516.0,3977635.0,3477763.0,dune,False,,Other EVMs,,BNB
 2024-04-20,blast,L2,81457.0,407394.0,400216.0,339259.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-20,base,L2,8453.0,2500150.0,2259619.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-20,base,L2,8453.0,2500150.0,2259619.0,1503240.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-20,avalanche_c,L1,43114.0,217154.0,202443.0,172727.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-20,arbitrum,L2,42161.0,1374396.0,1270865.0,1094854.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-19,zora,L2,7777777.0,379362.0,378649.0,91774.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1903,7 +1965,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-19,bob,L2,60808.0,278.0,278.0,265.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-19,bnb,L1,56.0,3847103.0,3563215.0,3048683.0,dune,False,,Other EVMs,,BNB
 2024-04-19,blast,L2,81457.0,411107.0,399837.0,347361.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-19,base,L2,8453.0,2539205.0,2240822.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-19,base,L2,8453.0,2539205.0,2240822.0,1567830.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-19,avalanche_c,L1,43114.0,254192.0,233685.0,199704.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-19,arbitrum,L2,42161.0,1754969.0,1559935.0,1323084.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-18,zora,L2,7777777.0,375196.0,374541.0,87738.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1923,7 +1985,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-18,bob,L2,60808.0,190.0,190.0,183.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-18,bnb,L1,56.0,3847410.0,3667011.0,3058785.0,dune,False,,Other EVMs,,BNB
 2024-04-18,blast,L2,81457.0,419504.0,413650.0,362974.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-18,base,L2,8453.0,2656509.0,2171718.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-18,base,L2,8453.0,2656509.0,2171718.0,1491831.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-18,avalanche_c,L1,43114.0,258016.0,239251.0,202743.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-18,arbitrum,L2,42161.0,1739031.0,1585104.0,1379336.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-17,zora,L2,7777777.0,396273.0,395485.0,104873.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1943,7 +2005,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-17,bob,L2,60808.0,230.0,230.0,218.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-17,bnb,L1,56.0,3630634.0,3463885.0,2943989.0,dune,False,,Other EVMs,,BNB
 2024-04-17,blast,L2,81457.0,426705.0,415180.0,359363.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-17,base,L2,8453.0,2678938.0,2181701.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-17,base,L2,8453.0,2678938.0,2181701.0,1517378.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-17,avalanche_c,L1,43114.0,282809.0,260701.0,222570.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-17,arbitrum,L2,42161.0,1738405.0,1550112.0,1309204.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-16,zora,L2,7777777.0,597361.0,596478.0,114017.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1963,7 +2025,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-16,bob,L2,60808.0,44.0,44.0,21.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-16,bnb,L1,56.0,3591397.0,3417996.0,2925107.0,dune,False,,Other EVMs,,BNB
 2024-04-16,blast,L2,81457.0,408938.0,399082.0,341629.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-16,base,L2,8453.0,2769653.0,2244575.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-16,base,L2,8453.0,2769653.0,2244575.0,1557327.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-16,avalanche_c,L1,43114.0,280554.0,256003.0,218054.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-16,arbitrum,L2,42161.0,1859439.0,1659547.0,1415045.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-15,zora,L2,7777777.0,627603.0,626851.0,101569.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -1984,7 +2046,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-15,bob,L2,60808.0,30.0,30.0,31.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-15,bnb,L1,56.0,3787963.0,3593033.0,3067786.0,dune,False,,Other EVMs,,BNB
 2024-04-15,blast,L2,81457.0,398736.0,392225.0,335780.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-15,base,L2,8453.0,2971306.0,2194109.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-15,base,L2,8453.0,2971306.0,2194109.0,1555881.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-15,avalanche_c,L1,43114.0,329186.0,295710.0,249224.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-15,arbitrum,L2,42161.0,1808870.0,1615399.0,1379821.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-14,zora,L2,7777777.0,626206.0,625353.0,101889.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2003,7 +2065,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-14,celo,L1,42220.0,290117.0,260154.0,239061.0,dune,False,,Other EVMs,,Celo
 2024-04-14,bnb,L1,56.0,3665777.0,3457550.0,3114507.0,dune,False,,Other EVMs,,BNB
 2024-04-14,blast,L2,81457.0,417182.0,409086.0,352923.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-14,base,L2,8453.0,2604772.0,2129790.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-14,base,L2,8453.0,2604772.0,2129790.0,1526145.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-14,avalanche_c,L1,43114.0,345725.0,310977.0,247734.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-14,arbitrum,L2,42161.0,1913461.0,1675065.0,1397184.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-13,zora,L2,7777777.0,608036.0,606799.0,94770.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2023,7 +2085,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-13,celo,L1,42220.0,284645.0,258570.0,236144.0,dune,False,,Other EVMs,,Celo
 2024-04-13,bnb,L1,56.0,4182543.0,3871890.0,3377437.0,dune,False,,Other EVMs,,BNB
 2024-04-13,blast,L2,81457.0,416874.0,408457.0,351417.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-13,base,L2,8453.0,2592758.0,2174703.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-13,base,L2,8453.0,2592758.0,2174703.0,1549324.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-13,avalanche_c,L1,43114.0,348320.0,305735.0,256029.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-13,arbitrum,L2,42161.0,1788686.0,1555469.0,1302234.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-12,zora,L2,7777777.0,801105.0,800025.0,111698.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2043,7 +2105,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-12,bob,L2,60808.0,6.0,6.0,7.0,goldsky,False,modern,OP Stack fork,bob,BOB (Build on Bitcoin)
 2024-04-12,bnb,L1,56.0,4249719.0,4002381.0,3380357.0,dune,False,,Other EVMs,,BNB
 2024-04-12,blast,L2,81457.0,455302.0,446148.0,372446.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-12,base,L2,8453.0,2716617.0,2344289.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-12,base,L2,8453.0,2716617.0,2344289.0,1651191.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-12,avalanche_c,L1,43114.0,309535.0,283972.0,231697.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-12,arbitrum,L2,42161.0,1705719.0,1517047.0,1278039.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-11,zora,L2,7777777.0,893886.0,893048.0,116640.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2062,7 +2124,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-11,celo,L1,42220.0,221844.0,214541.0,192679.0,dune,False,,Other EVMs,,Celo
 2024-04-11,bnb,L1,56.0,3803227.0,3623537.0,3074368.0,dune,False,,Other EVMs,,BNB
 2024-04-11,blast,L2,81457.0,538742.0,513646.0,411150.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-11,base,L2,8453.0,3009829.0,2432588.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-11,base,L2,8453.0,3009829.0,2432588.0,1709836.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-11,avalanche_c,L1,43114.0,281227.0,264373.0,215241.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-11,arbitrum,L2,42161.0,1616451.0,1489323.0,1251644.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-10,zora,L2,7777777.0,1026104.0,1024920.0,121636.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2081,7 +2143,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-10,celo,L1,42220.0,229924.0,220866.0,205839.0,dune,False,,Other EVMs,,Celo
 2024-04-10,bnb,L1,56.0,3913955.0,3729029.0,3139718.0,dune,False,,Other EVMs,,BNB
 2024-04-10,blast,L2,81457.0,480256.0,471915.0,393754.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-10,base,L2,8453.0,2944745.0,2402058.0,0.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-10,base,L2,8453.0,2944745.0,2402058.0,1725911.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-10,avalanche_c,L1,43114.0,283594.0,265305.0,223630.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-10,arbitrum,L2,42161.0,1831116.0,1602328.0,1334914.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-09,zora,L2,7777777.0,1105955.0,1100138.0,186255.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2101,7 +2163,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-09,celo,L1,42220.0,240029.0,232671.0,216792.0,dune,False,,Other EVMs,,Celo
 2024-04-09,bnb,L1,56.0,4138564.0,3948849.0,3273012.0,dune,False,,Other EVMs,,BNB
 2024-04-09,blast,L2,81457.0,455376.0,446054.0,372199.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-09,base,L2,8453.0,2980657.0,2330849.0,136178.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-09,base,L2,8453.0,2980657.0,2330849.0,1727902.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-09,avalanche_c,L1,43114.0,298916.0,274174.0,229089.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-09,arbitrum,L2,42161.0,1770534.0,1571798.0,1311732.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-08,zora,L2,7777777.0,1082975.0,1077746.0,179593.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2120,7 +2182,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-08,celo,L1,42220.0,254156.0,245440.0,219913.0,dune,False,,Other EVMs,,Celo
 2024-04-08,bnb,L1,56.0,4272902.0,4030135.0,3374260.0,dune,False,,Other EVMs,,BNB
 2024-04-08,blast,L2,81457.0,463597.0,455236.0,385202.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-08,base,L2,8453.0,3186272.0,2725187.0,689008.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-08,base,L2,8453.0,3186272.0,2725187.0,1924772.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-08,avalanche_c,L1,43114.0,274827.0,258527.0,215521.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-08,arbitrum,L2,42161.0,1702494.0,1428977.0,1222371.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-07,zora,L2,7777777.0,1027065.0,1024507.0,142763.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2139,7 +2201,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-07,celo,L1,42220.0,229905.0,223758.0,200690.0,dune,False,,Other EVMs,,Celo
 2024-04-07,bnb,L1,56.0,3726128.0,3562606.0,2973322.0,dune,False,,Other EVMs,,BNB
 2024-04-07,blast,L2,81457.0,476375.0,467800.0,392675.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-07,base,L2,8453.0,3104299.0,2657222.0,752847.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-07,base,L2,8453.0,3104299.0,2657222.0,1857081.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-07,avalanche_c,L1,43114.0,244444.0,229132.0,192197.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-07,arbitrum,L2,42161.0,1650962.0,1237279.0,1024608.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-06,zora,L2,7777777.0,828941.0,825722.0,132637.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2158,7 +2220,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-06,celo,L1,42220.0,262602.0,256689.0,233398.0,dune,False,,Other EVMs,,Celo
 2024-04-06,bnb,L1,56.0,3474842.0,3309555.0,3298234.0,dune,False,,Other EVMs,,BNB
 2024-04-06,blast,L2,81457.0,476407.0,468183.0,394212.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-06,base,L2,8453.0,3031288.0,2391115.0,705857.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-06,base,L2,8453.0,3031288.0,2391115.0,1668820.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-06,avalanche_c,L1,43114.0,252399.0,233120.0,194791.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-06,arbitrum,L2,42161.0,1433726.0,1154421.0,969894.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-05,zora,L2,7777777.0,942829.0,938911.0,131681.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2178,7 +2240,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-05,celo,L1,42220.0,269584.0,260847.0,232141.0,dune,False,,Other EVMs,,Celo
 2024-04-05,bnb,L1,56.0,3948159.0,3745098.0,3634877.0,dune,False,,Other EVMs,,BNB
 2024-04-05,blast,L2,81457.0,483958.0,474717.0,395505.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-05,base,L2,8453.0,3030163.0,2152311.0,743661.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-05,base,L2,8453.0,3030163.0,2152311.0,1480395.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-05,avalanche_c,L1,43114.0,273864.0,257508.0,208275.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-05,arbitrum,L2,42161.0,1536410.0,1243930.0,1053347.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-04,zora,L2,7777777.0,414436.0,411900.0,123042.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2198,7 +2260,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-04,celo,L1,42220.0,276876.0,268477.0,241519.0,dune,False,,Other EVMs,,Celo
 2024-04-04,bnb,L1,56.0,4082826.0,3877347.0,3370454.0,dune,False,,Other EVMs,,BNB
 2024-04-04,blast,L2,81457.0,494922.0,485286.0,404138.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-04,base,L2,8453.0,2950118.0,2076571.0,806732.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-04,base,L2,8453.0,2950118.0,2076571.0,1378643.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-04,avalanche_c,L1,43114.0,297707.0,276793.0,218436.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-04,arbitrum,L2,42161.0,1604154.0,1402725.0,1144396.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-03,zora,L2,7777777.0,182332.0,180993.0,128375.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2217,7 +2279,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-03,celo,L1,42220.0,265044.0,255418.0,225161.0,dune,False,,Other EVMs,,Celo
 2024-04-03,bnb,L1,56.0,4078460.0,3866214.0,3212703.0,dune,False,,Other EVMs,,BNB
 2024-04-03,blast,L2,81457.0,500625.0,488838.0,396931.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-03,base,L2,8453.0,2668790.0,2083958.0,1022924.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-03,base,L2,8453.0,2668790.0,2083958.0,1399743.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-03,avalanche_c,L1,43114.0,279893.0,260616.0,216558.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-03,arbitrum,L2,42161.0,1402515.0,1279425.0,1043630.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-02,zora,L2,7777777.0,154635.0,152731.0,102543.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2236,7 +2298,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-02,celo,L1,42220.0,261218.0,252444.0,227121.0,dune,False,,Other EVMs,,Celo
 2024-04-02,bnb,L1,56.0,4179664.0,3930689.0,3154800.0,dune,False,,Other EVMs,,BNB
 2024-04-02,blast,L2,81457.0,601391.0,586066.0,461227.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-02,base,L2,8453.0,2574559.0,2103865.0,1072465.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-02,base,L2,8453.0,2574559.0,2103865.0,1391528.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-02,avalanche_c,L1,43114.0,297077.0,271032.0,221571.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-02,arbitrum,L2,42161.0,1578122.0,1428549.0,1116230.0,dune,False,,Other EVMs,,Arbitrum One
 2024-04-01,zora,L2,7777777.0,158085.0,155330.0,100136.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2255,7 +2317,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-04-01,celo,L1,42220.0,270043.0,257919.0,235088.0,dune,False,,Other EVMs,,Celo
 2024-04-01,bnb,L1,56.0,4096911.0,3874052.0,3088140.0,dune,False,,Other EVMs,,BNB
 2024-04-01,blast,L2,81457.0,391401.0,382187.0,319497.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-04-01,base,L2,8453.0,2295243.0,1977197.0,1103454.0,goldsky,True,modern,OP Chain,base,Base
+2024-04-01,base,L2,8453.0,2295243.0,1977197.0,1334318.0,goldsky,True,modern,OP Chain,base,Base
 2024-04-01,avalanche_c,L1,43114.0,304581.0,278511.0,230479.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-04-01,arbitrum,L2,42161.0,1280590.0,1192339.0,986787.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-31,zora,L2,7777777.0,161401.0,159191.0,111163.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2274,7 +2336,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-31,celo,L1,42220.0,263920.0,258987.0,237579.0,dune,False,,Other EVMs,,Celo
 2024-03-31,bnb,L1,56.0,3718078.0,3550196.0,2839465.0,dune,False,,Other EVMs,,BNB
 2024-03-31,blast,L2,81457.0,365926.0,357005.0,292595.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-31,base,L2,8453.0,2207413.0,2045630.0,1119889.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-31,base,L2,8453.0,2207413.0,2045630.0,1356776.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-31,avalanche_c,L1,43114.0,265125.0,251470.0,207255.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-31,arbitrum,L2,42161.0,1220652.0,1160887.0,972223.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-30,zora,L2,7777777.0,98490.0,97965.0,74423.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2294,7 +2356,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-30,celo,L1,42220.0,243715.0,239061.0,220228.0,dune,False,,Other EVMs,,Celo
 2024-03-30,bnb,L1,56.0,3980155.0,3749692.0,3002334.0,dune,False,,Other EVMs,,BNB
 2024-03-30,blast,L2,81457.0,405704.0,396381.0,331412.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-30,base,L2,8453.0,2329945.0,2100831.0,1124981.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-30,base,L2,8453.0,2329945.0,2100831.0,1344739.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-30,avalanche_c,L1,43114.0,284653.0,267866.0,219665.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-30,arbitrum,L2,42161.0,1455424.0,1366292.0,1136212.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-29,zora,L2,7777777.0,105396.0,104976.0,79738.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2314,7 +2376,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-29,celo,L1,42220.0,246892.0,241953.0,222309.0,dune,False,,Other EVMs,,Celo
 2024-03-29,bnb,L1,56.0,4458156.0,4188281.0,3262449.0,dune,False,,Other EVMs,,BNB
 2024-03-29,blast,L2,81457.0,479133.0,464116.0,387332.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-29,base,L2,8453.0,2220433.0,1950811.0,1071208.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-29,base,L2,8453.0,2220433.0,1950811.0,1291527.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-29,avalanche_c,L1,43114.0,338690.0,319224.0,259789.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-29,arbitrum,L2,42161.0,1764365.0,1583255.0,1369050.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-28,zora,L2,7777777.0,102241.0,101720.0,81573.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2334,7 +2396,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-28,celo,L1,42220.0,245372.0,238882.0,219378.0,dune,False,,Other EVMs,,Celo
 2024-03-28,bnb,L1,56.0,4639630.0,4351967.0,3511076.0,dune,False,,Other EVMs,,BNB
 2024-03-28,blast,L2,81457.0,527117.0,513056.0,409561.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-28,base,L2,8453.0,2116467.0,1861887.0,1050670.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-28,base,L2,8453.0,2116467.0,1861887.0,1267338.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-28,avalanche_c,L1,43114.0,371208.0,348355.0,281647.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-28,arbitrum,L2,42161.0,1662752.0,1504795.0,1275029.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-27,zora,L2,7777777.0,106330.0,105690.0,88873.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2353,7 +2415,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-27,celo,L1,42220.0,286219.0,277185.0,251616.0,dune,False,,Other EVMs,,Celo
 2024-03-27,bnb,L1,56.0,4528626.0,4223780.0,3331865.0,dune,False,,Other EVMs,,BNB
 2024-03-27,blast,L2,81457.0,449399.0,436674.0,352797.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-27,base,L2,8453.0,1622193.0,1482169.0,848814.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-27,base,L2,8453.0,1622193.0,1482169.0,1026720.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-27,avalanche_c,L1,43114.0,363213.0,340835.0,270597.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-27,arbitrum,L2,42161.0,1775946.0,1616346.0,1387317.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-26,zora,L2,7777777.0,103977.0,101815.0,83497.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2372,7 +2434,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-26,celo,L1,42220.0,294568.0,288266.0,259945.0,dune,False,,Other EVMs,,Celo
 2024-03-26,bnb,L1,56.0,4776172.0,4485140.0,3541285.0,dune,False,,Other EVMs,,BNB
 2024-03-26,blast,L2,81457.0,462636.0,446843.0,354835.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-26,base,L2,8453.0,1567796.0,1383480.0,754987.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-26,base,L2,8453.0,1567796.0,1383480.0,918674.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-26,avalanche_c,L1,43114.0,375741.0,350817.0,276970.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-26,arbitrum,L2,42161.0,1823374.0,1473871.0,1265769.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-25,zora,L2,7777777.0,114067.0,112533.0,91652.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2391,7 +2453,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-25,celo,L1,42220.0,270054.0,264308.0,233818.0,dune,False,,Other EVMs,,Celo
 2024-03-25,bnb,L1,56.0,4815425.0,4419765.0,3492448.0,dune,False,,Other EVMs,,BNB
 2024-03-25,blast,L2,81457.0,409916.0,399833.0,326460.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-25,base,L2,8453.0,1486270.0,1346802.0,775596.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-25,base,L2,8453.0,1486270.0,1346802.0,927039.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-25,avalanche_c,L1,43114.0,359938.0,332160.0,271943.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-25,arbitrum,L2,42161.0,1498982.0,1370871.0,1194950.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-24,zora,L2,7777777.0,129001.0,128033.0,95257.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2410,7 +2472,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-24,celo,L1,42220.0,289145.0,284206.0,243785.0,dune,False,,Other EVMs,,Celo
 2024-03-24,bnb,L1,56.0,3915430.0,3703558.0,2932518.0,dune,False,,Other EVMs,,BNB
 2024-03-24,blast,L2,81457.0,358055.0,350151.0,293816.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-24,base,L2,8453.0,1430965.0,1329488.0,763445.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-24,base,L2,8453.0,1430965.0,1329488.0,926683.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-24,avalanche_c,L1,43114.0,330825.0,291465.0,240811.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-24,arbitrum,L2,42161.0,1310738.0,1242547.0,1066753.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-23,zora,L2,7777777.0,116801.0,115056.0,88063.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2429,7 +2491,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-23,celo,L1,42220.0,277317.0,272275.0,255077.0,dune,False,,Other EVMs,,Celo
 2024-03-23,bnb,L1,56.0,3993925.0,3769923.0,2956186.0,dune,False,,Other EVMs,,BNB
 2024-03-23,blast,L2,81457.0,349686.0,335806.0,277856.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-23,base,L2,8453.0,1269964.0,1182730.0,669608.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-23,base,L2,8453.0,1269964.0,1182730.0,831605.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-23,avalanche_c,L1,43114.0,302185.0,282721.0,233159.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-23,arbitrum,L2,42161.0,1313490.0,1239874.0,1074093.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-22,zora,L2,7777777.0,103237.0,102372.0,77766.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2448,7 +2510,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-22,celo,L1,42220.0,289322.0,283229.0,261573.0,dune,False,,Other EVMs,,Celo
 2024-03-22,bnb,L1,56.0,4478369.0,4222597.0,3260705.0,dune,False,,Other EVMs,,BNB
 2024-03-22,blast,L2,81457.0,328602.0,308954.0,258569.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-22,base,L2,8453.0,1278840.0,1197888.0,660847.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-22,base,L2,8453.0,1278840.0,1197888.0,816167.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-22,avalanche_c,L1,43114.0,371820.0,330291.0,278098.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-22,arbitrum,L2,42161.0,1533674.0,1409042.0,1221807.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-21,zora,L2,7777777.0,128371.0,127162.0,98838.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2467,7 +2529,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-21,celo,L1,42220.0,302087.0,292761.0,270501.0,dune,False,,Other EVMs,,Celo
 2024-03-21,bnb,L1,56.0,4257474.0,4039127.0,3157323.0,dune,False,,Other EVMs,,BNB
 2024-03-21,blast,L2,81457.0,319049.0,310821.0,254039.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-21,base,L2,8453.0,1352882.0,1268588.0,698410.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-21,base,L2,8453.0,1352882.0,1268588.0,856310.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-21,avalanche_c,L1,43114.0,368946.0,329696.0,275234.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-21,arbitrum,L2,42161.0,1496740.0,1365988.0,1177312.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-20,zora,L2,7777777.0,105360.0,104706.0,81642.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2486,7 +2548,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-20,celo,L1,42220.0,303265.0,294765.0,276212.0,dune,False,,Other EVMs,,Celo
 2024-03-20,bnb,L1,56.0,4696358.0,4423939.0,3389966.0,dune,False,,Other EVMs,,BNB
 2024-03-20,blast,L2,81457.0,248184.0,240341.0,193275.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-20,base,L2,8453.0,1596839.0,1506029.0,773916.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-20,base,L2,8453.0,1596839.0,1506029.0,927547.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-20,avalanche_c,L1,43114.0,416056.0,363177.0,304289.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-20,arbitrum,L2,42161.0,1861717.0,1620012.0,1381942.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-19,zora,L2,7777777.0,95600.0,95070.0,74160.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2505,7 +2567,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-19,celo,L1,42220.0,332990.0,323655.0,299494.0,dune,False,,Other EVMs,,Celo
 2024-03-19,bnb,L1,56.0,4946719.0,4565034.0,3616919.0,dune,False,,Other EVMs,,BNB
 2024-03-19,blast,L2,81457.0,224542.0,217930.0,179368.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-19,base,L2,8453.0,1167072.0,1082341.0,631821.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-19,base,L2,8453.0,1167072.0,1082341.0,781460.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-19,avalanche_c,L1,43114.0,522726.0,447635.0,378050.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-19,arbitrum,L2,42161.0,1712865.0,1526549.0,1252538.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-18,zora,L2,7777777.0,105697.0,105092.0,86230.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2524,7 +2586,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-18,celo,L1,42220.0,285062.0,276901.0,251582.0,dune,False,,Other EVMs,,Celo
 2024-03-18,bnb,L1,56.0,4126890.0,3876460.0,3079872.0,dune,False,,Other EVMs,,BNB
 2024-03-18,blast,L2,81457.0,216940.0,211939.0,175401.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-18,base,L2,8453.0,1141680.0,1079709.0,648744.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-18,base,L2,8453.0,1141680.0,1079709.0,786266.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-18,avalanche_c,L1,43114.0,488185.0,429542.0,354425.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-18,arbitrum,L2,42161.0,1172968.0,1082659.0,925022.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-17,zora,L2,7777777.0,114221.0,113663.0,92338.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2543,7 +2605,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-17,celo,L1,42220.0,252525.0,240701.0,220515.0,dune,False,,Other EVMs,,Celo
 2024-03-17,bnb,L1,56.0,4018182.0,3762777.0,2958669.0,dune,False,,Other EVMs,,BNB
 2024-03-17,blast,L2,81457.0,225461.0,211721.0,170776.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-17,base,L2,8453.0,1103458.0,1057886.0,632022.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-17,base,L2,8453.0,1103458.0,1057886.0,751690.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-17,avalanche_c,L1,43114.0,458237.0,407878.0,329892.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-17,arbitrum,L2,42161.0,989887.0,920401.0,772507.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-16,zora,L2,7777777.0,114460.0,113900.0,94292.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2562,7 +2624,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-16,celo,L1,42220.0,229732.0,222380.0,199132.0,dune,False,,Other EVMs,,Celo
 2024-03-16,bnb,L1,56.0,4377894.0,4079919.0,3183022.0,dune,False,,Other EVMs,,BNB
 2024-03-16,blast,L2,81457.0,211998.0,204888.0,168760.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-16,base,L2,8453.0,2068077.0,2017917.0,612582.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-16,base,L2,8453.0,2068077.0,2017917.0,739896.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-16,avalanche_c,L1,43114.0,503385.0,442714.0,367910.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-16,arbitrum,L2,42161.0,1112327.0,1017130.0,872743.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-15,zora,L2,7777777.0,97259.0,96778.0,79309.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2581,7 +2643,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-15,celo,L1,42220.0,268858.0,255807.0,213276.0,dune,False,,Other EVMs,,Celo
 2024-03-15,bnb,L1,56.0,4833337.0,4431173.0,3510803.0,dune,False,,Other EVMs,,BNB
 2024-03-15,blast,L2,81457.0,285116.0,271924.0,197586.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-15,base,L2,8453.0,1325278.0,1261221.0,762432.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-15,base,L2,8453.0,1325278.0,1261221.0,986242.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-15,avalanche_c,L1,43114.0,628870.0,550646.0,430685.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-15,arbitrum,L2,42161.0,1302618.0,1174070.0,993171.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-14,zora,L2,7777777.0,91056.0,90567.0,75744.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2600,7 +2662,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-14,celo,L1,42220.0,208788.0,202904.0,179481.0,dune,False,,Other EVMs,,Celo
 2024-03-14,bnb,L1,56.0,4994756.0,4671786.0,3681217.0,dune,False,,Other EVMs,,BNB
 2024-03-14,blast,L2,81457.0,262592.0,247842.0,177857.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-14,base,L2,8453.0,1181906.0,1115611.0,677665.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-14,base,L2,8453.0,1181906.0,1115611.0,877184.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-14,avalanche_c,L1,43114.0,548192.0,487345.0,388691.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-14,arbitrum,L2,42161.0,973799.0,889865.0,736676.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-13,zora,L2,7777777.0,48528.0,48371.0,37967.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2619,7 +2681,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-13,celo,L1,42220.0,222027.0,216089.0,195218.0,dune,False,,Other EVMs,,Celo
 2024-03-13,bnb,L1,56.0,4993303.0,4652365.0,3641334.0,dune,False,,Other EVMs,,BNB
 2024-03-13,blast,L2,81457.0,165512.0,159967.0,120979.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-13,base,L2,8453.0,526962.0,396241.0,221956.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-13,base,L2,8453.0,526962.0,396241.0,251679.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-13,avalanche_c,L1,43114.0,480877.0,435559.0,359416.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-13,arbitrum,L2,42161.0,757485.0,719464.0,586436.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-12,zora,L2,7777777.0,68324.0,68154.0,53629.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2638,7 +2700,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-12,celo,L1,42220.0,268032.0,258457.0,234539.0,dune,False,,Other EVMs,,Celo
 2024-03-12,bnb,L1,56.0,5044736.0,4715481.0,3713129.0,dune,False,,Other EVMs,,BNB
 2024-03-12,blast,L2,81457.0,194949.0,189088.0,146254.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-12,base,L2,8453.0,406248.0,394838.0,240678.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-12,base,L2,8453.0,406248.0,394838.0,272117.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-12,avalanche_c,L1,43114.0,617244.0,532023.0,447491.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-12,arbitrum,L2,42161.0,855500.0,802975.0,631823.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-11,zora,L2,7777777.0,71138.0,70891.0,57531.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2657,7 +2719,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-11,celo,L1,42220.0,349679.0,332565.0,300299.0,dune,False,,Other EVMs,,Celo
 2024-03-11,bnb,L1,56.0,5035134.0,4726165.0,3657907.0,dune,False,,Other EVMs,,BNB
 2024-03-11,blast,L2,81457.0,201685.0,196779.0,147084.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-11,base,L2,8453.0,411642.0,400389.0,248751.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-11,base,L2,8453.0,411642.0,400389.0,282276.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-11,avalanche_c,L1,43114.0,495341.0,429589.0,357671.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-11,arbitrum,L2,42161.0,734092.0,695969.0,575703.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-10,zora,L2,7777777.0,69772.0,69540.0,55539.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2676,7 +2738,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-10,celo,L1,42220.0,295543.0,290126.0,272531.0,dune,False,,Other EVMs,,Celo
 2024-03-10,bnb,L1,56.0,4691627.0,4356121.0,3422508.0,dune,False,,Other EVMs,,BNB
 2024-03-10,blast,L2,81457.0,198469.0,193791.0,144595.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-10,base,L2,8453.0,421370.0,410605.0,258276.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-10,base,L2,8453.0,421370.0,410605.0,296165.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-10,avalanche_c,L1,43114.0,383529.0,351757.0,291781.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-10,arbitrum,L2,42161.0,642188.0,615445.0,500743.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-09,zora,L2,7777777.0,69166.0,68904.0,54291.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2695,7 +2757,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-09,celo,L1,42220.0,288539.0,282900.0,263922.0,dune,False,,Other EVMs,,Celo
 2024-03-09,bnb,L1,56.0,4399846.0,4154441.0,3288204.0,dune,False,,Other EVMs,,BNB
 2024-03-09,blast,L2,81457.0,199017.0,194496.0,145372.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-09,base,L2,8453.0,401427.0,391257.0,245374.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-09,base,L2,8453.0,401427.0,391257.0,281460.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-09,avalanche_c,L1,43114.0,399128.0,366593.0,298441.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-09,arbitrum,L2,42161.0,650271.0,631662.0,499181.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-08,zora,L2,7777777.0,62555.0,62301.0,48947.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2714,7 +2776,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-08,celo,L1,42220.0,301094.0,294351.0,276384.0,dune,False,,Other EVMs,,Celo
 2024-03-08,bnb,L1,56.0,4673605.0,4361856.0,3438940.0,dune,False,,Other EVMs,,BNB
 2024-03-08,blast,L2,81457.0,226820.0,222240.0,157065.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-08,base,L2,8453.0,394798.0,383842.0,246248.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-08,base,L2,8453.0,394798.0,383842.0,280831.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-08,avalanche_c,L1,43114.0,367752.0,339107.0,275494.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-08,arbitrum,L2,42161.0,747506.0,706865.0,589030.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-07,zora,L2,7777777.0,83214.0,82425.0,60941.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2733,7 +2795,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-07,celo,L1,42220.0,324111.0,315677.0,296359.0,dune,False,,Other EVMs,,Celo
 2024-03-07,bnb,L1,56.0,4817055.0,4522117.0,3559240.0,dune,False,,Other EVMs,,BNB
 2024-03-07,blast,L2,81457.0,265120.0,256736.0,175960.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-07,base,L2,8453.0,463739.0,446237.0,283223.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-07,base,L2,8453.0,463739.0,446237.0,316466.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-07,avalanche_c,L1,43114.0,354152.0,327227.0,272020.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-07,arbitrum,L2,42161.0,746327.0,705532.0,584420.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-06,zora,L2,7777777.0,46275.0,45801.0,35689.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2752,7 +2814,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-06,celo,L1,42220.0,324920.0,315106.0,295836.0,dune,False,,Other EVMs,,Celo
 2024-03-06,bnb,L1,56.0,4764482.0,4436514.0,3501820.0,dune,False,,Other EVMs,,BNB
 2024-03-06,blast,L2,81457.0,411624.0,394424.0,240808.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-06,base,L2,8453.0,476352.0,454711.0,293372.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-06,base,L2,8453.0,476352.0,454711.0,329924.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-06,avalanche_c,L1,43114.0,344888.0,317547.0,265483.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-06,arbitrum,L2,42161.0,818543.0,753489.0,636931.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-05,zora,L2,7777777.0,40861.0,40605.0,30443.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2771,7 +2833,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-05,celo,L1,42220.0,320658.0,310714.0,288483.0,dune,False,,Other EVMs,,Celo
 2024-03-05,bnb,L1,56.0,5266706.0,4817380.0,3776038.0,dune,False,,Other EVMs,,BNB
 2024-03-05,blast,L2,81457.0,314320.0,298282.0,208044.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-05,base,L2,8453.0,418381.0,398786.0,258356.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-05,base,L2,8453.0,418381.0,398786.0,291944.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-05,avalanche_c,L1,43114.0,418147.0,377863.0,305800.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-05,arbitrum,L2,42161.0,936707.0,857242.0,726359.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-04,zora,L2,7777777.0,43099.0,42817.0,31245.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2790,7 +2852,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-04,celo,L1,42220.0,268962.0,258824.0,238351.0,dune,False,,Other EVMs,,Celo
 2024-03-04,bnb,L1,56.0,5142723.0,4810315.0,3808492.0,dune,False,,Other EVMs,,BNB
 2024-03-04,blast,L2,81457.0,428718.0,400979.0,289018.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-04,base,L2,8453.0,341936.0,331444.0,208743.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-04,base,L2,8453.0,341936.0,331444.0,238864.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-04,avalanche_c,L1,43114.0,370032.0,337903.0,274128.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-04,arbitrum,L2,42161.0,709291.0,664340.0,546614.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-03,zora,L2,7777777.0,63539.0,63211.0,43235.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2809,7 +2871,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-03,celo,L1,42220.0,249580.0,240831.0,218190.0,dune,False,,Other EVMs,,Celo
 2024-03-03,bnb,L1,56.0,4201632.0,3960422.0,3135299.0,dune,False,,Other EVMs,,BNB
 2024-03-03,blast,L2,81457.0,464308.0,429082.0,312650.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-03,base,L2,8453.0,399953.0,391049.0,246785.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-03,base,L2,8453.0,399953.0,391049.0,286946.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-03,avalanche_c,L1,43114.0,291853.0,269841.0,224903.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-03,arbitrum,L2,42161.0,810489.0,765926.0,632439.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-02,zora,L2,7777777.0,65198.0,64828.0,44437.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2828,7 +2890,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-02,celo,L1,42220.0,290179.0,268395.0,243816.0,dune,False,,Other EVMs,,Celo
 2024-03-02,bnb,L1,56.0,4314983.0,4069470.0,3224406.0,dune,False,,Other EVMs,,BNB
 2024-03-02,blast,L2,81457.0,492069.0,458263.0,336069.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-02,base,L2,8453.0,399568.0,390066.0,244177.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-02,base,L2,8453.0,399568.0,390066.0,284500.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-02,avalanche_c,L1,43114.0,304869.0,284249.0,234824.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-02,arbitrum,L2,42161.0,756944.0,728077.0,601736.0,dune,False,,Other EVMs,,Arbitrum One
 2024-03-01,zora,L2,7777777.0,61579.0,61358.0,38611.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2847,7 +2909,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-03-01,celo,L1,42220.0,271727.0,251661.0,225251.0,dune,False,,Other EVMs,,Celo
 2024-03-01,bnb,L1,56.0,4214928.0,3979990.0,3161787.0,dune,False,,Other EVMs,,BNB
 2024-03-01,blast,L2,81457.0,779005.0,695332.0,453406.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-03-01,base,L2,8453.0,370651.0,360998.0,220855.0,goldsky,True,modern,OP Chain,base,Base
+2024-03-01,base,L2,8453.0,370651.0,360998.0,257762.0,goldsky,True,modern,OP Chain,base,Base
 2024-03-01,avalanche_c,L1,43114.0,300423.0,281423.0,225302.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-03-01,arbitrum,L2,42161.0,824927.0,790203.0,654506.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-29,zora,L2,7777777.0,85040.0,84232.0,61120.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2866,7 +2928,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-29,celo,L1,42220.0,296649.0,284747.0,250600.0,dune,False,,Other EVMs,,Celo
 2024-02-29,bnb,L1,56.0,4754319.0,4481998.0,3514532.0,dune,False,,Other EVMs,,BNB
 2024-02-29,blast,L2,81457.0,373905.0,332605.0,215102.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-02-29,base,L2,8453.0,436764.0,425828.0,248280.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-29,base,L2,8453.0,436764.0,425828.0,294867.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-29,avalanche_c,L1,43114.0,374328.0,347838.0,288049.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-29,arbitrum,L2,42161.0,983368.0,921644.0,743245.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-28,zora,L2,7777777.0,70090.0,69751.0,49592.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2885,7 +2947,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-28,celo,L1,42220.0,325882.0,311229.0,270328.0,dune,False,,Other EVMs,,Celo
 2024-02-28,bnb,L1,56.0,4965449.0,4670266.0,3682994.0,dune,False,,Other EVMs,,BNB
 2024-02-28,blast,L2,81457.0,607.0,602.0,382.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-02-28,base,L2,8453.0,421010.0,389987.0,247840.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-28,base,L2,8453.0,421010.0,389987.0,289712.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-28,avalanche_c,L1,43114.0,356621.0,330503.0,272843.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-28,arbitrum,L2,42161.0,1031765.0,969923.0,789598.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-27,zora,L2,7777777.0,78292.0,77973.0,57266.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2904,7 +2966,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-27,celo,L1,42220.0,353961.0,343387.0,298550.0,dune,False,,Other EVMs,,Celo
 2024-02-27,bnb,L1,56.0,4118454.0,3905968.0,3107960.0,dune,False,,Other EVMs,,BNB
 2024-02-27,blast,L2,81457.0,56.0,56.0,42.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-02-27,base,L2,8453.0,405481.0,396861.0,252960.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-27,base,L2,8453.0,405481.0,396861.0,295671.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-27,avalanche_c,L1,43114.0,299026.0,280986.0,230665.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-27,arbitrum,L2,42161.0,815703.0,777167.0,617896.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-26,zora,L2,7777777.0,73208.0,72853.0,53313.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2923,7 +2985,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-26,celo,L1,42220.0,357668.0,342974.0,290185.0,dune,False,,Other EVMs,,Celo
 2024-02-26,bnb,L1,56.0,3880357.0,3681620.0,2949759.0,dune,False,,Other EVMs,,BNB
 2024-02-26,blast,L2,81457.0,12.0,12.0,7.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-02-26,base,L2,8453.0,388389.0,381631.0,247582.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-26,base,L2,8453.0,388389.0,381631.0,288674.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-26,avalanche_c,L1,43114.0,275050.0,261732.0,204091.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-26,arbitrum,L2,42161.0,857219.0,822218.0,657726.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-25,zora,L2,7777777.0,96332.0,95794.0,74648.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2942,7 +3004,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-25,celo,L1,42220.0,337717.0,326100.0,287913.0,dune,False,,Other EVMs,,Celo
 2024-02-25,bnb,L1,56.0,3557006.0,3388635.0,2718228.0,dune,False,,Other EVMs,,BNB
 2024-02-25,blast,L2,81457.0,5.0,5.0,3.0,flipside,False,modern,OP Stack fork,blast,Blast
-2024-02-25,base,L2,8453.0,482009.0,473620.0,308208.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-25,base,L2,8453.0,482009.0,473620.0,351977.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-25,avalanche_c,L1,43114.0,1403231.0,1390055.0,180321.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-25,arbitrum,L2,42161.0,800342.0,773064.0,625494.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-24,zora,L2,7777777.0,97477.0,96907.0,71640.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2960,7 +3022,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-24,ethereum,L1,1.0,1100629.0,1085043.0,680918.0,dune,False,,Other EVMs,,Ethereum
 2024-02-24,celo,L1,42220.0,330419.0,317342.0,289157.0,dune,False,,Other EVMs,,Celo
 2024-02-24,bnb,L1,56.0,3489057.0,3347340.0,2707273.0,dune,False,,Other EVMs,,BNB
-2024-02-24,base,L2,8453.0,443833.0,438086.0,289824.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-24,base,L2,8453.0,443833.0,438086.0,332600.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-24,avalanche_c,L1,43114.0,6194242.0,6186915.0,121651.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-24,arbitrum,L2,42161.0,747181.0,724195.0,576799.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-23,zora,L2,7777777.0,72225.0,71561.0,57429.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2978,7 +3040,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-23,ethereum,L1,1.0,1159107.0,1141605.0,719795.0,dune,False,,Other EVMs,,Ethereum
 2024-02-23,celo,L1,42220.0,304377.0,291825.0,265182.0,dune,False,,Other EVMs,,Celo
 2024-02-23,bnb,L1,56.0,4617544.0,4452156.0,2785858.0,dune,False,,Other EVMs,,BNB
-2024-02-23,base,L2,8453.0,325273.0,317246.0,201406.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-23,base,L2,8453.0,325273.0,317246.0,235242.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-23,avalanche_c,L1,43114.0,2015869.0,2003113.0,130037.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-23,arbitrum,L2,42161.0,750889.0,713496.0,580415.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-22,zora,L2,7777777.0,60958.0,60483.0,47276.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -2996,7 +3058,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-22,ethereum,L1,1.0,1081998.0,1061282.0,667034.0,dune,False,,Other EVMs,,Ethereum
 2024-02-22,celo,L1,42220.0,296265.0,288401.0,263733.0,dune,False,,Other EVMs,,Celo
 2024-02-22,bnb,L1,56.0,6372646.0,6188969.0,3047412.0,dune,False,,Other EVMs,,BNB
-2024-02-22,base,L2,8453.0,350578.0,343134.0,216913.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-22,base,L2,8453.0,350578.0,343134.0,254006.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-22,avalanche_c,L1,43114.0,243945.0,232571.0,186086.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-22,arbitrum,L2,42161.0,794546.0,751245.0,620608.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-21,zora,L2,7777777.0,66328.0,65922.0,51118.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3014,7 +3076,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-21,ethereum,L1,1.0,1099490.0,1082222.0,684930.0,dune,False,,Other EVMs,,Ethereum
 2024-02-21,celo,L1,42220.0,306398.0,291191.0,267666.0,dune,False,,Other EVMs,,Celo
 2024-02-21,bnb,L1,56.0,3865535.0,3685600.0,2998695.0,dune,False,,Other EVMs,,BNB
-2024-02-21,base,L2,8453.0,437924.0,419043.0,265107.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-21,base,L2,8453.0,437924.0,419043.0,310341.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-21,avalanche_c,L1,43114.0,228865.0,217674.0,172805.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-21,arbitrum,L2,42161.0,820108.0,767108.0,629753.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-20,zora,L2,7777777.0,73226.0,72240.0,59768.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3032,7 +3094,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-20,ethereum,L1,1.0,1148903.0,1132087.0,717863.0,dune,False,,Other EVMs,,Ethereum
 2024-02-20,celo,L1,42220.0,297425.0,282781.0,263132.0,dune,False,,Other EVMs,,Celo
 2024-02-20,bnb,L1,56.0,3856666.0,3672855.0,2983758.0,dune,False,,Other EVMs,,BNB
-2024-02-20,base,L2,8453.0,384293.0,376385.0,241472.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-20,base,L2,8453.0,384293.0,376385.0,286630.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-20,avalanche_c,L1,43114.0,224743.0,210938.0,174985.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-20,arbitrum,L2,42161.0,871594.0,815983.0,680212.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-19,zora,L2,7777777.0,74536.0,73988.0,60597.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3050,7 +3112,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-19,ethereum,L1,1.0,1145869.0,1129495.0,706095.0,dune,False,,Other EVMs,,Ethereum
 2024-02-19,celo,L1,42220.0,314761.0,300176.0,278193.0,dune,False,,Other EVMs,,Celo
 2024-02-19,bnb,L1,56.0,3753482.0,3589324.0,2918484.0,dune,False,,Other EVMs,,BNB
-2024-02-19,base,L2,8453.0,422003.0,414867.0,266013.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-19,base,L2,8453.0,422003.0,414867.0,318465.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-19,avalanche_c,L1,43114.0,233470.0,221330.0,177025.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-19,arbitrum,L2,42161.0,758727.0,711195.0,593145.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-18,zora,L2,7777777.0,94924.0,94269.0,78037.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3068,7 +3130,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-18,ethereum,L1,1.0,1092413.0,1074284.0,682413.0,dune,False,,Other EVMs,,Ethereum
 2024-02-18,celo,L1,42220.0,307628.0,299424.0,279847.0,dune,False,,Other EVMs,,Celo
 2024-02-18,bnb,L1,56.0,3585034.0,3454364.0,2844522.0,dune,False,,Other EVMs,,BNB
-2024-02-18,base,L2,8453.0,520161.0,511838.0,334269.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-18,base,L2,8453.0,520161.0,511838.0,396153.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-18,avalanche_c,L1,43114.0,225402.0,215142.0,167963.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-18,arbitrum,L2,42161.0,746605.0,716378.0,599303.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-17,zora,L2,7777777.0,94802.0,94296.0,74674.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3086,7 +3148,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-17,ethereum,L1,1.0,1077902.0,1060974.0,673733.0,dune,False,,Other EVMs,,Ethereum
 2024-02-17,celo,L1,42220.0,295178.0,290757.0,270774.0,dune,False,,Other EVMs,,Celo
 2024-02-17,bnb,L1,56.0,3922562.0,3768742.0,3140750.0,dune,False,,Other EVMs,,BNB
-2024-02-17,base,L2,8453.0,587744.0,579246.0,381282.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-17,base,L2,8453.0,587744.0,579246.0,455077.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-17,avalanche_c,L1,43114.0,227593.0,216776.0,175556.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-17,arbitrum,L2,42161.0,725419.0,700789.0,584277.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-16,zora,L2,7777777.0,73459.0,72949.0,60557.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3104,7 +3166,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-16,ethereum,L1,1.0,1178229.0,1158761.0,715381.0,dune,False,,Other EVMs,,Ethereum
 2024-02-16,celo,L1,42220.0,315489.0,304513.0,282890.0,dune,False,,Other EVMs,,Celo
 2024-02-16,bnb,L1,56.0,3696277.0,3539344.0,2936278.0,dune,False,,Other EVMs,,BNB
-2024-02-16,base,L2,8453.0,455773.0,446688.0,287701.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-16,base,L2,8453.0,455773.0,446688.0,346422.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-16,avalanche_c,L1,43114.0,239591.0,224919.0,183477.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-16,arbitrum,L2,42161.0,777798.0,741883.0,626652.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-15,zora,L2,7777777.0,64240.0,63904.0,49604.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3122,7 +3184,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-15,ethereum,L1,1.0,1153077.0,1133323.0,697637.0,dune,False,,Other EVMs,,Ethereum
 2024-02-15,celo,L1,42220.0,309992.0,299253.0,279498.0,dune,False,,Other EVMs,,Celo
 2024-02-15,bnb,L1,56.0,3645397.0,3489738.0,2853160.0,dune,False,,Other EVMs,,BNB
-2024-02-15,base,L2,8453.0,360764.0,352759.0,225397.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-15,base,L2,8453.0,360764.0,352759.0,266341.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-15,avalanche_c,L1,43114.0,250188.0,232657.0,190737.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-15,arbitrum,L2,42161.0,794633.0,740101.0,625734.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-14,zora,L2,7777777.0,75259.0,74871.0,58183.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3140,7 +3202,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-14,ethereum,L1,1.0,1129558.0,1112612.0,675644.0,dune,False,,Other EVMs,,Ethereum
 2024-02-14,celo,L1,42220.0,309010.0,304348.0,283960.0,dune,False,,Other EVMs,,Celo
 2024-02-14,bnb,L1,56.0,3324966.0,3202573.0,2629741.0,dune,False,,Other EVMs,,BNB
-2024-02-14,base,L2,8453.0,346446.0,338314.0,219044.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-14,base,L2,8453.0,346446.0,338314.0,258348.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-14,avalanche_c,L1,43114.0,257951.0,239042.0,197198.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-14,arbitrum,L2,42161.0,771653.0,716400.0,607043.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-13,zora,L2,7777777.0,102079.0,101441.0,72852.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3158,7 +3220,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-13,ethereum,L1,1.0,1101625.0,1083740.0,654703.0,dune,False,,Other EVMs,,Ethereum
 2024-02-13,celo,L1,42220.0,346518.0,340953.0,318434.0,dune,False,,Other EVMs,,Celo
 2024-02-13,bnb,L1,56.0,3299475.0,3164150.0,2587336.0,dune,False,,Other EVMs,,BNB
-2024-02-13,base,L2,8453.0,459183.0,446737.0,278202.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-13,base,L2,8453.0,459183.0,446737.0,340598.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-13,avalanche_c,L1,43114.0,232080.0,219185.0,174885.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-13,arbitrum,L2,42161.0,855708.0,807017.0,684719.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-12,zora,L2,7777777.0,77801.0,77286.0,56886.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3176,7 +3238,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-12,ethereum,L1,1.0,983471.0,967850.0,611354.0,dune,False,,Other EVMs,,Ethereum
 2024-02-12,celo,L1,42220.0,329875.0,324972.0,303564.0,dune,False,,Other EVMs,,Celo
 2024-02-12,bnb,L1,56.0,3394588.0,3266209.0,2698724.0,dune,False,,Other EVMs,,BNB
-2024-02-12,base,L2,8453.0,412639.0,398368.0,260360.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-12,base,L2,8453.0,412639.0,398368.0,302991.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-12,avalanche_c,L1,43114.0,213258.0,199862.0,166069.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-12,arbitrum,L2,42161.0,772289.0,732922.0,626364.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-11,zora,L2,7777777.0,86240.0,85682.0,65940.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3193,7 +3255,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-11,ethereum,L1,1.0,1026668.0,1009621.0,631128.0,dune,False,,Other EVMs,,Ethereum
 2024-02-11,celo,L1,42220.0,332560.0,329009.0,307584.0,dune,False,,Other EVMs,,Celo
 2024-02-11,bnb,L1,56.0,3007276.0,2887503.0,2341837.0,dune,False,,Other EVMs,,BNB
-2024-02-11,base,L2,8453.0,454752.0,437930.0,283739.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-11,base,L2,8453.0,454752.0,437930.0,331449.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-11,avalanche_c,L1,43114.0,201508.0,190315.0,159667.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-11,arbitrum,L2,42161.0,723924.0,703310.0,580520.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-10,zora,L2,7777777.0,70668.0,70151.0,51587.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3210,7 +3272,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-10,ethereum,L1,1.0,1010306.0,989835.0,616827.0,dune,False,,Other EVMs,,Ethereum
 2024-02-10,celo,L1,42220.0,329620.0,325303.0,304294.0,dune,False,,Other EVMs,,Celo
 2024-02-10,bnb,L1,56.0,3096966.0,2978435.0,2423540.0,dune,False,,Other EVMs,,BNB
-2024-02-10,base,L2,8453.0,429777.0,411270.0,270903.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-10,base,L2,8453.0,429777.0,411270.0,313839.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-10,avalanche_c,L1,43114.0,225036.0,211043.0,175224.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-10,arbitrum,L2,42161.0,668788.0,644866.0,540347.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-09,zora,L2,7777777.0,45192.0,44911.0,35477.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3228,7 +3290,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-09,ethereum,L1,1.0,1074610.0,1057197.0,637520.0,dune,False,,Other EVMs,,Ethereum
 2024-02-09,celo,L1,42220.0,294215.0,289067.0,270814.0,dune,False,,Other EVMs,,Celo
 2024-02-09,bnb,L1,56.0,3544325.0,3390818.0,2745825.0,dune,False,,Other EVMs,,BNB
-2024-02-09,base,L2,8453.0,428634.0,414552.0,252510.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-09,base,L2,8453.0,428634.0,414552.0,296363.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-09,avalanche_c,L1,43114.0,221329.0,207318.0,168121.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-09,arbitrum,L2,42161.0,625597.0,595919.0,495197.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-08,zora,L2,7777777.0,70896.0,70503.0,59961.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3246,7 +3308,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-08,ethereum,L1,1.0,1051353.0,1029988.0,647879.0,dune,False,,Other EVMs,,Ethereum
 2024-02-08,celo,L1,42220.0,321030.0,316385.0,297123.0,dune,False,,Other EVMs,,Celo
 2024-02-08,bnb,L1,56.0,3603442.0,3445226.0,2775640.0,dune,False,,Other EVMs,,BNB
-2024-02-08,base,L2,8453.0,400579.0,389090.0,250283.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-08,base,L2,8453.0,400579.0,389090.0,299035.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-08,avalanche_c,L1,43114.0,233611.0,214844.0,170844.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-08,arbitrum,L2,42161.0,672678.0,642440.0,539823.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-07,zora,L2,7777777.0,61073.0,60676.0,44733.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3264,7 +3326,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-07,ethereum,L1,1.0,1142377.0,1117825.0,705730.0,dune,False,,Other EVMs,,Ethereum
 2024-02-07,celo,L1,42220.0,295774.0,291652.0,270157.0,dune,False,,Other EVMs,,Celo
 2024-02-07,bnb,L1,56.0,3467192.0,3332714.0,2682435.0,dune,False,,Other EVMs,,BNB
-2024-02-07,base,L2,8453.0,403933.0,387799.0,250982.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-07,base,L2,8453.0,403933.0,387799.0,295226.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-07,avalanche_c,L1,43114.0,211772.0,198423.0,163188.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-07,arbitrum,L2,42161.0,744317.0,710450.0,597523.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-06,zora,L2,7777777.0,50345.0,50044.0,34420.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3282,7 +3344,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-06,ethereum,L1,1.0,1080181.0,1061530.0,681130.0,dune,False,,Other EVMs,,Ethereum
 2024-02-06,celo,L1,42220.0,310067.0,306385.0,286306.0,dune,False,,Other EVMs,,Celo
 2024-02-06,bnb,L1,56.0,3524742.0,3392173.0,2764105.0,dune,False,,Other EVMs,,BNB
-2024-02-06,base,L2,8453.0,423004.0,408173.0,261274.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-06,base,L2,8453.0,423004.0,408173.0,307416.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-06,avalanche_c,L1,43114.0,201613.0,192284.0,151817.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-06,arbitrum,L2,42161.0,693304.0,645840.0,554651.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-05,zora,L2,7777777.0,71425.0,70850.0,56670.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3299,7 +3361,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-05,ethereum,L1,1.0,1119388.0,1104529.0,698729.0,dune,False,,Other EVMs,,Ethereum
 2024-02-05,celo,L1,42220.0,353012.0,347432.0,324502.0,dune,False,,Other EVMs,,Celo
 2024-02-05,bnb,L1,56.0,3489962.0,3358421.0,2693608.0,dune,False,,Other EVMs,,BNB
-2024-02-05,base,L2,8453.0,482955.0,459009.0,300356.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-05,base,L2,8453.0,482955.0,459009.0,344860.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-05,avalanche_c,L1,43114.0,216353.0,207350.0,159519.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-05,arbitrum,L2,42161.0,709977.0,677696.0,580965.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-04,zora,L2,7777777.0,61365.0,60804.0,50805.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3317,7 +3379,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-04,ethereum,L1,1.0,1048789.0,1031644.0,651409.0,dune,False,,Other EVMs,,Ethereum
 2024-02-04,celo,L1,42220.0,356827.0,353046.0,332906.0,dune,False,,Other EVMs,,Celo
 2024-02-04,bnb,L1,56.0,3233066.0,3120355.0,2473188.0,dune,False,,Other EVMs,,BNB
-2024-02-04,base,L2,8453.0,454388.0,437721.0,283613.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-04,base,L2,8453.0,454388.0,437721.0,330472.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-04,avalanche_c,L1,43114.0,188069.0,179326.0,146393.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-04,arbitrum,L2,42161.0,633466.0,605210.0,513613.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-03,zora,L2,7777777.0,74193.0,73628.0,63794.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3334,7 +3396,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-03,ethereum,L1,1.0,1053931.0,1034657.0,670962.0,dune,False,,Other EVMs,,Ethereum
 2024-02-03,celo,L1,42220.0,352915.0,349110.0,322261.0,dune,False,,Other EVMs,,Celo
 2024-02-03,bnb,L1,56.0,3346382.0,3212001.0,2523879.0,dune,False,,Other EVMs,,BNB
-2024-02-03,base,L2,8453.0,396587.0,385597.0,253165.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-03,base,L2,8453.0,396587.0,385597.0,299077.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-03,avalanche_c,L1,43114.0,205670.0,195634.0,158435.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-03,arbitrum,L2,42161.0,630627.0,609126.0,520669.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-02,zora,L2,7777777.0,59787.0,59498.0,52401.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3351,7 +3413,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-02,ethereum,L1,1.0,1107423.0,1087406.0,698080.0,dune,False,,Other EVMs,,Ethereum
 2024-02-02,celo,L1,42220.0,344356.0,340443.0,319307.0,dune,False,,Other EVMs,,Celo
 2024-02-02,bnb,L1,56.0,3634959.0,3501354.0,2825589.0,dune,False,,Other EVMs,,BNB
-2024-02-02,base,L2,8453.0,359678.0,351446.0,235507.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-02,base,L2,8453.0,359678.0,351446.0,281019.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-02,avalanche_c,L1,43114.0,270541.0,252493.0,193233.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-02,arbitrum,L2,42161.0,665999.0,642165.0,550716.0,dune,False,,Other EVMs,,Arbitrum One
 2024-02-01,zora,L2,7777777.0,48064.0,47806.0,40878.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3368,7 +3430,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-02-01,ethereum,L1,1.0,1126423.0,1107908.0,719051.0,dune,False,,Other EVMs,,Ethereum
 2024-02-01,celo,L1,42220.0,315333.0,311709.0,289955.0,dune,False,,Other EVMs,,Celo
 2024-02-01,bnb,L1,56.0,3661718.0,3501388.0,2830886.0,dune,False,,Other EVMs,,BNB
-2024-02-01,base,L2,8453.0,296069.0,289375.0,193631.0,goldsky,True,modern,OP Chain,base,Base
+2024-02-01,base,L2,8453.0,296069.0,289375.0,231034.0,goldsky,True,modern,OP Chain,base,Base
 2024-02-01,avalanche_c,L1,43114.0,260771.0,242180.0,185115.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-02-01,arbitrum,L2,42161.0,734582.0,698129.0,577804.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-31,zora,L2,7777777.0,53306.0,52750.0,43395.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3385,7 +3447,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-31,ethereum,L1,1.0,1136774.0,1115332.0,716085.0,dune,False,,Other EVMs,,Ethereum
 2024-01-31,celo,L1,42220.0,339949.0,335898.0,313285.0,dune,False,,Other EVMs,,Celo
 2024-01-31,bnb,L1,56.0,3604266.0,3435553.0,2776149.0,dune,False,,Other EVMs,,BNB
-2024-01-31,base,L2,8453.0,294157.0,288125.0,185444.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-31,base,L2,8453.0,294157.0,288125.0,224479.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-31,avalanche_c,L1,43114.0,270683.0,256268.0,214244.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-31,arbitrum,L2,42161.0,791356.0,749042.0,646454.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-30,zora,L2,7777777.0,44310.0,43925.0,36078.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3402,7 +3464,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-30,ethereum,L1,1.0,1189715.0,1164770.0,740625.0,dune,False,,Other EVMs,,Ethereum
 2024-01-30,celo,L1,42220.0,317244.0,314566.0,293620.0,dune,False,,Other EVMs,,Celo
 2024-01-30,bnb,L1,56.0,3827826.0,3658014.0,2954778.0,dune,False,,Other EVMs,,BNB
-2024-01-30,base,L2,8453.0,278906.0,273310.0,175385.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-30,base,L2,8453.0,278906.0,273310.0,211005.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-30,avalanche_c,L1,43114.0,278793.0,262315.0,203216.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-30,arbitrum,L2,42161.0,839538.0,791040.0,672565.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-29,zora,L2,7777777.0,63836.0,63398.0,53704.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3419,7 +3481,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-29,ethereum,L1,1.0,1114731.0,1099384.0,699746.0,dune,False,,Other EVMs,,Ethereum
 2024-01-29,celo,L1,42220.0,293667.0,291338.0,273958.0,dune,False,,Other EVMs,,Celo
 2024-01-29,bnb,L1,56.0,3488421.0,3341209.0,2730955.0,dune,False,,Other EVMs,,BNB
-2024-01-29,base,L2,8453.0,416832.0,410306.0,212556.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-29,base,L2,8453.0,416832.0,410306.0,258361.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-29,avalanche_c,L1,43114.0,275581.0,254024.0,198127.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-29,arbitrum,L2,42161.0,867620.0,831011.0,638951.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-28,zora,L2,7777777.0,57339.0,56883.0,47427.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3436,7 +3498,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-28,ethereum,L1,1.0,1127432.0,1113390.0,692829.0,dune,False,,Other EVMs,,Ethereum
 2024-01-28,celo,L1,42220.0,277208.0,274160.0,252374.0,dune,False,,Other EVMs,,Celo
 2024-01-28,bnb,L1,56.0,3416257.0,3285133.0,2708123.0,dune,False,,Other EVMs,,BNB
-2024-01-28,base,L2,8453.0,399296.0,393748.0,179637.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-28,base,L2,8453.0,399296.0,393748.0,214129.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-28,avalanche_c,L1,43114.0,280494.0,260936.0,204096.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-28,arbitrum,L2,42161.0,840888.0,805646.0,619126.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-27,zora,L2,7777777.0,46682.0,46273.0,38768.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3453,7 +3515,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-27,ethereum,L1,1.0,1147177.0,1131994.0,722240.0,dune,False,,Other EVMs,,Ethereum
 2024-01-27,celo,L1,42220.0,283262.0,281472.0,265952.0,dune,False,,Other EVMs,,Celo
 2024-01-27,bnb,L1,56.0,3449015.0,3333182.0,2756946.0,dune,False,,Other EVMs,,BNB
-2024-01-27,base,L2,8453.0,320451.0,316070.0,167571.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-27,base,L2,8453.0,320451.0,316070.0,200908.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-27,avalanche_c,L1,43114.0,230564.0,216567.0,175649.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-27,arbitrum,L2,42161.0,709416.0,687605.0,539464.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-26,zora,L2,7777777.0,42438.0,42188.0,35724.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3470,7 +3532,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-26,ethereum,L1,1.0,1171573.0,1155631.0,737588.0,dune,False,,Other EVMs,,Ethereum
 2024-01-26,celo,L1,42220.0,306358.0,300575.0,283474.0,dune,False,,Other EVMs,,Celo
 2024-01-26,bnb,L1,56.0,3845134.0,3695424.0,3001178.0,dune,False,,Other EVMs,,BNB
-2024-01-26,base,L2,8453.0,334589.0,330308.0,154984.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-26,base,L2,8453.0,334589.0,330308.0,187415.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-26,avalanche_c,L1,43114.0,232769.0,220006.0,168242.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-26,arbitrum,L2,42161.0,796785.0,753525.0,607802.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-25,zora,L2,7777777.0,42751.0,42460.0,37116.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3487,7 +3549,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-25,ethereum,L1,1.0,1172827.0,1153158.0,731343.0,dune,False,,Other EVMs,,Ethereum
 2024-01-25,celo,L1,42220.0,309308.0,303954.0,288725.0,dune,False,,Other EVMs,,Celo
 2024-01-25,bnb,L1,56.0,4183586.0,4014735.0,3259488.0,dune,False,,Other EVMs,,BNB
-2024-01-25,base,L2,8453.0,347030.0,339545.0,156991.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-25,base,L2,8453.0,347030.0,339545.0,188290.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-25,avalanche_c,L1,43114.0,255356.0,242601.0,169699.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-25,arbitrum,L2,42161.0,880742.0,841193.0,643320.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-24,zora,L2,7777777.0,45045.0,44784.0,39738.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3504,7 +3566,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-24,ethereum,L1,1.0,1079134.0,1062334.0,699293.0,dune,False,,Other EVMs,,Ethereum
 2024-01-24,celo,L1,42220.0,327168.0,324361.0,308713.0,dune,False,,Other EVMs,,Celo
 2024-01-24,bnb,L1,56.0,4059229.0,3878559.0,3144697.0,dune,False,,Other EVMs,,BNB
-2024-01-24,base,L2,8453.0,485827.0,480603.0,172420.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-24,base,L2,8453.0,485827.0,480603.0,207371.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-24,avalanche_c,L1,43114.0,325807.0,308244.0,187497.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-24,arbitrum,L2,42161.0,1042677.0,977161.0,695129.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-23,zora,L2,7777777.0,52392.0,52027.0,44601.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3521,7 +3583,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-23,ethereum,L1,1.0,1081905.0,1065131.0,701744.0,dune,False,,Other EVMs,,Ethereum
 2024-01-23,celo,L1,42220.0,309739.0,302396.0,289784.0,dune,False,,Other EVMs,,Celo
 2024-01-23,bnb,L1,56.0,4092765.0,3904540.0,3195156.0,dune,False,,Other EVMs,,BNB
-2024-01-23,base,L2,8453.0,364975.0,356797.0,180024.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-23,base,L2,8453.0,364975.0,356797.0,213197.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-23,avalanche_c,L1,43114.0,315893.0,294136.0,197126.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-23,arbitrum,L2,42161.0,1076093.0,1001950.0,782786.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-22,zora,L2,7777777.0,43064.0,42732.0,38267.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3538,7 +3600,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-22,ethereum,L1,1.0,1075556.0,1058416.0,693682.0,dune,False,,Other EVMs,,Ethereum
 2024-01-22,celo,L1,42220.0,351528.0,344891.0,325682.0,dune,False,,Other EVMs,,Celo
 2024-01-22,bnb,L1,56.0,3877070.0,3691300.0,3055358.0,dune,False,,Other EVMs,,BNB
-2024-01-22,base,L2,8453.0,309368.0,302750.0,158829.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-22,base,L2,8453.0,309368.0,302750.0,190045.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-22,avalanche_c,L1,43114.0,275997.0,255149.0,199084.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-22,arbitrum,L2,42161.0,1140860.0,1077339.0,732391.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-21,zora,L2,7777777.0,54941.0,54376.0,48000.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3555,7 +3617,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-21,ethereum,L1,1.0,1118601.0,1102648.0,658000.0,dune,False,,Other EVMs,,Ethereum
 2024-01-21,celo,L1,42220.0,302188.0,298013.0,283349.0,dune,False,,Other EVMs,,Celo
 2024-01-21,bnb,L1,56.0,3282040.0,3161450.0,2588768.0,dune,False,,Other EVMs,,BNB
-2024-01-21,base,L2,8453.0,307311.0,302540.0,181383.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-21,base,L2,8453.0,307311.0,302540.0,216982.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-21,avalanche_c,L1,43114.0,220486.0,208405.0,167011.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-21,arbitrum,L2,42161.0,714554.0,691010.0,590473.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-20,zora,L2,7777777.0,55382.0,54816.0,48989.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3572,7 +3634,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-20,ethereum,L1,1.0,1061673.0,1045888.0,659818.0,dune,False,,Other EVMs,,Ethereum
 2024-01-20,celo,L1,42220.0,312099.0,309029.0,292897.0,dune,False,,Other EVMs,,Celo
 2024-01-20,bnb,L1,56.0,3325971.0,3195619.0,2608468.0,dune,False,,Other EVMs,,BNB
-2024-01-20,base,L2,8453.0,350581.0,346065.0,186267.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-20,base,L2,8453.0,350581.0,346065.0,221970.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-20,avalanche_c,L1,43114.0,238579.0,223562.0,169776.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-20,arbitrum,L2,42161.0,834725.0,807675.0,612575.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-19,zora,L2,7777777.0,39646.0,39240.0,34501.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3589,7 +3651,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-19,ethereum,L1,1.0,1172929.0,1151458.0,742445.0,dune,False,,Other EVMs,,Ethereum
 2024-01-19,celo,L1,42220.0,311786.0,306881.0,290403.0,dune,False,,Other EVMs,,Celo
 2024-01-19,bnb,L1,56.0,3813314.0,3626594.0,2916301.0,dune,False,,Other EVMs,,BNB
-2024-01-19,base,L2,8453.0,271399.0,267503.0,145881.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-19,base,L2,8453.0,271399.0,267503.0,175801.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-19,avalanche_c,L1,43114.0,266646.0,250257.0,182224.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-19,arbitrum,L2,42161.0,830349.0,782907.0,658152.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-18,zora,L2,7777777.0,33419.0,33117.0,29275.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3606,7 +3668,7 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-18,ethereum,L1,1.0,1203648.0,1181618.0,791333.0,dune,False,,Other EVMs,,Ethereum
 2024-01-18,celo,L1,42220.0,318055.0,312279.0,295230.0,dune,False,,Other EVMs,,Celo
 2024-01-18,bnb,L1,56.0,3755628.0,3571628.0,2917575.0,dune,False,,Other EVMs,,BNB
-2024-01-18,base,L2,8453.0,240983.0,236945.0,141129.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-18,base,L2,8453.0,240983.0,236945.0,169128.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-18,avalanche_c,L1,43114.0,313033.0,296001.0,201682.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-18,arbitrum,L2,42161.0,761988.0,714751.0,601604.0,dune,False,,Other EVMs,,Arbitrum One
 2024-01-17,zora,L2,7777777.0,31020.0,30706.0,26318.0,goldsky,True,modern,OP Chain,zora,Zora
@@ -3623,23 +3685,6 @@ dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,sourc
 2024-01-17,ethereum,L1,1.0,1180304.0,1158492.0,791013.0,dune,False,,Other EVMs,,Ethereum
 2024-01-17,celo,L1,42220.0,352239.0,346852.0,326673.0,dune,False,,Other EVMs,,Celo
 2024-01-17,bnb,L1,56.0,3637645.0,3464920.0,2820155.0,dune,False,,Other EVMs,,BNB
-2024-01-17,base,L2,8453.0,247157.0,243251.0,145583.0,goldsky,True,modern,OP Chain,base,Base
+2024-01-17,base,L2,8453.0,247157.0,243251.0,174899.0,goldsky,True,modern,OP Chain,base,Base
 2024-01-17,avalanche_c,L1,43114.0,333313.0,316528.0,197410.0,dune,False,,Other EVMs,,Avalanche C-Chain
 2024-01-17,arbitrum,L2,42161.0,701694.0,662894.0,547382.0,dune,False,,Other EVMs,,Arbitrum One
-2024-01-16,zora,L2,7777777.0,34051.0,33750.0,28210.0,goldsky,True,modern,OP Chain,zora,Zora
-2024-01-16,zksync,L2,324.0,1113175.0,1099989.0,1113176.0,dune,False,,Other EVMs,,zkSync Era
-2024-01-16,zkevm,L2,1101.0,14088.0,13901.0,8003.0,dune,False,,Other EVMs,,Polygon zkEVM
-2024-01-16,scroll,L2,534352.0,114529.0,112743.0,78958.0,dune,False,,Other EVMs,,Scroll
-2024-01-16,polygon,L1,137.0,3349720.0,3178665.0,3351331.0,dune,False,,Other EVMs,,Polygon PoS
-2024-01-16,op,L2,10.0,359028.0,349025.0,236789.0,goldsky,True,modern,OP Chain,op,OP Mainnet
-2024-01-16,mode,L2,34443.0,63.0,63.0,28.0,goldsky,True,modern,OP Chain,mode,Mode
-2024-01-16,mantle,L2,5000.0,237609.0,230152.0,224821.0,dune,False,legacy ovm,OP Stack fork,mantle network,Mantle
-2024-01-16,linea,L2,59144.0,138888.0,137876.0,109778.0,dune,False,,Other EVMs,,Linea
-2024-01-16,gnosis,L1,100.0,182560.0,178434.0,163383.0,dune,False,,Other EVMs,,Gnosis
-2024-01-16,fantom,L1,250.0,268056.0,235768.0,130246.0,dune,False,,Other EVMs,,Fantom
-2024-01-16,ethereum,L1,1.0,1269004.0,1250423.0,804500.0,dune,False,,Other EVMs,,Ethereum
-2024-01-16,celo,L1,42220.0,340622.0,336686.0,317625.0,dune,False,,Other EVMs,,Celo
-2024-01-16,bnb,L1,56.0,3816302.0,3651064.0,2937926.0,dune,False,,Other EVMs,,BNB
-2024-01-16,base,L2,8453.0,243863.0,240221.0,144688.0,goldsky,True,modern,OP Chain,base,Base
-2024-01-16,avalanche_c,L1,43114.0,597268.0,582848.0,185558.0,dune,False,,Other EVMs,,Avalanche C-Chain
-2024-01-16,arbitrum,L2,42161.0,696738.0,647672.0,541582.0,dune,False,,Other EVMs,,Arbitrum One
