@@ -21,6 +21,7 @@ import clickhouse_utils as ch
 import csv_utils as cu
 import google_bq_utils as bqu
 import opstack_metadata_utils as ops
+import goldsky_db_utils as gsb
 sys.path.pop()
 
 import time
@@ -38,9 +39,15 @@ table_name = 'daily_aggegate_l2_chain_usage_goldsky'
 # In[ ]:
 
 
+# bqu.delete_bq_table('api_table_uploads',table_name)
+
+
+# In[ ]:
+
+
 block_time_sec = 2
 
-trailing_days = 180
+trailing_days = 120
 max_execution_secs = 3000
 
 
@@ -108,6 +115,9 @@ for qn in query_names:
                 query = query.replace("@trailing_days@", str(trailing_days))
                 query = query.replace("@block_time_sec@", str(block_time_sec))
                 query = query.replace("@max_execution_secs@", str(max_execution_secs))
+
+                query = gsb.process_goldsky_sql(query)
+
                 # Execute the query
                 result_df = client.query_df(query)
         #         # Write to csv
