@@ -113,7 +113,7 @@ L2,Polygon zkEVM,1101,https://zkevm.polygonscan.com,Funds can be lost if,polygon
 L2,Public Goods Network,,,,publicgoodsnetwork,,publicgoodsnetwork,https://rpc.publicgoods.network,OP Stack,,False,False,True,'https://publicgoods.network/','https://docs.publicgoods.network/',"'https://github.com/supermodularxyz/pgn-monorepo',
         'https://github.com/supermodularxyz/pgn-docs',",Optimism: OP Stack,publicgoodsnetwork
 L2,Re.al,111188,https://explorer.re.al,,real,,real,https://real.drpc.org,Arbitrum Orbit,,False,False,True,'https://re.al','https://docs.re.al/','https://github.com/re-al-Foundation',Arbitrum: Orbit,real
-L2,ReddioEx,,,Validium,reddioex,,reddioex,,StarkEx,,False,False,True,'https://reddio.com/','https://docs.reddio.com/','https://github.com/reddio-com/starkex-contracts-source',Starkware: Starknet Stack,reddioex
+L2,RedSonic,,,Validium,reddioex,,reddioex,,StarkEx,,False,False,True,'https://reddio.com/','https://docs.reddio.com/','https://github.com/reddio-com/starkex-contracts-source',Starkware: Starknet Stack,reddioex
 L2,Reddio zkVM,,,ZK Rollup,reddiozkvm,,reddiozkvm,,Starknet,,False,False,True,'https://reddio.com',"'https://docs.reddio.com/guide/starknet/smart-contracts/overview.html',",'https://github.com/reddio-com/starknet-appchain-utils',Starkware: Starknet Stack,reddiozkvm
 L2,Redstone,,,Funds can be stolen if,redstone,,redstone,https://rpc.redstonechain.com,OP Stack,,False,False,True,'https://redstone.xyz/','https://redstone.xyz/docs','https://github.com/latticexyz/redstone',Optimism: OP Stack,redstone
 L2,Reya,1729,https://explorer.reya.network,,reya,,reya,,Arbitrum Orbit,,False,False,True,'https://reya.network/','https://docs.reya.network/','https://github.com/Reya-Labs',Arbitrum: Orbit,reya
@@ -154,6 +154,7 @@ L2,Ten,,,Optimistic Rollup,ten,,ten,,,,True,False,False,'https://ten.xyz',"'http
         'https://github.com/ten-protocol/tutorial',
         'https://github.com/ten-protocol/sample-applications',",,ten
 L2,Term Structure,,,ZK Rollup,termstructure,,termstructure,,ZKsync Lite,,False,False,True,'https://ts.finance/','https://docs.ts.finance/','https://github.com/term-structure/',zkSync: ZK Stack,termstructure
+L2,,,,,text,,text,,,,False,False,True,,,,,text
 L2,Tradable,,,ZK Rollup,tradable,,tradable,,ZK Stack,,True,False,False,'https://tradable.xyz/',,,zkSync: ZK Stack,tradable
 L2,Treasure Chain,,,Optimium,treasure,,treasure,,Arbitrum,,True,False,False,'https://treasure.lol/',,,Arbitrum: Orbit,treasure
 L2,Pay Chain,,,Validium,wirex,,wirex,,Polygon,,False,False,True,'https://wirexpaychain.com/',,,Polygon: CDK,wirex
