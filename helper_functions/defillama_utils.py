@@ -449,7 +449,7 @@ def get_historical_app_tvl_by_chain(chain_name):
 		p = get_protocol_tvls()
 
 def generate_flows_column(df):
-
+		# Still need to debug the price flow
 		try: 
 				df['token_value'] = df['token_value'].replace(0, np.nan) #Never divide by 0
 				df['price_usd'] = df['usd_value'] / df['token_value']
