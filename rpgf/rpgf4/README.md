@@ -37,7 +37,7 @@ Following input authentication, project scores are then calculated by badgeholde
 The first step in calculation project allocation begins with calculating each projects `impact_metric_share` which is defined as the score of a project on a given metric devided by the sum of all projects scores on the metric. This result is multiplied by the open source (OS) multiplier when the project is noted as open source. This calculation is then repeated for each impact metric individually by project and badgeholder.
 
 ```
-impact_metric_share = (project1_metric_1_score /Sum(project1_metric_scores))* IF(is_os, os_multiplier, 1)
+impact_metric_share = (project1_metric_1_score /Sum(project1_metric_1_scores))* IF(is_os, os_multiplier, 1)
 
 ```
 
@@ -45,7 +45,7 @@ For example, looking at the impact metric `gas_fees` for test project_1:
 
 | project_name | is_oss | gas_fees | badgeholder |os_multiplier | weighted_metric | impact_metric_share |
 |--|--|--|--|--|--|--|
-| preject_1 | TRUE |10.3540933 | badgeholder_1 | 1.8 | =gas_fees *IF(EQ(is_oss,TRUE),1.8,1) | = weighted_metric /sum(project_1_weighted_metric)|
+| preject_1 | TRUE |10.3540933 | badgeholder_1 | 1.8 | = gas_fees *IF(EQ(is_oss,TRUE),1.8,1) | = weighted_metric /sum(project_1_weighted_metric)|
 
 
 #### Finding the total score by project and badgeholder
@@ -54,7 +54,7 @@ Now that there is an impact metric share claculated for each metric, the next st
 
 ```
 
-Score(P) = impactMetric1Share*weight + impactMetric2Share*weight....
+score(P) = impact_metric1_share*metric1_weight + impact_metric2_share*metric2_weight....
 
 ```  
 
