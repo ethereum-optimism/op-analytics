@@ -96,3 +96,4 @@ In order to ensure consistent reporting of the allocations, the final figures we
 * **Carl**, _Kariba Labs_
 * **Michael**, _OP Labs_
 * **Chuxin**, _OP Labs_
+* **Bella**, _OP Labs_
