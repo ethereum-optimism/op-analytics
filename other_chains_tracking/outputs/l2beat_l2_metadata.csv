@@ -39,7 +39,7 @@ L2,dYdX v3,,,ZK Rollup,dydx,,dydx,,StarkEx,,False,False,True,'https://dydx.excha
         'https://github.com/dydxprotocol/',",Starkware: Starknet Stack,dydx
 L2,Ebi,,,Optimium,ebi,,ebi,,Arbitrum,,True,False,False,'https://ebi.xyz/',,,Arbitrum: Orbit,ebi
 L2,Eclipse,,,Optimistic Rollup,eclipse,,eclipse,,,,True,False,False,'https://eclipse.builders/','https://docs.eclipse.builders/',,,eclipse
-L2,Edgeless,,,Optimium,edgeless,,edgeless,,Arbitrum,,False,False,True,'https://edgeless.network/','https://docs.edgeless.network/','https://github.com/edgelessNetwork',Arbitrum: Orbit,edgeless
+L2,Edgeless,,,,edgeless,,edgeless,https://rpc.edgeless.network/http,Arbitrum Orbit,,False,False,True,'https://edgeless.network/','https://docs.edgeless.network/','https://github.com/edgelessNetwork',Arbitrum: Orbit,edgeless
 L2,Ethernity,,,Optimistic Rollup,ethernity,,ethernity,,OP Stack,,True,False,False,'https://ethernity.io/',"'https://drive.google.com/file/d/1o74ZBmYMIUa8QUwvLOK7KhoXP9-LCsPf/view',",,Optimism: OP Stack,ethernity
 L2,Everclear,,,Optimium,everclear,,everclear,,Arbitrum,,True,False,False,'https://everclear.org','https://docs.everclear.org',,Arbitrum: Orbit,everclear
 L2,Fhenix,,,Optimistic Rollup,fhenix,,fhenix,,Arbitrum,,True,False,False,'https://fhenix.io/',"'https://fhenix.io/fhe-rollups-scaling-confidential-smart-contracts-on-ethereum-and-beyond-whitepaper/',",'https://github.com/orgs/FhenixProtocol/',Arbitrum: Orbit,fhenix
@@ -193,7 +193,6 @@ L3,Meliora,,,Optimium,meliora,,meliora,,Arbitrum,arbitrum,True,False,False,'http
 L3,Molten Network,,,,molten,,molten,https://molten.calderachain.xyz/http,Arbitrum Orbit,arbitrum,False,False,True,'https://moltennetwork.com/','https://docs.unidex.exchange/appchain/markdown',,Arbitrum: Orbit,molten
 L3,Muster,,,Optimium,muster,,muster,https://api.muster-marketplace.cometh.io/v1,Arbitrum,arbitrum,False,False,True,'https://cometh.io/','https://docs.cometh.io/marketplace','https://github.com/cometh-hq',Arbitrum: Orbit,muster
 L3,MV Chain,,,Optimium,mvchain,,mvchain,,Arbitrum,arbitrum,True,False,False,'https://genso.game/en/',,,Arbitrum: Orbit,mvchain
-L3,MXC Moonchain zkEVM,,,ZK Rollup,mxc,,mxc,,Taiko,arbitrum,False,False,True,'https://mxc.org/','https://doc.mxc.com','https://github.com/MXCzkEVM',Taiko,mxc
 L3,ORB3,,,Optimium,orb3,,orb3,https://rpc.orb3.tech,Arbitrum,arbitrum,False,False,True,'https://orb3.tech/','https://docs.orb3.tech/','https://github.com/orb3-protocol',Arbitrum: Orbit,orb3
 L3,Oursong,,,Optimium,oursong,,oursong,,Arbitrum,arbitrum,True,False,False,'https://oursong.com/',,,Arbitrum: Orbit,oursong
 L3,PlayBlock,,,Optimium,playblock,,playblock,,Arbitrum,arbitrum,True,False,False,'https://playnance.com/',,,Arbitrum: Orbit,playblock
