@@ -56,3 +56,4 @@ myshell,MyShell,,,,,,,,,https://myshell.ai/,,myshell,,,L2,,,,,,,,,,,,,,,False,OP
 allo,Allo,,,,,,,,,https://allo.xyz/,,,,,L2,ethereum,ethereum,,,,,,,,,,,,,False,OP Stack fork
 gameswift,GameSwift,,,modern,non-standard,yes,,,,https://gameswift.io/,,,,GSWIFT,L2,,ethereum,,,,,,,,,,,,,True,OP Chain
 ethernity,Ethernity,,,,,,,,,https://www.ethernity.io/,,ethernity,,,,,ethereum,,,,,,,,,,,,,False,OP Stack fork
+shape,Shape,,,modern,,,,alchemy,,https://www.shape.network/,,,,ETH,L2,ethereum,ethereum,,,,,,,,,,,,,False,OP Stack fork
