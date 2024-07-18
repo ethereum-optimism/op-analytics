@@ -59,23 +59,29 @@ FROM (
 
         SUM(
             CASE WHEN gas_price > 0 THEN 
-            CAST(receipt_l1_fee AS Nullable(Float64)) / 1e18
+                CAST(receipt_l1_fee AS Nullable(Float64)) / 1e18
             ELSE 0 END
             ) AS l1_contrib_l2_eth_fees_per_day,
         SUM(
             CASE WHEN gas_price > 0 THEN 
-            CAST(gas_price * t.receipt_gas_used AS Nullable(Float64)) / 1e18
+                CAST(gas_price * t.receipt_gas_used AS Nullable(Float64)) / 1e18
             ELSE 0 END
             ) AS l2_contrib_l2_eth_fees_per_day,
 
         SUM(
             CASE WHEN gas_price > 0 THEN 
-            cast(receipt_l1_gas_used as Nullable(Float64)) * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar) * cast(receipt_l1_gas_price AS Nullable(Float64)) / 1e18
+                (
+                    cast(@estimated_size_sql@ as Nullable(Float64)) * COALESCE(16*receipt_l1_base_fee_scalar/1e6,receipt_l1_fee_scalar) * cast(receipt_l1_gas_price AS Nullable(Float64))
+                )/ 1e18
             ELSE 0 END
             ) AS l1_l1gas_contrib_l2_eth_fees_per_day,
         SUM(
             CASE WHEN gas_price > 0 THEN 
-            cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar * cast(receipt_l1_blob_base_fee AS Nullable(Float64)) / 1e18
+            coalesce(
+                (
+                    cast(@estimated_size_sql@ as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar/1e6 * cast(receipt_l1_blob_base_fee AS Nullable(Float64))
+                )/ 1e18
+            ,0)
             ELSE 0 END
             ) AS l1_blobgas_contrib_l2_eth_fees_per_day,
 
