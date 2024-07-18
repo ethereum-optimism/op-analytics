@@ -2,6 +2,7 @@ import requests as r
 import pandas as pd
 import re
 from datetime import datetime, timezone
+import requests_utils as ru
 
 api_string = 'https://api.l2beat.com/api/'
 # https://api.l2beat.com/api/tvl
@@ -9,6 +10,7 @@ api_string = 'https://api.l2beat.com/api/'
 # https://l2beat.com/api/tvl/scaling.json
 # https://l2beat.com/api/tvl/optimism.json
 
+@ru.retry_with_backoff(max_retries=3, initial_delay=1, backoff_factor=2)
 def get_l2beat_activity_data(data='activity',granularity='daily'):
         df = pd.DataFrame()
 
@@ -53,6 +55,7 @@ def get_all_l2beat_data(granularity='daily'):
 
         return combined_df
 
+@ru.retry_with_backoff(max_retries=3, initial_delay=1, backoff_factor=2)
 def get_daily_aoc_by_token():
         api_url = 'https://api.l2beat.com/api/tvl'
         response = r.get(api_url)
