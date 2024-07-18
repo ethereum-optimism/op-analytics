@@ -93,7 +93,7 @@ In order to ensure consistent reporting of the allocations, the final figures we
 
 * **Jonas**, _Optimism Foundation_
 * **Stepan**, _Agora_
-* **Carl**, _Kariba Labs_
+* **Carl**, _OS Observer_
 * **Michael**, _OP Labs_
 * **Chuxin**, _OP Labs_
 * **Bella**, _OP Labs_
