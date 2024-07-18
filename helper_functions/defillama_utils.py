@@ -589,3 +589,34 @@ def get_chains_config():
 	chains_df.rename(columns={'index': 'defillama_slug'}, inplace=True)
 
 	return chains_df
+
+
+def get_fees_revenue(chain_name, exclude_total_data_chart=True, exclude_total_data_chart_breakdown=True, data_type='totalRevenue'):
+    # Validate data_type
+    valid_data_types = ['totalFees', 'totalRevenue', 'dailyFees', 'dailyRevenue']
+    if data_type not in valid_data_types:
+        raise ValueError(f"Invalid data_type. Must be one of {valid_data_types}")
+
+    # Construct the API URL
+    base_url = "https://api.llama.fi/overview/fees"
+    url = f"{base_url}/{chain_name}"
+
+    # Set up query parameters
+    params = {
+        'excludeTotalDataChart': str(exclude_total_data_chart).lower(),
+        'excludeTotalDataChartBreakdown': str(exclude_total_data_chart_breakdown).lower(),
+        'dataType': data_type
+    }
+
+    # Make the API request
+    response = r.get(url, params=params)
+    response.raise_for_status()  # Raise an exception for bad responses
+
+    # Parse the JSON response
+    data = response.json()
+
+    # Extract the relevant data and create a DataFrame
+    protocols = data.get('protocols', [])
+    df = pd.DataFrame(protocols)
+
+    return df
