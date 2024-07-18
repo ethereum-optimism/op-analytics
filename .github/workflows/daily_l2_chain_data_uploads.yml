@@ -51,6 +51,7 @@ jobs:
           pipenv run jupyter nbconvert --to python get_dune_evms_info.ipynb
           pipenv run jupyter nbconvert --to python chain_tvl_trends.ipynb  
           pipenv run jupyter nbconvert --to python get_qualified_txs.ipynb
+          pipenv run jupyter nbconvert --to python get_contract_labels.ipynb
           
   # Run py files
       - name: Run L2 Uploads
@@ -61,6 +62,7 @@ jobs:
           pipenv run python get_dune_evms_info.py
           pipenv run python chain_tvl_trends.py
           pipenv run python get_qualified_txs.py
+          pipenv run python get_contract_labels.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           FLIPSIDE_API_KEY: ${{ secrets.FLIPSIDE_API_KEY }}
