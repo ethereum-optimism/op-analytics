@@ -32,6 +32,11 @@ def get_op_stack_metadata_df():
         md = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv')
         return md
 
+def get_superchain_metadata_by_data_source(data_source, col_rename = 'blockchain'):
+        opsup = get_op_stack_metadata_by_data_source(data_source, col_rename)
+        opsup = opsup[opsup['alignment']=='OP Chain']
+        return opsup
+
 def get_op_stack_metadata_by_data_source(data_source, col_rename = 'blockchain'):
         if data_source == 'oplabs':
                 col = 'oplabs_db_schema'
