@@ -59,7 +59,7 @@ jobs:
       - name: Generate Chain Metadata
         working-directory: op_chains_tracking/inputs
         run: |
-          pipenv run python inputs/clean_chain_metadata_and_upload.py
+          pipenv run python clean_chain_metadata_and_upload.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
