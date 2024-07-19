@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import pandas as pd
@@ -10,6 +10,7 @@ sys.path.append("../../helper_functions")
 import opstack_metadata_utils as ops
 import duneapi_utils as d
 import google_bq_utils as bqu
+import clickhouse_utils as ch
 sys.path.pop()
 
 import dotenv
@@ -17,7 +18,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[2]:
+# In[ ]:
 
 
 # Read the CSV file
@@ -26,7 +27,7 @@ df = pd.read_csv('chain_metadata_raw.csv')
 table_name = 'op_stack_chain_metadata'
 
 
-# In[3]:
+# In[ ]:
 
 
 # Trim columns
@@ -48,13 +49,13 @@ df[object_columns] = df[object_columns].fillna('')
 df.to_csv('../outputs/chain_metadata.csv', index=False)
 
 
-# In[4]:
+# In[ ]:
 
 
-# df
+# df.dtypes
 
 
-# In[5]:
+# In[ ]:
 
 
 # Post to Dune API
@@ -62,4 +63,8 @@ d.write_dune_api_from_pandas(df, table_name + '_info_tracking',\
                              'Basic Info & Metadata about OP Stack Chains, including forks')
 #BQ Upload
 bqu.write_df_to_bq_table(df, table_name)
+
+#CH Upload
+df['mainnet_chain_id'] = df['mainnet_chain_id'].astype('Int64')
+ch.write_df_to_clickhouse(df, table_name, if_exists='replace')
 
