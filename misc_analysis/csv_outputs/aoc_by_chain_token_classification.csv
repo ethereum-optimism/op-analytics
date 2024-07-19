@@ -1,145 +1,150 @@
 ,dt,blockchain,token_type,asset_id,address,usd_value,token_classification
-133,2024-06-22,optimism,native,optimism:exa-exactly-token,0x1e925de1c68ef83bd98ee3e130ef14a50309c01b,1291107.48,Proxy
-44,2024-06-22,base,native,base:usdc-usd-coin,0x833589fcd6edb6e08f4c7c32d4f71b54bda02913,3056718814.13,Proxy
-45,2024-06-22,base,native,base:seam-seamless,0x1c7a460413dd4e964f96d8dfc56e7223ce88cd85,45891527.93,Proxy
-19,2024-06-22,base,canonical,usdc-usd-coin,0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48,56471311.11,Proxy
-131,2024-06-22,optimism,external,optimism:tbtc-optimism-tbtc-v2,0x6c84a8f1c29108f47a79964b5fe888d4f4d0de40,2589852.83,Proxy
-40,2024-06-22,base,external,base:ezeth-renzo-restaked-eth,0x2416092f143378750bb29b79ed961ab195cceea5,6790847.8,Proxy
-134,2024-06-22,optimism,native,optimism:usdc-usd-coin,0x0b2c639c533813f4aa9d7837caf62653d097ff85,166741737.15,Proxy
-138,2024-06-22,optimism,native,optimism:alusd-alchemix-usd,0xcb8fa9a76b8e203d8c3797bf438d8fb81ea3326a,2275492.1,Proxy
-39,2024-06-22,base,external,base:weeth-wrapped-eeth,0x04c0599ae5a44757c0af6f9ec3b93da8976c150a,5998464.15,Proxy
-3,2024-06-22,base,canonical,cbeth-coinbase-wrapped-staked-eth,0xbe9895146f7af43049ca1c1ae358b0541ea49704,76065450.75,Proxy
-62,2024-06-22,optimism,canonical,usdt-tether-usd,0xdac17f958d2ee523a2206206994597c13d831ec7,970031240.0,Not Proxy or Factory
-41,2024-06-22,base,external,base:sdex-smardex,0xfd4330b0312fdeec6d4225075b82e00493ff2e3f,2412340.41,Not Proxy or Factory
-42,2024-06-22,base,external,base:rseth-kelpdao-restaked-eth,0x1bc71130a0e39942a7658878169764bbd8a45993,683594.47,Not Proxy or Factory
-85,2024-06-22,optimism,canonical,wbtc-wrapped-btc,0x2260fac5e5542a773aa44fbcfedf7c193bc2c599,85301374.16,Not Proxy or Factory
-79,2024-06-22,optimism,canonical,ens-ethereum-name-service,0xc18360217d8f7ab5e7c516566761ea12ce7f9d72,192751.26,Not Proxy or Factory
-150,2024-06-22,optimism,native,optimism:frax-frax,0x2e3d870790dc77a83dd1d18184acc7439a53f475,4667915.17,Not Proxy or Factory
-47,2024-06-22,base,native,base:toshi-toshi,0xac1bd2486aaf3b5c0fc3fd868558b082a531b2b4,102325295.32,Not Proxy or Factory
-48,2024-06-22,base,native,base:zro-layerzero,0x6985884c4392d348587b19cb9eaaf157f13271cd,14164991.0,Not Proxy or Factory
-49,2024-06-22,base,native,base:degen-degen,0x4ed4e862860bed51a9570b96d89af5e1b0efefed,120314575.34,Not Proxy or Factory
-50,2024-06-22,base,native,base:mochi-mochi,0xf6e932ca12afa26665dc4dde7e27be02a7c02e50,16075453.68,Not Proxy or Factory
-51,2024-06-22,base,native,base:brett-brett,0x532f27101965dd16442e59d40670faf5ebb142e4,1400321255.17,Not Proxy or Factory
-52,2024-06-22,base,native,base:tybg-base-god,0x0d97f261b1e88845184f678e2d1e7a98d9fd38de,16813628.66,Not Proxy or Factory
-110,2024-06-22,optimism,canonical,link-chainlink-token,0x514910771af9ca656af840dff83e8264ecf986ca,6105947.41,Not Proxy or Factory
-71,2024-06-22,optimism,canonical,cro-cro,0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b,189.68,Not Proxy or Factory
-67,2024-06-22,optimism,canonical,lusd-lusd-stablecoin,0x5f98805a4e8be255a32880fdec7f6728c6568ba0,2541172.39,Not Proxy or Factory
-65,2024-06-22,optimism,canonical,uni-uniswap,0x1f9840a85d5af5bf1d1762f925bdaddc4201f984,902637.34,Not Proxy or Factory
-55,2024-06-22,optimism,canonical,toncoin-wrapped-ton-coin,0x582d872a1b094fc48f5de31d3b73f2d9be47def1,1608.78,Not Proxy or Factory
-108,2024-06-22,optimism,canonical,pendle-pendle,0x808507121b80c02388fad14726482e061b8da827,3668137.77,Not Proxy or Factory
-60,2024-06-22,optimism,canonical,rai-rai-reflex-index,0x03ab458634910aad20ef5f1c8ee96f1d6ac54919,133830.42,Not Proxy or Factory
-104,2024-06-22,optimism,canonical,cyber-cyberconnect,0x14778860e937f509e651192a90589de711fb88a9,5.33,Not Proxy or Factory
-61,2024-06-22,optimism,canonical,mkr-maker,0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2,14195.19,Not Proxy or Factory
-105,2024-06-22,optimism,canonical,thales-thales-dao-token,0x8947da500eb47f82df21143d0c01a29862a8c3c5,7304642.41,Not Proxy or Factory
-151,2024-06-22,optimism,native,optimism:sfrxeth-staked-frax-ether,0x484c2d6e3cdd945a8b2df735e079178c1036578c,11681334.67,Not Proxy or Factory
-43,2024-06-22,base,native,base:aero-aerodrome,0x940181a94a35a4569e4529a3cdfb74e38fd98631,350428256.01,Not Proxy or Factory
-139,2024-06-22,optimism,native,optimism:velo-velodrome-finance,0x9560e827af36c94d2ac33a39bce1fe78631088db,72572838.67,Not Proxy or Factory
-135,2024-06-22,optimism,native,optimism:kwenta-kwenta,0x920cf626a271321c151d027030d5d08af699456b,22020001.59,Not Proxy or Factory
-130,2024-06-22,optimism,external,optimism:rseth-kelpdao-restaked-eth,0x4186bfc76e2e237523cbc30fd220fe055156b41f,991736.79,Not Proxy or Factory
-146,2024-06-22,optimism,native,optimism:frxeth-frax-ether,0x6806411765af15bddd26f8f544a34cc40cb9838b,17700818.19,Not Proxy or Factory
-129,2024-06-22,optimism,external,optimism:usde-usde,0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34,88192.43,Not Proxy or Factory
-128,2024-06-22,optimism,external,optimism:stg-stargatetoken,0x296f55f8fb28e498b858d0bcda06d955b2cb3f97,5225892.77,Not Proxy or Factory
-137,2024-06-22,optimism,native,optimism:tarot-tarot,0x1f514a61bcde34f94bc39731235690ab9da737f7,5352229.96,Not Proxy or Factory
-113,2024-06-22,optimism,canonical,hop-hop,0xc5102fe9359fd9a28f877a67e36b0f050d81a3cc,1344.75,Not Proxy or Factory
-136,2024-06-22,optimism,native,optimism:usx-dforce-usd,0xbfd291da8a403daaf7e5e9dc1ec0aceacd4848b9,10742968.74,Not Proxy or Factory
-141,2024-06-22,optimism,native,optimism:zro-layerzero,0x6985884c4392d348587b19cb9eaaf157f13271cd,14328227.95,Not Proxy or Factory
-149,2024-06-22,optimism,native,optimism:extra-extra-finance,0x2dad3a13ef0c6366220f989157009e501e7938f8,16826971.46,Not Proxy or Factory
-8,2024-06-22,base,canonical,usdt-tether-usd,0xdac17f958d2ee523a2206206994597c13d831ec7,2512474.94,Not Proxy or Factory
-142,2024-06-22,optimism,native,optimism:fxs-frax-share,0x67ccea5bb16181e7b4109c9c2143c24a1c2205be,667205.93,Not Proxy or Factory
-117,2024-06-22,optimism,canonical,aave-aave-token,0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9,1053209.45,Not Proxy or Factory
-143,2024-06-22,optimism,native,optimism:kite-protocol-token,0xf467c7d5a4a9c4687ffc7986ac6ad5a4c81e1404,4316969.01,Not Proxy or Factory
-115,2024-06-22,optimism,canonical,reth-rocket-pool-eth,0xae78736cd615f374d3085123a210448e74fc6393,17980926.41,Not Proxy or Factory
-144,2024-06-22,optimism,native,optimism:pika-pika,0x9a601c5bb360811d96a23689066af316a30c3027,10850998.22,Not Proxy or Factory
-124,2024-06-22,optimism,canonical,usdc-usd-coin,0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48,208392572.33,Not Proxy or Factory
-148,2024-06-22,optimism,native,optimism:sfrax-staked-frax,0x2dd1b4d4548accea497050619965f91f78b3b532,1692623.19,Not Proxy or Factory
-100,2024-06-22,optimism,canonical,hair-hairdao-token,0x9ce115f0341ae5dabc8b477b74e83db2018a6f42,2683698.65,Immutable Factory Created
-97,2024-06-22,optimism,canonical,premia-premia,0x6399c842dd2be3de30bf99bc7d1bbf6fa3650e70,216357.27,Immutable Factory Created
-96,2024-06-22,optimism,canonical,pla-playdapp-token,0x3a4f40631a4f906c2bad353ed06de7a5d3fcb430,47.97,Immutable Factory Created
-93,2024-06-22,optimism,canonical,wsteth-wrapped-liquid-staked-ether-2.0,0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0,114814316.12,Immutable Factory Created
-92,2024-06-22,optimism,canonical,eqb-equilibria-token,0xfe80d611c6403f70e5b1b9b722d2b3510b740b2b,882211.93,Immutable Factory Created
-91,2024-06-22,optimism,canonical,woo-wootrade-network,0x4691937a7508860f876c9c0a2a617e7d9e945d4b,443540.43,Immutable Factory Created
-90,2024-06-22,optimism,canonical,ldo-lido-dao-token,0x5a98fcbea516cf06857215779fd812ca3bef1b32,976792.96,Immutable Factory Created
-89,2024-06-22,optimism,canonical,ctsi-cartesi-token,0x491604c0fdf08347dd1fa4ee062a822a5dd06b5d,345.88,Immutable Factory Created
-88,2024-06-22,optimism,canonical,comp-compound,0xc00e94cb662c3520282e6f5717214004a7f26888,167787.73,Immutable Factory Created
-99,2024-06-22,optimism,canonical,bal-balancer,0xba100000625a3754423978a60c9317c58a424e3d,493170.78,Immutable Factory Created
-101,2024-06-22,optimism,canonical,perp-perpetual,0xbc396689893d065f41bc2c6ecbee5e0085233447,20703392.87,Immutable Factory Created
-112,2024-06-22,optimism,canonical,knc-kyber-network-crystal-v2,0xdefa4e8a7bcba345f687a2f1456f5edd9ce97202,262317.5,Immutable Factory Created
-103,2024-06-22,optimism,canonical,pt-phemex-token,0xbbb32f99e6f2cb29337eebaa43c5069386de6e6c,170105850.0,Immutable Factory Created
-106,2024-06-22,optimism,canonical,pstake-pstake-finance,0xfb5c6815ca3ac72ce9f5006869ae67f18bf77006,29475.56,Immutable Factory Created
-107,2024-06-22,optimism,canonical,dola-dola-usd-stablecoin,0x865377367054516e17014ccded1e7d814edc9ce4,4423049.56,Immutable Factory Created
-111,2024-06-22,optimism,canonical,ocean-ocean-token,0x967da4048cd07ab37855c090aaf366e4ce1b9f48,840.58,Immutable Factory Created
-127,2024-06-22,optimism,canonical,dht-dhedge-dao-token,0xca1207647ff814039530d7d35df0e1dd2e91fa84,2012494.09,Immutable Factory Created
-126,2024-06-22,optimism,canonical,1inch-1inch-token,0x111111111117dc0aa78b770fa6a738034120c302,5.64,Immutable Factory Created
-121,2024-06-22,optimism,canonical,lyra-lyra-token,0x01ba67aac7f75f647d94220cc98fb30fcc5105bf,107106.54,Immutable Factory Created
-120,2024-06-22,optimism,canonical,sushi-sushitoken,0x6b3595068778dd592e39a122f4f5a5cf09c90fe2,22995.18,Immutable Factory Created
-119,2024-06-22,optimism,canonical,bico-biconomy-token,0xf17e65822b568b3903685a7c9f496cf7656cc6c2,279571.39,Immutable Factory Created
-114,2024-06-22,optimism,canonical,mana-decentraland-mana,0x0f5d2fb29fb7d3cfee444a200298f468908cc942,166.08,Immutable Factory Created
-102,2024-06-22,optimism,canonical,crv-curve-dao-token,0xd533a949740bb3306d119cc777fa900ba034cd52,2634938.81,Immutable Factory Created
-87,2024-06-22,optimism,canonical,xyo-xy-oracle,0x55296f69f40ea6d20e478533c15a6b08b654e758,17437.14,Immutable Factory Created
-0,2024-06-22,base,canonical,omi-omi-token,0xed35af169af46a02ee13b9d79eb57d6d68c1749e,734156.0,Immutable Factory Created
-84,2024-06-22,optimism,canonical,sand-sand,0x3845badade8e6dff049820680d1f14bd3903a5d0,120.15,Immutable Factory Created
-30,2024-06-22,base,canonical,rsr-reserve-rights,0x320623b8e4ff03373931769a31fc52a4e78b5d70,2070068.68,Immutable Factory Created
-28,2024-06-22,base,canonical,snx-synthetix-network-token,0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f,2377980.46,Immutable Factory Created
-27,2024-06-22,base,canonical,comp-compound,0xc00e94cb662c3520282e6f5717214004a7f26888,577779.71,Immutable Factory Created
-25,2024-06-22,base,canonical,sdai-savings-dai,0x83f20f44975d03b1b09e64809b757c47f942beea,32462.37,Immutable Factory Created
-23,2024-06-22,base,canonical,zrx-0x-protocol-token,0xe41d2489571d322189246dafa5ebde1f4699f498,2964.39,Immutable Factory Created
-22,2024-06-22,base,canonical,trac-trace-token,0xaa7a9ca87d3694b5755f213b5d04094b8d0f0a6f,189.8,Immutable Factory Created
-18,2024-06-22,base,canonical,yfi-yearn.finance,0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e,69970.08,Immutable Factory Created
-17,2024-06-22,base,canonical,rpl-rocket-pool-protocol,0xd33526068d116ce69f19a9ee46f0bd304f21a51f,14173.39,Immutable Factory Created
-16,2024-06-22,base,canonical,reth-rocket-pool-eth,0xae78736cd615f374d3085123a210448e74fc6393,10914882.43,Immutable Factory Created
-15,2024-06-22,base,canonical,dai-dai-stablecoin,0x6b175474e89094c44da98b954eedeac495271d0f,3248946.29,Immutable Factory Created
-14,2024-06-22,base,canonical,thales-thales-dao-token,0x8947da500eb47f82df21143d0c01a29862a8c3c5,1914725.98,Immutable Factory Created
-13,2024-06-22,base,canonical,uni-uniswap,0x1f9840a85d5af5bf1d1762f925bdaddc4201f984,505215.73,Immutable Factory Created
-12,2024-06-22,base,canonical,1inch-1inch-token,0x111111111117dc0aa78b770fa6a738034120c302,18988.84,Immutable Factory Created
-11,2024-06-22,base,canonical,ctsi-cartesi-token,0x491604c0fdf08347dd1fa4ee062a822a5dd06b5d,0.16,Immutable Factory Created
-10,2024-06-22,base,canonical,crv-curve-dao-token,0xd533a949740bb3306d119cc777fa900ba034cd52,324610.92,Immutable Factory Created
-7,2024-06-22,base,canonical,lqty-lqty,0x6dea81c8171d0ba574754ef6f8b412f2ed88c54d,30.97,Immutable Factory Created
-6,2024-06-22,base,canonical,xyo-xy-oracle,0x55296f69f40ea6d20e478533c15a6b08b654e758,52461.39,Immutable Factory Created
-5,2024-06-22,base,canonical,razor-razor,0x50de6856358cc35f3a9a57eaaa34bd4cb707d2cd,63698.36,Immutable Factory Created
-4,2024-06-22,base,canonical,lusd-lusd-stablecoin,0x5f98805a4e8be255a32880fdec7f6728c6568ba0,406148.43,Immutable Factory Created
-2,2024-06-22,base,canonical,hair-hairdao-token,0x9ce115f0341ae5dabc8b477b74e83db2018a6f42,224193.24,Immutable Factory Created
-1,2024-06-22,base,canonical,pepe-pepe,0x6982508145454ce325ddbe47a25d4ec3d2311933,126.89,Immutable Factory Created
-31,2024-06-22,base,canonical,dht-dhedge-dao-token,0xca1207647ff814039530d7d35df0e1dd2e91fa84,948520.94,Immutable Factory Created
-32,2024-06-22,base,canonical,bal-balancer,0xba100000625a3754423978a60c9317c58a424e3d,787565.86,Immutable Factory Created
-33,2024-06-22,base,canonical,pstake-pstake-finance,0xfb5c6815ca3ac72ce9f5006869ae67f18bf77006,112582.42,Immutable Factory Created
-34,2024-06-22,base,canonical,arpa-arpa-token,0xba50933c268f567bdc86e1ac131be072c6b0b71a,6199.53,Immutable Factory Created
-83,2024-06-22,optimism,canonical,lrc-loopringcoin-v2,0xbbbbca6a901c926f240b89eacb641d8aec7aeafd,1442.67,Immutable Factory Created
-82,2024-06-22,optimism,canonical,weeth-wrapped-eeth,0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee,179433.05,Immutable Factory Created
-80,2024-06-22,optimism,canonical,usdd-decentralized-usd,0x0c10bf8fcb7bf5412187a595ab97a3609160b5c6,609.2,Immutable Factory Created
-78,2024-06-22,optimism,canonical,sdai-savings-dai,0x83f20f44975d03b1b09e64809b757c47f942beea,162412.48,Immutable Factory Created
-77,2024-06-22,optimism,canonical,han-hanchain,0x0c90c57aaf95a3a87eadda6ec3974c99d786511f,10143963.56,Immutable Factory Created
-76,2024-06-22,optimism,canonical,arpa-arpa-token,0xba50933c268f567bdc86e1ac131be072c6b0b71a,4.84,Immutable Factory Created
-75,2024-06-22,optimism,canonical,uma-uma-voting-token-v1,0x04fa0d235c4abf4bcf4787af4cf447de572ef828,86910.04,Immutable Factory Created
-74,2024-06-22,optimism,canonical,ape-apecoin,0x4d224452801aced8b2f0aebe155379bb5d594381,73.51,Immutable Factory Created
-70,2024-06-22,optimism,canonical,dai-dai-stablecoin,0x6b175474e89094c44da98b954eedeac495271d0f,30370306.67,Immutable Factory Created
-69,2024-06-22,optimism,canonical,zrx-0x-protocol-token,0xe41d2489571d322189246dafa5ebde1f4699f498,150715.43,Immutable Factory Created
-86,2024-06-22,optimism,canonical,acx-across-protocol-token,0x44108f0223a3c3028f5fe7aec7f9bb2e66bef82f,1423149.99,Immutable Factory Created
-68,2024-06-22,optimism,canonical,enj-enjin-coin,0xf629cbd94d3791c9250152bd8dfbdf380e2a3b9c,90.91,Immutable Factory Created
-59,2024-06-22,optimism,canonical,chz-chiliz,0x3506424f91fd33084466f402d5d97f05f8e3b4af,59.77,Immutable Factory Created
-58,2024-06-22,optimism,canonical,pepe-pepe,0x6982508145454ce325ddbe47a25d4ec3d2311933,3040.28,Immutable Factory Created
-57,2024-06-22,optimism,canonical,rpl-rocket-pool-protocol,0xd33526068d116ce69f19a9ee46f0bd304f21a51f,12900.14,Immutable Factory Created
-56,2024-06-22,optimism,canonical,tusd-trueusd,0x0000000000085d4780b73119b644ae5ecd22b376,5512.23,Immutable Factory Created
-53,2024-06-22,optimism,canonical,cbeth-coinbase-wrapped-staked-eth,0xbe9895146f7af43049ca1c1ae358b0541ea49704,367591.67,Immutable Factory Created
-38,2024-06-22,base,canonical,dola-dola-usd-stablecoin,0x865377367054516e17014ccded1e7d814edc9ce4,69927710.78,Immutable Factory Created
-37,2024-06-22,base,canonical,sushi-sushitoken,0x6b3595068778dd592e39a122f4f5a5cf09c90fe2,23217.17,Immutable Factory Created
-36,2024-06-22,base,canonical,knc-kyber-network-crystal-v2,0xdefa4e8a7bcba345f687a2f1456f5edd9ce97202,6141.16,Immutable Factory Created
-35,2024-06-22,base,canonical,gene-genomesdao,0x21413c119b0c11c5d96ae1bd328917bc5c8ed67e,1.29,Immutable Factory Created
-64,2024-06-22,optimism,canonical,matic-matic-token,0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0,312.94,Immutable Factory Created
-73,2024-06-22,optimism,canonical,wld-worldcoin,0x163f8c2467924be0ae7b5347228cabf260318753,630312232.97,Immutable Factory Created
-21,2024-06-22,base,canonical,eth-ether,native,1771360908.68,Native
-24,2024-06-22,base,canonical,wsteth-wrapped-liquid-staked-ether-2.0,0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0,57432206.75,Unknown
-26,2024-06-22,base,canonical,ezeth-renzo-restaked-eth,0xbf5495efe5db9ce00f80364c8b423567e58d2110,35.94,Unknown
-29,2024-06-22,base,canonical,link-chainlink-token,0x514910771af9ca656af840dff83e8264ecf986ca,13.89,Unknown
-46,2024-06-22,base,native,base:friend-friend,0x0bd4887f7d41b35cd75dff9ffee2856106f86670,95023448.74,Unknown
-66,2024-06-22,optimism,canonical,snx-synthetix-network-token,0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f,192843228.92000002,Unknown
-81,2024-06-22,optimism,canonical,snt-status-network-token,0x744d70fdbe2ba4cf95131626614a1763df805b9e,668.25,Unknown
-94,2024-06-22,optimism,canonical,fxs-frax-share,0x3432b6a60d23ca0dfca7761b7ab56459d9c964d0,212.64,Unknown
-95,2024-06-22,optimism,canonical,frax-frax,0x853d955acef822db058eb8505911ed77f175b99e,3.46,Unknown
-98,2024-06-22,optimism,canonical,eth-ether,native,1737336144.41,Native
-118,2024-06-22,optimism,canonical,rgt-rari-governance-token,0xd291e7a03283640fdc51b121ac401383a46cc623,3.49,Unknown
-122,2024-06-22,optimism,canonical,yfi-yearn.finance,0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e,186.51,Unknown
-123,2024-06-22,optimism,canonical,weth-wrapped-ether,0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2,192.65,Unknown
-132,2024-06-22,optimism,external,optimism:susde-staked-usde,0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2,12618.26,Unknown
-140,2024-06-22,optimism,native,optimism:fpis-frax-price-index-share,0x8368dca5ce2a4db530c0f6e535d90b6826428dee,24193.59,Unknown
-145,2024-06-22,optimism,native,op-optimism,0x4200000000000000000000000000000000000042,2050862189.19,Predeploy
-147,2024-06-22,optimism,native,optimism:fpi-frax-price-index,0xc5d43a94e26fca47a9b21cf547ae4aa0268670e1,278108.52,Unknown
+55,2024-07-19,base,native,base:seam-seamless,0x1c7a460413dd4e964f96d8dfc56e7223ce88cd85,47997073.0,Proxy
+39,2024-07-19,base,canonical,usdc-usd-coin,0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48,51105961.36,Proxy
+49,2024-07-19,base,native,base:usdc-usd-coin,0x833589fcd6edb6e08f4c7c32d4f71b54bda02913,2945807390.43,Proxy
+8,2024-07-19,base,canonical,cbeth-coinbase-wrapped-staked-eth,0xbe9895146f7af43049ca1c1ae358b0541ea49704,88899940.6,Proxy
+45,2024-07-19,base,external,base:ezeth-renzo-restaked-eth,0x2416092f143378750bb29b79ed961ab195cceea5,4191263.25,Proxy
+47,2024-07-19,base,external,base:weeth-wrapped-eeth,0x04c0599ae5a44757c0af6f9ec3b93da8976c150a,18782447.44,Proxy
+151,2024-07-19,optimism,native,optimism:usdc-usd-coin,0x0b2c639c533813f4aa9d7837caf62653d097ff85,180512124.78,Proxy
+152,2024-07-19,optimism,native,optimism:exa-exactly-token,0x1e925de1c68ef83bd98ee3e130ef14a50309c01b,1254570.42,Proxy
+133,2024-07-19,optimism,external,optimism:tbtc-optimism-tbtc-v2,0x6c84a8f1c29108f47a79964b5fe888d4f4d0de40,2982892.77,Proxy
+85,2024-07-19,optimism,canonical,ens-ethereum-name-service,0xc18360217d8f7ab5e7c516566761ea12ce7f9d72,163234.8,Not Proxy or Factory
+46,2024-07-19,base,external,base:sdex-smardex,0xfd4330b0312fdeec6d4225075b82e00493ff2e3f,2490032.73,Not Proxy or Factory
+53,2024-07-19,base,native,base:friend-friend,0x0bd4887f7d41b35cd75dff9ffee2856106f86670,22739982.76,Not Proxy or Factory
+48,2024-07-19,base,native,base:zro-layerzero,0x6985884c4392d348587b19cb9eaaf157f13271cd,26787951.36,Not Proxy or Factory
+50,2024-07-19,base,native,base:tybg-base-god,0x0d97f261b1e88845184f678e2d1e7a98d9fd38de,11770854.22,Not Proxy or Factory
+51,2024-07-19,base,native,base:brett-brett,0x532f27101965dd16442e59d40670faf5ebb142e4,1277936245.42,Not Proxy or Factory
+52,2024-07-19,base,native,base:degen-degen,0x4ed4e862860bed51a9570b96d89af5e1b0efefed,81690850.53,Not Proxy or Factory
+106,2024-07-19,optimism,canonical,rai-rai-reflex-index,0x03ab458634910aad20ef5f1c8ee96f1d6ac54919,100833.81,Not Proxy or Factory
+154,2024-07-19,optimism,native,optimism:kite-protocol-token,0xf467c7d5a4a9c4687ffc7986ac6ad5a4c81e1404,3470386.02,Not Proxy or Factory
+56,2024-07-19,base,native,base:toshi-toshi,0xac1bd2486aaf3b5c0fc3fd868558b082a531b2b4,98582108.39,Not Proxy or Factory
+57,2024-07-19,base,native,base:aero-aerodrome,0x940181a94a35a4569e4529a3cdfb74e38fd98631,501670856.78,Not Proxy or Factory
+62,2024-07-19,optimism,canonical,aave-aave-token,0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9,1388761.46,Not Proxy or Factory
+99,2024-07-19,optimism,canonical,pendle-pendle,0x808507121b80c02388fad14726482e061b8da827,2738635.84,Not Proxy or Factory
+96,2024-07-19,optimism,canonical,mkr-maker,0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2,15825.81,Not Proxy or Factory
+70,2024-07-19,optimism,canonical,link-chainlink-token,0x514910771af9ca656af840dff83e8264ecf986ca,5884199.3,Not Proxy or Factory
+94,2024-07-19,optimism,canonical,lusd-lusd-stablecoin,0x5f98805a4e8be255a32880fdec7f6728c6568ba0,2717032.56,Not Proxy or Factory
+153,2024-07-19,optimism,native,optimism:extra-extra-finance,0x2dad3a13ef0c6366220f989157009e501e7938f8,19980195.96,Not Proxy or Factory
+77,2024-07-19,optimism,canonical,cyber-cyberconnect,0x14778860e937f509e651192a90589de711fb88a9,4.53,Not Proxy or Factory
+90,2024-07-19,optimism,canonical,hop-hop,0xc5102fe9359fd9a28f877a67e36b0f050d81a3cc,1671.29,Not Proxy or Factory
+54,2024-07-19,base,native,base:mochi-mochi,0xf6e932ca12afa26665dc4dde7e27be02a7c02e50,14010258.36,Not Proxy or Factory
+34,2024-07-19,base,canonical,usdt-tether-usd,0xdac17f958d2ee523a2206206994597c13d831ec7,2526401.09,Not Proxy or Factory
+108,2024-07-19,optimism,canonical,reth-rocket-pool-eth,0xae78736cd615f374d3085123a210448e74fc6393,16223526.9,Not Proxy or Factory
+117,2024-07-19,optimism,canonical,thales-thales-dao-token,0x8947da500eb47f82df21143d0c01a29862a8c3c5,7209468.65,Not Proxy or Factory
+142,2024-07-19,optimism,native,optimism:frax-frax,0x2e3d870790dc77a83dd1d18184acc7439a53f475,4663181.73,Not Proxy or Factory
+116,2024-07-19,optimism,canonical,usdt-tether-usd,0xdac17f958d2ee523a2206206994597c13d831ec7,1053278230.37,Not Proxy or Factory
+139,2024-07-19,optimism,native,optimism:kwenta-kwenta,0x920cf626a271321c151d027030d5d08af699456b,23024203.42,Not Proxy or Factory
+138,2024-07-19,optimism,native,optimism:pika-pika,0x9a601c5bb360811d96a23689066af316a30c3027,10547031.09,Not Proxy or Factory
+137,2024-07-19,optimism,external,optimism:usde-usde,0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34,15300.59,Not Proxy or Factory
+136,2024-07-19,optimism,external,optimism:stg-stargatetoken,0x296f55f8fb28e498b858d0bcda06d955b2cb3f97,4644397.33,Not Proxy or Factory
+143,2024-07-19,optimism,native,optimism:frxeth-frax-ether,0x6806411765af15bddd26f8f544a34cc40cb9838b,17179768.55,Not Proxy or Factory
+146,2024-07-19,optimism,native,optimism:fxs-frax-share,0x67ccea5bb16181e7b4109c9c2143c24a1c2205be,478389.56,Not Proxy or Factory
+140,2024-07-19,optimism,native,optimism:velo-velodrome-finance,0x9560e827af36c94d2ac33a39bce1fe78631088db,81391712.6,Not Proxy or Factory
+147,2024-07-19,optimism,native,optimism:zro-layerzero,0x6985884c4392d348587b19cb9eaaf157f13271cd,23616525.38,Not Proxy or Factory
+125,2024-07-19,optimism,canonical,wbtc-wrapped-btc,0x2260fac5e5542a773aa44fbcfedf7c193bc2c599,89954026.69,Not Proxy or Factory
+121,2024-07-19,optimism,canonical,usdc-usd-coin,0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48,174925102.74,Not Proxy or Factory
+120,2024-07-19,optimism,canonical,uni-uniswap,0x1f9840a85d5af5bf1d1762f925bdaddc4201f984,716275.46,Not Proxy or Factory
+149,2024-07-19,optimism,native,optimism:sfrxeth-staked-frax-ether,0x484c2d6e3cdd945a8b2df735e079178c1036578c,11374282.1,Not Proxy or Factory
+150,2024-07-19,optimism,native,optimism:tarot-tarot,0x1f514a61bcde34f94bc39731235690ab9da737f7,6264955.89,Not Proxy or Factory
+148,2024-07-19,optimism,native,optimism:sfrax-staked-frax,0x2dd1b4d4548accea497050619965f91f78b3b532,1702847.67,Not Proxy or Factory
+95,2024-07-19,optimism,canonical,lyra-lyra-token,0x01ba67aac7f75f647d94220cc98fb30fcc5105bf,111051.91,Immutable Factory Created
+93,2024-07-19,optimism,canonical,lrc-loopringcoin-v2,0xbbbbca6a901c926f240b89eacb641d8aec7aeafd,1367.01,Immutable Factory Created
+97,2024-07-19,optimism,canonical,matic-matic-token,0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0,281.68,Immutable Factory Created
+98,2024-07-19,optimism,canonical,ocean-ocean-token,0x967da4048cd07ab37855c090aaf366e4ce1b9f48,779.51,Immutable Factory Created
+92,2024-07-19,optimism,canonical,ldo-lido-dao-token,0x5a98fcbea516cf06857215779fd812ca3bef1b32,820406.42,Immutable Factory Created
+91,2024-07-19,optimism,canonical,knc-kyber-network-crystal-v2,0xdefa4e8a7bcba345f687a2f1456f5edd9ce97202,261427.46,Immutable Factory Created
+89,2024-07-19,optimism,canonical,han-hanchain,0x0c90c57aaf95a3a87eadda6ec3974c99d786511f,7437857.65,Immutable Factory Created
+88,2024-07-19,optimism,canonical,hair-hairdao-token,0x9ce115f0341ae5dabc8b477b74e83db2018a6f42,2295778.4,Immutable Factory Created
+100,2024-07-19,optimism,canonical,pepe-pepe,0x6982508145454ce325ddbe47a25d4ec3d2311933,3070.63,Immutable Factory Created
+101,2024-07-19,optimism,canonical,perp-perpetual,0xbc396689893d065f41bc2c6ecbee5e0085233447,18540323.25,Immutable Factory Created
+105,2024-07-19,optimism,canonical,pstake-pstake-finance,0xfb5c6815ca3ac72ce9f5006869ae67f18bf77006,39066.37,Immutable Factory Created
+103,2024-07-19,optimism,canonical,pla-playdapp-token,0x3a4f40631a4f906c2bad353ed06de7a5d3fcb430,53.65,Immutable Factory Created
+113,2024-07-19,optimism,canonical,sushi-sushitoken,0x6b3595068778dd592e39a122f4f5a5cf09c90fe2,19504.29,Immutable Factory Created
+111,2024-07-19,optimism,canonical,sdai-savings-dai,0x83f20f44975d03b1b09e64809b757c47f942beea,116380.87,Immutable Factory Created
+110,2024-07-19,optimism,canonical,sand-sand,0x3845badade8e6dff049820680d1f14bd3903a5d0,116.91,Immutable Factory Created
+118,2024-07-19,optimism,canonical,tusd-trueusd,0x0000000000085d4780b73119b644ae5ecd22b376,5521.85,Immutable Factory Created
+109,2024-07-19,optimism,canonical,rpl-rocket-pool-protocol,0xd33526068d116ce69f19a9ee46f0bd304f21a51f,7815.34,Immutable Factory Created
+119,2024-07-19,optimism,canonical,uma-uma-voting-token-v1,0x04fa0d235c4abf4bcf4787af4cf447de572ef828,72316.9,Immutable Factory Created
+123,2024-07-19,optimism,canonical,woo-wootrade-network,0x4691937a7508860f876c9c0a2a617e7d9e945d4b,416317.58,Immutable Factory Created
+124,2024-07-19,optimism,canonical,wld-worldcoin,0x163f8c2467924be0ae7b5347228cabf260318753,605839702.98,Immutable Factory Created
+126,2024-07-19,optimism,canonical,weeth-wrapped-eeth,0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee,95602.75,Immutable Factory Created
+128,2024-07-19,optimism,canonical,wsteth-wrapped-liquid-staked-ether-2.0,0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0,130059990.29,Immutable Factory Created
+129,2024-07-19,optimism,canonical,toncoin-wrapped-ton-coin,0x582d872a1b094fc48f5de31d3b73f2d9be47def1,1646.84,Immutable Factory Created
+130,2024-07-19,optimism,canonical,xyo-xy-oracle,0x55296f69f40ea6d20e478533c15a6b08b654e758,17535.88,Immutable Factory Created
+104,2024-07-19,optimism,canonical,premia-premia,0x6399c842dd2be3de30bf99bc7d1bbf6fa3650e70,195411.24,Immutable Factory Created
+102,2024-07-19,optimism,canonical,pt-phemex-token,0xbbb32f99e6f2cb29337eebaa43c5069386de6e6c,176009249.99,Immutable Factory Created
+84,2024-07-19,optimism,canonical,eqb-equilibria-token,0xfe80d611c6403f70e5b1b9b722d2b3510b740b2b,673953.06,Immutable Factory Created
+1,2024-07-19,base,canonical,zrx-0x-protocol-token,0xe41d2489571d322189246dafa5ebde1f4699f498,2375.39,Immutable Factory Created
+82,2024-07-19,optimism,canonical,dola-dola-usd-stablecoin,0x865377367054516e17014ccded1e7d814edc9ce4,4242995.57,Immutable Factory Created
+29,2024-07-19,base,canonical,sdai-savings-dai,0x83f20f44975d03b1b09e64809b757c47f942beea,15012.26,Immutable Factory Created
+28,2024-07-19,base,canonical,rpl-rocket-pool-protocol,0xd33526068d116ce69f19a9ee46f0bd304f21a51f,10953.56,Immutable Factory Created
+27,2024-07-19,base,canonical,reth-rocket-pool-eth,0xae78736cd615f374d3085123a210448e74fc6393,13676394.61,Immutable Factory Created
+26,2024-07-19,base,canonical,rsr-reserve-rights,0x320623b8e4ff03373931769a31fc52a4e78b5d70,1857687.21,Immutable Factory Created
+24,2024-07-19,base,canonical,razor-razor,0x50de6856358cc35f3a9a57eaaa34bd4cb707d2cd,57725.42,Immutable Factory Created
+23,2024-07-19,base,canonical,pstake-pstake-finance,0xfb5c6815ca3ac72ce9f5006869ae67f18bf77006,126008.58,Immutable Factory Created
+22,2024-07-19,base,canonical,pepe-pepe,0x6982508145454ce325ddbe47a25d4ec3d2311933,137.4,Immutable Factory Created
+21,2024-07-19,base,canonical,omi-omi-token,0xed35af169af46a02ee13b9d79eb57d6d68c1749e,818516.21,Immutable Factory Created
+20,2024-07-19,base,canonical,lusd-lusd-stablecoin,0x5f98805a4e8be255a32880fdec7f6728c6568ba0,435081.72,Immutable Factory Created
+19,2024-07-19,base,canonical,lqty-lqty,0x6dea81c8171d0ba574754ef6f8b412f2ed88c54d,30.43,Immutable Factory Created
+18,2024-07-19,base,canonical,lrc-loopringcoin-v2,0xbbbbca6a901c926f240b89eacb641d8aec7aeafd,0.1,Immutable Factory Created
+17,2024-07-19,base,canonical,knc-kyber-network-crystal-v2,0xdefa4e8a7bcba345f687a2f1456f5edd9ce97202,6094.5,Immutable Factory Created
+16,2024-07-19,base,canonical,hair-hairdao-token,0x9ce115f0341ae5dabc8b477b74e83db2018a6f42,200458.64,Immutable Factory Created
+15,2024-07-19,base,canonical,gene-genomesdao,0x21413c119b0c11c5d96ae1bd328917bc5c8ed67e,0.97,Immutable Factory Created
+14,2024-07-19,base,canonical,dola-dola-usd-stablecoin,0x865377367054516e17014ccded1e7d814edc9ce4,55864403.47,Immutable Factory Created
+13,2024-07-19,base,canonical,dht-dhedge-dao-token,0xca1207647ff814039530d7d35df0e1dd2e91fa84,1057001.59,Immutable Factory Created
+12,2024-07-19,base,canonical,dai-dai-stablecoin,0x6b175474e89094c44da98b954eedeac495271d0f,3658926.79,Immutable Factory Created
+11,2024-07-19,base,canonical,crvusd-curve.fi-usd-stablecoin,0xf939e0a03fb07f59a73314e73794be0e57ac1b4e,1116595.07,Immutable Factory Created
+10,2024-07-19,base,canonical,crv-curve-dao-token,0xd533a949740bb3306d119cc777fa900ba034cd52,270772.51,Immutable Factory Created
+9,2024-07-19,base,canonical,comp-compound,0xc00e94cb662c3520282e6f5717214004a7f26888,459774.75,Immutable Factory Created
+6,2024-07-19,base,canonical,xcn-chain,0xa2cd3d43c775978a96bdbf12d733d5a1ed94fb18,535680.49,Immutable Factory Created
+5,2024-07-19,base,canonical,ctsi-cartesi-token,0x491604c0fdf08347dd1fa4ee062a822a5dd06b5d,0.15,Immutable Factory Created
+4,2024-07-19,base,canonical,bal-balancer,0xba100000625a3754423978a60c9317c58a424e3d,690905.12,Immutable Factory Created
+3,2024-07-19,base,canonical,arpa-arpa-token,0xba50933c268f567bdc86e1ac131be072c6b0b71a,5489.0,Immutable Factory Created
+2,2024-07-19,base,canonical,1inch-1inch-token,0x111111111117dc0aa78b770fa6a738034120c302,28036.73,Immutable Factory Created
+30,2024-07-19,base,canonical,silo-silo-governance-token,0x6f80310ca7f2c654691d1383149fa1a57d8ab1f8,126.18,Immutable Factory Created
+31,2024-07-19,base,canonical,sushi-sushitoken,0x6b3595068778dd592e39a122f4f5a5cf09c90fe2,29536.28,Immutable Factory Created
+32,2024-07-19,base,canonical,snx-synthetix-network-token,0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f,2427784.53,Immutable Factory Created
+81,2024-07-19,optimism,canonical,dht-dhedge-dao-token,0xca1207647ff814039530d7d35df0e1dd2e91fa84,1977494.34,Immutable Factory Created
+80,2024-07-19,optimism,canonical,usdd-decentralized-usd,0x0c10bf8fcb7bf5412187a595ab97a3609160b5c6,609.67,Immutable Factory Created
+79,2024-07-19,optimism,canonical,mana-decentraland-mana,0x0f5d2fb29fb7d3cfee444a200298f468908cc942,170.87,Immutable Factory Created
+78,2024-07-19,optimism,canonical,dai-dai-stablecoin,0x6b175474e89094c44da98b954eedeac495271d0f,30344585.02,Immutable Factory Created
+76,2024-07-19,optimism,canonical,crvusd-curve.fi-usd-stablecoin,0xf939e0a03fb07f59a73314e73794be0e57ac1b4e,3876768.87,Immutable Factory Created
+75,2024-07-19,optimism,canonical,crv-curve-dao-token,0xd533a949740bb3306d119cc777fa900ba034cd52,1732116.91,Immutable Factory Created
+74,2024-07-19,optimism,canonical,cro-cro,0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b,189.88,Immutable Factory Created
+72,2024-07-19,optimism,canonical,cbeth-coinbase-wrapped-staked-eth,0xbe9895146f7af43049ca1c1ae358b0541ea49704,357562.96,Immutable Factory Created
+71,2024-07-19,optimism,canonical,chz-chiliz,0x3506424f91fd33084466f402d5d97f05f8e3b4af,53.84,Immutable Factory Created
+68,2024-07-19,optimism,canonical,ctsi-cartesi-token,0x491604c0fdf08347dd1fa4ee062a822a5dd06b5d,326.84,Immutable Factory Created
+67,2024-07-19,optimism,canonical,bico-biconomy-token,0xf17e65822b568b3903685a7c9f496cf7656cc6c2,246779.05,Immutable Factory Created
+83,2024-07-19,optimism,canonical,enj-enjin-coin,0xf629cbd94d3791c9250152bd8dfbdf380e2a3b9c,90.25,Immutable Factory Created
+66,2024-07-19,optimism,canonical,bal-balancer,0xba100000625a3754423978a60c9317c58a424e3d,414679.12,Immutable Factory Created
+64,2024-07-19,optimism,canonical,ape-apecoin,0x4d224452801aced8b2f0aebe155379bb5d594381,63.37,Immutable Factory Created
+63,2024-07-19,optimism,canonical,acx-across-protocol-token,0x44108f0223a3c3028f5fe7aec7f9bb2e66bef82f,1880883.64,Immutable Factory Created
+60,2024-07-19,optimism,canonical,1inch-1inch-token,0x111111111117dc0aa78b770fa6a738034120c302,1944.09,Immutable Factory Created
+59,2024-07-19,optimism,canonical,zrx-0x-protocol-token,0xe41d2489571d322189246dafa5ebde1f4699f498,154886.9,Immutable Factory Created
+43,2024-07-19,base,canonical,yfi-yearn.finance,0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e,69298.66,Immutable Factory Created
+42,2024-07-19,base,canonical,xyo-xy-oracle,0x55296f69f40ea6d20e478533c15a6b08b654e758,51179.55,Immutable Factory Created
+40,2024-07-19,base,canonical,weeth-wrapped-eeth,0xcd5fe23c85820f7b72d0926fc9b05b43e359b7ee,119332.24,Immutable Factory Created
+37,2024-07-19,base,canonical,uni-uniswap,0x1f9840a85d5af5bf1d1762f925bdaddc4201f984,322705.14,Immutable Factory Created
+36,2024-07-19,base,canonical,trac-trace-token,0xaa7a9ca87d3694b5755f213b5d04094b8d0f0a6f,1074906.26,Immutable Factory Created
+35,2024-07-19,base,canonical,thales-thales-dao-token,0x8947da500eb47f82df21143d0c01a29862a8c3c5,1819956.43,Immutable Factory Created
+65,2024-07-19,optimism,canonical,arpa-arpa-token,0xba50933c268f567bdc86e1ac131be072c6b0b71a,4.28,Immutable Factory Created
+73,2024-07-19,optimism,canonical,comp-compound,0xc00e94cb662c3520282e6f5717214004a7f26888,170158.17,Immutable Factory Created
+0,2024-07-19,base,canonical,eth-ether,native,1763646481.05,Native
+7,2024-07-19,base,canonical,link-chainlink-token,0x514910771af9ca656af840dff83e8264ecf986ca,13.5,Unknown
+25,2024-07-19,base,canonical,ezeth-renzo-restaked-eth,0xbf5495efe5db9ce00f80364c8b423567e58d2110,35.28,Unknown
+41,2024-07-19,base,canonical,wsteth-wrapped-liquid-staked-ether-2.0,0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0,96762607.0,Unknown
+44,2024-07-19,base,external,base:rseth-kelpdao-restaked-eth,0x1bc71130a0e39942a7658878169764bbd8a45993,626177.72,Unknown
+58,2024-07-19,optimism,canonical,eth-ether,native,1707379237.81,Native
+86,2024-07-19,optimism,canonical,frax-frax,0x853d955acef822db058eb8505911ed77f175b99e,3.46,Unknown
+87,2024-07-19,optimism,canonical,fxs-frax-share,0x3432b6a60d23ca0dfca7761b7ab56459d9c964d0,152.46,Unknown
+107,2024-07-19,optimism,canonical,rgt-rari-governance-token,0xd291e7a03283640fdc51b121ac401383a46cc623,2.7800000000000002,Unknown
+112,2024-07-19,optimism,canonical,snt-status-network-token,0x744d70fdbe2ba4cf95131626614a1763df805b9e,620.57,Unknown
+114,2024-07-19,optimism,canonical,snx-synthetix-network-token,0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f,186393336.67,Unknown
+127,2024-07-19,optimism,canonical,weth-wrapped-ether,0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2,186.7,Unknown
+131,2024-07-19,optimism,canonical,yfi-yearn.finance,0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e,184.72,Unknown
+132,2024-07-19,optimism,external,optimism:rseth-kelpdao-restaked-eth,0x4186bfc76e2e237523cbc30fd220fe055156b41f,607951.13,Unknown
+134,2024-07-19,optimism,external,optimism:ezeth-renzo-restaked-eth,0x2416092f143378750bb29b79ed961ab195cceea5,7252873.97,Unknown
+135,2024-07-19,optimism,external,optimism:susde-staked-usde,0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2,12629.59,Unknown
+141,2024-07-19,optimism,native,op-optimism,0x4200000000000000000000000000000000000042,2048154133.56,Predeploy
+144,2024-07-19,optimism,native,optimism:fpi-frax-price-index,0xc5d43a94e26fca47a9b21cf547ae4aa0268670e1,277021.47,Unknown
+145,2024-07-19,optimism,native,optimism:fpis-frax-price-index-share,0x8368dca5ce2a4db530c0f6e535d90b6826428dee,16265.79,Unknown
