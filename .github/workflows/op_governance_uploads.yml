@@ -1,4 +1,4 @@
-name: Run OP Governance Data -> Dune
+name: Run OP Governance Data
 
 # Controls when the workflow will run
 on:
