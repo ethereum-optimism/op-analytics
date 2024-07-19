@@ -164,6 +164,7 @@ L2,World Chain,,,Optimistic Rollup,world,,world,,OP Stack,,True,False,False,'htt
 L2,XCHAIN,,,Validium,xchain,,xchain,,Polygon,,True,False,False,'https://idex.io/',"'https://medium.com/idex/the-all-new-idex-a-quick-recap-b27df4cd981b',",,Polygon: CDK,xchain
 L2,DAC,,,,xlayer,,xlayer,https://rpc.xlayer.tech,Polygon CDK,,False,False,True,'https://okx.com/x1','https://okx.com/xlayer/docs',,Polygon: CDK,xlayer
 L2,zkXPLA,,,Validium,xpla,,xpla,,ZK Stack,,True,False,False,'https://xpla.io',,,zkSync: ZK Stack,xpla
+L2,Xterio Chain,,,Funds can be stolen if,xterio,,xterio,https://xterio-eth.alt.technology/,OP Stack,,False,False,True,'https://xter.io/','https://stack.optimism.io/','https://github.com/XterioTech',Optimism: OP Stack,xterio
 L2,Zentachain,,,Optimistic Rollup,zentachain,,zentachain,,OP Stack,,True,False,False,'https://zentachain.io/','https://docs.zentachain.io/','https://github.com/ZentaChain',Optimism: OP Stack,zentachain
 L2,Zero Network,,,ZK Rollup,zeronetwork,,zeronetwork,,ZK Stack,,True,False,False,'https://zero.network/','https://docs.zero.network/',,zkSync: ZK Stack,zeronetwork
 L2,Zircuit,,,ZK Rollup,zircuit,,zircuit,,,,True,False,False,'https://zircuit.com/','https://docs.zircuit.com/',,,zircuit

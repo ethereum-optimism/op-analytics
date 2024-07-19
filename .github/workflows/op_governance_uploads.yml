@@ -2,9 +2,9 @@ name: Run OP Governance Data -> Dune
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule - Every day at 12:11 AM
+  # Run on a schedule - Every day at 12:31 AM
   schedule:
-      - cron: '11 0 * * *'
+      - cron: '31 0 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
