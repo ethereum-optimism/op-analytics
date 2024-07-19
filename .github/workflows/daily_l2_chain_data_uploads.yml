@@ -42,23 +42,24 @@ jobs:
             notebook: get_qualified_txs
           - working-directory: other_chains_tracking
             notebook: get_contract_labels
-          - working-directory: other_chains_tracking
+          - working-directory: op_chains_tracking
             notebook: get_superchain_token_list
           - working-directory: op_chains_tracking
             notebook: ch_gs_uploads
           - working-directory: op_chains_tracking
             notebook: dune_op_stack_chains_l1_data
-          - working-directory: op_chains_tracking
-            notebook: get_superchain_token_list
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.10.11'
-      - name: Install pipenv and dependencies
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Restore pipenv environment
         run: |
-          python -m pip install pipenv
           pipenv install --dev
       - name: Convert and run notebook
         working-directory: ${{ matrix.working-directory }}
