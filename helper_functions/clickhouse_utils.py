@@ -83,11 +83,11 @@ def write_csv_to_clickhouse(csv_file_path, table_name, client=None, if_exists='r
 
 def write_df_to_clickhouse(df, table_name, client=None, if_exists='replace'):
     """
-    Writes a DataFrame to a ClickHouse table.
+    Writes a DataFrame to a ClickHouse table, adding new columns if necessary.
     
     :param df: pandas DataFrame to write
     :param table_name: name of the table in ClickHouse
-    :param client: ClickHouse client (if None, a new connection will be established)
+    :param client: ClickHouse HTTP client (if None, a new connection will be established)
     :param if_exists: 'append' to add to existing data, 'replace' to delete existing data and overwrite
     """
     if client is None:
@@ -106,18 +106,50 @@ def write_df_to_clickhouse(df, table_name, client=None, if_exists='replace'):
         df[col] = df[col].astype(str)
 
     # Check if table exists
-    table_exists = client.command(f"EXISTS TABLE {table_name}") == 1
+    table_exists = client.command(f"EXISTS TABLE {table_name}") == '1'
 
-    if table_exists and if_exists == 'replace':
-        # Delete existing data
-        client.command(f"TRUNCATE TABLE {table_name}")
-        print(f"Existing data in table '{table_name}' has been deleted.")
-    elif not table_exists:
+    if table_exists:
+        if if_exists == 'replace':
+            # Delete existing data
+            client.command(f"TRUNCATE TABLE {table_name}")
+            print(f"Existing data in table '{table_name}' has been deleted.")
+        
+        # Get existing columns from the ClickHouse table
+        existing_columns = client.command(f"DESCRIBE TABLE {table_name}")
+        
+        # Handle different return formats
+        if isinstance(existing_columns, str):
+            # If it's a string, split it into lines
+            existing_columns = existing_columns.strip().split('\n')
+            existing_column_names = [col.split()[0] for col in existing_columns if col]
+        elif isinstance(existing_columns, list):
+            if existing_columns and isinstance(existing_columns[0], (list, tuple)):
+                # If it's a list of lists/tuples
+                existing_column_names = [col[0] for col in existing_columns]
+            else:
+                # If it's a flat list
+                existing_column_names = existing_columns
+        else:
+            raise ValueError(f"Unexpected format for existing columns: {type(existing_columns)}")
+
+        # Identify new columns in the DataFrame
+        new_columns = [col for col in df.columns if col not in existing_column_names]
+
+        # Add new columns to the ClickHouse table
+        for column in new_columns:
+            # Determine the ClickHouse data type based on DataFrame dtype
+            ch_type = get_clickhouse_type(df[column].dtype)
+            client.command(f"ALTER TABLE {table_name} ADD COLUMN IF NOT EXISTS {column} {ch_type}")
+            print(f"Added new column '{column}' with type '{ch_type}' to table '{table_name}'")
+
+    else:
         # Create table if it doesn't exist
         create_table_if_not_exists(client, table_name, df)
 
     # Write to ClickHouse
-    client.insert_df(table_name, df)
+    values = df.to_dict('records')
+    insert_query = f"INSERT INTO {table_name} FORMAT JSONEachRow"
+    client.command(insert_query, data=json.dumps(values))
     
     if if_exists == 'append':
         print(f"Data appended to table '{table_name}' successfully.")
