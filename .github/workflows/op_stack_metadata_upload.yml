@@ -1,4 +1,4 @@
-name: Run OP Stack Metadata -> csv and Dune
+name: Run OP Stack Metadata
 
 # Controls when the workflow will run
 on:
@@ -65,6 +65,10 @@ jobs:
           IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
           BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
           BQ_PROJECT_ID: ${{ secrets.BQ_PROJECT_ID }}
+          OP_CLICKHOUSE_HOST: ${{ secrets.OP_CLICKHOUSE_HOST }}
+          OP_CLICKHOUSE_USER: ${{ secrets.OP_CLICKHOUSE_USER }}
+          OP_CLICKHOUSE_PW: ${{ secrets.OP_CLICKHOUSE_PW }}
+          OP_CLICKHOUSE_PORT: ${{ secrets.OP_CLICKHOUSE_PORT }}
       - name: Create View
         working-directory: op_chains_tracking
         run: |
