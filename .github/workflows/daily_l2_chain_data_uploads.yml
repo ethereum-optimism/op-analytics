@@ -1,0 +1,96 @@
+name: Daily L2 Chain Data Uploads
+
+on:
+  schedule:
+    - cron: '1 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10.11'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Install pipenv and dependencies
+        run: |
+          python -m pip install pipenv
+          pipenv install --dev
+
+  run_notebook:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - working-directory: other_chains_tracking
+            notebook: chain_tvl_trends
+          - working-directory: other_chains_tracking
+            notebook: pull_l2_activity
+          - working-directory: other_chains_tracking
+            notebook: get_ethereum_chain_list
+          - working-directory: other_chains_tracking
+            notebook: get_dune_evms_info
+          - working-directory: other_chains_tracking
+            notebook: get_qualified_txs
+          - working-directory: other_chains_tracking
+            notebook: get_contract_labels
+          - working-directory: other_chains_tracking
+            notebook: get_superchain_token_list
+          - working-directory: op_chains_tracking
+            notebook: ch_gs_uploads
+          - working-directory: op_chains_tracking
+            notebook: dune_op_stack_chains_l1_data
+          - working-directory: op_chains_tracking
+            notebook: get_superchain_token_list
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10.11'
+      - name: Install pipenv and dependencies
+        run: |
+          python -m pip install pipenv
+          pipenv install --dev
+      - name: Convert and run notebook
+        working-directory: ${{ matrix.working-directory }}
+        run: |
+          pipenv run jupyter nbconvert --to python ${{ matrix.notebook }}.ipynb
+          pipenv run python ${{ matrix.notebook }}.py
+        env:
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+          FLIPSIDE_API_KEY: ${{ secrets.FLIPSIDE_API_KEY }}
+          OP_CLICKHOUSE_HOST: ${{ secrets.OP_CLICKHOUSE_HOST }}
+          OP_CLICKHOUSE_USER: ${{ secrets.OP_CLICKHOUSE_USER }}
+          OP_CLICKHOUSE_PW: ${{ secrets.OP_CLICKHOUSE_PW }}
+          OP_CLICKHOUSE_PORT: ${{ secrets.OP_CLICKHOUSE_PORT }}
+          IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
+          BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
+          BQ_PROJECT_ID: ${{ secrets.BQ_PROJECT_ID }}
+
+  commit-changes:
+    needs: run_notebook
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Commit and push changes
+        run: |
+          git pull origin main
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions"
+          git add --all
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit."
+          else
+            git commit -m "GH Action Update - L2 Chain Data" -a
+            git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
