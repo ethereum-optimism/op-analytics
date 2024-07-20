@@ -96,5 +96,6 @@ jobs:
           else
             git commit -m "GH Action Update - L2 Chain Data" -a
             git push
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
