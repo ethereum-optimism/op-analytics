@@ -109,7 +109,9 @@ def write_df_to_clickhouse(df, table_name, client=None, if_exists='replace'):
     table_exists = client.command(f"EXISTS TABLE {table_name}") == '1'
 
     if table_exists:
+        print('checking: ' + if_exists)
         if if_exists == 'replace':
+            print('starting delete')
             # Delete existing data
             client.command(f"TRUNCATE TABLE {table_name}")
             print(f"Existing data in table '{table_name}' has been deleted.")
