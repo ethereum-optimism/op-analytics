@@ -58,6 +58,12 @@ df.to_csv('../outputs/chain_metadata.csv', index=False)
 # In[ ]:
 
 
+# df[df['mainnet_chain_id'] ==10]
+
+
+# In[ ]:
+
+
 # Post to Dune API
 d.write_dune_api_from_pandas(df, table_name + '_info_tracking',\
                              'Basic Info & Metadata about OP Stack Chains, including forks')
