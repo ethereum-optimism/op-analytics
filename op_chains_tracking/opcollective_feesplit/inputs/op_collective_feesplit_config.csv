@@ -1,9 +1,9 @@
-feesplit_entity_name, transfer_on_chain_name, transfer_address
-op_collective, base, 0x9c3631dDE5c8316bE5B7554B0CcD2631C15a9A05
-op_collective, ethereum, 0xa3d596eafab6b13ab18d40fae1a962700c84adea
-base, base, 0x09c7bad99688a55a2e83644bfaed09e62bdcccba
-conduit, ethereum, 0x4a4962275DF8C60a80d3a25faEc5AA7De116A746
-zora, ethereum, 0xe900b3Edc1BA0430CFa9a204A1027B90825ac951
-mode, ethereum, 0xed4811010a86f7c39134fbc20206d906ad1176b6
-orderly, ethereum, 0x13f37e6b638ca83e7090bb3722b3ae04bf884019
-op, ethereum, 0x99c9fc46f92e8a1c0dec1b1747d010903e884be1
+feesplit_entity_name, transfer_on_chain_name, transfer_address, role
+op_collective, base, 0x9c3631dDE5c8316bE5B7554B0CcD2631C15a9A05, receiver
+op_collective, ethereum, 0xa3d596eafab6b13ab18d40fae1a962700c84adea, receiver
+base, base, 0x09c7bad99688a55a2e83644bfaed09e62bdcccba, sender
+conduit, ethereum, 0x4a4962275DF8C60a80d3a25faEc5AA7De116A746, sender
+zora, ethereum, 0xe900b3Edc1BA0430CFa9a204A1027B90825ac951, sender
+mode, ethereum, 0xed4811010a86f7c39134fbc20206d906ad1176b6, sender
+orderly, ethereum, 0x13f37e6b638ca83e7090bb3722b3ae04bf884019, sender
+op, ethereum, 0x99c9fc46f92e8a1c0dec1b1747d010903e884be1, sender
