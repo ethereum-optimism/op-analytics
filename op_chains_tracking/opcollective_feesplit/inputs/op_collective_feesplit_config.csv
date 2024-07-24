@@ -1,4 +1,4 @@
-revshare_entity_name, transfer_on_chain_name, transfer_address
+feesplit_entity_name, transfer_on_chain_name, transfer_address
 op_collective, base, 0x9c3631dDE5c8316bE5B7554B0CcD2631C15a9A05
 op_collective, ethereum, 0xa3d596eafab6b13ab18d40fae1a962700c84adea
 base, base, 0x09c7bad99688a55a2e83644bfaed09e62bdcccba
