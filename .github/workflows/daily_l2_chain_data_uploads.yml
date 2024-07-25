@@ -48,7 +48,7 @@ jobs:
             notebook: ch_gs_uploads
           - working-directory: op_chains_tracking
             notebook: dune_op_stack_chains_l1_data
-          - working-directory: op_chains_tracking
+          - working-directory: op_chains_tracking/opcollective_feesplit
             notebook: op_collective_revenue
     steps:
       - uses: actions/checkout@v3
