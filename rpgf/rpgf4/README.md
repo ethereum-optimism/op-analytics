@@ -6,7 +6,7 @@ This directory contains the scripts, files and methodology used to calculate Ret
  
 The following directory contains the method, necessary inputs and final results from the Retro Funding voting. The scripts used for this process are written in python and are contained within a detailed notebook for review and testing. All results have been validated within different teams to ensure accurate allocations to recipient projects.
 
-For any validation, please clone the directory and and follow the instructions detailed.
+For any validation, please clone the directory and follow the instructions detailed.
 
 ### Required inputs 
 
@@ -34,7 +34,7 @@ Following input authentication, project scores are then calculated by badgeholde
 
 #### Generating impact metric share by project and badgeholder
 
-The first step in calculation project allocation begins with calculating each projects `impact_metric_share` which is defined as the score of a project on a given metric devided by the sum of all projects scores on the metric. This result is multiplied by the open source (OS) multiplier when the project is noted as open source. This calculation is then repeated for each impact metric individually by project and badgeholder.
+The first step in calculation project allocation begins with calculating each projects `impact_metric_share` which is defined as the score of a project on a given metric divided by the sum of all projects scores on the metric. This result is multiplied by the open source (OS) multiplier when the project is noted as open source. This calculation is then repeated for each impact metric individually by project and badgeholder.
 
 ```
 impact_metric_share = (project1_metric_1_score /Sum(project1_metric_1_scores))* IF(is_os, os_multiplier, 1)
