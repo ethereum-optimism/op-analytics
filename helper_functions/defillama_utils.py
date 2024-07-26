@@ -466,7 +466,7 @@ def generate_flows_column(df):
 				df['prior_price_usd'] = (df[['prior_price_usd', 'price_usd']].bfill(axis=1).iloc[:, 0])
 				df['prior_token_value'] = (df[['prior_token_value', 'token_value']].bfill(axis=1).iloc[:, 0])
 				
-				# Sort, so that "last" is the msot recent date, since this skips nan, but first doesnt.
+				# Sort, so that "last" is the most recent date, since this skips nan, but first doesn't.
 				df.sort_values(by='date', ascending=False, inplace=True)
 				df['latest_price_usd'] = df.groupby(['token', 'protocol', 'chain'])['price_usd'].transform('last')
 				
