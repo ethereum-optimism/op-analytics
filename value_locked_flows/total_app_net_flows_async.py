@@ -87,8 +87,8 @@ df_df = df_df[
 # display(df_df_all)
 
 # df_df_all2['token_value'] = df_df_all2['token_value'].fillna(0)
-df_df['token_value'] = df_df['token_value'].astype("float64")
-df_df['usd_value'] = df_df['usd_value'].astype("float64")
+df_df.loc[:, 'token_value'] = df_df['token_value'].astype("float64")
+df_df.loc[:, 'usd_value'] = df_df['usd_value'].astype("float64")
 # display(df_df_all2)
 
 
@@ -105,41 +105,51 @@ df_df['usd_value'] = df_df['usd_value'].astype("float64")
 
 # create an extra day to handle for tokens dropping to 0
 
-df_df = df_df.fillna(0)
-df_df["token"] = df_df["token"].str.strip()
-df_df_shift_fwd = df_df.copy()
+df_df.fillna(0, inplace=True)
+df_df["token"] = df_df["token"].astype(str).str.strip()
+# df_df_shift_fwd = df_df.copy()
 # df_df_shift_bwd = df_df.copy()
-df_df_shift_fwd['date'] = df_df_shift_fwd['date'] + timedelta(days=1)
+# df_df_shift_fwd['date'] = df_df_shift_fwd['date'] + timedelta(days=1)
 # df_df_shift_bwd['date'] = df_df_shift_bwd['date'] - timedelta(days=1)
-df_df_shift = df_df_shift_fwd.copy()  # pd.concat([df_df_shift_fwd,df_df_shift_bwd])
+# df_df_shift = df_df_shift_fwd.copy()  # pd.concat([df_df_shift_fwd,df_df_shift_bwd])
 
-df_df_shift_fwd = None  # Free Up memory
-# df_df_shift_bwd = None #Free Up memory
+df_df_shift = df_df.copy()
+df_df_shift['date'] = df_df_shift['date'] + timedelta(days=1)
+
+
+# del df_df_shift_fwd  # Free Up memory
+#del df_df_shift_bwd #Free Up memory
 
 
 # In[ ]:
 
 
-df_df_shift = df_df_shift[
-    df_df_shift['date'] <= last_date
-]  # filter out if date carries over too far
-df_df_shift["token_value"] = 0.0
-df_df_shift["usd_value"] = 0.0
+# Use query for filtering instead of boolean indexing
+df_df_shift = df_df_shift.query('date <= @last_date')
+# df_df_shift = df_df_shift[
+#     df_df_shift['date'] <= last_date
+# ]  # filter out if date carries over too far
+df_df_shift.loc[:, ["token_value", "usd_value"]] = 0.0
 
 # merge back in
-df_df = pd.concat([df_df, df_df_shift])
-df_df_shift = None  # Free Up memory
+df_df = pd.concat([df_df, df_df_shift], sort=False) #don't sort for faster
+del df_df_shift  # Free Up memory
 # print(df_df_all.dtypes)
 
-df_df = df_df[df_df['date'] <= pd.to_datetime("today")]
-
-df_df["token_value"] = df_df["token_value"].fillna(0)
-df_df = df_df.groupby(
-    ['date', "token", "chain", "protocol", "name", "category", "parent_protocol"]
-).sum(["usd_value", "token_value"])
+df_df = df_df.query('date <= @pd.Timestamp.today()')
+# df_df = df_df[df_df['date'] <= pd.to_datetime("today")]
 
 
-df_df = df_df.reset_index()
+df_df = (df_df.fillna({'token_value': 0})
+               .groupby(['date', "token", "chain", "protocol", "name", "category", "parent_protocol"])
+               .sum(["usd_value", "token_value"])
+               .reset_index())
+
+# df_df["token_value"] = df_df["token_value"].fillna(0)
+# df_df = df_df.groupby(
+#     ['date', "token", "chain", "protocol", "name", "category", "parent_protocol"]
+# ).sum(["usd_value", "token_value"])
+# df_df = df_df.reset_index()
 
 
 # In[ ]:
@@ -174,7 +184,7 @@ df_df = df_df[df_df['date'] >= start_date]
 
 
 data_df = df_df.copy()
-df_df = None  # Free up memory
+del df_df  # Free up memory
 data_df = data_df.sort_values(by='date')
 
 # price = usd value / num tokens
@@ -239,7 +249,7 @@ latest_prices_df_prot = latest_prices_df_prot.reset_index()
 prices_df = prices_df.merge(
     latest_prices_df_prot, on=["token", "chain", "protocol"], how="left"
 )
-latest_prices_df_raw_prot = None  # Free up memory
+del latest_prices_df_raw_prot  # Free up memory
 print("done latest_prices_df_raw_prot")
 
 latest_prices_df_raw = data_df.loc[~data_df["price_usd"].isna()][
@@ -251,7 +261,7 @@ latest_prices_df = latest_prices_df.rename(
 )
 latest_prices_df = latest_prices_df.reset_index()
 prices_df = prices_df.merge(latest_prices_df, on=["token", "chain"], how="left")
-latest_prices_df = None  # Free up memory
+del latest_prices_df  # Free up memory
 print("done latest_prices_df")
 
 prices_df["latest_price_usd_prot_gt0"] = 0
@@ -303,7 +313,7 @@ prices_df = prices_df[~prices_df["latest_price_usd"].isna()]
 
 # Merge back in to the data dataframe
 data_df = data_df.merge(prices_df, on=["token", "chain", "protocol"], how="left")
-prices_df = None  # Free Up memory
+del prices_df  # Free Up memory
 print("prices map done")
 
 
@@ -399,7 +409,7 @@ netdf_df = data_df[
     ]
 ]
 
-data_df = None  # Free Up memory
+del data_df  # Free Up memory
 
 netdf_df = netdf_df.fillna(0)
 netdf_df = netdf_df.sort_values(by='date', ascending=True)
@@ -423,14 +433,6 @@ try:
 except:
     pass
 # display(netdf_df[netdf_df['protocol']=='makerdao'])
-
-
-# In[ ]:
-
-
-netdf_df[
-    (netdf_df["protocol"] == "sushi-bentobox") & (netdf_df["chain"] == "Ethereum")
-].tail(90).sort_values(by="net_dollar_flow_latest_price", ascending=True)
 
 
 # In[ ]:
@@ -500,57 +502,48 @@ summary_df["cumul_net_dollar_flow"] = (
 summary_df["flow_direction"] = np.where(
     summary_df["cumul_net_dollar_flow"] * 1.0 >= 0, 1, -1
 )
-summary_df["abs_cumul_net_dollar_flow"] = abs(summary_df["cumul_net_dollar_flow"])
 
+summary_df["abs_cumul_net_dollar_flow"] = summary_df["cumul_net_dollar_flow"].abs()
+
+# Loop through drange and calculate rolling sums and means
 for i in drange:
     if i == 0:
         continue
-        # summary_df['cumul_net_dollar_flow'] = summary_df[['protocol','chain','net_dollar_flow']]\
-        #                     .groupby(['protocol','chain']).cumsum()
-        # summary_df['flow_direction'] = np.where(summary_df['cumul_net_dollar_flow']*1.0 >= 0, 1,-1)
-        # summary_df['abs_cumul_net_dollar_flow'] = abs(summary_df['cumul_net_dollar_flow'])
 
-    else:
-        col_str = "cumul_net_dollar_flow_" + str(i) + "d"
-        tvl_str = "daily_avg_tvl_" + str(i) + "d"
+    col_str = f"cumul_net_dollar_flow_{i}d"
+    tvl_str = f"daily_avg_tvl_{i}d"
 
-        # chatgpt version
-        summary_df[col_str] = summary_df.groupby(["protocol", "chain"])[
-            "net_dollar_flow"
-        ].apply(lambda x: x.rolling(i, min_periods=1).sum())
+    # Calculate rolling sum for net_dollar_flow
+    summary_df[col_str] = summary_df.groupby(["protocol", "chain"])["net_dollar_flow"].transform(
+        lambda x: x.rolling(i, min_periods=1).sum()
+    )
 
-        summary_df[tvl_str] = (
-            summary_df[["protocol", "chain", "usd_value"]]
-            .groupby(["protocol", "chain"])["usd_value"]
-            .transform(lambda x: x.rolling(i, min_periods=1).mean())
-        )
+    # Calculate rolling mean for usd_value
+    summary_df[tvl_str] = summary_df.groupby(["protocol", "chain"])["usd_value"].transform(
+        lambda x: x.rolling(i, min_periods=1).mean()
+    )
 
-        summary_df["flow_direction_" + str(i) + "d"] = np.where(
-            summary_df[col_str] * 1.0 >= 0, 1, -1
-        )
-        summary_df["abs_cumul_net_dollar_flow_" + str(i) + "d"] = abs(
-            summary_df[col_str]
-        )
+    summary_df[f"flow_direction_{i}d"] = np.where(summary_df[col_str] >= 0, 1, -1)
+    summary_df[f"abs_cumul_net_dollar_flow_{i}d"] = summary_df[col_str].abs()
 
+# Calculate percentage of TVL
 summary_df["pct_of_tvl"] = 100 * summary_df["net_dollar_flow"] / summary_df["usd_value"]
+
+# Filter final summary DataFrame
 final_summary_df = summary_df[
-    (summary_df["rank_desc"] == 1)
-    & (summary_df['date'] >= pd.to_datetime("today") - timedelta(days=7))
+    (summary_df["rank_desc"] == 1) & 
+    (summary_df['date'] >= pd.to_datetime("today") - timedelta(days=7))
 ]
-final_summary_df = final_summary_df[
-    final_summary_df["cumul_net_dollar_flow"] < 1e20
-]  # weird error handling
+final_summary_df = final_summary_df[final_summary_df["cumul_net_dollar_flow"] < 1e20]
 
-
+# Create necessary directories
 os.makedirs("csv_outputs", exist_ok=True)
-os.makedirs("img_outputs", exist_ok=True)
 os.makedirs("img_outputs/png", exist_ok=True)
 os.makedirs("img_outputs/svg", exist_ok=True)
 os.makedirs("img_outputs/html", exist_ok=True)
 
-final_summary_df.to_csv(
-    "csv_outputs/latest_tvl_app_trends.csv", mode="w", index=False, encoding="utf-8"
-)
+# Save final summary DataFrame to CSV
+final_summary_df.to_csv("csv_outputs/latest_tvl_app_trends.csv", mode="w", index=False, encoding="utf-8")
 
 
 # In[ ]:
@@ -668,6 +661,13 @@ for i in drange:
         fig.show()
 # fig.data[0].textinfo = 'label+text+value'
 # fig.update_layout(tickprefix = '$')
+
+
+# In[ ]:
+
+
+# final_summary_df.dtypes
+# final_summary_df.sample(5)
 
 
 # In[ ]:
