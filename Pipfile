@@ -4,7 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pandas = "*"
+pandas = "==2.1.4"
+numpy = "==1.26.0"
 requests = "*"
 jupyter = "*"
 nbconvert = "*"
@@ -28,7 +29,6 @@ google-cloud = "*"
 google-cloud-bigquery = "*"
 google-auth = "*"
 pydantic = "*"
-numpy = "*"
 
 [dev-packages]
 
