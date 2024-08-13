@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 pandas = "*"
-requests = ">=2.32.0"
+requests = "*"
 jupyter = "*"
 nbconvert = "*"
 dune-client = "*"
