@@ -75,5 +75,38 @@ jobs:
         env:
           L1_ETHERSCAN_API: ${{ secrets.L1_ETHERSCAN_API }}
 
-      # Rest of your workflow remains the same
-      # ...
+      # Handle unstaged changes before pulling
+      - name: Stash changes before pulling
+        run: git stash --include-untracked
+
+      - name: Pull changes with rebase
+        run: git pull --rebase origin main
+
+      - name: Apply stashed changes
+        run: git stash pop || true  # Ignore conflicts
+
+      - name: Commit files
+        id: commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions"
+          git add --all
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+            echo "push=false" >> $GITHUB_ENV
+          else
+            git commit -m "GH Action Update - Update Market Data" || true
+            if [ $? -eq 0 ]; then
+              echo "push=true" >> $GITHUB_ENV
+            else
+              echo "No changes to commit."
+              echo "push=false" >> $GITHUB_ENV
+            fi
+          fi
+        shell: bash
+
+      - name: Push changes
+        if: env.push == 'true'
+        run: git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
