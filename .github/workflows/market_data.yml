@@ -28,23 +28,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install pipenv
 
-      - name: Debug Pipenv
-        run: |
-          cat Pipfile
-          pipenv graph
-          pipenv check
-      
       - name: Install Dependencies
-        run: |
-          pipenv lock --pre
-          pipenv install --dev --skip-lock
-        continue-on-error: true
-      
-      - name: Show dependency conflicts
-        if: failure()
-        run: |
-          pipenv graph
-          pipenv check
+        run: pipenv install --dev --skip-lock
 
       - name: Generate .py files
         working-directory: reference_data/market_data
