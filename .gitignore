@@ -23,3 +23,5 @@ misc_analysis/clickhouse
 misc_analysis/csv_outputs/tokens_by_type_base_opm.csv
 /misc_analysis/archiveandfails/csv_outputs
 /misc_analysis/raw_data_pulls/csv_outputs
+
+Pipfile.lock
