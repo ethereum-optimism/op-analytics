@@ -1,11 +1,11 @@
-name: Python Package Installation
+name: Python Package Installation and Dependency Check
 
 on:
   push:
-    branches: [ main ]  # Adjust this if your main branch has a different name
+    branches: [ main ]
   pull_request:
-    branches: [ main ]  # Adjust this if your main branch has a different name
-  workflow_dispatch:  # This allows manual triggering
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -33,5 +33,38 @@ jobs:
         pipenv lock
         pipenv sync --dev
 
-    - name: Show installed packages
+    - name: Show dependency graph
       run: pipenv graph
+
+    - name: Check for security vulnerabilities
+      run: pipenv check
+
+    - name: Show locked requirements
+      run: pipenv lock --requirements
+
+    - name: Compare installed packages with locked requirements
+      run: |
+        echo "Locked requirements:"
+        pipenv lock --requirements
+        echo "Actually installed packages:"
+        pipenv run pip list
+
+    - name: Verify Pipfile.lock
+      run: pipenv verify
+
+    - name: Check for dependency conflicts
+      run: |
+        echo "Checking for potential conflicts..."
+        pipenv graph | grep -E '\w+==.+\s+\w+==.+' || echo "No obvious conflicts found in dependency graph"
+        
+        echo "Packages with multiple versions:"
+        pipenv graph | awk -F'==' '{print $1}' | sort | uniq -c | sort -nr | awk '$1 > 1 {print $0}'
+
+    - name: Show environment information
+      run: |
+        pipenv --venv
+        pipenv --where
+        pipenv --py
+
+    - name: List all installed packages with versions
+      run: pipenv run pip freeze
