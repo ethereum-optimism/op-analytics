@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 pandas = "*"
-requests = "*"
+requests = ">=2.32.0"
 jupyter = "*"
 nbconvert = "*"
 dune-client = "*"
@@ -29,7 +29,7 @@ google-cloud-bigquery = "*"
 google-auth = "*"
 numpy = "<2.0.0"
 futures = "*"
-
+pydantic = ">=1.10.13"
 
 [dev-packages]
 
