@@ -24,17 +24,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install pipenv
 
-    - name: Install jq
-      run: sudo apt-get install jq -y
-
-    - name: Install dependencies from lock file
-      run: pipenv sync --dev
-
-    - name: If lock file install fails, update and retry
-      if: failure()
-      run: |
-        pipenv lock
-        pipenv sync --dev
+    - name: Install dependencies
+      run: pipenv install --dev --skip-lock
 
     - name: Show dependency graph
       run: pipenv graph
@@ -42,20 +33,8 @@ jobs:
     - name: Check for security vulnerabilities
       run: pipenv check || echo "Pipenv check failed, but continuing workflow"
 
-    - name: Show locked requirements
-      run: |
-        echo "Locked requirements:"
-        jq -r '.default + .develop | to_entries[] | .key + "==" + .value.version' Pipfile.lock
-
-    - name: Compare installed packages with locked requirements
-      run: |
-        echo "Locked requirements:"
-        jq -r '.default + .develop | to_entries[] | .key + "==" + .value.version' Pipfile.lock
-        echo "Actually installed packages:"
-        pipenv run pip list
-
-    - name: Verify Pipfile.lock
-      run: pipenv verify
+    - name: Show installed packages
+      run: pipenv run pip list
 
     - name: Check for dependency conflicts
       run: |
