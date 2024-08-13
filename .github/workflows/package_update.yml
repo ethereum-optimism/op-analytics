@@ -40,7 +40,9 @@ jobs:
       run: pipenv check || echo "Pipenv check failed, but continuing workflow"
 
     - name: Show locked requirements
-      run: pipenv lock --requirements
+      run: |
+        echo "Locked requirements:"
+        jq -r '.default + .develop | to_entries[] | .key + .value.version' Pipfile.lock
 
     - name: Compare installed packages with locked requirements
       run: |
