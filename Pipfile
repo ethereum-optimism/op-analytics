@@ -28,6 +28,7 @@ google-cloud = "*"
 google-cloud-bigquery = "*"
 google-auth = "*"
 pydantic = "*"
+numpy = "*"
 
 [dev-packages]
 
