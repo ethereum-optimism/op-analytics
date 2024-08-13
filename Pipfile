@@ -27,7 +27,6 @@ hexbytes = "*"
 google-cloud = "*"
 google-cloud-bigquery = "*"
 google-auth = "*"
-numpy = ">=1.21.0,<2.0.0"
 pydantic = "*"
 
 [dev-packages]
