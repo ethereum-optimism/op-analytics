@@ -1,26 +1,26 @@
 sources:
-  - referenceName: chain-db-name.raw_blocks
+  - referenceName: lisk.raw_blocks
     version: 1.0.0
     type: dataset
     startAt: earliest
     description: >-
       Metadata for each block on the chain including hashes, transaction count,
       difficulty, and gas used.
-  - referenceName: chain-db-name.raw_logs
+  - referenceName: lisk.raw_logs
     version: 1.0.0
     type: dataset
     startAt: earliest
     description: >-
       Raw logs for events emitted from contracts. Contains the contract address,
       data, topics, and metadata for blocks and transactions.
-  - referenceName: chain-db-name.receipt_transactions
+  - referenceName: lisk.receipt_transactions
     version: 1.0.0
     type: dataset
     startAt: earliest
     description: >-
       Transaction data including input, value, from and to address, and metadata
       for the block, gas, and receipts.
-  - referenceName: chain-db-name.raw_traces
+  - referenceName: lisk.raw_traces
     version: 1.0.0
     type: dataset
     startAt: earliest
@@ -29,70 +29,70 @@ sources:
       block, trace, transaction, and gas.
 transforms:
   - type: sql
-    referenceName: chain-name_blocks
+    referenceName: lisk_blocks
     primaryKey: id
     sql: |
       select
         *
-        ,'chain-name' as chain
-        ,'network-name' as network
-        ,chain-id as chain_id
+        ,'lisk' as chain
+        ,'mainnet' as network
+        ,1135 as chain_id
       from
-        chain-db-name.raw_blocks
+        lisk.raw_blocks
   - type: sql
-    referenceName: chain-name_raw_logs
+    referenceName: lisk_raw_logs
     primaryKey: id
     sql: |
       select
         *
-        ,'chain-name' as chain
-        ,'network-name' as network
-        ,chain-id as chain_id
+        ,'lisk' as chain
+        ,'mainnet' as network
+        ,1135 as chain_id
       from
-        chain-db-name.raw_logs
+        lisk.raw_logs
   - type: sql
-    referenceName: chain-name_raw_traces
+    referenceName: lisk_raw_traces
     primaryKey: id
     sql: |
       select
         *
-        ,'chain-name' as chain
-        ,'network-name' as network
-        ,chain-id as chain_id
+        ,'lisk' as chain
+        ,'mainnet' as network
+        ,1135 as chain_id
       from
-        chain-db-name.raw_traces
+        lisk.raw_traces
   - type: sql
-    referenceName: chain-name_transactions
+    referenceName: lisk_transactions
     primaryKey: id
     sql: |
       select
          *
-        ,'chain-name' as chain
-        ,'network-name' as network
-        ,chain-id as chain_id
+        ,'lisk' as chain
+        ,'mainnet' as network
+        ,1135 as chain_id
       from
-        chain-db-name.receipt_transactions
+        lisk.receipt_transactions
 sinks:
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: chain-name_blocks
+    table: lisk_blocks
     batchSize: 100000
-    description: ClickHouse sink from chain-db-name.raw_blocks to chain-name_blocks
+    description: ClickHouse sink from lisk.raw_blocks to lisk_blocks
     flushInterval: '10000'
-    referenceName: clickhouse_chain-db-name.raw_blocks
+    referenceName: clickhouse_lisk.raw_blocks
     appendOnlyMode: true
     schemaOverride:
       hash: FixedString(66)
       number: UInt64 CODEC(Delta, ZSTD)
       timestamp: DateTime CODEC(Delta, ZSTD)
-    sourceStreamName: chain-name_blocks
+    sourceStreamName: lisk_blocks
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: chain-name_logs
+    table: lisk_logs
     batchSize: 100000
-    description: ClickHouse sink from chain-db-name.raw_logs to chain-name_logs
+    description: ClickHouse sink from lisk.raw_logs to lisk_logs
     flushInterval: '10000'
-    referenceName: clickhouse_chain-db-name.raw_logs
+    referenceName: clickhouse_lisk.raw_logs
     appendOnlyMode: true
     schemaOverride:
       address: FixedString(42)
@@ -102,14 +102,14 @@ sinks:
       block_timestamp: DateTime CODEC(Delta, ZSTD)
       transaction_hash: FixedString(66)
       transaction_index: UInt64
-    sourceStreamName: chain-name_raw_logs
+    sourceStreamName: lisk_raw_logs
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: chain-name_transactions
+    table: lisk_transactions
     batchSize: 100000
-    description: ClickHouse sink from chain-db-name.receipt_transactions  to chain-name_transactions
+    description: ClickHouse sink from lisk.receipt_transactions  to lisk_transactions
     flushInterval: '10000'
-    referenceName: clickhouse_chain-db-name.receipt_transactions
+    referenceName: clickhouse_lisk.receipt_transactions
     appendOnlyMode: true
     schemaOverride:
       gas: UInt128
@@ -138,14 +138,14 @@ sinks:
       max_priority_fee_per_gas: UInt128
       receipt_cumulative_gas_used: UInt128
       receipt_effective_gas_price: UInt128
-    sourceStreamName: chain-name_transactions
+    sourceStreamName: lisk_transactions
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: chain-name_traces
+    table: lisk_traces
     batchSize: 100000
-    description: ClickHouse sink from chain-db-name.raw_traces to traces
+    description: ClickHouse sink from lisk.raw_traces to traces
     flushInterval: '10000'
-    referenceName: clickhouse_chain-db-name.raw_traces
+    referenceName: clickhouse_lisk.raw_traces
     appendOnlyMode: true
     schemaOverride:
       gas: UInt128
@@ -160,4 +160,4 @@ sinks:
       block_timestamp: DateTime CODEC(Delta, ZSTD)
       transaction_hash: FixedString(66)
       transaction_index: UInt64
-    sourceStreamName: chain-name_raw_traces
+    sourceStreamName: lisk_raw_traces

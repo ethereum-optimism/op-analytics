@@ -1,26 +1,26 @@
 sources:
-  - referenceName: chain-db-name.raw_blocks
+  - referenceName: swan.raw_blocks
     version: 1.0.0
     type: dataset
     startAt: earliest
     description: >-
       Metadata for each block on the chain including hashes, transaction count,
       difficulty, and gas used.
-  - referenceName: chain-db-name.raw_logs
+  - referenceName: swan.raw_logs
     version: 1.0.0
     type: dataset
     startAt: earliest
     description: >-
       Raw logs for events emitted from contracts. Contains the contract address,
       data, topics, and metadata for blocks and transactions.
-  - referenceName: chain-db-name.receipt_transactions
+  - referenceName: swan.receipt_transactions
     version: 1.0.0
     type: dataset
     startAt: earliest
     description: >-
       Transaction data including input, value, from and to address, and metadata
       for the block, gas, and receipts.
-  - referenceName: chain-db-name.raw_traces
+  - referenceName: swan.raw_traces
     version: 1.0.0
     type: dataset
     startAt: earliest
@@ -29,70 +29,70 @@ sources:
       block, trace, transaction, and gas.
 transforms:
   - type: sql
-    referenceName: chain-name_blocks
+    referenceName: swan_blocks
     primaryKey: id
     sql: |
       select
         *
-        ,'chain-name' as chain
-        ,'network-name' as network
-        ,chain-id as chain_id
+        ,'swan' as chain
+        ,'mainnet' as network
+        ,254 as chain_id
       from
-        chain-db-name.raw_blocks
+        swan.raw_blocks
   - type: sql
-    referenceName: chain-name_raw_logs
+    referenceName: swan_raw_logs
     primaryKey: id
     sql: |
       select
         *
-        ,'chain-name' as chain
-        ,'network-name' as network
-        ,chain-id as chain_id
+        ,'swan' as chain
+        ,'mainnet' as network
+        ,254 as chain_id
       from
-        chain-db-name.raw_logs
+        swan.raw_logs
   - type: sql
-    referenceName: chain-name_raw_traces
+    referenceName: swan_raw_traces
     primaryKey: id
     sql: |
       select
         *
-        ,'chain-name' as chain
-        ,'network-name' as network
-        ,chain-id as chain_id
+        ,'swan' as chain
+        ,'mainnet' as network
+        ,254 as chain_id
       from
-        chain-db-name.raw_traces
+        swan.raw_traces
   - type: sql
-    referenceName: chain-name_transactions
+    referenceName: swan_transactions
     primaryKey: id
     sql: |
       select
          *
-        ,'chain-name' as chain
-        ,'network-name' as network
-        ,chain-id as chain_id
+        ,'swan' as chain
+        ,'mainnet' as network
+        ,254 as chain_id
       from
-        chain-db-name.receipt_transactions
+        swan.receipt_transactions
 sinks:
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: chain-name_blocks
+    table: swan_blocks
     batchSize: 100000
-    description: ClickHouse sink from chain-db-name.raw_blocks to chain-name_blocks
+    description: ClickHouse sink from swan.raw_blocks to swan_blocks
     flushInterval: '10000'
-    referenceName: clickhouse_chain-db-name.raw_blocks
+    referenceName: clickhouse_swan.raw_blocks
     appendOnlyMode: true
     schemaOverride:
       hash: FixedString(66)
       number: UInt64 CODEC(Delta, ZSTD)
       timestamp: DateTime CODEC(Delta, ZSTD)
-    sourceStreamName: chain-name_blocks
+    sourceStreamName: swan_blocks
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: chain-name_logs
+    table: swan_logs
     batchSize: 100000
-    description: ClickHouse sink from chain-db-name.raw_logs to chain-name_logs
+    description: ClickHouse sink from swan.raw_logs to swan_logs
     flushInterval: '10000'
-    referenceName: clickhouse_chain-db-name.raw_logs
+    referenceName: clickhouse_swan.raw_logs
     appendOnlyMode: true
     schemaOverride:
       address: FixedString(42)
@@ -102,14 +102,14 @@ sinks:
       block_timestamp: DateTime CODEC(Delta, ZSTD)
       transaction_hash: FixedString(66)
       transaction_index: UInt64
-    sourceStreamName: chain-name_raw_logs
+    sourceStreamName: swan_raw_logs
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: chain-name_transactions
+    table: swan_transactions
     batchSize: 100000
-    description: ClickHouse sink from chain-db-name.receipt_transactions  to chain-name_transactions
+    description: ClickHouse sink from swan.receipt_transactions  to swan_transactions
     flushInterval: '10000'
-    referenceName: clickhouse_chain-db-name.receipt_transactions
+    referenceName: clickhouse_swan.receipt_transactions
     appendOnlyMode: true
     schemaOverride:
       gas: UInt128
@@ -138,14 +138,14 @@ sinks:
       max_priority_fee_per_gas: UInt128
       receipt_cumulative_gas_used: UInt128
       receipt_effective_gas_price: UInt128
-    sourceStreamName: chain-name_transactions
+    sourceStreamName: swan_transactions
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: chain-name_traces
+    table: swan_traces
     batchSize: 100000
-    description: ClickHouse sink from chain-db-name.raw_traces to traces
+    description: ClickHouse sink from swan.raw_traces to traces
     flushInterval: '10000'
-    referenceName: clickhouse_chain-db-name.raw_traces
+    referenceName: clickhouse_swan.raw_traces
     appendOnlyMode: true
     schemaOverride:
       gas: UInt128
@@ -160,4 +160,4 @@ sinks:
       block_timestamp: DateTime CODEC(Delta, ZSTD)
       transaction_hash: FixedString(66)
       transaction_index: UInt64
-    sourceStreamName: chain-name_raw_traces
+    sourceStreamName: swan_raw_traces
