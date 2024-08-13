@@ -1,0 +1,53 @@
+name: Python Package Installation
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10.11
+
+    - name: Install Pipenv
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv
+
+    - name: Install dependencies incrementally
+      run: |
+        echo "[[source]]
+        url = \"https://pypi.org/simple\"
+        verify_ssl = true
+        name = \"pypi\"
+
+        [packages]
+        requests = \">=2.32.0\"
+
+        [requires]
+        python_version = \"3.10.11\"
+
+        [pipenv]
+        allow_prereleases = true" > Pipfile
+
+        pipenv install
+        
+        for package in pandas numpy pydantic jupyter plotly google-cloud-bigquery web3 dune-client subgrounds flipside
+        do
+          echo "Installing $package"
+          pipenv install $package || echo "Failed to install $package, skipping"
+        done
+
+        pipenv graph
+
+    - name: Install remaining packages with pip
+      run: |
+        pipenv run pip install aiohttp_retry==2.8.3 kaleido==0.2.1 airtable dataclasses_json db-dtypes clickhouse-connect tzlocal hexbytes google-cloud google-auth
+
+    - name: Show installed packages
+      run: pipenv graph
