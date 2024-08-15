@@ -25,3 +25,4 @@ misc_analysis/csv_outputs/tokens_by_type_base_opm.csv
 /misc_analysis/raw_data_pulls/csv_outputs
 
 Pipfile.lock
+/misc_analysis/csv_outputs
