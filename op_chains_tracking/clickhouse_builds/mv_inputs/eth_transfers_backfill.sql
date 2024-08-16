@@ -39,5 +39,6 @@ FROM {chain}_logs
 
 WHERE address = lower('0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000')
 and splitByChar(',', topics)[1] = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+AND splitByChar(',', topics)[4] = '' --not an nft transfer
 and is_deleted = 0
 AND block_timestamp BETWEEN '{start_date}' AND '{end_date}'
