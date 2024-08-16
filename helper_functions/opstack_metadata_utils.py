@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 
 def generate_alignment_column(df):
 
@@ -29,8 +30,24 @@ def generate_alignment_column(df):
 
 
 def get_op_stack_metadata_df():
-        md = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv')
-        return md
+    # Find the root directory (where 'op-analytics' is located)
+    root_dir = find_root_dir()
+    
+    # Construct the path to the CSV file
+    csv_path = os.path.join(root_dir, 'op_chains_tracking', 'outputs', 'chain_metadata.csv')
+    
+    # Read and return the DataFrame
+    return pd.read_csv(csv_path)
+
+def find_root_dir():
+    current_dir = os.path.abspath(os.getcwd())
+    while True:
+        if os.path.exists(os.path.join(current_dir, 'op-analytics')):
+            return os.path.join(current_dir, 'op-analytics')
+        parent_dir = os.path.dirname(current_dir)
+        if parent_dir == current_dir:  # We've reached the root of the file system
+            raise FileNotFoundError("Could not find 'op-analytics' directory")
+        current_dir = parent_dir
 
 def get_superchain_metadata_by_data_source(data_source, col_rename = 'blockchain'):
         opsup = get_op_stack_metadata_by_data_source(data_source, col_rename)
