@@ -72,7 +72,7 @@ jobs:
       - name: Create View
         working-directory: op_chains_tracking
         run: |
-          pipenv run python create_superchain_data_view.py
+          pipenv run python clickhouse_builds/create_superchain_data_view.py
         env:
           OP_CLICKHOUSE_HOST: ${{ secrets.OP_CLICKHOUSE_HOST }}
           OP_CLICKHOUSE_USER: ${{ secrets.OP_CLICKHOUSE_USER }}
