@@ -71,10 +71,10 @@ jobs:
           OP_CLICKHOUSE_PW: ${{ secrets.OP_CLICKHOUSE_PW }}
           OP_CLICKHOUSE_PORT: ${{ secrets.OP_CLICKHOUSE_PORT }}
       - name: Create Views
-        working-directory: op_chains_tracking
+        working-directory: op_chains_tracking/clickhouse_builds
         run: |
-          pipenv run python clickhouse_builds/create_superchain_data_view.py
-          pipenv run python clickhouse_builds/create_transfers_mv.py
+          pipenv run python create_superchain_data_view.py
+          pipenv run python create_transfers_mv.py
         env:
           OP_CLICKHOUSE_HOST: ${{ secrets.OP_CLICKHOUSE_HOST }}
           OP_CLICKHOUSE_USER: ${{ secrets.OP_CLICKHOUSE_USER }}
