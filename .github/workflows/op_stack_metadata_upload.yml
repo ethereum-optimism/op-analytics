@@ -2,9 +2,9 @@ name: Run OP Stack Metadata
 
 # Controls when the workflow will run
 on:
-  # # Run on a schedule - “At 02:01 on Sunday.” - few mins for dependencies to install
-  # schedule:
-  #     - cron: '1 2 * * 0'
+  # # Run on a schedule - “At 05:01 on Sunday.”
+  schedule:
+      - cron: '1 5 * * 0'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   pull_request:
