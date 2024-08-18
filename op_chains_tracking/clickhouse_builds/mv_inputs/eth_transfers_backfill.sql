@@ -42,3 +42,6 @@ and splitByChar(',', topics)[1] = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c
 AND splitByChar(',', topics)[4] = '' --not an nft transfer
 and is_deleted = 0
 AND block_timestamp BETWEEN '{start_date}' AND '{end_date}'
+
+
+SETTINGS max_execution_time = 3000;
