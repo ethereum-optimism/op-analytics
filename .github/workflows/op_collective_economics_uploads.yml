@@ -60,6 +60,9 @@ jobs:
           OP_CLICKHOUSE_USER: ${{ secrets.OP_CLICKHOUSE_USER }}
           OP_CLICKHOUSE_PW: ${{ secrets.OP_CLICKHOUSE_PW }}
           OP_CLICKHOUSE_PORT: ${{ secrets.OP_CLICKHOUSE_PORT }}
+          L1_ETHERSCAN_API: ${{ secrets.L1_ETHERSCAN_API }}
+          BASESCAN_API: ${{ secrets.BASESCAN_API }}
+          OP_ETHERSCAN_API: ${{ secrets.OP_ETHERSCAN_API }}
 
 
     # commit_results:
