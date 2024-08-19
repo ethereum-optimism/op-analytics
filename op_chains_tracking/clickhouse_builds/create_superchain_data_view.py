@@ -6,7 +6,7 @@
 
 import pandas as pd
 import sys
-sys.path.append("../helper_functions")
+sys.path.append("../../helper_functions")
 import clickhouse_utils as ch
 import opstack_metadata_utils as ops
 sys.path.pop()
@@ -39,7 +39,7 @@ def get_chain_names_from_df(df):
     return df['blockchain'].dropna().unique().tolist()
 
 # Function to create ClickHouse view
-def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None):
+def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None, do_is_deleted_line = True):
     if client is None:
         client = ch.connect_to_clickhouse_db()
 
@@ -49,7 +49,7 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None):
     for chain in chain_names:
         table_name = f"{chain}_{dataset_type}"
         if dataset_type == 'transactions':
-            union_queries.append(f"""
+            sql_query = f"""
                                 SELECT 
                                 id, hash, nonce, block_hash, block_number, transaction_index, from_address, to_address
                                 , value, gas, gas_price, input, max_fee_per_gas, max_priority_fee_per_gas, transaction_type
@@ -57,18 +57,22 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None):
                                 , receipt_status, receipt_l1_fee, receipt_l1_gas_used, receipt_l1_gas_price, receipt_l1_fee_scalar
                                 , receipt_l1_blob_base_fee, receipt_l1_blob_base_fee_scalar, blob_versioned_hashes, max_fee_per_blob_gas
                                 , receipt_l1_block_number, receipt_l1_base_fee_scalar, chain, network, chain_id, insert_time
-                                FROM {table_name} WHERE is_deleted = 0
-                                """)
+                                FROM {table_name}
+                                """
         else: 
-            union_queries.append(f"""
+            sql_query = f"""
                                 SELECT 
                                 *
-                                FROM {table_name} WHERE is_deleted = 0
-                                """)
+                                FROM {table_name}
+                                """
+        if do_is_deleted_line:
+                sql_query += ' WHERE is_deleted = 0'
+        # finalize query
+        union_queries.append(sql_query)
     
     query += " UNION ALL\n".join(union_queries)
 
-    # print(query)
+    print(query)
     
     client.command(query)
 
@@ -79,9 +83,24 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None):
 
 
 view_slug = 'superchain'
-dataset_types = ['transactions', 'traces', 'blocks', 'logs']
+native_dataset_types = [
+                # native
+                # 'transactions', 'traces', 'blocks', 'logs',
+]
+mv_dataset_types = [
+                # mvs
+                 'erc20_transfers_mv','native_eth_transfers_mv'
+                 ]
+dataset_types = native_dataset_types + mv_dataset_types
+print(dataset_types)
 chain_names = get_chain_names_from_df(chain_configs)
 print(chain_names)
 for dataset_type in dataset_types:
-        create_clickhouse_view(view_slug, dataset_type, chain_names)
+        is_deleted_line = True
+        try:
+                if dataset_type in mv_dataset_types:
+                        is_deleted_line = False
+                create_clickhouse_view(view_slug, dataset_type, chain_names, do_is_deleted_line = is_deleted_line)
+        except:
+                print(f'Can not create view for {dataset_type}')
 
