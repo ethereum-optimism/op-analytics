@@ -9,8 +9,8 @@ CREATE TABLE across_bridging_txs
     input_token_address String,
     output_token_address String,
     dst_chain_id String,
-    input_amount UInt64,
-    output_amount UInt64,
+    input_amount UInt256,
+    output_amount UInt256,
     quote_timestamp UInt64,
     fill_deadline UInt64,
     exclusivity_deadline UInt64,
@@ -21,4 +21,4 @@ CREATE TABLE across_bridging_txs
     dst_chain String
 )
 ENGINE = MergeTree
-ORDER BY (block_timestamp);
+ORDER BY (block_timestamp, block_number, src_chain, deposit_id);
