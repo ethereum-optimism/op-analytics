@@ -72,7 +72,7 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None, 
     
     query += " UNION ALL\n".join(union_queries)
 
-    print(query)
+    # print(query)
     
     client.command(query)
 
@@ -85,7 +85,7 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None, 
 view_slug = 'superchain'
 native_dataset_types = [
                 # native
-                # 'transactions', 'traces', 'blocks', 'logs',
+                'transactions', 'traces', 'blocks', 'logs',
 ]
 mv_dataset_types = [
                 # mvs
