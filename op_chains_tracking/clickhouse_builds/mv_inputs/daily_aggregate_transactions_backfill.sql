@@ -40,7 +40,7 @@ SELECT
                 SUM((t.receipt_gas_used * b.base_fee_per_gas)/ 1e9)/ SUM(t.receipt_gas_used) AS avg_l2_base_fee_gas_price_gwei,
                 SUM((t.receipt_gas_used * (t.gas_price-b.base_fee_per_gas))/ 1e9)/ SUM(t.receipt_gas_used) AS avg_l2_priority_fee_gas_price_gwei,
         
-        SUM((@byte_length_sql@ * t.gas_price)/ 1e9)/ SUM(@byte_length_sql@) AS avg_l1_gas_price_gwei
+        SUM((COALESCE(receipt_l1_gas_used, @byte_length_sql@) * t.gas_price)/ 1e9)/ SUM(COALESCE(receipt_l1_gas_used,@byte_length_sql@)) AS avg_l1_gas_price_gwei
 
 
 FROM {chain}_transactions t 
@@ -52,3 +52,5 @@ INNER JOIN {chain}_blocks b final
     AND t.block_timestamp BETWEEN '{start_date}' AND '{end_date}'
 GROUP BY
     1,2,3,4,5
+
+SETTINGS max_execution_time = 3000
