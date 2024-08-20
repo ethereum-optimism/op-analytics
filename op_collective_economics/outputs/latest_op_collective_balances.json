@@ -12,27 +12,27 @@
     "address": "0x9c3631dDE5c8316bE5B7554B0CcD2631C15a9A05"
   },
   "op_sequencer_fee_vault": {
-    "balance": 21.185463890234463,
+    "balance": 0.42423711502207784,
     "address": "0x4200000000000000000000000000000000000011"
   },
   "op_base_fee_vault": {
-    "balance": 300.3991134356917,
+    "balance": 300.4007038765706,
     "address": "0x4200000000000000000000000000000000000019"
   },
   "op_l1fee_fee_vault": {
-    "balance": 4.406328376826346,
+    "balance": 4.408589445367963,
     "address": "0x420000000000000000000000000000000000001A"
   },
   "l1_batch_submitter": {
-    "balance": 309.78216569128017,
+    "balance": 309.7802779577746,
     "address": "0x6887246668a3b87F54DeB3b94Ba47a6f63F32985"
   },
   "l1_state_proposer": {
-    "balance": 121.95248974677227,
+    "balance": 121.95042236279285,
     "address": "0x473300df21D047806A082244b417f96b32f13A33"
   },
   "l1_to_l2_inflight_withdrawals": {
-    "balance": 7540.957068646794,
+    "balance": 7562.274794500709,
     "address": "https://dune.com/embeds/3939869/6626683/"
   }
 }
