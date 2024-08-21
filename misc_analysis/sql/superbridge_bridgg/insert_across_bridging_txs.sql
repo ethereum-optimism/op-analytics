@@ -35,7 +35,7 @@ from (
         and l.block_number = t.block_number
         and l.chain = t.chain
     where
-        l.block_timestamp >= date_trunc('day', now()) - interval '180' day
+        l.block_timestamp >= cast('2024-07-01' as block_timestamp)
         and splitByChar(',', l.topics)[1] = '0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f'
         and l.network = 'mainnet'
         and t.receipt_status = 1
