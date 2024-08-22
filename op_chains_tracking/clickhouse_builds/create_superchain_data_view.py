@@ -89,7 +89,7 @@ native_dataset_types = [
 ]
 mv_dataset_types = [
                 # mvs
-                 'erc20_transfers_mv','native_eth_transfers_mv'
+                 'erc20_transfers_mv','native_eth_transfers_mv','daily_aggregate_transactions'
                  ]
 dataset_types = native_dataset_types + mv_dataset_types
 print(dataset_types)
