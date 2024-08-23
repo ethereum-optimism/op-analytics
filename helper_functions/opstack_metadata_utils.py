@@ -62,7 +62,7 @@ def get_op_stack_metadata_by_data_source(data_source, col_rename = 'blockchain')
         elif data_source == 'dune':
                 col = 'dune_schema'
         
-        col_list = ['chain_name','display_name','mainnet_chain_id','chain_layer','alignment'] + [col]
+        col_list = ['chain_name','display_name','mainnet_chain_id','chain_layer','alignment','da_layer','output_root_layer','gas_token','block_time_sec'] + [col]
         
         ops = get_op_stack_metadata_df()
         ops = ops[col_list][~ops[col].isna()]

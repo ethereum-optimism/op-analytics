@@ -7,7 +7,7 @@ AS SELECT
     toDate(block_timestamp) AS dt,
     toFixedString(ifNull(to_address, repeat('0', 42)), 42) AS to_address,
 
-    count(*) AS count_transactions_to,
+    countState(*) AS count_transactions_to,
     countIf(receipt_status = 1) AS count_transactions_to_success,
 
     uniqState(t.block_number) AS count_blocks_to,
@@ -42,7 +42,7 @@ AS SELECT
     
     SUM((COALESCE(receipt_l1_gas_used, @byte_length_sql@) * t.gas_price)/ 1e9)/ SUM(COALESCE(receipt_l1_gas_used,@byte_length_sql@)) AS avg_l1_gas_price_gwei
 
-FROM {chain}_transactions t 
+FROM {chain}_transactions t final
 INNER JOIN {chain}_blocks b final
     ON t.block_number = b.number 
     AND t.block_timestamp = b.timestamp
