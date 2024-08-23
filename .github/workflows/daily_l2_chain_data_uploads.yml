@@ -48,8 +48,10 @@ jobs:
             notebook: ch_gs_uploads
           - working-directory: op_chains_tracking
             notebook: dune_op_stack_chains_l1_data
-          - working-directory: op_chains_tracking/opcollective_feesplit
+          - working-directory: op_collective_economics/opcollective_feesplit
             notebook: op_collective_revenue
+          - working-directoy: op_collective_economics
+            notebook: get_op_collective_net_revenue_balances
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -81,6 +83,9 @@ jobs:
           IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
           BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
           BQ_PROJECT_ID: ${{ secrets.BQ_PROJECT_ID }}
+          L1_ETHERSCAN_API: ${{ secrets.L1_ETHERSCAN_API }}
+          BASESCAN_API: ${{ secrets.BASESCAN_API }}
+          OP_ETHERSCAN_API: ${{ secrets.OP_ETHERSCAN_API }}
 
   commit-changes:
     needs: run_notebook
