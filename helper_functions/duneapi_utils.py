@@ -61,7 +61,7 @@ def get_dune_data(
     dune = DuneClient(os.environ["DUNE_API_KEY"])
     # get latest
     try:
-        results = dune.get_latest_result(query_id)
+        results = dune.get_latest_result(query)
         submitted_at = results.times.submitted_at
         # execution_started_at = latest.times.execution_started_at
         # execution_ended_at = latest.times.execution_ended_at
@@ -103,7 +103,7 @@ def get_dune_data(
     df.to_csv(f"{path}/{name}.csv", escapechar="\\", index=False)
 
     logger.info(
-        f"✨ Results saved as {path}/{name}.csv, with {len(df)} rows and {len(df.columns)} columns."
+        f"✨ Results saved as {path}/{name}.csv, with {len(df)} rows and {len(df.columns)} columns. Query: {query.url()}"
     )
 
     return df

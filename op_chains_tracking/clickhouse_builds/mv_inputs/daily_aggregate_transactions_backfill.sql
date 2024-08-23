@@ -43,7 +43,7 @@ SELECT
         SUM((COALESCE(receipt_l1_gas_used, @byte_length_sql@) * t.gas_price)/ 1e9)/ SUM(COALESCE(receipt_l1_gas_used,@byte_length_sql@)) AS avg_l1_gas_price_gwei
 
 
-FROM {chain}_transactions t 
+FROM {chain}_transactions t final
 INNER JOIN {chain}_blocks b final
             ON t.block_number = b.number 
             AND t.block_timestamp = b.timestamp
