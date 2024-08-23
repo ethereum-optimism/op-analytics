@@ -64,4 +64,4 @@ funki,Funki,33979,8/10/24,modern,Non-Standard,8/10/24,yes,AltLayer,https://rpc-m
 ozean,Ozean,,,,Standard,,yes,Caldera,,https://ozean.finance/,,,,,CPOOL,L2,2,ethereum,ethereum,,,,,,,,,,,,
 optopia,Optopia,62050,5/21/24,modern,,,unknown,,https://rpc-mainnet.optopia.ai,https://www.optopia.ai/,https://scan.optopia.ai/,,optopia,,ETH,L2,2,ethereum,ethereum,0x94118F86eE37Fa4Fdb266CDab1e55B8F0D6959D9,,,,,,0x3D0Bf26E60a689a7Da5EA3ddAD7371F27f7671a5,0xfF00000000000000000000000000000000062050,0x33397410000A219fa5a476c5B51032B367C77e78,0xdd80E05004f40815EaEf12ffeE69c2a8A5112aA5,0x1adE86B9cc8a50Db747b7aaC32E8527d42c71fC1,
 unite,Unite,,,,,,yes,,,https://www.unite.io/,,,unite,,UNITE,L3,2,,base,,,,,,,,,,,,
-soneium,Soneium,,,modern,Non-Standard,,yes,,,https://soneium.org/,,,,,ETH,L2,2,ethereum,ethereum,,,,,,,,,,,,
+soneium,Soneium,,,modern,Standard,,yes,,,https://soneium.org/,,,,,ETH,L2,2,ethereum,ethereum,,,,,,,,,,,,
