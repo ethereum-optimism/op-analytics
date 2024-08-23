@@ -128,9 +128,11 @@ FROM (
     WHERE
         t.block_timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
         AND b.timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
-        AND is_deleted = 0 --not deleted
+        AND t.block_timestamp < DATE_TRUNC('day',now())
+        AND t.is_deleted = 0 --not deleted
+        AND b.is_deleted = 0 --not deleted
     
     GROUP BY 1,2,3,4,5
     ) a
 
-SETTINGS max_execution_time = @max_execution_secs@;
+SETTINGS max_execution_time = @max_execution_secs@
