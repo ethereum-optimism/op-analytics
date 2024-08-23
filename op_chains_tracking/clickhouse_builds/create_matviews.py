@@ -9,6 +9,7 @@ mv_names = [
         'erc20_transfers',
         'native_eth_transfers',
         'daily_aggregate_transactions',
+        # 'daily_aggregate_chain_stats', #comment out, can't align datatypes across chains.
         ]
 set_days_batch_size = 7
 
@@ -39,7 +40,6 @@ dotenv.load_dotenv()
 
 # Get Chain List
 chain_configs = ops.get_superchain_metadata_by_data_source('oplabs') # OPLabs db
-# chain_configs = chain_configs[chain_configs['chain_name'].isin('op','zora')]
 
 if client is None:
         client = ch.connect_to_clickhouse_db()
@@ -48,14 +48,14 @@ if client is None:
 def get_chain_names_from_df(df):
     return df['blockchain'].dropna().unique().tolist()
 
-# chain_configs
+chain_configs
 
 
 # In[ ]:
 
 
 # List of chains
-chains = get_chain_names_from_df(chain_configs)
+# chains = get_chain_names_from_df(chain_configs)
 
 # Start date for backfilling
 start_date = datetime.date(2021, 11, 1)
@@ -97,7 +97,7 @@ def set_optimize_on_insert(option_int = 1):
 # In[ ]:
 
 
-def create_materialized_view(client, chain, mv_name):
+def create_materialized_view(client, chain, mv_name, block_time = 2):
     table_view_name = f'{chain}_{mv_name}'
     full_view_name = f'{chain}_{mv_name}_mv'
     create_file_name = f'{mv_name}_create'
@@ -125,7 +125,7 @@ def create_materialized_view(client, chain, mv_name):
         return
 
     query_template = get_query_from_file(f'{mv_name}_mv')
-    query = query_template.format(chain=chain, view_name=full_view_name, table_name = table_view_name)
+    query = query_template.format(chain=chain, view_name=full_view_name, table_name = table_view_name, block_time_sec = block_time)
     query = gsb.process_goldsky_sql(query)
     
     # print(query)
@@ -155,12 +155,13 @@ def ensure_backfill_tracking_table_exists(client):
     else:
         print("backfill_tracking table already exists.")
 
-def backfill_data(client, chain, mv_name):
+def backfill_data(client, chain, mv_name, block_time = 2):
     full_view_name = f'{chain}_{mv_name}_mv'
     full_table_name = f'{chain}_{mv_name}'
-    current_date = start_date
+    current_date_q = f"SELECT DATE_TRUNC('day',MIN(timestamp)) AS start_dt FROM {chain}_blocks WHERE number = 1 AND is_deleted = 0"
+    current_date = client.query(current_date_q).result_rows[0][0].date()
     
-    while current_date < end_date:
+    while current_date <= end_date:
         attempts = 1
         is_success = 0
         days_batch_size = set_days_batch_size
@@ -196,7 +197,8 @@ def backfill_data(client, chain, mv_name):
                     chain=chain,
                     start_date=current_date,
                     end_date=batch_end,
-                    table_name = full_table_name
+                    table_name = full_table_name,
+                    block_time_sec = block_time
                 )
                 query = gsb.process_goldsky_sql(query)
                 
@@ -274,7 +276,7 @@ def backfill_data(client, chain, mv_name):
 # In[ ]:
 
 
-def reset_materialized_view(client, chain, mv_name):
+def reset_materialized_view(client, chain, mv_name, block_time = 2):
     full_view_name = f'{chain}_{mv_name}_mv'
     table_name = f'{chain}_{mv_name}'
 
@@ -289,7 +291,7 @@ def reset_materialized_view(client, chain, mv_name):
         print(f"Dropped table {table_name}")
 
         # Recreate the materialized view using the existing function
-        create_materialized_view(client, chain, mv_name)
+        create_materialized_view(client, chain, mv_name, block_time)
         print(f"Recreated materialized view {full_view_name}")
 
         # Clear the backfill tracking for this view
@@ -306,21 +308,33 @@ def reset_materialized_view(client, chain, mv_name):
 # In[ ]:
 
 
-# # To reset a view
-# reset_materialized_view(client, 'op', 'daily_aggregate_transactions')
+# # # To reset a view
+# for row in chain_configs.itertuples(index=False):
+#         chain = row.chain_name
+#         reset_materialized_view(client, chain, 'daily_aggregate_chain_stats', 2)
 
 
-# In[ ]:
+# In[10]:
 
 
 # Main execution
 ensure_backfill_tracking_table_exists(client)
 
-for chain in chains:
+for row in chain_configs.itertuples(index=False):
+    chain = row.chain_name
+    block_time = row.block_time_sec
     print(f"Processing chain: {chain}")
     for mv_name in mv_names:
-        create_materialized_view(client, chain, mv_name)
-        backfill_data(client, chain, mv_name)
+        try:
+            print('create matview')
+            create_materialized_view(client, chain, mv_name, block_time)
+        except:
+            print('error')
+        try:
+            print('create backfill')
+            backfill_data(client, chain, mv_name, block_time)
+        except:
+            print('error')
         
     print(f"Completed processing for {chain}")
 
