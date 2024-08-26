@@ -1,1 +1,5 @@
+<<<<<<< Updated upstream
 4.612398611
+=======
+2.940687677
+>>>>>>> Stashed changes
