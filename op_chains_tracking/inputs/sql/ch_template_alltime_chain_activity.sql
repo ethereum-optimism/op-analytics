@@ -18,7 +18,7 @@ FROM (
         chain, network, chain_id, cast(@block_time_sec@ as Float64) AS block_time_sec,
 
         COUNT(*) AS num_raw_txs,
-        COUNT(DISTINCT t.block_number) AS num_blocks,
+        1+ (MAX(t.block_number) - MIN(t.block_number)) AS num_blocks,
 
         SUM(CASE WHEN gas_price = 0 AND to_address = '0x4200000000000000000000000000000000000015' THEN 1 ELSE 0 END) AS l2_num_attr_deposit_txs_per_day,
         SUM(CASE WHEN gas_price = 0 AND to_address = '0x4200000000000000000000000000000000000007' THEN 1 ELSE 0 END) AS l2_num_user_deposit_txs_per_day,
@@ -125,14 +125,17 @@ FROM (
         INNER JOIN @chain_db_name@_blocks b final
             ON t.block_number = b.number 
             AND t.block_timestamp = b.timestamp
-    WHERE
-        t.block_timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
-        AND b.timestamp >= DATE_TRUNC('day',now() - interval '@trailing_days@ days')
-        AND t.block_timestamp < DATE_TRUNC('day',now())
+    
+    WHERE t.block_timestamp >= toDate(now() - interval '@trailing_days@ days')
+        AND t.block_timestamp < toDate(now())
+        AND b.timestamp >= toDate(now() - interval '@trailing_days@ days')
+        AND b.timestamp < toDate(now())
         AND t.is_deleted = 0 --not deleted
         AND b.is_deleted = 0 --not deleted
     
-    GROUP BY 1,2,3,4,5
+    GROUP BY 1,2,3,4
     ) a
 
-SETTINGS max_execution_time = @max_execution_secs@
+SETTINGS
+    max_memory_usage = 200000000000, -- Set to 200 GB
+    max_execution_time = @max_execution_secs@

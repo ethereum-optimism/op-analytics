@@ -3,7 +3,7 @@ INSERT INTO {view_name}
 -- Native Transactions
 SELECT
         t.*
-        , if(gas_price > 0, @gas_fee_sql@, 0) AS gas_fee_eth
+        , if(gas_price > 0, @gas_fee_sql@/1e18, 0) AS gas_fee_eth
 
         , @byte_length_sql@ AS input_byte_length
         , @calldata_gas_sql@ AS input_calldata_gas
@@ -24,6 +24,7 @@ SELECT
 FROM {chain}_transactions t
 INNER JOIN {chain}_blocks b 
         ON t.block_number = b.number
+        AND t.block_timestamp = b.timestamp
 WHERE t.is_deleted = 0 AND b.is_deleted = 0
 AND t.block_timestamp BETWEEN '{start_date}' AND '{end_date}'
 
