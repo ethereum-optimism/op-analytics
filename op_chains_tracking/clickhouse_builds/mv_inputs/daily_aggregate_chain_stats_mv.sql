@@ -70,8 +70,6 @@ INNER JOIN {chain}_blocks b
     ON t.block_number = b.number 
     AND t.block_timestamp = b.timestamp
 WHERE
-    t.block_timestamp >= DATE_TRUNC('day', now() - interval '30 days')
-    AND b.timestamp >= DATE_TRUNC('day', now() - interval '30 days')
-    AND t.is_deleted = 0
+    t.is_deleted = 0
     AND b.is_deleted = 0
 GROUP BY dt, chain, network, chain_id, block_time_sec;
