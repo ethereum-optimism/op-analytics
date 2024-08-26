@@ -65,8 +65,8 @@ AS SELECT
     avgState(if(gas_price > 0, COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar), NULL)) AS avg_l1_fee_scalar_state,
     avgState(if(gas_price > 0, receipt_l1_blob_base_fee_scalar, NULL)) AS avg_l1_blob_fee_scalar_state
 
-FROM {chain}_transactions t
-INNER JOIN {chain}_blocks b
+FROM {chain}_transactions t final
+INNER JOIN {chain}_blocks b final
     ON t.block_number = b.number 
     AND t.block_timestamp = b.timestamp
 WHERE
