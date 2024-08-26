@@ -9,6 +9,7 @@ mv_names = [
         'erc20_transfers',
         'native_eth_transfers',
         'daily_aggregate_transactions',
+        'transactions_unique',
         # 'daily_aggregate_chain_stats', #comment out, can't align datatypes across chains.
         ]
 set_days_batch_size = 7
@@ -308,13 +309,13 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # In[ ]:
 
 
-# # # To reset a view
+# # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'daily_aggregate_chain_stats', 2)
+#         reset_materialized_view(client, chain, 'transactions_unique', 2)
 
 
-# In[10]:
+# In[ ]:
 
 
 # Main execution
