@@ -5,6 +5,7 @@ CREATE TABLE {view_name}
     network String,
     chain_id UInt64,
     block_time_sec Float64,
+    
     num_raw_txs AggregateFunction(count),
     num_blocks AggregateFunction(uniqExact, UInt64),
     l2_num_attr_deposit_txs_per_day AggregateFunction(sum, UInt8),
