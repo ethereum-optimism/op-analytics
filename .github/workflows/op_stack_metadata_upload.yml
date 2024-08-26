@@ -11,6 +11,7 @@ on:
     types: [closed]
     paths:
       - 'op_chains_tracking/inputs/**'
+      - 'op_chains_tracking/clickhouse_builds/**'
   
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
