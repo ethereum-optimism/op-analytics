@@ -40,6 +40,9 @@ fee_vaults = [
     ['BaseFeeVault','0x4200000000000000000000000000000000000019'],
     ['L1FeeVault','0x420000000000000000000000000000000000001A'],
 ]
+bespoke_fee_vaults = [
+        [255, 'Kroma: L1 Fee Vault', '0x4200000000000000000000000000000000000007'] #Kroma
+]
 
 # Aiming to eventually read from superchain-resitry + some non-superchain static adds
 chains_rpcs = pd.read_csv('outputs/chain_metadata.csv', na_filter=False)
@@ -49,7 +52,7 @@ chains_rpcs = chains_rpcs[~(chains_rpcs['rpc_url'] == '') & ~(chains_rpcs['op_ba
 # print(chains_rpcs.sample(5))
 
 # # Temp
-# chains_rpcs = chains_rpcs.head(1)
+# chains_rpcs = chains_rpcs[chains_rpcs['chain_name'] == 'kroma']
 # chains_rpcs
 
 
@@ -102,33 +105,34 @@ def process_chain(chain):
         block_datetime = datetime.fromtimestamp(block_timestamp, tz=timezone.utc)
         block_time = block_datetime.strftime('%Y-%m-%d %H:%M:%S')
 
-        for vault in fee_vaults:
-            vault_name = vault[0]
-            vault_address = vault[1]
-            # Call the function directly using eth_call
-            response = w3_conn.eth.call({
-                'to': vault_address,
-                'data': method_id
-            })
-            wei_balance = w3_conn.eth.get_balance(vault_address)
-            # Decode the result (assuming the function returns a uint256)
-            proxy_processed_wei = Web3.to_int(hexstr=response.hex())
-            
-            alltime_revenue_wei = proxy_processed_wei + wei_balance
-            alltime_revenue_native = alltime_revenue_wei / 1e18
+        bespoke_vaults = [[item[1], item[2]] for item in bespoke_fee_vaults if int(item[0]) == int(chain_id)]
+        iter_fee_vaults = fee_vaults + bespoke_vaults
 
-            # Debug - print response
-            # print(chain_name + ' | ' + vault_name + ': ' \
-            #     + str(proxy_processed_wei) + ' | bal: ' + str(wei_balance)\
-            #     + ' | total eth: ' + str(alltime_revenue_native)
-            #     )
-            
-            tmp = pd.DataFrame(
-                    [[block_time, block_number, chain_name, vault_name, vault_address, alltime_revenue_native, chain_id]]#, gas_token, da_layer, is_superchain_registry]]
-                    , columns=df_columns
-                    )
-            data_arr.append(tmp)
-            time.sleep(1)
+        for vault in iter_fee_vaults:
+            try:
+                vault_name = vault[0]
+                vault_address = vault[1]
+                # Call the function directly using eth_call
+                response = w3_conn.eth.call({
+                    'to': vault_address,
+                    'data': method_id
+                })
+                wei_balance = w3_conn.eth.get_balance(vault_address)
+                # Decode the result (assuming the function returns a uint256)
+                proxy_processed_wei = Web3.to_int(hexstr=response.hex())
+                
+                alltime_revenue_wei = proxy_processed_wei + wei_balance
+                alltime_revenue_native = alltime_revenue_wei / 1e18
+                print(alltime_revenue_native)
+                tmp = pd.DataFrame(
+                        [[block_time, block_number, chain_name, vault_name, vault_address, alltime_revenue_native, chain_id]]
+                        , columns=df_columns
+                        )
+                data_arr.append(tmp)
+                time.sleep(1)
+            except Exception as e:
+                print(f"Error processing vault {vault_name} on chain {chain_name}: {e}")
+                continue  # Skip to the next vault
     except Exception as e:
         print(f"Error processing chain {chain_name}: {e}")
 
@@ -208,7 +212,7 @@ data_df['block_time'] = pd.to_datetime(data_df['block_time'])
 
 file_path = 'outputs/all_time_revenue_data.csv'
 
-data_df.sample(5)
+data_df.sample()
 
 
 # In[ ]:

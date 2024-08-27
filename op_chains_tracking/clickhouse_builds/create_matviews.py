@@ -1,23 +1,25 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 # List of materialized view names
 mv_names = [
+        # in order of build
         'erc20_transfers',
         'native_eth_transfers',
-        'daily_aggregate_transactions',
         'transactions_unique',
-        # 'daily_aggregate_chain_stats', #comment out, can't align datatypes across chains.
+
+        'daily_aggregate_transactions_to',
+        'daily_aggregate_chain_stats', #comment out, if we can't align datatypes across chains.
         ]
 set_days_batch_size = 7
 
 optimize_all = True
 
 
-# In[ ]:
+# In[2]:
 
 
 import pandas as pd
@@ -36,7 +38,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[ ]:
+# In[3]:
 
 
 # Get Chain List
@@ -52,7 +54,7 @@ def get_chain_names_from_df(df):
 chain_configs
 
 
-# In[ ]:
+# In[4]:
 
 
 # List of chains
@@ -63,7 +65,7 @@ start_date = datetime.date(2021, 11, 1)
 end_date = datetime.date.today() + datetime.timedelta(days=1)
 
 
-# In[ ]:
+# In[5]:
 
 
 def get_query_from_file(mv_name):
@@ -85,7 +87,7 @@ def get_query_from_file(mv_name):
         raise
 
 
-# In[ ]:
+# In[6]:
 
 
 def set_optimize_on_insert(option_int = 1):
@@ -95,7 +97,7 @@ def set_optimize_on_insert(option_int = 1):
     print(f"Set optimize_on_insert = {option_int}")
 
 
-# In[ ]:
+# In[7]:
 
 
 def create_materialized_view(client, chain, mv_name, block_time = 2):
@@ -274,7 +276,7 @@ def backfill_data(client, chain, mv_name, block_time = 2):
 #         print(f"  Error: {str(e)}")
 
 
-# In[ ]:
+# In[8]:
 
 
 def reset_materialized_view(client, chain, mv_name, block_time = 2):
@@ -291,9 +293,9 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
         client.command(f"DROP TABLE IF EXISTS {table_name}")
         print(f"Dropped table {table_name}")
 
-        # Recreate the materialized view using the existing function
-        create_materialized_view(client, chain, mv_name, block_time)
-        print(f"Recreated materialized view {full_view_name}")
+        # # Recreate the materialized view using the existing function
+        # create_materialized_view(client, chain, mv_name, block_time)
+        # print(f"Recreated materialized view {full_view_name}")
 
         # Clear the backfill tracking for this view
         client.command(f"""
@@ -306,13 +308,13 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
         print(f"Error resetting materialized view {full_view_name}: {str(e)}")
 
 
-# In[ ]:
+# In[9]:
 
 
-# # # # To reset a view
+# # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'transactions_unique', 2)
+#         reset_materialized_view(client, chain, 'daily_aggregate_transactions', 2)
 
 
 # In[ ]:
