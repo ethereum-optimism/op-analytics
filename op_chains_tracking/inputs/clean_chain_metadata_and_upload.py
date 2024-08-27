@@ -35,6 +35,7 @@ df.columns = df.columns.str.replace(" ", "").str.strip()
 df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 # Datetime
 df['public_mainnet_launch_date'] = pd.to_datetime(df['public_mainnet_launch_date'], errors='coerce')
+df['op_chain_start'] = pd.to_datetime(df['op_chain_start'], errors='coerce')
 # ChainID
 df['mainnet_chain_id'] = pd.to_numeric(df['mainnet_chain_id'], errors='coerce')#.astype(int)
 # df['mainnet_chain_id'] = int(df['mainnet_chain_id'])
