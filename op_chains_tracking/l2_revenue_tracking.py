@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 # ! pip install --upgrade dune-client
 # ! pip show dune-client
 
 
-# In[ ]:
+# In[2]:
 
 
 # Get L2 Revenue and post it to a database (csv in github for now)
@@ -29,7 +29,7 @@ sys.path.pop()
 import os
 
 
-# In[ ]:
+# In[3]:
 
 
 # https://github.com/ethereum-optimism/optimism/blob/b86522036ad11a91de1d1dadb6805167add83326/specs/predeploys.md?plain=1#L50
@@ -40,6 +40,9 @@ fee_vaults = [
     ['BaseFeeVault','0x4200000000000000000000000000000000000019'],
     ['L1FeeVault','0x420000000000000000000000000000000000001A'],
 ]
+bespoke_fee_vaults = [
+        [255, 'Kroma: L1 Fee Vault', '0x4200000000000000000000000000000000000007'] #Kroma
+]
 
 # Aiming to eventually read from superchain-resitry + some non-superchain static adds
 chains_rpcs = pd.read_csv('outputs/chain_metadata.csv', na_filter=False)
@@ -49,11 +52,11 @@ chains_rpcs = chains_rpcs[~(chains_rpcs['rpc_url'] == '') & ~(chains_rpcs['op_ba
 # print(chains_rpcs.sample(5))
 
 # # Temp
-# chains_rpcs = chains_rpcs.head(1)
+# chains_rpcs = chains_rpcs[chains_rpcs['chain_name'] == 'kroma']
 # chains_rpcs
 
 
-# In[ ]:
+# In[4]:
 
 
 # Calculate the method signature hash
@@ -63,7 +66,7 @@ method_id = Web3.keccak(text=method_signature)[:4].hex()
 print(f"Method ID: {method_id}")
 
 
-# In[ ]:
+# In[5]:
 
 
 df_columns = [
@@ -73,7 +76,7 @@ df_columns = [
 ]
 
 
-# In[ ]:
+# In[6]:
 
 
 data_arr = []
@@ -83,7 +86,7 @@ def process_chain(chain):
     chain_id = chain['mainnet_chain_id']
 
     if chain_id:  # Check if chain_id is not empty
-        chain_id = int(float(chain_id))  # Convert to float first, then to int
+        chain_id = str(chain_id) 
     else:
         chain_id = None  # or keep it as an empty string or any default value you prefer
 
@@ -102,33 +105,34 @@ def process_chain(chain):
         block_datetime = datetime.fromtimestamp(block_timestamp, tz=timezone.utc)
         block_time = block_datetime.strftime('%Y-%m-%d %H:%M:%S')
 
-        for vault in fee_vaults:
-            vault_name = vault[0]
-            vault_address = vault[1]
-            # Call the function directly using eth_call
-            response = w3_conn.eth.call({
-                'to': vault_address,
-                'data': method_id
-            })
-            wei_balance = w3_conn.eth.get_balance(vault_address)
-            # Decode the result (assuming the function returns a uint256)
-            proxy_processed_wei = Web3.to_int(hexstr=response.hex())
-            
-            alltime_revenue_wei = proxy_processed_wei + wei_balance
-            alltime_revenue_native = alltime_revenue_wei / 1e18
+        bespoke_vaults = [[item[1], item[2]] for item in bespoke_fee_vaults if str(item[0]) == str(chain_id)]
+        iter_fee_vaults = fee_vaults + bespoke_vaults
 
-            # Debug - print response
-            # print(chain_name + ' | ' + vault_name + ': ' \
-            #     + str(proxy_processed_wei) + ' | bal: ' + str(wei_balance)\
-            #     + ' | total eth: ' + str(alltime_revenue_native)
-            #     )
-            
-            tmp = pd.DataFrame(
-                    [[block_time, block_number, chain_name, vault_name, vault_address, alltime_revenue_native, chain_id]]#, gas_token, da_layer, is_superchain_registry]]
-                    , columns=df_columns
-                    )
-            data_arr.append(tmp)
-            time.sleep(1)
+        for vault in iter_fee_vaults:
+            try:
+                vault_name = vault[0]
+                vault_address = vault[1]
+                # Call the function directly using eth_call
+                response = w3_conn.eth.call({
+                    'to': vault_address,
+                    'data': method_id
+                })
+                wei_balance = w3_conn.eth.get_balance(vault_address)
+                # Decode the result (assuming the function returns a uint256)
+                proxy_processed_wei = Web3.to_int(hexstr=response.hex())
+                
+                alltime_revenue_wei = proxy_processed_wei + wei_balance
+                alltime_revenue_native = alltime_revenue_wei / 1e18
+                # print(alltime_revenue_native)
+                tmp = pd.DataFrame(
+                        [[block_time, block_number, chain_name, vault_name, vault_address, alltime_revenue_native, chain_id]]
+                        , columns=df_columns
+                        )
+                data_arr.append(tmp)
+                time.sleep(1)
+            except Exception as e:
+                print(f"Error processing vault {vault_name} on chain {chain_name}: {e}")
+                continue  # Skip to the next vault
     except Exception as e:
         print(f"Error processing chain {chain_name}: {e}")
 
@@ -139,7 +143,7 @@ with ThreadPoolExecutor(max_workers=99) as executor: # Max Workers can be big, s
         future.result()  # This will raise any exceptions caught during the execution
 
 
-# In[ ]:
+# In[7]:
 
 
 # for index, chain in chains_rpcs.iterrows():
@@ -196,22 +200,22 @@ with ThreadPoolExecutor(max_workers=99) as executor: # Max Workers can be big, s
 #         continue
 
 
-# In[ ]:
+# In[8]:
 
 
 data_df = pd.concat(data_arr)
 data_df['block_time'] = pd.to_datetime(data_df['block_time'])
 
 
-# In[ ]:
+# In[9]:
 
 
 file_path = 'outputs/all_time_revenue_data.csv'
 
-data_df.sample(5)
+# data_df.sample()
 
 
-# In[ ]:
+# In[10]:
 
 
 # Check if the file exists
@@ -228,7 +232,7 @@ else:
     data_df.to_csv(file_path, mode='w', header=True, index=False)
 
 
-# In[ ]:
+# In[11]:
 
 
 # # Overwrite to Dune Table
@@ -238,7 +242,7 @@ dune_df = pd.read_csv(file_path)
 #                              'Snapshots of All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs - metadata in op_stack_chains_chain_rpc_metdata')
 
 
-# In[ ]:
+# In[12]:
 
 
 # #Insert Updates to Dune Table
@@ -258,28 +262,28 @@ dune_df = pd.read_csv(file_path)
 #                              'Chain metadata - used to join with op_stack_chains_cumulative_revenue_snapshots')
 
 
-# In[ ]:
+# In[13]:
 
 
 bq_cols = ['block_time','block_number','chain_name','vault_name','vault_address','alltime_revenue_native','chain_id']
 
 
-# In[ ]:
+# In[14]:
 
 
 # dune_df.sample(5)
 
 
-# In[ ]:
+# In[15]:
 
 
-data_df['chain_id'] = data_df['chain_id'].astype(float)
+data_df['chain_id'] = data_df['chain_id'].astype('string')
 data_df['block_time'] = pd.to_datetime(data_df['block_time'])
 # dune_df['block_time'] = pd.to_datetime(dune_df['block_time'])
 data_df.dtypes
 
 
-# In[ ]:
+# In[16]:
 
 
 dataset_name = 'rpc_table_uploads'
