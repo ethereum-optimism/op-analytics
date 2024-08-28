@@ -71,6 +71,7 @@ jobs:
       - name: Convert and run notebook
         working-directory: ${{ matrix.working-directory }}
         run: |
+          pwd
           pipenv run jupyter nbconvert --to python ${{ matrix.notebook }}.ipynb
           pipenv run python ${{ matrix.notebook }}.py
         env:
