@@ -12,7 +12,6 @@ mv_names = [
         'transactions_unique',
 
         'daily_aggregate_transactions_to',
-        'daily_aggregate_chain_stats', #comment out, if we can't align datatypes across chains.
         ]
 set_days_batch_size = 7
 
@@ -51,7 +50,7 @@ if client is None:
 def get_chain_names_from_df(df):
     return df['blockchain'].dropna().unique().tolist()
 
-chain_configs = chain_configs[chain_configs['chain_name'] == 'bob']
+# chain_configs = chain_configs[chain_configs['chain_name'] == 'bob']
 
 chain_configs
 
@@ -311,14 +310,14 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # In[ ]:
 
 
-# # # # # To reset a view
+# # # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'daily_aggregate_transactions', 2)
+#         reset_materialized_view(client, chain, 'transactions_unique', 2)
 
-# for mv in mv_names:
-#         # print(row)
-#         reset_materialized_view(client, 'bob', mv, 2)
+# # for mv in mv_names:
+# #         # print(row)
+# #         reset_materialized_view(client, 'bob', mv, 2)
 
 
 # In[ ]:
