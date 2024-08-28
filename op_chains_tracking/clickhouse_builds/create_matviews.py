@@ -51,6 +51,8 @@ if client is None:
 def get_chain_names_from_df(df):
     return df['blockchain'].dropna().unique().tolist()
 
+chain_configs = chain_configs[chain_configs['chain_name'] == 'bob']
+
 chain_configs
 
 
@@ -108,7 +110,7 @@ def create_materialized_view(client, chain, mv_name, block_time = 2):
     
     # Check if create file exists
     if not os.path.exists(f'mv_inputs/{create_file_name}.sql'):
-        print(f"Create file {create_file_name}.sql does not exist. Skipping creation.")
+        print(f"Table create file {create_file_name}.sql does not exist. Skipping table creation.")
     else:
         # Check if table already exists
         result = client.query(f"SHOW TABLES LIKE '{table_view_name}'")
@@ -130,9 +132,7 @@ def create_materialized_view(client, chain, mv_name, block_time = 2):
     query_template = get_query_from_file(f'{mv_name}_mv')
     query = query_template.format(chain=chain, view_name=full_view_name, table_name = table_view_name, block_time_sec = block_time)
     query = gsb.process_goldsky_sql(query)
-    
     # print(query)
-    
     client.command(query)
     print(f"Created materialized view {full_view_name}")
 
@@ -169,7 +169,7 @@ def backfill_data(client, chain, mv_name, block_time = 2):
         is_success = 0
         days_batch_size = set_days_batch_size
         
-        while is_success == 0 & attempts < 3:
+        while (is_success == 0) & (attempts < 3) & (current_date + datetime.timedelta(days=days_batch_size) <= end_date):
             batch_size = datetime.timedelta(days=days_batch_size)
 
             batch_end = min(current_date + batch_size, end_date)
@@ -315,6 +315,10 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
 #         reset_materialized_view(client, chain, 'daily_aggregate_transactions', 2)
+
+# for mv in mv_names:
+#         # print(row)
+#         reset_materialized_view(client, 'bob', mv, 2)
 
 
 # In[ ]:
