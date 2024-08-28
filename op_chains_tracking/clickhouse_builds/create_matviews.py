@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 # List of materialized view names
@@ -19,7 +19,7 @@ set_days_batch_size = 7
 optimize_all = True
 
 
-# In[2]:
+# In[ ]:
 
 
 import pandas as pd
@@ -38,7 +38,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[3]:
+# In[ ]:
 
 
 # Get Chain List
@@ -54,7 +54,7 @@ def get_chain_names_from_df(df):
 chain_configs
 
 
-# In[4]:
+# In[ ]:
 
 
 # List of chains
@@ -65,7 +65,7 @@ start_date = datetime.date(2021, 11, 1)
 end_date = datetime.date.today() + datetime.timedelta(days=1)
 
 
-# In[5]:
+# In[ ]:
 
 
 def get_query_from_file(mv_name):
@@ -87,7 +87,7 @@ def get_query_from_file(mv_name):
         raise
 
 
-# In[6]:
+# In[ ]:
 
 
 def set_optimize_on_insert(option_int = 1):
@@ -97,7 +97,7 @@ def set_optimize_on_insert(option_int = 1):
     print(f"Set optimize_on_insert = {option_int}")
 
 
-# In[7]:
+# In[ ]:
 
 
 def create_materialized_view(client, chain, mv_name, block_time = 2):
@@ -276,7 +276,7 @@ def backfill_data(client, chain, mv_name, block_time = 2):
 #         print(f"  Error: {str(e)}")
 
 
-# In[8]:
+# In[ ]:
 
 
 def reset_materialized_view(client, chain, mv_name, block_time = 2):
@@ -308,7 +308,7 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
         print(f"Error resetting materialized view {full_view_name}: {str(e)}")
 
 
-# In[9]:
+# In[ ]:
 
 
 # # # # # To reset a view
