@@ -15,16 +15,8 @@ SELECT
         , if(gas_price > 0, (cast(@estimated_size_sql@ as Nullable(Float64)) * COALESCE(16*receipt_l1_base_fee_scalar/1e6,receipt_l1_fee_scalar) * cast(receipt_l1_gas_price AS Nullable(Float64))) / 1e18, 0) AS l1_l1gas_contrib_l2_eth_fees_per_day
         , if(gas_price > 0, (cast(@estimated_size_sql@ as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar/1e6 * cast(receipt_l1_blob_base_fee AS Nullable(Float64))) / 1e18, 0) AS l1_blobgas_contrib_l2_eth_fees_per_day
 
-        , if(gas_price > 0, CAST((base_fee_per_gas) * t.receipt_gas_used AS Nullable(Float64)) / 1e18, 0) AS l2_contrib_l2_eth_fees_base_fee_per_day
-        , if(gas_price > 0, CAST((gas_price - base_fee_per_gas) * t.receipt_gas_used AS Nullable(Float64)) / 1e18, 0) AS l2_contrib_l2_eth_fees_priority_fee_per_day
-
-        , base_fee_per_gas / 1e9 AS l2_base_fee_gwei
-        , if(gas_price > 0 , (gas_price - base_fee_per_gas) / 1e9 , 0 ) AS l2_priority_fee_gwei
-
 FROM {chain}_transactions t
-INNER JOIN {chain}_blocks b 
-        ON t.block_number = b.number
-        AND t.block_timestamp = b.timestamp
+
 WHERE t.is_deleted = 0 AND b.is_deleted = 0
 AND t.block_timestamp BETWEEN '{start_date}' AND '{end_date}'
 
