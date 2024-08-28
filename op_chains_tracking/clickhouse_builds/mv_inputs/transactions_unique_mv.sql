@@ -1,6 +1,6 @@
 CREATE MATERIALIZED VIEW IF NOT EXISTS {view_name}
 ENGINE = ReplacingMergeTree()
-PARTITION BY toYYYYMM(block_timestamp)
+PARTITION BY toDate(block_timestamp)
 ORDER BY (chain_id, hash, block_number, block_timestamp)
 AS
 
