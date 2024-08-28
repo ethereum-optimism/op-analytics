@@ -29,7 +29,7 @@ sources:
       block, trace, transaction, and gas.
 transforms:
   - type: sql
-    referenceName: op_blocks
+    referenceName: op_sepolia_blocks
     primaryKey: id
     sql: |
       select
@@ -62,7 +62,7 @@ transforms:
       from
         optimism_sepolia.raw_traces
   - type: sql
-    referenceName: op_transactions
+    referenceName: op_sepolia_transactions
     primaryKey: id
     sql: |
       select
@@ -75,9 +75,9 @@ transforms:
 sinks:
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: op_blocks
+    table: op_sepolia_blocks
     batchSize: 100000
-    description: ClickHouse sink from optimism_sepolia.raw_blocks to op_blocks
+    description: ClickHouse sink from optimism_sepolia.raw_blocks to op_sepolia_blocks
     flushInterval: '10000'
     referenceName: clickhouse_optimism_sepolia.raw_blocks
     appendOnlyMode: true
@@ -85,12 +85,12 @@ sinks:
       hash: FixedString(66)
       number: UInt64 CODEC(Delta, ZSTD)
       timestamp: DateTime CODEC(Delta, ZSTD)
-    sourceStreamName: op_blocks
+    sourceStreamName: op_sepolia_blocks
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: op_logs
+    table: op_sepolia_logs
     batchSize: 100000
-    description: ClickHouse sink from optimism_sepolia.raw_logs to op_logs
+    description: ClickHouse sink from optimism_sepolia.raw_logs to op_sepolia_logs
     flushInterval: '10000'
     referenceName: clickhouse_optimism_sepolia.raw_logs
     appendOnlyMode: true
@@ -105,9 +105,9 @@ sinks:
     sourceStreamName: op_raw_logs
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: op_transactions
+    table: op_sepolia_transactions
     batchSize: 100000
-    description: ClickHouse sink from optimism_sepolia.transaction_receipts to op_transactions
+    description: ClickHouse sink from optimism_sepolia.transaction_receipts to op_sepolia_transactions
     flushInterval: '10000'
     referenceName: clickhouse_optimism_sepolia.transaction_receipts
     appendOnlyMode: true
@@ -138,10 +138,10 @@ sinks:
       max_priority_fee_per_gas: UInt128
       receipt_cumulative_gas_used: UInt128
       receipt_effective_gas_price: UInt128
-    sourceStreamName: op_transactions
+    sourceStreamName: op_sepolia_transactions
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: op_traces
+    table: op_sepolia_traces
     batchSize: 100000
     description: ClickHouse sink from optimism_sepolia.raw_traces to traces
     flushInterval: '10000'
