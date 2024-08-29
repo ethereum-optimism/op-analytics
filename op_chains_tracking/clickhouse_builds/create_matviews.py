@@ -12,7 +12,6 @@ mv_names = [
         'transactions_unique',
 
         'daily_aggregate_transactions_to',
-        'daily_aggregate_chain_stats', #comment out, if we can't align datatypes across chains.
         ]
 set_days_batch_size = 7
 
@@ -51,7 +50,7 @@ if client is None:
 def get_chain_names_from_df(df):
     return df['blockchain'].dropna().unique().tolist()
 
-chain_configs = chain_configs[chain_configs['chain_name'] == 'bob']
+# chain_configs = chain_configs[chain_configs['chain_name'] == 'bob']
 
 chain_configs
 
@@ -102,6 +101,9 @@ def set_optimize_on_insert(option_int = 1):
 # In[ ]:
 
 
+import clickhouse_connect
+from clickhouse_connect.driver.exceptions import ClickHouseError
+
 def create_materialized_view(client, chain, mv_name, block_time = 2):
     table_view_name = f'{chain}_{mv_name}'
     full_view_name = f'{chain}_{mv_name}_mv'
@@ -112,29 +114,39 @@ def create_materialized_view(client, chain, mv_name, block_time = 2):
     if not os.path.exists(f'mv_inputs/{create_file_name}.sql'):
         print(f"Table create file {create_file_name}.sql does not exist. Skipping table creation.")
     else:
-        # Check if table already exists
-        result = client.query(f"SHOW TABLES LIKE '{table_view_name}'")
-        if result.result_rows:
-            print(f"Table {table_view_name} already exists. Skipping creation.")
-        else:
-            # Create the table
-            create_query = get_query_from_file(create_file_name)
-            create_query = create_query.format(chain=chain, view_name=table_view_name)
-            client.command(create_query)
-            print(f"Created table {table_view_name}")
+        try:
+            # Check if table already exists
+            result = client.query(f"SHOW TABLES LIKE '{table_view_name}'")
+            result_rows = list(result.result_rows)
+            if result_rows:
+                print(f"Table {table_view_name} already exists. Skipping creation.")
+            else:
+                # Create the table
+                create_query = get_query_from_file(create_file_name)
+                create_query = create_query.format(chain=chain, view_name=table_view_name)
+                client.command(create_query)
+                print(f"Created table {table_view_name}")
+        except ClickHouseError as e:
+            print(f"Error creating table {table_view_name}: {str(e)}")
+            return  # Exit the function if table creation fails
 
-    # Check if view already exists
-    result = client.query(f"SHOW TABLES LIKE '{full_view_name}'")
-    if result.result_rows:
-        print(f"Materialized view {full_view_name} already exists. Skipping creation.")
-        return
+    try:
+        # Check if view already exists
+        result = client.query(f"SHOW TABLES LIKE '{full_view_name}'")
+        result_rows = list(result.result_rows)
+        if result_rows:
+            print(f"Materialized view {full_view_name} already exists. Skipping creation.")
+            return
 
-    query_template = get_query_from_file(f'{mv_name}_mv')
-    query = query_template.format(chain=chain, view_name=full_view_name, table_name = table_view_name, block_time_sec = block_time)
-    query = gsb.process_goldsky_sql(query)
-    # print(query)
-    client.command(query)
-    print(f"Created materialized view {full_view_name}")
+        query_template = get_query_from_file(f'{mv_name}_mv')
+        query = query_template.format(chain=chain, view_name=full_view_name, table_name=table_view_name, block_time_sec=block_time)
+        query = gsb.process_goldsky_sql(query)
+        # print(query)
+        client.command(query)
+        print(f"Created materialized view {full_view_name}")
+    except ClickHouseError as e:
+        print(f"Error creating materialized view {full_view_name}: {str(e)}")
+
 
 def ensure_backfill_tracking_table_exists(client):
     check_table_query = """
@@ -311,14 +323,14 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # In[ ]:
 
 
-# # # # # To reset a view
+# # # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'daily_aggregate_transactions', 2)
+#         reset_materialized_view(client, chain, 'transactions_unique', 2)
 
-# for mv in mv_names:
-#         # print(row)
-#         reset_materialized_view(client, 'bob', mv, 2)
+# # for mv in mv_names:
+# #         # print(row)
+# #         reset_materialized_view(client, 'bob', mv, 2)
 
 
 # In[ ]:
