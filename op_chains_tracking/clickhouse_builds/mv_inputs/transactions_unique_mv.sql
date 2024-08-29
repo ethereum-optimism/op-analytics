@@ -22,4 +22,3 @@ SELECT
 
 FROM {chain}_transactions t
 WHERE t.is_deleted = 0
-AND t.block_timestamp < NOW() - interval '15 mins' -- add lag to allow for data to catch up

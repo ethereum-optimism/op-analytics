@@ -17,7 +17,7 @@ SELECT
 
 FROM {chain}_transactions t
 
-WHERE t.is_deleted = 0 AND b.is_deleted = 0
+WHERE t.is_deleted = 0
 AND t.block_timestamp BETWEEN '{start_date}' AND '{end_date}'
 
 SETTINGS max_execution_time = 3000
