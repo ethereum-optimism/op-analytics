@@ -326,11 +326,11 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # # # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'transactions_unique', 2)
+#         reset_materialized_view(client, chain, 'daily_aggregate_transactions_to', 2)
 
-# # for mv in mv_names:
-# #         # print(row)
-# #         reset_materialized_view(client, 'bob', mv, 2)
+# # # for mv in mv_names:
+# # #         # print(row)
+# # #         reset_materialized_view(client, 'bob', mv, 2)
 
 
 # In[ ]:
