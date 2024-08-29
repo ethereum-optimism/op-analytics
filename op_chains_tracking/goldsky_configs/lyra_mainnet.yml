@@ -75,7 +75,7 @@ transforms:
 sinks:
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: lyra_mainnet_blocks
+    table: lyra_blocks
     batchSize: 100000
     description: ClickHouse sink from lyra_mainnet.raw_blocks to lyra_mainnet_blocks
     flushInterval: '10000'
@@ -88,7 +88,7 @@ sinks:
     sourceStreamName: lyra_mainnet_blocks
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: lyra_mainnet_logs
+    table: lyra_logs
     batchSize: 100000
     description: ClickHouse sink from lyra_mainnet.raw_logs to lyra_mainnet_logs
     flushInterval: '10000'
@@ -105,7 +105,7 @@ sinks:
     sourceStreamName: lyra_mainnet_raw_logs
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: lyra_mainnet_transactions
+    table: lyra_transactions
     batchSize: 100000
     description: ClickHouse sink from lyra_mainnet.transaction_receipts to lyra_mainnet_transactions
     flushInterval: '10000'
@@ -141,7 +141,7 @@ sinks:
     sourceStreamName: lyra_mainnet_transactions
   - secretName: OP_DEMO_CLICKHOUSE
     type: clickHouse
-    table: lyra_mainnet_traces
+    table: lyra_traces
     batchSize: 100000
     description: ClickHouse sink from lyra_mainnet.raw_traces to traces
     flushInterval: '10000'

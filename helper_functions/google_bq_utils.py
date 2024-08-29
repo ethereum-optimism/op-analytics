@@ -116,6 +116,13 @@ def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
 def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'dt']):
     client = connect_bq_client(project_id)
     table_ref = f"{project_id}.{dataset_id}.{table_id}"
+
+    for key in unique_keys:
+        if key in df.columns:
+            try:
+                df[key] = df[key].fillna('none')
+            except Exception as e:
+                print(f"Warning: Could not fill NULLs for column {key}. Error: {str(e)}")
     
     try:
         # Check if the table exists
