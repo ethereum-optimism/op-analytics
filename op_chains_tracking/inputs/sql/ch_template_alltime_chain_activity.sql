@@ -82,10 +82,15 @@ FROM (
             ON t.block_number = b.number 
             AND t.block_timestamp = b.timestamp
     
-    WHERE t.block_timestamp >= toDate(now() - interval '@trailing_days@ days')
+    WHERE
+            t.block_timestamp >= toDate('@start_date@')
+        AND t.block_timestamp < toDate('@end_date@')
         AND t.block_timestamp < toDate(now())
-        AND b.timestamp >= toDate(now() - interval '@trailing_days@ days')
+
+        AND b.timestamp >= toDate('@start_date@')
+        AND b.timestamp < toDate('@end_date@')
         AND b.timestamp < toDate(now())
+        
         AND t.is_deleted = 0
         AND b.is_deleted = 0
     
