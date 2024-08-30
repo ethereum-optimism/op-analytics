@@ -328,9 +328,9 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 #         chain = row.chain_name
 #         reset_materialized_view(client, chain, 'daily_aggregate_transactions_to', 2)
 
-# # # for mv in mv_names:
-# # #         # print(row)
-# # #         reset_materialized_view(client, 'bob', mv, 2)
+# # # # for mv in mv_names:
+# # # #         # print(row)
+# # # #         reset_materialized_view(client, 'bob', mv, 2)
 
 
 # In[ ]:
