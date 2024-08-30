@@ -3,7 +3,7 @@
 import pandas as pd
 import dotenv
 import os
-from loguru import logger
+# from loguru import logger
 import argparse
 import requests as r
 import re
@@ -55,7 +55,7 @@ def get_dune_data(
         query_id=query_id,
         params=params
     )
-    logger.info(f"Results available at {query.url()}")
+    print(f"Results available at {query.url()}")
 
     dotenv.load_dotenv()
     dune = DuneClient(os.environ["DUNE_API_KEY"])
@@ -102,7 +102,7 @@ def get_dune_data(
     # display(df)
     df.to_csv(f"{path}/{name}.csv", escapechar="\\", index=False)
 
-    logger.info(
+    print(
         f"✨ Results saved as {path}/{name}.csv, with {len(df)} rows and {len(df.columns)} columns. Query: {query.url()}"
     )
 
