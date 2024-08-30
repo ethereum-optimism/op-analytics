@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
@@ -18,7 +18,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[ ]:
+# In[2]:
 
 
 # Read the CSV file
@@ -27,7 +27,23 @@ df = pd.read_csv('chain_metadata_raw.csv')
 table_name = 'op_stack_chain_metadata'
 
 
-# In[ ]:
+# In[3]:
+
+
+def convert_to_int_or_keep_string(value):
+    try:
+        # Try to convert to float first
+        float_value = float(value)
+        # Check if it's a whole number
+        if float_value.is_integer():
+            return int(float_value)  # Convert to int if it's a whole number
+        else:
+            return value  # Keep as original string if it has decimal places
+    except ValueError:
+        return value  # Keep as original string if it can't be converted to float
+
+
+# In[4]:
 
 
 # Trim columns
@@ -35,8 +51,11 @@ df.columns = df.columns.str.replace(" ", "").str.strip()
 df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 # Datetime
 df['public_mainnet_launch_date'] = pd.to_datetime(df['public_mainnet_launch_date'], errors='coerce')
+df['op_chain_start'] = pd.to_datetime(df['op_chain_start'], errors='coerce')
 # ChainID
-df['mainnet_chain_id'] = pd.to_numeric(df['mainnet_chain_id'], errors='coerce')#.astype(int)
+# Apply the function to the column
+df['mainnet_chain_id'] = df['mainnet_chain_id'].apply(convert_to_int_or_keep_string)
+df['mainnet_chain_id'] = df['mainnet_chain_id'].astype('string')
 # df['mainnet_chain_id'] = int(df['mainnet_chain_id'])
 #Generate Alignment Column
 df = ops.generate_alignment_column(df)
@@ -49,19 +68,19 @@ df[object_columns] = df[object_columns].fillna('')
 df.to_csv('../outputs/chain_metadata.csv', index=False)
 
 
-# In[ ]:
+# In[5]:
 
 
 # df.dtypes
 
 
-# In[ ]:
+# In[6]:
 
 
-# df[df['mainnet_chain_id'] ==10]
+# df[df['mainnet_chain_id'] =='10']
 
 
-# In[ ]:
+# In[7]:
 
 
 # Post to Dune API
@@ -71,6 +90,5 @@ d.write_dune_api_from_pandas(df, table_name + '_info_tracking',\
 bqu.write_df_to_bq_table(df, table_name)
 
 #CH Upload
-df['mainnet_chain_id'] = df['mainnet_chain_id'].astype('Int64')
 ch.write_df_to_clickhouse(df, table_name, if_exists='replace')
 

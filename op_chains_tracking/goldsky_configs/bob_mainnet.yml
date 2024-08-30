@@ -14,7 +14,7 @@ sources:
       Raw logs for events emitted from contracts. Contains the contract address,
       data, topics, and metadata for blocks and transactions.
   - referenceName: bob.transaction_receipts
-    version: 1.0.0
+    version: 1.2.0
     type: dataset
     startAt: earliest
     description: >-

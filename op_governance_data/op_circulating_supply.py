@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 import sys
 sys.path.append("../helper_functions")
 import duneapi_utils as du
+import google_bq_utils as bqu
 sys.path.pop()
 
 # Define the CSV path and API URL
@@ -50,7 +51,7 @@ def update_csv_with_api_data(csv_path, api_url):
         for i in range(1, delta.days + 1):
             new_date = last_date_in_csv + timedelta(days=i)
             new_date_str = new_date.strftime('%Y-%m-%d')
-            df = df.append({'date': new_date_str, 'op_circulating_supply': current_supply}, ignore_index=True)
+            df = pd.concat([df, pd.DataFrame({'date': [new_date_str], 'op_circulating_supply': [current_supply]})], ignore_index=True)
 
     # Save the updated DataFrame back to CSV
     df.to_csv(csv_path, index=False)
@@ -96,4 +97,10 @@ print(df.tail(5))
 # Upload to Dune
 du.write_dune_api_from_pandas(df, 'daily_op_circulating_supply',\
                              'Daily Snapshots of OP Token Circulating Supply, pulled from: https://static.optimism.io/tokenomics/circulatingSupply.txt')
+
+
+# In[ ]:
+
+
+bqu.write_df_to_bq_table(df, 'daily_op_circulating_supply')
 
