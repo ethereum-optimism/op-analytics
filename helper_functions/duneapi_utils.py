@@ -61,8 +61,10 @@ def get_dune_data(
     dune = DuneClient(os.environ["DUNE_API_KEY"])
     # get latest
     try:
+        print('getting latest result')
         results = dune.get_latest_result(query)
         submitted_at = results.times.submitted_at
+        print(f'latest result submitted at {submitted_at}')
         # execution_started_at = latest.times.execution_started_at
         # execution_ended_at = latest.times.execution_ended_at
 
@@ -120,7 +122,7 @@ def generate_query_parameter(input, field_name, dtype):
     else:
         print('invalid datatype: ' + dtype)
         par = None
-        print(par)
+        # print(par)
     return par
 
 
