@@ -9,6 +9,7 @@ import json
 import re
 from collections import defaultdict
 import time
+from datetime import datetime, date
 nest_asyncio.apply()
 
 
@@ -208,6 +209,62 @@ def get_chain_tvls(chain_list):
 		chains = pd.concat(cl)
 		return chains
 
+def get_tvl_by_app_for_all_chains(protocol):
+        def fetch_protocol_data(protocol_name):
+                url = f"https://api.llama.fi/protocol/{protocol_name}"
+                print(url)
+                response = r.get(url)
+                if response.status_code == 200:
+                        return response.json()
+                else:
+                        print(f"Failed to fetch data for {protocol_name}. Status code: {response.status_code}")
+                        return None
+
+        def process_protocol_data(data):
+                if not data:
+                        return []
+
+                result = []
+                protocol = data['name']
+                chains = data.get('chains', [])
+                today = date.today()
+                today_start_timestamp = int(datetime(today.year, today.month, today.day).timestamp())
+
+                for chain in chains:
+                        chain_data = data.get('chainTvls', {}).get(chain, {})
+                        tvl_data = chain_data.get('tvl', [])
+                        tokens_in_usd = chain_data.get('tokensInUsd', [])
+                        tokens = chain_data.get('tokens', [])
+
+                        # Filter for today's data
+                        today_tvl = next((item for item in tvl_data if item['date'] >= today_start_timestamp), None)
+                        today_tokens_usd = next((item for item in tokens_in_usd if item['date'] >= today_start_timestamp), None)
+                        today_tokens = next((item for item in tokens if item['date'] >= today_start_timestamp), None)
+
+                        if today_tvl and (today_tokens_usd or today_tokens):
+                                tokens_usd = today_tokens_usd['tokens'] if today_tokens_usd else {}
+                                tokens_value = today_tokens['tokens'] if today_tokens else {}
+
+                                for token in set(list(tokens_usd.keys()) + list(tokens_value.keys())):
+                                        result.append({
+                                                'protocol': protocol,
+                                                'chain': chain,
+                                                'token': token,
+                                                'USD value': tokens_usd.get(token, None),
+                                                'token value': tokens_value.get(token, None)
+                                        })
+
+                return result
+
+        # Fetch and process data for the given protocol
+        data = fetch_protocol_data(protocol)
+        if data:
+                processed_data = process_protocol_data(data)
+                df = pd.DataFrame(processed_data)
+                return df
+        else:
+                return pd.DataFrame()  # Return an empty DataFrame if data fetch fails
+    
 # Eventually figure out how to integrate this with get_tvls so that it's not duplicative
 def get_single_tvl(prot, chains, header = header, statuses = statuses, fallback_on_raw_tvl = False, print_api_str = False):
 		prod = []
