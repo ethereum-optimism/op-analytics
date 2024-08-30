@@ -25,17 +25,17 @@ AS SELECT
     sumStateIf(CAST(l1_contrib_l2_eth_fees AS Float64), receipt_status = 1) AS sum_l1_fee_contrib_eth_gas_fees_to_success,
     sumState(CAST(l2_contrib_l2_eth_fees AS Float64)) AS sum_l2_fee_contrib_eth_gas_fees_to,
     sumStateIf(CAST(l2_contrib_l2_eth_fees AS Float64), receipt_status = 1) AS sum_l2_fee_contrib_eth_gas_fees_to_success,
-    sumState(CAST(l2_contrib_l2_eth_fees_base_fee AS Float64)) AS sum_l2_base_contrib_eth_gas_fees_to,
-    sumStateIf(CAST(l2_contrib_l2_eth_fees_base_fee AS Float64), receipt_status = 1) AS sum_l2_base_contrib_eth_gas_fees_to_success,
-    sumState(CAST(l2_contrib_l2_eth_fees_priority_fee AS Float64)) AS sum_l2_priority_contrib_eth_gas_fees_to,
-    sumStateIf(CAST(l2_contrib_l2_eth_fees_priority_fee AS Float64), receipt_status = 1) AS sum_l2_priority_contrib_eth_gas_fees_to_success,
+    {# sumState(CAST(l2_contrib_l2_eth_fees_base_fee AS Float64)) AS sum_l2_base_contrib_eth_gas_fees_to,
+    sumStateIf(CAST(l2_contrib_l2_eth_fees_base_fee AS Float64), receipt_status = 1) AS sum_l2_base_contrib_eth_gas_fees_to_success, #}
+    {# sumState(CAST(l2_contrib_l2_eth_fees_priority_fee AS Float64)) AS sum_l2_priority_contrib_eth_gas_fees_to,
+    sumStateIf(CAST(l2_contrib_l2_eth_fees_priority_fee AS Float64), receipt_status = 1) AS sum_l2_priority_contrib_eth_gas_fees_to_success, #}
 
     sumState(CAST(input_byte_length AS Int64)) AS sum_input_bytes_to,
     sumStateIf(CAST(input_byte_length AS Int64), receipt_status = 1) AS sum_input_bytes_to_success,
 
     avgState(CAST((t.receipt_gas_used * t.gas_price) / 1e9 AS Float64)) AS avg_l2_gas_price_gwei,
-    avgState(CAST(receipt_gas_used AS Float64) * CAST(l2_base_fee_gwei AS Float64)) AS avg_l2_base_fee_gas_price_gwei,
-    avgState(CAST(receipt_gas_used AS Float64) * CAST(l2_priority_fee_gwei AS Float64)) AS avg_l2_priority_fee_gas_price_gwei,
+    {# avgState(CAST(receipt_gas_used AS Float64) * CAST(l2_base_fee_gwei AS Float64)) AS avg_l2_base_fee_gas_price_gwei,
+    avgState(CAST(receipt_gas_used AS Float64) * CAST(l2_priority_fee_gwei AS Float64)) AS avg_l2_priority_fee_gas_price_gwei, #}
     avgState(CAST(COALESCE(receipt_l1_gas_used, input_byte_length) * receipt_l1_gas_price / 1e9 AS Float64)) AS avg_l1_gas_price_gwei
 
 FROM {chain}_transactions_unique_mv t
