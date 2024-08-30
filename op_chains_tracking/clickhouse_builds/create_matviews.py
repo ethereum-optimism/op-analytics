@@ -240,7 +240,7 @@ def backfill_data(client, chain, mv_name, block_time = 2):
                     attempts += 1
                 time.sleep(1)
             else:
-                print(f"Data already backfilled for {full_view_name} from {current_date} to {batch_end}. Skipping.")
+                # print(f"Data already backfilled for {full_view_name} from {current_date} to {batch_end}. Skipping.")
                 is_success = 1
                 # if optimize_all:
                 #     optimize_partition(client, full_view_name, current_date, batch_end)
