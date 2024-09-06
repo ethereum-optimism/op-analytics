@@ -25,6 +25,7 @@ import pandas as pd
 import sys
 import datetime
 import time
+import traceback
 sys.path.append("../../helper_functions")
 import clickhouse_utils as ch
 import opstack_metadata_utils as ops
@@ -65,6 +66,8 @@ chain_configs
 start_date = datetime.date(2021, 11, 1)
 end_date = datetime.date.today() + datetime.timedelta(days=1)
 
+print(end_date)
+
 
 # In[ ]:
 
@@ -96,6 +99,12 @@ def set_optimize_on_insert(option_int = 1):
         SET optimize_on_insert = {option_int};
         """)
     print(f"Set optimize_on_insert = {option_int}")
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
@@ -170,25 +179,26 @@ def ensure_backfill_tracking_table_exists(client):
     else:
         print("backfill_tracking table already exists.")
 
-def backfill_data(client, chain, mv_name, block_time = 2):
+def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2):
     full_view_name = f'{chain}_{mv_name}_mv'
     full_table_name = f'{chain}_{mv_name}'
     current_date_q = f"SELECT DATE_TRUNC('day',MIN(timestamp)) AS start_dt FROM {chain}_blocks WHERE number = 1 AND is_deleted = 0"
     current_date = client.query(current_date_q).result_rows[0][0].date()
-    
+
     while current_date <= end_date:
+        print(f"{chain} - {mv_name}: Current date: {current_date} - End Date: {end_date}")
         attempts = 1
         is_success = 0
         days_batch_size = set_days_batch_size
         
         while (is_success == 0) & (attempts < 3) & (current_date + datetime.timedelta(days=days_batch_size) <= end_date):
             batch_size = datetime.timedelta(days=days_batch_size)
-
+            print(f"attempt: {attempts}")
             batch_end = min(current_date + batch_size, end_date)
-            
+            # print('checking backfill tracking')
             # Check if this range has been backfilled
             check_query = f"""
-            SELECT 1
+            SELECT MAX(start_date) AS latest_fill_start
             FROM backfill_tracking
             WHERE chain = '{chain}'
             AND mv_name = '{mv_name}'
@@ -198,10 +208,19 @@ def backfill_data(client, chain, mv_name, block_time = 2):
             LIMIT 1
             """
             result = client.query(check_query)
+
+            if result.result_rows: # Get date to start backfilling
+                latest_fill_start = result.result_rows[0][0]
+                # print(f"Latest Fill Result: {latest_fill_start}")
+                current_date = max(latest_fill_start, current_date)
+                batch_end = min(current_date + batch_size, end_date)
+            else:
+                print("no backfill exists")
+            # print(f"Fill start: {current_date}")
+
             # print(check_query)
             # print(result.result_rows)
             #Check if data already exists
-            
 
 
             if not result.result_rows:
@@ -220,7 +239,8 @@ def backfill_data(client, chain, mv_name, block_time = 2):
                 # print(query)
                 try:
                     # print(query)
-                    set_optimize_on_insert()
+                    set_optimize_on_insert(0) # for runtime
+                    print(f"Starting backfill for {full_view_name} from {current_date} to {batch_end}")
                     client.command(query)
                     # Record the backfill
                     track_query = f"""
@@ -240,12 +260,13 @@ def backfill_data(client, chain, mv_name, block_time = 2):
                     attempts += 1
                 time.sleep(1)
             else:
-                # print(f"Data already backfilled for {full_view_name} from {current_date} to {batch_end}. Skipping.")
+                print(f"Data already backfilled for {full_view_name} from {current_date} to {batch_end}. Skipping.")
                 is_success = 1
                 # if optimize_all:
                 #     optimize_partition(client, full_view_name, current_date, batch_end)
-
-            current_date = batch_end + datetime.timedelta(days=1)
+        # print(f"Current Date: {current_date}, Batch End: {batch_end}")
+        current_date = max(batch_end,current_date) + datetime.timedelta(days=1)
+        # print(f"New Current Date: {current_date}")
 
 # def optimize_partition(client, full_view_name, start_date, end_date):
 #     # First, let's get the actual partition names
@@ -346,14 +367,17 @@ for row in chain_configs.itertuples(index=False):
     for mv_name in mv_names:
         try:
             print('create matview')
-            create_materialized_view(client, chain, mv_name, block_time)
+            create_materialized_view(client, chain, mv_name, block_time = block_time)
         except:
             print('error')
         try:
             print('create backfill')
-            backfill_data(client, chain, mv_name, block_time)
-        except:
-            print('error')
+            backfill_data(client, chain, mv_name, end_date = end_date, block_time = block_time)
+        except Exception as e:
+            print('An error occurred:')
+            print(str(e))
+            print('Traceback:')
+            print(traceback.format_exc())
         
     print(f"Completed processing for {chain}")
 
