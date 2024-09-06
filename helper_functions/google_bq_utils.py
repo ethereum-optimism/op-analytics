@@ -10,7 +10,7 @@ dotenv.load_dotenv()
 import logging
 
 # Setup logging configuration
-logging.basicConfig(level=logging.INFO)  # Set logging level to INFO
+logging.basicConfig(level=logging.ERROR)  # Set logging level to ERROR
 logger = logging.getLogger(__name__)  # Create logger instance for this module
 
 
