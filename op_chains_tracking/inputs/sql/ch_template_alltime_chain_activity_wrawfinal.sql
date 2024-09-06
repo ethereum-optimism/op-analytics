@@ -125,6 +125,7 @@ FROM (
         INNER JOIN @chain_db_name@_blocks b final
             ON t.block_number = b.number 
             AND t.block_timestamp = b.timestamp
+            AND t.chain_id = b.chain_id -- in case of pipeline mixups
     
     WHERE t.block_timestamp >= toDate(now() - interval '@trailing_days@ days')
         AND t.block_timestamp < toDate(now())
