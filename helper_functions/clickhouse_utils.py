@@ -159,3 +159,58 @@ def create_table_if_not_exists(client, table_name, df):
     """
     client.command(query)
     print(f"Table '{table_name}' created or already exists.")
+
+def append_and_upsert_df_to_clickhouse(df, table_name, unique_keys, client=None, max_execution_time=300):
+    """
+    Appends data to a ClickHouse table and performs an upsert operation based on unique keys.
+    
+    :param df: pandas DataFrame to write
+    :param table_name: name of the table in ClickHouse
+    :param unique_keys: list of column names that form the unique key
+    :param client: ClickHouse client (if None, a new connection will be established)
+    :param max_execution_time: maximum execution time in seconds (default: 300)
+    """
+    if client is None:
+        client = connect_to_clickhouse_db()
+
+    # Replace NaN, inf, and -inf values with None
+    df = df.replace([np.inf, -np.inf, np.nan], None)
+
+    # Check if table exists
+    result_table_exists = client.command(f"EXISTS TABLE {table_name}")
+    table_exists = result_table_exists == 1
+
+    if not table_exists:
+        # Create table if it doesn't exist
+        create_table_if_not_exists(client, table_name, df)
+
+    # Create a temporary table for the new data
+    temp_table_name = f"{table_name}_temp"
+    create_table_if_not_exists(client, temp_table_name, df)
+
+    # Insert data into the temporary table
+    client.insert_df(temp_table_name, df)
+
+    # Set max execution time
+    client.command(f"SET max_execution_time = {max_execution_time}")
+
+    # Perform the delete operation
+    unique_keys_str = ", ".join(unique_keys)
+    delete_query = f"""
+    ALTER TABLE {table_name} DELETE WHERE ({unique_keys_str}) IN (SELECT {unique_keys_str} FROM {temp_table_name})
+    """
+    client.command(delete_query)
+
+    # Perform the insert operation
+    columns_str = ", ".join(df.columns)
+    insert_query = f"""
+    INSERT INTO {table_name} ({columns_str})
+    SELECT {columns_str}
+    FROM {temp_table_name}
+    """
+    client.command(insert_query)
+
+    # Drop the temporary table
+    client.command(f"DROP TABLE {temp_table_name}")
+
+    print(f"Data appended and upserted to table '{table_name}' successfully.")
