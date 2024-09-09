@@ -11,7 +11,7 @@ value as amount_raw,
 from_address AS transfer_from_address,
 to_address AS transfer_to_address,
 substring(input,1,10) AS input_method_id,
-chain_id, chain, network
+chain_id, chain, network, insert_time
 
 FROM {chain}_traces
 
