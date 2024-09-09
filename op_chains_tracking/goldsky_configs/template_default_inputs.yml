@@ -1,88 +1,88 @@
-name: race-mainnet
+name: {chain_name}-{network_name}
 resource_size: s
 apiVersion: 3
 sources:
-  race.raw_blocks:
-    dataset_name: race.raw_blocks
-    version: 1.0.0
+  {chain_db_name}.raw_blocks:
+    dataset_name: {chain_db_name}.raw_blocks
+    version: {raw_blocks_version}
     type: dataset
     start_at: earliest
-  race.raw_logs:
-    dataset_name: race.raw_logs
-    version: 1.0.0
+  {chain_db_name}.raw_logs:
+    dataset_name: {chain_db_name}.raw_logs
+    version: {raw_logs_version}
     type: dataset
     start_at: earliest
-  race.receipt_transactions:
-    dataset_name: race.receipt_transactions
-    version: 1.0.0
+  {chain_db_name}.{enriched_transactions_name}:
+    dataset_name: {chain_db_name}.{enriched_transactions_name}
+    version: {enriched_transactions_version}
     type: dataset
     start_at: earliest
-  race.raw_traces:
-    dataset_name: race.raw_traces
-    version: 1.0.0
+  {chain_db_name}.raw_traces:
+    dataset_name: {chain_db_name}.raw_traces
+    version: {raw_traces_version}
     type: dataset
     start_at: earliest
 transforms:
-  race_blocks:
+  {chain_db_name}_blocks:
     primary_key: id
     sql: |
       select
         *
-        ,'race' as chain
-        ,'mainnet' as network
-        ,6805 as chain_id
+        ,'{chain_name}' as chain
+        ,'{network_name}' as network
+        ,{chain_id} as chain_id
       from
-        race.raw_blocks
-  race_raw_logs:
+        {chain_db_name}.raw_blocks
+  {chain_db_name}_raw_logs:
     primary_key: id
     sql: |
       select
         *
-        ,'race' as chain
-        ,'mainnet' as network
-        ,6805 as chain_id
+        ,'{chain_name}' as chain
+        ,'{network_name}' as network
+        ,{chain_id} as chain_id
       from
-        race.raw_logs
-  race_raw_traces:
+        {chain_db_name}.raw_logs
+  {chain_db_name}_raw_traces:
     primary_key: id
     sql: |
       select
         *
-        ,'race' as chain
-        ,'mainnet' as network
-        ,6805 as chain_id
+        ,'{chain_name}' as chain
+        ,'{network_name}' as network
+        ,{chain_id} as chain_id
       from
-        race.raw_traces
-  race_transactions:
+        {chain_db_name}.raw_traces
+  {chain_db_name}_transactions:
     primary_key: id
     sql: |
       select
          *
-        ,'race' as chain
-        ,'mainnet' as network
-        ,6805 as chain_id
+        ,'{chain_name}' as chain
+        ,'{network_name}' as network
+        ,{chain_id} as chain_id
       from
-        race.receipt_transactions
+        {chain_db_name}.{enriched_transactions_name}
 sinks:
-  clickhouse_race.raw_blocks:
+  clickhouse_{chain_db_name}.raw_blocks:
     type: clickhouse
-    table: race_blocks
+    table: {chain_name}_blocks
     batch_size: 100000
     secret_name: OP_DEMO_CLICKHOUSE
-    description: ClickHouse sink from race.raw_blocks to race_blocks
+    description: ClickHouse sink from {chain_db_name}.raw_blocks to {chain_db_name}_blocks
     batch_flush_interval: '10000'
     append_only_mode: true
     schema_override:
       hash: FixedString(66)
       number: UInt64 CODEC(Delta, ZSTD)
       timestamp: DateTime CODEC(Delta, ZSTD)
-    from: race_blocks
-  clickhouse_race.raw_logs:
+    from: {chain_db_name}_blocks
+  clickhouse_{chain_db_name}.raw_logs:
     type: clickhouse
-    table: race_logs
+    table: {chain_name}_logs
     batch_size: 100000
     secret_name: OP_DEMO_CLICKHOUSE
-    description: ClickHouse sink from race.raw_logs to race_logs
+    description: ClickHouse sink from {chain_db_name}.raw_logs to {chain_db_name}_logs
     batch_flush_interval: '10000'
     append_only_mode: true
     schema_override:
@@ -93,15 +93,15 @@ sinks:
       block_timestamp: DateTime CODEC(Delta, ZSTD)
       transaction_hash: FixedString(66)
       transaction_index: UInt64
-    from: race_raw_logs
-  clickhouse_race.receipt_transactions:
+    from: {chain_db_name}_raw_logs
+  clickhouse_{chain_db_name}.{enriched_transactions_name}:
     type: clickhouse
-    table: race_transactions
+    table: {chain_name}_transactions
     batch_size: 100000
     secret_name: OP_DEMO_CLICKHOUSE
     description: >-
-      ClickHouse sink from race.receipt_transactions to
-      race_transactions
+      ClickHouse sink from {chain_db_name}.{enriched_transactions_name} to
+      {chain_db_name}_transactions
     batch_flush_interval: '10000'
     append_only_mode: true
     schema_override:
@@ -131,13 +131,13 @@ sinks:
       receipt_cumulative_gas_used: UInt128
       receipt_effective_gas_price: UInt128
       receipt_l1_blob_base_fee_scalar: Nullable(Float64)
-    from: race_transactions
-  clickhouse_race.raw_traces:
+    from: {chain_db_name}_transactions
+  clickhouse_{chain_db_name}.raw_traces:
     type: clickhouse
-    table: race_traces
+    table: {chain_name}_traces
     batch_size: 100000
     secret_name: OP_DEMO_CLICKHOUSE
-    description: ClickHouse sink from race.raw_traces to traces
+    description: ClickHouse sink from {chain_db_name}.raw_traces to traces
     batch_flush_interval: '10000'
     append_only_mode: true
     schema_override:
@@ -153,4 +153,4 @@ sinks:
       block_timestamp: DateTime CODEC(Delta, ZSTD)
       transaction_hash: FixedString(66)
       transaction_index: UInt64
-    from: race_raw_traces
+    from: {chain_db_name}_raw_traces
