@@ -81,7 +81,7 @@ def get_query_from_file(mv_name):
         script_dir = os.getcwd()
     
     query_file_path = os.path.join(script_dir, 'mv_inputs', f'{mv_name}.sql')
-    print(f"Attempting to read query from: {query_file_path}")
+    # print(f"Attempting to read query from: {query_file_path}")
     
     try:
         with open(query_file_path, 'r') as file:
@@ -239,7 +239,7 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2):
                 # print(query)
                 try:
                     # print(query)
-                    set_optimize_on_insert(0) # for runtime
+                    # set_optimize_on_insert(0) # for runtime
                     print(f"Starting backfill for {full_view_name} from {current_date} to {batch_end}")
                     client.command(query)
                     # Record the backfill
