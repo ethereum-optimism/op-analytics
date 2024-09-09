@@ -59,6 +59,7 @@ jobs:
           fi
         env:
           L1_ETHERSCAN_API: ${{ secrets.L1_ETHERSCAN_API }}
+          BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
 
       # Handle unstaged changes before pulling
       - name: Stash changes before pulling
