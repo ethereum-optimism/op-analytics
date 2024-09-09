@@ -31,4 +31,5 @@ CREATE TABLE {view_name}
     avg_l1_gas_price_gwei AggregateFunction(avg, Float64),
 )
 ENGINE = AggregatingMergeTree()
+PARTITION BY toYYYYMM(dt)
 ORDER BY (chain, network, chain_id, dt, to_address)
