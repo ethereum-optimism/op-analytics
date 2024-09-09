@@ -176,6 +176,7 @@ data = {
 df = pd.DataFrame(data)
 print(df)
 print(df.dtypes)
+print(df.columns)
 table_name = 'market_data'
 dataset_name = 'rpc_table_uploads'
 bqu.write_df_to_bq_table(df, table_id = table_name, dataset_id = 'rpc_table_uploads', write_mode = 'append')
