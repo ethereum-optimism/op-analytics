@@ -161,15 +161,6 @@ def create_table_if_not_exists(client, table_name, df):
     print(f"Table '{table_name}' created or already exists.")
 
 def append_and_upsert_df_to_clickhouse(df, table_name, unique_keys, client=None, max_execution_time=300):
-    """
-    Appends data to a ClickHouse table and performs an upsert operation based on unique keys.
-    
-    :param df: pandas DataFrame to write
-    :param table_name: name of the table in ClickHouse
-    :param unique_keys: list of column names that form the unique key
-    :param client: ClickHouse client (if None, a new connection will be established)
-    :param max_execution_time: maximum execution time in seconds (default: 300)
-    """
     if client is None:
         client = connect_to_clickhouse_db()
 
@@ -196,10 +187,14 @@ def append_and_upsert_df_to_clickhouse(df, table_name, unique_keys, client=None,
 
     # Perform the delete operation
     unique_keys_str = ", ".join(unique_keys)
+    non_null_conditions = " AND ".join([f"{key} IS NOT NULL" for key in unique_keys])
     delete_query = f"""
-    ALTER TABLE {table_name} DELETE WHERE ({unique_keys_str}) IN (SELECT {unique_keys_str} FROM {temp_table_name})
+    ALTER TABLE {table_name} DELETE WHERE ({unique_keys_str}) IN (
+        SELECT {unique_keys_str} FROM {temp_table_name} WHERE {non_null_conditions}
+    )
     """
-    client.command(delete_query)
+    delete_result = client.command(delete_query)
+    print(f"Deleted {delete_result} rows")
 
     # Perform the insert operation
     columns_str = ", ".join(df.columns)
@@ -208,7 +203,13 @@ def append_and_upsert_df_to_clickhouse(df, table_name, unique_keys, client=None,
     SELECT {columns_str}
     FROM {temp_table_name}
     """
-    client.command(insert_query)
+    insert_result = client.command(insert_query)
+    print(f"Inserted {insert_result} rows")
+
+    # Check the number of rows in the main table
+    count_query = f"SELECT COUNT(*) FROM {table_name}"
+    row_count = client.command(count_query)
+    print(f"Total rows in {table_name} after upsert: {row_count}")
 
     # Drop the temporary table
     client.command(f"DROP TABLE {temp_table_name}")
