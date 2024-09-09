@@ -161,8 +161,21 @@ def create_table_if_not_exists(client, table_name, df):
     print(f"Table '{table_name}' created or already exists.")
 
 def append_and_upsert_df_to_clickhouse(df, table_name, unique_keys, client=None, max_execution_time=300):
+    """
+    Appends data to a ClickHouse table and performs an upsert operation based on unique keys.
+    
+    :param df: pandas DataFrame to write
+    :param table_name: name of the table in ClickHouse
+    :param unique_keys: list of column names that form the unique key
+    :param client: ClickHouse client (if None, a new connection will be established)
+    :param max_execution_time: maximum execution time in seconds (default: 300)
+    """
     if client is None:
         client = connect_to_clickhouse_db()
+
+    # Convert all object columns to strings
+    for col in df.select_dtypes(include=['object']).columns:
+        df[col] = df[col].astype(str)
 
     # Replace NaN, inf, and -inf values with None
     df = df.replace([np.inf, -np.inf, np.nan], None)
@@ -187,14 +200,21 @@ def append_and_upsert_df_to_clickhouse(df, table_name, unique_keys, client=None,
 
     # Perform the delete operation
     unique_keys_str = ", ".join(unique_keys)
-    non_null_conditions = " AND ".join([f"{key} IS NOT NULL" for key in unique_keys])
+    non_null_conditions = " AND ".join([f"a.{key} IS NOT NULL AND b.{key} IS NOT NULL" for key in unique_keys])
+    match_conditions = " AND ".join([f"a.{key} = b.{key}" for key in unique_keys])
     delete_query = f"""
     ALTER TABLE {table_name} DELETE WHERE ({unique_keys_str}) IN (
-        SELECT {unique_keys_str} FROM {temp_table_name} WHERE {non_null_conditions}
+        SELECT a.{unique_keys_str}
+        FROM {table_name} a
+        INNER JOIN {temp_table_name} b
+        ON {match_conditions}
+        WHERE {non_null_conditions}
     )
     """
     delete_result = client.command(delete_query)
-    print(f"Deleted {delete_result} rows")
+    deleted_rows = delete_result.summary.get('deleted_rows', 'Unknown')
+    # print(f"Deleted {deleted_rows} rows")
+    # print(f"Delete result summary: {delete_result.summary}")
 
     # Perform the insert operation
     columns_str = ", ".join(df.columns)
@@ -204,14 +224,29 @@ def append_and_upsert_df_to_clickhouse(df, table_name, unique_keys, client=None,
     FROM {temp_table_name}
     """
     insert_result = client.command(insert_query)
-    print(f"Inserted {insert_result} rows")
+    inserted_rows = insert_result.summary.get('written_rows', 'Unknown')
+    # print(f"Inserted {inserted_rows} rows")
+    # print(f"Insert result summary: {insert_result.summary}")
 
     # Check the number of rows in the main table
     count_query = f"SELECT COUNT(*) FROM {table_name}"
     row_count = client.command(count_query)
-    print(f"Total rows in {table_name} after upsert: {row_count}")
+    # Check if row_count is an integer or an object with result_rows
+    if isinstance(row_count, int):
+        total_rows = row_count
+    else:
+        total_rows = row_count.result_rows[0][0] if row_count.result_rows else 'Unknown'
+    print(f"Total rows in {table_name} after upsert: {total_rows}")
+    # print(f"Count result: {row_count}")
 
     # Drop the temporary table
     client.command(f"DROP TABLE {temp_table_name}")
 
     print(f"Data appended and upserted to table '{table_name}' successfully.")
+
+    # Return some statistics
+    return {
+        'deleted_rows': deleted_rows,
+        'inserted_rows': inserted_rows,
+        'total_rows': total_rows
+    }
