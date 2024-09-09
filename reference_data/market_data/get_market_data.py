@@ -164,20 +164,21 @@ blob_base_fee = safe_float_convert(blob_base_fee)
 # Upload to BQ
 # Get the current timestamp
 # Create a dictionary with your data
-try:
-    data = {
-        'timestamp': [current_timestamp],
-        'eth_usd': [ethusd],
-        'l1_base_fee_gwei': [suggest_base_fee],
-        'blob_base_fee_gwei': [blob_base_fee]
-    }
+# try:
+data = {
+    'timestamp': [current_timestamp],
+    'eth_usd': [ethusd],
+    'l1_base_fee_gwei': [suggest_base_fee],
+    'blob_base_fee_gwei': [blob_base_fee]
+}
 
-    # Create a DataFrame from the dictionary
-    df = pd.DataFrame(data)
-    print(df.dtypes)
-    table_name = 'market_data'
-    dataset_name = 'rpc_table_uploads'
-    bqu.write_df_to_bq_table(df, table_id = table_name, dataset_id = 'rpc_table_uploads', write_mode = 'append')
-except Exception as e:
-    print(f"An error occurred: {str(e)}")
+# Create a DataFrame from the dictionary
+df = pd.DataFrame(data)
+print(df)
+print(df.dtypes)
+table_name = 'market_data'
+dataset_name = 'rpc_table_uploads'
+bqu.write_df_to_bq_table(df, table_id = table_name, dataset_id = 'rpc_table_uploads', write_mode = 'append')
+# except Exception as e:
+#     print(f"An error occurred: {str(e)}")
 
