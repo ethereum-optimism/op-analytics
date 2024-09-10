@@ -354,6 +354,14 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # # # # #         reset_materialized_view(client, 'bob', mv, 2)
 
 
+# Clear all
+# mv_names
+# for row in chain_configs.itertuples(index=False):
+#         for mv in mv_names:
+#                 chain = row.chain_name
+#                 reset_materialized_view(client, chain, mv, 2)
+
+
 # In[ ]:
 
 
