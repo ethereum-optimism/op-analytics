@@ -1,7 +1,7 @@
 CREATE MATERIALIZED VIEW IF NOT EXISTS {view_name}
 ENGINE = ReplacingMergeTree(insert_time)
 PARTITION BY toYYYYMM(block_timestamp)
-ORDER BY (chain_id, transaction_hash, trace_address, trace_type, block_number,insert_time)
+ORDER BY (chain_id, transaction_hash, trace_address, trace_type, block_number)
 AS
 
 -- Native Traces
