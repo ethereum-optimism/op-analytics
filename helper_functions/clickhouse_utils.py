@@ -180,10 +180,7 @@ def create_replacing_merge_tree_table(client, table_name, df, unique_keys):
     
     columns_str = ",\n        ".join(columns)
     
-    # Include updated_at in the ORDER BY clause
     order_by = ", ".join(f"`{key}`" for key in unique_keys)
-    if 'updated_at' not in unique_keys:
-        order_by += ", `updated_at`"
     
     query = f"""
     CREATE TABLE IF NOT EXISTS {table_name}
