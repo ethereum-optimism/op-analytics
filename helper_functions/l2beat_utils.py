@@ -101,6 +101,7 @@ def get_l2beat_metadata():
         # Regular expression patterns for parsing TypeScript files
         patterns = {
                 'name': r"name: '([^']+)'",
+                'name': r"display:\s*{[^}]*name:\s*'([^']+)'",
                 'chainId': r"chainId: (\d+)",
                 'explorerUrl': r"explorerUrl: '([^']+)'",
                 # Improved patterns to match multiline and nested structures
