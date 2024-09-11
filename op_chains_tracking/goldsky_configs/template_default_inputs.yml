@@ -66,7 +66,7 @@ transforms:
 sinks:
   clickhouse_{chain_db_name}.raw_blocks:
     type: clickhouse
-    table: {chain_name}_blocks
+    table: {chain_name}_{network_slug}blocks
     batch_size: 100000
     secret_name: OP_DEMO_CLICKHOUSE
     description: ClickHouse sink from {chain_db_name}.raw_blocks to {chain_db_name}_blocks
@@ -79,7 +79,7 @@ sinks:
     from: {chain_db_name}_blocks
   clickhouse_{chain_db_name}.raw_logs:
     type: clickhouse
-    table: {chain_name}_logs
+    table: {chain_name}_{network_slug}logs
     batch_size: 100000
     secret_name: OP_DEMO_CLICKHOUSE
     description: ClickHouse sink from {chain_db_name}.raw_logs to {chain_db_name}_logs
@@ -96,7 +96,7 @@ sinks:
     from: {chain_db_name}_raw_logs
   clickhouse_{chain_db_name}.{enriched_transactions_name}:
     type: clickhouse
-    table: {chain_name}_transactions
+    table: {chain_name}_{network_slug}transactions
     batch_size: 100000
     secret_name: OP_DEMO_CLICKHOUSE
     description: >-
@@ -134,7 +134,7 @@ sinks:
     from: {chain_db_name}_transactions
   clickhouse_{chain_db_name}.raw_traces:
     type: clickhouse
-    table: {chain_name}_traces
+    table: {chain_name}_{network_slug}traces
     batch_size: 100000
     secret_name: OP_DEMO_CLICKHOUSE
     description: ClickHouse sink from {chain_db_name}.raw_traces to traces

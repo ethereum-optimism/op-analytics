@@ -100,10 +100,12 @@ def get_l2beat_metadata():
         # Regular expression patterns for parsing TypeScript files
         # Regular expression patterns for parsing TypeScript files
         patterns = {
-                'name': r"name: '([^']+)'",
+                'name': r"display:\s*{[^}]*name:\s*'([^']+)'",
                 'chainId': r"chainId: (\d+)",
                 'explorerUrl': r"explorerUrl: '([^']+)'",
                 # Improved patterns to match multiline and nested structures
+                'da_provider_name': r"daProvider:\s*{[^}]*name:\s*'([^']+)'",
+                'badges': r"badges:\s*\[(.*?)\]",
                 'category': r"display:.*?category: '([^']+)'",
                 'slug': r"slug: '([^']+)'",
                 'imports': r"import {([^}]+)} from",
@@ -210,6 +212,8 @@ def get_l2beat_metadata():
                                         'category': extract_data(file_content, patterns['category']) if layer_name in ['L2', 'L3'] else None,
                                         'provider': determine_provider(file_content),  # Determine provider with custom logic
                                         'hostChain': extract_data(file_content, patterns['hostChain']),
+                                        'da_provider_name': extract_data(file_content, patterns['da_provider_name']),
+                                        'badges': extract_data(file_content, patterns['badges']),
                                         'is_upcoming': is_upcoming,
                                         'is_archived': is_archived,
                                         'is_current_chain': is_current_chain,
