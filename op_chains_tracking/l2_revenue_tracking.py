@@ -204,7 +204,38 @@ with ThreadPoolExecutor(max_workers=99) as executor: # Max Workers can be big, s
 
 
 data_df = pd.concat(data_arr)
+data_df['chain_id'] = data_df['chain_id'].astype('string')
 data_df['block_time'] = pd.to_datetime(data_df['block_time'])
+
+
+# In[ ]:
+
+
+data_df.dtypes
+
+
+# In[ ]:
+
+
+bq_cols = ['block_time','block_number','chain_name','vault_name','vault_address','alltime_revenue_native','chain_id']
+
+
+# In[ ]:
+
+
+dataset_name = 'rpc_table_uploads'
+table_name = 'hourly_cumulative_l2_revenue_snapshots'
+
+
+# In[ ]:
+
+
+# Write All to BQ Table
+# bqu.write_df_to_bq_table(df = dune_df[bq_cols], table_id = table_name, dataset_id = dataset_name)
+
+# Write Updates to BQ Table
+unique_cols = ['block_time', 'chain_name', 'chain_id', 'vault_name']
+bqu.write_df_to_bq_table(df = data_df[bq_cols], table_id = table_name, dataset_id = dataset_name, write_mode='append')
 
 
 # In[ ]:
@@ -265,46 +296,13 @@ else:
 # In[ ]:
 
 
-bq_cols = ['block_time','block_number','chain_name','vault_name','vault_address','alltime_revenue_native','chain_id']
-
-
-# In[ ]:
-
-
-dataset_name = 'rpc_table_uploads'
-table_name = 'hourly_cumulative_l2_revenue_snapshots'
-
-
-# In[ ]:
-
-
 # dune_df.sample(5)
 
 
 # In[ ]:
 
 
-data_df['chain_id'] = data_df['chain_id'].astype('string')
-data_df['block_time'] = pd.to_datetime(data_df['block_time'])
-# dune_df['block_time'] = pd.to_datetime(dune_df['block_time'])
-data_df.dtypes
-
-
-# In[ ]:
-
-
-data_df
-
-
-# In[ ]:
-
-
-# Write All to BQ Table
-# bqu.write_df_to_bq_table(df = dune_df[bq_cols], table_id = table_name, dataset_id = dataset_name)
-
-# Write Updates to BQ Table
-unique_cols = ['block_time', 'chain_name', 'chain_id', 'vault_name']
-bqu.write_df_to_bq_table(df = data_df[bq_cols], table_id = table_name, dataset_id = dataset_name, write_mode='append')
+# data_df
 
 
 # In[ ]:
