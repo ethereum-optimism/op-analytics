@@ -91,11 +91,13 @@ native_dataset_types = [
                 # native
                 'transactions', 'traces', 'blocks', 'logs',
 ]
+
 mv_dataset_types = [
                 # mvs
                  'erc20_transfers_mv','native_eth_transfers_mv'
                 #  ,'transactions_unique'
                  ,'daily_aggregate_transactions_to'
+                 ,'across_bridging_txs_v3'
                  ]
 dataset_types = native_dataset_types + mv_dataset_types
 print(dataset_types)
