@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
@@ -18,7 +18,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[ ]:
+# In[2]:
 
 
 # Read the CSV file
@@ -27,7 +27,7 @@ df = pd.read_csv('chain_metadata_raw.csv')
 table_name = 'op_stack_chain_metadata'
 
 
-# In[ ]:
+# In[3]:
 
 
 def convert_to_int_or_keep_string(value):
@@ -43,7 +43,7 @@ def convert_to_int_or_keep_string(value):
         return value  # Keep as original string if it can't be converted to float
 
 
-# In[ ]:
+# In[4]:
 
 
 # Trim columns
@@ -68,16 +68,16 @@ df[object_columns] = df[object_columns].fillna('')
 df.to_csv('../outputs/chain_metadata.csv', index=False)
 
 
-# In[ ]:
+# In[5]:
 
 
 # df.dtypes
 
 
-# In[ ]:
+# In[6]:
 
 
-# df[df['mainnet_chain_id'] =='10']
+# df[df['mainnet_chain_id'] =='2702128']
 
 
 # In[ ]:
