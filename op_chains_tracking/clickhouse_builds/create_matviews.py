@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 # List of materialized view names
@@ -12,13 +12,14 @@ mv_names = [
         # 'transactions_unique',
 
         'daily_aggregate_transactions_to',
+        'across_bridging_txs_v3'
         ]
-set_days_batch_size = 7
+set_days_batch_size = 30
 
 optimize_all = True
 
 
-# In[ ]:
+# In[2]:
 
 
 import pandas as pd
@@ -38,7 +39,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[ ]:
+# In[3]:
 
 
 # Get Chain List
@@ -56,20 +57,21 @@ def get_chain_names_from_df(df):
 chain_configs
 
 
-# In[ ]:
+# In[4]:
 
 
 # List of chains
 # chains = get_chain_names_from_df(chain_configs)
 
 # Start date for backfilling
-start_date = datetime.date(2021, 11, 1)
+# start_date = datetime.date(2021, 11, 1)
+start_date = datetime.date(2024, 5, 1)
 end_date = datetime.date.today() + datetime.timedelta(days=1)
 
 print(end_date)
 
 
-# In[ ]:
+# In[5]:
 
 
 def get_query_from_file(mv_name):
@@ -91,7 +93,7 @@ def get_query_from_file(mv_name):
         raise
 
 
-# In[ ]:
+# In[6]:
 
 
 def set_optimize_on_insert(option_int = 1):
@@ -107,7 +109,7 @@ def set_optimize_on_insert(option_int = 1):
 
 
 
-# In[ ]:
+# In[7]:
 
 
 import clickhouse_connect
@@ -309,7 +311,7 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2):
 #         print(f"  Error: {str(e)}")
 
 
-# In[ ]:
+# In[8]:
 
 
 def reset_materialized_view(client, chain, mv_name, block_time = 2):
@@ -341,38 +343,43 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
         print(f"Error resetting materialized view {full_view_name}: {str(e)}")
 
 
-# In[ ]:
+# In[10]:
 
 
-# # # # # # To reset a view
+# # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'daily_aggregate_transactions_to', 2)
+#         reset_materialized_view(client, chain, 'across_bridging_txs_v3', 2)
 
-# # # # # for mv in mv_names:
-# # # # #         # print(row)
-# # # # #         reset_materialized_view(client, 'bob', mv, 2)
+#reset a single chain
+# reset_materialized_view(client, 'zora', 'across_bridging_txs_v3', 2)
 
-
-# Clear all
-# mv_names
-# for row in chain_configs.itertuples(index=False):
-#         for mv in mv_names:
-#                 chain = row.chain_name
-#                 reset_materialized_view(client, chain, mv, 2)
+# # # # # # # for mv in mv_names:
+# # # # # # #         # print(row)
+# # # # # # #         reset_materialized_view(client, 'bob', mv, 2)
 
 
-# In[ ]:
+# # # Clear all
+# # # mv_names
+# # # for row in chain_configs.itertuples(index=False):
+# # #         for mv in mv_names:
+# # #                 chain = row.chain_name
+# # #                 reset_materialized_view(client, chain, mv, 2)
+
+
+# In[11]:
 
 
 # Main execution
 ensure_backfill_tracking_table_exists(client)
 
 for row in chain_configs.itertuples(index=False):
+
     chain = row.chain_name
     block_time = row.block_time_sec
     print(f"Processing chain: {chain}")
     for mv_name in mv_names:
+        
         try:
             print('create matview')
             create_materialized_view(client, chain, mv_name, block_time = block_time)
