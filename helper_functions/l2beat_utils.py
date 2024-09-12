@@ -100,7 +100,8 @@ def get_l2beat_metadata():
         # Regular expression patterns for parsing TypeScript files
         # Regular expression patterns for parsing TypeScript files
         patterns = {
-                'name': r"display:\s*{[^}]*name:\s*'([^']+)'",
+                # 'name': r"display:\s*{[^}]*name:\s*'([^']+)'",
+                'name': r"display:.*?name:\s*['\"]([^'\"]+)['\"]",
                 'chainId': r"chainId: (\d+)",
                 'explorerUrl': r"explorerUrl: '([^']+)'",
                 # Improved patterns to match multiline and nested structures
@@ -123,15 +124,21 @@ def get_l2beat_metadata():
         def extract_data(text, pattern):
                 match = re.search(pattern, text, re.DOTALL)  # re.DOTALL allows '.' to match newlines
                 return match.group(1).strip() if match else None
-        
-        # Function to safely get file content, returns None if URL is invalid
+
         def safe_get_content(url):
                 if url:
                         try:
-                                return r.get(url).text
-                        except r.exceptions.MissingSchema:
-                                print(f"Invalid URL: {url}")
+                                response = r.get(url)
+                                if response.status_code == 200:
+                                        return response.text
+                                else:
+                                        print(f"Failed to fetch content: {response.status_code}")
+                                        return None
+                        except Exception as e:
+                                print(f"Error fetching content: {e}")
+                        return None
                 return None
+        
         def extract_imports(text):
                 matches = re.findall(patterns['imports'], text, re.DOTALL)
                 imports = set()
@@ -141,6 +148,23 @@ def get_l2beat_metadata():
                         items = [item.strip() for item in items if item.strip()]
                         imports.update(items)
                 return list(imports)
+        
+        def extract_name(content):
+                # First, try to find the entire display object
+                display_match = re.search(r'display:\s*{([^}]*name:[^}]*)}', content, re.DOTALL)
+                if display_match:
+                        # If found, search for name within this object
+                        name_match = re.search(r"name:\s*'([^']+)'", display_match.group(1))
+                        if name_match:
+                                return name_match.group(1)
+                
+                # If the above fails, try a more flexible approach
+                flexible_match = re.search(r'display:.*?name:\s*[\'"]([^\'"]+)[\'"]', content, re.DOTALL)
+                if flexible_match:
+                        return flexible_match.group(1)
+                
+                return None
+        
         # Function to check if any config item contains the word 'UpcomingL'
         def check_upcoming(configs):
                 return any('upcomingl' in config.lower() for config in configs)
@@ -206,7 +230,7 @@ def get_l2beat_metadata():
                                         'slug': slug or file['name'].replace('.ts', ''),  # Filename as fallback slug
                                         'file_name': file['name'].replace('.ts', ''),  # Filename as fallback slug
                                         'chainId': extract_data(file_content, patterns['chainId']),
-                                        'name': extract_data(file_content, patterns['name']),
+                                        'name': extract_name(file_content),
                                         'explorerUrl': extract_data(file_content, patterns['explorerUrl']),
                                         'rpcUrl': extract_data(file_content, patterns['rpcUrl']),
                                         'category': extract_data(file_content, patterns['category']) if layer_name in ['L2', 'L3'] else None,

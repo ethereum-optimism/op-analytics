@@ -37,7 +37,7 @@ L2,Capx,,,ZK Rollup,capx,,capx,,Polygon,,,,True,False,False,'https://capx.fi/','
 L2,Celo,,,Optimium,celo,,celo,,OP Stack,,,,True,False,False,'https://celo.org/','https://docs.celo.org/','https://github.com/celo-org',Optimism: OP Stack,celo
 L2,Coti,,,Optimistic Rollup,coti,,coti,,,,,,True,False,False,'https://coti.io/',"'https://medium.com/cotinetwork/how-coti-is-gearing-up-for-2024-and-beyond-e0d465794767',",'https://github.com/coti-io',,coti
 L2,Creator,,,Validium,creator,,creator,,ZK Stack,,,,True,False,False,'https://oncreator.com/',,,zkSync: ZK Stack,creator
-L2,,388,https://explorer.zkevm.cronos.org/,Validium,cronoszkevm,,cronoszkevm,,ZK Stack,,,"Badge.VM.EVM,
+L2,Cronos zkEVM,388,https://explorer.zkevm.cronos.org/,Validium,cronoszkevm,,cronoszkevm,,ZK Stack,,,"Badge.VM.EVM,
     Badge.DA.CustomDA,
     Badge.Stack.ZKStack,
     Badge.Infra.ElasticChain,",False,False,True,'https://cronos.org/zkevm','https://docs-zkevm.cronos.org/',,zkSync: ZK Stack,cronoszkevm
