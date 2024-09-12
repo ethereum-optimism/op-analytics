@@ -1,5 +1,6 @@
 CREATE MATERIALIZED VIEW {view_name}
 TO {table_name}
+
 AS SELECT
     chain,
     network,
