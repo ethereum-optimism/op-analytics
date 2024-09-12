@@ -14,7 +14,7 @@ mv_names = [
         'daily_aggregate_transactions_to',
         'across_bridging_txs_v3'
         ]
-set_days_batch_size = 30
+set_days_batch_size = 7 #30
 
 optimize_all = True
 
