@@ -94,7 +94,20 @@ FROM (
         coalesce(AVG(IF(gas_price > 0, receipt_l1_blob_base_fee_scalar, NULL)), 0) AS avg_l1_blob_fee_scalar
         
     FROM @chain_db_name@_transactions t final
-        INNER JOIN get_blocks b
+        INNER JOIN (
+            -- deal with clickhouse dupe issues
+                SELECT
+                number
+                    , argMax(timestamp, insert_time) AS timestamp
+                    , argMax(chain_id, insert_time) AS chain_id
+                    , argMax(base_fee_per_gas, insert_time) AS base_fee_per_gas
+                FROM @chain_db_name@_blocks b
+                WHERE b.timestamp >= toDate('@start_date@')
+                    AND b.timestamp < toDate('@end_date@')
+                    AND b.timestamp < toDate(now())
+                    AND b.is_deleted = 0
+                GROUP BY 1
+            ) b
             ON t.block_number = b.number 
             AND t.block_timestamp = b.timestamp
             AND t.chain_id = b.chain_id -- in case of pipeline mixups
