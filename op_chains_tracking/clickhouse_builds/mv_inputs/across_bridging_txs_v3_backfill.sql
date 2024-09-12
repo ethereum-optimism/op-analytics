@@ -45,6 +45,7 @@ from (
         AND t.is_deleted = 0
         AND l.is_deleted = 0
         AND t.gas_price > 0 
+        AND l.data IS NOT NULL -- info is there
 ) as x
 
 join across_bridge_metadata as c
