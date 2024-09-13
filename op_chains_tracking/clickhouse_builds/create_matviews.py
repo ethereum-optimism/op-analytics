@@ -55,8 +55,6 @@ def get_chain_names_from_df(df):
 
 # chain_configs = chain_configs[chain_configs['chain_name'] == 'xterio']
 
-chain_configs
-
 
 # In[ ]:
 
