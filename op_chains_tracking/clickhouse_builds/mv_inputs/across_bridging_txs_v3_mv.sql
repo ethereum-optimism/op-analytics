@@ -32,21 +32,22 @@ from (
         END AS integrator
         ,l.insert_time AS insert_time
     from {chain}_logs as l
-    join across_bridge_metadata as c
-        on l.chain = c.chain_name
     join {chain}_transactions as t
         on l.transaction_hash = t.hash
-        and l.block_number = t.block_number
         and l.block_timestamp = t.block_timestamp
+        and l.block_number = t.block_number
         and l.chain = t.chain
+    join across_bridge_metadata as c
+        on l.chain = c.chain_name
     where 1=1
         and splitByChar(',', l.topics)[1] = '0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f'
-        and l.network = 'mainnet'
+        -- and l.network = 'mainnet'
         and t.receipt_status = 1
         AND t.is_deleted = 0
         AND l.is_deleted = 0
         AND t.gas_price > 0 
-        AND l.data IS NOT NULL -- info is there
+        AND l.data IS NOT NULL AND l.data != '' -- info is there
+        AND l.chain IN (SELECT chain_name FROM across_bridge_metadata)
 ) as x
 
 join across_bridge_metadata as c
