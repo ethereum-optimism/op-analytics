@@ -9,6 +9,11 @@ calldata_gas_sql = \
 '''16 * (length(replace(toString(unhex(input)), '\0', '')) - 1)
             + 4 * ((length(unhex(input)) - 1) - (length(replace(toString(unhex(input)), '\0', '')) - 1))'''
 
+num_zero_bytes_sql = \
+'''((length(unhex(input)) - 1) - (length(replace(toString(unhex(input)), '\0', '')) - 1))'''
+num_nonzero_bytes_sql = \
+'''(length(replace(toString(unhex(input)), '\0', '')) - 1)'''
+
 byte_length_sql = \
 '''(length(unhex(input)) - 1)'''
 
