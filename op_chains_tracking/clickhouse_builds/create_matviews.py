@@ -9,7 +9,7 @@ mvs = [
     {'mv_name': 'across_bridging_txs_v3', 'start_date': '2024-05-01'},
     {'mv_name': 'erc20_transfers', 'start_date': ''},
     {'mv_name': 'native_eth_transfers', 'start_date': ''},
-    {'mv_name': 'transactions_unique', 'start_date': ''},
+    # {'mv_name': 'transactions_unique', 'start_date': ''},
     # {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''}
 ]
 
