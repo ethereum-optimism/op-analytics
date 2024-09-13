@@ -66,7 +66,23 @@ table_projections = {
 # In[ ]:
 
 
+# Projections to skip
+# These projections already have other versions that exist, so we skip them
+skip_combinations = [
+    ('base_blocks', 'proj_timestamp'),
+    ('base_transactions', 'proj_block_timestamp'),
+]
+
+
+# In[ ]:
+
+
 def create_projection_if_not_exists(client, table_name, projection_name, projection_fields):
+    # Check if this combination should be skipped
+    if (table_name, projection_name) in skip_combinations:
+        print(f"Skipping projection {projection_name} for table {table_name} as it's in the skip list.")
+        return
+    
     # Check if projection exists
     check_query = f"SHOW CREATE TABLE {table_name}"
     result = client.query(check_query)
