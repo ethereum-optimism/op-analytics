@@ -6,15 +6,15 @@
 
 # List of materialized view names
 mv_names = [
-        # in order of build
+        'across_bridging_txs_v3',
+        # # in order of build
         'erc20_transfers',
         'native_eth_transfers',
         # 'transactions_unique',
-
         'daily_aggregate_transactions_to',
-        'across_bridging_txs_v3'
+        
         ]
-set_days_batch_size = 3 #7 #30
+set_days_batch_size = 1 #3 #7 #30
 
 optimize_all = True
 
@@ -52,7 +52,7 @@ if client is None:
 def get_chain_names_from_df(df):
     return df['blockchain'].dropna().unique().tolist()
 
-# chain_configs = chain_configs[chain_configs['chain_name'] == 'bob']
+# chain_configs = chain_configs[chain_configs['chain_name'] == 'xterio']
 
 chain_configs
 
@@ -64,8 +64,8 @@ chain_configs
 # chains = get_chain_names_from_df(chain_configs)
 
 # Start date for backfilling
-# start_date = datetime.date(2021, 11, 1)
-start_date = datetime.date(2024, 5, 1)
+start_date = datetime.date(2021, 11, 1)
+# start_date = datetime.date(2024, 5, 1)
 end_date = datetime.date.today() + datetime.timedelta(days=1)
 
 print(end_date)
@@ -152,6 +152,13 @@ def create_materialized_view(client, chain, mv_name, block_time = 2):
         query_template = get_query_from_file(f'{mv_name}_mv')
         query = query_template.format(chain=chain, view_name=full_view_name, table_name=table_view_name, block_time_sec=block_time)
         query = gsb.process_goldsky_sql(query)
+        # Save the query
+        output_folder = os.path.join("mv_outputs", "sql")
+        os.makedirs(output_folder, exist_ok=True)
+        filename = f"{mv_name}_mv.sql"
+        file_path = os.path.join(output_folder, filename)
+        with open(file_path, 'w') as file:
+            file.write(query)
         # print(query)
         client.command(query)
         print(f"Created materialized view {full_view_name}")
@@ -243,6 +250,15 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2):
                     # print(query)
                     # set_optimize_on_insert(0) # for runtime
                     print(f"Starting backfill for {full_view_name} from {current_date} to {batch_end}")
+
+                    # Save the query
+                    output_folder = os.path.join("mv_outputs", "sql")
+                    os.makedirs(output_folder, exist_ok=True)
+                    filename = f"{mv_name}_backfill.sql"
+                    file_path = os.path.join(output_folder, filename)
+                    with open(file_path, 'w') as file:
+                        file.write(query)
+
                     client.command(query)
                     # Record the backfill
                     track_query = f"""
@@ -349,22 +365,22 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'across_bridging_txs_v3', 2)
+#         reset_materialized_view(client, chain, 'daily_aggregate_transactions_to', 2)
 
-#reset a single chain
-# reset_materialized_view(client, 'zora', 'across_bridging_txs_v3', 2)
+# # # # reset a single chain
+# # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to', 2)
 
-# # # # # # # for mv in mv_names:
-# # # # # # #         # print(row)
-# # # # # # #         reset_materialized_view(client, 'bob', mv, 2)
+# # # # # # # # # # for mv in mv_names:
+# # # # # # # # # #         # print(row)
+# # # # # # # # # #         reset_materialized_view(client, 'bob', mv, 2)
 
 
-# # # Clear all
-# # # mv_names
-# # # for row in chain_configs.itertuples(index=False):
-# # #         for mv in mv_names:
-# # #                 chain = row.chain_name
-# # #                 reset_materialized_view(client, chain, mv, 2)
+# # # # # # Clear all
+# # # # # # mv_names
+# # # # # # for row in chain_configs.itertuples(index=False):
+# # # # # #         for mv in mv_names:
+# # # # # #                 chain = row.chain_name
+# # # # # #                 reset_materialized_view(client, chain, mv, 2)
 
 
 # In[ ]:
