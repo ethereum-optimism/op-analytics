@@ -5,16 +5,15 @@
 
 
 # List of materialized view names
-mv_names = [
-        'across_bridging_txs_v3',
-        # # in order of build
-        'erc20_transfers',
-        'native_eth_transfers',
-        # 'transactions_unique',
-        'daily_aggregate_transactions_to',
-        
-        ]
-set_days_batch_size = 1 #3 #7 #30
+mvs = [
+    {'mv_name': 'across_bridging_txs_v3', 'start_date': '2024-05-01'},
+    {'mv_name': 'erc20_transfers', 'start_date': ''},
+    {'mv_name': 'native_eth_transfers', 'start_date': ''},
+    {'mv_name': 'transactions_unique', 'start_date': ''},
+    # {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''}
+]
+
+set_days_batch_size = 2 #3 #7 #30
 
 optimize_all = True
 
@@ -41,6 +40,8 @@ dotenv.load_dotenv()
 
 # In[ ]:
 
+
+mv_names = [item['mv_name'] for item in mvs]
 
 # Get Chain List
 chain_configs = ops.get_superchain_metadata_by_data_source('oplabs') # OPLabs db
@@ -188,11 +189,14 @@ def ensure_backfill_tracking_table_exists(client):
     else:
         print("backfill_tracking table already exists.")
 
-def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2):
+def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, mod_start_date = start_date):
     full_view_name = f'{chain}_{mv_name}_mv'
     full_table_name = f'{chain}_{mv_name}'
-    current_date_q = f"SELECT DATE_TRUNC('day',MIN(timestamp)) AS start_dt FROM {chain}_blocks WHERE number = 1 AND is_deleted = 0"
-    current_date = client.query(current_date_q).result_rows[0][0].date()
+    if mod_start_date == '':
+        current_date_q = f"SELECT DATE_TRUNC('day',MIN(timestamp)) AS start_dt FROM {chain}_blocks WHERE number = 1 AND is_deleted = 0"
+        current_date = client.query(current_date_q).result_rows[0][0].date()
+    else:
+        current_date = pd.to_datetime(mod_start_date).date()
 
     while current_date <= end_date:
         print(f"{chain} - {mv_name}: Current date: {current_date} - End Date: {end_date}")
@@ -394,7 +398,13 @@ for row in chain_configs.itertuples(index=False):
     chain = row.chain_name
     block_time = row.block_time_sec
     print(f"Processing chain: {chain}")
-    for mv_name in mv_names:
+    for row in mvs:
+        mv_name = row['mv_name']
+
+        if row['start_date'] != '':
+            mod_start_date = row['start_date']
+        else:
+            mod_start_date = start_date
         
         try:
             print('create matview')
@@ -403,7 +413,7 @@ for row in chain_configs.itertuples(index=False):
             print('error')
         try:
             print('create backfill')
-            backfill_data(client, chain, mv_name, end_date = end_date, block_time = block_time)
+            backfill_data(client, chain, mv_name, end_date = end_date, block_time = block_time, mod_start_date = mod_start_date)
         except Exception as e:
             print('An error occurred:')
             print(str(e))
