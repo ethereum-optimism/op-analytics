@@ -11,7 +11,8 @@ SELECT
         , if(gas_price > 0, @gas_fee_sql@/1e18, 0) AS gas_fee_eth
 
         , @byte_length_sql@ AS input_byte_length
-        , @calldata_gas_sql@ AS input_calldata_gas
+        , @num_zero_bytes_sql@ AS input_num_zero_bytes
+        , @num_nonzero_bytes_sql@ AS input_num_nonzero_bytes
         , @estimated_size_sql@ AS estimated_size
 
         , if(gas_price > 0, CAST(receipt_l1_fee AS Nullable(Float64)) / 1e18, 0) AS l1_contrib_l2_eth_fees
