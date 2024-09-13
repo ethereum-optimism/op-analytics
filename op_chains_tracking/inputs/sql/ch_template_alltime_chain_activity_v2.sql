@@ -1,3 +1,44 @@
+WITH unique_transactions AS (
+    -- deal with clickhouse dupe issues
+                SELECT
+                t.hash, t.block_number, t.network, t.chain, t.chain_id
+                    , argMax(b.timestamp, b.insert_time) AS block_timestamp
+                    , argMax(b.base_fee_per_gas, b.insert_time) AS base_fee_per_gas
+                    , argMax(t.gas_price, t.insert_time) AS gas_price
+                    , argMax(t.receipt_gas_used, t.insert_time) AS receipt_gas_used
+                    , argMax(t.receipt_l1_gas_used, t.insert_time) AS receipt_l1_gas_used
+                    , argMax(t.receipt_l1_base_fee_scalar, t.insert_time) AS receipt_l1_base_fee_scalar
+                    , argMax(t.receipt_l1_fee_scalar, t.insert_time) AS receipt_l1_fee_scalar
+                    , argMax(t.receipt_l1_blob_base_fee_scalar, t.insert_time) AS receipt_l1_blob_base_fee_scalar
+                    , argMax(t.input, t.insert_time) AS input
+                    , argMax(t.receipt_l1_blob_base_fee, t.insert_time) AS receipt_l1_blob_base_fee
+                    , argMax(t.receipt_l1_gas_price, t.insert_time) AS receipt_l1_gas_price
+                    , argMax(t.receipt_l1_fee, t.insert_time) AS receipt_l1_fee
+                    , argMax(t.from_address, t.insert_time) AS from_address
+                    , argMax(t.to_address, t.insert_time) AS to_address
+                    -- ,@byte_length_sql@ AS byte_length_sql
+                    -- ,@gas_fee_sql@ AS gas_fee_sql
+                    , argMax(t.receipt_status, t.insert_time) AS receipt_status
+                FROM @chain_db_name@_transactions t
+                INNER JOIN @chain_db_name@_blocks b
+                    ON t.block_number = b.number 
+                    AND t.block_timestamp = b.timestamp
+                    AND t.chain_id = b.chain_id -- in case of pipeline mixups
+
+                WHERE 1=1
+                    AND t.block_timestamp >= toDate('@start_date@')
+                    AND t.block_timestamp < least(toDate('@end_date@'), toDate(now()))
+                    AND t.is_deleted = 0
+
+                    AND b.timestamp >= toDate('@start_date@')
+                    AND b.timestamp < least(toDate('@end_date@'), toDate(now()))
+                    AND b.is_deleted = 0
+
+                    
+
+                GROUP BY 1,2,3,4,5
+)
+
 SELECT *
     , num_blocks * block_time_sec as active_secs_per_day
     , l2_num_txs_per_day / num_blocks AS l2_num_txs_per_day_per_block
@@ -77,46 +118,7 @@ FROM (
         AVG(IF(gas_price > 0, COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar), NULL)) AS avg_l1_fee_scalar,
         coalesce(AVG(IF(gas_price > 0, receipt_l1_blob_base_fee_scalar, NULL)), 0) AS avg_l1_blob_fee_scalar
         
-    FROM (
-            -- deal with clickhouse dupe issues
-                SELECT
-                t.hash, t.block_number, t.network, t.chain, t.chain_id
-                    , argMax(b.timestamp, b.insert_time) AS block_timestamp
-                    , argMax(b.base_fee_per_gas, b.insert_time) AS base_fee_per_gas
-                    , argMax(t.gas_price, t.insert_time) AS gas_price
-                    , argMax(t.receipt_gas_used, t.insert_time) AS receipt_gas_used
-                    , argMax(t.receipt_l1_gas_used, t.insert_time) AS receipt_l1_gas_used
-                    , argMax(t.receipt_l1_base_fee_scalar, t.insert_time) AS receipt_l1_base_fee_scalar
-                    , argMax(t.receipt_l1_fee_scalar, t.insert_time) AS receipt_l1_fee_scalar
-                    , argMax(t.receipt_l1_blob_base_fee_scalar, t.insert_time) AS receipt_l1_blob_base_fee_scalar
-                    , argMax(t.input, t.insert_time) AS input
-                    , argMax(t.receipt_l1_blob_base_fee, t.insert_time) AS receipt_l1_blob_base_fee
-                    , argMax(t.receipt_l1_gas_price, t.insert_time) AS receipt_l1_gas_price
-                    , argMax(t.receipt_l1_fee, t.insert_time) AS receipt_l1_fee
-                    , argMax(t.from_address, t.insert_time) AS from_address
-                    , argMax(t.to_address, t.insert_time) AS to_address
-                    -- ,@byte_length_sql@ AS byte_length_sql
-                    -- ,@gas_fee_sql@ AS gas_fee_sql
-                    , argMax(t.receipt_status, t.insert_time) AS receipt_status
-                FROM @chain_db_name@_transactions t
-                INNER JOIN @chain_db_name@_blocks b
-                    ON t.block_number = b.number 
-                    AND t.block_timestamp = b.timestamp
-                    AND t.chain_id = b.chain_id -- in case of pipeline mixups
-
-                WHERE
-                        b.timestamp >= toDate('@start_date@')
-                    AND b.timestamp < toDate('@end_date@')
-                    AND b.timestamp < toDate(now())
-                    AND b.is_deleted = 0
-
-                    AND t.block_timestamp >= toDate('@start_date@')
-                    AND t.block_timestamp < toDate('@end_date@')
-                    AND t.block_timestamp < toDate(now())
-                    AND t.is_deleted = 0
-
-                GROUP BY 1,2,3,4,5
-            ) t
+    FROM unique_transactions t
     
     GROUP BY 1,2,3,4
     ) a
