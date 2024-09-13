@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 # List of materialized view names
@@ -14,12 +14,12 @@ mv_names = [
         'daily_aggregate_transactions_to',
         'across_bridging_txs_v3'
         ]
-set_days_batch_size = 7 #30
+set_days_batch_size = 3 #7 #30
 
 optimize_all = True
 
 
-# In[2]:
+# In[ ]:
 
 
 import pandas as pd
@@ -39,7 +39,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[3]:
+# In[ ]:
 
 
 # Get Chain List
@@ -57,7 +57,7 @@ def get_chain_names_from_df(df):
 chain_configs
 
 
-# In[4]:
+# In[ ]:
 
 
 # List of chains
@@ -71,7 +71,7 @@ end_date = datetime.date.today() + datetime.timedelta(days=1)
 print(end_date)
 
 
-# In[5]:
+# In[ ]:
 
 
 def get_query_from_file(mv_name):
@@ -93,7 +93,7 @@ def get_query_from_file(mv_name):
         raise
 
 
-# In[6]:
+# In[ ]:
 
 
 def set_optimize_on_insert(option_int = 1):
@@ -109,7 +109,7 @@ def set_optimize_on_insert(option_int = 1):
 
 
 
-# In[7]:
+# In[ ]:
 
 
 import clickhouse_connect
@@ -311,7 +311,7 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2):
 #         print(f"  Error: {str(e)}")
 
 
-# In[8]:
+# In[ ]:
 
 
 def reset_materialized_view(client, chain, mv_name, block_time = 2):
@@ -343,7 +343,7 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
         print(f"Error resetting materialized view {full_view_name}: {str(e)}")
 
 
-# In[10]:
+# In[ ]:
 
 
 # # # # # To reset a view
@@ -367,7 +367,7 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # # #                 reset_materialized_view(client, chain, mv, 2)
 
 
-# In[11]:
+# In[ ]:
 
 
 # Main execution
