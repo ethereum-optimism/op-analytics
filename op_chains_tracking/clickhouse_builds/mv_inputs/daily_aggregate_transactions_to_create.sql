@@ -29,6 +29,7 @@ CREATE TABLE {view_name}
     --avg_l2_base_fee_gas_price_gwei AggregateFunction(avg, Float64),
     --avg_l2_priority_fee_gas_price_gwei AggregateFunction(avg, Float64),
     avg_l1_gas_price_gwei AggregateFunction(avg, Float64),
+    avg_l1_blob_base_fee_gwei AggregateFunction(avg, Float64),
 )
 ENGINE = AggregatingMergeTree()
 PARTITION BY toYYYYMM(dt)

@@ -43,38 +43,38 @@ FROM (
         SUM(cast(receipt_l1_gas_used as Nullable(Int64))) AS l1_gas_used_on_l2,
         SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar)) AS l1_gas_paid,
         SUM(cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar) AS blob_gas_paid,
-        SUM(@byte_length_sql@) AS calldata_bytes_l2_per_day,
+        SUM(byte_length_sql) AS calldata_bytes_l2_per_day,
 
-        SUM(IF(gas_price > 0, @estimated_size_sql@, 0)) AS estimated_size_user_txs,
+        SUM(IF(gas_price > 0, estimated_size_sql, 0)) AS estimated_size_user_txs,
 
-        SUM(@estimated_size_sql@ * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar)) AS l1_gas_paid_fjord,
-        SUM(@estimated_size_sql@ * receipt_l1_blob_base_fee_scalar) AS blob_gas_paid_fjord,
+        SUM(estimated_size_sql * COALESCE(receipt_l1_base_fee_scalar,receipt_l1_fee_scalar)) AS l1_gas_paid_fjord,
+        SUM(estimated_size_sql * receipt_l1_blob_base_fee_scalar) AS blob_gas_paid_fjord,
 
         SUM(IF(gas_price > 0, cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_fee_scalar, 0)) AS l1_gas_paid_user_txs,
         SUM(IF(gas_price > 0, cast(receipt_l1_gas_used as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar, 0)) AS blob_gas_paid_user_txs,
 
         SUM(IF(gas_price > 0, receipt_l1_gas_used, 0)) AS l1_gas_used_user_txs_l2_per_day,
-        SUM(IF(gas_price > 0, @byte_length_sql@, 0)) AS calldata_bytes_user_txs_l2_per_day,
+        SUM(IF(gas_price > 0, byte_length_sql, 0)) AS calldata_bytes_user_txs_l2_per_day,
         SUM(IF(gas_price > 0, t.receipt_gas_used, 0)) AS l2_gas_used_user_txs_per_day,
 
-        SUM(@gas_fee_sql@ / 1e18) AS l2_eth_fees_per_day,
-        median(IF(gas_price > 0, @gas_fee_sql@ / 1e18, NULL)) AS median_l2_eth_fees_per_tx,
+        SUM(gas_fee_sql / 1e18) AS l2_eth_fees_per_day,
+        median(IF(gas_price > 0, gas_fee_sql / 1e18, NULL)) AS median_l2_eth_fees_per_tx,
 
         SUM(IF(gas_price > 0, CAST(receipt_l1_fee AS Nullable(Float64)) / 1e18, 0)) AS l1_contrib_l2_eth_fees_per_day,
         SUM(IF(gas_price > 0, CAST(gas_price * t.receipt_gas_used AS Nullable(Float64)) / 1e18, 0)) AS l2_contrib_l2_eth_fees_per_day,
 
         SUM(IF(gas_price > 0, 
-            (cast(@estimated_size_sql@ as Nullable(Float64)) * COALESCE(16*receipt_l1_base_fee_scalar/1e6,receipt_l1_fee_scalar) * cast(receipt_l1_gas_price AS Nullable(Float64))) / 1e18, 
+            (cast(estimated_size_sql as Nullable(Float64)) * COALESCE(16*receipt_l1_base_fee_scalar/1e6,receipt_l1_fee_scalar) * cast(receipt_l1_gas_price AS Nullable(Float64))) / 1e18, 
             0)) AS l1_l1gas_contrib_l2_eth_fees_per_day,
         SUM(IF(gas_price > 0, 
-            coalesce((cast(@estimated_size_sql@ as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar/1e6 * cast(receipt_l1_blob_base_fee AS Nullable(Float64))) / 1e18, 0), 
+            coalesce((cast(estimated_size_sql as Nullable(Float64)) * receipt_l1_blob_base_fee_scalar/1e6 * cast(receipt_l1_blob_base_fee AS Nullable(Float64))) / 1e18, 0), 
             0)) AS l1_blobgas_contrib_l2_eth_fees_per_day,
 
         SUM(IF(gas_price > 0, CAST((base_fee_per_gas) * t.receipt_gas_used AS Nullable(Float64)) / 1e18, 0)) AS l2_contrib_l2_eth_fees_base_fee_per_day,
         SUM(IF(gas_price > 0, CAST((gas_price - base_fee_per_gas) * t.receipt_gas_used AS Nullable(Float64)) / 1e18, 0)) AS l2_contrib_l2_eth_fees_priority_fee_per_day,
 
-        SUM(@calldata_gas_sql@) AS input_calldata_gas_l2_per_day,
-        SUM(IF(gas_price > 0, @calldata_gas_sql@, 0)) AS input_calldata_gas_user_txs_l2_per_day,
+        SUM(calldata_gas_sql) AS input_calldata_gas_l2_per_day,
+        SUM(IF(gas_price > 0, calldata_gas_sql, 0)) AS input_calldata_gas_user_txs_l2_per_day,
 
         SUM(receipt_l1_gas_used / 16) AS compressedtxsize_approx_l2_per_day_ecotone,
         SUM(IF(gas_price > 0, receipt_l1_gas_used / 16, 0)) AS compressedtxsize_approx_user_txs_l2_per_day_ecotone,
@@ -105,14 +105,16 @@ FROM (
                     , argMax(t.receipt_l1_base_fee_scalar, t.insert_time) AS receipt_l1_base_fee_scalar
                     , argMax(t.receipt_l1_fee_scalar, t.insert_time) AS receipt_l1_fee_scalar
                     , argMax(t.receipt_l1_blob_base_fee_scalar, t.insert_time) AS receipt_l1_blob_base_fee_scalar
-                    , argMax(t.input, t.insert_time) AS input
+                    -- , argMax(t.input, t.insert_time) AS input
                     , argMax(t.receipt_l1_blob_base_fee, t.insert_time) AS receipt_l1_blob_base_fee
                     , argMax(t.receipt_l1_gas_price, t.insert_time) AS receipt_l1_gas_price
                     , argMax(t.receipt_l1_fee, t.insert_time) AS receipt_l1_fee
                     , argMax(t.from_address, t.insert_time) AS from_address
                     , argMax(t.to_address, t.insert_time) AS to_address
-                    -- ,@byte_length_sql@ AS byte_length_sql
-                    -- ,@gas_fee_sql@ AS gas_fee_sql
+                    , argMax( (@byte_length_sql@) , t.insert_time) AS byte_length_sql
+                    , argMax( (@gas_fee_sql@) , t.insert_time) AS gas_fee_sql
+                    , argMax( (@estimated_size_sql@) , t.insert_time) AS estimated_size_sql
+                    , argMax( (@calldata_gas_sql@) , t.insert_time) AS calldata_gas_sql
                     , argMax(t.receipt_status, t.insert_time) AS receipt_status
                 FROM @chain_db_name@_transactions t
                 INNER JOIN @chain_db_name@_blocks b
