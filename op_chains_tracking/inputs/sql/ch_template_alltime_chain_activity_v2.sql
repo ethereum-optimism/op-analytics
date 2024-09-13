@@ -1,19 +1,3 @@
-WITH get_blocks AS (
-    -- deal with clickhouse dupe issues
-    SELECT
-    number, timestamp, chain_id, base_fee_per_gas
-
-    FROM @chain_db_name@_blocks b final
-
-    WHERE b.timestamp >= toDate('@start_date@')
-        AND b.timestamp < toDate('@end_date@')
-        AND b.timestamp < toDate(now())
-        AND b.is_deleted = 0
-    
-    GROUP BY 1,2,3,4
-
-)
-
 SELECT *
     , num_blocks * block_time_sec as active_secs_per_day
     , l2_num_txs_per_day / num_blocks AS l2_num_txs_per_day_per_block
