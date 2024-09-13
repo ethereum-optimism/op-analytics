@@ -1,9 +1,6 @@
-CREATE MATERIALIZED VIEW IF NOT EXISTS {view_name}
-ENGINE = ReplacingMergeTree(insert_time)
-PARTITION BY toYYYYMM(block_timestamp)
-ORDER BY (block_timestamp, block_number, transaction_hash)
+INSERT INTO cyber_across_bridging_txs_v3_mv
 
-AS select
+select
     x.*
     ,c.chain_name as dst_chain
 from (
@@ -30,9 +27,9 @@ from (
             WHEN substring(t.input, -10) = '1dc0de0002' THEN 'Brid.gg'
             ELSE null
         END AS integrator
-        ,l.insert_time AS insert_time
-    from {chain}_logs as l
-    join {chain}_transactions as t
+        , l.insert_time
+    from cyber_logs as l
+    join cyber_transactions as t
         on l.transaction_hash = t.hash
         and l.block_timestamp = t.block_timestamp
         and l.block_number = t.block_number
@@ -40,6 +37,8 @@ from (
     join across_bridge_metadata as c
         on l.chain = c.chain_name
     where 1=1
+        AND l.block_timestamp BETWEEN '2024-09-13' AND '2024-09-14'
+        AND t.block_timestamp BETWEEN '2024-09-13' AND '2024-09-14'
         and splitByChar(',', l.topics)[1] = '0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f'
         -- and l.network = 'mainnet'
         and t.receipt_status = 1
@@ -54,4 +53,4 @@ join across_bridge_metadata as c
     on x.dst_chain_id = c.mainnet_chain_id
 where integrator is not null
 
--- SETTINGS max_execution_time = 5000
+SETTINGS max_execution_time = 5000
