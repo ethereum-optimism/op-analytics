@@ -13,6 +13,7 @@ import clickhouse_utils as ch
 import opstack_metadata_utils as ops
 import goldsky_db_utils as gsb
 sys.path.pop()
+from clickhouse_connect.driver.exceptions import DatabaseError
 client = ch.connect_to_clickhouse_db()
 
 import dotenv
@@ -91,28 +92,32 @@ def create_projection_if_not_exists(client, table_name, projection_name, project
     if f"PROJECTION {projection_name}" not in create_table_script:
         print(f"Projection {projection_name} does not exist for table {table_name}. Creating...")
         
-        # Create projection
-        projection_fields_str = ", ".join(projection_fields)
-        create_query = f"""
-        ALTER TABLE {table_name}
-        ADD PROJECTION {projection_name}
-        (
-            SELECT *
-            ORDER BY ({projection_fields_str})
-        )
-        """
-        
-        client.command(create_query)
-        
-        # Materialize projection
-        materialize_query = f"""
-        ALTER TABLE {table_name}
-        MATERIALIZE PROJECTION {projection_name}
-        """
-        
-        client.command(materialize_query)
-        
-        print(f"Projection {projection_name} created and materialized successfully for table {table_name}.")
+        try:
+            # Create projection
+            projection_fields_str = ", ".join(projection_fields)
+            create_query = f"""
+            ALTER TABLE {table_name}
+            ADD PROJECTION {projection_name}
+            (
+                SELECT *
+                ORDER BY ({projection_fields_str})
+            )
+            """
+            
+            client.command(create_query)
+            
+            # Materialize projection
+            materialize_query = f"""
+            ALTER TABLE {table_name}
+            MATERIALIZE PROJECTION {projection_name}
+            """
+            
+            client.command(materialize_query)
+            
+            print(f"Projection {projection_name} created and materialized successfully for table {table_name}.")
+        except DatabaseError as e:
+            print(e)
+
     else:
         print(f"Projection {projection_name} already exists for table {table_name}. Skipping creation.")
 
