@@ -1,5 +1,5 @@
 CREATE MATERIALIZED VIEW IF NOT EXISTS {view_name}
-ENGINE = ReplacingMergeTree()
+ENGINE = ReplacingMergeTree(insert_time)
 PARTITION BY toYYYYMM(block_timestamp)
 ORDER BY (chain_id, transaction_hash, trace_address, trace_type, block_number)
 AS
@@ -16,7 +16,7 @@ value as amount_raw,
 from_address AS transfer_from_address,
 to_address AS transfer_to_address,
 substring(input,1,10) AS input_method_id,
-chain_id, chain, network
+chain_id, chain, network, insert_time
 
 FROM {chain}_traces
 

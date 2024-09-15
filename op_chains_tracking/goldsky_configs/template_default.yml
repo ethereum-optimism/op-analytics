@@ -1,3 +1,4 @@
+name: chain-name-mainnet
 sources:
   - referenceName: chain-db-name.raw_blocks
     version: 1.0.0

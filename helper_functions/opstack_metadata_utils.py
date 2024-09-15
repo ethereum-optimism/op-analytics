@@ -71,6 +71,7 @@ def get_op_stack_metadata_by_data_source(data_source, col_rename = 'blockchain')
 
         return ops
 
+
 def generate_op_stack_chain_config_query_list(source_order=['oplabs', 'flipside']):
         aggs = []
         for s in source_order:

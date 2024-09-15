@@ -1,8 +1,8 @@
 name: Daily L2 Chain Data Uploads
 
 on:
-  schedule: #12:31 AM UTC
-    - cron: '31 0 * * *'
+  schedule: #02:01 AM UTC
+    - cron: '1 2 * * *'
   workflow_dispatch:
 
 jobs:

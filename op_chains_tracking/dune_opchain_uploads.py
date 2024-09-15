@@ -32,16 +32,16 @@ min_txs_per_day = 0
 
 
 # Run Dune
-print('     dune runs')
+print('     dune opchain upload runs')
 par_pd = du.generate_query_parameter(input= trailing_days, field_name= 'Trailing Num Days', dtype= 'number')
 txs_pd = du.generate_query_parameter(input= min_txs_per_day, field_name= 'Min Transactions per Day', dtype= 'number')
 
 dune_df = du.get_dune_data(query_id = 2453515, #https://dune.com/queries/2453515
     name = "dune_" + table_name,
     path = "outputs",
-    # performance="large",
+    performance="large",
     params = [par_pd,txs_pd],
-    num_hours_to_rerun = 0, #always rerun because of param
+    num_hours_to_rerun = 1, #quick rerun because of updates
 )
 dune_df['source'] = 'dune'
 dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
@@ -119,7 +119,7 @@ for col in columns_to_float64:
 # In[ ]:
 
 
-dune_df['calldata_bytes_l2_per_day'].dtypes
+# dune_df['calldata_bytes_l2_per_day'].dtypes
 
 
 # In[ ]:
