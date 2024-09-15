@@ -132,17 +132,20 @@ def write_df_to_clickhouse(df, table_name, client=None, if_exists='replace', max
         print(f"Data written to table '{table_name}' successfully, replacing previous data.")
 
 # Define the get_clickhouse_type function
-def get_clickhouse_type(dtype):
+def get_clickhouse_type(dtype, nullable=True):
+    base_type = ""
     if pd.api.types.is_integer_dtype(dtype):
-        return "Nullable(Int64)"
+        base_type = "Int64"
     elif pd.api.types.is_float_dtype(dtype):
-        return "Nullable(Float64)"
+        base_type = "Float64"
     elif pd.api.types.is_bool_dtype(dtype):
-        return "Nullable(UInt8)"
+        base_type = "UInt8"
     elif pd.api.types.is_datetime64_any_dtype(dtype):
-        return "Nullable(DateTime64(3))"
+        base_type = "DateTime64(3)"
     else:
-        return "Nullable(String)"
+        base_type = "String"
+    
+    return f"Nullable({base_type})" if nullable else base_type
 
 # Define the create_table_if_not_exists function
 def create_table_if_not_exists(client, table_name, df):
@@ -159,3 +162,91 @@ def create_table_if_not_exists(client, table_name, df):
     """
     client.command(query)
     print(f"Table '{table_name}' created or already exists.")
+
+def create_replacing_merge_tree_table(client, table_name, df, unique_keys):
+    columns = []
+    for col, dtype in df.dtypes.items():
+        nullable = col not in unique_keys and col != 'updated_at'
+        ch_type = get_clickhouse_type(dtype, nullable=nullable)
+        columns.append(f"`{col}` {ch_type}")
+    
+    # Ensure updated_at column is present and correctly typed
+    if 'updated_at' not in df.columns:
+        columns.append("`updated_at` DateTime64(3)")
+    else:
+        # If updated_at is already in df.columns, ensure it's the correct type
+        updated_at_index = next(i for i, col in enumerate(columns) if col.startswith('`updated_at`'))
+        columns[updated_at_index] = "`updated_at` DateTime64(3)"
+    
+    columns_str = ",\n        ".join(columns)
+    
+    order_by = ", ".join(f"`{key}`" for key in unique_keys)
+    
+    query = f"""
+    CREATE TABLE IF NOT EXISTS {table_name}
+    (
+        {columns_str}
+    ) ENGINE = ReplacingMergeTree(updated_at)
+    ORDER BY ({order_by})
+    """
+    # print(f"Executing query:\n{query}")  # Debug print
+    client.command(query)
+    print(f"Table '{table_name}' created or already exists with ReplacingMergeTree engine.")
+    
+def append_and_upsert_df_to_clickhouse(df, table_name, unique_keys, client=None, max_execution_time=300):
+    if client is None:
+        client = connect_to_clickhouse_db()
+
+    # Convert all object columns to strings
+    for col in df.select_dtypes(include=['object']).columns:
+        df[col] = df[col].astype(str)
+
+    # Replace NaN, inf, and -inf values with None
+    df = df.replace([np.inf, -np.inf, np.nan], None)
+
+    # Add updated_at column
+    df['updated_at'] = pd.Timestamp.now()
+
+    # Check if table exists
+    result_table_exists = client.command(f"EXISTS TABLE {table_name}")
+    table_exists = result_table_exists == 1
+
+    if not table_exists:
+        print(f"Table {table_name} does not exist. Creating it now.")
+        create_replacing_merge_tree_table(client, table_name, df, unique_keys)
+    else:
+        print(f"Table {table_name} already exists.")
+
+    # Set max execution time and enable async inserts
+    client.command(f"SET max_execution_time = {max_execution_time}")
+    client.command("SET async_insert = 1")
+    client.command("SET wait_for_async_insert = 0")
+
+    try:
+        # Execute the insert
+        insert_result = client.insert_df(table_name, df)
+        affected_rows = insert_result.summary.get('written_rows', 'Unknown')
+        print(f"Inserted {affected_rows} rows")
+        # print(f"Insert result summary: {insert_result.summary}")
+    except Exception as e:
+        print(f"Error during insert: {str(e)}")
+        print(f"DataFrame columns: {df.columns.tolist()}")
+        print(f"DataFrame dtypes: {df.dtypes}")
+        raise
+
+    # Optimize the table to force merges
+    optimize_query = f"OPTIMIZE TABLE {table_name} FINAL"
+    client.command(optimize_query)
+    print(f"Optimized table {table_name}")
+
+    # Check the number of rows in the main table
+    count_query = f"SELECT COUNT(*) FROM {table_name} FINAL"
+    row_count = client.command(count_query)
+    print(f"Total rows in {table_name} after insert: {row_count}")
+
+    print(f"Data appended and upserted to table '{table_name}' successfully.")
+
+    return {
+        'affected_rows': affected_rows,
+        'row_count': row_count
+    }

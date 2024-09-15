@@ -19,16 +19,18 @@ CREATE TABLE {view_name}
     sum_l1_fee_contrib_eth_gas_fees_to_success AggregateFunction(sum, Float64),
     sum_l2_fee_contrib_eth_gas_fees_to AggregateFunction(sum, Float64),
     sum_l2_fee_contrib_eth_gas_fees_to_success AggregateFunction(sum, Float64),
-    {# sum_l2_base_contrib_eth_gas_fees_to AggregateFunction(sum, Float64),
-    sum_l2_base_contrib_eth_gas_fees_to_success AggregateFunction(sum, Float64), #}
-    {# sum_l2_priority_contrib_eth_gas_fees_to AggregateFunction(sum, Float64),
-    sum_l2_priority_contrib_eth_gas_fees_to_success AggregateFunction(sum, Float64), #}
+    --sum_l2_base_contrib_eth_gas_fees_to AggregateFunction(sum, Float64),
+    --sum_l2_base_contrib_eth_gas_fees_to_success AggregateFunction(sum, Float64),
+    --sum_l2_priority_contrib_eth_gas_fees_to AggregateFunction(sum, Float64),
+    --sum_l2_priority_contrib_eth_gas_fees_to_success AggregateFunction(sum, Float64),
     sum_input_bytes_to AggregateFunction(sum, Int64),
     sum_input_bytes_to_success AggregateFunction(sum, Int64),
     avg_l2_gas_price_gwei AggregateFunction(avg, Float64),
-    {# avg_l2_base_fee_gas_price_gwei AggregateFunction(avg, Float64),
-    avg_l2_priority_fee_gas_price_gwei AggregateFunction(avg, Float64), #}
+    --avg_l2_base_fee_gas_price_gwei AggregateFunction(avg, Float64),
+    --avg_l2_priority_fee_gas_price_gwei AggregateFunction(avg, Float64),
     avg_l1_gas_price_gwei AggregateFunction(avg, Float64),
+    avg_l1_blob_base_fee_gwei AggregateFunction(avg, Float64),
 )
 ENGINE = AggregatingMergeTree()
+PARTITION BY toYYYYMM(dt)
 ORDER BY (chain, network, chain_id, dt, to_address)

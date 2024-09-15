@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 # Generate static txt files for data points that we can reference elsewhere (i.e. Google Sheets)
@@ -12,12 +12,20 @@ import time
 from dotenv import load_dotenv
 load_dotenv()
 import os
+from datetime import datetime
+import pandas as pd
+
+import sys
+sys.path.append("../../helper_functions")
+import google_bq_utils as bqu
+sys.path.pop()
 
 etherscan_api_key = os.environ.get('L1_ETHERSCAN_API')
 max_attempts = 3
+current_timestamp = datetime.now()
 
 
-# In[2]:
+# In[ ]:
 
 
 # Get ETH/USD
@@ -50,7 +58,7 @@ for attempt in range(max_attempts):
                         print("Failed to fetch data after 3 attempts.")
 
 
-# In[3]:
+# In[ ]:
 
 
 api_url_gas_oracle = f"https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey={etherscan_api_key}"
@@ -79,7 +87,7 @@ for attempt in range(max_attempts):
                         print("Failed to fetch data after 3 attempts.")
 
 
-# In[4]:
+# In[ ]:
 
 
 def get_blob_base_fee_per_gas(api_url):
@@ -123,7 +131,7 @@ api_url = 'https://api.blocknative.com/gasprices/blockprices'
 blob_base_fee  = get_blob_base_fee_per_gas(api_url)
 
 
-# In[5]:
+# In[ ]:
 
 
 #Write to Endpoints
@@ -133,4 +141,45 @@ with open(f"outputs/suggest_base_fee.txt", 'w') as file:
         file.write(suggest_base_fee)
 with open(f"outputs/blob_base_fee.txt", 'w') as file:
         file.write(blob_base_fee)
+
+
+# In[ ]:
+
+
+def safe_float_convert(value):
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        print(f"Warning: Could not convert {value} to float. Returning 0.0")
+        return 0.0
+    
+ethusd = safe_float_convert(ethusd)
+suggest_base_fee = safe_float_convert(suggest_base_fee)
+blob_base_fee = safe_float_convert(blob_base_fee)
+
+
+# In[ ]:
+
+
+# Upload to BQ
+# Get the current timestamp
+# Create a dictionary with your data
+# try:
+data = {
+    'timestamp': [current_timestamp],
+    'eth_usd': [ethusd],
+    'l1_base_fee_gwei': [suggest_base_fee],
+    'blob_base_fee_gwei': [blob_base_fee]
+}
+
+# Create a DataFrame from the dictionary
+df = pd.DataFrame(data)
+print(df)
+print(df.dtypes)
+print(df.columns)
+table_name = 'market_data'
+dataset_name = 'rpc_table_uploads'
+bqu.write_df_to_bq_table(df, table_id = table_name, dataset_id = 'rpc_table_uploads', write_mode = 'append')
+# except Exception as e:
+#     print(f"An error occurred: {str(e)}")
 

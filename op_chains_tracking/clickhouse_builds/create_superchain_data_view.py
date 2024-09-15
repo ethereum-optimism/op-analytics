@@ -58,15 +58,19 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None, 
                                 , receipt_l1_blob_base_fee, receipt_l1_blob_base_fee_scalar, blob_versioned_hashes, max_fee_per_blob_gas
                                 , receipt_l1_block_number, receipt_l1_base_fee_scalar, chain, network, chain_id, insert_time
                                 FROM {table_name}
+                                WHERE 1=1
                                 """
         else: 
             sql_query = f"""
                                 SELECT 
                                 *
                                 FROM {table_name}
+                                WHERE 1=1
                                 """
+        # Add mainnet filter
+        sql_query += " AND network = 'mainnet'"
         if do_is_deleted_line:
-                sql_query += ' WHERE is_deleted = 0'
+                sql_query += ' AND is_deleted = 0'
         # finalize query
         union_queries.append(sql_query)
     
@@ -87,11 +91,13 @@ native_dataset_types = [
                 # native
                 'transactions', 'traces', 'blocks', 'logs',
 ]
+
 mv_dataset_types = [
                 # mvs
                  'erc20_transfers_mv','native_eth_transfers_mv'
-                 ,'transactions_unique'
+                #  ,'transactions_unique'
                  ,'daily_aggregate_transactions_to'
+                 ,'across_bridging_txs_v3'
                  ]
 dataset_types = native_dataset_types + mv_dataset_types
 print(dataset_types)

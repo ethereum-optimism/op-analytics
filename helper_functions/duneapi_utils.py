@@ -64,7 +64,7 @@ def get_dune_data(
         print('getting latest result')
         results = dune.get_latest_result(query)
         submitted_at = results.times.submitted_at
-        print(f'latest result submitted at {submitted_at}')
+        # print(f'latest result submitted at {submitted_at}')
         # execution_started_at = latest.times.execution_started_at
         # execution_ended_at = latest.times.execution_ended_at
 
@@ -274,9 +274,9 @@ def cancel_query(execution_id):
     headers = {"X-Dune-API-Key": api_key}
     execution_id = str(execution_id)
     base_url = f"https://api.dune.com/api/v1/execution/{execution_id}/cancel"
-    print(base_url)
+    # print(base_url)
     result_response = r.request("POST", base_url, headers=headers)
-    print(result_response)
+    # print(result_response)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

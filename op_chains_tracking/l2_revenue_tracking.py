@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 # ! pip install --upgrade dune-client
 # ! pip show dune-client
 
 
-# In[2]:
+# In[ ]:
 
 
 # Get L2 Revenue and post it to a database (csv in github for now)
@@ -29,7 +29,7 @@ sys.path.pop()
 import os
 
 
-# In[3]:
+# In[ ]:
 
 
 # https://github.com/ethereum-optimism/optimism/blob/b86522036ad11a91de1d1dadb6805167add83326/specs/predeploys.md?plain=1#L50
@@ -56,7 +56,7 @@ chains_rpcs = chains_rpcs[~(chains_rpcs['rpc_url'] == '') & ~(chains_rpcs['op_ba
 # chains_rpcs
 
 
-# In[4]:
+# In[ ]:
 
 
 # Calculate the method signature hash
@@ -66,7 +66,7 @@ method_id = Web3.keccak(text=method_signature)[:4].hex()
 print(f"Method ID: {method_id}")
 
 
-# In[5]:
+# In[ ]:
 
 
 df_columns = [
@@ -76,7 +76,7 @@ df_columns = [
 ]
 
 
-# In[6]:
+# In[ ]:
 
 
 data_arr = []
@@ -143,7 +143,7 @@ with ThreadPoolExecutor(max_workers=99) as executor: # Max Workers can be big, s
         future.result()  # This will raise any exceptions caught during the execution
 
 
-# In[7]:
+# In[ ]:
 
 
 # for index, chain in chains_rpcs.iterrows():
@@ -200,14 +200,45 @@ with ThreadPoolExecutor(max_workers=99) as executor: # Max Workers can be big, s
 #         continue
 
 
-# In[8]:
+# In[ ]:
 
 
 data_df = pd.concat(data_arr)
+data_df['chain_id'] = data_df['chain_id'].astype('string')
 data_df['block_time'] = pd.to_datetime(data_df['block_time'])
 
 
-# In[9]:
+# In[ ]:
+
+
+data_df.dtypes
+
+
+# In[ ]:
+
+
+bq_cols = ['block_time','block_number','chain_name','vault_name','vault_address','alltime_revenue_native','chain_id']
+
+
+# In[ ]:
+
+
+dataset_name = 'rpc_table_uploads'
+table_name = 'hourly_cumulative_l2_revenue_snapshots'
+
+
+# In[ ]:
+
+
+# Write All to BQ Table
+# bqu.write_df_to_bq_table(df = dune_df[bq_cols], table_id = table_name, dataset_id = dataset_name)
+
+# Write Updates to BQ Table
+unique_cols = ['block_time', 'chain_name', 'chain_id', 'vault_name']
+bqu.write_df_to_bq_table(df = data_df[bq_cols], table_id = table_name, dataset_id = dataset_name, write_mode='append')
+
+
+# In[ ]:
 
 
 file_path = 'outputs/all_time_revenue_data.csv'
@@ -215,7 +246,7 @@ file_path = 'outputs/all_time_revenue_data.csv'
 # data_df.sample()
 
 
-# In[10]:
+# In[ ]:
 
 
 # Check if the file exists
@@ -232,7 +263,7 @@ else:
     data_df.to_csv(file_path, mode='w', header=True, index=False)
 
 
-# In[12]:
+# In[ ]:
 
 
 # # Overwrite to Dune Table
@@ -242,7 +273,7 @@ else:
 #                              'Snapshots of All-Time (cumulative) revenue for fee vaults on OP Stack Chains. Pulled from RPCs - metadata in op_stack_chains_chain_rpc_metdata')
 
 
-# In[13]:
+# In[ ]:
 
 
 # #Insert Updates to Dune Table
@@ -262,52 +293,19 @@ else:
 #                              'Chain metadata - used to join with op_stack_chains_cumulative_revenue_snapshots')
 
 
-# In[14]:
-
-
-bq_cols = ['block_time','block_number','chain_name','vault_name','vault_address','alltime_revenue_native','chain_id']
-
-
-# In[15]:
+# In[ ]:
 
 
 # dune_df.sample(5)
 
 
-# In[16]:
+# In[ ]:
 
 
-data_df['chain_id'] = data_df['chain_id'].astype('string')
-data_df['block_time'] = pd.to_datetime(data_df['block_time'])
-# dune_df['block_time'] = pd.to_datetime(dune_df['block_time'])
-data_df.dtypes
+# data_df
 
 
-# In[17]:
-
-
-data_df
-
-
-# In[18]:
-
-
-dataset_name = 'rpc_table_uploads'
-table_name = 'hourly_cumulative_l2_revenue_snapshots'
-
-
-# In[19]:
-
-
-# Write All to BQ Table
-# bqu.write_df_to_bq_table(df = dune_df[bq_cols], table_id = table_name, dataset_id = dataset_name)
-
-# Write Updates to BQ Table
-unique_cols = ['block_time', 'chain_name', 'chain_id', 'vault_name']
-bqu.write_df_to_bq_table(df = data_df[bq_cols], table_id = table_name, dataset_id = dataset_name, write_mode='append')
-
-
-# In[20]:
+# In[ ]:
 
 
 # # Backfills

@@ -5,15 +5,15 @@
 
 
 # List of materialized view names
-mv_names = [
-        # in order of build
-        'erc20_transfers',
-        'native_eth_transfers',
-        'transactions_unique',
+mvs = [
+    {'mv_name': 'across_bridging_txs_v3', 'start_date': '2024-05-01'},
+    {'mv_name': 'erc20_transfers', 'start_date': ''},
+    {'mv_name': 'native_eth_transfers', 'start_date': ''},
+    # {'mv_name': 'transactions_unique', 'start_date': ''},
+    # {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''}
+]
 
-        'daily_aggregate_transactions_to',
-        ]
-set_days_batch_size = 7
+set_days_batch_size = 2 #3 #7 #30
 
 optimize_all = True
 
@@ -25,6 +25,7 @@ import pandas as pd
 import sys
 import datetime
 import time
+import traceback
 sys.path.append("../../helper_functions")
 import clickhouse_utils as ch
 import opstack_metadata_utils as ops
@@ -40,6 +41,8 @@ dotenv.load_dotenv()
 # In[ ]:
 
 
+mv_names = [item['mv_name'] for item in mvs]
+
 # Get Chain List
 chain_configs = ops.get_superchain_metadata_by_data_source('oplabs') # OPLabs db
 
@@ -50,9 +53,7 @@ if client is None:
 def get_chain_names_from_df(df):
     return df['blockchain'].dropna().unique().tolist()
 
-# chain_configs = chain_configs[chain_configs['chain_name'] == 'bob']
-
-chain_configs
+# chain_configs = chain_configs[chain_configs['chain_name'] == 'xterio']
 
 
 # In[ ]:
@@ -63,7 +64,10 @@ chain_configs
 
 # Start date for backfilling
 start_date = datetime.date(2021, 11, 1)
+# start_date = datetime.date(2024, 5, 1)
 end_date = datetime.date.today() + datetime.timedelta(days=1)
+
+print(end_date)
 
 
 # In[ ]:
@@ -78,7 +82,7 @@ def get_query_from_file(mv_name):
         script_dir = os.getcwd()
     
     query_file_path = os.path.join(script_dir, 'mv_inputs', f'{mv_name}.sql')
-    print(f"Attempting to read query from: {query_file_path}")
+    # print(f"Attempting to read query from: {query_file_path}")
     
     try:
         with open(query_file_path, 'r') as file:
@@ -96,6 +100,12 @@ def set_optimize_on_insert(option_int = 1):
         SET optimize_on_insert = {option_int};
         """)
     print(f"Set optimize_on_insert = {option_int}")
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
@@ -141,6 +151,13 @@ def create_materialized_view(client, chain, mv_name, block_time = 2):
         query_template = get_query_from_file(f'{mv_name}_mv')
         query = query_template.format(chain=chain, view_name=full_view_name, table_name=table_view_name, block_time_sec=block_time)
         query = gsb.process_goldsky_sql(query)
+        # Save the query
+        output_folder = os.path.join("mv_outputs", "sql")
+        os.makedirs(output_folder, exist_ok=True)
+        filename = f"{mv_name}_mv.sql"
+        file_path = os.path.join(output_folder, filename)
+        with open(file_path, 'w') as file:
+            file.write(query)
         # print(query)
         client.command(query)
         print(f"Created materialized view {full_view_name}")
@@ -170,25 +187,29 @@ def ensure_backfill_tracking_table_exists(client):
     else:
         print("backfill_tracking table already exists.")
 
-def backfill_data(client, chain, mv_name, block_time = 2):
+def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, mod_start_date = start_date):
     full_view_name = f'{chain}_{mv_name}_mv'
     full_table_name = f'{chain}_{mv_name}'
-    current_date_q = f"SELECT DATE_TRUNC('day',MIN(timestamp)) AS start_dt FROM {chain}_blocks WHERE number = 1 AND is_deleted = 0"
-    current_date = client.query(current_date_q).result_rows[0][0].date()
-    
+    if mod_start_date == '':
+        current_date_q = f"SELECT DATE_TRUNC('day',MIN(timestamp)) AS start_dt FROM {chain}_blocks WHERE number = 1 AND is_deleted = 0"
+        current_date = client.query(current_date_q).result_rows[0][0].date()
+    else:
+        current_date = pd.to_datetime(mod_start_date).date()
+
     while current_date <= end_date:
+        print(f"{chain} - {mv_name}: Current date: {current_date} - End Date: {end_date}")
         attempts = 1
         is_success = 0
         days_batch_size = set_days_batch_size
         
         while (is_success == 0) & (attempts < 3) & (current_date + datetime.timedelta(days=days_batch_size) <= end_date):
             batch_size = datetime.timedelta(days=days_batch_size)
-
+            print(f"attempt: {attempts}")
             batch_end = min(current_date + batch_size, end_date)
-            
+            # print('checking backfill tracking')
             # Check if this range has been backfilled
             check_query = f"""
-            SELECT 1
+            SELECT MAX(start_date) AS latest_fill_start
             FROM backfill_tracking
             WHERE chain = '{chain}'
             AND mv_name = '{mv_name}'
@@ -198,10 +219,19 @@ def backfill_data(client, chain, mv_name, block_time = 2):
             LIMIT 1
             """
             result = client.query(check_query)
+
+            if result.result_rows: # Get date to start backfilling
+                latest_fill_start = result.result_rows[0][0]
+                # print(f"Latest Fill Result: {latest_fill_start}")
+                current_date = max(latest_fill_start, current_date)
+                batch_end = min(current_date + batch_size, end_date)
+            else:
+                print("no backfill exists")
+            # print(f"Fill start: {current_date}")
+
             # print(check_query)
             # print(result.result_rows)
             #Check if data already exists
-            
 
 
             if not result.result_rows:
@@ -220,7 +250,17 @@ def backfill_data(client, chain, mv_name, block_time = 2):
                 # print(query)
                 try:
                     # print(query)
-                    set_optimize_on_insert()
+                    # set_optimize_on_insert(0) # for runtime
+                    print(f"Starting backfill for {full_view_name} from {current_date} to {batch_end}")
+
+                    # Save the query
+                    output_folder = os.path.join("mv_outputs", "sql")
+                    os.makedirs(output_folder, exist_ok=True)
+                    filename = f"{mv_name}_backfill.sql"
+                    file_path = os.path.join(output_folder, filename)
+                    with open(file_path, 'w') as file:
+                        file.write(query)
+
                     client.command(query)
                     # Record the backfill
                     track_query = f"""
@@ -240,12 +280,13 @@ def backfill_data(client, chain, mv_name, block_time = 2):
                     attempts += 1
                 time.sleep(1)
             else:
-                # print(f"Data already backfilled for {full_view_name} from {current_date} to {batch_end}. Skipping.")
+                print(f"Data already backfilled for {full_view_name} from {current_date} to {batch_end}. Skipping.")
                 is_success = 1
                 # if optimize_all:
                 #     optimize_partition(client, full_view_name, current_date, batch_end)
-
-            current_date = batch_end + datetime.timedelta(days=1)
+        # print(f"Current Date: {current_date}, Batch End: {batch_end}")
+        current_date = max(batch_end,current_date) + datetime.timedelta(days=1)
+        # print(f"New Current Date: {current_date}")
 
 # def optimize_partition(client, full_view_name, start_date, end_date):
 #     # First, let's get the actual partition names
@@ -323,14 +364,25 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # In[ ]:
 
 
-# # # # # # To reset a view
+# # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
 #         reset_materialized_view(client, chain, 'daily_aggregate_transactions_to', 2)
 
-# # # # for mv in mv_names:
-# # # #         # print(row)
-# # # #         reset_materialized_view(client, 'bob', mv, 2)
+# # # # reset a single chain
+# # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to', 2)
+
+# # # # # # # # # # for mv in mv_names:
+# # # # # # # # # #         # print(row)
+# # # # # # # # # #         reset_materialized_view(client, 'bob', mv, 2)
+
+
+# # # # # # Clear all
+# # # # # # mv_names
+# # # # # # for row in chain_configs.itertuples(index=False):
+# # # # # #         for mv in mv_names:
+# # # # # #                 chain = row.chain_name
+# # # # # #                 reset_materialized_view(client, chain, mv, 2)
 
 
 # In[ ]:
@@ -340,20 +392,31 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 ensure_backfill_tracking_table_exists(client)
 
 for row in chain_configs.itertuples(index=False):
+
     chain = row.chain_name
     block_time = row.block_time_sec
     print(f"Processing chain: {chain}")
-    for mv_name in mv_names:
+    for row in mvs:
+        mv_name = row['mv_name']
+
+        if row['start_date'] != '':
+            mod_start_date = row['start_date']
+        else:
+            mod_start_date = start_date
+        
         try:
             print('create matview')
-            create_materialized_view(client, chain, mv_name, block_time)
+            create_materialized_view(client, chain, mv_name, block_time = block_time)
         except:
             print('error')
         try:
             print('create backfill')
-            backfill_data(client, chain, mv_name, block_time)
-        except:
-            print('error')
+            backfill_data(client, chain, mv_name, end_date = end_date, block_time = block_time, mod_start_date = mod_start_date)
+        except Exception as e:
+            print('An error occurred:')
+            print(str(e))
+            print('Traceback:')
+            print(traceback.format_exc())
         
     print(f"Completed processing for {chain}")
 

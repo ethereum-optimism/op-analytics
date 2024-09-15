@@ -77,10 +77,10 @@ df.to_csv('../outputs/chain_metadata.csv', index=False)
 # In[6]:
 
 
-# df[df['mainnet_chain_id'] =='10']
+# df[df['mainnet_chain_id'] =='2702128']
 
 
-# In[7]:
+# In[ ]:
 
 
 # Post to Dune API

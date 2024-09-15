@@ -87,10 +87,15 @@ deploy_dune_df = d.get_dune_data(query_id = 3753590, #https://dune.com/queries/3
     performance="large",
     params = [days_param]
 )
+
+
+# In[ ]:
+
+
 revdev_dune_df = d.get_dune_data(query_id = 3329567, #https://dune.com/queries/3329567
     name = "daily_evms_revdevs_dune",
     path = "outputs"#,
-    # parameters = [days_param]
+    # params = [days_param]
 )
 
 deploy_dune_df['source'] = 'dune'
@@ -107,18 +112,30 @@ revdev_dune_df = revdev_dune_df.rename(columns={'chain':'blockchain'})
 # In[ ]:
 
 
-# deploy_dune_df
-
-
-# In[ ]:
-
-
 dune_meta_df = d.get_dune_data(query_id = 3445473, #https://dune.com/queries/3445473
     name = "dune_evms_info",
     path = "outputs",
     num_hours_to_rerun = 12
 )
 dune_meta_df = dune_meta_df.rename(columns={'dune_schema':'blockchain'})
+
+
+# In[ ]:
+
+
+# deploy_dune_df
+dune_meta_df['chain_id'] = dune_meta_df['chain_id'].astype(str)
+deploy_dune_df['chain_id'] = deploy_dune_df['chain_id'].astype(str)
+revdev_dune_df['chain_id'] = revdev_dune_df['chain_id'].astype(str)
+
+dune_meta_df['blockchain'] = dune_meta_df['blockchain'].astype(str)
+deploy_dune_df['blockchain'] = deploy_dune_df['blockchain'].astype(str)
+revdev_dune_df['blockchain'] = revdev_dune_df['blockchain'].astype(str)
+
+
+# In[ ]:
+
+
 cols = ['name','layer','chain_id']
 deploy_dune_df = deploy_dune_df.merge(dune_meta_df[cols], on='chain_id',how='inner')
 revdev_dune_df = revdev_dune_df.merge(dune_meta_df[cols], on='chain_id',how='left')
@@ -336,7 +353,7 @@ dataframes = [deployer_enriched_df, revdev_enriched_df, unified_deployers_df]
 # Process each DataFrame
 for df in dataframes:
     df['blockchain'] = df['blockchain'].astype(str).fillna('-').str.strip()
-    df['chain_id'] = df['chain_id'].fillna(-1)
+    df['chain_id'] = df['chain_id'].fillna('-1')
     df.reset_index(drop=True, inplace=True)
 
 
@@ -369,6 +386,13 @@ revdev_enriched_df.to_csv('outputs/daily_revdev_counts.csv', index=False)
 
 
 # revdev_enriched_df.info()
+revdev_enriched_df.sample(4)
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
