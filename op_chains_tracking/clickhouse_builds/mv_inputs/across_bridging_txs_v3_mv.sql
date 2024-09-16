@@ -1,7 +1,7 @@
 CREATE MATERIALIZED VIEW IF NOT EXISTS {view_name}
 ENGINE = ReplacingMergeTree(insert_time)
 PARTITION BY toYYYYMM(block_timestamp)
-ORDER BY (block_timestamp, block_number, transaction_hash)
+ORDER BY (block_timestamp, block_number, transaction_hash, log_index, deposit_id)
 
 AS select
     x.*
@@ -30,6 +30,7 @@ from (
             WHEN substring(t.input, -10) = '1dc0de0002' THEN 'Brid.gg'
             ELSE null
         END AS integrator
+        ,l.log_index AS log_index
         ,l.insert_time AS insert_time
     from {chain}_logs as l
     join {chain}_transactions as t
@@ -48,6 +49,7 @@ from (
         AND t.gas_price > 0 
         AND l.data IS NOT NULL AND l.data != '' -- info is there
         AND l.chain IN (SELECT chain_name FROM across_bridge_metadata)
+        AND l.block_timestamp > '2024-05-01'
 ) as x
 
 join across_bridge_metadata as c
