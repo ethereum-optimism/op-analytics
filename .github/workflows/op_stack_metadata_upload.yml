@@ -9,6 +9,8 @@ on:
     paths:
       - 'op_chains_tracking/inputs/**'
       - 'op_chains_tracking/clickhouse_builds/**'
+permissions:
+  contents: write
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
