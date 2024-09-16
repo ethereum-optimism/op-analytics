@@ -4,7 +4,8 @@ on:
   schedule: #02:01 AM UTC
     - cron: '1 2 * * *'
   workflow_dispatch:
-
+permissions:
+  contents: write
 jobs:
   setup:
     runs-on: ubuntu-latest
