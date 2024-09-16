@@ -4,7 +4,8 @@ on:
   schedule:
       - cron: '57 * * * *'
   workflow_dispatch:
-
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-20.04

@@ -4,7 +4,8 @@ on:
   schedule:
     - cron: '15 3 * * *'
   workflow_dispatch:
-
+permissions:
+  contents: write
 jobs:
   general-l2:
     runs-on: ubuntu-latest
