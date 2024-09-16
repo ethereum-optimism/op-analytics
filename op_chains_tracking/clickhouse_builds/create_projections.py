@@ -44,23 +44,23 @@ table_projections = {
     'transactions': [
         ('proj_block_timestamp', ['block_timestamp', 'id']),
         ('proj_block_number', ['block_number', 'id']),
-        ('proj_block_timestamp_number', ['block_timestamp', 'block_number', 'id']),
+        # ('proj_block_timestamp_number', ['block_timestamp', 'block_number', 'id']),
     ],
     'blocks': [
         ('proj_timestamp', ['timestamp', 'id']),
         ('proj_number', ['number', 'id']),
-        ('proj_timestamp_number', ['timestamp', 'number', 'id']),
+        # ('proj_timestamp_number', ['timestamp', 'number', 'id']),
     ],
     'logs': [
         ('proj_block_timestamp', ['block_timestamp', 'id']),
         ('proj_block_number', ['block_number', 'id']),
-        ('proj_block_timestamp_number', ['block_timestamp', 'block_number', 'id']),
+        # ('proj_block_timestamp_number', ['block_timestamp', 'block_number', 'id']),
     ],
-    'traces': [
-        ('proj_block_timestamp', ['block_timestamp', 'id']),
-        ('proj_block_number', ['block_number', 'id']),
-        ('proj_block_timestamp_number', ['block_timestamp', 'block_number', 'id']),
-    ],
+    # 'traces': [
+    #     # ('proj_block_timestamp', ['block_timestamp', 'id']),
+    #     # ('proj_block_number', ['block_number', 'id']),
+    #     # ('proj_block_timestamp_number', ['block_timestamp', 'block_number', 'id']),
+    # ],
 }
 
 
