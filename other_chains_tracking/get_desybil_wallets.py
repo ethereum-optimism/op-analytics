@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 print('get qualified txs')
@@ -20,15 +20,17 @@ import os
 # import clickhouse_connect as cc
 
 
-# In[2]:
+# In[ ]:
 
 
 # ch_client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 
 query_name = 'daily_evms_desybilled_wallet_counts'
 
+trailing_pds = 180
 
-# In[3]:
+
+# In[ ]:
 
 
 # flipside_configs = [
@@ -42,7 +44,7 @@ query_name = 'daily_evms_desybilled_wallet_counts'
 # ]
 
 
-# In[4]:
+# In[ ]:
 
 
 # # Run Flipside
@@ -70,21 +72,23 @@ query_name = 'daily_evms_desybilled_wallet_counts'
 # flip = flip[['dt','blockchain','name','layer','num_qualified_txs','source']]
 
 
-# In[5]:
+# In[ ]:
 
 
 # Run Dune
 print('     dune runs')
+days_param = d.generate_query_parameter(input=trailing_pds,field_name='trailing_num_periods',dtype='number')
 dune_df = d.get_dune_data(query_id = 3784159, #https://dune.com/queries/3784159
     name = "dune_" + query_name,
     path = "outputs",
-    performance="large"
+    performance="large",
+    params = [days_param]
 )
 dune_df['source'] = 'dune'
 dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
 
 
-# In[6]:
+# In[ ]:
 
 
 # # Run Clickhouse
@@ -112,7 +116,7 @@ dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
 # ch = ch[['dt','blockchain','name','layer','num_qualified_txs','source']]
 
 
-# In[7]:
+# In[ ]:
 
 
 # # Step 1: Filter dune_df for chains not in flip
@@ -128,7 +132,7 @@ dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
 final_df = dune_df.copy()
 
 
-# In[8]:
+# In[ ]:
 
 
 opstack_metadata = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv')
@@ -146,7 +150,7 @@ final_enriched_df['display_name'] = final_enriched_df['display_name'].fillna(fin
 final_enriched_df = final_enriched_df.drop(columns=['name'])
 
 
-# In[9]:
+# In[ ]:
 
 
 final_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
@@ -154,7 +158,7 @@ final_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False],
 final_enriched_df.to_csv('outputs/'+query_name+'.csv', index=False)
 
 
-# In[10]:
+# In[ ]:
 
 
 #BQ Upload
