@@ -36,8 +36,8 @@ SELECT
     avgState(CAST((t.receipt_gas_used * t.gas_price_max) / 1e9 AS Float64)) AS avg_l2_gas_price_gwei,
     -- avgState(CAST(receipt_gas_used AS Float64) * CAST(l2_base_fee_gwei AS Float64)) AS avg_l2_base_fee_gas_price_gwei,
     -- avgState(CAST(receipt_gas_used AS Float64) * CAST(l2_priority_fee_gwei AS Float64)) AS avg_l2_priority_fee_gas_price_gwei,
-    avgState(CAST(COALESCE(receipt_l1_gas_used, byte_length_sql) * receipt_l1_gas_price_max / 1e9 AS Float64)) AS avg_l1_gas_price_gwei,
-    avgState(CAST(COALESCE(receipt_l1_gas_used, byte_length_sql) * receipt_l1_blob_base_fee_max / 1e9 AS Float64)) AS avg_blob_base_fee_gwei
+    avgState(CAST(COALESCE(receipt_l1_gas_used, byte_length_sql) * receipt_l1_gas_price_max / 1e9 AS Float64 )) AS avg_l1_gas_price_gwei,
+    avgState(CAST(COALESCE(receipt_l1_gas_used, byte_length_sql) * COALESCE(receipt_l1_blob_base_fee_max,0) / 1e9 AS Float64)) AS avg_blob_base_fee_gwei
 
 FROM (
         SELECT
