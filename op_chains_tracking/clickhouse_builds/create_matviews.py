@@ -6,14 +6,15 @@
 
 # List of materialized view names
 mvs = [
-    {'mv_name': 'across_bridging_txs_v3', 'start_date': '2024-05-01'},
-    {'mv_name': 'erc20_transfers', 'start_date': ''},
-    {'mv_name': 'native_eth_transfers', 'start_date': ''},
+    {'mv_name': 'across_bridging_txs_v3', 'start_date': '2024-07-01'},
+    {'mv_name': 'across_bridging_txs_v3_logs_only', 'start_date': '2024-07-01'},
+    # {'mv_name': 'erc20_transfers', 'start_date': ''},
+    # {'mv_name': 'native_eth_transfers', 'start_date': ''},
     # {'mv_name': 'transactions_unique', 'start_date': ''},
-    # {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''}
+    {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''}
 ]
 
-set_days_batch_size = 2 #3 #7 #30
+set_days_batch_size = 7 #30
 
 optimize_all = True
 
@@ -202,10 +203,11 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
         is_success = 0
         days_batch_size = set_days_batch_size
         
-        while (is_success == 0) & (attempts < 3) & (current_date + datetime.timedelta(days=days_batch_size) <= end_date):
+        while (is_success == 0) & (attempts < 3) :#& (current_date + datetime.timedelta(days=days_batch_size) <= end_date):
             batch_size = datetime.timedelta(days=days_batch_size)
             print(f"attempt: {attempts}")
             batch_end = min(current_date + batch_size, end_date)
+            # print(f'init batch end: {batch_end}')
             # print('checking backfill tracking')
             # Check if this range has been backfilled
             check_query = f"""
@@ -215,7 +217,7 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
             AND mv_name = '{mv_name}'
             HAVING 
                 MIN(start_date) <= toDate('{current_date}')
-            AND MAX(end_date) >= toDate('{batch_end}')
+            AND MAX(end_date) > toDate('{batch_end}')
             LIMIT 1
             """
             result = client.query(check_query)
@@ -227,11 +229,17 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
                 batch_end = min(current_date + batch_size, end_date)
             else:
                 print("no backfill exists")
+            
+            # print(f'backfill check batch end: {batch_end}')
             # print(f"Fill start: {current_date}")
 
             # print(check_query)
             # print(result.result_rows)
             #Check if data already exists
+
+            # Start 1 day back
+            query_start_date = current_date - datetime.timedelta(days = 1)
+            query_end_date = batch_end + datetime.timedelta(days = 1)
 
 
             if not result.result_rows:
@@ -240,8 +248,8 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
                 query = query_template.format(
                     view_name=full_view_name,
                     chain=chain,
-                    start_date=current_date,
-                    end_date=batch_end,
+                    start_date=query_start_date,
+                    end_date=query_end_date,
                     table_name = full_table_name,
                     block_time_sec = block_time
                 )
@@ -251,15 +259,15 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
                 try:
                     # print(query)
                     # set_optimize_on_insert(0) # for runtime
-                    print(f"Starting backfill for {full_view_name} from {current_date} to {batch_end}")
+                    print(f"Starting backfill for {full_view_name} from {query_start_date} to {batch_end}")
 
-                    # Save the query
-                    output_folder = os.path.join("mv_outputs", "sql")
-                    os.makedirs(output_folder, exist_ok=True)
-                    filename = f"{mv_name}_backfill.sql"
-                    file_path = os.path.join(output_folder, filename)
-                    with open(file_path, 'w') as file:
-                        file.write(query)
+                    # # Save the query
+                    # output_folder = os.path.join("mv_outputs", "sql")
+                    # os.makedirs(output_folder, exist_ok=True)
+                    # filename = f"{chain}_{mv_name}_backfill.sql"
+                    # file_path = os.path.join(output_folder, filename)
+                    # with open(file_path, 'w') as file:
+                    #     file.write(query)
 
                     client.command(query)
                     # Record the backfill
@@ -286,6 +294,7 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
                 #     optimize_partition(client, full_view_name, current_date, batch_end)
         # print(f"Current Date: {current_date}, Batch End: {batch_end}")
         current_date = max(batch_end,current_date) + datetime.timedelta(days=1)
+
         # print(f"New Current Date: {current_date}")
 
 # def optimize_partition(client, full_view_name, start_date, end_date):
@@ -364,10 +373,10 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # In[ ]:
 
 
-# # # # # To reset a view
+# # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'daily_aggregate_transactions_to', 2)
+#         reset_materialized_view(client, chain, 'across_bridging_txs_v3', 2)
 
 # # # # reset a single chain
 # # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to', 2)

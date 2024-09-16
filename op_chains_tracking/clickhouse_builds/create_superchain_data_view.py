@@ -67,8 +67,7 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None, 
                                 FROM {table_name}
                                 WHERE 1=1
                                 """
-        # Add mainnet filter
-        sql_query += " AND network = 'mainnet'"
+            
         if do_is_deleted_line:
                 sql_query += ' AND is_deleted = 0'
         # finalize query
@@ -94,10 +93,11 @@ native_dataset_types = [
 
 mv_dataset_types = [
                 # mvs
-                 'erc20_transfers_mv','native_eth_transfers_mv'
+                #  'erc20_transfers_mv','native_eth_transfers_mv',
                 #  ,'transactions_unique'
-                 ,'daily_aggregate_transactions_to'
-                 ,'across_bridging_txs_v3'
+                 'daily_aggregate_transactions_to_mv',
+                 'across_bridging_txs_v3_mv',
+                 'across_bridging_txs_v3_logs_only_mv',
                  ]
 dataset_types = native_dataset_types + mv_dataset_types
 print(dataset_types)
@@ -109,6 +109,7 @@ for dataset_type in dataset_types:
                 if dataset_type in mv_dataset_types:
                         is_deleted_line = False
                 create_clickhouse_view(view_slug, dataset_type, chain_names, do_is_deleted_line = is_deleted_line)
-        except:
+        except Exception as e:
                 print(f'Can not create view for {dataset_type}')
+                print(f'Error: {str(e)}')
 
