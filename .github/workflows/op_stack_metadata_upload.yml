@@ -64,13 +64,28 @@ jobs:
           OP_CLICKHOUSE_USER: ${{ secrets.OP_CLICKHOUSE_USER }}
           OP_CLICKHOUSE_PW: ${{ secrets.OP_CLICKHOUSE_PW }}
           OP_CLICKHOUSE_PORT: ${{ secrets.OP_CLICKHOUSE_PORT }}
-
-      - name: Commit and Push Chain Metadata changes
+      - name: Pull changes - Generate Chain Metadata
+        run: |
+          git pull origin main
+      - name: Commit files - Generate Chain Metadata
+        id: commit
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "github-actions"
           git add --all
-          git diff --quiet && git diff --staged --quiet || (git commit -m "GH Action Update - Chain Metadata" && git push --force-with-lease)
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit."
+            echo "push=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "GH Action Update - Generate Chain Metadata" -a
+            echo "push=true" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+      - name: Push changes - Generate Chain Metadata
+        if: steps.commit.outputs.push == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Create Projections
       #   working-directory: op_chains_tracking/clickhouse_builds
@@ -102,9 +117,25 @@ jobs:
           OP_CLICKHOUSE_PW: ${{ secrets.OP_CLICKHOUSE_PW }}
           OP_CLICKHOUSE_PORT: ${{ secrets.OP_CLICKHOUSE_PORT }}
 
-      - name: Commit and Push Matviews and Views changes
+      - name: Pull changes - Matviews and Views
+        run: |
+          git pull origin main
+      - name: Commit files - Matviews and Views
+        id: commitmvv
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "github-actions"
           git add --all
-          git diff --quiet && git diff --staged --quiet || (git commit -m "GH Action Update - Matviews and Views" && git push --force-with-lease)
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit."
+            echo "push=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "GH Action Update - Matviews and Views" -a
+            echo "push=true" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+      - name: Push changes - Matviews and Views
+        if: steps.commit.outputs.push == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
