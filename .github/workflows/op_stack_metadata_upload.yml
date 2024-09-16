@@ -47,9 +47,9 @@ jobs:
         working-directory: op_chains_tracking
         run: |
           pipenv run jupyter nbconvert --to python inputs/clean_chain_metadata_and_upload.ipynb
-          pipenv run jupyter nbconvert --to python clickhouse_builds/create_projections.ipynb
           pipenv run jupyter nbconvert --to python clickhouse_builds/create_matviews.ipynb
           pipenv run jupyter nbconvert --to python clickhouse_builds/create_superchain_data_view.ipynb
+        # pipenv run jupyter nbconvert --to python clickhouse_builds/create_projections.ipynb
           
       - name: Generate Chain Metadata
         working-directory: op_chains_tracking/inputs
@@ -72,15 +72,15 @@ jobs:
           git add --all
           git diff --quiet && git diff --staged --quiet || (git commit -m "GH Action Update - Chain Metadata" && git push --force-with-lease)
 
-      - name: Create Projections
-        working-directory: op_chains_tracking/clickhouse_builds
-        run: |
-          pipenv run python create_projections.py
-        env:
-          OP_CLICKHOUSE_HOST: ${{ secrets.OP_CLICKHOUSE_HOST }}
-          OP_CLICKHOUSE_USER: ${{ secrets.OP_CLICKHOUSE_USER }}
-          OP_CLICKHOUSE_PW: ${{ secrets.OP_CLICKHOUSE_PW }}
-          OP_CLICKHOUSE_PORT: ${{ secrets.OP_CLICKHOUSE_PORT }}
+      # - name: Create Projections
+      #   working-directory: op_chains_tracking/clickhouse_builds
+      #   run: |
+      #     pipenv run python create_projections.py
+      #   env:
+      #     OP_CLICKHOUSE_HOST: ${{ secrets.OP_CLICKHOUSE_HOST }}
+      #     OP_CLICKHOUSE_USER: ${{ secrets.OP_CLICKHOUSE_USER }}
+      #     OP_CLICKHOUSE_PW: ${{ secrets.OP_CLICKHOUSE_PW }}
+      #     OP_CLICKHOUSE_PORT: ${{ secrets.OP_CLICKHOUSE_PORT }}
 
       - name: Create Matviews
         working-directory: op_chains_tracking/clickhouse_builds
