@@ -1,4 +1,4 @@
-INSERT INTO race_across_bridging_txs_v3_mv
+INSERT INTO op_across_bridging_txs_v3_mv
 
 select
     x.*
@@ -29,8 +29,8 @@ from (
         END AS integrator
         ,l.log_index AS log_index
         , l.insert_time
-    from race_logs as l
-    join race_transactions as t
+    from op_logs as l
+    join op_transactions as t
         on l.transaction_hash = t.hash
         and l.block_timestamp = t.block_timestamp
         and l.block_number = t.block_number
@@ -38,8 +38,8 @@ from (
     join across_bridge_metadata as c
         on l.chain = c.chain_name
     where 1=1
-        AND l.block_timestamp BETWEEN '2024-09-10' AND '2024-09-17'
-        AND t.block_timestamp BETWEEN '2024-09-10' AND '2024-09-17'
+        AND l.block_timestamp BETWEEN '2024-06-30' AND '2024-07-08'
+        AND t.block_timestamp BETWEEN '2024-06-30' AND '2024-07-08'
         and t.receipt_status = 1
         AND t.is_deleted = 0
         AND l.is_deleted = 0
