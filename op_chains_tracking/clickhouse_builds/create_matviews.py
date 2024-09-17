@@ -16,7 +16,7 @@ mvs = [
     {'mv_name': 'event_emitting_transactions_l2s', 'start_date': ''},
 ]
 
-set_days_batch_size = 7 #30
+set_days_batch_size = 2 #7 #30
 
 optimize_all = True
 
@@ -143,29 +143,30 @@ def create_materialized_view(client, chain, mv_name, block_time = 2):
             print(f"Error creating table {table_view_name}: {str(e)}")
             return  # Exit the function if table creation fails
 
-    try:
-        # Check if view already exists
-        result = client.query(f"SHOW TABLES LIKE '{full_view_name}'")
-        result_rows = list(result.result_rows)
-        if result_rows:
-            print(f"Materialized view {full_view_name} already exists. Skipping creation.")
-            return
+    # Comment out matview since we're backfilling daily now
+    # try:
+    #     # Check if view already exists
+    #     result = client.query(f"SHOW TABLES LIKE '{full_view_name}'")
+    #     result_rows = list(result.result_rows)
+    #     if result_rows:
+    #         print(f"Materialized view {full_view_name} already exists. Skipping creation.")
+    #         return
 
-        query_template = get_query_from_file(f'{mv_name}_mv')
-        query = query_template.format(chain=chain, view_name=full_view_name, table_name=table_view_name, block_time_sec=block_time)
-        query = gsb.process_goldsky_sql(query)
-        # Save the query
-        output_folder = os.path.join("mv_outputs", "sql")
-        os.makedirs(output_folder, exist_ok=True)
-        filename = f"{mv_name}_mv.sql"
-        file_path = os.path.join(output_folder, filename)
-        with open(file_path, 'w') as file:
-            file.write(query)
-        # print(query)
-        client.command(query)
-        print(f"Created materialized view {full_view_name}")
-    except ClickHouseError as e:
-        print(f"Error creating materialized view {full_view_name}: {str(e)}")
+    #     query_template = get_query_from_file(f'{mv_name}_mv')
+    #     query = query_template.format(chain=chain, view_name=full_view_name, table_name=table_view_name, block_time_sec=block_time)
+    #     query = gsb.process_goldsky_sql(query)
+    #     # Save the query
+    #     output_folder = os.path.join("mv_outputs", "sql")
+    #     os.makedirs(output_folder, exist_ok=True)
+    #     filename = f"{mv_name}_mv.sql"
+    #     file_path = os.path.join(output_folder, filename)
+    #     with open(file_path, 'w') as file:
+    #         file.write(query)
+    #     # print(query)
+    #     client.command(query)
+    #     print(f"Created materialized view {full_view_name}")
+    # except ClickHouseError as e:
+    #     print(f"Error creating materialized view {full_view_name}: {str(e)}")
 
 
 def ensure_backfill_tracking_table_exists(client):
@@ -350,7 +351,7 @@ def detach_reset_materialized_view(client, chain, mv_name):
     client.command(dt_cmd)
     print(f"Detached table {full_view_name}")
 
-def reset_materialized_view(client, chain, mv_name):
+def reset_materialized_view(client, chain, mv_name,):
     full_view_name = f'{chain}_{mv_name}_mv'
     table_name = f'{chain}_{mv_name}'
 
@@ -362,6 +363,7 @@ def reset_materialized_view(client, chain, mv_name):
 
         # Drop the existing materialized view
         client.command(f"DROP TABLE IF EXISTS {table_name}")
+        client.command(f"DROP TABLE IF EXISTS {full_view_name}")
         print(f"Dropped table {table_name}")
 
         # Clear the backfill tracking for this view
