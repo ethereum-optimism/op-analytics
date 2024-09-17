@@ -19,7 +19,7 @@ mvs = [
 
 set_days_batch_size = 7 #30
 
-optimize_all = True
+optimize_all = False #True
 
 
 # In[ ]:
@@ -208,6 +208,15 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
         days_batch_size = set_days_batch_size
         
         while (is_success == 0) & (attempts < 3) :#& (current_date + datetime.timedelta(days=days_batch_size) <= end_date):
+            if attempts == 1:
+                days_batch_size = set_days_batch_size
+            elif attempts == 2:
+                days_batch_size = int( set_days_batch_size / 2 )
+                print(f'reset batch size to {days_batch_size}')
+            else:
+                days_batch_size = 1
+                print(f'reset batch size to {days_batch_size}')
+            
             batch_size = datetime.timedelta(days=days_batch_size)
             print(f"attempt: {attempts}")
             batch_end = min(current_date + batch_size, end_date)
@@ -281,7 +290,7 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
                     """
                     client.command(track_query)
                     
-                    print(f"Backfilled data for {full_view_name} from {current_date} to {batch_end}")
+                    print(f"Backfilled data for {full_view_name} from {query_start_date} to {batch_end}")
 
                     # Optimize the newly backfilled partition
                     # optimize_partition(client, full_view_name, current_date, batch_end)
@@ -398,29 +407,29 @@ def reset_materialized_view(client, chain, mv_name,):
 # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'event_emitting_transactions_l2s')
+#         reset_materialized_view(client, chain, 'across_bridging_txs_v3')
 
-# # # # # # reset a single chain
-# # # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to')
+# # # # # # # reset a single chain
+# # # # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to')
 
-# # # # # # # # # # # for mv in mv_names:
-# # # # # # # # # # #         # print(row)
-# # # # # # # # # # #         reset_materialized_view(client, 'bob', mv)
+# # # # # # # # # # # # for mv in mv_names:
+# # # # # # # # # # # #         # print(row)
+# # # # # # # # # # # #         reset_materialized_view(client, 'bob', mv)
 
 
-# # # # # # # Clear all
-# # # # # # # mv_names
-# # # # # # # for row in chain_configs.itertuples(index=False):
-# # # # # # #         for mv in mv_names:
-# # # # # # #                 chain = row.chain_name
-# # # # # # #                 reset_materialized_view(client, chain, mv)
+# # # # # # # # Clear all
+# # # # # # # # mv_names
+# # # # # # # # for row in chain_configs.itertuples(index=False):
+# # # # # # # #         for mv in mv_names:
+# # # # # # # #                 chain = row.chain_name
+# # # # # # # #                 reset_materialized_view(client, chain, mv)
 
-# # Detach all
-# detach_reset_materialized_view
-# for row in chain_configs.itertuples(index=False):
-#         for mv in mv_names:
-#                 chain = row.chain_name
-#                 detach_reset_materialized_view(client, chain, mv)
+# # # Detach all
+# # detach_reset_materialized_view
+# # for row in chain_configs.itertuples(index=False):
+# #         for mv in mv_names:
+# #                 chain = row.chain_name
+# #                 detach_reset_materialized_view(client, chain, mv)
 
 
 # In[ ]:
@@ -429,16 +438,17 @@ def reset_materialized_view(client, chain, mv_name,):
 # Main execution
 ensure_backfill_tracking_table_exists(client)
 
-for row in chain_configs.itertuples(index=False):
+for mv_row in mvs:
 
-    chain = row.chain_name
-    block_time = row.block_time_sec
-    print(f"Processing chain: {chain}")
-    for row in mvs:
-        mv_name = row['mv_name']
+    for chain_row in chain_configs.itertuples(index=False):
+        chain = chain_row.chain_name
+        block_time = chain_row.block_time_sec
 
-        if row['start_date'] != '':
-            mod_start_date = row['start_date']
+        mv_name = mv_row['mv_name']
+        print(f"Processing chain: {chain} - {mv_name}")
+
+        if mv_row['start_date'] != '':
+            mod_start_date = mv_row['start_date']
         else:
             mod_start_date = start_date
         
