@@ -1,5 +1,7 @@
-CREATE MATERIALIZED VIEW {view_name}
-TO {table_name}
+-- CREATE MATERIALIZED VIEW {view_name}
+-- TO {table_name}
+
+ALTER TABLE {view_name} MODIFY QUERY
 
 AS select
     x.*
