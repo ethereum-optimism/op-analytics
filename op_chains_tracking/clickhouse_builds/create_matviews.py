@@ -8,10 +8,12 @@
 mvs = [
     {'mv_name': 'across_bridging_txs_v3', 'start_date': '2024-07-01'},
     {'mv_name': 'across_bridging_txs_v3_logs_only', 'start_date': '2024-07-01'},
-    # {'mv_name': 'erc20_transfers', 'start_date': ''},
-    # {'mv_name': 'native_eth_transfers', 'start_date': ''},
-    # {'mv_name': 'transactions_unique', 'start_date': ''},
+    {'mv_name': 'filtered_logs_l2s', 'start_date': ''},
+    ### {'mv_name': 'erc20_transfers', 'start_date': ''},
+    ### {'mv_name': 'native_eth_transfers', 'start_date': ''},
+    ### {'mv_name': 'transactions_unique', 'start_date': ''},
     {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''}
+    {'mv_name': 'event_emitting_transactions_l2s', 'start_date': ''},
 ]
 
 set_days_batch_size = 7 #30
@@ -360,10 +362,13 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
         # print(f"Recreated materialized view {full_view_name}")
 
         # Clear the backfill tracking for this view
-        client.command(f"""
+        bf_delete = f"""
         ALTER TABLE backfill_tracking 
         DELETE WHERE chain = '{chain}' AND mv_name = '{mv_name}'
-        """)
+        """
+        # print(bf_delete)
+        client.command(bf_delete)
+
         print(f"Cleared backfill tracking for {full_view_name}")
 
     except Exception as e:
@@ -373,25 +378,25 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # In[ ]:
 
 
-# # # # To reset a view
-# for row in chain_configs.itertuples(index=False):
-#         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'across_bridging_txs_v3', 2)
+# # # To reset a view
+for row in chain_configs.itertuples(index=False):
+        chain = row.chain_name
+        reset_materialized_view(client, chain, 'filtered_logs_l2s', 2)
 
-# # # # reset a single chain
-# # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to', 2)
+# # # # # reset a single chain
+# # # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to', 2)
 
-# # # # # # # # # # for mv in mv_names:
-# # # # # # # # # #         # print(row)
-# # # # # # # # # #         reset_materialized_view(client, 'bob', mv, 2)
+# # # # # # # # # # # for mv in mv_names:
+# # # # # # # # # # #         # print(row)
+# # # # # # # # # # #         reset_materialized_view(client, 'bob', mv, 2)
 
 
-# # # # # # Clear all
-# # # # # # mv_names
-# # # # # # for row in chain_configs.itertuples(index=False):
-# # # # # #         for mv in mv_names:
-# # # # # #                 chain = row.chain_name
-# # # # # #                 reset_materialized_view(client, chain, mv, 2)
+# # # # # # # Clear all
+# # # # # # # mv_names
+# # # # # # # for row in chain_configs.itertuples(index=False):
+# # # # # # #         for mv in mv_names:
+# # # # # # #                 chain = row.chain_name
+# # # # # # #                 reset_materialized_view(client, chain, mv, 2)
 
 
 # In[ ]:

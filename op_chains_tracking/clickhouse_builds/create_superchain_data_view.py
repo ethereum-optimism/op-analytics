@@ -98,7 +98,9 @@ mv_dataset_types = [
                  'daily_aggregate_transactions_to_mv',
                  'across_bridging_txs_v3_mv',
                  'across_bridging_txs_v3_logs_only_mv',
+                 'filtered_logs_l2s_mv','event_emitting_transactions_l2s_mv'
                  ]
+
 dataset_types = native_dataset_types + mv_dataset_types
 print(dataset_types)
 chain_names = get_chain_names_from_df(chain_configs)
