@@ -1,6 +1,6 @@
-INSERT INTO {view_name}
+INSERT INTO {table_name}
 
-SELECT
+SELECT distinct
 transaction_hash as transaction_hash
 , chain as chain_name
 , block_timestamp AS block_timestamp
