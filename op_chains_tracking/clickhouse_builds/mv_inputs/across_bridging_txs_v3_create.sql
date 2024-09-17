@@ -19,9 +19,9 @@ CREATE TABLE {view_name}
     depositor_address String,
     integrator String,
     dst_chain String,
+    log_index   UInt64,
     insert_time DateTime
 )
-
 ENGINE = ReplacingMergeTree(insert_time)
 PARTITION BY toYYYYMM(block_timestamp)
 ORDER BY (block_timestamp, block_number, transaction_hash)

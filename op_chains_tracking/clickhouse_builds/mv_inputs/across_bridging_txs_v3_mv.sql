@@ -1,9 +1,10 @@
-CREATE MATERIALIZED VIEW IF NOT EXISTS {view_name}
-ENGINE = ReplacingMergeTree(insert_time)
-PARTITION BY toYYYYMM(block_timestamp)
-ORDER BY (block_timestamp, block_number, transaction_hash, log_index, deposit_id)
-
-AS select
+-- CREATE MATERIALIZED VIEW IF NOT EXISTS {view_name}
+-- ENGINE = ReplacingMergeTree(insert_time)
+-- PARTITION BY toYYYYMM(block_timestamp)
+-- ORDER BY (block_timestamp, block_number, transaction_hash, log_index, deposit_id)
+-- AS
+ALTER TABLE {view_name} MODIFY QUERY
+select
     x.*
     ,c.chain_name as dst_chain
 from (
