@@ -95,10 +95,9 @@ mv_dataset_types = [
                 # mvs
                 #  'erc20_transfers_mv','native_eth_transfers_mv',
                 #  ,'transactions_unique'
-                 'daily_aggregate_transactions_to_mv',
-                 'across_bridging_txs_v3_mv',
-                 'across_bridging_txs_v3_logs_only_mv',
-                 'filtered_logs_l2s_mv','event_emitting_transactions_l2s_mv'
+                #  'daily_aggregate_transactions_to_mv',
+                 'across_bridging_txs_v3',
+                 'event_emitting_transactions_l2s'
                  ]
 
 dataset_types = native_dataset_types + mv_dataset_types
