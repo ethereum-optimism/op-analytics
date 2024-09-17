@@ -18,10 +18,10 @@ CREATE TABLE {view_name}
     relayer_address String,
     depositor_address String,
     integrator String,
-    dst_chain String,
     log_index   UInt64,
-    insert_time DateTime
+    insert_time DateTime,
+    dst_chain String
 )
 ENGINE = ReplacingMergeTree(insert_time)
 PARTITION BY toYYYYMM(block_timestamp)
-ORDER BY (block_timestamp, block_number, transaction_hash)
+ORDER BY (block_timestamp, block_number, transaction_hash, deposit_id, log_index)
