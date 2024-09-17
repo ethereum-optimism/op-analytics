@@ -27,8 +27,8 @@ from (
             WHEN substring(t.input, -10) = '1dc0de0002' THEN 'Brid.gg'
             ELSE null
         END AS integrator
-        , l.log_index AS log_index
-        , insert_time
+        , l.log_index
+        , l.insert_time
     from {chain}_logs as l
     join {chain}_transactions as t
         on l.transaction_hash = t.hash
@@ -38,21 +38,22 @@ from (
     join across_bridge_metadata as c
         on l.chain = c.chain_name
     where 1=1
+        and splitByChar(',', l.topics)[1] = '0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f'
+        -- and l.network = 'mainnet'
         AND l.block_timestamp BETWEEN '{start_date}' AND '{end_date}'
         AND t.block_timestamp BETWEEN '{start_date}' AND '{end_date}'
+        
         and t.receipt_status = 1
         AND t.is_deleted = 0
         AND l.is_deleted = 0
         AND t.gas_price > 0 
         AND l.data IS NOT NULL AND l.data != '' -- info is there
         AND l.chain IN (SELECT chain_name FROM across_bridge_metadata)
-        AND l.block_timestamp > '2024-05-01'
-
-        AND t.block_timestamp < toDate(NOW())
 ) as x
 
 join across_bridge_metadata as c
     on x.dst_chain_id = c.mainnet_chain_id
 where integrator is not null
+AND block_timestamp < toDate(NOW())
 
 SETTINGS max_execution_time = 5000

@@ -24,4 +24,4 @@ CREATE TABLE {view_name}
 )
 ENGINE = ReplacingMergeTree(insert_time)
 PARTITION BY toYYYYMM(block_timestamp)
-ORDER BY (block_timestamp, block_number, transaction_hash)
+ORDER BY (block_timestamp, block_number, transaction_hash, deposit_id, log_index)
