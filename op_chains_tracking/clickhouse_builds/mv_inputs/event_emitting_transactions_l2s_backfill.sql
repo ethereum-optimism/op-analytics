@@ -1,4 +1,4 @@
-INSERT INTO {view_name}
+INSERT INTO {table_name}
 
 select distinct
     t.block_timestamp AS block_timestamp,
@@ -10,7 +10,8 @@ select distinct
     coalesce(t.receipt_l1_fee/1e18,0) AS l1_gas_fee,
     coalesce((t.gas_price * t.receipt_gas_used)/1e18,0) AS l2_gas_fee,
     coalesce(((t.gas_price * t.receipt_gas_used)/1e18),0) + coalesce((t.receipt_l1_fee/1e18),0) AS total_gas_fee,
-    t.chain as chain_name
+    t.chain as chain_name,
+    l.insert_time
 
 from {chain}_filtered_logs_l2s l
 inner join {chain}_transactions t
