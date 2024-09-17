@@ -1,4 +1,4 @@
-INSERT INTO {view_name}
+INSERT INTO {table_name}
 
 select
     x.*
@@ -27,8 +27,8 @@ from (
             WHEN substring(t.input, -10) = '1dc0de0002' THEN 'Brid.gg'
             ELSE null
         END AS integrator
-        ,l.log_index AS log_index
-        , l.insert_time
+        , l.log_index AS log_index
+        , insert_time
     from {chain}_logs as l
     join {chain}_transactions as t
         on l.transaction_hash = t.hash
