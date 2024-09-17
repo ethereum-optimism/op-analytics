@@ -7,16 +7,17 @@
 # List of materialized view names
 mvs = [
     {'mv_name': 'across_bridging_txs_v3', 'start_date': '2024-07-01'},
-    {'mv_name': 'across_bridging_txs_v3_logs_only', 'start_date': '2024-07-01'},
-    {'mv_name': 'filtered_logs_l2s', 'start_date': ''},
+    # {'mv_name': 'across_bridging_txs_v3_logs_only', 'start_date': '2024-07-01'},
+    # {'mv_name': 'filtered_logs_l2s', 'start_date': ''},
     ### {'mv_name': 'erc20_transfers', 'start_date': ''},
     ### {'mv_name': 'native_eth_transfers', 'start_date': ''},
     ### {'mv_name': 'transactions_unique', 'start_date': ''},
-    {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''},
+    # {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''},
     {'mv_name': 'event_emitting_transactions_l2s', 'start_date': ''},
+    
 ]
 
-set_days_batch_size = 2 #7 #30
+set_days_batch_size = 7 #30
 
 optimize_all = True
 
@@ -229,7 +230,7 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
                 latest_fill_start = result.result_rows[0][0]
                 # print(f"Latest Fill Result: {latest_fill_start}")
                 current_date = max(latest_fill_start, current_date)
-                batch_end = min(current_date + batch_size, end_date)
+                batch_end = min(current_date + batch_size, end_date + datetime.timedelta(days = 1))
             else:
                 print("no backfill exists")
             
@@ -242,7 +243,7 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
 
             # Start 1 day back
             query_start_date = current_date - datetime.timedelta(days = 1)
-            query_end_date = batch_end + datetime.timedelta(days = 1)
+            query_end_date = batch_end #+ datetime.timedelta(days = 1)
 
 
             if not result.result_rows:
@@ -296,7 +297,7 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
                 # if optimize_all:
                 #     optimize_partition(client, full_view_name, current_date, batch_end)
         # print(f"Current Date: {current_date}, Batch End: {batch_end}")
-        current_date = max(batch_end,current_date) + datetime.timedelta(days=1)
+        current_date = max(batch_end,current_date + datetime.timedelta(days=1))
 
         # print(f"New Current Date: {current_date}")
 
@@ -345,9 +346,20 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
 
 
 def detach_reset_materialized_view(client, chain, mv_name):
+    table_view_name = f'{chain}_{mv_name}'
     full_view_name = f'{chain}_{mv_name}_mv'
-    dt_cmd = f"DETACH TABLE PERMANENTLY {full_view_name}"
-    print(dt_cmd)
+    create_file_name = f'{mv_name}_create'
+    print(full_view_name)
+    query_template = get_query_from_file(f'{mv_name}_mv')
+    query = query_template.format(chain=chain, view_name=full_view_name, table_name=table_view_name, block_time_sec=block_time)
+    query = gsb.process_goldsky_sql(query)
+    client.command(query)
+    print(f"Updated materialized view {full_view_name}")
+
+    # dt_cmd = f"DETACH TABLE PERMANENTLY {full_view_name}"
+    # dt_cmd = f"ALTER TABLE {full_view_name} MODIFY QUERY SELECT 1 WHERE 0"
+
+    # print(dt_cmd)
     client.command(dt_cmd)
     print(f"Detached table {full_view_name}")
 
@@ -386,9 +398,9 @@ def reset_materialized_view(client, chain, mv_name,):
 # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'filtered_logs_l2s')
+#         reset_materialized_view(client, chain, 'event_emitting_transactions_l2s')
 
-# # # # # reset a single chain
+# # # # # # reset a single chain
 # # # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to')
 
 # # # # # # # # # # # for mv in mv_names:
