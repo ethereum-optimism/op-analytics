@@ -47,6 +47,8 @@ from (
         AND l.data IS NOT NULL AND l.data != '' -- info is there
         AND l.chain IN (SELECT chain_name FROM across_bridge_metadata)
         AND l.block_timestamp > '2024-05-01'
+
+        AND t.block_timestamp < toDate(NOW())
 ) as x
 
 join across_bridge_metadata as c
