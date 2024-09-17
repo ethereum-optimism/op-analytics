@@ -134,15 +134,6 @@ blob_base_fee  = get_blob_base_fee_per_gas(api_url)
 # In[ ]:
 
 
-#Write to Endpoints
-with open(f"outputs/ethusd.txt", 'w') as file:
-        file.write(ethusd)
-with open(f"outputs/suggest_base_fee.txt", 'w') as file:
-        file.write(suggest_base_fee)
-with open(f"outputs/blob_base_fee.txt", 'w') as file:
-        file.write(blob_base_fee)
-
-
 # In[ ]:
 
 
