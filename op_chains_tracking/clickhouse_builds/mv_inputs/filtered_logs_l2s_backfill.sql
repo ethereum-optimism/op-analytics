@@ -1,6 +1,12 @@
 INSERT INTO {table_name}
 
-SELECT distinct
+WITH block_ranges AS (
+SELECT min(number) AS min_num, max(number) AS max_num
+    from {chain}_blocks b2
+    where b2.timestamp between toDate('{start_date}') and toDate('{end_date}')
+)
+
+SELECT
 transaction_hash as transaction_hash
 , chain as chain_name
 , block_timestamp AS block_timestamp
@@ -22,6 +28,8 @@ NOT IN ( '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925'
 
 AND l.block_timestamp BETWEEN '{start_date}' AND '{end_date}'
 AND l.block_number between 
-    (SELECT min(number) from {chain}_blocks b2 where b2.timestamp >= toDate('{start_date}') )
+    (SELECT min_num FROM block_ranges )
                 and             
-    (SELECT max(number) from {chain}_blocks b2 where b2.timestamp < toDate('{end_date}'))
+    (SELECT max_num FROM block_ranges)
+
+GROUP BY 1,2,3,4,5
