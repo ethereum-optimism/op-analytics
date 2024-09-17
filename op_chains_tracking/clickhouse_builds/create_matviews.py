@@ -12,7 +12,7 @@ mvs = [
     ### {'mv_name': 'erc20_transfers', 'start_date': ''},
     ### {'mv_name': 'native_eth_transfers', 'start_date': ''},
     ### {'mv_name': 'transactions_unique', 'start_date': ''},
-    {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''}
+    {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''},
     {'mv_name': 'event_emitting_transactions_l2s', 'start_date': ''},
 ]
 
@@ -343,7 +343,14 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
 # In[ ]:
 
 
-def reset_materialized_view(client, chain, mv_name, block_time = 2):
+def detach_reset_materialized_view(client, chain, mv_name):
+    full_view_name = f'{chain}_{mv_name}_mv'
+    dt_cmd = f"DETACH TABLE PERMANENTLY {full_view_name}"
+    print(dt_cmd)
+    client.command(dt_cmd)
+    print(f"Detached table {full_view_name}")
+
+def reset_materialized_view(client, chain, mv_name):
     full_view_name = f'{chain}_{mv_name}_mv'
     table_name = f'{chain}_{mv_name}'
 
@@ -356,10 +363,6 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
         # Drop the existing materialized view
         client.command(f"DROP TABLE IF EXISTS {table_name}")
         print(f"Dropped table {table_name}")
-
-        # # Recreate the materialized view using the existing function
-        # create_materialized_view(client, chain, mv_name, block_time)
-        # print(f"Recreated materialized view {full_view_name}")
 
         # Clear the backfill tracking for this view
         bf_delete = f"""
@@ -378,17 +381,17 @@ def reset_materialized_view(client, chain, mv_name, block_time = 2):
 # In[ ]:
 
 
-# # # To reset a view
-for row in chain_configs.itertuples(index=False):
-        chain = row.chain_name
-        reset_materialized_view(client, chain, 'filtered_logs_l2s', 2)
+# # # # To reset a view
+# for row in chain_configs.itertuples(index=False):
+#         chain = row.chain_name
+#         reset_materialized_view(client, chain, 'filtered_logs_l2s')
 
 # # # # # reset a single chain
-# # # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to', 2)
+# # # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to')
 
 # # # # # # # # # # # for mv in mv_names:
 # # # # # # # # # # #         # print(row)
-# # # # # # # # # # #         reset_materialized_view(client, 'bob', mv, 2)
+# # # # # # # # # # #         reset_materialized_view(client, 'bob', mv)
 
 
 # # # # # # # Clear all
@@ -396,7 +399,14 @@ for row in chain_configs.itertuples(index=False):
 # # # # # # # for row in chain_configs.itertuples(index=False):
 # # # # # # #         for mv in mv_names:
 # # # # # # #                 chain = row.chain_name
-# # # # # # #                 reset_materialized_view(client, chain, mv, 2)
+# # # # # # #                 reset_materialized_view(client, chain, mv)
+
+# # Detach all
+# detach_reset_materialized_view
+# for row in chain_configs.itertuples(index=False):
+#         for mv in mv_names:
+#                 chain = row.chain_name
+#                 detach_reset_materialized_view(client, chain, mv)
 
 
 # In[ ]:
