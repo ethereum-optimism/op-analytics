@@ -16,7 +16,7 @@ SELECT
         MAX(CASE 
             WHEN start_date <= toDate('{start_date}') 
                 AND (next_start_date > toDate('{start_date}') OR next_start_date IS NULL)
-                AND end_date < toDate('{end_date}')
+                AND end_date <= toDate('{end_date}')
             THEN end_date
         END),
         MIN(start_date) - INTERVAL 1 DAY
