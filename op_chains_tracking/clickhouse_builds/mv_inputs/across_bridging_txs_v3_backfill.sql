@@ -1,5 +1,13 @@
 INSERT INTO {table_name}
 
+WITH block_ranges AS (
+SELECT min(number) AS min_num, max(number) AS max_num
+    from {chain}_blocks b2
+    where 
+        ( b2.timestamp between toDate('{start_date}') and toDate('{end_date}') )
+        and ( b2.timestamp < toDate(NOW()) )
+)
+
 select
     x.*
     ,c.chain_name as dst_chain
@@ -42,7 +50,10 @@ from (
         -- and l.network = 'mainnet'
         AND l.block_timestamp BETWEEN '{start_date}' AND '{end_date}'
         AND t.block_timestamp BETWEEN '{start_date}' AND '{end_date}'
-        
+        AND l.block_number between 
+        (SELECT min_num FROM block_ranges )
+                    and             
+        (SELECT max_num FROM block_ranges)
         and t.receipt_status = 1
         AND t.is_deleted = 0
         AND l.is_deleted = 0
