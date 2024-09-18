@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 # List of materialized view names
@@ -22,7 +22,7 @@ set_days_batch_size = 3# 7 #30
 optimize_all = False #True
 
 
-# In[2]:
+# In[ ]:
 
 
 import pandas as pd
@@ -42,7 +42,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[3]:
+# In[ ]:
 
 
 mv_names = [item['mv_name'] for item in mvs]
@@ -60,7 +60,7 @@ def get_chain_names_from_df(df):
 # chain_configs = chain_configs[chain_configs['chain_name'] == 'xterio']
 
 
-# In[4]:
+# In[ ]:
 
 
 # List of chains
@@ -74,7 +74,14 @@ end_date = datetime.date.today() #+ datetime.timedelta(days=1)
 print(end_date)
 
 
-# In[5]:
+# In[ ]:
+
+
+og_start_date = start_date
+og_end_date = end_date
+
+
+# In[ ]:
 
 
 def get_query_from_file(mv_name):
@@ -96,7 +103,7 @@ def get_query_from_file(mv_name):
         raise
 
 
-# In[6]:
+# In[ ]:
 
 
 def set_optimize_on_insert(option_int = 1):
@@ -106,7 +113,7 @@ def set_optimize_on_insert(option_int = 1):
     print(f"Set optimize_on_insert = {option_int}")
 
 
-# In[7]:
+# In[ ]:
 
 
 import clickhouse_connect
@@ -187,7 +194,7 @@ def ensure_backfill_tracking_table_exists(client):
         print("backfill_tracking table already exists.")
 
 
-# In[8]:
+# In[ ]:
 
 
 # LEGACY FUNCTIONS
@@ -346,7 +353,7 @@ def ensure_backfill_tracking_table_exists(client):
 #         print(f"  Error: {str(e)}")
 
 
-# In[9]:
+# In[ ]:
 
 
 def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date='', set_days_batch_size=7):
@@ -364,8 +371,8 @@ def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date
     result = client.query(current_date_q).result_rows
     
     if result and result[0][0] is not None and result[0][1] is not None:
-        start_date_result = max(result[0][0].date() , start_date) # handle for corrupt timestamp
-        end_date_result = min( result[0][1].date(), end_date) # handle for corrupt timestamp
+        start_date_result = max(result[0][0].date() , og_start_date) # handle for corrupt timestamp
+        end_date_result = min( result[0][1].date(), og_end_date) # handle for corrupt timestamp
         print(f'start_date_result {start_date_result} - end_date_result {end_date_result}')
     else:
         start_date_result = start_date
@@ -462,7 +469,7 @@ def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date
         current_date = batch_end + datetime.timedelta(days=1)
 
 
-# In[10]:
+# In[ ]:
 
 
 def detach_reset_materialized_view(client, chain, mv_name):
@@ -512,7 +519,7 @@ def reset_materialized_view(client, chain, mv_name,):
         print(f"Error resetting materialized view {full_view_name}: {str(e)}")
 
 
-# In[11]:
+# In[ ]:
 
 
 def print_backfill_gaps(client):
@@ -529,7 +536,7 @@ def print_backfill_gaps(client):
         print("No backfill gaps found.")
 
 
-# In[12]:
+# In[ ]:
 
 
 # # # # To reset a view
@@ -560,7 +567,7 @@ def print_backfill_gaps(client):
 # #                 detach_reset_materialized_view(client, chain, mv)
 
 
-# In[13]:
+# In[ ]:
 
 
 # Main execution
