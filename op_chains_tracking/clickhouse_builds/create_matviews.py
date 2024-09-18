@@ -349,7 +349,7 @@ def ensure_backfill_tracking_table_exists(client):
 # In[ ]:
 
 
-def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date=''):
+def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date='', set_days_batch_size=7):
     full_view_name = f'{chain}_{mv_name}_mv'
     full_table_name = f'{chain}_{mv_name}'
     
@@ -360,68 +360,81 @@ def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date
     else:
         start_date = pd.to_datetime(mod_start_date).date()
 
+    start_date = start_date - datetime.timedelta(days=1) #ensure we fill in prior day
+
     # Fetch all existing backfill ranges
     backfill_query = f"""
     SELECT start_date, end_date
     FROM backfill_tracking
     WHERE chain = '{chain}' AND mv_name = '{mv_name}'
     AND start_date >= toDate('{start_date}')
-    AND end_date <= toDate('{end_date}')
     ORDER BY start_date
     """
     backfill_ranges = client.query(backfill_query).result_rows
 
-    # Convert to list of tuples for easier processing
-    backfill_ranges = [(row[0], row[1]) for row in backfill_ranges]  # Removed .date() calls
+    # Convert to list of tuples and sort
+    backfill_ranges = sorted([(row[0], row[1]) for row in backfill_ranges])
 
     current_date = start_date
     while current_date <= end_date:
-        batch_end = min(current_date + datetime.timedelta(days=set_days_batch_size), end_date)
-        
-        # Check if this range needs backfilling
-        need_backfill = True
-        for bf_start, bf_end in backfill_ranges:
-            if bf_start <= current_date and bf_end >= batch_end:
-                need_backfill = False
+        # Find the next date that needs backfilling
+        while current_date <= end_date:
+            is_backfilled = any(bf_start <= current_date <= bf_end for bf_start, bf_end in backfill_ranges)
+            if not is_backfilled:
                 break
-            elif bf_start > current_date:
-                batch_end = min(bf_start - datetime.timedelta(days=1), batch_end)
+            current_date += datetime.timedelta(days=1)
+        
+        if current_date > end_date:
+            print(f"All dates up to {end_date} have been backfilled.")
+            break
+
+        # Determine the batch end date
+        batch_end = min(current_date + datetime.timedelta(days=set_days_batch_size - 1), end_date)
+        
+        # Adjust batch_end if it overlaps with an existing backfill range
+        for bf_start, bf_end in backfill_ranges:
+            if current_date < bf_start <= batch_end:
+                batch_end = bf_start - datetime.timedelta(days=1)
                 break
 
-        if need_backfill:
-            attempts = 1
-            while attempts <= 3:
-                try:
-                    query_template = get_query_from_file(f'{mv_name}_backfill')
-                    query = query_template.format(
-                        view_name=full_view_name,
-                        chain=chain,
-                        start_date=current_date - datetime.timedelta(days=1),
-                        end_date=batch_end,
-                        table_name=full_table_name,
-                        block_time_sec=block_time
-                    )
-                    query = gsb.process_goldsky_sql(query)
-                    
-                    print(f"Starting backfill for {full_view_name} from {current_date} to {batch_end}")
-                    client.command(query)
-                    
-                    # Record the backfill
-                    track_query = f"""
-                    INSERT INTO backfill_tracking (chain, mv_name, start_date, end_date)
-                    VALUES ('{chain}', '{mv_name}', toDate('{current_date}'), toDate('{batch_end}'))
-                    """
-                    client.command(track_query)
-                    
-                    print(f"Backfilled data for {full_view_name} from {current_date} to {batch_end}")
-                    break
-                except Exception as e:
-                    print(f"Error during backfill for {full_view_name} from {current_date} to {batch_end}: {str(e)}")
-                    attempts += 1
-                    batch_end = min(current_date + datetime.timedelta(days=set_days_batch_size // (2 ** (attempts - 1))), end_date)
-                time.sleep(1)
-        else:
-            print(f"Data already backfilled for {full_view_name} from {current_date} to {batch_end}. Skipping.")
+        # Perform the backfill
+        attempts = 1
+        query_start_date = current_date - datetime.timedelta(days=1)
+        while attempts <= 3:
+            try:
+                query_template = get_query_from_file(f'{mv_name}_backfill')
+                query = query_template.format(
+                    view_name=full_view_name,
+                    chain=chain,
+                    start_date=query_start_date,
+                    end_date=batch_end,
+                    table_name=full_table_name,
+                    block_time_sec=block_time
+                )
+                query = gsb.process_goldsky_sql(query)
+                
+                print(f"Starting backfill for {full_view_name} from {query_start_date} to {batch_end}")
+                client.command(query)
+                
+                # Record the backfill
+                track_query = f"""
+                INSERT INTO backfill_tracking (chain, mv_name, start_date, end_date)
+                VALUES ('{chain}', '{mv_name}', toDate('{query_start_date}'), toDate('{batch_end}'))
+                """
+                client.command(track_query)
+                
+                print(f"Backfilled data for {full_view_name} from {query_start_date} to {batch_end}")
+                
+                # Update backfill_ranges with the new range
+                backfill_ranges.append((current_date, batch_end))
+                backfill_ranges.sort()
+                
+                break
+            except Exception as e:
+                print(f"Error during backfill for {full_view_name} from {current_date} to {batch_end}: {str(e)}")
+                attempts += 1
+                batch_end = min(current_date + datetime.timedelta(days=set_days_batch_size // (2 ** (attempts - 1))), end_date)
+            time.sleep(1)
 
         current_date = batch_end + datetime.timedelta(days=1)
 
