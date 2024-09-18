@@ -109,12 +109,6 @@ def set_optimize_on_insert(option_int = 1):
 # In[ ]:
 
 
-
-
-
-# In[ ]:
-
-
 import clickhouse_connect
 from clickhouse_connect.driver.exceptions import ClickHouseError
 
@@ -192,121 +186,122 @@ def ensure_backfill_tracking_table_exists(client):
     else:
         print("backfill_tracking table already exists.")
 
-def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, mod_start_date = start_date):
-    full_view_name = f'{chain}_{mv_name}_mv'
-    full_table_name = f'{chain}_{mv_name}'
-    if mod_start_date == '':
-        current_date_q = f"SELECT DATE_TRUNC('day',MIN(timestamp)) AS start_dt FROM {chain}_blocks WHERE number = 1 AND is_deleted = 0"
-        current_date = client.query(current_date_q).result_rows[0][0].date()
-    else:
-        current_date = pd.to_datetime(mod_start_date).date()
 
-    while current_date <= end_date:
-        print(f"{chain} - {mv_name}: Current date: {current_date} - End Date: {end_date}")
-        attempts = 1
-        is_success = 0
-        days_batch_size = set_days_batch_size
+# In[ ]:
+
+
+# LEGACY FUNCTIONS
+# def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, mod_start_date = start_date):
+#     full_view_name = f'{chain}_{mv_name}_mv'
+#     full_table_name = f'{chain}_{mv_name}'
+#     if mod_start_date == '':
+#         current_date_q = f"SELECT DATE_TRUNC('day',MIN(timestamp)) AS start_dt FROM {chain}_blocks WHERE number = 1 AND is_deleted = 0"
+#         current_date = client.query(current_date_q).result_rows[0][0].date()
+#     else:
+#         current_date = pd.to_datetime(mod_start_date).date()
+
+#     while current_date <= end_date:
+#         print(f"{chain} - {mv_name}: Current date: {current_date} - End Date: {end_date}")
+#         attempts = 1
+#         is_success = 0
+#         days_batch_size = set_days_batch_size
         
-        while (is_success == 0) & (attempts < 3) :#& (current_date + datetime.timedelta(days=days_batch_size) <= end_date):
-            if attempts == 1:
-                days_batch_size = set_days_batch_size
-            elif attempts == 2:
-                days_batch_size = int( set_days_batch_size / 2 )
-                print(f'reset batch size to {days_batch_size}')
-            else:
-                days_batch_size = 1
-                print(f'reset batch size to {days_batch_size}')
+#         while (is_success == 0) & (attempts <= 3) :#& (current_date + datetime.timedelta(days=days_batch_size) <= end_date):
+#             if attempts == 1:
+#                 days_batch_size = set_days_batch_size
+#             elif attempts == 2:
+#                 days_batch_size = int( set_days_batch_size / 2 )
+#                 print(f'reset batch size to {days_batch_size}')
+#             else:
+#                 days_batch_size = 1
+#                 print(f'reset batch size to {days_batch_size}')
             
-            batch_size = datetime.timedelta(days=days_batch_size)
-            print(f"attempt: {attempts}")
-            batch_end = min(current_date + batch_size, end_date)
-            # print(f'init batch end: {batch_end}')
-            # print('checking backfill tracking')
-            # Check if this range has been backfilled
-            check_query = f"""
-            SELECT MAX(start_date) AS latest_fill_start
-            FROM backfill_tracking
-            WHERE chain = '{chain}'
-            AND mv_name = '{mv_name}'
-            HAVING 
-                MIN(start_date) <= toDate('{current_date}')
-            AND MAX(end_date) > toDate('{batch_end}')
-            LIMIT 1
-            """
-            result = client.query(check_query)
+#             batch_size = datetime.timedelta(days=days_batch_size)
+#             print(f"attempt: {attempts}")
+#             batch_end = min(current_date + batch_size, end_date)
+#             # print(f'init batch end: {batch_end}')
+#             # print('checking backfill tracking')
+#             # Check if this range has been backfilled
+#             check_query_temp = get_query_from_file('backfill_check_query')
+#             check_query = check_query_temp.format(
+#                     mv_name=mv_name,
+#                     chain=chain,
+#                     start_date=current_date,
+#                     end_date=batch_end
+#                 )
+#             result = client.query(check_query)
 
-            if result.result_rows: # Get date to start backfilling
-                latest_fill_start = result.result_rows[0][0]
-                # print(f"Latest Fill Result: {latest_fill_start}")
-                current_date = max(latest_fill_start, current_date)
-                batch_end = min(current_date + batch_size, end_date + datetime.timedelta(days = 1))
-            else:
-                print("no backfill exists")
+#             if result.result_rows: # Get date to start backfilling
+#                 latest_fill_start = result.result_rows[0][0]
+#                 # print(f"Latest Fill Result: {latest_fill_start}")
+#                 current_date = max(latest_fill_start, current_date)
+#                 batch_end = min(current_date + batch_size, end_date + datetime.timedelta(days = 1))
+#             else:
+#                 print("no backfill exists")
             
-            # print(f'backfill check batch end: {batch_end}')
-            # print(f"Fill start: {current_date}")
+#             # print(f'backfill check batch end: {batch_end}')
+#             # print(f"Fill start: {current_date}")
 
-            # print(check_query)
-            # print(result.result_rows)
-            #Check if data already exists
+#             # print(check_query)
+#             # print(result.result_rows)
+#             #Check if data already exists
 
-            # Start 1 day back
-            query_start_date = current_date - datetime.timedelta(days = 1)
-            query_end_date = batch_end #+ datetime.timedelta(days = 1)
+#             # Start 1 day back
+#             query_start_date = current_date - datetime.timedelta(days = 1)
+#             query_end_date = batch_end #+ datetime.timedelta(days = 1)
 
 
-            if not result.result_rows:
-                # No record of backfill, proceed
-                query_template = get_query_from_file(f'{mv_name}_backfill')
-                query = query_template.format(
-                    view_name=full_view_name,
-                    chain=chain,
-                    start_date=query_start_date,
-                    end_date=query_end_date,
-                    table_name = full_table_name,
-                    block_time_sec = block_time
-                )
-                query = gsb.process_goldsky_sql(query)
+#             if not result.result_rows:
+#                 # No record of backfill, proceed
+#                 query_template = get_query_from_file(f'{mv_name}_backfill')
+#                 query = query_template.format(
+#                     view_name=full_view_name,
+#                     chain=chain,
+#                     start_date=query_start_date,
+#                     end_date=query_end_date,
+#                     table_name = full_table_name,
+#                     block_time_sec = block_time
+#                 )
+#                 query = gsb.process_goldsky_sql(query)
                 
-                # print(query)
-                try:
-                    # print(query)
-                    # set_optimize_on_insert(0) # for runtime
-                    print(f"Starting backfill for {full_view_name} from {query_start_date} to {batch_end}")
+#                 # print(query)
+#                 try:
+#                     # print(query)
+#                     # set_optimize_on_insert(0) # for runtime
+#                     print(f"Starting backfill for {full_view_name} from {query_start_date} to {batch_end}")
 
-                    # # Save the query
-                    # output_folder = os.path.join("mv_outputs", "sql")
-                    # os.makedirs(output_folder, exist_ok=True)
-                    # filename = f"{chain}_{mv_name}_backfill.sql"
-                    # file_path = os.path.join(output_folder, filename)
-                    # with open(file_path, 'w') as file:
-                    #     file.write(query)
+#                     # # Save the query
+#                     # output_folder = os.path.join("mv_outputs", "sql")
+#                     # os.makedirs(output_folder, exist_ok=True)
+#                     # filename = f"{chain}_{mv_name}_backfill.sql"
+#                     # file_path = os.path.join(output_folder, filename)
+#                     # with open(file_path, 'w') as file:
+#                     #     file.write(query)
 
-                    client.command(query)
-                    # Record the backfill
-                    track_query = f"""
-                    INSERT INTO backfill_tracking (chain, mv_name, start_date, end_date)
-                    VALUES ('{chain}', '{mv_name}', toDate('{current_date}'), toDate('{batch_end}'))
-                    """
-                    client.command(track_query)
+#                     client.command(query)
+#                     # Record the backfill
+#                     track_query = f"""
+#                     INSERT INTO backfill_tracking (chain, mv_name, start_date, end_date)
+#                     VALUES ('{chain}', '{mv_name}', toDate('{current_date}'), toDate('{batch_end}'))
+#                     """
+#                     client.command(track_query)
                     
-                    print(f"Backfilled data for {full_view_name} from {query_start_date} to {batch_end}")
+#                     print(f"Backfilled data for {full_view_name} from {query_start_date} to {batch_end}")
 
-                    # Optimize the newly backfilled partition
-                    # optimize_partition(client, full_view_name, current_date, batch_end)
-                    is_success = 1
-                except Exception as e:
-                    print(f"Error during backfill for {full_view_name} from {current_date} to {batch_end}: {str(e)}")
-                    days_batch_size = 1
-                    attempts += 1
-                time.sleep(1)
-            else:
-                print(f"Data already backfilled for {full_view_name} from {current_date} to {batch_end}. Skipping.")
-                is_success = 1
-                # if optimize_all:
-                #     optimize_partition(client, full_view_name, current_date, batch_end)
-        # print(f"Current Date: {current_date}, Batch End: {batch_end}")
-        current_date = max(batch_end,current_date + datetime.timedelta(days=1))
+#                     # Optimize the newly backfilled partition
+#                     # optimize_partition(client, full_view_name, current_date, batch_end)
+#                     is_success = 1
+#                 except Exception as e:
+#                     print(f"Error during backfill for {full_view_name} from {current_date} to {batch_end}: {str(e)}")
+#                     attempts += 1
+#                 time.sleep(1)
+#             else:
+#                 print(f"Data already backfilled for {full_view_name} from {current_date} to {batch_end}. Skipping.")
+#                 is_success = 1
+#                 # if optimize_all:
+#                 #     optimize_partition(client, full_view_name, current_date, batch_end)
+#         # print(f"Current Date: {current_date}, Batch End: {batch_end}")
+#         current_date = max(batch_end,current_date + datetime.timedelta(days=1))
 
         # print(f"New Current Date: {current_date}")
 
@@ -349,6 +344,86 @@ def backfill_data(client, chain, mv_name, end_date = end_date, block_time = 2, m
 #         print(f"  Partition: {partition}")
 #         print(f"  Date range: {start_date} to {end_date}")
 #         print(f"  Error: {str(e)}")
+
+
+# In[ ]:
+
+
+def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date=''):
+    full_view_name = f'{chain}_{mv_name}_mv'
+    full_table_name = f'{chain}_{mv_name}'
+    
+    # Determine start date
+    if mod_start_date == '':
+        current_date_q = f"SELECT DATE_TRUNC('day', MIN(timestamp)) AS start_dt FROM {chain}_blocks WHERE number = 1 AND is_deleted = 0"
+        start_date = client.query(current_date_q).result_rows[0][0].date()
+    else:
+        start_date = pd.to_datetime(mod_start_date).date()
+
+    # Fetch all existing backfill ranges
+    backfill_query = f"""
+    SELECT start_date, end_date
+    FROM backfill_tracking
+    WHERE chain = '{chain}' AND mv_name = '{mv_name}'
+    AND start_date >= toDate('{start_date}')
+    AND end_date <= toDate('{end_date}')
+    ORDER BY start_date
+    """
+    backfill_ranges = client.query(backfill_query).result_rows
+
+    # Convert to list of tuples for easier processing
+    backfill_ranges = [(row[0], row[1]) for row in backfill_ranges]  # Removed .date() calls
+
+    current_date = start_date
+    while current_date <= end_date:
+        batch_end = min(current_date + datetime.timedelta(days=set_days_batch_size), end_date)
+        
+        # Check if this range needs backfilling
+        need_backfill = True
+        for bf_start, bf_end in backfill_ranges:
+            if bf_start <= current_date and bf_end >= batch_end:
+                need_backfill = False
+                break
+            elif bf_start > current_date:
+                batch_end = min(bf_start - datetime.timedelta(days=1), batch_end)
+                break
+
+        if need_backfill:
+            attempts = 1
+            while attempts <= 3:
+                try:
+                    query_template = get_query_from_file(f'{mv_name}_backfill')
+                    query = query_template.format(
+                        view_name=full_view_name,
+                        chain=chain,
+                        start_date=current_date - datetime.timedelta(days=1),
+                        end_date=batch_end,
+                        table_name=full_table_name,
+                        block_time_sec=block_time
+                    )
+                    query = gsb.process_goldsky_sql(query)
+                    
+                    print(f"Starting backfill for {full_view_name} from {current_date} to {batch_end}")
+                    client.command(query)
+                    
+                    # Record the backfill
+                    track_query = f"""
+                    INSERT INTO backfill_tracking (chain, mv_name, start_date, end_date)
+                    VALUES ('{chain}', '{mv_name}', toDate('{current_date}'), toDate('{batch_end}'))
+                    """
+                    client.command(track_query)
+                    
+                    print(f"Backfilled data for {full_view_name} from {current_date} to {batch_end}")
+                    break
+                except Exception as e:
+                    print(f"Error during backfill for {full_view_name} from {current_date} to {batch_end}: {str(e)}")
+                    attempts += 1
+                    batch_end = min(current_date + datetime.timedelta(days=set_days_batch_size // (2 ** (attempts - 1))), end_date)
+                time.sleep(1)
+        else:
+            print(f"Data already backfilled for {full_view_name} from {current_date} to {batch_end}. Skipping.")
+
+        current_date = batch_end + datetime.timedelta(days=1)
 
 
 # In[ ]:
