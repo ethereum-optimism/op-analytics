@@ -2,10 +2,10 @@ INSERT INTO {table_name}
 
 WITH block_ranges AS (
 SELECT min(number) AS min_num, max(number) AS max_num
-    from {chain}_blocks b2
-    where 
-        ( b2.timestamp between toDate('{start_date}') and toDate('{end_date}') )
-        and ( b2.timestamp < toDate(NOW()) )
+    from {chain}_blocks
+    where timestamp >= toDate('{start_date}')
+        and timestamp < toDate('{end_date}')
+        and timestamp < toDate(NOW())
 )
 
 select
@@ -38,7 +38,15 @@ from (
         , l.log_index
         , l.insert_time
     from {chain}_logs as l
-    join {chain}_transactions as t
+    join (
+            SELECT * FROM {chain}_transactions
+            WHERE block_number >= (SELECT min_num FROM block_ranges )
+                    and block_number < (SELECT max_num FROM block_ranges)
+                AND is_deleted = 0
+                AND receipt_status = 1
+                AND network = 'mainnet'
+                AND gas_price > 0 
+            )  as t
         on l.transaction_hash = t.hash
         and l.block_timestamp = t.block_timestamp
         and l.block_number = t.block_number
@@ -48,14 +56,10 @@ from (
     where 1=1
         and splitByChar(',', l.topics)[1] = '0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f'
         -- and l.network = 'mainnet'
-        AND l.block_timestamp BETWEEN '{start_date}' AND '{end_date}'
-        AND t.block_timestamp BETWEEN '{start_date}' AND '{end_date}'
         AND l.block_number between 
         (SELECT min_num FROM block_ranges )
                     and             
         (SELECT max_num FROM block_ranges)
-        and t.receipt_status = 1
-        AND t.is_deleted = 0
         AND l.is_deleted = 0
         AND t.gas_price > 0 
         AND l.data IS NOT NULL AND l.data != '' -- info is there
