@@ -1,4 +1,12 @@
-WITH unique_transactions AS (
+WITH block_ranges AS (
+SELECT min(number) AS min_num, max(number) AS max_num
+    from @chain_db_name@_blocks
+    where timestamp >= toDate('@start_date@')
+        and timestamp < toDate('@end_date@')
+        and timestamp < toDate(NOW())
+)
+
+ , unique_transactions AS (
     -- deal with clickhouse dupe issues
                 SELECT
                 t.hash, t.block_number, t.network, t.chain, t.chain_id
@@ -20,21 +28,22 @@ WITH unique_transactions AS (
                     -- ,@gas_fee_sql@ AS gas_fee_sql
                     , argMax(t.receipt_status, t.insert_time) AS receipt_status
                 FROM @chain_db_name@_transactions t
-                INNER JOIN @chain_db_name@_blocks b
+                INNER JOIN (
+                        SELECT * FROM @chain_db_name@_blocks
+                        WHERE number >= (SELECT min_num FROM block_ranges)
+                        AND number < (SELECT max_num FROM block_ranges)
+                        AND is_deleted = 0
+                        AND network = 'mainnet'
+                    ) b
                     ON t.block_number = b.number 
                     AND t.block_timestamp = b.timestamp
                     AND t.chain_id = b.chain_id -- in case of pipeline mixups
 
                 WHERE 1=1
-                    AND t.block_timestamp >= toDate('@start_date@')
-                    AND t.block_timestamp < least(toDate('@end_date@'), toDate(now()))
+                    AND t.block_number >= (SELECT min_num FROM block_ranges)
+                    AND t.block_number < (SELECT max_num FROM block_ranges)
                     AND t.is_deleted = 0
-
-                    AND b.timestamp >= toDate('@start_date@')
-                    AND b.timestamp < least(toDate('@end_date@'), toDate(now()))
-                    AND b.is_deleted = 0
-
-                    
+                    AND t.network = 'mainnet'                    
 
                 GROUP BY 1,2,3,4,5
 )
