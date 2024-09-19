@@ -409,6 +409,7 @@ def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date
     while current_date <= end_date:
         # Find the next date that needs backfilling
         while current_date <= end_date:
+            # print(f'check: start {start_date}, current {current_date}, end {end_date}')
             is_backfilled = any(bf_start <= current_date <= bf_end for bf_start, bf_end in backfill_ranges)
             if not is_backfilled:
                 break
