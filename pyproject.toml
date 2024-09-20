@@ -1,7 +1,7 @@
 [project]
 name = "op-analytics"
 version = "0.1.0"
-description = "Add your description here"
+description = "Data analysys tools by OP Labs."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
