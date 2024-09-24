@@ -5,8 +5,17 @@ description = "Data analysys tools by OP Labs."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "op-coreutils",
+    "op-indexer",
     "typer>=0.12.5",
 ]
+
+[tool.uv.sources]
+op-coreutils = { workspace = true }
+op-indexer = { workspace = true }
+
+[tool.uv.workspace]
+members = ["packages/op-indexer", "packages/op-coreutils"]
 
 [project.scripts]
 opdata = "op_analytics.cli.main:entrypoint"
@@ -14,3 +23,7 @@ opdata = "op_analytics.cli.main:entrypoint"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.ruff]
+# Allow lines to be as long as 100.
+line-length = 100
