@@ -1,0 +1,50 @@
+name: op-eth-transfers
+version: 2
+status: ACTIVE
+resource_size: s
+apiVersion: 3
+sources:
+  optimism.raw_traces:
+    dataset_name: optimism.raw_traces
+    version: 1.0.0
+    type: dataset
+    start_at: earliest
+transforms:
+  op_eth_transfers_transform:
+    primary_key: id
+    description: OP ETH Transfers transform
+    sql: >
+      SELECT
+          id
+        , block_number
+        , block_hash
+        , block_timestamp
+        , transaction_hash
+        , transaction_index
+        , from_address
+        , to_address
+        , CASE
+            WHEN trace_address <> '' THEN 'Internal Tx'
+            ELSE 'EOA Tx'
+        END AS tx_type
+        , `value`
+        , `value` / 1e18 as value_decimal
+        , call_type
+        , trace_address
+        , status
+        , 'op' as chain
+        , 'mainnet' as network
+        , 10 as chain_id
+      FROM
+        optimism.raw_traces
+      WHERE 1=1
+        AND (call_type not in ('delegatecall', 'callcode', 'staticcall') or call_type is null)
+        AND `value` > 0
+        AND status = 1
+sinks:
+  clickhouse_optimism_eth_transfers_transform:
+    type: clickhouse
+    table: op_eth_transfers
+    secret_name: OP_DEMO_CLICKHOUSE
+    description: "ClickHouse sink for: op_eth_transfers"
+    from: op_eth_transfers_transform
