@@ -25,6 +25,15 @@ optimize_all = False #True
 # In[ ]:
 
 
+topic0_maps = [
+        {'table_type': 'materialized', 'topic0_func': "topic0"},
+        {'table_type': 'raw', 'topic0_func': "arrayElement(splitByString(',', topics), 1)"}
+]
+
+
+# In[ ]:
+
+
 import pandas as pd
 import sys
 import datetime
@@ -111,6 +120,12 @@ def set_optimize_on_insert(option_int = 1):
         SET optimize_on_insert = {option_int};
         """)
     print(f"Set optimize_on_insert = {option_int}")
+
+def do_optimize_final(client, chain_name, mv_name):
+    # print(f'Optimizing: {chain_name}_{mv_name}')
+    opcmd = f'OPTIMIZE TABLE {chain_name}_{mv_name} FINAL;'
+    print(opcmd)
+    client.command(opcmd)
 
 
 # In[ ]:
@@ -359,6 +374,11 @@ def ensure_backfill_tracking_table_exists(client):
 def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date='', set_days_batch_size=7):
     full_view_name = f'{chain}_{mv_name}_mv'
     full_table_name = f'{chain}_{mv_name}'
+
+    if chain in ['op', 'base']:
+        topic0_func = next(item['topic0_func'] for item in topic0_maps if item['table_type'] == 'materialized')
+    else:
+        topic0_func = next(item['topic0_func'] for item in topic0_maps if item['table_type'] == 'raw')
     
     # Check on Date Ranges
     current_date_q = f"""
@@ -431,6 +451,7 @@ def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date
         # Perform the backfill
         attempts = 1
         query_start_date = current_date - datetime.timedelta(days=1)
+
         while attempts <= 3:
             try:
                 query_template = get_query_from_file(f'{mv_name}_backfill')
@@ -440,7 +461,8 @@ def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date
                     start_date=query_start_date,
                     end_date=batch_end,
                     table_name=full_table_name,
-                    block_time_sec=block_time
+                    block_time_sec=block_time,
+                    topic0_func=topic0_func
                 )
                 query = gsb.process_goldsky_sql(query)
                 
@@ -543,7 +565,7 @@ def print_backfill_gaps(client):
 # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'across_bridging_txs_v3')
+#         reset_materialized_view(client, chain, 'event_emitting_transactions_l2s')
 
 # # # # # # # reset a single chain
 # # # # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to')
@@ -566,6 +588,16 @@ def print_backfill_gaps(client):
 # #         for mv in mv_names:
 # #                 chain = row.chain_name
 # #                 detach_reset_materialized_view(client, chain, mv)
+
+
+# In[ ]:
+
+
+# # Optimize
+# for row in chain_configs.itertuples(index=False):
+#         for mv in mv_names:
+#                 chain = row.chain_name
+#                 do_optimize_final(client, chain, mv)
 
 
 # In[ ]:
