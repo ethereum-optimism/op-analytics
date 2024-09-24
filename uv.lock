@@ -172,6 +172,7 @@ version = "0.1.0"
 source = { editable = "packages/op-indexer" }
 dependencies = [
     { name = "op-coreutils" },
+    { name = "pydantic" },
     { name = "pyiceberg" },
     { name = "urllib3" },
 ]
@@ -179,6 +180,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "op-coreutils", editable = "packages/op-coreutils" },
+    { name = "pydantic", specifier = ">=2.9.2" },
     { name = "pyiceberg", specifier = ">=0.7.1" },
     { name = "urllib3", specifier = ">=2.2.3" },
 ]
