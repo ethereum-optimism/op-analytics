@@ -38,11 +38,12 @@ from ( --filtered_logs_l2s
             WHERE network = 'mainnet'
             AND cm.chain_layer = 'L2'
             AND is_deleted = 0
-            AND arrayElement(splitByString(',', topics), 1)
-            NOT IN ( '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925'
-            , '0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31'
-            , '0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c'
-            , '0x9e2c3f17bb468be8e272ad2ccf2b08c8532c2b08e0c378fbd5303ea8b660aa2f' )
+            AND {topic0_func}--arrayElement(splitByString(',', topics), 1)
+            NOT IN ( '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925' --approval erc20/721
+            , '0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31' --approval erc721
+            , '0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c' --wrap
+            , '0x7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b65' --unwrap
+            )
 
             AND l.block_number between 
                 (SELECT min_num FROM block_ranges )

@@ -20,7 +20,8 @@ def connect_to_clickhouse_db(
     ch_user=env_ch_user,
     ch_pw=env_ch_pw
 ):
-    client = cc.get_client(host=ch_host, port=ch_port, username=ch_user, password=ch_pw, secure=True)
+    client = cc.get_client(host=ch_host, port=ch_port, username=ch_user, password=ch_pw, secure=True
+                           ,settings={'max_execution_time': 3600})
     return client
 
 def write_api_data_to_clickhouse(api_url, table_name, client=None, if_exists='replace'):
