@@ -6,18 +6,22 @@
 
 # List of materialized view names
 mvs = [
-    {'mv_name': 'across_bridging_txs_v3', 'start_date': '2024-07-01'},
-    # {'mv_name': 'across_bridging_txs_v3_logs_only', 'start_date': '2024-07-01'},
-    # {'mv_name': 'filtered_logs_l2s', 'start_date': ''},
-    ### {'mv_name': 'erc20_transfers', 'start_date': ''},
-    ### {'mv_name': 'native_eth_transfers', 'start_date': ''},
-    ### {'mv_name': 'transactions_unique', 'start_date': ''},
-    # {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''},
-    {'mv_name': 'event_emitting_transactions_l2s', 'start_date': ''},
+    # {'mv_name': 'across_bridging_txs_v3', 'start_date': '2024-07-01', 'chains': ''},
+    # # {'mv_name': 'across_bridging_txs_v3_logs_only', 'start_date': '2024-07-01'},
+    # # {'mv_name': 'filtered_logs_l2s', 'start_date': ''},
+    # ### {'mv_name': 'erc20_transfers', 'start_date': ''},
+    # ### {'mv_name': 'native_eth_transfers', 'start_date': ''},
+    # ### {'mv_name': 'transactions_unique', 'start_date': ''},
+    # # {'mv_name': 'daily_aggregate_transactions_to', 'start_date': ''},
+    # {'mv_name': 'event_emitting_transactions_l2s', 'start_date': ''},
+    {'mv_name': 'weekly_retention_rate_temp', 'start_date': '2024-01-01', 'chains': 'superchain'},
+    {'mv_name': 'event_emitting_transactions_l2s_nofilter', 'start_date': '2024-01-01', 'chains': ''},
+    # {'mv_name': 'event_emitting_transactions_l2s_nofilter', 'start_date': '2024-01-01'},
+    
     
 ]
 
-set_days_batch_size = 3# 7 #30
+set_days_batch_size = 30# 7 #30
 
 optimize_all = False #True
 
@@ -565,7 +569,7 @@ def print_backfill_gaps(client):
 # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'event_emitting_transactions_l2s')
+#         reset_materialized_view(client, chain, 'weekly_retention_rate_temp')
 
 # # # # # # # reset a single chain
 # # # # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to')
@@ -603,11 +607,32 @@ def print_backfill_gaps(client):
 # In[ ]:
 
 
+og_chain_configs = chain_configs
+chain_configs_if_agg = pd.DataFrame({
+    'chain_name': ['superchain'],
+    'block_time_sec': [2]
+})
+
+
+# In[ ]:
+
+
+# chain_configs_if_agg
+
+
+# In[ ]:
+
+
 # Main execution
 ensure_backfill_tracking_table_exists(client)
 
 for mv_row in mvs:
 
+    if mv_row['chains'] == 'superchain':
+        chain_configs = chain_configs_if_agg
+    else:
+        chain_configs = og_chain_configs
+        
     for chain_row in chain_configs.itertuples(index=False):
         chain = chain_row.chain_name
         block_time = chain_row.block_time_sec
@@ -627,7 +652,7 @@ for mv_row in mvs:
             print('error')
         try:
             print('create backfill')
-            backfill_data(client, chain, mv_name, end_date = end_date, block_time = block_time, mod_start_date = mod_start_date)
+            backfill_data(client, chain, mv_name, end_date = end_date, block_time = block_time, mod_start_date = mod_start_date, set_days_batch_size = set_days_batch_size)
         except Exception as e:
             print('An error occurred:')
             print(str(e))
