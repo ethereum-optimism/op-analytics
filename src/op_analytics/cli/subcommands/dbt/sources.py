@@ -13,7 +13,7 @@ def to_dbt_column(column: Column):
     if column.enrichment_function is not None:
         meta["enrichment_function"] = column.enrichment_function
 
-    result = {
+    result: dict[str, str | dict] = {
         "name": column.name,
     }
 

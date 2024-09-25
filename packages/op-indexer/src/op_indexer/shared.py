@@ -18,14 +18,12 @@ def INGESTION_METADATA(field_id) -> Column:
         field_id=field_id,
         name="ingestion_metadata",
         field_type=StructType(
-            fields=[
-                NestedField(
-                    field_id=1,
-                    name="ingestion_time",
-                    field_type=TimestampType(),
-                    doc="Time at which data was ingested.",
-                )
-            ]
+            NestedField(
+                field_id=1,
+                name="ingestion_time",
+                field_type=TimestampType(),
+                doc="Time at which data was ingested.",
+            )
         ),
         required=True,
         doc="Internal metadata obtained during indexing.",

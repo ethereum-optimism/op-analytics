@@ -14,9 +14,7 @@ from op_indexer import shared
 
 BLOCKS_SCHEMA = Table(
     name="blocks",
-    doc=dedent("""BLOCKS SCHEMA
-            
-    For more info about individual fields see [eth_getblockbyhash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblockbyhash).
+    doc=dedent("""Indexed Blocks. See [eth_getblockbyhash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblockbyhash) for more info.
     
     Fields from RPC not included here:
     - parentBeaconBlockRoot
