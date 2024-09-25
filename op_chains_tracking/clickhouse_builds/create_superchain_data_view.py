@@ -39,7 +39,7 @@ def get_chain_names_from_df(df):
     return df['blockchain'].dropna().unique().tolist()
 
 # Function to create ClickHouse view
-def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None, do_is_deleted_line = True):
+def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None):
     if client is None:
         client = ch.connect_to_clickhouse_db()
 
@@ -67,9 +67,7 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None, 
                                 FROM {table_name}
                                 WHERE 1=1
                                 """
-            
-        if do_is_deleted_line:
-                sql_query += ' AND is_deleted = 0'
+        
         # finalize query
         union_queries.append(sql_query)
     
@@ -109,7 +107,7 @@ for dataset_type in dataset_types:
         try:
                 if dataset_type in mv_dataset_types:
                         is_deleted_line = False
-                create_clickhouse_view(view_slug, dataset_type, chain_names, do_is_deleted_line = is_deleted_line)
+                create_clickhouse_view(view_slug, dataset_type, chain_names)
         except Exception as e:
                 print(f'Can not create view for {dataset_type}')
                 print(f'Error: {str(e)}')
