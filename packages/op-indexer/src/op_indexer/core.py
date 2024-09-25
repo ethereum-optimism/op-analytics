@@ -19,7 +19,7 @@ class Column(BaseModel):
     required: bool
 
     # Custom Properties
-    docs: str | None
+    doc: str | None = None
     json_rpc_method: JsonRPCMethod | None = None
     json_rpc_field_name: str | None = None
     enrichment_function: str | None = None

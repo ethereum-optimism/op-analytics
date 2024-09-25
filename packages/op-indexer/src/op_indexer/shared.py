@@ -9,7 +9,7 @@ from pyiceberg.types import (
 from op_indexer.core import Column
 
 
-def INGESTION_METADATA(field_id):
+def INGESTION_METADATA(field_id) -> Column:
     """Ingestion metadata column.
 
     We use this internally to track the ingestion process.
@@ -27,11 +27,12 @@ def INGESTION_METADATA(field_id):
                 )
             ]
         ),
+        required=True,
         doc="Internal metadata obtained during indexing.",
     )
 
 
-def CHAIN(field_id):
+def CHAIN(field_id) -> Column:
     return Column(
         field_id=field_id,
         name="chain",
@@ -41,7 +42,7 @@ def CHAIN(field_id):
     )
 
 
-def NETWORK(field_id):
+def NETWORK(field_id) -> Column:
     return Column(
         field_id=field_id,
         name="network",
@@ -51,13 +52,11 @@ def NETWORK(field_id):
     )
 
 
-def CHAIN_ID(field_id):
-    return (
-        Column(
-            field_id=field_id,
-            name="chain_id",
-            field_type=IntegerType(),
-            required=True,
-            doc="Chain id as specified on the chain's configuration. Example: 8453",
-        ),
+def CHAIN_ID(field_id) -> Column:
+    return Column(
+        field_id=field_id,
+        name="chain_id",
+        field_type=IntegerType(),
+        required=True,
+        doc="Chain id as specified on the chain's configuration. Example: 8453",
     )

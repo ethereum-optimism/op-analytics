@@ -2,9 +2,9 @@ import time
 
 import urllib3
 
-import structlog
+from op_coreutils.logger import LOGGER
 
-log = structlog.get_logger()
+log = LOGGER.get_logger()
 
 
 # Hard-coded for now. Will be configuration based to support more chains.

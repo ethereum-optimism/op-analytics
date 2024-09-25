@@ -2,13 +2,15 @@ import importlib
 import os
 import time
 
-import structlog
 import typer
+from op_coreutils.logger import LOGGER
 
 from op_analytics.cli.mainhelpers import find_apps
 
+log = LOGGER.get_logger()
+
 app = typer.Typer(no_args_is_help=True)
-log = structlog.get_logger()
+
 
 typer.main.get_command_name = lambda name: name
 
