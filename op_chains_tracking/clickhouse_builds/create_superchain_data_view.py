@@ -95,7 +95,9 @@ mv_dataset_types = [
                 #  ,'transactions_unique'
                 #  'daily_aggregate_transactions_to_mv',
                  'across_bridging_txs_v3',
-                 'event_emitting_transactions_l2s'
+                 'event_emitting_transactions_l2s',
+                #  'weekly_retention_rate_temp',
+                 'event_emitting_transactions_l2s_nofilter'
                  ]
 
 dataset_types = native_dataset_types + mv_dataset_types
