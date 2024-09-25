@@ -27,6 +27,13 @@ misc_analysis/csv_outputs/tokens_by_type_base_opm.csv
 Pipfile.lock
 /misc_analysis/csv_outputs
 
-# Local folders to store HTTP requests and scratchpad JSON files
+# DBT
+dbt/duckdb/
+dbt/target
+dbt/logs
+dbt/.*
+
+# Local folders to store scratchpad content (HTTP requests, JSON, SQL).
 zzzhttp/
 zzzjson/
+zzzsql/
