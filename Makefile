@@ -1,10 +1,10 @@
 .PHONY: dbt-docs
-dbt-docs: dbt/docssite/index.html
+dbt-docs: website/dbt/index.html
 
 
 .PHONY: dbt-docs-open
-dbt-docs-open: dbt/docssite/index.html
-	open dbt/docssite/index.html
+dbt-docs-open: website/dbt/index.html
+	open website/dbt/index.html
 	
 
 # Generate dbt sources from op_indexer schema definitions
@@ -19,6 +19,6 @@ dbt/sources/indexed.yml:
 # This causes the "docs generate" command to fail unless we use --empty-catalog.
 #
 # The second command here is to customize the docs site and bundle it up as a single static HTML file.
-dbt/docssite/index.html: dbt/sources/indexed.yml dbt/docssite/optimism.css $(wildcard dbt/docs/*.md)
+website/dbt/index.html: dbt/sources/indexed.yml website/dbt/optimism.css $(wildcard dbt/docs/*.md)
 	cd dbt && uv run dbt --debug --macro-debugging docs generate --empty-catalog
 	uv run opdata dbt docs_custom
