@@ -49,8 +49,8 @@ def docs_custom():
     html_path = repo_path("dbt/target/index.html")
     manifest_path = repo_path("dbt/target/manifest.json")
     catalog_path = repo_path("dbt/target/catalog.json")
-    stylesheet_path = repo_path("dbt/docssite/optimism.css")
-    html_new_path = repo_path("dbt/docssite/index.html")
+    stylesheet_path = repo_path("website/dbt/optimism.css")
+    html_new_path = repo_path("website/dbt/index.html")
 
     with open(html_path, "r") as f:
         html_content = f.read()
