@@ -1,3 +1,8 @@
+.PHONY: sphinx-docs
+sphinx-docs:
+	$(MAKE) -C sphinx clean
+	$(MAKE) -C sphinx html
+
 .PHONY: dbt-docs
 dbt-docs: docs/dbt/index.html
 
