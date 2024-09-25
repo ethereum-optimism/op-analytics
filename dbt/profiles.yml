@@ -1,0 +1,19 @@
+# This profiles.yml file is provide as an example for running locally. 
+optimism_dbt_models:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: 'duckdb/optimism_dbt_models.duckdb'
+      extensions:
+        - httpfs
+        - parquet
+
+
+default:
+  outputs:
+    dev:
+      type: duckdb
+      path: dev.duckdb
+      threads: 1
+  target: dev

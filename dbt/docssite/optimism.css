@@ -1,0 +1,15 @@
+
+.logo {
+    background-image: url(https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-wordmark-large/OPTIMISM.png?raw=true);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-size: contain;
+    background-position-y: center;
+}
+img.logo {
+    display: none ;
+}
+
+.panel-body img {
+    max-width: 50%;
+}
