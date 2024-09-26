@@ -12,6 +12,28 @@ you can create your development virtualenv by running:
 $ uv sync
 ```
 
+## CLI
+
+
+The `opdata` CLI  (defined in `src/op_analytics/cli`) is used to expose the many utilities that are
+defined as part of our project member packages. Some of this utilities are internal. For example to
+help us autogenerate code, documentation, or to provide a simple way to execute some logic during
+CI/CD. We also have utilities that have external use cases. For example fetching onchain data from
+RPC nodes. Ideally every tool that we write in python should be exposed as a CLI subcommand.
+
+You can see the CLI help message by running:
+```
+$ uv run opdata --help
+```
+
+Or get help about a specific subcommand:
+```
+$ uv run opdata rpc --help
+```
+
+`opdata` subcommands are defined as python modules under `src/op_analytics/cli/subcommands`. If you
+want to develop a new subcommand look in there for examples of how to get things set up.
+
 
 ## Directory Structure
 
@@ -42,26 +64,13 @@ The dbt autogenrated docs are written out to ``docs/dbt``.
 
 ### `sphinx/`
 
-We use [sphinx](https://www.sphinx-doc.org/en/master/) to write documentation for our project. 
-The `sphinx` directory contains or sphinx setup. The build output from sphinx is written to 
+We use [sphinx](https://www.sphinx-doc.org/en/master/) to write documentation for our project.
+The `sphinx` directory contains or sphinx setup. The build output from sphinx is written to
 `docs/`. Our github-pages configuration is set up to serve a static site from the `docs/` directory.
 
 
-## CLI
+### `notebooks`
 
-
-The `opdata` CLI  (defined in `src/op_analytics/cli`) is used to expose the many utilities that are
-defined as part of our project member packages. Some of this utilities are internal. For example to
-help us autogenerate code or documentation, or to provide a simple way to execute some logic during
-CI/CD. We also have utilities that have external use cases. For example fetching onchain data from
-RPC nodes.
-
-You can see the CLI help message by running:
-```
-$ uv run opdata --help
-```
-
-Or get help about a specific subcommand:
-```
-$ uv run opdata rpc --help
-```
+Directory for storing notebooks and associated data. We are in the process of migrating contents
+here. There are two subdirectories here `adhoc` and `scheduled` to distinguish between the type
+of work.
