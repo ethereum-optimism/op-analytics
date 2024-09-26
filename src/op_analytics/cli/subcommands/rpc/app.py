@@ -4,7 +4,7 @@ import op_indexer
 import op_indexer.rpcs
 import typer
 
-app = typer.Typer()
+app = typer.Typer(help="Get onchain data from RPC nodes.")
 
 
 @app.command()

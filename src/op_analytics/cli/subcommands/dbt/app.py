@@ -10,7 +10,7 @@ from op_coreutils.path import repo_path
 
 log = LOGGER.get_logger()
 
-app = typer.Typer()
+app = typer.Typer(help="Utilities related to dbt.")
 
 
 @app.command()
