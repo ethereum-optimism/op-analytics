@@ -5,8 +5,9 @@ The op-analytics repo is the one stop shop for the Data Team at OP Labs.
 
 ## Virtual Environment
 
-Our project is managed using [uv](https://docs.astral.sh/uv/) (see the uv docs for installation
-instructions). You can create your development virtualenv by running:
+We use [uv](https://docs.astral.sh/uv/) to manage the virtual environment and project dependencies.
+After [installing uv](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer)
+you can create your development virtualenv by running:
 ```
 $ uv sync
 ```
@@ -33,7 +34,7 @@ interact with our functionality.
 
 ###  `dbt/`
 
-The ``dbt/`` directory contains a `dbt <https://www.getdbt.com/>`_ project. This is still work in
+The ``dbt/`` directory contains a [dbt](https://www.getdbt.com/) project. This is still work in
 progress, but we hope all our data warehouse tables will be modeld with dbt.
 
 The dbt autogenrated docs are written out to ``docs/dbt``.
@@ -41,11 +42,9 @@ The dbt autogenrated docs are written out to ``docs/dbt``.
 
 ### `sphinx/`
 
-We use `sphinx <https://www.sphinx-doc.org/en/master/>`_ to write documentation for our project. 
-The ``sphinx`` directory contains or sphinx setup.
-
-The build output from sphinx is written to ``docs/``. Our github-pages configuration is set up to
-serve a static site from the ``docs/`` directory.
+We use [sphinx](https://www.sphinx-doc.org/en/master/) to write documentation for our project.
+The `sphinx` directory contains or sphinx setup. The build output from sphinx is written to
+`docs/`. Our github-pages configuration is set up to serve a static site from the `docs/` directory.
 
 
 ## CLI
