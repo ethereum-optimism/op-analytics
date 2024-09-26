@@ -5,7 +5,7 @@ sphinx-docs: docs/sphinx/html/index.html
 
 
 sphinx-serve: sphinx-docs
-	cd docs && python -m http.server
+	python -m http.server
 
 
 docs/sphinx/html/index.html:
