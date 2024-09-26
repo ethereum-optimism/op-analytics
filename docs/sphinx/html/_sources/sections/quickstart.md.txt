@@ -5,11 +5,8 @@ The op-analytics repo is the one stop shop for the Data Team at OP Labs.
 
 ## Virtual Environment
 
-Our project is managed using [uv](https://docs.astral.sh/uv/). 
-Follow the instructions on the uv docs to install uv on your platform.
-
-
-Once you have uv installed you can create your development virtualenv by running:
+Our project is managed using [uv](https://docs.astral.sh/uv/) (see the uv docs for installation instructions). 
+You can create your development virtualenv by running:
 ```
 $ uv sync
 ```
@@ -17,7 +14,7 @@ $ uv sync
 
 ## Directory Structure
 
-```{danger}
+```{warning}
 We are currently in the process of migrating to our new directory structure for the project.
 There are a lot of directories in the top-level at the moment that we hope to reorganize
 over time.

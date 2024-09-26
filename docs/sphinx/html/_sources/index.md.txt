@@ -14,7 +14,7 @@ Welcome to the OP Analytics repo documentation.
 
 
 
-## Contributor Guide
+## Getting Started
 
 ```{toctree}
 sections/quickstart
