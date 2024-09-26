@@ -27,6 +27,9 @@ misc_analysis/csv_outputs/tokens_by_type_base_opm.csv
 Pipfile.lock
 /misc_analysis/csv_outputs
 
+# Sphinx
+docs/sphinx/doctrees
+
 # DBT
 dbt/duckdb/
 dbt/target

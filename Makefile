@@ -1,5 +1,14 @@
 .PHONY: sphinx-docs
-sphinx-docs:
+sphinx-docs: docs/sphinx/html/index.html
+	$(MAKE) -C sphinx clean
+	$(MAKE) -C sphinx html
+
+
+sphinx-serve: sphinx-docs
+	cd docs && python -m http.server
+
+
+docs/sphinx/html/index.html:
 	$(MAKE) -C sphinx clean
 	$(MAKE) -C sphinx html
 
