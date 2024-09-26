@@ -8,5 +8,10 @@
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.insertSpaces": true,
         "files.insertFinalNewline": true,
+    },
+    "[markdown]": {
+        "editor.rulers": [
+            100
+        ]
     }
 }
