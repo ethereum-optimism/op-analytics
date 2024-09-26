@@ -359,6 +359,24 @@ you can create your development virtualenv by running:</p>
 </pre></div>
 </div>
 </section>
+<section id="cli">
+<h2>CLI<a class="headerlink" href="#cli" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">opdata</span></code> CLI  (defined in <code class="docutils literal notranslate"><span class="pre">src/op_analytics/cli</span></code>) is used to expose the many utilities that are
+defined as part of our project member packages. Some of this utilities are internal. For example to
+help us autogenerate code, documentation, or to provide a simple way to execute some logic during
+CI/CD. We also have utilities that have external use cases. For example fetching onchain data from
+RPC nodes. Ideally every tool that we write in python should be exposed as a CLI subcommand.</p>
+<p>You can see the CLI help message by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ uv run opdata --help
+</pre></div>
+</div>
+<p>Or get help about a specific subcommand:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ uv run opdata rpc --help
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">opdata</span></code> subcommands are defined as python modules under <code class="docutils literal notranslate"><span class="pre">src/op_analytics/cli/subcommands</span></code>. If you
+want to develop a new subcommand look in there for examples of how to get things set up.</p>
+</section>
 <section id="directory-structure">
 <h2>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading">#</a></h2>
 <div class="admonition warning">
@@ -388,22 +406,12 @@ progress, but we hope all our data warehouse tables will be modeld with dbt.</p>
 The <code class="docutils literal notranslate"><span class="pre">sphinx</span></code> directory contains or sphinx setup. The build output from sphinx is written to
 <code class="docutils literal notranslate"><span class="pre">docs/</span></code>. Our github-pages configuration is set up to serve a static site from the <code class="docutils literal notranslate"><span class="pre">docs/</span></code> directory.</p>
 </section>
+<section id="notebooks">
+<h3><code class="docutils literal notranslate"><span class="pre">notebooks</span></code><a class="headerlink" href="#notebooks" title="Link to this heading">#</a></h3>
+<p>Directory for storing notebooks and associated data. We are in the process of migrating contents
+here. There are two subdirectories here <code class="docutils literal notranslate"><span class="pre">adhoc</span></code> and <code class="docutils literal notranslate"><span class="pre">scheduled</span></code> to distinguish between the type
+of work.</p>
 </section>
-<section id="cli">
-<h2>CLI<a class="headerlink" href="#cli" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">opdata</span></code> CLI  (defined in <code class="docutils literal notranslate"><span class="pre">src/op_analytics/cli</span></code>) is used to expose the many utilities that are
-defined as part of our project member packages. Some of this utilities are internal. For example to
-help us autogenerate code or documentation, or to provide a simple way to execute some logic during
-CI/CD. We also have utilities that have external use cases. For example fetching onchain data from
-RPC nodes.</p>
-<p>You can see the CLI help message by running:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ uv run opdata --help
-</pre></div>
-</div>
-<p>Or get help about a specific subcommand:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ uv run opdata rpc --help
-</pre></div>
-</div>
 </section>
 </section>
 
@@ -454,13 +462,14 @@ RPC nodes.</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#virtual-environment">Virtual Environment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cli">CLI</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#directory-structure">Directory Structure</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#src"><code class="docutils literal notranslate"><span class="pre">src/</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dbt"><code class="docutils literal notranslate"><span class="pre">dbt/</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sphinx"><code class="docutils literal notranslate"><span class="pre">sphinx/</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#notebooks"><code class="docutils literal notranslate"><span class="pre">notebooks</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cli">CLI</a></li>
 </ul>
   </nav></div>
 
