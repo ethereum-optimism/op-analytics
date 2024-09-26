@@ -352,8 +352,9 @@ document.write(`
 <p>The op-analytics repo is the one stop shop for the Data Team at OP Labs.</p>
 <section id="virtual-environment">
 <h2>Virtual Environment<a class="headerlink" href="#virtual-environment" title="Link to this heading">#</a></h2>
-<p>Our project is managed using <a class="reference external" href="https://docs.astral.sh/uv/">uv</a> (see the uv docs for installation instructions).
-You can create your development virtualenv by running:</p>
+<p>We use <a class="reference external" href="https://docs.astral.sh/uv/">uv</a> to manage the virtual environment and project dependencies.
+After <a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/#standalone-installer">installing uv</a>
+you can create your development virtualenv by running:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ uv sync
 </pre></div>
 </div>
@@ -377,25 +378,24 @@ interact with our functionality.</p>
 </section>
 <section id="dbt">
 <h3><code class="docutils literal notranslate"><span class="pre">dbt/</span></code><a class="headerlink" href="#dbt" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">dbt/</span></code> directory contains a <code class="docutils literal notranslate"><span class="pre">dbt</span> <span class="pre">&lt;https://www.getdbt.com/&gt;</span></code>_ project. This is still work in progress, but we
-hope all our data warehouse tables will be modeld with dbt.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">dbt/</span></code> directory contains a <a class="reference external" href="https://www.getdbt.com/">dbt</a> project. This is still work in
+progress, but we hope all our data warehouse tables will be modeld with dbt.</p>
 <p>The dbt autogenrated docs are written out to <code class="docutils literal notranslate"><span class="pre">docs/dbt</span></code>.</p>
 </section>
 <section id="sphinx">
 <h3><code class="docutils literal notranslate"><span class="pre">sphinx/</span></code><a class="headerlink" href="#sphinx" title="Link to this heading">#</a></h3>
-<p>We use <code class="docutils literal notranslate"><span class="pre">sphinx</span> <span class="pre">&lt;https://www.sphinx-doc.org/en/master/&gt;</span></code>_ to write documentation for our project. The <code class="docutils literal notranslate"><span class="pre">sphinx</span></code>
-directory contains or sphinx setup.</p>
-<p>The build output from sphinx is written to <code class="docutils literal notranslate"><span class="pre">docs/</span></code>. Our github-pages configuration is set up to serve a static site
-from the <code class="docutils literal notranslate"><span class="pre">docs/</span></code> directory.</p>
+<p>We use <a class="reference external" href="https://www.sphinx-doc.org/en/master/">sphinx</a> to write documentation for our project.
+The <code class="docutils literal notranslate"><span class="pre">sphinx</span></code> directory contains or sphinx setup. The build output from sphinx is written to
+<code class="docutils literal notranslate"><span class="pre">docs/</span></code>. Our github-pages configuration is set up to serve a static site from the <code class="docutils literal notranslate"><span class="pre">docs/</span></code> directory.</p>
 </section>
 </section>
 <section id="cli">
 <h2>CLI<a class="headerlink" href="#cli" title="Link to this heading">#</a></h2>
-<p>As mentioned above, the top-level <code class="docutils literal notranslate"><span class="pre">src/</span></code> python module for this project defines the <code class="docutils literal notranslate"><span class="pre">opdata</span></code> command-line interface.
-This CLI is used to expose the many utilities that are defined as part of our project member packages.</p>
-<p>Some of this utilities are internal. For example to help us autogenerate code or documentation, or to provide a simple
-way to execute some logic during CI/CD.</p>
-<p>We also have utilities that have external use cases. For example fetching onchain data from RPC nodes.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">opdata</span></code> CLI  (defined in <code class="docutils literal notranslate"><span class="pre">src/op_analytics/cli</span></code>) is used to expose the many utilities that are
+defined as part of our project member packages. Some of this utilities are internal. For example to
+help us autogenerate code or documentation, or to provide a simple way to execute some logic during
+CI/CD. We also have utilities that have external use cases. For example fetching onchain data from
+RPC nodes.</p>
 <p>You can see the CLI help message by running:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ uv run opdata --help
 </pre></div>
