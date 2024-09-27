@@ -4,7 +4,6 @@ from polars import datatypes
 from polars.functions.col import Col
 
 
-LEGACY_OP = "Legacy OP Chain"
 OP_CHAIN = "OP Chain"
 OP_FORK = "OP Stack fork"
 
@@ -45,19 +44,10 @@ def clean(raw_df: pl.DataFrame):
         clean_column(col, datatype) for col, datatype in raw_df.collect_schema().items()
     ]
 
-    # NOTE (pedro - 2024/09/27) The raw data has the string "legacy" all lower case. So appending
-    # legacy to the chain alignment column does not seem to be working as intended at the moment.
-    is_legacy = pl.col("op_based_version").str.contains("Legacy")
     is_op_chain = pl.col("chain_type").is_not_null().alias("is_op_chain")
 
-    # NOTE (pedro - 2024/09/27) "Other EVMs" or "OP Chain Legacy" values are never asigned.
     alignment_col = (
-        pl.when(is_legacy & is_op_chain)
-        .then(pl.lit(LEGACY_OP))
-        .when(is_op_chain)
-        .then(pl.lit(OP_CHAIN))
-        .otherwise(pl.lit(OP_FORK))
-        .alias("alignment")
+        pl.when(is_op_chain).then(pl.lit(OP_CHAIN)).otherwise(pl.lit(OP_FORK)).alias("alignment")
     )
 
     return raw_df.select(transformed_cols + [is_op_chain, alignment_col])
