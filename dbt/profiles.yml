@@ -16,8 +16,8 @@ clickhouse_goldsky:
     dev:
       type: clickhouse
       schema: default
-      host: https://pdmv9lhojy.us-west-2.aws.clickhouse.cloud
-      port: 8443
+      host: "{{ env_var('CLICKHOUSE_GOLDSKY_DBT_HOST') }}"
+      port: "{{ env_var('CLICKHOUSE_GOLDSKY_DBT_PORT') | as_number }}"
       user: "{{ env_var('CLICKHOUSE_GOLDSKY_DBT_USER') }}"
       password: "{{ env_var('CLICKHOUSE_GOLDSKY_DBT_PASSWORD') }}"
-      secure: False
+      secure: True

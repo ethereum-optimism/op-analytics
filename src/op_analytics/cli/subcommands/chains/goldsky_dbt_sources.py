@@ -17,6 +17,7 @@ def generate():
         "sources": [
             {
                 "name": source,
+                "schema": "default",
                 "description": "Tables for data ingested by Goldsky.",
                 "loader": "Goldsky",
                 "tables": tables,
