@@ -3,8 +3,16 @@ from typing_extensions import Annotated
 
 from op_analytics.cli.subcommands.chains import chain_metadata
 from op_coreutils.storage.gcs import gcs_upload_csv
+from op_coreutils.logger import LOGGER
+
+log = LOGGER.get_logger()
 
 app = typer.Typer(help="Chain related utilities.")
+
+
+@app.command()
+def hourly():
+    log.info("dummy hourly function")
 
 
 @app.command()

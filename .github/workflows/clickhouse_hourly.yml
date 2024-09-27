@@ -1,0 +1,26 @@
+name: ClickHouse Hourly Tasks
+run-name: ${{ github.event.created_at }}
+on:
+  schedule:
+    - cron: '12 * * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - pedro/hourly
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  run-hourly-tasks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+      - name: Set up Python
+        run: uv python install
+      - name: Install the project
+        run: uv sync --all-extras --dev
+      - name: Run tasks
+        run: uv run opdata chains hourly
+
