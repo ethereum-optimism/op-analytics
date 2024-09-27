@@ -1,4 +1,12 @@
+from op_coreutils.logger import LOGGER
+from op_coreutils.path import repo_path
 from op_indexer.core import Column, Table
+from op_indexer.schemas.blocks import BLOCKS_SCHEMA
+
+from op_analytics.cli.subcommands.chains.yamlwriter import write_sources_yaml
+
+
+log = LOGGER.get_logger()
 
 
 def to_dbt_column(column: Column):
@@ -32,3 +40,23 @@ def to_dbt_table(table: Table):
         "description": table.doc,
         "columns": [to_dbt_column(_) for _ in table.columns],
     }
+
+
+def generate():
+    """Generate dbt source YAML files for our core tables."""
+    source = "superchain_oplabs"
+
+    dbt_sources = {
+        "version": "2.0",
+        "sources": [
+            {
+                "name": source,
+                "description": "Tables for superchain data curated by OP Labs.",
+                "loader": "OP Labs",
+                "tables": [to_dbt_table(_) for _ in [BLOCKS_SCHEMA]],
+            }
+        ],
+    }
+
+    path = repo_path(f"dbt/sources/{source}.yml")
+    write_sources_yaml(path, dbt_sources)
