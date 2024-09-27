@@ -49,7 +49,7 @@ The project is structured as a [uv Workspace](https://docs.astral.sh/uv/concepts
 This means there is one top-level ``src/`` directory and multiple individual workspace member
 packages under ``packages/``.
 
-Any python implementation that we leverage for data work will be implemeted as part of a package.
+Any python implementation that we leverage for data work will be contained inside a package.
 At the top-level we only define a command-line interface, which is the default way by which we
 interact with our functionality.
 
@@ -75,3 +75,19 @@ repo root directory.  We have an `index.html` file at the root which redirects t
 Directory for storing notebooks and associated data. We are in the process of migrating contents
 here. There are two subdirectories here `adhoc` and `scheduled` to distinguish between the type
 of work.
+
+
+## Google Cloud Credentials
+
+Some functionality on this repo requires you to be authenticated with google cloud. If you have
+already installed the [gcloud](https://cloud.google.com/sdk/docs/install) cli you can run:
+```
+gcloud auth application-default login
+```
+
+
+Note, if you see the following error then either you are not authoenticated or you do not have
+access to the required resource:
+```
+DefaultCredentialsError: Your default credentials were not found. To set up Application Default Credentials
+```
