@@ -1,11 +1,12 @@
-# Airbyte Sources
+# Airbyte
 
+This is a placeholder for documenting airbyte pipelines that we currently rely on.
 
-## Source A
+## Pipeline A
 
 Description a.
 
 
-## Source B
+## Pipeline B
 
 Description b.

@@ -10,10 +10,14 @@ optimism_dbt_models:
         - parquet
 
 
-default:
+clickhouse_goldsky:
+  target: dev
   outputs:
     dev:
-      type: duckdb
-      path: dev.duckdb
-      threads: 1
-  target: dev
+      type: clickhouse
+      schema: default
+      host: "{{ env_var('CLICKHOUSE_GOLDSKY_DBT_HOST') }}"
+      port: "{{ env_var('CLICKHOUSE_GOLDSKY_DBT_PORT') | as_number }}"
+      user: "{{ env_var('CLICKHOUSE_GOLDSKY_DBT_USER') }}"
+      password: "{{ env_var('CLICKHOUSE_GOLDSKY_DBT_PASSWORD') }}"
+      secure: True
