@@ -5,7 +5,7 @@ sphinx-docs: docs/sphinx/html/index.html
 
 
 sphinx-serve: sphinx-docs
-	cd docs && python -m http.server
+	python -m http.server
 
 
 docs/sphinx/html/index.html:
@@ -22,8 +22,8 @@ dbt-docs-open: docs/dbt/index.html
 	
 
 # Generate dbt sources from op_indexer schema definitions
-dbt/sources/indexed.yml:
-	uv run opdata dbt generate_sources
+dbt/sources/superchain_oplabs.yml:
+	uv run opdata chains generate_dbt_sources
 
 
 # Generate dbt docs
@@ -33,6 +33,6 @@ dbt/sources/indexed.yml:
 # This causes the "docs generate" command to fail unless we use --empty-catalog.
 #
 # The second command here is to customize the docs site and bundle it up as a single static HTML file.
-docs/dbt/index.html: dbt/sources/indexed.yml docs/dbt/optimism.css $(wildcard dbt/docs/*.md)
-	cd dbt && uv run dbt --debug --macro-debugging docs generate --empty-catalog
-	uv run opdata dbt docs_custom
+docs/dbt/index.html: dbt/sources/superchain_oplabs.yml docs/dbt/optimism.css $(wildcard dbt/docs/*.md)
+	./scripts/dbt_docs.sh
+	uv run opdata chains customize_dbt_docs
