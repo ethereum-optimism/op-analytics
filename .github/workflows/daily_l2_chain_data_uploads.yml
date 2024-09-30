@@ -88,6 +88,8 @@ jobs:
           L1_ETHERSCAN_API: ${{ secrets.L1_ETHERSCAN_API }}
           BASESCAN_API: ${{ secrets.BASESCAN_API }}
           OP_ETHERSCAN_API: ${{ secrets.OP_ETHERSCAN_API }}
+      - name: List changed files
+        run: git status
 
   commit-changes:
     needs: run_notebook
