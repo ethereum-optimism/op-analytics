@@ -88,6 +88,12 @@ jobs:
           L1_ETHERSCAN_API: ${{ secrets.L1_ETHERSCAN_API }}
           BASESCAN_API: ${{ secrets.BASESCAN_API }}
           OP_ETHERSCAN_API: ${{ secrets.OP_ETHERSCAN_API }}
+      - name: Commit changes from notebook
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions"
+          git add --all
+          git commit -m "Update from ${{ matrix.notebook }}" -a || echo "No changes to commit"
       - name: List changed files
         run: git status
 
