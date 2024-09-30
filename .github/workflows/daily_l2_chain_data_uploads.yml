@@ -88,21 +88,8 @@ jobs:
           L1_ETHERSCAN_API: ${{ secrets.L1_ETHERSCAN_API }}
           BASESCAN_API: ${{ secrets.BASESCAN_API }}
           OP_ETHERSCAN_API: ${{ secrets.OP_ETHERSCAN_API }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Commit changes from notebook
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "github-actions"
-          git add --all
-          git commit -m "Update from ${{ matrix.notebook }}" -a || echo "No changes to commit"
-      - name: List changed files
-        run: git status
-
-  commit-changes:
-    needs: run_notebook
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Commit and push changes
         run: |
           git pull origin main
           git config --local user.email "action@github.com"
@@ -111,8 +98,28 @@ jobs:
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to commit."
           else
-            git commit -m "GH Action Update - L2 Chain Data" -a
+            git commit -m "GH Action Update from ${{ matrix.notebook }}" -a || echo "No changes to commit"
             git push
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: List changed files
+        run: git status
+
+  # commit-changes:
+  #   needs: run_notebook
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Commit and push changes
+  #       run: |
+  #         git pull origin main
+  #         git config --local user.email "action@github.com"
+  #         git config --local user.name "github-actions"
+  #         git add --all
+  #         if [ -z "$(git status --porcelain)" ]; then
+  #           echo "No changes to commit."
+  #         else
+  #           git commit -m "GH Action Update - L2 Chain Data" -a
+  #           git push
+  #         fi
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
