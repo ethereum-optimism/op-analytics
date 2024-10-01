@@ -1,5 +1,5 @@
 [project]
-name = "op-indexer"
+name = "op-datasets"
 version = "0.1.0"
 description = "Utilities to index on-chain data."
 readme = "README.md"

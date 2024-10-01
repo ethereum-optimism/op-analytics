@@ -5,8 +5,10 @@ description = "Core utitilies used across all op-analytics packages."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "clickhouse-connect>=0.8.0",
     "gitpython>=3.1.43",
     "google-cloud-storage>=2.18.2",
+    "pyarrow>=17.0.0",
     "structlog>=24.4.0",
 ]
 

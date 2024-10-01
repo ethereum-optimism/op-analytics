@@ -1,9 +1,9 @@
 from op_coreutils.logger import LOGGER
 from op_coreutils.path import repo_path
-from op_indexer.core import Column, Table
-from op_indexer.schemas.blocks import BLOCKS_SCHEMA
+from op_datasets.core import Column, Table
+from op_datasets.schemas.blocks import BLOCKS_SCHEMA
 
-from op_analytics.cli.subcommands.chains.yamlwriter import write_sources_yaml
+from op_analytics.cli.subcommands.chains.dbtgen.yamlwriter import write_sources_yaml
 
 
 log = LOGGER.get_logger()

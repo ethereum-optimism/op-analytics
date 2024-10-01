@@ -13,3 +13,19 @@
 .bd-article h1 {
     font-size: 1.8rem;
 }
+
+.table p {
+    font-size: 0.8em;
+}
+
+th {
+    white-space: nowrap;
+}
+
+.bd-sidebar-primary {
+    width: 15%; /* Adjust as needed, default is around 25% */
+}
+
+.bd-sidebar-secondary {
+    width: 10%; /* Adjust as needed, default is around 25% */
+}

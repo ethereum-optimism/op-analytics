@@ -69,6 +69,10 @@ sources:
   - name: redstone_transactions
   - name: redstone_traces
   - name: redstone_logs
+  - name: shape_blocks
+  - name: shape_transactions
+  - name: shape_traces
+  - name: shape_logs
   - name: swan_blocks
   - name: swan_transactions
   - name: swan_traces
