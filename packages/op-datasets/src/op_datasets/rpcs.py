@@ -33,7 +33,7 @@ def get_block(chain: str, block_number: str):
     return resp.json()
 
 
-def get_transactions(chain: str, tx_hashes: list[str]):
+def get_receipts(chain: str, tx_hashes: list[str]):
     """Proxies to  eth_getTransactionReceipt to get all receipts for a list of transactions."""
     start = time.time()
 
@@ -43,6 +43,25 @@ def get_transactions(chain: str, tx_hashes: list[str]):
         json={
             "jsonrpc": "2.0",
             "method": "eth_getTransactionReceipt",
+            "params": tx_hashes,
+            "id": 1,
+        },
+        headers={"Content-Type": "application/json"},
+    )
+    log.info(f"get_block {time.time() - start:.2f} seconds")
+    return resp.json()
+
+
+def get_transactions(chain: str, tx_hashes: list[str]):
+    """Proxies to  eth_getTransactionByHash to get a list of transactions."""
+    start = time.time()
+
+    resp = urllib3.request(
+        method="POST",
+        url=ENDPOINTS[chain],
+        json={
+            "jsonrpc": "2.0",
+            "method": "eth_getTransactionByHash",
             "params": tx_hashes,
             "id": 1,
         },
