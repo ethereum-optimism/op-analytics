@@ -1,0 +1,926 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Schemas &#8212; OP Analytics  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f461269d" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'sections/onchain/schemas';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="dbt Models" href="dbt.html" />
+    <link rel="prev" title="Ingestion" href="ingestion.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-wordmark-large/OPTIMISM.png?raw=true" class="logo__image only-light" alt="OP Analytics  documentation - Home"/>
+    <script>document.write(`<img src="https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-wordmark-large/OPTIMISM.png?raw=true" class="logo__image only-dark" alt="OP Analytics  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../quickstart.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="onchain.html">
+    Onchain Data
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../3rdparty/3rdparty.html">
+    3rd Party Data
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../quickstart.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="onchain.html">
+    Onchain Data
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../3rdparty/3rdparty.html">
+    3rd Party Data
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="ingestion.html">Ingestion</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dbt.html">dbt Models</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="onchain.html" class="nav-link">Onchain Data</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Schemas</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="schemas">
+<h1>Schemas<a class="headerlink" href="#schemas" title="Link to this heading">#</a></h1>
+<p>Here are the schemas!</p>
+<section id="blocks">
+<h2>Blocks<a class="headerlink" href="#blocks" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>JSON-RPC method</p></th>
+<th class="head"><p>JSON-RPC field</p></th>
+<th class="head"><p>Goldsky Type</p></th>
+<th class="head"><p>Goldsky Field</p></th>
+<th class="head"><p>OP Labs Compatible Expr</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ingestion_metadata</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-odd"><td><p>chain</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-even"><td><p>network</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-odd"><td><p>chain_id</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-even"><td><p>timestamp</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>timestamp</p></td>
+<td><p>long</p></td>
+<td><p>timestamp</p></td>
+<td><p>timestamp</p></td>
+</tr>
+<tr class="row-odd"><td><p>number</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>number</p></td>
+<td><p>long</p></td>
+<td><p>number</p></td>
+<td><p>accurateCast(number, ‘Int64’) AS number</p></td>
+</tr>
+<tr class="row-even"><td><p>hash</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>hash</p></td>
+<td><p>string</p></td>
+<td><p>hash</p></td>
+<td><p>hash</p></td>
+</tr>
+<tr class="row-odd"><td><p>parent_hash</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>parentHash</p></td>
+<td><p>string</p></td>
+<td><p>parent_hash</p></td>
+<td><p>parent_hash</p></td>
+</tr>
+<tr class="row-even"><td><p>nonce</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>nonce</p></td>
+<td><p>string</p></td>
+<td><p>nonce</p></td>
+<td><p>nonce</p></td>
+</tr>
+<tr class="row-odd"><td><p>sha3_uncles</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>sha3Uncles</p></td>
+<td><p>string</p></td>
+<td><p>sha3_uncles</p></td>
+<td><p>sha3_uncles</p></td>
+</tr>
+<tr class="row-even"><td><p>logs_bloom</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>logsBloom</p></td>
+<td><p>string</p></td>
+<td><p>logs_bloom</p></td>
+<td><p>logs_bloom</p></td>
+</tr>
+<tr class="row-odd"><td><p>transactions_root</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>transactionsRoot</p></td>
+<td><p>string</p></td>
+<td><p>transactions_root</p></td>
+<td><p>transactions_root</p></td>
+</tr>
+<tr class="row-even"><td><p>state_root</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>stateRoot</p></td>
+<td><p>string</p></td>
+<td><p>state_root</p></td>
+<td><p>state_root</p></td>
+</tr>
+<tr class="row-odd"><td><p>receipts_root</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>receiptsRoot</p></td>
+<td><p>string</p></td>
+<td><p>receipts_root</p></td>
+<td><p>receipts_root</p></td>
+</tr>
+<tr class="row-even"><td><p>withdrawals_root</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>withdrawalsRoot</p></td>
+<td><p>string</p></td>
+<td><p>withdrawals_root</p></td>
+<td><p>withdrawals_root</p></td>
+</tr>
+<tr class="row-odd"><td><p>miner</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>miner</p></td>
+<td><p>string</p></td>
+<td><p>miner</p></td>
+<td><p>miner</p></td>
+</tr>
+<tr class="row-even"><td><p>difficulty</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>difficulty</p></td>
+<td><p>double</p></td>
+<td><p>difficulty</p></td>
+<td><p>difficulty</p></td>
+</tr>
+<tr class="row-odd"><td><p>total_difficulty</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>totalDifficulty</p></td>
+<td><p>double</p></td>
+<td><p>total_difficulty</p></td>
+<td><p>total_difficulty</p></td>
+</tr>
+<tr class="row-even"><td><p>size</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>size</p></td>
+<td><p>long</p></td>
+<td><p>size</p></td>
+<td><p>size</p></td>
+</tr>
+<tr class="row-odd"><td><p>base_fee_per_gas</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>baseFeePerGas</p></td>
+<td><p>long</p></td>
+<td><p>base_fee_per_gas</p></td>
+<td><p>base_fee_per_gas</p></td>
+</tr>
+<tr class="row-even"><td><p>gas_used</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>gasUsed</p></td>
+<td><p>long</p></td>
+<td><p>gas_used</p></td>
+<td><p>gas_used</p></td>
+</tr>
+<tr class="row-odd"><td><p>gas_limit</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>gasLimit</p></td>
+<td><p>long</p></td>
+<td><p>gas_limit</p></td>
+<td><p>gas_limit</p></td>
+</tr>
+<tr class="row-even"><td><p>extra_data</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>extraData</p></td>
+<td><p>string</p></td>
+<td><p>extra_data</p></td>
+<td><p>extra_data</p></td>
+</tr>
+<tr class="row-odd"><td><p>transaction_count</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>long</p></td>
+<td><p>transaction_count</p></td>
+<td><p>transaction_count</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="transactions">
+<h2>Transactions<a class="headerlink" href="#transactions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>JSON-RPC method</p></th>
+<th class="head"><p>JSON-RPC field</p></th>
+<th class="head"><p>Goldsky Type</p></th>
+<th class="head"><p>Goldsky Field</p></th>
+<th class="head"><p>OP Labs Compatible Expr</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ingestion_metadata</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-odd"><td><p>chain</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-even"><td><p>network</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-odd"><td><p>chain_id</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-even"><td><p>block_timestamp</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>timestamp</p></td>
+<td><p>long</p></td>
+<td><p>block_timestamp</p></td>
+<td><p>block_timestamp</p></td>
+</tr>
+<tr class="row-odd"><td><p>block_number</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>number</p></td>
+<td><p>long</p></td>
+<td><p>block_number</p></td>
+<td><p>accurateCast(block_number, ‘Int64’) AS block_number</p></td>
+</tr>
+<tr class="row-even"><td><p>block_hash</p></td>
+<td><p>eth_getBlockByNumber</p></td>
+<td><p>block_hash</p></td>
+<td><p>string</p></td>
+<td><p>block_hash</p></td>
+<td><p>block_hash</p></td>
+</tr>
+<tr class="row-odd"><td><p>hash</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>hash</p></td>
+<td><p>string</p></td>
+<td><p>hash</p></td>
+<td><p>hash</p></td>
+</tr>
+<tr class="row-even"><td><p>nonce</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>nonce</p></td>
+<td><p>long</p></td>
+<td><p>nonce</p></td>
+<td><p>accurateCast(nonce, ‘Int64’) AS nonce</p></td>
+</tr>
+<tr class="row-odd"><td><p>transaction_index</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>hash</p></td>
+<td><p>long</p></td>
+<td><p>transaction_index</p></td>
+<td><p>accurateCast(transaction_index, ‘Int64’) AS transaction_index</p></td>
+</tr>
+<tr class="row-even"><td><p>from_address</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>from</p></td>
+<td><p>string</p></td>
+<td><p>from_address</p></td>
+<td><p>from_address</p></td>
+</tr>
+<tr class="row-odd"><td><p>to_address</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>to</p></td>
+<td><p>string</p></td>
+<td><p>to_address</p></td>
+<td><p>to_address</p></td>
+</tr>
+<tr class="row-even"><td><p>value</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>value</p></td>
+<td><p>decimal</p></td>
+<td><p>value</p></td>
+<td><p>accurateCastOrNull(value, ‘Int64’) AS value</p></td>
+</tr>
+<tr class="row-odd"><td><p>value_lossless</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>value</p></td>
+<td><p>decimal</p></td>
+<td><p>value</p></td>
+<td><p>cast(value, ‘String’) AS value_lossless</p></td>
+</tr>
+<tr class="row-even"><td><p>gas</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>gas</p></td>
+<td><p>decimal</p></td>
+<td><p>gas</p></td>
+<td><p>accurateCast(gas, ‘Int64’) AS gas</p></td>
+</tr>
+<tr class="row-odd"><td><p>gas_price</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>gasPrice</p></td>
+<td><p>decimal</p></td>
+<td><p>gas_price</p></td>
+<td><p>accurateCast(gas_price, ‘Int64’) AS gas_price</p></td>
+</tr>
+<tr class="row-even"><td><p>input</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>input</p></td>
+<td><p>string</p></td>
+<td><p>input</p></td>
+<td><p>input</p></td>
+</tr>
+<tr class="row-odd"><td><p>transaction_type</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>type</p></td>
+<td><p>long</p></td>
+<td><p>transaction_type</p></td>
+<td><p>accurateCast(transaction_type, ‘Int32’) AS transaction_type</p></td>
+</tr>
+<tr class="row-even"><td><p>max_fee_per_gas</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>maxFeePerGas</p></td>
+<td><p>decimal</p></td>
+<td><p>max_fee_per_gas</p></td>
+<td><p>accurateCast(max_fee_per_gas, ‘Int64’) AS max_fee_per_gas</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_priority_fee_per_gas</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>maxPriorityFeePerGas</p></td>
+<td><p>decimal</p></td>
+<td><p>max_priority_fee_per_gas</p></td>
+<td><p>accurateCast(max_priority_fee_per_gas, ‘Int64’) AS max_priority_fee_per_gas</p></td>
+</tr>
+<tr class="row-even"><td><p>blob_versioned_hashes</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>blobVersionedHashes</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_fee_per_blob_gas</p></td>
+<td><p>eth_getTransactionByHash</p></td>
+<td><p>maxFeePerBlobGas</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-even"><td><p>receipt_cumulative_gas_used</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>cumulativeGasUsed</p></td>
+<td><p>decimal</p></td>
+<td><p>receipt_cumulative_gas_used</p></td>
+<td><p>accurateCast(receipt_cumulative_gas_used, ‘Int64’) AS receipt_cumulative_gas_used</p></td>
+</tr>
+<tr class="row-odd"><td><p>receipt_gas_used</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>gasUsed</p></td>
+<td><p>decimal</p></td>
+<td><p>receipt_gas_used</p></td>
+<td><p>accurateCast(receipt_gas_used, ‘Int64’) AS receipt_gas_used</p></td>
+</tr>
+<tr class="row-even"><td><p>receipt_contract_address</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>contractAddress</p></td>
+<td><p>string</p></td>
+<td><p>receipt_contract_address</p></td>
+<td><p>receipt_contract_address</p></td>
+</tr>
+<tr class="row-odd"><td><p>receipt_status</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>status</p></td>
+<td><p>long</p></td>
+<td><p>receipt_status</p></td>
+<td><p>accurateCast(receipt_status, ‘Int32’) AS receipt_status</p></td>
+</tr>
+<tr class="row-even"><td><p>receipt_effective_gas_price</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>effectiveGasPrice</p></td>
+<td><p>decimal</p></td>
+<td><p>receipt_effective_gas_price</p></td>
+<td><p>accurateCast(receipt_effective_gas_price, ‘Int64’) AS receipt_effective_gas_price</p></td>
+</tr>
+<tr class="row-odd"><td><p>receipt_root_hash</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>root</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-even"><td><p>receipt_l1_gas_price</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>l1GasPrice</p></td>
+<td><p>decimal</p></td>
+<td><p>receipt_l1_gas_price</p></td>
+<td><p>accurateCast(receipt_l1_gas_price, ‘Nullable(Int64)’) AS receipt_l1_gas_price</p></td>
+</tr>
+<tr class="row-odd"><td><p>receipt_l1_gas_used</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>l1GasUsed</p></td>
+<td><p>decimal</p></td>
+<td><p>receipt_l1_gas_used</p></td>
+<td><p>accurateCast(receipt_l1_gas_used, ‘Nullable(Int64)’) AS receipt_l1_gas_used</p></td>
+</tr>
+<tr class="row-even"><td><p>receipt_l1_fee</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>l1Fee</p></td>
+<td><p>decimal</p></td>
+<td><p>receipt_l1_fee</p></td>
+<td><p>accurateCast(receipt_l1_fee, ‘Nullable(Int64)’) receipt_l1_fee</p></td>
+</tr>
+<tr class="row-odd"><td><p>receipt_l1_fee_scalar</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>l1FeeScalar</p></td>
+<td><p>decimal</p></td>
+<td><p>receipt_l1_fee_scalar</p></td>
+<td><p>receipt_l1_fee_scalar</p></td>
+</tr>
+<tr class="row-even"><td><p>receipt_l1_blob_base_fee</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>l1BlobBaseFee</p></td>
+<td><p>decimal</p></td>
+<td><p>receipt_l1_blob_base_fee</p></td>
+<td><p>accurateCast(receipt_l1_blob_base_fee, ‘Nullable(Int64)’) AS receipt_l1_blob_base_fee</p></td>
+</tr>
+<tr class="row-odd"><td><p>receipt_l1_blob_base_fee_scalar</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>l1BlobBaseFeeScalar</p></td>
+<td><p>decimal</p></td>
+<td><p>receipt_l1_blob_base_fee_scalar</p></td>
+<td><p>accurateCast(receipt_l1_blob_base_fee_scalar, ‘Nullable(Int64)’) AS receipt_l1_blob_base_fee_scalar</p></td>
+</tr>
+<tr class="row-even"><td><p>receipt_l1_base_fee_scalar</p></td>
+<td><p>eth_getTransactionReceipt</p></td>
+<td><p>l1BaseFeeScalar</p></td>
+<td><p>decimal</p></td>
+<td><p>receipt_l1_base_fee_scalar</p></td>
+<td><p>accurateCast(receipt_l1_base_fee_scalar, ‘Nullable(Int64)’) AS receipt_l1_base_fee_scalar</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ingestion.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Ingestion</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="dbt.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">dbt Models</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocks">Blocks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transactions">Transactions</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../_sources/sections/onchain/schemas.md.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, OP Labs.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.0.2.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

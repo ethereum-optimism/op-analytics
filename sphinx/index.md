@@ -21,15 +21,15 @@ sections/quickstart
 ```
 
 
-## DBT
+## Onchain Data
 
 ```{toctree}
-sections/dbt
+sections/onchain/onchain
 
 ```
 
-## Airbyte
+## 3rd Party Data
 
 ```{toctree}
-sections/airbyte
+sections/3rdparty/3rdparty
 ```

@@ -37,6 +37,16 @@ class Column(BaseModel):
     # The expression used by OP Labs to cast Clickhouse types to the OP Labs type used for this field.
     op_analytics_clickhouse_expr: str | None = None
 
+    def display_dict(self):
+        return {
+            "Name": self.name,
+            "JSON-RPC method": self.json_rpc_method.name if self.json_rpc_method else None,
+            "JSON-RPC field": self.json_rpc_field_name,
+            "Goldsky Type": self.raw_goldsky_pipeline_type,
+            "Goldsky Field": self.raw_goldsky_pipeline_expr,
+            "OP Labs Compatible Expr": self.op_analytics_clickhouse_expr,
+        }
+
 
 class Table(BaseModel):
     name: str

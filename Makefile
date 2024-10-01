@@ -12,6 +12,10 @@ docs/sphinx/html/index.html:
 	$(MAKE) -C sphinx clean
 	$(MAKE) -C sphinx html
 
+
+docs/sphinx/sections/onchain/schemas.md:
+	uv run opdata chains generate_docs
+
 .PHONY: dbt-docs
 dbt-docs: docs/dbt/index.html
 

@@ -921,6 +921,7 @@ dependencies = [
     { name = "op-datasets" },
     { name = "pandas" },
     { name = "polars" },
+    { name = "py-markdown-table" },
     { name = "pyyaml" },
     { name = "typer" },
 ]
@@ -945,6 +946,7 @@ requires-dist = [
     { name = "op-datasets", editable = "packages/op-datasets" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "polars", specifier = ">=1.8.2" },
+    { name = "py-markdown-table", specifier = ">=1.1.0" },
     { name = "pyyaml", specifier = ">=6.0.2" },
     { name = "typer", specifier = ">=0.12.5" },
 ]
@@ -1119,6 +1121,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c6/ab/0f384ca0bc6054b1a7b6009000ab75d28a5506e4459378b81280ae7fd358/protobuf-4.25.5-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:919ad92d9b0310070f8356c24b855c98df2b8bd207ebc1c0c6fcc9ab1e007f3d", size = 293717 },
     { url = "https://files.pythonhosted.org/packages/05/a6/094a2640be576d760baa34c902dcb8199d89bce9ed7dd7a6af74dcbbd62d/protobuf-4.25.5-cp37-abi3-manylinux2014_x86_64.whl", hash = "sha256:fe14e16c22be926d3abfcb500e60cab068baf10b542b8c858fa27e098123e331", size = 294635 },
     { url = "https://files.pythonhosted.org/packages/33/90/f198a61df8381fb43ae0fe81b3d2718e8dcc51ae8502c7657ab9381fbc4f/protobuf-4.25.5-py3-none-any.whl", hash = "sha256:0aebecb809cae990f8129ada5ca273d9d670b76d9bfc9b1809f0a9c02b7dbf41", size = 156467 },
+]
+
+[[package]]
+name = "py-markdown-table"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/27/d0/7e832bf631d4828bd345d9a4bad59348f38f2ea476ae65fe9e30a25941ec/py_markdown_table-1.1.0.tar.gz", hash = "sha256:c1a290a128602ecf732cc05e4fe5192101a8f17b09603b30970281c1dd226b82", size = 15664 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ff/a6/829357e07585d4e949af198e3edca23556a2ccfa70549245862889ddf1eb/py_markdown_table-1.1.0-py3-none-any.whl", hash = "sha256:51f799849d8bf56716bea5e9137e7eade16d114b8076a6aded470c7e353b64ce", size = 13094 },
 ]
 
 [[package]]

@@ -9,6 +9,7 @@ dependencies = [
     "op-datasets",
     "pandas>=2.2.3",
     "polars>=1.8.2",
+    "py-markdown-table>=1.1.0",
     "pyyaml>=6.0.2",
     "typer>=0.12.5",
 ]

@@ -10,6 +10,7 @@ from op_analytics.cli.subcommands.chains.dbtgen import (
     goldsky_dbt_views,
     superchain_dbt_sources,
 )
+from op_analytics.cli.subcommands.chains.docsgen import schema_mapping_docs
 
 log = LOGGER.get_logger()
 
@@ -23,8 +24,13 @@ app.command(name="customize_dbt_docs")(dbt_docs.customize)
 @app.command()
 def generate_dbt():
     goldsky_dbt_sources.generate()
-    superchain_dbt_sources.generate()
     goldsky_dbt_views.generate()
+    superchain_dbt_sources.generate()
+
+
+@app.command()
+def generate_docs():
+    schema_mapping_docs.generate()
 
 
 @app.command()

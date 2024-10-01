@@ -4,7 +4,7 @@
 
 SELECT
     timestamp,
-    number,
+    accurateCast(number, 'Int64') AS number,
     hash,
     parent_hash,
     nonce,
