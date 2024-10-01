@@ -117,10 +117,10 @@ FROM (
         SUM((CAST(receipt_l1_blob_base_fee AS Nullable(Float64)) / CAST(1e9 AS Nullable(Float64))) * CAST(receipt_l1_gas_used AS Nullable(Float64))) / SUM(CAST(receipt_l1_gas_used AS Nullable(Float64))) AS avg_blob_base_fee_on_l2,
         
         SUM(IF(gas_price > 0, CAST(t.receipt_gas_used * gas_price AS Nullable(Float64)) / 1e9, NULL))
-        / SUM(IF(gas_price > 0, t.receipt_gas_used, NULL)) AS avg_l2_gas_price,
+        / SUM(IF(gas_price > 0, t.receipt_gas_used, NULL)) AS avg_l2_gas_price_gwei,
         
         SUM(IF(gas_price > 0, CAST(t.receipt_gas_used AS Nullable(Float64)) * CAST((base_fee_per_gas) AS Nullable(Float64)) / 1e9, NULL))
-        / SUM(IF(gas_price > 0, t.receipt_gas_used, NULL)) AS base_fee_gwei,
+        / SUM(IF(gas_price > 0, t.receipt_gas_used, NULL)) AS avg_base_fee_gwei,
         
         SUM(IF(gas_price = 0, 0, CAST(t.receipt_gas_used*receipt_l1_gas_price as Nullable(Float64))) / 1e18) AS equivalent_l1_tx_fee,
         
