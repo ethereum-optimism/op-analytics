@@ -10,7 +10,6 @@ sources:
 
           Fields from RPC not included here:
           - parentBeaconBlockRoot
-          - receiptsRoot
           - transactions
           - uncles
           - withdrawals
@@ -69,6 +68,7 @@ sources:
         json_rpc_method: eth_getBlockByNumber
         json_rpc_field_name: parentHash
     - name: nonce
+      description: Hash of the generated proof-of-work
       meta:
         iceberg_type: StringType
         is_required: true
@@ -147,12 +147,6 @@ sources:
         is_required: true
         json_rpc_method: eth_getBlockByNumber
         json_rpc_field_name: gasUsed
-    - name: gas_limit
-      meta:
-        iceberg_type: LongType
-        is_required: true
-        json_rpc_method: eth_getBlockByNumber
-        json_rpc_field_name: gasLimit
     - name: gas_limit
       meta:
         iceberg_type: LongType

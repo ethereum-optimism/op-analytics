@@ -21,9 +21,9 @@ dbt-docs-open: docs/dbt/index.html
 	open docs/dbt/index.html
 	
 
-# Generate dbt sources from op_indexer schema definitions
+# Generate dbt sources from op_datasets schema definitions
 dbt/sources/superchain_oplabs.yml:
-	uv run opdata chains generate_dbt_sources
+	uv run opdata chains generate_dbt
 
 
 # Generate dbt docs

@@ -1,7 +1,7 @@
 from op_coreutils.path import repo_path
 from op_analytics.cli.subcommands.chains.chain_metadata import goldsky_chains
 
-from op_analytics.cli.subcommands.chains.yamlwriter import write_sources_yaml
+from op_analytics.cli.subcommands.chains.dbtgen.yamlwriter import write_sources_yaml
 
 
 def generate():

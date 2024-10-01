@@ -5,12 +5,14 @@ BLOCKS SCHEMA
 from textwrap import dedent
 
 from pyiceberg.types import (
+    DoubleType,
     LongType,
     StringType,
+    TimestampType,
 )
 
-from op_indexer.core import Column, Table, JsonRPCMethod
-from op_indexer import shared
+from op_datasets import shared
+from op_datasets.core import Column, JsonRPCMethod, Table
 
 BLOCKS_SCHEMA = Table(
     name="blocks",
@@ -18,7 +20,6 @@ BLOCKS_SCHEMA = Table(
     
     Fields from RPC not included here:
     - parentBeaconBlockRoot
-    - receiptsRoot
     - transactions
     - uncles
     - withdrawals
@@ -40,10 +41,13 @@ BLOCKS_SCHEMA = Table(
         Column(
             field_id=5,
             name="timestamp",
-            field_type=LongType(),
+            field_type=TimestampType(),
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="timestamp",
+            raw_goldsky_pipeline_expr="timestamp",
+            raw_goldsky_pipeline_type="long",
+            op_analytics_clickhouse_expr="timestamp",
         ),
         Column(
             field_id=6,
@@ -52,6 +56,9 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="number",
+            raw_goldsky_pipeline_expr="number",
+            raw_goldsky_pipeline_type="long",
+            op_analytics_clickhouse_expr="accurateCast(number, 'Int64') AS number",
         ),
         Column(
             field_id=7,
@@ -60,6 +67,9 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="hash",
+            raw_goldsky_pipeline_expr="hash",
+            raw_goldsky_pipeline_type="string",
+            op_analytics_clickhouse_expr="hash",
         ),
         Column(
             field_id=8,
@@ -68,6 +78,9 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="parentHash",
+            raw_goldsky_pipeline_expr="parent_hash",
+            raw_goldsky_pipeline_type="string",
+            op_analytics_clickhouse_expr="parent_hash",
         ),
         Column(
             field_id=9,
@@ -76,6 +89,10 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="nonce",
+            doc="Hash of the generated proof-of-work",
+            raw_goldsky_pipeline_expr="nonce",
+            raw_goldsky_pipeline_type="string",
+            op_analytics_clickhouse_expr="nonce",
         ),
         Column(
             field_id=10,
@@ -84,6 +101,9 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="sha3Uncles",
+            raw_goldsky_pipeline_expr="sha3_uncles",
+            raw_goldsky_pipeline_type="string",
+            op_analytics_clickhouse_expr="sha3_uncles",
         ),
         Column(
             field_id=11,
@@ -93,6 +113,9 @@ BLOCKS_SCHEMA = Table(
             doc="Logs Bloom can be used for efficient lookup of logs from this block.",
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="logsBloom",
+            raw_goldsky_pipeline_expr="logs_bloom",
+            raw_goldsky_pipeline_type="string",
+            op_analytics_clickhouse_expr="logs_bloom",
         ),
         Column(
             field_id=12,
@@ -101,6 +124,9 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="transactionsRoot",
+            raw_goldsky_pipeline_expr="transactions_root",
+            raw_goldsky_pipeline_type="string",
+            op_analytics_clickhouse_expr="transactions_root",
         ),
         Column(
             field_id=13,
@@ -109,6 +135,9 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="stateRoot",
+            raw_goldsky_pipeline_expr="state_root",
+            raw_goldsky_pipeline_type="string",
+            op_analytics_clickhouse_expr="state_root",
         ),
         Column(
             field_id=14,
@@ -117,6 +146,9 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="receiptsRoot",
+            raw_goldsky_pipeline_expr="receipts_root",
+            raw_goldsky_pipeline_type="string",
+            op_analytics_clickhouse_expr="receipts_root",
         ),
         Column(
             field_id=15,
@@ -125,6 +157,9 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="withdrawalsRoot",
+            raw_goldsky_pipeline_expr="withdrawals_root",
+            raw_goldsky_pipeline_type="string",
+            op_analytics_clickhouse_expr="withdrawals_root",
         ),
         Column(
             field_id=16,
@@ -133,22 +168,31 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="miner",
+            raw_goldsky_pipeline_expr="miner",
+            raw_goldsky_pipeline_type="string",
+            op_analytics_clickhouse_expr="miner",
         ),
         Column(
             field_id=17,
             name="difficulty",
-            field_type=LongType(),
+            field_type=DoubleType(),
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="difficulty",
+            raw_goldsky_pipeline_expr="difficulty",
+            raw_goldsky_pipeline_type="double",
+            op_analytics_clickhouse_expr="difficulty",
         ),
         Column(
             field_id=18,
             name="total_difficulty",
-            field_type=LongType(),
+            field_type=DoubleType(),
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="totalDifficulty",
+            raw_goldsky_pipeline_expr="total_difficulty",
+            raw_goldsky_pipeline_type="double",
+            op_analytics_clickhouse_expr="total_difficulty",
         ),
         Column(
             field_id=19,
@@ -157,6 +201,9 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="size",
+            raw_goldsky_pipeline_expr="size",
+            raw_goldsky_pipeline_type="long",
+            op_analytics_clickhouse_expr="size",
         ),
         Column(
             field_id=20,
@@ -165,6 +212,9 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="baseFeePerGas",
+            raw_goldsky_pipeline_expr="base_fee_per_gas",
+            raw_goldsky_pipeline_type="long",
+            op_analytics_clickhouse_expr="base_fee_per_gas",
         ),
         Column(
             field_id=21,
@@ -173,6 +223,9 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="gasUsed",
+            raw_goldsky_pipeline_expr="gas_used",
+            raw_goldsky_pipeline_type="long",
+            op_analytics_clickhouse_expr="gas_used",
         ),
         Column(
             field_id=22,
@@ -181,29 +234,30 @@ BLOCKS_SCHEMA = Table(
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="gasLimit",
+            raw_goldsky_pipeline_expr="gas_limit",
+            raw_goldsky_pipeline_type="long",
+            op_analytics_clickhouse_expr="gas_limit",
         ),
         Column(
             field_id=23,
-            name="gas_limit",
-            field_type=LongType(),
-            required=True,
-            json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
-            json_rpc_field_name="gasLimit",
-        ),
-        Column(
-            field_id=24,
             name="extra_data",
             field_type=StringType(),
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getBlockByNumber,
             json_rpc_field_name="extraData",
+            raw_goldsky_pipeline_expr="extra_data",
+            raw_goldsky_pipeline_type="string",
+            op_analytics_clickhouse_expr="extra_data",
         ),
         Column(
-            field_id=25,
+            field_id=24,
             name="transaction_count",
-            field_type=StringType(),
+            field_type=LongType(),
             required=True,
             enrichment_function="count_transactions",
+            raw_goldsky_pipeline_expr="transaction_count",
+            raw_goldsky_pipeline_type="long",
+            op_analytics_clickhouse_expr="transaction_count",
         ),
     ],
 )
