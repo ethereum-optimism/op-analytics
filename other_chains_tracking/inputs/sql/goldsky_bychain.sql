@@ -8,7 +8,13 @@ WITH filtered_events AS (
         ) a 
 )
 
-, raw_transactions AS (
+, block_ranges AS (
+SELECT min(number) AS min_num, max(number) AS max_num
+    from @blockchain@_blocks
+    where timestamp >= DATE_TRUNC('day', NOW() - INTERVAL '@trailing_days@ days')
+        and timestamp < toDate(NOW())
+)
+
 SELECT 
 DATE_TRUNC('day',block_timestamp) AS dt,
   chain AS blockchain,
@@ -16,31 +22,31 @@ DATE_TRUNC('day',block_timestamp) AS dt,
   '@name@' as name,
   '@layer@' AS layer,
 COUNT(*) AS num_raw_txs,
-COUNTIf(receipt_status = 1) AS num_success_txs
+COUNTIf(receipt_status = 1) AS num_success_txs,
+COUNTIf(is_qualified = 1) AS num_qualified_txs
+FROM (
+  SELECT block_timestamp, chain, chain_id, hash, receipt_status
+    , CASE WHEN (l.transaction_hash IS NOT NULL) AND (l.transaction_hash != '') THEN 1 ELSE 0 END AS is_qualified
+  FROM @blockchain@_transactions t
+  LEFT JOIN (
+      SELECT chain, block_number,block_timestamp,transaction_hash FROM @blockchain@_logs l 
+      WHERE is_deleted = 0 --not deleted
+      AND substring(l.topics, 1, position(l.topics, ',') - 1) NOT IN (SELECT topic FROM filtered_events)
+      AND l.block_number >= (SELECT min_num FROM block_ranges)
+      AND l.block_number < (SELECT max_num FROM block_ranges)
+      GROUP BY 1,2,3,4
+    ) l
+    ON l.chain = t.chain
+    AND l.block_number = t.block_number
+    AND l.block_timestamp = t.block_timestamp
+    AND l.transaction_hash = t.hash
 
-FROM @blockchain@_transactions final
-WHERE gas_price > 0
-AND block_timestamp >= DATE_TRUNC('day', NOW() - INTERVAL '@trailing_days@ days')
-AND is_deleted = 0 --not deleted
+  WHERE gas_price > 0
+    AND t.block_number >= (SELECT min_num FROM block_ranges)
+    AND t.block_number < (SELECT max_num FROM block_ranges)
+  AND t.is_deleted = 0 --not deleted
+
+  GROUP BY 1,2,3,4,5,6
+)
 GROUP BY 1,2,3,4,5
-)
 
-, log_transactions AS (
-SELECT 
-DATE_TRUNC('day',block_timestamp) AS dt,
-  chain_id, --db chain_id
-COUNT(DISTINCT transaction_hash) AS num_qualified_txs
-
-FROM @blockchain@_logs final
-WHERE substring(topics, 1, position(topics, ',') - 1) NOT IN (SELECT topic FROM filtered_events)
-AND block_timestamp >= DATE_TRUNC('day', NOW() - INTERVAL '@trailing_days@ days')
-AND is_deleted = 0 --not deleted
-GROUP BY 1,2
-)
-
-SELECT
-r.dt, r.blockchain, r.name, r.chain_id, r.layer, num_raw_txs, num_success_txs, num_qualified_txs
-FROM raw_transactions r 
-    LEFT JOIN log_transactions l 
-        ON r.chain_id = l.chain_id
-        AND r.dt = l.dt
