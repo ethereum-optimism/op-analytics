@@ -37,6 +37,7 @@ def load_locations():
 
 
 def update_gsheet(location_name: str, worksheet_name: str, dataframe: pd.DataFrame):
+    """Write a pandas dadtaframe to a Google Sheet."""
     global _GSHEETS_LOCATIONS
 
     load_locations()
