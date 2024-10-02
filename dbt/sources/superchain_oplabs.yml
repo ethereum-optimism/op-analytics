@@ -10,7 +10,6 @@ sources:
 
           Fields from RPC not included here:
           - parentBeaconBlockRoot
-          - receiptsRoot
           - transactions
           - uncles
           - withdrawals
@@ -46,7 +45,7 @@ sources:
         is_required: true
     - name: timestamp
       meta:
-        iceberg_type: LongType
+        iceberg_type: TimestampType
         is_required: true
         json_rpc_method: eth_getBlockByNumber
         json_rpc_field_name: timestamp
@@ -69,6 +68,7 @@ sources:
         json_rpc_method: eth_getBlockByNumber
         json_rpc_field_name: parentHash
     - name: nonce
+      description: Hash of the generated proof-of-work
       meta:
         iceberg_type: StringType
         is_required: true
@@ -119,13 +119,13 @@ sources:
         json_rpc_field_name: miner
     - name: difficulty
       meta:
-        iceberg_type: LongType
+        iceberg_type: DoubleType
         is_required: true
         json_rpc_method: eth_getBlockByNumber
         json_rpc_field_name: difficulty
     - name: total_difficulty
       meta:
-        iceberg_type: LongType
+        iceberg_type: DoubleType
         is_required: true
         json_rpc_method: eth_getBlockByNumber
         json_rpc_field_name: totalDifficulty
@@ -153,12 +153,6 @@ sources:
         is_required: true
         json_rpc_method: eth_getBlockByNumber
         json_rpc_field_name: gasLimit
-    - name: gas_limit
-      meta:
-        iceberg_type: LongType
-        is_required: true
-        json_rpc_method: eth_getBlockByNumber
-        json_rpc_field_name: gasLimit
     - name: extra_data
       meta:
         iceberg_type: StringType
@@ -167,6 +161,6 @@ sources:
         json_rpc_field_name: extraData
     - name: transaction_count
       meta:
-        iceberg_type: StringType
+        iceberg_type: LongType
         is_required: true
         enrichment_function: count_transactions

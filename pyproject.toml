@@ -6,19 +6,20 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "op-coreutils",
-    "op-indexer",
+    "op-datasets",
     "pandas>=2.2.3",
     "polars>=1.8.2",
+    "py-markdown-table>=1.1.0",
     "pyyaml>=6.0.2",
     "typer>=0.12.5",
 ]
 
 [tool.uv.sources]
 op-coreutils = { workspace = true }
-op-indexer = { workspace = true }
+op-datasets = { workspace = true }
 
 [tool.uv.workspace]
-members = ["packages/op-indexer", "packages/op-coreutils"]
+members = ["packages/op-datasets", "packages/op-coreutils"]
 
 [tool.mypy]
 files = ["src/**/*.py", "packages/**/*.py"]

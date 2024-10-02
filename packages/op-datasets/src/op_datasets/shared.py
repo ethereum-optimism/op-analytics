@@ -6,7 +6,7 @@ from pyiceberg.types import (
     TimestampType,
 )
 
-from op_indexer.core import Column
+from op_datasets.core import Column
 
 
 def INGESTION_METADATA(field_id) -> Column:
