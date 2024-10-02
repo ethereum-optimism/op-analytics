@@ -83,7 +83,7 @@ def check_balances(addresses: List[Tuple[str, str, str]]) -> Dict[str, float]:
     balances = {}
     for chain, address, name in addresses:
         balance = get_balance(chain, address)
-        print(balance)
+        # print(balance)
         if balance is not None:
             balances[name] = {"balance": balance, "address": address}
         else:
@@ -96,7 +96,7 @@ def get_inflight_withdrawals():
                 name = "l1_to_l2_inflight_withdrawals",
                 path = "outputs",
                 performance="large",
-                num_hours_to_rerun=12 #always rereun
+                num_hours_to_rerun=0 #always rereun
                 )
         wds_bal = wds['amount_eth'].sum()
         return wds_bal
@@ -116,7 +116,7 @@ balances['l1_to_l2_inflight_withdrawals'] = {"balance": get_inflight_withdrawals
 
 # Output balances as JSON
 json_txt = json.dumps(balances, indent=2)
-print(json_txt)
+# print(json_txt)
 # Create DataFrame
 current_time = datetime.now()
 df_data = []
@@ -141,11 +141,11 @@ with open(f'outputs/latest_{table_name}.json', 'w') as json_file:
         json_file.write(json_txt)
 print(f"JSON written")
 
-# Append DataFrame to CSV
-csv_output_file = f'outputs/{table_name}_history.csv'
-df.to_csv(csv_output_file, mode='a', header=not pd.io.common.file_exists(csv_output_file), index=False)
+# # Append DataFrame to CSV
+# csv_output_file = f'outputs/{table_name}_history.csv'
+# df.to_csv(csv_output_file, mode='a', header=not pd.io.common.file_exists(csv_output_file), index=False)
 
-print(f"CSV appended")
+# print(f"CSV appended")
 
 # Write latest values to a separate CSV, replacing it on every run
 latest_csv_file = f'outputs/latest_{table_name}.csv'
