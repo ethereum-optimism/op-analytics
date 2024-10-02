@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Onchain Data &#8212; OP Analytics  documentation</title>
+    <title>CLI Subcommands &#8212; OP Analytics  documentation</title>
   
   
   
@@ -39,11 +39,11 @@
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'sections/onchain/onchain';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'sections/cli/cli';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Ingestion" href="ingestion.html" />
-    <link rel="prev" title="CLI Subcommands" href="../cli/cli.html" />
+    <link rel="next" title="Onchain Data" href="../onchain/onchain.html" />
+    <link rel="prev" title="Getting Started" href="../quickstart.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -146,15 +146,15 @@
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../cli/cli.html">
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
     CLI Subcommands
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../onchain/onchain.html">
     Onchain Data
   </a>
 </li>
@@ -257,15 +257,15 @@ document.write(`
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../cli/cli.html">
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
     CLI Subcommands
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../onchain/onchain.html">
     Onchain Data
   </a>
 </li>
@@ -308,12 +308,7 @@ document.write(`
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="ingestion.html">Ingestion</a></li>
-<li class="toctree-l1"><a class="reference internal" href="coreschemas.html">Core Dataset Schemas</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dbt.html">dbt Models</a></li>
-</ul>
-</div>
+  <div class="bd-toc-item navbar-nav"></div>
 </nav></div>
     </div>
   
@@ -349,7 +344,7 @@ document.write(`
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page">Onchain Data</li>
+    <li class="breadcrumb-item active" aria-current="page">CLI Subcommands</li>
   </ul>
 </nav>
 </div>
@@ -366,29 +361,84 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="onchain-data">
-<h1>Onchain Data<a class="headerlink" href="#onchain-data" title="Link to this heading">#</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="ingestion.html">Ingestion</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ingestion.html#data-pipeline">Data Pipeline</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="ingestion.html#overview-diagram-link">Overview Diagram (link)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ingestion.html#audited-core-datasets">Audited Core Datasets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ingestion.html#processed-datasets">Processed Datasets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ingestion.html#public-datasets">Public Datasets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="ingestion.html#downstream-data-modeling">Downstream Data Modeling</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="coreschemas.html">Core Dataset Schemas</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="coreschemas.html#blocks">Blocks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="coreschemas.html#transactions">Transactions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dbt.html">dbt Models</a></li>
-</ul>
-</div>
+  <section id="cli-subcommands">
+<h1>CLI Subcommands<a class="headerlink" href="#cli-subcommands" title="Link to this heading">#</a></h1>
+<section id="opdata-chains">
+<h2><code class="docutils literal notranslate"><span class="pre">opdata</span> <span class="pre">chains</span></code><a class="headerlink" href="#opdata-chains" title="Link to this heading">#</a></h2>
+<div class="docutils container">
+<iframe style="border: none;" width="100%" height="328px" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;style&gt;
+.r1 {font-weight: bold}
+.r2 {color: #808000; text-decoration-color: #808000; font-weight: bold}
+.r3 {color: #7f7f7f; text-decoration-color: #7f7f7f}
+.r4 {color: #008080; text-decoration-color: #008080; font-weight: bold}
+body {
+    color: #000000;
+    background-color: #ffffff;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;pre style=&quot;font-family:Menlo,&#x27;DejaVu Sans Mono&#x27;,consolas,&#x27;Courier New&#x27;,monospace&quot;&gt;&lt;code style=&quot;font-family:inherit&quot;&gt;&lt;span class=&quot;r1&quot;&gt;                                                                                &lt;/span&gt;
+&lt;span class=&quot;r1&quot;&gt; &lt;/span&gt;&lt;span class=&quot;r2&quot;&gt;Usage: &lt;/span&gt;&lt;span class=&quot;r1&quot;&gt;opdata chains [OPTIONS] COMMAND [ARGS]...                               &lt;/span&gt;
+&lt;span class=&quot;r1&quot;&gt;                                                                                &lt;/span&gt;
+ Onchain data utilities.                                                        
+                                                                                
+&lt;span class=&quot;r3&quot;&gt;╭─ Options ────────────────────────────────────────────────────────────────────╮&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;r4&quot;&gt;--help&lt;/span&gt;          Show this message and exit.                                  &lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;╰──────────────────────────────────────────────────────────────────────────────╯&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;╭─ Commands ───────────────────────────────────────────────────────────────────╮&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;r4&quot;&gt;get-block       &lt;/span&gt; Get a single block.                                         &lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;r4&quot;&gt;get-receipts    &lt;/span&gt; Get transaction receipts.                                   &lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;r4&quot;&gt;get-txs         &lt;/span&gt; Get transactions.                                           &lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;r4&quot;&gt;process-blocks  &lt;/span&gt; Process a range of blocks.                                  &lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;╰──────────────────────────────────────────────────────────────────────────────╯&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></div>
+</section>
+<section id="opdata-misc">
+<h2><code class="docutils literal notranslate"><span class="pre">opdata</span> <span class="pre">misc</span></code><a class="headerlink" href="#opdata-misc" title="Link to this heading">#</a></h2>
+<div class="docutils container">
+<iframe style="border: none;" width="100%" height="328px" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;style&gt;
+.r1 {font-weight: bold}
+.r2 {color: #808000; text-decoration-color: #808000; font-weight: bold}
+.r3 {color: #7f7f7f; text-decoration-color: #7f7f7f}
+.r4 {color: #008080; text-decoration-color: #008080; font-weight: bold}
+body {
+    color: #000000;
+    background-color: #ffffff;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;pre style=&quot;font-family:Menlo,&#x27;DejaVu Sans Mono&#x27;,consolas,&#x27;Courier New&#x27;,monospace&quot;&gt;&lt;code style=&quot;font-family:inherit&quot;&gt;&lt;span class=&quot;r1&quot;&gt;                                                                                &lt;/span&gt;
+&lt;span class=&quot;r1&quot;&gt; &lt;/span&gt;&lt;span class=&quot;r2&quot;&gt;Usage: &lt;/span&gt;&lt;span class=&quot;r1&quot;&gt;opdata misc [OPTIONS] COMMAND [ARGS]...                                 &lt;/span&gt;
+&lt;span class=&quot;r1&quot;&gt;                                                                                &lt;/span&gt;
+ Miscelaneous housekeeping utilities.                                           
+                                                                                
+&lt;span class=&quot;r3&quot;&gt;╭─ Options ────────────────────────────────────────────────────────────────────╮&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;r4&quot;&gt;--help&lt;/span&gt;          Show this message and exit.                                  &lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;╰──────────────────────────────────────────────────────────────────────────────╯&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;╭─ Commands ───────────────────────────────────────────────────────────────────╮&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;r4&quot;&gt;customize_dbt    &lt;/span&gt; Customize html dbt docs.                                   &lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;r4&quot;&gt;generate-dbt     &lt;/span&gt; Autogenerated dbt source and model files.                  &lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;r4&quot;&gt;generate-docs    &lt;/span&gt; Autogenerated sphinx docs files.                           &lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;r4&quot;&gt;upload_metadata  &lt;/span&gt; Upload chain_metadata_raw.csv to cloud storage.            &lt;span class=&quot;r3&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;r3&quot;&gt;╰──────────────────────────────────────────────────────────────────────────────╯&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe></div>
+</section>
 </section>
 
 
@@ -402,20 +452,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../cli/cli.html"
+       href="../quickstart.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">CLI Subcommands</p>
+        <p class="prev-next-title">Getting Started</p>
       </div>
     </a>
     <a class="right-next"
-       href="ingestion.html"
+       href="../onchain/onchain.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Ingestion</p>
+        <p class="prev-next-title">Onchain Data</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -430,9 +480,22 @@ document.write(`
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#opdata-chains"><code class="docutils literal notranslate"><span class="pre">opdata</span> <span class="pre">chains</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#opdata-misc"><code class="docutils literal notranslate"><span class="pre">opdata</span> <span class="pre">misc</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../_sources/sections/onchain/onchain.rst.txt">
+    <a href="../../_sources/sections/cli/cli.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

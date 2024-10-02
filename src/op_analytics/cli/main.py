@@ -9,7 +9,7 @@ from op_analytics.cli.mainhelpers import find_apps
 
 log = LOGGER.get_logger()
 
-app = typer.Typer(no_args_is_help=True)
+app = typer.Typer(no_args_is_help=True, add_completion=False)
 
 
 typer.main.get_command_name = lambda name: name

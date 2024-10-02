@@ -36,7 +36,7 @@ def upload_metadata(
         str, typer.Argument(help="Path to local file that has the raw chain metadata.")
     ],
 ):
-    """Upload raw chain metadata csv file.
+    """Upload chain_metadata_raw.csv to cloud storage.
 
 
     The chain_metadata_raw.csv file is maintained manually by the OP Labs team. This function

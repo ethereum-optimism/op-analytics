@@ -38,8 +38,11 @@ dev-dependencies = [
     "pydata-sphinx-theme>=0.15.4",
     "pytest>=8.3.3",
     "ruff>=0.6.7",
+    "selenium>=4.25.0",
     "sphinx>=8.0.2",
+    "sphinxcontrib-typer>=0.5.0",
     "types-pyyaml>=6.0.12.20240917",
+    "webdriver-manager>=4.0.2",
 ]
 
 [build-system]

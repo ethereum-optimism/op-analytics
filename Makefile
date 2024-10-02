@@ -39,4 +39,4 @@ dbt/sources/superchain_oplabs.yml:
 # The second command here is to customize the docs site and bundle it up as a single static HTML file.
 docs/dbt/index.html: dbt/sources/superchain_oplabs.yml docs/dbt/optimism.css $(wildcard dbt/docs/*.md)
 	./scripts/dbt_docs.sh
-	uv run opdata chains customize_dbt_docs
+	uv run opdata chains customize_dbt

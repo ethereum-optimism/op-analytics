@@ -1,42 +1,49 @@
+import json
+from typing_extensions import Annotated
+
+import op_datasets
+import op_datasets.rpcs
 import polars as pl
 import typer
 from op_coreutils.logger import LOGGER
 from op_datasets.coretables.fromgoldsky import get_core_tables
 
-from op_analytics.cli.subcommands.chains import chain_metadata
-from op_analytics.cli.subcommands.chains.dbtgen import (
-    dbt_docs,
-    goldsky_dbt_sources,
-    goldsky_dbt_views,
-    superchain_dbt_sources,
-)
-from op_analytics.cli.subcommands.chains.docsgen import schema_mapping_docs
-
 log = LOGGER.get_logger()
 
-app = typer.Typer(help="Chain related utilities.")
 
-
-app.command(name="upload_metadata")(chain_metadata.upload_metadata)
-app.command(name="customize_dbt_docs")(dbt_docs.customize)
+app = typer.Typer(help="Onchain data utilities.", add_completion=False)
 
 
 @app.command()
-def generate_dbt():
-    goldsky_dbt_sources.generate()
-    goldsky_dbt_views.generate()
-    superchain_dbt_sources.generate()
+def get_block(chain: str, block_number: str):
+    """Get a single block."""
+    blocks = op_datasets.rpcs.get_block(chain, block_number)
+    print(json.dumps(blocks, indent=2))
 
 
 @app.command()
-def generate_docs():
-    schema_mapping_docs.generate()
+def get_txs(chain: str, tx_hashes: list[str]):
+    """Get transactions."""
+    txs = op_datasets.rpcs.get_transactions(chain, tx_hashes)
+    print(json.dumps(txs, indent=2))
 
 
 @app.command()
-def process_blocks(blocks: str):
-    """[WIP]. Run our transformation process on a range of blocks."""
-    dataframes = get_core_tables(blocks)
+def get_receipts(chain: str, tx_hashes: list[str]):
+    """Get transaction receipts."""
+    txs = op_datasets.rpcs.get_receipts(chain, tx_hashes)
+    print(json.dumps(txs, indent=2))
+
+
+@app.command()
+def process_blocks(
+    block_range: Annotated[str, typer.Argument(help="Range of blocks to be processed.")],
+):
+    """Process a range of blocks.
+
+    Runs our custom data processing functions on a range of blocks.
+    """
+    dataframes = get_core_tables(block_range)
 
     ctx = pl.SQLContext()
     for name, df in dataframes.items():
