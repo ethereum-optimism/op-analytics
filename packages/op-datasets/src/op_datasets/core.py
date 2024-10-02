@@ -5,12 +5,47 @@ from pydantic import BaseModel, model_validator
 from pyiceberg.types import (
     IcebergType,
 )
+from pyiceberg.types import (
+    DoubleType,
+    IntegerType,
+    ListType,
+    LongType,
+    StringType,
+    TimestampType,
+    StructType,
+)
 
 
 class JsonRPCMethod(str, Enum):
     eth_getBlockByNumber = 1
     eth_getTransactionReceipt = 2
     eth_getTransactionByHash = 3
+
+
+def to_bigquery_type(iceberg_type: IcebergType):
+    if iceberg_type == DoubleType():
+        return "FLOAT64"
+
+    if iceberg_type == IntegerType() or iceberg_type == LongType():
+        return "INT64"
+
+    if iceberg_type == TimestampType():
+        return "TIMESTAMP"
+
+    if iceberg_type == StringType():
+        return "STRING"
+
+    if isinstance(iceberg_type, ListType):
+        element = to_bigquery_type(iceberg_type.element_type)
+        return f"ARRAY<{element}>"
+
+    if isinstance(iceberg_type, StructType):
+        fields = ", ".join(
+            [f"{_.name} {to_bigquery_type(_.field_type)}" for _ in iceberg_type.fields]
+        )
+        return f"STRUCT<{fields}>"
+
+    raise NotImplementedError()
 
 
 class Column(BaseModel):
@@ -38,13 +73,25 @@ class Column(BaseModel):
     op_analytics_clickhouse_expr: str | None = None
 
     def display_dict(self):
+        oplabs_expr: str
+
+        if self.op_analytics_clickhouse_expr is not None:
+            oplabs_expr = (
+                self.op_analytics_clickhouse_expr.split("AS")[0].strip()
+                if " AS " in self.op_analytics_clickhouse_expr
+                else self.op_analytics_clickhouse_expr
+            )
+        else:
+            oplabs_expr = None
+
         return {
             "Name": self.name,
             "JSON-RPC method": self.json_rpc_method.name if self.json_rpc_method else None,
             "JSON-RPC field": self.json_rpc_field_name,
             "Goldsky Type": self.raw_goldsky_pipeline_type,
             "Goldsky Field": self.raw_goldsky_pipeline_expr,
-            "OP Labs Compatible Expr": self.op_analytics_clickhouse_expr,
+            "OP Labs BigQuery Type": to_bigquery_type(self.field_type),
+            "OP Labs Expression": oplabs_expr,
         }
 
 
