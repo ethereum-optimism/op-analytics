@@ -29,7 +29,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=f461269d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=613916f0" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -367,176 +367,193 @@ document.write(`
 <th class="head"><p>JSON-RPC field</p></th>
 <th class="head"><p>Goldsky Type</p></th>
 <th class="head"><p>Goldsky Field</p></th>
-<th class="head"><p>OP Labs Compatible Expr</p></th>
+<th class="head"><p>OP Labs BigQuery Type</p></th>
+<th class="head"><p>OP Labs Expression</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>ingestion_metadata</p></td>
+<tr class="row-even"><td><p>chain</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
-<td><p>–</p></td>
-</tr>
-<tr class="row-odd"><td><p>chain</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
+<td><p>STRING</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-even"><td><p>network</p></td>
+<tr class="row-odd"><td><p>network</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
-<td><p>–</p></td>
-</tr>
-<tr class="row-odd"><td><p>chain_id</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
+<td><p>STRING</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-even"><td><p>timestamp</p></td>
+<tr class="row-even"><td><p>chain_id</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>INT64</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-odd"><td><p>timestamp</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>timestamp</p></td>
 <td><p>long</p></td>
 <td><p>timestamp</p></td>
+<td><p>TIMESTAMP</p></td>
 <td><p>timestamp</p></td>
 </tr>
-<tr class="row-odd"><td><p>number</p></td>
+<tr class="row-even"><td><p>number</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>number</p></td>
 <td><p>long</p></td>
 <td><p>number</p></td>
-<td><p>accurateCast(number, ‘Int64’) AS number</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(number, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>hash</p></td>
+<tr class="row-odd"><td><p>hash</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>hash</p></td>
 <td><p>string</p></td>
 <td><p>hash</p></td>
+<td><p>STRING</p></td>
 <td><p>hash</p></td>
 </tr>
-<tr class="row-odd"><td><p>parent_hash</p></td>
+<tr class="row-even"><td><p>parent_hash</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>parentHash</p></td>
 <td><p>string</p></td>
 <td><p>parent_hash</p></td>
+<td><p>STRING</p></td>
 <td><p>parent_hash</p></td>
 </tr>
-<tr class="row-even"><td><p>nonce</p></td>
+<tr class="row-odd"><td><p>nonce</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>nonce</p></td>
 <td><p>string</p></td>
 <td><p>nonce</p></td>
+<td><p>STRING</p></td>
 <td><p>nonce</p></td>
 </tr>
-<tr class="row-odd"><td><p>sha3_uncles</p></td>
+<tr class="row-even"><td><p>sha3_uncles</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>sha3Uncles</p></td>
 <td><p>string</p></td>
 <td><p>sha3_uncles</p></td>
+<td><p>STRING</p></td>
 <td><p>sha3_uncles</p></td>
 </tr>
-<tr class="row-even"><td><p>logs_bloom</p></td>
+<tr class="row-odd"><td><p>logs_bloom</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>logsBloom</p></td>
 <td><p>string</p></td>
 <td><p>logs_bloom</p></td>
+<td><p>STRING</p></td>
 <td><p>logs_bloom</p></td>
 </tr>
-<tr class="row-odd"><td><p>transactions_root</p></td>
+<tr class="row-even"><td><p>transactions_root</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>transactionsRoot</p></td>
 <td><p>string</p></td>
 <td><p>transactions_root</p></td>
+<td><p>STRING</p></td>
 <td><p>transactions_root</p></td>
 </tr>
-<tr class="row-even"><td><p>state_root</p></td>
+<tr class="row-odd"><td><p>state_root</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>stateRoot</p></td>
 <td><p>string</p></td>
 <td><p>state_root</p></td>
+<td><p>STRING</p></td>
 <td><p>state_root</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipts_root</p></td>
+<tr class="row-even"><td><p>receipts_root</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>receiptsRoot</p></td>
 <td><p>string</p></td>
 <td><p>receipts_root</p></td>
+<td><p>STRING</p></td>
 <td><p>receipts_root</p></td>
 </tr>
-<tr class="row-even"><td><p>withdrawals_root</p></td>
+<tr class="row-odd"><td><p>withdrawals_root</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>withdrawalsRoot</p></td>
 <td><p>string</p></td>
 <td><p>withdrawals_root</p></td>
+<td><p>STRING</p></td>
 <td><p>withdrawals_root</p></td>
 </tr>
-<tr class="row-odd"><td><p>miner</p></td>
+<tr class="row-even"><td><p>miner</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>miner</p></td>
 <td><p>string</p></td>
 <td><p>miner</p></td>
+<td><p>STRING</p></td>
 <td><p>miner</p></td>
 </tr>
-<tr class="row-even"><td><p>difficulty</p></td>
+<tr class="row-odd"><td><p>difficulty</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>difficulty</p></td>
 <td><p>double</p></td>
 <td><p>difficulty</p></td>
+<td><p>FLOAT64</p></td>
 <td><p>difficulty</p></td>
 </tr>
-<tr class="row-odd"><td><p>total_difficulty</p></td>
+<tr class="row-even"><td><p>total_difficulty</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>totalDifficulty</p></td>
 <td><p>double</p></td>
 <td><p>total_difficulty</p></td>
+<td><p>FLOAT64</p></td>
 <td><p>total_difficulty</p></td>
 </tr>
-<tr class="row-even"><td><p>size</p></td>
+<tr class="row-odd"><td><p>size</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>size</p></td>
 <td><p>long</p></td>
 <td><p>size</p></td>
+<td><p>INT64</p></td>
 <td><p>size</p></td>
 </tr>
-<tr class="row-odd"><td><p>base_fee_per_gas</p></td>
+<tr class="row-even"><td><p>base_fee_per_gas</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>baseFeePerGas</p></td>
 <td><p>long</p></td>
 <td><p>base_fee_per_gas</p></td>
+<td><p>INT64</p></td>
 <td><p>base_fee_per_gas</p></td>
 </tr>
-<tr class="row-even"><td><p>gas_used</p></td>
+<tr class="row-odd"><td><p>gas_used</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>gasUsed</p></td>
 <td><p>long</p></td>
 <td><p>gas_used</p></td>
+<td><p>INT64</p></td>
 <td><p>gas_used</p></td>
 </tr>
-<tr class="row-odd"><td><p>gas_limit</p></td>
+<tr class="row-even"><td><p>gas_limit</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>gasLimit</p></td>
 <td><p>long</p></td>
 <td><p>gas_limit</p></td>
+<td><p>INT64</p></td>
 <td><p>gas_limit</p></td>
 </tr>
-<tr class="row-even"><td><p>extra_data</p></td>
+<tr class="row-odd"><td><p>extra_data</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>extraData</p></td>
 <td><p>string</p></td>
 <td><p>extra_data</p></td>
+<td><p>STRING</p></td>
 <td><p>extra_data</p></td>
 </tr>
-<tr class="row-odd"><td><p>transaction_count</p></td>
+<tr class="row-even"><td><p>transaction_count</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>long</p></td>
 <td><p>transaction_count</p></td>
+<td><p>INT64</p></td>
 <td><p>transaction_count</p></td>
 </tr>
 </tbody>
@@ -552,254 +569,282 @@ document.write(`
 <th class="head"><p>JSON-RPC field</p></th>
 <th class="head"><p>Goldsky Type</p></th>
 <th class="head"><p>Goldsky Field</p></th>
-<th class="head"><p>OP Labs Compatible Expr</p></th>
+<th class="head"><p>OP Labs BigQuery Type</p></th>
+<th class="head"><p>OP Labs Expression</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>ingestion_metadata</p></td>
+<tr class="row-even"><td><p>chain</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
-<td><p>–</p></td>
-</tr>
-<tr class="row-odd"><td><p>chain</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
+<td><p>STRING</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-even"><td><p>network</p></td>
+<tr class="row-odd"><td><p>network</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
-<td><p>–</p></td>
-</tr>
-<tr class="row-odd"><td><p>chain_id</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
-<td><p>–</p></td>
+<td><p>STRING</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-even"><td><p>block_timestamp</p></td>
+<tr class="row-even"><td><p>chain_id</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>INT64</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-odd"><td><p>block_timestamp</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>timestamp</p></td>
 <td><p>long</p></td>
 <td><p>block_timestamp</p></td>
+<td><p>TIMESTAMP</p></td>
 <td><p>block_timestamp</p></td>
 </tr>
-<tr class="row-odd"><td><p>block_number</p></td>
+<tr class="row-even"><td><p>block_number</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>number</p></td>
 <td><p>long</p></td>
 <td><p>block_number</p></td>
-<td><p>accurateCast(block_number, ‘Int64’) AS block_number</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(block_number, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>block_hash</p></td>
+<tr class="row-odd"><td><p>block_hash</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>block_hash</p></td>
 <td><p>string</p></td>
 <td><p>block_hash</p></td>
+<td><p>STRING</p></td>
 <td><p>block_hash</p></td>
 </tr>
-<tr class="row-odd"><td><p>hash</p></td>
+<tr class="row-even"><td><p>hash</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>hash</p></td>
 <td><p>string</p></td>
 <td><p>hash</p></td>
+<td><p>STRING</p></td>
 <td><p>hash</p></td>
 </tr>
-<tr class="row-even"><td><p>nonce</p></td>
+<tr class="row-odd"><td><p>nonce</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>nonce</p></td>
 <td><p>long</p></td>
 <td><p>nonce</p></td>
-<td><p>accurateCast(nonce, ‘Int64’) AS nonce</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(nonce, ‘Int64’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>transaction_index</p></td>
+<tr class="row-even"><td><p>transaction_index</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>hash</p></td>
 <td><p>long</p></td>
 <td><p>transaction_index</p></td>
-<td><p>accurateCast(transaction_index, ‘Int64’) AS transaction_index</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(transaction_index, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>from_address</p></td>
+<tr class="row-odd"><td><p>from_address</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>from</p></td>
 <td><p>string</p></td>
 <td><p>from_address</p></td>
+<td><p>STRING</p></td>
 <td><p>from_address</p></td>
 </tr>
-<tr class="row-odd"><td><p>to_address</p></td>
+<tr class="row-even"><td><p>to_address</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>to</p></td>
 <td><p>string</p></td>
 <td><p>to_address</p></td>
+<td><p>STRING</p></td>
 <td><p>to_address</p></td>
 </tr>
-<tr class="row-even"><td><p>value</p></td>
+<tr class="row-odd"><td><p>value</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>value</p></td>
 <td><p>decimal</p></td>
 <td><p>value</p></td>
-<td><p>accurateCastOrNull(value, ‘Int64’) AS value</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCastOrNull(value, ‘Int64’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>value_lossless</p></td>
+<tr class="row-even"><td><p>value_lossless</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>value</p></td>
 <td><p>decimal</p></td>
 <td><p>value</p></td>
-<td><p>cast(value, ‘String’) AS value_lossless</p></td>
+<td><p>STRING</p></td>
+<td><p>cast(value, ‘String’)</p></td>
 </tr>
-<tr class="row-even"><td><p>gas</p></td>
+<tr class="row-odd"><td><p>gas</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>gas</p></td>
 <td><p>decimal</p></td>
 <td><p>gas</p></td>
-<td><p>accurateCast(gas, ‘Int64’) AS gas</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(gas, ‘Int64’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>gas_price</p></td>
+<tr class="row-even"><td><p>gas_price</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>gasPrice</p></td>
 <td><p>decimal</p></td>
 <td><p>gas_price</p></td>
-<td><p>accurateCast(gas_price, ‘Int64’) AS gas_price</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(gas_price, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>input</p></td>
+<tr class="row-odd"><td><p>input</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>input</p></td>
 <td><p>string</p></td>
 <td><p>input</p></td>
+<td><p>STRING</p></td>
 <td><p>input</p></td>
 </tr>
-<tr class="row-odd"><td><p>transaction_type</p></td>
+<tr class="row-even"><td><p>transaction_type</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>type</p></td>
 <td><p>long</p></td>
 <td><p>transaction_type</p></td>
-<td><p>accurateCast(transaction_type, ‘Int32’) AS transaction_type</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(transaction_type, ‘Int32’)</p></td>
 </tr>
-<tr class="row-even"><td><p>max_fee_per_gas</p></td>
+<tr class="row-odd"><td><p>max_fee_per_gas</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>maxFeePerGas</p></td>
 <td><p>decimal</p></td>
 <td><p>max_fee_per_gas</p></td>
-<td><p>accurateCast(max_fee_per_gas, ‘Int64’) AS max_fee_per_gas</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(max_fee_per_gas, ‘Int64’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>max_priority_fee_per_gas</p></td>
+<tr class="row-even"><td><p>max_priority_fee_per_gas</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>maxPriorityFeePerGas</p></td>
 <td><p>decimal</p></td>
 <td><p>max_priority_fee_per_gas</p></td>
-<td><p>accurateCast(max_priority_fee_per_gas, ‘Int64’) AS max_priority_fee_per_gas</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(max_priority_fee_per_gas, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>blob_versioned_hashes</p></td>
+<tr class="row-odd"><td><p>blob_versioned_hashes</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>blobVersionedHashes</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
+<td><p>ARRAY<STRING></p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-odd"><td><p>max_fee_per_blob_gas</p></td>
+<tr class="row-even"><td><p>max_fee_per_blob_gas</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>maxFeePerBlobGas</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
+<td><p>INT64</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_cumulative_gas_used</p></td>
+<tr class="row-odd"><td><p>receipt_cumulative_gas_used</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>cumulativeGasUsed</p></td>
 <td><p>decimal</p></td>
 <td><p>receipt_cumulative_gas_used</p></td>
-<td><p>accurateCast(receipt_cumulative_gas_used, ‘Int64’) AS receipt_cumulative_gas_used</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(receipt_cumulative_gas_used, ‘Int64’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_gas_used</p></td>
+<tr class="row-even"><td><p>receipt_gas_used</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>gasUsed</p></td>
 <td><p>decimal</p></td>
 <td><p>receipt_gas_used</p></td>
-<td><p>accurateCast(receipt_gas_used, ‘Int64’) AS receipt_gas_used</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(receipt_gas_used, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_contract_address</p></td>
+<tr class="row-odd"><td><p>receipt_contract_address</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>contractAddress</p></td>
 <td><p>string</p></td>
 <td><p>receipt_contract_address</p></td>
+<td><p>INT64</p></td>
 <td><p>receipt_contract_address</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_status</p></td>
+<tr class="row-even"><td><p>receipt_status</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>status</p></td>
 <td><p>long</p></td>
 <td><p>receipt_status</p></td>
-<td><p>accurateCast(receipt_status, ‘Int32’) AS receipt_status</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(receipt_status, ‘Int32’)</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_effective_gas_price</p></td>
+<tr class="row-odd"><td><p>receipt_effective_gas_price</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>effectiveGasPrice</p></td>
 <td><p>decimal</p></td>
 <td><p>receipt_effective_gas_price</p></td>
-<td><p>accurateCast(receipt_effective_gas_price, ‘Int64’) AS receipt_effective_gas_price</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(receipt_effective_gas_price, ‘Int64’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_root_hash</p></td>
+<tr class="row-even"><td><p>receipt_root_hash</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>root</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
+<td><p>INT64</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_l1_gas_price</p></td>
+<tr class="row-odd"><td><p>receipt_l1_gas_price</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1GasPrice</p></td>
 <td><p>decimal</p></td>
 <td><p>receipt_l1_gas_price</p></td>
-<td><p>accurateCast(receipt_l1_gas_price, ‘Nullable(Int64)’) AS receipt_l1_gas_price</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(receipt_l1_gas_price, ‘Nullable(Int64)’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_l1_gas_used</p></td>
+<tr class="row-even"><td><p>receipt_l1_gas_used</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1GasUsed</p></td>
 <td><p>decimal</p></td>
 <td><p>receipt_l1_gas_used</p></td>
-<td><p>accurateCast(receipt_l1_gas_used, ‘Nullable(Int64)’) AS receipt_l1_gas_used</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(receipt_l1_gas_used, ‘Nullable(Int64)’)</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_l1_fee</p></td>
+<tr class="row-odd"><td><p>receipt_l1_fee</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1Fee</p></td>
 <td><p>decimal</p></td>
 <td><p>receipt_l1_fee</p></td>
+<td><p>INT64</p></td>
 <td><p>accurateCast(receipt_l1_fee, ‘Nullable(Int64)’) receipt_l1_fee</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_l1_fee_scalar</p></td>
+<tr class="row-even"><td><p>receipt_l1_fee_scalar</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1FeeScalar</p></td>
 <td><p>decimal</p></td>
 <td><p>receipt_l1_fee_scalar</p></td>
+<td><p>FLOAT64</p></td>
 <td><p>receipt_l1_fee_scalar</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_l1_blob_base_fee</p></td>
+<tr class="row-odd"><td><p>receipt_l1_blob_base_fee</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1BlobBaseFee</p></td>
 <td><p>decimal</p></td>
 <td><p>receipt_l1_blob_base_fee</p></td>
-<td><p>accurateCast(receipt_l1_blob_base_fee, ‘Nullable(Int64)’) AS receipt_l1_blob_base_fee</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(receipt_l1_blob_base_fee, ‘Nullable(Int64)’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_l1_blob_base_fee_scalar</p></td>
+<tr class="row-even"><td><p>receipt_l1_blob_base_fee_scalar</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1BlobBaseFeeScalar</p></td>
 <td><p>decimal</p></td>
 <td><p>receipt_l1_blob_base_fee_scalar</p></td>
-<td><p>accurateCast(receipt_l1_blob_base_fee_scalar, ‘Nullable(Int64)’) AS receipt_l1_blob_base_fee_scalar</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(receipt_l1_blob_base_fee_scalar, ‘Nullable(Int64)’)</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_l1_base_fee_scalar</p></td>
+<tr class="row-odd"><td><p>receipt_l1_base_fee_scalar</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1BaseFeeScalar</p></td>
 <td><p>decimal</p></td>
 <td><p>receipt_l1_base_fee_scalar</p></td>
-<td><p>accurateCast(receipt_l1_base_fee_scalar, ‘Nullable(Int64)’) AS receipt_l1_base_fee_scalar</p></td>
+<td><p>INT64</p></td>
+<td><p>accurateCast(receipt_l1_base_fee_scalar, ‘Nullable(Int64)’)</p></td>
 </tr>
 </tbody>
 </table>
