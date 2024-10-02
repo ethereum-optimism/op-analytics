@@ -56,47 +56,47 @@ col_list = [
 # In[ ]:
 
 
-trailing_days = 180
+trailing_days = 90
 
-flipside_configs = chain_configs[chain_configs['source'] == 'flipside']
+# flipside_configs = chain_configs[chain_configs['source'] == 'flipside']
 clickhouse_configs = chain_configs[chain_configs['source'] == 'oplabs']
 
 
 # In[ ]:
 
 
-print('     flipside runs')
-flip_dfs = []
+# print('     flipside runs')
+# flip_dfs = []
 
-with open(os.path.join("inputs/sql/flipside_bychain.sql"), "r") as file:
-    og_query = file.read()
+# with open(os.path.join("inputs/sql/flipside_bychain.sql"), "r") as file:
+#     og_query = file.read()
 
-for index, chain in flipside_configs.iterrows():
-    print('     flipside: ' + chain['blockchain'])
-    query = og_query
-    # Pass in Params to the query
-    query = query.replace("@blockchain@", chain['blockchain'])
-    query = query.replace("@chain_id@", str(chain['mainnet_chain_id']))
-    query = query.replace("@name@", chain['display_name'])
-    query = query.replace("@layer@", chain['chain_layer'])
-    query = query.replace("@trailing_days@", str(trailing_days))
+# for index, chain in flipside_configs.iterrows():
+#     print('     flipside: ' + chain['blockchain'])
+#     query = og_query
+#     # Pass in Params to the query
+#     query = query.replace("@blockchain@", chain['blockchain'])
+#     query = query.replace("@chain_id@", str(chain['mainnet_chain_id']))
+#     query = query.replace("@name@", chain['display_name'])
+#     query = query.replace("@layer@", chain['chain_layer'])
+#     query = query.replace("@trailing_days@", str(trailing_days))
     
-    try:
-        df = f.query_to_df(query)
-        flip_dfs.append(df)
-    except Exception as e:  # Use FlipsideError if available instead of Exception
-        print(f"Error querying Flipside for {chain['blockchain']}: {str(e)}")
-        print("Skipping this chain due to API credit limitation or other issues.")
-        continue
+#     try:
+#         df = f.query_to_df(query)
+#         flip_dfs.append(df)
+#     except Exception as e:  # Use FlipsideError if available instead of Exception
+#         print(f"Error querying Flipside for {chain['blockchain']}: {str(e)}")
+#         print("Skipping this chain due to API credit limitation or other issues.")
+#         continue
 
-if flip_dfs:
-    flip = pd.concat(flip_dfs)
-    flip['source'] = 'flipside'
-    flip['dt'] = pd.to_datetime(flip['dt']).dt.tz_localize(None)
-    flip = flip[col_list]
-else:
-    print("No data was retrieved from Flipside. The resulting DataFrame will be empty.")
-    flip = pd.DataFrame(columns=col_list)
+# if flip_dfs:
+#     flip = pd.concat(flip_dfs)
+#     flip['source'] = 'flipside'
+#     flip['dt'] = pd.to_datetime(flip['dt']).dt.tz_localize(None)
+#     flip = flip[col_list]
+# else:
+#     print("No data was retrieved from Flipside. The resulting DataFrame will be empty.")
+#     flip = pd.DataFrame(columns=col_list)
 
 
 # In[ ]:
@@ -124,18 +124,21 @@ for index, chain in clickhouse_configs.iterrows():
                 ch_dfs.append(df)
         except:
                 print('unable to process ' + chain['blockchain'])
-
-ch = pd.concat(ch_dfs)
-ch['source'] = 'goldsky'
-ch['dt'] = pd.to_datetime(ch['dt']).dt.tz_localize(None)
-ch = ch[col_list]
+if ch_dfs:
+    ch = pd.concat(ch_dfs)
+    ch['source'] = 'goldsky'
+    ch['dt'] = pd.to_datetime(ch['dt']).dt.tz_localize(None)
+    ch = ch[col_list]
+else:
+    print("No data was retrieved from Goldsky. The resulting DataFrame will be empty.")
+    ch = pd.DataFrame(columns=col_list)
 
 
 # In[ ]:
 
 
 # Get Chains we already have data for & don't need to run in Dune
-dataframes = [ch, flip]
+dataframes = [ch]#, flip]
 
 chain_ids_string = ops.get_unique_chain_ids_from_dfs(dataframes)
 
@@ -153,21 +156,62 @@ dune_df = d.get_dune_data(query_id = 3740822, #https://dune.com/queries/3740822
     path = "outputs",
     performance="large",
     params = [days_param,chain_ids_param],
-    num_hours_to_rerun=0 #always rerun due to param
+    num_hours_to_rerun=4
 )
-dune_df['source'] = 'dune'
-dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
-dune_df = dune_df[col_list]
+
+
+# In[ ]:
+
+
+if not dune_df.empty:
+    dune_df['source'] = 'dune'
+    dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
+    dune_df['chain_id'] = dune_df['chain_id'].astype(str)
+    dune_df = dune_df[col_list]
+else:
+    print("No data was retrieved from Dune. The resulting DataFrame will be empty.")
+    dune_df = pd.DataFrame(columns=col_list)
+
+
+# In[ ]:
+
+
+print(f"ch shape: {ch.shape}")
+# print(f"flip shape: {flip.shape}")
+print(f"dune_df shape: {dune_df.shape}")
+
+
+# In[ ]:
+
+
+# Convert chain_id and source to strings in both DataFrames
+ch['chain_id'] = ch['chain_id'].astype(str).fillna('na')
+ch['source'] = ch['source'].astype(str).fillna('na')
+# Apply ch datatypes to dunedf
+ch_dtypes = ch.dtypes.to_dict()
+
+# Now, apply these dtypes to dune_df
+for col, dtype in ch_dtypes.items():
+    dune_df[col] = dune_df[col].astype(dtype)
+
+print("ch columns:", ch.columns)
+print("dune_df columns:", dune_df.columns)
+
+print("ch dtypes:", ch.dtypes)
+print("dune_df dtypes:", dune_df.dtypes)
 
 
 # In[ ]:
 
 
 # Combine dfs
-final_df = pd.concat([ch, flip, dune_df])
+# final_df = pd.concat([ch, dune_df])#, flip])
+final_df = pd.concat([ch, dune_df], axis=0, ignore_index=True)
 
 # Remove Dupes
 final_df = final_df.drop_duplicates(subset=['chain_id','dt'], keep='first')
+
+print(f"final_df shape: {final_df.shape}")
 
 
 # In[ ]:
@@ -175,13 +219,13 @@ final_df = final_df.drop_duplicates(subset=['chain_id','dt'], keep='first')
 
 opstack_metadata = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv')
 
-opstack_metadata['chain_id'] = opstack_metadata['mainnet_chain_id']
+opstack_metadata['chain_id'] = opstack_metadata['mainnet_chain_id'].astype(str)
 
 meta_cols = ['is_op_chain','op_based_version', 'chain_id', 'alignment','chain_name', 'display_name']
 
-print("Columns in opstack_metadata:", opstack_metadata.columns)
-print("Columns in opstack_metadata[meta_cols]:", opstack_metadata[meta_cols].columns)
-print("Columns in final_df:", final_df.columns)
+# print("Columns in opstack_metadata:", opstack_metadata.columns)
+# print("Columns in opstack_metadata[meta_cols]:", opstack_metadata[meta_cols].columns)
+# print("Columns in final_df:", final_df.columns)
 
 
 # In[ ]:
@@ -206,7 +250,7 @@ final_enriched_df.to_csv('outputs/'+query_name+'.csv', index=False)
 # In[ ]:
 
 
-final_enriched_df['chain_id'] = final_enriched_df['chain_id'].astype(int)
+final_enriched_df['chain_id'] = final_enriched_df['chain_id'].astype('string')
 final_enriched_df['num_raw_txs'] = final_enriched_df['num_raw_txs'].astype(int)
 final_enriched_df['num_success_txs'] = final_enriched_df['num_success_txs'].astype(int)
 final_enriched_df['num_qualified_txs'] = final_enriched_df['num_qualified_txs'].fillna(0)
