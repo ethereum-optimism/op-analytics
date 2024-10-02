@@ -8,6 +8,7 @@ dependencies = [
     "clickhouse-connect>=0.8.0",
     "gitpython>=3.1.43",
     "google-cloud-storage>=2.18.2",
+    "gspread>=6.1.2",
     "pyarrow>=17.0.0",
     "structlog>=24.4.0",
 ]
