@@ -89,9 +89,10 @@ jobs:
           BASESCAN_API: ${{ secrets.BASESCAN_API }}
           OP_ETHERSCAN_API: ${{ secrets.OP_ETHERSCAN_API }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Commit changes from notebook
+      - name: List changed files
+        run: git status
+      - name: Commit and push changes
         run: |
-          git pull origin main
           git config --local user.email "action@github.com"
           git config --local user.name "github-actions"
           git add --all
@@ -99,10 +100,11 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "GH Action Update from ${{ matrix.notebook }}" -a || echo "No changes to commit"
-            git push
+            git pull --rebase origin main
+            git push --force-with-lease origin main
           fi
-      - name: List changed files
-        run: git status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # commit-changes:
   #   needs: run_notebook
