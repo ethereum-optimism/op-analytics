@@ -119,6 +119,7 @@ for index, chain in clickhouse_configs.iterrows():
         query = query.replace("@name@", chain['display_name'])
         query = query.replace("@layer@", chain['chain_layer'])
         query = query.replace("@trailing_days@", str(trailing_days))
+        # print(query)
         try:
                 df = ch_client.query_df(query)
                 ch_dfs.append(df)
