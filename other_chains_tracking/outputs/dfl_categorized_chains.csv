@@ -144,7 +144,7 @@ ICP,internet-computer,ICP,8916,,,['dfinity'],dfinity,https://internetcomputer.or
 Nova Network,supernova,SNT,15399,['EVM'],87,['nova-network-inc'],,,,['snapshot:novanetwork.eth']
 Kintsugi,kintsugi,KINT,13675,['Parachain'],,['interlay'],kintsugi_btc,https://www.interlay.io/,"{'chain': 'Kusama', 'types': ['parachain']}",
 Filecoin,filecoin,FIL,2280,['EVM'],,['filecoin-project'],Filecoin,https://filecoin.io/,,
-Flow,flow,FLOW,4558,,,['onflow'],flow_blockchain,https://flow.com/,,
+Flow,flow,FLOW,4558,,747,['onflow'],flow_blockchain,https://flow.com/,,
 Kujira,kujira,KUJI,15185,['Cosmos'],,['Team-Kujira'],TeamKujira,https://kujira.network/,,
 Heiko,,HKO,,['Parachain'],,['parallelchain-io'],ParallelFi,https://parallel.fi/,"{'chain': 'Kusama', 'types': ['parachain']}",
 Dogechain,dogechain,DG,,['EVM'],,['dogechain-lab'],DogechainFamily,https://dogechain.dog/,,
