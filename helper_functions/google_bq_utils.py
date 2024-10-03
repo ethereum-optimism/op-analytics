@@ -45,6 +45,8 @@ def check_table_exists(client, table_id, dataset_id='api_table_uploads', project
             raise e
 
 def get_bq_type(column_name, column_type):
+    column_name = str(column_name)
+    column_type = str(column_type)
     if (column_name == 'date' or column_name == 'dt' or 
         column_name.endswith('_dt') or column_name.startswith('dt_')):
         return 'DATETIME'
@@ -58,7 +60,7 @@ def get_bq_type(column_name, column_type):
         return 'DATETIME'
     elif column_type == 'bool':
         return 'BOOL'
-    elif column_type == 'string':
+    elif column_type in('string','python[string]'):
         return 'STRING'
     else:
         return 'STRING'
