@@ -1,6 +1,6 @@
 {
   "l1_revenue_wallet_1": {
-    "balance": 5434.176915922242,
+    "balance": 5561.130666625162,
     "address": "0xa3d596EAfaB6B13Ab18D40FaE1A962700C84ADEa"
   },
   "l1_revenue_wallet_2": {
@@ -16,27 +16,27 @@
     "address": "0x9c3631dDE5c8316bE5B7554B0CcD2631C15a9A05"
   },
   "op_sequencer_fee_vault": {
-    "balance": 35.19986776864919,
+    "balance": 40.41191159785791,
     "address": "0x4200000000000000000000000000000000000011"
   },
   "op_base_fee_vault": {
-    "balance": 32.539538342841404,
+    "balance": 36.42087365115054,
     "address": "0x4200000000000000000000000000000000000019"
   },
   "op_l1fee_fee_vault": {
-    "balance": 9.976408389407863,
+    "balance": 10.215817155668113,
     "address": "0x420000000000000000000000000000000000001A"
   },
   "l1_batch_submitter": {
-    "balance": 307.54930510989374,
+    "balance": 307.47138499490404,
     "address": "0x6887246668a3b87F54DeB3b94Ba47a6f63F32985"
   },
   "l1_state_proposer": {
-    "balance": 120.10885740305385,
+    "balance": 119.99014276803817,
     "address": "0x473300df21D047806A082244b417f96b32f13A33"
   },
   "l1_to_l2_inflight_withdrawals": {
-    "balance": 4316.9934220203895,
+    "balance": 4183.457301569825,
     "address": "https://dune.com/embeds/3939869/6626683/"
   }
 }
