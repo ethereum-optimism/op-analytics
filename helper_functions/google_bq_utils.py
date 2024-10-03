@@ -4,6 +4,7 @@ import json
 from google.cloud import bigquery
 from google.oauth2 import service_account
 import pandas_utils as pu
+import math
 
 dotenv.load_dotenv()
 
@@ -64,56 +65,130 @@ def get_bq_type(column_name, column_type):
         return 'STRING'
     else:
         return 'STRING'
+    
+def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', 
+                         write_mode='overwrite', project_id=os.getenv("BQ_PROJECT_ID"), 
+                         chunk_size=100000):
+    print(f"Start Writing {dataset_id}.{table_id}")
+    
+    client = connect_bq_client(project_id)
+    
+    # Create schema based on the first chunk to avoid processing the entire DataFrame
+    first_chunk = next(df.groupby(df.index // chunk_size))
+    schema = create_schema(first_chunk[1])
+    
+    # Set the write disposition
+    write_disposition = (bigquery.WriteDisposition.WRITE_APPEND if write_mode == 'append' 
+                         else bigquery.WriteDisposition.WRITE_TRUNCATE)
+
+    # Create a job configuration
+    job_config = bigquery.LoadJobConfig(
+        write_disposition=write_disposition,
+        schema=schema
+    )
+
+    # Calculate the number of chunks
+    total_rows = len(df)
+    num_chunks = math.ceil(total_rows / chunk_size)
+
+    for i, (_, chunk_df) in enumerate(df.groupby(df.index // chunk_size)):
+        # Reset index for each chunk
+        chunk_df = chunk_df.reset_index(drop=True)
         
-def write_df_to_bq_table(df, table_id, dataset_id = 'api_table_uploads'
-                         ,  write_mode='overwrite'
-                         , project_id = os.getenv("BQ_PROJECT_ID")):
-        print(f"Start Writing {dataset_id}.{table_id}")
-        schema = []
-        # Reset the index of the DataFrame to remove the index column
-        df = df.reset_index(drop=True)
+        # Process the chunk (flatten nested data, etc.)
+        chunk_df = process_chunk(chunk_df)
 
-        # Check for any flattens to do
-        for column_name, column_type in df.dtypes.items():
-                if column_type == 'object':
-                        # Attempt to flatten nested data if the column contains arrays or dictionaries
-                        try:
-                                df = pu.flatten_nested_data(df, column_name)
-                                continue  # Skip adding the original column to the schema
-                        except ValueError:
-                                continue
-        for column_name, column_type in df.dtypes.items():
-                # Map pandas data types to BigQuery data types
-                bq_data_type = get_bq_type(column_name, column_type)
-
-                schema.append(bigquery.SchemaField(column_name, bq_data_type))
-
-        # Set the write disposition based on the append_or_update parameter
-        if write_mode == 'append':
-                write_disposition = bigquery.WriteDisposition.WRITE_APPEND
-        elif write_mode == 'overwrite':
-                write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
-        else:
-              print('Error: Must be append or overwrite')
-        # Create a job configuration to overwrite the table
-        job_config = bigquery.LoadJobConfig(
-                write_disposition=write_disposition,
-                schema=schema
-        )
-        client = connect_bq_client(project_id)
-        # Load the DataFrame into BigQuery
+        # Load the chunk into BigQuery
         job = client.load_table_from_dataframe(
-                df, f"{dataset_id}.{table_id}", job_config=job_config
+            chunk_df, f"{dataset_id}.{table_id}", job_config=job_config
         )
 
-        # Wait for the job to complete
         try:
-                job.result()  # Wait for the job to complete
-                print(f"Data loaded successfully to {dataset_id}.{table_id}")
+            job.result()  # Wait for the job to complete
+            print(f"Chunk {i+1}/{num_chunks} loaded successfully to {dataset_id}.{table_id}")
         except Exception as e:
-                print(f"Error loading data to BigQuery: {e}")
-                # Log more details if needed
-                raise  # Re-raise the exception for higher-level error handling
+            print(f"Error loading chunk {i+1}/{num_chunks} to BigQuery: {e}")
+            raise  # Re-raise the exception for higher-level error handling
+
+        # If it's not the first chunk, change write mode to append
+        if i == 0 and write_mode == 'overwrite':
+            job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND
+
+    print(f"All data loaded successfully to {dataset_id}.{table_id}")
+
+def create_schema(df):
+    schema = []
+    for column_name, column_type in df.dtypes.items():
+        bq_data_type = get_bq_type(column_name, column_type)
+        schema.append(bigquery.SchemaField(column_name, bq_data_type))
+    return schema
+
+def process_chunk(df):
+    for column_name, column_type in df.dtypes.items():
+        if column_type == 'object':
+            try:
+                df = pu.flatten_nested_data(df, column_name)
+            except ValueError:
+                continue
+    return df
+# def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', 
+#                          write_mode='overwrite', project_id=os.getenv("BQ_PROJECT_ID"), 
+#                          chunk_size=100000):
+#     print(f"Start Writing {dataset_id}.{table_id}")
+    
+#     # Reset the index of the DataFrame to remove the index column
+#     df = df.reset_index(drop=True)
+
+#     # Check for any flattens to do
+#     for column_name, column_type in df.dtypes.items():
+#         if column_type == 'object':
+#             try:
+#                 df = pu.flatten_nested_data(df, column_name)
+#             except ValueError:
+#                 continue
+
+#     # Create schema
+#     schema = [bigquery.SchemaField(column_name, get_bq_type(column_name, column_type)) 
+#               for column_name, column_type in df.dtypes.items()]
+
+#     # Set the write disposition
+#     write_disposition = (bigquery.WriteDisposition.WRITE_APPEND if write_mode == 'append' 
+#                          else bigquery.WriteDisposition.WRITE_TRUNCATE)
+
+#     # Create a job configuration
+#     job_config = bigquery.LoadJobConfig(
+#         write_disposition=write_disposition,
+#         schema=schema
+#     )
+
+#     client = connect_bq_client(project_id)
+
+#     # Calculate the number of chunks
+#     total_rows = len(df)
+#     num_chunks = math.ceil(total_rows / chunk_size)
+
+#     for i in range(num_chunks):
+#         start_idx = i * chunk_size
+#         end_idx = min((i + 1) * chunk_size, total_rows)
+#         chunk_df = df.iloc[start_idx:end_idx]
+#         print(f'Starting Chunk {i+1}/{num_chunks}')
+#         # Load the chunk into BigQuery
+#         job = client.load_table_from_dataframe(
+#             chunk_df, f"{dataset_id}.{table_id}", job_config=job_config
+#         )
+
+#         try:
+#             job.result()  # Wait for the job to complete
+#             print(f"Chunk {i+1}/{num_chunks} loaded successfully to {dataset_id}.{table_id}")
+#         except Exception as e:
+#             print(f"Error loading chunk {i+1}/{num_chunks} to BigQuery: {e}")
+#             raise  # Re-raise the exception for higher-level error handling
+
+#         # If it's not the first chunk, change write mode to append
+#         if i == 0 and write_mode == 'overwrite':
+#             job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND
+
+#     print(f"All data loaded successfully to {dataset_id}.{table_id}")
 
 def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'dt']):
     client = connect_bq_client(project_id)
