@@ -3,9 +3,10 @@
 {{ config(materialized='view') }}
 
 SELECT
+    formatDateTime(timestamp, '%Y-%m-%d') AS dt,
     timestamp,
     accurateCast(number, 'Int64') AS number,
-    hash,
+    cast(hash, 'String') AS hash,
     parent_hash,
     nonce,
     sha3_uncles,
