@@ -17,6 +17,16 @@ def get_element_from_json_column(col,element):
     # extract the 'name' element from the JSON data
     return pd.json_normalize(col.apply(json.loads))[element]
 
+def parse_json_fields(df):
+    json_fields = ['risks', 'badges', 'purposes', 'tvl_associatedTokens']
+    for field in json_fields:
+        if field in df.columns:
+            df[field] = df[field].apply(lambda x: json.loads(x) if isinstance(x, str) else x)
+    return df
+
+def is_repeated_field(series):
+    return series.apply(lambda x: isinstance(x, (list, dict))).any()
+
 # https://www.thepythoncode.com/article/convert-pandas-dataframe-to-html-table-python
 
 def generate_html(dataframe: pd.DataFrame):
