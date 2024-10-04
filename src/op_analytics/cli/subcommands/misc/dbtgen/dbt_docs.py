@@ -1,10 +1,9 @@
 import json
 
-from op_coreutils.logger import LOGGER
+from op_coreutils.logger import structlog
 from op_coreutils.path import repo_path
 
-
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 
 def customize():

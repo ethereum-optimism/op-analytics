@@ -20,6 +20,12 @@ Welcome to the OP Analytics repo documentation.
 sections/quickstart
 ```
 
+## CLI Docs
+
+```{toctree}
+sections/cli/cli
+```
+
 
 ## Onchain Data
 

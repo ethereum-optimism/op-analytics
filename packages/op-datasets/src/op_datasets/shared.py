@@ -6,21 +6,21 @@ from pyiceberg.types import (
     TimestampType,
 )
 
-from op_datasets.core import Column
+from op_datasets.schemas.core import Column
 
 
-def INGESTION_METADATA(field_id) -> Column:
-    """Ingestion metadata column.
+def METADATA(field_id) -> Column:
+    """Metadata column.
 
-    We use this internally to track the ingestion process.
+    We use this internally to track data pipeline metadata.
     """
     return Column(
         field_id=field_id,
-        name="ingestion_metadata",
+        name="_meta",
         field_type=StructType(
             NestedField(
                 field_id=1,
-                name="ingestion_time",
+                name="ingestion_timestamp",
                 field_type=TimestampType(),
                 doc="Time at which data was ingested.",
             )

@@ -146,6 +146,13 @@
 </li>
 
 
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../cli/cli.html">
+    CLI Subcommands
+  </a>
+</li>
+
+
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="onchain.html">
     Onchain Data
@@ -246,6 +253,13 @@ document.write(`
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../quickstart.html">
     Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../cli/cli.html">
+    CLI Subcommands
   </a>
 </li>
 
@@ -374,7 +388,15 @@ maps to our schemas.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>chain</p></td>
+<tr class="row-even"><td><p>_meta</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>STRUCT&lt;ingestion_timestamp TIMESTAMP&gt;</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-odd"><td><p>chain</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
@@ -382,7 +404,7 @@ maps to our schemas.</p>
 <td><p>STRING</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-odd"><td><p>network</p></td>
+<tr class="row-even"><td><p>network</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
@@ -390,13 +412,21 @@ maps to our schemas.</p>
 <td><p>STRING</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-even"><td><p>chain_id</p></td>
+<tr class="row-odd"><td><p>chain_id</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>INT64</p></td>
 <td><p>–</p></td>
+</tr>
+<tr class="row-even"><td><p>dt</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>STRING</p></td>
+<td><p>formatDateTime(timestamp, ‘%Y-%m-%d’)</p></td>
 </tr>
 <tr class="row-odd"><td><p>timestamp</p></td>
 <td><p>eth_getBlockByNumber</p></td>
@@ -420,7 +450,7 @@ maps to our schemas.</p>
 <td><p>string</p></td>
 <td><p>hash</p></td>
 <td><p>STRING</p></td>
-<td><p>hash</p></td>
+<td><p>cast(hash, ‘String’)</p></td>
 </tr>
 <tr class="row-even"><td><p>parent_hash</p></td>
 <td><p>eth_getBlockByNumber</p></td>
@@ -576,7 +606,15 @@ maps to our schemas.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>chain</p></td>
+<tr class="row-even"><td><p>_meta</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>–</p></td>
+<td><p>STRUCT&lt;ingestion_timestamp TIMESTAMP&gt;</p></td>
+<td><p>–</p></td>
+</tr>
+<tr class="row-odd"><td><p>chain</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
@@ -584,7 +622,7 @@ maps to our schemas.</p>
 <td><p>STRING</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-odd"><td><p>network</p></td>
+<tr class="row-even"><td><p>network</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
@@ -592,7 +630,7 @@ maps to our schemas.</p>
 <td><p>STRING</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-even"><td><p>chain_id</p></td>
+<tr class="row-odd"><td><p>chain_id</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
 <td><p>–</p></td>
@@ -600,7 +638,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-odd"><td><p>block_timestamp</p></td>
+<tr class="row-even"><td><p>block_timestamp</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>timestamp</p></td>
 <td><p>long</p></td>
@@ -608,7 +646,7 @@ maps to our schemas.</p>
 <td><p>TIMESTAMP</p></td>
 <td><p>block_timestamp</p></td>
 </tr>
-<tr class="row-even"><td><p>block_number</p></td>
+<tr class="row-odd"><td><p>block_number</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>number</p></td>
 <td><p>long</p></td>
@@ -616,23 +654,23 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(block_number, ‘Int64’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>block_hash</p></td>
+<tr class="row-even"><td><p>block_hash</p></td>
 <td><p>eth_getBlockByNumber</p></td>
 <td><p>block_hash</p></td>
 <td><p>string</p></td>
 <td><p>block_hash</p></td>
 <td><p>STRING</p></td>
-<td><p>block_hash</p></td>
+<td><p>cast(block_hash, ‘String’)</p></td>
 </tr>
-<tr class="row-even"><td><p>hash</p></td>
+<tr class="row-odd"><td><p>hash</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>hash</p></td>
 <td><p>string</p></td>
 <td><p>hash</p></td>
 <td><p>STRING</p></td>
-<td><p>hash</p></td>
+<td><p>cast(hash, ‘String’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>nonce</p></td>
+<tr class="row-even"><td><p>nonce</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>nonce</p></td>
 <td><p>long</p></td>
@@ -640,7 +678,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(nonce, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>transaction_index</p></td>
+<tr class="row-odd"><td><p>transaction_index</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>hash</p></td>
 <td><p>long</p></td>
@@ -648,23 +686,23 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(transaction_index, ‘Int64’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>from_address</p></td>
+<tr class="row-even"><td><p>from_address</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>from</p></td>
 <td><p>string</p></td>
 <td><p>from_address</p></td>
 <td><p>STRING</p></td>
-<td><p>from_address</p></td>
+<td><p>cast(from_address, ‘String’)</p></td>
 </tr>
-<tr class="row-even"><td><p>to_address</p></td>
+<tr class="row-odd"><td><p>to_address</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>to</p></td>
 <td><p>string</p></td>
 <td><p>to_address</p></td>
 <td><p>STRING</p></td>
-<td><p>to_address</p></td>
+<td><p>cast(to_address, ‘String’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>value</p></td>
+<tr class="row-even"><td><p>value</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>value</p></td>
 <td><p>decimal</p></td>
@@ -672,7 +710,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCastOrNull(value, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>value_lossless</p></td>
+<tr class="row-odd"><td><p>value_lossless</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>value</p></td>
 <td><p>decimal</p></td>
@@ -680,7 +718,7 @@ maps to our schemas.</p>
 <td><p>STRING</p></td>
 <td><p>cast(value, ‘String’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>gas</p></td>
+<tr class="row-even"><td><p>gas</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>gas</p></td>
 <td><p>decimal</p></td>
@@ -688,7 +726,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(gas, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>gas_price</p></td>
+<tr class="row-odd"><td><p>gas_price</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>gasPrice</p></td>
 <td><p>decimal</p></td>
@@ -696,7 +734,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(gas_price, ‘Int64’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>input</p></td>
+<tr class="row-even"><td><p>input</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>input</p></td>
 <td><p>string</p></td>
@@ -704,7 +742,7 @@ maps to our schemas.</p>
 <td><p>STRING</p></td>
 <td><p>input</p></td>
 </tr>
-<tr class="row-even"><td><p>transaction_type</p></td>
+<tr class="row-odd"><td><p>transaction_type</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>type</p></td>
 <td><p>long</p></td>
@@ -712,7 +750,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(transaction_type, ‘Int32’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>max_fee_per_gas</p></td>
+<tr class="row-even"><td><p>max_fee_per_gas</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>maxFeePerGas</p></td>
 <td><p>decimal</p></td>
@@ -720,7 +758,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(max_fee_per_gas, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>max_priority_fee_per_gas</p></td>
+<tr class="row-odd"><td><p>max_priority_fee_per_gas</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>maxPriorityFeePerGas</p></td>
 <td><p>decimal</p></td>
@@ -728,7 +766,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(max_priority_fee_per_gas, ‘Int64’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>blob_versioned_hashes</p></td>
+<tr class="row-even"><td><p>blob_versioned_hashes</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>blobVersionedHashes</p></td>
 <td><p>–</p></td>
@@ -736,7 +774,7 @@ maps to our schemas.</p>
 <td><p>ARRAY<STRING></p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-even"><td><p>max_fee_per_blob_gas</p></td>
+<tr class="row-odd"><td><p>max_fee_per_blob_gas</p></td>
 <td><p>eth_getTransactionByHash</p></td>
 <td><p>maxFeePerBlobGas</p></td>
 <td><p>–</p></td>
@@ -744,7 +782,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_cumulative_gas_used</p></td>
+<tr class="row-even"><td><p>receipt_cumulative_gas_used</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>cumulativeGasUsed</p></td>
 <td><p>decimal</p></td>
@@ -752,7 +790,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(receipt_cumulative_gas_used, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_gas_used</p></td>
+<tr class="row-odd"><td><p>receipt_gas_used</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>gasUsed</p></td>
 <td><p>decimal</p></td>
@@ -760,7 +798,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(receipt_gas_used, ‘Int64’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_contract_address</p></td>
+<tr class="row-even"><td><p>receipt_contract_address</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>contractAddress</p></td>
 <td><p>string</p></td>
@@ -768,7 +806,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>receipt_contract_address</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_status</p></td>
+<tr class="row-odd"><td><p>receipt_status</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>status</p></td>
 <td><p>long</p></td>
@@ -776,7 +814,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(receipt_status, ‘Int32’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_effective_gas_price</p></td>
+<tr class="row-even"><td><p>receipt_effective_gas_price</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>effectiveGasPrice</p></td>
 <td><p>decimal</p></td>
@@ -784,7 +822,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(receipt_effective_gas_price, ‘Int64’)</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_root_hash</p></td>
+<tr class="row-odd"><td><p>receipt_root_hash</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>root</p></td>
 <td><p>–</p></td>
@@ -792,7 +830,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>–</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_l1_gas_price</p></td>
+<tr class="row-even"><td><p>receipt_l1_gas_price</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1GasPrice</p></td>
 <td><p>decimal</p></td>
@@ -800,7 +838,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(receipt_l1_gas_price, ‘Nullable(Int64)’)</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_l1_gas_used</p></td>
+<tr class="row-odd"><td><p>receipt_l1_gas_used</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1GasUsed</p></td>
 <td><p>decimal</p></td>
@@ -808,7 +846,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(receipt_l1_gas_used, ‘Nullable(Int64)’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_l1_fee</p></td>
+<tr class="row-even"><td><p>receipt_l1_fee</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1Fee</p></td>
 <td><p>decimal</p></td>
@@ -816,7 +854,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(receipt_l1_fee, ‘Nullable(Int64)’) receipt_l1_fee</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_l1_fee_scalar</p></td>
+<tr class="row-odd"><td><p>receipt_l1_fee_scalar</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1FeeScalar</p></td>
 <td><p>decimal</p></td>
@@ -824,7 +862,7 @@ maps to our schemas.</p>
 <td><p>FLOAT64</p></td>
 <td><p>receipt_l1_fee_scalar</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_l1_blob_base_fee</p></td>
+<tr class="row-even"><td><p>receipt_l1_blob_base_fee</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1BlobBaseFee</p></td>
 <td><p>decimal</p></td>
@@ -832,7 +870,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(receipt_l1_blob_base_fee, ‘Nullable(Int64)’)</p></td>
 </tr>
-<tr class="row-even"><td><p>receipt_l1_blob_base_fee_scalar</p></td>
+<tr class="row-odd"><td><p>receipt_l1_blob_base_fee_scalar</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1BlobBaseFeeScalar</p></td>
 <td><p>decimal</p></td>
@@ -840,7 +878,7 @@ maps to our schemas.</p>
 <td><p>INT64</p></td>
 <td><p>accurateCast(receipt_l1_blob_base_fee_scalar, ‘Nullable(Int64)’)</p></td>
 </tr>
-<tr class="row-odd"><td><p>receipt_l1_base_fee_scalar</p></td>
+<tr class="row-even"><td><p>receipt_l1_base_fee_scalar</p></td>
 <td><p>eth_getTransactionReceipt</p></td>
 <td><p>l1BaseFeeScalar</p></td>
 <td><p>decimal</p></td>

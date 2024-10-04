@@ -22,7 +22,7 @@ sources:
           - sha3_uncles: 0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347
 
     columns:
-    - name: ingestion_metadata
+    - name: _meta
       description: Internal metadata obtained during indexing.
       meta:
         iceberg_type: StructType
@@ -42,6 +42,10 @@ sources:
         8453'
       meta:
         iceberg_type: IntegerType
+        is_required: true
+    - name: dt
+      meta:
+        iceberg_type: StringType
         is_required: true
     - name: timestamp
       meta:

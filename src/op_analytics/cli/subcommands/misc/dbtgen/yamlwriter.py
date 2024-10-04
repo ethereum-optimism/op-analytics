@@ -1,9 +1,8 @@
 import yaml
+from op_coreutils.logger import structlog
 from yaml.representer import SafeRepresenter
 
-from op_coreutils.logger import LOGGER
-
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 
 def custom_str_representer(dumper, data):
