@@ -2,7 +2,7 @@ import polars as pl
 from op_coreutils.testutils.pathmanager import PathManager
 from op_coreutils.testutils.dataframe import compare_dataframes
 
-from op_analytics.cli.subcommands.chains import chain_metadata
+from op_analytics.cli.subcommands.misc import chain_metadata
 
 
 def test_clean():

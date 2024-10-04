@@ -1,9 +1,9 @@
 import os
 
+from op_coreutils.logger import structlog
 from op_coreutils.path import repo_path
-from op_coreutils.logger import LOGGER
 
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 
 def load_env():

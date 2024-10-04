@@ -6,7 +6,9 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "clickhouse-connect>=0.8.0",
+    "gcsfs>=2024.9.0.post1",
     "gitpython>=3.1.43",
+    "google-cloud-bigquery>=3.26.0",
     "google-cloud-storage>=2.18.2",
     "gspread>=6.1.2",
     "pyarrow>=17.0.0",

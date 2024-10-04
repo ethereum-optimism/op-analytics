@@ -1,12 +1,10 @@
+from op_coreutils.logger import structlog
 from op_coreutils.path import repo_path
-
-
 from op_datasets.coretables.fromgoldsky import get_sql
-from op_coreutils.logger import LOGGER
 
-from op_analytics.cli.subcommands.chains.dbtgen.yamlwriter import AUTOGEN_WARNING_SQL, VIEW_CONFIG
+from op_analytics.cli.subcommands.misc.dbtgen.yamlwriter import AUTOGEN_WARNING_SQL, VIEW_CONFIG
 
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 
 def generate():
