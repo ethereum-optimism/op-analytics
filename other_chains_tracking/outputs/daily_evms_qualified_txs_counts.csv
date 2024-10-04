@@ -1,10 +1,10 @@
 dt,blockchain,layer,chain_id,num_raw_txs,num_success_txs,num_qualified_txs,source,is_op_chain,op_based_version,alignment,chain_name,display_name
 2024-10-03,zora,L2,7777777.0,118573,118315,102965,goldsky,True,modern,OP Chain,zora,Zora
-2024-10-03,zksync,L2,324,145135,141981,145136,dune,False,,Other EVMs,,zkSync Era
+2024-10-03,zksync,L2,324,146996,143829,146997,dune,False,,Other EVMs,,zkSync Era
 2024-10-03,zkevm,L2,1101,13209,10660,7077,dune,False,,Other EVMs,,Polygon zkEVM
 2024-10-03,swan,L2,254.0,131542,131537,129430,goldsky,True,modern,OP Chain,swan,SwanChain
 2024-10-03,shape,L2,360.0,6946,6915,6075,goldsky,True,modern,OP Chain,shape,Shape
-2024-10-03,sei,L1,1329,206383,200562,143027,dune,False,,Other EVMs,,Sei Network
+2024-10-03,sei,L1,1329,206403,200582,143043,dune,False,,Other EVMs,,Sei Network
 2024-10-03,scroll,L2,534352,312954,303525,233745,dune,False,,Other EVMs,,Scroll
 2024-10-03,redstone,L2,690.0,2684,2628,2564,goldsky,True,modern,OP Chain,redstone,Redstone
 2024-10-03,polynomial,L2,8008.0,488,455,454,goldsky,True,modern,OP Chain,polynomial,Polynomial Chain
