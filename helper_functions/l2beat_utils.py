@@ -1,5 +1,7 @@
 import requests as r
 import pandas as pd
+from pandas import json_normalize
+import pandas_utils as pu
 import re
 from datetime import datetime, timezone
 import requests_utils as ru
@@ -9,6 +11,36 @@ api_string = 'https://api.l2beat.com/api/'
 # https://api.l2beat.com/api/activity
 # https://l2beat.com/api/tvl/scaling.json
 # https://l2beat.com/api/tvl/optimism.json
+
+def get_l2beat_chain_summary():
+        url = "https://l2beat.com/api/scaling/summary"
+        response = r.get(url)
+        data = response.json()
+
+        # Extract the projects data
+        projects = data["data"]["projects"]
+
+        # Normalize the data while preserving arrays
+        df = json_normalize(projects.values(), sep="_")
+
+        # Function to safely access nested dictionaries
+        def safe_get(dict_obj, *keys):
+                for key in keys:
+                        # print(f"Accessing key: {key}")
+                        # print(f"Current dict_obj: {dict_obj}")
+                        if isinstance(dict_obj, dict) and key in dict_obj:
+                                dict_obj = dict_obj[key]
+                        else:
+                                print(f"Key {key} not found or dict_obj is not a dictionary")
+                                return None
+                return dict_obj
+
+        # Ensure 'risks' is a list
+        df["risks"] = df["risks"].apply(lambda x: x if isinstance(x, list) else [])
+
+        df = pu.parse_json_fields(df)
+        
+        return df
 
 @ru.retry_with_backoff(max_retries=3, initial_delay=1, backoff_factor=2)
 def get_l2beat_activity_data(data='activity',granularity='daily'):
