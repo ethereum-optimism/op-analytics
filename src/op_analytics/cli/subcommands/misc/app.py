@@ -1,5 +1,5 @@
 import typer
-from op_coreutils.logger import LOGGER
+from op_coreutils.logger import structlog
 
 from op_analytics.cli.subcommands.misc import chain_metadata
 from op_analytics.cli.subcommands.misc.dbtgen import (
@@ -10,7 +10,7 @@ from op_analytics.cli.subcommands.misc.dbtgen import (
 )
 from op_analytics.cli.subcommands.misc.docsgen import schema_mapping_docs
 
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 app = typer.Typer(help="Miscelaneous housekeeping utilities.", add_completion=False)
 

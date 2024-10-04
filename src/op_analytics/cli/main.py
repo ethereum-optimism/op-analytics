@@ -3,11 +3,11 @@ import os
 import time
 
 import typer
-from op_coreutils.logger import LOGGER
+from op_coreutils.logger import structlog
 
 from op_analytics.cli.mainhelpers import find_apps
 
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 app = typer.Typer(no_args_is_help=True, add_completion=False)
 

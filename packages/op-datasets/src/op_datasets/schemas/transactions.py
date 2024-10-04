@@ -7,7 +7,7 @@ from textwrap import dedent
 from pyiceberg.types import DoubleType, IntegerType, ListType, LongType, StringType, TimestampType
 
 from op_datasets import shared
-from op_datasets.core import Column, JsonRPCMethod, Table
+from op_datasets.schemas.core import Column, JsonRPCMethod, Table
 
 TRANSACTIONS_SCHEMA = Table(
     name="transactions",
@@ -28,7 +28,7 @@ TRANSACTIONS_SCHEMA = Table(
     
     """),
     columns=[
-        shared.INGESTION_METADATA(field_id=1),
+        shared.METADATA(field_id=1),
         shared.CHAIN(field_id=2),
         shared.NETWORK(field_id=3),
         shared.CHAIN_ID(field_id=4),
@@ -64,7 +64,7 @@ TRANSACTIONS_SCHEMA = Table(
             json_rpc_field_name="block_hash",
             raw_goldsky_pipeline_expr="block_hash",
             raw_goldsky_pipeline_type="string",
-            op_analytics_clickhouse_expr="block_hash",
+            op_analytics_clickhouse_expr="cast(block_hash, 'String') AS block_hash",
         ),
         # Transaction
         Column(
@@ -76,7 +76,7 @@ TRANSACTIONS_SCHEMA = Table(
             json_rpc_field_name="hash",
             raw_goldsky_pipeline_expr="hash",
             raw_goldsky_pipeline_type="string",
-            op_analytics_clickhouse_expr="hash",
+            op_analytics_clickhouse_expr="cast(hash, 'String') AS hash",
         ),
         Column(
             field_id=9,
@@ -109,7 +109,7 @@ TRANSACTIONS_SCHEMA = Table(
             json_rpc_field_name="from",
             raw_goldsky_pipeline_expr="from_address",
             raw_goldsky_pipeline_type="string",
-            op_analytics_clickhouse_expr="from_address",
+            op_analytics_clickhouse_expr="cast(from_address, 'String') AS from_address",
         ),
         Column(
             field_id=12,
@@ -120,7 +120,7 @@ TRANSACTIONS_SCHEMA = Table(
             json_rpc_field_name="to",
             raw_goldsky_pipeline_expr="to_address",
             raw_goldsky_pipeline_type="string",
-            op_analytics_clickhouse_expr="to_address",
+            op_analytics_clickhouse_expr="cast(to_address, 'String') AS to_address",
         ),
         Column(
             field_id=13,

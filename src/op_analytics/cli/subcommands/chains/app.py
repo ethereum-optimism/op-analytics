@@ -1,14 +1,13 @@
 import json
-from typing_extensions import Annotated
 
 import op_datasets
 import op_datasets.rpcs
-import polars as pl
 import typer
-from op_coreutils.logger import LOGGER
-from op_datasets.coretables.fromgoldsky import get_core_tables
+from op_coreutils.logger import structlog
+from op_datasets.processing.execute import execute
+from typing_extensions import Annotated
 
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 
 app = typer.Typer(help="Onchain data utilities.", add_completion=False)
@@ -37,20 +36,15 @@ def get_receipts(chain: str, tx_hashes: list[str]):
 
 @app.command()
 def process_blocks(
-    block_range: Annotated[str, typer.Argument(help="Range of blocks to be processed.")],
+    chain: Annotated[str, typer.Argument(help="L2 chain name")],
+    block_spec: Annotated[str, typer.Argument(help="Range of blocks to be ingested.")],
+    source_spec: Annotated[
+        str | None, typer.Argument(help="Parameters specifying the data source.")
+    ] = None,
 ):
-    """Process a range of blocks.
+    """Ingest a range of blocks [WIP].
 
     Runs our custom data processing functions on a range of blocks.
     """
-    dataframes = get_core_tables(block_range)
-
-    ctx = pl.SQLContext()
-    for name, df in dataframes.items():
-        ctx.register(name=name, frame=df)
-
-    extractions = []
-
-    results = []
-    for extraction in extractions:
-        results.append(extraction(ctx, dataframes))
+    source_spec = source_spec or "goldsky"
+    execute(chain, source_spec, block_spec)

@@ -1,12 +1,11 @@
-from op_coreutils.logger import LOGGER
+from op_coreutils.logger import structlog
 from op_coreutils.path import repo_path
-from op_datasets.core import Column, Table
 from op_datasets.schemas.blocks import BLOCKS_SCHEMA
+from op_datasets.schemas.core import Column, Table
 
 from op_analytics.cli.subcommands.misc.dbtgen.yamlwriter import write_sources_yaml
 
-
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 
 def to_dbt_column(column: Column):

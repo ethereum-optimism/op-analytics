@@ -12,6 +12,7 @@ dependencies = [
     "py-markdown-table>=1.1.0",
     "pyyaml>=6.0.2",
     "typer>=0.12.5",
+    "urllib3>=2.2.3",
 ]
 
 [tool.uv.sources]

@@ -1,12 +1,13 @@
-import os
 import json
+import os
+
 import gspread
 import pandas as pd
 
-from op_coreutils.logger import LOGGER
+from op_coreutils.logger import structlog
 from op_coreutils.path import repo_path
 
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 _GSHEETS_LOCATIONS = {}
 
@@ -48,4 +49,4 @@ def update_gsheet(location_name: str, worksheet_name: str, dataframe: pd.DataFra
     sh = gc.open_by_url(sheet["url"])
     worksheet = sh.worksheet(worksheet_name)
     worksheet.update([dataframe.columns.values.tolist()] + dataframe.values.tolist())
-    log.info(f"Wrote {dataframe.shape} cells to {location_name}#{worksheet_name}")
+    log.info(f"Wrote {dataframe.shape} cells to Google Sheets: {location_name}#{worksheet_name}")

@@ -1,13 +1,13 @@
 import polars as pl
 import typer
-from op_coreutils.logger import LOGGER
+from op_coreutils.logger import structlog
 from op_coreutils.path import repo_path
 from op_coreutils.storage.gcs import gcs_upload_csv
 from polars import datatypes
 from polars.functions.col import Col
 from typing_extensions import Annotated
 
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 
 OP_CHAIN = "OP Chain"
@@ -33,8 +33,8 @@ def goldsky_chains(path: str | None = None):
 
 def upload_metadata(
     path: Annotated[
-        str, typer.Argument(help="Path to local file that has the raw chain metadata.")
-    ],
+        str | None, typer.Argument(help="Path to local file that has the raw chain metadata.")
+    ] = None,
 ):
     """Upload chain_metadata_raw.csv to cloud storage.
 
