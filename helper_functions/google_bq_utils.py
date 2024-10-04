@@ -74,8 +74,8 @@ def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads',
     client = connect_bq_client(project_id)
     
     # Create schema based on the first chunk to avoid processing the entire DataFrame
-    first_chunk = next(df.groupby(df.index // chunk_size))
-    schema = create_schema(first_chunk[1])
+    first_chunk = df.iloc[:chunk_size]
+    schema = create_schema(first_chunk)
     
     # Set the write disposition
     write_disposition = (bigquery.WriteDisposition.WRITE_APPEND if write_mode == 'append' 
