@@ -5,6 +5,7 @@ from google.cloud import bigquery
 from google.oauth2 import service_account
 from google.api_core.exceptions import NotFound
 import pandas_utils as pu
+import pandas as pd
 import math
 
 dotenv.load_dotenv()
@@ -74,6 +75,14 @@ def get_bq_type(column_name, column_type, series):
     else:
         return 'STRING'
     
+def clean_chain_id(value):
+    if pd.isna(value):
+        return ''
+    
+    # Convert to string and remove '.0' if present
+    str_value = str(value).strip()
+    return str_value[:-2] if str_value.endswith('.0') else str_value
+   
 def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', 
                          write_mode='overwrite', project_id=os.getenv("BQ_PROJECT_ID"), 
                          chunk_size=100000):
@@ -114,10 +123,13 @@ def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads',
         # Reset index for each chunk
         chunk_df = chunk_df.reset_index(drop=True)
         # Ensure chain id isn't weird
-        for col in df.columns:
-            if 'chain_id' in col.lower() or 'chainid' in col.lower():
-                chunk_df[col] = chunk_df[col].astype(str).str.replace('.0', '', regex=False)
-        
+        try:
+            for col in df.columns:
+                if ('chain_id' in col.lower() or 'chainid' in col.lower()) and (df[col].dtype == 'object' or df[col].dtype == 'string'):
+                    chunk_df[col] = chunk_df[col].apply(clean_chain_id)
+        except Exception as e:
+            print(f"An error occurred while processing column {col}: {str(e)}")
+                
         # Process the chunk (flatten nested data, etc.)
         chunk_df = process_chunk(chunk_df)
 
