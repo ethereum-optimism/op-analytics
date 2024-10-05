@@ -23,7 +23,7 @@ import os
 import clickhouse_connect as cc
 
 
-# In[ ]:
+# In[2]:
 
 
 # d = ops.get_op_stack_metadata_by_data_source('flipside')
@@ -36,7 +36,7 @@ chain_configs = ops.generate_op_stack_chain_config_query_list()
 # display(chain_configs)
 
 
-# In[ ]:
+# In[3]:
 
 
 ch_client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
@@ -44,7 +44,7 @@ ch_client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 query_name = 'daily_evms_qualified_txs_counts'
 
 
-# In[ ]:
+# In[4]:
 
 
 col_list = [
@@ -53,16 +53,16 @@ col_list = [
         ]
 
 
-# In[ ]:
+# In[5]:
 
 
-trailing_days = 90
+trailing_days = 30
 
 # flipside_configs = chain_configs[chain_configs['source'] == 'flipside']
 clickhouse_configs = chain_configs[chain_configs['source'] == 'oplabs']
 
 
-# In[ ]:
+# In[6]:
 
 
 # print('     flipside runs')
@@ -113,9 +113,6 @@ for index, chain in clickhouse_configs.iterrows():
         query = og_query
         #Pass in Params to the query
         query = query.replace("@blockchain@", chain['blockchain'])
-        if chain['blockchain'] == 'bob':
-                query = query.replace("chain_id, --db chain_id", str(chain['mainnet_chain_id']) + " as chain_id,")
-                # query = query.replace("@chain_id@", str(chain['mainnet_chain_id']))
         query = query.replace("@name@", chain['display_name'])
         query = query.replace("@layer@", chain['chain_layer'])
         query = query.replace("@trailing_days@", str(trailing_days))
@@ -147,6 +144,12 @@ chain_ids_string = ops.get_unique_chain_ids_from_dfs(dataframes)
 # In[ ]:
 
 
+ch.sample(5)
+
+
+# In[ ]:
+
+
 # Run Dune
 print('     dune runs')
 days_param = d.generate_query_parameter(input=trailing_days,field_name='trailing_days',dtype='number')
@@ -161,17 +164,33 @@ dune_df = d.get_dune_data(query_id = 3740822, #https://dune.com/queries/3740822
 )
 
 
-# In[ ]:
+# In[30]:
 
 
 if not dune_df.empty:
     dune_df['source'] = 'dune'
     dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
     dune_df['chain_id'] = dune_df['chain_id'].astype(str)
+    dune_df['chain_id'] = dune_df['chain_id'].astype(str).str.replace(r'\.0$', '', regex=True)
     dune_df = dune_df[col_list]
 else:
     print("No data was retrieved from Dune. The resulting DataFrame will be empty.")
     dune_df = pd.DataFrame(columns=col_list)
+
+
+# In[ ]:
+
+
+# Verify that all elements are strings
+assert dune_df['chain_id'].apply(type).eq(str).all(), "Not all elements are strings"
+print(dune_df['chain_id'].dtype)
+
+
+# In[ ]:
+
+
+# dune_df.sample(5)
+print(dune_df.dtypes)
 
 
 # In[ ]:
@@ -215,7 +234,7 @@ final_df = final_df.drop_duplicates(subset=['chain_id','dt'], keep='first')
 print(f"final_df shape: {final_df.shape}")
 
 
-# In[ ]:
+# In[39]:
 
 
 opstack_metadata = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv')
@@ -240,18 +259,25 @@ final_enriched_df['display_name'] = final_enriched_df['display_name'].fillna(fin
 final_enriched_df = final_enriched_df.drop(columns=['name'])
 
 
-# In[ ]:
+# In[49]:
+
+
+# final_enriched_df = final_enriched_df.sort_values(by='dt')
+# final_enriched_df[final_enriched_df['blockchain'] == 'base'].tail(5)
+
+
+# In[50]:
 
 
 final_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
 
-final_enriched_df.to_csv('outputs/'+query_name+'.csv', index=False)
+# final_enriched_df.to_csv('outputs/'+query_name+'.csv', index=False)
 
 
-# In[ ]:
+# In[51]:
 
 
-final_enriched_df['chain_id'] = final_enriched_df['chain_id'].astype('string')
+final_enriched_df['chain_id'] = final_enriched_df['chain_id'].astype('string').str.replace('.0', '', regex=False)
 final_enriched_df['num_raw_txs'] = final_enriched_df['num_raw_txs'].astype(int)
 final_enriched_df['num_success_txs'] = final_enriched_df['num_success_txs'].astype(int)
 final_enriched_df['num_qualified_txs'] = final_enriched_df['num_qualified_txs'].fillna(0)
