@@ -43,9 +43,9 @@ def mod_dfl_dates(df, start_date='', date_column='date'):
 		df_filtered = df[df[date_column] >= pd.to_datetime(start_date)]
 		return df_filtered
 
-async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses = statuses, do_aggregate = 'No', fallback_on_raw_tvl = False, fallback_indicator = '*', start_date='2000-01-01'):#write_bq_dataset = '',write_bq_table=''):
+async def get_tvl(session, apistring, chains, prot, prot_name, header = header, statuses = statuses, do_aggregate = 'No', fallback_on_raw_tvl = False, fallback_indicator = '*', start_date='2000-01-01'):#write_bq_dataset = '',write_bq_table=''):
 		prod = []
-		retry_client = RetryClient()
+		retry_client = RetryClient(client_session=session)  # Use the passed session
 
 		async with retry_client.get(apistring, retry_options=ExponentialRetry(attempts=10), raise_for_status=statuses) as response:
 				try:
@@ -124,7 +124,7 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 										ad['name'] = prot_name
 										ad['parent_protocol'] = parent_prot_name
 
-										if do_aggregate == 'Yes':
+										if do_aggregate == 'Yes': #aggregate tokens
 											ad = generate_flows_column(ad)
 											ad = ad.groupby(['chain', 'date','protocol','parent_protocol']).agg(
 												sum_token_value_usd_flow=pd.NamedAgg(column='token_value_usd_flow', aggfunc='sum'),
@@ -132,8 +132,10 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 												sum_usd_value=pd.NamedAgg(column='usd_value', aggfunc='sum')
 											)
 											ad = ad.reset_index()
-										ad['token'] = ad['token'].fillna('0').astype(str)
-										ad['token_value'] = ad['token_value'].fillna(0).astype('float64')
+										else: #maintain token-level
+											ad['token'] = ad['token'].fillna('0').astype(str).infer_objects(copy=False)
+											ad['token_value'] = ad['token_value'].fillna(0).astype('float64').infer_objects(copy=False)
+
 										ad['to_filter_out'] = (ad['chain'].apply(matches_pattern) | 
 																	(ad['protocol'] == "polygon-bridge-&-staking") | 
 																	ad['protocol'].str.endswith("-cex")).astype(int)
@@ -144,87 +146,69 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 										# 	bqu.append_and_upsert_df_to_bq_table(ad, table_id = write_bq_table, dataset_id= write_bq_dataset, unique_keys = ['date','chain','token','protocol'])
 										# else:
 										# 	prod.append(ad)
-
-										print(ad.sample(3))
 										
 										prod.append(ad)
 										ad = None #clear memory
 										# print(ad)
 				except Exception as e:
 						raise Exception("Could not convert json")
-				finally:
-					await retry_client.close()
+				# finally:
+				# 	await retry_client.close()
 		
-		await retry_client.close()
+		# await retry_client.close()
 		
 		return prod
 
-def get_range(protocols, chains = '', do_aggregate = 'No', fallback_on_raw_tvl = False, fallback_indicator = '*', header = header, statuses = statuses, start_date='2000-01-01'):#write_bq_dataset = '',write_bq_table=''):
-		data_dfs = []
-		fee_df = []
-		if isinstance(chains, list):
-				og_chains = chains #get starting value
-		elif chains == '':
-				og_chains = chains
-		else:
-				og_chains = [chains] #make it a list
-		# for dt in date_range:
-		#		 await asyncio.gather()
-		#		 data_dfs.append(res_df)
-		#		 # res.columns
-		# try:
-		#		 loop.close()
-		# except:
-		#		 #nothing
-		loop = asyncio.get_event_loop()
-		#get by app
-		api_str = 'https://api.llama.fi/protocol/'
-		# print(protocols)
-		prod = []
-		tasks = []
-		for index,proto in protocols.iterrows():
-				prot = proto['slug']
-				##
-				try:
-						prot_name = proto['name']
-				except:
-						prot_name = ''
-				##
-				try:
-						if og_chains == '':
-								chains = proto['chainTvls']
-						else:
-								chains = og_chains
-				except:
-						chains = og_chains
-				apic = api_str + prot
-				tasks.append( get_tvl(apic, chains, prot, prot_name, do_aggregate = do_aggregate, fallback_on_raw_tvl = fallback_on_raw_tvl, fallback_indicator = fallback_indicator, header = header, statuses = statuses, start_date=start_date) )# write_bq_dataset=write_bq_dataset,write_bq_table=write_bq_table) )
+async def get_range(protocols, chains='', do_aggregate='No', fallback_on_raw_tvl=False, fallback_indicator='*', header=header, statuses=statuses, start_date='2000-01-01'):
+    data_dfs = []
+    fee_df = []
+    if isinstance(chains, list):
+        og_chains = chains
+    elif chains == '':
+        og_chains = chains
+    else:
+        og_chains = [chains]
 
-		data_dfs = loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
+    api_str = 'https://api.llama.fi/protocol/'
+    prod = []
+    tasks = []
+    
+    async with aiohttp.ClientSession() as session:  # Create a single session
+        for index, proto in protocols.iterrows():
+            prot = proto['slug']
+            try:
+                prot_name = proto['name']
+            except:
+                prot_name = ''
+            try:
+                if og_chains == '':
+                    chains = proto['chainTvls']
+                else:
+                    chains = og_chains
+            except:
+                chains = og_chains
+            apic = api_str + prot
+            tasks.append(get_tvl(session, apic, chains, prot, prot_name, do_aggregate=do_aggregate, fallback_on_raw_tvl=fallback_on_raw_tvl, fallback_indicator=fallback_indicator, header=header, statuses=statuses, start_date=start_date))
 
-		# if write_bq_dataset == '':
-		df_list = []
-		for dat in data_dfs:
-				# print(type(dat))
-				# print(dat)
-				if isinstance(dat,list):
-						for pt in dat: #each list within the list (i.e. multiple chains)
-								# print(pt)
-								try:
-										tempdf = pd.DataFrame(pt)
-										if not tempdf.empty:
-												# print(tempdf)
-												df_list.append(tempdf)
-								except:
-										continue
-		df_df_all = pd.concat(df_list)
-		df_df_all = df_df_all.fillna(0)
-		
-		data_dfs = [] #Free up Memory
-		
-		return df_df_all
-		# else:
-		# 	return None
+        data_dfs = await asyncio.gather(*tasks, return_exceptions=True)
+
+    # Process results (this part remains unchanged)
+    df_list = []
+    for dat in data_dfs:
+        if isinstance(dat, list):
+            for pt in dat:
+                try:
+                    tempdf = pd.DataFrame(pt)
+                    if not tempdf.empty:
+                        df_list.append(tempdf)
+                except:
+                    continue
+    df_df_all = pd.concat(df_list)
+    df_df_all = df_df_all.fillna(0)
+    
+    data_dfs = []  # Free up Memory
+    
+    return df_df_all
 
 def remove_bad_cats(netdf):
 		summary_df = netdf[\
@@ -443,24 +427,24 @@ def get_protocol_tvls(min_tvl = 0, excluded_cats = ['CEX','Chain'], chains = '')
 
 		return resp
 
-def get_all_protocol_tvls_by_chain_and_token(min_tvl = 0, chains = '', do_aggregate='No',fallback_on_raw_tvl = False, fallback_indicator='*', excluded_cats = ['CEX','Chain'], start_date = '2000-01-01'): #write_bq_dataset = '',write_bq_table=''):
-		res = get_protocol_tvls(min_tvl, excluded_cats = excluded_cats, chains = chains)
-		print(f'Number of Apps: {len(res)}')
-		protocols = res[['slug','name','category','parentProtocol','chainTvls']]
-		res = [] #Free up memory
+async def get_all_protocol_tvls_by_chain_and_token(min_tvl=0, chains='', do_aggregate='No', fallback_on_raw_tvl=False, fallback_indicator='*', excluded_cats=['CEX', 'Chain'], start_date='2000-01-01'):
+    res = get_protocol_tvls(min_tvl, excluded_cats=excluded_cats, chains=chains)
+    print(f'Number of Apps: {len(res)}')
+    protocols = res[['slug', 'name', 'category', 'parentProtocol', 'chainTvls']]
+    res = []  # Free up memory
 
-		protocols['parentProtocol'] = protocols['parentProtocol'].combine_first(protocols['name'])
-		protocols['chainTvls'] = protocols['chainTvls'].apply(lambda x: list(x.keys()) )
-		df_df = get_range(protocols, chains, do_aggregate = do_aggregate, fallback_on_raw_tvl = fallback_on_raw_tvl, fallback_indicator = fallback_indicator,start_date=start_date)#write_bq_dataset=write_bq_dataset,write_bq_table=write_bq_table)
-		protocols = [] #Free up memory
+    protocols['parentProtocol'] = protocols['parentProtocol'].combine_first(protocols['name'])
+    protocols['chainTvls'] = protocols['chainTvls'].apply(lambda x: list(x.keys()))
+    
+    # Call get_range asynchronously
+    df_df = await get_range(protocols, chains, do_aggregate=do_aggregate, fallback_on_raw_tvl=fallback_on_raw_tvl, fallback_indicator=fallback_indicator, start_date=start_date)
+    
+    protocols = []  # Free up memory
 
-		# Get Other Flags -- not working right now?
-		# proto_info = res[['name','is_doubelcount','is_liqstake']]
-		# df_df = df_df.merge(proto_info,on='name',how='left')
+    print(f'Number of Rows: {len(df_df)}')
 
-		print(f'Number of Rows: {len(df_df)}')
+    return df_df
 
-		return df_df
 
 def get_latest_defillama_prices(token_list, chain = 'optimism'):
 
@@ -585,7 +569,7 @@ def generate_flows_column(df):
 				df.sort_values(by='date', ascending=True, inplace=True)
 
 				# Fill Gaps
-				df = df.fillna(0)
+				df = df.fillna(0).infer_objects(copy=False)
 				# Get Differences
 				df['price_usd_change'] = df['price_usd'] - df['prior_price_usd']
 				df['token_value_change'] = df['token_value'] - df['prior_token_value']
@@ -695,7 +679,7 @@ def get_chains_config():
 	# Transpose the chains dataframe
 	chains_df = chains_df.transpose()
 	# Combine the two "chainId" fields into one
-	chains_df['chainId'].fillna(chains_df['chainid'], inplace=True)
+	chains_df.fillna({'chainId': chains_df['chainid']}, inplace=True)
 	chains_df.drop(columns=['chainid'], inplace=True)
 	# Reset index and rename index column
 	chains_df.reset_index(inplace=True)
