@@ -5,9 +5,9 @@ from typing import Any
 import clickhouse_connect
 import polars as pl
 
-from op_coreutils.logger import LOGGER
+from op_coreutils.logger import structlog
 
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 _CLIENT = None
 
@@ -39,9 +39,10 @@ def run_query(
     """Return arrow table with clickhouse results"""
     init_client()
 
-    return pl.from_arrow(
-        _CLIENT.query_arrow(query=query, parameters=parameters, settings=settings, use_strings=True)
+    arrow_result = _CLIENT.query_arrow(
+        query=query, parameters=parameters, settings=settings, use_strings=True
     )
+    return pl.from_arrow(arrow_result)
 
 
 def run_queries_concurrently(

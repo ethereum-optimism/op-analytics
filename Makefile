@@ -13,8 +13,8 @@ docs/sphinx/html/index.html:
 	$(MAKE) -C sphinx html
 
 
-docs/sphinx/sections/onchain/schemas.md:
-	uv run opdata chains generate_docs
+docs/sphinx/sections/onchain/coreschemas.md:
+	uv run opdata misc generate_docs
 
 .PHONY: dbt-docs
 dbt-docs: docs/dbt/index.html
@@ -27,7 +27,7 @@ dbt-docs-open: docs/dbt/index.html
 
 # Generate dbt sources from op_datasets schema definitions
 dbt/sources/superchain_oplabs.yml:
-	uv run opdata chains generate_dbt
+	uv run opdata misc generate_dbt
 
 
 # Generate dbt docs
@@ -39,4 +39,4 @@ dbt/sources/superchain_oplabs.yml:
 # The second command here is to customize the docs site and bundle it up as a single static HTML file.
 docs/dbt/index.html: dbt/sources/superchain_oplabs.yml docs/dbt/optimism.css $(wildcard dbt/docs/*.md)
 	./scripts/dbt_docs.sh
-	uv run opdata chains customize_dbt_docs
+	uv run opdata misc customize_dbt
