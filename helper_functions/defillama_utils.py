@@ -10,6 +10,7 @@ import re
 from collections import defaultdict
 import time
 from datetime import datetime, date
+import google_bq_utils as bqu
 nest_asyncio.apply()
 
 
@@ -18,10 +19,31 @@ statuses = {x for x in range(100, 600)}
 statuses.remove(200)
 statuses.remove(429)
 
+# Create a list of patterns to match
+patterns_to_filter = [
+    "-borrowed", "-staking", "-pool2", "-treasury",
+    "^treasury$", "^borrowed$", "^staking$", "^pool2$"
+]
+
+# Create a function to check if a string matches any of the patterns
+def matches_pattern(s):
+    return any(re.search(pattern, s, re.IGNORECASE) for pattern in patterns_to_filter)
+
 def has_overlap(a, b):
 	return not set(a).isdisjoint(b)
 
-async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses = statuses, do_aggregate = 'No', fallback_on_raw_tvl = False, fallback_indicator = '*'):
+def mod_dfl_dates(df, start_date='', date_column='date'):
+	# Convert date column to datetime
+	df[date_column] = pd.to_datetime(df[date_column], unit='s')
+    
+    # Filter rows
+	if start_date == '':
+		return df_filtered
+	else:
+		df_filtered = df[df[date_column] >= pd.to_datetime(start_date)]
+		return df_filtered
+
+async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses = statuses, do_aggregate = 'No', fallback_on_raw_tvl = False, fallback_indicator = '*', start_date='2000-01-01'):#write_bq_dataset = '',write_bq_table=''):
 		prod = []
 		retry_client = RetryClient()
 
@@ -47,6 +69,10 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 						for ch in chain_list:
 								ad = pd.json_normalize( prot_req[ch]['tokens'] )
 								ad_usd = pd.json_normalize( prot_req[ch]['tokensInUsd'] )
+								ad = mod_dfl_dates(ad, start_date = start_date)
+								ad_usd = mod_dfl_dates(ad_usd, start_date = start_date)
+
+
 								if (ad_usd.empty) & (fallback_on_raw_tvl == True):
 										ad = pd.DataFrame( prot_req[ch]['tvl'] )
 										prot_map = prot + str(fallback_indicator)
@@ -54,6 +80,7 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 										prot_map = prot
 								try: #if there's generic tvl
 										ad_tvl = pd.json_normalize( prot_req[ch]['tvl'] )
+										ad_tvl = mod_dfl_dates(ad_tvl, start_date = start_date)
 										ad_tvl = ad_tvl[['date','totalLiquidityUSD']]
 										ad_tvl = ad_tvl.rename(columns={'totalLiquidityUSD':'total_app_tvl'})
 										# Sort the DataFrame by date in descending order
@@ -68,18 +95,21 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 								if not ad.empty:
 										ad = pd.melt(ad,id_vars = ['date'])
 										ad = ad.rename(columns={'variable':'token','value':'token_value'})
+
+
 										if not ad_usd.empty:
 												ad_usd = pd.melt(ad_usd,id_vars = ['date'])
 												ad_usd = ad_usd.rename(columns={'variable':'token','value':'usd_value'})
 												ad = ad.merge(ad_usd,on=['date','token'])
+										
 										else:
 												ad['usd_value'] = ''
+									
 										if not ad_tvl.empty:
 												ad = ad.merge(ad_tvl,on=['date'],how = 'outer')
 										else:
 												ad['total_app_tvl'] = ''
 										
-										ad['date'] = pd.to_datetime(ad['date'], unit ='s') #convert to days
 										try:
 												ad['token'] = ad['token'].str.replace('tokens.','', regex=False)
 										except:
@@ -102,8 +132,21 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 												sum_usd_value=pd.NamedAgg(column='usd_value', aggfunc='sum')
 											)
 											ad = ad.reset_index()
+										ad['token'] = ad['token'].fillna('0').astype(str)
+										ad['token_value'] = ad['token_value'].fillna(0).astype('float64')
+										ad['to_filter_out'] = (ad['chain'].apply(matches_pattern) | 
+																	(ad['protocol'] == "polygon-bridge-&-staking") | 
+																	ad['protocol'].str.endswith("-cex")).astype(int)
+										
 								#		 ad['start_date'] = pd.to_datetime(prot[1])
 										# ad['date'] = ad['date'] - timedelta(days=1) #change to eod vs sod
+										# if write_bq_dataset != '':
+										# 	bqu.append_and_upsert_df_to_bq_table(ad, table_id = write_bq_table, dataset_id= write_bq_dataset, unique_keys = ['date','chain','token','protocol'])
+										# else:
+										# 	prod.append(ad)
+
+										print(ad.sample(3))
+										
 										prod.append(ad)
 										ad = None #clear memory
 										# print(ad)
@@ -116,7 +159,7 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 		
 		return prod
 
-def get_range(protocols, chains = '', do_aggregate = 'No', fallback_on_raw_tvl = False, fallback_indicator = '*', header = header, statuses = statuses):
+def get_range(protocols, chains = '', do_aggregate = 'No', fallback_on_raw_tvl = False, fallback_indicator = '*', header = header, statuses = statuses, start_date='2000-01-01'):#write_bq_dataset = '',write_bq_table=''):
 		data_dfs = []
 		fee_df = []
 		if isinstance(chains, list):
@@ -155,10 +198,11 @@ def get_range(protocols, chains = '', do_aggregate = 'No', fallback_on_raw_tvl =
 				except:
 						chains = og_chains
 				apic = api_str + prot
-				tasks.append( get_tvl(apic, chains, prot, prot_name, do_aggregate = do_aggregate, fallback_on_raw_tvl = fallback_on_raw_tvl, fallback_indicator = fallback_indicator, header = header, statuses = statuses) )
+				tasks.append( get_tvl(apic, chains, prot, prot_name, do_aggregate = do_aggregate, fallback_on_raw_tvl = fallback_on_raw_tvl, fallback_indicator = fallback_indicator, header = header, statuses = statuses, start_date=start_date) )# write_bq_dataset=write_bq_dataset,write_bq_table=write_bq_table) )
 
 		data_dfs = loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
 
+		# if write_bq_dataset == '':
 		df_list = []
 		for dat in data_dfs:
 				# print(type(dat))
@@ -179,6 +223,8 @@ def get_range(protocols, chains = '', do_aggregate = 'No', fallback_on_raw_tvl =
 		data_dfs = [] #Free up Memory
 		
 		return df_df_all
+		# else:
+		# 	return None
 
 def remove_bad_cats(netdf):
 		summary_df = netdf[\
@@ -397,7 +443,7 @@ def get_protocol_tvls(min_tvl = 0, excluded_cats = ['CEX','Chain'], chains = '')
 
 		return resp
 
-def get_all_protocol_tvls_by_chain_and_token(min_tvl = 0, chains = '', do_aggregate='No',fallback_on_raw_tvl = False, fallback_indicator='*', excluded_cats = ['CEX','Chain']):
+def get_all_protocol_tvls_by_chain_and_token(min_tvl = 0, chains = '', do_aggregate='No',fallback_on_raw_tvl = False, fallback_indicator='*', excluded_cats = ['CEX','Chain'], start_date = '2000-01-01'): #write_bq_dataset = '',write_bq_table=''):
 		res = get_protocol_tvls(min_tvl, excluded_cats = excluded_cats, chains = chains)
 		print(f'Number of Apps: {len(res)}')
 		protocols = res[['slug','name','category','parentProtocol','chainTvls']]
@@ -405,7 +451,7 @@ def get_all_protocol_tvls_by_chain_and_token(min_tvl = 0, chains = '', do_aggreg
 
 		protocols['parentProtocol'] = protocols['parentProtocol'].combine_first(protocols['name'])
 		protocols['chainTvls'] = protocols['chainTvls'].apply(lambda x: list(x.keys()) )
-		df_df = get_range(protocols, chains, do_aggregate = do_aggregate, fallback_on_raw_tvl = fallback_on_raw_tvl, fallback_indicator = fallback_indicator)
+		df_df = get_range(protocols, chains, do_aggregate = do_aggregate, fallback_on_raw_tvl = fallback_on_raw_tvl, fallback_indicator = fallback_indicator,start_date=start_date)#write_bq_dataset=write_bq_dataset,write_bq_table=write_bq_table)
 		protocols = [] #Free up memory
 
 		# Get Other Flags -- not working right now?
@@ -620,6 +666,8 @@ def get_chain_category_data():
 
 	# Step 11: Create DataFrame
 	df = pd.DataFrame(data)
+
+	df['chain_id'] = df['chain_id'].astype(str).str.replace('.0','')
 
 	return df
 

@@ -341,6 +341,7 @@ Zircuit,zircuit,ZRC,29711,"['EVM', 'Rollup']",48900,,ZircuitL2,https://www.zircu
 Polynomial,,,,"['EVM', 'Rollup', 'Superchain']",,,PolynomialFi,https://www.polynomial.fi/,"{'chain': 'Ethereum', 'types': ['L2', 'gas']}",
 Electroneum,electroneum,ETN,2137,['EVM'],52014,,electroneum,https://electroneum.com/,,
 Lisk,lisk,LSK,,"['EVM', 'Rollup']",1135,['LiskHQ'],LiskHQ,https://lisk.com/,"{'chain': 'Ethereum', 'types': ['L2']}",
+HeLa,hela,HELA,2137,['EVM'],8668,,Hela_Network,https://helalabs.com/,,
 xDai,gnosis,GNO,1659,['EVM'],100,['gnosis'],gnosischain,https://www.gnosis.io/,,['snapshot:xdaistake.eth']
 Binance,binancecoin,BNB,1839,['EVM'],56,['bnb-chain'],BNBCHAIN,https://www.bnbchain.org/en,,
 Kucoin,kucoin-shares,KCS,2087,['EVM'],321,['kcc-community'],KCCOfficialTW,https://www.kcc.io/,,['snapshot:kcc.eth']

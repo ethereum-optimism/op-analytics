@@ -113,6 +113,10 @@ def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads',
     for i, (_, chunk_df) in enumerate(df.groupby(df.index // chunk_size)):
         # Reset index for each chunk
         chunk_df = chunk_df.reset_index(drop=True)
+        # Ensure chain id isn't weird
+        for col in df.columns:
+            if 'chain_id' in col.lower() or 'chainid' in col.lower():
+                chunk_df[col] = chunk_df[col].astype(str).str.replace('.0', '', regex=False)
         
         # Process the chunk (flatten nested data, etc.)
         chunk_df = process_chunk(chunk_df)
