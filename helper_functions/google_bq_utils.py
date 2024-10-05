@@ -3,6 +3,7 @@ import dotenv
 import json
 from google.cloud import bigquery
 from google.oauth2 import service_account
+from google.api_core.exceptions import NotFound
 import pandas_utils as pu
 import math
 
@@ -45,9 +46,16 @@ def check_table_exists(client, table_id, dataset_id='api_table_uploads', project
         else:
             raise e
 
-def get_bq_type(column_name, column_type):
+def get_bq_type(column_name, column_type, series):
     column_name = str(column_name)
     column_type = str(column_type)
+    
+    if pu.is_repeated_field(series):
+        if series.apply(lambda x: isinstance(x, dict)).any():
+            return 'RECORD'
+        else:
+            return 'STRING'  # For lists, we'll store as JSON strings
+    
     if (column_name == 'date' or column_name == 'dt' or 
         column_name.endswith('_dt') or column_name.startswith('dt_')):
         return 'DATETIME'
@@ -72,6 +80,17 @@ def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads',
     print(f"Start Writing {dataset_id}.{table_id}")
     
     client = connect_bq_client(project_id)
+
+    # Check if the table exists
+    table_ref = f"{project_id}.{dataset_id}.{table_id}"
+    try:
+        table = client.get_table(table_ref)
+        # Use existing schema if table exists
+        schema = table.schema
+    except NotFound:
+        # Create schema based on the first chunk if table doesn't exist
+        first_chunk = df.iloc[:chunk_size]
+        schema = create_schema(first_chunk)
     
     # Create schema based on the first chunk to avoid processing the entire DataFrame
     first_chunk = df.iloc[:chunk_size]
@@ -94,6 +113,10 @@ def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads',
     for i, (_, chunk_df) in enumerate(df.groupby(df.index // chunk_size)):
         # Reset index for each chunk
         chunk_df = chunk_df.reset_index(drop=True)
+        # Ensure chain id isn't weird
+        for col in df.columns:
+            if 'chain_id' in col.lower() or 'chainid' in col.lower():
+                chunk_df[col] = chunk_df[col].astype(str).str.replace('.0', '', regex=False)
         
         # Process the chunk (flatten nested data, etc.)
         chunk_df = process_chunk(chunk_df)
@@ -119,76 +142,23 @@ def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads',
 def create_schema(df):
     schema = []
     for column_name, column_type in df.dtypes.items():
-        bq_data_type = get_bq_type(column_name, column_type)
-        schema.append(bigquery.SchemaField(column_name, bq_data_type))
+        bq_data_type = get_bq_type(column_name, column_type, df[column_name])
+        if bq_data_type == 'RECORD':
+            schema.append(bigquery.SchemaField(column_name, bq_data_type, mode='REPEATED'))
+        else:
+            schema.append(bigquery.SchemaField(column_name, bq_data_type))
     return schema
 
 def process_chunk(df):
     for column_name, column_type in df.dtypes.items():
-        if column_type == 'object':
+        if pu.is_repeated_field(df[column_name]):
+            df[column_name] = df[column_name].apply(lambda x: json.dumps(x) if x is not None else None)
+        elif column_type == 'object':
             try:
                 df = pu.flatten_nested_data(df, column_name)
             except ValueError:
                 continue
     return df
-# def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', 
-#                          write_mode='overwrite', project_id=os.getenv("BQ_PROJECT_ID"), 
-#                          chunk_size=100000):
-#     print(f"Start Writing {dataset_id}.{table_id}")
-    
-#     # Reset the index of the DataFrame to remove the index column
-#     df = df.reset_index(drop=True)
-
-#     # Check for any flattens to do
-#     for column_name, column_type in df.dtypes.items():
-#         if column_type == 'object':
-#             try:
-#                 df = pu.flatten_nested_data(df, column_name)
-#             except ValueError:
-#                 continue
-
-#     # Create schema
-#     schema = [bigquery.SchemaField(column_name, get_bq_type(column_name, column_type)) 
-#               for column_name, column_type in df.dtypes.items()]
-
-#     # Set the write disposition
-#     write_disposition = (bigquery.WriteDisposition.WRITE_APPEND if write_mode == 'append' 
-#                          else bigquery.WriteDisposition.WRITE_TRUNCATE)
-
-#     # Create a job configuration
-#     job_config = bigquery.LoadJobConfig(
-#         write_disposition=write_disposition,
-#         schema=schema
-#     )
-
-#     client = connect_bq_client(project_id)
-
-#     # Calculate the number of chunks
-#     total_rows = len(df)
-#     num_chunks = math.ceil(total_rows / chunk_size)
-
-#     for i in range(num_chunks):
-#         start_idx = i * chunk_size
-#         end_idx = min((i + 1) * chunk_size, total_rows)
-#         chunk_df = df.iloc[start_idx:end_idx]
-#         print(f'Starting Chunk {i+1}/{num_chunks}')
-#         # Load the chunk into BigQuery
-#         job = client.load_table_from_dataframe(
-#             chunk_df, f"{dataset_id}.{table_id}", job_config=job_config
-#         )
-
-#         try:
-#             job.result()  # Wait for the job to complete
-#             print(f"Chunk {i+1}/{num_chunks} loaded successfully to {dataset_id}.{table_id}")
-#         except Exception as e:
-#             print(f"Error loading chunk {i+1}/{num_chunks} to BigQuery: {e}")
-#             raise  # Re-raise the exception for higher-level error handling
-
-#         # If it's not the first chunk, change write mode to append
-#         if i == 0 and write_mode == 'overwrite':
-#             job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND
-
-#     print(f"All data loaded successfully to {dataset_id}.{table_id}")
 
 def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'dt']):
     client = connect_bq_client(project_id)
