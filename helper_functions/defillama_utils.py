@@ -124,7 +124,7 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 										ad['name'] = prot_name
 										ad['parent_protocol'] = parent_prot_name
 
-										if do_aggregate == 'Yes':
+										if do_aggregate == 'Yes': #aggregate tokens
 											ad = generate_flows_column(ad)
 											ad = ad.groupby(['chain', 'date','protocol','parent_protocol']).agg(
 												sum_token_value_usd_flow=pd.NamedAgg(column='token_value_usd_flow', aggfunc='sum'),
@@ -132,8 +132,10 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 												sum_usd_value=pd.NamedAgg(column='usd_value', aggfunc='sum')
 											)
 											ad = ad.reset_index()
-										ad['token'] = ad['token'].fillna('0').astype(str)
-										ad['token_value'] = ad['token_value'].fillna(0).astype('float64')
+										else: #maintain token-level
+											ad['token'] = ad['token'].fillna('0').astype(str).infer_objects(copy=False)
+											ad['token_value'] = ad['token_value'].fillna(0).astype('float64').infer_objects(copy=False)
+
 										ad['to_filter_out'] = (ad['chain'].apply(matches_pattern) | 
 																	(ad['protocol'] == "polygon-bridge-&-staking") | 
 																	ad['protocol'].str.endswith("-cex")).astype(int)
@@ -144,8 +146,6 @@ async def get_tvl(apistring, chains, prot, prot_name, header = header, statuses 
 										# 	bqu.append_and_upsert_df_to_bq_table(ad, table_id = write_bq_table, dataset_id= write_bq_dataset, unique_keys = ['date','chain','token','protocol'])
 										# else:
 										# 	prod.append(ad)
-
-										print(ad.sample(3))
 										
 										prod.append(ad)
 										ad = None #clear memory
@@ -585,7 +585,7 @@ def generate_flows_column(df):
 				df.sort_values(by='date', ascending=True, inplace=True)
 
 				# Fill Gaps
-				df = df.fillna(0)
+				df = df.fillna(0).infer_objects(copy=False)
 				# Get Differences
 				df['price_usd_change'] = df['price_usd'] - df['prior_price_usd']
 				df['token_value_change'] = df['token_value'] - df['prior_token_value']
@@ -695,7 +695,7 @@ def get_chains_config():
 	# Transpose the chains dataframe
 	chains_df = chains_df.transpose()
 	# Combine the two "chainId" fields into one
-	chains_df['chainId'].fillna(chains_df['chainid'], inplace=True)
+	chains_df.fillna({'chainId': chains_df['chainid']}, inplace=True)
 	chains_df.drop(columns=['chainid'], inplace=True)
 	# Reset index and rename index column
 	chains_df.reset_index(inplace=True)
