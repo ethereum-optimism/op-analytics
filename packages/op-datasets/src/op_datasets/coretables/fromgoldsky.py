@@ -1,11 +1,12 @@
+import polars as pl
 from op_coreutils.clickhouse.client import run_queries_concurrently
-from op_coreutils.logger import LOGGER
+from op_coreutils.logger import structlog
 
-from op_datasets.coretables.blockrange import BlockRange
+from op_datasets.blockrange import BlockRange
 from op_datasets.schemas.blocks import BLOCKS_SCHEMA
 from op_datasets.schemas.transactions import TRANSACTIONS_SCHEMA
 
-log = LOGGER.get_logger()
+log = structlog.get_logger()
 
 
 def jinja(val: str):
@@ -39,15 +40,15 @@ def get_sql(chain_name: str, dataset: str, use_dbt_ref: bool = False, filter: st
         return f"SELECT\n{cols}\nFROM {table} WHERE {filter}"
 
 
-def get_core_tables(blocks: str):
+def read_core_tables(chain: str, block_range: BlockRange) -> dict[str, pl.DataFrame]:
     """Get the core dataset tables from Goldsky."""
-    block_range = BlockRange.from_str(blocks)
 
     names = ["blocks", "transactions"]
     queries = [
-        get_sql("op", "blocks", filter=block_range.filter()),
-        get_sql("op", "transactions", filter=block_range.filter(number_column="block_number")),
+        get_sql(chain, "blocks", filter=block_range.filter()),
+        get_sql(chain, "transactions", filter=block_range.filter(number_column="block_number")),
     ]
+
     dataframes = run_queries_concurrently(queries)
 
     return {names[i]: df for i, df in enumerate(dataframes)}
