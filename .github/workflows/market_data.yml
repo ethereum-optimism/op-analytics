@@ -1,8 +1,8 @@
 name: Run Market Data Updates
 
 on:
-  schedule:
-      - cron: '*/30 * * * *'
+  schedule: #run at minute 55
+      - cron: '55 * * * *'
   workflow_dispatch:
 permissions:
   contents: write
