@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 # github: https://github.com/ethereum-lists/chains
@@ -21,7 +21,7 @@ import google_bq_utils as bqu
 sys.path.pop()
 
 
-# In[ ]:
+# In[3]:
 
 
 # Send a GET request to the API
@@ -41,13 +41,13 @@ else:
     print(f"Error: {response.status_code}")
 
 
-# In[ ]:
+# In[4]:
 
 
 df = pu.flatten_nested_data(df, 'nativeCurrency')
 
 
-# In[ ]:
+# In[5]:
 
 
 def remove_words(name, words_to_remove):
@@ -67,7 +67,7 @@ def remove_words(name, words_to_remove):
     return cleaned_name
 
 
-# In[ ]:
+# In[6]:
 
 
 # Generate Clean Name
@@ -83,7 +83,7 @@ df['faucets'] = df['faucets'].apply(lambda x: str(x))
 df['infoURL'] = df['infoURL'].apply(lambda x: str(x))
 
 
-# In[ ]:
+# In[7]:
 
 
 # df['name'] = df['name'].astype(str)
@@ -91,10 +91,10 @@ df['infoURL'] = df['infoURL'].apply(lambda x: str(x))
 # df[df['name'].isnull()]
 
 
-# In[ ]:
+# In[8]:
 
 
-# df.sample(10)
+# df.head(10)
 
 
 # In[ ]:
