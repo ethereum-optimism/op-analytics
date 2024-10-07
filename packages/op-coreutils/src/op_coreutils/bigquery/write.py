@@ -8,6 +8,7 @@ from unittest.mock import MagicMock
 
 from op_coreutils.logger import human_rows, human_size, structlog
 from op_coreutils.env.aware import current_environment, OPLabsEnvironment
+from op_coreutils.gcpauth import get_credentials
 
 log = structlog.get_logger()
 
@@ -29,7 +30,7 @@ def init_client():
         if current_env == OPLabsEnvironment.PROD:
             from google.cloud import bigquery
 
-            _CLIENT = bigquery.Client()
+            _CLIENT = bigquery.Client(credentials=get_credentials())
 
         else:
             _CLIENT = MagicMock()
