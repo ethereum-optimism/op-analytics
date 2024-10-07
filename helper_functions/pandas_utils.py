@@ -224,10 +224,26 @@ def float_format_func(x):
         return str(x)
     
 def flatten_nested_data(df, column_name):
+    # Function to convert null to empty dict
+    def null_to_empty(x):
+        if pd.isna(x) or x is None:
+            return {}
+        elif isinstance(x, dict) or isinstance(x, list):
+            return x
+        else:
+            return {}
+
+    # Apply the null_to_empty function
+    df[column_name] = df[column_name].apply(null_to_empty)
+
     # Check if the column contains dictionaries or arrays
     if df[column_name].apply(lambda x: isinstance(x, dict) or isinstance(x, list)).any():
-        flat_df = pd.json_normalize(df[column_name].apply(lambda x: x if isinstance(x, dict) else {}))
+        flat_df = pd.json_normalize(df[column_name])
         flat_df = flat_df.add_prefix(f"{column_name}_")
+        
+        # Replace NaN with empty string
+        flat_df = flat_df.fillna('')
+        
         return pd.concat([df.drop(column_name, axis=1), flat_df], axis=1)
     else:
         return df
