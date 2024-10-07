@@ -1,12 +1,9 @@
 name: Daily API Uploads
 run-name: ${{ github.event.created_at }}
 on:
-  # schedule:
-  #   - cron: '12 * * * *'
+  schedule:
+    - cron: '15 3 * * *'
   workflow_dispatch:
-  push:
-    branches:
-      - pedrod/api-uploads
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
