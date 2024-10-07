@@ -46,6 +46,7 @@ def get_dune_data(
     params: list = None,
     num_hours_to_rerun=4,
     performance: str = "medium",
+    save_to_csv: bool = False
 ) -> pd.DataFrame:
     """
     Get data via Dune API.
@@ -102,11 +103,12 @@ def get_dune_data(
     if not os.path.exists(path):
         os.makedirs(path)
     # display(df)
-    df.to_csv(f"{path}/{name}.csv", escapechar="\\", index=False)
+    if save_to_csv:
+        df.to_csv(f"{path}/{name}.csv", escapechar="\\", index=False)
 
-    print(
-        f"✨ Results saved as {path}/{name}.csv, with {len(df)} rows and {len(df.columns)} columns. Query: {query.url()}"
-    )
+        print(
+            f"✨ Results saved as {path}/{name}.csv, with {len(df)} rows and {len(df.columns)} columns. Query: {query.url()}"
+        )
 
     return df
 
