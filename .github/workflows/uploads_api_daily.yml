@@ -1,0 +1,25 @@
+name: Daily API Uploads
+run-name: ${{ github.event.created_at }}
+on:
+  schedule:
+    - cron: '15 3 * * *'
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  run-daily-tasks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+      - name: Set up Python
+        run: uv python install
+      - name: Install the project
+        run: uv sync --all-extras --dev
+      - name: Run tasks
+        run: OPLABS_ENV=prod uv run opdata pulls l2beat
+        env:
+          GOOGLE_AUTH: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
+

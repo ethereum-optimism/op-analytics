@@ -13,6 +13,7 @@ dependencies = [
     "gspread>=6.1.2",
     "pyarrow>=17.0.0",
     "structlog>=24.4.0",
+    "urllib3>=2.2.3",
 ]
 
 [build-system]

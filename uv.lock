@@ -1284,6 +1284,7 @@ dependencies = [
     { name = "gspread" },
     { name = "pyarrow" },
     { name = "structlog" },
+    { name = "urllib3" },
 ]
 
 [package.metadata]
@@ -1296,6 +1297,7 @@ requires-dist = [
     { name = "gspread", specifier = ">=6.1.2" },
     { name = "pyarrow", specifier = ">=17.0.0" },
     { name = "structlog", specifier = ">=24.4.0" },
+    { name = "urllib3", specifier = ">=2.2.3" },
 ]
 
 [[package]]
