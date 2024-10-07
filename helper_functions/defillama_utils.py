@@ -427,7 +427,7 @@ def get_protocol_tvls(min_tvl = 0, excluded_cats = ['CEX','Chain'], chains = '')
 
 		return resp
 
-async def get_all_protocol_tvls_by_chain_and_token(min_tvl=0, chains='', do_aggregate='No', fallback_on_raw_tvl=False, fallback_indicator='*', excluded_cats=['CEX', 'Chain'], start_date='2000-01-01'):
+async def async_get_all_protocol_tvls_by_chain_and_token(min_tvl, chains, do_aggregate, fallback_on_raw_tvl, fallback_indicator, excluded_cats, start_date):
     res = get_protocol_tvls(min_tvl, excluded_cats=excluded_cats, chains=chains)
     print(f'Number of Apps: {len(res)}')
     protocols = res[['slug', 'name', 'category', 'parentProtocol', 'chainTvls']]
@@ -445,6 +445,10 @@ async def get_all_protocol_tvls_by_chain_and_token(min_tvl=0, chains='', do_aggr
 
     return df_df
 
+def get_all_protocol_tvls_by_chain_and_token(min_tvl=0, chains='', do_aggregate='No', fallback_on_raw_tvl=False, fallback_indicator='*', excluded_cats=['CEX', 'Chain'], start_date='2000-01-01'):
+    return asyncio.run(async_get_all_protocol_tvls_by_chain_and_token(
+        min_tvl, chains, do_aggregate, fallback_on_raw_tvl, fallback_indicator, excluded_cats, start_date
+    ))
 
 def get_latest_defillama_prices(token_list, chain = 'optimism'):
 

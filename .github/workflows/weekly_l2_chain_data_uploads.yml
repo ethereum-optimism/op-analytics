@@ -2,9 +2,9 @@ name: Weekly L2 Chain Data Uploads
 
 # Controls when the workflow will run
 on:
-  # Run on a schedule - At 02:02 on Monday
+  # Run on a schedule - At 02:02 on Monday, or 1st / 4th of the month
   schedule:
-      - cron: 2 2 * * 1
+      - cron: 2 2 1,4,* * 1,1
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 permissions:
