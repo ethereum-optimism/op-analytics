@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import pandas as pd
@@ -48,7 +48,7 @@ def convert_to_int_or_keep_string(value):
     return val
 
 
-# In[4]:
+# In[ ]:
 
 
 # Trim columns
@@ -78,7 +78,7 @@ df.to_csv('../outputs/chain_metadata.csv', index=False)
 # df.dtypes
 
 
-# In[6]:
+# In[ ]:
 
 
 #check chain id
