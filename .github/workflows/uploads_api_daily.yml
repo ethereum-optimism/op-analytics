@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - pedro/api-uploads
+      - pedrod/api-uploads
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
