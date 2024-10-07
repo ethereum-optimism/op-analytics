@@ -53,3 +53,10 @@ build-backend = "hatchling.build"
 [tool.ruff]
 # Allow lines to be as long as 100.
 line-length = 100
+
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    # Ignore some google bigquery deprecation warnings
+    'ignore:Type google._upb._message:',
+]

@@ -51,9 +51,7 @@ def run_queries_concurrently(
     settings: dict[str, Any] | None = None,
     max_workers: int | None = None,
 ):
-    """Concurrent clickhouse queries require separate client instances."""
-
-    max_workers = max_workers or 1
+    max_workers = max_workers or 4
     results = [None] * len(queries)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
