@@ -50,29 +50,31 @@ def check_table_exists(client, table_id, dataset_id='api_table_uploads', project
 def get_bq_type(column_name, column_type, series):
     column_name = str(column_name)
     column_type = str(column_type)
-    
-    if pu.is_repeated_field(series):
-        if series.apply(lambda x: isinstance(x, dict)).any():
-            return 'RECORD'
+    try:
+        if pu.is_repeated_field(series):
+            if series.apply(lambda x: isinstance(x, dict)).any():
+                return 'RECORD'
+            else:
+                return 'STRING'  # For lists, we'll store as JSON strings
+        
+        if (column_name == 'date' or column_name == 'dt' or 
+            column_name.endswith('_dt') or column_name.startswith('dt_')):
+            return 'DATETIME'
+        elif column_type == 'float64':
+            return 'FLOAT64'
+        elif column_type in ['int64', 'uint64']:
+            return 'INTEGER'
+        elif column_type in ['Int64', 'UInt64']:
+            return 'FLOAT64'  # Or 'INTEGER' if you prefer
+        elif column_type == 'datetime64[ns]':
+            return 'DATETIME'
+        elif column_type == 'bool':
+            return 'BOOL'
+        elif column_type in('string','python[string]'):
+            return 'STRING'
         else:
-            return 'STRING'  # For lists, we'll store as JSON strings
-    
-    if (column_name == 'date' or column_name == 'dt' or 
-        column_name.endswith('_dt') or column_name.startswith('dt_')):
-        return 'DATETIME'
-    elif column_type == 'float64':
-        return 'FLOAT64'
-    elif column_type in ['int64', 'uint64']:
-        return 'INTEGER'
-    elif column_type in ['Int64', 'UInt64']:
-        return 'FLOAT64'  # Or 'INTEGER' if you prefer
-    elif column_type == 'datetime64[ns]':
-        return 'DATETIME'
-    elif column_type == 'bool':
-        return 'BOOL'
-    elif column_type in('string','python[string]'):
-        return 'STRING'
-    else:
+            return 'STRING'
+    except:
         return 'STRING'
     
 def clean_chain_id(value):
