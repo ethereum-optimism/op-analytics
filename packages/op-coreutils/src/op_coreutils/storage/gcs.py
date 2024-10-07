@@ -5,7 +5,7 @@ import warnings
 import gcsfs
 import polars as pl
 
-from op_coreutils.logger import structlog
+from op_coreutils.logger import structlog, human_size
 
 log = structlog.get_logger()
 warnings.filterwarnings("ignore", message="Polars found a filename")
@@ -35,15 +35,6 @@ def init_client():
         _CLIENT = storage.Client()
         _BUCKET = _CLIENT.bucket(BUCKET_NAME)
         log.info(f"Initialized GCS client for bucket=gs://{BUCKET_NAME}")
-
-
-def human_size(size_bytes, suffix="B"):
-    """Human-readable file sizes."""
-    for unit in ("", "K", "M", "G", "T", "P", "E", "Z"):
-        if abs(size_bytes) < 1000.0:
-            return f"{size_bytes:3.1f}{unit}{suffix}"
-        size_bytes /= 1000.0
-    return f"{size_bytes:.1f}Yi{suffix}"
 
 
 def gcs_upload(blob_path: str, content: bytes | str, prefix=None):
