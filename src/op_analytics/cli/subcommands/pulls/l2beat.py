@@ -37,6 +37,12 @@ def get_data(session, url):
 
 
 def pull():
+    """Pull data from L2Beat.
+
+    - Fetch the L2Beat summary endpoint.
+    - For each project in the L2Beat summary fetch TVL (last 30 days).
+    - Write all results to BigQuery.
+    """
     # Call the summary endpoint
     session = new_session()
     summary = get_data(session, SUMMARY_ENDPOINT)
