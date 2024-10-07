@@ -89,39 +89,25 @@ jobs:
           BASESCAN_API: ${{ secrets.BASESCAN_API }}
           OP_ETHERSCAN_API: ${{ secrets.OP_ETHERSCAN_API }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  commit-changes:
+    needs: run_notebook
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - name: List changed files
         run: git status
       - name: Commit and push changes
         run: |
+          git pull origin main
           git config --local user.email "action@github.com"
           git config --local user.name "github-actions"
           git add --all
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to commit."
           else
-            git commit -m "GH Action Update from ${{ matrix.notebook }}" -a || echo "No changes to commit"
-            git pull --rebase origin main
-            git push --force-with-lease origin main
+            git commit -m "GH Action Update - L2 Chain Data" -a
+            git push
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # commit-changes:
-  #   needs: run_notebook
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Commit and push changes
-  #       run: |
-  #         git pull origin main
-  #         git config --local user.email "action@github.com"
-  #         git config --local user.name "github-actions"
-  #         git add --all
-  #         if [ -z "$(git status --porcelain)" ]; then
-  #           echo "No changes to commit."
-  #         else
-  #           git commit -m "GH Action Update - L2 Chain Data" -a
-  #           git push
-  #         fi
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
