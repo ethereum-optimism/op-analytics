@@ -46,35 +46,42 @@ def check_table_exists(client, table_id, dataset_id='api_table_uploads', project
             return False
         else:
             raise e
-
+def validate_schema(df, schema):
+    df_columns = set(df.columns)
+    schema_columns = set(field.name for field in schema)
+    if df_columns != schema_columns:
+        print("DataFrame columns:", df_columns)
+        print("Schema columns:", schema_columns)
+        missing = schema_columns - df_columns
+        extra = df_columns - schema_columns
+        raise ValueError(f"Schema mismatch. Missing: {missing}, Extra: {extra}")
+    
 def get_bq_type(column_name, column_type, series):
     column_name = str(column_name)
     column_type = str(column_type)
-    try:
-        if pu.is_repeated_field(series):
-            if series.apply(lambda x: isinstance(x, dict)).any():
-                return 'RECORD'
-            else:
-                return 'STRING'  # For lists, we'll store as JSON strings
-        
-        if (column_name == 'date' or column_name == 'dt' or 
-            column_name.endswith('_dt') or column_name.startswith('dt_')):
-            return 'DATETIME'
-        elif column_type == 'float64':
-            return 'FLOAT64'
-        elif column_type in ['int64', 'uint64']:
-            return 'INTEGER'
-        elif column_type in ['Int64', 'UInt64']:
-            return 'FLOAT64'  # Or 'INTEGER' if you prefer
-        elif column_type == 'datetime64[ns]':
-            return 'DATETIME'
-        elif column_type == 'bool':
-            return 'BOOL'
-        elif column_type in('string','python[string]'):
-            return 'STRING'
+
+    if pu.is_repeated_field(series):
+        if series.apply(lambda x: isinstance(x, dict)).any():
+            return 'RECORD'
         else:
-            return 'STRING'
-    except:
+            return 'STRING'  # For lists, we'll store as JSON strings
+    
+    if (column_name == 'date' or column_name == 'dt' or 
+        column_name.endswith('_dt') or column_name.startswith('dt_')):
+        return 'DATETIME'
+    elif column_type == 'float64':
+        return 'FLOAT64'
+    elif column_type in ['int64', 'uint64']:
+        return 'INTEGER'
+    elif column_type in ['Int64', 'UInt64']:
+        return 'FLOAT64'  # Or 'INTEGER' if you prefer
+    elif column_type == 'datetime64[ns]':
+        return 'DATETIME'
+    elif column_type == 'bool':
+        return 'BOOL'
+    elif column_type in('string','python[string]'):
+        return 'STRING'
+    else:
         return 'STRING'
     
 def clean_chain_id(value):
@@ -102,10 +109,8 @@ def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads',
         # Create schema based on the first chunk if table doesn't exist
         first_chunk = df.iloc[:chunk_size]
         schema = create_schema(first_chunk)
-    
-    # Create schema based on the first chunk to avoid processing the entire DataFrame
+
     first_chunk = df.iloc[:chunk_size]
-    schema = create_schema(first_chunk)
     
     # Set the write disposition
     write_disposition = (bigquery.WriteDisposition.WRITE_APPEND if write_mode == 'append' 
@@ -133,8 +138,13 @@ def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads',
             print(f"An error occurred while processing column {col}: {str(e)}")
                 
         # Process the chunk (flatten nested data, etc.)
+        # print("Original DataFrame columns:", df.columns.tolist())
+        # print("Chunk columns before processing:", chunk_df.columns.tolist())
         chunk_df = process_chunk(chunk_df)
+        # print("Chunk columns after processing:", chunk_df.columns.tolist())
+        # print("Schema fields:", [field.name for field in schema])
 
+        validate_schema(chunk_df, schema)
         # Load the chunk into BigQuery
         job = client.load_table_from_dataframe(
             chunk_df, f"{dataset_id}.{table_id}", job_config=job_config
@@ -154,6 +164,7 @@ def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads',
     print(f"All data loaded successfully to {dataset_id}.{table_id}")
 
 def create_schema(df):
+    print('makin schema')
     schema = []
     for column_name, column_type in df.dtypes.items():
         bq_data_type = get_bq_type(column_name, column_type, df[column_name])
@@ -161,18 +172,31 @@ def create_schema(df):
             schema.append(bigquery.SchemaField(column_name, bq_data_type, mode='REPEATED'))
         else:
             schema.append(bigquery.SchemaField(column_name, bq_data_type))
+    print(schema)
     return schema
 
 def process_chunk(df):
+    original_columns = df.columns.tolist()
+    processed_df = df.copy()
+
     for column_name, column_type in df.dtypes.items():
         if pu.is_repeated_field(df[column_name]):
-            df[column_name] = df[column_name].apply(lambda x: json.dumps(x) if x is not None else None)
+            processed_df[column_name] = df[column_name].apply(lambda x: json.dumps(x) if x is not None else None)
         elif column_type == 'object':
             try:
-                df = pu.flatten_nested_data(df, column_name)
+                processed_df = pu.flatten_nested_data(processed_df, column_name)
             except ValueError:
                 continue
-    return df
+
+    # Ensure all original columns are present
+    for col in original_columns:
+        if col not in processed_df.columns:
+            processed_df[col] = df[col]  # Restore the original column
+
+    # Reorder columns to match original order
+    processed_df = processed_df[original_columns]
+
+    return processed_df
 
 def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'dt']):
     client = connect_bq_client(project_id)
@@ -194,6 +218,12 @@ def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads
             
             # Identify new columns
             new_columns = set(df.columns) - existing_columns
+
+            # After checking for new columns
+            missing_columns = existing_columns - set(df.columns)
+            if missing_columns:
+                for col in missing_columns:
+                    df[col] = None  # or an appropriate default value
             
             # If there are new columns, alter the table
             if new_columns:
@@ -211,6 +241,7 @@ def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads
             staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
             
             # Write data to staging table (overwrite mode)
+            # print(df.head(5))
             write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
             
             # Perform upsert from staging table to main table
