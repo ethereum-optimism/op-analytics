@@ -91,7 +91,15 @@ def clean_chain_id(value):
     # Convert to string and remove '.0' if present
     str_value = str(value).strip()
     return str_value[:-2] if str_value.endswith('.0') else str_value
-   
+
+def drop_table_if_exists(client, project_id, dataset_id, table_id):
+    table_ref = f"{project_id}.{dataset_id}.{table_id}"
+    try:
+        client.delete_table(table_ref)
+        print(f"Table {table_ref} deleted.")
+    except NotFound:
+        print(f"Table {table_ref} does not exist.")
+        
 def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', 
                          write_mode='overwrite', project_id=os.getenv("BQ_PROJECT_ID"), 
                          chunk_size=100000):
@@ -164,7 +172,7 @@ def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads',
     print(f"All data loaded successfully to {dataset_id}.{table_id}")
 
 def create_schema(df):
-    print('makin schema')
+    # print('makin schema')
     schema = []
     for column_name, column_type in df.dtypes.items():
         bq_data_type = get_bq_type(column_name, column_type, df[column_name])
@@ -172,7 +180,7 @@ def create_schema(df):
             schema.append(bigquery.SchemaField(column_name, bq_data_type, mode='REPEATED'))
         else:
             schema.append(bigquery.SchemaField(column_name, bq_data_type))
-    print(schema)
+    # print(schema)
     return schema
 
 def process_chunk(df):
