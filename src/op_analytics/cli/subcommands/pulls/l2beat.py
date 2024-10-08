@@ -29,7 +29,7 @@ def get_data(session, url):
     start = time.time()
     resp = session.request(
         method="GET",
-        url=SUMMARY_ENDPOINT,
+        url=url,
         headers={"Content-Type": "application/json"},
     ).json()
     log.info(f"Fetched from {url}: {time.time() - start:.2f} seconds")
@@ -51,11 +51,14 @@ def pull():
     # Parse the summary and store as a dataframe.
     summary_df = pl.DataFrame(projects)
 
-    # Set up 30d TVL data http requests.
+    # Set up TVL data http requests.
+    query_range = (
+        "30d"  # the query range can be modified if we need to go back and backfill older data
+    )
     urls = {}
     for project in projects:
         project_id = project["id"]
-        urls[project_id] = f"https://l2beat.com/api/scaling/tvl/{project_id}?range=30d"
+        urls[project_id] = f"https://l2beat.com/api/scaling/tvl/{project_id}?range={query_range}"
 
     # Run requests concurrenetly.
     tvl_data = run_concurrently(lambda x: get_data(session, x), urls, max_workers=8)
