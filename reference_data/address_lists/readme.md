@@ -58,3 +58,19 @@ Airdrop #4 (Feb 2024) address lists, category eligibility, and total OP received
 - `is_eligible_...` & `a_`,`b_`,`c_`,`..._`: True/False if the address was eligible for the category.
 - `multiplier`: The address' multiplier bonus, if qualified
 - `op_amount_raw`: Total OP the address received. *Note: These numbers need to be divided by 10^18 to get to the # of OP (they are in raw form, not decimal adjusted)*
+
+## Airdrop 5
+
+#### op_airdrop_5_simple_list.csv
+Simplified address list for Airdrop #5 distribution (Oct 2024). Claims were available at [optimism.io](https://app.optimism.io/airdrops/5). See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-5/).
+
+- `address`: User address
+- `op_total`: Total OP the address received in human readable form (i.e. already decimal adjusted)
+
+#### op_airdrop_5_addresses_detailed_list.csv
+Airdrop #5 address lists, category eligibility, and total OP received. Claims were available at [optimism.io](https://app.optimism.io/airdrops/5). See [Optimism Docs](https://community.optimism.io/docs/governance/airdrop-5/).
+
+- `address`: User address
+- `is_[category]`: True/False indicates if the address was eligible for the category
+- `multiplier`: The address' multiplier bonus, if qualified
+- `op_total`: Total OP the address received. *Note: These numbers need to be divided by 10^18 to get to the # of OP (they are in raw form, not decimal adjusted)*
