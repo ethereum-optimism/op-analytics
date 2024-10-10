@@ -1,4 +1,4 @@
-from op_datasets.blockrange import BlockRange
+from op_datasets.processing.blockrange import BlockRange
 
 
 def test_blockrange():

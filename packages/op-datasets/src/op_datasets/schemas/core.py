@@ -95,13 +95,15 @@ class Column(BaseModel):
         }
 
 
-class Table(BaseModel):
+class CoreDataset(BaseModel):
     name: str
+    goldsky_table: str
+    block_number_col: str
     doc: str
     columns: list[Column]
 
     @model_validator(mode="after")
-    def names_are_unique(self) -> "Table":
+    def names_are_unique(self) -> "CoreDataset":
         def _check_unique(attr):
             values = [getattr(col, attr) for col in self.columns if getattr(col, attr) is not None]
             for key, val in Counter(values).items():

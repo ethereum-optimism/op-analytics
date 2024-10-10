@@ -11,11 +11,13 @@ from pyiceberg.types import (
     TimestampType,
 )
 
-from op_datasets import shared
-from op_datasets.schemas.core import Column, JsonRPCMethod, Table
+from op_datasets.schemas import shared
+from op_datasets.schemas.core import Column, JsonRPCMethod, CoreDataset
 
-BLOCKS_SCHEMA = Table(
-    name="blocks",
+BLOCKS_V1_SCHEMA = CoreDataset(
+    name="blocks_v1",
+    goldsky_table="blocks",
+    block_number_col="number",
     doc=dedent("""Indexed Blocks. See [eth_getblockbyhash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblockbyhash) for more info.
     
     Fields from RPC not included here:

@@ -1,7 +1,7 @@
 from op_coreutils.logger import structlog
 from op_coreutils.path import repo_path
-from op_datasets.schemas.blocks import BLOCKS_SCHEMA
-from op_datasets.schemas.core import Column, Table
+from op_datasets.schemas.blocks.v1 import BLOCKS_V1_SCHEMA
+from op_datasets.schemas.core import Column, CoreDataset
 
 from op_analytics.cli.subcommands.misc.dbtgen.yamlwriter import write_sources_yaml
 
@@ -31,7 +31,7 @@ def to_dbt_column(column: Column):
     return result
 
 
-def to_dbt_table(table: Table):
+def to_dbt_table(table: CoreDataset):
     """Convert a Table to a dbt source."""
 
     return {
@@ -52,7 +52,7 @@ def generate():
                 "name": source,
                 "description": "Tables for superchain data curated by OP Labs.",
                 "loader": "OP Labs",
-                "tables": [to_dbt_table(_) for _ in [BLOCKS_SCHEMA]],
+                "tables": [to_dbt_table(_) for _ in [BLOCKS_V1_SCHEMA]],
             }
         ],
     }

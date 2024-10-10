@@ -1,5 +1,5 @@
-import concurrent.futures
 import os
+from threading import Lock
 from typing import Any
 
 import clickhouse_connect
@@ -11,6 +11,8 @@ log = structlog.get_logger()
 
 _CLIENT = None
 
+_INIT_LOCK = Lock()
+
 
 def init_client():
     """Idempotent client initialization.
@@ -19,16 +21,18 @@ def init_client():
     """
     global _CLIENT
 
-    # Server-generated ids (as opoosed to client-generated) are required for running
-    # concurrent queries. See https://clickhouse.com/docs/en/integrations/python#managing-clickhouse-session-ids.
-    clickhouse_connect.common.set_setting("autogenerate_session_id", False)
-    _CLIENT = clickhouse_connect.get_client(
-        host=os.environ["CLICKHOUSE_GOLDSKY_DBT_HOST"],
-        port=int(os.environ["CLICKHOUSE_GOLDSKY_DBT_PORT"]),
-        username=os.environ["CLICKHOUSE_GOLDSKY_DBT_USER"],
-        password=os.environ["CLICKHOUSE_GOLDSKY_DBT_PASSWORD"],
-    )
-    log.info("Initialized Clickhouse client.")
+    with _INIT_LOCK:
+        if _CLIENT is None:
+            # Server-generated ids (as opoosed to client-generated) are required for running
+            # concurrent queries. See https://clickhouse.com/docs/en/integrations/python#managing-clickhouse-session-ids.
+            clickhouse_connect.common.set_setting("autogenerate_session_id", False)
+            _CLIENT = clickhouse_connect.get_client(
+                host=os.environ["CLICKHOUSE_GOLDSKY_DBT_HOST"],
+                port=int(os.environ["CLICKHOUSE_GOLDSKY_DBT_PORT"]),
+                username=os.environ["CLICKHOUSE_GOLDSKY_DBT_USER"],
+                password=os.environ["CLICKHOUSE_GOLDSKY_DBT_PASSWORD"],
+            )
+            log.info("Initialized Clickhouse client.")
 
 
 def run_query(
@@ -45,31 +49,9 @@ def run_query(
     return pl.from_arrow(arrow_result)
 
 
-def run_queries_concurrently(
-    queries: list[str],
-    parameters: dict[str, Any] | None = None,
-    settings: dict[str, Any] | None = None,
-    max_workers: int | None = None,
-):
-    max_workers = max_workers or 4
-    results = [None] * len(queries)
+def append_df(database: str, table: str, df: pl.DataFrame):
+    """Write polars DF to clickhouse."""
+    init_client()
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {}
-        for i, query in enumerate(queries):
-            future = executor.submit(
-                run_query, **dict(query=query, parameters=parameters, settings=settings)
-            )
-            futures[future] = i
-
-        for future in concurrent.futures.as_completed(futures):
-            i = futures[future]
-            try:
-                results[i] = future.result()
-            except Exception:
-                log.error(f"Failed to execute query {i+1} of {len(queries)}")
-                raise
-            else:
-                log.info(f"Success query {i+1} of {len(queries)}")
-
-    return results
+    _CLIENT.insert_arrow(table=table, arrow_table=df.to_arrow(), database=database)
+    log.info(f"Inserted {len(df)} rows to clickhouse {database}.{table}")
