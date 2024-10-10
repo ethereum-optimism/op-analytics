@@ -1,8 +1,8 @@
 from collections import defaultdict
 
-from op_datasets.schemas.core import Table
-from op_datasets.schemas.blocks import BLOCKS_SCHEMA
-from op_datasets.schemas.transactions import TRANSACTIONS_SCHEMA
+from op_datasets.schemas.core import CoreDataset
+from op_datasets.schemas.blocks.v1 import BLOCKS_V1_SCHEMA
+from op_datasets.schemas.transactions.v1 import TRANSACTIONS_V1_SCHEMA
 from op_coreutils.path import repo_path
 from op_coreutils.gsheets import update_gsheet
 
@@ -14,7 +14,7 @@ from py_markdown_table.markdown_table import markdown_table
 EXCLUDED_COLS = {"ingestion_metadata"}
 
 
-def column_details_df(schema: Table) -> list[dict]:
+def column_details_df(schema: CoreDataset) -> list[dict]:
     """Produces a list with display details for all of the columns in the schema."""
     return pd.DataFrame(
         [col.display_dict() for col in schema.columns if col.name not in EXCLUDED_COLS]
@@ -34,7 +34,7 @@ def generate():
         multiline = defaultdict(lambda: 30)
 
         fobj.write("\n\n## Blocks\n")
-        blocks_df = column_details_df(BLOCKS_SCHEMA)
+        blocks_df = column_details_df(BLOCKS_V1_SCHEMA)
         update_gsheet("core_schemas", "Blocks", blocks_df)
         fobj.write(
             markdown_table(blocks_df.to_dict(orient="records"))
@@ -47,7 +47,7 @@ def generate():
         )
 
         fobj.write("\n\n## Transactions\n")
-        transactions_df = column_details_df(TRANSACTIONS_SCHEMA)
+        transactions_df = column_details_df(TRANSACTIONS_V1_SCHEMA)
         update_gsheet("core_schemas", "Transactions", transactions_df)
         fobj.write(
             markdown_table(transactions_df.to_dict(orient="records"))

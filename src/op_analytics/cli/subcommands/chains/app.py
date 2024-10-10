@@ -38,8 +38,9 @@ def get_receipts(chain: str, tx_hashes: list[str]):
 def process_blocks(
     chain: Annotated[str, typer.Argument(help="L2 chain name")],
     block_spec: Annotated[str, typer.Argument(help="Range of blocks to be ingested.")],
-    source_spec: Annotated[
-        str | None, typer.Argument(help="Parameters specifying the data source.")
+    source_spec: Annotated[str | None, typer.Option(help="Data source specification.")] = None,
+    sinks_spec: Annotated[
+        list[str] | None, typer.Option(help="Data sink(s) specification.")
     ] = None,
 ):
     """Ingest a range of blocks [WIP].
@@ -47,4 +48,10 @@ def process_blocks(
     Runs our custom data processing functions on a range of blocks.
     """
     source_spec = source_spec or "goldsky"
-    execute(chain, source_spec, block_spec)
+    sinks_spec = sinks_spec or ["gcs"]
+    execute(
+        chain,
+        block_spec,
+        source_spec,
+        sinks_spec,
+    )

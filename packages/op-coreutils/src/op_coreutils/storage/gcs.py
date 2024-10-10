@@ -5,7 +5,7 @@ import warnings
 import gcsfs
 import polars as pl
 
-from op_coreutils.logger import structlog, human_size
+from op_coreutils.logger import structlog, human_size, human_rows
 
 log = structlog.get_logger()
 warnings.filterwarnings("ignore", message="Polars found a filename")
@@ -73,4 +73,6 @@ def gcs_upload_parquet(blob_path: str, df: pl.DataFrame):
     path = f"{BUCKET_NAME}/{blob_path}"
     with _GCSFS_CLIENT.open(path, "wb") as fobj:
         df.write_parquet(fobj)
-    log.info(f"Wrote parquet file at gs://{path}")
+        size = fobj.tell()
+
+        log.info(f"Wrote parquet [{human_rows(len(df))} {human_size(size)}] at gs://{path}")
