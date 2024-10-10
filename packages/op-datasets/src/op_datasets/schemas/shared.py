@@ -37,6 +37,7 @@ def CHAIN(field_id) -> Column:
         field_type=StringType(),
         required=True,
         doc="Name of the chain. Example: 'op'",
+        op_analytics_clickhouse_expr="chain",
     )
 
 
@@ -47,6 +48,7 @@ def NETWORK(field_id) -> Column:
         field_type=StringType(),
         required=True,
         doc="Network codename. Example: 'mainnet'",
+        op_analytics_clickhouse_expr="network",
     )
 
 
@@ -57,4 +59,5 @@ def CHAIN_ID(field_id) -> Column:
         field_type=IntegerType(),
         required=True,
         doc="Chain id as specified on the chain's configuration. Example: 8453",
+        op_analytics_clickhouse_expr="chain_id",
     )

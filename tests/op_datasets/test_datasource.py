@@ -1,4 +1,4 @@
-from op_datasets.datastores import DataSource, GoldskySource, LocalFileSource
+from op_datasets.coretables.read import DataSource, GoldskySource, LocalFileSource
 
 
 def test_blockrange():
@@ -7,5 +7,5 @@ def test_blockrange():
 
 
 def test_blockrange_plus():
-    br = DataSource.from_spec("local:/path/to/dir")
-    assert br == LocalFileSource(rootpath="/path/to/dir")
+    br = DataSource.from_spec("file:///path/to/dir")
+    assert br == LocalFileSource(basepath="/path/to/dir")
