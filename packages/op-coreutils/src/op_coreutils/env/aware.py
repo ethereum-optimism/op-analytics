@@ -19,7 +19,10 @@ def current_environment():
         if os.environ.get("PYTEST_VERSION") is not None:
             _CURRENT_ENV = OPLabsEnvironment.UNITTEST
 
-        elif os.environ.get("OPLABS_ENV").upper() == "PROD":
+        elif (
+            os.environ.get("OPLABS_ENV") is not None
+            and os.environ.get("OPLABS_ENV").upper() == "PROD"
+        ):
             _CURRENT_ENV = OPLabsEnvironment.PROD
 
         else:

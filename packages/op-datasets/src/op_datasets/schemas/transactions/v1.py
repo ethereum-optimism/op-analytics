@@ -6,11 +6,13 @@ from textwrap import dedent
 
 from pyiceberg.types import DoubleType, IntegerType, ListType, LongType, StringType, TimestampType
 
-from op_datasets import shared
-from op_datasets.schemas.core import Column, JsonRPCMethod, Table
+from op_datasets.schemas import shared
+from op_datasets.schemas.core import Column, JsonRPCMethod, CoreDataset
 
-TRANSACTIONS_SCHEMA = Table(
-    name="transactions",
+TRANSACTIONS_V1_SCHEMA = CoreDataset(
+    name="transactions_v1",
+    goldsky_table="transactions",
+    block_number_col="block_number",
     doc=dedent("""Indexed Transactions. See [eth_gettransactionreceipt](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionreceipt) for more info.
     
     Fields from RPC not included here:
@@ -124,14 +126,14 @@ TRANSACTIONS_SCHEMA = Table(
         ),
         Column(
             field_id=13,
-            name="value",
+            name="value_64",
             field_type=LongType(),
             required=True,
             json_rpc_method=JsonRPCMethod.eth_getTransactionByHash,
             json_rpc_field_name="value",
             raw_goldsky_pipeline_expr="value",
             raw_goldsky_pipeline_type="decimal",
-            op_analytics_clickhouse_expr="accurateCastOrNull(value, 'Int64') AS value",
+            op_analytics_clickhouse_expr="accurateCastOrNull(value, 'Int64') AS value_64",
             doc="Lossy value downcasted to Int64 to be compatible with BigQuery data types.",
         ),
         Column(
