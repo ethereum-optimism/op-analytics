@@ -46,3 +46,4 @@ zzzsql/
 
 # Local ozone warehouse folder
 ozone/
+.env_legacy
