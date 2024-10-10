@@ -40,6 +40,35 @@ TRANSACTION_AUDITS = [
     AuditExpr(name="audit_invalid_hash", expr=(~pl.col("hash").str.contains(VALID_HASH)).sum()),
 ]
 
+VALID_HASH = r"^0x[\da-f]{64}$"
+
+
+def valid_hashes(dataframes: dict[str, pl.DataFrame]):
+    # 1. Check that all hashes are valid.
+    block_hashes = dataframes["blocks"].select(
+        pl.lit("all block hashes are valid").alias("audit_name"),
+        (~pl.col("hash").str.contains(VALID_HASH)).sum().alias("failure_count"),
+    )
+
+    tx_hashes = dataframes["transactions"].select(
+        pl.lit("all tx hashes are valid").alias("audit_name"),
+        (~pl.col("hash").str.contains(VALID_HASH)).sum().alias("failure_count"),
+    )
+    return pl.concat([block_hashes, tx_hashes])
+
+
+def txs_join_to_blocks(dataframes: dict[str, pl.DataFrame]):
+    # Check that each transaction can join back to a block by block number.
+    blks = dataframes["blocks"].select("number")
+    tx = dataframes["transactions"].select("hash", "block_number")
+    joined_df = blks.join(tx, left_on="number", right_on="block_number", how="full")
+    joined_txs = joined_df.select(
+        pl.lit("txs that dont join to blocks").alias("audit_name"),
+        pl.col("block_number").is_null().sum().alias("failure_count"),
+    )
+
+    return joined_txs
+
 
 def monotonically_increasing(dataframes: dict[str, pl.DataFrame]):
     diffs = (
@@ -54,10 +83,18 @@ def monotonically_increasing(dataframes: dict[str, pl.DataFrame]):
         .filter(pl.col("number_diff").is_not_null())  # ignore the first row
     )
 
-    result = {
-        "block_number": diffs.select((pl.col("number_diff") != 1).sum().alias("audit")),
-        "timestamp": diffs.select((pl.col("timestamp_diff") < 0).sum().alias("audit")),
-    }
+    result = pl.concat(
+        [
+            diffs.select(
+                pl.lit("block number is monotonically increasing").alias("audit_name"),
+                (pl.col("number_diff") != 1).sum().alias("failure_count"),
+            ),
+            diffs.select(
+                pl.lit("block timestamp is monotonically increasing").alias("audit_name"),
+                (pl.col("timestamp_diff") < 0).sum().alias("failure_count"),
+            ),
+        ]
+    )
 
     return result
 
@@ -66,7 +103,9 @@ def distinct_block_numbers(dataframes: dict[str, pl.DataFrame]):
     ctx = pl.SQLContext(frames=dataframes)
     result = ctx.execute(
         """
-        SELECT count(*) - count(distinct number) AS audit
+        SELECT 
+            'distinct_block_numbers' AS audit_name,
+            count(*) - count(distinct number) AS failure_count
         FROM blocks
         """
     ).collect()
