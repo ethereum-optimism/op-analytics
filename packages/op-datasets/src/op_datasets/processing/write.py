@@ -4,12 +4,12 @@ import polars as pl
 from op_coreutils.logger import structlog
 from op_coreutils.storage.gcs import gcs_upload_parquet
 
-from op_datasets.processing.ozone import OzoneTask
+from op_datasets.processing.ozone import DateTask
 
 log = structlog.get_logger()
 
 
-def write_to_sink(sink_spec: str, task: OzoneTask, namespace: str, name: str, df: pl.DataFrame):
+def write_to_sink(sink_spec: str, task: DateTask, namespace: str, name: str, df: pl.DataFrame):
     df_write = df.drop("chain", "dt")
     path = f"warehouse/{namespace}/{task.construct_path(name)}"
 

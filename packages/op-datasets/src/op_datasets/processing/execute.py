@@ -5,7 +5,7 @@ from op_coreutils.clickhouse.client import append_df
 
 from op_datasets.processing.blockrange import BlockRange
 from op_datasets.coretables.read import filter_to_date, read_core_tables
-from op_datasets.processing.ozone import OzoneTask, split_block_range
+from op_datasets.processing.ozone import DateTask, split_block_range
 from op_datasets.schemas import ONCHAIN_CORE_DATASETS, CoreDataset
 from op_datasets.processing.write import write_to_sink
 
@@ -17,28 +17,27 @@ def execute(chain: str, block_spec: str, source_spec: str, sinks_spec: list[str]
     clear_contextvars()
     bind_contextvars(chain=chain, spec=block_spec)
     for task in split_block_range(block_range):
-        execute_task(task, chain, source_spec, sinks_spec)
+        execute_single_batch(task, chain, source_spec, sinks_spec)
 
 
-def execute_task(task: BlockRange, chain: str, source_spec: str, sinks_spec: list[str]):
+def execute_single_batch(batch: BlockRange, chain: str, source_spec: str, sinks_spec: list[str]):
     datasets: dict[str, CoreDataset] = {
         "blocks": ONCHAIN_CORE_DATASETS["blocks_v1"],
         "transactions": ONCHAIN_CORE_DATASETS["transactions_v1"],
+        # TODO: Also read in traces, logs
     }
 
-    input_dataframes: dict[str, pl.DataFrame] = read_core_tables(chain, source_spec, datasets, task)
+    input_dataframes: dict[str, pl.DataFrame] = read_core_tables(
+        chain, source_spec, datasets, batch
+    )
 
     for dt in input_dataframes["blocks"]["dt"].unique().sort().to_list():
         # We filter to a single date to make sure our processing never straddles date boundaries.
         dataframes = filter_to_date(input_dataframes, dt)
 
         # Determine the actual BlockRange we have in hand.
-        actual_range = BlockRange(
-            min=dataframes["blocks"].select("number").min().item(),
-            max=dataframes["blocks"].select("number").max().item(),
-        )
-        date_task = OzoneTask(chain, dt, actual_range)
-        log.info(f"Processing blocks dt={dt} min={actual_range.min} max={actual_range.max}")
+        date_task = DateTask(chain, dt, batch)
+        log.info(f"Processing blocks dt={dt} min={batch.min} max={batch.max}")
 
         # Run the audit process.
         run_audits(dataframes)
@@ -60,7 +59,7 @@ def execute_task(task: BlockRange, chain: str, source_spec: str, sinks_spec: lis
 
 def write_all(
     sink_spec: str,
-    task: OzoneTask,
+    task: DateTask,
     namespace: str,
     dataframes: dict[str, pl.DataFrame],
     datasets: dict[str, CoreDataset],
@@ -73,24 +72,25 @@ def write_all(
 def run_audits(dataframes: dict[str, pl.DataFrame]):
     from op_datasets.logic.audits import registered_audits
 
+    # Iterate over all the registered audits.
+    # Raises an exception if an audit is failing.
     for name, audit in registered_audits.items():
-        result = audit(dataframes)
-        if isinstance(result, pl.DataFrame):
-            results = {"": result}
-        elif isinstance(result, dict):
-            results = result
+        # Execute the audit!
+        result: pl.DataFrame = audit(dataframes)
 
-        for key, dataframe in results.items():
-            result_schema = dataframe.collect_schema()
+        if not result.collect_schema().get("audit_name") == pl.String:
+            raise Exception("Audit result DataFrame is missing column: audit_name[String]")
 
-            if not result_schema.get("audit") == pl.UInt32:
-                raise Exception("Audit result DataFrame is missing column: audit[UInt32]")
+        if not result.collect_schema().get("failure_count") == pl.UInt32:
+            raise Exception("Audit result DataFrame is missing column: failure_count[UInt32]")
 
-            failing = dataframe.filter(pl.col("audit") > 0)
-            if len(failing) > 0:
-                print(failing)
-                msg = f"audit failed: {name}.{key}"
+        for audit_result in result.to_dicts():
+            name = audit_result["audit_name"]
+            value = audit_result["failure_count"]
+
+            if value > 0:
+                msg = f"audit failed: {name}"
                 log.error(msg)
                 raise Exception(f"Audit failure {msg}")
             else:
-                log.info(f"PASS audit: {name}.{key}")
+                log.info(f"PASS audit: {name}")

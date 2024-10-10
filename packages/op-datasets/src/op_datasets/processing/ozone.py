@@ -33,7 +33,7 @@ class OzoneOutput:
 
 
 @dataclass
-class OzoneTask:
+class DateTask:
     chain: str  # chain name
     dt: str  # YYYY-MM-DD
     block_range: BlockRange

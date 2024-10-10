@@ -2,4 +2,4 @@
 dbt Models
 ===============
 
-See our `dbt docs site <../../../dbt/index.html>`_.
+See our `dbt docs site <../../../../dbt/index.html>`_.
