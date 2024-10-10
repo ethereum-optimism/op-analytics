@@ -9,7 +9,8 @@ CURRENT_ENV = current_environment().name
 
 
 def add_oplabs_env(logger: logging.Logger, method_name: str, event_dict: EventDict) -> EventDict:
-    event_dict["oplabs"] = CURRENT_ENV
+    if CURRENT_ENV != "UNDEFINED":
+        event_dict["env"] = CURRENT_ENV
 
     return event_dict
 

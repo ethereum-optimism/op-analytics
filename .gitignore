@@ -43,3 +43,6 @@ dbt/.*
 zzzhttp/
 zzzjson/
 zzzsql/
+
+# Local ozone warehouse folder
+ozone/
