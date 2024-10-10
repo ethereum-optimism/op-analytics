@@ -14,4 +14,9 @@ def now_seconds():
 
 
 def now_dt() -> str:
+    """Return the date value in YYYY-MM-DD format for the current time."""
     return now_seconds().strftime("%Y-%m-%d")
+
+
+def dt_fromepoch(epoch: int) -> str:
+    return datetime.fromtimestamp(epoch).strftime("%Y-%m-%d")
