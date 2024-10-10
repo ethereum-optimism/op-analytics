@@ -16,11 +16,12 @@ def execute(chain: str, block_spec: str, source_spec: str, sinks_spec: list[str]
     block_range = BlockRange.from_spec(block_spec)
     clear_contextvars()
     bind_contextvars(chain=chain, spec=block_spec)
-    for task in split_block_range(block_range):
-        execute_single_batch(task, chain, source_spec, sinks_spec)
+    for batch in split_block_range(block_range):
+        for dt, dataframes in split_dates(batch, chain, source_spec):
+            execute_single_batch_date(dataframes, batch, chain, dt, source_spec, sinks_spec)
 
 
-def execute_single_batch(batch: BlockRange, chain: str, source_spec: str, sinks_spec: list[str]):
+def split_dates(batch: BlockRange, chain: str, source_spec: str):
     datasets: dict[str, CoreDataset] = {
         "blocks": ONCHAIN_CORE_DATASETS["blocks_v1"],
         "transactions": ONCHAIN_CORE_DATASETS["transactions_v1"],
@@ -35,26 +36,36 @@ def execute_single_batch(batch: BlockRange, chain: str, source_spec: str, sinks_
         # We filter to a single date to make sure our processing never straddles date boundaries.
         dataframes = filter_to_date(input_dataframes, dt)
 
-        # Determine the actual BlockRange we have in hand.
-        date_task = DateTask(chain, dt, batch)
-        log.info(f"Processing blocks dt={dt} min={batch.min} max={batch.max}")
+        yield dt, dataframes
 
-        # Run the audit process.
-        run_audits(dataframes)
 
-        # Store audited datasets.
-        for sink_spec in sinks_spec:
-            write_all(sink_spec, date_task, "ingestion", dataframes, datasets)
+def execute_single_batch_date(
+    dataframes: dict[str, pl.DataFrame],
+    chain: str,
+    dt: str,
+    batch: BlockRange,
+    sinks_spec: list[str],
+):
+    # Determine the actual BlockRange we have in hand.
+    date_task = DateTask(chain, dt, batch)
+    log.info(f"Processing blocks dt={dt} min={batch.min} max={batch.max}")
 
-        # Run data transformations.
-        extractions = {}
-        results = {name: logic(dataframes) for name, logic in extractions}
-        log.info(f"len(results) = {len(results)}")
+    # Run the audit process.
+    run_audits(dataframes)
 
-        # Store a record of all outputs produced.
-        for output in date_task.outputs:
-            log.info(f"OUTPUT: {output}")
-        append_df("oplabs_monitor", "core_datasets", date_task.to_polars())
+    # Store audited datasets.
+    for sink_spec in sinks_spec:
+        write_all(sink_spec, date_task, "ingestion", dataframes, datasets)
+
+    # Run data transformations.
+    extractions = {}
+    results = {name: logic(dataframes) for name, logic in extractions}
+    log.info(f"len(results) = {len(results)}")
+
+    # Store a record of all outputs produced.
+    for output in date_task.outputs:
+        log.info(f"OUTPUT: {output}")
+    append_df("oplabs_monitor", "core_datasets", date_task.to_polars())
 
 
 def write_all(
