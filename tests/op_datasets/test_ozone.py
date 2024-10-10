@@ -1,10 +1,10 @@
 from op_datasets.processing.blockrange import BlockRange
-from op_datasets.processing.ozone import OzoneTask, split_block_range
+from op_datasets.processing.ozone import DateTask, split_block_range
 
 
 def test_path_01():
     br = BlockRange.from_spec("245156:+15000")
-    actual = OzoneTask(chain="op", dt="2024-10-03", block_range=br).construct_path("blocks")
+    actual = DateTask(chain="op", dt="2024-10-03", block_range=br).construct_path("blocks")
     assert actual == "blocks/chain=op/dt=2024-10-03/000000244000.parquet"
 
 
