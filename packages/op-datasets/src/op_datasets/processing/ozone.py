@@ -11,11 +11,13 @@ data for those blocks is stored in GCS.
 """
 
 from datetime import date
+from typing import Callable
 
 import polars as pl
 
 from dataclasses import dataclass, field
 from op_datasets.processing.blockrange import BlockRange
+from op_datasets.coretables.read import filter_to_date
 
 
 # The number of blocks that are processed in a single ozone micro-batch. The goal is that
@@ -26,19 +28,50 @@ BLOCK_MOD = 2000
 
 
 @dataclass
-class OzoneOutput:
+class BlockBatch:
+    """Represents the blocks included in a processing batch.
+
+    BlockBatch is structurally the same as a BlockRange, but the BlockBatch
+    is constructed to match the BLOCK_MOD ozone micro-batch size."""
+
+    min: int  # inclusive
+    max: int  # exclusive
+
+    def __len__(self):
+        return self.max - self.min
+
+
+@dataclass
+class BatchInput:
+    """Represents the input data neeeded to process a batch."""
+
+    chain: str  # chain name
+    dt: str  # YYYY-MM-DD
+    block_batch: BlockBatch
+    dataframes: dict[str, pl.DataFrame]
+
+
+@dataclass
+class BatchOutputLocation:
+    """Represents the location of an output produced when processing a batch.
+
+    Note that processing a batch can result in one ore more outputs. The location of
+    the output can be used to reference the output. This can be helpful to read it
+    back later or to check if it has already been produced (to avoid reprocessing).
+    """
+
     namespace: str
     name: str
     path: str
 
 
 @dataclass
-class DateTask:
+class BatchOutputs:
     chain: str  # chain name
     dt: str  # YYYY-MM-DD
     block_range: BlockRange
 
-    outputs: list[OzoneOutput] = field(default_factory=list)
+    outputs: list[BatchOutputLocation] = field(default_factory=list)
 
     def construct_path(self, dataset: str):
         return construct_parquet_path(
@@ -49,7 +82,7 @@ class DateTask:
         )
 
     def save_output(self, namespace: str, name: str, path: str):
-        self.outputs.append(OzoneOutput(namespace, name, path))
+        self.outputs.append(BatchOutputLocation(namespace, name, path))
 
     def to_polars(self):
         data = []
@@ -102,14 +135,27 @@ def construct_parquet_path(dataset: str, chain: str, dt: str, block_range: Block
     return f"{dataset}/chain={chain}/dt={dt}/{construct_parquet_filename(block_range)}"
 
 
-def split_block_range(block_range: BlockRange) -> list[BlockRange]:
+def split_block_range(block_range: BlockRange) -> list[BlockBatch]:
     coarse = int(block_floor(block_range))
 
-    tasks = []
+    batches: list[BlockBatch] = []
     while coarse < block_range.max:
-        task = BlockRange(coarse, coarse + BLOCK_MOD)
-        tasks.append(task)
+        task: BlockBatch = BlockRange(coarse, coarse + BLOCK_MOD)
+        batches.append(task)
 
         coarse += BLOCK_MOD
 
-    return tasks
+    return batches
+
+
+def split_dates(
+    block_batch: BlockRange,
+    data_reader: Callable[[BlockRange], dict[str, pl.DataFrame]],
+):
+    input_dataframes: dict[str, pl.DataFrame] = data_reader(block_batch)
+
+    for dt in input_dataframes["blocks"]["dt"].unique().sort().to_list():
+        # We filter to a single date to make sure our processing never straddles date boundaries.
+        dataframes = filter_to_date(input_dataframes, dt)
+
+        yield dt, dataframes
