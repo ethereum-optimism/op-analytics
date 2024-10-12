@@ -33,7 +33,7 @@ class DataSource(BaseModel):
         raise NotImplementedError()
 
 
-def read_core_tables(
+def read_core_datasets(
     chain: str,
     source_spec: str,
     datasets: dict[str, CoreDataset],
