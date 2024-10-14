@@ -20,17 +20,17 @@ import os
 # import clickhouse_connect as cc
 
 
-# In[ ]:
+# In[2]:
 
 
 # ch_client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
 
 query_name = 'daily_evms_desybilled_wallet_counts'
 
-trailing_pds = 180
+trailing_pds = 90
 
 
-# In[ ]:
+# In[3]:
 
 
 # flipside_configs = [
@@ -44,7 +44,7 @@ trailing_pds = 180
 # ]
 
 
-# In[ ]:
+# In[4]:
 
 
 # # Run Flipside
@@ -88,7 +88,7 @@ dune_df['source'] = 'dune'
 dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
 
 
-# In[ ]:
+# In[6]:
 
 
 # # Run Clickhouse
@@ -116,7 +116,7 @@ dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
 # ch = ch[['dt','blockchain','name','layer','num_qualified_txs','source']]
 
 
-# In[ ]:
+# In[7]:
 
 
 # # Step 1: Filter dune_df for chains not in flip
@@ -132,7 +132,19 @@ dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
 final_df = dune_df.copy()
 
 
-# In[ ]:
+# In[8]:
+
+
+def safe_convert_to_string(value):
+    if pd.isna(value):
+        return '0'
+    elif isinstance(value, (int, float)):
+        return str(int(value))  # Convert float to int, then to string
+    else:
+        return str(value)
+
+
+# In[63]:
 
 
 opstack_metadata = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv')
@@ -140,27 +152,31 @@ opstack_metadata = pd.read_csv('../op_chains_tracking/outputs/chain_metadata.csv
 opstack_metadata['display_name_lower'] = opstack_metadata['display_name'].str.lower()
 final_df['display_name_lower'] = final_df['name'].str.lower()
 
-meta_cols = ['is_op_chain','mainnet_chain_id','op_based_version', 'alignment','chain_name', 'display_name','display_name_lower']
+final_df = final_df.rename(columns={'name':'display_name'})
 
-final_enriched_df = final_df.merge(opstack_metadata[meta_cols], on='display_name_lower', how = 'left')
-final_enriched_df['alignment'] = final_enriched_df['alignment'].fillna('Other EVMs')
-final_enriched_df['is_op_chain'] = final_enriched_df['is_op_chain'].fillna(False)
-final_enriched_df['display_name'] = final_enriched_df['display_name'].fillna(final_enriched_df['name'])
+# meta_cols = ['is_op_chain','mainnet_chain_id','op_based_version', 'alignment','chain_name', 'display_name','display_name_lower']
 
-final_enriched_df = final_enriched_df.drop(columns=['name'])
+# final_enriched_df = final_df.merge(opstack_metadata[meta_cols], on='display_name_lower', how = 'left')
+# final_enriched_df['alignment'] = final_enriched_df['alignment'].fillna('Other EVMs')
+# final_enriched_df['is_op_chain'] = final_enriched_df['is_op_chain'].fillna(False)
+# final_enriched_df['display_name'] = final_enriched_df['display_name'].fillna(final_enriched_df['name'])
+# final_enriched_df['mainnet_chain_id'] = final_enriched_df['mainnet_chain_id'].apply(safe_convert_to_string)
+
+# final_enriched_df = final_enriched_df.drop(columns=['name'])
+
+
+# In[64]:
+
+
+final_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
+
+# final_enriched_df.to_csv('outputs/'+query_name+'.csv', index=False)
 
 
 # In[ ]:
 
 
-final_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
-
-final_enriched_df.to_csv('outputs/'+query_name+'.csv', index=False)
-
-
-# In[ ]:
-
-
-#BQ Upload
-bqu.write_df_to_bq_table(final_enriched_df, query_name)
+#BQ Upload - Append and Upsert
+# bqu.write_df_to_bq_table(final_enriched_df, query_name)
+bqu.append_and_upsert_df_to_bq_table(final_df, query_name, unique_keys = ['blockchain','dt','classification','source'])
 
