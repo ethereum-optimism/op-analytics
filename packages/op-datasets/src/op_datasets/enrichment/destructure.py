@@ -4,7 +4,6 @@ import polars as pl
 
 
 def desctructure_event_args(dataframes) -> pl.Series:
-    breakpoint()
     return dataframes["logs"]["data"]
 
 

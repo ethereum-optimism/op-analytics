@@ -1,5 +1,10 @@
+import os
+import shlex
+import subprocess
+
 import typer
 from op_coreutils.logger import structlog
+from op_coreutils.env import env_get
 
 from op_analytics.cli.subcommands.misc import chain_metadata
 from op_analytics.cli.subcommands.misc.dbtgen import (
@@ -12,6 +17,19 @@ from op_analytics.cli.subcommands.misc.docsgen import schema_mapping_docs
 log = structlog.get_logger()
 
 app = typer.Typer(help="Miscelaneous housekeeping utilities.", add_completion=False)
+
+
+@app.command()
+def run_with_env(env_vars: list[str], cmd: str):
+    """Set environment vars from the op_coreutils vault and run the provided cmd."""
+    custom_env = os.environ.copy()
+
+    for var in env_vars:
+        value = env_get(var)
+        if isinstance(value, str):
+            custom_env[var] = env_get(var)
+
+    subprocess.run(shlex.split(cmd), env=custom_env)
 
 
 app.command(name="upload_metadata")(chain_metadata.upload_metadata)
