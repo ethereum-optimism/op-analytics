@@ -28,6 +28,8 @@ def run_with_env(env_vars: list[str], cmd: str):
         value = env_get(var)
         if isinstance(value, str):
             custom_env[var] = env_get(var)
+        elif isinstance(value, int):
+            custom_env[var] = str(env_get(var))
 
     subprocess.run(shlex.split(cmd), env=custom_env)
 
