@@ -17,8 +17,8 @@ def to_dbt_column(column: Column):
     if column.json_rpc_method is not None:
         meta["json_rpc_method"] = column.json_rpc_method.name
         meta["json_rpc_field_name"] = column.json_rpc_field_name
-    if column.enrichment_function is not None:
-        meta["enrichment_function"] = column.enrichment_function
+    if column.op_analytics_enrichment_function is not None:
+        meta["enrichment_function"] = column.op_analytics_enrichment_function
 
     result: dict[str, str | dict] = {
         "name": column.name,

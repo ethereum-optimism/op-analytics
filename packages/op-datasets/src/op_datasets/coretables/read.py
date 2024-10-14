@@ -41,6 +41,27 @@ def read_core_datasets(
 ) -> dict[str, pl.DataFrame]:
     datasource = DataSource.from_spec(source_spec)
 
+    # Read
+    dataframes = read_from_source(
+        datasource=datasource,
+        chain=chain,
+        datasets=datasets,
+        block_range=block_range,
+    )
+
+    # Run the enrichment process
+    if isinstance(datasource, GoldskySource):
+        return enrichment(datasets=datasets, dataframes=dataframes)
+
+    return dataframes
+
+
+def read_from_source(
+    datasource: DataSource,
+    chain: str,
+    datasets: dict[str, CoreDataset],
+    block_range: BlockRange,
+):
     if isinstance(datasource, GoldskySource):
         from op_datasets.coretables import fromgoldsky
 
@@ -61,7 +82,6 @@ def filter_to_date(dataframes: dict[str, pl.DataFrame], dt: str):
     filtered_blocks = blocks.filter(pl.col("dt") == dt)
     min_block = filtered_blocks.select("number").min().item()
     max_block = filtered_blocks.select("number").max().item()
-    log.info("Filtering blocks", dt=dt, min_block=min_block, max_block=max_block)
 
     result = {}
     for name, df in dataframes.items():
@@ -75,3 +95,21 @@ def filter_to_date(dataframes: dict[str, pl.DataFrame], dt: str):
             filtered = filtered.with_columns(dt=pl.lit(dt)).select(["dt"] + filtered.columns)
             result[name] = filtered
     return result
+
+
+def enrichment(
+    datasets: dict[str, CoreDataset],
+    dataframes: dict[str, pl.DataFrame],
+) -> dict[str, pl.DataFrame]:
+    new_dataframes = {}
+    for dataset_name, dataset in datasets.items():
+        enriched_columns = {}
+        for column_name, enrichment_func in dataset.enrichment_functions().items():
+            enriched_columns[column_name] = enrichment_func(dataframes)
+
+        if enriched_columns:
+            new_dataframes[dataset_name] = dataframes[dataset_name].with_columns(**enriched_columns)
+        else:
+            new_dataframes[dataset_name] = dataframes[dataset_name]
+
+    return new_dataframes

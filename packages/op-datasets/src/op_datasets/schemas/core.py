@@ -1,5 +1,6 @@
 from collections import Counter
 from enum import Enum
+from typing import Callable
 
 from pydantic import BaseModel, model_validator
 from pyiceberg.types import (
@@ -20,6 +21,7 @@ class JsonRPCMethod(str, Enum):
     eth_getBlockByNumber = 1
     eth_getTransactionReceipt = 2
     eth_getTransactionByHash = 3
+    eth_getLogs = 4
 
 
 def to_bigquery_type(iceberg_type: IcebergType):
@@ -59,7 +61,6 @@ class Column(BaseModel):
     doc: str | None = None
     json_rpc_method: JsonRPCMethod | None = None
     json_rpc_field_name: str | None = None
-    enrichment_function: str | None = None
 
     # Translation Properties
 
@@ -71,6 +72,9 @@ class Column(BaseModel):
 
     # The expression used by OP Labs to cast Clickhouse types to the OP Labs type used for this field.
     op_analytics_clickhouse_expr: str | None = None
+
+    # The name of the function used by OP Labs to derive the value from the raw fields.
+    op_analytics_enrichment_function: str | None = None
 
     def display_dict(self):
         oplabs_expr: str
@@ -114,3 +118,14 @@ class CoreDataset(BaseModel):
         _check_unique("op_analytics_clickhouse_expr")
 
         return self
+
+    def enrichment_functions(self) -> dict[str, Callable]:
+        from op_datasets.enrichment import REGISTRY
+
+        funcs = {}
+        for col in self.columns:
+            if col.op_analytics_enrichment_function is not None:
+                func = REGISTRY[col.op_analytics_enrichment_function]
+                funcs[col.name] = func
+
+        return funcs

@@ -1,44 +1,8 @@
-from dataclasses import dataclass
-
 import polars as pl
 from op_coreutils.logger import structlog
 
 log = structlog.get_logger()
 
-
-@dataclass
-class AuditExpr:
-    name: str
-    expr: pl.Expr | str
-
-    @property
-    def col(self) -> pl.Expr:
-        if isinstance(self.expr, str):
-            _expr = pl.sql_expr(self.expr)
-        else:
-            _expr = self.expr
-        return _expr.alias(self.name)
-
-
-VALID_HASH = r"^0x[\da-f]{64}$"
-
-BLOCK_AUDITS = [
-    #
-    # Ensure there are no duplicate block numbers.
-    AuditExpr(name="audit_duplicate_blocks", expr="count(*) - count(distinct number)"),
-    #
-    # Ensure all "hash" values are valid hex strings.
-    AuditExpr(name="audit_invalid_hash", expr=(~pl.col("hash").str.contains(VALID_HASH)).sum()),
-    #
-    # Enxure that block timestamps are increasing.
-    AuditExpr(name="audit_timestamps", expr=(~pl.col("hash").str.contains(VALID_HASH)).sum()),
-]
-
-TRANSACTION_AUDITS = [
-    #
-    # Ensure all "hash" values are valid hex strings.
-    AuditExpr(name="audit_invalid_hash", expr=(~pl.col("hash").str.contains(VALID_HASH)).sum()),
-]
 
 VALID_HASH = r"^0x[\da-f]{64}$"
 
@@ -111,3 +75,18 @@ def distinct_block_numbers(dataframes: dict[str, pl.DataFrame]):
     ).collect()
 
     return result
+
+
+def dataset_consistent_block_timestamps(dataframes: dict[str, pl.DataFrame]):
+    # TODO: Write an audit to make sure the block_timestamp is correct in all of the
+    # non-block datasets.
+    pass
+
+
+def dataset_valid_logs():
+    # TODO: Write an audit to make sure that the length of the logs data string is always a
+    # multiple of 32: (length(data)-2) % 32 == 0
+
+    # TODO: Write an audit to make sure that the length of the topics data string is always
+    # valid.  66, 133, 200, 267
+    pass
