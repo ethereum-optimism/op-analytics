@@ -27,11 +27,15 @@ misc_analysis/csv_outputs/tokens_by_type_base_opm.csv
 Pipfile.lock
 /misc_analysis/csv_outputs
 
+# Makefile dummy markers
+.makemarkers
+
 # GSheets locations
 .gsheets.json
 
-# Sphinx
-docs/sphinx/doctrees
+# Autogenrated Sphinx and DBT Outputs
+docs/sphinx/
+docs/dbt/index.html
 
 # DBT
 dbt/duckdb/

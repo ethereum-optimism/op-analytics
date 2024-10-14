@@ -3,6 +3,9 @@
 {{ config(materialized='view') }}
 
 SELECT
+    chain,
+    network,
+    chain_id,
     formatDateTime(timestamp, '%Y-%m-%d') AS dt,
     timestamp,
     accurateCast(number, 'Int64') AS number,
@@ -24,4 +27,4 @@ SELECT
     gas_limit,
     extra_data,
     transaction_count
-FROM {{ source("superchain_goldsky", "op_blocks") }}
+FROM {{ source("goldsky_pipelines", "blocks") }}

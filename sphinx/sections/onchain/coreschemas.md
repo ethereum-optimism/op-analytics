@@ -9,9 +9,9 @@ maps to our schemas.
 |       Name      |   JSON-RPC method  | JSON-RPC field |Goldsky Type|  Goldsky Field  |        OP Labs BigQuery Type        |          OP Labs Expression         |
 |-----------------|--------------------|----------------|------------|-----------------|-------------------------------------|-------------------------------------|
 |      _meta      |         --         |       --       |     --     |        --       |STRUCT<ingestion_timestamp TIMESTAMP>|                  --                 |
-|      chain      |         --         |       --       |     --     |        --       |                STRING               |                  --                 |
-|     network     |         --         |       --       |     --     |        --       |                STRING               |                  --                 |
-|     chain_id    |         --         |       --       |     --     |        --       |                INT64                |                  --                 |
+|      chain      |         --         |       --       |     --     |        --       |                STRING               |                chain                |
+|     network     |         --         |       --       |     --     |        --       |                STRING               |               network               |
+|     chain_id    |         --         |       --       |     --     |        --       |                INT64                |               chain_id              |
 |        dt       |         --         |       --       |     --     |        --       |                STRING               |formatDateTime(timestamp, '%Y-%m-%d')|
 |    timestamp    |eth_getBlockByNumber|    timestamp   |    long    |    timestamp    |              TIMESTAMP              |              timestamp              |
 |      number     |eth_getBlockByNumber|     number     |    long    |      number     |                INT64                |    accurateCast(number, 'Int64')    |
@@ -38,9 +38,9 @@ maps to our schemas.
 |              Name             |     JSON-RPC method     |   JSON-RPC field   |Goldsky Type|         Goldsky Field         |        OP Labs BigQuery Type        |                       OP Labs Expression                       |
 |-------------------------------|-------------------------|--------------------|------------|-------------------------------|-------------------------------------|----------------------------------------------------------------|
 |             _meta             |            --           |         --         |     --     |               --              |STRUCT<ingestion_timestamp TIMESTAMP>|                               --                               |
-|             chain             |            --           |         --         |     --     |               --              |                STRING               |                               --                               |
-|            network            |            --           |         --         |     --     |               --              |                STRING               |                               --                               |
-|            chain_id           |            --           |         --         |     --     |               --              |                INT64                |                               --                               |
+|             chain             |            --           |         --         |     --     |               --              |                STRING               |                              chain                             |
+|            network            |            --           |         --         |     --     |               --              |                STRING               |                             network                            |
+|            chain_id           |            --           |         --         |     --     |               --              |                INT64                |                            chain_id                            |
 |        block_timestamp        |   eth_getBlockByNumber  |      timestamp     |    long    |        block_timestamp        |              TIMESTAMP              |                         block_timestamp                        |
 |          block_number         |   eth_getBlockByNumber  |       number       |    long    |          block_number         |                INT64                |               accurateCast(block_number, 'Int64')              |
 |           block_hash          |   eth_getBlockByNumber  |     block_hash     |   string   |           block_hash          |                STRING               |                   cast(block_hash, 'String')                   |
@@ -49,7 +49,7 @@ maps to our schemas.
 |       transaction_index       | eth_getTransactionByHash|        hash        |    long    |       transaction_index       |                INT64                |            accurateCast(transaction_index, 'Int64')            |
 |          from_address         | eth_getTransactionByHash|        from        |   string   |          from_address         |                STRING               |                  cast(from_address, 'String')                  |
 |           to_address          | eth_getTransactionByHash|         to         |   string   |           to_address          |                STRING               |                   cast(to_address, 'String')                   |
-|             value             | eth_getTransactionByHash|        value       |   decimal  |             value             |                INT64                |               accurateCastOrNull(value, 'Int64')               |
+|            value_64           | eth_getTransactionByHash|        value       |   decimal  |             value             |                INT64                |               accurateCastOrNull(value, 'Int64')               |
 |         value_lossless        | eth_getTransactionByHash|        value       |   decimal  |             value             |                STRING               |                      cast(value, 'String')                     |
 |              gas              | eth_getTransactionByHash|         gas        |   decimal  |              gas              |                INT64                |                   accurateCast(gas, 'Int64')                   |
 |           gas_price           | eth_getTransactionByHash|      gasPrice      |   decimal  |           gas_price           |                INT64                |                accurateCast(gas_price, 'Int64')                |
@@ -72,3 +72,22 @@ maps to our schemas.
 |    receipt_l1_blob_base_fee   |eth_getTransactionReceipt|    l1BlobBaseFee   |   decimal  |    receipt_l1_blob_base_fee   |                INT64                |    accurateCast(receipt_l1_blob_base_fee, 'Nullable(Int64)')   |
 |receipt_l1_blob_base_fee_scalar|eth_getTransactionReceipt| l1BlobBaseFeeScalar|   decimal  |receipt_l1_blob_base_fee_scalar|                INT64                |accurateCast(receipt_l1_blob_base_fee_scalar, 'Nullable(Int64)')|
 |   receipt_l1_base_fee_scalar  |eth_getTransactionReceipt|   l1BaseFeeScalar  |   decimal  |   receipt_l1_base_fee_scalar  |                INT64                |   accurateCast(receipt_l1_base_fee_scalar, 'Nullable(Int64)')  |
+
+## Logs
+|       Name      |   JSON-RPC method  |  JSON-RPC field |Goldsky Type|  Goldsky Field  |        OP Labs BigQuery Type        |                   OP Labs Expression                  |
+|-----------------|--------------------|-----------------|------------|-----------------|-------------------------------------|-------------------------------------------------------|
+|      _meta      |         --         |        --       |     --     |        --       |STRUCT<ingestion_timestamp TIMESTAMP>|                           --                          |
+|      chain      |         --         |        --       |     --     |        --       |                STRING               |                         chain                         |
+|     network     |         --         |        --       |     --     |        --       |                STRING               |                        network                        |
+|     chain_id    |         --         |        --       |     --     |        --       |                INT64                |                        chain_id                       |
+| block_timestamp |eth_getBlockByNumber|    timestamp    |    long    | block_timestamp |              TIMESTAMP              |                    block_timestamp                    |
+|   block_number  |     eth_getLogs    |      number     |    long    |   block_number  |                INT64                |          accurateCast(block_number, 'Int64')          |
+|    block_hash   |     eth_getLogs    |    block_hash   |   string   |    block_hash   |                STRING               |               cast(block_hash, 'String')              |
+| transaction_hash|     eth_getLogs    | transaction_hash|   string   | transaction_hash|                STRING               |            cast(transaction_hash, 'String')           |
+|transaction_index|     eth_getLogs    |transaction_index|    long    |transaction_index|                INT64                |        accurateCast(transaction_index, 'Int64')       |
+|    log_index    |     eth_getLogs    |       hash      |    long    |transaction_index|                INT64                |            accurateCast(log_index, 'Int64')           |
+|     address     |     eth_getLogs    |     address     |   string   |     address     |                STRING               |                cast(address, 'String')                |
+|      topics     |     eth_getLogs    |      topics     |   string   |      topics     |                STRING               |                 cast(topics, 'String')                |
+|       data      |     eth_getLogs    |       data      |   string   |       data      |                STRING               |                  cast(data, 'String')                 |
+|      topic0     |         --         |        --       |     --     |        --       |                STRING               |         splitByChar(',', topics)[1] as topic0         |
+|   indexed_args  |         --         |        --       |     --     |        --       |            ARRAY<STRING>            |arraySlice(splitByChar(',', topics), 2) as indexed_args|
