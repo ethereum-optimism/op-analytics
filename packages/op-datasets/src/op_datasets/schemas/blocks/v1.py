@@ -267,7 +267,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             name="transaction_count",
             field_type=LongType(),
             required=True,
-            enrichment_function="count_transactions",
             raw_goldsky_pipeline_expr="transaction_count",
             raw_goldsky_pipeline_type="long",
             op_analytics_clickhouse_expr="transaction_count",

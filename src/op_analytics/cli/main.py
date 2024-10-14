@@ -9,7 +9,11 @@ from op_analytics.cli.mainhelpers import find_apps
 
 log = structlog.get_logger()
 
-app = typer.Typer(no_args_is_help=True, add_completion=False)
+app = typer.Typer(
+    no_args_is_help=True,
+    add_completion=False,
+    pretty_exceptions_show_locals=False,
+)
 
 
 typer.main.get_command_name = lambda name: name
