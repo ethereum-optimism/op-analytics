@@ -10,14 +10,14 @@ init:
 # ----------------------------------------------------------------------------#
 
 %:
-	@echo "dummy taget: $@"
+	@echo "dummy target: $@"
 
 .PHONY: html
 html: .makemarkers/sphinx-docs
 
 
 .makemarkers/sphinx-autogen: \
-	$(shell find src/op_analytics/cli/subcommands/misc/dbtgen -type f -print0 | xargs -0 ls -t | head -n 1)
+	$(shell find src/op_analytics/cli/subcommands/misc/dbtgen -type f -print0 | xargs -0 ls -t | head -n 1) \
 	$(shell find packages/op-datasets/src/op_datasets/schemas -type f -print0 | xargs -0 ls -t | head -n 1) \
 	src/op_analytics/cli/subcommands/misc/docsgen/coreschemas.md
 	@echo "Running sphinx documentation autegen."
