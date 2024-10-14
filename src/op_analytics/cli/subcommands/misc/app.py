@@ -31,7 +31,11 @@ def run_with_env(env_vars: list[str], cmd: str):
         elif isinstance(value, int):
             custom_env[var] = str(env_get(var))
 
-    subprocess.run(shlex.split(cmd), env=custom_env)
+    result = subprocess.run(shlex.split(cmd), env=custom_env)
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(
+            result.returncode, "Command did not finish successfully."
+        )
 
 
 app.command(name="upload_metadata")(chain_metadata.upload_metadata)
