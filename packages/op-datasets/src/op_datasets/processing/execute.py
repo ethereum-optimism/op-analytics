@@ -19,9 +19,25 @@ log = structlog.get_logger()
 
 
 # The version of the core datasets we are using is configured here.
-READ_CORE_DATASETS = {"blocks": "blocks_v1", "transactions": "transactions_v1"}
+READ_CORE_DATASETS = {
+    "blocks": "blocks_v1",
+    "transactions": "transactions_v1",
+    "logs": "logs_v1",
+}
 
-WRITE_CORE_DATASETS = {"blocks": "blocks_v1", "transactions": "transactions_v1"}
+WRITE_CORE_DATASETS = {
+    "blocks": "blocks_v1",
+    "transactions": "transactions_v1",
+    "logs": "logs_v1",
+}
+
+
+def execute(chain: str, block_spec: str, source_spec: str, sinks_spec: list[str]):
+    clear_contextvars()
+    bind_contextvars(chain=chain)
+
+    for microbach in reader(chain, block_spec, source_spec):
+        processor(microbach, sinks_spec)
 
 
 def reader(chain: str, block_spec: str, source_spec: str):
@@ -55,35 +71,31 @@ def reader(chain: str, block_spec: str, source_spec: str):
             yield BatchInput(chain, dt, block_batch, dataframes)
 
 
-def execute(chain: str, block_spec: str, source_spec: str, sinks_spec: list[str]):
-    clear_contextvars()
-    bind_contextvars(chain=chain, spec=block_spec)
+def processor(microbatch: BatchInput, sinks_spec: list[str]):
+    log.info(
+        f"Processing blocks dt={microbatch.dt} blocks={microbatch.block_batch.min}-{microbatch.block_batch.max}"
+    )
 
-    for microbach in reader(chain, block_spec, source_spec):
-        execute_microbatch(microbach, sinks_spec)
-
-
-def execute_microbatch(microbatch: BatchInput, sinks_spec: list[str]):
-    log.info(f"Processing blocks dt={microbatch.dt} blocks={microbatch.min} - {microbatch.max}")
-
-    outputs = BatchOutputs(microbatch.chain, microbatch.dt, microbatch.block_batch)
+    out = BatchOutputs(microbatch.chain, microbatch.dt, microbatch.block_batch)
 
     # Run the audit process.
     run_audits(microbatch.dataframes)
 
     # Store audited datasets.
     for sink_spec in sinks_spec:
-        write_core_datasets(sink_spec, outputs, "ingestion", microbatch.dataframes)
+        write_core_datasets(sink_spec, out, "ingestion", microbatch.dataframes)
 
-    # Run data transformations.
-    extractions = {}
-    results = {name: logic(microbatch.dataframes) for name, logic in extractions}
-    log.info(f"len(results) = {len(results)}")
+    # TODO: Run data transformations.
+    # extractions = {}
+    # results = {name: logic(microbatch.dataframes) for name, logic in extractions}
+    # log.info(f"len(results) = {len(results)}")
 
     # Store a record of all outputs produced.
-    for output in outputs:
+    append_df("oplabs_monitor", "core_datasets", out.to_polars())
+
+    # Log the outputs to stdout.
+    for output in out.outputs:
         log.info(f"OUTPUT: {output}")
-    append_df("oplabs_monitor", "core_datasets", outputs.to_polars())
 
 
 def run_audits(dataframes: dict[str, pl.DataFrame]):
@@ -91,6 +103,7 @@ def run_audits(dataframes: dict[str, pl.DataFrame]):
 
     # Iterate over all the registered audits.
     # Raises an exception if an audit is failing.
+    passing_audits = 0
     for name, audit in registered_audits.items():
         # Execute the audit!
         result: pl.DataFrame = audit(dataframes)
@@ -110,7 +123,9 @@ def run_audits(dataframes: dict[str, pl.DataFrame]):
                 log.error(msg)
                 raise Exception(f"Audit failure {msg}")
             else:
-                log.info(f"PASS audit: {name}")
+                passing_audits += 1
+
+    log.info(f"PASS {passing_audits} audits.")
 
 
 def write_core_datasets(

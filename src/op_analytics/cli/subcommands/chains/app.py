@@ -10,7 +10,11 @@ from typing_extensions import Annotated
 log = structlog.get_logger()
 
 
-app = typer.Typer(help="Onchain data utilities.", add_completion=False)
+app = typer.Typer(
+    help="Onchain data utilities.",
+    add_completion=False,
+    pretty_exceptions_show_locals=False,
+)
 
 
 @app.command()
