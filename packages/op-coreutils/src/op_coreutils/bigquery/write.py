@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import io
 
 import polars as pl
@@ -99,13 +100,17 @@ def overwrite_partitions(
     table_name: str,
     expiration_days: int = 360,
 ):
+    init_client()
+
     destination = f"{dataset}.{table_name}"
 
     if df["dt"].dtype == pl.String:
         df = df.with_columns(dt=pl.col("dt").str.strptime(pl.Datetime, "%Y-%m-%d"))
 
     partitions = df["dt"].unique().sort().to_list()
-    log.info(f"Writing {len(partitions)} partitions to BQ [{partitions[0]} ... {partitions[-1]}]")
+    log.info(
+        f"Writing {len(partitions)} partitions to BQ [{partitions[0]} ... {partitions[-1]}]"
+    )
 
     with io.BytesIO() as stream:
         df.write_parquet(stream)
