@@ -57,7 +57,7 @@ html: .makemarkers/sphinx-docs
 html-copies:
 	find "op_rewards_tracking" -type f -name "*.html" > rsync-files.txt
 	rsync -aSvuc --recursive --files-from=rsync-files.txt . "docs/"
-	rsync-files.txt
+	rm rsync-files.txt
 
 # ----------------------------------------------------------------------------#
 #     LOCAL DEVELOPMENT
