@@ -10,4 +10,15 @@ ONCHAIN_CORE_DATASETS = {
     "logs_v1": LOGS_V1_SCHEMA,
 }
 
+ONCHAIN_CURRENT_VERSION = {
+    "blocks": "blocks_v1",
+    "transactions": "transactions_v1",
+    "logs": "logs_v1",
+}
+
+
+def resolve_core_dataset(name) -> CoreDataset:
+    return ONCHAIN_CORE_DATASETS[ONCHAIN_CURRENT_VERSION[name]]
+
+
 __all__ = ["ONCHAIN_SCHEMAS", "CoreDataset"]

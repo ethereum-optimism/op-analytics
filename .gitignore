@@ -27,17 +27,20 @@ misc_analysis/csv_outputs/tokens_by_type_base_opm.csv
 Pipfile.lock
 /misc_analysis/csv_outputs
 
+# Environment Configuration
+.envjson
+
 # GSheets locations
 .gsheets.json
-
-# Sphinx
-docs/sphinx/doctrees
 
 # DBT
 dbt/duckdb/
 dbt/target
 dbt/logs
 dbt/.*
+
+# Sphinx docs related
+rsync-files.txt
 
 # Local folders to store scratchpad content (HTTP requests, JSON, SQL).
 zzzhttp/

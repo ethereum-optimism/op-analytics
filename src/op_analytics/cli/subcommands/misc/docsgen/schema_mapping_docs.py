@@ -1,8 +1,7 @@
 from collections import defaultdict
 
 from op_datasets.schemas.core import CoreDataset
-from op_datasets.schemas.blocks.v1 import BLOCKS_V1_SCHEMA
-from op_datasets.schemas.transactions.v1 import TRANSACTIONS_V1_SCHEMA
+from op_datasets.schemas import resolve_core_dataset
 from op_coreutils.path import repo_path
 from op_coreutils.gsheets import update_gsheet
 
@@ -33,28 +32,17 @@ def generate():
 
         multiline = defaultdict(lambda: 30)
 
-        fobj.write("\n\n## Blocks\n")
-        blocks_df = column_details_df(BLOCKS_V1_SCHEMA)
-        update_gsheet("core_schemas", "Blocks", blocks_df)
-        fobj.write(
-            markdown_table(blocks_df.to_dict(orient="records"))
-            .set_params(
-                row_sep="markdown",
-                multiline=multiline,
-                quote=False,
+        for name in ["Blocks", "Transactions", "Logs"]:
+            dataset = resolve_core_dataset(name.lower())
+            fobj.write(f"\n\n## {name}\n")
+            df = column_details_df(dataset)
+            update_gsheet("core_schemas", name, df)
+            fobj.write(
+                markdown_table(df.to_dict(orient="records"))
+                .set_params(
+                    row_sep="markdown",
+                    multiline=multiline,
+                    quote=False,
+                )
+                .get_markdown()
             )
-            .get_markdown()
-        )
-
-        fobj.write("\n\n## Transactions\n")
-        transactions_df = column_details_df(TRANSACTIONS_V1_SCHEMA)
-        update_gsheet("core_schemas", "Transactions", transactions_df)
-        fobj.write(
-            markdown_table(transactions_df.to_dict(orient="records"))
-            .set_params(
-                row_sep="markdown",
-                multiline=multiline,
-                quote=False,
-            )
-            .get_markdown()
-        )
