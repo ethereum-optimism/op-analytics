@@ -23,12 +23,14 @@ READ_CORE_DATASETS = {
     "blocks": "blocks_v1",
     "transactions": "transactions_v1",
     "logs": "logs_v1",
+    "traces": "traces_v1",
 }
 
 WRITE_CORE_DATASETS = {
     "blocks": "blocks_v1",
     "transactions": "transactions_v1",
     "logs": "logs_v1",
+    "traces": "traces_v1",
 }
 
 
