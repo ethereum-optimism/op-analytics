@@ -37,13 +37,17 @@ jobs:
         run: uv python install
       - name: Build Static Content
         run: make html
+        env:
+          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
+      - name: Copy Diretories To Serve
+        run: make html-copies
       - name: Setup Pages
         uses: actions/configure-pages@v5     
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          # Upload only the docs folder
+          path: 'docs'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

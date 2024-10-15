@@ -1,10 +1,10 @@
-import os
 from threading import Lock
 from typing import Any
 
 import clickhouse_connect
 import polars as pl
 
+from op_coreutils.env import env_get
 from op_coreutils.logger import structlog
 
 log = structlog.get_logger()
@@ -27,10 +27,10 @@ def init_client():
             # concurrent queries. See https://clickhouse.com/docs/en/integrations/python#managing-clickhouse-session-ids.
             clickhouse_connect.common.set_setting("autogenerate_session_id", False)
             _CLIENT = clickhouse_connect.get_client(
-                host=os.environ["CLICKHOUSE_GOLDSKY_DBT_HOST"],
-                port=int(os.environ["CLICKHOUSE_GOLDSKY_DBT_PORT"]),
-                username=os.environ["CLICKHOUSE_GOLDSKY_DBT_USER"],
-                password=os.environ["CLICKHOUSE_GOLDSKY_DBT_PASSWORD"],
+                host=env_get("CLICKHOUSE_GOLDSKY_DBT_HOST"),
+                port=int(env_get("CLICKHOUSE_GOLDSKY_DBT_PORT")),
+                username=env_get("CLICKHOUSE_GOLDSKY_DBT_USER"),
+                password=env_get("CLICKHOUSE_GOLDSKY_DBT_PASSWORD"),
             )
             log.info("Initialized Clickhouse client.")
 

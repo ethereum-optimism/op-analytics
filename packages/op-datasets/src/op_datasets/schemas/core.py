@@ -129,3 +129,20 @@ class CoreDataset(BaseModel):
                 funcs[col.name] = func
 
         return funcs
+
+    def goldsky_sql(
+        self,
+        source_table: str,
+        where: str | None = None,
+    ):
+        exprs = [
+            "    " + _.op_analytics_clickhouse_expr
+            for _ in self.columns
+            if _.op_analytics_clickhouse_expr is not None
+        ]
+        cols = ",\n".join(exprs)
+
+        if where is None:
+            return f"SELECT\n{cols}\nFROM {source_table}"
+        else:
+            return f"SELECT\n{cols}\nFROM {source_table} WHERE {where}"
