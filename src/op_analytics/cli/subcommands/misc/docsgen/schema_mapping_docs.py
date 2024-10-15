@@ -32,7 +32,7 @@ def generate():
 
         multiline = defaultdict(lambda: 30)
 
-        for name in ["Blocks", "Transactions", "Logs"]:
+        for name in ["Blocks", "Transactions", "Logs", "Traces"]:
             dataset = resolve_core_dataset(name.lower())
             fobj.write(f"\n\n## {name}\n")
             df = column_details_df(dataset)

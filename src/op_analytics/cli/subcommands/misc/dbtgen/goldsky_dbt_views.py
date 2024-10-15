@@ -15,7 +15,7 @@ def jinja(val: str):
 def generate():
     """Generate dbt view models corresponding to the OP Labs dataset schemas."""
 
-    datasets = ["blocks", "transactions", "logs"]  # "traces",
+    datasets = ["blocks", "transactions", "logs", "traces"]
 
     for dataset in datasets:
         sql = resolve_core_dataset(dataset).goldsky_sql(
