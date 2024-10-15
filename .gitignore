@@ -33,15 +33,14 @@ Pipfile.lock
 # GSheets locations
 .gsheets.json
 
-# Autogenrated Sphinx and DBT Outputs
-docs/sphinx/
-docs/dbt/index.html
-
 # DBT
 dbt/duckdb/
 dbt/target
 dbt/logs
 dbt/.*
+
+# Sphinx docs related
+rsync-files.txt
 
 # Local folders to store scratchpad content (HTTP requests, JSON, SQL).
 zzzhttp/

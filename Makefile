@@ -51,10 +51,19 @@ html: .makemarkers/sphinx-docs
 
 
 # ----------------------------------------------------------------------------#
+#     MAKE COPIES OF HTML CONTENT THAT NEEDS TO BE SERVED ON THE STATIC SITE
+# ----------------------------------------------------------------------------#
+
+html-copies:
+	find "op_rewards_tracking" -type f -name "*.html" > rsync-files.txt
+	rsync -aSvuc --recursive --files-from=rsync-files.txt . "docs/"
+	rsync-files.txt
+
+# ----------------------------------------------------------------------------#
 #     LOCAL DEVELOPMENT
 # ----------------------------------------------------------------------------#
 
 .PHONY: sphinx-serve
 sphinx-serve: .makemarkers/sphinx-docs
-	uv run python -m http.server
+	cd docs && uv run python -m http.server
 
