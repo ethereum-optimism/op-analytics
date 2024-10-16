@@ -110,6 +110,10 @@ def daily_address_summary(
 
         -- average fees
         ,SUM( CAST( (gas_price * receipt_gas_used) AS DECIMAL(38,9) ) / CAST( 1000000000 AS DECIMAL(9, 0)) ) / SUM( CAST(receipt_gas_used AS DECIMAL(38,9)) ) AS avg_l2_gas_price_gwei
+        ,SUM( CAST( ((gas_price - max_priority_fee_per_gas) * receipt_gas_used) AS DECIMAL(38,9) ) / CAST( 1000000000 AS DECIMAL(9, 0)) ) / SUM( CAST(receipt_gas_used AS DECIMAL(38,9)) ) AS avg_l2_base_fee_gwei
+        ,SUM( CAST( (max_priority_fee_per_gas * receipt_gas_used) AS DECIMAL(38,9) ) / CAST( 1000000000 AS DECIMAL(9, 0)) ) / SUM( CAST(receipt_gas_used AS DECIMAL(38,9)) ) AS avg_l2_priority_fee_gwei
+        ,SUM( CAST( (receipt_l1_gas_price * receipt_l1_gas_used) AS DECIMAL(38,9) ) / CAST( 1000000000 AS DECIMAL(9, 0)) ) / SUM( CAST(receipt_l1_gas_used AS DECIMAL(38,9)) ) AS avg_l1_gas_price_gwei
+        ,SUM( CAST( (receipt_l1_blob_base_fee * receipt_l1_gas_used) AS DECIMAL(38,9) ) / CAST( 1000000000 AS DECIMAL(9, 0)) ) / SUM( CAST(receipt_l1_gas_used AS DECIMAL(38,9)) ) AS avg_l1_blob_base_fee_gwei
 
         -- block time
         ,MIN(block_timestamp) AS min_block_timestamp
