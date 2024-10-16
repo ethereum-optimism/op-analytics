@@ -31,24 +31,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - working-directory: other_chains_tracking
-            notebook: chain_tvl_trends
-          - working-directory: other_chains_tracking
-            notebook: pull_l2_activity
-          - working-directory: other_chains_tracking
-            notebook: get_ethereum_chain_list
-          - working-directory: other_chains_tracking
-            notebook: get_dune_evms_info
-          - working-directory: other_chains_tracking
-            notebook: get_qualified_txs
-          - working-directory: other_chains_tracking
-            notebook: get_contract_labels
-          - working-directory: op_chains_tracking
-            notebook: get_superchain_token_list
-          - working-directory: op_chains_tracking
-            notebook: ch_gs_uploads
-          - working-directory: op_chains_tracking
-            notebook: dune_op_stack_chains_l1_data
+          - working-directory: op_collective_economics/opcollective_feesplit
+            notebook: op_collective_revenue
+          - working-directory: op_collective_economics
+            notebook: get_op_collective_net_revenue_balances
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
