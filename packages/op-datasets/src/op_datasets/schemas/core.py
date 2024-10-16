@@ -76,8 +76,8 @@ class Column(BaseModel):
     # The name of the function used by OP Labs to derive the value from the raw fields.
     op_analytics_enrichment_function: str | None = None
 
-    def display_dict(self):
-        oplabs_expr: str
+    def display_dict(self) -> dict[str, str | None]:
+        oplabs_expr: str | None
 
         if self.op_analytics_clickhouse_expr is not None:
             oplabs_expr = (

@@ -3,13 +3,7 @@ from datetime import date, timedelta
 
 from op_coreutils.logger import structlog
 
-from op_datasets.processing.blockrange import BlockRange
-from op_datasets.processing.ozone import (
-    construct_dataset_path,
-    construct_date_path,
-    construct_parquet_filename,
-    construct_parquet_path,
-)
+from op_datasets.processing.ozone import BlockBatch
 from op_datasets.schemas import CoreDataset
 
 import polars as pl
@@ -18,21 +12,25 @@ log = structlog.get_logger()
 
 
 def read_core_tables(
-    base_path: str, chain: str, datasets: dict[str, CoreDataset], block_range: BlockRange
+    base_path: str,
+    datasets: dict[str, CoreDataset],
+    block_batch: BlockBatch,
 ):
     """Get the core dataset tables from a local directory."""
 
     blocks_dataset = datasets["blocks"]
 
-    blocks_path = os.path.join(base_path, construct_dataset_path(blocks_dataset.name, chain))
+    blocks_path = os.path.join(base_path, block_batch.construct_dataset_path(blocks_dataset.name))
     dates = [_.removeprefix("dt=") for _ in os.listdir(blocks_path)]
 
-    log.debug(f"Locating parquet files for blocks {block_range.min} to {block_range.max}")
+    log.debug(f"Locating parquet files for blocks {block_batch.min} to {block_batch.max}")
 
-    search_filename = construct_parquet_filename(block_range)
+    search_filename = block_batch.construct_parquet_filename()
 
     def lookup(dt):
-        date_path = os.path.join(base_path, construct_date_path(blocks_dataset.name, chain, dt))
+        date_path = os.path.join(
+            base_path, block_batch.construct_date_path(blocks_dataset.name, dt)
+        )
 
         if not (os.path.exists(date_path) and os.path.isdir(date_path)):
             return None
@@ -68,10 +66,12 @@ def read_core_tables(
         dataset_dfs = []
         for dt in sorted(matching_dates):
             parquet_path = os.path.join(
-                base_path, construct_parquet_path(dataset.name, chain, dt, block_range)
+                base_path, block_batch.construct_parquet_path(dataset.name, dt)
             )
             dataset_dfs.append(
-                pl.read_parquet(parquet_path).with_columns(chain=pl.lit(chain), dt=pl.lit(dt))
+                pl.read_parquet(parquet_path).with_columns(
+                    chain=pl.lit(block_batch.chain), dt=pl.lit(dt)
+                )
             )
 
         dataframes[key] = pl.concat(dataset_dfs)

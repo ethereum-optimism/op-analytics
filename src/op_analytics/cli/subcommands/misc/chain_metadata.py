@@ -4,7 +4,6 @@ from op_coreutils.logger import structlog
 from op_coreutils.path import repo_path
 from op_coreutils.storage.gcs import gcs_upload_csv
 from polars import datatypes
-from polars.functions.col import Col
 from typing_extensions import Annotated
 
 log = structlog.get_logger()
@@ -47,7 +46,7 @@ def upload_metadata(
     gcs_upload_csv("op_chains_tracking/chain_metadata.csv", clean_df)
 
 
-def _clean(raw_df: pl.DataFrame):
+def _clean(raw_df: pl.LazyFrame):
     """Clean and enrich the raw chain metadata.
 
     The enriched columns are:
@@ -58,8 +57,8 @@ def _clean(raw_df: pl.DataFrame):
     See constants for possible alignment values.
     """
 
-    def clean_column(col, datatype):
-        result: Col
+    def clean_column(col, datatype) -> pl.Expr:
+        result: pl.Expr
 
         # Strip whitespace for all string columns.
         if datatype == datatypes.String:

@@ -41,6 +41,9 @@ def gcs_upload(blob_path: str, content: bytes | str, prefix=None):
     """Uploads content to GCS."""
     init_client()
 
+    if _BUCKET is None:
+        raise RuntimeError("GCS was not properly initialized.")
+
     from google.cloud.storage import Blob
 
     key = os.path.join(prefix or _PATH_PREFIX, blob_path)
@@ -70,9 +73,11 @@ def init_gcsfs_client():
 def gcs_upload_parquet(blob_path: str, df: pl.DataFrame):
     init_gcsfs_client()
 
+    if _GCSFS_CLIENT is None:
+        raise RuntimeError("GCSFS was not properly initialized.")
+
     path = f"{BUCKET_NAME}/{blob_path}"
     with _GCSFS_CLIENT.open(path, "wb") as fobj:
         df.write_parquet(fobj)
         size = fobj.tell()
-
         log.info(f"Wrote parquet [{human_rows(len(df))} {human_size(size)}] at gs://{path}")

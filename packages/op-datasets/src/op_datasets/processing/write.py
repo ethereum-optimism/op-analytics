@@ -1,7 +1,7 @@
 import os
 
 import polars as pl
-from op_coreutils.logger import structlog
+from op_coreutils.logger import structlog, human_rows, human_size
 from op_coreutils.storage.gcs import gcs_upload_parquet
 
 from op_datasets.processing.ozone import BatchOutputs
@@ -24,8 +24,11 @@ def write_to_sink(sink_spec: str, task: BatchOutputs, namespace: str, name: str,
 
         if not os.path.exists(parent):
             os.makedirs(parent)
-        df_write.write_parquet(filepath)
-        log.info(f"Wrote {len(df_write)} rows to {filepath}")
+
+        with open(filepath, "wb") as fobj:
+            df_write.write_parquet(fobj)
+            size = fobj.tell()
+            log.info(f"Wrote parquet [{human_rows(len(df))} {human_size(size)}] at gs://{path}")
 
     if sink_spec.startswith("dummy"):
         log.info(f"Dummy sink: {len(df_write)} rows to {path}")

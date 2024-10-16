@@ -5,22 +5,23 @@ from op_coreutils.clickhouse.client import run_query
 from op_coreutils.logger import structlog
 from op_coreutils.threads import run_concurrently
 
-from op_datasets.processing.blockrange import BlockRange
 from op_datasets.schemas import CoreDataset
+from op_datasets.processing.ozone import BlockBatch
 
 
 log = structlog.get_logger()
 
 
 def read_core_tables(
-    chain: str, datasets: dict[str, CoreDataset], block_range: BlockRange
+    datasets: dict[str, CoreDataset],
+    block_batch: BlockBatch,
 ) -> dict[str, pl.DataFrame]:
     """Get the core dataset tables from Goldsky."""
 
     queries = {
         key: dataset.goldsky_sql(
-            source_table=f"{chain}_{dataset.goldsky_table}",
-            where=block_range.filter(number_column=dataset.block_number_col),
+            source_table=f"{block_batch.chain}_{dataset.goldsky_table}",
+            where=block_batch.filter(number_column=dataset.block_number_col),
         )
         for key, dataset in datasets.items()
     }
