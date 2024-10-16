@@ -22,8 +22,3 @@ jobs:
         run: OPLABS_ENV=prod uv run opdata pulls l2beat
         env:
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
-      # - name: Agora data pull
-      #   run: OPLABS_ENV=prod uv run opdata pulls agora
-      #   env:
-      #     OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}          
-
