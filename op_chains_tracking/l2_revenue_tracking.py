@@ -47,7 +47,7 @@ bespoke_fee_vaults = [
 # Aiming to eventually read from superchain-resitry + some non-superchain static adds
 chains_rpcs = pd.read_csv('outputs/chain_metadata.csv', na_filter=False)
 # print(chains_rpcs.columns)
-chains_rpcs = chains_rpcs[~(chains_rpcs['rpc_url'] == '') & ~(chains_rpcs['op_based_version'].str.contains('legacy'))]
+chains_rpcs = chains_rpcs[~(chains_rpcs['rpc_url'] == '')]
 # chains_rpcs = chains_rpcs.values.tolist()
 # print(chains_rpcs.sample(5))
 
