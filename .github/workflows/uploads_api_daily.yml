@@ -18,7 +18,7 @@ jobs:
         run: uv python install
       - name: Install the project
         run: uv sync --all-extras --dev
-      - name: L2Beat data pull
+      - name: Run tasks
         run: OPLABS_ENV=prod uv run opdata pulls l2beat
         env:
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
