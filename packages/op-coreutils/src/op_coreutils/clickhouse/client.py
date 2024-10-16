@@ -2,6 +2,7 @@ from threading import Lock
 from typing import Any
 
 import clickhouse_connect
+from clickhouse_connect.driver.client import Client
 import polars as pl
 
 from op_coreutils.env import env_get
@@ -9,7 +10,7 @@ from op_coreutils.logger import structlog
 
 log = structlog.get_logger()
 
-_CLIENT = None
+_CLIENT: Client | None = None
 
 _INIT_LOCK = Lock()
 
@@ -34,6 +35,11 @@ def init_client():
             )
             log.info("Initialized Clickhouse client.")
 
+    if _CLIENT is None:
+        raise RuntimeError("Clickhouse client was not properly initialized.")
+
+    return _CLIENT
+
 
 def run_query(
     query: str,
@@ -41,9 +47,9 @@ def run_query(
     settings: dict[str, Any] | None = None,
 ):
     """Return arrow table with clickhouse results"""
-    init_client()
+    client = init_client()
 
-    arrow_result = _CLIENT.query_arrow(
+    arrow_result = client.query_arrow(
         query=query, parameters=parameters, settings=settings, use_strings=True
     )
     return pl.from_arrow(arrow_result)
@@ -51,7 +57,7 @@ def run_query(
 
 def append_df(database: str, table: str, df: pl.DataFrame):
     """Write polars DF to clickhouse."""
-    init_client()
+    client = init_client()
 
-    _CLIENT.insert_arrow(table=table, arrow_table=df.to_arrow(), database=database)
+    client.insert_arrow(table=table, arrow_table=df.to_arrow(), database=database)
     log.info(f"Inserted {len(df)} rows to clickhouse {database}.{table}")
