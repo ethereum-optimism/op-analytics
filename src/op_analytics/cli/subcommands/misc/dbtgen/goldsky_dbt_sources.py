@@ -8,7 +8,7 @@ def generate():
 
     datasets = ["blocks", "transactions", "traces", "logs"]
     tables = [
-        dict(name=f"{dataset}", identifier=f"merge('default', '\w+_{dataset}$')")
+        dict(name=f"{dataset}", identifier=f"merge('default', '\\w+_{dataset}$')")
         for dataset in datasets
     ]
 

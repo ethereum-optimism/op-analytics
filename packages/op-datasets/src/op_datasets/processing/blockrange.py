@@ -28,6 +28,3 @@ class BlockRange:
             return cls(min_val, min_val + plus_val)
 
         raise NotImplementedError()
-
-    def filter(self, number_column: str = "number"):
-        return f" {number_column} >= {self.min} and {number_column} < {self.max}"
