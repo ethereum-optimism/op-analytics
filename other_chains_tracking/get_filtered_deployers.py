@@ -21,7 +21,7 @@ import os
 # import clickhouse_connect as cc
 
 
-# In[ ]:
+# In[2]:
 
 
 # ch_client = ch.connect_to_clickhouse_db() #Default is OPLabs DB
@@ -29,7 +29,7 @@ import os
 query_name = 'daily_evms_filtered_deployers_counts'
 
 
-# In[ ]:
+# In[3]:
 
 
 trailing_days = 28 #Per Chain for Deployers
@@ -47,7 +47,7 @@ clickhouse_configs = [
 ]
 
 
-# In[ ]:
+# In[4]:
 
 
 # # Run Flipside - TODO: Build Deployer Query (tbd if it will run)
@@ -120,20 +120,20 @@ dune_meta_df = d.get_dune_data(query_id = 3445473, #https://dune.com/queries/344
 dune_meta_df = dune_meta_df.rename(columns={'dune_schema':'blockchain'})
 
 
-# In[ ]:
+# In[8]:
 
 
 # deploy_dune_df
-dune_meta_df['chain_id'] = dune_meta_df['chain_id'].astype(str)
-deploy_dune_df['chain_id'] = deploy_dune_df['chain_id'].astype(str)
-revdev_dune_df['chain_id'] = revdev_dune_df['chain_id'].astype(str)
+# dune_meta_df['chain_id'] = dune_meta_df['chain_id'].astype(str)
+# deploy_dune_df['chain_id'] = deploy_dune_df['chain_id'].astype(str)
+# revdev_dune_df['chain_id'] = revdev_dune_df['chain_id'].astype(str)
 
 dune_meta_df['blockchain'] = dune_meta_df['blockchain'].astype(str)
 deploy_dune_df['blockchain'] = deploy_dune_df['blockchain'].astype(str)
 revdev_dune_df['blockchain'] = revdev_dune_df['blockchain'].astype(str)
 
 
-# In[ ]:
+# In[9]:
 
 
 cols = ['name','layer','chain_id']
@@ -143,13 +143,13 @@ revdev_dune_df = revdev_dune_df.merge(dune_meta_df[cols], on='chain_id',how='lef
 # deploy_dune_df.sample(5)
 
 
-# In[ ]:
+# In[10]:
 
 
 # revdev_dune_df.head()
 
 
-# In[ ]:
+# In[11]:
 
 
 # # Run Clickhouse - TODO: Build Deployer Query (tbd if it will run)
@@ -177,7 +177,7 @@ revdev_dune_df = revdev_dune_df.merge(dune_meta_df[cols], on='chain_id',how='lef
 # ch = ch[['dt','blockchain','name','layer','num_qualified_txs','source']]
 
 
-# In[ ]:
+# In[12]:
 
 
 # Step 1: Filter dune_df for chains not in flip
@@ -212,7 +212,7 @@ op_chains
 unified_deployers_df.sample(5)
 
 
-# In[ ]:
+# In[15]:
 
 
 # Ensure created_dt is in datetime format
@@ -303,13 +303,22 @@ opstack_metadata_map = opstack_metadata[meta_cols]
 opstack_metadata_map = opstack_metadata_map.rename(columns={'mainnet_chain_id':'chain_id'})
 
 opstack_metadata_map = opstack_metadata_map[opstack_metadata_map['chain_id'].notnull()]
-opstack_metadata_map.sample(5)
+opstack_metadata_map['chain_id'] = opstack_metadata_map['chain_id'].astype(int)
+opstack_metadata_map.head(5)
 
 
 # In[ ]:
 
 
-# final_df
+opstack_metadata_map['chain_id'] = opstack_metadata_map['chain_id'].astype(int)
+final_df['chain_id'] = final_df['chain_id'].fillna(-1).astype(int)
+unified_revdev_df['chain_id'] = unified_revdev_df['chain_id'].replace('None', np.nan).fillna(-1).astype(int)
+unified_deployers_df['chain_id'] = unified_deployers_df['chain_id'].replace('None', np.nan).fillna(-1).astype(int)
+unified_deployers_df
+
+# print(unified_revdev_df.dtypes)
+# # opstack_metadata_map['chain_id'] = opstack_metadata_map['chain_id'].astype(str).replace('.0','')
+# print(final_df.dtypes)
 
 
 # In[ ]:
@@ -329,7 +338,8 @@ deployer_enriched_df = deployer_enriched_df.drop(columns=['name'])
 # In[ ]:
 
 
-deployer_enriched_df.sample(5)
+# deployer_enriched_df[deployer_enriched_df['is_op_chain'] == True].sample(5)
+unified_revdev_df
 
 
 # In[ ]:
@@ -344,7 +354,7 @@ revdev_enriched_df['display_name'] = revdev_enriched_df['display_name'].fillna(r
 revdev_enriched_df = revdev_enriched_df.drop(columns=['name'])
 
 
-# In[ ]:
+# In[24]:
 
 
 # List of DataFrames
@@ -357,7 +367,7 @@ for df in dataframes:
     df.reset_index(drop=True, inplace=True)
 
 
-# In[ ]:
+# In[25]:
 
 
 # Check DataFrame information to verify data types and non-null counts
@@ -366,17 +376,17 @@ for df in dataframes:
 # print(unified_deployers_df.info())
 
 
-# In[ ]:
+# In[26]:
 
 
 deployer_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
-deployer_enriched_df.to_csv('outputs/daily_filter_deployer_counts.csv', index=False)
+# deployer_enriched_df.to_csv('outputs/daily_filter_deployer_counts.csv', index=False)
 
 revdev_enriched_df.sort_values(by=['dt','blockchain'], ascending =[False, False], inplace = True)
-revdev_enriched_df.to_csv('outputs/daily_revdev_counts.csv', index=False)
+# revdev_enriched_df.to_csv('outputs/daily_revdev_counts.csv', index=False)
 
 
-# In[ ]:
+# In[27]:
 
 
 # print(revdev_enriched_df.dtypes)
