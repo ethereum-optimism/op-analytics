@@ -76,7 +76,7 @@ def daily_address_summary(
             ,CAST(((gas_price - max_priority_fee_per_gas) * receipt_gas_used) AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS base_fee_gwei
             ,CAST(max_priority_fee_per_gas * receipt_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS priority_fee_gwei
             ,CAST(receipt_l1_gas_price * receipt_l1_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS l1_gas_price_gwei
-            ,CAST(receipt_l1_blob_base_fee * receipt_l1_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS l1_blob_base_fee_gwe
+            ,CAST(receipt_l1_blob_base_fee * receipt_l1_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS l1_blob_base_fee_gwei
         FROM
             _filter_df
         CROSS JOIN constants
