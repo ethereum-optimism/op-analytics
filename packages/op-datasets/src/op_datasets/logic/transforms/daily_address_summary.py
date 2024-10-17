@@ -52,31 +52,31 @@ def daily_address_summary(
     )
     ,df_enrich AS (
         SELECT
-            _filter_df.*,
+            _filter_df.*
 
             -- Gas Fee Breakdown
-            CAST(((gas_price * receipt_gas_used) + receipt_l1_fee) AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS total_gas_fee,
-            CASE
+            ,CAST(((gas_price * receipt_gas_used) + receipt_l1_fee) AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS total_gas_fee
+            ,CASE
                 WHEN receipt_status = 1 THEN CAST(((gas_price * receipt_gas_used) + receipt_l1_fee) AS DECIMAL(38,18)) / constants.WEI_IN_ETH
                 ELSE 0
-            END AS total_gas_fee_success,
-            CASE
+                END AS total_gas_fee_success
+            ,CASE
                 WHEN receipt_status != 1 THEN CAST(((gas_price * receipt_gas_used) + receipt_l1_fee) AS DECIMAL(38,18)) / constants.WEI_IN_ETH
                 ELSE 0
-            END AS total_gas_fee_fail,
-            CAST((gas_price * receipt_gas_used) AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l2_contrib_gas_fee,
-            CAST(receipt_l1_fee AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l1_contrib_gas_fee,
-            CAST((receipt_l1_gas_used * receipt_l1_blob_base_fee_scalar * receipt_l1_blob_base_fee) AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l1_blobgas_contrib_gas_fee,
-            CAST((receipt_l1_gas_used * COALESCE(receipt_l1_base_fee_scalar, receipt_l1_fee_scalar) * receipt_l1_gas_price) AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l1_l1gas_contrib_gas_fee,
-            CAST((gas_price - max_priority_fee_per_gas) * receipt_gas_used AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l2_contrib_gas_fee_base_fee,
-            CAST(max_priority_fee_per_gas * receipt_gas_used AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l2_contrib_gas_fee_priority_fee,
+                END AS total_gas_fee_fail
+            ,CAST((gas_price * receipt_gas_used) AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l2_contrib_gas_fee
+            ,CAST(receipt_l1_fee AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l1_contrib_gas_fee
+            ,CAST((receipt_l1_gas_used * receipt_l1_blob_base_fee_scalar * receipt_l1_blob_base_fee) AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l1_blobgas_contrib_gas_fee
+            ,CAST((receipt_l1_gas_used * COALESCE(receipt_l1_base_fee_scalar, receipt_l1_fee_scalar) * receipt_l1_gas_price) AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l1_l1gas_contrib_gas_fee
+            ,CAST((gas_price - max_priority_fee_per_gas) * receipt_gas_used AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l2_contrib_gas_fee_base_fee
+            ,CAST(max_priority_fee_per_gas * receipt_gas_used AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l2_contrib_gas_fee_priority_fee
 
             -- Gas Price Breakdown
-            CAST((gas_price * receipt_gas_used) AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS total_gas_price_gwei,
-            CAST(((gas_price - max_priority_fee_per_gas) * receipt_gas_used) AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS base_fee_gwei,
-            CAST(max_priority_fee_per_gas * receipt_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS priority_fee_gwei,
-            CAST(receipt_l1_gas_price * receipt_l1_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS l1_gas_price_gwei,
-            CAST(receipt_l1_blob_base_fee * receipt_l1_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS l1_blob_base_fee_gwei
+            ,CAST((gas_price * receipt_gas_used) AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS total_gas_price_gwei
+            ,CAST(((gas_price - max_priority_fee_per_gas) * receipt_gas_used) AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS base_fee_gwei
+            ,CAST(max_priority_fee_per_gas * receipt_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS priority_fee_gwei
+            ,CAST(receipt_l1_gas_price * receipt_l1_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS l1_gas_price_gwei
+            ,CAST(receipt_l1_blob_base_fee * receipt_l1_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS l1_blob_base_fee_gwe
         FROM
             _filter_df
         CROSS JOIN constants
