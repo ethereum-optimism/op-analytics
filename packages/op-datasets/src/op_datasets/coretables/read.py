@@ -1,9 +1,9 @@
 import polars as pl
 from op_coreutils.logger import structlog
 
-from op_datasets.processing.blockrange import BlockRange
+from op_datasets.processing.ozone import BlockBatch
 from op_datasets.schemas import CoreDataset
-from typing import Literal, Union
+from typing import Literal
 from pydantic import BaseModel, Field
 
 log = structlog.get_logger()
@@ -20,33 +20,47 @@ class LocalFileSource(BaseModel):
 
 
 class DataSource(BaseModel):
-    source: Union[GoldskySource, LocalFileSource] = Field(..., discriminator="source_type")
+    source: GoldskySource | LocalFileSource = Field(..., discriminator="source_type")
 
     @classmethod
     def from_spec(cls, source_spec: str) -> "DataSource":
         if source_spec.startswith("goldsky"):
-            return GoldskySource()
+            return DataSource(source=GoldskySource())
 
         if source_spec.startswith("file://"):
-            return LocalFileSource(basepath=source_spec.removeprefix("file://"))
+            return DataSource(source=LocalFileSource(basepath=source_spec.removeprefix("file://")))
+
+        raise NotImplementedError()
+
+    def read_from_source(
+        self,
+        datasets: dict[str, CoreDataset],
+        block_batch: BlockBatch,
+    ):
+        if isinstance(self.source, GoldskySource):
+            from op_datasets.coretables import fromgoldsky
+
+            return fromgoldsky.read_core_tables(datasets, block_batch)
+
+        if isinstance(self.source, LocalFileSource):
+            from op_datasets.coretables import fromlocal
+
+            return fromlocal.read_core_tables(self.source.basepath, datasets, block_batch)
 
         raise NotImplementedError()
 
 
 def read_core_datasets(
-    chain: str,
     source_spec: str,
     datasets: dict[str, CoreDataset],
-    block_range: BlockRange,
+    block_batch: BlockBatch,
 ) -> dict[str, pl.DataFrame]:
     datasource = DataSource.from_spec(source_spec)
 
     # Read
-    dataframes = read_from_source(
-        datasource=datasource,
-        chain=chain,
+    dataframes = datasource.read_from_source(
         datasets=datasets,
-        block_range=block_range,
+        block_batch=block_batch,
     )
 
     # Run the enrichment process
@@ -54,25 +68,6 @@ def read_core_datasets(
         return enrichment(datasets=datasets, dataframes=dataframes)
 
     return dataframes
-
-
-def read_from_source(
-    datasource: DataSource,
-    chain: str,
-    datasets: dict[str, CoreDataset],
-    block_range: BlockRange,
-):
-    if isinstance(datasource, GoldskySource):
-        from op_datasets.coretables import fromgoldsky
-
-        return fromgoldsky.read_core_tables(chain, datasets, block_range)
-
-    if isinstance(datasource, LocalFileSource):
-        from op_datasets.coretables import fromlocal
-
-        return fromlocal.read_core_tables(datasource.basepath, chain, datasets, block_range)
-
-    raise NotImplementedError()
 
 
 def filter_to_date(dataframes: dict[str, pl.DataFrame], dt: str):

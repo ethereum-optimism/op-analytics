@@ -1,8 +1,9 @@
 import time
 import polars as pl
+from op_coreutils.bigquery.write import overwrite_partition, overwrite_partitions, overwrite_table
 from op_coreutils.logger import structlog
 from op_coreutils.request import new_session
-from op_coreutils.time import dt_fromepoch
+from op_coreutils.time import dt_fromepoch, now_dt
 from op_coreutils.threads import run_concurrently
 
 log = structlog.get_logger()
@@ -12,8 +13,8 @@ BREAKDOWN_ENDPOINT = "https://stablecoins.llama.fi/stablecoin/{id}"
 
 BQ_DATASET = "uploads_api"
 
-SUMMARY_TABLE = "defillama_daily_stablecoins_summary"
 BREAKDOWN_TABLE = "defillama_daily_stablecoins_breakdown"
+METADATA_TABLE = "defillama_stablecoins_metadata"
 
 
 def get_data(session, url):
@@ -27,7 +28,7 @@ def get_data(session, url):
     return resp
 
 
-def process_breakdown_data(data):
+def process_breakdown_stables(data):
     peg_type = data["pegType"]
     balances = data["chainBalances"]
 
@@ -120,19 +121,19 @@ def pull_stables():
     breakdown_dfs = []
     metadata_rows = []
     for data in stablecoin_data.values():
-        breakdown_df, metadata = process_breakdown_data(data)
+        breakdown_df, metadata = process_breakdown_stables(data)
         breakdown_dfs.append(breakdown_df)
         metadata_rows.append(metadata)
 
     breakdown_df = pl.concat(breakdown_dfs, how="diagonal_relaxed")
     metadata_df = pl.DataFrame(metadata_rows, infer_schema_length=len(metadata_rows))
 
-    # # Write summary to BQ
-    # dt = now_dt()
-    # overwrite_table(summary_df, BQ_DATASET, f"{SUMMARY_TABLE}_latest")
-    # overwrite_partition(summary_df, dt, BQ_DATASET, f"{SUMMARY_TABLE}_history")
+    # Write metadata to BQ
+    dt = now_dt()
+    overwrite_table(metadata_df, BQ_DATASET, f"{METADATA_TABLE}_latest")
+    overwrite_partition(metadata_df, dt, BQ_DATASET, f"{METADATA_TABLE}_history")
 
-    # # Write breakdown to BQ
-    # overwrite_partitions(breakdown_df, BQ_DATASET, f"{BREAKDOWN_TABLE}_history")
+    # Write breakdown to BQ
+    overwrite_partitions(breakdown_df, BQ_DATASET, f"{BREAKDOWN_TABLE}_history")
 
-    return {"summary": summary_df, "breakdown": breakdown_df}
+    return {"metadata": metadata_df, "breakdown": breakdown_df}

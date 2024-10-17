@@ -6,6 +6,7 @@ import typer
 from op_coreutils.logger import structlog
 from op_datasets.processing.blockrange import BlockRange
 from op_datasets.processing.execute import execute
+from op_datasets.processing.ozone import split_block_range
 from op_datasets.schemas import resolve_core_dataset
 from typing_extensions import Annotated
 
@@ -43,16 +44,20 @@ def get_receipts(chain: str, tx_hashes: list[str]):
 @app.command()
 def goldsky_sql(
     chain: Annotated[str, typer.Argument(help="L2 chain name")],
-    block_spec: Annotated[str, typer.Argument(help="Range of blocks to be ingested.")],
+    block_spec: Annotated[str, typer.Argument(help="Range of blocks to be filtered in the query.")],
     dataset_name: str,
 ):
     """Helper command to show the SQL we use to query Goldsky Clickhouse for a given block range."""
+
+    # Split the block range into batches and use the first batch for the sql query.
     block_range = BlockRange.from_spec(block_spec)
+    block_batch = split_block_range(chain, block_range)[0]
+
     dataset = resolve_core_dataset(dataset_name)
 
     sql = dataset.goldsky_sql(
         source_table=f"{chain}_{dataset.goldsky_table}",
-        where=block_range.filter(number_column=dataset.block_number_col),
+        where=block_batch.filter(number_column=dataset.block_number_col),
     )
 
     print(sql)
