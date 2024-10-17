@@ -71,7 +71,7 @@ def daily_address_summary(
             ,CAST((gas_price - max_priority_fee_per_gas) * receipt_gas_used AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l2_contrib_gas_fee_base_fee
             ,CAST(max_priority_fee_per_gas * receipt_gas_used AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l2_contrib_gas_fee_priority_fee
 
-            -- Gas Price Breakdown
+            -- Gas Price Breakdown, conversion for average calculation below
             ,CAST((gas_price * receipt_gas_used) AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS total_gas_price_gwei
             ,CAST(((gas_price - max_priority_fee_per_gas) * receipt_gas_used) AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS base_fee_gwei
             ,CAST(max_priority_fee_per_gas * receipt_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS priority_fee_gwei
