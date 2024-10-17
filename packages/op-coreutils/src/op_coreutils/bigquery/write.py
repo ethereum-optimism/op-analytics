@@ -14,7 +14,7 @@ from op_coreutils.gcpauth import get_credentials
 log = structlog.get_logger()
 
 
-_CLIENT = None
+_CLIENT: bigquery.Client | MagicMock | None = None
 
 
 def init_client():
@@ -36,6 +36,11 @@ def init_client():
         else:
             _CLIENT = MagicMock()
 
+    if _CLIENT is None:
+        raise RuntimeError("Biguqery client was not properly initialized.")
+
+    return _CLIENT
+
 
 class OPLabsBigQueryError(Exception):
     pass
@@ -49,7 +54,7 @@ def ensure_valid_dt(dt: str):
 
 
 def overwrite_table(df: pl.DataFrame, dataset: str, table_name: str):
-    init_client()
+    client = init_client()
 
     destination = f"{dataset}.{table_name}"
 
@@ -62,7 +67,7 @@ def overwrite_table(df: pl.DataFrame, dataset: str, table_name: str):
         df.write_parquet(stream)
         filesize = stream.tell()
         stream.seek(0)
-        job = _CLIENT.load_table_from_file(
+        job = client.load_table_from_file(
             stream,
             destination=destination,
             job_config=bigquery.LoadJobConfig(
@@ -71,12 +76,12 @@ def overwrite_table(df: pl.DataFrame, dataset: str, table_name: str):
             ),
         )
         job.result()
-        if isinstance(_CLIENT, MagicMock):
-            operation = "DRYRUN OVERWRITE TABLE"
+        if isinstance(client, MagicMock):
+            operation = "DRYRUN "
         else:
-            operation = "OVERWRITE TABLE"
+            operation = ""
         log.info(
-            f"{operation}: Wrote {human_rows(len(df))} {human_size(filesize)} to BQ {destination}"
+            f"{operation}OVERWRITE TABLE: Wrote {human_rows(len(df))} {human_size(filesize)} to BQ {destination}"
         )
 
 
@@ -100,7 +105,7 @@ def overwrite_partitions(
     table_name: str,
     expiration_days: int = 360,
 ):
-    init_client()
+    client = init_client()
 
     destination = f"{dataset}.{table_name}"
 
@@ -108,15 +113,19 @@ def overwrite_partitions(
         df = df.with_columns(dt=pl.col("dt").str.strptime(pl.Datetime, "%Y-%m-%d"))
 
     partitions = df["dt"].unique().sort().to_list()
+    if isinstance(client, MagicMock):
+        operation = "DRYRUN "
+    else:
+        operation = ""
     log.info(
-        f"Writing {len(partitions)} partitions to BQ [{partitions[0]} ... {partitions[-1]}]"
+        f"{operation}Writing {len(partitions)} partitions to BQ [{partitions[0]} ... {partitions[-1]}]"
     )
 
     with io.BytesIO() as stream:
         df.write_parquet(stream)
         filesize = stream.tell()
         stream.seek(0)
-        job = _CLIENT.load_table_from_file(
+        job = client.load_table_from_file(
             stream,
             destination=destination,
             job_config=bigquery.LoadJobConfig(
@@ -131,11 +140,11 @@ def overwrite_partitions(
         )
         job.result()
 
-        if isinstance(_CLIENT, MagicMock):
-            operation = "DRYRUN OVERWRITE PARTITION"
+        if isinstance(client, MagicMock):
+            operation = "DRYRUN "
         else:
-            operation = "OVERWRITE PARTITION"
+            operation = ""
 
         log.info(
-            f"{operation}: Wrote {human_rows(len(df))} {human_size(filesize)} to BQ {destination}"
+            f"{operation}OVERWRITE PARTITION: Wrote {human_rows(len(df))} {human_size(filesize)} to BQ {destination}"
         )

@@ -1,15 +1,16 @@
+from typing import Callable
+
 import polars as pl
-from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
+from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog, human_interval
 from op_coreutils.clickhouse.client import append_df
 
 
 from op_datasets.processing.blockrange import BlockRange
-from op_datasets.coretables.read import read_core_datasets
+from op_datasets.coretables.read import read_core_datasets, filter_to_date
 from op_datasets.processing.ozone import (
     BlockBatch,
     BatchOutputs,
     split_block_range,
-    split_dates,
     BatchInput,
 )
 from op_datasets.schemas import ONCHAIN_CORE_DATASETS, CoreDataset
@@ -42,6 +43,19 @@ def execute(chain: str, block_spec: str, source_spec: str, sinks_spec: list[str]
         processor(microbach, sinks_spec)
 
 
+def split_dates(
+    block_batch: BlockBatch,
+    data_reader: Callable[[BlockBatch], dict[str, pl.DataFrame]],
+):
+    input_dataframes: dict[str, pl.DataFrame] = data_reader(block_batch)
+
+    for dt in input_dataframes["blocks"]["dt"].unique().sort().to_list():
+        # We filter to a single date to make sure our processing never straddles date boundaries.
+        dataframes = filter_to_date(input_dataframes, dt)
+
+        yield dt, dataframes
+
+
 def reader(chain: str, block_spec: str, source_spec: str):
     """Split work in microbatches and yield BatchInput data.
 
@@ -66,19 +80,27 @@ def reader(chain: str, block_spec: str, source_spec: str):
     }
 
     def data_reader(_block_batch: BlockBatch):
-        return read_core_datasets(chain, source_spec, datasets, _block_batch)
+        return read_core_datasets(source_spec, datasets, _block_batch)
 
-    for block_batch in split_block_range(block_range):
+    for block_batch in split_block_range(chain, block_range):
         for dt, dataframes in split_dates(block_batch, data_reader):
-            yield BatchInput(chain, dt, block_batch, dataframes)
+            yield BatchInput(dt, block_batch, dataframes)
 
 
 def processor(microbatch: BatchInput, sinks_spec: list[str]):
-    log.info(
-        f"Processing blocks dt={microbatch.dt} blocks={microbatch.block_batch.min}-{microbatch.block_batch.max}"
+    num_blocks = microbatch.block_batch.max - microbatch.block_batch.min
+
+    num_seconds = (
+        microbatch.dataframes["blocks"]
+        .select(pl.col("timestamp").max() - pl.col("timestamp").min())
+        .item()
     )
 
-    out = BatchOutputs(microbatch.chain, microbatch.dt, microbatch.block_batch)
+    log.info(
+        f"Processing {num_blocks} {microbatch.chain!r} blocks on dt={microbatch.dt} spanning {human_interval(num_seconds)} starting at block={microbatch.block_batch.min}"
+    )
+
+    out = BatchOutputs(microbatch.dt, microbatch.block_batch)
 
     # Run the audit process.
     run_audits(microbatch.dataframes)

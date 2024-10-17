@@ -19,6 +19,8 @@ jobs:
       - name: Install the project
         run: uv sync --all-extras --dev
       - name: Run tasks
-        run: OPLABS_ENV=prod uv run opdata pulls l2beat
+        run: |
+          OPLABS_ENV=prod uv run opdata pulls l2beat
+          OPLABS_ENV=prod uv run opdata pulls dfl_stables
         env:
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
