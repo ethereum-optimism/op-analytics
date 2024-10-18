@@ -10,8 +10,9 @@ from op_datasets.schemas import shared
 from op_datasets.schemas.core import Column, JsonRPCMethod, CoreDataset
 
 TRANSACTIONS_V1_SCHEMA = CoreDataset(
-    name="transactions_v1",
-    goldsky_table="transactions",
+    name="transactions",
+    versioned_location="ingestion/transactions_v1",
+    goldsky_table_suffix="transactions",
     block_number_col="block_number",
     doc=dedent("""Indexed Transactions. See [eth_gettransactionreceipt](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionreceipt) for more info.
     
@@ -30,13 +31,22 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
     
     """),
     columns=[
-        shared.METADATA(field_id=1),
-        shared.CHAIN(field_id=2),
-        shared.NETWORK(field_id=3),
-        shared.CHAIN_ID(field_id=4),
+        shared.METADATA,
+        shared.CHAIN,
+        shared.NETWORK,
+        shared.CHAIN_ID,
         # Block
         Column(
-            field_id=5,
+            name="dt",
+            field_type=StringType(),
+            required=True,
+            json_rpc_method=None,
+            json_rpc_field_name=None,
+            raw_goldsky_pipeline_expr=None,
+            raw_goldsky_pipeline_type=None,
+            op_analytics_clickhouse_expr="formatDateTime(block_timestamp, '%Y-%m-%d') AS dt",
+        ),
+        Column(
             name="block_timestamp",
             field_type=TimestampType(),
             required=True,
@@ -47,7 +57,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="block_timestamp",
         ),
         Column(
-            field_id=6,
             name="block_number",
             field_type=LongType(),
             required=True,
@@ -58,7 +67,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(block_number, 'Int64') AS block_number",
         ),
         Column(
-            field_id=7,
             name="block_hash",
             field_type=StringType(),
             required=True,
@@ -70,7 +78,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
         ),
         # Transaction
         Column(
-            field_id=8,
             name="hash",
             field_type=StringType(),
             required=True,
@@ -81,7 +88,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(hash, 'String') AS hash",
         ),
         Column(
-            field_id=9,
             name="nonce",
             field_type=LongType(),
             required=True,
@@ -92,7 +98,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(nonce, 'Int64') AS nonce",
         ),
         Column(
-            field_id=10,
             name="transaction_index",
             field_type=LongType(),
             required=True,
@@ -103,7 +108,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(transaction_index, 'Int64') AS transaction_index",
         ),
         Column(
-            field_id=11,
             name="from_address",
             field_type=StringType(),
             required=True,
@@ -114,7 +118,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(from_address, 'String') AS from_address",
         ),
         Column(
-            field_id=12,
             name="to_address",
             field_type=StringType(),
             required=True,
@@ -125,7 +128,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(to_address, 'String') AS to_address",
         ),
         Column(
-            field_id=13,
             name="value_64",
             field_type=LongType(),
             required=True,
@@ -137,7 +139,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             doc="Lossy value downcasted to Int64 to be compatible with BigQuery data types.",
         ),
         Column(
-            field_id=14,
             name="value_lossless",
             field_type=StringType(),
             required=True,
@@ -148,7 +149,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(value, 'String') AS value_lossless",
         ),
         Column(
-            field_id=15,
             name="gas",
             field_type=LongType(),
             required=True,
@@ -159,7 +159,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(gas, 'Int64') AS gas",
         ),
         Column(
-            field_id=16,
             name="gas_price",
             field_type=LongType(),
             required=True,
@@ -170,7 +169,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(gas_price, 'Int64') AS gas_price",
         ),
         Column(
-            field_id=17,
             name="input",
             field_type=StringType(),
             required=True,
@@ -181,7 +179,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="input",
         ),
         Column(
-            field_id=18,
             name="transaction_type",
             field_type=IntegerType(),
             required=True,
@@ -192,7 +189,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(transaction_type, 'Int32') AS transaction_type",
         ),
         Column(
-            field_id=19,
             name="max_fee_per_gas",
             field_type=LongType(),
             required=True,
@@ -203,7 +199,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(max_fee_per_gas, 'Int64') AS max_fee_per_gas",
         ),
         Column(
-            field_id=20,
             name="max_priority_fee_per_gas",
             field_type=LongType(),
             required=True,
@@ -214,7 +209,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(max_priority_fee_per_gas, 'Int64') AS max_priority_fee_per_gas",
         ),
         Column(
-            field_id=21,
             name="blob_versioned_hashes",
             field_type=ListType(element_id=1, element_type=StringType(), element_required=True),
             required=True,
@@ -226,7 +220,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr=None,
         ),
         Column(
-            field_id=22,
             name="max_fee_per_blob_gas",
             field_type=LongType(),
             required=True,
@@ -238,7 +231,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
         ),
         # Receipt
         Column(
-            field_id=23,
             name="receipt_cumulative_gas_used",
             field_type=LongType(),
             required=True,
@@ -249,7 +241,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(receipt_cumulative_gas_used, 'Int64') AS receipt_cumulative_gas_used",
         ),
         Column(
-            field_id=24,
             name="receipt_gas_used",
             field_type=LongType(),
             required=True,
@@ -260,7 +251,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(receipt_gas_used, 'Int64') AS receipt_gas_used",
         ),
         Column(
-            field_id=25,
             name="receipt_contract_address",
             field_type=LongType(),
             required=True,
@@ -271,7 +261,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="receipt_contract_address",
         ),
         Column(
-            field_id=26,
             name="receipt_status",
             field_type=IntegerType(),
             required=True,
@@ -282,7 +271,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(receipt_status, 'Int32') AS receipt_status",
         ),
         Column(
-            field_id=27,
             name="receipt_effective_gas_price",
             field_type=LongType(),
             required=True,
@@ -293,7 +281,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(receipt_effective_gas_price, 'Int64') AS receipt_effective_gas_price",
         ),
         Column(
-            field_id=28,
             name="receipt_root_hash",
             field_type=LongType(),
             required=True,
@@ -304,7 +291,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr=None,
         ),
         Column(
-            field_id=29,
             name="receipt_l1_gas_price",
             field_type=LongType(),
             required=True,
@@ -315,7 +301,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(receipt_l1_gas_price, 'Nullable(Int64)') AS receipt_l1_gas_price",
         ),
         Column(
-            field_id=30,
             name="receipt_l1_gas_used",
             field_type=LongType(),
             required=True,
@@ -326,7 +311,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(receipt_l1_gas_used, 'Nullable(Int64)') AS receipt_l1_gas_used",
         ),
         Column(
-            field_id=31,
             name="receipt_l1_fee",
             field_type=LongType(),
             required=True,
@@ -337,7 +321,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(receipt_l1_fee, 'Nullable(Int64)') receipt_l1_fee",
         ),
         Column(
-            field_id=32,
             name="receipt_l1_fee_scalar",
             field_type=DoubleType(),
             required=True,
@@ -349,7 +332,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="receipt_l1_fee_scalar",
         ),
         Column(
-            field_id=33,
             name="receipt_l1_blob_base_fee",
             field_type=LongType(),
             required=True,
@@ -361,7 +343,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(receipt_l1_blob_base_fee, 'Nullable(Int64)') AS receipt_l1_blob_base_fee",
         ),
         Column(
-            field_id=34,
             name="receipt_l1_blob_base_fee_scalar",
             field_type=LongType(),
             required=True,
@@ -373,7 +354,6 @@ TRANSACTIONS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(receipt_l1_blob_base_fee_scalar, 'Nullable(Int64)') AS receipt_l1_blob_base_fee_scalar",
         ),
         Column(
-            field_id=35,
             name="receipt_l1_base_fee_scalar",
             field_type=LongType(),
             required=True,
