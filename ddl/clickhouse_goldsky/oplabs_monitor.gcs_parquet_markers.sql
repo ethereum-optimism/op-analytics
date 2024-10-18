@@ -9,10 +9,14 @@ CREATE TABLE IF NOT EXISTS etl_monitor.gcs_parquet_markers
 (
     updated_at DateTime DEFAULT now(),
     marker_path String,
-    -- 'dt' is the lowest value of 'dt' encountered across parquet files saved under this marker
+
+    -- 'dt' is the min(dt) across parquet files saved under this marker.
     dt Date,
+
+    -- 'total_rows' is sum(rows) across parquet files saved under this marker.
     total_rows UInt64,
-    -- The following 3 arrays always have the same number of elements.
+
+    -- Details for each parquet output saved under this marker.
     outputs Nested
     (
         full_path String,

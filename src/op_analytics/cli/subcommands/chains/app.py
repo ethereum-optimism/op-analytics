@@ -67,10 +67,8 @@ def goldsky_sql(
 def ingest_blocks(
     chains: Annotated[str, typer.Argument(help="Comma-separated list of chains to be processed.")],
     block_spec: Annotated[str, typer.Argument(help="Range of blocks to be ingested.")],
-    source_spec: Annotated[str | None, typer.Option(help="Data source specification.")] = None,
-    sinks_spec: Annotated[
-        list[str] | None, typer.Option(help="Data sink(s) specification.")
-    ] = None,
+    source_from: Annotated[str | None, typer.Option(help="Data source specification.")] = None,
+    sink_to: Annotated[list[str] | None, typer.Option(help="Data sink(s) specification.")] = None,
     dryrun: Annotated[
         bool, typer.Option(help="Dryrun shows a summary of the data that will be processed")
     ] = False,
@@ -79,8 +77,8 @@ def ingest_blocks(
 
     Runs our custom data processing functions on a range of blocks.
     """
-    source_spec = source_spec or "goldsky"
-    sinks_spec = sinks_spec or ["gcs"]
+    source_spec = source_from or "goldsky"
+    sinks_spec = sink_to or ["gcs"]
 
     ingest(
         chains=[_.strip() for _ in chains.split(",")],

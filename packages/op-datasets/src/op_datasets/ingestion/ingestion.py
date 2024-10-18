@@ -29,6 +29,29 @@ def ingest(
     if dryrun:
         return
 
+    sinks = construct_sinks(sinks_spec)
+
+    for task in tasks:
+        # Check and decide if we need to run this task.
+        checker(task, sinks)
+        if task.is_complete and not force:
+            continue
+        if force:
+            log.info(f"Forcing execution of {task.pretty}")
+
+        # Read the data (updates the task in-place with the input dataframes).
+        reader(task, source_spec)
+
+        # Run audits (updates the task in-pace with the output dataframes).
+        auditor(task)
+
+        # Write outputs and markers.
+        writer(task, sinks)
+
+
+def construct_sinks(
+    sinks_spec: list[str],
+) -> list[DataSink]:
     sinks = []
     for sink_spec in sinks_spec:
         if sink_spec == "local":
@@ -38,24 +61,7 @@ def ingest(
             sinks.append(DataSink.from_spec(sink_spec))
         else:
             raise NotImplementedError(f"sink_spec not supported: {sink_spec}")
-
-    for task in tasks:
-        checker(task, sinks)
-
-        if task.is_complete and not force:
-            continue
-
-        if force:
-            log.info(f"Forcing execution of {task.pretty}")
-
-        # Read the data (updates the task with the actual data)
-        reader(task, source_spec)
-
-        # Run audits.
-        auditor(task)
-
-        # Write outputs.
-        writer(task, sinks)
+    return sinks
 
 
 def construct_tasks(chains: list[str], block_spec: str):
