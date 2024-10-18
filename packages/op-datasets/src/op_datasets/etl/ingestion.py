@@ -88,10 +88,18 @@ def construct_tasks(chains: list[str], block_spec: str):
     return all_tasks
 
 
-def reader(task: IngestionTask, source_spec: str):
+def reader(task: IngestionTask, source_spec: str, dataset_names: list[str] | None = None):
     """Read core datasets from the specified source."""
     log.info(f"Reading input data from {source_spec!r} for {task.pretty}")
     datasource = CoreDatasetSource.from_spec(source_spec)
+
+    if dataset_names is not None:
+        datasets = {}
+        for name in dataset_names:
+            datasets[name] = ONCHAIN_CURRENT_VERSION[name]
+    else:
+        datasets = ONCHAIN_CURRENT_VERSION
+
     dataframes = datasource.read_from_source(
         datasets=ONCHAIN_CURRENT_VERSION,
         block_batch=task.block_batch,
