@@ -3,7 +3,7 @@ from op_coreutils.path import repo_path
 
 from op_analytics.cli.subcommands.misc.dbtgen.yamlwriter import AUTOGEN_WARNING_SQL, VIEW_CONFIG
 
-from op_datasets.schemas import resolve_core_dataset
+from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 log = structlog.get_logger()
 
@@ -15,14 +15,10 @@ def jinja(val: str):
 def generate():
     """Generate dbt view models corresponding to the OP Labs dataset schemas."""
 
-    datasets = ["blocks", "transactions", "logs"]  # "traces",
+    for name, dataset in ONCHAIN_CURRENT_VERSION.items():
+        sql = dataset.goldsky_sql(source_table=jinja(f'source("goldsky_pipelines", "{name}")'))
 
-    for dataset in datasets:
-        sql = resolve_core_dataset(dataset).goldsky_sql(
-            source_table=jinja(f'source("goldsky_pipelines", "{dataset}")')
-        )
-
-        path = repo_path(f"dbt/models/audited_{dataset}.sql")
+        path = repo_path(f"dbt/models/audited_{name}.sql")
 
         with open(path, "w") as fobj:
             fobj.write(AUTOGEN_WARNING_SQL + "\n\n")

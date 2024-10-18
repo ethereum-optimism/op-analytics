@@ -11,7 +11,7 @@ def test_process_breakdown_data():
     with open(TESTCASE.path("mockdata/stablecoin_tether.json"), "r") as fobj:
         data = json.load(fobj)
 
-    dataframe, metadata = defillama.process_breakdown_data(data)
+    dataframe, metadata = defillama.process_breakdown_stables(data)
 
     expected_metadata = {
         "id": "1",

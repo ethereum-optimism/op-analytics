@@ -6,10 +6,10 @@ from op_coreutils.logger import structlog
 
 log = structlog.get_logger()
 
-_STORE = None
+_STORE: dict | None = None
 
 
-def init():
+def init() -> None:
     """Load the secrets into the vault store."""
     global _STORE
 
@@ -29,10 +29,16 @@ def init():
 def env_get(key: str):
     init()
 
+    if _STORE is None:
+        raise ValueError("OP_ANALYTICS_VAULT was not propertly initialized.")
+
     return _STORE[key]
 
 
 def env_get_or_none(key: str):
     init()
+
+    if _STORE is None:
+        raise ValueError("OP_ANALYTICS_VAULT was not propertly initialized.")
 
     return _STORE.get(key)

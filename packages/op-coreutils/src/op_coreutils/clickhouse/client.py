@@ -1,57 +1,106 @@
 from threading import Lock
-from typing import Any
+from typing import Any, Literal
 
 import clickhouse_connect
+from clickhouse_connect.driver.client import Client
+import pyarrow as pa
 import polars as pl
 
 from op_coreutils.env import env_get
-from op_coreutils.logger import structlog
+from op_coreutils.logger import structlog, human_size, human_rows
 
 log = structlog.get_logger()
 
-_CLIENT = None
+
+ClickHouseInstance = Literal["GOLDSKY", "OPLABS"]
+
+_GOLDSKY_CLIENT: Client | None = None
+_OPLABS_CLIENT: Client | None = None
 
 _INIT_LOCK = Lock()
 
 
-def init_client():
+def connect(instance: ClickHouseInstance):
+    # Server-generated ids (as opoosed to client-generated) are required for running
+    # concurrent queries. See https://clickhouse.com/docs/en/integrations/python#managing-clickhouse-session-ids.
+    clickhouse_connect.common.set_setting("autogenerate_session_id", False)
+    client = clickhouse_connect.get_client(
+        host=env_get(f"CLICKHOUSE_{instance}_HOST"),
+        port=int(env_get(f"CLICKHOUSE_{instance}_PORT")),
+        username=env_get(f"CLICKHOUSE_{instance}_USER"),
+        password=env_get(f"CLICKHOUSE_{instance}_PASSWORD"),
+    )
+    log.info(f"Initialized {instance} Clickhouse client.")
+    return client
+
+
+def init_client(instance: ClickHouseInstance):
     """Idempotent client initialization.
 
     This function guarantess only one global instance exists.
     """
-    global _CLIENT
+    global _GOLDSKY_CLIENT
+    global _OPLABS_CLIENT
 
     with _INIT_LOCK:
-        if _CLIENT is None:
-            # Server-generated ids (as opoosed to client-generated) are required for running
-            # concurrent queries. See https://clickhouse.com/docs/en/integrations/python#managing-clickhouse-session-ids.
-            clickhouse_connect.common.set_setting("autogenerate_session_id", False)
-            _CLIENT = clickhouse_connect.get_client(
-                host=env_get("CLICKHOUSE_GOLDSKY_DBT_HOST"),
-                port=int(env_get("CLICKHOUSE_GOLDSKY_DBT_PORT")),
-                username=env_get("CLICKHOUSE_GOLDSKY_DBT_USER"),
-                password=env_get("CLICKHOUSE_GOLDSKY_DBT_PASSWORD"),
-            )
-            log.info("Initialized Clickhouse client.")
+        if instance == "GOLDSKY":
+            if _GOLDSKY_CLIENT is None:
+                _GOLDSKY_CLIENT = connect(instance)
+
+        if instance == "OPLABS":
+            if _OPLABS_CLIENT is None:
+                _OPLABS_CLIENT = connect(instance)
+
+    if instance == "GOLDSKY":
+        if _GOLDSKY_CLIENT is None:
+            raise RuntimeError(f"{instance} Clickhouse client was not properly initialized.")
+        return _GOLDSKY_CLIENT
+
+    if instance == "OPLABS":
+        if _OPLABS_CLIENT is None:
+            raise RuntimeError(f"{instance} Clickhouse client was not properly initialized.")
+        return _OPLABS_CLIENT
+
+    raise NotImplementedError()
+
+
+def run_goldsky_query(
+    query: str,
+    parameters: dict[str, Any] | None = None,
+    settings: dict[str, Any] | None = None,
+):
+    return run_query("GOLDSKY", query, parameters, settings)
+
+
+def run_oplabs_query(
+    query: str,
+    parameters: dict[str, Any] | None = None,
+    settings: dict[str, Any] | None = None,
+):
+    return run_query("OPLABS", query, parameters, settings)
 
 
 def run_query(
+    instance: ClickHouseInstance,
     query: str,
     parameters: dict[str, Any] | None = None,
     settings: dict[str, Any] | None = None,
 ):
     """Return arrow table with clickhouse results"""
-    init_client()
+    client = init_client(instance)
 
-    arrow_result = _CLIENT.query_arrow(
+    arrow_result = client.query_arrow(
         query=query, parameters=parameters, settings=settings, use_strings=True
     )
     return pl.from_arrow(arrow_result)
 
 
-def append_df(database: str, table: str, df: pl.DataFrame):
+def insert_dataframe(instance: ClickHouseInstance, database: str, table: str, df_arrow: pa.Table):
     """Write polars DF to clickhouse."""
-    init_client()
+    client = init_client(instance)
 
-    _CLIENT.insert_arrow(table=table, arrow_table=df.to_arrow(), database=database)
-    log.info(f"Inserted {len(df)} rows to clickhouse {database}.{table}")
+    result = client.insert_arrow(table=table, arrow_table=df_arrow, database=database)
+
+    log.info(
+        f"Inserted [{human_rows(result.written_rows)} {human_size(result.written_bytes())}] to {database}.{table}"
+    )
