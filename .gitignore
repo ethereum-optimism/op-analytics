@@ -46,6 +46,7 @@ rsync-files.txt
 zzzhttp/
 zzzjson/
 zzzsql/
+zzzpython/
 
 # Local ozone warehouse folder
 ozone/

@@ -10,12 +10,17 @@ Given a range of block numbers we want to have a deterministic way of locating w
 data for those blocks is stored in GCS.
 """
 
+from dataclasses import dataclass, field
 from datetime import date
 
 import polars as pl
+from op_coreutils.logger import structlog
 
-from dataclasses import dataclass, field
-from op_datasets.processing.blockrange import BlockRange
+from op_datasets.pipeline.blockrange import BlockRange
+from op_datasets.pipeline.sinks import SinkMarkerPath, SinkOutputRootPath
+from op_datasets.schemas import CoreDataset, ONCHAIN_CURRENT_VERSION
+
+log = structlog.get_logger()
 
 
 @dataclass
@@ -35,17 +40,23 @@ class BlockBatch:
     def filter(self, number_column: str = "number"):
         return f" {number_column} >= {self.min} and {number_column} < {self.max}"
 
+    def construct_filename(self):
+        return f"{self.min:012d}"
+
+    def construct_dataset_path(self):
+        return f"chain={self}"
+
+    def construct_date_path(self, dt: str):
+        return f"chain={self.chain}/dt={dt}"
+
+    def construct_parquet_path(self, dt: str):
+        return f"chain={self.chain}/dt={dt}/{self.construct_filename()}.parquet"
+
     def construct_parquet_filename(self):
-        return f"{self.min:012d}.parquet"
+        return f"{self.construct_filename()}.parquet"
 
-    def construct_dataset_path(self, dataset):
-        return f"{dataset}/chain={self}"
-
-    def construct_date_path(self, dataset: str, dt: str):
-        return f"{dataset}/chain={self.chain}/dt={dt}"
-
-    def construct_parquet_path(self, dataset: str, dt: str):
-        return f"{dataset}/chain={self.chain}/dt={dt}/{self.construct_parquet_filename()}"
+    def construct_marker_path(self):
+        return f"chain={self.chain}/{self.construct_filename()}.json"
 
 
 # The number of blocks that are processed in a single ozone micro-batch. The goal is that
@@ -154,7 +165,7 @@ def split_block_range(chain: str, block_range: BlockRange) -> list[BlockBatch]:
 
 def split_block_range_from_boundaries(
     chain: str,
-    boundaries: list[(int, int)],
+    boundaries: list[Delimiter],
     block_range: BlockRange,
 ) -> list[BlockBatch]:
     validate_microbatch_configuration(boundaries)
@@ -172,16 +183,84 @@ def split_block_range_from_boundaries(
 
 
 @dataclass
-class BatchInput:
-    """Represents the input data neeeded to process a batch."""
+class OutputDataFrame:
+    dataframe: pl.DataFrame
+    root_path: SinkOutputRootPath
+    marker_path: SinkMarkerPath
 
-    dt: str  # YYYY-MM-DD
+
+@dataclass
+class IngestionTask:
+    """Contains all the information and data required to ingest a batch.
+
+    This object is mutated during the ingestion process."""
+
+    # Parameters
     block_batch: BlockBatch
-    dataframes: dict[str, pl.DataFrame]
+
+    # Inputs
+    input_datasets: dict[str, CoreDataset]
+    input_dataframes: dict[str, pl.DataFrame]
+
+    # Expected Markers
+    expected_markers: list[SinkMarkerPath]
+    is_complete: bool
+
+    # Outputs
+    output_dataframes: list[OutputDataFrame]
 
     @property
     def chain(self):
         return self.block_batch.chain
+
+    @property
+    def pretty(self):
+        return f"{self.chain}#{self.block_batch.min}"
+
+    @classmethod
+    def new(cls, block_batch: BlockBatch):
+        new_obj = cls(
+            block_batch=block_batch,
+            input_datasets={},
+            input_dataframes={},
+            expected_markers=[],
+            is_complete=False,
+            output_dataframes=[],
+        )
+
+        for dataset in ONCHAIN_CURRENT_VERSION.values():
+            new_obj.expected_markers.append(new_obj.get_marker_location(dataset))
+
+        return new_obj
+
+    def add_inputs(self, datasets: dict[str, CoreDataset], dataframes: dict[str, pl.DataFrame]):
+        for key, val in datasets.items():
+            self.add_input(key, val, dataframes[key])
+
+    def add_input(self, name: str, dataset: CoreDataset, dataframe: pl.DataFrame):
+        self.input_datasets[name] = dataset
+        self.input_dataframes[name] = dataframe
+
+    def add_output(
+        self,
+        dataframe: pl.DataFrame,
+        location: SinkOutputRootPath,
+        marker: SinkMarkerPath,
+    ):
+        self.output_dataframes.append(
+            OutputDataFrame(
+                dataframe=dataframe,
+                root_path=location,
+                marker_path=marker,
+            )
+        )
+
+    def get_output_location(self, dataset: CoreDataset) -> SinkOutputRootPath:
+        return SinkOutputRootPath(f"{dataset.versioned_location}")
+
+    def get_marker_location(self, dataset: CoreDataset) -> SinkMarkerPath:
+        marker_path = self.block_batch.construct_marker_path()
+        return SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
 
 
 @dataclass
@@ -205,8 +284,8 @@ class BatchOutputs:
 
     outputs: list[BatchOutputLocation] = field(default_factory=list)
 
-    def construct_path(self, dataset: str):
-        return self.block_batch.construct_parquet_path(dataset=dataset, dt=self.dt)
+    def construct_path(self):
+        return self.block_batch.construct_parquet_path(dt=self.dt)
 
     def save_output(self, namespace: str, name: str, path: str):
         self.outputs.append(BatchOutputLocation(namespace, name, path))

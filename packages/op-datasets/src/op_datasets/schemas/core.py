@@ -1,6 +1,5 @@
 from collections import Counter
 from enum import Enum
-from typing import Callable
 
 from pydantic import BaseModel, model_validator
 from pyiceberg.types import (
@@ -52,7 +51,6 @@ def to_bigquery_type(iceberg_type: IcebergType):
 
 class Column(BaseModel):
     # Iceberg Properties
-    field_id: int
     name: str
     field_type: IcebergType
     required: bool
@@ -101,7 +99,8 @@ class Column(BaseModel):
 
 class CoreDataset(BaseModel):
     name: str
-    goldsky_table: str
+    versioned_location: str
+    goldsky_table_suffix: str
     block_number_col: str
     doc: str
     columns: list[Column]
@@ -118,17 +117,6 @@ class CoreDataset(BaseModel):
         _check_unique("op_analytics_clickhouse_expr")
 
         return self
-
-    def enrichment_functions(self) -> dict[str, Callable]:
-        from op_datasets.enrichment import REGISTRY
-
-        funcs = {}
-        for col in self.columns:
-            if col.op_analytics_enrichment_function is not None:
-                func = REGISTRY[col.op_analytics_enrichment_function]
-                funcs[col.name] = func
-
-        return funcs
 
     def goldsky_sql(
         self,

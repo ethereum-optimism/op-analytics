@@ -1,11 +1,11 @@
-from op_datasets.coretables.read import DataSource, GoldskySource, LocalFileSource
+from op_datasets.coretables.sources import CoreDatasetSource, GoldskySource, LocalFileSource
 
 
 def test_blockrange():
-    br = DataSource.from_spec("goldsky")
+    br = CoreDatasetSource.from_spec("goldsky")
     assert br == GoldskySource()
 
 
 def test_blockrange_plus():
-    br = DataSource.from_spec("file:///path/to/dir")
+    br = CoreDatasetSource.from_spec("file:///path/to/dir")
     assert br == LocalFileSource(basepath="/path/to/dir")

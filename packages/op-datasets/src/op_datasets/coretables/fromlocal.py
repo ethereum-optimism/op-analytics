@@ -3,7 +3,7 @@ from datetime import date, timedelta
 
 from op_coreutils.logger import structlog
 
-from op_datasets.processing.ozone import BlockBatch
+from op_datasets.pipeline.ozone import BlockBatch
 from op_datasets.schemas import CoreDataset
 
 import polars as pl
@@ -20,7 +20,10 @@ def read_core_tables(
 
     blocks_dataset = datasets["blocks"]
 
-    blocks_path = os.path.join(base_path, block_batch.construct_dataset_path(blocks_dataset.name))
+    def prepend_location(dataset: CoreDataset, suffix):
+        return os.path.join(base_path, dataset.versioned_location, suffix)
+
+    blocks_path = prepend_location(blocks_dataset, block_batch.construct_dataset_path())
     dates = [_.removeprefix("dt=") for _ in os.listdir(blocks_path)]
 
     log.debug(f"Locating parquet files for blocks {block_batch.min} to {block_batch.max}")
@@ -28,9 +31,7 @@ def read_core_tables(
     search_filename = block_batch.construct_parquet_filename()
 
     def lookup(dt):
-        date_path = os.path.join(
-            base_path, block_batch.construct_date_path(blocks_dataset.name, dt)
-        )
+        date_path = prepend_location(dataset, block_batch.construct_date_path(dt))
 
         if not (os.path.exists(date_path) and os.path.isdir(date_path)):
             return None
@@ -65,9 +66,8 @@ def read_core_tables(
     for key, dataset in datasets.items():
         dataset_dfs = []
         for dt in sorted(matching_dates):
-            parquet_path = os.path.join(
-                base_path, block_batch.construct_parquet_path(dataset.name, dt)
-            )
+            parquet_path = prepend_location(dataset, block_batch.construct_parquet_path(dt))
+
             dataset_dfs.append(
                 pl.read_parquet(parquet_path).with_columns(
                     chain=pl.lit(block_batch.chain), dt=pl.lit(dt)

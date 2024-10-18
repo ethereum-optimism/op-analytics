@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "op-coreutils",
+    "overrides>=7.7.0",
     "pydantic>=2.9.2",
     "pyiceberg[sql-sqlite]>=0.7.1",
     "urllib3>=2.2.3",
