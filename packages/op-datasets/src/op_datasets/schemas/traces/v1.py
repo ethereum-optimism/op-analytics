@@ -10,18 +10,28 @@ from op_datasets.schemas import shared
 from op_datasets.schemas.core import Column, CoreDataset
 
 TRACES_V1_SCHEMA = CoreDataset(
-    name="traces_v1",
-    goldsky_table="traces",
+    name="traces",
+    versioned_location="ingestion/traces",
+    goldsky_table_suffix="traces",
     block_number_col="block_number",
     doc=dedent("""Indexed Traces."""),
     columns=[
-        shared.METADATA(field_id=1),
-        shared.CHAIN(field_id=2),
-        shared.NETWORK(field_id=3),
-        shared.CHAIN_ID(field_id=4),
+        shared.METADATA,
+        shared.CHAIN,
+        shared.NETWORK,
+        shared.CHAIN_ID,
         # Block
         Column(
-            field_id=5,
+            name="dt",
+            field_type=StringType(),
+            required=True,
+            json_rpc_method=None,
+            json_rpc_field_name=None,
+            raw_goldsky_pipeline_expr=None,
+            raw_goldsky_pipeline_type=None,
+            op_analytics_clickhouse_expr="formatDateTime(block_timestamp, '%Y-%m-%d') AS dt",
+        ),
+        Column(
             name="block_timestamp",
             field_type=TimestampType(),
             required=True,
@@ -32,7 +42,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="block_timestamp",
         ),
         Column(
-            field_id=6,
             name="block_number",
             field_type=LongType(),
             required=True,
@@ -43,7 +52,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(block_number, 'Int64') AS block_number",
         ),
         Column(
-            field_id=7,
             name="block_hash",
             field_type=StringType(),
             required=True,
@@ -55,7 +63,6 @@ TRACES_V1_SCHEMA = CoreDataset(
         ),
         # Transaction
         Column(
-            field_id=8,
             name="transaction_hash",
             field_type=StringType(),
             required=True,
@@ -66,7 +73,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(transaction_hash, 'String') AS transaction_hash",
         ),
         Column(
-            field_id=9,
             name="transaction_index",
             field_type=LongType(),
             required=True,
@@ -77,7 +83,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(transaction_index, 'Int64') AS transaction_index",
         ),
         Column(
-            field_id=10,
             name="from_address",
             field_type=StringType(),
             required=True,
@@ -88,7 +93,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(from_address, 'String') AS from_address",
         ),
         Column(
-            field_id=11,
             name="to_address",
             field_type=StringType(),
             required=True,
@@ -99,7 +103,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(to_address, 'String') AS to_address",
         ),
         Column(
-            field_id=12,
             name="value_64",
             field_type=LongType(),
             required=True,
@@ -111,7 +114,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             doc="Lossy value downcasted to Int64 to be compatible with BigQuery data types.",
         ),
         Column(
-            field_id=13,
             name="value_lossless",
             field_type=StringType(),
             required=True,
@@ -122,7 +124,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(value, 'String') AS value_lossless",
         ),
         Column(
-            field_id=14,
             name="input",
             field_type=StringType(),
             required=True,
@@ -133,7 +134,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="input",
         ),
         Column(
-            field_id=15,
             name="output",
             field_type=StringType(),
             required=True,
@@ -145,7 +145,6 @@ TRACES_V1_SCHEMA = CoreDataset(
         ),
         # Trace
         Column(
-            field_id=16,
             name="trace_type",
             field_type=StringType(),
             required=True,
@@ -156,7 +155,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(trace_type, 'String') AS trace_type",
         ),
         Column(
-            field_id=17,
             name="call_type",
             field_type=StringType(),
             required=True,
@@ -167,7 +165,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(call_type, 'String') AS call_type",
         ),
         Column(
-            field_id=18,
             name="reward_type",
             field_type=StringType(),
             required=True,
@@ -178,7 +175,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(reward_type, 'String') AS reward_type",
         ),
         Column(
-            field_id=19,
             name="gas",
             field_type=LongType(),
             required=True,
@@ -189,7 +185,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(gas, 'Int64') AS gas",
         ),
         Column(
-            field_id=20,
             name="gas_used",
             field_type=LongType(),
             required=True,
@@ -200,7 +195,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(gas_used, 'Int64') AS gas_used",
         ),
         Column(
-            field_id=21,
             name="subtraces",
             field_type=LongType(),
             required=True,
@@ -211,7 +205,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(subtraces, 'Int64') AS subtraces",
         ),
         Column(
-            field_id=22,
             name="trace_address",
             field_type=StringType(),
             required=True,
@@ -222,7 +215,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(trace_address, 'String') AS trace_address",
         ),
         Column(
-            field_id=23,
             name="error",
             field_type=StringType(),
             required=True,
@@ -233,7 +225,6 @@ TRACES_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(error, 'String') AS error",
         ),
         Column(
-            field_id=24,
             name="status",
             field_type=LongType(),
             required=True,

@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from op_datasets.schemas.core import CoreDataset
-from op_datasets.schemas import resolve_core_dataset
+from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 from op_coreutils.path import repo_path
 from op_coreutils.gsheets import update_gsheet
 
@@ -32,11 +32,11 @@ def generate():
 
         multiline = defaultdict(lambda: 30)
 
-        for name in ["Blocks", "Transactions", "Logs", "Traces"]:
-            dataset = resolve_core_dataset(name.lower())
-            fobj.write(f"\n\n## {name}\n")
+        for name, dataset in ONCHAIN_CURRENT_VERSION.items():
+            capitalized = name.capitalize()
+            fobj.write(f"\n\n## {capitalized}\n")
             df = column_details_df(dataset)
-            update_gsheet("core_schemas", name, df)
+            update_gsheet("core_schemas", capitalized, df)
             fobj.write(
                 markdown_table(df.to_dict(orient="records"))
                 .set_params(

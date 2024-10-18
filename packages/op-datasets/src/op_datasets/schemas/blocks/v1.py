@@ -15,8 +15,9 @@ from op_datasets.schemas import shared
 from op_datasets.schemas.core import Column, JsonRPCMethod, CoreDataset
 
 BLOCKS_V1_SCHEMA = CoreDataset(
-    name="blocks_v1",
-    goldsky_table="blocks",
+    name="blocks",
+    versioned_location="ingestion/blocks_v1",
+    goldsky_table_suffix="blocks",
     block_number_col="number",
     doc=dedent("""Indexed Blocks. See [eth_getblockbyhash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblockbyhash) for more info.
     
@@ -35,13 +36,12 @@ BLOCKS_V1_SCHEMA = CoreDataset(
     
     """),
     columns=[
-        shared.METADATA(field_id=1),
-        shared.CHAIN(field_id=2),
-        shared.NETWORK(field_id=3),
-        shared.CHAIN_ID(field_id=4),
+        shared.METADATA,
+        shared.CHAIN,
+        shared.NETWORK,
+        shared.CHAIN_ID,
         # Block columns
         Column(
-            field_id=5,
             name="dt",
             field_type=StringType(),
             required=True,
@@ -52,7 +52,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="formatDateTime(timestamp, '%Y-%m-%d') AS dt",
         ),
         Column(
-            field_id=6,
             name="timestamp",
             field_type=TimestampType(),
             required=True,
@@ -63,7 +62,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="timestamp",
         ),
         Column(
-            field_id=7,
             name="number",
             field_type=LongType(),
             required=True,
@@ -74,7 +72,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="accurateCast(number, 'Int64') AS number",
         ),
         Column(
-            field_id=8,
             name="hash",
             field_type=StringType(),
             required=True,
@@ -85,7 +82,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="cast(hash, 'String') AS hash",
         ),
         Column(
-            field_id=9,
             name="parent_hash",
             field_type=StringType(),
             required=True,
@@ -96,7 +92,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="parent_hash",
         ),
         Column(
-            field_id=10,
             name="nonce",
             field_type=StringType(),
             required=True,
@@ -108,7 +103,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="nonce",
         ),
         Column(
-            field_id=11,
             name="sha3_uncles",
             field_type=StringType(),
             required=True,
@@ -119,7 +113,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="sha3_uncles",
         ),
         Column(
-            field_id=12,
             name="logs_bloom",
             field_type=StringType(),
             required=True,
@@ -131,7 +124,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="logs_bloom",
         ),
         Column(
-            field_id=13,
             name="transactions_root",
             field_type=StringType(),
             required=True,
@@ -142,7 +134,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="transactions_root",
         ),
         Column(
-            field_id=14,
             name="state_root",
             field_type=StringType(),
             required=True,
@@ -153,7 +144,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="state_root",
         ),
         Column(
-            field_id=15,
             name="receipts_root",
             field_type=StringType(),
             required=True,
@@ -164,7 +154,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="receipts_root",
         ),
         Column(
-            field_id=16,
             name="withdrawals_root",
             field_type=StringType(),
             required=True,
@@ -175,7 +164,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="withdrawals_root",
         ),
         Column(
-            field_id=17,
             name="miner",
             field_type=StringType(),
             required=True,
@@ -186,7 +174,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="miner",
         ),
         Column(
-            field_id=18,
             name="difficulty",
             field_type=DoubleType(),
             required=True,
@@ -197,7 +184,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="difficulty",
         ),
         Column(
-            field_id=19,
             name="total_difficulty",
             field_type=DoubleType(),
             required=True,
@@ -208,7 +194,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="total_difficulty",
         ),
         Column(
-            field_id=20,
             name="size",
             field_type=LongType(),
             required=True,
@@ -219,7 +204,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="size",
         ),
         Column(
-            field_id=21,
             name="base_fee_per_gas",
             field_type=LongType(),
             required=True,
@@ -230,7 +214,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="base_fee_per_gas",
         ),
         Column(
-            field_id=22,
             name="gas_used",
             field_type=LongType(),
             required=True,
@@ -241,7 +224,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="gas_used",
         ),
         Column(
-            field_id=23,
             name="gas_limit",
             field_type=LongType(),
             required=True,
@@ -252,7 +234,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="gas_limit",
         ),
         Column(
-            field_id=24,
             name="extra_data",
             field_type=StringType(),
             required=True,
@@ -263,7 +244,6 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             op_analytics_clickhouse_expr="extra_data",
         ),
         Column(
-            field_id=25,
             name="transaction_count",
             field_type=LongType(),
             required=True,

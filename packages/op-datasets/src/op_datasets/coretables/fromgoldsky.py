@@ -6,7 +6,7 @@ from op_coreutils.logger import structlog
 from op_coreutils.threads import run_concurrently
 
 from op_datasets.schemas import CoreDataset
-from op_datasets.processing.ozone import BlockBatch
+from op_datasets.pipeline.ozone import BlockBatch
 
 
 log = structlog.get_logger()
@@ -20,7 +20,7 @@ def read_core_tables(
 
     queries = {
         key: dataset.goldsky_sql(
-            source_table=f"{block_batch.chain}_{dataset.goldsky_table}",
+            source_table=f"{block_batch.chain}_{dataset.goldsky_table_suffix}",
             where=block_batch.filter(number_column=dataset.block_number_col),
         )
         for key, dataset in datasets.items()

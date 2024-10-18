@@ -3,10 +3,17 @@ from op_coreutils.logger import structlog
 
 log = structlog.get_logger()
 
+REGISTERED_AUDITS = {}
+
+
+def register(func):
+    REGISTERED_AUDITS[func.__name__] = func
+
 
 VALID_HASH = r"^0x[\da-f]{64}$"
 
 
+@register
 def valid_hashes(dataframes: dict[str, pl.DataFrame]):
     # 1. Check that all hashes are valid.
     block_hashes = dataframes["blocks"].select(
@@ -21,6 +28,7 @@ def valid_hashes(dataframes: dict[str, pl.DataFrame]):
     return pl.concat([block_hashes, tx_hashes])
 
 
+@register
 def txs_join_to_blocks(dataframes: dict[str, pl.DataFrame]):
     # Check that each transaction can join back to a block by block number.
     blks = dataframes["blocks"].select("number")
@@ -34,6 +42,7 @@ def txs_join_to_blocks(dataframes: dict[str, pl.DataFrame]):
     return joined_txs
 
 
+@register
 def monotonically_increasing(dataframes: dict[str, pl.DataFrame]):
     diffs = (
         dataframes["blocks"]
@@ -63,6 +72,7 @@ def monotonically_increasing(dataframes: dict[str, pl.DataFrame]):
     return result
 
 
+@register
 def distinct_block_numbers(dataframes: dict[str, pl.DataFrame]):
     ctx = pl.SQLContext(frames=dataframes)
     result = ctx.execute(
@@ -77,10 +87,39 @@ def distinct_block_numbers(dataframes: dict[str, pl.DataFrame]):
     return result
 
 
+@register
 def dataset_consistent_block_timestamps(dataframes: dict[str, pl.DataFrame]):
-    # TODO: Write an audit to make sure the block_timestamp is correct in all of the
-    # non-block datasets.
-    pass
+    """Make sure the block_timestamp is correct in the non-block datasets."""
+
+    blocks_df = dataframes["blocks"].select("number", "timestamp", "dt")
+
+    audits = []
+    for name, dataframe in dataframes.items():
+        if name == "blocks":
+            continue
+
+        joined = dataframe.select(
+            "block_number", "block_timestamp", pl.col("dt").alias("block_dt")
+        ).join(
+            blocks_df,
+            left_on="block_number",
+            right_on="number",
+            how="left",
+            validate="m:1",
+        )
+        timestamp_check = joined.select(
+            pl.lit(f"{name} block timestamp agrees with blocks dataframe").alias("audit_name"),
+            (pl.col("block_timestamp") != pl.col("timestamp")).sum().alias("failure_count"),
+        )
+        audits.append(timestamp_check)
+
+        dt_check = joined.select(
+            pl.lit(f"{name} block dt agrees with blocks dataframe").alias("audit_name"),
+            (pl.col("block_dt") != pl.col("dt")).sum().alias("failure_count"),
+        )
+        audits.append(dt_check)
+
+    return pl.concat(audits)
 
 
 def dataset_valid_logs():

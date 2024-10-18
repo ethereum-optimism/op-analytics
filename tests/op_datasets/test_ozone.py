@@ -1,8 +1,7 @@
 import pytest
 
-from op_datasets.processing.blockrange import BlockRange
-from op_datasets.processing.ozone import (
-    BatchOutputs,
+from op_datasets.pipeline.blockrange import BlockRange
+from op_datasets.pipeline.ozone import (
     BlockBatch,
     Delimiter,
     find_batch_delimiter,
@@ -12,27 +11,13 @@ from op_datasets.processing.ozone import (
 )
 
 
-def test_path_01():
-    br = BlockRange.from_spec("245156:+15000")
-    task = split_block_range(chain="op", block_range=br)[0]
-
-    actual = BatchOutputs(dt="2024-10-03", block_batch=task).construct_path("blocks")
-    assert actual == "blocks/chain=op/dt=2024-10-03/000000244000.parquet"
-
-
 def test_batches_01():
     br = BlockRange.from_spec("245156:+15000")
     tasks = split_block_range(chain="op", block_range=br)
     assert tasks == [
-        BlockBatch(chain="op", min=244000, max=246000),
-        BlockBatch(chain="op", min=246000, max=248000),
-        BlockBatch(chain="op", min=248000, max=250000),
-        BlockBatch(chain="op", min=250000, max=252000),
-        BlockBatch(chain="op", min=252000, max=254000),
-        BlockBatch(chain="op", min=254000, max=256000),
-        BlockBatch(chain="op", min=256000, max=258000),
-        BlockBatch(chain="op", min=258000, max=260000),
-        BlockBatch(chain="op", min=260000, max=262000),
+        BlockBatch(chain="op", min=240000, max=250000),
+        BlockBatch(chain="op", min=250000, max=260000),
+        BlockBatch(chain="op", min=260000, max=270000),
     ]
 
 
