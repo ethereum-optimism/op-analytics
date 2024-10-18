@@ -21,6 +21,12 @@ import os
 # import clickhouse_connect as cc
 
 
+# In[ ]:
+
+
+
+
+
 # In[2]:
 
 
@@ -402,7 +408,19 @@ revdev_enriched_df.sample(4)
 # In[ ]:
 
 
+# Filter Days
 
+# Get the maximum date
+max_deployer_date = deployer_enriched_df['dt'].max()
+max_revdev_date = revdev_enriched_df['dt'].max()
+
+# Calculate the cutoff date
+cutoff_deployer_date = max_deployer_date - pd.Timedelta(days=trailing_days)
+cutoff_revdev_date = max_revdev_date - pd.Timedelta(days=trailing_days)
+
+# Filter the DataFrame
+deployer_enriched_df = deployer_enriched_df[deployer_enriched_df['dt'] >= cutoff_deployer_date]
+revdev_enriched_df = revdev_enriched_df[revdev_enriched_df['dt'] >= cutoff_revdev_date]
 
 
 # In[ ]:
