@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import polars as pl
 
+
 CONDITIONS = {
     "gas_price": lambda x: x > 0,
 }
@@ -72,11 +73,11 @@ def daily_address_summary(
             ,CAST(max_priority_fee_per_gas * receipt_gas_used AS DECIMAL(38,18)) / constants.WEI_IN_ETH AS l2_contrib_gas_fee_priority_fee
 
             -- Gas Price Breakdown, conversion for average calculation below
-            ,CAST((gas_price * receipt_gas_used) AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS total_gas_price_gwei
-            ,CAST(((gas_price - max_priority_fee_per_gas) * receipt_gas_used) AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS base_fee_gwei
-            ,CAST(max_priority_fee_per_gas * receipt_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS priority_fee_gwei
-            ,CAST(receipt_l1_gas_price * receipt_l1_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS l1_gas_price_gwei
-            ,CAST(receipt_l1_blob_base_fee * receipt_l1_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS l1_blob_base_fee_gwei
+            ,CAST(CAST((gas_price * receipt_gas_used) AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS DECIMAL(38,9)) AS total_gas_price_gwei
+            ,CAST(CAST(((gas_price - max_priority_fee_per_gas) * receipt_gas_used) AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS DECIMAL(38,9)) AS base_fee_gwei
+            ,CAST(CAST(max_priority_fee_per_gas * receipt_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS DECIMAL(38,9)) AS priority_fee_gwei
+            ,CAST(CAST(receipt_l1_gas_price * receipt_l1_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS DECIMAL(38,9)) AS l1_gas_price_gwei
+            ,CAST(CAST(receipt_l1_blob_base_fee * receipt_l1_gas_used AS DECIMAL(38,9)) / constants.WEI_IN_GWEI AS DECIMAL(38,9)) AS l1_blob_base_fee_gwei
         FROM
             _filter_df
         CROSS JOIN constants
@@ -121,8 +122,8 @@ def daily_address_summary(
         ,SUM(l1_contrib_gas_fee) AS l1_contrib_gas_fees
         ,SUM(l1_blobgas_contrib_gas_fee) AS l1_blobgas_contrib_gas_fees
         ,SUM(l1_l1gas_contrib_gas_fee) AS l1_l1gas_contrib_gas_fees
-        ,SUM(l2_contrib_gas_fee_base_fee) AS l2_contrib_gas_fees_base_fee
-        ,SUM(l2_contrib_gas_fee_priority_fee) AS l2_contrib_gas_fees_priority_fee
+        ,SUM(l2_contrib_gas_fee_base_fee) AS l2_contrib_gas_fees_base_fees
+        ,SUM(l2_contrib_gas_fee_priority_fee) AS l2_contrib_gas_fees_priority_fees
 
         -- Average Gas Fee
         ,SUM(total_gas_price_gwei) / SUM(CAST(receipt_gas_used AS DECIMAL(38,9))) AS avg_l2_gas_price_gwei
@@ -184,8 +185,8 @@ def daily_address_summary(
         "l1_contrib_gas_fees": pl.Decimal,
         "l1_blobgas_contrib_gas_fees": pl.Decimal,
         "l1_l1gas_contrib_gas_fees": pl.Decimal,
-        "l2_contrib_gas_fees_base_fee": pl.Decimal,
-        "l2_contrib_gas_fees_priority_fee": pl.Decimal,
+        "l2_contrib_gas_fees_base_fees": pl.Decimal,
+        "l2_contrib_gas_fees_priority_fees": pl.Decimal,
         "avg_l2_gas_price_gwei": pl.Decimal,
         "avg_l2_base_fee_gwei": pl.Decimal,
         "avg_l2_priority_fee_gwei": pl.Decimal,
