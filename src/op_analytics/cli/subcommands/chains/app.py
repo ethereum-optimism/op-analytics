@@ -5,7 +5,7 @@ import op_datasets.rpcs
 import typer
 from op_coreutils.logger import structlog
 from op_datasets.pipeline.blockrange import BlockRange
-from op_datasets.ingestion.ingestion import ingest
+from op_datasets.etl.ingestion import ingest
 from op_datasets.pipeline.ozone import split_block_range
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 from typing_extensions import Annotated
