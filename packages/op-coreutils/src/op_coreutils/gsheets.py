@@ -1,28 +1,32 @@
 import json
 import os
+from unittest.mock import MagicMock
 
 import gspread
 import pandas as pd
 
+
 from op_coreutils.logger import structlog
 from op_coreutils.path import repo_path
-from op_coreutils.env import env_get
+from op_coreutils.gcpauth import get_credentials
 
 log = structlog.get_logger()
 
+_GSHEETS_CLIENT: gspread.client.Client | None = None
 _GSHEETS_LOCATIONS: dict | None = None
 
 _GSHEETS_JSON_FILE = ".gsheets.json"
 
 
-def load_locations():
-    """Load the Google Sheets locations map.
+def init_client():
+    """Init client and load the Google Sheets locations map.
 
     Google sheet URLs are loaded from a .gsheets.json file located at the root of the repo.
     This allows us to refer to Google Sheets using simpler names insted of having to pass around
     the full URL.
     """
     global _GSHEETS_LOCATIONS
+    global _GSHEETS_CLIENT
 
     # Only load locations once.
     if _GSHEETS_LOCATIONS is None:
@@ -40,12 +44,24 @@ def load_locations():
                 for row in json.load(fobj):
                     _GSHEETS_LOCATIONS[row["name"]] = row
 
+        if len(_GSHEETS_LOCATIONS) == 0:
+            _GSHEETS_CLIENT = MagicMock()
+        else:
+            scoped_creds = get_credentials().with_scopes(gspread.auth.DEFAULT_SCOPES)
+            _GSHEETS_CLIENT = gspread.client.Client(
+                auth=scoped_creds, http_client=gspread.http_client.HTTPClient
+            )
+
+    if _GSHEETS_CLIENT is None or _GSHEETS_LOCATIONS is None:
+        raise RuntimeError("GSheets client was not properly initialized.")
+
 
 def update_gsheet(location_name: str, worksheet_name: str, dataframe: pd.DataFrame):
     """Write a pandas dadtaframe to a Google Sheet."""
     global _GSHEETS_LOCATIONS
+    global _GSHEETS_CLIENT
 
-    load_locations()
+    init_client()
 
     if _GSHEETS_LOCATIONS is None:
         raise RuntimeError("GSHEETS locations was not properly initialized.")
@@ -58,8 +74,7 @@ def update_gsheet(location_name: str, worksheet_name: str, dataframe: pd.DataFra
 
     sheet = _GSHEETS_LOCATIONS[location_name]
 
-    gc = gspread.service_account(filename=env_get("GITHUB_ACTIONS_GCP_SERVICE_ACCOUNT"))
-    sh = gc.open_by_url(sheet["url"])
+    sh = _GSHEETS_CLIENT.open_by_url(sheet["url"])
     worksheet = sh.worksheet(worksheet_name)
     worksheet.update([dataframe.columns.values.tolist()] + dataframe.values.tolist())
     log.info(f"Wrote {dataframe.shape} cells to Google Sheets: {location_name}#{worksheet_name}")
