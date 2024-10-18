@@ -1,6 +1,6 @@
 import polars as pl
 
-from op_coreutils.storage.gcs_parquet import breakout_partitions, PartitionOutput, PartitionValue
+from op_coreutils.storage.gcs_parquet import breakout_partitions, PartitionOutput, PartitionCol
 
 
 def test_breakout_partitions():
@@ -35,32 +35,32 @@ def test_breakout_partitions():
     assert outputs == [
         PartitionOutput(
             partition=[
-                PartitionValue(name="dt", value="2024-01-01"),
-                PartitionValue(name="chain", value="base"),
+                PartitionCol(name="dt", value="2024-01-01"),
+                PartitionCol(name="chain", value="base"),
             ],
             path="warehouse/dt=2024-01-01/chain=base/myfile.parquet",
             row_count=2,
         ),
         PartitionOutput(
             partition=[
-                PartitionValue(name="dt", value="2024-01-01"),
-                PartitionValue(name="chain", value="op"),
+                PartitionCol(name="dt", value="2024-01-01"),
+                PartitionCol(name="chain", value="op"),
             ],
             path="warehouse/dt=2024-01-01/chain=op/myfile.parquet",
             row_count=2,
         ),
         PartitionOutput(
             partition=[
-                PartitionValue(name="dt", value="2024-01-02"),
-                PartitionValue(name="chain", value="base"),
+                PartitionCol(name="dt", value="2024-01-02"),
+                PartitionCol(name="chain", value="base"),
             ],
             path="warehouse/dt=2024-01-02/chain=base/myfile.parquet",
             row_count=2,
         ),
         PartitionOutput(
             partition=[
-                PartitionValue(name="dt", value="2024-01-03"),
-                PartitionValue(name="chain", value="op"),
+                PartitionCol(name="dt", value="2024-01-03"),
+                PartitionCol(name="chain", value="op"),
             ],
             path="warehouse/dt=2024-01-03/chain=op/myfile.parquet",
             row_count=1,

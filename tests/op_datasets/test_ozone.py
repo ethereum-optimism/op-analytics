@@ -8,13 +8,14 @@ from op_datasets.pipeline.ozone import (
     split_block_range,
     split_block_range_from_boundaries,
     InvalidMicrobatchConfig,
+    IngestionTask,
 )
 
 
 def test_batches_01():
     br = BlockRange.from_spec("245156:+15000")
-    tasks = split_block_range(chain="op", block_range=br)
-    assert tasks == [
+    batches = split_block_range(chain="op", block_range=br)
+    assert batches == [
         BlockBatch(chain="op", min=240000, max=250000),
         BlockBatch(chain="op", min=250000, max=260000),
         BlockBatch(chain="op", min=260000, max=270000),
@@ -30,8 +31,8 @@ def test_batches_02():
         Delimiter(2000, 500),
     ]
 
-    tasks = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
-    assert tasks == [
+    batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
+    assert batches == [
         BlockBatch(chain="op", min=0, max=100),
         BlockBatch(chain="op", min=100, max=200),
         BlockBatch(chain="op", min=200, max=300),
@@ -55,8 +56,8 @@ def test_batches_03():
         Delimiter(2000, 500),
     ]
 
-    tasks = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
-    assert tasks == [
+    batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
+    assert batches == [
         BlockBatch(chain="op", min=200, max=400),
         BlockBatch(chain="op", min=400, max=600),
         BlockBatch(chain="op", min=600, max=800),
@@ -77,8 +78,8 @@ def test_batches_04():
         Delimiter(2800, 200),
     ]
 
-    tasks = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
-    assert tasks == [
+    batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
+    assert batches == [
         BlockBatch(chain="op", min=0, max=800),
         BlockBatch(chain="op", min=800, max=1600),
         BlockBatch(chain="op", min=1600, max=2000),
@@ -143,3 +144,22 @@ def test_find_batch_start_02():
     assert actual(1700) == Delimiter(block_number=1600, batch_size=400)
     assert actual(2800) == Delimiter(block_number=2800, batch_size=200)
     assert actual(1600) == Delimiter(block_number=1600, batch_size=400)
+
+
+def test_expected_markers():
+    br = BlockRange.from_spec("210:+2600")
+    boundaries = boundaries = [
+        Delimiter(block_number=0, batch_size=800),
+        Delimiter(1600, 400),
+        Delimiter(2800, 200),
+    ]
+
+    batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
+
+    task = IngestionTask.new(batches[0])
+    assert task.expected_markers == [
+        "markers/ingestion/blocks_v1/chain=op/000000000000.json",
+        "markers/ingestion/transactions_v1/chain=op/000000000000.json",
+        "markers/ingestion/logs_v1/chain=op/000000000000.json",
+        "markers/ingestion/traces/chain=op/000000000000.json",
+    ]

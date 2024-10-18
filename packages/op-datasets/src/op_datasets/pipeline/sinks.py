@@ -1,16 +1,18 @@
 import json
 import os
 
-from dataclasses import dataclass
-from typing import Any, NewType
+from dataclasses import dataclass, asdict
+from typing import NewType
 
+import pyarrow as pa
 import polars as pl
 from overrides import EnforceOverrides, override
 
+from op_coreutils.clickhouse.client import insert_dataframe, run_oplabs_query
 from op_coreutils.logger import structlog
 from op_coreutils.storage.gcs_parquet import (
     gcs_upload_partitioned_parquet,
-    write_partitioned_parquet,
+    local_write_partitioned_parquet,
     PartitionOutput,
 )
 from fsspec.implementations.local import LocalFileSystem
@@ -63,7 +65,7 @@ class DataSink(EnforceOverrides):
 
     def write_marker(
         self,
-        content: Any,
+        content: list[PartitionOutput],
         marker_path: SinkMarkerPath,
     ):
         raise NotImplementedError()
@@ -92,22 +94,65 @@ class GCSSink(DataSink):
     @override
     def write_marker(
         self,
-        content: Any,
+        content: list[PartitionOutput],
         marker_path: SinkMarkerPath,
     ):
         """Markers for GCS output are writen to Clickhouse.
 
         Having markers in clickhouse allows us to quickly perform analytics
-        on marker data.
+        and query marker data over time.
         """
-        raise NotImplementedError()
-        # Write markers for the data written to the sink
-        # append_df("oplabs_monitor", "core_datasets", out.to_polars())
-        # self.completion_status_cache[location] = True
+        dts: list[str] = []
+        full_paths: list[str] = []
+        partition_cols: list[list[dict[str, str]]] = []
+        row_counts: list[int] = []
+        total_rows: int = 0
+        output: PartitionOutput
+        for output in content:
+            dts.append(output.dt_value())
+            full_paths.append(output.path)
+            partition_cols.append(output.partition_key_value_list())
+            row_counts.append(output.row_count)
+            total_rows += output.row_count
+        dt = min(dts)
+
+        row = {
+            "dt": dt,
+            "marker_path": marker_path,
+            "total_rows": total_rows,
+            "outputs.full_path": full_paths,
+            "outputs.partition_cols": partition_cols,
+            "outputs.row_count": row_counts,
+        }
+
+        schema = pa.schema(
+            [
+                pa.field("dt", pa.string()),
+                pa.field("marker_path", pa.string()),
+                pa.field("total_rows", pa.int64()),
+                pa.field("outputs.full_path", pa.large_list(pa.string())),
+                pa.field(
+                    "outputs.partition_cols", pa.large_list(pa.map_(pa.string(), pa.string()))
+                ),
+                pa.field("outputs.row_count", pa.large_list(pa.int64())),
+            ]
+        )
+
+        table = pa.Table.from_pylist(
+            [row],
+            schema=schema,
+        )
+
+        insert_dataframe("OPLABS", "etl_monitor", "gcs_parquet_markers", table)
 
     @override
     def is_complete(self, marker_path: SinkMarkerPath) -> bool:
-        raise NotImplementedError
+        result = run_oplabs_query(
+            "SELECT marker_path FROM etl_monitor.gcs_parquet_markers WHERE marker_path = {search_value:String}",
+            parameters={"search_value": marker_path},
+        )
+
+        return len(result) > 0
 
 
 @dataclass(kw_only=True)
@@ -125,9 +170,7 @@ class LocalFileSink(DataSink):
         basename: str,
         partition_cols: list[str],
     ) -> list[PartitionOutput]:
-        fs = LocalFileSystem(auto_mkdir=True)
-        return write_partitioned_parquet(
-            filesystem=fs,
+        return local_write_partitioned_parquet(
             root_path=self.full_path(root_path),
             basename=basename,
             df=dataframe,
@@ -137,12 +180,12 @@ class LocalFileSink(DataSink):
     @override
     def write_marker(
         self,
-        content: Any,
+        content: list[PartitionOutput],
         marker_path: SinkMarkerPath,
     ):
         fs = LocalFileSystem(auto_mkdir=True)
         with fs.open(self.full_path(marker_path), "w") as fobj:
-            fobj.write(json.dumps(content, indent=2))
+            fobj.write(json.dumps([asdict(_) for _ in content], indent=2))
 
     @override
     def is_complete(self, marker_path: SinkMarkerPath) -> bool:

@@ -1,7 +1,7 @@
 import time
 
 import polars as pl
-from op_coreutils.clickhouse.client import run_query
+from op_coreutils.clickhouse.client import run_goldsky_query
 from op_coreutils.logger import structlog
 from op_coreutils.threads import run_concurrently
 
@@ -29,7 +29,7 @@ def read_core_tables(
     def func(key):
         start = time.time()
         try:
-            result = run_query(queries[key])
+            result = run_goldsky_query(queries[key])
             log.info(f"Query success: {key} in {time.time() - start:.2f}s {len(result)} rows")
             return result
         except Exception:

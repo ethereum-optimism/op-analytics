@@ -81,6 +81,7 @@ def ingest_blocks(
     """
     source_spec = source_spec or "goldsky"
     sinks_spec = sinks_spec or ["gcs"]
+
     ingest(
         chains=[_.strip() for _ in chains.split(",")],
         block_spec=block_spec,

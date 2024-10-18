@@ -1,5 +1,3 @@
-from dataclasses import asdict
-
 import polars as pl
 from op_coreutils.logger import clear_contextvars, human_interval, structlog
 
@@ -10,7 +8,7 @@ from op_datasets.pipeline.ozone import (
     IngestionTask,
     split_block_range,
 )
-from op_datasets.pipeline.sinks import DataSink, all_outputs_complete
+from op_datasets.pipeline.sinks import DataSink, PartitionOutput, all_outputs_complete
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 log = structlog.get_logger()
@@ -31,7 +29,15 @@ def ingest(
     if dryrun:
         return
 
-    sinks = [DataSink.from_spec(_) for _ in sinks_spec]
+    sinks = []
+    for sink_spec in sinks_spec:
+        if sink_spec == "local":
+            # Use the canonical location in our repo
+            sinks.append(DataSink.from_spec("file://ozone/"))
+        elif sink_spec == "gcs":
+            sinks.append(DataSink.from_spec(sink_spec))
+        else:
+            raise NotImplementedError(f"sink_spec not supported: {sink_spec}")
 
     for task in tasks:
         checker(task, sinks)
@@ -124,7 +130,7 @@ def auditor(task: IngestionTask):
             if value > 0:
                 msg = f"audit failed: {name}"
                 log.error(msg)
-                raise Exception(f"Audit failure {msg}")
+                raise Exception(msg)
             else:
                 passing_audits += 1
 
@@ -142,7 +148,13 @@ def auditor(task: IngestionTask):
 def writer(task: IngestionTask, sinks: list[DataSink]):
     for sink in sinks:
         for output in task.output_dataframes:
-            written = sink.write_output(
+            if sink.is_complete(output.marker_path):
+                log.info(
+                    f"[{sink.sink_spec}] Skipping already complete output at {output.marker_path}"
+                )
+                continue
+
+            written: list[PartitionOutput] = sink.write_output(
                 dataframe=output.dataframe,
                 root_path=output.root_path,
                 basename=task.block_batch.construct_parquet_filename(),
@@ -150,7 +162,7 @@ def writer(task: IngestionTask, sinks: list[DataSink]):
             )
 
             sink.write_marker(
-                content=[asdict(_) for _ in written],
+                content=written,
                 marker_path=output.marker_path,
             )
 
