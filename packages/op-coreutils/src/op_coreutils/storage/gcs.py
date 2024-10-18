@@ -2,10 +2,9 @@ import io
 import os
 import warnings
 
-import gcsfs
 import polars as pl
 
-from op_coreutils.logger import structlog, human_size, human_rows
+from op_coreutils.logger import human_size, structlog
 
 log = structlog.get_logger()
 warnings.filterwarnings("ignore", message="Polars found a filename")
@@ -16,7 +15,6 @@ BUCKET_NAME = "oplabs-tools-data-sink"
 
 _CLIENT = None
 _BUCKET = None
-_GCSFS_CLIENT = None
 
 _PATH_PREFIX = "op_analytics"
 
@@ -56,28 +54,3 @@ def gcs_upload_csv(blob_path: str, df: pl.DataFrame):
     buf = io.BytesIO()
     df.write_csv(buf)
     gcs_upload(blob_path, buf.getvalue())
-
-
-def init_gcsfs_client():
-    """Idempotent client initialization.
-
-    This function guarantess only one global instance of the GCSFileSystem() exists.
-    """
-    global _GCSFS_CLIENT
-
-    if _GCSFS_CLIENT is None:
-        _GCSFS_CLIENT = gcsfs.GCSFileSystem(project=PROJECT_NAME)
-        log.info(f"Initialized gcsfs client for bucket=gs://{BUCKET_NAME}")
-
-
-def gcs_upload_parquet(blob_path: str, df: pl.DataFrame):
-    init_gcsfs_client()
-
-    if _GCSFS_CLIENT is None:
-        raise RuntimeError("GCSFS was not properly initialized.")
-
-    path = f"{BUCKET_NAME}/{blob_path}"
-    with _GCSFS_CLIENT.open(path, "wb") as fobj:
-        df.write_parquet(fobj)
-        size = fobj.tell()
-        log.info(f"Wrote parquet [{human_rows(len(df))} {human_size(size)}] at gs://{path}")
