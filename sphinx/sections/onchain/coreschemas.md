@@ -41,6 +41,7 @@ maps to our schemas.
 |             chain             |            --           |         --         |     --     |               --              |                STRING               |                              chain                             |
 |            network            |            --           |         --         |     --     |               --              |                STRING               |                             network                            |
 |            chain_id           |            --           |         --         |     --     |               --              |                INT64                |                            chain_id                            |
+|               dt              |            --           |         --         |     --     |               --              |                STRING               |           formatDateTime(block_timestamp, '%Y-%m-%d')          |
 |        block_timestamp        |   eth_getBlockByNumber  |      timestamp     |    long    |        block_timestamp        |              TIMESTAMP              |                         block_timestamp                        |
 |          block_number         |   eth_getBlockByNumber  |       number       |    long    |          block_number         |                INT64                |               accurateCast(block_number, 'Int64')              |
 |           block_hash          |   eth_getBlockByNumber  |     block_hash     |   string   |           block_hash          |                STRING               |                   cast(block_hash, 'String')                   |
@@ -80,6 +81,7 @@ maps to our schemas.
 |      chain      |         --         |        --       |     --     |        --       |                STRING               |                         chain                         |
 |     network     |         --         |        --       |     --     |        --       |                STRING               |                        network                        |
 |     chain_id    |         --         |        --       |     --     |        --       |                INT64                |                        chain_id                       |
+|        dt       |         --         |        --       |     --     |        --       |                STRING               |      formatDateTime(block_timestamp, '%Y-%m-%d')      |
 | block_timestamp |eth_getBlockByNumber|    timestamp    |    long    | block_timestamp |              TIMESTAMP              |                    block_timestamp                    |
 |   block_number  |     eth_getLogs    |      number     |    long    |   block_number  |                INT64                |          accurateCast(block_number, 'Int64')          |
 |    block_hash   |     eth_getLogs    |    block_hash   |   string   |    block_hash   |                STRING               |               cast(block_hash, 'String')              |
@@ -91,3 +93,32 @@ maps to our schemas.
 |       data      |     eth_getLogs    |       data      |   string   |       data      |                STRING               |                  cast(data, 'String')                 |
 |      topic0     |         --         |        --       |     --     |        --       |                STRING               |         splitByChar(',', topics)[1] as topic0         |
 |   indexed_args  |         --         |        --       |     --     |        --       |            ARRAY<STRING>            |arraySlice(splitByChar(',', topics), 2) as indexed_args|
+
+## Traces
+|       Name      |JSON-RPC method|JSON-RPC field|Goldsky Type|  Goldsky Field  |        OP Labs BigQuery Type        |             OP Labs Expression            |
+|-----------------|---------------|--------------|------------|-----------------|-------------------------------------|-------------------------------------------|
+|      _meta      |       --      |      --      |     --     |        --       |STRUCT<ingestion_timestamp TIMESTAMP>|                     --                    |
+|      chain      |       --      |      --      |     --     |        --       |                STRING               |                   chain                   |
+|     network     |       --      |      --      |     --     |        --       |                STRING               |                  network                  |
+|     chain_id    |       --      |      --      |     --     |        --       |                INT64                |                  chain_id                 |
+|        dt       |       --      |      --      |     --     |        --       |                STRING               |formatDateTime(block_timestamp, '%Y-%m-%d')|
+| block_timestamp |       --      |      --      |    long    | block_timestamp |              TIMESTAMP              |              block_timestamp              |
+|   block_number  |       --      |      --      |    long    |   block_number  |                INT64                |    accurateCast(block_number, 'Int64')    |
+|    block_hash   |       --      |      --      |   string   |    block_hash   |                STRING               |         cast(block_hash, 'String')        |
+| transaction_hash|       --      |      --      |   string   | transaction_hash|                STRING               |      cast(transaction_hash, 'String')     |
+|transaction_index|       --      |      --      |    long    |transaction_index|                INT64                |  accurateCast(transaction_index, 'Int64') |
+|   from_address  |       --      |      --      |   string   |   from_address  |                STRING               |        cast(from_address, 'String')       |
+|    to_address   |       --      |      --      |   string   |    to_address   |                STRING               |         cast(to_address, 'String')        |
+|     value_64    |       --      |      --      |   decimal  |      value      |                INT64                |     accurateCastOrNull(value, 'Int64')    |
+|  value_lossless |       --      |      --      |   decimal  |      value      |                STRING               |           cast(value, 'String')           |
+|      input      |       --      |      --      |   string   |      input      |                STRING               |                   input                   |
+|      output     |       --      |      --      |   string   |      output     |                STRING               |                   output                  |
+|    trace_type   |       --      |      --      |   string   |    trace_type   |                STRING               |         cast(trace_type, 'String')        |
+|    call_type    |       --      |      --      |   string   |    call_type    |                STRING               |         cast(call_type, 'String')         |
+|   reward_type   |       --      |      --      |   string   |   reward_type   |                STRING               |        cast(reward_type, 'String')        |
+|       gas       |       --      |      --      |    long    |       gas       |                INT64                |         accurateCast(gas, 'Int64')        |
+|     gas_used    |       --      |      --      |    long    |     gas_used    |                INT64                |      accurateCast(gas_used, 'Int64')      |
+|    subtraces    |       --      |      --      |    long    |    subtraces    |                INT64                |      accurateCast(subtraces, 'Int64')     |
+|  trace_address  |       --      |      --      |   string   |  trace_address  |                STRING               |       cast(trace_address, 'String')       |
+|      error      |       --      |      --      |   string   |      error      |                STRING               |           cast(error, 'String')           |
+|      status     |       --      |      --      |    long    |      status     |                INT64                |       accurateCast(status, 'Int64')       |

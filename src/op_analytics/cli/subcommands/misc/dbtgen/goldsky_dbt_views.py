@@ -15,10 +15,10 @@ def jinja(val: str):
 def generate():
     """Generate dbt view models corresponding to the OP Labs dataset schemas."""
 
-    for _, dataset in ONCHAIN_CURRENT_VERSION.items():
-        sql = dataset.goldsky_sql(source_table=jinja(f'source("goldsky_pipelines", "{dataset}")'))
+    for name, dataset in ONCHAIN_CURRENT_VERSION.items():
+        sql = dataset.goldsky_sql(source_table=jinja(f'source("goldsky_pipelines", "{name}")'))
 
-        path = repo_path(f"dbt/models/audited_{dataset}.sql")
+        path = repo_path(f"dbt/models/audited_{name}.sql")
 
         with open(path, "w") as fobj:
             fobj.write(AUTOGEN_WARNING_SQL + "\n\n")

@@ -6,6 +6,7 @@ SELECT
     chain,
     network,
     chain_id,
+    formatDateTime(block_timestamp, '%Y-%m-%d') AS dt,
     block_timestamp,
     accurateCast(block_number, 'Int64') AS block_number,
     cast(block_hash, 'String') AS block_hash,
