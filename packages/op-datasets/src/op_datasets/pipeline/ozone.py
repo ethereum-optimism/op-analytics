@@ -17,7 +17,7 @@ import polars as pl
 from op_coreutils.logger import structlog
 
 from op_datasets.pipeline.blockrange import BlockRange
-from op_datasets.pipeline.sinks import SinkMarkerPath, SinkOutputRootPath
+from op_coreutils.storage.paths import SinkOutputRootPath, SinkMarkerPath
 from op_datasets.schemas import CoreDataset, ONCHAIN_CURRENT_VERSION
 
 log = structlog.get_logger()
@@ -208,6 +208,7 @@ class IngestionTask:
 
     # Outputs
     output_dataframes: list[OutputDataFrame]
+    force: bool  # ignores completion markers when set to true
 
     @property
     def chain(self):
@@ -226,6 +227,7 @@ class IngestionTask:
             expected_markers=[],
             is_complete=False,
             output_dataframes=[],
+            force=False,
         )
 
         for dataset in ONCHAIN_CURRENT_VERSION.values():
@@ -241,19 +243,8 @@ class IngestionTask:
         self.input_datasets[name] = dataset
         self.input_dataframes[name] = dataframe
 
-    def add_output(
-        self,
-        dataframe: pl.DataFrame,
-        location: SinkOutputRootPath,
-        marker: SinkMarkerPath,
-    ):
-        self.output_dataframes.append(
-            OutputDataFrame(
-                dataframe=dataframe,
-                root_path=location,
-                marker_path=marker,
-            )
-        )
+    def add_output(self, output: OutputDataFrame):
+        self.output_dataframes.append(output)
 
     def get_output_location(self, dataset: CoreDataset) -> SinkOutputRootPath:
         return SinkOutputRootPath(f"{dataset.versioned_location}")

@@ -95,8 +95,8 @@ def run_query(
     return pl.from_arrow(arrow_result)
 
 
-def insert_dataframe(instance: ClickHouseInstance, database: str, table: str, df_arrow: pa.Table):
-    """Write polars DF to clickhouse."""
+def insert_arrow(instance: ClickHouseInstance, database: str, table: str, df_arrow: pa.Table):
+    """Write arrow table to clickhouse."""
     client = init_client(instance)
 
     result = client.insert_arrow(table=table, arrow_table=df_arrow, database=database)

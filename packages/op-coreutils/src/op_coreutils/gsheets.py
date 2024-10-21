@@ -55,26 +55,23 @@ def init_client():
     if _GSHEETS_CLIENT is None or _GSHEETS_LOCATIONS is None:
         raise RuntimeError("GSheets client was not properly initialized.")
 
+    return _GSHEETS_LOCATIONS, _GSHEETS_CLIENT
+
 
 def update_gsheet(location_name: str, worksheet_name: str, dataframe: pd.DataFrame):
     """Write a pandas dadtaframe to a Google Sheet."""
-    global _GSHEETS_LOCATIONS
-    global _GSHEETS_CLIENT
 
-    init_client()
+    locations, client = init_client()
 
-    if _GSHEETS_LOCATIONS is None:
-        raise RuntimeError("GSHEETS locations was not properly initialized.")
-
-    if location_name not in _GSHEETS_LOCATIONS:
+    if location_name not in locations:
         log.warn(
             f"Location {location_name} is not present in _GSHEETS_LOCATIONS. Will skip writing."
         )
         return
 
-    sheet = _GSHEETS_LOCATIONS[location_name]
+    sheet = locations[location_name]
 
-    sh = _GSHEETS_CLIENT.open_by_url(sheet["url"])
+    sh = client.open_by_url(sheet["url"])
     worksheet = sh.worksheet(worksheet_name)
     worksheet.update([dataframe.columns.values.tolist()] + dataframe.values.tolist())
     log.info(f"Wrote {dataframe.shape} cells to Google Sheets: {location_name}#{worksheet_name}")

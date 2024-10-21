@@ -8,6 +8,7 @@ from op_datasets.pipeline.blockrange import BlockRange
 from op_datasets.etl.ingestion import ingest
 from op_datasets.pipeline.ozone import split_block_range
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
+from rich import print
 from typing_extensions import Annotated
 
 log = structlog.get_logger()
@@ -64,18 +65,27 @@ def goldsky_sql(
 
 
 @app.command()
+def list_chains():
+    """Get a the current list of chains."""
+    print([])
+
+
+@app.command()
 def ingest_blocks(
     chains: Annotated[str, typer.Argument(help="Comma-separated list of chains to be processed.")],
     block_spec: Annotated[str, typer.Argument(help="Range of blocks to be ingested.")],
     source_from: Annotated[str | None, typer.Option(help="Data source specification.")] = None,
     sink_to: Annotated[list[str] | None, typer.Option(help="Data sink(s) specification.")] = None,
     dryrun: Annotated[
-        bool, typer.Option(help="Dryrun shows a summary of the data that will be processed")
+        bool, typer.Option(help="Dryrun shows a summary of the data that will be processed.")
+    ] = False,
+    force: Annotated[
+        bool, typer.Option(help="Run the full process ignore any existing completion markers.")
     ] = False,
 ):
-    """Ingest a range of blocks [WIP].
+    """Ingest a range of blocks.
 
-    Runs our custom data processing functions on a range of blocks.
+    Run audits + ingestion to GCS on a range of blocks.
     """
     source_spec = source_from or "goldsky"
     sinks_spec = sink_to or ["gcs"]
@@ -86,4 +96,5 @@ def ingest_blocks(
         source_spec=source_spec,
         sinks_spec=sinks_spec,
         dryrun=dryrun,
+        force=force,
     )

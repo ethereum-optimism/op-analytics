@@ -1,14 +1,16 @@
 import polars as pl
 from op_coreutils.logger import clear_contextvars, human_interval, structlog
+from op_coreutils.storage.paths import Marker, PartitionedOutput, breakout_partitions
 
 from op_datasets.coretables.sources import CoreDatasetSource
 from op_datasets.pipeline.blockrange import BlockRange
 from op_datasets.pipeline.ozone import (
     BlockBatch,
     IngestionTask,
+    OutputDataFrame,
     split_block_range,
 )
-from op_datasets.pipeline.sinks import DataSink, PartitionOutput, all_outputs_complete
+from op_datasets.pipeline.sinks import DataSink, IngestionProcessMarker, all_outputs_complete
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 log = structlog.get_logger()
@@ -38,6 +40,7 @@ def ingest(
             continue
         if force:
             log.info(f"Forcing execution of {task.pretty}")
+            task.force = True
 
         # Read the data (updates the task in-place with the input dataframes).
         reader(task, source_spec)
@@ -56,7 +59,7 @@ def construct_sinks(
     for sink_spec in sinks_spec:
         if sink_spec == "local":
             # Use the canonical location in our repo
-            sinks.append(DataSink.from_spec("file://ozone/"))
+            sinks.append(DataSink.from_spec("file://ozone/warehouse/"))
         elif sink_spec == "gcs":
             sinks.append(DataSink.from_spec(sink_spec))
         else:
@@ -153,31 +156,45 @@ def auditor(task: IngestionTask):
     # Set up the output dataframes now that the audits have passed
     for name, dataset in task.input_datasets.items():
         task.add_output(
-            dataframe=task.input_dataframes[name],
-            location=task.get_output_location(dataset),
-            marker=task.get_marker_location(dataset),
+            OutputDataFrame(
+                dataframe=task.input_dataframes[name],
+                root_path=task.get_output_location(dataset),
+                marker_path=task.get_marker_location(dataset),
+            )
         )
 
 
 def writer(task: IngestionTask, sinks: list[DataSink]):
     for sink in sinks:
         for output in task.output_dataframes:
-            if sink.is_complete(output.marker_path):
+            if sink.is_complete(output.marker_path) and not task.force:
                 log.info(
                     f"[{sink.sink_spec}] Skipping already complete output at {output.marker_path}"
                 )
                 continue
 
-            written: list[PartitionOutput] = sink.write_output(
-                dataframe=output.dataframe,
+            written_parts: list[PartitionedOutput] = []
+
+            parts = breakout_partitions(
+                df=output.dataframe,
+                partition_cols=["chain", "dt"],
                 root_path=output.root_path,
                 basename=task.block_batch.construct_parquet_filename(),
-                partition_cols=["chain", "dt"],
             )
 
+            for part_df, part in parts:
+                sink.write_single_part(dataframe=part_df, part_output=part)
+                written_parts.append(part)
+
             sink.write_marker(
-                content=written,
-                marker_path=output.marker_path,
+                marker=IngestionProcessMarker(
+                    process_name="default",
+                    chain=task.chain,
+                    marker=Marker(
+                        marker_path=output.marker_path,
+                        outputs=written_parts,
+                    ),
+                )
             )
 
 

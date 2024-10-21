@@ -1,35 +1,59 @@
 import json
 import os
 
-from dataclasses import dataclass, asdict
-from typing import NewType
+from dataclasses import dataclass
 
+import duckdb
 import pyarrow as pa
 import polars as pl
 from overrides import EnforceOverrides, override
 
-from op_coreutils.clickhouse.client import insert_dataframe, run_oplabs_query
+from op_coreutils.path import repo_path
+from op_coreutils.clickhouse.client import insert_arrow, run_oplabs_query
 from op_coreutils.logger import structlog
 from op_coreutils.storage.gcs_parquet import (
-    gcs_upload_partitioned_parquet,
-    local_write_partitioned_parquet,
-    PartitionOutput,
+    gcs_upload_parquet,
+    local_upload_parquet,
 )
+from op_coreutils.storage.paths import SinkMarkerPath, PartitionedOutput, Marker
 from fsspec.implementations.local import LocalFileSystem
 
 
 log = structlog.get_logger()
 
 
-# Root path for a partitioned dataframe output.
-SinkOutputRootPath = NewType("SinkOutputRootPath", str)
+@dataclass
+class IngestionProcessMarker:
+    process_name: str
+    chain: str
+    marker: Marker
 
-# A single object path in a partitioned dataframe output (includes the base bath).
-SinkOutputPath = NewType("SinkOutputPath", str)
+    @property
+    def path(self):
+        return self.marker.marker_path
 
-# A single object path for a sink marker. Markers are light objects that are used to
-# indicate a sink output has been written successfully.
-SinkMarkerPath = NewType("SinkMarkerPath", str)
+    def dt_value(self):
+        return min(_.path.dt_value() for _ in self.marker.outputs)
+
+    def to_row(self) -> dict:
+        row: dict = self.marker.to_clickhouse_row()
+        row["process_name"] = self.process_name
+        row["chain"] = self.chain
+        row["dt"] = self.dt_value()
+        return row
+
+    def to_pyarrow_table(self) -> pa.Table:
+        row: dict = self.to_row()
+
+        schema = self.marker.clickhouse_schema()
+        schema.append(pa.field("process_name", pa.string()))
+        schema.append(pa.field("chain", pa.string()))
+        schema.append(pa.field("dt", pa.string()))
+
+        return pa.Table.from_pylist(
+            [row],
+            schema=schema,
+        )
 
 
 @dataclass(kw_only=True)
@@ -54,20 +78,10 @@ class DataSink(EnforceOverrides):
 
         raise NotImplementedError()
 
-    def write_output(
-        self,
-        dataframe: pl.DataFrame,
-        root_path: SinkOutputRootPath,
-        basename: str,
-        partition_cols: list[str],
-    ) -> list[PartitionOutput]:
+    def write_single_part(self, dataframe: pl.DataFrame, part_output: PartitionedOutput):
         raise NotImplementedError()
 
-    def write_marker(
-        self,
-        content: list[PartitionOutput],
-        marker_path: SinkMarkerPath,
-    ):
+    def write_marker(self, marker: IngestionProcessMarker):
         raise NotImplementedError()
 
     def is_complete(self, marker_path: SinkMarkerPath) -> bool:
@@ -77,78 +91,23 @@ class DataSink(EnforceOverrides):
 @dataclass(kw_only=True)
 class GCSSink(DataSink):
     @override
-    def write_output(
-        self,
-        dataframe: pl.DataFrame,
-        root_path: SinkOutputRootPath,
-        basename: str,
-        partition_cols: list[str],
-    ) -> list[PartitionOutput]:
-        return gcs_upload_partitioned_parquet(
-            root_path=root_path,
-            basename=basename,
-            df=dataframe,
-            partition_cols=partition_cols,
-        )
+    def write_single_part(self, dataframe: pl.DataFrame, part_output: PartitionedOutput):
+        gcs_upload_parquet(part_output.path.full_path, dataframe)
 
     @override
-    def write_marker(
-        self,
-        content: list[PartitionOutput],
-        marker_path: SinkMarkerPath,
-    ):
+    def write_marker(self, marker: IngestionProcessMarker):
         """Markers for GCS output are writen to Clickhouse.
 
         Having markers in clickhouse allows us to quickly perform analytics
         and query marker data over time.
         """
-        dts: list[str] = []
-        full_paths: list[str] = []
-        partition_cols: list[list[dict[str, str]]] = []
-        row_counts: list[int] = []
-        total_rows: int = 0
-        output: PartitionOutput
-        for output in content:
-            dts.append(output.dt_value())
-            full_paths.append(output.path)
-            partition_cols.append(output.partition_key_value_list())
-            row_counts.append(output.row_count)
-            total_rows += output.row_count
-        dt = min(dts)
-
-        row = {
-            "dt": dt,
-            "marker_path": marker_path,
-            "total_rows": total_rows,
-            "outputs.full_path": full_paths,
-            "outputs.partition_cols": partition_cols,
-            "outputs.row_count": row_counts,
-        }
-
-        schema = pa.schema(
-            [
-                pa.field("dt", pa.string()),
-                pa.field("marker_path", pa.string()),
-                pa.field("total_rows", pa.int64()),
-                pa.field("outputs.full_path", pa.large_list(pa.string())),
-                pa.field(
-                    "outputs.partition_cols", pa.large_list(pa.map_(pa.string(), pa.string()))
-                ),
-                pa.field("outputs.row_count", pa.large_list(pa.int64())),
-            ]
-        )
-
-        table = pa.Table.from_pylist(
-            [row],
-            schema=schema,
-        )
-
-        insert_dataframe("OPLABS", "etl_monitor", "gcs_parquet_markers", table)
+        table = marker.to_pyarrow_table()
+        insert_arrow("OPLABS", "etl_monitor", "raw_onchain_ingestion_markers", table)
 
     @override
     def is_complete(self, marker_path: SinkMarkerPath) -> bool:
         result = run_oplabs_query(
-            "SELECT marker_path FROM etl_monitor.gcs_parquet_markers WHERE marker_path = {search_value:String}",
+            "SELECT marker_path FROM etl_monitor.raw_onchain_ingestion_markers WHERE marker_path = {search_value:String}",
             parameters={"search_value": marker_path},
         )
 
@@ -162,33 +121,38 @@ class LocalFileSink(DataSink):
     def full_path(self, path: str):
         return os.path.join(self.basepath, path)
 
-    @override
-    def write_output(
-        self,
-        dataframe: pl.DataFrame,
-        root_path: SinkOutputRootPath,
-        basename: str,
-        partition_cols: list[str],
-    ) -> list[PartitionOutput]:
-        return local_write_partitioned_parquet(
-            root_path=self.full_path(root_path),
-            basename=basename,
-            df=dataframe,
-            partition_cols=partition_cols,
-        )
+    MARKERS_TABLE = "raw_onchain_ingestion_markers"
 
     @override
-    def write_marker(
-        self,
-        content: list[PartitionOutput],
-        marker_path: SinkMarkerPath,
-    ):
+    def write_single_part(self, dataframe: pl.DataFrame, part_output: PartitionedOutput):
+        local_upload_parquet(self.full_path(part_output.path.full_path), dataframe)
+
+    def connect(self):
+        path = self.full_path("markers/etl_monitor.db")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        return duckdb.connect(self.full_path("markers/etl_monitor.db"))
+
+    def create_sql(self):
+        with open(repo_path(f"ddl/duckdb_local/etl_monitor.{self.MARKERS_TABLE}.sql"), "r") as fobj:
+            return fobj.read()
+
+    @override
+    def write_marker(self, marker: IngestionProcessMarker):
+        con = self.connect()
+        con.sql(self.create_sql())
+
+        arrow_table = marker.to_pyarrow_table()  # noqa: F841
+        con.sql(f"INSERT INTO {self.MARKERS_TABLE} SELECT * FROM arrow_table")
+
+        row: dict = marker.to_row()
         fs = LocalFileSystem(auto_mkdir=True)
-        with fs.open(self.full_path(marker_path), "w") as fobj:
-            fobj.write(json.dumps([asdict(_) for _ in content], indent=2))
+        with fs.open(self.full_path(marker.path), "w") as fobj:
+            fobj.write(json.dumps(row, indent=2))
 
     @override
     def is_complete(self, marker_path: SinkMarkerPath) -> bool:
+        con = self.connect()
+        con.sql(self.create_sql())
         if os.path.isfile(self.full_path(marker_path)):
             return True
         else:
