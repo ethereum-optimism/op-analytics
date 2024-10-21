@@ -1561,6 +1561,7 @@ version = "0.1.0"
 source = { editable = "packages/op-datasets" }
 dependencies = [
     { name = "op-coreutils" },
+    { name = "overrides" },
     { name = "pydantic" },
     { name = "pyiceberg", extra = ["sql-sqlite"] },
     { name = "urllib3" },
@@ -1569,6 +1570,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "op-coreutils", editable = "packages/op-coreutils" },
+    { name = "overrides", specifier = ">=7.7.0" },
     { name = "pydantic", specifier = ">=2.9.2" },
     { name = "pyiceberg", extras = ["sql-sqlite"], specifier = ">=0.7.1" },
     { name = "urllib3", specifier = ">=2.2.3" },
@@ -1593,6 +1595,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/98/df/77698abfac98571e65ffeb0c1fba8ffd692ab8458d617a0eed7d9a8d38f2/outcome-1.3.0.post0.tar.gz", hash = "sha256:9dcf02e65f2971b80047b377468e72a268e15c0af3cf1238e6ff14f7f91143b8", size = 21060 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/55/8b/5ab7257531a5d830fc8000c476e63c935488d74609b50f9384a643ec0a62/outcome-1.3.0.post0-py2.py3-none-any.whl", hash = "sha256:e771c5ce06d1415e356078d3bdd68523f284b4ce5419828922b6871e65eda82b", size = 10692 },
+]
+
+[[package]]
+name = "overrides"
+version = "7.7.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/36/86/b585f53236dec60aba864e050778b25045f857e17f6e5ea0ae95fe80edd2/overrides-7.7.0.tar.gz", hash = "sha256:55158fa3d93b98cc75299b1e67078ad9003ca27945c76162c1c0766d6f91820a", size = 22812 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2c/ab/fc8290c6a4c722e5514d80f62b2dc4c4df1a68a41d1364e625c35990fcf3/overrides-7.7.0-py3-none-any.whl", hash = "sha256:c7ed9d062f78b8e4c1a7b70bd8796b35ead4d9f510227ef9c5dc7626c60d7e49", size = 17832 },
 ]
 
 [[package]]
