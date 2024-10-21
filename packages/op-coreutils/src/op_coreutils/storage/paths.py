@@ -63,6 +63,10 @@ class PartitionedPath(BaseModel):
         """Return a list of key,value dicts that is is useful to represent the partition as a Map type in an Arror table."""
         return [{"key": key, "value": value} for key, value in self.partition_values_map().items()]
 
+    def partition_array_list(self) -> list[list[str]]:
+        """Return a list of key,value dicts that is is useful to represent the partition as a Map type in an Arror table."""
+        return [[key, value] for key, value in self.partition_values_map().items()]
+
 
 class PartitionedOutput(BaseModel):
     """Represent a single object written to storage."""
@@ -114,6 +118,49 @@ class Marker(BaseModel):
                     "outputs.partition_cols", pa.large_list(pa.map_(pa.string(), pa.string()))
                 ),
                 pa.field("outputs.row_count", pa.large_list(pa.int64())),
+            ]
+        )
+
+    def to_duckdb_row(self) -> dict[str, Any]:
+        total_rows: int = 0
+
+        outputs = []
+        for output in self.outputs:
+            outputs.append(
+                {
+                    "full_path": output.path.full_path,
+                    "partition_cols": output.path.partition_array_list(),
+                    "row_count": output.row_count,
+                }
+            )
+            total_rows += output.row_count
+
+        return {
+            "marker_path": self.marker_path,
+            "total_rows": total_rows,
+            "outputs": outputs,
+        }
+
+    def duckdb_schema(self):
+        return pa.schema(
+            [
+                pa.field("marker_path", pa.string()),
+                pa.field("total_rows", pa.int64()),
+                pa.field(
+                    "outputs",
+                    pa.large_list(
+                        pa.struct(
+                            [
+                                pa.field("full_path", pa.string()),
+                                pa.field(
+                                    "partition_cols",
+                                    pa.large_list(pa.list_(pa.string(), list_size=2)),
+                                ),
+                                pa.field("row_count", pa.int64()),
+                            ]
+                        )
+                    ),
+                ),
             ]
         )
 

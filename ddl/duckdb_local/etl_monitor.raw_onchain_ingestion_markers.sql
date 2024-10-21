@@ -2,7 +2,7 @@
 -- A completion marker indicates that 1 or more parquet files
 -- corresponding to a single unit of processing were successfully
 -- written out to GCS.
-CREATE TABLE IF NOT EXISTS raw_onchain_ingestion_markers
+CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
 (
     updated_at TIMESTAMP,
     marker_path STRING,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS raw_onchain_ingestion_markers
     total_rows BIGINT,
 
     -- Details for each parquet output saved under this marker.
-    outputs STRUCT(full_path STRING, partition_cols MAP(STRING, STRING), row_count BIGINT)[],
+    outputs STRUCT(full_path STRING, partition_cols STRING[2][], row_count BIGINT)[],
 
 
     -- Name of the process ingesting data and writing this marker.

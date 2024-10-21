@@ -59,9 +59,9 @@ def construct_sinks(
     for sink_spec in sinks_spec:
         if sink_spec == "local":
             # Use the canonical location in our repo
-            sinks.append(DataSink.from_spec("file://ozone/warehouse/"))
+            sinks.append(DataSink(sink_spec="file://ozone/warehouse/"))
         elif sink_spec == "gcs":
-            sinks.append(DataSink.from_spec(sink_spec))
+            sinks.append(DataSink(sink_spec=sink_spec))
         else:
             raise NotImplementedError(f"sink_spec not supported: {sink_spec}")
     return sinks
