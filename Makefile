@@ -56,6 +56,7 @@ html: .makemarkers/sphinx-docs
 
 html-copies:
 	find "op_rewards_tracking" -type f -name "*.html" > rsync-files.txt
+	find "reference_data/market_data/outputs/suggest_base_fee.txt" -type f >> rsync-files.txt
 	rsync -aSvuc --recursive --files-from=rsync-files.txt . "docs/"
 	rm rsync-files.txt
 
