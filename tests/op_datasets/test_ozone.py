@@ -161,5 +161,5 @@ def test_expected_markers():
         "markers/ingestion/blocks_v1/chain=op/000000000000.json",
         "markers/ingestion/transactions_v1/chain=op/000000000000.json",
         "markers/ingestion/logs_v1/chain=op/000000000000.json",
-        "markers/ingestion/traces/chain=op/000000000000.json",
+        "markers/ingestion/traces_v1/chain=op/000000000000.json",
     ]

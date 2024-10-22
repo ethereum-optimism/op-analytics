@@ -1,9 +1,12 @@
 import polars as pl
 from op_coreutils.logger import clear_contextvars, human_interval, structlog
 from op_coreutils.storage.paths import Marker, PartitionedOutput, breakout_partitions
+from op_coreutils.threads import run_concurrently
 
+from op_datasets.etl.ingestion.utilities import block_range_for_dates
 from op_datasets.coretables.sources import CoreDatasetSource
 from op_datasets.pipeline.blockrange import BlockRange
+from op_datasets.pipeline.daterange import DateRange
 from op_datasets.pipeline.ozone import (
     BlockBatch,
     IngestionTask,
@@ -18,7 +21,7 @@ log = structlog.get_logger()
 
 def ingest(
     chains: list[str],
-    block_spec: str,
+    range_spec: str,
     source_spec: str,
     sinks_spec: list[str],
     dryrun: bool,
@@ -26,7 +29,7 @@ def ingest(
 ):
     clear_contextvars()
 
-    tasks = construct_tasks(chains, block_spec)
+    tasks = construct_tasks(chains, range_spec)
 
     if dryrun:
         return
@@ -67,13 +70,30 @@ def construct_sinks(
     return sinks
 
 
-def construct_tasks(chains: list[str], block_spec: str):
-    block_range = BlockRange.from_spec(block_spec)
+def construct_tasks(chains: list[str], range_spec: str):
+    blocks_by_chain: dict[str, BlockRange]
+
+    try:
+        block_range = BlockRange.from_spec(range_spec)
+        blocks_by_chain = {}
+        for chain in chains:
+            blocks_by_chain[chain] = block_range
+
+    except NotImplementedError:
+        # Ensure range_spec is a valid DateRange.
+        DateRange.from_spec(range_spec)
+
+        def blocks_for_chain(ch):
+            return block_range_for_dates(chain=ch, date_spec=range_spec)
+
+        blocks_by_chain: dict[str, BlockRange] = run_concurrently(
+            blocks_for_chain, targets=chains, max_workers=4
+        )
 
     # Batches to be ingested for each chain.
     chain_batches: dict[str, list[BlockBatch]] = {}
-    for chain in chains:
-        chain_batches[chain] = split_block_range(chain, block_range)
+    for chain, chain_block_range in blocks_by_chain.items():
+        chain_batches[chain] = split_block_range(chain, chain_block_range)
 
     # Log a summayr of the work that will be done for each chain.
     for chain, batches in chain_batches.items():
@@ -201,6 +221,6 @@ def writer(task: IngestionTask, sinks: list[DataSink]):
 def checker(task: IngestionTask, sinks: list[DataSink]):
     if all_outputs_complete(sinks, task.expected_markers):
         log.info(
-            f"{len(task.expected_markers)} outputs are already complete for #{task.block_batch.min}"
+            f"{len(task.expected_markers)} outputs are already complete for chain={task.block_batch.chain} #{task.block_batch.min}"
         )
         task.is_complete = True

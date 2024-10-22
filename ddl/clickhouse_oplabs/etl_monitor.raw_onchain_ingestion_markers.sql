@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
     dt Date,
     
     INDEX dt_idx dt TYPE minmax GRANULARITY 1,
+    INDEX chain_idx chain TYPE minmax GRANULARITY 1,
 )
 -- Use a merge tree so that we keep around all markers ever written
 -- could be useful for auditing purposes.

@@ -11,7 +11,7 @@ from op_datasets.schemas.core import Column, CoreDataset
 
 TRACES_V1_SCHEMA = CoreDataset(
     name="traces",
-    versioned_location="ingestion/traces",
+    versioned_location="ingestion/traces_v1",
     goldsky_table_suffix="traces",
     block_number_col="block_number",
     doc=dedent("""Indexed Traces."""),

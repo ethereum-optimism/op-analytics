@@ -6,7 +6,6 @@ import typer
 from op_coreutils.logger import structlog
 from op_coreutils.env import env_get
 
-from op_analytics.cli.subcommands.misc import chain_metadata
 from op_analytics.cli.subcommands.misc.dbtgen import (
     dbt_docs,
     goldsky_dbt_sources,
@@ -38,7 +37,6 @@ def run_with_env(env_vars: list[str], cmd: str):
         )
 
 
-app.command(name="upload_metadata")(chain_metadata.upload_metadata)
 app.command(name="customize_dbt")(dbt_docs.customize)
 
 

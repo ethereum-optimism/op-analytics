@@ -5,9 +5,9 @@ from op_coreutils.time import date_toepoch
 
 import re
 
-MIN_MAX_RE = re.compile(r"^(?P<min>\d{8}):(?P<max>\d{8})$")
+MIN_MAX_RE = re.compile(r"^@(?P<min>\d{8}):(?P<max>\d{8})$")
 
-PLUS_RE = re.compile(r"^(?P<min>\d{8}):\+(?P<plus>\d+)$")
+PLUS_RE = re.compile(r"^@(?P<min>\d{8}):\+(?P<plus>\d+)$")
 
 
 @dataclass
