@@ -57,7 +57,7 @@ def pull():
     )
     urls = {}
     for project in projects:
-        project_id = project["id"]
+        project_id = project["slug"]
         urls[project_id] = f"https://l2beat.com/api/scaling/tvl/{project_id}?range={query_range}"
 
     # Run requests concurrenetly.
