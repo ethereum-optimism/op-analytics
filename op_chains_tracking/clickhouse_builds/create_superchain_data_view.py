@@ -16,7 +16,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[ ]:
+# In[2]:
 
 
 # Get Chain List
@@ -25,13 +25,13 @@ chain_configs = ops.get_superchain_metadata_by_data_source('oplabs') # OPLabs db
 # so that we're not rebuilding the view on every metadata update
 
 
-# In[ ]:
+# In[3]:
 
 
 # chain_configs
 
 
-# In[ ]:
+# In[4]:
 
 
 # Function to create ClickHouse view
@@ -60,6 +60,14 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None):
                                 FROM {table_name}
                                 WHERE 1=1
                                 """
+        elif dataset_type == 'blocks':
+            sql_query = f"""
+                        SELECT id, number, hash, parent_hash, nonce, sha3_uncles, logs_bloom, transactions_root, state_root
+                        , receipts_root, miner, cast(difficulty as Float64) AS difficulty, cast(total_difficulty as Float64) AS total_difficulty, size, extra_data, gas_limit, gas_used, timestamp
+                        , transaction_count, base_fee_per_gas, withdrawals_root, chain, network, chain_id, insert_time
+                        FROM {table_name}
+                        WHERE 1=1
+                        """
         else: 
             sql_query = f"""
                                 SELECT 
@@ -72,6 +80,8 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None):
         union_queries.append(sql_query)
     
     query += " UNION ALL\n".join(union_queries)
+
+    # print(query)
 
     # print(query)
     
