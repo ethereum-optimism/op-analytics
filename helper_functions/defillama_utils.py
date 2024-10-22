@@ -532,6 +532,13 @@ def get_todays_tvl():
 		
 		return df
 
+def get_chain_list():
+	df = get_todays_tvl()
+	df = df[['chain']]
+	df = df.drop_duplicates()
+	return df
+		
+
 def get_historical_chain_tvl(chain_name):
 		df = pd.DataFrame()
 		api_string = 'https://api.llama.fi/v2/historicalChainTvl/' + chain_name
@@ -545,7 +552,7 @@ def get_historical_chain_tvl(chain_name):
 
 
 def get_historical_app_tvl_by_chain(chain_name):
-		p = get_protocol_tvls()
+		p = get_protocol_tvls(chain_name)
 
 def generate_flows_column(df):
 		# Still need to debug the price flow
