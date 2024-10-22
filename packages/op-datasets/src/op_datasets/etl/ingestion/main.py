@@ -1,24 +1,14 @@
 import polars as pl
-from op_coreutils.logger import clear_contextvars, human_interval, structlog
+from op_coreutils.logger import clear_contextvars, human_interval, structlog, bind_contextvars
 from op_coreutils.storage.paths import Marker, PartitionedOutput, breakout_partitions
-from op_coreutils.threads import run_concurrently
 
-from op_datasets.coretables.sources import CoreDatasetSource
 from op_datasets.etl.ingestion.sinks import (
-    DataSink,
     IngestionCompletionMarker,
     all_outputs_complete,
 )
-from op_datasets.etl.ingestion.utilities import block_range_for_dates
-from op_datasets.pipeline.blockrange import BlockRange
-from op_datasets.pipeline.daterange import DateRange
-from op_datasets.pipeline.ozone import (
-    BlockBatch,
-    IngestionTask,
-    OutputDataFrame,
-    split_block_range,
-)
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
+
+from .task import IngestionTask, OutputDataFrame, construct_tasks
 
 log = structlog.get_logger()
 
@@ -33,16 +23,15 @@ def ingest(
 ):
     clear_contextvars()
 
-    tasks = construct_tasks(chains, range_spec)
+    tasks = construct_tasks(chains, range_spec, source_spec, sinks_spec)
 
     if dryrun:
         return
 
-    sinks = construct_sinks(sinks_spec)
-
     for task in tasks:
+        bind_contextvars(chain=task.block_batch.chain, block=f"#{task.block_batch.min}")
         # Check and decide if we need to run this task.
-        checker(task, sinks)
+        checker(task)
         if task.is_complete and not force:
             continue
         if force:
@@ -50,84 +39,20 @@ def ingest(
             task.force = True
 
         # Read the data (updates the task in-place with the input dataframes).
-        reader(task, source_spec)
+        reader(task)
 
         # Run audits (updates the task in-pace with the output dataframes).
         auditor(task)
 
         # Write outputs and markers.
-        writer(task, sinks)
+        writer(task)
 
 
-def construct_sinks(
-    sinks_spec: list[str],
-) -> list[DataSink]:
-    sinks = []
-    for sink_spec in sinks_spec:
-        if sink_spec == "local":
-            # Use the canonical location in our repo
-            sinks.append(DataSink(sink_spec="file://ozone/warehouse/"))
-        elif sink_spec == "gcs":
-            sinks.append(DataSink(sink_spec=sink_spec))
-        else:
-            raise NotImplementedError(f"sink_spec not supported: {sink_spec}")
-    return sinks
-
-
-def construct_tasks(chains: list[str], range_spec: str):
-    blocks_by_chain: dict[str, BlockRange]
-
-    try:
-        block_range = BlockRange.from_spec(range_spec)
-        blocks_by_chain = {}
-        for chain in chains:
-            blocks_by_chain[chain] = block_range
-
-    except NotImplementedError:
-        # Ensure range_spec is a valid DateRange.
-        DateRange.from_spec(range_spec)
-
-        def blocks_for_chain(ch):
-            return block_range_for_dates(chain=ch, date_spec=range_spec)
-
-        blocks_by_chain: dict[str, BlockRange] = run_concurrently(
-            blocks_for_chain, targets=chains, max_workers=4
-        )
-
-    # Batches to be ingested for each chain.
-    chain_batches: dict[str, list[BlockBatch]] = {}
-    for chain, chain_block_range in blocks_by_chain.items():
-        chain_batches[chain] = split_block_range(chain, chain_block_range)
-
-    # Log a summayr of the work that will be done for each chain.
-    for chain, batches in chain_batches.items():
-        total_blocks = batches[-1].max - batches[0].min
-        log.info(
-            f"Will process chain={chain!r} {len(batches)} batch(es) {total_blocks} total blocks starting at #{batches[0].min}"
-        )
-
-    # Collect a single list of tasks to perform across all chains.
-    all_tasks: list[IngestionTask] = []
-    for batches in chain_batches.values():
-        for batch in batches:
-            all_tasks.append(IngestionTask.new(batch))
-
-    return all_tasks
-
-
-def reader(task: IngestionTask, source_spec: str, dataset_names: list[str] | None = None):
+def reader(task: IngestionTask):
     """Read core datasets from the specified source."""
-    log.info(f"Reading input data from {source_spec!r} for {task.pretty}")
-    datasource = CoreDatasetSource.from_spec(source_spec)
+    log.info(f"Reading input data from for {task.pretty}")
 
-    if dataset_names is not None:
-        datasets = {}
-        for name in dataset_names:
-            datasets[name] = ONCHAIN_CURRENT_VERSION[name]
-    else:
-        datasets = ONCHAIN_CURRENT_VERSION
-
-    dataframes = datasource.read_from_source(
+    dataframes = task.source.read_from_source(
         datasets=ONCHAIN_CURRENT_VERSION,
         block_batch=task.block_batch,
     )
@@ -188,8 +113,8 @@ def auditor(task: IngestionTask):
         )
 
 
-def writer(task: IngestionTask, sinks: list[DataSink]):
-    for sink in sinks:
+def writer(task: IngestionTask):
+    for sink in task.sinks:
         for output in task.output_dataframes:
             if sink.is_complete(output.marker_path) and not task.force:
                 log.info(
@@ -222,9 +147,7 @@ def writer(task: IngestionTask, sinks: list[DataSink]):
             )
 
 
-def checker(task: IngestionTask, sinks: list[DataSink]):
-    if all_outputs_complete(sinks, task.expected_markers):
-        log.info(
-            f"{len(task.expected_markers)} outputs are already complete for chain={task.block_batch.chain} #{task.block_batch.min}"
-        )
+def checker(task: IngestionTask):
+    if all_outputs_complete(task.sinks, task.expected_markers):
+        log.info(f"{len(task.expected_markers)} outputs are already complete")
         task.is_complete = True

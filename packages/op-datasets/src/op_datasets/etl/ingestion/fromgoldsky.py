@@ -6,7 +6,8 @@ from op_coreutils.logger import structlog
 from op_coreutils.threads import run_concurrently
 
 from op_datasets.schemas import CoreDataset
-from op_datasets.pipeline.ozone import BlockBatch
+
+from .batches import BlockBatch
 
 
 log = structlog.get_logger()

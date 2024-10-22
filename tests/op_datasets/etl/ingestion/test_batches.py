@@ -1,14 +1,14 @@
 import pytest
 
 from op_datasets.pipeline.blockrange import BlockRange
-from op_datasets.pipeline.ozone import (
+from op_datasets.etl.ingestion.task import IngestionTask
+from op_datasets.etl.ingestion.batches import (
     BlockBatch,
     Delimiter,
     find_batch_delimiter,
     split_block_range,
     split_block_range_from_boundaries,
     InvalidMicrobatchConfig,
-    IngestionTask,
 )
 
 
