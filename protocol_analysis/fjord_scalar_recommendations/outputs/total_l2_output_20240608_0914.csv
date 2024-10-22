@@ -1,0 +1,2 @@
+index,chain_id,chain_name,display_name,average_len_encoded_transaction,average_len_compressed_transaction,average_estimatedSize,average_blobgas_per_l2_tx,wt_average_blobgas_per_l2_tx,average_daily_l1_blobgas_purchased_inbox,average_daily_transaction_count,start_dt,end_dt
+0,10,op,OP Mainnet,1246.5535124158664,531.6352824400143,415.8721570168605,436.42791640595635,436.42791640595635,222227894.85714287,509197.25,2024-05-03,2024-05-30

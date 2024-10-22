@@ -1,0 +1,34 @@
+.navbar-brand img {
+    height: 50%
+}
+
+.bd-article h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.bd-article h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.bd-article h1 {
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+.table p {
+    font-size: 0.8em;
+}
+
+th {
+    white-space: nowrap;
+}
+
+.bd-sidebar-primary {
+    width: 20%; /* Adjust as needed, default is around 25% */
+}
+
+.bd-sidebar-secondary {
+    width: 20%; /* Adjust as needed, default is around 25% */
+}

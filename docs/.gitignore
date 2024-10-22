@@ -1,0 +1,6 @@
+# This directory is used for docs static html. 
+# Only some specific files are tracked in git.
+*
+!dbt/optimism.css
+!index.html
+!.gitignore

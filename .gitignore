@@ -1,0 +1,53 @@
+reference_data/.DS_Store
+.DS_Store
+*.env
+*.ini
+op_rewards_tracking/csv_outputs/tvl_flows_by_token.csv
+*.pyc
+__pycache__/
+helper_functions/get_op_chain_addresses_from_repo_ms_copy.ipynb
+l2_economics/downloads
+misc_analysis/downloads/
+l1_base_fees/csv_inputs/
+misc_analysis/derive_l2_tx_hash_WIP.ipynb
+contracts_tracking/inputs/*.csv
+
+op_chains_tracking/lightweight_chain_tracker/.cryo/reports/*
+op_chains_tracking/lightweight_chain_tracker/lyra_output/*
+*.parquet
+/op_chains_tracking/lightweight_chain_tracker/outputs
+/op_chains_tracking/lightweight_chain_tracker/cryo_outputs/.cryo
+misc_analysis/csv_outputs/base_14.csv
+misc_analysis/csv_outputs/optimism_14.csv
+misc_analysis/clickhouse
+misc_analysis/csv_outputs/tokens_by_type_base_opm.csv
+/misc_analysis/archiveandfails/csv_outputs
+/misc_analysis/raw_data_pulls/csv_outputs
+
+Pipfile.lock
+/misc_analysis/csv_outputs
+
+# Environment Configuration
+.envjson
+
+# GSheets locations
+.gsheets.json
+
+# DBT
+dbt/duckdb/
+dbt/target
+dbt/logs
+dbt/.*
+
+# Sphinx docs related
+rsync-files.txt
+
+# Local folders to store scratchpad content (HTTP requests, JSON, SQL).
+zzzhttp/
+zzzjson/
+zzzsql/
+zzzpython/
+
+# Local ozone warehouse folder
+ozone/
+.env_legacy
