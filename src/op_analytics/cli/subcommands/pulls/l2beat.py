@@ -57,8 +57,9 @@ def pull():
     )
     urls = {}
     for project in projects:
-        project_id = project["slug"]
-        urls[project_id] = f"https://l2beat.com/api/scaling/tvl/{project_id}?range={query_range}"
+        project_id = project["id"]
+        project_slug = project["slug"]
+        urls[project_id] = f"https://l2beat.com/api/scaling/tvl/{project_slug}?range={query_range}"
 
     # Run requests concurrenetly.
     tvl_data = run_concurrently(lambda x: get_data(session, x), urls, max_workers=8)
@@ -79,6 +80,7 @@ def pull():
                 pl.DataFrame(values, schema=schema, orient="row")
                 .with_columns(
                     id=pl.lit(project_id),
+                    slug=pl.lit(project_slug),
                     dt=pl.from_epoch(pl.col("timestamp")).dt.strftime("%Y-%m-%d"),
                 )
                 .sort("timestamp")
