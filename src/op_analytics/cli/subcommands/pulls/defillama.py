@@ -80,6 +80,7 @@ def process_breakdown_stables(data):
         "cmcId",
         "priceSource",
         "twitter",
+        "price"
     ]
 
     metadata = {}
@@ -107,9 +108,6 @@ def pull_stables():
     """
     session = new_session()
     summary = get_data(session, SUMMARY_ENDPOINT)
-
-    # Parse the summary and store as a dataframe
-    summary_df = pl.DataFrame(summary["peggedAssets"])
 
     urls = {}
     for stablecoin in summary["peggedAssets"]:
