@@ -9,7 +9,7 @@ log = structlog.get_logger()
 
 
 @dataclass
-class IngestionProcessMarker:
+class IngestionCompletionMarker:
     process_name: str
     chain: str
     marker: Marker

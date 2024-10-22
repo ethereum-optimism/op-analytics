@@ -4,7 +4,11 @@ from op_coreutils.storage.paths import Marker, PartitionedOutput, breakout_parti
 from op_coreutils.threads import run_concurrently
 
 from op_datasets.coretables.sources import CoreDatasetSource
-from op_datasets.etl.ingestion.sinks import DataSink, IngestionProcessMarker, all_outputs_complete
+from op_datasets.etl.ingestion.sinks import (
+    DataSink,
+    IngestionCompletionMarker,
+    all_outputs_complete,
+)
 from op_datasets.etl.ingestion.utilities import block_range_for_dates
 from op_datasets.pipeline.blockrange import BlockRange
 from op_datasets.pipeline.daterange import DateRange
@@ -207,7 +211,7 @@ def writer(task: IngestionTask, sinks: list[DataSink]):
                 written_parts.append(part)
 
             sink.write_marker(
-                marker=IngestionProcessMarker(
+                marker=IngestionCompletionMarker(
                     process_name="default",
                     chain=task.chain,
                     marker=Marker(

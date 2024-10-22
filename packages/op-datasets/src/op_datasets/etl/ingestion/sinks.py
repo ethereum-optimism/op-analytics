@@ -11,7 +11,7 @@ from op_coreutils.storage.gcs_parquet import (
 )
 from op_coreutils.storage.paths import PartitionedOutput, SinkMarkerPath
 
-from op_datasets.etl.ingestion.markers import IngestionProcessMarker
+from op_datasets.etl.ingestion.markers import IngestionCompletionMarker
 
 log = structlog.get_logger()
 
@@ -44,7 +44,7 @@ class DataSink:
     MARKERS_DB = "etl_monitor"
     MARKERS_TABLE = "raw_onchain_ingestion_markers"
 
-    def write_marker(self, marker: IngestionProcessMarker):
+    def write_marker(self, marker: IngestionCompletionMarker):
         """Write marker.
 
         Having markers allows us to quickly check completion and perform analytics
