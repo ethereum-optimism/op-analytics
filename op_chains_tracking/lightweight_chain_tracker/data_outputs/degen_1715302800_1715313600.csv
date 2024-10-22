@@ -1,0 +1,2 @@
+,timestamp_date,chain_id,num_blocks,min_block_number,max_block_number,min_block_time,max_block_time,num_user_transactions,num_success_user_transactions,num_success_event_transactions,num_success_qualified_transactions,num_senders,total_gas_used,user_gas_used,total_gas_used_per_block,user_gas_used_per_block,avg_l2_base_fee_gwei,avg_l2_priority_fee_gwei
+0,2024-05-10,666666666,11,14581785,14581795,1715299734,1715299736,105,83,72,72,76,21875245,21875245,1988658.6363636365,1988658.6363636365,0.02995184506628383,0.6523335700057801

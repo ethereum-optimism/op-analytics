@@ -1,0 +1,64 @@
+[project]
+name = "op-analytics"
+version = "0.1.0"
+description = "Data analysys tools by OP Labs."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "op-coreutils",
+    "op-datasets",
+    "pandas>=2.2.3",
+    "polars>=1.8.2",
+    "py-markdown-table>=1.1.0",
+    "pyyaml>=6.0.2",
+    "typer>=0.12.5",
+    "urllib3>=2.2.3",
+]
+
+[tool.uv.sources]
+op-coreutils = { workspace = true }
+op-datasets = { workspace = true }
+
+[tool.uv.workspace]
+members = ["packages/op-datasets", "packages/op-coreutils"]
+
+[tool.mypy]
+files = ["src/**/*.py", "packages/**/*.py"]
+ignore_missing_imports = true
+
+[project.scripts]
+opdata = "op_analytics.cli.main:entrypoint"
+
+[tool.uv]
+dev-dependencies = [
+    "dbt-clickhouse>=1.8.4",
+    "dbt-core>=1.8.7",
+    "dbt-duckdb>=1.8.3",
+    "eth-abi>=5.1.0",
+    "ipykernel>=6.29.5",
+    "mypy>=1.11.2",
+    "myst-parser>=4.0.0",
+    "pydata-sphinx-theme>=0.15.4",
+    "pytest>=8.3.3",
+    "ruff>=0.6.7",
+    "selenium>=4.25.0",
+    "sphinx>=8.0.2",
+    "sphinxcontrib-typer>=0.5.0",
+    "types-pyyaml>=6.0.12.20240917",
+    "webdriver-manager>=4.0.2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+# Allow lines to be as long as 100.
+line-length = 100
+
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    # Ignore some google bigquery deprecation warnings
+    'ignore:Type google._upb._message:',
+]

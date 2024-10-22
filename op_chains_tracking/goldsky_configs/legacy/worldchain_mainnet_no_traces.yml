@@ -1,0 +1,120 @@
+name: worldchain-mainnet
+resource_size: s
+apiVersion: 3
+sources:
+  worldchain.raw_blocks:
+    dataset_name: worldchain.raw_blocks
+    version: 1.0.0
+    type: dataset
+    start_at: earliest
+  worldchain.raw_logs:
+    dataset_name: worldchain.raw_logs
+    version: 1.0.0
+    type: dataset
+    start_at: earliest
+  worldchain.receipt_transactions:
+    dataset_name: worldchain.receipt_transactions
+    version: 1.0.0
+    type: dataset
+    start_at: earliest
+
+transforms:
+  worldchain_blocks:
+    primary_key: id
+    sql: |
+      select
+        *
+        ,'worldchain' as chain
+        ,'mainnet' as network
+        ,480 as chain_id
+      from
+        worldchain.raw_blocks
+  worldchain_raw_logs:
+    primary_key: id
+    sql: |
+      select
+        *
+        ,'worldchain' as chain
+        ,'mainnet' as network
+        ,480 as chain_id
+      from
+        worldchain.raw_logs
+  worldchain_transactions:
+    primary_key: id
+    sql: |
+      select
+         *
+        ,'worldchain' as chain
+        ,'mainnet' as network
+        ,480 as chain_id
+      from
+        worldchain.receipt_transactions
+sinks:
+  clickhouse_worldchain.raw_blocks:
+    type: clickhouse
+    table: worldchain_blocks
+    batch_size: 100000
+    secret_name: OP_DEMO_CLICKHOUSE
+    description: ClickHouse sink from worldchain.raw_blocks to worldchain_blocks
+    batch_flush_interval: '10000'
+    append_only_mode: true
+    schema_override:
+      hash: FixedString(66)
+      number: UInt64 CODEC(Delta, ZSTD)
+      timestamp: DateTime CODEC(Delta, ZSTD)
+    from: worldchain_blocks
+  clickhouse_worldchain.raw_logs:
+    type: clickhouse
+    table: worldchain_logs
+    batch_size: 100000
+    secret_name: OP_DEMO_CLICKHOUSE
+    description: ClickHouse sink from worldchain.raw_logs to worldchain_logs
+    batch_flush_interval: '10000'
+    append_only_mode: true
+    schema_override:
+      address: FixedString(42)
+      log_index: UInt64
+      block_hash: FixedString(66)
+      block_number: UInt64 CODEC(Delta, ZSTD)
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      transaction_hash: FixedString(66)
+      transaction_index: UInt64
+    from: worldchain_raw_logs
+  clickhouse_worldchain.receipt_transactions:
+    type: clickhouse
+    table: worldchain_transactions
+    batch_size: 100000
+    secret_name: OP_DEMO_CLICKHOUSE
+    description: >-
+      ClickHouse sink from worldchain.receipt_transactions to
+      worldchain_transactions
+    batch_flush_interval: '10000'
+    append_only_mode: true
+    schema_override:
+      gas: UInt128
+      hash: FixedString(66)
+      nonce: UInt64
+      value: UInt256
+      gas_price: UInt128
+      block_hash: FixedString(66)
+      to_address: FixedString(42)
+      block_number: UInt64 CODEC(Delta, ZSTD)
+      from_address: FixedString(42)
+      receipt_l1_fee: Nullable(UInt128)
+      receipt_status: UInt8
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      max_fee_per_gas: UInt128
+      receipt_gas_used: UInt128
+      transaction_type: UInt8
+      transaction_index: UInt64
+      receipt_l1_gas_used: Nullable(UInt128)
+      receipt_l1_gas_price: Nullable(UInt128)
+      receipt_l1_fee_scalar: Nullable(Float64)
+      receipt_l1_block_number: Nullable(Int64)
+      max_priority_fee_per_gas: UInt128
+      receipt_l1_blob_base_fee: Nullable(UInt128)
+      receipt_l1_base_fee_scalar: Nullable(Float64)
+      receipt_cumulative_gas_used: UInt128
+      receipt_effective_gas_price: UInt128
+      receipt_l1_blob_base_fee_scalar: Nullable(Float64)
+    from: worldchain_transactions

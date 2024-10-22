@@ -1,0 +1,728 @@
+project_name,rpgf1_amount(usdc),rpgf2_amount,rpgf3_amount,is_in_rpgf1,is_in_rpgf2,is_in_rpgf3,round_count
+Protocol Guild,0,557301.0,663853.62,False,True,True,2
+Solidity,40342,217383.16,422361.96,True,True,True,3
+go-ethereum,45232,230590.08,496896.42,True,True,True,3
+ETHGlobal,42787,230005.52,253848.98,True,True,True,3
+Erigon,34230,141650.27,339545.72,True,True,True,3
+🏰 BuidlGuidl,28117,224174.11,227602.91,True,True,True,3
+L2BEAT 💗,15892,256294.36,198758.57,True,True,True,3
+Lighthouse,0,165460.21,298137.85,False,True,True,2
+OpenZeppelin Contracts,0,181764.94,248448.21,False,True,True,2
+DefiLlama,7335,171292.71,248448.21,True,True,True,3
+Remix Project,0,151676.14,248448.21,False,True,True,2
+Nethermind,0,135623.67,248448.21,False,True,True,2
+Vyper,0,135226.3,248448.21,False,True,True,2
+Lattice (OPCraft & MUD),0,183348.21,195280.29,False,True,True,2
+Wagmi / Viem,0,156463.05,198758.57,False,True,True,2
+ethers.js,51345,209140.64,298137.85,True,True,True,3
+foundry,0,148672.83,198758.57,False,True,True,2
+Snapshot,0,145698.5,198758.57,False,True,True,2
+ZachXBT,0,188573.93,149455.02,False,True,True,2
+beaconcha.in,0,105836.75,223603.39,False,True,True,2
+Lodestar,0,79662.51,248448.21,False,True,True,2
+Gitcoin,0,151494.17,176398.23,False,True,True,2
+Hardhat,41565,0.0,280249.58,True,False,True,2
+rotki,22005,145272.64,149068.93,True,True,True,3
+Agora,0,101992.05,212309.93,False,True,True,2
+Account Abstraction - ERC-4337,0,61332.92,248448.21,False,True,True,2
+Test in Prod,0,0.0,273293.03,False,False,True,1
+libp2p,0,0.0,298137.85,False,False,True,1
+Nimbus,0,84018.23,198758.57,False,True,True,2
+Blockscout Block Explorer,0,65259.35,198758.57,False,True,True,2
+Dappnode,9780,0.0,248448.21,True,False,True,2
+Web3js,0,0.0,248448.21,False,False,True,1
+Otterscan,8557,68834.84,170364.91,True,True,True,3
+TrueBlocks / Unchained Index,12225,71866.56,136646.52,True,True,True,3
+Kernel,0,132035.12,99379.28,False,True,True,2
+CryptoZombies,0,130577.81,99379.28,False,True,True,2
+Sourcify,0,30743.66,198758.57,False,True,True,2
+Revoke.cash,3667,73489.5,149068.93,True,True,True,3
+IPFS,0,0.0,225861.29,False,False,True,1
+Ethereum Attestation Service,0,0.0,219757.63,False,False,True,1
+0xPARC,0,206053.62,0.0,False,True,False,1
+revm,0,0.0,198758.57,False,False,True,1
+EIP4844 collection,0,195674.82,0.0,False,True,False,1
+Cannon,4890,90241.42,99379.28,True,True,True,3
+Support NERDs,0,93683.95,99379.28,False,True,True,2
+eth.limo,0,92270.33,99379.28,False,True,True,2
+Synpress,0,91886.73,99379.28,False,True,True,2
+Frame,18337,47826.28,123541.37,True,True,True,3
+Monorepo dependencies collection,0,188999.93,0.0,False,True,False,1
+Week in Ethereum News,0,121700.47,59627.57,False,True,True,2
+Optimism Translators,0,85657.06,99379.28,False,True,True,2
+TypeChain / DethCode,14670,44938.67,124224.11,True,True,True,3
+Giveth Web3 House,0,0.0,49689.64,False,False,True,1
+EthernautDAO,14670,63437.9,99379.28,True,True,True,3
+Giveth,24450,129814.43,149068.93,True,True,True,3
+polynya,0,98824.31,72049.98,False,True,True,2
+Slither,0,38926.43,121739.62,False,True,True,2
+Prettier Solidity,20782,43833.72,92656.28,True,True,True,3
+Optimism Ambassadors,0,52240.79,99379.28,False,True,True,2
+Guild.xyz,0,51001.26,99379.28,False,True,True,2
+OP Reth,0,0.0,149068.93,False,False,True,1
+Ipsilon,20782,23531.25,99379.28,True,True,True,3
+Small Brain Games,0,28260.7,114285.18,False,True,True,2
+Blobscan,0,40012.19,99379.28,False,True,True,2
+Mirror,0,0.0,138983.92,False,False,True,1
+Keccak hashing,0,62838.16,81987.91,False,True,True,2
+Candide,0,37888.81,99379.28,False,True,True,2
+Ethereum on ARM,0,0.0,133449.98,False,False,True,1
+EthereumETL,0,31044.49,99379.28,False,True,True,2
+Commons Stack,0,60038.39,69565.5,False,True,True,2
+Immunefi,0,0.0,129193.07,False,False,True,1
+blst Cryptography Library,23227,40614.0,64596.53,True,True,True,3
+Open Source Observer,0,0.0,127914.06,False,False,True,1
+ChainList,0,49979.68,76445.53,False,True,True,2
+Department of Decentralization,35452,143507.74,124224.11,True,True,True,3
+RadicalxChange Foundation,0,70988.29,52755.99,False,True,True,2
+Ethereum Cat Herders,0,0.0,124224.11,False,False,True,1
+Pocket Network,0,58180.59,61771.18,False,True,True,2
+Safe (previously Gnosis Safe),0,119584.01,0.0,False,True,False,1
+BasePaint,0,0.0,115058.35,False,False,True,1
+CharmVerse,0,0.0,109317.21,False,False,True,1
+Umbra,0,34177.99,74534.46,False,True,True,2
+RainbowKit,0,9227.83,99379.28,False,True,True,2
+Aerodrome Finance,0,0.0,104348.25,False,False,True,1
+Optimism Community Governance Calls (Michael),0,56339.4,47702.06,False,True,True,2
+Pairwise,0,7805.18,96208.59,False,True,True,2
+Kwenta,0,0.0,99876.18,False,False,True,1
+Wallet Abstraction,0,0.0,99379.28,False,False,True,1
+Tally,0,0.0,99379.28,False,False,True,1
+Optimistic Indexer,0,0.0,99379.28,False,False,True,1
+Fe,0,0.0,99379.28,False,False,True,1
+Velodrome,0,0.0,99379.28,False,False,True,1
+Vectorized,0,45018.75,99379.28,False,True,True,2
+StreamETH,0,0.0,99379.28,False,False,True,1
+Yearn,0,0.0,99379.28,False,False,True,1
+Coordinape,0,0.0,99379.28,False,False,True,1
+Ronan Sandford,0,0.0,99379.28,False,False,True,1
+Synthetix,0,0.0,99379.28,False,False,True,1
+Waffle,0,0.0,99379.28,False,False,True,1
+Secureum,0,0.0,99379.28,False,False,True,1
+ZORA,0,0.0,99379.28,False,False,True,1
+Zuzalu,0,0.0,99379.28,False,False,True,1
+Gitcoin Passport,0,0.0,99379.28,False,False,True,1
+Soul Wallet,0,0.0,99379.28,False,False,True,1
+The Ethernaut,0,0.0,99379.28,False,False,True,1
+Blocknative | Web3 Onboard,0,0.0,99379.28,False,False,True,1
+P256Verifier,0,0.0,99379.28,False,False,True,1
+Ultra Sound Relay,0,0.0,99379.28,False,False,True,1
+UseDApp,0,0.0,99379.28,False,False,True,1
+Metagov,0,0.0,99379.28,False,False,True,1
+ApeWorX LTD,0,0.0,99379.28,False,False,True,1
+Lyra Finance,0,0.0,99379.28,False,False,True,1
+EthStaker,15892,0.0,81987.91,True,False,True,2
+🐍 snekmate,0,48081.33,49689.64,False,True,True,2
+Aestus Relay,0,0.0,97294.31,False,False,True,1
+NiceNode,0,21521.52,74534.46,False,True,True,2
+IC3,0,45349.22,49689.64,False,True,True,2
+Gelato,0,17983.16,76445.53,False,True,True,2
+Sushi,0,0.0,99379.28,False,False,True,1
+Hypercerts Foundation,0,0.0,94410.32,False,False,True,1
+JiffyScan,0,18994.87,74534.46,False,True,True,2
+Funding the Commons,0,0.0,92656.28,False,False,True,1
+Splits,0,0.0,92167.83,False,False,True,1
+OP Governance Analytics Dashboard,0,0.0,90435.15,False,False,True,1
+Flipside Crypto,0,40079.68,49689.64,False,True,True,2
+Conduit,0,0.0,89441.36,False,False,True,1
+Zero Knowledge Podcast,0,0.0,89441.36,False,False,True,1
+WhatsABI,0,0.0,94410.32,False,False,True,1
+draper,0,0.0,89441.36,False,False,True,1
+BrightID,11002,0.0,74534.46,True,False,True,2
+Galxe,0,0.0,85313.14,False,False,True,1
+PatrickAlphaC,0,0.0,84472.39,False,False,True,1
+LexDAO,0,0.0,79503.43,False,False,True,1
+Bankless Academy,0,58066.79,24357.86,False,True,True,2
+ETHSafari 2023,0,0.0,82229.9,False,False,True,1
+Boardroom,0,32480.07,49689.64,False,True,True,2
+Sonne Finance,0,0.0,81987.91,False,False,True,1
+hardhat-deploy,17115,62648.76,0.0,True,True,False,2
+Holograph,0,0.0,79503.43,False,False,True,1
+Teku,0,78199.65,0.0,False,True,False,1
+Fire,0,15774.28,62112.05,False,True,True,2
+Sphinx (formerly ChugSplash),0,27967.65,49689.64,False,True,True,2
+Alloy,0,0.0,77515.84,False,False,True,1
+Hats Protocol,0,0.0,79503.43,False,False,True,1
+Sassal.eth,0,0.0,76445.53,False,False,True,1
+Tenderly,0,0.0,76445.53,False,False,True,1
+growthepie,0,0.0,76445.53,False,False,True,1
+ethOS,0,0.0,76445.53,False,False,True,1
+Rainbow Wallet,0,0.0,76445.53,False,False,True,1
+RabbitHole,0,0.0,76445.53,False,False,True,1
+Socket,0,0.0,76445.53,False,False,True,1
+AW House/Komorebi's Hacker House,0,0.0,76445.53,False,False,True,1
+Beam Wallet LLC,0,0.0,76445.53,False,False,True,1
+Endaoment,0,0.0,76445.53,False,False,True,1
+DappRadar,0,0.0,76445.53,False,False,True,1
+CryptoStats & CryptoFees.info,22005,18549.22,35451.08,True,True,True,3
+ERC4337 Smart Accounts Dune Dashboard,0,0.0,75490.0,False,False,True,1
+SEED Latam,0,55061.82,19875.86,False,True,True,2
+Pyth Network,0,0.0,74534.46,False,False,True,1
+roll-op,0,0.0,74534.46,False,False,True,1
+Alchemy,0,0.0,74534.46,False,False,True,1
+Forum,0,0.0,74534.46,False,False,True,1
+WASD,0,0.0,74534.46,False,False,True,1
+Crust Network,0,0.0,74534.46,False,False,True,1
+The Red Guild,0,0.0,74534.46,False,False,True,1
+Clave (formerly Opclave),0,0.0,74534.46,False,False,True,1
+Paco Bytes,0,0.0,73252.54,False,False,True,1
+Impersonator,0,0.0,72511.1,False,False,True,1
+Node Guardians,0,20278.03,49689.64,False,True,True,2
+NumbaNERDs,0,0.0,69565.5,False,False,True,1
+Karma,0,0.0,69565.5,False,False,True,1
+WTF Academy,0,19419.09,49689.64,False,True,True,2
+Token Terminal,0,25954.85,42987.5,False,True,True,2
+Praise,0,9286.72,59627.57,False,True,True,2
+⚡️ TurboETH,0,18271.88,49689.64,False,True,True,2
+Bware Labs,0,2217.5,65585.86,False,True,True,2
+Clique,0,18034.69,49689.64,False,True,True,2
+Edge & Node / The Graph,0,0.0,67081.02,False,False,True,1
+crate crypto,4890,12115.61,49689.64,True,True,True,3
+Hardhat Tracer,0,0.0,66145.36,False,False,True,1
+PR0,0,0.0,65585.86,False,False,True,1
+Moso,0,0.0,65585.86,False,False,True,1
+Where has the OP Gone?,0,65055.77,0.0,False,True,False,1
+Superscan,0,0.0,64596.53,False,False,True,1
+Holonym,0,0.0,64596.53,False,False,True,1
+LlamaFolio,0,8246.43,56038.49,False,True,True,2
+Cryptocurrency and Friends,0,63907.22,0.0,False,True,False,1
+Flexible Voting,0,19056.6,44720.68,False,True,True,2
+OptiNames | ENS on Optimism 🔴,0,13930.17,49689.64,False,True,True,2
+Velocimeter,0,0.0,63335.41,False,False,True,1
+Token Engineering Commons,3667,0.0,59627.57,True,False,True,2
+grapebaba,0,0.0,62608.95,False,False,True,1
+Upnode Deploy | OP Stack Deployment UI,0,0.0,62112.05,False,False,True,1
+State Channels,0,0.0,62112.05,False,False,True,1
+Dapp-Learning,0,21627.0,39751.71,False,True,True,2
+hildobby,0,31170.72,32298.27,False,True,True,2
+Optimism Español,0,45993.28,14906.89,False,True,True,2
+Patrick Workman,0,0.0,60616.89,False,False,True,1
+Lore,0,0.0,59627.57,False,False,True,1
+Seamless Protocol,0,0.0,59627.57,False,False,True,1
+ShapeShift DAO,0,0.0,59627.57,False,False,True,1
+Collab.Land,0,0.0,59627.57,False,False,True,1
+Public Goods Grant Management,0,0.0,58674.52,False,False,True,1
+Ankr,0,8603.48,49689.64,False,True,True,2
+MerkleTreeJS,0,58260.33,0.0,False,True,False,1
+abi-to-sol,0,0.0,58132.41,False,False,True,1
+TE Academy,0,57564.71,0.0,False,True,False,1
+Wonderland,0,0.0,57218.12,False,False,True,1
+Index Supply,0,0.0,57143.09,False,False,True,1
+Decent.xyz,0,0.0,56637.25,False,False,True,1
+ITU Blockchain,0,26447.32,29813.79,False,True,True,2
+Hedgey,0,0.0,55430.78,False,False,True,1
+GasHawk,0,10535.97,44720.68,False,True,True,2
+Ultra Sound Money,0,0.0,54658.61,False,False,True,1
+Moonwell,0,0.0,54658.61,False,False,True,1
+EIP-5164 / PoolTogether Inc,0,54551.25,0.0,False,True,False,1
+Jessy's Hacker House,0,0.0,54049.41,False,False,True,1
+Across Protocol,0,15038.62,38223.26,False,True,True,2
+Odos,0,2619.19,49689.64,False,True,True,2
+Arbiter,0,0.0,52174.12,False,False,True,1
+0xSplits,0,52154.24,0.0,False,True,False,1
+Coop Records Music,0,0.0,51677.23,False,False,True,1
+Equalizer,0,0.0,50913.0,False,False,True,1
+Bankless DAO,0,27567.62,23164.32,False,True,True,2
+TechNERD Program,0,0.0,50461.82,False,False,True,1
+Xofee,0,0.0,50076.23,False,False,True,1
+anotherblock,0,0.0,49689.64,False,False,True,1
+Spearbit,0,0.0,49689.64,False,False,True,1
+Public Nouns,0,0.0,49689.64,False,False,True,1
+LearnWeb3,0,0.0,49689.64,False,False,True,1
+Ponder,0,0.0,49689.64,False,False,True,1
+DeepDAO,0,0.0,49689.64,False,False,True,1
+Alex Harley,0,0.0,49689.64,False,False,True,1
+Public Assembly,0,0.0,49689.64,False,False,True,1
+Ethereum France,0,0.0,49689.64,False,False,True,1
+Greg's Farcaster Projects,0,0.0,49689.64,False,False,True,1
+Optimism Grants Council Season 4,0,0.0,49689.64,False,False,True,1
+Clipper,0,0.0,49689.64,False,False,True,1
+The Noun Square Media Collective,0,0.0,49689.64,False,False,True,1
+Delegate,0,0.0,49689.64,False,False,True,1
+Bonding Curve Research Group,0,0.0,49689.64,False,False,True,1
+wslyvh,0,0.0,49689.64,False,False,True,1
+DAC on OP Stack,0,0.0,49689.64,False,False,True,1
+Gaslite,0,0.0,49689.64,False,False,True,1
+Synapse DAO,0,0.0,49689.64,False,False,True,1
+EZKL,0,0.0,49689.64,False,False,True,1
+Layer3,0,0.0,49689.64,False,False,True,1
+RetroPGF Community,0,0.0,49689.64,False,False,True,1
+Based Nouns,0,0.0,49689.64,False,False,True,1
+Wallet Guard,0,0.0,49689.64,False,False,True,1
+Token Engineering Academy,0,0.0,49689.64,False,False,True,1
+Builder Protocol,0,0.0,49689.64,False,False,True,1
+IDriss,0,0.0,49689.64,False,False,True,1
+RADAR,0,0.0,49689.64,False,False,True,1
+ChainPatrol - Real Time Security protecting the OP Collective,0,0.0,49689.64,False,False,True,1
+Antoine,0,0.0,49689.64,False,False,True,1
+Frens,0,0.0,49689.64,False,False,True,1
+Grateful,0,0.0,49689.64,False,False,True,1
+Diego,0,0.0,49689.64,False,False,True,1
+ETHBarcelona,0,0.0,49689.64,False,False,True,1
+cryo,0,0.0,49689.64,False,False,True,1
+Hop DAO,0,38596.06,49689.64,False,True,True,2
+go-ethereum-hdwallet,0,0.0,49689.64,False,False,True,1
+Chronicle Labs,0,0.0,49689.64,False,False,True,1
+Retrolist | RetroPGF Rubric-based List Creation UI,0,0.0,49689.64,False,False,True,1
+Covalent,0,0.0,49689.64,False,False,True,1
+Public HAUS,0,0.0,49197.71,False,False,True,1
+Hyperledger Besu,0,48486.28,0.0,False,True,False,1
+Airstack,0,0.0,47956.47,False,False,True,1
+DackieSwap,0,0.0,47956.47,False,False,True,1
+Cannon-rs,0,5995.93,47702.06,False,True,True,2
+LauNaMu,0,0.0,46328.63,False,False,True,1
+EtherScore,0,0.0,46223.29,False,False,True,1
+Rollup.codes,0,0.0,46083.66,False,False,True,1
+Wildcards Protocol,6112,0.0,39751.71,True,False,True,2
+HER LATAM _ Optimistas Brillando en Blockchain,0,24880.58,21366.55,False,True,True,2
+RetroPGF Hub,0,0.0,44720.68,False,False,True,1
+OpenOcean,0,0.0,44720.68,False,False,True,1
+Attestation Station Interface,0,44342.3,0.0,False,True,False,1
+Messari,0,19085.86,24844.82,False,True,True,2
+Grandine,0,0.0,42236.2,False,False,True,1
+WalletConnect,40342,0.0,0.0,True,False,False,1
+Ethereum Mexico,0,15736.37,24357.86,False,True,True,2
+Defi-lab.xyz,0,0.0,40084.63,False,False,True,1
+dm3 protocol.,0,10197.32,29813.79,False,True,True,2
+Synthetix IPFS Node,0,0.0,39751.71,False,False,True,1
+Venom & Fang,0,0.0,39670.22,False,False,True,1
+Buildooor,0,0.0,39670.22,False,False,True,1
+Akula,0,39663.82,0.0,False,True,False,1
+Dasy,0,0.0,38548.73,False,False,True,1
+Iggy Social - Web3 Social for DAOs,0,0.0,38223.26,False,False,True,1
+WOOFi,0,0.0,38223.26,False,False,True,1
+Interface,0,0.0,38223.26,False,False,True,1
+Launchcaster,0,0.0,38223.26,False,False,True,1
+Surreal,0,0.0,38223.26,False,False,True,1
+Cielo,0,0.0,38223.26,False,False,True,1
+Archly,0,0.0,38223.26,False,False,True,1
+The Opimist,0,0.0,38223.26,False,False,True,1
+indexed.xyz,0,0.0,38223.26,False,False,True,1
+rhino.fi,0,0.0,38223.26,False,False,True,1
+Blockhead: track/visualize/explore all of crypto/DeFi/web3 in ONE interface!,0,0.0,38223.26,False,False,True,1
+LandTorn - Lorak,0,0.0,38223.26,False,False,True,1
+Andrew Hong (ilemi),0,9657.05,27544.96,False,True,True,2
+PWN DAO,0,0.0,37267.23,False,False,True,1
+EIP-4824/ DAOstar,0,0.0,37214.56,False,False,True,1
+GoPlus Security,0,0.0,37023.75,False,False,True,1
+Optimism Prices Contracts,0,5973.38,30297.76,False,True,True,2
+Proof of Integrity,0,15732.3,19305.92,False,True,True,2
+Mosaic,0,0.0,34782.75,False,False,True,1
+Another World,0,0.0,34782.75,False,False,True,1
+solidity-analyzer,0,0.0,34782.75,False,False,True,1
+Vaults.fyi,0,0.0,34175.05,False,False,True,1
+Crowdmuse,0,0.0,32795.16,False,False,True,1
+Layer 2 Weekly Roundup,0,22678.04,9937.93,False,True,True,2
+Llama Risk,0,0.0,30479.63,False,False,True,1
+BMX by Morphex,0,0.0,31801.37,False,False,True,1
+Geo Web,0,0.0,31801.37,False,False,True,1
+Hive,31785,0.0,0.0,True,False,False,1
+diligit,0,31481.75,0.0,False,True,False,1
+WakeUp Labs,0,11328.63,19875.86,False,True,True,2
+DappTools,30562,0.0,0.0,True,False,False,1
+Revert,0,0.0,30479.63,False,False,True,1
+Thesleeper.eth Thai OP Educator,0,20380.82,9937.93,False,True,True,2
+CrossAngle (“Xangle”),0,0.0,30297.76,False,False,True,1
+Rollup Economics Dune Spell,0,15329.31,14906.89,False,True,True,2
+Optimism Grant Analytics: Grant3,0,0.0,30055.77,False,False,True,1
+joohhnnn,0,0.0,29813.79,False,False,True,1
+Superchain Eco,0,0.0,29813.79,False,False,True,1
+Optimism Grants Changelog,0,0.0,29813.79,False,False,True,1
+Optimystics,0,0.0,29813.79,False,False,True,1
+MetricsDAO,0,2859.89,26709.18,False,True,True,2
+Web3bridge,0,0.0,28819.99,False,False,True,1
+Unitap,0,0.0,28318.13,False,False,True,1
+Kiwi News,0,0.0,28318.13,False,False,True,1
+AyaHQ,0,0.0,28291.29,False,False,True,1
+Tokepad,0,0.0,28179.49,False,False,True,1
+Copin.io,0,0.0,27826.2,False,False,True,1
+LXDAO,0,0.0,27826.2,False,False,True,1
+Zapper,0,27792.68,0.0,False,True,False,1
+Jrocki - YouTube & Podcast,0,27607.95,0.0,False,True,False,1
+Summer of Protocols,0,0.0,27329.3,False,False,True,1
+Mechanism Institute,0,0.0,27329.3,False,False,True,1
+Faina,0,0.0,27329.3,False,False,True,1
+Gravity DAO,0,0.0,27329.3,False,False,True,1
+Infinity Wallet,0,2508.66,24357.86,False,True,True,2
+ETH Daily (OP News),0,0.0,25838.61,False,False,True,1
+Cryptoversidad,0,10933.37,14906.89,False,True,True,2
+FilosofiaCodigo,0,13411.82,12422.41,False,True,True,2
+Layer 2 Landscape,0,25407.48,0.0,False,True,False,1
+Zengo: Decentralized Budget,0,0.0,24844.82,False,False,True,1
+Kromatika Finance,0,0.0,24844.82,False,False,True,1
+Eventcaster,0,0.0,24844.82,False,False,True,1
+Baseswap,0,0.0,24844.82,False,False,True,1
+Inverter Network,0,0.0,24844.82,False,False,True,1
+Subli,0,0.0,24844.82,False,False,True,1
+Josh | The Blockchain Socialist,0,0.0,24844.82,False,False,True,1
+Sweetman,0,0.0,24844.82,False,False,True,1
+MultiBaas blockchain middleware,0,0.0,24844.82,False,False,True,1
+FOAM,0,0.0,24844.82,False,False,True,1
+0xSalman,0,0.0,24790.16,False,False,True,1
+Optimism DAppNode Package,0,24704.11,0.0,False,True,False,1
+Redacted Research,0,0.0,24601.34,False,False,True,1
+Pheasant Network,0,0.0,24579.48,False,False,True,1
+solidity-coverage,24450,0.0,0.0,True,False,False,1
+Kovan,24450,0.0,0.0,True,False,False,1
+Etherscan,24450,0.0,0.0,True,False,False,1
+flink,0,0.0,24357.86,False,False,True,1
+Brichis,0,0.0,24357.86,False,False,True,1
+Synapse Labs,0,0.0,24357.86,False,False,True,1
+0xs34n,0,0.0,24357.86,False,False,True,1
+0xKhmer,0,0.0,23807.3,False,False,True,1
+Atlantis World,0,23656.03,0.0,False,True,False,1
+delegation.tools,0,23641.12,0.0,False,True,False,1
+ETHAccra,0,0.0,23607.55,False,False,True,1
+Revolte,0,2800.97,20648.03,False,True,True,2
+Solhint,0,22972.7,0.0,False,True,False,1
+EthereansOS,0,5990.16,16894.48,False,True,True,2
+Attest Fest,0,0.0,22857.24,False,False,True,1
+GreenPill Network,0,0.0,22360.34,False,False,True,1
+Invest in Music,0,0.0,22360.34,False,False,True,1
+Smart Onboarding SDK,0,0.0,22116.86,False,False,True,1
+Opti.domains | Connecting Web2&3 with ENS + Attestation,0,0.0,22116.86,False,False,True,1
+VitaDAO,0,0.0,22116.86,False,False,True,1
+Marko,0,0.0,22116.86,False,False,True,1
+ERC-6551 Tooling,0,0.0,22116.86,False,False,True,1
+Accessible Education for Web3 Public Goods Changemakers,0,0.0,22116.86,False,False,True,1
+Proof of Humanity,22005,0.0,0.0,True,False,False,1
+European Crypto Initiative,0,0.0,21905.68,False,False,True,1
+Taxman: The Web3 Income Tax Helper,0,0.0,21371.52,False,False,True,1
+RareSkills Book of Zero Knowledge Proofs,0,8449.31,12697.69,False,True,True,2
+Women Biz - Optimism education,0,21067.76,0.0,False,True,False,1
+valio.xyz,0,0.0,20551.64,False,False,True,1
+donnoh.eth,0,10129.83,9937.93,False,True,True,2
+OptiChads,0,8606.59,11428.62,False,True,True,2
+Fractal Visions,0,7588.94,12422.41,False,True,True,2
+Optimism Guide,0,0.0,19875.86,False,False,True,1
+Newtro Arts,0,0.0,19875.86,False,False,True,1
+RegenScore,0,0.0,19875.86,False,False,True,1
+JobStash,0,0.0,16496.96,False,False,True,1
+LATASHÁ,0,0.0,19875.86,False,False,True,1
+SpaghettETH,0,0.0,19875.86,False,False,True,1
+Web3ForGood,0,0.0,19875.86,False,False,True,1
+webOfTrust,0,0.0,19875.86,False,False,True,1
+Parsec Finance,0,0.0,19875.86,False,False,True,1
+Slugs,0,0.0,19875.86,False,False,True,1
+Reno,0,0.0,19875.86,False,False,True,1
+1W3,0,0.0,19875.86,False,False,True,1
+Optimism Resource Center,0,0.0,19875.86,False,False,True,1
+Optimism University,0,0.0,19875.86,False,False,True,1
+Remix CC,0,0.0,19875.86,False,False,True,1
+Ethereum Lima,0,0.0,19875.86,False,False,True,1
+Protofire Blockchain Learning Path,0,0.0,19875.86,False,False,True,1
+Pin Save - decentralized Pinterest,0,0.0,19875.86,False,False,True,1
+Yoki Finance,0,0.0,19875.86,False,False,True,1
+Titanoboa,0,0.0,19875.86,False,False,True,1
+Espacio Cripto,0,9910.0,9937.93,False,True,True,2
+Web3j,0,19785.18,0.0,False,True,False,1
+Gov,0,1079.78,18471.13,False,True,True,2
+js-ethereum-cryptography (JS library),19560,0.0,0.0,True,False,False,1
+The Optimistic Series,0,19213.55,0.0,False,True,False,1
+Multicall3,0,18798.99,0.0,False,True,False,1
+DeFi Africa,0,0.0,18429.39,False,False,True,1
+Ivan Molto,0,0.0,18236.1,False,False,True,1
+Ethereum Colombia,0,0.0,17888.27,False,False,True,1
+Crypto Sapiens,0,0.0,17888.27,False,False,True,1
+Keyring,0,0.0,17715.35,False,False,True,1
+simple-optimism-node (Maintaining my own fork),0,0.0,17391.37,False,False,True,1
+Kairos Research,0,0.0,17333.73,False,False,True,1
+raho & tnorm,0,0.0,17189.63,False,False,True,1
+criptomommy,0,0.0,17142.93,False,False,True,1
+OVM security research,17115,0.0,0.0,True,False,False,1
+Bored Town NFT art community,0,4109.12,12422.41,False,True,True,2
+jordanmmck,0,5566.61,9937.93,False,True,True,2
+Optimism FM,0,15206.14,0.0,False,True,False,1
+sorryvrerror,0,0.0,14906.89,False,False,True,1
+MrCrypto Arabic,0,0.0,14906.89,False,False,True,1
+Republik Rupiah,0,0.0,14906.89,False,False,True,1
+Kredeum NFTs Factory,0,0.0,14906.89,False,False,True,1
+Gadgeteer (nanobro),0,0.0,14906.89,False,False,True,1
+far.quest,0,0.0,14906.89,False,False,True,1
+Carlos Melgar,0,0.0,14906.89,False,False,True,1
+ReFi Medellín,0,0.0,14906.89,False,False,True,1
+Eth-Volcano,0,0.0,14906.89,False,False,True,1
+Modular Crypto,0,0.0,14906.89,False,False,True,1
+Crypto Commons Association,0,0.0,14906.89,False,False,True,1
+Web3xplorer,0,0.0,14906.89,False,False,True,1
+Bankless Africa,0,0.0,14906.89,False,False,True,1
+Lyra Research Collective,0,0.0,14906.89,False,False,True,1
+Randomness Ceremony,0,0.0,14820.93,False,False,True,1
+gas-reporter,14670,0.0,0.0,True,False,False,1
+Apetimism Launchpad,0,13769.49,0.0,False,True,False,1
+Smock,0,13684.13,0.0,False,True,False,1
+GSN,13447,0.0,0.0,True,False,False,1
+OpenEthereum,13447,0.0,0.0,True,False,False,1
+Brownie.Eth,13447,0.0,0.0,True,False,False,1
+Polynomial Bytes,0,0.0,13373.47,False,False,True,1
+MarcoV,0,3244.13,9937.93,False,True,True,2
+Spring Zhang,0,13169.25,0.0,False,True,False,1
+Ante,0,12928.58,0.0,False,True,False,1
+JEFE TOKEN,0,0.0,12422.41,False,False,True,1
+CryptoConexión,0,0.0,12422.41,False,False,True,1
+Solow 🐽,0,0.0,12230.61,False,False,True,1
+EIP1559,12225,0.0,0.0,True,False,False,1
+zerokn0wledge,0,0.0,11580.67,False,False,True,1
+Duniversity (Dune Education),0,11449.32,0.0,False,True,False,1
+Blocktrend (區塊勢),0,6355.71,4968.96,False,True,True,2
+OP Security Council Rehearsal Beta Testers,0,0.0,11180.17,False,False,True,1
+Codechecks,11002,0.0,0.0,True,False,False,1
+Bankless Publishing,0,0.0,10931.72,False,False,True,1
+Optimism Vision Reservoir,0,0.0,10931.72,False,False,True,1
+Blockchain na Escola,0,0.0,10883.03,False,False,True,1
+Forta,0,10875.07,0.0,False,True,False,1
+Web3beach,0,10735.09,0.0,False,True,False,1
+Otterspace,0,10499.66,0.0,False,True,False,1
+Optimism Türkiye,0,0.0,10448.74,False,False,True,1
+OptimismArabia,0,5322.68,4968.96,False,True,True,2
+OurNetwork,0,0.0,10120.79,False,False,True,1
+timdaub’s work as ETH Magician,0,10072.54,0.0,False,True,False,1
+Andino - Talent in technology,0,0.0,9937.93,False,False,True,1
+Modular Media,0,0.0,9937.93,False,False,True,1
+Metagals,0,0.0,9937.93,False,False,True,1
+Awesome Optimism,0,0.0,9937.93,False,False,True,1
+Learning about OP through Gitcoin Grants,0,0.0,9937.93,False,False,True,1
+Cryptosquare,0,0.0,9937.93,False,False,True,1
+T2LATAM,0,0.0,9937.93,False,False,True,1
+Definomics labs,0,0.0,9937.93,False,False,True,1
+Divergent,0,0.0,9937.93,False,False,True,1
+Cryptomind Research,0,0.0,9937.93,False,False,True,1
+Cardo,0,0.0,9937.93,False,False,True,1
+satorrr,0,0.0,9937.93,False,False,True,1
+ODTU Blockchain,0,0.0,9937.93,False,False,True,1
+OPChainList,0,0.0,9937.93,False,False,True,1
+Taz,0,0.0,9937.93,False,False,True,1
+DeSchool,0,0.0,9937.93,False,False,True,1
+bh2smith,0,0.0,9937.93,False,False,True,1
+DeFI Saint,0,0.0,9937.93,False,False,True,1
+Inbest Program,0,0.0,9937.93,False,False,True,1
+CryptoMage,0,0.0,9937.93,False,False,True,1
+Rodrigo NuñΞz,0,0.0,9937.93,False,False,True,1
+Basic course in blockchain and crypto literacy,0,4503.78,4968.96,False,True,True,2
+0xDeFiTH,0,0.0,8832.83,False,False,True,1
+Nested,0,8663.52,0.0,False,True,False,1
+GiveStation (youbuidl),0,1101.52,7453.45,False,True,True,2
+Danny Ryan,8557,0.0,0.0,True,False,False,1
+CII,0,0.0,8447.24,False,False,True,1
+Optimism_CIS,0,0.0,7453.45,False,False,True,1
+Web3-react,7335,0.0,0.0,True,False,False,1
+LeapDAO,7335,0.0,0.0,True,False,False,1
+optimismPBR (Public Benefit Robot),7335,0.0,0.0,True,False,False,1
+OP Medicine,0,7195.57,0.0,False,True,False,1
+L2 Planet,0,6845.28,0.0,False,True,False,1
+ATK,0,0.0,6708.1,False,False,True,1
+Orbiter Finance,0,6696.53,0.0,False,True,False,1
+Bankless Japan,0,0.0,6637.54,False,False,True,1
+Bankless Malayalam,0,0.0,6459.65,False,False,True,1
+DeFi Library,0,6403.57,0.0,False,True,False,1
+Kotal,6112,0.0,0.0,True,False,False,1
+daboyshine,0,0.0,5962.76,False,False,True,1
+Chaineye,0,5680.22,0.0,False,True,False,1
+Castle Capital,0,0.0,4968.96,False,False,True,1
+Scry,0,5324.67,0.0,False,True,False,1
+Mrfti,0,0.0,5128.96,False,False,True,1
+XomNFT,0,0.0,5128.96,False,False,True,1
+cryptolawyer,0,0.0,4968.96,False,False,True,1
+International Media Nodes (IMN),0,0.0,4968.96,False,False,True,1
+First NFT Agency,0,0.0,4968.96,False,False,True,1
+Doris Protocol,0,0.0,4968.96,False,False,True,1
+BanklessUA,0,0.0,4968.96,False,False,True,1
+Xanny,0,0.0,4968.96,False,False,True,1
+Findcaster,0,0.0,4968.96,False,False,True,1
+KManuS88,0,0.0,4968.96,False,False,True,1
+MyFirstLayer2,0,0.0,4968.96,False,False,True,1
+Kaito/CoffeeTimes,0,0.0,4968.96,False,False,True,1
+Revelo Intel,0,0.0,4968.96,False,False,True,1
+Bankless Bengali,0,0.0,4968.96,False,False,True,1
+Encriptados,0,0.0,4968.96,False,False,True,1
+Pidgin Parlour,0,0.0,4968.96,False,False,True,1
+geleeroyale,0,0.0,4968.96,False,False,True,1
+ruslanklinkov,0,0.0,4968.96,False,False,True,1
+Banklessadria,0,0.0,4968.96,False,False,True,1
+ProMint,0,0.0,4968.96,False,False,True,1
+Bankless DAO Magyar ( Hungarian ),0,0.0,4968.96,False,False,True,1
+ZEFIRIUM,0,0.0,4968.96,False,False,True,1
+ilyessghz,0,0.0,4968.96,False,False,True,1
+Hitasyurek,0,0.0,4968.96,False,False,True,1
+CryptoDuck,0,0.0,4968.96,False,False,True,1
+RoOptimism,0,0.0,4968.96,False,False,True,1
+Alpha Insiders,0,0.0,4968.96,False,False,True,1
+KudasaiJP,0,0.0,4968.96,False,False,True,1
+DeFi France,0,0.0,4968.96,False,False,True,1
+BanklessDAO Turkish,0,0.0,4968.96,False,False,True,1
+Onboard en Perú Optimistas e Indexer,0,0.0,4968.96,False,False,True,1
+Bedrock Contracts Architecture Diagram,0,0.0,4968.96,False,False,True,1
+Cryptoast,0,0.0,4968.96,False,False,True,1
+The Rollup,0,0.0,4968.96,False,False,True,1
+web3made,0,0.0,4968.96,False,False,True,1
+BitcoinAddict Thailand,0,0.0,4968.96,False,False,True,1
+Nacion Bankless,0,0.0,4968.96,False,False,True,1
+Defy Foundation,0,0.0,4968.96,False,False,True,1
+Watch The Burn,4890,0.0,0.0,True,False,False,1
+C4,4890,0.0,0.0,True,False,False,1
+Code423n4,4890,0.0,0.0,True,False,False,1
+Sourcecred,4890,0.0,0.0,True,False,False,1
+Esteroids,0,4759.8,0.0,False,True,False,1
+cp0x,0,4378.2,0.0,False,True,False,1
+KryptoSpace,0,0.0,4223.62,False,False,True,1
+Quark ID,0,4029.06,0.0,False,True,False,1
+Bankless,3667,0.0,0.0,True,False,False,1
+Proto is a machine,3667,0.0,0.0,True,False,False,1
+Launchifi,0,3424.26,0.0,False,True,False,1
+Big Sybil'or,0,2796.37,0.0,False,True,False,1
+Cryptola,0,0.0,2732.93,False,False,True,1
+Lemon,0,0.0,2732.93,False,False,True,1
+RockX,0,2552.76,0.0,False,True,False,1
+DexKit,0,2436.18,0.0,False,True,False,1
+OAYC,0,2148.79,0.0,False,True,False,1
+OptimismGuru,0,2144.2,0.0,False,True,False,1
+Perpetuals Dune Abstraction,0,2069.04,0.0,False,True,False,1
+raise_exception (rotate.eth),0,2044.08,0.0,False,True,False,1
+Peter Priew Sommon,0,0.0,1987.59,False,False,True,1
+Bob,0,0.0,1987.59,False,False,True,1
+OptimismCIS,0,0.0,1987.59,False,False,True,1
+Optimism Cult Merch,0,1862.82,0.0,False,True,False,1
+zenbit.eth,0,1535.52,0.0,False,True,False,1
+Layer2DAO,0,1465.75,0.0,False,True,False,1
+Mutual Aid Monday,1222,0.0,0.0,True,False,False,1
+Blockchain Education Network (BEN),1222,0.0,0.0,True,False,False,1
+Sugar,0,1103.26,0.0,False,True,False,1
+ERC-5560: Redeemable NFTs,0,1072.54,0.0,False,True,False,1
+Questbook,0,1014.56,0.0,False,True,False,1
+MUX Protocol,0,985.61,0.0,False,True,False,1
+Rigoblock,0,927.59,0.0,False,True,False,1
+Thumbs Up,0,724.68,0.0,False,True,False,1
+Ospace Project,0,594.26,0.0,False,True,False,1
+NFTEarth,0,594.26,0.0,False,True,False,1
+Vue Dapp,0,0.0,0.0,False,False,False,0
+Ether.actor,0,0.0,0.0,False,False,False,0
+Fugu Works,0,0.0,0.0,False,False,False,0
+Mike-Alphaday,0,0.0,0.0,False,False,False,0
+JustCause,0,0.0,0.0,False,False,False,0
+Woosh,0,0.0,0.0,False,False,False,0
+dForce,0,0.0,0.0,False,False,False,0
+Merkly,0,0.0,0.0,False,False,False,0
+Downstream,0,0.0,0.0,False,False,False,0
+IntoTheBlock Optimism Analytics,0,0.0,0.0,False,False,False,0
+Client Side Proofs,0,0.0,0.0,False,False,False,0
+ERC1155 Bridge,0,0.0,0.0,False,False,False,0
+ACryptoS,0,0.0,0.0,False,False,False,0
+CompareNodes,0,0.0,0.0,False,False,False,0
+Decentraclasses,0,0.0,0.0,False,False,False,0
+yAcademy/yAudit,0,0.0,0.0,False,False,False,0
+Bress,0,0.0,0.0,False,False,False,0
+Artemis Analytics,0,0.0,0.0,False,False,False,0
+Bio.xyz,0,0.0,0.0,False,False,False,0
+6551 Studio,0,0.0,0.0,False,False,False,0
+Picodes,0,0.0,0.0,False,False,False,0
+Hummingbot,0,0.0,0.0,False,False,False,0
+VMEX Finance,0,0.0,0.0,False,False,False,0
+The Open X Project,0,0.0,0.0,False,False,False,0
+supernova,0,0.0,0.0,False,False,False,0
+BunnyAI,0,0.0,0.0,False,False,False,0
+APAC DAO,0,0.0,0.0,False,False,False,0
+Stable.fish,0,0.0,0.0,False,False,False,0
+markg85,0,0.0,0.0,False,False,False,0
+Thank Optimism | by ThriveCoin,0,0.0,0.0,False,False,False,0
+vrypan,0,0.0,0.0,False,False,False,0
+Web3Native,0,0.0,0.0,False,False,False,0
+monaditar,0,0.0,0.0,False,False,False,0
+ARPA Randcast,0,0.0,0.0,False,False,False,0
+EVM.Finance,0,0.0,0.0,False,False,False,0
+Verso,0,0.0,0.0,False,False,False,0
+sunce86,0,0.0,0.0,False,False,False,0
+Unruggable Names,0,0.0,0.0,False,False,False,0
+Private Retrieval Fund,0,0.0,0.0,False,False,False,0
+OpTracker,0,0.0,0.0,False,False,False,0
+The Rug,0,0.0,0.0,False,False,False,0
+Brian Kim,0,0.0,0.0,False,False,False,0
+Layer2News,0,0.0,0.0,False,False,False,0
+Proofivy,0,0.0,0.0,False,False,False,0
+Namespace,0,0.0,0.0,False,False,False,0
+herocast,0,0.0,0.0,False,False,False,0
+Mac Budkowski,0,0.0,0.0,False,False,False,0
+Duct Tape,0,0.0,0.0,False,False,False,0
+UNWA,0,0.0,0.0,False,False,False,0
+Onchain Reads,0,0.0,0.0,False,False,False,0
+MesoReefDAO,0,0.0,0.0,False,False,False,0
+Grappa Finance,0,0.0,0.0,False,False,False,0
+Base Punk,0,0.0,0.0,False,False,False,0
+Mirror Curator DAO,0,0.0,0.0,False,False,False,0
+Raiden,0,0.0,0.0,False,False,False,0
+prego,0,0.0,0.0,False,False,False,0
+Pods,0,0.0,0.0,False,False,False,0
+DecentrAgora,0,0.0,0.0,False,False,False,0
+arabianhorses,0,0.0,0.0,False,False,False,0
+The Optimism Superchain Roundup,0,0.0,0.0,False,False,False,0
+DeFi Declassified (OptiNauts NFT collection),0,0.0,0.0,False,False,False,0
+Coinbold,0,0.0,0.0,False,False,False,0
+gang,0,0.0,0.0,False,False,False,0
+Webacy,0,0.0,0.0,False,False,False,0
+Refi Phangan,0,0.0,0.0,False,False,False,0
+API3 DAO,0,0.0,0.0,False,False,False,0
+Ryan Berckmans,0,0.0,0.0,False,False,False,0
+Tockable.xyz,0,0.0,0.0,False,False,False,0
+Donate3,0,0.0,0.0,False,False,False,0
+Eternal Garden: ORIGINS,0,0.0,0.0,False,False,False,0
+Onchain Media Enthusiast,0,0.0,0.0,False,False,False,0
+BlockchainOAU,0,0.0,0.0,False,False,False,0
+UniDex,0,0.0,0.0,False,False,False,0
+r72.fi,0,0.0,0.0,False,False,False,0
+Arkham,0,0.0,0.0,False,False,False,0
+Seedle,0,0.0,0.0,False,False,False,0
+Perelyn,0,0.0,0.0,False,False,False,0
+Optiland Quests,0,0.0,0.0,False,False,False,0
+Nodies DLB,0,0.0,0.0,False,False,False,0
+Blue Norva,0,0.0,0.0,False,False,False,0
+Coinpassport,0,0.0,0.0,False,False,False,0
+Cryptotesters,0,0.0,0.0,False,False,False,0
+banterlytics,0,0.0,0.0,False,False,False,0
+Interport Finance,0,0.0,0.0,False,False,False,0
+jaxcoder,0,0.0,0.0,False,False,False,0
+Sinjun,0,0.0,0.0,False,False,False,0
+Gajesh Naik,0,0.0,0.0,False,False,False,0
+dudedodut,0,0.0,0.0,False,False,False,0
+Golden Boys (GOLD),0,0.0,0.0,False,False,False,0
+EIP Fun,0,0.0,0.0,False,False,False,0
+OP Friday Twitter Thread Translation Contest,0,0.0,0.0,False,False,False,0
+Admiano,0,0.0,0.0,False,False,False,0
+QuantumFair,0,0.0,0.0,False,False,False,0
+SupraOracles,0,0.0,0.0,False,False,False,0
+Crew,0,0.0,0.0,False,False,False,0
+Kristoph Galland,0,0.0,0.0,False,False,False,0
+Validato,0,0.0,0.0,False,False,False,0
+LNRZ,0,0.0,0.0,False,False,False,0
+Optimistic Academy,0,0.0,0.0,False,False,False,0
+DevRel Uni,0,0.0,0.0,False,False,False,0
+ghostlinkz,0,0.0,0.0,False,False,False,0
+Optimism AI,0,0.0,0.0,False,False,False,0
+Apetimism,0,0.0,0.0,False,False,False,0
+Rainie,0,0.0,0.0,False,False,False,0
+AyohTunde,0,0.0,0.0,False,False,False,0
+Joe,0,0.0,0.0,False,False,False,0
+Ivan on Tech,0,0.0,0.0,False,False,False,0
+borderless,0,0.0,0.0,False,False,False,0
+Travenesia,0,0.0,0.0,False,False,False,0
+Paul Burg,0,0.0,0.0,False,False,False,0
+EGG 🥚 RECORDS,0,0.0,0.0,False,False,False,0
+IceBreak-R,0,0.0,0.0,False,False,False,0
+mehran @ castle,0,0.0,0.0,False,False,False,0
+DRAMA,0,0.0,0.0,False,False,False,0
+c2ba,0,0.0,0.0,False,False,False,0
+UXUY,0,0.0,0.0,False,False,False,0
+NingNing,0,0.0,0.0,False,False,False,0
+Hope: A Curated AI Assistant for the Optimism Ecosystem,0,0.0,0.0,False,False,False,0
+Onchain Postcard,0,0.0,0.0,False,False,False,0
+Squirtle0x,0,0.0,0.0,False,False,False,0
+simple8720,0,0.0,0.0,False,False,False,0
+AsymmetricDefi,0,0.0,0.0,False,False,False,0
+The Blockchain Report,0,0.0,0.0,False,False,False,0
+Defigourmet,0,0.0,0.0,False,False,False,0
+FA40Ziv,0,0.0,0.0,False,False,False,0
+Syke,0,0.0,0.0,False,False,False,0
+Blockchain_Space,0,0.0,0.0,False,False,False,0
+MaitreSarce,0,0.0,0.0,False,False,False,0
+UTU,0,0.0,0.0,False,False,False,0
+Blocktorch,0,0.0,0.0,False,False,False,0
+coinman,0,0.0,0.0,False,False,False,0
+Crypto Fundraising,0,0.0,0.0,False,False,False,0

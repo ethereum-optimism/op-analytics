@@ -1,0 +1,30 @@
+name: op-erc-20-transfers
+version: 5
+status: ACTIVE
+resource_size: s
+apiVersion: 3
+sources:
+  optimism_erc20_transfers:
+    dataset_name: optimism.erc20_transfers
+    version: 1.0.0
+    type: dataset
+    start_at: earliest
+transforms:
+  op_erc20_transfers_transform:
+    primary_key: id
+    description: OP ERC20 Transfers transform
+    sql: |
+      select
+        *
+        ,'op' as chain
+        ,'mainnet' as network
+        ,10 as chain_id
+      from
+        optimism_erc20_transfers
+sinks:
+  clickhouse_optimism_erc20_transfers:
+    type: clickhouse
+    table: op_erc20_transfers
+    secret_name: OP_DEMO_CLICKHOUSE
+    description: "ClickHouse sink for: op_erc20_transfers"
+    from: op_erc20_transfers_transform

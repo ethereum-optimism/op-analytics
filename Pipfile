@@ -1,0 +1,39 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pandas = "==2.1.4"
+numpy = "==1.26.0"
+requests = "*"
+jupyter = "*"
+nbconvert = "*"
+dune-client = "*"
+python-dotenv = "*"
+loguru = "*"
+plotly = "*"
+subgrounds = "*"
+aiohttp_retry = "==2.8.3"
+kaleido = "==0.2.1"
+airtable = "*"
+web3 = "*"
+pytest = "*"
+dataclasses_json = "*"
+db-dtypes = "*"
+clickhouse-connect = "*"
+flipside = "*"
+tzlocal = "*"
+hexbytes = "*"
+google-cloud = "*"
+google-cloud-bigquery = "*"
+google-auth = "*"
+pydantic = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
+
+[pipenv]
+allow_prereleases = false

@@ -1,0 +1,17 @@
+{
+    "[python]": {
+        "editor.tabSize": 4,
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.insertSpaces": true,
+        "files.insertFinalNewline": true,
+    },
+    "[markdown]": {
+        "editor.rulers": [
+            100
+        ]
+    }
+}

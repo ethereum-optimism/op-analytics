@@ -1,0 +1,157 @@
+name: polynomial-mainnet
+version: 2
+status: ACTIVE
+resource_size: s
+apiVersion: 3
+sources:
+  polynomial.raw_blocks:
+    dataset_name: polynomial.raw_blocks
+    version: 1.0.0
+    type: dataset
+    start_at: earliest
+  polynomial.raw_logs:
+    dataset_name: polynomial.raw_logs
+    version: 1.0.0
+    type: dataset
+    start_at: earliest
+  polynomial.receipt_transactions:
+    dataset_name: polynomial.receipt_transactions
+    version: 1.0.0
+    type: dataset
+    start_at: earliest
+  polynomial.raw_traces:
+    dataset_name: polynomial.raw_traces
+    version: 1.0.0
+    type: dataset
+    start_at: earliest
+transforms:
+  polynomial_blocks:
+    primary_key: id
+    sql: |
+      select
+        *
+        ,'polynomial' as chain
+        ,'mainnet' as network
+        ,8008 as chain_id
+      from
+        polynomial.raw_blocks
+  polynomial_raw_logs:
+    primary_key: id
+    sql: |
+      select
+        *
+        ,'polynomial' as chain
+        ,'mainnet' as network
+        ,8008 as chain_id
+      from
+        polynomial.raw_logs
+  polynomial_raw_traces:
+    primary_key: id
+    sql: |
+      select
+        *
+        ,'polynomial' as chain
+        ,'mainnet' as network
+        ,8008 as chain_id
+      from
+        polynomial.raw_traces
+  polynomial_transactions:
+    primary_key: id
+    sql: |
+      select
+         *
+        ,'polynomial' as chain
+        ,'mainnet' as network
+        ,8008 as chain_id
+      from
+        polynomial.receipt_transactions
+sinks:
+  clickhouse_polynomial.raw_blocks:
+    type: clickhouse
+    table: polynomial_blocks
+    batch_size: 100000
+    secret_name: OP_DEMO_CLICKHOUSE
+    description: ClickHouse sink from polynomial.raw_blocks to polynomial_blocks
+    batch_flush_interval: "10000"
+    append_only_mode: true
+    schema_override:
+      hash: FixedString(66)
+      number: UInt64 CODEC(Delta, ZSTD)
+      timestamp: DateTime CODEC(Delta, ZSTD)
+    from: polynomial_blocks
+  clickhouse_polynomial.raw_logs:
+    type: clickhouse
+    table: polynomial_logs
+    batch_size: 100000
+    secret_name: OP_DEMO_CLICKHOUSE
+    description: ClickHouse sink from polynomial.raw_logs to polynomial_logs
+    batch_flush_interval: "10000"
+    append_only_mode: true
+    schema_override:
+      address: FixedString(42)
+      log_index: UInt64
+      block_hash: FixedString(66)
+      block_number: UInt64 CODEC(Delta, ZSTD)
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      transaction_hash: FixedString(66)
+      transaction_index: UInt64
+    from: polynomial_raw_logs
+  clickhouse_polynomial.receipt_transactions:
+    type: clickhouse
+    table: polynomial_transactions
+    batch_size: 100000
+    secret_name: OP_DEMO_CLICKHOUSE
+    description: ClickHouse sink from polynomial.receipt_transactions to
+      polynomial_transactions
+    batch_flush_interval: "10000"
+    append_only_mode: true
+    schema_override:
+      gas: UInt128
+      hash: FixedString(66)
+      nonce: UInt64
+      value: UInt256
+      gas_price: UInt128
+      block_hash: FixedString(66)
+      to_address: FixedString(42)
+      block_number: UInt64 CODEC(Delta, ZSTD)
+      from_address: FixedString(42)
+      receipt_l1_fee: Nullable(UInt128)
+      receipt_status: UInt8
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      max_fee_per_gas: UInt128
+      receipt_gas_used: UInt128
+      transaction_type: UInt8
+      transaction_index: UInt64
+      receipt_l1_gas_used: Nullable(UInt128)
+      receipt_l1_gas_price: Nullable(UInt128)
+      receipt_l1_fee_scalar: Nullable(Float64)
+      receipt_l1_block_number: Nullable(Int64)
+      max_priority_fee_per_gas: UInt128
+      receipt_l1_blob_base_fee: Nullable(UInt128)
+      receipt_l1_base_fee_scalar: Nullable(Float64)
+      receipt_cumulative_gas_used: UInt128
+      receipt_effective_gas_price: UInt128
+      receipt_l1_blob_base_fee_scalar: Nullable(Float64)
+    from: polynomial_transactions
+  clickhouse_polynomial.raw_traces:
+    type: clickhouse
+    table: polynomial_traces
+    batch_size: 100000
+    secret_name: OP_DEMO_CLICKHOUSE
+    description: ClickHouse sink from polynomial.raw_traces to traces
+    batch_flush_interval: "10000"
+    append_only_mode: true
+    schema_override:
+      gas: UInt128
+      value: UInt256
+      status: UInt8
+      gas_used: UInt128
+      subtraces: UInt256
+      block_hash: FixedString(66)
+      to_address: FixedString(42)
+      block_number: UInt64 CODEC(Delta(4), ZSTD)
+      from_address: FixedString(42)
+      block_timestamp: DateTime CODEC(Delta, ZSTD)
+      transaction_hash: FixedString(66)
+      transaction_index: UInt64
+    from: polynomial_raw_traces

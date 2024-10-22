@@ -1,0 +1,108 @@
+name: Value Locked Flows Update
+
+# Controls when the workflow will run
+on:
+  # Run on a schedule - Once per day at 06:00 am
+  schedule:
+      - cron: '0 6 * * *'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+permissions:
+  contents: write
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+  # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      
+      - name: Display System Info
+        run: |
+          free -h
+          df -h
+
+      # Set up Python and Node.js
+      - name: Set up Python and Node.js
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10.11'
+        # Set max space to see if this helps with timeouts
+        env:
+          node-version: '16'
+
+
+      - name: Install pipenv
+        run: |
+          python -m pip install pipenv
+
+      # Add any missing dependencied to pipfile
+      - name: Install Dependencies
+        run: |
+          pipenv install --dev
+          
+    # Generate .py files for each notebook
+      - name: Generate py files
+        working-directory: value_locked_flows
+        run: |
+          pipenv run jupyter nbconvert --to python total_app_net_flows_async.ipynb
+          pipenv run jupyter nbconvert --to python pull_todays_tvl.ipynb
+
+    # Runs a single command using the runners shell
+
+    # Value Flows
+      - name: Update Value Flows
+        working-directory: value_locked_flows
+        run: pipenv run python total_app_net_flows_async.py
+
+        env:
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+          IS_RUNNING_LOCAL: ${{ secrets.IS_RUNNING_LOCAL }}
+          BQ_APPLICATION_CREDENTIALS: ${{ secrets.BQ_APPLICATION_CREDENTIALS }}
+          BQ_PROJECT_ID: ${{ secrets.BQ_PROJECT_ID }}
+    
+    # Today's TVL
+      - name: Pull today's TVL
+        working-directory: value_locked_flows
+        run: pipenv run python pull_todays_tvl.py
+
+
+    # commit_results:
+      # if: ${{ always() }} #Always runs even if prior jobs fail - so that one bad job doesn't f everything up.
+      # needs: build #[build, app_fees, op_summer, total_tvl_flow]
+      # runs-on: ubuntu-latest
+      # steps:
+        # Runs a set of commands using the runners shell
+        # - name: Run a multi-line script
+        #  run: |
+        #    echo Add other actions to build,
+        #    echo test, and deploy your project.
+
+        # Commit and push output images
+        # https://github.com/orgs/community/discussions/26672
+      - name: Pull changes
+        run: |
+          git pull origin main
+      - name: Commit files
+        id: commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions"
+          git add --all
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit."
+            echo "push=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "GH Action Update - Value Flows" -a
+            echo "push=true" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+      - name: Push changes
+        if: steps.commit.outputs.push == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,644 @@
+Project Name,ballots,median amount,Quorum reached,OP Received,Project Profile
+Protocol Guild,95,668000.0,True,663853.62,https://vote.optimism.io/retropgf/3/application/0x2a1d784639add63bb313c3836b5dc1421d0a775d4cf7459c97bfbee95f39e26f
+go-ethereum,101,500000.0,True,496896.42,https://vote.optimism.io/retropgf/3/application/0x5b5cb12df644ca17fabd91825886b5491d1526befaec2924315b8e5971d26cf8
+Solidity,109,425000.0,True,422361.96,https://vote.optimism.io/retropgf/3/application/0xef65b1e277e1c7398bbd8a10c623d53dbbb64474ea68b6484e9ccf5c9c0cc494
+Erigon,92,341666.5,True,339545.72,https://vote.optimism.io/retropgf/3/application/0x75c17ab86592588357ebe8f116dab73c6a531ec20a5b23a1f57ae7d85dbb3549
+Lighthouse,89,300000.0,True,298137.85,https://vote.optimism.io/retropgf/3/application/0xd37644d60f063de12786ccd1bb192bdca7ead7aaed1707161943e0ce8bfb72ff
+libp2p,85,300000.0,True,298137.85,https://vote.optimism.io/retropgf/3/application/0xc6c2fa66bbe46ab4a041463f0414883b2c12bd4399355aa62d48b2e1b2669940
+ethers.js,107,300000.0,True,298137.85,https://vote.optimism.io/retropgf/3/application/0x32ee121e0dbcef2fe2b7a8e668f9a53ddc6d43e16c423fe8b4595b0120ac08d8
+Hardhat,101,282000.0,True,280249.58,https://vote.optimism.io/retropgf/3/application/0x31588517386990050541aed3f6d4d5a370e30fcd5bf622886c1955ffc9565f52
+Test in Prod,70,275000.0,True,273293.03,https://vote.optimism.io/retropgf/3/application/0x09a432ebeb70fe4d205e410b028c0ac46b04aa9e1e96b9fafdeb8dc06dbb22e0
+ETHGlobal,90,255434.5,True,253848.98,https://vote.optimism.io/retropgf/3/application/0x9e6b178f20d63eb3179d3872317848582de1d0e793af5c3cbc6891b0071c4e76
+Remix Project,90,250000.0,True,248448.21,https://vote.optimism.io/retropgf/3/application/0xfc31f53ebad145efbb22244d8bb6a7a34b226353b89675f46d04ed0089dd931b
+Lodestar,84,250000.0,True,248448.21,https://vote.optimism.io/retropgf/3/application/0xde75c1d79d53e7864eca485bd594741b745f36cdafdc272cc7809407acb409db
+DefiLlama,93,250000.0,True,248448.21,https://vote.optimism.io/retropgf/3/application/0xda04cebe79ec8547116a948edfbdb87e48dcb0543b29b7276df53df579170f74
+Account Abstraction - ERC-4337,85,250000.0,True,248448.21,https://vote.optimism.io/retropgf/3/application/0xd730a803f5714c7f1b5e518edd57121d1b64c8c91cf611ae5f226cf9bb4b963f
+Web3js,90,250000.0,True,248448.21,https://vote.optimism.io/retropgf/3/application/0x9d1718c287c5d346ddcdaba1ea67709d8c86fb86736fc38b0be12b118e938f47
+OpenZeppelin Contracts,93,250000.0,True,248448.21,https://vote.optimism.io/retropgf/3/application/0x912e6971c43c3a46dbb82d1358af205530663ef01c2fb0691d843a9f72293689
+Nethermind,78,250000.0,True,248448.21,https://vote.optimism.io/retropgf/3/application/0x610c90e43f00306d50b676c4b9f3c02612c121ba42137f9eac49dccc8d2d1d07
+Dappnode,87,250000.0,True,248448.21,https://vote.optimism.io/retropgf/3/application/0x2b665cd3ae32a16f5cdbecc55f61abc071ed32b13398ac741c81a7d372771bad
+Vyper,97,250000.0,True,248448.21,https://vote.optimism.io/retropgf/3/application/0x023dfdedcfb50385c8c24fd86489a7f016633219c66583c71f154d7af99c6b51
+🏰 BuidlGuidl,88,229024.5,True,227602.91,https://vote.optimism.io/retropgf/3/application/0x8bf38219babafdfd18899b481056e6b9dfdf5aed56e5b91a6490cbbc72ac70b0
+IPFS,77,227272.0,True,225861.29,https://vote.optimism.io/retropgf/3/application/0x4ee85a3d39e87cfd1f59d5067668bcacfaf111b74bbd3d1fcbe6da166395f372
+beaconcha.in,94,225000.0,True,223603.39,https://vote.optimism.io/retropgf/3/application/0xa0498cfa249bc5a542fa793407d47f31e0d090e1edf767bd1d72f7869bbbe534
+Ethereum Attestation Service,93,221130.22,True,219757.63,https://vote.optimism.io/retropgf/3/application/0x5eace21ba2231567c07c2c39ad0854c8051e096d18a4bee3e08c833becd2d776
+Agora,88,213636.0,True,212309.93,https://vote.optimism.io/retropgf/3/application/0x9d8e8db50a93b8fc1c68f5a99a240d4a5665fa0fe67b45c093bf70542e97fea7
+Snapshot,77,200000.0,True,198758.57,https://vote.optimism.io/retropgf/3/application/0xfadf25227cc176c7ede5ca6453f663bf57947c42664768e00de9f71c1a907c41
+L2BEAT 💗,99,200000.0,True,198758.57,https://vote.optimism.io/retropgf/3/application/0xc754e70f8d64d1923e4fb7591e0cad3790d4e164b3b11a8db1c1356714037792
+Wagmi / Viem,88,200000.0,True,198758.57,https://vote.optimism.io/retropgf/3/application/0xc593432238cfdcaf9bb9c5d5b87e447f2b6a42d59a91135e0119cccc0d15aa32
+Blockscout Block Explorer,87,200000.0,True,198758.57,https://vote.optimism.io/retropgf/3/application/0x995fc63a5a0c6388a57c586d8fa75ec8f3bb29b6bdc065fe93358ae848092f9e
+foundry,83,200000.0,True,198758.57,https://vote.optimism.io/retropgf/3/application/0x86fdabe5c2a67af3c291ce7acb008088e21f99f3f6f1d464b28e9a8c2034455b
+Sourcify,77,200000.0,True,198758.57,https://vote.optimism.io/retropgf/3/application/0x2c95b50db5da51867c96da2c76773472d2aad9a63f473a3e8096e9b4cbf3f29b
+Nimbus,64,200000.0,True,198758.57,https://vote.optimism.io/retropgf/3/application/0x2133357c7f4da64fbf24b6edde526190e6f2396e9b2b7d5f0dde12ff9799867d
+revm,89,200000.0,True,198758.57,https://vote.optimism.io/retropgf/3/application/0x17e2c8ce0820b7ff172084cd69c6c2b4cdbd65e20e8af8a8f2c96b8401fb22c7
+Lattice (OPCraft & MUD),68,196500.0,True,195280.29,https://vote.optimism.io/retropgf/3/application/0xd623d6ed56a0f8bb9d891f8f3c84f7d76b12741c83103715ec061eaa5d80e27e
+Gitcoin,78,177500.0,True,176398.23,https://vote.optimism.io/retropgf/3/application/0x859d7ec1d7414662658b753da4559bfa6d091483fd0084b673a374e1c3cabf05
+Otterscan,99,171429.0,True,170364.91,https://vote.optimism.io/retropgf/3/application/0x5c84f2c69cd6044c8a9275924a2c4040acbc8e31572260526d9b0bd028eabf04
+ZachXBT,60,150388.5,True,149455.01,https://vote.optimism.io/retropgf/3/application/0x29a4b00f46a4eb31db8a962dfa202fe79f02ba3dc9dd49c98d993eb6189d72aa
+rotki,93,150000.0,True,149068.93,https://vote.optimism.io/retropgf/3/application/0xf307abb7638c184e3836beb422abf8cd36b7fd2bbb4fbd0fdeadf7ab7047a8c8
+Revoke.cash,90,150000.0,True,149068.93,https://vote.optimism.io/retropgf/3/application/0xa0ef6246d5c1dc17417db2b0f2b0b3aa3113f9c6df5920e93ac1e0c639a5bd1e
+OP Reth,65,150000.0,True,149068.93,https://vote.optimism.io/retropgf/3/application/0x356900a8a5aa893d522dfcd67cc89f6472f8793ea8cf41088b47833ff1c16b5f
+Giveth,78,150000.0,True,149068.93,https://vote.optimism.io/retropgf/3/application/0x17cfb81d50a65a6ef3e7ecfdf8e4ca428514d77e74ca3c650d4ba9926f9e67ac
+Mirror,73,139852.0,True,138983.92,https://vote.optimism.io/retropgf/3/application/0x2d8dc7a3cd967718d8f27253b4a3912653d308620007576ac0697ba65fecd985
+TrueBlocks / Unchained Index,70,137500.0,True,136646.52,https://vote.optimism.io/retropgf/3/application/0xd7678550d5092dc6163c97666248ff136eae59c82e3bfd21905be13024d0662e
+Ethereum on ARM,60,134283.5,True,133449.98,https://vote.optimism.io/retropgf/3/application/0x092a8ce182f9443499d2a36b1b6bbcd5da9340360d82a38c921b6b5c46f1e67f
+Immunefi,53,130000.0,True,129193.07,https://vote.optimism.io/retropgf/3/application/0x12da34c1a3904b0f73945a9d7babe8f5182000b737a7da1fc3777554589a2191
+Open Source Observer,63,128713.0,True,127914.06,https://vote.optimism.io/retropgf/3/application/0x21ff2e7e147448cad238cf12c9622b73cd409d17d6b9443181f8ea4f3a044c86
+Ethereum Cat Herders,75,125000.0,True,124224.11,https://vote.optimism.io/retropgf/3/application/0xfcc4798ccc9e2f578ce316278aa40da3fcee3c3f0b92c265062cf31906f2e815
+Department of Decentralization,62,125000.0,True,124224.11,https://vote.optimism.io/retropgf/3/application/0xf780b4a39ea9529b9e7af1638c816801ce89cf06e93dd6d66ea383fb3ed263f0
+TypeChain / DethCode,55,125000.0,True,124224.11,https://vote.optimism.io/retropgf/3/application/0xa41c1671630bb1c1474b3ec7fecf4fc13f3bb292d29620a83878dfcd66ed4006
+Frame,79,124313.0,True,123541.37,https://vote.optimism.io/retropgf/3/application/0xdb768783fabfa13b0755542de7af4cb1d4a0c3e0b52ba68069c5d06b3718b7d5
+Slither,68,122500.0,True,121739.62,https://vote.optimism.io/retropgf/3/application/0xdc83083060482b77d672b1ce442d426f9c9843bd5f6bd2b994a3bdc70489e3d0
+BasePaint,57,115777.0,True,115058.35,https://vote.optimism.io/retropgf/3/application/0x91bba885bafc9e5144c7577f7159778277e17eb6073d4f6adf5acd3b31c9f1fc
+Small Brain Games,57,114999.0,True,114285.18,https://vote.optimism.io/retropgf/3/application/0x9a3872d9d2a22b3d9e0cd88a7169fbc897a3aea36159e62253be38c06cf97bb2
+CharmVerse,57,110000.0,True,109317.21,https://vote.optimism.io/retropgf/3/application/0x6b71f6d6aa0190ee949d08c706f772a90e600cc55972287fdb74cbafc2ba099e
+Aerodrome Finance,51,105000.0,True,104348.25,https://vote.optimism.io/retropgf/3/application/0x8a98ca3820628543b412f97cfb5e9d0b75987432daf1d6199a658234727c8564
+Kwenta,46,100500.0,True,99876.18,https://vote.optimism.io/retropgf/3/application/0xd19033e89a3fcb4a7dc19baad712836f6965cf6b4efc0a40f1f0e46d23f8256c
+Ultra Sound Relay,42,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0xf6c81f36041a6d90c828596ffa470e1fc4929cad6ade4242f3f8a9f37f66597e
+Secureum,36,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0xf3556b88ce615a95656a66b816dccd3aafa786e47905a2bf5f40af726c481ebd
+Candide,43,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0xf28fd827c67ce04a26b1ecf1f938d109f56c0977d5a2f0a0a7ecb14eb3276122
+CryptoZombies,70,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0xea51114ddd4cd331be77a9318748c5e276a2b3c34c5e220558e6fb88483bec5c
+RainbowKit,79,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0xe9140c31f3a448f0f52124b3f9782f7947d698a686ceb20f77f60366670f3f8e
+Metagov,58,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0xe367584886bdb185038a466f6a8e5a4ad746ffef051507a311cae85ae11c7d5e
+Cannon,54,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0xdc0face64ba51ddef44e2735f61245b27d54351a77d1a838b15d447e5ac6fcd0
+Coordinape,52,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0xcec7aea98b44a9e53c771a33664e9349c0cfd6d9bb769a40c2acb8baf1a3beb1
+Wallet Abstraction,33,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0xb3ee9ece0744873de674a173e46ad498bb7bbd53d98623b05b748d2f2a58210f
+Velodrome,44,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0xb223887547f0bd1560b4e472a18da5f8733792b7e334bf8009dd36346b91a8f8
+Blobscan,45,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0xaa5c01558feace0ee3dde7cca66d30b81b6f097f26405aa0a4e6fdc1885adf5b
+Support NERDs,41,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x9f02d0fb07627df18ee7c9aced74e8f9bfb6ed4801619de380b0cde3e5a7941c
+Fe,50,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x9ed643c855860e3fa9950a598af75c9810a39e2780c4227afe5bc8df865c067d
+StreamETH,38,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x9ae606d30dc33cdb405ea16e48fd055ba496a088cd4cc7efec488db659a296d2
+EthernautDAO,60,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x93d140bdf129de19dce4df8922b9b599aabde4632a89e646a84669b470ee5a8a
+Ipsilon,40,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x92a87cf038d881b99443a9157cd5649fe87a9df62511aaf72c5fe659ff8ef02b
+Lyra Finance,40,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x8e02390fa0a94edad31224af640fa639f7d62111f05f32ea1e2746111e45a905
+Waffle,57,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x877ded44fae0833c412ef1b802419a7d6d9e668c6f92f1fb439dbbd40ca12b2d
+Guild.xyz,62,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x867d2124127d8e8cca1dffa619fce4279b29312553774c585be90c0427a81c39
+Synpress,55,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x7992f31ac0db3aad3dc7edead1a3670a6be071703212129f3a396c043cb23e84
+Optimistic Indexer,44,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x75815ccd858e6b97c6e8435e24ec66b1bc4d67c4775a81d4b49a8c58b62daf3f
+Vectorized,72,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x71e490b88c1fcd2eec579fd0d16da882c82aa9f86b8f7b0ae3ce2096139dc22f
+UseDApp,41,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x6af5473e4db0dd86a69cb40bb73784f078e1dd2c242bad094331cde932c54daf
+Synthetix,54,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x6ae2bf87fcbddb4d715add72ea987fcb9537ec19e3f859befeebeed533144e73
+eth.limo,50,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x67d0c66af963dd27720330e5dc2b5ab73a522c9436fd4085aa7048f1584da54b
+Optimism Translators,41,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x667dd1b67a216d3e7a0499dbdb6728837677cb8787a002dfd093708dc705584a
+ApeWorX LTD,63,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x6655fe259700452b0452aad4b8c7589c745e7df2dccefe76d70701317fd9e3b8
+Soul Wallet,39,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x641fe0827e471069d6c0d2aa3a0688393aa20c3c845da252b4c8450cdee29630
+Gitcoin Passport,60,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x60085a98f5c48d97a28d7b45d193f9a734d1704e257df91827459b09565e0e47
+Ronan Sandford,61,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x5a18e693d79904be1b43af93354e08bf21c1e6322d29cfd03fd235e27bb6e815
+EthereumETL,42,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x5673d6a413d360de74d262487bdb4e70cb357c4d890af9cd62a369b1d858416b
+Yearn,45,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x4b73a8f4d2e3bf2f6cff7ae014b13fdf8a85d0b33064127e53b81b2b7d365652
+Tally,65,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x3a4decc8b39d16b0eff1b41134bc9b9fcdba84292c2416766237125ad730072f
+Optimism Ambassadors,33,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x24b3600b0d049e7bdaee893d3988bdc4b04ebb0819c2c44f693093637d96f111
+Kernel,67,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x1fd47d4e1eb48f9423464b8fe00c9b2c490705e138082ac5c3b8ee7aa2258d3b
+Sushi,38,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x176d93beb29316e51b21e42cc1d49ef0867b37bda258b06ba410a3043fee7df5
+P256Verifier,61,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x118a000851cf4c736497bab89993418517ac7cd9c8ede074aff408a8e0f84060
+The Ethernaut,56,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x1053c5fc1597ff030c267d4667898095ca3a42cc370fe9b8d156880b8a2b455e
+Zuzalu,46,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x0d0e25080679f616ff720b738c084c971d67c39a9e0a9cdec4541f011376a72d
+ZORA,59,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x0bcd7e1f59a78a15a8c481244aaba93b7f690aaece04ffc6e4a55e282afa309c
+Blocknative | Web3 Onboard,44,100000.0,True,99379.28,https://vote.optimism.io/retropgf/3/application/0x0a70938874b0558c1ce25ba50bb3cf18125b55a92b22171205d41a79a2680974
+Aestus Relay,22,97902.0,True,97294.31,https://vote.optimism.io/retropgf/3/application/0x5c465f2cece28e1ba91ef5967549fec63f8b17212fba05e5e0117b442af554b8
+Pairwise,66,96809.5,True,96208.59,https://vote.optimism.io/retropgf/3/application/0xefa8ac63c7c8ba12ad5e43575ea25cd2d60fc44d38f6c83aea47ca6a7a05662d
+Hypercerts Foundation,49,95000.0,True,94410.32,https://vote.optimism.io/retropgf/3/application/0xdc7101e51a122ec96eaf07c4191f5cc0a096ef50cbbdfdf5936464369991afb2
+WhatsABI,44,95000.0,True,94410.32,https://vote.optimism.io/retropgf/3/application/0x0056608c46c8d39fe0433671112d2b657578f801379b16e62f2e910f72406745
+Prettier Solidity,73,93235.0,True,92656.28,https://vote.optimism.io/retropgf/3/application/0xa1ba547a93ddb2d5273ad0960f42b4c2d1a1dd92fe945b019787a937c5e9c705
+Funding the Commons,53,93235.0,True,92656.28,https://vote.optimism.io/retropgf/3/application/0x258d37e997650d7c83eba44f7210224fdb2afbf331e6e6dedb8bf6e83c75645c
+Splits,56,92743.5,True,92167.83,https://vote.optimism.io/retropgf/3/application/0x2b4aeb64146ded169a426bde053b3f9e9e925ee740a58149d92812114af83de6
+OP Governance Analytics Dashboard,48,91000.0,True,90435.15,https://vote.optimism.io/retropgf/3/application/0xebfc1df338555d25cbe27bce4896c16c761e90e879be669fe8a6910c9f60dc6d
+Conduit,43,90000.0,True,89441.36,https://vote.optimism.io/retropgf/3/application/0xf6e92ff9410d269f6e6659011dfdc4f3cbd59fee6736924bf7fb948c75ca5113
+Zero Knowledge Podcast,47,90000.0,True,89441.36,https://vote.optimism.io/retropgf/3/application/0xb046f206a85340c9a5fd8a2580c50a959a5e12ce83472533cf7320481836c242
+draper,43,90000.0,True,89441.36,https://vote.optimism.io/retropgf/3/application/0x0ce37173aac4d925ca6434dc28b7fad840870ec6ee27bda8c7db4685cb6fd812
+Galxe,47,85846.0,True,85313.14,https://vote.optimism.io/retropgf/3/application/0x198fe5e11670cd1195067815e48f7e696fe5e7bf43a1c15f9bbbdcd72442c319
+PatrickAlphaC,47,85000.0,True,84472.39,https://vote.optimism.io/retropgf/3/application/0xfcd835dcd49c065f771ddd79ee1a37a908645121a0a59c51738507d6c89ae06c
+ETHSafari 2023,38,82743.5,True,82229.9,https://vote.optimism.io/retropgf/3/application/0xe75ec593d70d62544e17643586f9742e6bb779e9562eaa8202a9a04dd6782f85
+Keccak hashing,52,82500.0,True,81987.91,https://vote.optimism.io/retropgf/3/application/0xaee5d6c20a44b769b67767b8e691476d87b0b644784f635664c3f133c63e822b
+Sonne Finance,36,82500.0,True,81987.91,https://vote.optimism.io/retropgf/3/application/0x655147f840bb857c98d0a6841d40c43a0d1359aa79843c46e8e15b9f8cafd6eb
+EthStaker,54,82500.0,True,81987.91,https://vote.optimism.io/retropgf/3/application/0x29a3d9a092906a2b2cbe6e979b3d56f3a88047a9b2b5647ed8f8d40783cd5edf
+Hats Protocol,39,80000.0,True,79503.43,https://vote.optimism.io/retropgf/3/application/0xe481da7dcea63794d734fbbd156f0327a4b6905852d6865a5437b722c80871ab
+Holograph,25,80000.0,True,79503.43,https://vote.optimism.io/retropgf/3/application/0xd36960a852e96960b93022ee1d40f33170e9786cda841db0bb6a8f4130658529
+LexDAO,45,80000.0,True,79503.43,https://vote.optimism.io/retropgf/3/application/0x88403a05838b89463ea5a2a8635d2b4c537fb2f6e7a4b939bebb60adb7dedee0
+Alloy,39,78000.0,True,77515.84,https://vote.optimism.io/retropgf/3/application/0xc7f3dfa39edf399c56c96c2c192f50e54e71faefd01a07a8b3d9e6d9471ed09c
+Socket,46,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0xef72bca84161d8ba1e471dbe58b8a3fef9cd56e697e885d78c6ec5c77e81b71a
+Endaoment,49,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0xe04b509d073efc17c44e3dd988dbb46724a11836aff71575424bcc7a0ec91123
+Gelato,64,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0xdb2312b8fbf29ccf68c0b22ee4d2d9dfcf192d32cd86c58d9bc5cfd610783084
+AW House/Komorebi's Hacker House,46,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0xda538dc56054ec05476e152009df9af3e1947505e067b8363dd568a0d89c739d
+DappRadar,54,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0xcab1256cd3698caa9028d2bd357d50587a5876530cc310b890051df99f626a76
+Rainbow Wallet,58,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0xb1af1a67d6a94f233303d850c607aa1e26365237ab1376864a81d636ec0ebe0a
+Sassal.eth,70,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0x9e1829323c35d18c3b5366b75922da2d966c39abf4472b29f763cf09e150a09d
+growthepie,66,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0x849e164d1b8cc2b51bd3313d007ac58acb816660492336d2498615551ec75f02
+ChainList,67,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0x7d1e13db1b852828f7072e10fcfc179751c624f6a93929a3b5a4a6795d5bdec4
+Tenderly,74,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0x63506f0d71ed13eb435d76d593ad9d466dec78e7e19417538e8abde6e4d8ffe6
+Beam Wallet LLC,39,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0x5fea22432b5b5a6f836e2d7f40372234e9a4e5d987b229cdc548d2057124cf4e
+RabbitHole,57,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0x4f382f942845103eace9ad3e46a817e5e95a1676974c58358c7c84d540fdd951
+ethOS,55,76923.0,True,76445.53,https://vote.optimism.io/retropgf/3/application/0x44e382b0845c4bbe3695f5bc8218c1cf75e5c44d1868a08f10571871295ad042
+ERC4337 Smart Accounts Dune Dashboard,48,75961.5,True,75490.0,https://vote.optimism.io/retropgf/3/application/0x2eb508d0de065158c7ad478b90f5ad3bb34f530ae4eff096d2183a28e2d24930
+Pyth Network,45,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0xfeba07d541bf93651d4278ab2fb91f89b147e6c5d743ea29fe797958997644cf
+JiffyScan,44,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0xfd284c78fd0dfbc9d66a2c7638601860a02990d25de2ff46365ef487c7d138ed
+WASD,37,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0xbff2ae300da0871d1241325f143822c7281690f37d84ccdefd4f8b5d3d6be304
+BrightID,52,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0xa9833d02614a828dbce1c5a02c8c0bfd809fa0399db60f3ab9692a8421f01307
+Alchemy,59,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0xa771de85e1b955ba11b2cb314b940ab3d9aab65fd27900fd54c7f7011c969d46
+roll-op,55,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0x9f375d025498e4a6e457e9bbd517f1c75395fbc521bb3300f85b02ed6cbbe5d1
+NiceNode,39,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0x825391e7c04751be3c9a8971ec57d1a1e9fba7f12df9e78046d3a4646b096dd9
+Umbra,48,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0x617e15a1edc68034cac85db6f0a4d3bb55418761ab7ba4fe26423c3806ff20e6
+Crust Network,24,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0x55de5c33ffd56e471340bf62a199c25f84f0c5564e7a6f2d6e8b3a4aaabeb8f7
+Forum,30,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0x17b6075cdc32729b7ef683d9cb9160cfc5425c00115af4844eaf310721862e8d
+The Red Guild,40,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0x08887fb11639636a61fda9a74730cc377d5bb7b66f68c8da13dd97f67bb4819d
+Clave (formerly Opclave),42,75000.0,True,74534.46,https://vote.optimism.io/retropgf/3/application/0x0517a9d930d480d5478b6b173e54376cd03ec48d17574baadde2a6322560c7a7
+Paco Bytes,49,73710.07,True,73252.54,https://vote.optimism.io/retropgf/3/application/0x43a3dfdedf7dc7ba761c2c6c39f1ff92749ec592bdaa818dd15faf42f53d0401
+Impersonator,36,72964.0,True,72511.1,https://vote.optimism.io/retropgf/3/application/0x2baa369e4449595c51759fa9a5b71e3e016b108b6baac6a0b815874a898eade5
+polynya,74,72500.0,True,72049.98,https://vote.optimism.io/retropgf/3/application/0x639313c5da7056c1827ea1609066c4746bf74d886936551b77a13f63406d3889
+Commons Stack,49,70000.0,True,69565.5,https://vote.optimism.io/retropgf/3/application/0xe3e819b9059115915280be91f45afb951f907e7ba9208cb9f979bc0d1e58a45e
+NumbaNERDs,44,70000.0,True,69565.5,https://vote.optimism.io/retropgf/3/application/0xc1e0a3e9fe552dc8e04a7b2ca5a7be55cdc9f2eece78a954074b4a739aaeda3c
+Karma,57,70000.0,True,69565.5,https://vote.optimism.io/retropgf/3/application/0x643b377b91001dfe0b6badb91cfb0b79ef97510ccf731cbeb29166cb2d55415a
+Edge & Node / The Graph,58,67500.0,True,67081.02,https://vote.optimism.io/retropgf/3/application/0x8526b3343ae97a1859ff98d7f7d414ba2f47735d62a84b94f5aef514b5260aa6
+Hardhat Tracer,34,66558.5,True,66145.36,https://vote.optimism.io/retropgf/3/application/0x91411a9f53cb3d0d36f4dc6394d6d6aea81e12d9ecef2ac2225af3f9fe6d3d07
+Moso,30,65995.5,True,65585.86,https://vote.optimism.io/retropgf/3/application/0xd2a9d5fcec639fa8163db2e6a22d551c778226fd2edf17e9fd8a64fa7c7d0983
+Bware Labs,32,65995.5,True,65585.86,https://vote.optimism.io/retropgf/3/application/0xb1e3145980b63c6b80adad4ff345f8424b51b2885c13a411ffa6f37fba3aeb23
+PR0,28,65995.5,True,65585.86,https://vote.optimism.io/retropgf/3/application/0x938958cbd40bff58453dad061a22b9ee0e525767622cc363bdd69af8f9b2d9c7
+Holonym,36,65000.0,True,64596.53,https://vote.optimism.io/retropgf/3/application/0xb0f319e13cdddf0cb23344062d1e445a0c0f005e9d44a93692838438a5ee0c3b
+Superscan,45,65000.0,True,64596.53,https://vote.optimism.io/retropgf/3/application/0x315ab2dcbb2d8196e6c9a5a5945ca34ca210901a6f71ab103e00b253ccb73158
+blst Cryptography Library,44,65000.0,True,64596.53,https://vote.optimism.io/retropgf/3/application/0x09154033133226c880b4e0dbcf22d8e6a0e19eafe9c548787b6ec6ac92b0bc7d
+Velocimeter,28,63731.0,True,63335.41,https://vote.optimism.io/retropgf/3/application/0x3a19a401d8892df9abdc19a255ef686d98ff5e2cb629a03f90272e89725ac3e5
+grapebaba,36,63000.0,True,62608.95,https://vote.optimism.io/retropgf/3/application/0x34f3abc13da15fc697abc16701dfafb2896c7a063a80959b997c5c3218b24523
+Fire,32,62500.0,True,62112.05,https://vote.optimism.io/retropgf/3/application/0xa64b80a2cc3524a73173be61f8356f03be155dfa8f9f9e2f9bd9ec94c1d40e2e
+State Channels,30,62500.0,True,62112.05,https://vote.optimism.io/retropgf/3/application/0x6fb1521598b6e2417c6439d4350c577ab1609f2bd9a3cdfdfa1267cfa52789e1
+Upnode Deploy | OP Stack Deployment UI,34,62500.0,True,62112.05,https://vote.optimism.io/retropgf/3/application/0x6414f98253234460bc3783f0ad377c47d96d354c49d428ac992524f71cf7da37
+Pocket Network,49,62157.0,True,61771.18,https://vote.optimism.io/retropgf/3/application/0x715a13d6d425db499f4b493b302f02f738fe93b2c32e09ab7ca35d4392e2471a
+Patrick Workman,40,60995.5,True,60616.89,https://vote.optimism.io/retropgf/3/application/0xba60fee29d573acf227ffb4dd7bc8f44371cf226b37ce28efe413a082f23e53b
+Token Engineering Commons,56,60000.0,True,59627.57,https://vote.optimism.io/retropgf/3/application/0xfa0bb32edc38f3704e38dfa2af33310fed14f3a90928143c688643342b7f3466
+Praise,62,60000.0,True,59627.57,https://vote.optimism.io/retropgf/3/application/0xf73e389c8467cd1dbf9afe32eb596e2b2d176272a3819fccfca22ec4bc978725
+ShapeShift DAO,36,60000.0,True,59627.57,https://vote.optimism.io/retropgf/3/application/0xbac29b5be9a91892eae39f804c408fe66bf8b4772710f35a475eae07d1967a6b
+Collab.Land,50,60000.0,True,59627.57,https://vote.optimism.io/retropgf/3/application/0x9ce4de6780a17ff4dfbab6b255157c5ee3aad755b83a7a38de5667bc6609f700
+Seamless Protocol,29,60000.0,True,59627.57,https://vote.optimism.io/retropgf/3/application/0x7f2bcd6d20e753b49c12c96eee3304715ecb33bdc6750c572530c90750e47713
+Week in Ethereum News,75,60000.0,True,59627.57,https://vote.optimism.io/retropgf/3/application/0x44be5b3d06daade4fd7a1c3e1bc9428926befe272b72c16f2d72dce66692af13
+Lore,40,60000.0,True,59627.57,https://vote.optimism.io/retropgf/3/application/0x0eb54adbc7b4564eea0b18f9270d201dde386ad9aba771dff0cc0370ca4df523
+Public Goods Grant Management,26,59041.0,True,58674.52,https://vote.optimism.io/retropgf/3/application/0x79fc11f76eb95d878142bf547b993f5850e2fec2408457ae7d3a68d0a755fabb
+abi-to-sol,36,58495.5,True,58132.41,https://vote.optimism.io/retropgf/3/application/0x8af099c741d009e71850d3a9570e2672078ad7ca5b3ee391a7d4a0b75f845be4
+Wonderland,40,57575.5,True,57218.12,https://vote.optimism.io/retropgf/3/application/0x517fa0d1a58652b1fec28db4d4f9be287bc4d1f2fac7bac8f583de374f9534f7
+Index Supply,24,57500.0,True,57143.09,https://vote.optimism.io/retropgf/3/application/0x91accca44656ae99040e947aa75f50e9f9657bce564fdf1b9f266c32081ecf0b
+Decent.xyz,35,56991.0,True,56637.25,https://vote.optimism.io/retropgf/3/application/0x8afe332e8f4c42d4df6e92389c13e0e1b3a43369655761e4f17af9c50975ba18
+LlamaFolio,24,56388.5,True,56038.49,https://vote.optimism.io/retropgf/3/application/0xf42ea318753c3e178b843d0f7718634e910003f14ce2b32c6bee43be9cdc02ee
+Hedgey,33,55777.0,True,55430.78,https://vote.optimism.io/retropgf/3/application/0xf8dfff20523c457d87c6ee83f00574f4c73912597f0487c1eff55afb663c4fa2
+Moonwell,39,55000.0,True,54658.61,https://vote.optimism.io/retropgf/3/application/0xeff464a4d1163c24dea3777598667b31c6b68cea03649e0e8dbaa80fad82fc5f
+Ultra Sound Money,54,55000.0,True,54658.61,https://vote.optimism.io/retropgf/3/application/0x5e97794e6f3b8af9c3b97da269e51387e788cb4b3c609d708aaa668538ef1de2
+Jessy's Hacker House,38,54387.0,True,54049.41,https://vote.optimism.io/retropgf/3/application/0x625af78742d214ddceb8fdc2fb992333579e3787b1b270e940e82ff44f261ea3
+RadicalxChange Foundation,58,53085.5,True,52755.99,https://vote.optimism.io/retropgf/3/application/0x257a1cd3636dacb61acfaf682f07d3753453246858145ba32c5de11284bd9c5a
+Arbiter,38,52500.0,True,52174.12,https://vote.optimism.io/retropgf/3/application/0x64f7a2367e5de2ebdcadd967385bc304f0221568276247dae792e86d608b402a
+Coop Records Music,36,52000.0,True,51677.23,https://vote.optimism.io/retropgf/3/application/0xad1dd3ce07f04ed555f84a28aa95421353a89a7eb14145fd4b4239d44b4aeaef
+Equalizer,30,51231.0,True,50913.0,https://vote.optimism.io/retropgf/3/application/0x3fefb03794a7df62a191bd6d771f6ccfa00a52b266b352a9d1d070b6b257bf44
+TechNERD Program,37,50777.0,True,50461.82,https://vote.optimism.io/retropgf/3/application/0xf7c02a1b2ca36e04e1c42ec8238a3d18ee6952aa6055f64cc832fbc45a4213d1
+Xofee,31,50389.0,True,50076.23,https://vote.optimism.io/retropgf/3/application/0x8e27954588424d59759c84a2692f4115e12bb557b584ecea2b8e872aa3cdc133
+DeepDAO,48,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xfaaed11baa954ccc12629031eeaf8dbfb8041b73f0e050614152b0d1b6beaed7
+DAC on OP Stack,44,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xf2be22e439749a342bfe13feb107007c7f3f3ff438d869fad8befdf3169d8ee4
+Delegate,50,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xf251eca6ba1ed9dd7203accd891e6d00b086a4af7d0b6bf19eb663a2eecaca84
+Alex Harley,31,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xedd5da3aa7cb23ec992f2d0b8bc6da3976efa2d28ed3a30521b5cbe6069eea01
+Public Nouns,37,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xde31ec6552239160f9a6e7297ab01f4bdf4c176a7230bf06ac282e2e46add674
+Boardroom,49,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xde2cdac6214cb7c5ebabfbf74f0038b416910f207f41be680680db18e477a820
+Clipper,23,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xdc7d2186884c4635d06e1ba6c63ac036abeae77eaa753df024ad7029f6b63831
+OptiNames | ENS on Optimism 🔴,42,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xd283248f9b998c566b07a1868dc87d7bed5f702f68ec23d9dd540ee359be70f2
+Odos,35,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xd27984d196342b49f7e3019510482e2dab1a80d9b3e1b292a5dcf60134dce7b8
+Grateful,27,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xcbafba4f9d052bf3575a31d0a48c6a194480d1e05f78589fe1a8e71031fb88f8
+Node Guardians,40,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xc994fee0c5255f0bb044f3e0e86fc18ecb6243a10189e717f3269d430a0c507c
+cryo,41,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xc8c29a526ab223c3ed963b4eca6a2e462a5e7b7fa33bf443b17d17a0a60e208c
+Frens,22,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xc78ef9f4578ace0ad5ee70cdf9aac6647a8d0d5ed16d08170007f6abddcdc0cf
+WTF Academy,43,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xc77e8caea0ff6aa3bfcb546234f651f9c7b2486d42a326a64b0d847fe3f84afc
+Retrolist | RetroPGF Rubric-based List Creation UI,34,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xc666c3ec5d303fd37605cfed32f7233e734a307c495893c11f63749dc73e49d9
+Covalent,39,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xc3606287e34909a0402a4d95c142bfc460cacdcff60474f514e4e33f653ede76
+IC3,50,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xb8741b55dc416bd673cfb40a1ae2f19e10e1ddc2acc809c27016a5a4c17484fa
+RetroPGF Community,35,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xb77dba2c57ae730d73a32f05ed1e4e606d7028084345c5bc295f12d5048c5fc8
+Wallet Guard,25,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xb7247ddd26258c85d25c75b287219c22c72db583a99d9539a962b9b5cccb5194
+Token Engineering Academy,40,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xb5386c6c0b8a2c05d49240513e2be7f96519b790a2a6037ce5fc19d318c5ff04
+Builder Protocol,46,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xa9b16b1e8a17444d945256acaf74dccd451bc330f809757af9b310b90cefa883
+Clique,40,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xa9260589617014351c0138126f203c9dbb72d5983bfd9aa48c7e312764d85097
+Gaslite,41,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xa6d7790f101a9e2efc543a623d1f362f0707f2dc570caa96ac092926fb2bedfb
+Antoine,30,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xa2f3c16259f6eec775914f44a084ab251d93bfd7d109956b5a0b220edd1acd9a
+RADAR,30,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0xa10952029e2cea8e74682ea75ae2214e1a5ab43f4130f36a387aa1e772f35fa3
+Layer3,51,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x9c62c8c4e6a4f3612d4dde56bdff7115f8934983284a250c50b7519913197f40
+ETHBarcelona,41,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x8edf293b0aea3ba42326168d77b100a6ef4f41bb163e5421094ff67d5f281e68
+The Noun Square Media Collective,33,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x7d76018d1a4bf0867c24bbdc5d3d3665928909911e6ec2cbe191e9b00f92ae36
+Spearbit,32,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x7c45354a60d2e984beb565b698bd3c04a0901ca065bc788459023f03c3b1cfa2
+Bonding Curve Research Group,27,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x7b87da7a264b179034d1d09483889d744f7a77259049ee4afe742063167151db
+wslyvh,51,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x7a1947b73ddb3943d864d089f552222edca3de46a42cbebf8d873f139aeef609
+Public Assembly,33,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x772cd778c83db4986af453df66bd3d6f93348ec07cf134385dccef9ecb2e5780
+anotherblock,33,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x709b9997ca752016352dd68ed316bf912105a1a476c25c44cbf1809686fa8bbc
+Hop DAO,50,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x67ced2fcb164fe4806d9f1e10cb7a6ba4862530cd9d60a188e3dd3d5c6ce162d
+Sphinx (formerly ChugSplash),39,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x64c29212540213b6f6e552332edc7fc08bd51680e3a748386b4b4ef0323f62db
+Ethereum France,50,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x6354fae34134dde352bd3dbc3a0941d935dd089d8730ec5e5446213e92e713d7
+Giveth Web3 House,36,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x5e78ac7cb417bb9a6f96e126cd442468d925bf0be07547bbdf089bb07fde9b79
+⚡️ TurboETH,47,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x57f808acf22f28cb2bad6dfa0e86bc36f09569d4939fc3adfc83165d1e827d8d
+Diego,41,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x553a463819936d8c8f5bdd26e2c3c6eba8fca668093e1b18f388f24bc6666012
+go-ethereum-hdwallet,35,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x4fa4c7e69725d373c6c010ae9a56e26857a72d5797d8575eb4c7210a31bffbea
+Chronicle Labs,32,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x4f900f5b3f1521b7bbb2c2d1da5ebee6975fa0739aacb003d466f655eed324ae
+Synapse DAO,33,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x4d45e9d995034cd82f32898d4d0651e83be2735f87b8783dc24518cb6525a1a4
+EZKL,35,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x4aacfc3a0bb32ae4204d79ebe4c9935431264016e1f11f7d6c7e5ad5988330bb
+Based Nouns,31,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x45f4ac02622878b9d0ff20242526729dce79ecb7b742099813cb6ef56533b377
+ChainPatrol - Real Time Security protecting the OP Collective,18,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x39be80ba67dcdc408202dce1462a12ef64cf5454f3b227f750d09c01c82918f9
+crate crypto,17,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x38f7def3a807b2947526a64a1b56f99589c84ff90a3144e1628218569fd66cf2
+IDriss,22,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x389052bbf6ba46b28fdb951e573560a21c61490449f4fd17f8399e93e0dec333
+Flipside Crypto,47,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x377e4881a89878f1086735552bb4f83d362683e86c8b2d68126eeb726bc684bb
+🐍 snekmate,49,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x2ef1439654b9728dc8e5412623d8fc1374bd6ab1ab919d018b39cf52613e4e4d
+Ankr,23,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x18d58f3a1be99ab8f5cb887edc4681df50b513b47dfec961ed4ddce79d42b109
+Ponder,39,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x134cdf191a5a805f5069b74bff91a1e2f641053908d50ab9c2531de6baf03de1
+Optimism Grants Council Season 4,47,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x03b5b6ffac48925d3a94db18da9e93520c5faab92154362aaab8cb37b0eae8f2
+Greg's Farcaster Projects,36,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x03ace8762fad52f1c0aa3e629bd7eb2a9e8de3ea807ab5878fa7789ceb7028f3
+LearnWeb3,44,50000.0,True,49689.64,https://vote.optimism.io/retropgf/3/application/0x013249f25537a8abdd06d367538d0eab0c9e5e8e36dde210abe1e7da8dd89c9e
+Public HAUS,43,49505.0,True,49197.71,https://vote.optimism.io/retropgf/3/application/0x1230e13ddd6a768853da352e490b26ce145a23554359c7bb2522c0700ef5381e
+DackieSwap,30,48256.0,True,47956.47,https://vote.optimism.io/retropgf/3/application/0x97cacef9bf5fce74535c27a69bfd929cfe48b862253ce3fa53fe4dde4963a788
+Airstack,34,48256.0,True,47956.47,https://vote.optimism.io/retropgf/3/application/0x2da0a205208f0703f3b53ee3b8a1e385d587a8c79768521ff1d088d34356a7a1
+Optimism Community Governance Calls (Michael),49,48000.0,True,47702.06,https://vote.optimism.io/retropgf/3/application/0x0d494df8a9fd661b3eac0d17be9cb49c90ca4c94d8b6551d82df74b74907ef4f
+Cannon-rs,29,48000.0,True,47702.06,https://vote.optimism.io/retropgf/3/application/0x0318efeb0360dac86e7d00df462f98e5b43b359cf6bc4f54ef857ea79d33ff0b
+LauNaMu,63,46618.0,True,46328.63,https://vote.optimism.io/retropgf/3/application/0x0a590cce4569153cb95031a80525e2ab5d9bc27e4ecbed4d4dd91c27704cbeae
+EtherScore,39,46512.0,True,46223.29,https://vote.optimism.io/retropgf/3/application/0xc676fa16bad73be396f17d6aec821eca5740ccfb9a8547c4cc487dee82e08548
+Rollup.codes,58,46371.5,True,46083.66,https://vote.optimism.io/retropgf/3/application/0x6f845346e36b53a2fadd37486b709d088aa4278cc5b3b0e3e9488b85ff450822
+OpenOcean,27,45000.0,True,44720.68,https://vote.optimism.io/retropgf/3/application/0xdef7aef5aedfb4fe622c6a145659d6c1a7a9dfdb57e53c9a9dc93adf6f05f0d3
+RetroPGF Hub,45,45000.0,True,44720.68,https://vote.optimism.io/retropgf/3/application/0xb8ab3791f36218d548c3356ec308d82d1d4479a1c93552d39c40962ad74b898c
+GasHawk,38,45000.0,True,44720.68,https://vote.optimism.io/retropgf/3/application/0x6f6e00c81aeb5d79b12ca07b1e301e64da9d17be6300d9d7f5008ceefdeac7ca
+Flexible Voting,42,45000.0,True,44720.68,https://vote.optimism.io/retropgf/3/application/0x0d545183c325a4ddc39efb4311dc9c8221d6bc0e3a0179feae2c308c5111da6d
+Token Terminal,46,43256.0,True,42987.5,https://vote.optimism.io/retropgf/3/application/0xa984f01496fcd682259ab15f5f02ab74eb841c30ede157e140921f3c6a1c54aa
+Grandine,24,42500.0,True,42236.2,https://vote.optimism.io/retropgf/3/application/0x00007821871c29a7f1377bcfe3e02d474777111d71b541884ea014d1aa9a1b96
+Defi-lab.xyz,18,40335.0,True,40084.63,https://vote.optimism.io/retropgf/3/application/0xf77b5c952f2a7dddc5634a1ff63a57835a6c3e72a52c133b63a2ac65c20819f0
+Wildcards Protocol,25,40000.0,True,39751.71,https://vote.optimism.io/retropgf/3/application/0xff47a8efd1b697c569903d9f0630712212dc9860276a2a7acbf59e67a11c6573
+Dapp-Learning,45,40000.0,True,39751.71,https://vote.optimism.io/retropgf/3/application/0xe74dbae19350be6155c66a28b65be982bf7b1a4db210695dde5ed2f53782a315
+Synthetix IPFS Node,32,40000.0,True,39751.71,https://vote.optimism.io/retropgf/3/application/0x173710a47aa4f7feb17dab57db62f8ef0eb3e496a67aeb9541a78e4efcdb312a
+Venom & Fang,19,39918.0,True,39670.22,https://vote.optimism.io/retropgf/3/application/0xd1dff3d8e1413ab2640763b44af7ef52d8a80f14bb04986f4804574aa71d6dca
+Buildooor,25,39918.0,True,39670.22,https://vote.optimism.io/retropgf/3/application/0xa38d1ea3ce71d1aec3c40e3159aa2efeede0bed790b8c809488a3db69dbbb22b
+Dasy,26,38789.5,True,38548.73,https://vote.optimism.io/retropgf/3/application/0xaba3b78dec1a41f6529564b951c9f5277a079cf7c2b29e78e0802af97336eb31
+WOOFi,28,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0xfbc5b3bbff7b3e97d80ae04bfefc389dd9caf7085ce788d752bd3a04cf1165fa
+Archly,31,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0xee97ff73170357b99babe87e571446a14ceca69695a9f3cd877e20f29d55c0ab
+Launchcaster,38,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0xe43e48a485bb7d86311ec9af48c8dff4af695fc9b783943388e14801a0f8915b
+Across Protocol,42,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0xc69423093777bdb9ea96d3047694d4de113cc4722d9832e09bb717e570ddb941
+Surreal,28,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0xb29e4e3bd4f2b23b05979cc108c1263c98926b4d2747fe0a7c2d7197ebf71d2b
+LandTorn - Lorak,32,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0x89fb018dfa7d20cc5d1e0f7153cd123972fce65842e0df352dbff2913682193c
+Blockhead: track/visualize/explore all of crypto/DeFi/web3 in ONE interface!,38,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0x884d2033ce97d63efc7524f104572d0cae1d1ca48491a3774c26ccd922a15f5b
+Cielo,33,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0x84ecb27cf284c8208d4e5d3900b7d82ac73d30bd6de1aa5593e66db08b999f34
+indexed.xyz,46,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0x7f79282eea83f7969d81ae6254a31fc755e299c5bce901c2e241f60564159fbe
+Iggy Social - Web3 Social for DAOs,31,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0x7d3016ec843e04aa195883ac9287fb02b66f67ccbece89883463b9a0ae7f10f1
+Interface,38,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0x74332149d2712aaf8639acfcc5de8aaad60365f28b5348896a8a3a174163d98a
+rhino.fi,33,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0x6ff9260b94544e3a51d026a98f7c3d7a420d32f8ccb169a592a7de913f42be06
+The Opimist,38,38462.0,True,38223.26,https://vote.optimism.io/retropgf/3/application/0x1fe1cb0ecbc5bf8e3ca770babf4404e0f28da2e08dc17d71fffe6b9a627ee6de
+PWN DAO,24,37500.0,True,37267.23,https://vote.optimism.io/retropgf/3/application/0xfccc7c07d594efcee70f43a21fef3d041ccb420014f8415122c54e74c47dbe16
+EIP-4824/ DAOstar,50,37447.0,True,37214.56,https://vote.optimism.io/retropgf/3/application/0x62303737eacb3de8795ae5ad00bc2da45a36e8c4a033c20257b0f893f7c4d3a4
+GoPlus Security,18,37255.0,True,37023.75,https://vote.optimism.io/retropgf/3/application/0x93efc906a84b4367757350dacd0ad700cafc78eb658fcb47d0b4f7e0240d2e9f
+CryptoStats & CryptoFees.info,34,35672.5,True,35451.08,https://vote.optimism.io/retropgf/3/application/0xae4aa2fec8bda8568083e9f482cd0a08c278959582fd6776ea1e55230a2a487a
+solidity-analyzer,27,35000.0,True,34782.75,https://vote.optimism.io/retropgf/3/application/0xf6a4e9d22c8d7ee7fd67c5416493a53c3936a9c7fd4f26132bf29831fe7a0e8f
+Mosaic,29,35000.0,True,34782.75,https://vote.optimism.io/retropgf/3/application/0xf40a0097695977f72786fd5ddeabfd3f791cdccf8b5bf045ad295c86007c1345
+Another World,19,35000.0,True,34782.75,https://vote.optimism.io/retropgf/3/application/0x7cf3ce699a7d72e767947a95cf180a72884dddfd70b306daa9e7f5be52f01ba8
+Vaults.fyi,20,34388.5,True,34175.05,https://vote.optimism.io/retropgf/3/application/0x2fc9b012b38a2d63e2ad9751960acd53bf541fef2053510d49da848375813e87
+Crowdmuse,18,33000.0,True,32795.16,https://vote.optimism.io/retropgf/3/application/0xc2618c219f978482880af2ae3995632711a3c5a24039378e805604b1c1deee27
+hildobby,42,32500.0,True,32298.27,https://vote.optimism.io/retropgf/3/application/0x5bd75a998f0c4564449fadff6ad602fd73df5d02e836d5d5369f3d6a10e567df
+Geo Web,29,32000.0,True,31801.37,https://vote.optimism.io/retropgf/3/application/0xe1afef77d8778b1ca62e10a5157d7536abfd82ab17ef71319a8766f8b24eb1bf
+BMX by Morphex,28,32000.0,True,31801.37,https://vote.optimism.io/retropgf/3/application/0x7ab835fe64d2895755b3bbb798cd2164884ff924485993448394a28a1f854d33
+Revert,24,30670.0,True,30479.63,https://vote.optimism.io/retropgf/3/application/0x653d55ee03bdd6efb8c8cf7434f6c98fd3741bb5dbbc678d021365adfd9dce23
+Llama Risk,25,30670.0,True,30479.63,https://vote.optimism.io/retropgf/3/application/0x0e97cffc1c157bba2c4c02d38348539c76b07db6ba12f7cd4a52ba26794664aa
+CrossAngle (“Xangle”),17,30487.0,True,30297.76,https://vote.optimism.io/retropgf/3/application/0xc769fbdc23daaddf4267c4026326106783271a78f1be761c859c9f508ebe895e
+Optimism Prices Contracts,25,30487.0,True,30297.76,https://vote.optimism.io/retropgf/3/application/0x2436f1b74b54ca65793596f47abf27a6f333057f0d76d0c4224723e5a93832a8
+Optimism Grant Analytics: Grant3,26,30243.5,True,30055.77,https://vote.optimism.io/retropgf/3/application/0x935d545be3e3255d6b0c2048c49e26544114cb1c26809a0a10a1a79236c92172
+Optimystics,32,30000.0,True,29813.79,https://vote.optimism.io/retropgf/3/application/0xfd664805607a6c8e26bed11d372f794ac465462bc171a4b6992b84143876cc3a
+Optimism Grants Changelog,41,30000.0,True,29813.79,https://vote.optimism.io/retropgf/3/application/0xd7b6b4e476d072c936089b773ee57c8118d2d5011c7c70cb64a46007c1b20529
+dm3 protocol.,23,30000.0,True,29813.79,https://vote.optimism.io/retropgf/3/application/0xa97288157a5dbd10e18e03c08b6434e4999a7741ec8f4b5e5d10d5638560e7a4
+ITU Blockchain,55,30000.0,True,29813.79,https://vote.optimism.io/retropgf/3/application/0x9dd5aa707043c2286fdb625be1a5b46808a10aad3f137e89855683bcb260b013
+joohhnnn,23,30000.0,True,29813.79,https://vote.optimism.io/retropgf/3/application/0x5a041a04567ec1d38f7938f95579599846e0f9c01fcc5df978d20da56e957257
+Superchain Eco,35,30000.0,True,29813.79,https://vote.optimism.io/retropgf/3/application/0x30424023f5c627b2db7a76c4ebcce97561e7f7ec66b1a0e7c1c8f06e06a1c62b
+Web3bridge,36,29000.0,True,28819.99,https://vote.optimism.io/retropgf/3/application/0xe51d0e1c3aab90e21468e3764fab7c9eb69645432dd5ca4a7cba91f3ed156bc4
+Kiwi News,33,28495.0,True,28318.13,https://vote.optimism.io/retropgf/3/application/0x50565b1e518ab91b14ef50fdab91a63623fb5951e96c18918e36be5aeb6fd297
+Unitap,23,28495.0,True,28318.13,https://vote.optimism.io/retropgf/3/application/0x1a0f5668e635eb1a79c7f4baef6e41900c9370a147abdb89021d94f7bac007c6
+AyaHQ,32,28468.0,True,28291.29,https://vote.optimism.io/retropgf/3/application/0xd57877d44413352f5bdc2197304056fd24dcf3eea5b6c86a17177feb838468e0
+Tokepad,28,28355.5,True,28179.49,https://vote.optimism.io/retropgf/3/application/0x36052f8bd5466f6f9569ced3f7b8755d67fd20b6eb320c6302821b13dccb6377
+LXDAO,40,28000.0,True,27826.2,https://vote.optimism.io/retropgf/3/application/0x79aaf24aab7a9cffbaffd2003b262aa452d31b5a07fb17c54021479284c564be
+Copin.io,25,28000.0,True,27826.2,https://vote.optimism.io/retropgf/3/application/0x2f13f29404a2aa8725336f24fcda2eadd5f15ef510db6063b5b0e5b49968c40d
+Andrew Hong (ilemi),37,27717.0,True,27544.96,https://vote.optimism.io/retropgf/3/application/0xb9dc69169ecedba49d6e8c75ca7a115cb62ed8f59032454605a4ac12180f94c1
+Gravity DAO,44,27500.0,True,27329.3,https://vote.optimism.io/retropgf/3/application/0xb8293744bb647089c30bcee93260cef2baefefde4e2d94bac1ee7ed1516ab7cc
+Summer of Protocols,52,27500.0,True,27329.3,https://vote.optimism.io/retropgf/3/application/0x56f592e7b4deb70a3b8c31c0670fcf25aa1122046c229b071f29645d5d4a0062
+Faina,34,27500.0,True,27329.3,https://vote.optimism.io/retropgf/3/application/0x35410b3bbfeec0b4474cf36141da039eaa8bdeea6c619ac4efa2095c934131da
+Mechanism Institute,38,27500.0,True,27329.3,https://vote.optimism.io/retropgf/3/application/0x31e6a151a738d9175f93bd96c5578b71f66475ddbd341b5da69ce5ddb2ad7bfc
+MetricsDAO,34,26876.0,True,26709.18,https://vote.optimism.io/retropgf/3/application/0xaf08029a3c0accb045830a66a63d8d500d21c662f5147150bc4e908869b99fbc
+ETH Daily (OP News),44,26000.0,True,25838.61,https://vote.optimism.io/retropgf/3/application/0xe8db9badf4fac5f877c2333e492f853081b559be08bdfeb0d9947076637c1318
+Inverter Network,25,25000.0,True,24844.82,https://vote.optimism.io/retropgf/3/application/0xf7a5573c9467232564842bdc02d87c1ccba9c66bca347b9455c89fc9eb97852b
+Sweetman,25,25000.0,True,24844.82,https://vote.optimism.io/retropgf/3/application/0xb736895db321cd99558c9b3c039fb03442e2fd2cfa95c95e1dd13a2d611fada7
+Zengo: Decentralized Budget,27,25000.0,True,24844.82,https://vote.optimism.io/retropgf/3/application/0xa0e0d386a862f8f1ee625bf5837bfb8ef5a8201d70c459efbe9172602ff3d831
+FOAM,31,25000.0,True,24844.82,https://vote.optimism.io/retropgf/3/application/0x90bc7355488e5587a996f673b7fd58197bf51d642db64461a63c9a09656923a8
+MultiBaas blockchain middleware,21,25000.0,True,24844.82,https://vote.optimism.io/retropgf/3/application/0x647d213cfe0907891af5e26a8baa386b8f6ffbaa8206219c2deab554f6f0cbcf
+Kromatika Finance,24,25000.0,True,24844.82,https://vote.optimism.io/retropgf/3/application/0x3eca7098f253e56e7f0b2da0877651ec375762f07fdae2583281b3d0c82f50e3
+Subli,30,25000.0,True,24844.82,https://vote.optimism.io/retropgf/3/application/0x33db1eb9aa4fc4f62089e22d4b167613d9a5d372c16cb1afed2c94dcd12eb9d9
+Messari,39,25000.0,True,24844.82,https://vote.optimism.io/retropgf/3/application/0x2d4bf185c104a0e1976fd4d96265b829218839875d671f24a3211288f9f1c2fa
+Baseswap,36,25000.0,True,24844.82,https://vote.optimism.io/retropgf/3/application/0x0acc8d164a8084029652743eb5a4d6e624ee9f2b18c5fe77ac3f0dcb9160b28d
+Eventcaster,37,25000.0,True,24844.82,https://vote.optimism.io/retropgf/3/application/0x09cf4d12f221b02800975408200f32b18b428c08f6796199f2b9b4a54fe86bc7
+Josh | The Blockchain Socialist,31,25000.0,True,24844.82,https://vote.optimism.io/retropgf/3/application/0x03465fe21e603b8d7564f75829c8703c04c51bfac5bc6ce60462c5b2b40ed558
+0xSalman,19,24945.0,True,24790.16,https://vote.optimism.io/retropgf/3/application/0x0f81c3b45bc842c5b8bba42ffe3080b4fafa4530a6b61ba2c8f26bb833f997e4
+Redacted Research,22,24755.0,True,24601.34,https://vote.optimism.io/retropgf/3/application/0x820f5efe1a5260622d32a660a46019384db52b2c3a57756b87af53f985950e8d
+Pheasant Network,18,24733.0,True,24579.48,https://vote.optimism.io/retropgf/3/application/0xe7f9ad888086ccc95ea11472ae068c93a22e9cb9dc14162c1987adf67995a8f0
+0xs34n,31,24510.0,True,24357.86,https://vote.optimism.io/retropgf/3/application/0x96b420d4a9c0cacc124d46cc85e29dcccd8811e3119f01dd336954af17843bb7
+Infinity Wallet,23,24510.0,True,24357.86,https://vote.optimism.io/retropgf/3/application/0x6171948a78c9c005648ef034be5ae3b2dec2535cdf437b2cf1f67d66f72e5073
+Synapse Labs,29,24510.0,True,24357.86,https://vote.optimism.io/retropgf/3/application/0x3d2fe07760753070d5f3fe44fb92923065c688b56f3069906d8eae4cc3867fb6
+flink,17,24510.0,True,24357.86,https://vote.optimism.io/retropgf/3/application/0x3306bffd50aad7f470b0bbdf71e379e0150a72956483b4c53aae12a35336a4c9
+Ethereum Mexico,49,24510.0,True,24357.86,https://vote.optimism.io/retropgf/3/application/0x1d538cf069b0305b1e1ba23f59f4d305fb1e501c977f6a7a80e6e414caa36077
+Brichis,47,24510.0,True,24357.86,https://vote.optimism.io/retropgf/3/application/0x12f8c09e2283155c61201fcc0263c628c07a522d4681242cf91cbc954c28d4cf
+Bankless Academy,45,24510.0,True,24357.86,https://vote.optimism.io/retropgf/3/application/0x11d02544f79918bd8af9755f8a14e0188db0aadfaab274c6cf0b97d3da295ec7
+0xKhmer,22,23956.0,True,23807.3,https://vote.optimism.io/retropgf/3/application/0x9f35e67a3fab96d07539e342cfb9417ab7eee66ea589a6ba5ac27531d1e36c5b
+ETHAccra,48,23755.0,True,23607.55,https://vote.optimism.io/retropgf/3/application/0x032562ffb94edec40ce6e75bae96a313d10dd6e6242b4e53e94dad57a5d69ef7
+Bankless DAO,47,23309.0,True,23164.32,https://vote.optimism.io/retropgf/3/application/0x023ec749b1a3ad4335595edad791b6dd5523a94817f53cba336060779471c3c8
+Attest Fest,33,23000.0,True,22857.24,https://vote.optimism.io/retropgf/3/application/0x60f9485a7773d0b6dfc5a250e5c724fb5bb9cc6f77ad3920204286f347f59ffc
+GreenPill Network,30,22500.0,True,22360.34,https://vote.optimism.io/retropgf/3/application/0x55378093d61eafa2bc90b52e6719e48e518a33c4099169343b46dae452167bb9
+Invest in Music,20,22500.0,True,22360.34,https://vote.optimism.io/retropgf/3/application/0x3cf3e5f19c555ab993614a924386c30b472d27d4a4ed9343493465a0ba42a770
+Accessible Education for Web3 Public Goods Changemakers,22,22255.0,True,22116.86,https://vote.optimism.io/retropgf/3/application/0xe40f4bceed7ff7b0cd1e3b4b13362b1494babab80dd37bf0c68ca00e1c707e55
+ERC-6551 Tooling,18,22255.0,True,22116.86,https://vote.optimism.io/retropgf/3/application/0xe32dd99f7bf39e91647601d011d0801f61cc551b89aa37f9b8f387178ce98464
+Marko,18,22255.0,True,22116.86,https://vote.optimism.io/retropgf/3/application/0x7e30bd735b4d56efe3ea3e57521ec441cc10ac2cd6c1d1a121af24873b2c13f7
+Smart Onboarding SDK,18,22255.0,True,22116.86,https://vote.optimism.io/retropgf/3/application/0x2f2c20e60d1f327d708f2e46799a3582623ab0fac770bc1afb2b5e793f86bf83
+Opti.domains | Connecting Web2&3 with ENS + Attestation,22,22255.0,True,22116.86,https://vote.optimism.io/retropgf/3/application/0x1b434e0cbcc1f7f55673f468fb0f179a553502407ef975f8bf431996b4afcaae
+VitaDAO,36,22255.0,True,22116.86,https://vote.optimism.io/retropgf/3/application/0x1189ec9f3fefecc6f06cc85b2ee87798bb78c54f541d8da5e29390ae8fa5bc2d
+European Crypto Initiative,32,22042.5,True,21905.68,https://vote.optimism.io/retropgf/3/application/0xf82d6bed5abf74e7540f503c694097612b6002103966ccaec043b19557787cb9
+Taxman: The Web3 Income Tax Helper,18,21505.0,True,21371.52,https://vote.optimism.io/retropgf/3/application/0x36095c75011838036c512484b03c67dc9d23dcbaf5f87d413a270d256dd5bb4e
+HER LATAM _ Optimistas Brillando en Blockchain,48,21500.0,True,21366.55,https://vote.optimism.io/retropgf/3/application/0xe2475267e00104f0095decdb6da91a6e0cc172e4fa2a336bc36b5bf3eba13fa3
+Revolte,21,20777.0,True,20648.03,https://vote.optimism.io/retropgf/3/application/0xc80e8d0f165b8d28ebb3ed0a92450b245dec416c1376659bc1ea5adc0e9777a4
+valio.xyz,19,20680.0,True,20551.64,https://vote.optimism.io/retropgf/3/application/0x1cad8308a2ca6a64abb3dc2286bac3f71ad46d0efd3bd82d3bde215b8aea71db
+Optimism University,35,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0xfb0a12ec6c8fbfc68bd70d0a5c76fc285ff849fc7f4347674ceee82afe123608
+WakeUp Labs,27,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0xf00fb0eb4581ec63ea15fef0aff171097b14e072eb9223ee3ed3dbcc1ffe0be7
+Newtro Arts,31,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0xe5c355375061711e0749d08da9345dd8245930ead52a60fb2768dc5f136853dc
+Pin Save - decentralized Pinterest,25,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0xc613e2a991ce0dbcf8fae1d6128e67543da9710e14831112fba654cc8fe8c389
+Optimism Resource Center,42,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0xc591d19f15acefac79bddeb5e9d79e7425558c53fc87a5b3425cd1febacc8141
+Titanoboa,23,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0xb69bd7618a4186b861ac50e11d6ab546db2e435afd46d2da211fc64e84505bf3
+Optimism Guide,43,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0xa5a843f8a51aac49eacd6f5a69a68235e273a101da9916a73f2c5373ab827496
+RegenScore,44,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0xa3a9f7442c1e971a696a7f70f7eea524eff2a8685d279b143506a8f3cca22924
+Parsec Finance,25,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x89f8a3ae09553252f125cb6adaf4a0f1bd75f0d46239ab0e6c659223cf24fb50
+LATASHÁ,24,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x692fdc32cf03165e999d9abc1df1f0ae32549ad1e7c218505c4ed5fc6ed12b68
+Web3ForGood,31,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x5d62c2b0ea27ae7683a5e112858901605cc47a14681e537b6cac7103da001bda
+1W3,27,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x54763940f1803ecdd2adf48c1446268cdc3aa02e11090189cf91a78615c89d23
+Protofire Blockchain Learning Path,34,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x49fdb9c842a1295fd27af6adfca0941414c3b7f6e69aa056bb9418a9a629c2eb
+SpaghettETH,37,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x3a6d7fdd39d0752fc14a0127b0ad5e5700c701ee7f359214121069e899969c58
+Remix CC,29,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x36971f3eca782399ac07ca77c8e49d66e066eece8fe10fdbc121a3176db59c46
+Slugs,28,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x2d93c0eca3a25f1350286a43e12958aef2292c5213adc111db326b40f67098cc
+Reno,19,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x2c3cb1cda92a66effc9c010c9d29774c4b549e1617dcaa4823068e7053513ffb
+SEED Latam,47,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x2bb6fd5bdce9bec41b0ede8c956aeeef777a3ffa14aaf953e3828c245352363e
+Ethereum Lima,41,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x2af9558e4a0079a549ae741e00f2893029dd0f5fc9225e935f7295c3371e2a4f
+Yoki Finance,27,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x27de4f66f0433de79ae96092bef499db80909c87b8572d4fbbb63bb6d82af2a0
+webOfTrust,40,20000.0,True,19875.86,https://vote.optimism.io/retropgf/3/application/0x0240b8b7a7f5ea55e524af0552a37d087c05af579484b2e88d8a96e382b96976
+Proof of Integrity,34,19426.5,True,19305.92,https://vote.optimism.io/retropgf/3/application/0x8e286bc38bb979df225229c751673d577edf1d2277e28dcdbc61246ae82dd2cb
+Gov,18,18586.5,True,18471.13,https://vote.optimism.io/retropgf/3/application/0x8ea2ef9ab0d04fe8fdb9edd5208abf0504eafb530378f52b6a401f2b26a9e233
+DeFi Africa,38,18544.5,True,18429.39,https://vote.optimism.io/retropgf/3/application/0xc6aefba00febddc9d0c0e0c35619ef05265c805e0fe304ce4bf5ca53a6f80d09
+Ivan Molto,19,18350.0,True,18236.1,https://vote.optimism.io/retropgf/3/application/0x191984aae9639decffa28ae92a2c2522e23e0bff534bf3d6b19a0eeaec12217d
+Ethereum Colombia,39,18000.0,True,17888.27,https://vote.optimism.io/retropgf/3/application/0xa56d0018133907dbd04d4e07f18bebd9b1fcef5f3cbc8f2510d0724c35d9cea8
+Crypto Sapiens,21,18000.0,True,17888.27,https://vote.optimism.io/retropgf/3/application/0x49e4327985ab88c1578c65953b88e6e492fe9a0e850678c56cca6d023f56449e
+Keyring,22,17826.0,True,17715.35,https://vote.optimism.io/retropgf/3/application/0x6b9133680966c6d5b9a0496aa442e063ea73d965024cb2c89685f9f3c79148f0
+simple-optimism-node (Maintaining my own fork),24,17500.0,True,17391.37,https://vote.optimism.io/retropgf/3/application/0x254cf8c61aa5ca4191734ca14ed63e4ae450a166fd3b1e0b9a1b90fde7fe1405
+Kairos Research,36,17442.0,True,17333.73,https://vote.optimism.io/retropgf/3/application/0xb4e6f65da9c95c3bf4e2113fdb1faf843d024f558734e882fcf4c64c95c043fa
+raho & tnorm,37,17297.0,True,17189.63,https://vote.optimism.io/retropgf/3/application/0xf48c8f1be7eecbf735c46a7d49cea0a493de50bfac64b4e1da5082a2e73bf24a
+criptomommy,24,17250.0,True,17142.93,https://vote.optimism.io/retropgf/3/application/0x8d2746b81e20c419e84f2148ab48fe51d028ebb53377039ed37e40f135f6feac
+EthereansOS,38,17000.0,True,16894.48,https://vote.optimism.io/retropgf/3/application/0x23eed6d72357cda3ebfe45d46539200b47f97d63f5c6c8685d5f910a94cbdb77
+JobStash,30,16600.0,True,16496.96,https://vote.optimism.io/retropgf/3/application/0x3dfd6b4332ecaa6f961b5de2fc02b57f521710c79393e352bbe7e6ab8adff4f0
+Rollup Economics Dune Spell,33,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0xfb8c37a789f9b1e6344b85bccb943cc1402b03d99ade45620a6d69923939c911
+Lyra Research Collective,31,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0xe037146acf3e340b21d068e8cdecc7766050bf7c646665f773ae1c8dc0c57cc1
+Eth-Volcano,35,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0xd366e1bdec99b048ef89c5162522c7b520cb0ac87cfe20c806f2091072044aec
+Modular Crypto,50,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0xd0f44065f84301c017ac4452081c0be800f5dbfe2b70a3f54fc2effabbe67885
+Web3xplorer,27,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0xd0d30ee0aaf6677230ac5acb46193af636b1888b0793cb8eb6f3c175d9f35221
+Bankless Africa,33,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0xd06e2d03da9fd53c32acf2de3762498f40b4c64bc9982de571d638605e8db73e
+Crypto Commons Association,22,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0xaf6b794c61e26bd91422684b07eeef6d23baab119cdf060a98ae209f639370e7
+Gadgeteer (nanobro),34,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0xa94487a5ed3b3cfd1d9c2ae647f359ec7537ce1f23751d1b069bcf2a651858ed
+Optimism Español,46,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0x798b48bee9f259cdee46a8f917b3d27aadc31c2c3fcf0d4688db8d139b48f863
+far.quest,25,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0x5d6729e302997ffbc275b1f03a437a3fd2e493b205b1c58888ebfdaba50bafa3
+Carlos Melgar,28,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0x3b4636b476fecc9ad6d7ba3a0843ceaf1f3202b309de16a28e4f244bed98c2a5
+ReFi Medellín,29,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0x3440915b7799f4dfb1577267a90d0d24336ce3b8cd2c900c80af3a39a92ec52d
+MrCrypto Arabic,31,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0x26ff87883511c2e098d8f80ec85de3191eee5560ac5838c3e78119acc1201ad1
+sorryvrerror,17,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0x16975e7a89132161310d5fb63766352915c0311044748fa7ee80ea507812edde
+Cryptoversidad,34,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0x0f374141f63fadb67585ea00af986b0cce7fadacc91568cb52e3faaecc3db7a2
+Kredeum NFTs Factory,19,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0x0d6e26e569c5948ab3298986d805965a6f6f8c9f15308600e725ad512c5c1e61
+Republik Rupiah,33,15000.0,True,14906.89,https://vote.optimism.io/retropgf/3/application/0x0c8b2527c29dee98b481017068e914279edf1a67c32f8670474b8bc376acd2b6
+Randomness Ceremony,20,14913.5,True,14820.93,https://vote.optimism.io/retropgf/3/application/0xaa3b9caf85727a484ac82d25594adc78d68fef1291de82be680bf00436164741
+Polynomial Bytes,27,13457.0,True,13373.47,https://vote.optimism.io/retropgf/3/application/0xf94999236a584b5f3001843160a771f693ba9afbb542af94fc5ca520bfcd4686
+RareSkills Book of Zero Knowledge Proofs,17,12777.0,True,12697.69,https://vote.optimism.io/retropgf/3/application/0x72c4197430710848de6ad973ca7fe8a7e680174298608189a399222bc195b662
+JEFE TOKEN,18,12500.0,True,12422.41,https://vote.optimism.io/retropgf/3/application/0xfe2b907f252c0cb610a2625a1da0746862b02b814a0ad1a3296271725a841ec4
+CryptoConexión,32,12500.0,True,12422.41,https://vote.optimism.io/retropgf/3/application/0xc84d4bc9f541cc7905a3a5b68144b3a49ec97837e3713fe989520a31bcbe6087
+Fractal Visions,32,12500.0,True,12422.41,https://vote.optimism.io/retropgf/3/application/0xb786a6a7dfc293642c60cb34e00d2f5286aad6bc7e3d9c99f83493b44e7934e9
+Bored Town NFT art community,20,12500.0,True,12422.41,https://vote.optimism.io/retropgf/3/application/0x9d2d5d4f6fe9b6eb701f06c046c56f54d3ea287fc76cd237d7cb03f7f34d316b
+FilosofiaCodigo,24,12500.0,True,12422.41,https://vote.optimism.io/retropgf/3/application/0x6c36998db2c142c13535bed9481e4ec4ac6fdad0d616ede7d4b1279d342494ca
+Solow 🐽,45,12307.0,True,12230.61,https://vote.optimism.io/retropgf/3/application/0xd2e847d0232af51a0c83586ca0241e5326a42e4547ddb16eac2fa7b9887b741e
+zerokn0wledge,24,11653.0,True,11580.67,https://vote.optimism.io/retropgf/3/application/0xa86ba3d6a29e11a4be7ae1368f0ade28a6baf49383e0872eebc128409f384c65
+OptiChads,20,11500.0,True,11428.62,https://vote.optimism.io/retropgf/3/application/0x4002ff01746bfe821acbcdc98c3d97d58673998dc655471186dc13f27e2d84ab
+OP Security Council Rehearsal Beta Testers,18,11250.0,True,11180.17,https://vote.optimism.io/retropgf/3/application/0x074bd7082cde0d054a4d0402d63e6da0c02630dd39f552ec72c83d9614ec2a03
+Optimism Vision Reservoir,28,11000.0,True,10931.72,https://vote.optimism.io/retropgf/3/application/0xd763a0e8d4f5aadc247f8ba9495c4f6f1edd71f1436691e31bf3b822ee2da908
+Bankless Publishing,20,11000.0,True,10931.72,https://vote.optimism.io/retropgf/3/application/0x9af42af0df7a417b399a5e83c3744391b0c8d0e433392f02fa819f48420ff80d
+Blockchain na Escola,30,10951.0,True,10883.03,https://vote.optimism.io/retropgf/3/application/0xce24df3f2e6686742dde97adb6eac3b7ce19a18fdcce2837e167484587f05404
+Optimism Türkiye,39,10514.0,True,10448.74,https://vote.optimism.io/retropgf/3/application/0x67fb1aa6cf2fb9f3c2c63d9fed2b335c5e2f16241d3bb8b3070809bec87a42c4
+OurNetwork,28,10184.0,True,10120.79,https://vote.optimism.io/retropgf/3/application/0x17d67fb01bea7fd8bed50b5d05f595560115e40bc6c9088d4253fe25dff0c12a
+CryptoMage,31,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xfb1b19ddff60689f73f25dbc033f8423da1a7c9d900ccb6d6b35357823fdb8f8
+DeSchool,32,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xf4307a080fe3c893ca3a441a8c2b31011cee4fa51e46db8493a44445bffeff93
+Modular Media,18,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xf2e7ffb45f3f23db8b2bcbbe51878e0824f428485e39d95e634916be521e9e92
+Divergent,26,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xe87485f46475bbd8b881558918f50099485718a652f363cb94454a58deddc58f
+Espacio Cripto,39,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xe05c110f8480f685c1918cf8ebdc592f92a2012f3f40bbf8568161d665136040
+T2LATAM,38,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xd9a704d14fcf56e7d17b8a35f10e436fb4082d4c9bd7dbae254c59dd3e60a291
+Andino - Talent in technology,31,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xd5390391a52f0c2add9c6a9da3579d0eb4cdc8dfc62d30c791f29b7358e6d113
+Metagals,32,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xd52f6f34a723d029c1e932de60ebd44658ffa91eed7569ce1a5e6fb8521f5ceb
+Thesleeper.eth Thai OP Educator,43,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xcf2976fc08ff98f124c53e66b9fdfc90a5cfedcf0980596dbe9a5e70d883ef12
+donnoh.eth,23,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xbfff1e92ab7d10ccc59fc3f26df800c8c3c632e4ebe3c8f416aa2871569b18b7
+Rodrigo NuñΞz,30,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xbf77dd60670643679c3108d6c26fc5d658aa52fa1d0a50d89f58cb3fc59d10ec
+ODTU Blockchain,34,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xa9c293993eca8f9b128c0a5d1eb821b5680b8fa736cd8bec4d8058ee3707821b
+Definomics labs,31,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0xa308b01ca0cc1fda4dbfa5b4f26d676bd1cb23cebd2d1dd25c40fea46d58f1e6
+Cryptomind Research,31,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x876550bff1a9cc69817bcf27d37ce8a7f2525dfe1bb54613cfa5b643c0b9f007
+OPChainList,19,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x85e3c3687d30b02d1f9f1f4ad21d3ddfdc9bec86ba36773f978ef792d7382e68
+jordanmmck,33,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x85c5d3e6042e4c2e0ee421e480b749e83b0b741220fbbc50c7bf88eda47f213d
+DeFI Saint,27,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x8207d38dd2b645c6df0b29f35e36bf30a6e42eac03054c63f139089c8f443082
+Cardo,17,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x74fa8a40b8989bbd3e3a9bebe3b3900f377be2f2feab6dc6a3d1272bbdf45b57
+Taz,21,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x6b1dacf09d39e4af7b211477c67428abfc9b2da6ad4ae996383ed3bd00b99bc1
+Inbest Program,36,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x50a46b0a2eb26fc734d5429337e6446d068451fb903c86b1dfc79bef41eebaee
+Layer 2 Weekly Roundup,22,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x306df7a12c88c0ea169699c0e108da5e59414d22a8250651c3832868b10b6dfd
+satorrr,31,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x2ce0a71770e02af9a60965fd214e45283cc8adf5328ba54fecc9799b6c5adf6a
+Learning about OP through Gitcoin Grants,20,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x2193da360fb81d3c0ca642ed79cde635206eb7f2c4fb0659ad308c203884006f
+Awesome Optimism,24,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x1d865a703d9c84fa4b5d97f84d399b0a785f64d0ae99716a306e698035412c54
+Cryptosquare,32,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x1cdb926d184bb8a656cb141dadb5c2c01211afa9b060abcb5deb604d0a1cdf93
+bh2smith,18,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x0217ac586cd82d3e19fb6e208aaa6a2d59b3fbbe43dc594749d1425f152a177e
+MarcoV,25,10000.0,True,9937.93,https://vote.optimism.io/retropgf/3/application/0x0005effcf8fef542bbf3d1ee5bb6e8fb8b00b018dc325ef4932325bf78aed622
+0xDeFiTH,23,8888.0,True,8832.83,https://vote.optimism.io/retropgf/3/application/0x22524ed382560f233db327f8a15688699606d15e0be81b104d6a71c78c44211c
+CII,25,8500.0,True,8447.24,https://vote.optimism.io/retropgf/3/application/0x0dcf0958585d5eee6ef0de0fab32b480fff80558028f096d8cd93d812f261b86
+Optimism_CIS,32,7500.0,True,7453.45,https://vote.optimism.io/retropgf/3/application/0xfeece77fd33f7851d672917565bcf1f8f5ecdde44f5497c45c8729d2386764e0
+GiveStation (youbuidl),24,7500.0,True,7453.45,https://vote.optimism.io/retropgf/3/application/0x4eaad00dad07e150e1570ee2faff68700cc106cf96d470be91eb8ee28bfa7d6c
+ATK,18,6750.0,True,6708.1,https://vote.optimism.io/retropgf/3/application/0x1c8c4fd36918b7b75642a5fccbcc1c4404299c3aed94ab0203a18c158f7744a6
+Bankless Japan,29,6679.0,True,6637.54,https://vote.optimism.io/retropgf/3/application/0xefa725b7cc2edfa6b591a2dedbfc35be2520858d4b8df32a33f731c2d1ca8be1
+Bankless Malayalam,28,6500.0,True,6459.65,https://vote.optimism.io/retropgf/3/application/0xd1fc5b5d7e7f975ce4e0b40c1f587f68ba4bb1e9ef72beb0a11128efb38c1b7b
+daboyshine,32,6000.0,True,5962.76,https://vote.optimism.io/retropgf/3/application/0x6c138f65797f29f8378d1a8bfe362a242b858401b1eddd45717abe7d553693a3
+XomNFT,28,5161.0,True,5128.96,https://vote.optimism.io/retropgf/3/application/0xf9713a96a949426afc4139884b71adab7b17dd6f269fc2ad8f4f8623ca01162a
+Mrfti,24,5161.0,True,5128.96,https://vote.optimism.io/retropgf/3/application/0x87d80f43444297d914b7de5e7cd41452926abb483cfdbd68fb12326c1a445120
+Doris Protocol,20,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xf3b403af50cdb976fea39b15645501515f7ee31a5353476611a1bf5a44dae665
+International Media Nodes (IMN),31,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xe86ace02ddfb143eb1034965b5b5a326b19e99945800afc1452d2d04397994e7
+Pidgin Parlour,25,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xe78996e8e5f0d8ee8e9a80ff48639a723ebac7c7e71cb925649cafb69e8aa0af
+The Rollup,22,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xdd21efe36f7f32fb23d3f328b90a740d50a9514262f8c51cfc01f8b87e55f513
+ruslanklinkov,28,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xd34b4064a58bb43e3e537d449351804c9a57dc0a1b262face17a73c367152843
+geleeroyale,26,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xc7f01f655621b8fb18c4cc61fd51eb28c91f730774a757d63cddee4fc4a02dab
+DeFi France,25,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xc4a629437b7193a4c4ea51f2f43c9f4f0e1ba9887f7f38e576ac45d7f66ec208
+Encriptados,30,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xbd677b4b419fc7f370267f8a16c767ee86d5821a9ff623372d1201eba82028c2
+KudasaiJP,32,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xb8995100de67ccb37e0d12d1bec7e3b90b0c9423055c5d0f24d7265e66daefa2
+Alpha Insiders,27,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xb8235b78bc813abcb99a302af764fb6b97e5e4d62803740995e4d0155da4def7
+CryptoDuck,31,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xb7325aece5b94952d12d2042d7292bcb1bb217de28d55ed2d9f779a5bd1d0d76
+ilyessghz,22,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xb4831ed3f4f28e666b5a9f94de5b54569793576ae9072e69b48f043dde3742e3
+BanklessDAO Turkish,26,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xb0e0767fc71db3090cdbb71b61ca3c6837e16377e4571fd2223ce4e7aedab8f4
+Nacion Bankless,40,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xaa798e8755a6003a0f337780d1ad90ba73c94dea219515c588ec10221c4aa61e
+Onboard en Perú Optimistas e Indexer,31,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0xa947864f205748da24b0941e7225ec73a08b80f8791c682cadfb6f327e7d275d
+Bankless Bengali,24,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x9f4fbe2f82b8c499849bfd1963f8798ab8f25f95b0631fdf44129d477a3f7b78
+cryptolawyer,21,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x9d192d74ebbf2326632012667abda8b9c1c993cda9ee4fa3968bcc37607a7b24
+OptimismArabia,34,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x8e62c9b3dcb09648c017fd3322d1ad7e5a8a1e9efc9cc38b5b3a432fa4a8db54
+Hitasyurek,25,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x8529424f94a220361835d9ddcdd4dc60c45c5ec556f5dfdc8515dd2bcfb9b4ff
+ZEFIRIUM,23,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x82c761226b539bc24e8924cad9983b5edf337c5d4318d629421904abd371a503
+First NFT Agency,23,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x733452eb6b9e98b599d8bd708a69086087618abd72a0c733ae7fd8c71c3deae5
+Cryptoast,25,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x6939fbb2f2cbf416e355659b9bd2cdbbd322c098607bdff1d0a87974c176b180
+Castle Capital,29,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x497b9c9c4998c8766cda59603f34d2519cd0b52269d5269f372cb6983f4a5c1c
+BanklessUA,29,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x494d0957610b0e388d1cd8746ec6d9bb2237d0ab7467a6f216c557ef7a6ac83a
+Basic course in blockchain and crypto literacy,25,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x4944faa89385224a1c499f4a4f35d0d8a00331d2ab3020efd63e203793e11845
+Xanny,28,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x4549e4350b5665b8baddddf4e8795667a16dcc1a922ec38f80bf80bbb61cc576
+Blocktrend (區塊勢),27,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x43b75ffb6854af47b5566238d3077e593e819ec422d95156bcee4234aebb2a40
+KManuS88,25,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x43042ba8a6c988b3f167424da3ef593d5a26ba6ff87d0388d77876fcdf4b3014
+Defy Foundation,32,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x37772ce655f287f26af2d3c5252c704af87428dec0c993fd5d30f2e4f35f0314
+Banklessadria,21,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x33cbedc1cd085228b82aad34354954300fa82e7de307b5508ca3145c8e0f1ab7
+RoOptimism,35,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x2995531e6e01e3772d20be68e015d8e9c9c1d88579054fea65ed6e98c47c069c
+Bankless DAO Magyar ( Hungarian ),25,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x239e74907063bead8e62acaaab47e4d716627b78036f7046e5d5403c405fb2aa
+BitcoinAddict Thailand,27,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x1aec42dbae707e65b8df0cb3694858b9becf180a60dba20975e5a3e710c3dbef
+web3made,31,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x16d6ac20ee0a1f9075007e8d88a05bee1badce36f104d907a6826afb79bd96de
+Bedrock Contracts Architecture Diagram,21,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x13b31e6d44adbf64b745db28dfac1c8a4003a6e11b244e2cbf2f105b5d98b24a
+ProMint,18,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x12b66aca65986c1db036dffc4e1e8e68b8245164d79cdfce832a12b8671a5d88
+Revelo Intel,27,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x0dbc478d1c0eec7962e5dcc3de89f17eaeb2d7053c4edc0d293f1eaa53bb0265
+Findcaster,18,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x0649c52a10c70c6f044d930c1ad92756f6aed49e68fb136c6168cea78a73d524
+Kaito/CoffeeTimes,23,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x0158d4c9ac52ab09828a95355bb021c5880f0a1766da7508d287544fa2b025c3
+MyFirstLayer2,24,5000.0,True,4968.96,https://vote.optimism.io/retropgf/3/application/0x0126dfee34af34334c909eb12d6c1695a42146f5c421ae747cd4b9f8a77cb33f
+KryptoSpace,22,4250.0,True,4223.62,https://vote.optimism.io/retropgf/3/application/0x52ea28bade0488f325a3428887f4cf1395e00a146ebb70bc77fd575193f7bdfe
+Lemon,24,2750.0,True,2732.93,https://vote.optimism.io/retropgf/3/application/0xad78424bff63abc154f5377f9c876ed1e9f2a2c18c692854f32a383756868641
+Cryptola,24,2750.0,True,2732.93,https://vote.optimism.io/retropgf/3/application/0x07aba0691e21259cd522100bb6e651d69ef63c8c2c12878c392cd6d89c9d2aba
+Peter Priew Sommon,27,2000.0,True,1987.59,https://vote.optimism.io/retropgf/3/application/0x5b70a0c9b8c7f9ae678eb13b261801084fffc2b2bf2a27f73c93e2a9ac8cbd83
+OptimismCIS,17,2000.0,True,1987.59,https://vote.optimism.io/retropgf/3/application/0x21a961b132e3305cd199a7d70872c61961cbd5c65b30a318d1402e469d1eeef0
+Bob,22,2000.0,True,1987.59,https://vote.optimism.io/retropgf/3/application/0x0aa530ea27323da4a3e87aa9318d26fdbc7ce40e9567a13cb8b65dbbeef4db3f
+Cryptotesters,16,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xfdff090a4b7839348e6e77c07018d20ea187249cd32c3d6661a06baebc82578e
+arabianhorses,14,12500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xf87b7f797e8df50d31171f12138cb6980a9c0bf2c19f846fbcf44ccdbd440062
+MaitreSarce,4,0.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xf75a2a43e2b5184bfb2aeb9eaccf5531101258317799c3faf9e51b1721491cf0
+Kristoph Galland,7,5000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xf66b0bbe50377edf2155266196156712722bd53ee9e2a1368b094de071484147
+Bio.xyz,10,29247.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0xf52b29dee6155d61885345fc646a2e4de3258a9a51ff96f056ce2dcae02ae530
+UNWA,12,15000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xf02abe0a28342d032f03ea868bdba3b2c5eb81d40ca3ba5f8f781786febef7f7
+Spring Zhang,16,12500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xef1f798f5fad0d822ed7fe4fa3df93a48650be45c528b09cc455caff317a9aff
+Donate3,16,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xeef1e2aa3447f6231738c67c99227d02f33b87d853ea16fa21a137ed73bcd100
+BunnyAI,10,27553.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0xec28a8a5e5c37b7ed2633d2618df0b3c2ff0e3b1ffbdd401d317a90b5c884b9a
+EVM.Finance,7,20680.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xeb6a80070c1f94ee5bd855e4703d92bb41b44796b866c26c3be72bb74656a290
+Verso,9,20000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xe87b160ad7b2d7a9e13982760509cf6bb1467ce6ea19626fe4970280cdefb6e8
+DexKit,16,22643.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0xe6ebcb24497bf6894cbff1547be6c433a210ff34d9b8c863f7e2f9f727a5ed9d
+banterlytics,12,9274.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xe4023251b0538517567388cdd107415b505169fca86081402f62cda741fb7f7e
+markg85,9,24978.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xe3ed647a584d9ba739324fa51e1d5810bf2db62570cb7491cc0c63eac8a44e4a
+Vue Dapp,14,65995.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0xe237610298218749548a170de7784f05fbfc33497558142eb76d366e5f3aafe1
+c2ba,4,2500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xe166384404f3f711dc62738c7ae7493865b8130bfb02d281a97c0fd3a31e9705
+AyohTunde,13,5000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xe0e818d0ad170d8c2e66fbb83372463dffa9b19937a3b7b368a4adf307ffd193
+MesoReefDAO,16,15000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xe0bf90167bf2df7b82043f0c0bf564730e5ebd506e2cacf4d44f8c3cd29cdc27
+BlockchainOAU,13,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xdd13ea4a8294edb99dd6c59c65c5c15eae76e12ca23fdbe8d3141f3adb18198d
+Thumbs Up,12,7500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xda20b9456d60e3929ec03e830ebc028b1bc734bb84b7ddec3f510fdf244bcd85
+Pods,10,14000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xd61045d17bdd1312b455d49bcaf58eab5f8eca9825d145aabc848507cd692d82
+APAC DAO,15,25612.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xd589501f226f1cb4a8b47dc4d78d6d8e3887033ba197e60ef0499eb5d40315bb
+OpTracker,8,19973.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0xd440298214a506f4b23470fc38c664f016b6c801924a2bec2a85f8df5713d1f2
+UniDex,16,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xd0b94ba626d77239d6f96a187fbce720584871ae0c6c2104c10d585ea72cac58
+QuantumFair,12,5750.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xd07ed285925f927fef7e65c2ab60ca781d5697707e3de58becdd3f29091e5278
+Optimistic Academy,16,5000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xd02c9ba1056cbd0d5098b5bfd02d0de524716e24744b668b2c3006dea747a057
+VMEX Finance,9,28000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xcd17447eb2b8a5332630662c3bcf6a4da4ad8213c643621536d40655340c7f84
+Admiano,8,5750.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xc9eea786d0f4a0dedcf3c4bbb8998a516997b8f2f39c5096e30f455beedab862
+Arkham,15,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xc9eab65a0f546527d3e4556709a16daa43203e8642b538e2b5687b4127071ec9
+Paul Burg,8,3388.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0xc9cf6f0c8f011f5935524d823da0ae4b50447ce084165692b931ef131c28403b
+DevRel Uni,12,5000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xc76784fc7db684faae15967f8494991615dbc9149b371f2efc9afa9956e25097
+r72.fi,11,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xc6cbf9c5e892a9fdbdf109e6bfab5af0c1b584bcd2d6c40d677549942c315df5
+dudedodut,7,7500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xc56adc46c6687b1b8b40930bf6724b819917ac03b0b9f83e7f02ea219098275b
+EGG 🥚 RECORDS,6,3325.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xc239e46090b3ed9696d3ab3fc213668a3081333eaeeb4bf9f26e13d46ca1bfed
+ghostlinkz,11,5000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xc0b7848433e5918db316a4f3735252a60c15be0ca6d9da79a2a2d65b65e19b57
+Brian Kim,16,18500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xbf60aad61fe50124510ec9c2f806bea84a2cb24d9b1f820fec6f74eaa127e4a8
+Base Punk,13,15000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xbe242c7f7734a53649ee419283e72ff164020d8ab6b42656e7393d9db8915094
+Woosh,14,50000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xbc5e56099c6de4d39fcd36d44db1331a819281956214a50218245864c9d18ec4
+Client Side Proofs,12,37255.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xbc143f0bb65bd6355dbda961519e124721b88349b53ff73c699ae785a8d60411
+Syke,6,60.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xb9eb765925d42dc2169d2770a981697c276260d2a06f35a95f75bce0e1790aaf
+mehran @ castle,6,2500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xb61ed750e99be2df7e825ec88ab34f4e52afa65478f54ed8e8229ce391608cea
+Proofivy,10,15582.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xb5b8a7a121a175d70136e0509cdb1ad0fd66b30dc10c955a5717cecc9e8b1961
+ARPA Randcast,13,20777.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xb44ac303c0dcb238771f0c33978f5ae49635c364e68089886bdca1d7b1233e7a
+Perelyn,7,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xb0bf2edc069ec73134f4ec6b77963c21ac1c7197253d7be701ef936266ad63e2
+API3 DAO,9,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xaf653d363546b960d5b49fed59d46b5449441ec1d46b4a2b51e2164298666e42
+Optimism AI,7,5000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xaeae1f24e9c99641e8670196d5bd50e3d19d2eb13f527cc7a8c7ee9e9fc87d33
+Coinbold,9,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xae493e2a90529953b1fe3bc0e8232042935112e1b7a6ffad6a762b84b80e341b
+FA40Ziv,6,142.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xadf0e10314510d7da68875b910ff50c889c540f98ae6a9b65eb55be4f37a13ce
+Eternal Garden: ORIGINS,9,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xa9f33a56aa40586c814f40717d2a50abc26ec56ce17f978e788abf6d05d19525
+Travenesia,8,3500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xa838bacd4b72cce9d99f0489ad48c64ea9ad2b0c5b90c55075f8c5aec4a5bb6d
+Mike-Alphaday,13,50000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xa5a8c932998fe9a2bd783bc249eb714e4c318e961b16f5fc4880224c0c915ed9
+gang,6,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xa1e63dbe5365f402c1a594f2867c310dbcdd55e7b7681670ef20a2820bf18bdf
+Blockchain_Space,7,0.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0xa0b2b4ff3008a56ad78eec7d7c11b5deb1602a484de651c269de3fda04fad0a0
+Hummingbot,15,28495.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x9ff4d4ff2ba7e77917b04ec98c645535a0ff29f0584a67c92201e34757d57b2e
+JustCause,16,50000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x9979098a0bd42d43226f772324d159dc274ab52d4c5ed9399fdfc1b01e6f5448
+jaxcoder,9,8326.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x94cd29637ae8c90214e1e4953feb4f5d3052c41c2dcf5c39d33a585c25c5cca7
+herocast,9,15000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x9074d96ab8e27fd5e8086fdbde349932d2c69c70da18dd38e25acacba394b5c0
+zenbit.eth,11,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x904fafc79d5a1e200399edc47fbe95e69530075f8a699866ff7ccbd3f5567cb7
+Artemis Analytics,16,29698.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0x8df3105410325d956c1bbc30d3504ac0c32f2de16b2828b6029ec202c4954c63
+monaditar,13,21289.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x8c7bfa1af3e8e0a16c688a3304b534cdc1926b27841623ea3b1990775b09a0fb
+Coinpassport,7,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x8c296435286bd1a2116dfe41c1323e27361af7931b007457bc5b754cfb6fdc55
+LNRZ,7,5000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x8b15a95f06dcb065dd7ec3eff34624cb2db10ae7c67eebee1b04ee65d81f84a8
+Grappa Finance,11,15000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x8950355a1dd8ddcbd9acc926563e980bc6df7b41358a6ba6fa58822f235baedb
+Squirtle0x,8,1638.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0x867da355e07b879b745bbc8ab27dba3b2a3d6fea30c7b30bcaa5d552a089b709
+sunce86,11,20000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x82426eab338a4383b2ab55d94d41ffd46770a1f5f217f0c3fa81fbb5a0964dc4
+Layer2News,12,16500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x807db7b398630dba09cdaeff7949ad3abcfbccaaa900aa2900ab59b8c10dd26f
+Decentraclasses,10,30000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x7fcb54a60df19932aed931a67527d0c78c82d8d90870d946c49fe5c429a48925
+Private Retrieval Fund,7,20000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x7f6cff783ec90dfbb875801ddcca2830a063ce8af7c0cd1debfea5d660b096df
+DRAMA,6,2500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x7f3bf5b2180022c8ff66d6ad6517253fe8b01761df9a8bc4dbd4df65e05ad8f6
+The Rug,10,19500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x7eaa955f8d0bb913dc3169511a75e72f758c7e6661632b20cc0035a338255e04
+Picodes,11,28969.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x7e980b829cf896bc976e773dd743294a767ab097af1185a270ebb9e8f5899b9b
+Onchain Reads,10,15000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x7b855bce8c0fbab5e05de3891f1cdf733af9f00e06b8fc7c7742bb4fb93774d4
+Ivan on Tech,9,3777.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x79d8e9c58f9727a6381824e67e5b540c1d6b17ab5270d3f7af49d521fbbd28a1
+Merkly,8,41330.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0x7840d1178ec3b4c6fa6fcef1ab16acdb40522b824806d2f6bed7a62519f251cc
+Gajesh Naik,14,7849.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0x77bc669a940c76bd014eb7649f3970ec2fb8479de6167016a92bff163df6ac86
+NingNing,6,2350.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x7715221880775bde6c4e1cc1d2d62e3a798c30e21319cb06492b1c5e45e69500
+Crew,12,5300.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x759e6f42422f5e660ce8359097c72c9598219be2fe5eada718100e53dd9866cf
+EIP Fun,14,7500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x74bb2fd6c1dacf0d3556a80af369e620df5ee6f348a8435b0b977064c79bc50d
+Rainie,7,5000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x7424d0334feb519ea48f66153ce6b3f7dfd156f2dd861c23e4c5f308c95aef41
+DecentrAgora,16,13199.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x73e0327a0ed5b09bd040f874faa140adb5b17279c39c0e7febb5c3f111b6ae61
+Namespace,15,15335.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x7306b6b6693b92628d6b79880298112179fba89eb4289aaa1f4423cd8eb2b49e
+Web3Native,14,21324.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x70b69055f61045ae4ea36c1078a413f7d32a237c052b78047efbf8c38fe44652
+Duct Tape,16,15000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x70552a6638c8b5ce74bc1e16c7c2580d29ece1c3f29804abb452be1204f74806
+Chaineye,12,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x704e1ae65341be6d169ba16441f8fd7089da05c54ac709671afca0d1a459fee1
+Unruggable Names,11,20000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x6f1af6989066fa803d16c46cd1f055b28af0ddd0e081abf2207b67704e7c8d93
+Blue Norva,7,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x6eea26d2a2688f111f327806c65629f56802de7bc1078cd7618887ebf4006486
+Nodies DLB,12,7500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x6eb944b672b1cf8e4c2e46e756f58ef62620cd76ba5909f93a0a17a0a9e09992
+Mac Budkowski,14,15000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x6e9bdfc93cdba878fa63c1cff9c4b6ad4f84dd5374475b9c612d9b5718ea5a53
+Apetimism,9,5000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x6e8a118fd384d47958f5a7773569de37463645011edb43193202c749f1e27ca5
+SupraOracles,4,5712.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x6e41c1f59d6d42d2a6e7e9b246cd8b1081b8c54dc8c7c2112e5d73e48540b0f9
+Interport Finance,5,9000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x6a6895e360009a6b3f15b176fec8fc400567658003b2bd408228fab9e2bd2489
+Refi Phangan,13,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x65eb997409c4507e265482ba4c355fa87a936d326a45bacc0b3f815477dff588
+Mirror Curator DAO,12,14497.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x6565449e46eba1283b32efd00d98c22aa9c43ccfb2edc7c79747e311a04284c9
+Sinjun,12,7888.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0x63addd88cadccd8bdb353b81606bc7125714a9742fddd16db19ba48e6840b5e1
+CompareNodes,8,31162.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x636d999fedb8bb3b3973646e85e30a63e2861700bd98a2d8125c791e7d541937
+L2 Planet,15,18000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x61d9a1f264eee03736c42a4e80d7f06d531b3305f53a8d3692ef901e3ec4af6e
+Hope: A Curated AI Assistant for the Optimism Ecosystem,9,2000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x61c8643cde34638a2c02c2672fe49f60bd5076527811573e0cc6cabb15cf29e0
+Downstream,16,41330.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0x60e8b63d4c87c43409731ac1370379af9884f7239cf69b052fb36c14d121f736
+Apetimism Launchpad,12,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x5fb9f9c499ef4e96440e5d9623068c8f7f10a3ed601c73628eb2e216f53338b9
+supernova,15,27717.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x5e11cabdb73600171d8fc02a26c7c2c571d46db0988690efb842ba0ce3b77e99
+ACryptoS,12,33010.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x5cc8dc85d40909999a55201f90c714b334cc502f013209497a271934e604b9d0
+6551 Studio,16,29247.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0x5697290de650311df3acdaabedea14aa95879c472d6f449091137d1a736339db
+UXUY,4,2500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x56572c92143d2355c0744c69ed9eeee088eea9ad84a15f20a8f9b3cb11233350
+Bress,12,29884.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x55b066faef9778562ef6b74addcd11c169bfa05d4d2b00fa56ab3d003a5246d9
+prego,15,14247.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x5493ad25a21ade46d776ee122fa64cb3a396fd32d014b919fde940c73cc75fdf
+IntoTheBlock Optimism Analytics,13,38336.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x53b27d6f1094914fd15913484f1330a1186f0479f796e173acebe3fe72ce3300
+Joe,10,3924.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0x4f5288babc44fe1d53d8a322b5fc674d916b7edd40715052d566929667b2efab
+vrypan,16,22489.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x4d16611e268b1c19d04bcd5350984ab00502c27e28a4d7d705b2d55bd88c10ce
+simple8720,9,1500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x4cd6a82325cb804aaa19bbc8a3900e4cfc7c9e1f8ab014a9e6318488bf6dd35f
+Ospace Project,8,3250.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x4c9226d7a48438ede6eecf93bd511d547a85bf5e4e846a0733e2c1d7214fd48e
+Ether.actor,16,51612.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x47ac6700012c2e9bba07fbb9cf739eda25880791096d64796a328a16842dfec9
+The Blockchain Report,4,557.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x44e708bdd13870098672da024bef02f8a103fa33dccd900b9e6ace0f14ca5e78
+Stable.fish,11,25000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x43fe522287123a1ec1cd4b0ea4f346db3d9ed4cf8ade3f011bfda15cdbc0a80d
+DeFi Declassified (OptiNauts NFT collection),6,12274.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x3d17e2141d2f43c7bf1c32b2da17f39f8fd1d47fda7ddd5bc1ffb49562e99cf9
+The Optimism Superchain Roundup,14,12500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x3c44fe46a0a6e885a87fb828f1f2a4f7053cb5075cab92476b0df3d08f7fe64b
+Golden Boys (GOLD),15,7500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x354f3199bd976ba1839b8d893b7fd0234e2c6f29ccbc38e66fefbadeb060642f
+ERC1155 Bridge,12,34755.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x31fa3f2b3ab4221bb89dd64e864339a6c59ab6658d91860e239e2491f4bb2435
+The Open X Project,10,28000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x319c241769c8f63909963052be4e3cec10249bf7782f57aa005c71481b177545
+Seedle,9,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x3192905c60d595504b29dcbea66d0ab0fa07cf37eccd422726a2f87287f720b3
+coinman,5,0.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x2be7f3d97285899944dc774d48ae5bb1c1df672d68fdee9c77e03b6974fdcb6d
+AsymmetricDefi,9,1039.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x28f3a89844dd7eda7d26a4dcd32231900665f2300aebeb2c717f066a232572e5
+borderless,6,3740.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x2839cc9328681813ec1e29293cbec14d3b835ffd5c2ab3af0abc0acf160c27db
+Thank Optimism | by ThriveCoin,14,22954.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0x271a5f83a4a79b1e0e65dedef46a10e22fe6ec6b8c5a9828546182026d4c6067
+Fugu Works,8,50746.5,False,0.0,https://vote.optimism.io/retropgf/3/application/0x2356a899e6a3b44ae87b63f06bfc7ab385031ae5f84553b91a79809b1f42b954
+OptimismGuru,8,4500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x2048682adffcfd98f2b36de8721e68269dca7d4e7b1d73002c3f2fb2566e5c90
+Defigourmet,9,542.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x1eeb37b64c871d9e9988756d714dadd6cd645edb0f185389f2139d561df9e079
+Webacy,16,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x1e9b3321fa23259baa2e24c4282c3f9569692888e907a17b984c36bf0efc96e9
+Crypto Fundraising,14,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x1d7420159a7ae784669c6d675dd4f88acaeda9ab56d762347797b19c6422e319
+Ryan Berckmans,15,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x1d32f5fd7007ddfb7d205481a2c6897d1c4c7cf2e871a327f9f9e5dd3c8751ef
+Raiden,8,14350.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x1d31165ae1b07462d311c0be2fa7cd90bf6fcdf1bf86756a633598c3e9e5199b
+UTU,5,0.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x19fb609f4c81c556f9189200004718b5e29edce15a1ccb10b212d4c91760b70f
+yAcademy/yAudit,15,30000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x19bb8ea55d16ee9859efbee9041d8d205023bf3a3c3e70d4a2a07627c3a1f41e
+Tockable.xyz,16,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x14396f1320abe1af334cd3c05b25ad70f7b4d17be33ed54ac01dd9eabd5cb096
+OP Friday Twitter Thread Translation Contest,12,7500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x1215eeadfd5b7c57a9ce545fcdf5128c91678f102e898260b4c7011fd77c6a7d
+IceBreak-R,6,2500.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x114c13890758c9829e133d5483871a2fcd95d98253781532e54c4be6b4a3f46d
+Onchain Postcard,7,1777.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x10afb8ffbeca9342d21e4bf30fc5ee6180de4c2e044cc8cd106ce0eb8fc7cfc7
+Onchain Media Enthusiast,7,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x0f58770e28eee769f12903e9f1a7bb057fbe07869e5f026d30e1d06458a55105
+Blocktorch,6,0.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x0b2f10e6d718c30137841f1c2017c2aa0e5a16f11f3dd5e00c23ddd37f32e5a2
+dForce,13,42000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x03a6b6d06964fe9fe43aba6058e2369640a18fb38bf650c587184cd16015fb70
+Optiland Quests,13,10000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x0121ef4e9b7106ceaccdbb3196e12b5767386ae7647642ef791f88e233fa1528
+Validato,9,5000.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x0013d2c9abbc3047014a3815916ae8159058186379175c4613b1d00cbbb39864
+NFTEarth,20,0.0,False,0.0,https://vote.optimism.io/retropgf/3/application/0x00129cda3549f0230e7b7868745bdd11085164ede251ca9c5b2dd5af720d60e8
