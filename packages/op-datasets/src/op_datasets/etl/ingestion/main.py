@@ -3,8 +3,9 @@ from op_coreutils.logger import clear_contextvars, human_interval, structlog
 from op_coreutils.storage.paths import Marker, PartitionedOutput, breakout_partitions
 from op_coreutils.threads import run_concurrently
 
-from op_datasets.etl.ingestion.utilities import block_range_for_dates
 from op_datasets.coretables.sources import CoreDatasetSource
+from op_datasets.etl.ingestion.sinks import DataSink, IngestionProcessMarker, all_outputs_complete
+from op_datasets.etl.ingestion.utilities import block_range_for_dates
 from op_datasets.pipeline.blockrange import BlockRange
 from op_datasets.pipeline.daterange import DateRange
 from op_datasets.pipeline.ozone import (
@@ -13,7 +14,6 @@ from op_datasets.pipeline.ozone import (
     OutputDataFrame,
     split_block_range,
 )
-from op_datasets.pipeline.sinks import DataSink, IngestionProcessMarker, all_outputs_complete
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 log = structlog.get_logger()
