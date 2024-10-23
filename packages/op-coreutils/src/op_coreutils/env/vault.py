@@ -9,6 +9,15 @@ log = structlog.get_logger()
 _STORE: dict | None = None
 
 
+def load_encoded(var_name) -> dict:
+    default: bytes = base64.b64encode("{}".encode())
+    result = json.loads(base64.b64decode(os.environ.get(var_name, default)).decode())
+    if not isinstance(result, dict):
+        # FOR SECURITY DO NOT PRINT THE LOADED "result".
+        raise ValueError(f"was expecting a dictionary at {var_name}")
+    return result
+
+
 def init() -> None:
     """Load the secrets into the vault store."""
     global _STORE
@@ -17,8 +26,7 @@ def init() -> None:
         # Only initialize  once.
         return
 
-    default: bytes = base64.b64encode("{}".encode())
-    data = json.loads(base64.b64decode(os.environ.get("OP_ANALYTICS_VAULT", default)).decode())
+    data = load_encoded("OP_ANALYTICS_VAULT")
 
     _STORE = {}
     for key, val in data.items():

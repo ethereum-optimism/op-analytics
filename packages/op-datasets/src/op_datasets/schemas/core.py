@@ -123,6 +123,12 @@ class CoreDataset(BaseModel):
         source_table: str,
         where: str | None = None,
     ):
+        """Query to read the source table from the Goldsky Clickhouse instance.
+
+        The clickhouse expr is used for each column in the dataset to formulate the
+        SQL query. The optional "where" filter is typically used to narrow down the
+        query to a specific range of block numbers.
+        """
         exprs = [
             "    " + _.op_analytics_clickhouse_expr
             for _ in self.columns
@@ -134,3 +140,39 @@ class CoreDataset(BaseModel):
             return f"SELECT\n{cols}\nFROM {source_table}"
         else:
             return f"SELECT\n{cols}\nFROM {source_table} WHERE {where}"
+
+    def goldsky_sql_find_blocks_for_dates(self, source_table: str):
+        """Query to find the range of blocks for a given date.
+
+        Onchain tables are sorted by block_number and not by timestamp. When backfilling the
+        ingestion process it is useful to know what is the range of blocks that spans a given
+        date.
+
+        In this way we can run ingestion by date instead of by block number, which makes it
+        easier to generalize the process across chains.
+        """
+        if self.name != "blocks":
+            raise ValueError(
+                f"querying to find blocks for dates is not supported for dataset={self.name!r}"
+            )
+
+        exprs = [
+            "    " + _.op_analytics_clickhouse_expr
+            for _ in self.columns
+            if (
+                _.op_analytics_clickhouse_expr is not None
+                and _.name in ["number", "timestamp", "dt"]
+            )
+        ]
+        cols = ",\n".join(exprs)
+
+        filter_clause = "WHERE timestamp >= {mints:UInt64} AND timestamp < {maxts:UInt64}"
+        cte = f"SELECT\n{cols}\nFROM {source_table} {filter_clause}"
+
+        query = f"""
+        WITH blocks as ({cte})
+        
+        SELECT min(number) as block_min, max(number) as block_max FROM blocks
+        """
+
+        return query
