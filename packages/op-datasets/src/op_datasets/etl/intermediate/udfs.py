@@ -7,6 +7,8 @@ from op_coreutils.duckdb_inmem import init_client
 
 @dataclass
 class Expression:
+    """Helper class to hold the definition of an expression along with its alias."""
+
     alias: str
     sql_expr: str
 
