@@ -88,10 +88,15 @@ def goldsky_chains(path: str | None = None):
 
 
 def filter_to_goldsky_chains(clean_df: pl.DataFrame) -> pl.DataFrame:
-    return clean_df.filter(pl.col("oplabs_db_schema").is_not_null()).select(
-        "chain_name",
-        "mainnet_chain_id",
-        "oplabs_db_schema",
+    return (
+        clean_df.filter(pl.col("oplabs_db_schema").is_not_null())
+        .select(
+            "chain_name",
+            "display_name",
+            "mainnet_chain_id",
+            "oplabs_db_schema",
+        )
+        .sort("chain_name")
     )
 
 
