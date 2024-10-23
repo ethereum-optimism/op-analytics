@@ -26,6 +26,10 @@ def construct_tasks(
 
     # Load python functions that define registered data models.
     load_model_definitions()
+
+    # Load shared DuckDB UDFs.
+    create_duckdb_macros()
+
     date_range = DateRange.from_spec(range_spec)
 
     tasks = []
