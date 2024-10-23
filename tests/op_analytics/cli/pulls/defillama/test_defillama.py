@@ -28,6 +28,7 @@ def test_process_breakdown_data():
         "cmcId": "825",
         "priceSource": "defillama",
         "twitter": "https://twitter.com/Tether_to",
+        "price": 0.999751,
     }
     assert metadata == expected_metadata
 
