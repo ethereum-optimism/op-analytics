@@ -1,15 +1,15 @@
 import pytest
-
-from op_datasets.utils.blockrange import BlockRange
-from op_datasets.etl.ingestion.task import IngestionTask
 from op_datasets.etl.ingestion.batches import (
     BlockBatch,
     Delimiter,
+    InvalidMicrobatchConfig,
     find_batch_delimiter,
     split_block_range,
     split_block_range_from_boundaries,
-    InvalidMicrobatchConfig,
 )
+from op_datasets.etl.ingestion.sources import CoreDatasetSource
+from op_datasets.etl.ingestion.task import IngestionTask
+from op_datasets.utils.blockrange import BlockRange
 
 
 def test_batches_01():
@@ -156,7 +156,7 @@ def test_expected_markers():
 
     batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
 
-    task = IngestionTask.new(batches[0])
+    task = IngestionTask.new(batches[0], source=CoreDatasetSource.from_spec("goldsky"), sinks=[])
     assert task.expected_markers == [
         "markers/ingestion/blocks_v1/chain=op/000000000000.json",
         "markers/ingestion/transactions_v1/chain=op/000000000000.json",
