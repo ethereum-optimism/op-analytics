@@ -1,27 +1,33 @@
+# -*- coding: utf-8 -*-
 import duckdb
 
 from op_datasets.etl.intermediate.registry import register_model
 from op_datasets.etl.intermediate.task import IntermediateModelsTask
-from op_datasets.etl.intermediate.udfs import Expression, wei_to_eth, wei_to_gwei, safe_div, to_sql
+from op_datasets.etl.intermediate.udfs import (
+    Expression,
+    wei_to_eth,
+    wei_to_gwei,
+    safe_div,
+    to_sql,
+)
 
 
 # Reused expressions
 
 BLOCK_HOUR = "datepart('hour', make_timestamp(block_timestamp::BIGINT * 1000000))"
 TX_SUCCESS = "receipt_status = 1"
-TX_FAIL = "receipt_status != 1"
 
-L2_CONTRIB_GAS = "(gas_price * receipt_gas_used)"
-L1_CONTRIB_GAS = "receipt_l1_fee"
+L2_CONTRIB_GAS_FEES = "(gas_price * receipt_gas_used)"
+L1_CONTRIB_GAS_FEES = "receipt_l1_fee"
 
-TOTAL_GAS = f"{L2_CONTRIB_GAS} + {L1_CONTRIB_GAS}"
-
-L1_BLOB_GAS_CONTRIB = (
-    "receipt_l1_gas_used * receipt_l1_blob_base_fee_scalar * receipt_l1_blob_base_fee"
-)
-L1_L1_GAS_CONTRIB = "receipt_l1_gas_used * COALESCE(receipt_l1_base_fee_scalar, receipt_l1_fee_scalar) * receipt_l1_gas_price"
+TOTAL_GAS_FEES = f"{L2_CONTRIB_GAS_FEES} + {L1_CONTRIB_GAS_FEES}"
 
 L2_CONTRIB_PRIORITY = "(max_priority_fee_per_gas * receipt_gas_used)"
+
+ESTIMATED_SIZE = "receipt_l1_fee /(16*COALESCE(receipt_l1_fee_scalar,receipt_l1_base_fee_scalar)*receipt_l1_gas_price/1000000 + COALESCE( receipt_l1_blob_base_fee_scalar*receipt_l1_blob_base_fee/1000000 , 0))"
+
+L1_CONTRIB_BLOB = f"({ESTIMATED_SIZE}) * receipt_l1_blob_base_fee_scalar/1000000 * receipt_l1_blob_base_fee"
+L1_CONTRIB_L1_GAS = f"({ESTIMATED_SIZE}) * COALESCE(16*receipt_l1_base_fee_scalar/1000000, receipt_l1_fee_scalar) * receipt_l1_gas_price"
 
 
 AGGREGATION_EXPRS = [
@@ -34,10 +40,6 @@ AGGREGATION_EXPRS = [
         alias="total_txs_success",
         sql_expr=f"COUNT_IF({TX_SUCCESS})",
     ),
-    Expression(
-        alias="total_txs_fail",
-        sql_expr=f"COUNT_IF({TX_FAIL})",
-    ),
     # Blocks
     Expression(
         alias="total_blocks",
@@ -46,10 +48,6 @@ AGGREGATION_EXPRS = [
     Expression(
         alias="total_blocks_success",
         sql_expr=f"COUNT(DISTINCT IF({TX_SUCCESS}, block_number, NULL))",
-    ),
-    Expression(
-        alias="total_blocks_fail",
-        sql_expr=f"COUNT(DISTINCT IF({TX_FAIL}, block_number, NULL))",
     ),
     Expression(
         alias="min_block_number",
@@ -76,115 +74,6 @@ AGGREGATION_EXPRS = [
         alias="nonce_interval_active",
         sql_expr="MAX(nonce) - MIN(nonce) + 1",
     ),
-    # Gas Usage
-    Expression(
-        alias="total_l2_gas_used",
-        sql_expr="SUM(receipt_gas_used)",
-    ),
-    Expression(
-        alias="total_l2_gas_used_success",
-        sql_expr=f"SUM(IF({TX_SUCCESS}, receipt_gas_used, 0))",
-    ),
-    Expression(
-        alias="total_l2_gas_used_fail",
-        sql_expr=f"SUM(IF({TX_FAIL}, receipt_gas_used, 0))",
-    ),
-    Expression(
-        alias="total_l1_gas_used",
-        sql_expr="SUM(receipt_l1_gas_used)",
-    ),
-    Expression(
-        alias="total_l1_gas_used_success",
-        sql_expr=f"SUM(IF({TX_SUCCESS}, receipt_l1_gas_used, 0))",
-    ),
-    Expression(
-        alias="total_l1_gas_used_fail",
-        sql_expr=f"SUM(IF({TX_FAIL}, receipt_l1_gas_used, 0))",
-    ),
-    # Gas Fee Paid
-    Expression(
-        alias="total_gas_fees",
-        sql_expr=wei_to_eth(f"SUM({TOTAL_GAS})"),
-    ),
-    Expression(
-        alias="total_gas_fees_success",
-        sql_expr=wei_to_eth(f"SUM(IF({TX_SUCCESS}, {TOTAL_GAS}, 0))"),
-    ),
-    Expression(
-        alias="total_gas_fees_fail",
-        sql_expr=wei_to_eth(f"SUM(IF({TX_FAIL}, {TOTAL_GAS}, 0))"),
-    ),
-    # Gas Fee Breakdown
-    Expression(
-        alias="l2_contrib_gas_fees",
-        sql_expr=wei_to_eth(f"SUM({L2_CONTRIB_GAS})"),
-    ),
-    Expression(
-        alias="l1_contrib_gas_fees",
-        sql_expr=wei_to_eth(f"SUM({L1_CONTRIB_GAS})"),
-    ),
-    Expression(
-        alias="l1_blobgas_contrib_gas_fees",
-        sql_expr=wei_to_eth(f"SUM({L1_BLOB_GAS_CONTRIB})"),
-    ),
-    Expression(
-        alias="l1_l1gas_contrib_gas_fees",
-        sql_expr=wei_to_eth(f"SUM({L1_L1_GAS_CONTRIB})"),
-    ),
-    Expression(
-        alias="l2_contrib_gas_fees_base_fees",
-        sql_expr=wei_to_eth(f"SUM({L2_CONTRIB_GAS} - {L2_CONTRIB_PRIORITY})"),
-    ),
-    Expression(
-        alias="l2_contrib_gas_fees_priority_fees",
-        sql_expr=wei_to_eth(f"SUM({L2_CONTRIB_PRIORITY})"),
-    ),
-    # Average Gas Fee
-    Expression(
-        alias="avg_l2_gas_price_gwei",
-        sql_expr=wei_to_gwei(
-            safe_div(
-                f"SUM({L2_CONTRIB_GAS})",
-                "SUM(receipt_gas_used)",
-            )
-        ),
-    ),
-    Expression(
-        alias="avg_l2_base_fee_gwei",
-        sql_expr=wei_to_gwei(
-            safe_div(
-                f"SUM({L2_CONTRIB_GAS} - {L2_CONTRIB_PRIORITY})",
-                "SUM(receipt_gas_used)",
-            )
-        ),
-    ),
-    Expression(
-        alias="avg_l2_priority_fee_gwei",
-        sql_expr=wei_to_gwei(
-            safe_div(
-                f"SUM({L2_CONTRIB_PRIORITY})",
-                "SUM(receipt_gas_used)",
-            )
-        ),
-    ),
-    Expression(
-        alias="avg_l1_gas_price_gwei",
-        sql_expr=wei_to_gwei(
-            safe_div(
-                "SUM(receipt_l1_gas_price * receipt_l1_gas_used)",
-                "SUM(receipt_l1_gas_used)",
-            )
-        ),
-    ),
-    Expression(
-        alias="avg_l1_blob_base_fee_gwei",
-        sql_expr=wei_to_gwei(
-            safe_div(
-                "SUM(receipt_l1_blob_base_fee * receipt_l1_gas_used)",
-                "SUM(receipt_l1_gas_used)",
-            )
-        ),
-    ),
     # Block Time
     Expression(
         alias="min_block_timestamp",
@@ -208,15 +97,110 @@ AGGREGATION_EXPRS = [
         alias="num_to_addresses_success",
         sql_expr=f"COUNT(DISTINCT IF({TX_SUCCESS}, to_address, NULL))",
     ),
+    # Gas Usage
     Expression(
-        alias="num_to_addresses_fail",
-        sql_expr=f"COUNT(DISTINCT IF({TX_FAIL}, to_address, NULL))",
+        alias="total_l2_gas_used",
+        sql_expr="SUM(receipt_gas_used)",
+    ),
+    Expression(
+        alias="total_l2_gas_used_success",
+        sql_expr=f"SUM(IF({TX_SUCCESS}, receipt_gas_used, 0))",
+    ),
+    Expression(
+        alias="total_l1_gas_used",
+        sql_expr="SUM(COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE})))",
+    ),
+    Expression(
+        alias="total_l1_gas_used_success",
+        sql_expr=f"SUM(IF({TX_SUCCESS}, COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE}), 0))",
+    ),
+    # Gas Fee Paid
+    Expression(
+        alias="total_gas_fees",
+        sql_expr=wei_to_eth(f"SUM({TOTAL_GAS_FEES})"),
+    ),
+    Expression(
+        alias="total_gas_fees_success",
+        sql_expr=wei_to_eth(f"SUM(IF({TX_SUCCESS}, {TOTAL_GAS_FEES}, 0))"),
+    ),
+    # Gas Fee Breakdown
+    Expression(
+        alias="l2_contrib_gas_fees",
+        sql_expr=wei_to_eth(f"SUM({L2_CONTRIB_GAS_FEES})"),
+    ),
+    Expression(
+        alias="l1_contrib_gas_fees",
+        sql_expr=wei_to_eth(f"SUM({L1_CONTRIB_GAS_FEES})"),
+    ),
+    Expression(
+        alias="l1_contrib_contrib_gas_fees_blobgas",
+        sql_expr=wei_to_eth(f"SUM({L1_CONTRIB_BLOB})"),
+    ),
+    Expression(
+        alias="l1_contrib_gas_fees_l1gas",
+        sql_expr=wei_to_eth(f"SUM({L1_CONTRIB_L1_GAS})"),
+    ),
+    Expression(
+        alias="l2_contrib_gas_fees_basefee",
+        sql_expr=wei_to_eth(f"SUM({L2_CONTRIB_GAS_FEES} - {L2_CONTRIB_PRIORITY})"),
+    ),
+    Expression(
+        alias="l2_contrib_gas_fees_priorityfee",
+        sql_expr=wei_to_eth(f"SUM({L2_CONTRIB_PRIORITY})"),
+    ),
+    # Average Gas Fee
+    Expression(
+        alias="avg_l2_gas_price_gwei",
+        sql_expr=wei_to_gwei(
+            safe_div(
+                f"SUM({L2_CONTRIB_GAS_FEES})",
+                "SUM(receipt_gas_used)",
+            )
+        ),
+    ),
+    Expression(
+        alias="avg_l2_base_fee_gwei",
+        sql_expr=wei_to_gwei(
+            safe_div(
+                f"SUM({L2_CONTRIB_GAS_FEES} - {L2_CONTRIB_PRIORITY})",
+                "SUM(receipt_gas_used)",
+            )
+        ),
+    ),
+    Expression(
+        alias="avg_l2_priority_fee_gwei",
+        sql_expr=wei_to_gwei(
+            safe_div(
+                f"SUM({L2_CONTRIB_PRIORITY})",
+                "SUM(receipt_gas_used)",
+            )
+        ),
+    ),
+    Expression(
+        alias="avg_l1_gas_price_gwei",
+        sql_expr=wei_to_gwei(
+            safe_div(
+                "SUM({L1_CONTRIB_L1_GAS})",
+                "SUM(COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE})))",
+            )
+        ),
+    ),
+    Expression(
+        alias="avg_l1_blob_base_fee_gwei",
+        sql_expr=wei_to_gwei(
+            safe_div(
+                "SUM({L1_CONTRIB_BLOB})",
+                "SUM(COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE})))",
+            )
+        ),
     ),
 ]
 
 
 @register_model
-def daily_address_summary(task: IntermediateModelsTask) -> dict[str, duckdb.DuckDBPyRelation]:
+def daily_address_summary(
+    task: IntermediateModelsTask,
+) -> dict[str, duckdb.DuckDBPyRelation]:
     query = f"""
     SELECT
         dt,
