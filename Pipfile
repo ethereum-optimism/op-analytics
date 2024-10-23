@@ -4,8 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-numpy = "*"
-pandas = "*"
+pandas = "==2.1.4"
+numpy = "==1.26.0"
 requests = "*"
 jupyter = "*"
 nbconvert = "*"
