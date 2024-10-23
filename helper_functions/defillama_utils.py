@@ -11,6 +11,7 @@ from collections import defaultdict
 import time
 from datetime import datetime, date
 import google_bq_utils as bqu
+import traceback
 nest_asyncio.apply()
 
 
@@ -21,12 +22,14 @@ statuses.remove(429)
 
 # Create a list of patterns to match
 patterns_to_filter = [
-    "-borrowed", "-staking", "-pool2", "-treasury",
-    "^treasury$", "^borrowed$", "^staking$", "^pool2$"
+    "-borrowed", "-vesting", "-staking", "-pool2", "-treasury", "-cex",
+    "^treasury$", "^borrowed$", "^staking$", "^pool2$", "^pool2$",
+    "polygon-bridge-&-staking",  # Added this as a full match
+    ".*-cex$"  # Added this to match anything ending with -cex
 ]
 
 # Create a function to check if a string matches any of the patterns
-def matches_pattern(s):
+def matches_filter_pattern(s):
     return any(re.search(pattern, s, re.IGNORECASE) for pattern in patterns_to_filter)
 
 def has_overlap(a, b):
@@ -136,7 +139,7 @@ async def get_tvl(session, apistring, chains, prot, prot_name, header = header, 
 											ad['token'] = ad['token'].fillna('0').astype(str).infer_objects(copy=False)
 											ad['token_value'] = ad['token_value'].fillna(0).astype('float64').infer_objects(copy=False)
 
-										ad['to_filter_out'] = (ad['chain'].apply(matches_pattern) | 
+										ad['to_filter_out'] = (ad['chain'].apply(matches_filter_pattern) | 
 																	(ad['protocol'] == "polygon-bridge-&-staking") | 
 																	ad['protocol'].str.endswith("-cex")).astype(int)
 										
@@ -532,23 +535,32 @@ def get_todays_tvl():
 		
 		return df
 
+def get_latest_chain_tvl():
+	chains_api = 'https://api.llama.fi/v2/chains'
+	df = pd.DataFrame(r.get(chains_api, headers=header).json())
+	return df
+
 def get_chain_list():
-	df = get_todays_tvl()
-	df = df[['chain']]
+	df = get_latest_chain_tvl()
+	df = df[['name']]
 	df = df.drop_duplicates()
 	return df
 		
 
 def get_historical_chain_tvl(chain_name):
-		df = pd.DataFrame()
-		api_string = 'https://api.llama.fi/v2/historicalChainTvl/' + chain_name
-		try:
-				tvl = r.get(api_string,headers=header).json()
-				df = pd.DataFrame(tvl)
-				df['date'] = pd.to_datetime(df['date'], unit='s')
-		except:
-				print('error - historicalChainTvl api')
-		return df
+    df = pd.DataFrame()
+    api_string = 'https://api.llama.fi/v2/historicalChainTvl/' + chain_name
+    try:
+        tvl = r.get(api_string, headers=header).json()
+        df = pd.DataFrame(tvl)
+        df['date'] = pd.to_datetime(df['date'], unit='s')
+        # df['to_filter_out'] = matches_filter_pattern(chain_name)
+    except Exception as e:
+        error_message = f"{chain_name} - error - historicalChainTvl api: {str(e)}"
+        # print(error_message)
+        # print(traceback.format_exc())  # This will print the full traceback
+        return None  # Return None instead of an empty DataFrame on error
+    return df
 
 
 def get_historical_app_tvl_by_chain(chain_name):
