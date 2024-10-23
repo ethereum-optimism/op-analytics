@@ -1,5 +1,5 @@
-from op_datasets.pipeline.daterange import DateRange
-from op_datasets.pipeline.blockrange import BlockRange
+from op_datasets.utils.daterange import DateRange
+from op_datasets.utils.blockrange import BlockRange
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 from op_coreutils.clickhouse import run_goldsky_query
@@ -25,7 +25,3 @@ def block_range_for_dates(chain: str, date_spec: str):
 
     row = result.to_dicts()[0]
     return BlockRange(row["block_min"], row["block_max"])
-
-
-if __name__ == "__main__":
-    print(block_range_for_dates("op", "20241001:+1"))

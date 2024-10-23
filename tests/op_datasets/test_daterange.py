@@ -1,6 +1,6 @@
 import datetime
 
-from op_datasets.pipeline.daterange import DateRange
+from op_datasets.utils.daterange import DateRange
 
 
 def test_daterange():

@@ -5,8 +5,8 @@ from op_coreutils.logger import structlog
 from op_coreutils.storage.paths import SinkMarkerPath, SinkOutputRootPath
 from op_coreutils.threads import run_concurrently
 
-from op_datasets.pipeline.blockrange import BlockRange
-from op_datasets.pipeline.daterange import DateRange
+from op_datasets.utils.blockrange import BlockRange
+from op_datasets.utils.daterange import DateRange
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
 from .batches import BlockBatch, split_block_range

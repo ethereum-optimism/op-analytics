@@ -13,7 +13,7 @@ from op_datasets.chains.chain_metadata import (
 from op_datasets.etl.ingestion import ingest
 from op_datasets.etl.ingestion.batches import split_block_range
 from op_datasets.etl.intermediate import compute_intermediate
-from op_datasets.pipeline.blockrange import BlockRange
+from op_datasets.utils.blockrange import BlockRange
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 from rich import print
 from typing_extensions import Annotated

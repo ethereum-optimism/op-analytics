@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 
 import polars as pl
-from op_coreutils import duckdb as utilsduckdb
+from op_coreutils import duckdb_local as utilsduckdb
 from op_coreutils.clickhouse import insert_arrow, run_oplabs_query
 from op_coreutils.logger import structlog
 from op_coreutils.storage.gcs_parquet import (

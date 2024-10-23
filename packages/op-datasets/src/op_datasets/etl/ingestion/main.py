@@ -148,5 +148,4 @@ def writer(task: IngestionTask):
 
 def checker(task: IngestionTask):
     if all_outputs_complete(task.sinks, task.expected_markers):
-        log.info(f"{len(task.expected_markers)} outputs are already complete")
         task.is_complete = True

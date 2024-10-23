@@ -1,4 +1,4 @@
-from op_datasets.pipeline.blockrange import BlockRange
+from op_datasets.utils.blockrange import BlockRange
 
 
 def test_blockrange():

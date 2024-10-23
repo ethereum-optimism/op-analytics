@@ -1,6 +1,6 @@
 import pytest
 
-from op_datasets.pipeline.blockrange import BlockRange
+from op_datasets.utils.blockrange import BlockRange
 from op_datasets.etl.ingestion.task import IngestionTask
 from op_datasets.etl.ingestion.batches import (
     BlockBatch,

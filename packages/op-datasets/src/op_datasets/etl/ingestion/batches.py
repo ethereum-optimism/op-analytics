@@ -13,7 +13,7 @@ from dataclasses import dataclass
 
 from op_coreutils.logger import structlog
 
-from op_datasets.pipeline.blockrange import BlockRange
+from op_datasets.utils.blockrange import BlockRange
 
 log = structlog.get_logger()
 
