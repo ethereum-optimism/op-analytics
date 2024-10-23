@@ -4,7 +4,7 @@ from op_coreutils.gsheets import read_gsheet
 from op_coreutils.clickhouse import insert_arrow, run_goldsky_statement
 
 DATABASE = "default"
-TABLE = "across_bridge_metadata_v2"
+TABLE = "across_bridge_metadata"
 
 
 def upload_across_bridge_addresses(chains_df: pl.DataFrame):
