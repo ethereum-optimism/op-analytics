@@ -1,12 +1,12 @@
 import os
 from datetime import date, timedelta
 
+import polars as pl
 from op_coreutils.logger import structlog
 
-from op_datasets.pipeline.ozone import BlockBatch
 from op_datasets.schemas import CoreDataset
 
-import polars as pl
+from .batches import BlockBatch
 
 log = structlog.get_logger()
 

@@ -5,6 +5,7 @@ description = "Utilities to index on-chain data."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "duckdb>=1.1.1",
     "op-coreutils",
     "overrides>=7.7.0",
     "pydantic>=2.9.2",

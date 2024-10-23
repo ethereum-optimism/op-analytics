@@ -1,4 +1,4 @@
-from op_datasets.coretables.sources import CoreDatasetSource, GoldskySource, LocalFileSource
+from op_datasets.etl.ingestion.sources import CoreDatasetSource, GoldskySource, LocalFileSource
 
 
 def test_blockrange():

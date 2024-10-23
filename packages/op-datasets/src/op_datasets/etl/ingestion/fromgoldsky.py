@@ -1,12 +1,13 @@
 import time
 
 import polars as pl
-from op_coreutils.clickhouse.client import run_goldsky_query
+from op_coreutils.clickhouse import run_goldsky_query
 from op_coreutils.logger import structlog
 from op_coreutils.threads import run_concurrently
 
 from op_datasets.schemas import CoreDataset
-from op_datasets.pipeline.ozone import BlockBatch
+
+from .batches import BlockBatch
 
 
 log = structlog.get_logger()
