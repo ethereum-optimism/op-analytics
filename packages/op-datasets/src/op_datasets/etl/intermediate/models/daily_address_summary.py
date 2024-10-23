@@ -2,7 +2,7 @@ import duckdb
 
 from op_datasets.etl.intermediate.registry import register_model
 from op_datasets.etl.intermediate.task import IntermediateModelsTask
-from op_datasets.etl.intermediate.udfs import Expression, wei_to_eth, wei_to_gwei, safe_div
+from op_datasets.etl.intermediate.udfs import Expression, wei_to_eth, wei_to_gwei, safe_div, to_sql
 
 
 # Reused expressions
@@ -217,23 +217,27 @@ AGGREGATION_EXPRS = [
 
 @register_model
 def daily_address_summary(task: IntermediateModelsTask) -> dict[str, duckdb.DuckDBPyRelation]:
-    txs = task.input_duckdb_relations["transactions"]
-
-    aggregations = ",\n    ".join([_.expr for _ in AGGREGATION_EXPRS])
-
     query = f"""
     SELECT
         dt,
         chain,
         chain_id,
         from_address,
-        {aggregations}
+        {to_sql(AGGREGATION_EXPRS)}
     FROM txs
     WHERE gas_price > 0
+
+    -- Optional address filter for faster results when developoing.
+    -- AND from_address LIKE '0x00%'
+
     GROUP BY 1, 2, 3, 4
     """
 
-    # Print the query to debug it:
+    # Uncomment when debugging:
     # print(query)
 
-    return {"daily_address_summary": txs.query("txs", query)}
+    txs: duckdb.DuckDBPyRelation = task.input_duckdb_relations["transactions"]
+    results = txs.query("txs", query)
+
+    # Model functions always return a dictionary of output results.
+    return {"daily_address_summary": results}
