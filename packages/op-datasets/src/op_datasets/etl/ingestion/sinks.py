@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import polars as pl
 from op_coreutils import duckdb as utilsduckdb
-from op_coreutils.clickhouse.client import insert_arrow, run_oplabs_query
+from op_coreutils.clickhouse import insert_arrow, run_oplabs_query
 from op_coreutils.logger import structlog
 from op_coreutils.storage.gcs_parquet import (
     gcs_upload_parquet,
@@ -14,6 +14,10 @@ from op_coreutils.storage.paths import PartitionedOutput, SinkMarkerPath
 from op_datasets.etl.ingestion.markers import IngestionCompletionMarker
 
 log = structlog.get_logger()
+
+
+MARKERS_DB = "etl_monitor"
+MARKERS_TABLE = "raw_onchain_ingestion_markers"
 
 
 @dataclass(kw_only=True)
@@ -41,9 +45,6 @@ class DataSink:
 
         raise NotImplementedError()
 
-    MARKERS_DB = "etl_monitor"
-    MARKERS_TABLE = "raw_onchain_ingestion_markers"
-
     def write_marker(self, marker: IngestionCompletionMarker):
         """Write marker.
 
@@ -65,18 +66,18 @@ class DataSink:
         local_table = marker.to_duckdb_pyarrow_table()
 
         if self.is_gcs:
-            insert_arrow("OPLABS", self.MARKERS_DB, self.MARKERS_TABLE, gcs_table)
+            insert_arrow("OPLABS", MARKERS_DB, MARKERS_TABLE, gcs_table)
             return
 
         elif self.is_local:
-            utilsduckdb.insert_arrow(self.MARKERS_DB, self.MARKERS_TABLE, local_table)
+            utilsduckdb.insert_arrow(MARKERS_DB, MARKERS_TABLE, local_table)
             return
 
         raise NotImplementedError()
 
     def is_complete(self, marker_path: SinkMarkerPath) -> bool:
         if self.is_gcs:
-            select = f"SELECT marker_path FROM {self.MARKERS_DB}.{self.MARKERS_TABLE} "
+            select = f"SELECT marker_path FROM {MARKERS_DB}.{MARKERS_TABLE} "
             result = run_oplabs_query(
                 select + "WHERE marker_path = {search_value:String}",
                 parameters={"search_value": marker_path},
@@ -84,7 +85,7 @@ class DataSink:
             return len(result) > 0
 
         elif self.is_local:
-            select = f"SELECT marker_path FROM {self.MARKERS_DB}.{self.MARKERS_TABLE} "
+            select = f"SELECT marker_path FROM {MARKERS_DB}.{MARKERS_TABLE} "
             result = utilsduckdb.run_sql(
                 sql=select + "WHERE marker_path = ?",
                 params=[marker_path],

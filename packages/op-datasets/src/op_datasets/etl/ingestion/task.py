@@ -30,7 +30,7 @@ class IngestionTask:
 
     This object is mutated during the ingestion process."""
 
-    # Parameters
+    # Batch
     block_batch: BlockBatch
 
     # Source
@@ -145,7 +145,7 @@ def construct_tasks(
     for chain, chain_block_range in blocks_by_chain.items():
         chain_batches[chain] = split_block_range(chain, chain_block_range)
 
-    # Log a summayr of the work that will be done for each chain.
+    # Log a summary of the work that will be done for each chain.
     for chain, batches in chain_batches.items():
         total_blocks = batches[-1].max - batches[0].min
         log.info(

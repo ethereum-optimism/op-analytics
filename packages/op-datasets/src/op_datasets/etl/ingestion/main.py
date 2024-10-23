@@ -1,5 +1,5 @@
 import polars as pl
-from op_coreutils.logger import clear_contextvars, human_interval, structlog, bind_contextvars
+from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
 from op_coreutils.storage.paths import Marker, PartitionedOutput, breakout_partitions
 
 from op_datasets.etl.ingestion.sinks import (
@@ -8,6 +8,7 @@ from op_datasets.etl.ingestion.sinks import (
 )
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
+from .audits import REGISTERED_AUDITS
 from .task import IngestionTask, OutputDataFrame, construct_tasks
 
 log = structlog.get_logger()
@@ -61,6 +62,7 @@ def reader(task: IngestionTask):
 
 
 def auditor(task: IngestionTask):
+    """Run the audit process."""
     num_blocks = task.block_batch.max - task.block_batch.min
 
     num_seconds = (
@@ -72,9 +74,6 @@ def auditor(task: IngestionTask):
     log.info(
         f"Auditing {num_blocks} {task.chain!r} blocks spanning {human_interval(num_seconds)} starting at block={task.block_batch.min}"
     )
-
-    # Run the audit process.
-    from op_datasets.logic.audits.basic import REGISTERED_AUDITS
 
     # Iterate over all the registered audits.
     # Raises an exception if an audit is failing.

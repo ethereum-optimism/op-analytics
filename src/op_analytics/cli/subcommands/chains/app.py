@@ -2,7 +2,7 @@ import json
 
 import op_datasets.rpcs
 import typer
-from op_coreutils.clickhouse.client import run_goldsky_query
+from op_coreutils.clickhouse import run_goldsky_query
 from op_coreutils.gsheets import update_gsheet
 from op_coreutils.logger import structlog
 from op_datasets.chains.chain_metadata import (
@@ -12,6 +12,7 @@ from op_datasets.chains.chain_metadata import (
 )
 from op_datasets.etl.ingestion import ingest
 from op_datasets.etl.ingestion.batches import split_block_range
+from op_datasets.etl.intermediate import compute_intermediate
 from op_datasets.pipeline.blockrange import BlockRange
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 from rich import print
@@ -78,15 +79,20 @@ def update_chain_metadata_gsheet():
     accepts a local CSV file with raw chain metadata. It loads the data, cleans it up and uploads
     it to Google Sheets.
 
-    TODO: Decide if we want to uplaod to Dune, Clickhouse or BigQuery.
+    TODO: Decide if we want to uplaod to Dune, Clickhouse, BigQuery. or op-analytics-static repo.
     """
     clean_df = load_chain_metadata()
+
     goldsky_df = filter_to_goldsky_chains(clean_df)
+
+    # Save the clean df to Google Sheets
     update_gsheet(
         location_name="chain_metadata",
         worksheet_name="Chain Metadata",
         dataframe=to_pandas(clean_df),
     )
+
+    # Save goldsky chains.
     update_gsheet(
         location_name="chain_metadata",
         worksheet_name="Goldsky Chains",
@@ -122,7 +128,7 @@ def verify_goldsky_tables():
         for name in sorted(missing_tables):
             log.error(f"ERROR: Table missing in Goldsky Clickhouse: {name!r}")
     else:
-        log.info("SUCCESS: All expected tables are present in Goldsky Clickkhouse")
+        log.info("SUCCESS: All expected tables are present in Goldsky Clickhouse")
         for name in sorted(expected_tables):
             log.info("    " + name)
 
@@ -156,6 +162,42 @@ def ingest_blocks(
 
     ingest(
         chains=chain_list,
+        range_spec=range_spec,
+        source_spec=source_spec,
+        sinks_spec=sinks_spec,
+        dryrun=dryrun,
+        force=force,
+    )
+
+
+@app.command()
+def intermediate_models(
+    chains: Annotated[str, typer.Argument(help="Comma-separated list of chains to be processed.")],
+    models: Annotated[str, typer.Argument(help="Comma-separated list of models to be processed.")],
+    range_spec: Annotated[str, typer.Argument(help="Range of dates to be processed.")],
+    source_from: Annotated[str | None, typer.Option(help="Data source specification.")] = None,
+    sink_to: Annotated[list[str] | None, typer.Option(help="Data sink(s) specification.")] = None,
+    dryrun: Annotated[
+        bool, typer.Option(help="Dryrun shows a summary of the data that will be processed.")
+    ] = False,
+    force: Annotated[
+        bool, typer.Option(help="Run the full process ignore any existing completion markers.")
+    ] = False,
+):
+    """Compute intermediate models for a range of dates."""
+    source_spec = source_from or "gcs"
+    sinks_spec = sink_to or ["local"]
+
+    if chains == "ALL":
+        chain_list = verify_goldsky_tables()
+    else:
+        chain_list = [_.strip() for _ in chains.split(",")]
+
+    model_list = [_.strip() for _ in models.split(",")]
+
+    compute_intermediate(
+        chains=chain_list,
+        models=model_list,
         range_spec=range_spec,
         source_spec=source_spec,
         sinks_spec=sinks_spec,

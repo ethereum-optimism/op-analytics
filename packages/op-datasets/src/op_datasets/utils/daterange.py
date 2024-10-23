@@ -27,6 +27,15 @@ class DateRange:
     def max_ts(self) -> int:
         return date_toepoch(self.max)
 
+    @property
+    def dates(self) -> list[date]:
+        result = []
+        current = self.min
+        while current < self.max:
+            result.append(current)
+            current += timedelta(days=1)
+        return result
+
     @classmethod
     def from_spec(cls, date_range_spec: str) -> "DateRange":
         if minmax := MIN_MAX_RE.fullmatch(date_range_spec):

@@ -2,7 +2,7 @@ from op_datasets.pipeline.daterange import DateRange
 from op_datasets.pipeline.blockrange import BlockRange
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
-from op_coreutils.clickhouse.client import run_goldsky_query
+from op_coreutils.clickhouse import run_goldsky_query
 
 
 def block_range_for_dates(chain: str, date_spec: str):

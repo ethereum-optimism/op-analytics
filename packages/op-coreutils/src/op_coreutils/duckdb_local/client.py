@@ -49,7 +49,7 @@ def run_sql(sql: str, params: object = None):
 
 
 def insert_arrow(database: str, table: str, df_arrow: pa.Table):
-    """Write arrow table to clickhouse."""
+    """Write arrow table to local duckdb database."""
     client = init_client()
 
     my_table = df_arrow
