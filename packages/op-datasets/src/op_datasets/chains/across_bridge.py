@@ -1,7 +1,10 @@
 import polars as pl
 
 from op_coreutils.gsheets import read_gsheet
-from op_coreutils.clickhouse import insert_arrow
+from op_coreutils.clickhouse import insert_arrow, run_goldsky_statement
+
+DATABASE = "default"
+TABLE = "across_bridge_metadata_v2"
 
 
 def upload_across_bridge_addresses(chains_df: pl.DataFrame):
@@ -14,11 +17,22 @@ def upload_across_bridge_addresses(chains_df: pl.DataFrame):
     # Load and verify that the data is consistent with our Chain Metadata source of truth.
     df = load_across_bridge_addresses(chains_df)
 
+    # In ClickHouse we store the mainnet_chain_id as a string.
+    clickhouse_df = df.select(
+        pl.col("chain_name"),
+        pl.col("display_name"),
+        pl.col("mainnet_chain_id").cast(pl.String),
+        pl.col("spokepool_address"),
+    )
+
+    # Truncate is necessary so we avoid duplicates when inserting values.
+    run_goldsky_statement(f"TRUNCATE TABLE {DATABASE}.{TABLE}")
+
     insert_arrow(
         instance="GOLDSKY",
-        database="default",
-        table="across_bridge_metadata_v2",
-        df_arrow=df.to_arrow(),
+        database=DATABASE,
+        table=TABLE,
+        df_arrow=clickhouse_df.to_arrow(),
     )
 
 
