@@ -44,4 +44,5 @@ def test_extract():
         "external": 79759467.7,
         "ethPrice": 2409.8306,
         "id": "base",
+        "slug": "base",
     }

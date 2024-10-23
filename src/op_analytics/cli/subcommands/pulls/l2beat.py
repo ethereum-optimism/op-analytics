@@ -1,4 +1,5 @@
 import time
+from dataclasses import dataclass
 
 import polars as pl
 from op_coreutils.bigquery.write import overwrite_partition, overwrite_partitions, overwrite_table
@@ -26,6 +27,7 @@ TVL_SCHEMA = {
 
 
 def get_data(session, url):
+    """Helper function to reuse an existing HTTP session to fetch data from a URL."""
     start = time.time()
     resp = session.request(
         method="GET",
@@ -34,6 +36,17 @@ def get_data(session, url):
     ).json()
     log.info(f"Fetched from {url}: {time.time() - start:.2f} seconds")
     return resp
+
+
+@dataclass(frozen=True)
+class L2BeatProject:
+    """A single project as referenced by L2Beat."""
+
+    id: str
+    slug: str
+
+    # The L2Beat url used to fetch TVL for this project
+    tvl_url: str
 
 
 def pull():
@@ -46,29 +59,36 @@ def pull():
     # Call the summary endpoint
     session = new_session()
     summary = get_data(session, SUMMARY_ENDPOINT)
-    projects = list(summary["data"]["projects"].values())
+    projects_summary = list(summary["data"]["projects"].values())
 
     # Parse the summary and store as a dataframe.
-    summary_df = pl.DataFrame(projects)
+    summary_df = pl.DataFrame(projects_summary)
 
     # Set up TVL data http requests.
     query_range = (
         "30d"  # the query range can be modified if we need to go back and backfill older data
     )
-    urls = {}
-    for project in projects:
-        project_id = project["id"]
-        project_slug = project["slug"]
-        urls[project_id] = f"https://l2beat.com/api/scaling/tvl/{project_slug}?range={query_range}"
+
+    projects = []
+    for project_data in projects_summary:
+        slug = project_data["slug"]
+
+        projects.append(
+            L2BeatProject(
+                id=project_data["id"],
+                slug=slug,
+                tvl_url=f"https://l2beat.com/api/scaling/tvl/{slug}?range={query_range}",
+            )
+        )
 
     # Run requests concurrenetly.
-    tvl_data = run_concurrently(lambda x: get_data(session, x), urls, max_workers=8)
+    tvl_data = run_concurrently(lambda x: get_data(session, x.tvl_url), projects, max_workers=8)
     percent_success = 100.0 * sum(_["success"] for _ in tvl_data.values()) / len(tvl_data)
     if percent_success < 80:
         raise Exception("Failed to get L2Beat data for >80%% of chains")
 
     dfs = []
-    for project_id, data in tvl_data.items():
+    for project, data in tvl_data.items():
         if data["success"]:
             chart_data = data["data"]["chart"]
             columns = chart_data["types"]
@@ -79,8 +99,8 @@ def pull():
             project_tvl = (
                 pl.DataFrame(values, schema=schema, orient="row")
                 .with_columns(
-                    id=pl.lit(project_id),
-                    slug=pl.lit(project_slug),
+                    id=pl.lit(project.id),
+                    slug=pl.lit(project.slug),
                     dt=pl.from_epoch(pl.col("timestamp")).dt.strftime("%Y-%m-%d"),
                 )
                 .sort("timestamp")
