@@ -22,8 +22,8 @@ def find_apps(path: str):
         ):
             apps.append(basename)
 
-        app_names = []
-        for basename in apps:
-            app_names.append(basename.removesuffix(".py"))
+    app_names = []
+    for basename in apps:
+        app_names.append(basename.removesuffix(".py"))
 
     return sorted(app_names)

@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 
 
 def now():
@@ -20,3 +20,8 @@ def now_dt() -> str:
 
 def dt_fromepoch(epoch: int) -> str:
     return datetime.fromtimestamp(epoch).strftime("%Y-%m-%d")
+
+
+def date_toepoch(dateval: date) -> int:
+    dtval = datetime(year=dateval.year, month=dateval.month, day=dateval.day, tzinfo=timezone.utc)
+    return int(dtval.timestamp())

@@ -1560,6 +1560,7 @@ name = "op-datasets"
 version = "0.1.0"
 source = { editable = "packages/op-datasets" }
 dependencies = [
+    { name = "duckdb" },
     { name = "op-coreutils" },
     { name = "overrides" },
     { name = "pydantic" },
@@ -1569,6 +1570,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "duckdb", specifier = ">=1.1.1" },
     { name = "op-coreutils", editable = "packages/op-coreutils" },
     { name = "overrides", specifier = ">=7.7.0" },
     { name = "pydantic", specifier = ">=2.9.2" },

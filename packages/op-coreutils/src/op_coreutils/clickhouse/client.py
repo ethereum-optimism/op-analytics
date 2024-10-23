@@ -21,6 +21,7 @@ _INIT_LOCK = Lock()
 
 
 def connect(instance: ClickHouseInstance):
+    log.info(f"Connecting to {instance} Clickhouse client...")
     # Server-generated ids (as opoosed to client-generated) are required for running
     # concurrent queries. See https://clickhouse.com/docs/en/integrations/python#managing-clickhouse-session-ids.
     clickhouse_connect.common.set_setting("autogenerate_session_id", False)
@@ -95,8 +96,8 @@ def run_query(
     return pl.from_arrow(arrow_result)
 
 
-def insert_dataframe(instance: ClickHouseInstance, database: str, table: str, df_arrow: pa.Table):
-    """Write polars DF to clickhouse."""
+def insert_arrow(instance: ClickHouseInstance, database: str, table: str, df_arrow: pa.Table):
+    """Write arrow table to clickhouse."""
     client = init_client(instance)
 
     result = client.insert_arrow(table=table, arrow_table=df_arrow, database=database)

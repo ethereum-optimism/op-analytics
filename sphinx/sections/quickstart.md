@@ -79,14 +79,14 @@ of work.
 
 ## Google Cloud Credentials
 
-Some functionality on this repo requires you to be authenticated with google cloud. If you have
-already installed the [gcloud](https://cloud.google.com/sdk/docs/install) cli you can run:
+Some functionality on this repo requires you to be authenticated with google cloud. You should
+install the [gcloud](https://cloud.google.com/sdk/docs/install) cli and then run:
 ```
 gcloud auth application-default login
+gcloud config set project oplabs-tools-data
 ```
 
-
-Note, if you see the following error then either you are not authoenticated or you do not have
+Note, if you see the following error then either you are not authenticated or you do not have
 access to the required resource:
 ```
 DefaultCredentialsError: Your default credentials were not found. To set up Application Default Credentials
