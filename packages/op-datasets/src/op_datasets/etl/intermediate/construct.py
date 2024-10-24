@@ -1,22 +1,20 @@
-from datetime import date
-
+from datetime import timedelta
 import polars as pl
-from op_coreutils.clickhouse import run_oplabs_query
 
-from op_datasets.etl.ingestion.sinks import MARKERS_DB, MARKERS_TABLE
+from op_datasets.etl.ingestion.utilities import marker_paths_for_dates, RawOnchainDataLocation
 from op_datasets.utils.daterange import DateRange
 
 from .registry import load_model_definitions
-from .udfs import create_duckdb_macros
 from .task import IntermediateModelsTask
+from .udfs import create_duckdb_macros
 
 
 def construct_tasks(
     chains: list[str],
     models: list[str],
     range_spec: str,
-    source_spec: str,
-    sinks_spec: list[str],
+    read_from: RawOnchainDataLocation,
+    write_to: list[RawOnchainDataLocation],
 ) -> list[IntermediateModelsTask]:
     """Construct a collection of tasks to compute intermediate models.
 
@@ -34,65 +32,31 @@ def construct_tasks(
 
     tasks = []
 
+    # Make one query for all dates and chains.
+    #
+    # Extend the range of dates +/-1 day to be able to check if there is data
+    # continuity on boths ends, which allows us to confirm that the data is ready
+    # to be processed.
+    query_range = [
+        date_range.min - timedelta(days=1),
+        date_range.max + timedelta(days=1),
+    ] + date_range.dates
+
+    paths_by_dataset_df = marker_paths_for_dates(read_from, query_range, chains)
+
     for dateval in date_range.dates:
-        paths_by_dataset_df = query_completion_markers(dateval, chains)
-
-        # TODO: Determine if the data is complete and ready to be consumed.
-
         for chain in chains:
+            filtered_df = paths_by_dataset_df.filter(pl.col("chain") == chain)
+
             tasks.append(
                 IntermediateModelsTask.new(
                     dateval=dateval,
                     chain=chain,
-                    paths_by_dataset_df=paths_by_dataset_df,
+                    read_from=read_from,
+                    paths_by_dataset_df=filtered_df,
                     models=models,
+                    write_to=write_to,
                 )
             )
 
     return tasks
-
-
-def query_completion_markers(dateval: date, chains: list[str]) -> pl.DataFrame:
-    # Assume source spec is GCS
-    select = f"SELECT marker_path, outputs.full_path, chain FROM {MARKERS_DB}.{MARKERS_TABLE}"
-
-    markers = run_oplabs_query(
-        query=select + " WHERE dt = {date:Date} AND chain in {chains:Array(String)}",
-        parameters={"date": dateval, "chains": chains},
-    )
-
-    paths_df = markers.select(
-        pl.col("chain"),
-        pl.col("outputs.full_path").alias("parquet_path"),
-    ).explode("parquet_path")
-
-    paths_by_dataset_df = (
-        paths_df.with_columns(
-            dataset=pl.col("parquet_path").map_elements(
-                _marker_path_to_dataset,
-                return_dtype=pl.String,
-            )
-        )
-        .group_by("chain", "dataset")
-        .agg(pl.col("parquet_path"))
-    )
-
-    assert paths_by_dataset_df.schema == {
-        "chain": pl.String,
-        "dataset": pl.String,
-        "parquet_path": pl.List(pl.String),
-    }
-    return paths_by_dataset_df
-
-
-def _marker_path_to_dataset(path: str) -> str:
-    if path.startswith("ingestion/blocks"):
-        return "blocks"
-    if path.startswith("ingestion/transactions"):
-        return "transactions"
-    if path.startswith("ingestion/logs"):
-        return "logs"
-    if path.startswith("ingestion/traces"):
-        return "traces"
-
-    raise NotImplementedError()
