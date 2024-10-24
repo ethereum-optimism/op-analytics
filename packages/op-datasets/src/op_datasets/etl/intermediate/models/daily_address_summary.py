@@ -232,7 +232,7 @@ def daily_address_summary(
     WHERE gas_price > 0
 
     -- Optional address filter for faster results when developing.
-    AND from_address LIKE '0x00%'
+    -- AND from_address LIKE '0x00%'
 
     GROUP BY 1, 2, 3, 4
     """
