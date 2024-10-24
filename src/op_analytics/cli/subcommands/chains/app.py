@@ -5,6 +5,7 @@ import typer
 from op_coreutils.clickhouse import run_goldsky_query
 from op_coreutils.gsheets import update_gsheet
 from op_coreutils.logger import structlog
+from op_datasets.chains.across_bridge import upload_across_bridge_addresses
 from op_datasets.chains.chain_metadata import (
     filter_to_goldsky_chains,
     load_chain_metadata,
@@ -13,8 +14,8 @@ from op_datasets.chains.chain_metadata import (
 from op_datasets.etl.ingestion import ingest
 from op_datasets.etl.ingestion.batches import split_block_range
 from op_datasets.etl.intermediate import compute_intermediate
-from op_datasets.utils.blockrange import BlockRange
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
+from op_datasets.utils.blockrange import BlockRange
 from rich import print
 from typing_extensions import Annotated
 
@@ -72,12 +73,12 @@ def goldsky_sql(
 
 
 @app.command()
-def update_chain_metadata_gsheet():
-    """Upload chain_metadata_raw.csv to Google Sheets.
+def chain_metadata_updates():
+    """Run various chain metadata related updates.
 
-    The chain_metadata_raw.csv file is maintained manually by the OP Labs team. This function
-    accepts a local CSV file with raw chain metadata. It loads the data, cleans it up and uploads
-    it to Google Sheets.
+    - Upload chain_metadata_raw.csv to Google Sheets.
+    - Update the OP Analytics Chain Metadata [ADMIN MANAGED] google sheet.
+    - Update the Across Superchain Bridge Addresses [ADMIN MANAGED] google sheet.
 
     TODO: Decide if we want to uplaod to Dune, Clickhouse, BigQuery. or op-analytics-static repo.
     """
@@ -98,6 +99,10 @@ def update_chain_metadata_gsheet():
         worksheet_name="Goldsky Chains",
         dataframe=to_pandas(goldsky_df),
     )
+
+    # Upload the across bridge addresses.
+    # Makes sure they are consistent with Chain Metadata.
+    upload_across_bridge_addresses(goldsky_df)
 
 
 @app.command()

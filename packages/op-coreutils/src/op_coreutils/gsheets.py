@@ -47,10 +47,9 @@ def get_worksheet(location_name: str, worksheet_name: str):
     locations, client = init_client()
 
     if location_name not in locations:
-        log.warn(
+        raise ValueError(
             f"Location {location_name} is not present in _GSHEETS_LOCATIONS. Will skip writing."
         )
-        return
 
     sh = client.open_by_url(locations[location_name])
     worksheet = sh.worksheet(worksheet_name)

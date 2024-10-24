@@ -8,6 +8,7 @@ REGISTERED_AUDITS = {}
 
 def register(func):
     REGISTERED_AUDITS[func.__name__] = func
+    return func
 
 
 VALID_HASH = r"^0x[\da-f]{64}$"
