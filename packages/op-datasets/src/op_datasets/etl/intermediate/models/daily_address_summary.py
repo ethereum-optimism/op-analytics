@@ -20,7 +20,6 @@ TX_SUCCESS = "receipt_status = 1"
 
 L2_CONTRIB_GAS_FEES = "(gas_price * receipt_gas_used)"
 L1_CONTRIB_GAS_FEES = "receipt_l1_fee"
-
 TOTAL_GAS_FEES = f"{L2_CONTRIB_GAS_FEES} + {L1_CONTRIB_GAS_FEES}"
 
 L2_CONTRIB_PRIORITY = "(max_priority_fee_per_gas * receipt_gas_used)"
