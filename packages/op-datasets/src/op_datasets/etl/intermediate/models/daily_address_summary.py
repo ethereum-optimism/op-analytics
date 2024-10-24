@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import duckdb
+from op_coreutils.duckdb_inmem import init_client
 
 from op_datasets.etl.intermediate.registry import register_model
 from op_datasets.etl.intermediate.task import IntermediateModelsTask
@@ -23,6 +24,7 @@ L1_CONTRIB_GAS_FEES = "receipt_l1_fee"
 TOTAL_GAS_FEES = f"{L2_CONTRIB_GAS_FEES} + {L1_CONTRIB_GAS_FEES}"
 
 L2_CONTRIB_PRIORITY = "(max_priority_fee_per_gas * receipt_gas_used)"
+L2_CONTRIB_BASE = "(base_fee_per_gas * receipt_gas_used)"
 
 ESTIMATED_SIZE = "receipt_l1_fee /(16*COALESCE(receipt_l1_fee_scalar,receipt_l1_base_fee_scalar)*receipt_l1_gas_price/1000000 + COALESCE( receipt_l1_blob_base_fee_scalar*receipt_l1_blob_base_fee/1000000 , 0))"
 
@@ -108,11 +110,11 @@ AGGREGATION_EXPRS = [
     ),
     Expression(
         alias="total_l1_gas_used",
-        sql_expr="SUM(COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE})))",
+        sql_expr=f"SUM(COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE})))",
     ),
     Expression(
         alias="total_l1_gas_used_success",
-        sql_expr=f"SUM(IF({TX_SUCCESS}, COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE}), 0))",
+        sql_expr=f"SUM(IF({TX_SUCCESS}, COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE})), 0))",
     ),
     # Gas Fee Paid
     Expression(
@@ -142,11 +144,17 @@ AGGREGATION_EXPRS = [
     ),
     Expression(
         alias="l2_contrib_gas_fees_basefee",
-        sql_expr=wei_to_eth(f"SUM({L2_CONTRIB_GAS_FEES} - {L2_CONTRIB_PRIORITY})"),
+        sql_expr=wei_to_eth(f"SUM({L2_CONTRIB_BASE})"),
     ),
     Expression(
         alias="l2_contrib_gas_fees_priorityfee",
         sql_expr=wei_to_eth(f"SUM({L2_CONTRIB_PRIORITY})"),
+    ),
+    Expression(
+        alias="l2_contrib_gas_fees_legacyfee",
+        sql_expr=wei_to_eth(
+            f"SUM(IF(max_priority_fee_per_gas=0, {TOTAL_GAS_FEES} - {L2_CONTRIB_PRIORITY} - {L2_CONTRIB_BASE}, 0))"
+        ),
     ),
     # Average Gas Fee
     Expression(
@@ -162,7 +170,7 @@ AGGREGATION_EXPRS = [
         alias="avg_l2_base_fee_gwei",
         sql_expr=wei_to_gwei(
             safe_div(
-                f"SUM({L2_CONTRIB_GAS_FEES} - {L2_CONTRIB_PRIORITY})",
+                f"SUM({L2_CONTRIB_BASE})",
                 "SUM(receipt_gas_used)",
             )
         ),
@@ -180,8 +188,8 @@ AGGREGATION_EXPRS = [
         alias="avg_l1_gas_price_gwei",
         sql_expr=wei_to_gwei(
             safe_div(
-                "SUM({L1_CONTRIB_L1_GAS})",
-                "SUM(COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE})))",
+                f"SUM({L1_CONTRIB_L1_GAS})",
+                f"SUM(({ESTIMATED_SIZE}) * COALESCE(16*receipt_l1_base_fee_scalar/1000000, receipt_l1_fee_scalar))",
             )
         ),
     ),
@@ -189,8 +197,8 @@ AGGREGATION_EXPRS = [
         alias="avg_l1_blob_base_fee_gwei",
         sql_expr=wei_to_gwei(
             safe_div(
-                "SUM({L1_CONTRIB_BLOB})",
-                "SUM(COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE})))",
+                f"SUM({L1_CONTRIB_BLOB})",
+                f"SUM(({ESTIMATED_SIZE}) * receipt_l1_blob_base_fee_scalar/1000000)",
             )
         ),
     ),
@@ -201,18 +209,31 @@ AGGREGATION_EXPRS = [
 def daily_address_summary(
     task: IntermediateModelsTask,
 ) -> dict[str, duckdb.DuckDBPyRelation]:
+    txs: duckdb.DuckDBPyRelation = task.input_duckdb_relations["transactions"]
+    blks: duckdb.DuckDBPyRelation = task.input_duckdb_relations["blocks"]
+
+    client = init_client()
+
     query = f"""
+    WITH blocks AS (
+        SELECT
+            number,
+            base_fee_per_gas
+        FROM blks
+    )
     SELECT
         dt,
         chain,
         chain_id,
         from_address,
         {to_sql(AGGREGATION_EXPRS)}
-    FROM txs
+    FROM txs AS t
+    JOIN blocks AS b
+        ON t.block_number = b.number
     WHERE gas_price > 0
 
-    -- Optional address filter for faster results when developoing.
-    -- AND from_address LIKE '0x00%'
+    -- Optional address filter for faster results when developing.
+    AND from_address LIKE '0x00%'
 
     GROUP BY 1, 2, 3, 4
     """
@@ -220,8 +241,7 @@ def daily_address_summary(
     # Uncomment when debugging:
     # print(query)
 
-    txs: duckdb.DuckDBPyRelation = task.input_duckdb_relations["transactions"]
-    results = txs.query("txs", query)
+    results = client.sql(query)
 
     # Model functions always return a dictionary of output results.
     return {"daily_address_summary": results}
