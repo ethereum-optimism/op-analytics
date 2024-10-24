@@ -12,9 +12,10 @@ from op_datasets.chains.chain_metadata import (
 )
 from op_datasets.etl.ingestion import ingest
 from op_datasets.etl.ingestion.batches import split_block_range
+from op_datasets.etl.ingestion.utilities import RawOnchainDataLocation, RawOnchainDataProvider
 from op_datasets.etl.intermediate import compute_intermediate
-from op_datasets.utils.blockrange import BlockRange
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
+from op_datasets.utils.blockrange import BlockRange
 from rich import print
 from typing_extensions import Annotated
 
@@ -139,10 +140,22 @@ def verify_goldsky_tables():
 def ingest_blocks(
     chains: Annotated[str, typer.Argument(help="Comma-separated list of chains to be processed.")],
     range_spec: Annotated[str, typer.Argument(help="Range of blocks to be ingested.")],
-    source_from: Annotated[str | None, typer.Option(help="Data source specification.")] = None,
-    sink_to: Annotated[list[str] | None, typer.Option(help="Data sink(s) specification.")] = None,
+    read_from: Annotated[
+        RawOnchainDataProvider,
+        typer.Option(
+            help="Where datda will be read from.",
+            case_sensitive=False,
+        ),
+    ] = RawOnchainDataProvider.GOLDSKY,
+    write_to: Annotated[
+        list[RawOnchainDataLocation] | None,
+        typer.Option(
+            help="Where data will be written to.",
+            case_sensitive=False,
+        ),
+    ] = None,
     dryrun: Annotated[
-        bool, typer.Option(help="Dryrun shows a summary of the data that will be processed.")
+        bool, typer.Option(help="Dryrun shows a summary of the data that will be ingested.")
     ] = False,
     force: Annotated[
         bool, typer.Option(help="Run the full process ignore any existing completion markers.")
@@ -152,9 +165,6 @@ def ingest_blocks(
 
     Run audits + ingestion to GCS on a range of blocks.
     """
-    source_spec = source_from or "goldsky"
-    sinks_spec = sink_to or ["gcs"]
-
     if chains == "ALL":
         chain_list = verify_goldsky_tables()
     else:
@@ -163,8 +173,8 @@ def ingest_blocks(
     ingest(
         chains=chain_list,
         range_spec=range_spec,
-        source_spec=source_spec,
-        sinks_spec=sinks_spec,
+        read_from=read_from,
+        write_to=write_to or [RawOnchainDataLocation.LOCAL],
         dryrun=dryrun,
         force=force,
     )
@@ -175,8 +185,20 @@ def intermediate_models(
     chains: Annotated[str, typer.Argument(help="Comma-separated list of chains to be processed.")],
     models: Annotated[str, typer.Argument(help="Comma-separated list of models to be processed.")],
     range_spec: Annotated[str, typer.Argument(help="Range of dates to be processed.")],
-    source_from: Annotated[str | None, typer.Option(help="Data source specification.")] = None,
-    sink_to: Annotated[list[str] | None, typer.Option(help="Data sink(s) specification.")] = None,
+    read_from: Annotated[
+        RawOnchainDataLocation,
+        typer.Option(
+            help="Where datda will be read from.",
+            case_sensitive=False,
+        ),
+    ] = RawOnchainDataLocation.GCS,
+    write_to: Annotated[
+        list[RawOnchainDataLocation] | None,
+        typer.Option(
+            help="Where data will be written to.",
+            case_sensitive=False,
+        ),
+    ] = None,
     dryrun: Annotated[
         bool, typer.Option(help="Dryrun shows a summary of the data that will be processed.")
     ] = False,
@@ -185,9 +207,6 @@ def intermediate_models(
     ] = False,
 ):
     """Compute intermediate models for a range of dates."""
-    source_spec = source_from or "gcs"
-    sinks_spec = sink_to or ["local"]
-
     if chains == "ALL":
         chain_list = verify_goldsky_tables()
     else:
@@ -199,8 +218,8 @@ def intermediate_models(
         chains=chain_list,
         models=model_list,
         range_spec=range_spec,
-        source_spec=source_spec,
-        sinks_spec=sinks_spec,
+        read_from=read_from,
+        write_to=write_to or [RawOnchainDataLocation.LOCAL],
         dryrun=dryrun,
         force=force,
     )

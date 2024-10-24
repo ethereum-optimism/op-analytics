@@ -1,54 +1,51 @@
-from dataclasses import dataclass
+import time
 
+import polars as pl
+from op_coreutils.clickhouse import run_goldsky_query
 from op_coreutils.logger import structlog
-from overrides import EnforceOverrides, override
+from op_coreutils.threads import run_concurrently
 
-from op_datasets.etl.ingestion.batches import BlockBatch
 from op_datasets.schemas import CoreDataset
 
-from . import fromgoldsky, fromlocal
+from .batches import BlockBatch
+from .utilities import RawOnchainDataProvider
 
 log = structlog.get_logger()
 
 
-class CoreDatasetSource(EnforceOverrides):
-    @classmethod
-    def from_spec(cls, source_spec: str) -> "CoreDatasetSource":
-        if source_spec.startswith("goldsky"):
-            return GoldskySource()
+def read_from_source(
+    provider: RawOnchainDataProvider,
+    datasets: dict[str, CoreDataset],
+    block_batch: BlockBatch,
+):
+    if provider == RawOnchainDataProvider.GOLDSKY:
+        return _read_from_goldsky(datasets, block_batch)
 
-        if source_spec.startswith("file://"):
-            return LocalFileSource(basepath=source_spec.removeprefix("file://"))
-
-        raise NotImplementedError()
-
-    def read_from_source(
-        self,
-        datasets: dict[str, CoreDataset],
-        block_batch: BlockBatch,
-    ):
-        raise NotImplementedError()
+    raise NotImplementedError(f"raw data provider is not implemented: {provider}")
 
 
-@dataclass
-class GoldskySource(CoreDatasetSource):
-    @override
-    def read_from_source(
-        self,
-        datasets: dict[str, CoreDataset],
-        block_batch: BlockBatch,
-    ):
-        return fromgoldsky.read_core_tables(datasets, block_batch)
+def _read_from_goldsky(
+    datasets: dict[str, CoreDataset],
+    block_batch: BlockBatch,
+) -> dict[str, pl.DataFrame]:
+    """Get the core dataset tables from Goldsky."""
 
+    queries = {
+        key: dataset.goldsky_sql(
+            source_table=f"{block_batch.chain}_{dataset.goldsky_table_suffix}",
+            where=block_batch.filter(number_column=dataset.block_number_col),
+        )
+        for key, dataset in datasets.items()
+    }
 
-@dataclass
-class LocalFileSource(CoreDatasetSource):
-    basepath: str
+    def func(key):
+        start = time.time()
+        try:
+            result = run_goldsky_query(queries[key])
+            log.info(f"Query success: {key} in {time.time() - start:.2f}s {len(result)} rows")
+            return result
+        except Exception:
+            log.error(f"Query failure: {key}: \n{queries[key]}")
+            raise
 
-    @override
-    def read_from_source(
-        self,
-        datasets: dict[str, CoreDataset],
-        block_batch: BlockBatch,
-    ):
-        return fromlocal.read_core_tables(self.basepath, datasets, block_batch)
+    return run_concurrently(func, list(queries.keys()), 4)
