@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import polars as pl
 from op_coreutils import duckdb_local as utilsduckdb
-from op_coreutils.clickhouse import insert_arrow, run_oplabs_query
+from op_coreutils.clickhouse import insert_arrow
 from op_coreutils.logger import structlog
 from op_coreutils.storage.gcs_parquet import (
     gcs_upload_parquet,
@@ -13,11 +13,9 @@ from op_coreutils.storage.paths import PartitionedOutput, SinkMarkerPath
 
 from op_datasets.etl.ingestion.markers import IngestionCompletionMarker
 
+from .utilities import marker_exists, MARKERS_DB, MARKERS_TABLE
+
 log = structlog.get_logger()
-
-
-MARKERS_DB = "etl_monitor"
-MARKERS_TABLE = "raw_onchain_ingestion_markers"
 
 
 @dataclass(kw_only=True)
@@ -56,7 +54,7 @@ class DataSink:
 
         """
         # Note that the marker schemas are slightly different in Clickhouse and DuckDB. This is
-        # due to the difference in how these database support the nested structs that we use to
+        # due to the difference in how these databases support the nested structs that we use to
         # represent partition values.
         #
         # We create both flavors of the markers arrow table just so we can exercise the GCS code
@@ -77,21 +75,9 @@ class DataSink:
 
     def is_complete(self, marker_path: SinkMarkerPath) -> bool:
         if self.is_gcs:
-            select = f"SELECT marker_path FROM {MARKERS_DB}.{MARKERS_TABLE} "
-            result = run_oplabs_query(
-                select + "WHERE marker_path = {search_value:String}",
-                parameters={"search_value": marker_path},
-            )
-            return len(result) > 0
-
+            return marker_exists("OPLABS_CLICKHOUSE", marker_path)
         elif self.is_local:
-            select = f"SELECT marker_path FROM {MARKERS_DB}.{MARKERS_TABLE} "
-            result = utilsduckdb.run_sql(
-                sql=select + "WHERE marker_path = ?",
-                params=[marker_path],
-            )
-            return len(result) > 0
-
+            return marker_exists("LOCAL_DUCKDB", marker_path)
         raise NotImplementedError
 
 
