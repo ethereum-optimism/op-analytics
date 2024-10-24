@@ -2,14 +2,16 @@ import polars as pl
 from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
 from op_coreutils.storage.paths import Marker, PartitionedOutput, breakout_partitions
 
-from op_datasets.etl.ingestion.sinks import (
-    IngestionCompletionMarker,
-    all_outputs_complete,
-)
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
-from .task import IngestionTask, OutputDataFrame, construct_tasks
+from .construct import construct_tasks
+from .markers import IngestionCompletionMarker
+from .sources import read_from_source
+from .sinks import RawOnchainDataSink
+from .status import all_inputs_ready, all_outputs_complete
+from .task import IngestionTask, OutputDataFrame
+from .utilities import RawOnchainDataLocation, RawOnchainDataProvider
 
 log = structlog.get_logger()
 
@@ -17,27 +19,39 @@ log = structlog.get_logger()
 def ingest(
     chains: list[str],
     range_spec: str,
-    source_spec: str,
-    sinks_spec: list[str],
+    read_from: RawOnchainDataProvider,
+    write_to: list[RawOnchainDataLocation],
     dryrun: bool,
     force: bool = False,
 ):
     clear_contextvars()
 
-    tasks = construct_tasks(chains, range_spec, source_spec, sinks_spec)
+    tasks = construct_tasks(chains, range_spec, read_from, write_to)
+    log.info(f"Constructed {len(tasks)} tasks.")
 
     if dryrun:
+        log.info("DRYRUN: No work will be done.")
         return
 
-    for task in tasks:
-        bind_contextvars(chain=task.block_batch.chain, block=f"#{task.block_batch.min}")
+    not_skipped = 0
+    for i, task in enumerate(tasks):
+        bind_contextvars(
+            task=f"{i+1}/{len(tasks)}",
+            **task.contextvars,
+        )
+
         # Check and decide if we need to run this task.
         checker(task)
+        if not task.inputs_ready:
+            log.warning("Task inputs are not ready. Skipping this task.")
+            continue
         if task.is_complete and not force:
             continue
         if force:
-            log.info(f"Forcing execution of {task.pretty}")
+            log.info("Force flag detected. Forcing execution.")
             task.force = True
+
+        not_skipped += 1
 
         # Read the data (updates the task in-place with the input dataframes).
         reader(task)
@@ -48,12 +62,15 @@ def ingest(
         # Write outputs and markers.
         writer(task)
 
+        if not_skipped > 20:
+            log.warning(f"Stopping after executing {not_skipped} tasks")
+            break
+
 
 def reader(task: IngestionTask):
     """Read core datasets from the specified source."""
-    log.info(f"Reading input data from for {task.pretty}")
-
-    dataframes = task.source.read_from_source(
+    dataframes = read_from_source(
+        provider=task.read_from,
         datasets=ONCHAIN_CURRENT_VERSION,
         block_batch=task.block_batch,
     )
@@ -113,11 +130,12 @@ def auditor(task: IngestionTask):
 
 
 def writer(task: IngestionTask):
-    for sink in task.sinks:
+    for location in task.write_to:
+        sink = RawOnchainDataSink(location=location)
         for output in task.output_dataframes:
             if sink.is_complete(output.marker_path) and not task.force:
                 log.info(
-                    f"[{sink.sink_spec}] Skipping already complete output at {output.marker_path}"
+                    f"[{sink.location.name}] Skipping already complete output at {output.marker_path}"
                 )
                 continue
 
@@ -147,5 +165,11 @@ def writer(task: IngestionTask):
 
 
 def checker(task: IngestionTask):
-    if all_outputs_complete(task.sinks, task.expected_markers):
+    if all_outputs_complete(task.write_to, task.expected_markers):
         task.is_complete = True
+        task.inputs_ready = True
+        return
+
+    if all_inputs_ready(task.read_from, task.block_batch):
+        task.inputs_ready = True
+        return
