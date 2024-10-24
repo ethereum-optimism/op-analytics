@@ -10,6 +10,7 @@ REGISTERED_INTERMEDIATE_MODELS = {}
 
 def register_model(func):
     REGISTERED_INTERMEDIATE_MODELS[func.__name__] = func
+    return func
 
 
 def load_model_definitions():
