@@ -98,6 +98,11 @@ AGGREGATION_EXPRS = [
         alias="num_to_addresses_success",
         sql_expr=f"COUNT(DISTINCT IF({TX_SUCCESS}, to_address, NULL))",
     ),
+    # method ids
+    Expression(
+        alias="num_method_ids",
+        sql_expr="COUNT(DISTINCT SUBSTRING(input,1,10))",
+    ),
     # Gas Usage
     Expression(
         alias="total_l2_gas_used",
@@ -224,7 +229,7 @@ def daily_address_summary(
         dt,
         chain,
         chain_id,
-        from_address,
+        from_address AS address,
         {to_sql(AGGREGATION_EXPRS)}
     FROM txs AS t
     JOIN blocks AS b
