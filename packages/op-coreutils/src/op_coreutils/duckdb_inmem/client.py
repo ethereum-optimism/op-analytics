@@ -35,11 +35,9 @@ def init_client():
     return _DUCK_DB
 
 
-def parquet_relation(parquet_paths, bucket: str | None = None) -> duckdb.DuckDBPyRelation:
+def parquet_relation(parquet_paths) -> duckdb.DuckDBPyRelation:
     """Return a DuckDB relation from a list of parquet files."""
     client = init_client()
 
-    bucket = bucket or "oplabs-tools-data-sink"
-
-    paths = ", ".join([f"'gs://{bucket}/{_}'" for _ in parquet_paths])
+    paths = ", ".join(f"'{_}'" for _ in parquet_paths)
     return client.sql(f"SELECT * FROM read_parquet([{paths}])")
