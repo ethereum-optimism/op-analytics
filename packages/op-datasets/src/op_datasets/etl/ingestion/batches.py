@@ -126,6 +126,9 @@ class BlockBatch:
     def __len__(self):
         return self.max - self.min
 
+    def num_blocks(self):
+        return self.max - self.min
+
     def filter(self, number_column: str = "number"):
         return f" {number_column} >= {self.min} and {number_column} < {self.max}"
 

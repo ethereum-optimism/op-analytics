@@ -12,7 +12,7 @@ from op_coreutils.storage.paths import PartitionedOutput, SinkMarkerPath
 
 from op_datasets.etl.ingestion.markers import IngestionCompletionMarker
 
-from .utilities import MARKERS_DB, MARKERS_TABLE, RawOnchainDataLocation, marker_exists, local_path
+from .utilities import MARKERS_DB, MARKERS_TABLE, RawOnchainDataLocation, marker_exists
 
 log = structlog.get_logger()
 
@@ -27,7 +27,11 @@ class RawOnchainDataSink:
             return
 
         elif self.location == RawOnchainDataLocation.LOCAL:
-            local_upload_parquet(local_path(part_output.path.full_path), dataframe)
+            local_upload_parquet(
+                path=self.location.with_prefix(part_output.path.full_path),
+                df=dataframe,
+            )
+
             return
 
         raise NotImplementedError()
@@ -42,22 +46,14 @@ class RawOnchainDataSink:
         Markers for local output are written to DuckDB
 
         """
-        # Note that the marker schemas are slightly different in Clickhouse and DuckDB. This is
-        # due to the difference in how these databases support the nested structs that we use to
-        # represent partition values.
-        #
-        # We create both flavors of the markers arrow table just so we can exercise the GCS code
-        # when we are testing locally.
-
-        gcs_table = marker.to_clickhouse_pyarrow_table()
-        local_table = marker.to_duckdb_pyarrow_table()
+        table = marker.to_pyarrow_table()
 
         if self.location == RawOnchainDataLocation.GCS:
-            insert_arrow("OPLABS", MARKERS_DB, MARKERS_TABLE, gcs_table)
+            insert_arrow("OPLABS", MARKERS_DB, MARKERS_TABLE, table)
             return
 
         elif self.location == RawOnchainDataLocation.LOCAL:
-            utilsduckdb.insert_arrow(MARKERS_DB, MARKERS_TABLE, local_table)
+            utilsduckdb.insert_arrow(MARKERS_DB, MARKERS_TABLE, table)
             return
 
         raise NotImplementedError()

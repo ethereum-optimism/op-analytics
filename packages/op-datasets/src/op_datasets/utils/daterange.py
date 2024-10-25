@@ -38,6 +38,12 @@ class DateRange:
             current += timedelta(days=1)
         return result
 
+    def padded_dates(self) -> list[date]:
+        result = [self.min - timedelta(days=1)]
+        result.extend(self.dates)
+        result.append(self.max)
+        return result
+
     @classmethod
     def from_spec(cls, date_range_spec: str) -> "DateRange":
         if minmax := MIN_MAX_RE.fullmatch(date_range_spec):

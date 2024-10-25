@@ -3,73 +3,31 @@ from dataclasses import dataclass
 import pyarrow as pa
 from op_coreutils.logger import structlog
 from op_coreutils.storage.paths import Marker
-from op_coreutils.time import now
 
 log = structlog.get_logger()
 
 
 @dataclass
 class IngestionCompletionMarker:
-    process_name: str
+    num_blocks: int
+    min_block: int
+    max_block: int
     chain: str
     marker: Marker
 
-    @property
-    def path(self):
-        return self.marker.marker_path
+    def to_pyarrow_table(self) -> pa.Table:
+        rows: list[dict] = self.marker.to_rows()
 
-    def dt_value(self):
-        return min(_.path.dt_value() for _ in self.marker.outputs)
-
-    def to_clickhouse_pyarrow_table(self) -> pa.Table:
-        row: dict = self.marker.to_clickhouse_row()
-        row["process_name"] = self.process_name
-        row["chain"] = self.chain
-        row["dt"] = self.dt_value()
-
-        marker_schema = self.marker.clickhouse_schema()
-        schema = pa.schema(
-            [
-                marker_schema.field("marker_path"),
-                marker_schema.field("total_rows"),
-                marker_schema.field("outputs.full_path"),
-                marker_schema.field("outputs.partition_cols"),
-                marker_schema.field("outputs.row_count"),
-                pa.field("process_name", pa.string()),
-                pa.field("chain", pa.string()),
-                pa.field("dt", pa.string()),
-            ]
+        schema = self.marker.arrow_schema()
+        schema_new = (
+            schema.append(pa.field("num_blocks", pa.int32()))
+            .append(pa.field("min_block", pa.int64()))
+            .append(pa.field("max_block", pa.int64()))
         )
 
-        return pa.Table.from_pylist(
-            [row],
-            schema=schema,
-        )
+        for row in rows:
+            row["num_blocks"] = self.num_blocks
+            row["min_block"] = self.min_block
+            row["max_block"] = self.max_block
 
-    def to_duckdb_pyarrow_table(self) -> pa.Table:
-        row: dict = self.marker.to_duckdb_row()
-        row["updated_at"] = now()
-        row["process_name"] = self.process_name
-        row["chain"] = self.chain
-        row["dt"] = self.dt_value()
-
-        marker_schema = self.marker.duckdb_schema()
-
-        # The order of the columns must match the order as declared in the CREATE TABLE
-        # statement for the table.
-        schema = pa.schema(
-            [
-                pa.field("updated_at", pa.timestamp(unit="us", tz=None)),
-                marker_schema.field("marker_path"),
-                marker_schema.field("total_rows"),
-                marker_schema.field("outputs"),
-                pa.field("process_name", pa.string()),
-                pa.field("chain", pa.string()),
-                pa.field("dt", pa.string()),
-            ]
-        )
-
-        return pa.Table.from_pylist(
-            [row],
-            schema=schema,
-        )
+        return pa.Table.from_pylist(rows, schema=schema_new)
