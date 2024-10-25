@@ -125,6 +125,7 @@ def auditor(task: IngestionTask):
                 dataframe=task.input_dataframes[name],
                 root_path=task.get_output_location(dataset),
                 marker_path=task.get_marker_location(dataset),
+                dataset_name=name,
             )
         )
 
@@ -154,11 +155,16 @@ def writer(task: IngestionTask):
 
             sink.write_marker(
                 marker=IngestionCompletionMarker(
-                    process_name="default",
+                    num_blocks=task.block_batch.num_blocks(),
+                    min_block=task.block_batch.min,
+                    max_block=task.block_batch.max,
                     chain=task.chain,
                     marker=Marker(
                         marker_path=output.marker_path,
+                        dataset_name=output.dataset_name,
                         outputs=written_parts,
+                        chain=task.block_batch.chain,
+                        process_name="default",
                     ),
                 )
             )

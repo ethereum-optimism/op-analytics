@@ -1,7 +1,7 @@
-from datetime import timedelta
 import polars as pl
+from op_coreutils.time import surrounding_dates
 
-from op_datasets.etl.ingestion.utilities import marker_paths_for_dates, RawOnchainDataLocation
+from op_datasets.etl.ingestion.utilities import RawOnchainDataLocation, markers_for_dates
 from op_datasets.utils.daterange import DateRange
 
 from .registry import load_model_definitions
@@ -34,26 +34,24 @@ def construct_tasks(
 
     # Make one query for all dates and chains.
     #
-    # Extend the range of dates +/-1 day to be able to check if there is data
-    # continuity on boths ends, which allows us to confirm that the data is ready
-    # to be processed.
-    query_range = [
-        date_range.min - timedelta(days=1),
-        date_range.max + timedelta(days=1),
-    ] + date_range.dates
-
-    paths_by_dataset_df = marker_paths_for_dates(read_from, query_range, chains)
+    # We use the +/- 1 day padded dates so that we can use the query results to
+    # check if there is data on boths ends. This allows us to confirm that the
+    # data is ready to be processed.
+    markers_df = markers_for_dates(read_from, date_range.padded_dates(), chains)
 
     for dateval in date_range.dates:
         for chain in chains:
-            filtered_df = paths_by_dataset_df.filter(pl.col("chain") == chain)
+            filtered = markers_df.filter(
+                pl.col("chain") == chain,
+                pl.col("dt").is_in(surrounding_dates(dateval)),
+            )
 
             tasks.append(
                 IntermediateModelsTask.new(
                     dateval=dateval,
                     chain=chain,
                     read_from=read_from,
-                    paths_by_dataset_df=filtered_df,
+                    markers_df=filtered,
                     models=models,
                     write_to=write_to,
                 )
