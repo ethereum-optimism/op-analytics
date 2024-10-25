@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pyarrow as pa
 from op_coreutils.logger import structlog
-from op_coreutils.storage.paths import Marker
+from op_coreutils.partitioned import Marker
 
 log = structlog.get_logger()
 

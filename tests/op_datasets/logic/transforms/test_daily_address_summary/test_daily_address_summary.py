@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from op_datasets.etl.ingestion.utilities import RawOnchainDataLocation
 from op_datasets.etl.intermediate.construct import construct_tasks
 from op_datasets.etl.intermediate.models.daily_address_summary import (
     daily_address_summary,
@@ -14,8 +15,8 @@ tasks = construct_tasks(
     chains=["op"],
     models=["dummy"],
     range_spec="@20241001:+1",
-    source_spec="gcs",
-    sinks_spec=["dummy"],
+    read_from=RawOnchainDataLocation.GCS,
+    write_to=[],
 )
 
 result = daily_address_summary(tasks[0])
@@ -28,10 +29,7 @@ def test_system_address_not_included():
 
 
 def test_uniqueness():
-    assert (
-        df.collect().n_unique(subset=["address", "chain_id", "dt"])
-        == df.collect().shape[0]
-    )
+    assert df.collect().n_unique(subset=["address", "chain_id", "dt"]) == df.collect().shape[0]
 
 
 # tx ref link: https://optimistic.etherscan.io/tx/0x2ab7a335f3ecc0236ac9fc0c4832f4500d299ee40abf99e5609fa16309f82763
@@ -46,9 +44,7 @@ def test_single_txs_output():
     assert pl.select(df_single_tx["num_method_ids"]).item() == 1
     assert pl.select(df_single_tx["total_l2_gas_used"]).item() == 47038
     assert pl.select(df_single_tx["total_l1_gas_used"]).item() == 1600
-    assert pl.select(df_single_tx["total_gas_fees"]).item() == Decimal(
-        str(0.00000027230883812)
-    )
+    assert pl.select(df_single_tx["total_gas_fees"]).item() == Decimal(str(0.00000027230883812))
     assert pl.select(df_single_tx["l2_contrib_gas_fees"]).item() == Decimal(
         str(0.000000025959378478)
     )
@@ -71,18 +67,10 @@ def test_single_txs_output():
         + pl.select(df_single_tx["l2_contrib_gas_fees_legacyfee"]).item()
         == pl.select(df_single_tx["l2_contrib_gas_fees"]).item()
     )
-    assert pl.select(df_single_tx["avg_l2_gas_price_gwei"]).item() == Decimal(
-        str(0.000551881)
-    )
-    assert pl.select(df_single_tx["avg_l2_base_fee_gwei"]).item() == Decimal(
-        str(0.000451881)
-    )
-    assert pl.select(df_single_tx["avg_l2_priority_fee_gwei"]).item() == Decimal(
-        str(0.0001)
-    )
-    assert pl.select(df_single_tx["avg_l1_gas_price_gwei"]).item() == Decimal(
-        str(29.456363538)
-    )
+    assert pl.select(df_single_tx["avg_l2_gas_price_gwei"]).item() == Decimal(str(0.000551881))
+    assert pl.select(df_single_tx["avg_l2_base_fee_gwei"]).item() == Decimal(str(0.000451881))
+    assert pl.select(df_single_tx["avg_l2_priority_fee_gwei"]).item() == Decimal(str(0.0001))
+    assert pl.select(df_single_tx["avg_l1_gas_price_gwei"]).item() == Decimal(str(29.456363538))
 
 
 # https://optimistic.etherscan.io/tx/0x0c8c81cc9a97f4d66f4f78ef2bbb5a64c23358db2c4ba6ad35e338f2d2fa3535
@@ -111,9 +99,7 @@ def test_multiple_txs_output():
     )
     assert pl.select(df_multi_txs["total_l2_gas_used"]).item() == 59852
     assert pl.select(df_multi_txs["total_l1_gas_used"]).item() == 3200
-    assert pl.select(df_multi_txs["total_gas_fees"]).item() == Decimal(
-        str(0.0000037408546364060)
-    )
+    assert pl.select(df_multi_txs["total_gas_fees"]).item() == Decimal(str(0.0000037408546364060))
     assert pl.select(df_multi_txs["l2_contrib_gas_fees"]).item() == Decimal(
         str(0.0000035911200000000)
     )

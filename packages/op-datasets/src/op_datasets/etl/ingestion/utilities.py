@@ -4,7 +4,7 @@ from enum import Enum
 
 import polars as pl
 from op_coreutils import clickhouse, duckdb_local
-from op_coreutils.storage.paths import SinkMarkerPath
+from op_coreutils.partitioned import SinkMarkerPath
 from op_coreutils.path import repo_path
 
 MARKERS_DB = "etl_monitor"
@@ -144,7 +144,8 @@ def _query_many_clickhouse(datevals: list[date], chains: list[str]):
         parameters={"dates": datevals, "chains": chains},
     )
 
-    return markers
+    # ClickHouse returns the Date type as u16 days from epoch.
+    return markers.with_columns(dt=pl.from_epoch(pl.col("dt"), time_unit="d"))
 
 
 def _query_many_duckdb(datevals: list[date], chains: list[str]):

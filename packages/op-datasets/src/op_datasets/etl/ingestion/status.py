@@ -1,13 +1,13 @@
 from datetime import timedelta
 
-from op_coreutils.logger import structlog
-from op_coreutils.storage.paths import SinkMarkerPath
-from op_coreutils.time import datetime_fromepoch, now_seconds
 from op_coreutils import clickhouse
+from op_coreutils.logger import structlog
+from op_coreutils.partitioned import SinkMarkerPath
+from op_coreutils.time import datetime_fromepoch, now_seconds
 
 from .batches import BlockBatch
 from .sinks import RawOnchainDataSink
-from .utilities import RawOnchainDataProvider, RawOnchainDataLocation
+from .utilities import RawOnchainDataLocation, RawOnchainDataProvider
 
 log = structlog.get_logger()
 
@@ -33,7 +33,7 @@ def all_outputs_complete(
                 incomplete.append(marker)
 
         log.info(
-            f"{len(complete)} complete, {len(incomplete)} incomplete locations out of {len(markers)} expected at {sink.location.name}"
+            f"{len(complete)} complete, {len(incomplete)} incomplete on sink={sink.location.name}"
         )
 
         if incomplete:

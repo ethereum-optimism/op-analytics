@@ -1,6 +1,6 @@
 import polars as pl
 from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
-from op_coreutils.storage.paths import Marker, PartitionedOutput, breakout_partitions
+from op_coreutils.partitioned import Marker, WrittenParquetPath, breakout_partitions
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
@@ -140,7 +140,7 @@ def writer(task: IngestionTask):
                 )
                 continue
 
-            written_parts: list[PartitionedOutput] = []
+            written_parts: list[WrittenParquetPath] = []
 
             parts = breakout_partitions(
                 df=output.dataframe,
@@ -162,7 +162,7 @@ def writer(task: IngestionTask):
                     marker=Marker(
                         marker_path=output.marker_path,
                         dataset_name=output.dataset_name,
-                        outputs=written_parts,
+                        data_paths=written_parts,
                         chain=task.block_batch.chain,
                         process_name="default",
                     ),

@@ -1,15 +1,15 @@
 from dataclasses import dataclass
 from datetime import date
 from typing import NewType
-import duckdb
 
+import duckdb
 import polars as pl
 from op_coreutils.duckdb_inmem import parquet_relation
+from op_coreutils.partitioned import SinkMarkerPath
+
 from op_datasets.etl.ingestion.utilities import RawOnchainDataLocation
-from op_coreutils.storage.paths import SinkMarkerPath
 
 from .status import are_inputs_ready
-
 
 BatchDate = NewType("BatchDate", str)
 

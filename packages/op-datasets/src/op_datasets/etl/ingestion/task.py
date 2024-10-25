@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import polars as pl
 from op_coreutils.logger import structlog
-from op_coreutils.storage.paths import SinkMarkerPath, SinkOutputRootPath
+from op_coreutils.partitioned import SinkMarkerPath, SinkOutputRootPath
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
