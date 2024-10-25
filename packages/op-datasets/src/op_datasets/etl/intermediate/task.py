@@ -5,9 +5,8 @@ from typing import NewType
 import duckdb
 import polars as pl
 from op_coreutils.duckdb_inmem import parquet_relation
-from op_coreutils.partitioned import SinkMarkerPath
+from op_coreutils.partitioned import SinkMarkerPath, DataLocation
 
-from op_datasets.etl.ingestion.utilities import RawOnchainDataLocation
 
 from .status import are_inputs_ready
 
@@ -28,7 +27,7 @@ class IntermediateModelsTask:
     chain: str
 
     # Source
-    read_from: RawOnchainDataLocation
+    read_from: DataLocation
 
     # Input data as duckdb parquet relations by dataset.
     input_duckdb_relations: dict[str, duckdb.DuckDBPyRelation]
@@ -43,7 +42,7 @@ class IntermediateModelsTask:
     force: bool  # ignores completion markers when set to true
 
     # Sinks
-    write_to: list[RawOnchainDataLocation]
+    write_to: list[DataLocation]
 
     # # Expected Markers
     expected_markers: list[SinkMarkerPath]
@@ -66,8 +65,8 @@ class IntermediateModelsTask:
         dateval: date,
         chain: str,
         markers_df: pl.DataFrame,
-        read_from: RawOnchainDataLocation,
-        write_to: list[RawOnchainDataLocation],
+        read_from: DataLocation,
+        write_to: list[DataLocation],
         models: list[str],
     ):
         # IMPORTANT: At this point the paths_by_dataset_df contains

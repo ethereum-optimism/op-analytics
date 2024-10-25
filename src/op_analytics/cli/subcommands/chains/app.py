@@ -5,6 +5,7 @@ import typer
 from op_coreutils.clickhouse import run_goldsky_query
 from op_coreutils.gsheets import update_gsheet
 from op_coreutils.logger import structlog
+from op_coreutils.partitioned import DataLocation
 from op_datasets.chains.chain_metadata import (
     filter_to_goldsky_chains,
     load_chain_metadata,
@@ -12,7 +13,7 @@ from op_datasets.chains.chain_metadata import (
 )
 from op_datasets.etl.ingestion import ingest
 from op_datasets.etl.ingestion.batches import split_block_range
-from op_datasets.etl.ingestion.utilities import RawOnchainDataLocation, RawOnchainDataProvider
+from op_datasets.etl.ingestion.sources import RawOnchainDataProvider
 from op_datasets.etl.intermediate import compute_intermediate
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 from op_datasets.utils.blockrange import BlockRange
@@ -148,7 +149,7 @@ def ingest_blocks(
         ),
     ] = RawOnchainDataProvider.GOLDSKY,
     write_to: Annotated[
-        list[RawOnchainDataLocation] | None,
+        list[DataLocation] | None,
         typer.Option(
             help="Where data will be written to.",
             case_sensitive=False,
@@ -174,7 +175,7 @@ def ingest_blocks(
         chains=chain_list,
         range_spec=range_spec,
         read_from=read_from,
-        write_to=write_to or [RawOnchainDataLocation.LOCAL],
+        write_to=write_to or [DataLocation.LOCAL],
         dryrun=dryrun,
         force=force,
     )
@@ -186,14 +187,14 @@ def intermediate_models(
     models: Annotated[str, typer.Argument(help="Comma-separated list of models to be processed.")],
     range_spec: Annotated[str, typer.Argument(help="Range of dates to be processed.")],
     read_from: Annotated[
-        RawOnchainDataLocation,
+        DataLocation,
         typer.Option(
             help="Where datda will be read from.",
             case_sensitive=False,
         ),
-    ] = RawOnchainDataLocation.GCS,
+    ] = DataLocation.GCS,
     write_to: Annotated[
-        list[RawOnchainDataLocation] | None,
+        list[DataLocation] | None,
         typer.Option(
             help="Where data will be written to.",
             case_sensitive=False,
@@ -219,7 +220,7 @@ def intermediate_models(
         models=model_list,
         range_spec=range_spec,
         read_from=read_from,
-        write_to=write_to or [RawOnchainDataLocation.LOCAL],
+        write_to=write_to or [DataLocation.LOCAL],
         dryrun=dryrun,
         force=force,
     )

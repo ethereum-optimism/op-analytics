@@ -1,4 +1,5 @@
 import time
+from enum import Enum
 
 import polars as pl
 from op_coreutils.clickhouse import run_goldsky_query
@@ -8,9 +9,14 @@ from op_coreutils.threads import run_concurrently
 from op_datasets.schemas import CoreDataset
 
 from .batches import BlockBatch
-from .utilities import RawOnchainDataProvider
 
 log = structlog.get_logger()
+
+
+class RawOnchainDataProvider(str, Enum):
+    """Providers of raw onchain data."""
+
+    GOLDSKY = "GOLDSKY"
 
 
 def read_from_source(

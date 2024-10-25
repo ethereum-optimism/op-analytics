@@ -1,10 +1,9 @@
 from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
+from op_coreutils.partitioned import DataLocation, all_outputs_complete
 
-from op_datasets.etl.ingestion.sinks import RawOnchainDataLocation
-from op_datasets.etl.ingestion.status import all_outputs_complete
+from .construct import construct_tasks
 from .registry import REGISTERED_INTERMEDIATE_MODELS
 from .task import IntermediateModelsTask
-from .construct import construct_tasks
 
 log = structlog.get_logger()
 
@@ -13,8 +12,8 @@ def compute_intermediate(
     chains: list[str],
     models: list[str],
     range_spec: str,
-    read_from: RawOnchainDataLocation,
-    write_to: list[RawOnchainDataLocation],
+    read_from: DataLocation,
+    write_to: list[DataLocation],
     dryrun: bool,
     force: bool = False,
 ):

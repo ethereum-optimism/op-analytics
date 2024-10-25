@@ -2,12 +2,12 @@ from dataclasses import dataclass
 
 import polars as pl
 from op_coreutils.logger import structlog
-from op_coreutils.partitioned import SinkMarkerPath, SinkOutputRootPath
+from op_coreutils.partitioned import SinkMarkerPath, SinkOutputRootPath, DataLocation
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
 from .batches import BlockBatch
-from .utilities import RawOnchainDataProvider, RawOnchainDataLocation
+from .sources import RawOnchainDataProvider
 
 
 log = structlog.get_logger()
@@ -43,7 +43,7 @@ class IngestionTask:
     force: bool  # ignores completion markers when set to true
 
     # Sinks
-    write_to: list[RawOnchainDataLocation]
+    write_to: list[DataLocation]
 
     # Expected Markers
     expected_markers: list[SinkMarkerPath]
@@ -65,7 +65,7 @@ class IngestionTask:
         cls,
         block_batch: BlockBatch,
         read_from: RawOnchainDataProvider,
-        write_to: list[RawOnchainDataLocation],
+        write_to: list[DataLocation],
     ):
         new_obj = cls(
             block_batch=block_batch,

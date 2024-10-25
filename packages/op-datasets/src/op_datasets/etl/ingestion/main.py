@@ -1,17 +1,24 @@
 import polars as pl
 from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
-from op_coreutils.partitioned import Marker, WrittenParquetPath, breakout_partitions
+from op_coreutils.partitioned import (
+    DataLocation,
+    Marker,
+    WrittenParquetPath,
+    all_outputs_complete,
+    breakout_partitions,
+    marker_exists,
+    write_marker,
+    write_single_part,
+)
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
 from .construct import construct_tasks
 from .markers import IngestionCompletionMarker
-from .sources import read_from_source
-from .sinks import RawOnchainDataSink
-from .status import all_inputs_ready, all_outputs_complete
+from .sources import RawOnchainDataProvider, read_from_source
+from .status import all_inputs_ready
 from .task import IngestionTask, OutputDataFrame
-from .utilities import RawOnchainDataLocation, RawOnchainDataProvider
 
 log = structlog.get_logger()
 
@@ -20,7 +27,7 @@ def ingest(
     chains: list[str],
     range_spec: str,
     read_from: RawOnchainDataProvider,
-    write_to: list[RawOnchainDataLocation],
+    write_to: list[DataLocation],
     dryrun: bool,
     force: bool = False,
 ):
@@ -132,11 +139,12 @@ def auditor(task: IngestionTask):
 
 def writer(task: IngestionTask):
     for location in task.write_to:
-        sink = RawOnchainDataSink(location=location)
         for output in task.output_dataframes:
-            if sink.is_complete(output.marker_path) and not task.force:
+            is_complete = marker_exists(location, output.marker_path)
+
+            if is_complete and not task.force:
                 log.info(
-                    f"[{sink.location.name}] Skipping already complete output at {output.marker_path}"
+                    f"[{location.name}] Skipping already complete output at {output.marker_path}"
                 )
                 continue
 
@@ -150,23 +158,31 @@ def writer(task: IngestionTask):
             )
 
             for part_df, part in parts:
-                sink.write_single_part(dataframe=part_df, part_output=part)
+                write_single_part(
+                    location=location,
+                    dataframe=part_df,
+                    part_output=part,
+                )
                 written_parts.append(part)
 
-            sink.write_marker(
-                marker=IngestionCompletionMarker(
-                    num_blocks=task.block_batch.num_blocks(),
-                    min_block=task.block_batch.min,
-                    max_block=task.block_batch.max,
-                    chain=task.chain,
-                    marker=Marker(
-                        marker_path=output.marker_path,
-                        dataset_name=output.dataset_name,
-                        data_paths=written_parts,
-                        chain=task.block_batch.chain,
-                        process_name="default",
-                    ),
-                )
+            # TODO: Generalize Marker so it accepts additional columns
+            marker = IngestionCompletionMarker(
+                num_blocks=task.block_batch.num_blocks(),
+                min_block=task.block_batch.min,
+                max_block=task.block_batch.max,
+                chain=task.chain,
+                marker=Marker(
+                    marker_path=output.marker_path,
+                    dataset_name=output.dataset_name,
+                    data_paths=written_parts,
+                    chain=task.block_batch.chain,
+                    process_name="default",
+                ),
+            )
+
+            write_marker(
+                location=location,
+                arrow_table=marker.to_pyarrow_table(),
             )
 
 

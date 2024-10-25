@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
-from op_datasets.etl.ingestion.utilities import RawOnchainDataLocation
+from decimal import Decimal
+
+import polars as pl
+from op_coreutils.partitioned import DataLocation
 from op_datasets.etl.intermediate.construct import construct_tasks
 from op_datasets.etl.intermediate.models.daily_address_summary import (
     daily_address_summary,
 )
-from decimal import Decimal
-import polars as pl
 
 SYSTEM_ADDRESS = "0xdeaddeaddeaddeaddeaddeaddeaddeaddead0001"
 SINGLE_TX_ADDRESS = "0xd666115c3d251bece7896297bf446ea908caf035"
@@ -15,7 +15,7 @@ tasks = construct_tasks(
     chains=["op"],
     models=["dummy"],
     range_spec="@20241001:+1",
-    read_from=RawOnchainDataLocation.GCS,
+    read_from=DataLocation.GCS,
     write_to=[],
 )
 

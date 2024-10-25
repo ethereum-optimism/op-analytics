@@ -3,8 +3,8 @@ from datetime import date
 import polars as pl
 from op_coreutils.logger import structlog
 from op_coreutils.time import surrounding_dates
+from op_coreutils.partitioned import DataLocation
 
-from op_datasets.etl.ingestion.utilities import RawOnchainDataLocation
 
 log = structlog.get_logger()
 
@@ -13,7 +13,7 @@ def are_inputs_ready(
     markers_df: pl.DataFrame,
     dateval: date,
     expected_datasets: set[str],
-    storage_location: RawOnchainDataLocation,
+    storage_location: DataLocation,
 ) -> dict[str, list[str]] | None:
     """Decide if we the input data for a given date is complete.
 
