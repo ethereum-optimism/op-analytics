@@ -1,7 +1,6 @@
 import polars as pl
 from op_coreutils.storage.paths import (
     KeyValue,
-    Marker,
     PartitionedOutput,
     PartitionedPath,
     breakout_partitions,
@@ -91,6 +90,3 @@ def test_breakout_partitions():
         "warehouse/dt=2024-01-02/chain=base/myfile.parquet",
         "warehouse/dt=2024-01-03/chain=op/myfile.parquet",
     ]
-
-    marker = Marker(marker_path="blah", outputs=outputs)
-    assert marker.total_rows == 7

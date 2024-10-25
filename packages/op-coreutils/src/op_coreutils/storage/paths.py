@@ -1,9 +1,13 @@
 import os
+import socket
+from dataclasses import dataclass
+from datetime import date
 from typing import Any, Generator, NewType
 
 import polars as pl
 import pyarrow as pa
-from pydantic import BaseModel
+
+from op_coreutils.time import now, date_fromstr
 
 # Root path for a partitioned dataframe output.
 SinkOutputRootPath = NewType("SinkOutputRootPath", str)
@@ -16,12 +20,14 @@ SinkOutputPath = NewType("SinkOutputPath", str)
 SinkMarkerPath = NewType("SinkMarkerPath", str)
 
 
-class KeyValue(BaseModel):
+@dataclass
+class KeyValue:
     key: str
     value: str
 
 
-class PartitionedPath(BaseModel):
+@dataclass
+class PartitionedPath:
     root: SinkOutputRootPath
     basename: str
     partition_cols: list[KeyValue]
@@ -44,17 +50,23 @@ class PartitionedPath(BaseModel):
     def full_path(self):
         return os.path.join(self.root, self.partitions_path, self.basename)
 
-    def dt_value(self) -> str:
+    def dt_value(self) -> date:
         """Return the "dt" value if this partition has a "dt" column."""
         for col in self.partition_cols:
             if col.key == "dt":
                 if isinstance(col.value, str):
-                    return col.value
+                    return date_fromstr(col.value)
                 else:
                     raise ValueError(
                         f"a string value is expected on the 'dt' partition column: got dt={col.value}"
                     )
         raise ValueError(f"partition does not have a 'dt' column: {self}")
+
+    def safe_dt_value(self) -> date:
+        try:
+            return self.dt_value()
+        except ValueError:
+            return date_fromstr("1970-01-01")
 
     def partition_values_map(self) -> dict[str, str]:
         return {col.key: str(col.value) for col in self.partition_cols}
@@ -68,99 +80,56 @@ class PartitionedPath(BaseModel):
         return [[key, value] for key, value in self.partition_values_map().items()]
 
 
-class PartitionedOutput(BaseModel):
+@dataclass
+class PartitionedOutput:
     """Represent a single object written to storage."""
 
     path: PartitionedPath
     row_count: int
 
 
-class Marker(BaseModel):
+@dataclass
+class Marker:
     """Represent a marker for a collection of objects written to storage."""
 
     marker_path: SinkMarkerPath
+    dataset_name: str
     outputs: list[PartitionedOutput]
+    chain: str
+    process_name: str
 
-    @property
-    def total_rows(self):
-        return sum(_.row_count for _ in self.outputs)
-
-    def to_row(self):
-        return self.model_dump()
-
-    def to_clickhouse_row(self) -> dict[str, Any]:
-        full_paths: list[str] = []
-        partition_cols: list[list[dict[str, str]]] = []
-        row_counts: list[int] = []
-        total_rows: int = 0
-
-        for output in self.outputs:
-            full_paths.append(output.path.full_path)
-            partition_cols.append(output.path.partition_key_value_list())
-            row_counts.append(output.row_count)
-            total_rows += output.row_count
-
-        return {
-            "marker_path": self.marker_path,
-            "total_rows": total_rows,
-            "outputs.full_path": full_paths,
-            "outputs.partition_cols": partition_cols,
-            "outputs.row_count": row_counts,
-        }
-
-    def clickhouse_schema(self):
-        return pa.schema(
-            [
-                pa.field("marker_path", pa.string()),
-                pa.field("total_rows", pa.int64()),
-                pa.field("outputs.full_path", pa.large_list(pa.string())),
-                pa.field(
-                    "outputs.partition_cols", pa.large_list(pa.map_(pa.string(), pa.string()))
-                ),
-                pa.field("outputs.row_count", pa.large_list(pa.int64())),
-            ]
-        )
-
-    def to_duckdb_row(self) -> dict[str, Any]:
-        total_rows: int = 0
-
-        outputs = []
-        for output in self.outputs:
-            outputs.append(
+    def to_rows(self) -> list[dict[str, Any]]:
+        current_time = now()
+        hostname = socket.gethostname()
+        rows = []
+        for parquet_out in self.outputs:
+            rows.append(
                 {
-                    "full_path": output.path.full_path,
-                    "partition_cols": output.path.partition_array_list(),
-                    "row_count": output.row_count,
+                    "updated_at": current_time,
+                    "marker_path": self.marker_path,
+                    "dataset_name": self.dataset_name,
+                    "data_path": parquet_out.path.full_path,
+                    "row_count": parquet_out.row_count,
+                    "chain": self.chain,
+                    "dt": parquet_out.path.safe_dt_value(),
+                    "process_name": self.process_name,
+                    "writer_name": hostname,
                 }
             )
-            total_rows += output.row_count
+        return rows
 
-        return {
-            "marker_path": self.marker_path,
-            "total_rows": total_rows,
-            "outputs": outputs,
-        }
-
-    def duckdb_schema(self):
+    def arrow_schema(self) -> pa.Schema:
         return pa.schema(
             [
+                pa.field("updated_at", pa.timestamp(unit="us", tz=None)),
                 pa.field("marker_path", pa.string()),
-                pa.field("total_rows", pa.int64()),
-                pa.field(
-                    "outputs",
-                    pa.large_list(
-                        pa.struct(
-                            [
-                                pa.field("full_path", pa.string()),
-                                pa.field(
-                                    "partition_cols",
-                                    pa.large_list(pa.list_(pa.string(), list_size=2)),
-                                ),
-                                pa.field("row_count", pa.int64()),
-                            ]
-                        )
-                    ),
-                ),
+                pa.field("dataset_name", pa.string()),
+                pa.field("data_path", pa.string()),
+                pa.field("row_count", pa.int64()),
+                pa.field("chain", pa.string()),
+                pa.field("dt", pa.date32()),
+                pa.field("process_name", pa.string()),
+                pa.field("writer_name", pa.string()),
             ]
         )
 

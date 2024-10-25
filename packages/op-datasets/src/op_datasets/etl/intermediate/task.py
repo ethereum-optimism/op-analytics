@@ -65,34 +65,37 @@ class IntermediateModelsTask:
         cls,
         dateval: date,
         chain: str,
-        paths_by_dataset_df: pl.DataFrame,
+        markers_df: pl.DataFrame,
         read_from: RawOnchainDataLocation,
         write_to: list[RawOnchainDataLocation],
         models: list[str],
     ):
         # IMPORTANT: At this point the paths_by_dataset_df contains
-        # data for more days than pertain to this task. This is for
+        # data for more dates than pertain to this task. This is for
         # us to check data continuity so we can determine if the
         # inputs are ready.
+        dataset_paths = are_inputs_ready(
+            markers_df,
+            dateval,
+            expected_datasets={
+                "blocks",
+                "transactions",
+                "traces",
+                "logs",
+            },
+            storage_location=read_from,
+        )
 
-        inputs_ready = are_inputs_ready(paths_by_dataset_df, dateval)
-
-        paths_by_dataset_map = {}
-        for row in paths_by_dataset_df.filter(pl.col("dt") == dateval).to_dicts():
-            dataset_name = row["dataset"]
-            parquet_paths = sorted(set(row["parquet_path"]))
-            paths_by_dataset_map[dataset_name] = parquet_paths
-
-        duckb_parquet_relations = {
-            name: parquet_relation(paths) for name, paths in paths_by_dataset_map.items()
-        }
+        duckb_parquet_relations = {}
+        for name, paths in (dataset_paths or {}).items():
+            duckb_parquet_relations[name] = parquet_relation(paths)
 
         new_obj = cls(
             dateval=dateval,
             chain=chain,
             read_from=read_from,
             input_duckdb_relations=duckb_parquet_relations,
-            inputs_ready=inputs_ready,
+            inputs_ready=dataset_paths is not None,
             models=models,
             output_duckdb_relations={},
             write_to=write_to,

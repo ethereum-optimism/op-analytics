@@ -18,6 +18,7 @@ class OutputDataFrame:
     dataframe: pl.DataFrame
     root_path: SinkOutputRootPath
     marker_path: SinkMarkerPath
+    dataset_name: str
 
 
 @dataclass(kw_only=True)

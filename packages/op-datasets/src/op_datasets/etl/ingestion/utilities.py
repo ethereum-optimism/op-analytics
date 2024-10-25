@@ -5,6 +5,7 @@ from enum import Enum
 import polars as pl
 from op_coreutils import clickhouse, duckdb_local
 from op_coreutils.storage.paths import SinkMarkerPath
+from op_coreutils.path import repo_path
 
 MARKERS_DB = "etl_monitor"
 MARKERS_TABLE = "raw_onchain_ingestion_markers"
@@ -22,13 +23,21 @@ class RawOnchainDataLocation(str, Enum):
     GCS = "GCS"
     LOCAL = "LOCAL"
 
+    def with_prefix(self, path: str) -> str:
+        if self == RawOnchainDataLocation.GCS:
+            # Prepend the GCS bucket scheme and bucket name to make the paths
+            # understandable by read_parquet() in DuckDB.
+            return f"gs://oplabs-tools-data-sink/{path}"
 
-# Hard-coded path for local data outputs.
-LOCAL_PATH_PREFIX = "ozone/warehouse"
+        if self == RawOnchainDataLocation.LOCAL:
+            # Prepend the default loal path.
+            return os.path.join("ozone/warehouse", path)
 
-
-def local_path(path: str):
-    return os.path.join(LOCAL_PATH_PREFIX, path)
+    def absolute(self, path: str) -> str:
+        if self == RawOnchainDataLocation.GCS:
+            return self.with_prefix(path)
+        if self == RawOnchainDataLocation.LOCAL:
+            return os.path.abspath(repo_path(self.with_prefix(path)))
 
 
 class RawOnchainMarkersLocation(str, Enum):
@@ -54,7 +63,7 @@ def marker_exists(
     return len(result) > 0
 
 
-def marker_paths_for_dates(
+def markers_for_dates(
     data_location: RawOnchainDataLocation,
     datevals: list[date],
     chains: list[str],
@@ -72,24 +81,17 @@ def marker_paths_for_dates(
         # default to DUCKDB_LOCAL
         paths_df = _query_many_duckdb(datevals, chains)
 
-    paths_by_dataset_df = (
-        paths_df.with_columns(
-            dataset=pl.col("parquet_path").map_elements(
-                _marker_path_to_dataset,
-                return_dtype=pl.String,
-            )
-        )
-        .group_by("dt", "chain", "dataset")
-        .agg(pl.col("parquet_path"))
-    )
-
-    assert paths_by_dataset_df.schema == {
+    assert paths_df.schema == {
         "dt": pl.Date,
         "chain": pl.String,
-        "dataset": pl.String,
-        "parquet_path": pl.List(pl.String),
+        "num_blocks": pl.Int32,
+        "min_block": pl.Int64,
+        "max_block": pl.Int64,
+        "dataset_name": pl.String,
+        "data_path": pl.String,
     }
-    return paths_by_dataset_df
+
+    return paths_df
 
 
 # Private functions
@@ -103,19 +105,6 @@ def _marker_location(data_location: RawOnchainDataLocation) -> RawOnchainMarkers
         return RawOnchainMarkersLocation.DUCKDB_LOCAL
 
     raise NotImplementedError(f"invalid data location: {data_location}")
-
-
-def _marker_path_to_dataset(path: str) -> str:
-    if "ingestion/blocks" in path:
-        return "blocks"
-    if "ingestion/transactions" in path:
-        return "transactions"
-    if "ingestion/logs" in path:
-        return "logs"
-    if "ingestion/traces" in path:
-        return "traces"
-
-    raise NotImplementedError()
 
 
 def _query_one_clickhouse(marker_path: SinkMarkerPath):
@@ -144,60 +133,39 @@ def _query_many_clickhouse(datevals: list[date], chains: list[str]):
         SELECT
             dt,
             chain,
-            outputs.full_path,
+            num_blocks,
+            min_block,
+            max_block,
+            data_path,
+            dataset_name
         FROM {MARKERS_DB}.{MARKERS_TABLE}
         WHERE {where}
         """,
         parameters={"dates": datevals, "chains": chains},
     )
 
-    parquet_paths = markers.select(
-        pl.col("dt"),
-        pl.col("chain"),
-        pl.col("outputs.full_path").alias("parquet_path"),
-    ).explode("parquet_path")
-
-    def _prefix(x):
-        return f"gs://oplabs-tools-data-sink/{x}"
-
-    # Prepend the GCS bucket scheme and bucket name to make the paths
-    # understandable by read_parquet() in DuckDB.
-    return parquet_paths.with_columns(
-        parquet_path=pl.col("parquet_path").map_elements(
-            _prefix,
-            return_dtype=pl.String,
-        )
-    )
+    return markers
 
 
 def _query_many_duckdb(datevals: list[date], chains: list[str]):
     """DuckDB version of query many."""
 
+    datelist = ", ".join([f"'{_.strftime("%Y-%m-%d")}'" for _ in datevals])
+    chainlist = ", ".join(f"'{_}'" for _ in chains)
+
     markers = duckdb_local.run_query(
         query=f"""
-        WITH exploded AS (
-            SELECT
-                dt,
-                chain,
-                unnest(outputs) as output
-            FROM {MARKERS_DB}.{MARKERS_TABLE}
-            WHERE dt IN ?
-        )
-        
         SELECT
             dt,
             chain,
-            output.full_path AS parquet_path
-        FROM exploded
+            num_blocks,
+            min_block,
+            max_block,
+            data_path,
+            dataset_name
+        FROM {MARKERS_DB}.{MARKERS_TABLE}
+        WHERE dt IN ({datelist}) AND chain in ({chainlist})
         """,
-        params=[datevals],
     )
 
-    parquet_paths = markers.pl()
-
-    return parquet_paths.with_columns(
-        parquet_path=pl.col("parquet_path").map_elements(
-            local_path,
-            return_dtype=pl.String,
-        )
-    )
+    return markers.pl()
