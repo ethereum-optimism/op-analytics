@@ -8,7 +8,7 @@ from op_datasets.etl.ingestion.batches import (
     split_block_range_from_boundaries,
 )
 from op_datasets.etl.ingestion.task import IngestionTask
-from op_datasets.etl.ingestion.utilities import RawOnchainDataProvider
+from op_datasets.etl.ingestion.sources import RawOnchainDataProvider
 from op_datasets.utils.blockrange import BlockRange
 
 
