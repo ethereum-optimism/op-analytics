@@ -1,10 +1,8 @@
 import polars as pl
 
-from op_coreutils.partitioned import (
-    KeyValue,
-    WrittenParquetPath,
-    breakout_partitions,
-)
+
+from op_coreutils.partitioned.output import KeyValue, WrittenParquetPath
+from op_coreutils.partitioned.breakout import breakout_partitions
 
 
 def test_breakout_partitions():

@@ -1,24 +1,15 @@
 import polars as pl
+import pyarrow as pa
 from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
-from op_coreutils.partitioned import (
-    DataLocation,
-    Marker,
-    WrittenParquetPath,
-    all_outputs_complete,
-    breakout_partitions,
-    marker_exists,
-    write_marker,
-    write_single_part,
-)
+from op_coreutils.partitioned import DataLocation, OutputDataFrame, all_outputs_complete, write_all
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
 from .construct import construct_tasks
-from .markers import IngestionCompletionMarker
 from .sources import RawOnchainDataProvider, read_from_source
 from .status import all_inputs_ready
-from .task import IngestionTask, OutputDataFrame
+from .task import IngestionTask
 
 log = structlog.get_logger()
 
@@ -30,6 +21,7 @@ def ingest(
     write_to: list[DataLocation],
     dryrun: bool,
     force: bool = False,
+    max_tasks: int | None = None,
 ):
     clear_contextvars()
 
@@ -69,7 +61,7 @@ def ingest(
         # Write outputs and markers.
         writer(task)
 
-        if not_skipped > 20:
+        if max_tasks is not None and not_skipped >= max_tasks:
             log.warning(f"Stopping after executing {not_skipped} tasks")
             break
 
@@ -138,52 +130,29 @@ def auditor(task: IngestionTask):
 
 
 def writer(task: IngestionTask):
-    for location in task.write_to:
-        for output in task.output_dataframes:
-            is_complete = marker_exists(location, output.marker_path)
+    marker_kwargs = dict(
+        process_name="default",
+        additional_columns=dict(
+            num_blocks=task.block_batch.num_blocks(),
+            min_block=task.block_batch.min,
+            max_block=task.block_batch.max,
+        ),
+        additional_columns_schema=[
+            pa.field("chain", pa.string()),
+            pa.field("dt", pa.date32()),
+            pa.field("num_blocks", pa.int32()),
+            pa.field("min_block", pa.int64()),
+            pa.field("max_block", pa.int64()),
+        ],
+    )
 
-            if is_complete and not task.force:
-                log.info(
-                    f"[{location.name}] Skipping already complete output at {output.marker_path}"
-                )
-                continue
-
-            written_parts: list[WrittenParquetPath] = []
-
-            parts = breakout_partitions(
-                df=output.dataframe,
-                partition_cols=["chain", "dt"],
-                root_path=output.root_path,
-                basename=task.block_batch.construct_parquet_filename(),
-            )
-
-            for part_df, part in parts:
-                write_single_part(
-                    location=location,
-                    dataframe=part_df,
-                    part_output=part,
-                )
-                written_parts.append(part)
-
-            # TODO: Generalize Marker so it accepts additional columns
-            marker = IngestionCompletionMarker(
-                num_blocks=task.block_batch.num_blocks(),
-                min_block=task.block_batch.min,
-                max_block=task.block_batch.max,
-                chain=task.chain,
-                marker=Marker(
-                    marker_path=output.marker_path,
-                    dataset_name=output.dataset_name,
-                    data_paths=written_parts,
-                    chain=task.block_batch.chain,
-                    process_name="default",
-                ),
-            )
-
-            write_marker(
-                location=location,
-                arrow_table=marker.to_pyarrow_table(),
-            )
+    write_all(
+        locations=task.write_to,
+        dataframes=task.output_dataframes,
+        basename=task.block_batch.construct_parquet_filename(),
+        marker_kwargs=marker_kwargs,
+        force=task.force,
+    )
 
 
 def checker(task: IngestionTask):

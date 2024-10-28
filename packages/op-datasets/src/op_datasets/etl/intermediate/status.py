@@ -37,14 +37,15 @@ def are_inputs_ready(
 
     if datasets != expected_datasets:
         for name in expected_datasets - datasets:
-            log.warning(f"input data is not complete for {name!r}")
+            log.warning(f"Input data is not complete for {name!r}. Missing markers.")
         return None
 
     dataset_paths = {}
     for dataset in datasets:
         dataset_df = markers_df.filter(pl.col("dataset_name") == dataset)
 
-        dataset_ready = is_datset_ready(
+        dataset_ready = is_dataset_ready(
+            dataset_name=dataset,
             dataset_df=dataset_df,
             dateval=dateval,
         )
@@ -61,7 +62,7 @@ def are_inputs_ready(
     return dataset_paths
 
 
-def is_datset_ready(dataset_df: pl.DataFrame, dateval: date) -> bool:
+def is_dataset_ready(dataset_name: str, dataset_df: pl.DataFrame, dateval: date) -> bool:
     block_intervals = (
         dataset_df.select("min_block", "max_block", "dt").sort("min_block", "dt").to_dicts()
     )
@@ -82,4 +83,11 @@ def is_datset_ready(dataset_df: pl.DataFrame, dateval: date) -> bool:
 
     # Check that there is coverage from the day before the dateval
     # to the day after the dateval.
-    return sorted(dates_covered) == surrounding_dates(dateval)
+    expected = surrounding_dates(dateval)
+    is_ready = sorted(dates_covered) == expected
+
+    if not is_ready:
+        missing = [_.isoformat() for _ in sorted(set(expected) - dates_covered)]
+        log.warning(f"Input data is not complete for {dataset_name!r}. Missing {missing}")
+
+    return is_ready

@@ -7,11 +7,11 @@ import polars as pl
 import pyarrow as pa
 
 from op_coreutils import clickhouse, duckdb_local
-from op_coreutils.time import now
+from op_coreutils.time import date_fromstr, now
 
 from .location import DataLocation, MarkersLocation, marker_location
 from .output import WrittenParquetPath
-from .types import SinkMarkerPath
+from .types import SinkMarkerPath, SinkOutputRootPath
 
 
 @dataclass
@@ -20,29 +20,13 @@ class Marker:
 
     marker_path: SinkMarkerPath
     dataset_name: str
+    root_path: SinkOutputRootPath
     data_paths: list[WrittenParquetPath]
-    chain: str
     process_name: str
 
-    def to_rows(self) -> list[dict[str, Any]]:
-        current_time = now()
-        hostname = socket.gethostname()
-        rows = []
-        for parquet_out in self.data_paths:
-            rows.append(
-                {
-                    "updated_at": current_time,
-                    "marker_path": self.marker_path,
-                    "dataset_name": self.dataset_name,
-                    "data_path": parquet_out.full_path,
-                    "row_count": parquet_out.row_count,
-                    "chain": self.chain,
-                    "dt": parquet_out.safe_dt_value(),
-                    "process_name": self.process_name,
-                    "writer_name": hostname,
-                }
-            )
-        return rows
+    # Values for additional columns stored in the markers table.
+    additional_columns: dict[str, Any]
+    additional_columns_schema: list[pa.Field]
 
     def arrow_schema(self) -> pa.Schema:
         return pa.schema(
@@ -50,14 +34,49 @@ class Marker:
                 pa.field("updated_at", pa.timestamp(unit="us", tz=None)),
                 pa.field("marker_path", pa.string()),
                 pa.field("dataset_name", pa.string()),
+                pa.field("root_path", pa.string()),
+                pa.field("num_parts", pa.int32()),
                 pa.field("data_path", pa.string()),
                 pa.field("row_count", pa.int64()),
-                pa.field("chain", pa.string()),
-                pa.field("dt", pa.date32()),
                 pa.field("process_name", pa.string()),
                 pa.field("writer_name", pa.string()),
             ]
+            + self.additional_columns_schema
         )
+
+    def to_pyarrow_table(self) -> pa.Table:
+        schema = self.arrow_schema()
+
+        current_time = now()
+        hostname = socket.gethostname()
+        rows = []
+        for parquet_out in self.data_paths:
+            parquet_out_row = {
+                "updated_at": current_time,
+                "marker_path": self.marker_path,
+                "root_path": self.root_path,
+                "num_parts": len(self.data_paths),
+                "dataset_name": self.dataset_name,
+                "data_path": parquet_out.full_path,
+                "row_count": parquet_out.row_count,
+                "process_name": self.process_name,
+                "writer_name": hostname,
+            }
+
+            for partition in parquet_out.partitions:
+                sch = schema.field(partition.key)
+                if sch.type == pa.date32():
+                    parquet_out_row[partition.key] = date_fromstr(partition.value)
+                else:
+                    parquet_out_row[partition.key] = partition.value
+
+            rows.append(parquet_out_row)
+
+        for row in rows:
+            for name, value in self.additional_columns.items():
+                row[name] = value
+
+        return pa.Table.from_pylist(rows, schema=schema)
 
 
 MARKERS_DB = "etl_monitor"

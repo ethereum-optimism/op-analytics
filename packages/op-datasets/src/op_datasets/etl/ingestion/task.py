@@ -2,23 +2,19 @@ from dataclasses import dataclass
 
 import polars as pl
 from op_coreutils.logger import structlog
-from op_coreutils.partitioned import SinkMarkerPath, SinkOutputRootPath, DataLocation
+from op_coreutils.partitioned import (
+    DataLocation,
+    OutputDataFrame,
+    SinkMarkerPath,
+    SinkOutputRootPath,
+)
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
 from .batches import BlockBatch
 from .sources import RawOnchainDataProvider
 
-
 log = structlog.get_logger()
-
-
-@dataclass
-class OutputDataFrame:
-    dataframe: pl.DataFrame
-    root_path: SinkOutputRootPath
-    marker_path: SinkMarkerPath
-    dataset_name: str
 
 
 @dataclass(kw_only=True)

@@ -29,7 +29,7 @@ def all_outputs_complete(sinks: list[DataLocation], markers: list[SinkMarkerPath
         if incomplete:
             log.info(f"Showing the first 5 incomplete locations at {location.name}")
             for marker_location in sorted(incomplete)[:5]:
-                log.info(f"DataSink {location.name!r} is incomplete at {marker_location!r}")
+                log.info(f"{location.name} is incomplete: {marker_location!r}")
             result = False
 
     return result

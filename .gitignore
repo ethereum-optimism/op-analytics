@@ -30,6 +30,9 @@ Pipfile.lock
 # Environment Configuration
 .envjson
 
+# Coverage
+.coverage
+
 # GSheets locations
 .gsheets.json
 

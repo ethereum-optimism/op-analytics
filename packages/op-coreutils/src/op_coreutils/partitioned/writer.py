@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+from typing import Any
+
 import polars as pl
 import pyarrow as pa
 
@@ -8,16 +11,29 @@ from op_coreutils.storage.gcs_parquet import (
     local_upload_parquet,
 )
 
+from .breakout import breakout_partitions
 from .location import DataLocation
-from .marker import MARKERS_DB, MARKERS_TABLE
+from .marker import MARKERS_DB, MARKERS_TABLE, marker_exists, Marker
 from .output import WrittenParquetPath
+from .types import SinkMarkerPath, SinkOutputRootPath
 
 log = structlog.get_logger()
 
 
+@dataclass
+class OutputDataFrame:
+    dataframe: pl.DataFrame
+    root_path: SinkOutputRootPath
+    marker_path: SinkMarkerPath
+    dataset_name: str
+
+
 def write_single_part(
-    location: DataLocation, dataframe: pl.DataFrame, part_output: WrittenParquetPath
+    location: DataLocation,
+    dataframe: pl.DataFrame,
+    part_output: WrittenParquetPath,
 ):
+    """Write a single parquet output file for a partitioned output."""
     if location == DataLocation.GCS:
         gcs_upload_parquet(part_output.full_path, dataframe)
         return
@@ -52,3 +68,52 @@ def write_marker(location: DataLocation, arrow_table: pa.Table):
         return
 
     raise NotImplementedError()
+
+
+def write_all(
+    locations: list[DataLocation],
+    dataframes: list[OutputDataFrame],
+    basename: str,
+    marker_kwargs: dict[str, Any],
+    force: bool = False,
+):
+    """Write dataframes to all the specified locations."""
+    for location in locations:
+        for output in dataframes:
+            is_complete = marker_exists(location, output.marker_path)
+
+            if is_complete and not force:
+                log.info(
+                    f"[{location.name}] Skipping already complete output at {output.marker_path}"
+                )
+                continue
+
+            written_parts: list[WrittenParquetPath] = []
+
+            parts = breakout_partitions(
+                df=output.dataframe,
+                partition_cols=["chain", "dt"],
+                root_path=output.root_path,
+                basename=basename,
+            )
+
+            for part_df, part in parts:
+                write_single_part(
+                    location=location,
+                    dataframe=part_df,
+                    part_output=part,
+                )
+                written_parts.append(part)
+
+            marker = Marker(
+                marker_path=output.marker_path,
+                dataset_name=output.dataset_name,
+                root_path=output.root_path,
+                data_paths=written_parts,
+                **marker_kwargs,
+            )
+
+            write_marker(
+                location=location,
+                arrow_table=marker.to_pyarrow_table(),
+            )
