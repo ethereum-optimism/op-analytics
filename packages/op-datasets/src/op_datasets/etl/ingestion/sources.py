@@ -69,4 +69,4 @@ def _read_from_goldsky(
         )
         return result
 
-    return run_concurrently(func, list(queries.keys()), max_workers=-1)
+    return run_concurrently(func, list(queries.keys()), max_workers=2)

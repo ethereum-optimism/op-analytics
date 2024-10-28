@@ -5,7 +5,7 @@ import polars as pl
 import pyarrow as pa
 
 from op_coreutils import clickhouse, duckdb_local
-from op_coreutils.logger import structlog
+from op_coreutils.logger import structlog, bound_contextvars
 from op_coreutils.storage.gcs_parquet import (
     gcs_upload_parquet,
     local_upload_parquet,
@@ -84,41 +84,45 @@ def write_all(
     """Write dataframes to all the specified locations."""
     for location in locations:
         for output in dataframes:
-            is_complete = marker_exists(location, output.marker_path)
+            # The default partition value is included in logs because it includes
+            # the dt value, which helps keep track of where we are when we run a
+            # backfill.
+            with bound_contextvars(**output.default_partition):
+                is_complete = marker_exists(location, output.marker_path)
 
-            if is_complete and not force:
-                log.info(
-                    f"[{location.name}] Skipping already complete output at {output.marker_path}"
+                if is_complete and not force:
+                    log.info(
+                        f"[{location.name}] Skipping already complete output at {output.marker_path}"
+                    )
+                    continue
+
+                written_parts: list[WrittenParquetPath] = []
+                parts = breakout_partitions(
+                    df=output.dataframe,
+                    partition_cols=["chain", "dt"],
+                    root_path=output.root_path,
+                    basename=basename,
+                    default_partition=output.default_partition,
                 )
-                continue
 
-            written_parts: list[WrittenParquetPath] = []
-            parts = breakout_partitions(
-                df=output.dataframe,
-                partition_cols=["chain", "dt"],
-                root_path=output.root_path,
-                basename=basename,
-                default_partition=output.default_partition,
-            )
+                for part_df, part in parts:
+                    write_single_part(
+                        location=location,
+                        dataframe=part_df,
+                        part_output=part,
+                    )
+                    written_parts.append(part)
 
-            for part_df, part in parts:
-                write_single_part(
+                marker = Marker(
+                    marker_path=output.marker_path,
+                    dataset_name=output.dataset_name,
+                    root_path=output.root_path,
+                    data_paths=written_parts,
+                    **marker_kwargs,
+                )
+
+                write_marker(
                     location=location,
-                    dataframe=part_df,
-                    part_output=part,
+                    arrow_table=marker.to_pyarrow_table(),
                 )
-                written_parts.append(part)
-
-            marker = Marker(
-                marker_path=output.marker_path,
-                dataset_name=output.dataset_name,
-                root_path=output.root_path,
-                data_paths=written_parts,
-                **marker_kwargs,
-            )
-
-            write_marker(
-                location=location,
-                arrow_table=marker.to_pyarrow_table(),
-            )
-            log.info(f"Wrote {output.dataset_name} to {location.name}")
+                log.info(f"Wrote {output.dataset_name} to {location.name}")
