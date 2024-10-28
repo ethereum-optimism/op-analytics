@@ -7,16 +7,14 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
     updated_at TIMESTAMP,
     marker_path STRING,
     dataset_name STRING,
+    root_path STRING,
+
+    -- The number of parts covered by this marker
+    num_parts INT32,
 
     -- Details for each parquet output saved under this marker.
     data_path String,
     row_count UInt64,
-
-    -- Name of the chain. (optional)
-    chain STRING,
-
-    -- Date for this parquet path. (optional)
-    dt Date,
 
 
     -- Name of the process ingesting data and writing this marker.
@@ -30,6 +28,12 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
 
     -- NON-STANDARD FIELDS BELOW
 
+    -- Name of the chain
+    chain STRING,
+
+    -- Date for this parquet path
+    dt Date,
+
     -- Number of blocks in this batch
     num_blocks Int32,
 
@@ -37,4 +41,3 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
     min_block Int64,
     max_block Int64,
 )
-

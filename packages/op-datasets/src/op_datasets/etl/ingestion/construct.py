@@ -1,12 +1,13 @@
-from op_coreutils.logger import structlog
-from op_coreutils.threads import run_concurrently
 from op_coreutils import clickhouse
+from op_coreutils.logger import structlog
+from op_coreutils.partitioned import DataLocation
+from op_coreutils.threads import run_concurrently
 
 from op_datasets.utils.blockrange import BlockRange
 from op_datasets.utils.daterange import DateRange
 
 from .batches import BlockBatch, split_block_range
-from .utilities import RawOnchainDataProvider, RawOnchainDataLocation
+from .sources import RawOnchainDataProvider
 from .task import IngestionTask
 
 log = structlog.get_logger()
@@ -16,7 +17,7 @@ def construct_tasks(
     chains: list[str],
     range_spec: str,
     read_from: RawOnchainDataProvider,
-    write_to: list[RawOnchainDataLocation],
+    write_to: list[DataLocation],
 ):
     blocks_by_chain: dict[str, BlockRange]
 
@@ -44,7 +45,7 @@ def construct_tasks(
     for chain, batches in chain_batches.items():
         total_blocks = batches[-1].max - batches[0].min
         log.info(
-            f"Will process chain={chain!r} {len(batches)} batch(es) {total_blocks} total blocks starting at #{batches[0].min}"
+            f"Prepared chain={chain!r}: {len(batches)} batch(es) {total_blocks} total blocks starting at #{batches[0].min}"
         )
 
     # Collect a single list of tasks to perform across all chains.
