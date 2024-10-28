@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Any, Generator
 
 import polars as pl
 
@@ -12,6 +12,7 @@ def breakout_partitions(
     partition_cols: list[str],
     root_path: SinkOutputRootPath,
     basename: str,
+    default_partition: dict[str, Any] | None = None,
 ) -> Generator[tuple[pl.DataFrame, WrittenParquetPath], None, None]:
     """Split a dataframe into partitions.
 
@@ -19,15 +20,28 @@ def breakout_partitions(
     """
     parts = df.select(*partition_cols).unique().to_dicts()
 
-    for part in parts:
-        part_df = df.filter(pl.all_horizontal(pl.col(col) == val for col, val in part.items()))
-
+    if len(df) == 0:
+        assert default_partition is not None
         yield (
-            part_df.drop(*partition_cols),
+            df.drop(*partition_cols),
             WrittenParquetPath(
                 root=root_path,
                 basename=basename,
-                partitions=[KeyValue(key=col, value=val) for col, val in part.items()],
-                row_count=len(part_df),
+                partitions=[KeyValue(key=col, value=val) for col, val in default_partition.items()],
+                row_count=0,
             ),
         )
+
+    else:
+        for part in parts:
+            part_df = df.filter(pl.all_horizontal(pl.col(col) == val for col, val in part.items()))
+
+            yield (
+                part_df.drop(*partition_cols),
+                WrittenParquetPath(
+                    root=root_path,
+                    basename=basename,
+                    partitions=[KeyValue(key=col, value=val) for col, val in part.items()],
+                    row_count=len(part_df),
+                ),
+            )

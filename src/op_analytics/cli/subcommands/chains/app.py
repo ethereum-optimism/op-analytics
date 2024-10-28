@@ -107,9 +107,10 @@ def verify_goldsky_tables():
     """Ensure Goldsky pipeline tables exist for all of the chains."""
     clean_df = load_chain_metadata()
     goldsky_df = filter_to_goldsky_chains(clean_df)
+    chains = goldsky_df["chain_name"].to_list()
 
     tables = []
-    for chain in goldsky_df["chain_name"].to_list():
+    for chain in chains:
         for _, dataset in ONCHAIN_CURRENT_VERSION.items():
             tables.append(f"{chain}_{dataset.goldsky_table_suffix}")
     tables_filter = ",\n".join([f"'{t}'" for t in tables])
@@ -134,7 +135,8 @@ def verify_goldsky_tables():
         for name in sorted(expected_tables):
             log.info("    " + name)
 
-    return sorted(expected_tables)
+    # Return the chain names only
+    return sorted(chains)
 
 
 @app.command()
@@ -168,6 +170,7 @@ def ingest_blocks(
     """
     if chains == "ALL":
         chain_list = verify_goldsky_tables()
+        chain_list = [_ for _ in chain_list if _ not in {"automata", "worldchain"}]
     else:
         chain_list = [_.strip() for _ in chains.split(",")]
 

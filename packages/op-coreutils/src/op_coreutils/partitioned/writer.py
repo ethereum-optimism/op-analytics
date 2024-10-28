@@ -27,6 +27,10 @@ class OutputDataFrame:
     marker_path: SinkMarkerPath
     dataset_name: str
 
+    # Default partition values for cases when the output datafarame is empty
+    # and therefore has no implicit partition values.
+    default_partition: dict[str, Any]
+
 
 def write_single_part(
     location: DataLocation,
@@ -89,12 +93,12 @@ def write_all(
                 continue
 
             written_parts: list[WrittenParquetPath] = []
-
             parts = breakout_partitions(
                 df=output.dataframe,
                 partition_cols=["chain", "dt"],
                 root_path=output.root_path,
                 basename=basename,
+                default_partition=output.default_partition,
             )
 
             for part_df, part in parts:
@@ -117,3 +121,4 @@ def write_all(
                 location=location,
                 arrow_table=marker.to_pyarrow_table(),
             )
+            log.info(f"Wrote {output.dataset_name} to {location.name}")

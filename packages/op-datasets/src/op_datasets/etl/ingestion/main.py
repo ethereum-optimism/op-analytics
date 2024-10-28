@@ -117,14 +117,26 @@ def auditor(task: IngestionTask):
 
     log.info(f"PASS {passing_audits} audits.")
 
+    # Default values for "chain" and "dt" to be used in cases where one of the
+    # other datsets is empty.  On chains with very low throughput (e.g. race) we
+    # sometimes see no logs for a range of blocks. We still need to create a
+    # marker for these empty dataframes.
+    default_partition = (
+        task.input_dataframes["blocks"].sort("number").select("chain", "dt").limit(1).to_dicts()[0]
+    )
+
     # Set up the output dataframes now that the audits have passed
     for name, dataset in task.input_datasets.items():
+        # Sometimes we observe blocks that don't have any logs.
+        task.input_dataframes[name]
+
         task.add_output(
             OutputDataFrame(
                 dataframe=task.input_dataframes[name],
                 root_path=task.get_output_location(dataset),
                 marker_path=task.get_marker_location(dataset),
                 dataset_name=name,
+                default_partition=default_partition,
             )
         )
 

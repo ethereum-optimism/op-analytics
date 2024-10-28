@@ -49,6 +49,7 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=94000000, batch_size=2000),
     ],
     # Default
+    "automata": [Delimiter(0, 20000)],
     "bob": [Delimiter(0, 20000)],
     "cyber": [Delimiter(0, 20000)],
     "fraxtal": [Delimiter(0, 20000)],
@@ -63,9 +64,11 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "polynomial": [Delimiter(0, 20000)],
     "race": [Delimiter(0, 20000)],
     "redstone": [Delimiter(0, 20000)],
+    "shape": [Delimiter(0, 20000)],
     "swan": [Delimiter(0, 20000)],
     "xterio": [Delimiter(0, 20000)],
     "zora": [Delimiter(0, 20000)],
+    "worldchain": [Delimiter(0, 20000)],
 }
 
 
@@ -122,6 +125,13 @@ class BlockBatch:
     chain: str
     min: int  # inclusive
     max: int  # exclusive
+
+    @property
+    def contextvars(self):
+        return dict(
+            chain=self.chain,
+            blocks=f"#{self.min}-{self.max}",
+        )
 
     def __len__(self):
         return self.max - self.min

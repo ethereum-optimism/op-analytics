@@ -63,4 +63,4 @@ filterwarnings = [
     # Ignore some google bigquery deprecation warnings
     'ignore:Type google._upb._message:',
 ]
-addopts = "--cov=src/ --cov=packages/ --cov-report html --cov-report term"
+addopts = "--cov=src/ --cov=packages/ --cov-report html"

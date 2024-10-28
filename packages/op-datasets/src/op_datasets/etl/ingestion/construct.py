@@ -45,7 +45,7 @@ def construct_tasks(
     for chain, batches in chain_batches.items():
         total_blocks = batches[-1].max - batches[0].min
         log.info(
-            f"Will process chain={chain!r} {len(batches)} batch(es) {total_blocks} total blocks starting at #{batches[0].min}"
+            f"Prepared chain={chain!r}: {len(batches)} batch(es) {total_blocks} total blocks starting at #{batches[0].min}"
         )
 
     # Collect a single list of tasks to perform across all chains.

@@ -103,7 +103,9 @@ def test_marker():
     assert exists
 
     markers_df = markers_for_dates(
-        DataLocation.LOCAL, datevals=[datetime.date(2024, 10, 25)], chains=["DUMMYCHAIN"]
+        DataLocation.LOCAL,
+        datevals=[datetime.date(2024, 10, 25)],
+        chains=["DUMMYCHAIN"],
     )
     assert len(markers_df) == 1
 
