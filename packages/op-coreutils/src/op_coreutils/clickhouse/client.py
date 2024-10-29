@@ -66,6 +66,12 @@ def init_client(instance: ClickHouseInstance):
     raise NotImplementedError()
 
 
+def run_goldsky_statement(statement):
+    """A statement does not return results."""
+    client = init_client("GOLDSKY")
+    client.query(statement)
+
+
 def run_goldsky_query(
     query: str,
     parameters: dict[str, Any] | None = None,
