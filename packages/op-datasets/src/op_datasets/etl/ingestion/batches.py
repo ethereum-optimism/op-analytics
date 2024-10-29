@@ -42,6 +42,7 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=0, batch_size=10000),
         Delimiter(block_number=10000000, batch_size=5000),
         Delimiter(block_number=15000000, batch_size=2000),
+        Delimiter(block_number=20900000, batch_size=1000),
     ],
     "op": [
         Delimiter(block_number=0, batch_size=10000),
