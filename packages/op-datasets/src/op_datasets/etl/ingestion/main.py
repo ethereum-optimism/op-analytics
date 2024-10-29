@@ -57,6 +57,11 @@ def ingest(
         p.start()
         p.join()
 
+        if p.exitcode != 0:
+            log.error(f"Process terminated with exit code: {p.exitcode}")
+        else:
+            log.info("Process terminated successfully.")
+
         if max_tasks is not None and not_skipped >= max_tasks:
             log.warning(f"Stopping after executing {not_skipped} tasks")
             break
