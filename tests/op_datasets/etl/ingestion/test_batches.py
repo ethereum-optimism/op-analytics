@@ -163,3 +163,19 @@ def test_expected_markers():
         "markers/ingestion/logs_v1/chain=op/000000000000.json",
         "markers/ingestion/traces_v1/chain=op/000000000000.json",
     ]
+
+
+def test_batches_base():
+    br = BlockRange.from_spec("20894000:20904000")
+
+    batches = split_block_range(chain="base", block_range=br)
+    assert batches == [
+        BlockBatch(chain="base", min=20894000, max=20896000),
+        BlockBatch(chain="base", min=20896000, max=20898000),
+        BlockBatch(chain="base", min=20898000, max=20900000),
+        # The transition from 2000 -> 1000 blocks per batch starts here
+        BlockBatch(chain="base", min=20900000, max=20901000),
+        BlockBatch(chain="base", min=20901000, max=20902000),
+        BlockBatch(chain="base", min=20902000, max=20903000),
+        BlockBatch(chain="base", min=20903000, max=20904000),
+    ]
