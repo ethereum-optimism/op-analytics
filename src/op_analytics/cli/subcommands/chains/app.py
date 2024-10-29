@@ -3,13 +3,14 @@ import json
 import op_datasets.rpcs
 import typer
 from op_coreutils.clickhouse import run_goldsky_query
-from op_coreutils.gsheets import update_gsheet
+
 from op_coreutils.logger import structlog
+from op_datasets.chains.across_bridge import upload_across_bridge_addresses
 from op_coreutils.partitioned import DataLocation
 from op_datasets.chains.chain_metadata import (
     filter_to_goldsky_chains,
     load_chain_metadata,
-    to_pandas,
+    upload_chain_metadata,
 )
 from op_datasets.etl.ingestion import ingest
 from op_datasets.etl.ingestion.batches import split_block_range
@@ -74,12 +75,12 @@ def goldsky_sql(
 
 
 @app.command()
-def update_chain_metadata_gsheet():
-    """Upload chain_metadata_raw.csv to Google Sheets.
+def chain_metadata_updates():
+    """Run various chain metadata related updates.
 
-    The chain_metadata_raw.csv file is maintained manually by the OP Labs team. This function
-    accepts a local CSV file with raw chain metadata. It loads the data, cleans it up and uploads
-    it to Google Sheets.
+    - Upload chain_metadata_raw.csv to Google Sheets.
+    - Update the OP Analytics Chain Metadata [ADMIN MANAGED] google sheet.
+    - Update the Across Superchain Bridge Addresses [ADMIN MANAGED] google sheet.
 
     TODO: Decide if we want to uplaod to Dune, Clickhouse, BigQuery. or op-analytics-static repo.
     """
@@ -87,19 +88,12 @@ def update_chain_metadata_gsheet():
 
     goldsky_df = filter_to_goldsky_chains(clean_df)
 
-    # Save the clean df to Google Sheets
-    update_gsheet(
-        location_name="chain_metadata",
-        worksheet_name="Chain Metadata",
-        dataframe=to_pandas(clean_df),
-    )
+    # Upload chain metadata.
+    upload_chain_metadata(chains_df=clean_df, goldsky_chains_df=goldsky_df)
 
-    # Save goldsky chains.
-    update_gsheet(
-        location_name="chain_metadata",
-        worksheet_name="Goldsky Chains",
-        dataframe=to_pandas(goldsky_df),
-    )
+    # Upload the across bridge addresses.
+    # Makes sure they are consistent with Chain Metadata.
+    upload_across_bridge_addresses(chains_df=goldsky_df)
 
 
 @app.command()
