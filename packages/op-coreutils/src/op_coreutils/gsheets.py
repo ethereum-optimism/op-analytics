@@ -7,6 +7,7 @@ import pandas as pd
 from op_coreutils.logger import structlog
 from op_coreutils.gcpauth import get_credentials
 from op_coreutils.env.vault import env_get
+from op_coreutils.time import now
 
 log = structlog.get_logger()
 
@@ -47,10 +48,9 @@ def get_worksheet(location_name: str, worksheet_name: str):
     locations, client = init_client()
 
     if location_name not in locations:
-        log.warn(
+        raise ValueError(
             f"Location {location_name} is not present in _GSHEETS_LOCATIONS. Will skip writing."
         )
-        return
 
     sh = client.open_by_url(locations[location_name])
     worksheet = sh.worksheet(worksheet_name)
@@ -68,3 +68,13 @@ def read_gsheet(location_name: str, worksheet_name: str):
     """Read data from a google sheet"""
     worksheet = get_worksheet(location_name, worksheet_name)
     return worksheet.get_all_records()
+
+
+def record_changes(location_name: str, messages: list[str]):
+    current_time = now().isoformat()
+
+    update_gsheet(
+        location_name=location_name,
+        worksheet_name="[AGENT LOGS]",
+        dataframe=pd.DataFrame([{"timestamp": current_time, "message": msg} for msg in messages]),
+    )
