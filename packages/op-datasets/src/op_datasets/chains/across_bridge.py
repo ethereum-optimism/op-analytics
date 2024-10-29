@@ -1,10 +1,12 @@
 import polars as pl
 
-from op_coreutils.gsheets import read_gsheet
+from op_coreutils.gsheets import read_gsheet, record_changes
 from op_coreutils.clickhouse import insert_arrow, run_goldsky_statement
 
 DATABASE = "default"
 TABLE = "across_bridge_metadata"
+
+GSHEET_NAME = "across_bridge"
 
 
 def upload_across_bridge_addresses(chains_df: pl.DataFrame):
@@ -35,11 +37,18 @@ def upload_across_bridge_addresses(chains_df: pl.DataFrame):
         df_arrow=clickhouse_df.to_arrow(),
     )
 
+    # Save a record of what was done.
+    full_name = f"{DATABASE}.{TABLE}"
+    record_changes(
+        GSHEET_NAME,
+        messages=[f"Uploaded data to Clickhouse at {full_name!r}"],
+    )
+
 
 def load_across_bridge_addresses(chains_df: pl.DataFrame) -> pl.DataFrame:
     # Read CSV from Google Sheets Input
     raw_records = read_gsheet(
-        location_name="across_bridge",
+        location_name=GSHEET_NAME,
         worksheet_name="[INPUT -ADMIN MANAGED]",
     )
     raw_df = pl.DataFrame(raw_records, infer_schema_length=len(raw_records))

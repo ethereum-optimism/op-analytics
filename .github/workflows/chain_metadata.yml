@@ -1,6 +1,8 @@
 name: On-Demand Chain Metadata Updates
 run-name: ${{ github.event.created_at }}
 on:
+  schedule:
+    - cron: '5 18 * * *'
   workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

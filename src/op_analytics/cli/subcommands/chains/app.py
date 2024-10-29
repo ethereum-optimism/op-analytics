@@ -3,14 +3,14 @@ import json
 import op_datasets.rpcs
 import typer
 from op_coreutils.clickhouse import run_goldsky_query
-from op_coreutils.gsheets import update_gsheet
+
 from op_coreutils.logger import structlog
 from op_datasets.chains.across_bridge import upload_across_bridge_addresses
 from op_coreutils.partitioned import DataLocation
 from op_datasets.chains.chain_metadata import (
     filter_to_goldsky_chains,
     load_chain_metadata,
-    to_pandas,
+    upload_chain_metadata,
 )
 from op_datasets.etl.ingestion import ingest
 from op_datasets.etl.ingestion.batches import split_block_range
@@ -88,23 +88,12 @@ def chain_metadata_updates():
 
     goldsky_df = filter_to_goldsky_chains(clean_df)
 
-    # Save the clean df to Google Sheets
-    update_gsheet(
-        location_name="chain_metadata",
-        worksheet_name="Chain Metadata",
-        dataframe=to_pandas(clean_df),
-    )
-
-    # Save goldsky chains.
-    update_gsheet(
-        location_name="chain_metadata",
-        worksheet_name="Goldsky Chains",
-        dataframe=to_pandas(goldsky_df),
-    )
+    # Upload chain metadata.
+    upload_chain_metadata(chains_df=clean_df, goldsky_chains_df=goldsky_df)
 
     # Upload the across bridge addresses.
     # Makes sure they are consistent with Chain Metadata.
-    upload_across_bridge_addresses(goldsky_df)
+    upload_across_bridge_addresses(chains_df=goldsky_df)
 
 
 @app.command()

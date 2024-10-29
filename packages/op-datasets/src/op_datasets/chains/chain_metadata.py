@@ -1,6 +1,6 @@
 import pandas as pd
 import polars as pl
-from op_coreutils.gsheets import read_gsheet
+from op_coreutils.gsheets import read_gsheet, update_gsheet, record_changes
 from op_coreutils.logger import structlog
 from op_coreutils.path import repo_path
 from op_coreutils.testutils.dataframe import compare_dataframes
@@ -167,3 +167,33 @@ def _clean(raw_df: pl.DataFrame) -> pl.DataFrame:
     )
 
     return raw_df.select(transformed_cols + [is_op_chain, alignment_col])
+
+
+GSHEET_NAME = "chain_metadata"
+
+WORKSHEET_METADATA = "Chain Metadata"
+WORKSHEET_GOLDSKY_CHAINS = "Goldsky Chains"
+
+
+def upload_chain_metadata(chains_df, goldsky_chains_df):
+    # Save the clean df to Google Sheets
+    update_gsheet(
+        location_name=GSHEET_NAME,
+        worksheet_name=WORKSHEET_METADATA,
+        dataframe=to_pandas(chains_df),
+    )
+
+    # Save goldsky chains.
+    update_gsheet(
+        location_name=GSHEET_NAME,
+        worksheet_name=WORKSHEET_GOLDSKY_CHAINS,
+        dataframe=to_pandas(goldsky_chains_df),
+    )
+
+    # Save a record of what was done.
+    record_changes(
+        GSHEET_NAME,
+        messages=[
+            f"Updated worksheeet: {_}" for _ in [WORKSHEET_METADATA, WORKSHEET_GOLDSKY_CHAINS]
+        ],
+    )
