@@ -48,13 +48,19 @@ class IngestionTask:
     expected_markers: list[SinkMarkerPath]
     is_complete: bool
 
+    # Progress Indicator
+    progress_indicator: str
+
     @property
     def chain(self):
         return self.block_batch.chain
 
     @property
     def contextvars(self):
-        return self.block_batch.contextvars
+        ctx = self.block_batch.contextvars
+        if self.progress_indicator:
+            ctx["task"] = self.progress_indicator
+        return ctx
 
     @classmethod
     def new(
@@ -74,6 +80,7 @@ class IngestionTask:
             force=False,
             read_from=read_from,
             write_to=write_to,
+            progress_indicator="",
         )
 
         for dataset in ONCHAIN_CURRENT_VERSION.values():
