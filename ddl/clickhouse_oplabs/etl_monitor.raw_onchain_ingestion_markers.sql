@@ -10,17 +10,11 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
     updated_at DateTime DEFAULT now(),
     marker_path String,
     dataset_name String,
+    root_path String,
 
     -- Details for each parquet output saved under this marker.
     data_path String,
     row_count UInt64,
-
-    -- Name of the chain.
-    chain String,
-
-    -- NON-STANDARD FIELDS BELOW
-    dt Date,
-
 
     -- Name of the process ingesting data and writing this marker.
     -- Helps us identify who is responsible for writing data. Can
@@ -30,6 +24,12 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
     -- Hostname of the machine where the ingeston process was running
     writer_name String,
 
+    -- NON-STANDARD FIELDS BELOW    
+
+    -- Name of the chain.
+    chain String,
+
+    dt Date,
 
     -- Number of blocks in this batch
     num_blocks Int32,
@@ -46,3 +46,5 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
 ENGINE = MergeTree
 ORDER BY (marker_path)
 
+-- The number of parts covered by this marker
+ALTER TABLE etl_monitor.raw_onchain_ingestion_markers ADD COLUMN IF NOT EXISTS num_parts UInt32 AFTER root_path

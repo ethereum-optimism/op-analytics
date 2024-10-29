@@ -1,7 +1,8 @@
 import polars as pl
+from op_coreutils.logger import bind_contextvars
+from op_coreutils.partitioned import DataLocation, markers_for_dates
 from op_coreutils.time import surrounding_dates
 
-from op_datasets.etl.ingestion.utilities import RawOnchainDataLocation, markers_for_dates
 from op_datasets.utils.daterange import DateRange
 
 from .registry import load_model_definitions
@@ -13,8 +14,8 @@ def construct_tasks(
     chains: list[str],
     models: list[str],
     range_spec: str,
-    read_from: RawOnchainDataLocation,
-    write_to: list[RawOnchainDataLocation],
+    read_from: DataLocation,
+    write_to: list[DataLocation],
 ) -> list[IntermediateModelsTask]:
     """Construct a collection of tasks to compute intermediate models.
 
@@ -41,6 +42,7 @@ def construct_tasks(
 
     for dateval in date_range.dates:
         for chain in chains:
+            bind_contextvars(chain=chain, date=dateval.isoformat())
             filtered = markers_df.filter(
                 pl.col("chain") == chain,
                 pl.col("dt").is_in(surrounding_dates(dateval)),

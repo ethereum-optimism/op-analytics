@@ -1,6 +1,6 @@
 import logging
 import structlog
-from structlog.contextvars import bind_contextvars, clear_contextvars
+from structlog.contextvars import bind_contextvars, clear_contextvars, bound_contextvars
 from structlog.typing import EventDict
 
 from op_coreutils.env.aware import current_environment
@@ -25,13 +25,13 @@ structlog.configure(
         structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
         structlog.dev.ConsoleRenderer(),
     ],
-    wrapper_class=structlog.make_filtering_bound_logger(logging.NOTSET),
+    wrapper_class=structlog.make_filtering_bound_logger(logging.DEBUG),
     context_class=dict,
     logger_factory=structlog.PrintLoggerFactory(),
     cache_logger_on_first_use=False,
 )
 
-__all__ = ["bind_contextvars", "clear_contextvars"]
+__all__ = ["structlog", "bind_contextvars", "clear_contextvars", "bound_contextvars"]
 
 
 def numtext(number):
