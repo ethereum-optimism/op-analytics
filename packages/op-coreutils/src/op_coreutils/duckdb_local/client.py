@@ -41,11 +41,11 @@ def init_client():
     return _CLIENT
 
 
-def run_sql(sql: str, params: object = None):
-    """Run sql"""
+def run_query(query: str, params: object = None):
+    """Run query"""
     client = init_client()
 
-    return client.sql(sql, params=params)
+    return client.sql(query, params=params)
 
 
 def insert_arrow(database: str, table: str, df_arrow: pa.Table):

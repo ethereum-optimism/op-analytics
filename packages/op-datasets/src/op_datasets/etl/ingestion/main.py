@@ -1,15 +1,17 @@
-import polars as pl
-from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
-from op_coreutils.storage.paths import Marker, PartitionedOutput, breakout_partitions
+import multiprocessing as mp
 
-from op_datasets.etl.ingestion.sinks import (
-    IngestionCompletionMarker,
-    all_outputs_complete,
-)
+import polars as pl
+import pyarrow as pa
+from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
+from op_coreutils.partitioned import DataLocation, OutputDataFrame, all_outputs_complete, write_all
+
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
-from .task import IngestionTask, OutputDataFrame, construct_tasks
+from .construct import construct_tasks
+from .sources import RawOnchainDataProvider, read_from_source
+from .status import all_inputs_ready
+from .task import IngestionTask
 
 log = structlog.get_logger()
 
@@ -17,43 +19,66 @@ log = structlog.get_logger()
 def ingest(
     chains: list[str],
     range_spec: str,
-    source_spec: str,
-    sinks_spec: list[str],
+    read_from: RawOnchainDataProvider,
+    write_to: list[DataLocation],
     dryrun: bool,
     force: bool = False,
+    max_tasks: int | None = None,
 ):
     clear_contextvars()
 
-    tasks = construct_tasks(chains, range_spec, source_spec, sinks_spec)
+    tasks = construct_tasks(chains, range_spec, read_from, write_to)
+    log.info(f"Constructed {len(tasks)} tasks.")
 
     if dryrun:
+        log.info("DRYRUN: No work will be done.")
         return
 
-    for task in tasks:
-        bind_contextvars(chain=task.block_batch.chain, block=f"#{task.block_batch.min}")
+    not_skipped = 0
+    for i, task in enumerate(tasks):
+        task.progress_indicator = f"{i+1}/{len(tasks)}"
+        bind_contextvars(**task.contextvars)
+
         # Check and decide if we need to run this task.
         checker(task)
+        if not task.inputs_ready:
+            log.warning("Task inputs are not ready. Skipping this task.")
+            continue
         if task.is_complete and not force:
             continue
         if force:
-            log.info(f"Forcing execution of {task.pretty}")
+            log.info("Force flag detected. Forcing execution.")
             task.force = True
 
-        # Read the data (updates the task in-place with the input dataframes).
-        reader(task)
+        not_skipped += 1
 
-        # Run audits (updates the task in-pace with the output dataframes).
-        auditor(task)
+        ctx = mp.get_context("spawn")
+        p = ctx.Process(target=execute, args=(task,))
+        p.start()
+        p.join()
 
-        # Write outputs and markers.
-        writer(task)
+        if max_tasks is not None and not_skipped >= max_tasks:
+            log.warning(f"Stopping after executing {not_skipped} tasks")
+            break
+
+
+def execute(task):
+    bind_contextvars(**task.contextvars)
+
+    # Read the data (updates the task in-place with the input dataframes).
+    reader(task)
+
+    # Run audits (updates the task in-pace with the output dataframes).
+    auditor(task)
+
+    # Write outputs and markers.
+    writer(task)
 
 
 def reader(task: IngestionTask):
     """Read core datasets from the specified source."""
-    log.info(f"Reading input data from for {task.pretty}")
-
-    dataframes = task.source.read_from_source(
+    dataframes = read_from_source(
+        provider=task.read_from,
         datasets=ONCHAIN_CURRENT_VERSION,
         block_batch=task.block_batch,
     )
@@ -101,51 +126,62 @@ def auditor(task: IngestionTask):
 
     log.info(f"PASS {passing_audits} audits.")
 
+    # Default values for "chain" and "dt" to be used in cases where one of the
+    # other datsets is empty.  On chains with very low throughput (e.g. race) we
+    # sometimes see no logs for a range of blocks. We still need to create a
+    # marker for these empty dataframes.
+    default_partition = (
+        task.input_dataframes["blocks"].sort("number").select("chain", "dt").limit(1).to_dicts()[0]
+    )
+
     # Set up the output dataframes now that the audits have passed
     for name, dataset in task.input_datasets.items():
+        # Sometimes we observe blocks that don't have any logs.
+        task.input_dataframes[name]
+
         task.add_output(
             OutputDataFrame(
                 dataframe=task.input_dataframes[name],
                 root_path=task.get_output_location(dataset),
                 marker_path=task.get_marker_location(dataset),
+                dataset_name=name,
+                default_partition=default_partition,
             )
         )
 
 
 def writer(task: IngestionTask):
-    for sink in task.sinks:
-        for output in task.output_dataframes:
-            if sink.is_complete(output.marker_path) and not task.force:
-                log.info(
-                    f"[{sink.sink_spec}] Skipping already complete output at {output.marker_path}"
-                )
-                continue
+    marker_kwargs = dict(
+        process_name="default",
+        additional_columns=dict(
+            num_blocks=task.block_batch.num_blocks(),
+            min_block=task.block_batch.min,
+            max_block=task.block_batch.max,
+        ),
+        additional_columns_schema=[
+            pa.field("chain", pa.string()),
+            pa.field("dt", pa.date32()),
+            pa.field("num_blocks", pa.int32()),
+            pa.field("min_block", pa.int64()),
+            pa.field("max_block", pa.int64()),
+        ],
+    )
 
-            written_parts: list[PartitionedOutput] = []
-
-            parts = breakout_partitions(
-                df=output.dataframe,
-                partition_cols=["chain", "dt"],
-                root_path=output.root_path,
-                basename=task.block_batch.construct_parquet_filename(),
-            )
-
-            for part_df, part in parts:
-                sink.write_single_part(dataframe=part_df, part_output=part)
-                written_parts.append(part)
-
-            sink.write_marker(
-                marker=IngestionCompletionMarker(
-                    process_name="default",
-                    chain=task.chain,
-                    marker=Marker(
-                        marker_path=output.marker_path,
-                        outputs=written_parts,
-                    ),
-                )
-            )
+    write_all(
+        locations=task.write_to,
+        dataframes=task.output_dataframes,
+        basename=task.block_batch.construct_parquet_filename(),
+        marker_kwargs=marker_kwargs,
+        force=task.force,
+    )
 
 
 def checker(task: IngestionTask):
-    if all_outputs_complete(task.sinks, task.expected_markers):
+    if all_outputs_complete(task.write_to, task.expected_markers):
         task.is_complete = True
+        task.inputs_ready = True
+        return
+
+    if all_inputs_ready(task.read_from, task.block_batch):
+        task.inputs_ready = True
+        return

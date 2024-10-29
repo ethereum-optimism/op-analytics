@@ -42,6 +42,12 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=0, batch_size=10000),
         Delimiter(block_number=10000000, batch_size=5000),
         Delimiter(block_number=15000000, batch_size=2000),
+        # Starting here base is ~2.5M traces / 1k blocks.
+        # Traces file can be ~70MB.
+        Delimiter(block_number=20900000, batch_size=1000),
+        # Decided to go to 400 blocks per batch to give us more room.
+        # Traces filed size is ~25MB.
+        Delimiter(block_number=21200000, batch_size=400),
     ],
     "op": [
         Delimiter(block_number=0, batch_size=10000),
@@ -49,6 +55,7 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=94000000, batch_size=2000),
     ],
     # Default
+    "automata": [Delimiter(0, 20000)],
     "bob": [Delimiter(0, 20000)],
     "cyber": [Delimiter(0, 20000)],
     "fraxtal": [Delimiter(0, 20000)],
@@ -63,9 +70,11 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "polynomial": [Delimiter(0, 20000)],
     "race": [Delimiter(0, 20000)],
     "redstone": [Delimiter(0, 20000)],
+    "shape": [Delimiter(0, 20000)],
     "swan": [Delimiter(0, 20000)],
     "xterio": [Delimiter(0, 20000)],
     "zora": [Delimiter(0, 20000)],
+    "worldchain": [Delimiter(0, 20000)],
 }
 
 
@@ -123,7 +132,17 @@ class BlockBatch:
     min: int  # inclusive
     max: int  # exclusive
 
+    @property
+    def contextvars(self):
+        return dict(
+            chain=self.chain,
+            blocks=f"#{self.min}-{self.max}",
+        )
+
     def __len__(self):
+        return self.max - self.min
+
+    def num_blocks(self):
         return self.max - self.min
 
     def filter(self, number_column: str = "number"):

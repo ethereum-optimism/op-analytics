@@ -1,3 +1,4 @@
+import logging
 from threading import Lock
 from typing import Any, Literal
 
@@ -102,12 +103,19 @@ def run_query(
     return pl.from_arrow(arrow_result)
 
 
-def insert_arrow(instance: ClickHouseInstance, database: str, table: str, df_arrow: pa.Table):
+def insert_arrow(
+    instance: ClickHouseInstance,
+    database: str,
+    table: str,
+    df_arrow: pa.Table,
+    log_level=logging.DEBUG,
+):
     """Write arrow table to clickhouse."""
     client = init_client(instance)
 
     result = client.insert_arrow(table=table, arrow_table=df_arrow, database=database)
 
-    log.info(
-        f"Inserted [{human_rows(result.written_rows)} {human_size(result.written_bytes())}] to {database}.{table}"
+    log.log(
+        log_level,
+        f"Inserted [{human_rows(result.written_rows)} {human_size(result.written_bytes())}] to {database}.{table}",
     )

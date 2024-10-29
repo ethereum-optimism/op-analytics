@@ -22,6 +22,9 @@ def run_concurrently(
     if isinstance(targets, list):
         targets = {k: k for k in targets}
 
+    if max_workers == -1:
+        return run_serially(function, targets)
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {}
 
@@ -37,4 +40,11 @@ def run_concurrently(
                 log.error(f"Failed to run thread for {key}")
                 raise
 
+    return results
+
+
+def run_serially(function: Callable, targets: dict[str, Any]) -> dict[str, Any]:
+    results = {}
+    for key, target in targets.items():
+        results[key] = function(target)
     return results

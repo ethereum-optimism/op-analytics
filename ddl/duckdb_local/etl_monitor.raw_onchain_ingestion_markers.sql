@@ -6,12 +6,15 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
 (
     updated_at TIMESTAMP,
     marker_path STRING,
+    dataset_name STRING,
+    root_path STRING,
 
-    -- 'total_rows' is sum(rows) across parquet files saved under this marker.
-    total_rows BIGINT,
+    -- The number of parts covered by this marker
+    num_parts INT32,
 
     -- Details for each parquet output saved under this marker.
-    outputs STRUCT(full_path STRING, partition_cols STRING[2][], row_count BIGINT)[],
+    data_path String,
+    row_count UInt64,
 
 
     -- Name of the process ingesting data and writing this marker.
@@ -19,10 +22,22 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
     -- be useful to monitor specific backfills.
     process_name STRING,
 
-    -- Name of the chain.
+    -- Hostname of the machine where the ingeston process was running
+    writer_name String,
+
+
+    -- NON-STANDARD FIELDS BELOW
+
+    -- Name of the chain
     chain STRING,
 
-    -- 'dt' is the min(dt) across parquet files saved under this marker.
-    dt DATE
-)
+    -- Date for this parquet path
+    dt Date,
 
+    -- Number of blocks in this batch
+    num_blocks Int32,
+
+    -- Min and max block numbers in this batch
+    min_block Int64,
+    max_block Int64,
+)

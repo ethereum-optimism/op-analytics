@@ -1,1 +1,1 @@
-from .client import insert_arrow, run_sql
+from .client import insert_arrow, run_query

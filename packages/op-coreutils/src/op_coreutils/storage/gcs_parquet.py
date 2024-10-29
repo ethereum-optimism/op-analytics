@@ -1,3 +1,4 @@
+import logging
 import warnings
 
 import gcsfs
@@ -46,8 +47,8 @@ def local_upload_parquet(path: str, df: pl.DataFrame):
     fsclient_upload_parquet(client, path, df)
 
 
-def fsclient_upload_parquet(client, path: str, df: pl.DataFrame):
+def fsclient_upload_parquet(client, path: str, df: pl.DataFrame, log_level=logging.DEBUG):
     with client.open(path, "wb") as fobj:
         df.write_parquet(fobj)
         size = fobj.tell()
-        log.info(f"Wrote parquet [{human_rows(len(df))} {human_size(size)}] at {path}")
+        log.log(log_level, f"Wrote parquet [{human_rows(len(df))} {human_size(size)}] at {path}")

@@ -1,9 +1,9 @@
 from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
+from op_coreutils.partitioned import DataLocation, all_outputs_complete
 
+from .construct import construct_tasks
 from .registry import REGISTERED_INTERMEDIATE_MODELS
 from .task import IntermediateModelsTask
-from .construct import construct_tasks
-
 
 log = structlog.get_logger()
 
@@ -12,17 +12,36 @@ def compute_intermediate(
     chains: list[str],
     models: list[str],
     range_spec: str,
-    source_spec: str,
-    sinks_spec: list[str],
+    read_from: DataLocation,
+    write_to: list[DataLocation],
     dryrun: bool,
     force: bool = False,
 ):
     clear_contextvars()
 
-    tasks = construct_tasks(chains, models, range_spec, source_spec, sinks_spec)
+    tasks = construct_tasks(chains, models, range_spec, read_from, write_to)
+    log.info(f"Constructed {len(tasks)} tasks.")
 
-    for task in tasks:
-        bind_contextvars(chain=task.chain, block=f"@{task.dt}")
+    if dryrun:
+        log.info("DRYRUN: No work will be done.")
+        return
+
+    for i, task in enumerate(tasks):
+        bind_contextvars(
+            task=f"{i+1}/{len(tasks)}",
+            **task.contextvars,
+        )
+
+        # Check and decide if we need to run this task.
+        checker(task)
+        if not task.inputs_ready:
+            log.warning("Task inputs are not ready. Skipping this task.")
+            continue
+        if task.is_complete and not force:
+            continue
+        if force:
+            log.info("Force flag detected. Forcing execution.")
+            task.force = True
 
         executor(task)
 
@@ -48,3 +67,9 @@ def writer(task):
 
     # TODO: Implement writing.
     pass
+
+
+def checker(task: IntermediateModelsTask):
+    if all_outputs_complete(task.write_to, task.expected_markers):
+        task.is_complete = True
+        return

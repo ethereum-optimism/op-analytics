@@ -7,8 +7,8 @@ from op_datasets.etl.ingestion.batches import (
     split_block_range,
     split_block_range_from_boundaries,
 )
-from op_datasets.etl.ingestion.sources import CoreDatasetSource
 from op_datasets.etl.ingestion.task import IngestionTask
+from op_datasets.etl.ingestion.sources import RawOnchainDataProvider
 from op_datasets.utils.blockrange import BlockRange
 
 
@@ -156,10 +156,48 @@ def test_expected_markers():
 
     batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
 
-    task = IngestionTask.new(batches[0], source=CoreDatasetSource.from_spec("goldsky"), sinks=[])
+    task = IngestionTask.new(batches[0], read_from=RawOnchainDataProvider.GOLDSKY, write_to=[])
     assert task.expected_markers == [
         "markers/ingestion/blocks_v1/chain=op/000000000000.json",
         "markers/ingestion/transactions_v1/chain=op/000000000000.json",
         "markers/ingestion/logs_v1/chain=op/000000000000.json",
         "markers/ingestion/traces_v1/chain=op/000000000000.json",
+    ]
+
+
+def test_batches_base():
+    # Switching over from 2k -> 1k blocks per batch.
+    br = BlockRange.from_spec("20894000:20904000")
+
+    batches = split_block_range(chain="base", block_range=br)
+    assert batches == [
+        BlockBatch(chain="base", min=20894000, max=20896000),
+        BlockBatch(chain="base", min=20896000, max=20898000),
+        BlockBatch(chain="base", min=20898000, max=20900000),
+        # Here it goes from 2000 -> 1000 blocks per batch
+        BlockBatch(chain="base", min=20900000, max=20901000),
+        BlockBatch(chain="base", min=20901000, max=20902000),
+        BlockBatch(chain="base", min=20902000, max=20903000),
+        BlockBatch(chain="base", min=20903000, max=20904000),
+    ]
+
+    # Switching over from 1k -> 400 blocks per batch.
+    br = BlockRange.from_spec("21189000:21201000")
+    batches = split_block_range(chain="base", block_range=br)
+    assert batches == [
+        BlockBatch(chain="base", min=21189000, max=21190000),
+        BlockBatch(chain="base", min=21190000, max=21191000),
+        BlockBatch(chain="base", min=21191000, max=21192000),
+        BlockBatch(chain="base", min=21192000, max=21193000),
+        BlockBatch(chain="base", min=21193000, max=21194000),
+        BlockBatch(chain="base", min=21194000, max=21195000),
+        BlockBatch(chain="base", min=21195000, max=21196000),
+        BlockBatch(chain="base", min=21196000, max=21197000),
+        BlockBatch(chain="base", min=21197000, max=21198000),
+        BlockBatch(chain="base", min=21198000, max=21199000),
+        BlockBatch(chain="base", min=21199000, max=21200000),
+        # Here it goes from 1000 -> 400 blocks per batch
+        BlockBatch(chain="base", min=21200000, max=21200400),
+        BlockBatch(chain="base", min=21200400, max=21200800),
+        BlockBatch(chain="base", min=21200800, max=21201200),
     ]
