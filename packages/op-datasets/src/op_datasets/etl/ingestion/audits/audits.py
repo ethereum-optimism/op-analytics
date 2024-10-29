@@ -30,17 +30,23 @@ def valid_hashes(dataframes: dict[str, pl.DataFrame]):
 
 
 @register
-def txs_join_to_blocks(dataframes: dict[str, pl.DataFrame]):
-    # Check that each transaction can join back to a block by block number.
-    blks = dataframes["blocks"].select("number")
-    tx = dataframes["transactions"].select("hash", "block_number")
-    joined_df = blks.join(tx, left_on="number", right_on="block_number", how="full")
-    joined_txs = joined_df.select(
-        pl.lit("txs should join back to blocks on block number").alias("audit_name"),
-        pl.col("block_number").is_null().sum().alias("failure_count"),
-    )
+def datasets_join_to_blocks(dataframes: dict[str, pl.DataFrame]):
+    blocks = dataframes["blocks"].select("number")
 
-    return joined_txs
+    # Check that other datasets can join back to a block by block number.
+    results = []
+    for dataset in ["transactions", "logs", "traces"]:
+        df = dataframes[dataset].select("block_number")
+        joined_df = df.join(blocks, left_on="block_number", right_on="number", how="full")
+
+        failures = joined_df.select(
+            pl.lit(f"{dataset} should join back to blocks on block number").alias("audit_name"),
+            pl.col("number").is_null().sum().alias("failure_count"),
+        )
+
+        results.append(failures)
+
+    return pl.concat(results)
 
 
 @register

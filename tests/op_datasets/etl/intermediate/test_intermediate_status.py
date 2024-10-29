@@ -1,8 +1,7 @@
 import datetime
 
 import polars as pl
-
-from op_datasets.etl.ingestion.utilities import RawOnchainDataLocation
+from op_coreutils.partitioned import DataLocation
 from op_datasets.etl.intermediate.status import are_inputs_ready
 
 MARKER_PATHS_DATA = [
@@ -91,7 +90,7 @@ def test_are_inputs_ready():
         expected_datasets={
             "traces",
         },
-        storage_location=RawOnchainDataLocation.GCS,
+        storage_location=DataLocation.GCS,
     )
     assert actual == {
         "traces": [
@@ -112,7 +111,7 @@ def test_not_ready_01():
         expected_datasets={
             "traces",
         },
-        storage_location=RawOnchainDataLocation.GCS,
+        storage_location=DataLocation.GCS,
     )
     assert actual is None
 
@@ -125,6 +124,6 @@ def test_not_ready_02():
         markers_df=markers_df,
         dateval=dateval,
         expected_datasets={"traces", "logs"},
-        storage_location=RawOnchainDataLocation.GCS,
+        storage_location=DataLocation.GCS,
     )
     assert actual is None

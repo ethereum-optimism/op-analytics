@@ -1,17 +1,17 @@
+import multiprocessing as mp
+
 import polars as pl
+import pyarrow as pa
 from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
-from op_coreutils.storage.paths import Marker, PartitionedOutput, breakout_partitions
+from op_coreutils.partitioned import DataLocation, OutputDataFrame, all_outputs_complete, write_all
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
 from .construct import construct_tasks
-from .markers import IngestionCompletionMarker
-from .sources import read_from_source
-from .sinks import RawOnchainDataSink
-from .status import all_inputs_ready, all_outputs_complete
-from .task import IngestionTask, OutputDataFrame
-from .utilities import RawOnchainDataLocation, RawOnchainDataProvider
+from .sources import RawOnchainDataProvider, read_from_source
+from .status import all_inputs_ready
+from .task import IngestionTask
 
 log = structlog.get_logger()
 
@@ -20,9 +20,10 @@ def ingest(
     chains: list[str],
     range_spec: str,
     read_from: RawOnchainDataProvider,
-    write_to: list[RawOnchainDataLocation],
+    write_to: list[DataLocation],
     dryrun: bool,
     force: bool = False,
+    max_tasks: int | None = None,
 ):
     clear_contextvars()
 
@@ -35,10 +36,8 @@ def ingest(
 
     not_skipped = 0
     for i, task in enumerate(tasks):
-        bind_contextvars(
-            task=f"{i+1}/{len(tasks)}",
-            **task.contextvars,
-        )
+        task.progress_indicator = f"{i+1}/{len(tasks)}"
+        bind_contextvars(**task.contextvars)
 
         # Check and decide if we need to run this task.
         checker(task)
@@ -53,18 +52,27 @@ def ingest(
 
         not_skipped += 1
 
-        # Read the data (updates the task in-place with the input dataframes).
-        reader(task)
+        ctx = mp.get_context("spawn")
+        p = ctx.Process(target=execute, args=(task,))
+        p.start()
+        p.join()
 
-        # Run audits (updates the task in-pace with the output dataframes).
-        auditor(task)
-
-        # Write outputs and markers.
-        writer(task)
-
-        if not_skipped > 20:
+        if max_tasks is not None and not_skipped >= max_tasks:
             log.warning(f"Stopping after executing {not_skipped} tasks")
             break
+
+
+def execute(task):
+    bind_contextvars(**task.contextvars)
+
+    # Read the data (updates the task in-place with the input dataframes).
+    reader(task)
+
+    # Run audits (updates the task in-pace with the output dataframes).
+    auditor(task)
+
+    # Write outputs and markers.
+    writer(task)
 
 
 def reader(task: IngestionTask):
@@ -118,56 +126,54 @@ def auditor(task: IngestionTask):
 
     log.info(f"PASS {passing_audits} audits.")
 
+    # Default values for "chain" and "dt" to be used in cases where one of the
+    # other datsets is empty.  On chains with very low throughput (e.g. race) we
+    # sometimes see no logs for a range of blocks. We still need to create a
+    # marker for these empty dataframes.
+    default_partition = (
+        task.input_dataframes["blocks"].sort("number").select("chain", "dt").limit(1).to_dicts()[0]
+    )
+
     # Set up the output dataframes now that the audits have passed
     for name, dataset in task.input_datasets.items():
+        # Sometimes we observe blocks that don't have any logs.
+        task.input_dataframes[name]
+
         task.add_output(
             OutputDataFrame(
                 dataframe=task.input_dataframes[name],
                 root_path=task.get_output_location(dataset),
                 marker_path=task.get_marker_location(dataset),
                 dataset_name=name,
+                default_partition=default_partition,
             )
         )
 
 
 def writer(task: IngestionTask):
-    for location in task.write_to:
-        sink = RawOnchainDataSink(location=location)
-        for output in task.output_dataframes:
-            if sink.is_complete(output.marker_path) and not task.force:
-                log.info(
-                    f"[{sink.location.name}] Skipping already complete output at {output.marker_path}"
-                )
-                continue
+    marker_kwargs = dict(
+        process_name="default",
+        additional_columns=dict(
+            num_blocks=task.block_batch.num_blocks(),
+            min_block=task.block_batch.min,
+            max_block=task.block_batch.max,
+        ),
+        additional_columns_schema=[
+            pa.field("chain", pa.string()),
+            pa.field("dt", pa.date32()),
+            pa.field("num_blocks", pa.int32()),
+            pa.field("min_block", pa.int64()),
+            pa.field("max_block", pa.int64()),
+        ],
+    )
 
-            written_parts: list[PartitionedOutput] = []
-
-            parts = breakout_partitions(
-                df=output.dataframe,
-                partition_cols=["chain", "dt"],
-                root_path=output.root_path,
-                basename=task.block_batch.construct_parquet_filename(),
-            )
-
-            for part_df, part in parts:
-                sink.write_single_part(dataframe=part_df, part_output=part)
-                written_parts.append(part)
-
-            sink.write_marker(
-                marker=IngestionCompletionMarker(
-                    num_blocks=task.block_batch.num_blocks(),
-                    min_block=task.block_batch.min,
-                    max_block=task.block_batch.max,
-                    chain=task.chain,
-                    marker=Marker(
-                        marker_path=output.marker_path,
-                        dataset_name=output.dataset_name,
-                        outputs=written_parts,
-                        chain=task.block_batch.chain,
-                        process_name="default",
-                    ),
-                )
-            )
+    write_all(
+        locations=task.write_to,
+        dataframes=task.output_dataframes,
+        basename=task.block_batch.construct_parquet_filename(),
+        marker_kwargs=marker_kwargs,
+        force=task.force,
+    )
 
 
 def checker(task: IngestionTask):
