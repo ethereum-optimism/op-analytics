@@ -1,3 +1,5 @@
+import multiprocessing as mp
+
 import polars as pl
 import pyarrow as pa
 from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
@@ -34,10 +36,8 @@ def ingest(
 
     not_skipped = 0
     for i, task in enumerate(tasks):
-        bind_contextvars(
-            task=f"{i+1}/{len(tasks)}",
-            **task.contextvars,
-        )
+        task.progress_indicator = f"{i+1}/{len(tasks)}"
+        bind_contextvars(**task.contextvars)
 
         # Check and decide if we need to run this task.
         checker(task)
@@ -52,18 +52,27 @@ def ingest(
 
         not_skipped += 1
 
-        # Read the data (updates the task in-place with the input dataframes).
-        reader(task)
-
-        # Run audits (updates the task in-pace with the output dataframes).
-        auditor(task)
-
-        # Write outputs and markers.
-        writer(task)
+        ctx = mp.get_context("spawn")
+        p = ctx.Process(target=execute, args=(task,))
+        p.start()
+        p.join()
 
         if max_tasks is not None and not_skipped >= max_tasks:
             log.warning(f"Stopping after executing {not_skipped} tasks")
             break
+
+
+def execute(task):
+    bind_contextvars(**task.contextvars)
+
+    # Read the data (updates the task in-place with the input dataframes).
+    reader(task)
+
+    # Run audits (updates the task in-pace with the output dataframes).
+    auditor(task)
+
+    # Write outputs and markers.
+    writer(task)
 
 
 def reader(task: IngestionTask):
