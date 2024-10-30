@@ -1,4 +1,6 @@
 import os
+import shutil
+import tempfile
 import unittest
 from datetime import date
 from textwrap import dedent
@@ -54,6 +56,7 @@ class IntermediateModelTestBase(unittest.TestCase):
     # Internal duckdb_client
     _enable_fetching = False
     _duckdb_client = None
+    _tempdir = None
 
     @classmethod
     def setUpClass(cls):
@@ -71,8 +74,6 @@ class IntermediateModelTestBase(unittest.TestCase):
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
         cls._duckdb_client = duckdb.connect(db_path)
-        create_duckdb_macros(cls._duckdb_client)
-
         tables_exist = cls._tables_exist()
 
         if not tables_exist:
@@ -96,9 +97,19 @@ class IntermediateModelTestBase(unittest.TestCase):
         else:
             log.info(f"Using local test data from: {db_path}")
 
+        cls._duckdb_client.close()
+
+        # Make a copy of the duck.db file, to prevent changing the input test data.
+        cls._tempdir = tempfile.TemporaryDirectory()
+        tmp_db_path = os.path.join(cls._tempdir.name, os.path.basename(db_path))
+        shutil.copyfile(db_path, tmp_db_path)
+        cls._duckdb_client = duckdb.connect(tmp_db_path)
+
+        # Execute the model on the temporary duckdb instance.
         log.info("Executing model...")
+        create_duckdb_macros(cls._duckdb_client)
         model = REGISTERED_INTERMEDIATE_MODELS["daily_address_summary"]
-        model_result = model(cls._duckdb_client, cls._input_relations())
+        model_result = model.func(cls._duckdb_client, cls._input_relations())
 
         # Create TEMP tables with the model results
         for name, relation in model_result.items():
@@ -108,6 +119,8 @@ class IntermediateModelTestBase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         """Ensure duckb client is closed after running the test."""
+        assert cls._duckdb_client is not None
+
         cls._duckdb_client.close()
 
     @classmethod
@@ -117,6 +130,7 @@ class IntermediateModelTestBase(unittest.TestCase):
     @classmethod
     def _tables_exist(cls) -> bool:
         """Helper function to check if the test database already contains the test data."""
+        assert cls._duckdb_client is not None
         tables = (
             cls._duckdb_client.sql("SELECT table_name FROM duckdb_tables;")
             .df()["table_name"]
@@ -163,6 +177,7 @@ class IntermediateModelTestBase(unittest.TestCase):
     @classmethod
     def _input_relations(cls) -> NamedRelations:
         """Return the datasets available for the test."""
+        assert cls._duckdb_client is not None
         relations = {}
         for dataset in cls.datasets:
             table_name = cls.input_table_name(dataset)

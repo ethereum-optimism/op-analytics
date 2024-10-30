@@ -25,11 +25,11 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         "{block_number} % 1000 <= 2",
     ]
 
-    _enable_fetching = True
+    _enable_fetching = False
 
     def test_system_address_not_included(self):
         ans = self._duckdb_client.sql(f"""
-        SELECT * FROM daily_address_summary WHERE address = '{SYSTEM_ADDRESS}'
+        SELECT * FROM daily_address_summary_v1 WHERE address = '{SYSTEM_ADDRESS}'
         """)
 
         assert len(ans) == 0
@@ -37,11 +37,11 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
     def test_uniqueness(self):
         unique_count = self._duckdb_client.sql("""
         SELECT COUNT(*) FROM (
-            SELECT DISTINCT address, chain_id, dt FROM daily_address_summary
+            SELECT DISTINCT address, chain_id, dt FROM daily_address_summary_v1
         )
         """)
         total_count = self._duckdb_client.sql("""
-        SELECT COUNT(*) FROM daily_address_summary
+        SELECT COUNT(*) FROM daily_address_summary_v1
         """)
 
         unique_count_val = unique_count.fetchone()[0]
@@ -52,7 +52,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
 
     def test_model_schema(self):
         schema = (
-            self._duckdb_client.sql("DESCRIBE daily_address_summary")
+            self._duckdb_client.sql("DESCRIBE daily_address_summary_v1")
             .pl()
             .select("column_name", "column_type")
             .to_dicts()
@@ -108,7 +108,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
 
         actual = (
             self._duckdb_client.sql(f"""
-        SELECT * FROM daily_address_summary WHERE address == '{SINGLE_TX_ADDRESS}'
+        SELECT * FROM daily_address_summary_v1 WHERE address == '{SINGLE_TX_ADDRESS}'
         """)
             .pl()
             .to_dicts()
@@ -196,7 +196,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
 
         actual = (
             self._duckdb_client.sql(f"""
-        SELECT * FROM daily_address_summary WHERE address == '{MULTI_TXS_ADDRESS}'
+        SELECT * FROM daily_address_summary_v1 WHERE address == '{MULTI_TXS_ADDRESS}'
         """)
             .pl()
             .to_dicts()
@@ -260,7 +260,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
 
     def test_overall_totals(self):
         actual = (
-            self._duckdb_client.sql("SELECT SUM(total_txs) FROM daily_address_summary")
+            self._duckdb_client.sql("SELECT SUM(total_txs) FROM daily_address_summary_v1")
             .pl()
             .to_dicts()
         )
@@ -272,29 +272,29 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
             WITH checks AS (
                 SELECT
                     true                                                      AS check0,
-                    
-                    l1_contrib_gas_fees 
+
+                    l1_contrib_gas_fees
                     + l2_contrib_gas_fees = total_gas_fees                    AS check1,
-                    
-                    l1_contrib_contrib_gas_fees_blobgas 
+
+                    l1_contrib_contrib_gas_fees_blobgas
                     + l1_contrib_gas_fees_l1gas = l1_contrib_gas_fees         AS check2,
-                    
-                    l2_contrib_gas_fees_basefee 
+
+                    l2_contrib_gas_fees_basefee
                     + l2_contrib_gas_fees_priorityfee
                     + l2_contrib_gas_fees_legacyfee  = l2_contrib_gas_fees    AS check3,
-                    
-                    block_interval_active = 
+
+                    block_interval_active =
                     max_block_number - min_block_number + 1                   AS check4,
-                    
-                    nonce_interval_active = 
+
+                    nonce_interval_active =
                     max_nonce - min_nonce + 1                                 AS check5,
-                    
-                    time_interval_active = 
+
+                    time_interval_active =
                     max_block_timestamp - min_block_timestamp                 AS check6
-                
-                FROM daily_address_summary
+
+                FROM daily_address_summary_v1
             )
-            
+
             SELECT
                 count(check0),
                 count(check1),

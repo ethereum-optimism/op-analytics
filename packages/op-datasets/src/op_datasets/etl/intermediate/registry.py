@@ -1,7 +1,9 @@
 import importlib
 import os
+from dataclasses import dataclass
 from typing import Callable
 
+import duckdb
 from op_coreutils.logger import structlog
 
 from .types import NamedRelations
@@ -10,12 +12,29 @@ log = structlog.get_logger()
 
 _LOADED = False
 
-REGISTERED_INTERMEDIATE_MODELS: dict[str, Callable[[NamedRelations], NamedRelations]] = {}
+
+@dataclass
+class IntermediateModel:
+    name: str
+    input_datasets: list[str]
+    func: Callable[[duckdb.DuckDBPyConnection, NamedRelations], NamedRelations]
+    expected_outputs: list[str]
 
 
-def register_model(func):
-    REGISTERED_INTERMEDIATE_MODELS[func.__name__] = func
-    return func
+REGISTERED_INTERMEDIATE_MODELS: dict[str, IntermediateModel] = {}
+
+
+def register_model(input_datasets: list[str], expected_outputs: list[str]):
+    def decorator(func):
+        REGISTERED_INTERMEDIATE_MODELS[func.__name__] = IntermediateModel(
+            name=func.__name__,
+            input_datasets=input_datasets,
+            func=func,
+            expected_outputs=expected_outputs,
+        )
+        return func
+
+    return decorator
 
 
 def load_model_definitions():
