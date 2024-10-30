@@ -28,10 +28,9 @@ def init_client():
             _CLIENT = bigquery.Client(credentials=get_credentials())
         elif "pytest" in sys.modules:
             _CLIENT = MagicMock()
-        else:
-            # In non-PROD environments outside of tests, initialize as None
-            _CLIENT = None
 
+    # In non-PROD environments outside of tests _CLIENT remains uninitialized
+    # so it raises an exception if we try to use it. 
     if _CLIENT is None:
         raise RuntimeError("BigQuery client was not properly initialized.")
 
