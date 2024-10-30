@@ -1,11 +1,16 @@
 import importlib
 import os
+from typing import Callable
 
 from op_coreutils.logger import structlog
 
+from .types import NamedRelations
+
 log = structlog.get_logger()
 
-REGISTERED_INTERMEDIATE_MODELS = {}
+_LOADED = False
+
+REGISTERED_INTERMEDIATE_MODELS: dict[str, Callable[[NamedRelations], NamedRelations]] = {}
 
 
 def register_model(func):
@@ -15,6 +20,11 @@ def register_model(func):
 
 def load_model_definitions():
     """Import python modules under the models directory so the model registry is populated."""
+    global _LOADED
+
+    if _LOADED:
+        return
+
     # Python modules under the "models" directory are imported to populate the model registry.
     MODELS_PATH = os.path.join(os.path.dirname(__file__), "models")
 
@@ -28,3 +38,4 @@ def load_model_definitions():
             count += 1
 
     log.info(f"Loaded {count} python modules with intermediate model definitions.")
+    _LOADED = True
