@@ -10,6 +10,7 @@ from google.cloud import bigquery
 from op_coreutils.env.aware import OPLabsEnvironment, current_environment
 from op_coreutils.gcpauth import get_credentials
 from op_coreutils.logger import human_rows, human_size, structlog
+from google.api_core.exceptions import NotFound
 
 log = structlog.get_logger()
 
@@ -208,6 +209,12 @@ def upsert_partition(
     destination = f"{dataset}.{table_name}"
     staging_table_name = f"{table_name}_staging"
     staging_destination = f"{dataset}.{staging_table_name}"
+
+    # Delete the staging table if it already exists
+    try:
+        client.delete_table(staging_destination)
+    except NotFound:
+        pass  # If the table does not exist, continue without error
 
     write_df_to_bq(df, staging_destination, client, operation="WRITE STAGING TABLE")
 
