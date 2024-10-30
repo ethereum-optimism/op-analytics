@@ -2,11 +2,15 @@ import time
 from dataclasses import dataclass
 
 import polars as pl
-from op_coreutils.bigquery.write import overwrite_partition, overwrite_partitions, overwrite_table
+from op_coreutils.bigquery.write import (
+    overwrite_partition_static,
+    overwrite_partitions_dynamic,
+    overwrite_table,
+)
 from op_coreutils.logger import structlog
 from op_coreutils.request import new_session
 from op_coreutils.threads import run_concurrently
-from op_coreutils.time import now_dt
+from op_coreutils.time import now_date
 
 log = structlog.get_logger()
 
@@ -113,11 +117,11 @@ def pull():
     tvl_df = pl.concat(dfs)
 
     # Write summary to BQ.
-    dt = now_dt()
+    dt = now_date()
     overwrite_table(summary_df, BQ_DATASET, f"{SUMMARY_TABLE}_latest")
-    overwrite_partition(summary_df, dt, BQ_DATASET, f"{SUMMARY_TABLE}_history")
+    overwrite_partition_static(summary_df, dt, BQ_DATASET, f"{SUMMARY_TABLE}_history")
 
     # Write TVL to BQ.
-    overwrite_partitions(tvl_df, BQ_DATASET, f"{TVL_TABLE}_history")
+    overwrite_partitions_dynamic(tvl_df, BQ_DATASET, f"{TVL_TABLE}_history")
 
     return {"summary": summary_df, "tvl": tvl_df}
