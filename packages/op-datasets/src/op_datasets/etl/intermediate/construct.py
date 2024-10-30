@@ -3,12 +3,10 @@ from op_coreutils.logger import bind_contextvars
 from op_coreutils.partitioned import DataLocation, markers_for_dates
 from op_coreutils.time import surrounding_dates
 
-from op_coreutils.duckdb_inmem import init_client
 from op_datasets.utils.daterange import DateRange
 
 from .registry import load_model_definitions
 from .task import IntermediateModelsTask
-from .udfs import create_duckdb_macros
 
 
 def construct_tasks(
@@ -26,10 +24,6 @@ def construct_tasks(
 
     # Load python functions that define registered data models.
     load_model_definitions()
-
-    # Load shared DuckDB UDFs.
-    client = init_client()
-    create_duckdb_macros(client)
 
     date_range = DateRange.from_spec(range_spec)
 

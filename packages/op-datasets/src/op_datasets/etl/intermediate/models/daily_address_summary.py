@@ -210,13 +210,16 @@ AGGREGATION_EXPRS = [
 ]
 
 
-@register_model
+@register_model(
+    input_datasets=["blocks", "transactions"],
+    expected_outputs=["daily_address_summary_v1"],
+)
 def daily_address_summary(
     duckdb_client: duckdb.DuckDBPyConnection,
     input_tables: NamedRelations,
 ) -> NamedRelations:
-    input_transactions: duckdb.DuckDBPyRelation = input_tables["transactions"]
-    input_blocks: duckdb.DuckDBPyRelation = input_tables["blocks"]
+    input_transactions: duckdb.DuckDBPyRelation = input_tables["transactions"]  # noqa: F841
+    input_blocks: duckdb.DuckDBPyRelation = input_tables["blocks"]  # noqa: F841
 
     query = f"""
     WITH blocks AS (
@@ -248,4 +251,4 @@ def daily_address_summary(
     results = duckdb_client.sql(query)
 
     # Model functions always return a dictionary of output results.
-    return {"daily_address_summary": results}
+    return {"daily_address_summary_v1": results}
