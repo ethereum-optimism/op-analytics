@@ -21,17 +21,17 @@ class IntermediateModelTestBase(unittest.TestCase):
     """Base Class for Intermediate Model Unit Tests.
 
     This class helps with fetching and locally storing sample data for use in intermediate
-    model unite tests.
+    model unit tests.
 
     The test data is stored in a local duckdb file. If the file does not exist the data is
-    fetched from GCS and stored in the file so it can be used by subsequent runs.
+    fetched from GCS and stored so it can be used by subsequent runs.
 
     Fetching is disabled by default. To enable fetching set `_enable_fetching = True` on
     the child class. This should be done explicitly when you wish to fetch data for the
     first time or when you want to update the existing test data.
 
-    To avoid storing very large data files for tests users of the class must supply
-    "block_filters" to filter out the input data to a narrow set of blocks.
+    Users of the class must supply a "block_filters" to narrow down the input data to
+    a set of blocks. This helps control the test data file size.
     """
 
     # Input parameters (must be set by child class)
