@@ -3,13 +3,13 @@ from dataclasses import dataclass
 
 
 @dataclass
-class PathManager:
+class InputTestData:
     """Utitlity to help manage location of data files used in tests."""
 
     abspath: str
 
     @classmethod
-    def at(cls, file_path: str) -> "PathManager":
+    def at(cls, file_path: str) -> "InputTestData":
         """Initialize at the same directory of the provided file path.
 
         Used in unit tests as PathManager.at(__file__)

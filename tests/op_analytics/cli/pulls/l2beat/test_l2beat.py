@@ -2,25 +2,25 @@ import json
 from unittest.mock import patch
 
 import polars as pl
-from op_coreutils.testutils.pathmanager import PathManager
+from op_coreutils.testutils.inputdata import InputTestData
 
 from op_analytics.cli.subcommands.pulls import l2beat
 
-TESTCASE = PathManager.at(__file__)
+TESTDATA = InputTestData.at(__file__)
 
 
 def mock_get_data(session, url):
     if url == l2beat.SUMMARY_ENDPOINT:
-        with open(TESTCASE.path("mockdata/l2beat_scaling_summary.json")) as fobj:
+        with open(TESTDATA.path("mockdata/l2beat_scaling_summary.json")) as fobj:
             return json.load(fobj)
 
     if url.startswith("https://l2beat.com/api/scaling/tvl/base"):
-        with open(TESTCASE.path("mockdata/l2beat_tvl_base.json")) as fobj:
+        with open(TESTDATA.path("mockdata/l2beat_tvl_base.json")) as fobj:
             return json.load(fobj)
 
     # Use the taiko data for all other chains so we don't have to have as many mocks.
     if url.startswith("https://l2beat.com/api/scaling/tvl/"):
-        with open(TESTCASE.path("mockdata/l2beat_tvl_taiko.json")) as fobj:
+        with open(TESTDATA.path("mockdata/l2beat_tvl_taiko.json")) as fobj:
             return json.load(fobj)
 
     raise NotImplementedError({url})
