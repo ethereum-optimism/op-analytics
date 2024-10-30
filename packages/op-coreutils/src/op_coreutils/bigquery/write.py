@@ -30,7 +30,7 @@ def init_client():
             _CLIENT = MagicMock()
 
     # In non-PROD environments outside of tests _CLIENT remains uninitialized
-    # so it raises an exception if we try to use it. 
+    # so it raises an exception if we try to use it.
     if _CLIENT is None:
         raise RuntimeError("BigQuery client was not properly initialized.")
 
@@ -60,14 +60,14 @@ def ensure_valid_dt(df: pl.DataFrame, dt=None):
     if dt is None:
         dt_values = df["dt"].unique().to_list()
         if not dt_values:
-            raise OPLabsBigQueryError("No valid 'dt' values found in DataFrame.")
+            log.info("No valid 'dt' values found in DataFrame.")
+            return
         dt = str(dt_values[0])
 
     if isinstance(dt, datetime) or hasattr(dt, "strftime"):
         dt = dt.strftime("%Y-%m-%d")
     elif isinstance(dt, str):
         dt = dt.split(" ")[0]
-
     try:
         datetime.strptime(dt, "%Y-%m-%d")
     except Exception as ex:
