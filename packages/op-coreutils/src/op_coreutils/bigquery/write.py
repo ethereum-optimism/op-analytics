@@ -1,5 +1,4 @@
 import io
-import sys
 from datetime import date
 from unittest.mock import MagicMock
 
@@ -22,14 +21,14 @@ def init_client():
     if _CLIENT is None:
         current_env = current_environment()
 
-        # Only use MagicMock in a testing environment (i.e., when running with pytest)
         if current_env == OPLabsEnvironment.PROD:
             _CLIENT = bigquery.Client(credentials=get_credentials())
-        elif "pytest" in sys.modules:
+        else:
+            # MagicMock is used when running tests or when the PROD env is not specified.
+            # This is helpful to collect data and iterate on transformations without
+            # accidentally writing data to BigQuery before the final logic is in place.
             _CLIENT = MagicMock()
 
-    # In non-PROD environments outside of tests _CLIENT remains uninitialized
-    # so it raises an exception if we try to use it.
     if _CLIENT is None:
         raise RuntimeError("BigQuery client was not properly initialized.")
 
