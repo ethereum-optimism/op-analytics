@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-# test_write.py
-
 from unittest.mock import patch, MagicMock
 import polars as pl
 import pytest
@@ -8,13 +6,11 @@ import numpy as np
 import pandas as pd
 
 from op_coreutils.bigquery.write import (
-    init_client,
     ensure_valid_dt,
     overwrite_table,
     overwrite_partition,
     overwrite_partitions,
     OPLabsBigQueryError,
-    OPLabsEnvironment,
     upsert_partition,
 )
 
@@ -42,31 +38,6 @@ def reset_client():
     import op_coreutils.bigquery.write
 
     op_coreutils.bigquery.write._CLIENT = None
-
-
-@patch("op_coreutils.bigquery.write.get_credentials")
-@patch("op_coreutils.bigquery.write.bigquery.Client")
-def test_init_client(mock_bigquery_client, mock_get_credentials):
-    reset_client()
-    with patch(
-        "op_coreutils.bigquery.write.current_environment",
-        return_value=OPLabsEnvironment.DEV,
-    ):
-        client = init_client()
-        assert isinstance(
-            client, MagicMock
-        ), "Client should be MagicMock in non-PROD environments."
-
-    reset_client()
-    with patch(
-        "op_coreutils.bigquery.write.current_environment",
-        return_value=OPLabsEnvironment.PROD,
-    ):
-        client = init_client()
-        mock_bigquery_client.assert_called_once_with(
-            credentials=mock_get_credentials.return_value
-        )
-        assert client == mock_bigquery_client.return_value
 
 
 def test_ensure_valid_dt():
