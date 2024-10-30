@@ -1,14 +1,14 @@
 import json
 
-from op_coreutils.testutils.pathmanager import PathManager
+from op_coreutils.testutils.inputdata import InputTestData
 
 from op_analytics.cli.subcommands.pulls import defillama
 
-TESTCASE = PathManager.at(__file__)
+TESTDATA = InputTestData.at(__file__)
 
 
 def test_process_breakdown_data():
-    with open(TESTCASE.path("mockdata/stablecoin_tether.json"), "r") as fobj:
+    with open(TESTDATA.path("mockdata/stablecoin_tether.json"), "r") as fobj:
         data = json.load(fobj)
 
     dataframe, metadata = defillama.process_breakdown_stables(data)
