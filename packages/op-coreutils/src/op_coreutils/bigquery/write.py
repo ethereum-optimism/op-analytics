@@ -80,7 +80,7 @@ def write_df_to_bq(
     destination: str,
     client: bigquery.Client,
     operation: str,
-    write_disposition: str = bigquery.WriteDisposition.WRITE_TRUNCATE,
+    write_disposition: str,
     time_partitioning: bigquery.TimePartitioning = None,
 ):
     """Helper function to write a DataFrame to BigQuery.
@@ -90,7 +90,7 @@ def write_df_to_bq(
         destination (str): The BigQuery table destination in 'dataset.table' format.
         client (bigquery.Client): The BigQuery client.
         operation (str): Description of the operation for logging.
-        write_disposition (str, optional): BigQuery write disposition. Defaults to 'WRITE_TRUNCATE'.
+        write_disposition (str, optional): BigQuery write disposition.
         time_partitioning (bigquery.TimePartitioning, optional): Time partitioning configuration.
     """
     with io.BytesIO() as stream:
