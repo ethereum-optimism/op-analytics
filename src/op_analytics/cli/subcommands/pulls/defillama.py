@@ -3,7 +3,7 @@ import polars as pl
 from op_coreutils.bigquery.write import (
     overwrite_partition_static,
     overwrite_partitions_dynamic,
-    overwrite_table,
+    overwrite_unpartitioned_table,
 )
 from op_coreutils.logger import structlog
 from op_coreutils.request import new_session
@@ -132,7 +132,7 @@ def pull_stables():
 
     # Write metadata to BQ
     dt = now_date()
-    overwrite_table(metadata_df, BQ_DATASET, f"{METADATA_TABLE}_latest")
+    overwrite_unpartitioned_table(metadata_df, BQ_DATASET, f"{METADATA_TABLE}_latest")
     overwrite_partition_static(metadata_df, dt, BQ_DATASET, f"{METADATA_TABLE}_history")
 
     # Write breakdown to BQ
