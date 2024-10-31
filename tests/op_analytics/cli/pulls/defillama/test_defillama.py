@@ -1,14 +1,14 @@
 import json
 
-from op_coreutils.testutils.pathmanager import PathManager
+from op_coreutils.testutils.inputdata import InputTestData
 
 from op_analytics.cli.subcommands.pulls import defillama
 
-TESTCASE = PathManager.at(__file__)
+TESTDATA = InputTestData.at(__file__)
 
 
 def test_process_breakdown_data():
-    with open(TESTCASE.path("mockdata/stablecoin_tether.json"), "r") as fobj:
+    with open(TESTDATA.path("mockdata/stablecoin_tether.json"), "r") as fobj:
         data = json.load(fobj)
 
     dataframe, metadata = defillama.process_breakdown_stables(data)
@@ -36,17 +36,6 @@ def test_process_breakdown_data():
     expected_rows = [
         {
             "chain": "Optimism",
-            "dt": "2022-05-11",
-            "circulating": 19021887.0,
-            "bridged_to": 19021887.0,
-            "minted": None,
-            "unreleased": None,
-            "id": "1",
-            "name": "Tether",
-            "symbol": "USDT",
-        },
-        {
-            "chain": "Optimism",
             "dt": "2022-05-12",
             "circulating": 19021887.0,
             "bridged_to": 19021887.0,
@@ -59,6 +48,17 @@ def test_process_breakdown_data():
         {
             "chain": "Optimism",
             "dt": "2022-05-13",
+            "circulating": 19021887.0,
+            "bridged_to": 19021887.0,
+            "minted": None,
+            "unreleased": None,
+            "id": "1",
+            "name": "Tether",
+            "symbol": "USDT",
+        },
+        {
+            "chain": "Optimism",
+            "dt": "2022-05-14",
             "circulating": 19021906.0,
             "bridged_to": 19021906.0,
             "minted": None,
@@ -69,7 +69,7 @@ def test_process_breakdown_data():
         },
         {
             "chain": "Optimism",
-            "dt": "2022-05-14",
+            "dt": "2022-05-15",
             "circulating": 19023188.0,
             "bridged_to": 19023188.0,
             "minted": None,
@@ -80,7 +80,7 @@ def test_process_breakdown_data():
         },
         {
             "chain": "Optimism",
-            "dt": "2022-05-15",
+            "dt": "2022-05-16",
             "circulating": 18844204.0,
             "bridged_to": 18844204.0,
             "minted": None,
@@ -91,7 +91,7 @@ def test_process_breakdown_data():
         },
         {
             "chain": "Optimism",
-            "dt": "2022-05-16",
+            "dt": "2022-05-17",
             "circulating": 18850486.0,
             "bridged_to": 18850486.0,
             "minted": None,
@@ -102,7 +102,7 @@ def test_process_breakdown_data():
         },
         {
             "chain": "Optimism",
-            "dt": "2022-05-17",
+            "dt": "2022-05-18",
             "circulating": 18875986.0,
             "bridged_to": 18875986.0,
             "minted": None,
@@ -113,7 +113,7 @@ def test_process_breakdown_data():
         },
         {
             "chain": "Optimism",
-            "dt": "2022-05-18",
+            "dt": "2022-05-19",
             "circulating": 19207042.0,
             "bridged_to": 19207042.0,
             "minted": None,
@@ -124,7 +124,7 @@ def test_process_breakdown_data():
         },
         {
             "chain": "Optimism",
-            "dt": "2022-05-19",
+            "dt": "2022-05-20",
             "circulating": 19358232.0,
             "bridged_to": 19358232.0,
             "minted": None,
@@ -135,7 +135,7 @@ def test_process_breakdown_data():
         },
         {
             "chain": "Optimism",
-            "dt": "2022-05-20",
+            "dt": "2022-05-21",
             "circulating": 19368126.0,
             "bridged_to": 19368126.0,
             "minted": None,

@@ -1,9 +1,11 @@
 from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
 from op_coreutils.partitioned import DataLocation, all_outputs_complete
+from op_coreutils.duckdb_inmem import init_client
 
 from .construct import construct_tasks
 from .registry import REGISTERED_INTERMEDIATE_MODELS
 from .task import IntermediateModelsTask
+from .udfs import create_duckdb_macros
 
 log = structlog.get_logger()
 
@@ -51,11 +53,23 @@ def compute_intermediate(
 def executor(task: IntermediateModelsTask):
     """Execute the model computations."""
 
-    for model in task.models:
-        model_func = REGISTERED_INTERMEDIATE_MODELS[model]
+    # Load shared DuckDB UDFs.
+    client = init_client()
+    create_duckdb_macros(client)
 
-        for name, output in model_func(task).items():
-            task.add_output(name, output)
+    for model in task.models:
+        im_model = REGISTERED_INTERMEDIATE_MODELS[model]
+
+        input_tables = {}
+        for dataset in im_model.input_datasets:
+            input_tables[dataset] = task.duckdb_relation(dataset)
+
+        for output_name, output in im_model.func(client, input_tables).items():
+            task.add_output(output_name, output)
+
+        produced_datasets = set(task.output_duckdb_relations.keys())
+        if produced_datasets != set(im_model.expected_outputs):
+            raise RuntimeError(f"model {model!r} produced unexpected datasets: {produced_datasets}")
 
     # Show the outputs that were produced by running the models.
     for key in task.output_duckdb_relations.keys():

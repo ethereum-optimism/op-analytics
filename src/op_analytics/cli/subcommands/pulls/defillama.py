@@ -1,9 +1,13 @@
 import time
 import polars as pl
-from op_coreutils.bigquery.write import overwrite_partition, overwrite_partitions, overwrite_table
+from op_coreutils.bigquery.write import (
+    overwrite_partition_static,
+    overwrite_partitions_dynamic,
+    overwrite_table,
+)
 from op_coreutils.logger import structlog
 from op_coreutils.request import new_session
-from op_coreutils.time import dt_fromepoch, now_dt
+from op_coreutils.time import dt_fromepoch, now_date
 from op_coreutils.threads import run_concurrently
 
 log = structlog.get_logger()
@@ -80,7 +84,7 @@ def process_breakdown_stables(data):
         "cmcId",
         "priceSource",
         "twitter",
-        "price"
+        "price",
     ]
 
     metadata = {}
@@ -127,11 +131,11 @@ def pull_stables():
     metadata_df = pl.DataFrame(metadata_rows, infer_schema_length=len(metadata_rows))
 
     # Write metadata to BQ
-    dt = now_dt()
+    dt = now_date()
     overwrite_table(metadata_df, BQ_DATASET, f"{METADATA_TABLE}_latest")
-    overwrite_partition(metadata_df, dt, BQ_DATASET, f"{METADATA_TABLE}_history")
+    overwrite_partition_static(metadata_df, dt, BQ_DATASET, f"{METADATA_TABLE}_history")
 
     # Write breakdown to BQ
-    overwrite_partitions(breakdown_df, BQ_DATASET, f"{BREAKDOWN_TABLE}_history")
+    overwrite_partitions_dynamic(breakdown_df, BQ_DATASET, f"{BREAKDOWN_TABLE}_history")
 
     return {"metadata": metadata_df, "breakdown": breakdown_df}

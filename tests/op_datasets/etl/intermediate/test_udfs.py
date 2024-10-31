@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from op_coreutils.duckdb_inmem import init_client
 from op_datasets.etl.intermediate.udfs import (
     create_duckdb_macros,
     Expression,
@@ -11,7 +12,8 @@ from op_datasets.etl.intermediate.udfs import (
 
 
 def test_macros():
-    client = create_duckdb_macros()
+    client = init_client()
+    create_duckdb_macros(client)
 
     client.sql("""
     CREATE TABLE test_macros AS 

@@ -30,7 +30,7 @@ class IntermediateModelsTask:
     read_from: DataLocation
 
     # Input data as duckdb parquet relations by dataset.
-    input_duckdb_relations: dict[str, duckdb.DuckDBPyRelation]
+    dataset_paths: dict[str, list[str]]
     inputs_ready: bool
 
     # Models to compute
@@ -48,6 +48,12 @@ class IntermediateModelsTask:
     expected_markers: list[SinkMarkerPath]
     is_complete: bool
 
+    def __repr__(self):
+        return (
+            self.__class__.__name__
+            + f"[ctx: {self.contextvars}, datset_paths: {self.paths_summary}]"
+        )
+
     @property
     def dt(self):
         return self.dateval.strftime("%Y-%m-%d")
@@ -58,6 +64,13 @@ class IntermediateModelsTask:
             chain=self.chain,
             date=self.dt,
         )
+
+    @property
+    def paths_summary(self):
+        return {dataset_name: len(paths) for dataset_name, paths in self.dataset_paths.items()}
+
+    def duckdb_relation(self, dataset):
+        return parquet_relation(self.dataset_paths[dataset])
 
     @classmethod
     def new(
@@ -85,15 +98,11 @@ class IntermediateModelsTask:
             storage_location=read_from,
         )
 
-        duckb_parquet_relations = {}
-        for name, paths in (dataset_paths or {}).items():
-            duckb_parquet_relations[name] = parquet_relation(paths)
-
         new_obj = cls(
             dateval=dateval,
             chain=chain,
             read_from=read_from,
-            input_duckdb_relations=duckb_parquet_relations,
+            dataset_paths=dataset_paths or {},
             inputs_ready=dataset_paths is not None,
             models=models,
             output_duckdb_relations={},

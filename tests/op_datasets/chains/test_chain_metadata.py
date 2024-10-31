@@ -1,12 +1,12 @@
 import polars as pl
-from op_coreutils.testutils.pathmanager import PathManager
+from op_coreutils.testutils.inputdata import InputTestData
 from op_coreutils.testutils.dataframe import compare_dataframes
 
 from op_datasets.chains import chain_metadata
 
 
 def test_clean():
-    testcase = PathManager.at(__file__)
+    testcase = InputTestData.at(__file__)
 
     # Load the raw and cleaned up CSVs from the test path.
     raw_df = pl.read_csv(testcase.path("case01/chain_metadata_raw.csv"))
@@ -20,7 +20,7 @@ def test_clean():
 
 
 def test_to_pandas():
-    testcase = PathManager.at(__file__)
+    testcase = InputTestData.at(__file__)
 
     # Load the raw and cleaned up CSVs from the test path.
     raw_df = pl.read_csv(testcase.path("case01/chain_metadata_raw.csv"))
@@ -110,7 +110,7 @@ def test_to_pandas():
 
 
 def test_goldsky_chains():
-    testcase = PathManager.at(__file__)
+    testcase = InputTestData.at(__file__)
 
     actual = chain_metadata.goldsky_chains(testcase.path("case01/chain_metadata_raw.csv"))
     actual.sort()
