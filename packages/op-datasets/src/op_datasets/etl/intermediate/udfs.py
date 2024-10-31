@@ -1,8 +1,8 @@
 """DuckDB UDFs that are shared across intermediate models."""
 
-from dataclasses import dataclass
+import duckdb
 
-from op_coreutils.duckdb_inmem import init_client
+from dataclasses import dataclass
 
 
 @dataclass
@@ -22,14 +22,13 @@ def to_sql(exprs: list[Expression]):
     return ",\n    ".join([_.expr for _ in exprs])
 
 
-def create_duckdb_macros():
+def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     """Create general purpose macros on the DuckDB in-memory client.
 
     These macros can be used as part of data model definitions.
     """
-    client = init_client()
 
-    client.sql("""
+    duckdb_client.sql("""
     CREATE OR REPLACE MACRO wei_to_eth(a)
     AS a::DECIMAL(28, 0) * 0.000000000000000001::DECIMAL(19, 19);
 
@@ -39,10 +38,6 @@ def create_duckdb_macros():
     CREATE OR REPLACE MACRO safe_div(a, b) AS
     IF(b = 0, NULL, a / b);
     """)
-
-    # Return the client for convenience when writing unit tests.
-    # Tests can use the client to run sql queries that exercise the defined macros.
-    return client
 
 
 # The functions below are defined for cosmetic purposes. When used they add syntax highlighting

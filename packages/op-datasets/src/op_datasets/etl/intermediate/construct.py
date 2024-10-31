@@ -7,7 +7,6 @@ from op_datasets.utils.daterange import DateRange
 
 from .registry import load_model_definitions
 from .task import IntermediateModelsTask
-from .udfs import create_duckdb_macros
 
 
 def construct_tasks(
@@ -25,9 +24,6 @@ def construct_tasks(
 
     # Load python functions that define registered data models.
     load_model_definitions()
-
-    # Load shared DuckDB UDFs.
-    create_duckdb_macros()
 
     date_range = DateRange.from_spec(range_spec)
 

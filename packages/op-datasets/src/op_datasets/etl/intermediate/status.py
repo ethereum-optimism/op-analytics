@@ -56,7 +56,7 @@ def are_inputs_ready(
         for row in dataset_df.filter(pl.col("dt") == dateval).to_dicts():
             parquet_paths.append(storage_location.absolute(row["data_path"]))
 
-        dataset_paths[dataset] = sorted(parquet_paths)
+        dataset_paths[dataset] = sorted(set(parquet_paths))
 
     # If we get to this point then data is ready to be consumed!
     return dataset_paths

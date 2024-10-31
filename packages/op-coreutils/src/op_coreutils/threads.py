@@ -7,9 +7,9 @@ log = structlog.get_logger()
 
 def run_concurrently(
     function: Callable,
-    targets: dict[str, Any] | list[str],
+    targets: dict[str, Any] | list[Any],
     max_workers: int | None = None,
-) -> dict[str, Any]:
+) -> dict[Any, Any]:
     """Concurrently call function on the provided targets.
 
     "targets" is a dictionary from key to function parameters. The key is used to identify the result in

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import duckdb
-from op_coreutils.duckdb_inmem import init_client
 
 from op_datasets.etl.intermediate.registry import register_model
-from op_datasets.etl.intermediate.task import IntermediateModelsTask
+from op_datasets.etl.intermediate.types import NamedRelations
 from op_datasets.etl.intermediate.udfs import (
     Expression,
     wei_to_eth,
@@ -27,7 +26,9 @@ L2_CONTRIB_BASE = "(base_fee_per_gas * receipt_gas_used)"
 
 ESTIMATED_SIZE = "receipt_l1_fee /(16*COALESCE(receipt_l1_fee_scalar,receipt_l1_base_fee_scalar)*receipt_l1_gas_price/1000000 + COALESCE( receipt_l1_blob_base_fee_scalar*receipt_l1_blob_base_fee/1000000 , 0))"
 
-L1_CONTRIB_BLOB = f"({ESTIMATED_SIZE}) * receipt_l1_blob_base_fee_scalar/1000000 * receipt_l1_blob_base_fee"
+L1_CONTRIB_BLOB = (
+    f"({ESTIMATED_SIZE}) * receipt_l1_blob_base_fee_scalar/1000000 * receipt_l1_blob_base_fee"
+)
 L1_CONTRIB_L1_GAS = f"({ESTIMATED_SIZE}) * COALESCE(16*receipt_l1_base_fee_scalar/1000000, receipt_l1_fee_scalar) * receipt_l1_gas_price"
 
 
@@ -39,7 +40,7 @@ AGGREGATION_EXPRS = [
     ),
     Expression(
         alias="total_txs_success",
-        sql_expr=f"COUNT_IF({TX_SUCCESS})",
+        sql_expr=f"COUNT(IF({TX_SUCCESS}, 1, NULL))",
     ),
     # Blocks
     Expression(
@@ -209,21 +210,23 @@ AGGREGATION_EXPRS = [
 ]
 
 
-@register_model
+@register_model(
+    input_datasets=["blocks", "transactions"],
+    expected_outputs=["daily_address_summary_v1"],
+)
 def daily_address_summary(
-    task: IntermediateModelsTask,
-) -> dict[str, duckdb.DuckDBPyRelation]:
-    txs: duckdb.DuckDBPyRelation = task.input_duckdb_relations["transactions"]
-    blks: duckdb.DuckDBPyRelation = task.input_duckdb_relations["blocks"]
-
-    client = init_client()
+    duckdb_client: duckdb.DuckDBPyConnection,
+    input_tables: NamedRelations,
+) -> NamedRelations:
+    input_transactions: duckdb.DuckDBPyRelation = input_tables["transactions"]  # noqa: F841
+    input_blocks: duckdb.DuckDBPyRelation = input_tables["blocks"]  # noqa: F841
 
     query = f"""
     WITH blocks AS (
         SELECT
             number,
             base_fee_per_gas
-        FROM blks
+        FROM input_blocks
     )
     SELECT
         dt,
@@ -231,7 +234,7 @@ def daily_address_summary(
         chain_id,
         from_address AS address,
         {to_sql(AGGREGATION_EXPRS)}
-    FROM txs AS t
+    FROM input_transactions AS t
     JOIN blocks AS b
         ON t.block_number = b.number
     WHERE gas_price > 0
@@ -245,7 +248,7 @@ def daily_address_summary(
     # Uncomment when debugging:
     # print(query)
 
-    results = client.sql(query)
+    results = duckdb_client.sql(query)
 
     # Model functions always return a dictionary of output results.
-    return {"daily_address_summary": results}
+    return {"daily_address_summary_v1": results}
