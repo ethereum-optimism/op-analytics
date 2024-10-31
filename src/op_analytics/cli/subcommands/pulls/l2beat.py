@@ -4,9 +4,11 @@ from typing import Any, Callable
 
 import polars as pl
 from op_coreutils.bigquery.write import (
+    most_recent_dates,
     overwrite_partition_static,
+    overwrite_partitioned_table,
     overwrite_partitions_dynamic,
-    overwrite_table,
+    overwrite_unpartitioned_table,
 )
 from op_coreutils.logger import structlog
 from op_coreutils.request import new_session
@@ -21,7 +23,7 @@ BQ_DATASET = "uploads_api"
 
 SUMMARY_TABLE = "l2beat_daily_chain_summary"
 
-TVL_TABLE = "l2beat_daily_tvl"
+TVL_TABLE = "l2beat_daily_tvl_history"
 TVL_SCHEMA: dict[str, type[pl.DataType]] = {
     "timestamp": pl.Int64,
     "native": pl.Float64,
@@ -29,15 +31,19 @@ TVL_SCHEMA: dict[str, type[pl.DataType]] = {
     "external": pl.Float64,
     "ethPrice": pl.Float64,
 }
-TVL_QUERY_RANGE = "30d"  # use "max" for backfill
+# Use "max" for backfill
+# Otherwise use 30d to get 6hr data intervals
+TVL_QUERY_RANGE = "30d"
 
 
-ACTIVITY_TABLE = "l2beat_daily_activity"
+ACTIVITY_TABLE = "l2beat_daily_activity_history"
 ACTIVITY_SCHEMA: dict[str, type[pl.DataType]] = {
     "timestamp": pl.Int64,
     "count": pl.Int64,
 }
-ACTIVITY_QUERY_RANGE = "30d"  # use "max" for backfill
+# Use "max" for backfill
+# Otherwise use 30d to get 6hr data intervals
+ACTIVITY_QUERY_RANGE = "30d"
 
 
 def get_data(session, url):
@@ -77,7 +83,7 @@ def pull():
 
     # Write summary to BQ.
     dt = now_date()
-    overwrite_table(summary_df, BQ_DATASET, f"{SUMMARY_TABLE}_latest")
+    overwrite_unpartitioned_table(summary_df, BQ_DATASET, f"{SUMMARY_TABLE}_latest")
     overwrite_partition_static(summary_df, dt, BQ_DATASET, f"{SUMMARY_TABLE}_history")
 
     # Collect the list of projects tracked by L2Beat
@@ -108,7 +114,20 @@ def _process_tvl(session, projects: list[L2BeatProject]):
         fetch=fetch_tvl,
         column_schemas=TVL_SCHEMA,
     )
-    overwrite_partitions_dynamic(tvl_df, BQ_DATASET, f"{TVL_TABLE}_history")
+
+    if TVL_QUERY_RANGE == "max":
+        overwrite_partitioned_table(
+            df=tvl_df,
+            dataset=BQ_DATASET,
+            table_name=TVL_TABLE,
+        )
+    else:
+        overwrite_partitions_dynamic(
+            df=most_recent_dates(tvl_df, n_dates=7),
+            dataset=BQ_DATASET,
+            table_name=TVL_TABLE,
+        )
+
     return tvl_df
 
 
@@ -124,7 +143,20 @@ def _process_activity(session, projects: list[L2BeatProject]):
         fetch=fetch_activity,
         column_schemas=ACTIVITY_SCHEMA,
     ).rename({"count": "transaction_count"})
-    overwrite_partitions_dynamic(activity_df, BQ_DATASET, f"{ACTIVITY_TABLE}_history")
+
+    if ACTIVITY_QUERY_RANGE == "max":
+        overwrite_partitioned_table(
+            df=activity_df,
+            dataset=BQ_DATASET,
+            table_name=ACTIVITY_TABLE,
+        )
+    else:
+        overwrite_partitions_dynamic(
+            df=most_recent_dates(activity_df, n_dates=7),
+            dataset=BQ_DATASET,
+            table_name=ACTIVITY_TABLE,
+        )
+
     return activity_df
 
 
