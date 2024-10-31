@@ -15,6 +15,21 @@ log = structlog.get_logger()
 
 @dataclass
 class InputData:
+    """Represents input data stored as parquet paths in GCS.
+
+    When objects of this class are created the creator must be aware of whether
+    the data is ready to be consumed.
+
+    A specfic task may decide what to do with the current parquet paths in GCS
+    on cases when the data is not yet ready to be consumed.
+
+    On some cases it will be preferable to do no processing for incomplete data
+    (e.g. when processing intermediate models).
+
+    On other cases it can make sense to do partial processing (e.g. when loading
+    data into BigQuery).
+    """
+
     # Date
     dateval: date
 
@@ -42,6 +57,12 @@ def construct_inputs(
     read_from: DataLocation,
     input_datasets: list[str],
 ) -> list[InputData]:
+    """Construct a list of InputData for the given parameters.
+
+    The parameters specify a set of chains, dates, and datasets that we are
+    interested in processing.
+    """
+
     date_range = DateRange.from_spec(range_spec)
 
     # Make one query for all dates and chains.

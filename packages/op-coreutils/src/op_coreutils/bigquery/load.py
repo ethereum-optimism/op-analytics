@@ -19,6 +19,10 @@ def load_from_parquet_uris(
     time_partition_field: str,
     clustering_fields: list[str] | None,
 ):
+    """Execute a load job to load parquet uris into BigQuery.
+
+    All of the provided URIs must belong to the same "dt" partition.
+    """
     client = init_client()
 
     date_suffix = date_partition.strftime("%Y%m%d")
