@@ -42,6 +42,8 @@ jobs:
           - working-directory: other_chains_tracking
             notebook: get_qualified_txs
           - working-directory: other_chains_tracking
+            notebook: get_all_txs
+          - working-directory: other_chains_tracking
             notebook: get_contract_labels
           - working-directory: op_chains_tracking
             notebook: get_superchain_token_list
