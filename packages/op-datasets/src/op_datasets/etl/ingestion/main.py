@@ -23,6 +23,7 @@ def ingest(
     write_to: list[DataLocation],
     dryrun: bool,
     force: bool = False,
+    fork_process: bool = True,
     max_tasks: int | None = None,
 ):
     clear_contextvars()
@@ -52,8 +53,17 @@ def ingest(
 
         not_skipped += 1
 
+        execute(task, fork_process)
+
+        if max_tasks is not None and not_skipped >= max_tasks:
+            log.warning(f"Stopping after executing {not_skipped} tasks")
+            break
+
+
+def execute(task, fork_process: bool):
+    if fork_process:
         ctx = mp.get_context("spawn")
-        p = ctx.Process(target=execute, args=(task,))
+        p = ctx.Process(target=steps, args=(task,))
         p.start()
         p.join()
 
@@ -61,13 +71,11 @@ def ingest(
             log.error(f"Process terminated with exit code: {p.exitcode}")
         else:
             log.info("Process terminated successfully.")
-
-        if max_tasks is not None and not_skipped >= max_tasks:
-            log.warning(f"Stopping after executing {not_skipped} tasks")
-            break
+    else:
+        steps(task)
 
 
-def execute(task):
+def steps(task):
     bind_contextvars(**task.contextvars)
 
     # Read the data (updates the task in-place with the input dataframes).

@@ -163,6 +163,9 @@ def ingest_blocks(
     force: Annotated[
         bool, typer.Option(help="Run the full process ignore any existing completion markers.")
     ] = False,
+    fork_process: Annotated[
+        bool, typer.Option(help="If true, execute task in a forked subprocess.")
+    ] = True,
 ):
     """Ingest a range of blocks.
 
@@ -181,6 +184,7 @@ def ingest_blocks(
         write_to=write_to or [DataLocation.LOCAL],
         dryrun=dryrun,
         force=force,
+        fork_process=fork_process,
     )
 
 
