@@ -39,10 +39,14 @@ def datasets_join_to_blocks(dataframes: dict[str, pl.DataFrame]):
         df = dataframes[dataset].select("block_number")
         joined_df = df.join(blocks, left_on="block_number", right_on="number", how="full")
 
+        failure_condition = pl.col("number").is_null()
         failures = joined_df.select(
             pl.lit(f"{dataset} should join back to blocks on block number").alias("audit_name"),
-            pl.col("number").is_null().sum().alias("failure_count"),
+            failure_condition.sum().alias("failure_count"),
         )
+
+        if len(joined_df.filter(failure_condition)) > 0:
+            print(joined_df.filter(failure_condition))  # helps debug failures
 
         results.append(failures)
 
@@ -127,6 +131,50 @@ def dataset_consistent_block_timestamps(dataframes: dict[str, pl.DataFrame]):
         audits.append(dt_check)
 
     return pl.concat(audits)
+
+
+@register
+def transaction_count(dataframes: dict[str, pl.DataFrame]):
+    """Block transaction count should agree with number of transaction records."""
+    blocks_df = dataframes["blocks"].select("number", "transaction_count")
+    transactions_df = dataframes["transactions"].select("block_number")
+
+    tx_count = transactions_df.group_by("block_number").count()
+    joined = blocks_df.join(
+        tx_count, left_on="number", right_on="block_number", how="full", validate="1:1"
+    )
+
+    failure_condition = pl.col("transaction_count") != pl.col("count")
+    check = joined.select(
+        pl.lit("block transaction count must match observed transactions").alias("audit_name"),
+        failure_condition.sum().alias("failure_count"),
+    )
+
+    if len(joined.filter(failure_condition)) > 0:
+        print(joined.filter(failure_condition))  # helps debug failures
+
+    return check
+
+
+@register
+def logs_count(dataframes: dict[str, pl.DataFrame]):
+    """Block log max_index should agree with number of log records."""
+    logs_df = dataframes["logs"].select("block_number", "log_index")
+
+    agged = logs_df.group_by("block_number").agg(
+        (1 + pl.max("log_index")).alias("max_log_idx"), pl.count()
+    )
+
+    failure_condition = pl.col("max_log_idx") != pl.col("count")
+    check = agged.select(
+        pl.lit("log max index must max log count").alias("audit_name"),
+        failure_condition.sum().alias("failure_count"),
+    )
+
+    if len(agged.filter(failure_condition)) > 0:
+        print(agged.filter(failure_condition))  # helps debug failures
+
+    return check
 
 
 def dataset_valid_logs():
