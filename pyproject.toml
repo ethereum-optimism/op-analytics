@@ -23,7 +23,7 @@ op-datasets = { workspace = true }
 members = ["packages/op-datasets", "packages/op-coreutils"]
 
 [tool.mypy]
-files = ["src/**/*.py", "packages/**/*.py"]
+files = ["src/**/*.py", "packages/**/*.py", "tests/**/*.py"]
 ignore_missing_imports = true
 
 [project.scripts]
