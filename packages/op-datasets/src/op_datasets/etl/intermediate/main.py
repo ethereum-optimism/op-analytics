@@ -3,7 +3,7 @@ from op_coreutils.partitioned import DataLocation, all_outputs_complete
 from op_coreutils.duckdb_inmem import init_client
 
 from .construct import construct_tasks
-from .registry import REGISTERED_INTERMEDIATE_MODELS
+from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .task import IntermediateModelsTask
 from .udfs import create_duckdb_macros
 
@@ -21,6 +21,18 @@ def compute_intermediate(
 ):
     clear_contextvars()
 
+    # Load python functions that define registered data models.
+    load_model_definitions()
+
+    for model in models:
+        should_exit = False
+        if model not in REGISTERED_INTERMEDIATE_MODELS:
+            should_exit = True
+            log.error("Model is not registered: {model}")
+        if should_exit:
+            log.error("Cannot run on unregistered models. Will exit.")
+            exit(1)
+
     tasks = construct_tasks(chains, models, range_spec, read_from, write_to)
 
     if dryrun:
@@ -35,7 +47,7 @@ def compute_intermediate(
 
         # Check and decide if we need to run this task.
         checker(task)
-        if not task.inputs_ready:
+        if not task.inputdata.inputs_ready:
             log.warning("Task inputs are not ready. Skipping this task.")
             continue
         if task.is_complete and not force:

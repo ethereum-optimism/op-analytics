@@ -16,7 +16,7 @@ from op_datasets.etl.ingestion import ingest
 from op_datasets.etl.ingestion.batches import split_block_range
 from op_datasets.etl.ingestion.sources import RawOnchainDataProvider
 from op_datasets.etl.intermediate import compute_intermediate
-from op_datasets.etl.loadraw import load_superchain_raw_to_bq
+from op_datasets.etl.loadbq import load_superchain_raw_to_bq
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 from op_datasets.utils.blockrange import BlockRange
 from rich import print
@@ -236,15 +236,16 @@ def intermediate_models(
 
 @app.command()
 def load_superchain_raw(
-    chains: CHAINS_ARG,
     range_spec: DATES_ARG,
     dryrun: DRYRUN_ARG = False,
+    force: Annotated[
+        bool, typer.Option(help="Run load jobs even if some input data is not ready yet.")
+    ] = False,
 ):
     """Load superchain_raw tables to BigQuery."""
-    chain_list = normalize_chains(chains)
 
     load_superchain_raw_to_bq(
-        chains=chain_list,
         range_spec=range_spec,
         dryrun=dryrun,
+        force=force,
     )

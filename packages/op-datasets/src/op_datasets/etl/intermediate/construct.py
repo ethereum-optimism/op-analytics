@@ -1,11 +1,7 @@
-import polars as pl
-from op_coreutils.logger import bind_contextvars, structlog
-from op_coreutils.partitioned import DataLocation, markers_for_dates
-from op_coreutils.time import surrounding_dates
+from op_coreutils.logger import structlog
+from op_coreutils.partitioned import DataLocation, InputData, construct_inputs
 
-from op_datasets.utils.daterange import DateRange
 
-from .registry import load_model_definitions
 from .task import IntermediateModelsTask
 
 
@@ -25,38 +21,28 @@ def construct_tasks(
     shared duckdb macros that are used across models.
     """
 
-    # Load python functions that define registered data models.
-    load_model_definitions()
-
-    date_range = DateRange.from_spec(range_spec)
+    inputs: list[InputData] = construct_inputs(
+        chains=chains,
+        range_spec=range_spec,
+        read_from=read_from,
+        input_datasets=["blocks", "transactions", "logs", "traces"],
+    )
 
     tasks = []
+    for inputdata in inputs:
+        # TODO: Compute what are the expected markers for the task.
 
-    # Make one query for all dates and chains.
-    #
-    # We use the +/- 1 day padded dates so that we can use the query results to
-    # check if there is data on boths ends. This allows us to confirm that the
-    # data is ready to be processed.
-    markers_df = markers_for_dates(read_from, date_range.padded_dates(), chains)
-
-    for dateval in date_range.dates:
-        for chain in chains:
-            bind_contextvars(chain=chain, date=dateval.isoformat())
-            filtered = markers_df.filter(
-                pl.col("chain") == chain,
-                pl.col("dt").is_in(surrounding_dates(dateval)),
+        tasks.append(
+            IntermediateModelsTask(
+                inputdata=inputdata,
+                models=models,
+                output_duckdb_relations={},
+                write_to=write_to,
+                force=False,
+                expected_markers=[],
+                is_complete=False,
             )
-
-            tasks.append(
-                IntermediateModelsTask.new(
-                    dateval=dateval,
-                    chain=chain,
-                    read_from=read_from,
-                    markers_df=filtered,
-                    models=models,
-                    write_to=write_to,
-                )
-            )
+        )
 
     log.info(f"Constructed {len(tasks)} tasks.")
     return tasks
