@@ -29,7 +29,7 @@ class IntermediateModelsTask:
     # Source
     read_from: DataLocation
 
-    # Input data as duckdb parquet relations by dataset.
+    # Input data as parquet paths for each dataset.
     dataset_paths: dict[str, list[str]]
     inputs_ready: bool
 
@@ -44,7 +44,7 @@ class IntermediateModelsTask:
     # Sinks
     write_to: list[DataLocation]
 
-    # # Expected Markers
+    # Expected Markers
     expected_markers: list[SinkMarkerPath]
     is_complete: bool
 

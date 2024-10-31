@@ -22,7 +22,6 @@ def compute_intermediate(
     clear_contextvars()
 
     tasks = construct_tasks(chains, models, range_spec, read_from, write_to)
-    log.info(f"Constructed {len(tasks)} tasks.")
 
     if dryrun:
         log.info("DRYRUN: No work will be done.")

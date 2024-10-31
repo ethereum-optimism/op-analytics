@@ -16,6 +16,7 @@ from op_datasets.etl.ingestion import ingest
 from op_datasets.etl.ingestion.batches import split_block_range
 from op_datasets.etl.ingestion.sources import RawOnchainDataProvider
 from op_datasets.etl.intermediate import compute_intermediate
+from op_datasets.etl.loadraw import load_superchain_raw_to_bq
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 from op_datasets.utils.blockrange import BlockRange
 from rich import print
@@ -133,9 +134,16 @@ def verify_goldsky_tables():
     return sorted(chains)
 
 
+CHAINS_ARG = Annotated[str, typer.Argument(help="Comma-separated list of chains to be processed.")]
+DATES_ARG = Annotated[str, typer.Argument(help="Range of dates to be processed.")]
+DRYRUN_ARG = Annotated[
+    bool, typer.Option(help="Dryrun shows a summary of the data that will be processed.")
+]
+
+
 @app.command()
 def ingest_blocks(
-    chains: Annotated[str, typer.Argument(help="Comma-separated list of chains to be processed.")],
+    chains: CHAINS_ARG,
     range_spec: Annotated[str, typer.Argument(help="Range of blocks to be ingested.")],
     read_from: Annotated[
         RawOnchainDataProvider,
@@ -151,9 +159,7 @@ def ingest_blocks(
             case_sensitive=False,
         ),
     ] = None,
-    dryrun: Annotated[
-        bool, typer.Option(help="Dryrun shows a summary of the data that will be ingested.")
-    ] = False,
+    dryrun: DRYRUN_ARG = False,
     force: Annotated[
         bool, typer.Option(help="Run the full process ignore any existing completion markers.")
     ] = False,
@@ -178,11 +184,18 @@ def ingest_blocks(
     )
 
 
+def normalize_chains(chains: str) -> list[str]:
+    if chains == "ALL":
+        return verify_goldsky_tables()
+
+    return [_.strip() for _ in chains.split(",")]
+
+
 @app.command()
 def intermediate_models(
-    chains: Annotated[str, typer.Argument(help="Comma-separated list of chains to be processed.")],
+    chains: CHAINS_ARG,
     models: Annotated[str, typer.Argument(help="Comma-separated list of models to be processed.")],
-    range_spec: Annotated[str, typer.Argument(help="Range of dates to be processed.")],
+    range_spec: DATES_ARG,
     read_from: Annotated[
         DataLocation,
         typer.Option(
@@ -197,19 +210,13 @@ def intermediate_models(
             case_sensitive=False,
         ),
     ] = None,
-    dryrun: Annotated[
-        bool, typer.Option(help="Dryrun shows a summary of the data that will be processed.")
-    ] = False,
+    dryrun: DRYRUN_ARG = False,
     force: Annotated[
         bool, typer.Option(help="Run the full process ignore any existing completion markers.")
     ] = False,
 ):
     """Compute intermediate models for a range of dates."""
-    if chains == "ALL":
-        chain_list = verify_goldsky_tables()
-    else:
-        chain_list = [_.strip() for _ in chains.split(",")]
-
+    chain_list = normalize_chains(chains)
     model_list = [_.strip() for _ in models.split(",")]
 
     compute_intermediate(
@@ -220,4 +227,20 @@ def intermediate_models(
         write_to=write_to or [DataLocation.LOCAL],
         dryrun=dryrun,
         force=force,
+    )
+
+
+@app.command()
+def load_superchain_raw(
+    chains: CHAINS_ARG,
+    range_spec: DATES_ARG,
+    dryrun: DRYRUN_ARG = False,
+):
+    """Load superchain_raw tables to BigQuery."""
+    chain_list = normalize_chains(chains)
+
+    load_superchain_raw_to_bq(
+        chains=chain_list,
+        range_spec=range_spec,
+        dryrun=dryrun,
     )
