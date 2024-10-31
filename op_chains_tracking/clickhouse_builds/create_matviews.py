@@ -26,15 +26,6 @@ set_days_batch_size = 30# 7 #30
 optimize_all = False #True
 
 
-# In[2]:
-
-
-topic0_maps = [
-        {'table_type': 'materialized', 'topic0_func': "topic0"},
-        {'table_type': 'raw', 'topic0_func': "arrayElement(splitByString(',', topics), 1)"}
-]
-
-
 # In[ ]:
 
 
@@ -53,6 +44,25 @@ client = ch.connect_to_clickhouse_db()
 import dotenv
 import os
 dotenv.load_dotenv()
+
+
+# In[3]:
+
+
+topic0_maps = [
+        {'table_type': 'materialized', 'topic0_func': "topic0"},
+        {'table_type': 'raw', 'topic0_func': "arrayElement(splitByString(',', topics), 1)"}
+]
+    
+def check_topic0(client,chain):
+        sql = f"SELECT topic0 FROM {chain}_logs limit 1"
+        try:
+                client.command(sql)
+                topic0_func = next(item['topic0_func'] for item in topic0_maps if item['table_type'] == 'materialized')
+        except:
+                topic0_func = next(item['topic0_func'] for item in topic0_maps if item['table_type'] == 'raw')
+
+        return topic0_func
 
 
 # In[4]:
@@ -379,10 +389,7 @@ def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date
     full_view_name = f'{chain}_{mv_name}_mv'
     full_table_name = f'{chain}_{mv_name}'
 
-    if chain in ['op', 'base']:
-        topic0_func = next(item['topic0_func'] for item in topic0_maps if item['table_type'] == 'materialized')
-    else:
-        topic0_func = next(item['topic0_func'] for item in topic0_maps if item['table_type'] == 'raw')
+    topic0_func = check_topic0(client, chain)
     
     # Check on Date Ranges
     current_date_q = f"""
@@ -563,13 +570,13 @@ def print_backfill_gaps(client):
         print("No backfill gaps found.")
 
 
-# In[14]:
+# In[ ]:
 
 
 # # # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
-#         reset_materialized_view(client, chain, 'weekly_retention_rate_temp')
+#         reset_materialized_view(client, chain, 'across_bridging_txs_v3')
 
 # # # # # # # reset a single chain
 # # # # # reset_materialized_view(client, 'xterio', 'daily_aggregate_transactions_to')
