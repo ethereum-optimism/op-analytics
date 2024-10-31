@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import io
 from datetime import date
 from unittest.mock import MagicMock
@@ -8,6 +9,7 @@ from google.cloud import bigquery
 from op_coreutils.env.aware import OPLabsEnvironment, current_environment
 from op_coreutils.gcpauth import get_credentials
 from op_coreutils.logger import human_rows, human_size, structlog
+
 
 log = structlog.get_logger()
 
@@ -89,7 +91,9 @@ def overwrite_partitions_dynamic(
         df = df.with_columns(dt=pl.col("dt").str.strptime(pl.Datetime, "%Y-%m-%d"))
 
     partitions = df["dt"].unique().sort().to_list()
-    log.info(f"Writing {len(partitions)} partitions to BQ [{partitions[0]} ... {partitions[-1]}]")
+    log.info(
+        f"Writing {len(partitions)} partitions to BQ [{partitions[0]} ... {partitions[-1]}]"
+    )
 
     _write_df_to_bq(
         df,
@@ -134,7 +138,12 @@ def overwrite_partition_static(
     )
 
 
-def _write_df_to_bq(df: pl.DataFrame, destination: str, job_config=bigquery.LoadJobConfig):
+def _write_df_to_bq(
+    df: pl.DataFrame,
+    destination: str,
+    job_config=bigquery.LoadJobConfig,
+    operation_prefix: str = "",
+):
     """Helper function to write a DataFrame to BigQuery."""
     client = init_client()
 
@@ -152,3 +161,55 @@ def _write_df_to_bq(df: pl.DataFrame, destination: str, job_config=bigquery.Load
         log.info(
             f"{operation_prefix}{job_config.write_disposition}: Wrote {human_rows(len(df))} {human_size(filesize)} to BQ {destination}"
         )
+
+
+def upsert_partition(
+    df: pl.DataFrame, dt: str, dataset: str, table_name: str, unique_keys=["dt"]
+):
+    """Upsert data into a specific partition in a BigQuery table.
+
+    Args:
+        df (pl.DataFrame): The DataFrame to upsert.
+        dt (str): The partition date in 'YYYY-MM-DD' format.
+        dataset (str): The BigQuery dataset name.
+        table_name (str): The BigQuery table name.
+        unique_keys (list, optional): Columns that uniquely identify rows. Defaults to ['dt'].
+    """
+    client = init_client()
+
+    df = df.with_columns(dt=pl.lit(dt).str.strptime(pl.Datetime, "%Y-%m-%d"))
+
+    destination = f"{dataset}.{table_name}"
+    staging_table_name = f"{table_name}_staging"
+    staging_destination = f"{dataset}.{staging_table_name}"
+
+    _write_df_to_bq(
+        df,
+        staging_destination,
+        job_config=bigquery.LoadJobConfig(
+            source_format=bigquery.SourceFormat.PARQUET,
+            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        ),
+    )
+
+    # Build the merge condition using unique_keys
+    merge_condition = " AND ".join([f"T.{key} = S.{key}" for key in unique_keys])
+
+    # Exclude unique_keys from update columns
+    update_columns = [col for col in df.columns if col not in unique_keys]
+
+    merge_query = f"""
+    MERGE `{destination}` T
+    USING `{staging_destination}` S
+    ON {merge_condition}
+    WHEN MATCHED THEN
+      UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in update_columns])}
+    WHEN NOT MATCHED THEN
+      INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f'S.{col}' for col in df.columns])})
+    """
+
+    query_job = client.query(merge_query)
+    query_job.result()
+    client.delete_table(staging_destination)
+
+    log.info(f"Upsert for partition {dt} completed successfully.")
