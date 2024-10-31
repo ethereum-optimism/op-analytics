@@ -144,10 +144,15 @@ def transaction_count(dataframes: dict[str, pl.DataFrame]):
         tx_count, left_on="number", right_on="block_number", how="full", validate="1:1"
     )
 
+    failure_condition = pl.col("transaction_count") != pl.col("count")
     check = joined.select(
         pl.lit("block transaction count must match observed transactions").alias("audit_name"),
-        (pl.col("transaction_count") != pl.col("count")).sum().alias("failure_count"),
+        failure_condition.sum().alias("failure_count"),
     )
+
+    if len(joined.filter(failure_condition)) > 0:
+        print(joined.filter(failure_condition))  # helps debug failures
+
     return check
 
 
@@ -157,13 +162,18 @@ def logs_count(dataframes: dict[str, pl.DataFrame]):
     logs_df = dataframes["logs"].select("block_number", "log_index")
 
     agged = logs_df.group_by("block_number").agg(
-        pl.max("log_index").alias("max_log_idx"), pl.count()
+        (1 + pl.max("log_index")).alias("max_log_idx"), pl.count()
     )
 
+    failure_condition = pl.col("max_log_idx") != pl.col("count")
     check = agged.select(
         pl.lit("log max index must max log count").alias("audit_name"),
-        (pl.col("max_log_idx") != pl.col("count")).sum().alias("failure_count"),
+        failure_condition.sum().alias("failure_count"),
     )
+
+    if len(agged.filter(failure_condition)) > 0:
+        print(agged.filter(failure_condition))  # helps debug failures
+
     return check
 
 
