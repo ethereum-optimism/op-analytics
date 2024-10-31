@@ -95,7 +95,7 @@ def overwrite_partitioned_table(
     df: pl.DataFrame,
     dataset: str,
     table_name: str,
-    expiration_days: int = None,
+    expiration_days: int | None = None,
 ):
     """Overwrite en entire partitioned BigQuery table.
 
@@ -132,7 +132,7 @@ def overwrite_partitions_dynamic(
     df: pl.DataFrame,
     dataset: str,
     table_name: str,
-    expiration_days: int = None,
+    expiration_days: int | None = None,
 ):
     """Overwrite partitions in a BigQuery table.
 
@@ -180,7 +180,7 @@ def overwrite_partition_static(
     partition_dt: date,
     dataset: str,
     table_name: str,
-    expiration_days: int = None,
+    expiration_days: int | None = None,
 ):
     """Overwrite single partition in a BigQuery table.
 
@@ -203,7 +203,7 @@ def overwrite_partition_static(
     )
 
 
-def _days_to_ms(days: int | None) -> int:
+def _days_to_ms(days: int | None) -> int | None:
     if days is None:
         return None
 
