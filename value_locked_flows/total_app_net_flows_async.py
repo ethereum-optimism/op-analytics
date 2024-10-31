@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
@@ -11,6 +11,7 @@ import numpy as np
 import os
 import sys
 import shutil
+import re
 
 sys.path.append("../helper_functions")
 import defillama_utils as dfl
@@ -23,7 +24,8 @@ import google_bq_utils as bqu
 
 
 # date ranges to build charts for
-drange = [1, 3, 7, 14, 30, 90, 180, 365]
+drange = [1, 3, 7, 14, 30, 90]
+load_num_days = 14
 # Do we count net flows marked at the lastest token price (1) or the price on each day (0)
 # By default, we opt to 1, so that price movement isn't accidentally counted as + or - flow remainder
 mark_at_latest_price = (
@@ -34,6 +36,7 @@ trailing_num_days = max(drange)
 # print(trailing_num_days)
 last_date = datetime.utcnow().date() - timedelta(days=1)
 start_date = last_date - timedelta(days=trailing_num_days)
+load_start_date = last_date - timedelta(days=load_num_days)
 # Convert to Pandas Timestamp
 last_date = pd.to_datetime(last_date)
 start_date = pd.to_datetime(start_date)
@@ -46,25 +49,58 @@ print(last_date)
 
 
 # get all apps > x m tvl
-min_tvl = 10 * 1e6
-
+all_tvl_floor = 0
+min_tvl = 10 *1e6
 # if TVL by token is not available, do we fallback on raw TVL (sensitive to token prices)?
 is_fallback_on_raw_tvl = True  # False
 
-df_df = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl = min_tvl, fallback_on_raw_tvl = is_fallback_on_raw_tvl)
+# df_all = dfl.get_all_protocol_tvls_by_chain_and_token(min_tvl = all_tvl_floor, fallback_on_raw_tvl = is_fallback_on_raw_tvl, start_date = start_date)#write_bq_dataset='api_table_uploads', write_bq_table='daily_defillama_tvl_full_breakdown')
+df_all = dfl.get_all_protocol_tvls_by_chain_and_token(
+    min_tvl=all_tvl_floor, 
+    fallback_on_raw_tvl=is_fallback_on_raw_tvl, 
+    start_date=start_date
+)
 
 
 # In[ ]:
 
 
-df_df.tail()
 
-df_df.columns
+
+
+# In[ ]:
+
+
+df_all['token'] = df_all['token'].fillna('0').astype(str)
+df_all['token_value'] = df_all['token_value'].fillna(0).astype('float64')
+df_all.dtypes
+
+
+# In[ ]:
+
+
+# Upload Raw to BQ
+unique_cols = ['date','chain','token','protocol']
+# df_recent = df_all[df_all['date'] >= pd.to_datetime(start_date)]
+df_recent = df_all[df_all['date'] >= pd.to_datetime(load_start_date)]
+# df_recent = df_all
+# df_recent = df_all[df_all['date'] >= last_date - timedelta(days = 30)]
+print(f'Number of Rows: {len(df_recent)}')
+bqu.append_and_upsert_df_to_bq_table(df_recent, 'daily_defillama_tvl_full_breakdown',unique_keys = unique_cols)
+
+
+# In[6]:
+
+
+# Filter down for the visuals
+df_df = df_all[df_all['latest_total_app_tvl'] >= min_tvl]
+df_all = None
+# df_df.columns
 # Test for errors
 # df_df_all[(df_df_all['protocol'] == 'app_name') & (df_df_all['date'] == '2023-01-27')]
 
 
-# In[ ]:
+# In[7]:
 
 
 # df_df[(df_df['protocol'] == 'blast')].sort_values(by='date',ascending=False).head(10)
@@ -81,7 +117,7 @@ df_df = df_df[
 ]  
 
 
-# In[ ]:
+# In[9]:
 
 
 # display(df_df_all)
@@ -92,7 +128,7 @@ df_df.loc[:, 'usd_value'] = df_df['usd_value'].astype("float64")
 # display(df_df_all2)
 
 
-# In[ ]:
+# In[10]:
 
 
 # df_df[(df_df['protocol'] == 'blast')].sort_values(by='date',ascending=False).head(15)
@@ -100,7 +136,7 @@ df_df.loc[:, 'usd_value'] = df_df['usd_value'].astype("float64")
 # df_df = df_backup.copy()
 
 
-# In[ ]:
+# In[11]:
 
 
 # create an extra day to handle for tokens dropping to 0
@@ -121,7 +157,7 @@ df_df_shift['date'] = df_df_shift['date'] + timedelta(days=1)
 #del df_df_shift_bwd #Free Up memory
 
 
-# In[ ]:
+# In[12]:
 
 
 # Use query for filtering instead of boolean indexing
@@ -161,7 +197,7 @@ print("done api")
 # df_df[(df_df['protocol'] == 'uniswap-v3')].sort_values(by='date',ascending=False).head(15)
 
 
-# In[ ]:
+# In[14]:
 
 
 # trailing comparison
@@ -172,7 +208,7 @@ df_df["last_token_value"] = df_df.groupby(["token", "protocol", "chain"])[
 df_df = df_df[df_df['date'] >= start_date]
 
 
-# In[ ]:
+# In[15]:
 
 
 # df_df[df_df['date'] == '2023-12-05']
@@ -180,7 +216,7 @@ df_df = df_df[df_df['date'] >= start_date]
 # print(df_df[df_df['date'] == '2023-12-05'].sum())
 
 
-# In[ ]:
+# In[16]:
 
 
 data_df = df_df.copy()
@@ -203,7 +239,7 @@ data_df["price_usd"] = data_df[["price_usd", "last_price_usd"]].bfill(axis=1).il
 # data_df.sample(10)
 
 
-# In[ ]:
+# In[17]:
 
 
 # Find what is the latest token price. This sometimes gets skewed if tokens disappear or supply locked goes to 0
@@ -317,7 +353,7 @@ del prices_df  # Free Up memory
 print("prices map done")
 
 
-# In[ ]:
+# In[20]:
 
 
 # Fix Price Choice Errors
@@ -360,14 +396,16 @@ data_df = data_df[
 data_df = data_df[data_df["multiple_ratio"] < 1000]  # 1000x error bar for bad prices
 data_df = data_df[~data_df["net_dollar_flow"].isna()]
 
+print('flow columns done')
 
-# In[ ]:
+
+# In[22]:
 
 
 # data_df[ (data_df['protocol'] == 'sushi-bentobox') & (data_df['date'] >= '2023-09-10') & (data_df['chain'] == 'Ethereum') & (data_df['token'] == 'VOLT') ]#.sort_values(by='net_dollar_flow_latest_price',ascending=True)
 
 
-# In[ ]:
+# In[23]:
 
 
 # data_df[(data_df['protocol'] == 'uniswap-v3')].sort_values(by=['date','net_dollar_flow_latest_price'],ascending=[False,False]).head(50)
@@ -375,7 +413,7 @@ data_df = data_df[~data_df["net_dollar_flow"].isna()]
 # data_df[ (data_df['protocol'] == 'sushi-bentobox') & (data_df['date'] == '2023-09-11') & (data_df['chain'] == 'Ethereum') ].sort_values(by='net_dollar_flow_latest_price',ascending=True)
 
 
-# In[ ]:
+# In[24]:
 
 
 # data_df[(data_df['protocol'] == 'uniswap-v3')].groupby(['date','chain']).sum().tail(20)
@@ -388,6 +426,8 @@ data_df = data_df[~data_df["net_dollar_flow"].isna()]
 data_df["net_dollar_flow_latest_price"] = np.where(
     data_df["net_dollar_flow"] == 0, 0, data_df["net_dollar_flow_latest_price"]
 )
+
+print('latest price filter done')
 
 
 # In[ ]:
@@ -434,6 +474,8 @@ except:
     pass
 # display(netdf_df[netdf_df['protocol']=='makerdao'])
 
+print('flows sum done')
+
 
 # In[ ]:
 
@@ -445,24 +487,12 @@ netdf_df["rank_desc"] = (
     .astype(int)
 )
 # display(netdf_df[netdf_df['protocol'] == 'lyra'])
-netdf_df = netdf_df[  # ( netdf_df['rank_desc'] == 1 ) &\
-    (~netdf_df["chain"].str.contains("-borrowed"))
-    & (~netdf_df["chain"].str.contains("-staking"))
-    & (~netdf_df["chain"].str.contains("-pool2"))
-    & (~netdf_df["chain"].str.contains("-treasury"))
-    & (~(netdf_df["chain"] == "treasury"))
-    & (~(netdf_df["chain"] == "borrowed"))
-    & (~(netdf_df["chain"] == "staking"))
-    & (~(netdf_df["chain"] == "treasury"))
-    & (~(netdf_df["chain"] == "pool2"))
-    & (~(netdf_df["protocol"] == "polygon-bridge-&-staking"))
-    & (~(netdf_df["protocol"].str[-4:] == "-cex"))
-    #                         & (~( netdf_df['chain'] == 'Ethereum') )
-]
 # display(netdf_df[netdf_df['protocol']=='makerdao'])
 
+print('rank done')
 
-# In[ ]:
+
+# In[28]:
 
 
 # netdf_df.columns
@@ -476,10 +506,12 @@ for i in ("svg", "png", "html"):
     os.mkdir(dir_path)
 
 
-# In[ ]:
+# In[29]:
 
 
 summary_df = netdf_df.copy()
+
+del netdf_df #Free Up memory
 
 summary_df = summary_df.sort_values(by='date', ascending=True)
 
@@ -536,14 +568,14 @@ final_summary_df = summary_df[
 ]
 final_summary_df = final_summary_df[final_summary_df["cumul_net_dollar_flow"] < 1e20]
 
-# Create necessary directories
-os.makedirs("csv_outputs", exist_ok=True)
-os.makedirs("img_outputs/png", exist_ok=True)
-os.makedirs("img_outputs/svg", exist_ok=True)
-os.makedirs("img_outputs/html", exist_ok=True)
+# # Create necessary directories
+# os.makedirs("csv_outputs", exist_ok=True)
+# os.makedirs("img_outputs/png", exist_ok=True)
+# os.makedirs("img_outputs/svg", exist_ok=True)
+# os.makedirs("img_outputs/html", exist_ok=True)
 
-# Save final summary DataFrame to CSV
-final_summary_df.to_csv("csv_outputs/latest_tvl_app_trends.csv", mode="w", index=False, encoding="utf-8")
+# # Save final summary DataFrame to CSV
+# final_summary_df.to_csv("csv_outputs/latest_tvl_app_trends.csv", mode="w", index=False, encoding="utf-8")
 
 
 # In[ ]:
@@ -647,12 +679,12 @@ for i in drange:
     fig_app.update_traces(root_color="lightgrey")
     fig_app.update_layout(margin=dict(t=50, l=25, r=25, b=25))
 
-    fig.write_image("img_outputs/svg/" + saveval + ".svg")  #
-    fig.write_image("img_outputs/png/" + saveval + ".png")  #
+    # fig.write_image("img_outputs/svg/" + saveval + ".svg")  #
+    # fig.write_image("img_outputs/png/" + saveval + ".png")  #
     fig.write_html("img_outputs/html/" + saveval + ".html", include_plotlyjs="cdn")
 
-    fig_app.write_image("img_outputs/svg/" + saveval_app + ".svg")  #
-    fig_app.write_image("img_outputs/png/" + saveval_app + ".png")  #
+    # fig_app.write_image("img_outputs/svg/" + saveval_app + ".svg")  #
+    # fig_app.write_image("img_outputs/png/" + saveval_app + ".png")  #
     fig_app.write_html(
         "img_outputs/html/" + saveval_app + ".html", include_plotlyjs="cdn"
     )
@@ -663,7 +695,7 @@ for i in drange:
 # fig.update_layout(tickprefix = '$')
 
 
-# In[ ]:
+# In[32]:
 
 
 # final_summary_df.dtypes
