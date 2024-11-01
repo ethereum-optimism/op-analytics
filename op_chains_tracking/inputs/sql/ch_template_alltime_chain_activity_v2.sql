@@ -64,7 +64,7 @@ FROM (
         chain, network, chain_id, cast(@block_time_sec@ as Float64) AS block_time_sec,
 
         COUNT(*) AS num_raw_txs,
-        1+ (MAX(t.block_number) - MIN(t.block_number)) AS num_blocks,
+        COUNT(DISTINCT t.block_number) AS num_blocks,
 
         SUM(IF(gas_price = 0 AND to_address = '0x4200000000000000000000000000000000000015', 1, 0)) AS l2_num_attr_deposit_txs_per_day,
         SUM(IF(gas_price = 0 AND to_address = '0x4200000000000000000000000000000000000007', 1, 0)) AS l2_num_user_deposit_txs_per_day,

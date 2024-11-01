@@ -250,6 +250,7 @@ def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads
             
             # Write data to staging table (overwrite mode)
             # print(df.head(5))
+            delete_bq_table(table_id = staging_table_id, dataset_id = dataset_id, project_id=project_id)
             write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
             
             # Perform upsert from staging table to main table
@@ -271,6 +272,7 @@ def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads
             
             # Clean up staging table
             client.delete_table(staging_table_ref)
+            delete_bq_table(table_id = staging_table_id, dataset_id = dataset_id, project_id=project_id)
             logger.info(f"Staging table {staging_table_ref} deleted.")
             
         else:
