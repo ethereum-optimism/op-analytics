@@ -2,7 +2,7 @@ import datetime
 
 import polars as pl
 from op_coreutils.partitioned import DataLocation
-from op_datasets.etl.intermediate.status import are_inputs_ready
+from op_coreutils.partitioned.inputdata import are_inputs_ready
 
 MARKER_PATHS_DATA = [
     {
@@ -84,14 +84,15 @@ def test_are_inputs_ready():
     markers_df = pl.DataFrame(MARKER_PATHS_DATA, schema_overrides={"num_blocks": pl.Int32})
     dateval = datetime.date(2024, 10, 23)
 
-    actual = are_inputs_ready(
+    is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        expected_datasets={
+        input_datasets={
             "traces",
         },
         storage_location=DataLocation.GCS,
     )
+    assert is_ready
     assert actual == {
         "traces": [
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011400000.parquet",
@@ -105,25 +106,40 @@ def test_not_ready_01():
     markers_df = pl.DataFrame(MARKER_PATHS_DATA[:-4], schema_overrides={"num_blocks": pl.Int32})
     dateval = datetime.date(2024, 10, 23)
 
-    actual = are_inputs_ready(
+    is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        expected_datasets={
+        input_datasets={
             "traces",
         },
         storage_location=DataLocation.GCS,
     )
-    assert actual is None
+    assert not is_ready
+    assert actual == {
+        "traces": [
+            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011400000.parquet",
+            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011420000.parquet",
+            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011440000.parquet",
+        ]
+    }
 
 
 def test_not_ready_02():
     markers_df = pl.DataFrame(MARKER_PATHS_DATA, schema_overrides={"num_blocks": pl.Int32})
     dateval = datetime.date(2024, 10, 23)
 
-    actual = are_inputs_ready(
+    is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        expected_datasets={"traces", "logs"},
+        input_datasets={"traces", "logs"},
         storage_location=DataLocation.GCS,
     )
-    assert actual is None
+    assert not is_ready
+    assert actual == {
+        "logs": [],
+        "traces": [
+            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011400000.parquet",
+            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011420000.parquet",
+            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011440000.parquet",
+        ],
+    }
