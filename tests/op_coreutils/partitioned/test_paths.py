@@ -1,119 +1,45 @@
-import polars as pl
+from datetime import date
+
+from op_coreutils.partitioned.paths import get_root_path, get_dt
 
 
-from op_coreutils.partitioned.output import KeyValue, WrittenParquetPath
-from op_coreutils.partitioned.breakout import breakout_partitions
-
-
-def test_breakout_partitions():
-    df = pl.DataFrame(
-        {
-            "dt": [
-                "2024-01-01",
-                "2024-01-01",
-                "2024-01-01",
-                "2024-01-01",
-                "2024-01-02",
-                "2024-01-02",
-                "2024-01-03",
-            ],
-            "chain": ["op", "op", "base", "base", "base", "base", "op"],
-            "c": ["some", "words", "here", "and", "some", "more", "blah"],
-        }
-    )
-
-    outputs = []
-    for part_df, part in breakout_partitions(
-        df,
-        partition_cols=["dt", "chain"],
-        root_path="warehouse",
-        basename="myfile.parquet",
-    ):
-        outputs.append(part)
-        assert part_df.columns == ["c"]
-
-    outputs.sort(key=lambda x: x.full_path)
-
-    assert outputs == [
-        WrittenParquetPath(
-            root="warehouse",
-            basename="myfile.parquet",
-            partitions=[
-                KeyValue(key="dt", value="2024-01-01"),
-                KeyValue(key="chain", value="base"),
-            ],
-            row_count=2,
-        ),
-        WrittenParquetPath(
-            root="warehouse",
-            basename="myfile.parquet",
-            partitions=[KeyValue(key="dt", value="2024-01-01"), KeyValue(key="chain", value="op")],
-            row_count=2,
-        ),
-        WrittenParquetPath(
-            root="warehouse",
-            basename="myfile.parquet",
-            partitions=[
-                KeyValue(key="dt", value="2024-01-02"),
-                KeyValue(key="chain", value="base"),
-            ],
-            row_count=2,
-        ),
-        WrittenParquetPath(
-            root="warehouse",
-            basename="myfile.parquet",
-            partitions=[KeyValue(key="dt", value="2024-01-03"), KeyValue(key="chain", value="op")],
-            row_count=1,
-        ),
+def test_get_root_01():
+    paths = [
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020474000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020476000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020478000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020480000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020482000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020484000.parquet",
     ]
 
-    paths = [_.full_path for _ in outputs]
-    assert paths == [
-        "warehouse/dt=2024-01-01/chain=base/myfile.parquet",
-        "warehouse/dt=2024-01-01/chain=op/myfile.parquet",
-        "warehouse/dt=2024-01-02/chain=base/myfile.parquet",
-        "warehouse/dt=2024-01-03/chain=op/myfile.parquet",
+    actual = get_root_path(paths)
+    assert actual == "gs://mybucket/ingestion/transactions_v1/"
+
+
+def test_get_root_02():
+    paths = [
+        "gs://mybucket/ingestion/transactions_v1/mypart=base/dt=2024-10-01/000020474000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/mypart=base/dt=2024-10-01/000020476000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/mypart=base/dt=2024-10-01/000020478000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/mypart=base/dt=2024-10-01/000020480000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/mypart=base/dt=2024-10-01/000020482000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/mypart=base/dt=2024-10-01/000020484000.parquet",
     ]
 
+    actual = get_root_path(paths)
+    assert actual == "gs://mybucket/ingestion/transactions_v1/"
 
-def test_breakout_partitions_empty():
-    df = pl.DataFrame(
-        {
-            "dt": [
-                "2024-01-01",
-                "2024-01-01",
-                "2024-01-01",
-                "2024-01-01",
-                "2024-01-02",
-                "2024-01-02",
-                "2024-01-03",
-            ],
-            "chain": ["op", "op", "base", "base", "base", "base", "op"],
-            "c": ["some", "words", "here", "and", "some", "more", "blah"],
-        }
-    )
 
-    outputs = []
-    for part_df, part in breakout_partitions(
-        df.filter(pl.col("dt") == ""),  # Filter out all data to get a default empty parquet file
-        partition_cols=["dt", "chain"],
-        root_path="warehouse",
-        basename="myfile.parquet",
-        default_partition={"chain": "op", "dt": "2023-10-30"},
-    ):
-        outputs.append(part)
-        assert part_df.columns == ["c"]
-
-    outputs.sort(key=lambda x: x.full_path)
-
-    assert outputs == [
-        WrittenParquetPath(
-            root="warehouse",
-            basename="myfile.parquet",
-            partitions=[KeyValue(key="chain", value="op"), KeyValue(key="dt", value="2023-10-30")],
-            row_count=0,
-        )
+def test_get_dt():
+    paths = [
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020474000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020476000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020478000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020480000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020482000.parquet",
+        "gs://mybucket/ingestion/transactions_v1/chain=base/dt=2024-10-01/000020484000.parquet",
     ]
 
-    paths = [_.full_path for _ in outputs]
-    assert paths == ["warehouse/chain=op/dt=2023-10-30/myfile.parquet"]
+    actual = get_dt(paths)
+    assert actual == date(2024, 10, 1)

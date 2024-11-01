@@ -155,9 +155,8 @@ def overwrite_partitions_dynamic(
         df = df.with_columns(dt=pl.col("dt").str.strptime(pl.Datetime, "%Y-%m-%d"))
 
     partitions = df["dt"].unique().sort().to_list()
-    log.info(
-        f"Writing {len(partitions)} partitions to BQ [{partitions[0]} ... {partitions[-1]}]"
-    )
+
+    log.info(f"Writing {len(partitions)} partitions to BQ [{partitions[0]} ... {partitions[-1]}]")
 
     if len(partitions) > 10:
         raise OPLabsBigQueryError(
@@ -217,9 +216,8 @@ def _days_to_ms(days: int | None) -> int | None:
     return days * 24 * 3600 * 1000
 
 
-def _write_df_to_bq(
-    df: pl.DataFrame, destination: str, job_config=bigquery.LoadJobConfig
-):
+
+def _write_df_to_bq(df: pl.DataFrame, destination: str, job_config=bigquery.LoadJobConfig):
     """Helper function to write a DataFrame to BigQuery."""
     client = init_client()
 

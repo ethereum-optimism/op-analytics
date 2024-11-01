@@ -3,11 +3,13 @@ import io
 from datetime import date, datetime
 from unittest.mock import MagicMock
 
+
 import numpy as np
 import pandas as pd
 import polars as pl
 import pytest
 from google.cloud import bigquery
+
 from op_coreutils.bigquery.write import (
     OPLabsBigQueryError,
     init_client,
@@ -103,9 +105,9 @@ def test_overwrite_partitions_dynamic_pass():
         == "dt"
     )
 
-    actual = [
-        _.kwargs["destination"] for _ in mock_client.load_table_from_file.call_args_list
-    ]
+
+    actual = [_.kwargs["destination"] for _ in mock_client.load_table_from_file.call_args_list]
+
     assert actual == [
         "test_dataset.test_table$20240407",
         "test_dataset.test_table$20240408",
@@ -132,15 +134,14 @@ def test_overwrite_partitions_dynamic_pass_with_dt_string():
         == "dt"
     )
 
-    actual = [
-        _.kwargs["destination"] for _ in mock_client.load_table_from_file.call_args_list
-    ]
+
+    actual = [_.kwargs["destination"] for _ in mock_client.load_table_from_file.call_args_list]
+
     assert actual == [
         "test_dataset.test_table$20240407",
         "test_dataset.test_table$20240408",
         "test_dataset.test_table$20240409",
     ]
-
 
 def test_upsert_table():
     # Create a test DataFrame
