@@ -18,7 +18,8 @@ from op_coreutils.bigquery.write import (
     overwrite_partitioned_table,
     overwrite_partitions_dynamic,
     overwrite_unpartitioned_table,
-    upsert_table,
+    upsert_unpartitioned_table,
+    upsert_partitioned_table,
 )
 
 # Generate a larger sample DataFrame for testing
@@ -105,8 +106,9 @@ def test_overwrite_partitions_dynamic_pass():
         == "dt"
     )
 
-
-    actual = [_.kwargs["destination"] for _ in mock_client.load_table_from_file.call_args_list]
+    actual = [
+        _.kwargs["destination"] for _ in mock_client.load_table_from_file.call_args_list
+    ]
 
     assert actual == [
         "test_dataset.test_table$20240407",
@@ -134,8 +136,9 @@ def test_overwrite_partitions_dynamic_pass_with_dt_string():
         == "dt"
     )
 
-
-    actual = [_.kwargs["destination"] for _ in mock_client.load_table_from_file.call_args_list]
+    actual = [
+        _.kwargs["destination"] for _ in mock_client.load_table_from_file.call_args_list
+    ]
 
     assert actual == [
         "test_dataset.test_table$20240407",
@@ -143,7 +146,8 @@ def test_overwrite_partitions_dynamic_pass_with_dt_string():
         "test_dataset.test_table$20240409",
     ]
 
-def test_upsert_table():
+
+def test_upsert_unpartitioned_table():
     # Create a test DataFrame
     test_df = pl.DataFrame(
         {
@@ -172,8 +176,7 @@ def test_upsert_table():
     mock_table = MagicMock()
     client.get_table.return_value = mock_table
 
-    # Call the function under test without partition_dt
-    upsert_table(
+    upsert_unpartitioned_table(
         df=test_df, dataset=dataset, table_name=table_name, unique_keys=unique_keys
     )
 
@@ -196,7 +199,7 @@ def test_upsert_table():
     client.delete_table.assert_called_with(destination)
 
 
-def test_upsert_table_with_partition_dt():
+def test_upsert_partitioned_table():
     # Create a test DataFrame without 'dt' column
     test_df = pl.DataFrame(
         {
@@ -240,8 +243,7 @@ def test_upsert_table_with_partition_dt():
     mock_table = MagicMock()
     client.get_table.return_value = mock_table
 
-    # Call the function under test with partition_dt
-    upsert_table(
+    upsert_partitioned_table(
         df=test_df,
         dataset=dataset,
         table_name=table_name,

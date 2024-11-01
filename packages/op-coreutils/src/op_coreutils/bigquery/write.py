@@ -7,6 +7,7 @@ from uuid import uuid4
 
 import polars as pl
 from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 
 from op_coreutils.env.aware import OPLabsEnvironment, current_environment
 from op_coreutils.gcpauth import get_credentials
@@ -156,7 +157,9 @@ def overwrite_partitions_dynamic(
 
     partitions = df["dt"].unique().sort().to_list()
 
-    log.info(f"Writing {len(partitions)} partitions to BQ [{partitions[0]} ... {partitions[-1]}]")
+    log.info(
+        f"Writing {len(partitions)} partitions to BQ [{partitions[0]} ... {partitions[-1]}]"
+    )
 
     if len(partitions) > 10:
         raise OPLabsBigQueryError(
@@ -216,8 +219,9 @@ def _days_to_ms(days: int | None) -> int | None:
     return days * 24 * 3600 * 1000
 
 
-
-def _write_df_to_bq(df: pl.DataFrame, destination: str, job_config=bigquery.LoadJobConfig):
+def _write_df_to_bq(
+    df: pl.DataFrame, destination: str, job_config=bigquery.LoadJobConfig
+):
     """Helper function to write a DataFrame to BigQuery."""
     client = init_client()
 
@@ -237,28 +241,90 @@ def _write_df_to_bq(df: pl.DataFrame, destination: str, job_config=bigquery.Load
         )
 
 
-def upsert_table(
+def upsert_unpartitioned_table(
     df: pl.DataFrame,
     dataset: str,
     table_name: str,
     unique_keys: List[str],
-    partition_dt: str = None,
     expiration_minutes: int = 30,
 ):
-    """Upsert data into a BigQuery table.
-
-    This function works with both partitioned and non-partitioned tables. It performs
-    an upsert operation based on the provided unique keys.
-
-    If 'partition_dt' is provided, it will set the 'dt' column in the DataFrame to this date,
-    and is intended for use with partitioned tables.
+    """Upsert data into an unpartitioned BigQuery table.
 
     Args:
         df (pl.DataFrame): The DataFrame to upsert.
         dataset (str): The BigQuery dataset name.
         table_name (str): The BigQuery table name.
-        unique_keys (list): Columns that uniquely identify rows.
-        partition_dt (str, optional): The partition date in 'YYYY-MM-DD' format. Defaults to None.
+        unique_keys (List[str]): Columns that uniquely identify rows.
+        expiration_minutes (int, optional): Expiration time for the staging table in minutes.
+            Defaults to 30.
+
+    Raises:
+        ValueError: If the DataFrame is empty or if unique_keys are not in the DataFrame.
+    """
+    if "dt" in df.columns:
+        raise ValueError(
+            "DataFrame should not contain 'dt' column for unpartitioned tables."
+        )
+
+    _upsert_df_to_bq(
+        df=df,
+        dataset=dataset,
+        table_name=table_name,
+        unique_keys=unique_keys,
+        expiration_minutes=expiration_minutes,
+    )
+
+
+def upsert_partitioned_table(
+    df: pl.DataFrame,
+    dataset: str,
+    table_name: str,
+    unique_keys: List[str],
+    partition_dt: str,
+    expiration_minutes: int = 30,
+):
+    """Upsert data into a partitioned BigQuery table.
+
+    This function will set the 'dt' column in the DataFrame to the provided partition_dt.
+
+    Args:
+        df (pl.DataFrame): The DataFrame to upsert.
+        dataset (str): The BigQuery dataset name.
+        table_name (str): The BigQuery table name.
+        unique_keys (List[str]): Columns that uniquely identify rows.
+        partition_dt (str): The partition date in 'YYYY-MM-DD' format.
+        expiration_minutes (int, optional): Expiration time for the staging table in minutes.
+            Defaults to 30.
+
+    Raises:
+        ValueError: If the DataFrame is empty or if unique_keys are not in the DataFrame.
+    """
+    # Ensure 'dt' column is set to partition_dt
+    df = df.with_columns(dt=pl.lit(partition_dt).str.strptime(pl.Datetime, "%Y-%m-%d"))
+
+    _upsert_df_to_bq(
+        df=df,
+        dataset=dataset,
+        table_name=table_name,
+        unique_keys=unique_keys,
+        expiration_minutes=expiration_minutes,
+    )
+
+
+def _upsert_df_to_bq(
+    df: pl.DataFrame,
+    dataset: str,
+    table_name: str,
+    unique_keys: List[str],
+    expiration_minutes: int = 30,
+):
+    """Helper function to upsert data into a BigQuery table.
+
+    Args:
+        df (pl.DataFrame): The DataFrame to upsert.
+        dataset (str): The BigQuery dataset name.
+        table_name (str): The BigQuery table name.
+        unique_keys (List[str]): Columns that uniquely identify rows.
         expiration_minutes (int, optional): Expiration time for the staging table in minutes.
             Defaults to 30.
 
@@ -267,12 +333,6 @@ def upsert_table(
     """
     if df.is_empty():
         raise ValueError("The DataFrame is empty and cannot be upserted.")
-
-    if partition_dt is not None:
-        # Ensure 'dt' column is set to partition_dt
-        df = df.with_columns(
-            dt=pl.lit(partition_dt).str.strptime(pl.Datetime, "%Y-%m-%d")
-        )
 
     missing_keys = [key for key in unique_keys if key not in df.columns]
     if missing_keys:
