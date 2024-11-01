@@ -35,7 +35,8 @@ def ingest(
         log.info("DRYRUN: No work will be done.")
         return
 
-    not_skipped = 0
+    executed = 0
+    executed_ok = 1
     for i, task in enumerate(tasks):
         task.progress_indicator = f"{i+1}/{len(tasks)}"
         bind_contextvars(**task.contextvars)
@@ -51,16 +52,19 @@ def ingest(
             log.info("Force flag detected. Forcing execution.")
             task.force = True
 
-        not_skipped += 1
+        executed += 1
+        success = execute(task, fork_process)
+        executed_ok += 1 if success else 0
 
-        execute(task, fork_process)
-
-        if max_tasks is not None and not_skipped >= max_tasks:
-            log.warning(f"Stopping after executing {not_skipped} tasks")
+        if max_tasks is not None and executed >= max_tasks:
+            log.warning(f"Stopping after executing {executed} tasks")
             break
 
+    log.info(f"Execuded {executed} tasks. {executed_ok} succeeded.")
 
-def execute(task, fork_process: bool):
+
+def execute(task, fork_process: bool) -> bool:
+    """Returns true if task succeeds."""
     if fork_process:
         ctx = mp.get_context("spawn")
         p = ctx.Process(target=steps, args=(task,))
@@ -69,10 +73,13 @@ def execute(task, fork_process: bool):
 
         if p.exitcode != 0:
             log.error(f"Process terminated with exit code: {p.exitcode}")
+            return False
         else:
             log.info("Process terminated successfully.")
+            return True
     else:
         steps(task)
+        return True
 
 
 def steps(task):
