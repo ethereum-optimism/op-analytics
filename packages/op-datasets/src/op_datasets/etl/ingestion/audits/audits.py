@@ -67,18 +67,23 @@ def monotonically_increasing(dataframes: dict[str, pl.DataFrame]):
         .filter(pl.col("number_diff").is_not_null())  # ignore the first row
     )
 
-    result = pl.concat(
-        [
-            diffs.select(
-                pl.lit("block number must be monotonically increasing").alias("audit_name"),
-                (pl.col("number_diff") != 1).sum().alias("failure_count"),
-            ),
-            diffs.select(
-                pl.lit("block timestamp must be monotonically increasing").alias("audit_name"),
-                (pl.col("timestamp_diff") < 0).sum().alias("failure_count"),
-            ),
-        ]
+    cond1 = pl.col("number_diff") != 1
+    check1 = diffs.select(
+        pl.lit("block number must be monotonically increasing").alias("audit_name"),
+        cond1.sum().alias("failure_count"),
     )
+    if len(diffs.filter(cond1)) > 0:
+        print(diffs.filter(cond1))  # helps debug failures
+
+    cond2 = pl.col("timestamp_diff") < 0
+    check2 = diffs.select(
+        pl.lit("block timestamp must be monotonically increasing").alias("audit_name"),
+        cond2.sum().alias("failure_count"),
+    )
+    if len(diffs.filter(cond2)) > 0:
+        print(diffs.filter(cond2))  # helps debug failures
+
+    result = pl.concat([check1, check2])
 
     return result
 
