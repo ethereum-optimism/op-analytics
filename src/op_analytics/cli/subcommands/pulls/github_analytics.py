@@ -53,17 +53,16 @@ def pull():
     session = new_session()
 
     # Fetch data for all repos.
-
     repo_dfs = run_concurrently(
         lambda r: process_repo(session, repo=r), targets=REPOS, max_workers=3
     )
 
+    # Consolidate into one dataframe per table for all repos.
     all_metrics = []
     all_referrers = []
     for repo, (referrers_df, metrics_df) in repo_dfs.items():
         all_metrics.append(metrics_df)
         all_referrers.append(referrers_df)
-
     all_metrics_df = pl.concat(all_metrics).select(
         "date",
         "repo_name",
@@ -77,6 +76,7 @@ def pull():
         "unique_visitors",
     )
 
+    # Write to BQ.
     if os.environ.get("CREATE_TABLES") == "true":
         # Use with care. Should only really be used the
         # first time the table is created.
