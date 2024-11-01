@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 import pytest
+import io
 from unittest.mock import patch, MagicMock
-from datetime import date
+from datetime import date, datetime
 import polars as pl
 import pandas as pd
 import numpy as np
+from google.cloud import bigquery
 from op_coreutils.bigquery.write import (
     overwrite_table,
     overwrite_partition_static,
     overwrite_partitions_dynamic,
-    upsert_partition,
     OPLabsBigQueryError,
+    upsert_table,
 )
 
 # Generate a larger sample DataFrame for testing
@@ -73,27 +75,143 @@ def test_overwrite_partitions_dynamic(mock_init_client):
     assert job_config.time_partitioning.field == "dt"
 
 
-@patch("op_coreutils.bigquery.write.init_client")
-def test_upsert_partition(mock_init_client):
-    mock_client = MagicMock()
-    mock_init_client.return_value = mock_client
-
-    mock_query_job = MagicMock()
-    mock_client.query.return_value = mock_query_job
-    mock_query_job.result.return_value = None
-
-    upsert_partition(
-        test_df, "2024-01-01", "test_dataset", "test_table", unique_keys=["dt"]
+def test_upsert_table():
+    # Create a test DataFrame
+    test_df = pl.DataFrame(
+        {
+            "id": [1, 2, 3],
+            "value": [10, 20, 30],
+        }
     )
-    merge_query = mock_client.query.call_args[0][0]
-    assert "MERGE" in merge_query
-    assert "ON T.dt = S.dt" in merge_query
 
-    # Verify that the staging table was written with WRITE_TRUNCATE
-    mock_client.load_table_from_file.assert_called()
-    args, kwargs = mock_client.load_table_from_file.call_args
-    assert kwargs["destination"] == "test_dataset.test_table_staging"
-    assert kwargs["job_config"].write_disposition == "WRITE_TRUNCATE"
+    dataset = "test_dataset"
+    table_name = "test_table"
+    unique_keys = ["id"]
 
-    # Verify that the staging table was deleted after use
-    mock_client.delete_table.assert_called_with("test_dataset.test_table_staging")
+    with patch("op_coreutils.bigquery.write.init_client") as mock_init_client:
+        mock_client = MagicMock()
+        mock_init_client.return_value = mock_client
+
+        # Mock the load_table_from_file method
+        mock_load_job = MagicMock()
+        mock_client.load_table_from_file.return_value = mock_load_job
+        mock_load_job.result.return_value = None
+
+        # Mock the query method
+        mock_query_job = MagicMock()
+        mock_client.query.return_value = mock_query_job
+        mock_query_job.result.return_value = None
+
+        # Mock get_table and update_table for setting expiration
+        mock_table = MagicMock()
+        mock_client.get_table.return_value = mock_table
+
+        # Call the function under test without partition_dt
+        upsert_table(
+            df=test_df, dataset=dataset, table_name=table_name, unique_keys=unique_keys
+        )
+
+        # Assertions
+        # Verify that the staging table was written with WRITE_EMPTY
+        mock_client.load_table_from_file.assert_called()
+        args, kwargs = mock_client.load_table_from_file.call_args
+        destination = kwargs["destination"]
+        assert destination.startswith(f"{dataset}_staging.{table_name}_staging_")
+        assert (
+            kwargs["job_config"].write_disposition
+            == bigquery.WriteDisposition.WRITE_EMPTY
+        )
+
+        # Check that the merge query was constructed correctly
+        merge_query = mock_client.query.call_args[0][0]
+        assert "MERGE" in merge_query
+        assert "ON T.id = S.id" in merge_query
+
+        # Check that the staging table was deleted
+        mock_client.delete_table.assert_called_with(destination)
+
+
+def test_upsert_table_with_partition_dt():
+    # Create a test DataFrame without 'dt' column
+    test_df = pl.DataFrame(
+        {
+            "id": [1, 2, 3],
+            "value": [10, 20, 30],
+        }
+    )
+
+    dataset = "test_dataset"
+    table_name = "test_table"
+    unique_keys = ["id", "dt"]
+    partition_dt = "2024-01-01"
+
+    with patch("op_coreutils.bigquery.write.init_client") as mock_init_client:
+        mock_client = MagicMock()
+        mock_init_client.return_value = mock_client
+
+        # Prepare a mock load job
+        mock_load_job = MagicMock()
+        mock_load_job.result.return_value = None
+
+        # Variable to capture the stream
+        captured_stream = None
+
+        # Define side_effect function to capture the stream
+        def load_table_from_file_side_effect(stream, destination, job_config):
+            nonlocal captured_stream
+            # Make a copy of the stream content
+            captured_stream = io.BytesIO(stream.read())
+            # Reset the original stream position
+            stream.seek(0)
+            return mock_load_job
+
+        # Set the side_effect on the mocked method
+        mock_client.load_table_from_file.side_effect = load_table_from_file_side_effect
+
+        # Mock the query method
+        mock_query_job = MagicMock()
+        mock_client.query.return_value = mock_query_job
+        mock_query_job.result.return_value = None
+
+        # Mock get_table and update_table for setting expiration
+        mock_table = MagicMock()
+        mock_client.get_table.return_value = mock_table
+
+        # Call the function under test with partition_dt
+        upsert_table(
+            df=test_df,
+            dataset=dataset,
+            table_name=table_name,
+            unique_keys=unique_keys,
+            partition_dt=partition_dt,
+        )
+
+        # Assertions
+        # Verify that the staging table was written with WRITE_EMPTY
+        mock_client.load_table_from_file.assert_called()
+        args, kwargs = mock_client.load_table_from_file.call_args
+        destination = kwargs["destination"]
+        assert destination.startswith(f"{dataset}_staging.{table_name}_staging_")
+        assert (
+            kwargs["job_config"].write_disposition
+            == bigquery.WriteDisposition.WRITE_EMPTY
+        )
+
+        # Check that the DataFrame has 'dt' column set to the correct date
+        if captured_stream is not None:
+            captured_stream.seek(0)
+            written_df = pl.read_parquet(captured_stream)
+            assert "dt" in written_df.columns
+            assert written_df["dt"].unique().to_list() == [
+                datetime.strptime(partition_dt, "%Y-%m-%d")
+            ]
+        else:
+            pytest.fail("Failed to capture the stream.")
+
+        # Check that the merge query was constructed correctly
+        merge_query = mock_client.query.call_args[0][0]
+        assert "MERGE" in merge_query
+        assert "ON T.id = S.id AND T.dt = S.dt" in merge_query
+
+        # Check that the staging table was deleted
+        mock_client.delete_table.assert_called_with(destination)

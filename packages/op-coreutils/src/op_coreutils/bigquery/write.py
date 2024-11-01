@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 import io
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from unittest.mock import MagicMock
-
+from uuid import uuid4
+from typing import List
 import polars as pl
 from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 
 from op_coreutils.env.aware import OPLabsEnvironment, current_environment
 from op_coreutils.gcpauth import get_credentials
 from op_coreutils.logger import human_rows, human_size, structlog
-
 
 log = structlog.get_logger()
 
@@ -142,7 +143,6 @@ def _write_df_to_bq(
     df: pl.DataFrame,
     destination: str,
     job_config=bigquery.LoadJobConfig,
-    operation_prefix: str = "",
 ):
     """Helper function to write a DataFrame to BigQuery."""
     client = init_client()
@@ -157,40 +157,85 @@ def _write_df_to_bq(
             job_config=job_config,
         )
         job.result()
-        operation_prefix = "DRYRUN " if isinstance(client, MagicMock) else ""
         log.info(
-            f"{operation_prefix}{job_config.write_disposition}: Wrote {human_rows(len(df))} {human_size(filesize)} to BQ {destination}"
+            f"{job_config.write_disposition}: Wrote {human_rows(len(df))} {human_size(filesize)} to BQ {destination}"
         )
 
 
-def upsert_partition(
-    df: pl.DataFrame, dt: str, dataset: str, table_name: str, unique_keys=["dt"]
+def upsert_table(
+    df: pl.DataFrame,
+    dataset: str,
+    table_name: str,
+    unique_keys: List[str],
+    partition_dt: str = None,
+    expiration_minutes: int = 30,
 ):
-    """Upsert data into a specific partition in a BigQuery table.
+    """Upsert data into a BigQuery table.
+
+    This function works with both partitioned and non-partitioned tables. It performs
+    an upsert operation based on the provided unique keys.
+
+    If 'partition_dt' is provided, it will set the 'dt' column in the DataFrame to this date,
+    and is intended for use with partitioned tables.
 
     Args:
         df (pl.DataFrame): The DataFrame to upsert.
-        dt (str): The partition date in 'YYYY-MM-DD' format.
         dataset (str): The BigQuery dataset name.
         table_name (str): The BigQuery table name.
-        unique_keys (list, optional): Columns that uniquely identify rows. Defaults to ['dt'].
+        unique_keys (list): Columns that uniquely identify rows.
+        partition_dt (str, optional): The partition date in 'YYYY-MM-DD' format. Defaults to None.
+        expiration_minutes (int, optional): Expiration time for the staging table in minutes.
+            Defaults to 30.
+
+    Raises:
+        ValueError: If the DataFrame is empty or if unique_keys are not in the DataFrame.
     """
+    if df.is_empty():
+        raise ValueError("The DataFrame is empty and cannot be upserted.")
+
+    if partition_dt is not None:
+        # Ensure 'dt' column is set to partition_dt
+        df = df.with_columns(
+            dt=pl.lit(partition_dt).str.strptime(pl.Datetime, "%Y-%m-%d")
+        )
+
+    missing_keys = [key for key in unique_keys if key not in df.columns]
+    if missing_keys:
+        raise ValueError(
+            f"The following unique keys are missing from the DataFrame: {missing_keys}"
+        )
+
     client = init_client()
 
-    df = df.with_columns(dt=pl.lit(dt).str.strptime(pl.Datetime, "%Y-%m-%d"))
+    # Use a dedicated staging dataset
+    staging_dataset = f"{dataset}_staging"
 
-    destination = f"{dataset}.{table_name}"
-    staging_table_name = f"{table_name}_staging"
-    staging_destination = f"{dataset}.{staging_table_name}"
+    # Ensure staging dataset exists
+    try:
+        client.get_dataset(staging_dataset)
+    except NotFound:
+        dataset_ref = bigquery.Dataset(staging_dataset)
+        client.create_dataset(dataset_ref)
+        log.info(f"Created staging dataset {staging_dataset}")
+
+    # Generate a unique staging table name
+    random_suffix = uuid4().hex[:8]
+    staging_table_name = f"{table_name}_staging_{random_suffix}"
+    staging_destination = f"{staging_dataset}.{staging_table_name}"
 
     _write_df_to_bq(
         df,
         staging_destination,
         job_config=bigquery.LoadJobConfig(
             source_format=bigquery.SourceFormat.PARQUET,
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+            write_disposition=bigquery.WriteDisposition.WRITE_EMPTY,
         ),
     )
+
+    # Set expiration time on the staging table
+    table = client.get_table(staging_destination)
+    table.expires = datetime.now(timezone.utc) + timedelta(minutes=expiration_minutes)
+    client.update_table(table, ["expires"])
 
     # Build the merge condition using unique_keys
     merge_condition = " AND ".join([f"T.{key} = S.{key}" for key in unique_keys])
@@ -198,18 +243,26 @@ def upsert_partition(
     # Exclude unique_keys from update columns
     update_columns = [col for col in df.columns if col not in unique_keys]
 
+    # Handle case where there are no columns to update (all columns are unique keys)
+    if update_columns:
+        update_statement = (
+            f"UPDATE SET {', '.join([f'T.{col} = S.{col}' for col in update_columns])}"
+        )
+    else:
+        update_statement = "NOTHING"
+
     merge_query = f"""
-    MERGE `{destination}` T
+    MERGE `{dataset}.{table_name}` T
     USING `{staging_destination}` S
     ON {merge_condition}
     WHEN MATCHED THEN
-      UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in update_columns])}
+      {update_statement}
     WHEN NOT MATCHED THEN
-      INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f'S.{col}' for col in df.columns])})
+      INSERT ({', '.join(df.columns)}) VALUES ({', '.join([f'S.{col}' for col in df.columns])})
     """
 
     query_job = client.query(merge_query)
     query_job.result()
     client.delete_table(staging_destination)
 
-    log.info(f"Upsert for partition {dt} completed successfully.")
+    log.info(f"Upsert to table {dataset}.{table_name} completed successfully.")
