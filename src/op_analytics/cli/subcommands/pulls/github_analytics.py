@@ -20,6 +20,9 @@ log = structlog.get_logger()
 # GitHub API endpoint
 REPOS_BASE_URL = "https://api.github.com/repos/ethereum-optimism"
 
+# Repos to track
+REPOS = ["supersim"]
+
 # Dataset and Tables
 BQ_DATASET = "uploads_api"
 ANALYTICS_TABLE = "github_daily_analytics"
@@ -50,9 +53,9 @@ def pull():
     session = new_session()
 
     # Fetch data for all repos.
-    repos = ["supersim"]
+
     repo_dfs = run_concurrently(
-        lambda r: process_repo(session, repo=r), targets=repos, max_workers=3
+        lambda r: process_repo(session, repo=r), targets=REPOS, max_workers=3
     )
 
     all_metrics = []
