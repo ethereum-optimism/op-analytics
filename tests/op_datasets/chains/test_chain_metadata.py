@@ -125,7 +125,6 @@ def test_goldsky_chains():
         actual = chain_metadata.goldsky_chains(
             testcase.path("case01/chain_metadata_raw.csv")
         )
-        # Rest of your test code
 
         actual.sort()
         expected = [
