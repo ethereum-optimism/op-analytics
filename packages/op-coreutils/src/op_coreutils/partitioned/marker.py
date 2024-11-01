@@ -110,7 +110,7 @@ def markers_for_dates(
     associated with them.
 
 
-    IMPORANT TODO: This function must accept a table parameter so we can query
+    IMPORTANT TODO: This function must accept a table parameter so we can query
     markers stored in different tables. It should also accept a dataset_names
     parameters so that we can target markers for a specific dataset.
     """
