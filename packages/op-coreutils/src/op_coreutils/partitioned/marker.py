@@ -110,11 +110,6 @@ def markers_for_dates(
 
     Returns a dataframe with the markers and all of the parquet output paths
     associated with them.
-
-
-    IMPORTANT TODO: This function must accept a table parameter so we can query
-    markers stored in different tables. It should also accept a dataset_names
-    parameters so that we can target markers for a specific dataset.
     """
     store = marker_location(data_location)
 
