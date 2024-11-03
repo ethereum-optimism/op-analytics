@@ -9,7 +9,6 @@ from op_coreutils.partitioned import (
     DataLocation,
     OutputDataFrame,
     SinkMarkerPath,
-    SinkOutputRootPath,
 )
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
@@ -69,42 +68,35 @@ class IngestionTask:
         read_from: RawOnchainDataProvider,
         write_to: list[DataLocation],
     ):
+        expected_markers = []
+        for dataset in ONCHAIN_CURRENT_VERSION.values():
+            marker_path = block_batch.construct_marker_path()
+            full_marker_path = SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
+            expected_markers.append(full_marker_path)
+
         new_obj = cls(
             block_batch=block_batch,
             input_datasets={},
             input_dataframes={},
             inputs_ready=False,
-            expected_markers=[],
-            is_complete=False,
             output_dataframes=[],
             force=False,
             read_from=read_from,
             write_to=write_to,
+            is_complete=False,
+            expected_markers=expected_markers,
             progress_indicator="",
         )
-
-        for dataset in ONCHAIN_CURRENT_VERSION.values():
-            new_obj.expected_markers.append(new_obj.get_marker_location(dataset))
 
         return new_obj
 
     def add_inputs(self, datasets: dict[str, CoreDataset], dataframes: dict[str, pl.DataFrame]):
-        for key, val in datasets.items():
-            self.add_input(key, val, dataframes[key])
-
-    def add_input(self, name: str, dataset: CoreDataset, dataframe: pl.DataFrame):
-        self.input_datasets[name] = dataset
-        self.input_dataframes[name] = dataframe
+        for name, dataset in datasets.items():
+            self.input_datasets[name] = dataset
+            self.input_dataframes[name] = dataframes[name]
 
     def add_output(self, output: OutputDataFrame):
         self.output_dataframes.append(output)
-
-    def get_output_location(self, dataset: CoreDataset) -> SinkOutputRootPath:
-        return SinkOutputRootPath(f"{dataset.versioned_location}")
-
-    def get_marker_location(self, dataset: CoreDataset) -> SinkMarkerPath:
-        marker_path = self.block_batch.construct_marker_path()
-        return SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
 
 
 def ordered_task_list(tasks: list[Any]):

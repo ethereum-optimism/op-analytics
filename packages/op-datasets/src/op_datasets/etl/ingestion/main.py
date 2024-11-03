@@ -3,7 +3,13 @@ import multiprocessing as mp
 import polars as pl
 import pyarrow as pa
 from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
-from op_coreutils.partitioned import DataLocation, OutputDataFrame, all_outputs_complete, write_all
+from op_coreutils.partitioned import (
+    DataLocation,
+    OutputDataFrame,
+    all_outputs_complete,
+    write_all,
+    SinkOutputRootPath,
+)
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
@@ -41,8 +47,10 @@ def ingest(
         task.progress_indicator = f"{i+1}/{len(tasks)}"
         bind_contextvars(**task.contextvars)
 
-        # Check and decide if we need to run this task.
+        # Check output/input status for the task.
         checker(task)
+
+        # Decide if we need to run this task.
         if not task.inputs_ready:
             log.warning("Task inputs are not ready. Skipping this task.")
             continue
@@ -155,14 +163,12 @@ def auditor(task: IngestionTask):
     )
 
     # Set up the output dataframes now that the audits have passed
+    # On ingestion the outputs are the same as the inputs.
     for name, dataset in task.input_datasets.items():
-        # Sometimes we observe blocks that don't have any logs.
-        task.input_dataframes[name]
-
         task.add_output(
             OutputDataFrame(
                 dataframe=task.input_dataframes[name],
-                root_path=task.get_output_location(dataset),
+                root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
                 marker_path=task.get_marker_location(dataset),
                 dataset_name=name,
                 default_partition=default_partition,
