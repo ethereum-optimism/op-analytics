@@ -16,8 +16,8 @@ log = structlog.get_logger()
 
 
 @dataclass
-class InputData:
-    """Represents input data stored as parquet paths in GCS.
+class DataReader:
+    """Manages reading partitioned data.
 
     When objects of this class are created the creator must be aware of whether
     the data is ready to be consumed.
@@ -60,13 +60,13 @@ class InputData:
         return parquet_relation(self.dataset_paths[dataset])
 
 
-def construct_inputs(
+def construct_input_batches(
     chains: list[str],
     range_spec: str,
     read_from: DataLocation,
     markers_table: str,
     dataset_names: list[str],
-) -> list[InputData]:
+) -> list[DataReader]:
     """Construct a list of InputData for the given parameters.
 
     The parameters specify a set of chains, dates, and datasets that we are
@@ -108,7 +108,7 @@ def construct_inputs(
                 storage_location=read_from,
             )
 
-            obj = InputData(
+            obj = DataReader(
                 dateval=dateval,
                 chain=chain,
                 read_from=read_from,

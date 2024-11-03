@@ -100,7 +100,7 @@ class IngestionTask:
             self.input_datasets[name] = dataset
             self.input_dataframes[name] = dataframes[name]
 
-    def add_output(self, output: OutputDataFrame):
+    def store_output(self, output: OutputDataFrame):
         self.output_dataframes.append(output)
 
 

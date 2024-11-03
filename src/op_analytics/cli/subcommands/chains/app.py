@@ -83,7 +83,7 @@ def chain_metadata_updates():
     - Update the OP Analytics Chain Metadata [ADMIN MANAGED] google sheet.
     - Update the Across Superchain Bridge Addresses [ADMIN MANAGED] google sheet.
 
-    TODO: Decide if we want to uplaod to Dune, Clickhouse, BigQuery. or op-analytics-static repo.
+    TODO: Decide if we want to upload to Dune, Clickhouse, BigQuery. or op-analytics-static repo.
     """
     clean_df = load_chain_metadata()
 
