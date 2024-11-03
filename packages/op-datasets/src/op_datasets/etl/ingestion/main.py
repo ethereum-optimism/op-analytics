@@ -112,7 +112,7 @@ def reader(task: IngestionTask):
         block_batch=task.block_batch,
     )
 
-    assert set(ONCHAIN_CURRENT_VERSION.keys()) == INGESTION_DATASETS
+    assert set(ONCHAIN_CURRENT_VERSION.keys()) == set(INGESTION_DATASETS)
     task.add_inputs(ONCHAIN_CURRENT_VERSION, dataframes)
 
 
