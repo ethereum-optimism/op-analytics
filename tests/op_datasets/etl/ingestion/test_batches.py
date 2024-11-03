@@ -159,7 +159,7 @@ def test_expected_markers():
     batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
 
     task = IngestionTask.new(batches[0], read_from=RawOnchainDataProvider.GOLDSKY, write_to=[])
-    assert task.expected_outputs == {
+    assert task.data_writer.expected_outputs == {
         "blocks": ExpectedOutput(
             dataset_name="blocks",
             marker_path="markers/ingestion/blocks_v1/chain=op/000000000000.json",

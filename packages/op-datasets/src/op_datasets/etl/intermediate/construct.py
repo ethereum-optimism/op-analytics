@@ -1,8 +1,16 @@
 from op_coreutils.logger import structlog
-from op_coreutils.partitioned import DataLocation, InputData, construct_inputs, SinkMarkerPath
+from op_coreutils.partitioned import (
+    DataLocation,
+    InputData,
+    construct_inputs,
+    SinkMarkerPath,
+    DataWriter,
+    ExpectedOutput,
+)
 
 from op_datasets.etl.ingestion.markers import INGESTION_DATASETS, INGESTION_MARKERS_TABLE
 
+from .markers import INTERMEDIATE_MODELS_MARKERS_TABLE
 from .registry import REGISTERED_INTERMEDIATE_MODELS
 from .task import IntermediateModelsTask
 
@@ -33,20 +41,29 @@ def construct_tasks(
     tasks = []
     for inputdata in inputs:
         # There is 1 marker per output dataset.
-        expected_markers = []
+        expected_outputs = {}
+
         for model in models:
             for dataset in REGISTERED_INTERMEDIATE_MODELS[model].expected_output_datasets:
-                expected_markers.append(SinkMarkerPath(f"{model}/{dataset}"))
+                dataset_name = f"{model}/{dataset}"
+                expected_outputs[dataset_name] = ExpectedOutput(
+                    dataset_name=dataset_name,
+                    marker_path=SinkMarkerPath(dataset_name),
+                )
 
         tasks.append(
             IntermediateModelsTask(
                 inputdata=inputdata,
                 models=models,
                 output_duckdb_relations={},
-                write_to=write_to,
                 force=False,
-                expected_markers=expected_markers,
-                is_complete=False,
+                data_writer=DataWriter(
+                    write_to=write_to,
+                    markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
+                    expected_outputs=expected_outputs,
+                    is_complete=False,
+                    force=False,
+                ),
             )
         )
 
