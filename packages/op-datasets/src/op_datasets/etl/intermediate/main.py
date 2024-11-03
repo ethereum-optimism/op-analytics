@@ -77,7 +77,7 @@ def executor(task: IntermediateModelsTask):
 
         input_tables = {}
         for dataset in im_model.input_datasets:
-            input_tables[dataset] = task.duckdb_relation(dataset)
+            input_tables[dataset] = task.inputdata.duckdb_relation(dataset)
 
         for output_name, output in im_model.func(client, input_tables).items():
             task.add_output(output_name, output)

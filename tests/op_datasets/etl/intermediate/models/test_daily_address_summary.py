@@ -25,7 +25,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         "{block_number} % 1000 <= 2",
     ]
 
-    _enable_fetching = False
+    _enable_fetching = True
 
     def test_system_address_not_included(self):
         ans = self._duckdb_client.sql(f"""

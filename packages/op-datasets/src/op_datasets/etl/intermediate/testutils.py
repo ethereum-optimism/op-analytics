@@ -157,7 +157,7 @@ class IntermediateModelTestBase(unittest.TestCase):
 
         relations = {}
         for dataset in cls.datasets:
-            rel = task.duckdb_relation(dataset)
+            rel = task.inputdata.duckdb_relation(dataset)
 
             if dataset == "blocks":
                 block_number_col = "number"
