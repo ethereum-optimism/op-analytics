@@ -2,8 +2,8 @@ from op_coreutils.bigquery.load import load_from_parquet_uris
 from op_coreutils.logger import bind_contextvars, structlog
 from op_coreutils.partitioned import (
     DataLocation,
-    InputData,
-    construct_inputs,
+    DataReader,
+    construct_input_batches,
     get_dt,
     get_root_path,
 )
@@ -26,7 +26,7 @@ def load_superchain_raw_to_bq(
     # partition.
 
     chains = goldsky_chains()
-    inputs: list[InputData] = construct_inputs(
+    inputs: list[DataReader] = construct_input_batches(
         chains=chains,
         range_spec=range_spec,
         read_from=DataLocation.GCS,

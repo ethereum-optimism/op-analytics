@@ -167,7 +167,7 @@ def auditor(task: IngestionTask):
     # Set up the output dataframes now that the audits have passed
     # (ingestion process: outputs are the same as inputs)
     for name, dataset in task.input_datasets.items():
-        task.add_output(
+        task.store_output(
             OutputDataFrame(
                 dataframe=task.input_dataframes[name],
                 root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),

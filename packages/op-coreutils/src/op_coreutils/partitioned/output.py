@@ -35,6 +35,7 @@ class WrittenParquetPath:
     """Represent a single object written to storage in a partitioned path."""
 
     root: SinkOutputRootPath
+    # TODO: see if we can avoid having basename here and think of a different class name.
     basename: str
     partitions: list[KeyValue]
     row_count: int

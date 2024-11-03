@@ -1,8 +1,8 @@
 from op_coreutils.logger import structlog
 from op_coreutils.partitioned import (
     DataLocation,
-    InputData,
-    construct_inputs,
+    DataReader,
+    construct_input_batches,
     SinkMarkerPath,
     DataWriter,
     ExpectedOutput,
@@ -30,7 +30,7 @@ def construct_tasks(
     shared duckdb macros that are used across models.
     """
 
-    inputs: list[InputData] = construct_inputs(
+    batches: list[DataReader] = construct_input_batches(
         chains=chains,
         range_spec=range_spec,
         read_from=read_from,
@@ -39,10 +39,9 @@ def construct_tasks(
     )
 
     tasks = []
-    for inputdata in inputs:
-        # There is 1 marker per output dataset.
+    for batch in batches:
+        # Each model can have one or more outputs. There is 1 marker per output.
         expected_outputs = {}
-
         for model in models:
             for dataset in REGISTERED_INTERMEDIATE_MODELS[model].expected_output_datasets:
                 dataset_name = f"{model}/{dataset}"
@@ -53,10 +52,9 @@ def construct_tasks(
 
         tasks.append(
             IntermediateModelsTask(
-                inputdata=inputdata,
+                data_reader=batch,
                 models=models,
                 output_duckdb_relations={},
-                force=False,
                 data_writer=DataWriter(
                     write_to=write_to,
                     markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,

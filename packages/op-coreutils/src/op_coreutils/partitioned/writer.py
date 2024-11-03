@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Callable
 
 import polars as pl
 import pyarrow as pa
@@ -58,9 +58,28 @@ class DataWriter:
         basename: str,
         marker_kwargs: dict[str, Any],
     ):
-        """Write dataframes and markers to all the specified locations."""
+        """Write data and markers to all the specified locations."""
+        return self.write_all_callables(
+            dataframes=[lambda: df for df in dataframes],
+            basename=basename,
+            marker_kwargs=marker_kwargs,
+        )
+
+    def write_all_callables(
+        self,
+        dataframes: list[Callable[[], OutputDataFrame]],
+        basename: str,
+        marker_kwargs: dict[str, Any],
+    ):
+        """Write data and markers to all the specified locations.
+
+        The data is provided as a list of functions that return a dataframe. This lets us generalize
+        the way in which different tasks produce OutputDataFrame.
+        """
         for location in self.write_to:
-            for output_dataframe in dataframes:
+            for func in dataframes:
+                output_dataframe: OutputDataFrame = func()
+
                 # The default partition value is included in logs because it includes
                 # the dt value, which helps keep track of where we are when we run a
                 # backfill.

@@ -1,7 +1,7 @@
 import importlib
 import os
 from dataclasses import dataclass
-from typing import Callable
+from typing import Protocol
 
 import duckdb
 from op_coreutils.logger import structlog
@@ -13,11 +13,19 @@ log = structlog.get_logger()
 _LOADED = False
 
 
+class ModelFunction(Protocol):
+    def __call__(
+        self,
+        duckdb_client: duckdb.DuckDBPyConnection,
+        input_tables: NamedRelations,
+    ) -> NamedRelations: ...
+
+
 @dataclass
 class IntermediateModel:
     name: str
     input_datasets: list[str]
-    func: Callable[[duckdb.DuckDBPyConnection, NamedRelations], NamedRelations]
+    func: ModelFunction
     expected_output_datasets: list[str]
 
 
