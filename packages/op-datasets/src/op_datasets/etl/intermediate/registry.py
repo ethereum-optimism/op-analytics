@@ -48,11 +48,11 @@ def load_model_definitions():
     MODELS_PATH = os.path.join(os.path.dirname(__file__), "models")
 
     count = 0
-    for basename in os.listdir(MODELS_PATH):
-        name = os.path.join(MODELS_PATH, basename)
-        if os.path.isfile(name) and basename not in ("__init__.py", "registry.py"):
+    for fname in os.listdir(MODELS_PATH):
+        name = os.path.join(MODELS_PATH, fname)
+        if os.path.isfile(name) and fname not in ("__init__.py", "registry.py"):
             importlib.import_module(
-                f"op_datasets.etl.intermediate.models.{basename.removesuffix(".py")}"
+                f"op_datasets.etl.intermediate.models.{fname.removesuffix(".py")}"
             )
             count += 1
 

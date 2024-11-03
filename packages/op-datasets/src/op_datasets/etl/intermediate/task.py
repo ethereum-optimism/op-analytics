@@ -3,7 +3,7 @@ from typing import NewType
 
 import duckdb
 from op_coreutils.duckdb_inmem import parquet_relation
-from op_coreutils.partitioned import DataLocation, InputData, SinkMarkerPath
+from op_coreutils.partitioned import InputData, DataWriter
 
 BatchDate = NewType("BatchDate", str)
 
@@ -26,12 +26,8 @@ class IntermediateModelsTask:
 
     force: bool  # ignores completion markers when set to true
 
-    # Sinks
-    write_to: list[DataLocation]
-
-    # Expected Markers
-    expected_markers: list[SinkMarkerPath]
-    is_complete: bool
+    # DataWriter
+    data_writer: DataWriter
 
     def __repr__(self):
         return (
