@@ -8,6 +8,7 @@ from op_coreutils.logger import structlog
 from op_coreutils.partitioned import (
     DataLocation,
     OutputDataFrame,
+    ExpectedOutput,
     SinkMarkerPath,
 )
 
@@ -43,8 +44,8 @@ class IngestionTask:
     # Sinks
     write_to: list[DataLocation]
 
-    # Expected Markers
-    expected_markers: list[SinkMarkerPath]
+    # Expected Outputs
+    expected_outputs: dict[str, ExpectedOutput]
     is_complete: bool
 
     # Progress Indicator
@@ -68,11 +69,17 @@ class IngestionTask:
         read_from: RawOnchainDataProvider,
         write_to: list[DataLocation],
     ):
-        expected_markers = []
-        for dataset in ONCHAIN_CURRENT_VERSION.values():
+        expected_outputs = {}
+        for name, dataset in ONCHAIN_CURRENT_VERSION.items():
+            # Determine the marker path for this dataset.
             marker_path = block_batch.construct_marker_path()
             full_marker_path = SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
-            expected_markers.append(full_marker_path)
+
+            # Store the dataset as an expected output.
+            expected_outputs[name] = ExpectedOutput(
+                dataset_name=name,
+                marker_path=full_marker_path,
+            )
 
         new_obj = cls(
             block_batch=block_batch,
@@ -84,7 +91,7 @@ class IngestionTask:
             read_from=read_from,
             write_to=write_to,
             is_complete=False,
-            expected_markers=expected_markers,
+            expected_outputs=expected_outputs,
             progress_indicator="",
         )
 

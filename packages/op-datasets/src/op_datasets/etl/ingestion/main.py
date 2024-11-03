@@ -8,6 +8,7 @@ from op_coreutils.partitioned import (
     OutputDataFrame,
     all_outputs_complete,
     write_all,
+    SinkMarkerPath,
     SinkOutputRootPath,
 )
 
@@ -169,7 +170,7 @@ def auditor(task: IngestionTask):
             OutputDataFrame(
                 dataframe=task.input_dataframes[name],
                 root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
-                marker_path=task.get_marker_location(dataset),
+                marker_path=task.expected_outputs[name].marker_path,
                 dataset_name=name,
                 default_partition=default_partition,
             )
@@ -203,7 +204,8 @@ def writer(task: IngestionTask):
 
 
 def checker(task: IngestionTask):
-    if all_outputs_complete(task.write_to, task.expected_markers):
+    expected_markers: list[SinkMarkerPath] = [_.marker_path for _ in task.expected_outputs.values()]
+    if all_outputs_complete(task.write_to, expected_markers):
         task.is_complete = True
         task.inputs_ready = True
         return
