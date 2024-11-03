@@ -1,0 +1,1 @@
+INTERMEDIATE_MODELS_MARKERS_TABLE = "intermediate_model_markers"
