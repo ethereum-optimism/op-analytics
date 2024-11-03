@@ -18,7 +18,7 @@ class IntermediateModel:
     name: str
     input_datasets: list[str]
     func: Callable[[duckdb.DuckDBPyConnection, NamedRelations], NamedRelations]
-    expected_outputs: list[str]
+    expected_output_datasets: list[str]
 
 
 REGISTERED_INTERMEDIATE_MODELS: dict[str, IntermediateModel] = {}
@@ -30,7 +30,7 @@ def register_model(input_datasets: list[str], expected_outputs: list[str]):
             name=func.__name__,
             input_datasets=input_datasets,
             func=func,
-            expected_outputs=expected_outputs,
+            expected_output_datasets=expected_outputs,
         )
         return func
 

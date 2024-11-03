@@ -55,7 +55,8 @@ def construct_inputs(
     chains: list[str],
     range_spec: str,
     read_from: DataLocation,
-    input_datasets: list[str],
+    markers_table: str,
+    dataset_names: list[str],
 ) -> list[InputData]:
     """Construct a list of InputData for the given parameters.
 
@@ -70,7 +71,13 @@ def construct_inputs(
     # We use the +/- 1 day padded dates so that we can use the query results to
     # check if there is data on boths ends. This allows us to confirm that the
     # data is ready to be processed.
-    markers_df = markers_for_dates(read_from, date_range.padded_dates(), chains)
+    markers_df = markers_for_dates(
+        data_location=read_from,
+        datevals=date_range.padded_dates(),
+        chains=chains,
+        markers_table=markers_table,
+        dataset_names=dataset_names,
+    )
 
     inputs = []
     for dateval in date_range.dates:
@@ -88,7 +95,7 @@ def construct_inputs(
             inputs_ready, dataset_paths = are_inputs_ready(
                 markers_df=filtered_df,
                 dateval=dateval,
-                input_datasets=set(input_datasets),
+                input_datasets=set(dataset_names),
                 storage_location=read_from,
             )
 

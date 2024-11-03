@@ -8,7 +8,6 @@ from op_coreutils.partitioned import (
     OutputDataFrame,
     all_outputs_complete,
     write_all,
-    SinkMarkerPath,
     SinkOutputRootPath,
 )
 
@@ -16,6 +15,7 @@ from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
 from .construct import construct_tasks
+from .markers import INGESTION_DATASETS, INGESTION_MARKERS_TABLE
 from .sources import RawOnchainDataProvider, read_from_source
 from .status import all_inputs_ready
 from .task import IngestionTask
@@ -112,6 +112,7 @@ def reader(task: IngestionTask):
         block_batch=task.block_batch,
     )
 
+    assert set(ONCHAIN_CURRENT_VERSION.keys()) == INGESTION_DATASETS
     task.add_inputs(ONCHAIN_CURRENT_VERSION, dataframes)
 
 
@@ -164,7 +165,7 @@ def auditor(task: IngestionTask):
     )
 
     # Set up the output dataframes now that the audits have passed
-    # On ingestion the outputs are the same as the inputs.
+    # (ingestion process: outputs are the same as inputs)
     for name, dataset in task.input_datasets.items():
         task.add_output(
             OutputDataFrame(
@@ -172,6 +173,7 @@ def auditor(task: IngestionTask):
                 root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
                 marker_path=task.expected_outputs[name].marker_path,
                 dataset_name=name,
+                markers_table=INGESTION_MARKERS_TABLE,
                 default_partition=default_partition,
             )
         )
@@ -198,14 +200,18 @@ def writer(task: IngestionTask):
         locations=task.write_to,
         dataframes=task.output_dataframes,
         basename=task.block_batch.construct_parquet_filename(),
+        markers_table=INGESTION_MARKERS_TABLE,
         marker_kwargs=marker_kwargs,
         force=task.force,
     )
 
 
 def checker(task: IngestionTask):
-    expected_markers: list[SinkMarkerPath] = [_.marker_path for _ in task.expected_outputs.values()]
-    if all_outputs_complete(task.write_to, expected_markers):
+    if all_outputs_complete(
+        sinks=task.write_to,
+        markers=[_.marker_path for _ in task.expected_outputs.values()],
+        markers_table=INGESTION_MARKERS_TABLE,
+    ):
         task.is_complete = True
         task.inputs_ready = True
         return

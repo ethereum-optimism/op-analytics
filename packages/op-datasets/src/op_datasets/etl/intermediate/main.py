@@ -3,6 +3,7 @@ from op_coreutils.partitioned import DataLocation, all_outputs_complete
 from op_coreutils.duckdb_inmem import init_client
 
 from .construct import construct_tasks
+from .markers import INTERMEDIATE_MODELS_MARKERS_TABLE
 from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .task import IntermediateModelsTask
 from .udfs import create_duckdb_macros
@@ -79,7 +80,7 @@ def executor(task: IntermediateModelsTask):
             task.add_output(output_name, output)
 
         produced_datasets = set(task.output_duckdb_relations.keys())
-        if produced_datasets != set(im_model.expected_outputs):
+        if produced_datasets != set(im_model.expected_output_datasets):
             raise RuntimeError(f"model {model!r} produced unexpected datasets: {produced_datasets}")
 
     # Show the outputs that were produced by running the models.
@@ -95,6 +96,10 @@ def writer(task):
 
 
 def checker(task: IntermediateModelsTask):
-    if all_outputs_complete(task.write_to, task.expected_markers):
+    if all_outputs_complete(
+        sinks=task.write_to,
+        markers=task.expected_markers,
+        markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
+    ):
         task.is_complete = True
         return

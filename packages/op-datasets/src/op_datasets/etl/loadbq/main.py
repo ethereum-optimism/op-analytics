@@ -9,6 +9,7 @@ from op_coreutils.partitioned import (
 )
 
 from op_datasets.chains.chain_metadata import goldsky_chains
+from op_datasets.etl.ingestion.markers import INGESTION_DATASETS, INGESTION_MARKERS_TABLE
 
 from .task import DateLoadTask, consolidate_chains
 
@@ -29,7 +30,8 @@ def load_superchain_raw_to_bq(
         chains=chains,
         range_spec=range_spec,
         read_from=DataLocation.GCS,
-        input_datasets=["blocks", "transactions", "logs", "traces"],
+        markers_table=INGESTION_MARKERS_TABLE,
+        dataset_names=INGESTION_DATASETS,
     )
 
     if dryrun:

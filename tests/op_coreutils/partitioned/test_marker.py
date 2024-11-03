@@ -8,9 +8,11 @@ from op_coreutils.partitioned.writer import write_marker
 from op_coreutils.duckdb_local import run_query
 from op_coreutils.time import now
 
+MARKERS_TABLE = "raw_onchain_ingestion_markers"
+
 
 def test_marker():
-    run_query("DELETE FROM etl_monitor.raw_onchain_ingestion_markers WHERE chain = 'DUMMYCHAIN'")
+    run_query(f"DELETE FROM etl_monitor.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'")
 
     marker = Marker(
         marker_path="markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
@@ -47,10 +49,18 @@ def test_marker():
         ],
     )
 
-    initially_exists = marker_exists(DataLocation.LOCAL, marker.marker_path)
+    initially_exists = marker_exists(
+        data_location=DataLocation.LOCAL,
+        marker_path=marker.marker_path,
+        markers_table=MARKERS_TABLE,
+    )
     assert not initially_exists
 
-    write_marker(DataLocation.LOCAL, marker.to_pyarrow_table())
+    write_marker(
+        data_location=DataLocation.LOCAL,
+        arrow_table=marker.to_pyarrow_table(),
+        markers_table=MARKERS_TABLE,
+    )
 
     result = (
         run_query(
@@ -99,13 +109,19 @@ def test_marker():
         },
     ]
 
-    exists = marker_exists(DataLocation.LOCAL, marker.marker_path)
+    exists = marker_exists(
+        data_location=DataLocation.LOCAL,
+        marker_path=marker.marker_path,
+        markers_table=MARKERS_TABLE,
+    )
     assert exists
 
     markers_df = markers_for_dates(
         DataLocation.LOCAL,
         datevals=[datetime.date(2024, 10, 25)],
         chains=["DUMMYCHAIN"],
+        markers_table=MARKERS_TABLE,
+        dataset_names=["blocks"],
     )
     assert len(markers_df) == 1
 
@@ -113,3 +129,12 @@ def test_marker():
         markers_df.limit(1)["data_path"].item()
         == "ingestion/blocks_v1/chain=DUMMYCHAIN/dt=2024-10-25/000011540000.parquet"
     )
+
+    markers_df = markers_for_dates(
+        DataLocation.LOCAL,
+        datevals=[datetime.date(2024, 10, 25)],
+        chains=["DUMMYCHAIN"],
+        markers_table=MARKERS_TABLE,
+        dataset_names=["transactions"],
+    )
+    assert len(markers_df) == 0
