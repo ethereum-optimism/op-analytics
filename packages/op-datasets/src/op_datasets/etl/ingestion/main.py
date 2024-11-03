@@ -43,7 +43,7 @@ def ingest(
         return
 
     executed = 0
-    executed_ok = 1
+    executed_ok = 0
     for i, task in enumerate(tasks):
         task.progress_indicator = f"{i+1}/{len(tasks)}"
         bind_contextvars(**task.contextvars)
