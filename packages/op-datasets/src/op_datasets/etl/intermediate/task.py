@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import NewType
 
 import duckdb
-from op_coreutils.partitioned import InputData, DataWriter
+from op_coreutils.partitioned import DataReader, DataWriter
 
 BatchDate = NewType("BatchDate", str)
 
@@ -14,8 +14,8 @@ class IntermediateModelsTask:
     This object is mutated during processing.
     """
 
-    # Input data
-    inputdata: InputData
+    # DataReader
+    data_reader: DataReader
 
     # Models to compute
     models: list[str]
@@ -23,26 +23,21 @@ class IntermediateModelsTask:
     # Output duckdb relations
     output_duckdb_relations: dict[str, duckdb.DuckDBPyRelation]
 
-    force: bool  # ignores completion markers when set to true
-
     # DataWriter
     data_writer: DataWriter
 
     def __repr__(self):
         return (
             self.__class__.__name__
-            + f"[ctx: {self.contextvars}, datset_paths: {self.paths_summary}]"
+            + f"[ctx: {self.data_reader.contextvars}, datset_paths: {self.data_reader.paths_summary}]"
         )
 
-    @property
-    def contextvars(self):
-        return self.inputdata.contextvars
+    def store_output(self, name: str, output: duckdb.DuckDBPyRelation):
+        """Register output data.
 
-    @property
-    def paths_summary(self) -> dict[str, int]:
-        return self.inputdata.paths_summary
-
-    def add_output(self, name: str, output: duckdb.DuckDBPyRelation):
+        The provided duckdb relation is stored in the task. All outputs that are stored
+        in the task will be written out by the DataWriter at the end of execution.
+        """
         if name in self.output_duckdb_relations:
             raise ValueError(f"name already exists in task outputs: {name}")
         self.output_duckdb_relations[name] = output
