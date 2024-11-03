@@ -6,8 +6,6 @@ from op_coreutils.logger import bind_contextvars, clear_contextvars, human_inter
 from op_coreutils.partitioned import (
     DataLocation,
     OutputDataFrame,
-    all_outputs_complete,
-    write_all,
     SinkOutputRootPath,
 )
 
@@ -15,7 +13,7 @@ from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
 from .construct import construct_tasks
-from .markers import INGESTION_DATASETS, INGESTION_MARKERS_TABLE
+from .markers import INGESTION_DATASETS
 from .sources import RawOnchainDataProvider, read_from_source
 from .status import all_inputs_ready
 from .task import IngestionTask
@@ -51,15 +49,17 @@ def ingest(
         # Check output/input status for the task.
         checker(task)
 
-        # Decide if we need to run this task.
+        # Decide if we can run this task.
         if not task.inputs_ready:
             log.warning("Task inputs are not ready. Skipping this task.")
             continue
-        if task.is_complete and not force:
+
+        # Decide if we need to run this task.
+        if task.data_writer.is_complete and not force:
             continue
         if force:
             log.info("Force flag detected. Forcing execution.")
-            task.force = True
+            task.data_writer.force = True
 
         executed += 1
         success = execute(task, fork_process)
@@ -171,9 +171,7 @@ def auditor(task: IngestionTask):
             OutputDataFrame(
                 dataframe=task.input_dataframes[name],
                 root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
-                marker_path=task.expected_outputs[name].marker_path,
                 dataset_name=name,
-                markers_table=INGESTION_MARKERS_TABLE,
                 default_partition=default_partition,
             )
         )
@@ -196,23 +194,16 @@ def writer(task: IngestionTask):
         ],
     )
 
-    write_all(
-        locations=task.write_to,
+    task.data_writer.write_all(
         dataframes=task.output_dataframes,
         basename=task.block_batch.construct_parquet_filename(),
-        markers_table=INGESTION_MARKERS_TABLE,
         marker_kwargs=marker_kwargs,
-        force=task.force,
     )
 
 
 def checker(task: IngestionTask):
-    if all_outputs_complete(
-        sinks=task.write_to,
-        markers=[_.marker_path for _ in task.expected_outputs.values()],
-        markers_table=INGESTION_MARKERS_TABLE,
-    ):
-        task.is_complete = True
+    if task.data_writer.all_complete():
+        task.data_writer.is_complete = True
         task.inputs_ready = True
         return
 

@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from datetime import date
 
+import duckdb
 import polars as pl
 from op_datasets.utils.daterange import DateRange
 
+from op_coreutils.duckdb_inmem import parquet_relation
 from op_coreutils.logger import bind_contextvars, structlog
 from op_coreutils.time import surrounding_dates
 
@@ -49,6 +51,13 @@ class InputData:
             chain=self.chain,
             date=self.dateval,
         )
+
+    @property
+    def paths_summary(self) -> dict[str, int]:
+        return {dataset_name: len(paths) for dataset_name, paths in self.dataset_paths.items()}
+
+    def duckdb_relation(self, dataset) -> duckdb.DuckDBPyRelation:
+        return parquet_relation(self.dataset_paths[dataset])
 
 
 def construct_inputs(

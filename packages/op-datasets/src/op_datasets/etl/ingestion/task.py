@@ -10,11 +10,13 @@ from op_coreutils.partitioned import (
     OutputDataFrame,
     ExpectedOutput,
     SinkMarkerPath,
+    DataWriter,
 )
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
 from .batches import BlockBatch
+from .markers import INGESTION_MARKERS_TABLE
 from .sources import RawOnchainDataProvider
 
 log = structlog.get_logger()
@@ -39,14 +41,9 @@ class IngestionTask:
 
     # Outputs
     output_dataframes: list[OutputDataFrame]
-    force: bool  # ignores completion markers when set to true
 
-    # Sinks
-    write_to: list[DataLocation]
-
-    # Expected Outputs
-    expected_outputs: dict[str, ExpectedOutput]
-    is_complete: bool
+    # DataWriter
+    data_writer: DataWriter
 
     # Progress Indicator
     progress_indicator: str
@@ -81,21 +78,22 @@ class IngestionTask:
                 marker_path=full_marker_path,
             )
 
-        new_obj = cls(
+        return cls(
             block_batch=block_batch,
             input_datasets={},
             input_dataframes={},
             inputs_ready=False,
             output_dataframes=[],
-            force=False,
             read_from=read_from,
-            write_to=write_to,
-            is_complete=False,
-            expected_outputs=expected_outputs,
+            data_writer=DataWriter(
+                write_to=write_to,
+                markers_table=INGESTION_MARKERS_TABLE,
+                expected_outputs=expected_outputs,
+                is_complete=False,
+                force=False,
+            ),
             progress_indicator="",
         )
-
-        return new_obj
 
     def add_inputs(self, datasets: dict[str, CoreDataset], dataframes: dict[str, pl.DataFrame]):
         for name, dataset in datasets.items():

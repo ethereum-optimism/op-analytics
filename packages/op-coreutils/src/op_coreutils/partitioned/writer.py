@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any
 
 import polars as pl
@@ -13,10 +14,102 @@ from op_coreutils.storage.gcs_parquet import (
 from .breakout import breakout_partitions
 from .location import DataLocation
 from .marker import MARKERS_DB, marker_exists, Marker
-from .output import WrittenParquetPath
-from .output import OutputDataFrame
+from .output import OutputDataFrame, WrittenParquetPath, ExpectedOutput
+from .status import all_outputs_complete
+from .types import SinkMarkerPath
 
 log = structlog.get_logger()
+
+
+@dataclass
+class DataWriter:
+    """Manages writing data and markers consistently."""
+
+    # Sinks
+    write_to: list[DataLocation]
+
+    # Markers Table
+    markers_table: str
+
+    # Expected Outputs
+    expected_outputs: dict[str, ExpectedOutput]
+
+    # Is set to true if all markers already exist.
+    is_complete: bool
+
+    # If true, writes data even if markers already exist.
+    force: bool
+
+    def get_marker(self, dataset_name: str) -> SinkMarkerPath:
+        """Return the marker path for the dataset name."""
+        return self.expected_outputs[dataset_name].marker_path
+
+    def all_complete(self) -> bool:
+        """Check if all expected markers are complete."""
+        return all_outputs_complete(
+            sinks=self.write_to,
+            markers=[_.marker_path for _ in self.expected_outputs.values()],
+            markers_table=self.markers_table,
+        )
+
+    def write_all(
+        self,
+        dataframes: list[OutputDataFrame],
+        basename: str,
+        marker_kwargs: dict[str, Any],
+    ):
+        """Write dataframes and markers to all the specified locations."""
+        for location in self.write_to:
+            for output_dataframe in dataframes:
+                # The default partition value is included in logs because it includes
+                # the dt value, which helps keep track of where we are when we run a
+                # backfill.
+                with bound_contextvars(**output_dataframe.default_partition):
+                    marker_path = self.get_marker(output_dataframe.dataset_name)
+
+                    is_complete = marker_exists(
+                        data_location=location,
+                        marker_path=marker_path,
+                        markers_table=self.markers_table,
+                    )
+
+                    if is_complete and not self.force:
+                        log.info(
+                            f"[{location.name}] Skipping already complete output at {marker_path}"
+                        )
+                        continue
+
+                    written_parts: list[WrittenParquetPath] = []
+                    parts = breakout_partitions(
+                        df=output_dataframe.dataframe,
+                        partition_cols=["chain", "dt"],
+                        root_path=output_dataframe.root_path,
+                        basename=basename,
+                        default_partition=output_dataframe.default_partition,
+                    )
+
+                    for part_df, part in parts:
+                        write_single_part(
+                            location=location,
+                            dataframe=part_df,
+                            part_output=part,
+                        )
+                        written_parts.append(part)
+
+                    marker = Marker(
+                        marker_path=marker_path,
+                        dataset_name=output_dataframe.dataset_name,
+                        root_path=output_dataframe.root_path,
+                        data_paths=written_parts,
+                        **marker_kwargs,
+                    )
+
+                    write_marker(
+                        data_location=location,
+                        arrow_table=marker.to_pyarrow_table(),
+                        markers_table=self.markers_table,
+                    )
+                    log.info(f"Wrote {output_dataframe.dataset_name} to {location.name}")
 
 
 def write_single_part(
@@ -63,63 +156,3 @@ def write_marker(
         return
 
     raise NotImplementedError()
-
-
-def write_all(
-    locations: list[DataLocation],
-    dataframes: list[OutputDataFrame],
-    basename: str,
-    markers_table: str,
-    marker_kwargs: dict[str, Any],
-    force: bool = False,
-):
-    """Write dataframes to all the specified locations."""
-    for location in locations:
-        for output_dataframe in dataframes:
-            # The default partition value is included in logs because it includes
-            # the dt value, which helps keep track of where we are when we run a
-            # backfill.
-            with bound_contextvars(**output_dataframe.default_partition):
-                is_complete = marker_exists(
-                    data_location=location,
-                    marker_path=output_dataframe.marker_path,
-                    markers_table=output_dataframe.markers_table,
-                )
-
-                if is_complete and not force:
-                    log.info(
-                        f"[{location.name}] Skipping already complete output at {output_dataframe.marker_path}"
-                    )
-                    continue
-
-                written_parts: list[WrittenParquetPath] = []
-                parts = breakout_partitions(
-                    df=output_dataframe.dataframe,
-                    partition_cols=["chain", "dt"],
-                    root_path=output_dataframe.root_path,
-                    basename=basename,
-                    default_partition=output_dataframe.default_partition,
-                )
-
-                for part_df, part in parts:
-                    write_single_part(
-                        location=location,
-                        dataframe=part_df,
-                        part_output=part,
-                    )
-                    written_parts.append(part)
-
-                marker = Marker(
-                    marker_path=output_dataframe.marker_path,
-                    dataset_name=output_dataframe.dataset_name,
-                    root_path=output_dataframe.root_path,
-                    data_paths=written_parts,
-                    **marker_kwargs,
-                )
-
-                write_marker(
-                    data_location=location,
-                    arrow_table=marker.to_pyarrow_table(),
-                    markers_table=markers_table,
-                )
-                log.info(f"Wrote {output_dataframe.dataset_name} to {location.name}")

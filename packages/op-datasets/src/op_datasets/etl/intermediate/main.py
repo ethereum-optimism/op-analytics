@@ -1,9 +1,8 @@
 from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
-from op_coreutils.partitioned import DataLocation, all_outputs_complete
+from op_coreutils.partitioned import DataLocation
 from op_coreutils.duckdb_inmem import init_client
 
 from .construct import construct_tasks
-from .markers import INTERMEDIATE_MODELS_MARKERS_TABLE
 from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .task import IntermediateModelsTask
 from .udfs import create_duckdb_macros
@@ -46,16 +45,20 @@ def compute_intermediate(
             **task.contextvars,
         )
 
-        # Check and decide if we need to run this task.
+        # Check output/input status for the task.
         checker(task)
+
+        # Decide if we can run this task.
         if not task.inputdata.inputs_ready:
             log.warning("Task inputs are not ready. Skipping this task.")
             continue
-        if task.is_complete and not force:
+
+        # Decide if we need to run this task.
+        if task.data_writer.is_complete and not force:
             continue
         if force:
             log.info("Force flag detected. Forcing execution.")
-            task.force = True
+            task.data_writer.force = True
 
         executor(task)
 
@@ -74,7 +77,7 @@ def executor(task: IntermediateModelsTask):
 
         input_tables = {}
         for dataset in im_model.input_datasets:
-            input_tables[dataset] = task.duckdb_relation(dataset)
+            input_tables[dataset] = task.inputdata.duckdb_relation(dataset)
 
         for output_name, output in im_model.func(client, input_tables).items():
             task.add_output(output_name, output)
@@ -96,10 +99,7 @@ def writer(task):
 
 
 def checker(task: IntermediateModelsTask):
-    if all_outputs_complete(
-        sinks=task.write_to,
-        markers=task.expected_markers,
-        markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
-    ):
-        task.is_complete = True
+    if task.data_writer.all_complete():
+        task.data_writer.is_complete = True
+        task.inputdata.inputs_ready = True
         return

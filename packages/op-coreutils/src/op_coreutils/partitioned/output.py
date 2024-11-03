@@ -17,9 +17,7 @@ class ExpectedOutput:
 class OutputDataFrame:
     dataframe: pl.DataFrame
     root_path: SinkOutputRootPath
-    marker_path: SinkMarkerPath
     dataset_name: str
-    markers_table: str
 
     # Default partition values for cases when the output datafarame is empty
     # and therefore has no implicit partition values.
