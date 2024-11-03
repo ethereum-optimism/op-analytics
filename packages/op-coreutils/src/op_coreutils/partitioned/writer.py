@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Any
 
 import polars as pl
@@ -14,22 +13,9 @@ from op_coreutils.storage.gcs_parquet import (
 from .breakout import breakout_partitions
 from .location import DataLocation
 from .marker import MARKERS_DB, MARKERS_TABLE, marker_exists, Marker
-from .output import WrittenParquetPath
-from .types import SinkMarkerPath, SinkOutputRootPath
+from .output import WrittenParquetPath, OutputDataFrame
 
 log = structlog.get_logger()
-
-
-@dataclass
-class OutputDataFrame:
-    dataframe: pl.DataFrame
-    root_path: SinkOutputRootPath
-    marker_path: SinkMarkerPath
-    dataset_name: str
-
-    # Default partition values for cases when the output datafarame is empty
-    # and therefore has no implicit partition values.
-    default_partition: dict[str, Any]
 
 
 def write_single_part(

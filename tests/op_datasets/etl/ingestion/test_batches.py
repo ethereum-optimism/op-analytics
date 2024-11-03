@@ -1,4 +1,6 @@
 import pytest
+
+from op_coreutils.partitioned import ExpectedOutput
 from op_datasets.etl.ingestion.batches import (
     BlockBatch,
     Delimiter,
@@ -157,12 +159,23 @@ def test_expected_markers():
     batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
 
     task = IngestionTask.new(batches[0], read_from=RawOnchainDataProvider.GOLDSKY, write_to=[])
-    assert task.expected_markers == [
-        "markers/ingestion/blocks_v1/chain=op/000000000000.json",
-        "markers/ingestion/transactions_v1/chain=op/000000000000.json",
-        "markers/ingestion/logs_v1/chain=op/000000000000.json",
-        "markers/ingestion/traces_v1/chain=op/000000000000.json",
-    ]
+    assert task.expected_outputs == {
+        "blocks": ExpectedOutput(
+            dataset_name="blocks",
+            marker_path="markers/ingestion/blocks_v1/chain=op/000000000000.json",
+        ),
+        "transactions": ExpectedOutput(
+            dataset_name="transactions",
+            marker_path="markers/ingestion/transactions_v1/chain=op/000000000000.json",
+        ),
+        "logs": ExpectedOutput(
+            dataset_name="logs", marker_path="markers/ingestion/logs_v1/chain=op/000000000000.json"
+        ),
+        "traces": ExpectedOutput(
+            dataset_name="traces",
+            marker_path="markers/ingestion/traces_v1/chain=op/000000000000.json",
+        ),
+    }
 
 
 def test_batches_base():
