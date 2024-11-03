@@ -1,8 +1,28 @@
 import os
 from dataclasses import dataclass
+from typing import Any
+
+import polars as pl
+
+from .types import SinkMarkerPath, SinkOutputRootPath
 
 
-from .types import SinkOutputRootPath
+@dataclass
+class ExpectedOutput:
+    dataset_name: str
+    marker_path: SinkMarkerPath
+
+
+@dataclass
+class OutputDataFrame:
+    dataframe: pl.DataFrame
+    root_path: SinkOutputRootPath
+    marker_path: SinkMarkerPath
+    dataset_name: str
+
+    # Default partition values for cases when the output datafarame is empty
+    # and therefore has no implicit partition values.
+    default_partition: dict[str, Any]
 
 
 @dataclass
