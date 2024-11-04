@@ -1,6 +1,7 @@
 import time
 import polars as pl
 from op_coreutils.bigquery.write import (
+    most_recent_dates,
     overwrite_partition_static,
     overwrite_partitions_dynamic,
     overwrite_unpartitioned_table,
@@ -135,7 +136,12 @@ def pull_stables():
     overwrite_unpartitioned_table(metadata_df, BQ_DATASET, f"{METADATA_TABLE}_latest")
     overwrite_partition_static(metadata_df, dt, BQ_DATASET, f"{METADATA_TABLE}_history")
 
-    # Write breakdown to BQ
-    overwrite_partitions_dynamic(breakdown_df, BQ_DATASET, f"{BREAKDOWN_TABLE}_history")
+    # Write breakdown to BQ. Only the most recent 7 days are inserted.
+    # Data in BQ older than 7 days is considered immutable.
+    overwrite_partitions_dynamic(
+        df=most_recent_dates(breakdown_df, n_dates=7),
+        dataset=BQ_DATASET,
+        table_name=f"{BREAKDOWN_TABLE}_history",
+    )
 
     return {"metadata": metadata_df, "breakdown": breakdown_df}

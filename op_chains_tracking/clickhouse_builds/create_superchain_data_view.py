@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 import pandas as pd
@@ -57,23 +57,21 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None):
                                 , receipt_status, receipt_l1_fee, receipt_l1_gas_used, receipt_l1_gas_price, receipt_l1_fee_scalar
                                 , receipt_l1_blob_base_fee, receipt_l1_blob_base_fee_scalar, blob_versioned_hashes, max_fee_per_blob_gas
                                 , receipt_l1_block_number, receipt_l1_base_fee_scalar, chain, network, chain_id, insert_time
-                                FROM {table_name}
-                                WHERE 1=1
+                                FROM {table_name} final
+
                                 """
         elif dataset_type == 'blocks':
             sql_query = f"""
                         SELECT id, number, hash, parent_hash, nonce, sha3_uncles, logs_bloom, transactions_root, state_root
                         , receipts_root, miner, cast(difficulty as Float64) AS difficulty, cast(total_difficulty as Float64) AS total_difficulty, size, extra_data, gas_limit, gas_used, timestamp
                         , transaction_count, base_fee_per_gas, withdrawals_root, chain, network, chain_id, insert_time
-                        FROM {table_name}
-                        WHERE 1=1
+                        FROM {table_name} final
                         """
         else: 
             sql_query = f"""
                                 SELECT 
                                 *
-                                FROM {table_name}
-                                WHERE 1=1
+                                FROM {table_name} final
                                 """
         
         # finalize query
@@ -90,7 +88,7 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None):
     print(f"View '{view_slug}_{dataset_type}' created successfully.")
 
 
-# In[ ]:
+# In[5]:
 
 
 view_slug = 'superchain'

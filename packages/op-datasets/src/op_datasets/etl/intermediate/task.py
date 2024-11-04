@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from typing import NewType
 
 import duckdb
-from op_coreutils.duckdb_inmem import parquet_relation
-from op_coreutils.partitioned import DataLocation, InputData, SinkMarkerPath
+from op_coreutils.partitioned import DataReader, DataWriter
 
 BatchDate = NewType("BatchDate", str)
 
@@ -15,8 +14,8 @@ class IntermediateModelsTask:
     This object is mutated during processing.
     """
 
-    # Input data
-    inputdata: InputData
+    # DataReader
+    data_reader: DataReader
 
     # Models to compute
     models: list[str]
@@ -24,37 +23,24 @@ class IntermediateModelsTask:
     # Output duckdb relations
     output_duckdb_relations: dict[str, duckdb.DuckDBPyRelation]
 
-    force: bool  # ignores completion markers when set to true
-
-    # Sinks
-    write_to: list[DataLocation]
-
-    # Expected Markers
-    expected_markers: list[SinkMarkerPath]
-    is_complete: bool
+    # DataWriter
+    data_writer: DataWriter
 
     def __repr__(self):
         return (
             self.__class__.__name__
-            + f"[ctx: {self.contextvars}, datset_paths: {self.paths_summary}]"
+            + f"[ctx: {self.data_reader.contextvars}, datset_paths: {self.data_reader.paths_summary}]"
         )
 
-    @property
-    def dt(self):
-        return self.dateval.strftime("%Y-%m-%d")
+    def store_output(self, model_name, output_name: str, rel: duckdb.DuckDBPyRelation):
+        """Register output data.
 
-    @property
-    def contextvars(self):
-        return self.inputdata.contextvars
+        The provided duckdb relation is stored in the task. All outputs that are stored
+        in the task will be written out by the DataWriter at the end of execution.
+        """
+        dataset_name = f"{model_name}/{output_name}"
 
-    @property
-    def paths_summary(self):
-        return {dataset_name: len(paths) for dataset_name, paths in self.dataset_paths.items()}
+        if dataset_name in self.output_duckdb_relations:
+            raise ValueError(f"name already exists in task outputs: {dataset_name}")
 
-    def duckdb_relation(self, dataset):
-        return parquet_relation(self.dataset_paths[dataset])
-
-    def add_output(self, name: str, output: duckdb.DuckDBPyRelation):
-        if name in self.output_duckdb_relations:
-            raise ValueError(f"name already exists in task outputs: {name}")
-        self.output_duckdb_relations[name] = output
+        self.output_duckdb_relations[dataset_name] = rel

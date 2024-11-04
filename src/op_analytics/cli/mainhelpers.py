@@ -8,22 +8,22 @@ def find_apps(path: str):
     """
     apps = []
 
-    for basename in os.listdir(path):
-        name = os.path.join(path, basename)
+    for childname in os.listdir(path):
+        name = os.path.join(path, childname)
         if os.path.isdir(name) and os.path.isfile(os.path.join(name, "__init__.py")):
-            apps.append(basename)
+            apps.append(childname)
 
         if all(
             [
                 os.path.isfile(name),
-                basename.endswith(".py"),
-                not basename.endswith("__init__.py"),
+                childname.endswith(".py"),
+                not childname.endswith("__init__.py"),
             ]
         ):
-            apps.append(basename)
+            apps.append(childname)
 
     app_names = []
-    for basename in apps:
-        app_names.append(basename.removesuffix(".py"))
+    for childname in apps:
+        app_names.append(childname.removesuffix(".py"))
 
     return sorted(app_names)

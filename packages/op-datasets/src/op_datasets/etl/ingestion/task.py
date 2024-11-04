@@ -3,18 +3,21 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
 
+import pyarrow as pa
 import polars as pl
 from op_coreutils.logger import structlog
 from op_coreutils.partitioned import (
     DataLocation,
-    OutputDataFrame,
+    OutputData,
+    ExpectedOutput,
     SinkMarkerPath,
-    SinkOutputRootPath,
+    DataWriter,
 )
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
 from .batches import BlockBatch
+from .markers import INGESTION_MARKERS_TABLE
 from .sources import RawOnchainDataProvider
 
 log = structlog.get_logger()
@@ -38,15 +41,10 @@ class IngestionTask:
     inputs_ready: bool
 
     # Outputs
-    output_dataframes: list[OutputDataFrame]
-    force: bool  # ignores completion markers when set to true
+    output_dataframes: list[OutputData]
 
-    # Sinks
-    write_to: list[DataLocation]
-
-    # Expected Markers
-    expected_markers: list[SinkMarkerPath]
-    is_complete: bool
+    # DataWriter
+    data_writer: DataWriter
 
     # Progress Indicator
     progress_indicator: str
@@ -69,42 +67,55 @@ class IngestionTask:
         read_from: RawOnchainDataProvider,
         write_to: list[DataLocation],
     ):
-        new_obj = cls(
+        expected_outputs = {}
+        for name, dataset in ONCHAIN_CURRENT_VERSION.items():
+            # Determine the marker path for this dataset.
+            marker_path = block_batch.construct_marker_path()
+            full_marker_path = SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
+
+            # Construct expected output for the dataset.
+            expected_outputs[name] = ExpectedOutput(
+                dataset_name=name,
+                marker_path=full_marker_path,
+                process_name="default",
+                additional_columns=dict(
+                    num_blocks=block_batch.num_blocks(),
+                    min_block=block_batch.min,
+                    max_block=block_batch.max,
+                ),
+                additional_columns_schema=[
+                    pa.field("chain", pa.string()),
+                    pa.field("dt", pa.date32()),
+                    pa.field("num_blocks", pa.int32()),
+                    pa.field("min_block", pa.int64()),
+                    pa.field("max_block", pa.int64()),
+                ],
+            )
+
+        return cls(
             block_batch=block_batch,
             input_datasets={},
             input_dataframes={},
             inputs_ready=False,
-            expected_markers=[],
-            is_complete=False,
             output_dataframes=[],
-            force=False,
             read_from=read_from,
-            write_to=write_to,
+            data_writer=DataWriter(
+                write_to=write_to,
+                markers_table=INGESTION_MARKERS_TABLE,
+                expected_outputs=expected_outputs,
+                is_complete=False,
+                force=False,
+            ),
             progress_indicator="",
         )
 
-        for dataset in ONCHAIN_CURRENT_VERSION.values():
-            new_obj.expected_markers.append(new_obj.get_marker_location(dataset))
-
-        return new_obj
-
     def add_inputs(self, datasets: dict[str, CoreDataset], dataframes: dict[str, pl.DataFrame]):
-        for key, val in datasets.items():
-            self.add_input(key, val, dataframes[key])
+        for name, dataset in datasets.items():
+            self.input_datasets[name] = dataset
+            self.input_dataframes[name] = dataframes[name]
 
-    def add_input(self, name: str, dataset: CoreDataset, dataframe: pl.DataFrame):
-        self.input_datasets[name] = dataset
-        self.input_dataframes[name] = dataframe
-
-    def add_output(self, output: OutputDataFrame):
+    def store_output(self, output: OutputData):
         self.output_dataframes.append(output)
-
-    def get_output_location(self, dataset: CoreDataset) -> SinkOutputRootPath:
-        return SinkOutputRootPath(f"{dataset.versioned_location}")
-
-    def get_marker_location(self, dataset: CoreDataset) -> SinkMarkerPath:
-        marker_path = self.block_batch.construct_marker_path()
-        return SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
 
 
 def ordered_task_list(tasks: list[Any]):

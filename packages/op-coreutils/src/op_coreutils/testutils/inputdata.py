@@ -16,7 +16,7 @@ class InputTestData:
         """
         return cls(os.path.abspath(os.path.dirname(file_path)))
 
-    def path(self, basename):
-        """Return abspath for the given basename on the TestCase directory."""
+    def path(self, name):
+        """Return abspath for the given name on the TestCase directory."""
 
-        return os.path.join(self.abspath, basename)
+        return os.path.join(self.abspath, name)
