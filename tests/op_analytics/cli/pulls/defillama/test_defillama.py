@@ -76,17 +76,17 @@ def test_process_breakdown_stables(mock_sample_data):
     assert result_df["unreleased"][0] == 0
 
 
-@patch("op_analytics.cli.subcommands.pulls.defillama.get_data")  # Correct mock path
-@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_unpartitioned_table")
-@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_partition_static")
-@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_partitioned_table")
 @patch("op_analytics.cli.subcommands.pulls.defillama.new_session")
+@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_partitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_partition_static")
+@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_unpartitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.get_data")
 def test_pull_stables(
-    mock_new_session,
-    mock_upsert_partitioned_table,
-    mock_overwrite_partition_static,
-    mock_overwrite_unpartitioned_table,
     mock_get_data,
+    mock_overwrite_unpartitioned_table,
+    mock_overwrite_partition_static,
+    mock_upsert_partitioned_table,
+    mock_new_session,
     mock_sample_data,
 ):
     # Mock the session
