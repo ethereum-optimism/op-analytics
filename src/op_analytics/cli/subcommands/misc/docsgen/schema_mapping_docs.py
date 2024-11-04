@@ -13,7 +13,7 @@ from py_markdown_table.markdown_table import markdown_table
 EXCLUDED_COLS = {"ingestion_metadata"}
 
 
-def column_details_df(schema: CoreDataset) -> list[dict]:
+def column_details_df(schema: CoreDataset) -> pd.DataFrame:
     """Produces a list with display details for all of the columns in the schema."""
     return pd.DataFrame(
         [col.display_dict() for col in schema.columns if col.name not in EXCLUDED_COLS]
@@ -30,7 +30,9 @@ def generate():
     with open(output_path, "w") as fobj:
         fobj.write(template)
 
-        multiline = defaultdict(lambda: 30)
+        # Avoid having to codify the data columns in the multiline config dictionary
+        # by using a defaultdict.
+        multiline: dict[str, int] = defaultdict(lambda: 30)
 
         for name, dataset in ONCHAIN_CURRENT_VERSION.items():
             capitalized = name.capitalize()

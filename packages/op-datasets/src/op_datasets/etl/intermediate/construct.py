@@ -51,7 +51,7 @@ def construct_tasks(
 
                 expected_outputs[dataset_name] = ExpectedOutput(
                     dataset_name=dataset_name,
-                    root_path=SinkOutputRootPath(dataset_name),
+                    root_path=SinkOutputRootPath(f"intermediate/{dataset_name}"),
                     file_name="out.parquet",
                     marker_path=SinkMarkerPath(dataset_name),
                     process_name="default",

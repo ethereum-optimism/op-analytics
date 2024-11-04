@@ -1,9 +1,6 @@
-from typing import Callable
-
-import duckdb
 from op_coreutils.duckdb_inmem import init_client
 from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
-from op_coreutils.partitioned import DataLocation, OutputData, SinkOutputRootPath
+from op_coreutils.partitioned import DataLocation, OutputData
 
 from .construct import construct_tasks
 from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
@@ -102,25 +99,17 @@ def executor(task: IntermediateModelsTask) -> None:
             )
 
 
-def relation_to_output(dataset_name: str, rel: duckdb.DuckDBPyRelation) -> Callable[[], OutputData]:
-    def func():
-        return OutputData(
-            dataframe=rel.pl(),
-            root_path=SinkOutputRootPath(f"intermediate/{dataset_name}"),
-            dataset_name=dataset_name,
-            default_partition=None,
-        )
-
-    return func
-
-
 def writer(task: IntermediateModelsTask):
-    task.data_writer.write_all_callables(
-        outputs=[
-            relation_to_output(dataset_name, rel)
-            for dataset_name, rel in task.output_duckdb_relations.items()
-        ],
-    )
+    for dataset_name, rel in task.output_duckdb_relations.items():
+        for location in task.data_writer.write_to:
+            task.data_writer.write(
+                location=location,
+                output_data=OutputData(
+                    dataframe=rel.pl(),
+                    dataset_name=dataset_name,
+                    default_partition=None,
+                ),
+            )
 
 
 def checker(task: IntermediateModelsTask) -> None:
