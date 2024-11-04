@@ -40,7 +40,7 @@ def get_data(session: requests.Session, url: str, headers: dict[str, str] | None
     resp.raise_for_status()
 
     if resp.status_code != 200:
-        raise Exception(f"status={resp.status}, url={url!r}")
+        raise Exception(f"status={resp.status_code}, url={url!r}")
 
     log.info(f"Fetched from {url}: {time.time() - start:.2f} seconds")
     return resp.json()
