@@ -1,7 +1,6 @@
 import socket
 from dataclasses import dataclass
 from datetime import date
-from typing import Any
 
 import polars as pl
 import pyarrow as pa
@@ -10,23 +9,21 @@ from op_coreutils import clickhouse, duckdb_local
 from op_coreutils.time import date_fromstr, now
 
 from .location import DataLocation, MarkersLocation, marker_location
-from .output import WrittenParquetPath
-from .types import SinkMarkerPath, SinkOutputRootPath
+from .output import OutputPartMeta, ExpectedOutput
+from .types import SinkMarkerPath
 
 
 @dataclass
 class Marker:
     """Represent a marker for a collection of objects written to storage."""
 
-    marker_path: SinkMarkerPath
-    dataset_name: str
-    root_path: SinkOutputRootPath
-    data_paths: list[WrittenParquetPath]
-    process_name: str
+    expected_output: ExpectedOutput
 
-    # Values for additional columns stored in the markers table.
-    additional_columns: dict[str, Any]
-    additional_columns_schema: list[pa.Field]
+    written_parts: list[OutputPartMeta]
+
+    @property
+    def marker_path(self):
+        return self.expected_output.marker_path
 
     def arrow_schema(self) -> pa.Schema:
         return pa.schema(
@@ -41,7 +38,7 @@ class Marker:
                 pa.field("process_name", pa.string()),
                 pa.field("writer_name", pa.string()),
             ]
-            + self.additional_columns_schema
+            + self.expected_output.additional_columns_schema
         )
 
     def to_pyarrow_table(self) -> pa.Table:
@@ -50,16 +47,18 @@ class Marker:
         current_time = now()
         hostname = socket.gethostname()
         rows = []
-        for parquet_out in self.data_paths:
+        for parquet_out in self.written_parts:
             parquet_out_row = {
                 "updated_at": current_time,
-                "marker_path": self.marker_path,
-                "root_path": self.root_path,
-                "num_parts": len(self.data_paths),
-                "dataset_name": self.dataset_name,
-                "data_path": parquet_out.full_path,
+                "marker_path": self.expected_output.marker_path,
+                "root_path": self.expected_output.root_path,
+                "num_parts": len(self.written_parts),
+                "dataset_name": self.expected_output.dataset_name,
+                "data_path": parquet_out.full_path(
+                    self.expected_output.root_path, self.expected_output.file_name
+                ),
                 "row_count": parquet_out.row_count,
-                "process_name": self.process_name,
+                "process_name": self.expected_output.process_name,
                 "writer_name": hostname,
             }
 
@@ -73,7 +72,7 @@ class Marker:
             rows.append(parquet_out_row)
 
         for row in rows:
-            for name, value in self.additional_columns.items():
+            for name, value in self.expected_output.additional_columns.items():
                 row[name] = value
 
         return pa.Table.from_pylist(rows, schema=schema)

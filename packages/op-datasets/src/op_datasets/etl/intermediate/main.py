@@ -120,7 +120,6 @@ def writer(task: IntermediateModelsTask):
             relation_to_output(dataset_name, rel)
             for dataset_name, rel in task.output_duckdb_relations.items()
         ],
-        basename="blah.parquet",
     )
 
 
