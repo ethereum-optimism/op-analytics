@@ -3,17 +3,14 @@ from typing import Any, Generator
 import polars as pl
 
 
-from .types import SinkOutputRootPath
-from .output import WrittenParquetPath, KeyValue
+from .output import KeyValue, OutputPart, OutputPartMeta
 
 
 def breakout_partitions(
     df: pl.DataFrame,
     partition_cols: list[str],
-    root_path: SinkOutputRootPath,
-    basename: str,
     default_partition: dict[str, Any] | None = None,
-) -> Generator[tuple[pl.DataFrame, WrittenParquetPath], None, None]:
+) -> Generator[OutputPart, None, None]:
     """Split a dataframe into partitions.
 
     The data in each partition will be written to storage as a separate parquet file.
@@ -22,11 +19,9 @@ def breakout_partitions(
 
     if len(df) == 0:
         assert default_partition is not None
-        yield (
-            df.drop(*partition_cols),
-            WrittenParquetPath(
-                root=root_path,
-                basename=basename,
+        yield OutputPart(
+            df=df.drop(*partition_cols),
+            meta=OutputPartMeta(
                 partitions=[KeyValue(key=col, value=val) for col, val in default_partition.items()],
                 row_count=0,
             ),
@@ -36,11 +31,9 @@ def breakout_partitions(
         for part in parts:
             part_df = df.filter(pl.all_horizontal(pl.col(col) == val for col, val in part.items()))
 
-            yield (
-                part_df.drop(*partition_cols),
-                WrittenParquetPath(
-                    root=root_path,
-                    basename=basename,
+            yield OutputPart(
+                df=df.drop(*partition_cols),
+                meta=OutputPartMeta(
                     partitions=[KeyValue(key=col, value=val) for col, val in part.items()],
                     row_count=len(part_df),
                 ),

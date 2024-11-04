@@ -14,7 +14,7 @@ from op_coreutils.storage.gcs_parquet import (
 from .breakout import breakout_partitions
 from .location import DataLocation
 from .marker import MARKERS_DB, marker_exists, Marker
-from .output import OutputData, WrittenParquetPath, ExpectedOutput
+from .output import OutputData, ExpectedOutput
 from .status import all_outputs_complete
 
 log = structlog.get_logger()
@@ -47,14 +47,11 @@ class DataWriter:
             markers_table=self.markers_table,
         )
 
-    def write_all(self, outputs: list[OutputData], basename: str):
+    def write_all(self, outputs: list[OutputData]):
         """Write data and markers to all the specified locations."""
-        return self.write_all_callables(
-            outputs=[lambda: df for df in outputs],
-            basename=basename,
-        )
+        return self.write_all_callables(outputs=[lambda: df for df in outputs])
 
-    def write_all_callables(self, outputs: list[Callable[[], OutputData]], basename: str):
+    def write_all_callables(self, outputs: list[Callable[[], OutputData]]):
         """Write data and markers to all the specified locations.
 
         The data is provided as a list of functions that return a dataframe. This lets us generalize
@@ -81,31 +78,26 @@ class DataWriter:
                         )
                         continue
 
-                    written_parts: list[WrittenParquetPath] = []
                     parts = breakout_partitions(
                         df=output_data.dataframe,
                         partition_cols=["chain", "dt"],
-                        root_path=output_data.root_path,
-                        basename=basename,
                         default_partition=output_data.default_partition,
                     )
 
-                    for part_df, part in parts:
+                    parts_meta = []
+                    for part in parts:
                         write_single_part(
                             location=location,
-                            dataframe=part_df,
-                            part_output=part,
+                            dataframe=part.df,
+                            full_path=part.meta.full_path(
+                                expected_output.root_path, expected_output.file_name
+                            ),
                         )
-                        written_parts.append(part)
+                        parts_meta.append(part.meta)
 
                     marker = Marker(
-                        marker_path=expected_output.marker_path,
-                        dataset_name=output_data.dataset_name,
-                        root_path=output_data.root_path,
-                        data_paths=written_parts,
-                        process_name=expected_output.process_name,
-                        additional_columns=expected_output.additional_columns,
-                        additional_columns_schema=expected_output.additional_columns_schema,
+                        expected_output=expected_output,
+                        written_parts=parts_meta,
                     )
 
                     write_marker(
@@ -119,16 +111,16 @@ class DataWriter:
 def write_single_part(
     location: DataLocation,
     dataframe: pl.DataFrame,
-    part_output: WrittenParquetPath,
+    full_path: str,
 ):
     """Write a single parquet output file for a partitioned output."""
     if location == DataLocation.GCS:
-        gcs_upload_parquet(part_output.full_path, dataframe)
+        gcs_upload_parquet(full_path, dataframe)
         return
 
     elif location == DataLocation.LOCAL:
         local_upload_parquet(
-            path=location.with_prefix(part_output.full_path),
+            path=location.with_prefix(full_path),
             df=dataframe,
         )
 
