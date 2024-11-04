@@ -130,3 +130,50 @@ def test_pull_stables(
     assert "unique_keys" in kwargs
     assert "partition_dt" in kwargs
     assert kwargs["unique_keys"] == ["dt", "id", "chain"]
+
+
+@patch("op_analytics.cli.subcommands.pulls.defillama.new_session")
+@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_partitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_partition_static")
+@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_unpartitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.get_data")
+def test_pull_stables_multiple_stablecoins(
+    mock_get_data,
+    mock_overwrite_unpartitioned_table,
+    mock_overwrite_partition_static,
+    mock_upsert_partitioned_table,
+    mock_new_session,
+    mock_sample_data,
+):
+    # Mock the session
+    mock_session = MagicMock()
+    mock_new_session.return_value = mock_session
+
+    mock_get_data.side_effect = [
+        {
+            "peggedAssets": [
+                {"id": "sample-stablecoin", "name": "Sample Stablecoin"},
+                {"id": "another-stablecoin", "name": "Another Stablecoin"},
+            ]
+        },
+        mock_sample_data,
+        mock_sample_data,
+    ]
+
+    result = defillama.pull_stables(days=30)
+
+    # Assertions
+    assert "metadata" in result
+    assert "breakdown" in result
+    assert isinstance(result["metadata"], pl.DataFrame)
+    assert isinstance(result["breakdown"], pl.DataFrame)
+    assert len(result["metadata"]) == 2  # Two stablecoins
+    assert len(result["breakdown"]) >= 2  # At least two data points
+
+    # Verify that get_data was called three times (summary and two breakdowns)
+    assert mock_get_data.call_count == 3
+
+    # Check that BigQuery functions were called
+    assert mock_overwrite_unpartitioned_table.called
+    assert mock_overwrite_partition_static.called
+    assert mock_upsert_partitioned_table.called
