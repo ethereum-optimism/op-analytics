@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from op_coreutils.testutils.inputdata import InputTestData
-from unittest.mock import MagicMock
-import polars as pl
 from datetime import datetime, timezone
+from unittest.mock import MagicMock, patch
+
+import polars as pl
 import pytest
-from unittest.mock import patch
+from op_coreutils.testutils.inputdata import InputTestData
+
 from op_analytics.cli.subcommands.pulls import defillama
 
 TESTDATA = InputTestData.at(__file__)
