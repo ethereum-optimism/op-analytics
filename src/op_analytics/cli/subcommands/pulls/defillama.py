@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import time
 from typing import Dict, List, Optional, Tuple
 import polars as pl
 from op_coreutils.bigquery.write import (
@@ -9,7 +8,7 @@ from op_coreutils.bigquery.write import (
 )
 from datetime import datetime, timedelta, timezone
 from op_coreutils.logger import structlog
-from op_coreutils.request import new_session
+from op_coreutils.request import new_session, get_data
 from op_coreutils.time import now_date
 from op_coreutils.threads import run_concurrently
 
@@ -24,29 +23,6 @@ BREAKDOWN_TABLE = "defillama_daily_stablecoins_breakdown"
 METADATA_TABLE = "defillama_stablecoins_metadata"
 
 
-def get_data(session, url: str) -> Optional[dict]:
-    """
-    Fetches data from a given URL using the provided session.
-
-    Args:
-        session: The HTTP session for making requests.
-        url (str): The URL to fetch data from.
-
-    Returns:
-        Optional[dict]: The JSON response as a dictionary, or None if an error occurred.
-    """
-    start = time.time()
-    try:
-        response = session.get(url, headers={"Content-Type": "application/json"})
-        response.raise_for_status()
-        resp_json = response.json()
-        log.info(f"Fetched from {url}: {time.time() - start:.2f} seconds")
-        return resp_json
-    except Exception as e:
-        log.error(f"Failed to fetch data from {url}: {e}")
-        return None
-
-
 def process_breakdown_stables(
     data: dict, days: int = 30
 ) -> Tuple[pl.DataFrame, Dict[str, Optional[str]]]:
@@ -54,15 +30,12 @@ def process_breakdown_stables(
     Processes breakdown data for stablecoins, filtering for the most recent N days.
 
     Args:
-        data (dict): The breakdown data from the API.
-        days (int): The number of days to filter in the processed data.
+        data: The breakdown data from the API.
+        days: The number of days to filter in the processed data.
 
     Returns:
-        Tuple[pl.DataFrame, Dict[str, Optional[str]]]: A Polars DataFrame with breakdown data and metadata dictionary.
+        A tuple containing a Polars DataFrame with breakdown data and a metadata dictionary.
     """
-    if data is None:
-        return pl.DataFrame(), {}
-
     peg_type: str = data.get("pegType", "")
     balances: Dict[str, dict] = data.get("chainBalances", {})
 
@@ -134,17 +107,14 @@ def pull_stables(
     Pulls and processes stablecoin data from DeFiLlama.
 
     Args:
-        stablecoin_ids (Optional[List[str]]): List of stablecoin IDs to process. Defaults to None (process all).
-        days (int): Number of days of data to retrieve. Defaults to 30.
+        stablecoin_ids: List of stablecoin IDs to process. Defaults to None (process all).
+        days: Number of days of data to retrieve. Defaults to 30.
 
     Returns:
-        Dict[str, pl.DataFrame]: A dictionary containing metadata and breakdown DataFrames.
+        A dictionary containing metadata and breakdown DataFrames.
     """
     session = new_session()
     summary = get_data(session, SUMMARY_ENDPOINT)
-    if summary is None:
-        log.error("Failed to fetch summary data.")
-        return {"metadata": pl.DataFrame(), "breakdown": pl.DataFrame()}
 
     all_stablecoin_ids = [asset["id"] for asset in summary.get("peggedAssets", [])]
     if stablecoin_ids is not None:
@@ -169,14 +139,11 @@ def pull_stables(
     metadata_rows: List[Dict[str, Optional[str]]] = []
 
     for data in stablecoin_data.values():
-        if data:
-            breakdown_df, metadata = process_breakdown_stables(data, days=days)
-            if not breakdown_df.is_empty():
-                breakdown_dfs.append(breakdown_df)
-            if metadata:
-                metadata_rows.append(metadata)
-        else:
-            log.warning("Received empty data for a stablecoin.")
+        breakdown_df, metadata = process_breakdown_stables(data, days=days)
+        if not breakdown_df.is_empty():
+            breakdown_dfs.append(breakdown_df)
+        if metadata:
+            metadata_rows.append(metadata)
 
     breakdown_df = (
         pl.concat(breakdown_dfs, how="diagonal_relaxed")
