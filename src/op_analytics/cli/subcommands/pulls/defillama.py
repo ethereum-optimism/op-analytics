@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Tuple
+
 import polars as pl
 from op_coreutils.bigquery.write import (
-    overwrite_unpartitioned_table,
     overwrite_partition_static,
+    overwrite_unpartitioned_table,
     upsert_partitioned_table,
 )
-from datetime import datetime, timedelta, timezone
 from op_coreutils.logger import structlog
-from op_coreutils.request import new_session, get_data
-from op_coreutils.time import now_date
+from op_coreutils.request import get_data, new_session
 from op_coreutils.threads import run_concurrently
+from op_coreutils.time import now_date
 
 log = structlog.get_logger()
 
