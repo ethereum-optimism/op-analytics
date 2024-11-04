@@ -7,9 +7,7 @@ import pytest
 from unittest.mock import patch
 from op_analytics.cli.subcommands.pulls import defillama
 
-
 TESTDATA = InputTestData.at(__file__)
-
 
 # Sample data resembling the API response
 current_timestamp = int(datetime.now(timezone.utc).timestamp())
@@ -77,7 +75,7 @@ def test_process_breakdown_stables(mock_sample_data):
     assert result_df["unreleased"][0] == 0
 
 
-@patch("op_analytics.cli.subcommands.pulls.defillama.get_data")
+@patch("op_analytics.cli.subcommands.pulls.defillama.get_data")  # Correct mock path
 @patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_unpartitioned_table")
 @patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_partition_static")
 @patch("op_analytics.cli.subcommands.pulls.defillama.upsert_partitioned_table")
