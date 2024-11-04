@@ -390,6 +390,8 @@ def _upsert_df_to_bq(
     WHEN NOT MATCHED THEN
       INSERT ({df_columns}) VALUES ({df_values})
     """
+
+    # Print the merge query for debugging purposes.
     print()
     print(merge_query)
     print()

@@ -1,16 +1,15 @@
 import os
-import time
+import requests
 from datetime import datetime
 
 import polars as pl
-import urllib3
 from op_coreutils.bigquery.write import (
     overwrite_partition_static,
     overwrite_unpartitioned_table,
     upsert_unpartitioned_table,
 )
 from op_coreutils.logger import structlog
-from op_coreutils.request import new_session
+from op_coreutils.request import new_session, get_data
 from op_coreutils.time import now_date
 from op_coreutils.threads import run_concurrently
 from op_coreutils.env.vault import env_get
@@ -29,38 +28,26 @@ ANALYTICS_TABLE = "github_daily_analytics"
 REFERRERS_TABLE = "github_daily_referrers_snapshot"
 
 
-def get_data(session: urllib3.PoolManager, url):
-    """Helper function to reuse an existing HTTP session to fetch data from a URL."""
-    start = time.time()
-    token = env_get("GITHUB_API_TOKEN")
-    resp = session.request(
-        method="GET",
-        url=url,
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"token {token}",
-        },
-    )
-    if resp.status != 200:
-        print(f"status = {resp.status}")
-        print(resp.data)
-        raise Exception(f"failed to get data from {url!r}")
-    log.info(f"Fetched from {url}: {time.time() - start:.2f} seconds")
-    return resp.json()
-
-
 def pull():
     session = new_session()
 
+    token = env_get("GITHUB_API_TOKEN")
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"token {token}",
+    }
+
     # Fetch data for all repos.
     repo_dfs = run_concurrently(
-        lambda r: process_repo(session, repo=r), targets=REPOS, max_workers=3
+        lambda repo: process_repo(session, headers, repo=repo),
+        targets=REPOS,
+        max_workers=3,
     )
 
     # Consolidate into one dataframe per table for all repos.
     all_metrics = []
     all_referrers = []
-    for repo, (referrers_df, metrics_df) in repo_dfs.items():
+    for referrers_df, metrics_df in repo_dfs.values():
         all_metrics.append(metrics_df)
         all_referrers.append(referrers_df)
     all_metrics_df = pl.concat(all_metrics).select(
@@ -102,11 +89,27 @@ def pull():
     )
 
 
-def process_repo(session, repo: str):
-    views = get_data(session, REPOS_BASE_URL + f"/{repo}/traffic/views")
-    clones = get_data(session, REPOS_BASE_URL + f"/{repo}/traffic/clones")
-    forks = get_data(session, REPOS_BASE_URL + f"/{repo}/forks?sort=oldest")
-    referrers = get_data(session, REPOS_BASE_URL + f"/{repo}/traffic/popular/referrers")
+def process_repo(session: requests.Session, headers: dict[str, str], repo: str):
+    views = get_data(
+        session=session,
+        url=REPOS_BASE_URL + f"/{repo}/traffic/views",
+        headers=headers,
+    )
+    clones = get_data(
+        session=session,
+        url=REPOS_BASE_URL + f"/{repo}/traffic/clones",
+        headers=headers,
+    )
+    forks = get_data(
+        session=session,
+        url=REPOS_BASE_URL + f"/{repo}/forks?sort=oldest",
+        headers=headers,
+    )
+    referrers = get_data(
+        session=session,
+        url=REPOS_BASE_URL + f"/{repo}/traffic/popular/referrers",
+        headers=headers,
+    )
 
     views_df = process_views(views)
     clones_df = process_clones(clones)
