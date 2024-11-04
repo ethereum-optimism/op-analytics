@@ -11,6 +11,7 @@ from op_coreutils.partitioned import (
     OutputData,
     ExpectedOutput,
     SinkMarkerPath,
+    SinkOutputRootPath,
     DataWriter,
 )
 
@@ -76,6 +77,8 @@ class IngestionTask:
             # Construct expected output for the dataset.
             expected_outputs[name] = ExpectedOutput(
                 dataset_name=name,
+                root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
+                file_name=block_batch.construct_parquet_filename(),
                 marker_path=full_marker_path,
                 process_name="default",
                 additional_columns=dict(

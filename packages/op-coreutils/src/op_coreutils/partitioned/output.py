@@ -15,6 +15,12 @@ class ExpectedOutput:
     # Name of the datset.
     dataset_name: str
 
+    # Root path that will be used for the partitioned output.
+    root_path: SinkOutputRootPath
+
+    # File name that will be used for the parquet file.
+    file_name: str
+
     # Completion marker path.
     marker_path: SinkMarkerPath
 
@@ -33,7 +39,8 @@ class ExpectedOutput:
 @dataclass
 class OutputData:
     dataframe: pl.DataFrame
-    root_path: SinkOutputRootPath
+
+    # Name of the datset.
     dataset_name: str
 
     # Default partition values for cases when the output datafarame is empty
@@ -48,30 +55,23 @@ class KeyValue:
 
 
 @dataclass
-class WrittenParquetPath:
-    """Represent a single object written to storage in a partitioned path."""
+class OutputPartMeta:
+    """Metadata for an output part."""
 
-    root: SinkOutputRootPath
-    # TODO: see if we can avoid having basename here and think of a different class name.
-    basename: str
     partitions: list[KeyValue]
     row_count: int
-
-    @classmethod
-    def from_partition(
-        cls, root: SinkOutputRootPath, basename: str, partitions: list[KeyValue], row_count: int
-    ) -> "WrittenParquetPath":
-        return cls(
-            root=root,
-            basename=basename,
-            partitions=partitions,
-            row_count=row_count,
-        )
 
     @property
     def partitions_path(self):
         return "/".join(f"{col.key}={col.value}" for col in self.partitions)
 
-    @property
-    def full_path(self):
-        return os.path.join(self.root, self.partitions_path, self.basename)
+    def full_path(self, root_path: str, file_name: str):
+        return os.path.join(root_path, self.partitions_path, file_name)
+
+
+@dataclass
+class OutputPart:
+    """Data and metadadta for a single part in a a partitioned output."""
+
+    df: pl.DataFrame
+    meta: OutputPartMeta

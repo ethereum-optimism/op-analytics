@@ -5,7 +5,6 @@ from op_coreutils.logger import bind_contextvars, clear_contextvars, human_inter
 from op_coreutils.partitioned import (
     DataLocation,
     OutputData,
-    SinkOutputRootPath,
 )
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
@@ -169,7 +168,6 @@ def auditor(task: IngestionTask):
         task.store_output(
             OutputData(
                 dataframe=task.input_dataframes[name],
-                root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
                 dataset_name=name,
                 default_partition=default_partition,
             )
@@ -177,10 +175,7 @@ def auditor(task: IngestionTask):
 
 
 def writer(task: IngestionTask):
-    task.data_writer.write_all(
-        outputs=task.output_dataframes,
-        basename=task.block_batch.construct_parquet_filename(),
-    )
+    task.data_writer.write_all(outputs=task.output_dataframes)
 
 
 def checker(task: IngestionTask):

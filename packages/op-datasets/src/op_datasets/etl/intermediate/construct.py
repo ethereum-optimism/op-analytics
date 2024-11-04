@@ -6,6 +6,7 @@ from op_coreutils.partitioned import (
     DataReader,
     construct_input_batches,
     SinkMarkerPath,
+    SinkOutputRootPath,
     DataWriter,
     ExpectedOutput,
 )
@@ -47,8 +48,11 @@ def construct_tasks(
         for model in models:
             for dataset in REGISTERED_INTERMEDIATE_MODELS[model].expected_output_datasets:
                 dataset_name = f"{model}/{dataset}"
+
                 expected_outputs[dataset_name] = ExpectedOutput(
                     dataset_name=dataset_name,
+                    root_path=SinkOutputRootPath(dataset_name),
+                    file_name="out.parquet",
                     marker_path=SinkMarkerPath(dataset_name),
                     process_name="default",
                     additional_columns=dict(
