@@ -1,149 +1,179 @@
-import json
+# -*- coding: utf-8 -*-
+from datetime import datetime, timezone
+from unittest.mock import MagicMock, patch
 
+import polars as pl
+import pytest
 from op_coreutils.testutils.inputdata import InputTestData
 
 from op_analytics.cli.subcommands.pulls import defillama
 
 TESTDATA = InputTestData.at(__file__)
 
+# Sample data resembling the API response
+current_timestamp = int(datetime.now(timezone.utc).timestamp())
 
-def test_process_breakdown_data():
-    with open(TESTDATA.path("mockdata/stablecoin_tether.json"), "r") as fobj:
-        data = json.load(fobj)
+sample_data = {
+    "pegType": "peggedUSD",
+    "chainBalances": {
+        "Ethereum": {
+            "tokens": [
+                {
+                    "date": current_timestamp,
+                    "circulating": {"peggedUSD": 1000000},
+                    "bridgedTo": {"peggedUSD": 200000},
+                    "minted": {"peggedUSD": 1200000},
+                    "unreleased": {"peggedUSD": 0},
+                },
+                {
+                    "date": current_timestamp - 86400 * 2,  # 2 days ago
+                    "circulating": {"peggedUSD": 900000},
+                    "bridgedTo": {"peggedUSD": 180000},
+                    "minted": {"peggedUSD": 1080000},
+                    "unreleased": {"peggedUSD": 0},
+                },
+            ]
+        }
+    },
+    "id": "sample-stablecoin",
+    "name": "Sample Stablecoin",
+    "address": "0xSampleAddress",
+    "symbol": "SSC",
+    "url": "https://samplestablecoin.com",
+    "pegMechanism": "fiat-backed",
+    "description": "A sample stablecoin for testing.",
+    "mintRedeemDescription": "Mint and redeem instructions.",
+    "onCoinGecko": True,
+    "gecko_id": "sample-stablecoin",
+    "cmcId": "12345",
+    "priceSource": "coingecko",
+    "twitter": "@samplestablecoin",
+    "price": 1.00,
+}
 
-    dataframe, metadata = defillama.process_breakdown_stables(data)
 
-    expected_metadata = {
-        "id": "1",
-        "name": "Tether",
-        "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
-        "symbol": "USDT",
-        "url": "https://tether.to/",
-        "pegType": "peggedUSD",
-        "pegMechanism": "fiat-backed",
-        "description": "Launched in 2014, Tether tokens pioneered the stablecoin model. Tether tokens are pegged to real-world currencies on a 1-to-1 basis. This offers traders, merchants and funds a low volatility solution when exiting positions in the market.",
-        "mintRedeemDescription": "Tether customers who have undergone a verification process can exchange USD for USDT and redeem USDT for USD.",
-        "onCoinGecko": "true",
-        "gecko_id": "tether",
-        "cmcId": "825",
-        "priceSource": "defillama",
-        "twitter": "https://twitter.com/Tether_to",
-        "price": 0.999751,
-    }
-    assert metadata == expected_metadata
+@pytest.fixture
+def mock_sample_data():
+    return sample_data
 
-    actual_rows = dataframe.to_dicts()[:10]
-    expected_rows = [
+
+def test_process_breakdown_stables(mock_sample_data):
+    # Test with default days=30
+    result_df, metadata = defillama.process_breakdown_stables(mock_sample_data)
+    assert isinstance(result_df, pl.DataFrame)
+    assert len(result_df) == 2  # Two data points within 30 days
+    assert metadata["id"] == "sample-stablecoin"
+    assert metadata["name"] == "Sample Stablecoin"
+
+    # Test filtering with days=1
+    result_df_recent, _ = defillama.process_breakdown_stables(mock_sample_data, days=1)
+    assert len(result_df_recent) == 1  # Only the most recent data point
+
+    # Check data correctness
+    assert result_df["circulating"][0] == 1000000
+    assert result_df["bridged_to"][0] == 200000
+    assert result_df["minted"][0] == 1200000
+    assert result_df["unreleased"][0] == 0
+
+
+@patch("op_analytics.cli.subcommands.pulls.defillama.new_session")
+@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_partitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_partition_static")
+@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_unpartitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.get_data")
+def test_pull_stables(
+    mock_get_data,
+    mock_overwrite_unpartitioned_table,
+    mock_overwrite_partition_static,
+    mock_upsert_partitioned_table,
+    mock_new_session,
+    mock_sample_data,
+):
+    # Mock the session
+    mock_session = MagicMock()
+    mock_new_session.return_value = mock_session
+
+    # Mock get_data to return sample summary and sample data
+    mock_get_data.side_effect = [
         {
-            "chain": "Optimism",
-            "dt": "2022-05-12",
-            "circulating": 19021887.0,
-            "bridged_to": 19021887.0,
-            "minted": None,
-            "unreleased": None,
-            "id": "1",
-            "name": "Tether",
-            "symbol": "USDT",
+            "peggedAssets": [
+                {"id": "sample-stablecoin", "name": "Sample Stablecoin"},
+                {"id": "another-stablecoin", "name": "Another Stablecoin"},
+            ]
         },
-        {
-            "chain": "Optimism",
-            "dt": "2022-05-13",
-            "circulating": 19021887.0,
-            "bridged_to": 19021887.0,
-            "minted": None,
-            "unreleased": None,
-            "id": "1",
-            "name": "Tether",
-            "symbol": "USDT",
-        },
-        {
-            "chain": "Optimism",
-            "dt": "2022-05-14",
-            "circulating": 19021906.0,
-            "bridged_to": 19021906.0,
-            "minted": None,
-            "unreleased": None,
-            "id": "1",
-            "name": "Tether",
-            "symbol": "USDT",
-        },
-        {
-            "chain": "Optimism",
-            "dt": "2022-05-15",
-            "circulating": 19023188.0,
-            "bridged_to": 19023188.0,
-            "minted": None,
-            "unreleased": None,
-            "id": "1",
-            "name": "Tether",
-            "symbol": "USDT",
-        },
-        {
-            "chain": "Optimism",
-            "dt": "2022-05-16",
-            "circulating": 18844204.0,
-            "bridged_to": 18844204.0,
-            "minted": None,
-            "unreleased": None,
-            "id": "1",
-            "name": "Tether",
-            "symbol": "USDT",
-        },
-        {
-            "chain": "Optimism",
-            "dt": "2022-05-17",
-            "circulating": 18850486.0,
-            "bridged_to": 18850486.0,
-            "minted": None,
-            "unreleased": None,
-            "id": "1",
-            "name": "Tether",
-            "symbol": "USDT",
-        },
-        {
-            "chain": "Optimism",
-            "dt": "2022-05-18",
-            "circulating": 18875986.0,
-            "bridged_to": 18875986.0,
-            "minted": None,
-            "unreleased": None,
-            "id": "1",
-            "name": "Tether",
-            "symbol": "USDT",
-        },
-        {
-            "chain": "Optimism",
-            "dt": "2022-05-19",
-            "circulating": 19207042.0,
-            "bridged_to": 19207042.0,
-            "minted": None,
-            "unreleased": None,
-            "id": "1",
-            "name": "Tether",
-            "symbol": "USDT",
-        },
-        {
-            "chain": "Optimism",
-            "dt": "2022-05-20",
-            "circulating": 19358232.0,
-            "bridged_to": 19358232.0,
-            "minted": None,
-            "unreleased": None,
-            "id": "1",
-            "name": "Tether",
-            "symbol": "USDT",
-        },
-        {
-            "chain": "Optimism",
-            "dt": "2022-05-21",
-            "circulating": 19368126.0,
-            "bridged_to": 19368126.0,
-            "minted": None,
-            "unreleased": None,
-            "id": "1",
-            "name": "Tether",
-            "symbol": "USDT",
-        },
+        mock_sample_data,  # For the stablecoin breakdown
     ]
 
-    assert actual_rows == expected_rows
+    # Call the function under test
+    result = defillama.pull_stables(stablecoin_ids=["sample-stablecoin"], days=30)
+
+    # Assertions
+    assert "metadata" in result
+    assert "breakdown" in result
+    assert isinstance(result["metadata"], pl.DataFrame)
+    assert isinstance(result["breakdown"], pl.DataFrame)
+    assert len(result["metadata"]) == 1
+    assert len(result["breakdown"]) == 2
+
+    # Check that BigQuery functions were called
+    assert mock_overwrite_unpartitioned_table.called
+    assert mock_overwrite_partition_static.called
+    assert mock_upsert_partitioned_table.called
+
+    # Verify that get_data was called twice (summary and breakdown)
+    assert mock_get_data.call_count == 2
+
+    # Check that upsert_partitioned_table was called with correct parameters
+    args, kwargs = mock_upsert_partitioned_table.call_args
+    assert "dataset" in kwargs
+    assert "table_name" in kwargs
+    assert "unique_keys" in kwargs
+    assert "partition_dt" in kwargs
+    assert kwargs["unique_keys"] == ["dt", "id", "chain"]
+
+
+@patch("op_analytics.cli.subcommands.pulls.defillama.new_session")
+@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_partitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_partition_static")
+@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_unpartitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.get_data")
+def test_pull_stables_multiple_stablecoins(
+    mock_get_data,
+    mock_overwrite_unpartitioned_table,
+    mock_overwrite_partition_static,
+    mock_upsert_partitioned_table,
+    mock_new_session,
+    mock_sample_data,
+):
+    # Mock the session
+    mock_session = MagicMock()
+    mock_new_session.return_value = mock_session
+
+    mock_get_data.side_effect = [
+        {
+            "peggedAssets": [
+                {"id": "sample-stablecoin", "name": "Sample Stablecoin"},
+                {"id": "another-stablecoin", "name": "Another Stablecoin"},
+            ]
+        },
+        mock_sample_data,
+        mock_sample_data,
+    ]
+
+    result = defillama.pull_stables(days=30)
+
+    # Assertions
+    assert "metadata" in result
+    assert "breakdown" in result
+    assert isinstance(result["metadata"], pl.DataFrame)
+    assert isinstance(result["breakdown"], pl.DataFrame)
+    assert len(result["metadata"]) == 2  # Two stablecoins
+    assert len(result["breakdown"]) >= 2  # At least two data points
+
+    # Verify that get_data was called three times (summary and two breakdowns)
+    assert mock_get_data.call_count == 3
+
+    # Check that BigQuery functions were called
+    assert mock_overwrite_unpartitioned_table.called
+    assert mock_overwrite_partition_static.called
+    assert mock_upsert_partitioned_table.called
