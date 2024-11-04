@@ -1,9 +1,20 @@
+import pyarrow as pa
+
 from op_coreutils.logger import structlog
-from op_coreutils.partitioned import DataLocation, InputData, construct_inputs
+from op_coreutils.partitioned import (
+    DataLocation,
+    DataReader,
+    construct_input_batches,
+    SinkMarkerPath,
+    DataWriter,
+    ExpectedOutput,
+)
 
+from op_datasets.etl.ingestion.markers import INGESTION_DATASETS, INGESTION_MARKERS_TABLE
 
+from .markers import INTERMEDIATE_MODELS_MARKERS_TABLE
+from .registry import REGISTERED_INTERMEDIATE_MODELS
 from .task import IntermediateModelsTask
-
 
 log = structlog.get_logger()
 
@@ -21,26 +32,47 @@ def construct_tasks(
     shared duckdb macros that are used across models.
     """
 
-    inputs: list[InputData] = construct_inputs(
+    batches: list[DataReader] = construct_input_batches(
         chains=chains,
         range_spec=range_spec,
         read_from=read_from,
-        input_datasets=["blocks", "transactions", "logs", "traces"],
+        markers_table=INGESTION_MARKERS_TABLE,
+        dataset_names=INGESTION_DATASETS,
     )
 
     tasks = []
-    for inputdata in inputs:
-        # TODO: Compute what are the expected markers for the task.
+    for batch in batches:
+        # Each model can have one or more outputs. There is 1 marker per output.
+        expected_outputs = {}
+        for model in models:
+            for dataset in REGISTERED_INTERMEDIATE_MODELS[model].expected_output_datasets:
+                dataset_name = f"{model}/{dataset}"
+                expected_outputs[dataset_name] = ExpectedOutput(
+                    dataset_name=dataset_name,
+                    marker_path=SinkMarkerPath(dataset_name),
+                    process_name="default",
+                    additional_columns=dict(
+                        mode_name=model,
+                    ),
+                    additional_columns_schema=[
+                        pa.field("chain", pa.string()),
+                        pa.field("dt", pa.date32()),
+                        pa.field("model_name", pa.string()),
+                    ],
+                )
 
         tasks.append(
             IntermediateModelsTask(
-                inputdata=inputdata,
+                data_reader=batch,
                 models=models,
                 output_duckdb_relations={},
-                write_to=write_to,
-                force=False,
-                expected_markers=[],
-                is_complete=False,
+                data_writer=DataWriter(
+                    write_to=write_to,
+                    markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
+                    expected_outputs=expected_outputs,
+                    is_complete=False,
+                    force=False,
+                ),
             )
         )
 

@@ -4,7 +4,7 @@ from datetime import date
 
 from op_coreutils.logger import structlog
 from op_coreutils.partitioned import (
-    InputData,
+    DataReader,
 )
 
 
@@ -25,7 +25,7 @@ class DateLoadTask:
         return {"date": self.dateval.strftime("%Y-%m-%d")}
 
 
-def consolidate_chains(inputs: list[InputData]) -> list[DateLoadTask]:
+def consolidate_chains(inputs: list[DataReader]) -> list[DateLoadTask]:
     """Consolidate inputs.
 
     list[InputData] has separate entries for each chain and date. This function goes over

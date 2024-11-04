@@ -1,14 +1,18 @@
 import multiprocessing as mp
 
 import polars as pl
-import pyarrow as pa
 from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
-from op_coreutils.partitioned import DataLocation, OutputDataFrame, all_outputs_complete, write_all
+from op_coreutils.partitioned import (
+    DataLocation,
+    OutputData,
+    SinkOutputRootPath,
+)
 
 from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
 from .construct import construct_tasks
+from .markers import INGESTION_DATASETS
 from .sources import RawOnchainDataProvider, read_from_source
 from .status import all_inputs_ready
 from .task import IngestionTask
@@ -36,21 +40,25 @@ def ingest(
         return
 
     executed = 0
-    executed_ok = 1
+    executed_ok = 0
     for i, task in enumerate(tasks):
         task.progress_indicator = f"{i+1}/{len(tasks)}"
         bind_contextvars(**task.contextvars)
 
-        # Check and decide if we need to run this task.
+        # Check output/input status for the task.
         checker(task)
+
+        # Decide if we can run this task.
         if not task.inputs_ready:
             log.warning("Task inputs are not ready. Skipping this task.")
             continue
-        if task.is_complete and not force:
+
+        # Decide if we need to run this task.
+        if task.data_writer.is_complete and not force:
             continue
         if force:
             log.info("Force flag detected. Forcing execution.")
-            task.force = True
+            task.data_writer.force = True
 
         executed += 1
         success = execute(task, fork_process)
@@ -103,6 +111,7 @@ def reader(task: IngestionTask):
         block_batch=task.block_batch,
     )
 
+    assert set(ONCHAIN_CURRENT_VERSION.keys()) == set(INGESTION_DATASETS)
     task.add_inputs(ONCHAIN_CURRENT_VERSION, dataframes)
 
 
@@ -155,15 +164,12 @@ def auditor(task: IngestionTask):
     )
 
     # Set up the output dataframes now that the audits have passed
+    # (ingestion process: outputs are the same as inputs)
     for name, dataset in task.input_datasets.items():
-        # Sometimes we observe blocks that don't have any logs.
-        task.input_dataframes[name]
-
-        task.add_output(
-            OutputDataFrame(
+        task.store_output(
+            OutputData(
                 dataframe=task.input_dataframes[name],
-                root_path=task.get_output_location(dataset),
-                marker_path=task.get_marker_location(dataset),
+                root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
                 dataset_name=name,
                 default_partition=default_partition,
             )
@@ -171,34 +177,15 @@ def auditor(task: IngestionTask):
 
 
 def writer(task: IngestionTask):
-    marker_kwargs = dict(
-        process_name="default",
-        additional_columns=dict(
-            num_blocks=task.block_batch.num_blocks(),
-            min_block=task.block_batch.min,
-            max_block=task.block_batch.max,
-        ),
-        additional_columns_schema=[
-            pa.field("chain", pa.string()),
-            pa.field("dt", pa.date32()),
-            pa.field("num_blocks", pa.int32()),
-            pa.field("min_block", pa.int64()),
-            pa.field("max_block", pa.int64()),
-        ],
-    )
-
-    write_all(
-        locations=task.write_to,
-        dataframes=task.output_dataframes,
+    task.data_writer.write_all(
+        outputs=task.output_dataframes,
         basename=task.block_batch.construct_parquet_filename(),
-        marker_kwargs=marker_kwargs,
-        force=task.force,
     )
 
 
 def checker(task: IngestionTask):
-    if all_outputs_complete(task.write_to, task.expected_markers):
-        task.is_complete = True
+    if task.data_writer.all_complete():
+        task.data_writer.is_complete = True
         task.inputs_ready = True
         return
 

@@ -54,6 +54,11 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=62000000, batch_size=5000),
         Delimiter(block_number=94000000, batch_size=2000),
     ],
+    "orderly": [
+        # At various times during 2024 orderly had a sustained peak
+        # of ~130k transactions per second.
+        Delimiter(block_number=0, batch_size=5000),
+    ],
     # Default
     "automata": [Delimiter(0, 20000)],
     "bob": [Delimiter(0, 20000)],
@@ -66,7 +71,6 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "metal": [Delimiter(0, 20000)],
     "mint": [Delimiter(0, 20000)],
     "mode": [Delimiter(0, 20000)],
-    "orderly": [Delimiter(0, 20000)],
     "polynomial": [Delimiter(0, 20000)],
     "race": [Delimiter(0, 20000)],
     "redstone": [Delimiter(0, 20000)],

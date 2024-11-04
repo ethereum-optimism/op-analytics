@@ -83,7 +83,7 @@ def chain_metadata_updates():
     - Update the OP Analytics Chain Metadata [ADMIN MANAGED] google sheet.
     - Update the Across Superchain Bridge Addresses [ADMIN MANAGED] google sheet.
 
-    TODO: Decide if we want to uplaod to Dune, Clickhouse, BigQuery. or op-analytics-static repo.
+    TODO: Decide if we want to upload to Dune, Clickhouse, BigQuery. or op-analytics-static repo.
     """
     clean_df = load_chain_metadata()
 
@@ -141,6 +141,23 @@ DRYRUN_ARG = Annotated[
 ]
 
 
+def normalize_chains(chains: str) -> list[str]:
+    result = set()
+
+    # TODO: Fix problems with automata and worldchain.
+    not_included = {"automata", "worldchain"}
+
+    for chain in chains.split(","):
+        if chain == "ALL":
+            result.update(verify_goldsky_tables())
+        elif chain.startswith("-"):
+            not_included.add(chain.removeprefix("-").strip())
+        else:
+            result.add(chain.strip())
+
+    return list(result - not_included)
+
+
 @app.command()
 def ingest_blocks(
     chains: CHAINS_ARG,
@@ -171,11 +188,7 @@ def ingest_blocks(
 
     Run audits + ingestion to GCS on a range of blocks.
     """
-    if chains == "ALL":
-        chain_list = verify_goldsky_tables()
-        chain_list = [_ for _ in chain_list if _ not in {"automata", "worldchain"}]
-    else:
-        chain_list = [_.strip() for _ in chains.split(",")]
+    chain_list = normalize_chains(chains)
 
     ingest(
         chains=chain_list,
@@ -186,13 +199,6 @@ def ingest_blocks(
         force=force,
         fork_process=fork_process,
     )
-
-
-def normalize_chains(chains: str) -> list[str]:
-    if chains == "ALL":
-        return verify_goldsky_tables()
-
-    return [_.strip() for _ in chains.split(",")]
 
 
 @app.command()
