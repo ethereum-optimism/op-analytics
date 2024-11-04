@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Callable
 
 import polars as pl
 import pyarrow as pa
@@ -48,64 +47,62 @@ class DataWriter:
         )
 
     def write_all(self, outputs: list[OutputData]):
-        """Write data and markers to all the specified locations."""
-        return self.write_all_callables(outputs=[lambda: df for df in outputs])
-
-    def write_all_callables(self, outputs: list[Callable[[], OutputData]]):
         """Write data and markers to all the specified locations.
 
         The data is provided as a list of functions that return a dataframe. This lets us generalize
         the way in which different tasks produce OutputDataFrame.
         """
         for location in self.write_to:
-            for func in outputs:
-                output_data: OutputData = func()
-                expected_output = self.expected_outputs[output_data.dataset_name]
+            for output_data in outputs:
+                self.write(location, output_data)
 
-                # The default partition value is included in logs because it includes
-                # the dt value, which helps keep track of where we are when we run a
-                # backfill.
-                with bound_contextvars(**(output_data.default_partition or {})):
-                    is_complete = marker_exists(
-                        data_location=location,
-                        marker_path=expected_output.marker_path,
-                        markers_table=self.markers_table,
-                    )
+    def write(self, location: DataLocation, output_data: OutputData):
+        expected_output = self.expected_outputs[output_data.dataset_name]
 
-                    if is_complete and not self.force:
-                        log.info(
-                            f"[{location.name}] Skipping already complete output at {expected_output.marker_path}"
-                        )
-                        continue
+        # The default partition value is included in logs because it includes
+        # the dt value, which helps keep track of where we are when we run a
+        # backfill.
+        with bound_contextvars(**(output_data.default_partition or {})):
+            is_complete = marker_exists(
+                data_location=location,
+                marker_path=expected_output.marker_path,
+                markers_table=self.markers_table,
+            )
 
-                    parts = breakout_partitions(
-                        df=output_data.dataframe,
-                        partition_cols=["chain", "dt"],
-                        default_partition=output_data.default_partition,
-                    )
+            if is_complete and not self.force:
+                log.info(
+                    f"[{location.name}] Skipping already complete output at {expected_output.marker_path}"
+                )
+                return
 
-                    parts_meta = []
-                    for part in parts:
-                        write_single_part(
-                            location=location,
-                            dataframe=part.df,
-                            full_path=part.meta.full_path(
-                                expected_output.root_path, expected_output.file_name
-                            ),
-                        )
-                        parts_meta.append(part.meta)
+            parts = breakout_partitions(
+                df=output_data.dataframe,
+                partition_cols=["chain", "dt"],
+                default_partition=output_data.default_partition,
+            )
 
-                    marker = Marker(
-                        expected_output=expected_output,
-                        written_parts=parts_meta,
-                    )
+            parts_meta = []
+            for part in parts:
+                write_single_part(
+                    location=location,
+                    dataframe=part.df,
+                    full_path=part.meta.full_path(
+                        expected_output.root_path, expected_output.file_name
+                    ),
+                )
+                parts_meta.append(part.meta)
 
-                    write_marker(
-                        data_location=location,
-                        arrow_table=marker.to_pyarrow_table(),
-                        markers_table=self.markers_table,
-                    )
-                    log.info(f"Wrote {output_data.dataset_name} to {location.name}")
+            marker = Marker(
+                expected_output=expected_output,
+                written_parts=parts_meta,
+            )
+
+            write_marker(
+                data_location=location,
+                arrow_table=marker.to_pyarrow_table(),
+                markers_table=self.markers_table,
+            )
+            log.info(f"Wrote {output_data.dataset_name} to {location.name}")
 
 
 def write_single_part(

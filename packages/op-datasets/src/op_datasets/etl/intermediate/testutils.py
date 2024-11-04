@@ -170,6 +170,8 @@ class IntermediateModelTestBase(unittest.TestCase):
 
             arrow_table = rel.filter(block_filter).to_arrow_table()  # noqa: F841
             table_name = cls.input_table_name(dataset)
+
+            assert cls._duckdb_client is not None
             cls._duckdb_client.sql(f"CREATE TABLE {table_name} AS SELECT * FROM arrow_table")
 
             relations[dataset] = rel

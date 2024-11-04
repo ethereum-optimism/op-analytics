@@ -28,6 +28,8 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
     _enable_fetching = False
 
     def test_system_address_not_included(self):
+        assert self._duckdb_client is not None
+
         ans = self._duckdb_client.sql(f"""
         SELECT * FROM daily_address_summary_v1 WHERE address = '{SYSTEM_ADDRESS}'
         """)
@@ -35,6 +37,8 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         assert len(ans) == 0
 
     def test_uniqueness(self):
+        assert self._duckdb_client is not None
+
         unique_count = self._duckdb_client.sql("""
         SELECT COUNT(*) FROM (
             SELECT DISTINCT address, chain_id, dt FROM daily_address_summary_v1
@@ -44,13 +48,15 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         SELECT COUNT(*) FROM daily_address_summary_v1
         """)
 
-        unique_count_val = unique_count.fetchone()[0]
-        total_count_val = total_count.fetchone()[0]
+        unique_count_val = (unique_count.fetchone() or [None])[0]
+        total_count_val = (total_count.fetchone() or [None])[0]
 
         assert unique_count_val == 785
         assert unique_count_val == total_count_val
 
     def test_model_schema(self):
+        assert self._duckdb_client is not None
+
         schema = (
             self._duckdb_client.sql("DESCRIBE daily_address_summary_v1")
             .pl()
@@ -103,6 +109,8 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         }
 
     def test_single_txs_output(self):
+        assert self._duckdb_client is not None
+
         # Transaction that is relevant for this test:
         # https://optimistic.etherscan.io/tx/0x2ab7a335f3ecc0236ac9fc0c4832f4500d299ee40abf99e5609fa16309f82763
 
@@ -190,6 +198,8 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         )
 
     def test_multiple_txs_output(self):
+        assert self._duckdb_client is not None
+
         # Transactions that are relevant for this test:
         # https://optimistic.etherscan.io/tx/0x0c8c81cc9a97f4d66f4f78ef2bbb5a64c23358db2c4ba6ad35e338f2d2fa3535
         # https://optimistic.etherscan.io/tx/0x8aa91fc3fb1c11cd4aba16130697a1fa52fd74ae7ee9f23627b6b8b42fec0a34
@@ -259,6 +269,8 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         )
 
     def test_overall_totals(self):
+        assert self._duckdb_client is not None
+
         actual = (
             self._duckdb_client.sql("SELECT SUM(total_txs) FROM daily_address_summary_v1")
             .pl()
@@ -267,6 +279,8 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         assert actual == [{"sum(total_txs)": Decimal("2397")}]
 
     def test_consistency(self):
+        assert self._duckdb_client is not None
+
         actual = (
             self._duckdb_client.sql("""
             WITH checks AS (

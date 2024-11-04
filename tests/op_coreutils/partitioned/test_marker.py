@@ -5,6 +5,7 @@ from op_coreutils.partitioned.location import DataLocation
 from op_coreutils.partitioned.marker import Marker, marker_exists, markers_for_dates
 from op_coreutils.partitioned.output import ExpectedOutput, KeyValue, OutputPartMeta
 from op_coreutils.partitioned.writer import write_marker
+from op_coreutils.partitioned.types import SinkMarkerPath, SinkOutputRootPath
 from op_coreutils.duckdb_local import run_query
 from op_coreutils.time import now
 
@@ -32,9 +33,11 @@ def test_marker():
             ),
         ],
         expected_output=ExpectedOutput(
-            marker_path="markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
+            marker_path=SinkMarkerPath(
+                "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json"
+            ),
             dataset_name="blocks",
-            root_path="ingestion/blocks_v1",
+            root_path=SinkOutputRootPath("ingestion/blocks_v1"),
             file_name="000011540000.parquet",
             process_name="default",
             additional_columns={"num_blocks": 20000, "min_block": 11540000, "max_block": 11560000},
