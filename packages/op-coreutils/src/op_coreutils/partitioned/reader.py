@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from datetime import date
 
+import duckdb
 import polars as pl
 from op_datasets.utils.daterange import DateRange
 
+from op_coreutils.duckdb_inmem import parquet_relation
 from op_coreutils.logger import bind_contextvars, structlog
 from op_coreutils.time import surrounding_dates
 
@@ -14,8 +16,8 @@ log = structlog.get_logger()
 
 
 @dataclass
-class InputData:
-    """Represents input data stored as parquet paths in GCS.
+class DataReader:
+    """Manages reading partitioned data.
 
     When objects of this class are created the creator must be aware of whether
     the data is ready to be consumed.
@@ -50,13 +52,21 @@ class InputData:
             date=self.dateval,
         )
 
+    @property
+    def paths_summary(self) -> dict[str, int]:
+        return {dataset_name: len(paths) for dataset_name, paths in self.dataset_paths.items()}
 
-def construct_inputs(
+    def duckdb_relation(self, dataset) -> duckdb.DuckDBPyRelation:
+        return parquet_relation(self.dataset_paths[dataset])
+
+
+def construct_input_batches(
     chains: list[str],
     range_spec: str,
     read_from: DataLocation,
-    input_datasets: list[str],
-) -> list[InputData]:
+    markers_table: str,
+    dataset_names: list[str],
+) -> list[DataReader]:
     """Construct a list of InputData for the given parameters.
 
     The parameters specify a set of chains, dates, and datasets that we are
@@ -70,7 +80,13 @@ def construct_inputs(
     # We use the +/- 1 day padded dates so that we can use the query results to
     # check if there is data on boths ends. This allows us to confirm that the
     # data is ready to be processed.
-    markers_df = markers_for_dates(read_from, date_range.padded_dates(), chains)
+    markers_df = markers_for_dates(
+        data_location=read_from,
+        datevals=date_range.padded_dates(),
+        chains=chains,
+        markers_table=markers_table,
+        dataset_names=dataset_names,
+    )
 
     inputs = []
     for dateval in date_range.dates:
@@ -88,11 +104,11 @@ def construct_inputs(
             inputs_ready, dataset_paths = are_inputs_ready(
                 markers_df=filtered_df,
                 dateval=dateval,
-                input_datasets=set(input_datasets),
+                input_datasets=set(dataset_names),
                 storage_location=read_from,
             )
 
-            obj = InputData(
+            obj = DataReader(
                 dateval=dateval,
                 chain=chain,
                 read_from=read_from,

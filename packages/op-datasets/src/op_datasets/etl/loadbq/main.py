@@ -2,13 +2,14 @@ from op_coreutils.bigquery.load import load_from_parquet_uris
 from op_coreutils.logger import bind_contextvars, structlog
 from op_coreutils.partitioned import (
     DataLocation,
-    InputData,
-    construct_inputs,
+    DataReader,
+    construct_input_batches,
     get_dt,
     get_root_path,
 )
 
 from op_datasets.chains.chain_metadata import goldsky_chains
+from op_datasets.etl.ingestion.markers import INGESTION_DATASETS, INGESTION_MARKERS_TABLE
 
 from .task import DateLoadTask, consolidate_chains
 
@@ -25,11 +26,12 @@ def load_superchain_raw_to_bq(
     # partition.
 
     chains = goldsky_chains()
-    inputs: list[InputData] = construct_inputs(
+    inputs: list[DataReader] = construct_input_batches(
         chains=chains,
         range_spec=range_spec,
         read_from=DataLocation.GCS,
-        input_datasets=["blocks", "transactions", "logs", "traces"],
+        markers_table=INGESTION_MARKERS_TABLE,
+        dataset_names=INGESTION_DATASETS,
     )
 
     if dryrun:

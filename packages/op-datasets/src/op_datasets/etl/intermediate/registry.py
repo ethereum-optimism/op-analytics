@@ -1,7 +1,7 @@
 import importlib
 import os
 from dataclasses import dataclass
-from typing import Callable
+from typing import Protocol
 
 import duckdb
 from op_coreutils.logger import structlog
@@ -13,12 +13,20 @@ log = structlog.get_logger()
 _LOADED = False
 
 
+class ModelFunction(Protocol):
+    def __call__(
+        self,
+        duckdb_client: duckdb.DuckDBPyConnection,
+        input_tables: NamedRelations,
+    ) -> NamedRelations: ...
+
+
 @dataclass
 class IntermediateModel:
     name: str
     input_datasets: list[str]
-    func: Callable[[duckdb.DuckDBPyConnection, NamedRelations], NamedRelations]
-    expected_outputs: list[str]
+    func: ModelFunction
+    expected_output_datasets: list[str]
 
 
 REGISTERED_INTERMEDIATE_MODELS: dict[str, IntermediateModel] = {}
@@ -30,7 +38,7 @@ def register_model(input_datasets: list[str], expected_outputs: list[str]):
             name=func.__name__,
             input_datasets=input_datasets,
             func=func,
-            expected_outputs=expected_outputs,
+            expected_output_datasets=expected_outputs,
         )
         return func
 
@@ -48,11 +56,11 @@ def load_model_definitions():
     MODELS_PATH = os.path.join(os.path.dirname(__file__), "models")
 
     count = 0
-    for basename in os.listdir(MODELS_PATH):
-        name = os.path.join(MODELS_PATH, basename)
-        if os.path.isfile(name) and basename not in ("__init__.py", "registry.py"):
+    for fname in os.listdir(MODELS_PATH):
+        name = os.path.join(MODELS_PATH, fname)
+        if os.path.isfile(name) and fname not in ("__init__.py", "registry.py"):
             importlib.import_module(
-                f"op_datasets.etl.intermediate.models.{basename.removesuffix(".py")}"
+                f"op_datasets.etl.intermediate.models.{fname.removesuffix(".py")}"
             )
             count += 1
 

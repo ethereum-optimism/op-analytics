@@ -7,7 +7,11 @@ from .marker import marker_exists
 log = structlog.get_logger()
 
 
-def all_outputs_complete(sinks: list[DataLocation], markers: list[SinkMarkerPath]) -> bool:
+def all_outputs_complete(
+    sinks: list[DataLocation],
+    markers: list[SinkMarkerPath],
+    markers_table: str,
+) -> bool:
     """Check if all outputs are complete.
 
     This function is somewhat low-level in that it receives the explicit completion
@@ -19,7 +23,7 @@ def all_outputs_complete(sinks: list[DataLocation], markers: list[SinkMarkerPath
         complete = []
         incomplete = []
         for marker in markers:
-            if marker_exists(location, marker):
+            if marker_exists(location, marker, markers_table):
                 complete.append(marker)
             else:
                 incomplete.append(marker)

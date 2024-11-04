@@ -1,10 +1,14 @@
-from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
-from op_coreutils.partitioned import DataLocation, all_outputs_complete
+from typing import Callable
+
+import duckdb
 from op_coreutils.duckdb_inmem import init_client
+from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
+from op_coreutils.partitioned import DataLocation, OutputData, SinkOutputRootPath
 
 from .construct import construct_tasks
 from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .task import IntermediateModelsTask
+from .types import NamedRelations
 from .udfs import create_duckdb_macros
 
 log = structlog.get_logger()
@@ -42,59 +46,86 @@ def compute_intermediate(
     for i, task in enumerate(tasks):
         bind_contextvars(
             task=f"{i+1}/{len(tasks)}",
-            **task.contextvars,
+            **task.data_reader.contextvars,
         )
 
-        # Check and decide if we need to run this task.
+        # Check output/input status for the task.
         checker(task)
-        if not task.inputdata.inputs_ready:
+
+        # Decide if we can run this task.
+        if not task.data_reader.inputs_ready:
             log.warning("Task inputs are not ready. Skipping this task.")
             continue
-        if task.is_complete and not force:
+
+        # Decide if we need to run this task.
+        if task.data_writer.is_complete and not force:
             continue
         if force:
             log.info("Force flag detected. Forcing execution.")
-            task.force = True
+            task.data_writer.force = True
 
         executor(task)
 
         writer(task)
 
 
-def executor(task: IntermediateModelsTask):
+def executor(task: IntermediateModelsTask) -> None:
     """Execute the model computations."""
 
     # Load shared DuckDB UDFs.
     client = init_client()
     create_duckdb_macros(client)
 
-    for model in task.models:
-        im_model = REGISTERED_INTERMEDIATE_MODELS[model]
+    for model_name in task.models:
+        # Get the model.
+        im_model = REGISTERED_INTERMEDIATE_MODELS[model_name]
 
-        input_tables = {}
+        # Prepare input data.
+        input_tables: NamedRelations = {}
         for dataset in im_model.input_datasets:
-            input_tables[dataset] = task.duckdb_relation(dataset)
+            input_tables[dataset] = task.data_reader.duckdb_relation(dataset)
 
-        for output_name, output in im_model.func(client, input_tables).items():
-            task.add_output(output_name, output)
+        # Execute the model.
+        model_results = im_model.func(
+            duckdb_client=client,
+            input_tables=input_tables,
+        )
+
+        # Store outputs produced by the model.
+        for output_name, output in model_results.items():
+            task.store_output(model_name, output_name, output)
 
         produced_datasets = set(task.output_duckdb_relations.keys())
-        if produced_datasets != set(im_model.expected_outputs):
-            raise RuntimeError(f"model {model!r} produced unexpected datasets: {produced_datasets}")
-
-    # Show the outputs that were produced by running the models.
-    for key in task.output_duckdb_relations.keys():
-        log.info(f"Task output: {key}")
+        if produced_datasets != set(im_model.expected_output_datasets):
+            raise RuntimeError(
+                f"model {model_name!r} produced unexpected datasets: {produced_datasets}"
+            )
 
 
-def writer(task):
-    """Write the model outputs"""
+def relation_to_output(dataset_name: str, rel: duckdb.DuckDBPyRelation) -> Callable[[], OutputData]:
+    def func():
+        return OutputData(
+            dataframe=rel.pl(),
+            root_path=SinkOutputRootPath(f"intermediate/{dataset_name}"),
+            dataset_name=dataset_name,
+            default_partition=None,
+        )
 
-    # TODO: Implement writing.
-    pass
+    return func
 
 
-def checker(task: IntermediateModelsTask):
-    if all_outputs_complete(task.write_to, task.expected_markers):
-        task.is_complete = True
+def writer(task: IntermediateModelsTask):
+    task.data_writer.write_all_callables(
+        outputs=[
+            relation_to_output(dataset_name, rel)
+            for dataset_name, rel in task.output_duckdb_relations.items()
+        ],
+        basename="blah.parquet",
+    )
+
+
+def checker(task: IntermediateModelsTask) -> None:
+    if task.data_writer.all_complete():
+        task.data_writer.is_complete = True
+        task.data_reader.inputs_ready = True
         return
