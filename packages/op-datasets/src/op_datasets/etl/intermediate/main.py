@@ -98,25 +98,10 @@ def executor(task: IntermediateModelsTask) -> None:
 
 
 def writer(task: IntermediateModelsTask):
-    # TODO: implementt writing
-    pass
-    # marker_kwargs = dict(
-    #     process_name="default",
-    #     additional_columns=dict(
-    #         model_name=...,
-    #     ),
-    #     additional_columns_schema=[
-    #         pa.field("chain", pa.string()),
-    #         pa.field("dt", pa.date32()),
-    #         pa.field("model_name", pa.string()),
-    #     ],
-    # )
-
-    # task.data_writer.write_all(
-    #     dataframes=task.output_duckdb_relations,
-    #     basename=task.block_batch.construct_parquet_filename(),
-    #     marker_kwargs=marker_kwargs,
-    # )
+    task.data_writer.write_all(
+        outputs=task.output_duckdb_relations,
+        basename="blah.parquet",
+    )
 
 
 def checker(task: IntermediateModelsTask) -> None:
