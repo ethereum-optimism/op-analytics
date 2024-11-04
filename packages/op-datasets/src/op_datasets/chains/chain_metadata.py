@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 import polars as pl
 from op_coreutils.gsheets import read_gsheet, update_gsheet, record_changes
@@ -13,7 +14,9 @@ OP_CHAIN = "OP Chain"
 OP_FORK = "OP Stack fork"
 
 
-DEFAULT_CHAIN_METADATA_LOCATION = repo_path("op_chains_tracking/inputs/chain_metadata_raw.csv")
+DEFAULT_CHAIN_METADATA_LOCATION = repo_path(
+    "op_chains_tracking/inputs/chain_metadata_raw.csv"
+)
 
 RAW_CHAIN_METADATA_SCHEMA = pl.Schema(
     {
@@ -69,7 +72,9 @@ def load_chain_metadata(path: str | None = None) -> pl.DataFrame:
         location_name="chain_metadata",
         worksheet_name="Chain Metadata [RAW INPUT]",
     )
-    clean_df_gsheets = _clean(pl.DataFrame(raw_records, infer_schema_length=len(raw_records)))
+    clean_df_gsheets = _clean(
+        pl.DataFrame(raw_records, infer_schema_length=len(raw_records))
+    )
 
     try:
         compare_dataframes(clean_df, clean_df_gsheets)
@@ -136,14 +141,21 @@ def _clean(raw_df: pl.DataFrame) -> pl.DataFrame:
         # Strip whitespace for all string columns.
         if datatype == datatypes.String:
             result = pl.col(col).str.strip_chars().alias(col)
-            result = pl.when(result.str.len_chars() == 0).then(None).otherwise(result).alias(col)
+            result = (
+                pl.when(result.str.len_chars() == 0)
+                .then(None)
+                .otherwise(result)
+                .alias(col)
+            )
         else:
             result = pl.col(col)
 
         # Transform dates.
         if col in {"public_mainnet_launch_date", "op_chain_start"}:
             result = (
-                result.str.to_date("%m/%d/%y", strict=False).dt.to_string("%Y-%m-%d").alias(col)
+                result.str.to_date("%m/%d/%y", strict=False)
+                .dt.to_string("%Y-%m-%d")
+                .alias(col)
             )
 
         # Cast the block time.
@@ -160,10 +172,15 @@ def _clean(raw_df: pl.DataFrame) -> pl.DataFrame:
         clean_column(col, datatype) for col, datatype in raw_df.collect_schema().items()
     ]
 
-    is_op_chain = clean_column("chain_type", pl.String).is_not_null().alias("is_op_chain")
+    is_op_chain = (
+        clean_column("chain_type", pl.String).is_not_null().alias("is_op_chain")
+    )
 
     alignment_col = (
-        pl.when(is_op_chain).then(pl.lit(OP_CHAIN)).otherwise(pl.lit(OP_FORK)).alias("alignment")
+        pl.when(is_op_chain)
+        .then(pl.lit(OP_CHAIN))
+        .otherwise(pl.lit(OP_FORK))
+        .alias("alignment")
     )
 
     return raw_df.select(transformed_cols + [is_op_chain, alignment_col])
@@ -194,6 +211,34 @@ def upload_chain_metadata(chains_df, goldsky_chains_df):
     record_changes(
         GSHEET_NAME,
         messages=[
-            f"Updated worksheeet: {_}" for _ in [WORKSHEET_METADATA, WORKSHEET_GOLDSKY_CHAINS]
+            f"Updated worksheeet: {_}"
+            for _ in [WORKSHEET_METADATA, WORKSHEET_GOLDSKY_CHAINS]
         ],
     )
+
+
+def get_chain_colors(chain_identifier: str = "chain_name") -> dict[str, str]:
+    """
+    Create a mapping of chain identifiers to colors. Only chains with a color are included.
+
+    Parameters:
+    - chain_identifier (str): The column name to use as keys for the color mapping. Defaults to "chain_name".
+
+    Returns:
+    - dict[str, str]: A dictionary mapping each chain identifier to its corresponding uppercase hex color.
+    """
+    df_color = (
+        load_chain_metadata()
+        .select(chain_identifier, "hex_color")
+        .filter(pl.col("hex_color").is_not_null())
+    )
+
+    if df_color.is_empty():
+        log.error("No color data found.")
+    else:
+        colors = {
+            chain[chain_identifier]: "#" + chain["hex_color"].strip().upper()
+            for chain in df_color.to_dicts()
+        }
+
+    return colors
