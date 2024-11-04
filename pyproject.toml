@@ -59,6 +59,8 @@ build-backend = "hatchling.build"
 # Allow lines to be as long as 100.
 line-length = 100
 
+[tool.black]
+line-length = 100
 
 [tool.pytest.ini_options]
 filterwarnings = [
