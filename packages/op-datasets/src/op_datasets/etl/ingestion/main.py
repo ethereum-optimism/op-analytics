@@ -1,11 +1,10 @@
 import multiprocessing as mp
 
 import polars as pl
-import pyarrow as pa
 from op_coreutils.logger import bind_contextvars, clear_contextvars, human_interval, structlog
 from op_coreutils.partitioned import (
     DataLocation,
-    OutputDataFrame,
+    OutputData,
     SinkOutputRootPath,
 )
 
@@ -168,7 +167,7 @@ def auditor(task: IngestionTask):
     # (ingestion process: outputs are the same as inputs)
     for name, dataset in task.input_datasets.items():
         task.store_output(
-            OutputDataFrame(
+            OutputData(
                 dataframe=task.input_dataframes[name],
                 root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
                 dataset_name=name,
@@ -178,26 +177,9 @@ def auditor(task: IngestionTask):
 
 
 def writer(task: IngestionTask):
-    marker_kwargs = dict(
-        process_name="default",
-        additional_columns=dict(
-            num_blocks=task.block_batch.num_blocks(),
-            min_block=task.block_batch.min,
-            max_block=task.block_batch.max,
-        ),
-        additional_columns_schema=[
-            pa.field("chain", pa.string()),
-            pa.field("dt", pa.date32()),
-            pa.field("num_blocks", pa.int32()),
-            pa.field("min_block", pa.int64()),
-            pa.field("max_block", pa.int64()),
-        ],
-    )
-
     task.data_writer.write_all(
-        dataframes=task.output_dataframes,
+        outputs=task.output_dataframes,
         basename=task.block_batch.construct_parquet_filename(),
-        marker_kwargs=marker_kwargs,
     )
 
 

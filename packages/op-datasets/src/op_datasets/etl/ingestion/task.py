@@ -3,11 +3,12 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
 
+import pyarrow as pa
 import polars as pl
 from op_coreutils.logger import structlog
 from op_coreutils.partitioned import (
     DataLocation,
-    OutputDataFrame,
+    OutputData,
     ExpectedOutput,
     SinkMarkerPath,
     DataWriter,
@@ -40,7 +41,7 @@ class IngestionTask:
     inputs_ready: bool
 
     # Outputs
-    output_dataframes: list[OutputDataFrame]
+    output_dataframes: list[OutputData]
 
     # DataWriter
     data_writer: DataWriter
@@ -72,10 +73,23 @@ class IngestionTask:
             marker_path = block_batch.construct_marker_path()
             full_marker_path = SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
 
-            # Store the dataset as an expected output.
+            # Construct expected output for the dataset.
             expected_outputs[name] = ExpectedOutput(
                 dataset_name=name,
                 marker_path=full_marker_path,
+                process_name="default",
+                additional_columns=dict(
+                    num_blocks=block_batch.num_blocks(),
+                    min_block=block_batch.min,
+                    max_block=block_batch.max,
+                ),
+                additional_columns_schema=[
+                    pa.field("chain", pa.string()),
+                    pa.field("dt", pa.date32()),
+                    pa.field("num_blocks", pa.int32()),
+                    pa.field("min_block", pa.int64()),
+                    pa.field("max_block", pa.int64()),
+                ],
             )
 
         return cls(
@@ -100,7 +114,7 @@ class IngestionTask:
             self.input_datasets[name] = dataset
             self.input_dataframes[name] = dataframes[name]
 
-    def store_output(self, output: OutputDataFrame):
+    def store_output(self, output: OutputData):
         self.output_dataframes.append(output)
 
 

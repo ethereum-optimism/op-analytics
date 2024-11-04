@@ -3,25 +3,42 @@ from dataclasses import dataclass
 from typing import Any
 
 import polars as pl
+import pyarrow as pa
 
 from .types import SinkMarkerPath, SinkOutputRootPath
 
 
 @dataclass
 class ExpectedOutput:
+    """Information about a dataset that is expectd to be produced by a task."""
+
+    # Name of the datset.
     dataset_name: str
+
+    # Completion marker path.
     marker_path: SinkMarkerPath
+
+    # Identifier for the process that produced the datset.
+    process_name: str
+
+    # Values for additional columns stored in the markers table.
+    additional_columns: dict[str, Any]
+
+    # Schema for additional columns stored in the markers table.
+    # This schema is used to create a pyarrow table to write markers
+    # into the markers table.
+    additional_columns_schema: list[pa.Field]
 
 
 @dataclass
-class OutputDataFrame:
+class OutputData:
     dataframe: pl.DataFrame
     root_path: SinkOutputRootPath
     dataset_name: str
 
     # Default partition values for cases when the output datafarame is empty
     # and therefore has no implicit partition values.
-    default_partition: dict[str, Any]
+    default_partition: dict[str, Any] | None
 
 
 @dataclass

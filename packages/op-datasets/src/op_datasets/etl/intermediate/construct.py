@@ -1,3 +1,5 @@
+import pyarrow as pa
+
 from op_coreutils.logger import structlog
 from op_coreutils.partitioned import (
     DataLocation,
@@ -48,6 +50,15 @@ def construct_tasks(
                 expected_outputs[dataset_name] = ExpectedOutput(
                     dataset_name=dataset_name,
                     marker_path=SinkMarkerPath(dataset_name),
+                    process_name="default",
+                    additional_columns=dict(
+                        mode_name=model,
+                    ),
+                    additional_columns_schema=[
+                        pa.field("chain", pa.string()),
+                        pa.field("dt", pa.date32()),
+                        pa.field("model_name", pa.string()),
+                    ],
                 )
 
         tasks.append(
