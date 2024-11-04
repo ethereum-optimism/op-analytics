@@ -68,7 +68,7 @@ class DataWriter:
                 # The default partition value is included in logs because it includes
                 # the dt value, which helps keep track of where we are when we run a
                 # backfill.
-                with bound_contextvars(**output_data.default_partition):
+                with bound_contextvars(**(output_data.default_partition or {})):
                     is_complete = marker_exists(
                         data_location=location,
                         marker_path=expected_output.marker_path,

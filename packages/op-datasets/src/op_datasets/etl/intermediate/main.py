@@ -1,6 +1,9 @@
-from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
-from op_coreutils.partitioned import DataLocation
+from typing import Callable
+
+import duckdb
 from op_coreutils.duckdb_inmem import init_client
+from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
+from op_coreutils.partitioned import DataLocation, OutputData, SinkOutputRootPath
 
 from .construct import construct_tasks
 from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
@@ -73,9 +76,9 @@ def executor(task: IntermediateModelsTask) -> None:
     client = init_client()
     create_duckdb_macros(client)
 
-    for model in task.models:
+    for model_name in task.models:
         # Get the model.
-        im_model = REGISTERED_INTERMEDIATE_MODELS[model]
+        im_model = REGISTERED_INTERMEDIATE_MODELS[model_name]
 
         # Prepare input data.
         input_tables: NamedRelations = {}
@@ -90,16 +93,33 @@ def executor(task: IntermediateModelsTask) -> None:
 
         # Store outputs produced by the model.
         for output_name, output in model_results.items():
-            task.store_output(output_name, output)
+            task.store_output(model_name, output_name, output)
 
         produced_datasets = set(task.output_duckdb_relations.keys())
         if produced_datasets != set(im_model.expected_output_datasets):
-            raise RuntimeError(f"model {model!r} produced unexpected datasets: {produced_datasets}")
+            raise RuntimeError(
+                f"model {model_name!r} produced unexpected datasets: {produced_datasets}"
+            )
+
+
+def relation_to_output(dataset_name: str, rel: duckdb.DuckDBPyRelation) -> Callable[[], OutputData]:
+    def func():
+        return OutputData(
+            dataframe=rel.pl(),
+            root_path=SinkOutputRootPath(f"intermediate/{dataset_name}"),
+            dataset_name=dataset_name,
+            default_partition=None,
+        )
+
+    return func
 
 
 def writer(task: IntermediateModelsTask):
-    task.data_writer.write_all(
-        outputs=task.output_duckdb_relations,
+    task.data_writer.write_all_callables(
+        outputs=[
+            relation_to_output(dataset_name, rel)
+            for dataset_name, rel in task.output_duckdb_relations.items()
+        ],
         basename="blah.parquet",
     )
 
