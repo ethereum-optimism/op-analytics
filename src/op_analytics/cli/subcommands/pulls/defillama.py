@@ -11,7 +11,7 @@ from op_coreutils.bigquery.write import (
 from op_coreutils.logger import structlog
 from op_coreutils.request import get_data, new_session
 from op_coreutils.threads import run_concurrently
-from op_coreutils.time import datetime_fromepoch, dt_fromepoch, now_date
+from op_coreutils.time import datetime_fromepoch, now_date
 from datetime import UTC
 
 log = structlog.get_logger()
@@ -45,7 +45,7 @@ def process_breakdown_stables(
     peg_type: str = data["pegType"]
     balances: Dict[str, dict] = data["chainBalances"]
 
-    cutoff_date = datetime.now(UTC) - timedelta(days=days)
+    cutoff_date = (datetime.now(UTC) - timedelta(days=days)).replace(tzinfo=None)
     rows: List[Dict[str, Optional[str]]] = []
 
     for chain, balance in balances.items():
@@ -56,7 +56,7 @@ def process_breakdown_stables(
                 continue
             row: Dict[str, Optional[str]] = {
                 "chain": chain,
-                "dt": dt_fromepoch(datapoint["date"]).strftime("%Y-%m-%d"),
+                "dt": datetime_fromepoch(datapoint["date"]).strftime("%Y-%m-%d"),
                 "circulating": datapoint.get("circulating", {}).get(peg_type),
                 "bridged_to": datapoint.get("bridgedTo", {}).get(peg_type),
                 "minted": datapoint.get("minted", {}).get(peg_type),
@@ -88,6 +88,8 @@ def process_breakdown_stables(
 
     # Collect required metadata fields
     for key in must_have_metadata_fields:
+        if key not in data:
+            raise KeyError(f"Missing required metadata field: '{key}'")
         metadata[key] = data[key]
 
     # Collect additional optional metadata fields
