@@ -13,8 +13,7 @@ log = structlog.get_logger()
 def load_from_parquet_uris(
     source_uris: list[str],
     source_uri_prefix: str,
-    destination_dataset: str,
-    destination_table: str,
+    destination: str,
     date_partition: date,
     time_partition_field: str,
     clustering_fields: list[str] | None,
@@ -26,7 +25,7 @@ def load_from_parquet_uris(
     client = init_client()
 
     date_suffix = date_partition.strftime("%Y%m%d")
-    destination = f"{destination_dataset}.{destination_table}${date_suffix}"
+    destination = f"{destination}${date_suffix}"
 
     job_config = bigquery.LoadJobConfig(
         source_format=bigquery.SourceFormat.PARQUET,
