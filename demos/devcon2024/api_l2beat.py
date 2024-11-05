@@ -1,22 +1,25 @@
 import pandas as pd
 import requests as r
-import numpy as np
 import time
 import api_utilities as ap
 
-# TODO Make Concurrent #
+# TODO Make Concurrent
 
 url_base = "https://l2beat.com/api/"
 
 default_query_range = "1y" # range can be any of ['7d', '30d', '90d', '180d', '1y', 'max'], defaults to 30d
 max_retries = 5
-session = ap.new_session()
+
 
 
 def get_l2beat_summary():
-    summary_url = url_base + "scaling/summary"
+    session = ap.new_session()
+
+    summary_url = f"{url_base}scaling/summary"
     print(summary_url)
-    summary = r.get(summary_url).json()
+
+    summary = ap.get_data(session, summary_url)
+
     projects_summary = list(summary["data"]["projects"].values())
     df = pd.DataFrame(projects_summary)
     return df
@@ -49,8 +52,9 @@ def process_response(l2beat_slug, response_json, metric_value):
         return None
 
 def get_single_project(l2beat_slug, url_type, query_range = default_query_range):
+        session = ap.new_session()
         
-        project_url = url_base + f"scaling/{url_type}/{l2beat_slug}?range={query_range}"
+        project_url = f"{url_base}scaling/{url_type}/{l2beat_slug}?range={query_range}"
         # print(project_url)
 
         if url_type == 'activity':
@@ -60,24 +64,16 @@ def get_single_project(l2beat_slug, url_type, query_range = default_query_range)
         else:
             metric = 'unknown'
 
-        for attempt in range(max_retries):
-            try:
-                response = r.get(project_url)
-                response.raise_for_status()  # Raises an HTTPError for bad responses
-                response_df = process_response(l2beat_slug, response.json(), metric)
-                # df = resp_json['data']
-                return response_df
-            except r.exceptions.HTTPError as e:
-                if response.status_code == 429:  # Too Many Requests
-                    print(f"Rate limited. Retrying in 1 second... (Attempt {attempt + 1}/{max_retries})")
-                    time.sleep(1)
-                else:
-                    print(f"HTTP Error occurred: {e}")
-                    time.sleep(1)
-                    return None
+        try:
+            response = ap.get_data(session, project_url)
+            response_df = process_response(l2beat_slug, response, metric)
+            return response_df
         
-        print(f"Failed to get data after {max_retries} attempts")
-        return None
+        except r.exceptions.HTTPError as e:
+            print(f"HTTP Error occurred: {e}")
+            time.sleep(1)
+            return None
+
 
 def get_all_projects_data(summary_df, url_type = 'activity', query_range=default_query_range):
     project_list = summary_df['slug']
@@ -99,7 +95,6 @@ def get_all_projects_data(summary_df, url_type = 'activity', query_range=default
         
         if i % 25 == 0:
             print(f"{i} / {num_projects} completed")
-            time.sleep(0.1)
     
     if not data_dfs:
         print("No valid data retrieved for any project.")
