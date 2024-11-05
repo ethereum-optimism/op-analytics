@@ -11,7 +11,7 @@ from op_coreutils.bigquery.write import (
 from op_coreutils.logger import structlog
 from op_coreutils.request import get_data, new_session
 from op_coreutils.threads import run_concurrently
-from op_coreutils.time import now_date
+from op_coreutils.time import datetime_fromepoch, dt_fromepoch
 
 log = structlog.get_logger()
 
@@ -49,16 +49,13 @@ def process_breakdown_stables(
 
     for chain, balance in balances.items():
         tokens = balance.get("tokens", [])
-        from op_coreutils.time import datetime_fromepoch
 
         for datapoint in tokens:
             if datetime_fromepoch(datapoint["date"]) < cutoff_date:
                 continue
             row: Dict[str, Optional[str]] = {
                 "chain": chain,
-                "dt": datetime.fromtimestamp(
-                    datapoint["date"], tz=timezone.utc
-                ).strftime("%Y-%m-%d"),
+                "dt": dt_fromepoch(datapoint["date"]).strftime("%Y-%m-%d"),
                 "circulating": datapoint.get("circulating", {}).get(peg_type),
                 "bridged_to": datapoint.get("bridgedTo", {}).get(peg_type),
                 "minted": datapoint.get("minted", {}).get(peg_type),
