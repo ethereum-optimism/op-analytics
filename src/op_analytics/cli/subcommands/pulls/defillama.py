@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import UTC, datetime, timedelta
+from datetime import timedelta
 from typing import Dict, List, Optional, Tuple
 
 import polars as pl
@@ -11,7 +11,7 @@ from op_coreutils.bigquery.write import (
 from op_coreutils.logger import structlog
 from op_coreutils.request import get_data, new_session
 from op_coreutils.threads import run_concurrently
-from op_coreutils.time import datetime_fromepoch, now_date
+from op_coreutils.time import datetime_fromepoch, now_date, now
 
 log = structlog.get_logger()
 
@@ -44,7 +44,7 @@ def process_breakdown_stables(
     peg_type: str = data["pegType"]
     balances: Dict[str, dict] = data["chainBalances"]
 
-    cutoff_date = (datetime.now(UTC) - timedelta(days=days)).replace(tzinfo=None)
+    cutoff_date = now() - timedelta(days=days)
     rows: List[Dict[str, Optional[str]]] = []
 
     for chain, balance in balances.items():
