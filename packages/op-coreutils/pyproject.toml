@@ -12,6 +12,7 @@ dependencies = [
     "google-cloud-storage>=2.18.2",
     "gspread>=6.1.2",
     "pyarrow>=17.0.0",
+    "stamina>=24.3.0",
     "structlog>=24.4.0",
     "urllib3>=2.2.3",
 ]

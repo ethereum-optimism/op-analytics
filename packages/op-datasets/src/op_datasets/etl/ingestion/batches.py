@@ -59,6 +59,12 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # of ~130k transactions per second.
         Delimiter(block_number=0, batch_size=5000),
     ],
+    "worldchain": [
+        Delimiter(block_number=0, batch_size=20000),
+        # On 2024/10/13 after launching worldchain started having
+        # sustained transaction count of ~600k/day.
+        Delimiter(block_number=4700000, batch_size=4000),
+    ],
     # Default
     "automata": [Delimiter(0, 20000)],
     "bob": [Delimiter(0, 20000)],
@@ -78,7 +84,6 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "swan": [Delimiter(0, 20000)],
     "xterio": [Delimiter(0, 20000)],
     "zora": [Delimiter(0, 20000)],
-    "worldchain": [Delimiter(0, 20000)],
 }
 
 

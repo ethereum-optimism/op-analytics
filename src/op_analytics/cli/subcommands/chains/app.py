@@ -142,11 +142,10 @@ DRYRUN_ARG = Annotated[
 
 
 def normalize_chains(chains: str) -> list[str]:
+    # If for some reason we need to force exclude a chain, add it here.
+    not_included = set()
+
     result = set()
-
-    # TODO: Fix problems with automata and worldchain.
-    not_included = {"automata", "worldchain"}
-
     for chain in chains.split(","):
         if chain == "ALL":
             result.update(verify_goldsky_tables())
@@ -154,6 +153,10 @@ def normalize_chains(chains: str) -> list[str]:
             not_included.add(chain.removeprefix("-").strip())
         else:
             result.add(chain.strip())
+
+    excluded = result.intersection(not_included)
+    for chain in excluded:
+        log.warning(f"Excluding chain: {chain!r}")
 
     return list(result - not_included)
 

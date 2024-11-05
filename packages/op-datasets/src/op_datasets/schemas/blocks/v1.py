@@ -181,7 +181,8 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             json_rpc_field_name="difficulty",
             raw_goldsky_pipeline_expr="difficulty",
             raw_goldsky_pipeline_type="double",
-            op_analytics_clickhouse_expr="difficulty",
+            # NOTE: Some goldsky tables have difficulty as Decimal(76, 18) so we cast it to Float64.
+            op_analytics_clickhouse_expr="cast(difficulty, 'Float64') AS difficulty",
         ),
         Column(
             name="total_difficulty",
@@ -191,7 +192,8 @@ BLOCKS_V1_SCHEMA = CoreDataset(
             json_rpc_field_name="totalDifficulty",
             raw_goldsky_pipeline_expr="total_difficulty",
             raw_goldsky_pipeline_type="double",
-            op_analytics_clickhouse_expr="total_difficulty",
+            # NOTE: Some goldsky tables have total_difficulty as Decimal(76, 18) so we cast it to Float64.
+            op_analytics_clickhouse_expr="cast(total_difficulty, 'Float64') AS total_difficulty",
         ),
         Column(
             name="size",
