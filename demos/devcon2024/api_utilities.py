@@ -2,7 +2,8 @@
 
 import concurrent.futures
 from typing import Any, Callable
-import urllib3
+import requests
+from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import time
 
@@ -13,21 +14,35 @@ DEFAULT_RETRY_STRATEGY = Retry(
     status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to retry on
 )
 
-def new_session():
-    http = urllib3.PoolManager(retries=DEFAULT_RETRY_STRATEGY)
 
-    return http
+def new_session() -> requests.Session:
+    session = requests.Session()
+    adapter = HTTPAdapter(max_retries=DEFAULT_RETRY_STRATEGY)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
 
-def get_data(session, url):
-    """Helper function to reuse an existing HTTP session to fetch data from a URL."""
+    return session
+
+
+def get_data(session: requests.Session, url: str, headers: dict[str, str] | None = None):
+    """Helper function to reuse an existing HTTP session to fetch data from a URL.
+
+    - Reports timing.
+    - Raises for HTTP error status codes (>400) and checks for 200 status code.
+    """
     start = time.time()
-    resp = session.request(
-        method="GET",
-        url=url,
-        headers={"Content-Type": "application/json"},
-    ).json()
-    print(f"Fetched from {url}: {time.time() - start:.2f} seconds")
-    return resp
+
+    headers = headers or {"Content-Type": "application/json"}
+
+    resp = session.request(method="GET", url=url, headers=headers)
+
+    resp.raise_for_status()
+
+    if resp.status_code != 200:
+        raise Exception(f"status={resp.status_code}, url={url!r}")
+
+    # print(f"Fetched from {url}: {time.time() - start:.2f} seconds")
+    return resp.json()
 
 
 def run_concurrently(
