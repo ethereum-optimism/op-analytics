@@ -115,20 +115,14 @@ def pull_stables(
     session = new_session()
     summary = get_data(session, SUMMARY_ENDPOINT)
 
-    all_stablecoin_ids = [asset["id"] for asset in summary.get("peggedAssets", [])]
-    if stablecoin_ids is not None:
-        # Filter only the stablecoin IDs provided
-        stablecoin_ids = [id_ for id_ in stablecoin_ids if id_ in all_stablecoin_ids]
-        if not stablecoin_ids:
-            log.error("No valid stablecoin IDs provided.")
-            return {"metadata": pl.DataFrame(), "breakdown": pl.DataFrame()}
-    else:
-        stablecoin_ids = all_stablecoin_ids
-
-    urls = {
-        stablecoin_id: BREAKDOWN_ENDPOINT.format(id=stablecoin_id)
-        for stablecoin_id in stablecoin_ids
-    }
+    urls = {}
+    for stablecoin in summary["peggedAssets"]:
+        stablecoin_id = stablecoin["id"]
+        if stablecoin_id in (stablecoin_ids or []):
+            urls[stablecoin_id] = BREAKDOWN_ENDPOINT.format(id=stablecoin_id)
+            
+    if not urls:
+        raise ValueError("no valid stablecoin IDs provided.")
 
     stablecoin_data = run_concurrently(
         lambda x: get_data(session, x), urls, max_workers=4
