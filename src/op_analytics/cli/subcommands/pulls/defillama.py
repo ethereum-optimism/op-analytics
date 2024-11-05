@@ -86,9 +86,15 @@ def process_breakdown_stables(
         "price",
     ]
 
-    metadata: Dict[str, Optional[str]] = {
-        key: data.get(key) for key in must_have_metadata_fields + metadata_fields
-    }
+    metadata: Dict[str, Optional[str]] = {}
+
+    # Collect required metadata fields
+    for key in must_have_metadata_fields:
+        metadata[key] = data[key]
+
+    # Collect additional optional metadata fields
+    for key in metadata_fields:
+        metadata[key] = data.get(key)
 
     result = (
         pl.DataFrame(rows, infer_schema_length=len(rows)).with_columns(
