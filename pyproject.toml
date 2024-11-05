@@ -49,6 +49,9 @@ dev-dependencies = [
     "types-pyyaml>=6.0.12.20240917",
     "types-requests>=2.32.0.20241016",
     "webdriver-manager>=4.0.2",
+    "matplotlib>=3.9.0",
+    "plotly>=5.20.1",
+    "nbformat>=4.2.0",
 ]
 
 [build-system]
