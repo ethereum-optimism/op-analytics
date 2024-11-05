@@ -13,7 +13,7 @@ import numpy as np
 url_base = 'https://api.growthepie.xyz/'
 
 def get_growthepie_fundamentals():
-    data_url = url_base + 'v1/fundamentals_full.json'
+    data_url = f"{url_base}v1/fundamentals_full.json"
     print(data_url)
     response = r.get(data_url)
 
@@ -27,13 +27,15 @@ def get_growthepie_fundamentals():
         # Drop rows where all metric columns (excluding 'origin_key' and 'date') are NaN
         filtered_data_df = pivot_df.dropna(subset=[col for col in pivot_df.columns if col not in ['origin_key', 'date']], how='all')
         filtered_data_df = filtered_data_df.reset_index()
+
+        filtered_data_df['date'] = pd.to_datetime(filtered_data_df['date'])
+
         return filtered_data_df
     else:
         print("Failed to retrieve data. HTTP Status Code:", response.status_code)
 
 def get_growthepie_metadata():
-    meta_url = url_base + 'v1/master.json'
-    print(meta_url)
+    meta_url = f"{url_base}v1/master.json"
     response = r.get(meta_url)
 
     # Process response

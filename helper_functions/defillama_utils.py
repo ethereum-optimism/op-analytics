@@ -549,7 +549,7 @@ def get_chain_list():
 
 def get_historical_chain_tvl(chain_name):
     df = pd.DataFrame()
-    api_string = 'https://api.llama.fi/v2/historicalChainTvl/' + chain_name
+    api_string = f"https://api.llama.fi/v2/historicalChainTvl/{chain_name}"
     try:
         tvl = r.get(api_string, headers=header).json()
         df = pd.DataFrame(tvl)
