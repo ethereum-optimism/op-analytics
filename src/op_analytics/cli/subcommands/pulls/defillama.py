@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 
 import polars as pl
@@ -12,7 +12,6 @@ from op_coreutils.logger import structlog
 from op_coreutils.request import get_data, new_session
 from op_coreutils.threads import run_concurrently
 from op_coreutils.time import datetime_fromepoch, now_date
-from datetime import UTC
 
 log = structlog.get_logger()
 
@@ -147,8 +146,8 @@ def pull_stables(
         breakdown_df, metadata = process_breakdown_stables(data, days=days)
         if not breakdown_df.is_empty():
             breakdown_dfs.append(breakdown_df)
-        if metadata:
-            metadata_rows.append(metadata)
+            if metadata:
+                metadata_rows.append(metadata)
 
     breakdown_df = (
         pl.concat(breakdown_dfs, how="diagonal_relaxed")
@@ -167,7 +166,6 @@ def pull_stables(
         raise ValueError(
             "metadata_df is empty. Expected non-empty data to write to BigQuery."
         )
-
     overwrite_unpartitioned_table(metadata_df, BQ_DATASET, f"{METADATA_TABLE}_latest")
     overwrite_partition_static(
         metadata_df,
