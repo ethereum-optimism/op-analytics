@@ -45,13 +45,11 @@ def process_breakdown_stables(
 
     for chain, balance in balances.items():
         tokens = balance.get("tokens", [])
-        filtered_tokens = [
-            datapoint
-            for datapoint in tokens
-            if datetime.fromtimestamp(datapoint["date"], tz=timezone.utc) >= cutoff_date
-        ]
+        from op_coreutils.time import datetime_fromepoch
 
-        for datapoint in filtered_tokens:
+        for datapoint in tokens:
+            if datetime_fromepoch(datapoint["date"]) < cutoff_date:
+                continue
             row: Dict[str, Optional[str]] = {
                 "chain": chain,
                 "dt": datetime.fromtimestamp(
