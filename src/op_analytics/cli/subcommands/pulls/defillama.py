@@ -11,7 +11,7 @@ from op_coreutils.bigquery.write import (
 from op_coreutils.logger import structlog
 from op_coreutils.request import get_data, new_session
 from op_coreutils.threads import run_concurrently
-from op_coreutils.time import datetime_fromepoch, dt_fromepoch
+from op_coreutils.time import datetime_fromepoch, dt_fromepoch, now_date
 
 log = structlog.get_logger()
 
@@ -158,27 +158,33 @@ def pull_stables(
 
     dt = now_date()
 
-    if not metadata_df.is_empty():
-        overwrite_unpartitioned_table(
-            metadata_df, BQ_DATASET, f"{METADATA_TABLE}_latest"
-        )
-        overwrite_partition_static(
-            metadata_df,
-            partition_dt=dt,
-            dataset=BQ_DATASET,
-            table_name=f"{METADATA_TABLE}_history",
+    if metadata_df.is_empty():
+        raise ValueError(
+            "metadata_df is empty. Expected non-empty data to write to BigQuery."
         )
 
-    if not breakdown_df.is_empty():
-        dates = breakdown_df["dt"].unique().to_list()
-        for date_value in dates:
-            date_data = breakdown_df.filter(pl.col("dt") == date_value)
-            upsert_partitioned_table(
-                date_data,
-                dataset=BQ_DATASET,
-                table_name=f"{BREAKDOWN_TABLE}_history",
-                unique_keys=["dt", "id", "chain"],
-                partition_dt=date_value,
-            )
+    overwrite_unpartitioned_table(metadata_df, BQ_DATASET, f"{METADATA_TABLE}_latest")
+    overwrite_partition_static(
+        metadata_df,
+        partition_dt=dt,
+        dataset=BQ_DATASET,
+        table_name=f"{METADATA_TABLE}_history",
+    )
+
+    if breakdown_df.is_empty():
+        raise ValueError(
+            "breakdown_df is empty. Expected non-empty data to write to BigQuery."
+        )
+
+    dates = breakdown_df["dt"].unique().to_list()
+    for date_value in dates:
+        date_data = breakdown_df.filter(pl.col("dt") == date_value)
+        upsert_partitioned_table(
+            date_data,
+            dataset=BQ_DATASET,
+            table_name=f"{BREAKDOWN_TABLE}_history",
+            unique_keys=["dt", "id", "chain"],
+            partition_dt=date_value,
+        )
 
     return {"metadata": metadata_df, "breakdown": breakdown_df}
