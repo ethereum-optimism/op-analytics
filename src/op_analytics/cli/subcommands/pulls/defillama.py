@@ -37,8 +37,12 @@ def process_breakdown_stables(
     Returns:
         A tuple containing a Polars DataFrame with breakdown data and a metadata dictionary.
     """
-    peg_type: str = data.get("pegType", "")
-    balances: Dict[str, dict] = data.get("chainBalances", {})
+
+    if "pegType" not in data or "chainBalances" not in data:
+        raise ValueError("Missing required fields: 'pegType' or 'chainBalances'")
+
+    peg_type: str = data["pegType"]
+    balances: Dict[str, dict] = data["chainBalances"]
 
     cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
     rows: List[Dict[str, Optional[str]]] = []
@@ -120,9 +124,9 @@ def pull_stables(
         stablecoin_id = stablecoin["id"]
         if stablecoin_id in (stablecoin_ids or []):
             urls[stablecoin_id] = BREAKDOWN_ENDPOINT.format(id=stablecoin_id)
-            
+
     if not urls:
-        raise ValueError("no valid stablecoin IDs provided.")
+        raise ValueError("No valid stablecoin IDs provided.")
 
     stablecoin_data = run_concurrently(
         lambda x: get_data(session, x), urls, max_workers=4
