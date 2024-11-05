@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 
 import polars as pl
@@ -12,6 +12,7 @@ from op_coreutils.logger import structlog
 from op_coreutils.request import get_data, new_session
 from op_coreutils.threads import run_concurrently
 from op_coreutils.time import datetime_fromepoch, dt_fromepoch, now_date
+from datetime import UTC
 
 log = structlog.get_logger()
 
@@ -44,7 +45,7 @@ def process_breakdown_stables(
     peg_type: str = data["pegType"]
     balances: Dict[str, dict] = data["chainBalances"]
 
-    cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
+    cutoff_date = datetime.now(UTC) - timedelta(days=days)
     rows: List[Dict[str, Optional[str]]] = []
 
     for chain, balance in balances.items():
@@ -122,12 +123,14 @@ def pull_stables(
     session = new_session()
     summary = get_data(session, SUMMARY_ENDPOINT)
 
+    if "peggedAssets" not in summary:
+        raise KeyError("The 'peggedAssets' key is missing from the summary data.")
+
     urls = {}
     for stablecoin in summary["peggedAssets"]:
         stablecoin_id = stablecoin["id"]
-        if stablecoin_id in (stablecoin_ids or []):
+        if stablecoin_ids is None or stablecoin_id in stablecoin_ids:
             urls[stablecoin_id] = BREAKDOWN_ENDPOINT.format(id=stablecoin_id)
-
     if not urls:
         raise ValueError("No valid stablecoin IDs provided.")
 
