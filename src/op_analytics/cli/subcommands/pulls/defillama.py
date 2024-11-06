@@ -26,7 +26,7 @@ METADATA_TABLE = "defillama_stablecoins_metadata"
 
 def process_breakdown_stables(
     data: dict, days: int = 30
-) -> tuple[pl.DataFrame, dict[str, Optional[str]]]:
+) -> tuple[pl.DataFrame, pl.DataFrame]:
     """
     Processes breakdown data for stablecoins, filtering for the most recent N days.
 
@@ -35,7 +35,7 @@ def process_breakdown_stables(
         days: The number of days to filter in the processed data.
 
     Returns:
-        A tuple containing a Polars DataFrame with breakdown data and a metadata dictionary.
+        A tuple containing a Polars DataFrame with breakdown data and a metadata DataFrame.
     """
 
     peg_type: str = data["pegType"]
@@ -80,37 +80,42 @@ def process_breakdown_stables(
         "price",
     ]
 
-    metadata: dict[str, Optional[str]] = {}
+    metadata_list = []
 
     # Collect required metadata fields
+    metadata_row = {}
     for key in must_have_metadata_fields:
         if key not in data:
             raise KeyError(f"Missing required metadata field: '{key}'")
-        metadata[key] = data[key]
+        metadata_row[key] = data[key]
 
     # Collect additional optional metadata fields
     for key in metadata_fields:
-        metadata[key] = data.get(key)
+        metadata_row[key] = data.get(key)
+    metadata_list.append(metadata_row)
 
-    result = (
+    breakdown_df = (
         pl.DataFrame(rows, infer_schema_length=len(rows)).with_columns(
-            id=pl.lit(metadata["id"]),
-            name=pl.lit(metadata["name"]),
-            symbol=pl.lit(metadata["symbol"]),
+            id=pl.lit(metadata_row["id"]),
+            name=pl.lit(metadata_row["name"]),
+            symbol=pl.lit(metadata_row["symbol"]),
         )
         if rows
         else pl.DataFrame()
     )
 
-    if not result.is_empty():
+    metadata_df = pl.DataFrame(metadata_list, infer_schema_length=len(metadata_list))
+
+    if breakdown_df.is_empty():
         raise ValueError(
-            "result is empty. Expected non-empty data to write to BigQuery."
+            "breakdown_df is empty. Expected non-empty data to write to BigQuery."
         )
-    if not metadata:
+    if metadata_df.is_empty():
         raise ValueError(
-            "metadata is empty. Expected non-empty data to write to BigQuery."
+            "metadata_df is empty. Expected non-empty data to write to BigQuery."
         )
-    return result, metadata
+
+    return breakdown_df, metadata_df
 
 
 def pull_stables(
@@ -142,31 +147,22 @@ def pull_stables(
     )
 
     breakdown_dfs: list[pl.DataFrame] = []
-    metadata_rows: list[dict[str, Optional[str]]] = []
+    metadata_dfs: list[pl.DataFrame] = []
 
     for data in stablecoin_data.values():
-        breakdown_df, metadata = process_breakdown_stables(data, days=days)
+        breakdown_df, metadata_df = process_breakdown_stables(data, days=days)
 
         breakdown_dfs.append(breakdown_df)
-        metadata_rows.append(metadata)
+        metadata_dfs.append(metadata_df)
 
-    breakdown_df = (
-        pl.concat(breakdown_dfs, how="diagonal_relaxed")
-        if breakdown_dfs
-        else pl.DataFrame()
-    )
-    metadata_df = (
-        pl.DataFrame(metadata_rows, infer_schema_length=len(metadata_rows))
-        if metadata_rows
-        else pl.DataFrame()
-    )
+    if not breakdown_dfs:
+        raise ValueError("No breakdown dataframes were created. Expected at least one.")
+
+    breakdown_df = pl.concat(breakdown_dfs, how="diagonal_relaxed")
+    metadata_df = pl.concat(metadata_dfs, how="diagonal_relaxed")
 
     dt = now_date()
 
-    if metadata_df.is_empty():
-        raise ValueError(
-            "metadata_df is empty. Expected non-empty data to write to BigQuery."
-        )
     overwrite_unpartitioned_table(metadata_df, BQ_DATASET, f"{METADATA_TABLE}_latest")
     overwrite_partition_static(
         metadata_df,
@@ -180,15 +176,12 @@ def pull_stables(
             "breakdown_df is empty. Expected non-empty data to write to BigQuery."
         )
 
-    dates = breakdown_df["dt"].unique().to_list()
-    for date_value in dates:
-        date_data = breakdown_df.filter(pl.col("dt") == date_value)
-        upsert_partitioned_table(
-            date_data,
-            dataset=BQ_DATASET,
-            table_name=f"{BREAKDOWN_TABLE}_history",
-            unique_keys=["dt", "id", "chain"],
-            partition_dt=date_value,
-        )
+    upsert_partitioned_table(
+        breakdown_df,
+        dataset=BQ_DATASET,
+        table_name=f"{BREAKDOWN_TABLE}_history",
+        unique_keys=["dt", "id", "chain"],
+        partition_dt=dt,
+    )
 
     return {"metadata": metadata_df, "breakdown": breakdown_df}
