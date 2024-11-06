@@ -3,12 +3,13 @@ from threading import Lock
 from typing import Any, Literal
 
 import clickhouse_connect
-from clickhouse_connect.driver.client import Client
-import pyarrow as pa
 import polars as pl
+import pyarrow as pa
+import stamina
+from clickhouse_connect.driver.client import Client
 
 from op_coreutils.env import env_get
-from op_coreutils.logger import structlog, human_size, human_rows
+from op_coreutils.logger import human_rows, human_size, structlog
 
 log = structlog.get_logger()
 
@@ -80,6 +81,15 @@ def run_goldsky_query(
     return run_query("GOLDSKY", query, parameters, settings)
 
 
+def retry_logger(exc: Exception) -> bool:
+    log.error(f"Retrying after encoutering exception: {exc}")
+
+    # TODO: Reinitialize the client on failure.
+
+    return True
+
+
+@stamina.retry(on=retry_logger, attempts=3)
 def run_oplabs_query(
     query: str,
     parameters: dict[str, Any] | None = None,

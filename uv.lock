@@ -1757,6 +1757,7 @@ dependencies = [
     { name = "google-cloud-storage" },
     { name = "gspread" },
     { name = "pyarrow" },
+    { name = "stamina" },
     { name = "structlog" },
     { name = "urllib3" },
 ]
@@ -1770,6 +1771,7 @@ requires-dist = [
     { name = "google-cloud-storage", specifier = ">=2.18.2" },
     { name = "gspread", specifier = ">=6.1.2" },
     { name = "pyarrow", specifier = ">=17.0.0" },
+    { name = "stamina", specifier = ">=24.3.0" },
     { name = "structlog", specifier = ">=24.4.0" },
     { name = "urllib3", specifier = ">=2.2.3" },
 ]
@@ -2801,6 +2803,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/28/e3/55dcc2cfbc3ca9c29519eb6884dd1415ecb53b0e934862d3559ddcb7e20b/stack_data-0.6.3.tar.gz", hash = "sha256:836a778de4fec4dcd1dcd89ed8abff8a221f58308462e1c4aa2a3cf30148f0b9", size = 44707 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f1/7b/ce1eafaf1a76852e2ec9b22edecf1daa58175c090266e9f6c64afcd81d91/stack_data-0.6.3-py3-none-any.whl", hash = "sha256:d5558e0c25a4cb0853cddad3d77da9891a08cb85dd9f9f91b9f8cd66e511e695", size = 24521 },
+]
+
+[[package]]
+name = "stamina"
+version = "24.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "tenacity" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c8/35/afe1f3467e840f414cfea90993c5a94490a6360eb3653236c3a7de099cf6/stamina-24.3.0.tar.gz", hash = "sha256:1d763c98962ca11f1729c357422926a750a138e803e7beb9f9d6c99d33d9997d", size = 558536 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7d/81/818b0b93812cc0a69a0b17c591dca1a3779aeab7f0ff094dee51f4a6bcd3/stamina-24.3.0-py3-none-any.whl", hash = "sha256:28caf1a5db514256d86e32b60621630552fa9a60dace4e6fb5c78ba15f26236e", size = 16445 },
 ]
 
 [[package]]

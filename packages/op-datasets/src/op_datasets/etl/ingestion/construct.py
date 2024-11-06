@@ -43,10 +43,13 @@ def construct_tasks(
 
     # Log a summary of the work that will be done for each chain.
     for chain, batches in chain_batches.items():
-        total_blocks = batches[-1].max - batches[0].min
-        log.info(
-            f"Prepared chain={chain!r}: {len(batches)} batch(es) {total_blocks} total blocks starting at #{batches[0].min}"
-        )
+        if batches:
+            total_blocks = batches[-1].max - batches[0].min
+            log.info(
+                f"Prepared chain={chain!r}: {len(batches)} batch(es) {total_blocks} total blocks starting at #{batches[0].min}"
+            )
+        else:
+            log.info(f"Prepared chain={chain!r}: {len(batches)} batch(es)")
 
     # Collect a single list of tasks to perform across all chains.
     all_tasks: list[IngestionTask] = []
