@@ -1,6 +1,6 @@
 import io
 import re
-from datetime import date, datetime
+from datetime import date
 from unittest.mock import MagicMock
 
 
@@ -195,9 +195,10 @@ def test_upsert_partitioned_table():
     mock_client = init_client()
     mock_client.reset_mock()
 
-    # Create a test DataFrame without 'dt' column
+    # Create a test DataFrame with 2 different dts.
     test_df = pl.DataFrame(
         {
+            "dt": [date(2024, 1, 1), date(2024, 1, 1), date(2024, 1, 2)],
             "id": [1, 2, 3],
             "value": [10, 20, 30],
         }
@@ -206,20 +207,19 @@ def test_upsert_partitioned_table():
     dataset = "test_dataset"
     table_name = "test_table"
     unique_keys = ["id", "dt"]
-    partition_dt = "2024-01-01"
 
     # Prepare a mock load job
     mock_load_job = MagicMock()
     mock_load_job.result.return_value = None
 
-    # Variable to capture the stream
-    captured_stream = None
+    # Capture all dataframes that are written out.
+    written_dataframes = []
 
     # Define side_effect function to capture the stream
     def load_table_from_file_side_effect(stream, destination, job_config):
-        nonlocal captured_stream
         # Make a copy of the stream content
         captured_stream = io.BytesIO(stream.read())
+        written_dataframes.append(pl.read_parquet(captured_stream))
         # Reset the original stream position
         stream.seek(0)
         return mock_load_job
@@ -241,25 +241,29 @@ def test_upsert_partitioned_table():
         dataset=dataset,
         table_name=table_name,
         unique_keys=unique_keys,
-        partition_dt=partition_dt,
     )
 
     # Assertions
     # Verify that the staging table was written with WRITE_EMPTY
     mock_client.load_table_from_file.assert_called()
-    args, kwargs = mock_client.load_table_from_file.call_args
-    destination = kwargs["destination"]
-    assert re.match(r"temp_upserts.[\w_]+_\d{12}-\w{8}$", destination)
-    assert kwargs["job_config"].write_disposition == bigquery.WriteDisposition.WRITE_EMPTY
+
+    for call_args in mock_client.load_table_from_file.call_args_list:
+        assert re.match(
+            r"temp_upserts.test_table_202401\d{2}_\d{12}-\w{8}$", call_args.kwargs["destination"]
+        )
+        assert (
+            call_args.kwargs["job_config"].write_disposition
+            == bigquery.WriteDisposition.WRITE_EMPTY
+        )
 
     # Check that the DataFrame has 'dt' column set to the correct date
-    if captured_stream is not None:
-        captured_stream.seek(0)
-        written_df = pl.read_parquet(captured_stream)
-        assert "dt" in written_df.columns
-        assert written_df["dt"].unique().to_list() == [datetime.strptime(partition_dt, "%Y-%m-%d")]
-    else:
-        pytest.fail("Failed to capture the stream.")
+    assert len(written_dataframes) == 2
+
+    assert len(written_dataframes[0]) == 2  # 2 rows
+    assert written_dataframes[0]["dt"].unique().to_list() == [date(2024, 1, 1)]
+
+    assert len(written_dataframes[1]) == 1  # 1 row
+    assert written_dataframes[1]["dt"].unique().to_list() == [date(2024, 1, 2)]
 
     # Check that the merge query was constructed correctly
     merge_query = mock_client.query.call_args[0][0]

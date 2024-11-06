@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
-from datetime import timedelta
+from dataclasses import dataclass
 from typing import Optional
 
 import polars as pl
 from op_coreutils.bigquery.write import (
-    overwrite_partition_static,
-    overwrite_unpartitioned_table,
+    most_recent_dates,
     upsert_partitioned_table,
+    upsert_unpartitioned_table,
 )
 from op_coreutils.logger import structlog
 from op_coreutils.request import get_data, new_session
 from op_coreutils.threads import run_concurrently
-from op_coreutils.time import datetime_fromepoch, now_date, now
+from op_coreutils.time import dt_fromepoch
 
 log = structlog.get_logger()
 
@@ -20,175 +19,184 @@ BREAKDOWN_ENDPOINT = "https://stablecoins.llama.fi/stablecoin/{id}"
 
 BQ_DATASET = "uploads_api"
 
-BREAKDOWN_TABLE = "defillama_daily_stablecoins_breakdown"
-METADATA_TABLE = "defillama_stablecoins_metadata"
+METADATA_TABLE = "defillama_stablecoin_metadata"
+BALANCES_TABLE = "defillama_daily_stablecoin_balances"
+BALANCES_TABLE_LAST_N_DAYS = 7  # upsert only the last 7 days of balances fetched from the api
 
 
-def process_breakdown_stables(
-    data: dict, days: int = 30
-) -> tuple[pl.DataFrame, dict[str, Optional[str]]]:
+MUST_HAVE_METADATA_FIELDS = [
+    "id",
+    "name",
+    "address",
+    "symbol",
+    "url",
+    "pegType",
+    "pegMechanism",
+]
+
+OPTIONAL_METADATA_FIELDS = [
+    "description",
+    "mintRedeemDescription",
+    "onCoinGecko",
+    "gecko_id",
+    "cmcId",
+    "priceSource",
+    "twitter",
+    "price",
+]
+
+
+@dataclass
+class DefillamaStablecoins:
+    """Metadata and balances for all stablecoins.
+
+    This is the result we obtain after fetching from the API and extracting the data
+    that we need to ingest.
     """
-    Processes breakdown data for stablecoins, filtering for the most recent N days.
+
+    metadata_df: pl.DataFrame
+    balances_df: pl.DataFrame
+
+
+def construct_urls(stablecoins_summary, symbols: list[str] | None) -> dict[str, str]:
+    """Build the collection of urls that we will fetch from DefiLlama.
 
     Args:
-        data: The breakdown data from the API.
-        days: The number of days to filter in the processed data.
-
-    Returns:
-        A tuple containing a Polars DataFrame with breakdown data and a metadata dictionary.
+        symbols: list of symbols to process. Defaults to None (process all).
     """
+    urls = {}
+    for stablecoin in stablecoins_summary:
+        stablecoin_symbol = stablecoin["symbol"]
+        stablecoin_id = stablecoin["id"]
+        if symbols is None or stablecoin_symbol in symbols:
+            urls[stablecoin_id] = BREAKDOWN_ENDPOINT.format(id=stablecoin_id)
 
-    peg_type: str = data["pegType"]
-    balances: dict[str, dict] = data["chainBalances"]
-
-    cutoff_date = now() - timedelta(days=days)
-    rows: list[dict[str, Optional[str]]] = []
-
-    for chain, balance in balances.items():
-        tokens = balance.get("tokens", [])
-
-        for datapoint in tokens:
-            if datetime_fromepoch(datapoint["date"]) < cutoff_date:
-                continue
-            row: dict[str, Optional[str]] = {
-                "chain": chain,
-                "dt": datetime_fromepoch(datapoint["date"]).strftime("%Y-%m-%d"),
-                "circulating": datapoint.get("circulating", {}).get(peg_type),
-                "bridged_to": datapoint.get("bridgedTo", {}).get(peg_type),
-                "minted": datapoint.get("minted", {}).get(peg_type),
-                "unreleased": datapoint.get("unreleased", {}).get(peg_type),
-            }
-            rows.append(row)
-
-    must_have_metadata_fields = [
-        "id",
-        "name",
-        "address",
-        "symbol",
-        "url",
-        "pegType",
-        "pegMechanism",
-    ]
-    metadata_fields = [
-        "description",
-        "mintRedeemDescription",
-        "onCoinGecko",
-        "gecko_id",
-        "cmcId",
-        "priceSource",
-        "twitter",
-        "price",
-    ]
-
-    metadata: dict[str, Optional[str]] = {}
-
-    # Collect required metadata fields
-    for key in must_have_metadata_fields:
-        if key not in data:
-            raise KeyError(f"Missing required metadata field: '{key}'")
-        metadata[key] = data[key]
-
-    # Collect additional optional metadata fields
-    for key in metadata_fields:
-        metadata[key] = data.get(key)
-
-    result = (
-        pl.DataFrame(rows, infer_schema_length=len(rows)).with_columns(
-            id=pl.lit(metadata["id"]),
-            name=pl.lit(metadata["name"]),
-            symbol=pl.lit(metadata["symbol"]),
-        )
-        if rows
-        else pl.DataFrame()
-    )
-
-    if not result.is_empty():
-        raise ValueError(
-            "result is empty. Expected non-empty data to write to BigQuery."
-        )
-    if not metadata:
-        raise ValueError(
-            "metadata is empty. Expected non-empty data to write to BigQuery."
-        )
-    return result, metadata
+    if not urls:
+        raise ValueError("No valid stablecoin IDs provided.")
+    return urls
 
 
-def pull_stables(
-    stablecoin_ids: Optional[list[str]] = None, days: int = 30
-) -> dict[str, pl.DataFrame]:
+def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
     """
     Pulls and processes stablecoin data from DeFiLlama.
 
     Args:
         stablecoin_ids: list of stablecoin IDs to process. Defaults to None (process all).
-        days: Number of days of data to retrieve. Defaults to 30.
-
-    Returns:
-        A dictionary containing metadata and breakdown DataFrames.
     """
     session = new_session()
+
+    # Call the summary endpoint to find the list of stablecoins tracked by DefiLLama.
     summary = get_data(session, SUMMARY_ENDPOINT)
+    stablecoins_summary = summary["peggedAssets"]
 
-    urls = {}
-    for stablecoin in summary["peggedAssets"]:
-        stablecoin_id = stablecoin["id"]
-        if stablecoin_ids is None or stablecoin_id in stablecoin_ids:
-            urls[stablecoin_id] = BREAKDOWN_ENDPOINT.format(id=stablecoin_id)
-    if not urls:
-        raise ValueError("No valid stablecoin IDs provided.")
+    # Call the API endpoint for each stablecoin in parallel.
+    urls = construct_urls(stablecoins_summary, symbols=symbols)
+    stablecoins_data = run_concurrently(lambda x: get_data(session, x), urls, max_workers=4)
 
-    stablecoin_data = run_concurrently(
-        lambda x: get_data(session, x), urls, max_workers=4
-    )
+    # Extract all the balances (includes metadata).
+    result = extract(stablecoins_data)
 
-    breakdown_dfs: list[pl.DataFrame] = []
-    metadata_rows: list[dict[str, Optional[str]]] = []
-
-    for data in stablecoin_data.values():
-        breakdown_df, metadata = process_breakdown_stables(data, days=days)
-
-        breakdown_dfs.append(breakdown_df)
-        metadata_rows.append(metadata)
-
-    breakdown_df = (
-        pl.concat(breakdown_dfs, how="diagonal_relaxed")
-        if breakdown_dfs
-        else pl.DataFrame()
-    )
-    metadata_df = (
-        pl.DataFrame(metadata_rows, infer_schema_length=len(metadata_rows))
-        if metadata_rows
-        else pl.DataFrame()
-    )
-
-    dt = now_date()
-
-    if metadata_df.is_empty():
-        raise ValueError(
-            "metadata_df is empty. Expected non-empty data to write to BigQuery."
-        )
-    overwrite_unpartitioned_table(metadata_df, BQ_DATASET, f"{METADATA_TABLE}_latest")
-    overwrite_partition_static(
-        metadata_df,
-        partition_dt=dt,
+    # Upsert metadata to BQ.
+    upsert_unpartitioned_table(
+        df=result.metadata_df,
         dataset=BQ_DATASET,
-        table_name=f"{METADATA_TABLE}_history",
+        table_name=METADATA_TABLE,
+        unique_keys=["id", "name", "symbol"],
     )
 
-    if breakdown_df.is_empty():
-        raise ValueError(
-            "breakdown_df is empty. Expected non-empty data to write to BigQuery."
-        )
+    # Upsert balances to BQ.
+    # Only update balances on the most recent dates. Assume data further back in time is immutable.
+    upsert_partitioned_table(
+        df=most_recent_dates(result.balances_df, n_dates=BALANCES_TABLE_LAST_N_DAYS),
+        dataset=BQ_DATASET,
+        table_name=BALANCES_TABLE,
+        unique_keys=["dt", "id", "chain"],
+    )
 
-    dates = breakdown_df["dt"].unique().to_list()
-    for date_value in dates:
-        date_data = breakdown_df.filter(pl.col("dt") == date_value)
-        upsert_partitioned_table(
-            date_data,
-            dataset=BQ_DATASET,
-            table_name=f"{BREAKDOWN_TABLE}_history",
-            unique_keys=["dt", "id", "chain"],
-            partition_dt=date_value,
-        )
+    return result
 
-    return {"metadata": metadata_df, "breakdown": breakdown_df}
+
+def extract(stablecoins_data) -> DefillamaStablecoins:
+    """Extract metadata and balances for all stablecoins."""
+    metadata: list[dict] = []
+    balances: list[dict] = []
+    for stablecoin_id, data in stablecoins_data.items():
+        assert stablecoin_id == data["id"]
+        metadata_row, balance_rows = single_stablecoin_balances(data)
+
+        if not metadata_row:
+            raise ValueError(f"No metadata for stablecoin={data['name']}")
+
+        if not balance_rows:
+            raise ValueError(f"No balances for stablecoin={data['name']}")
+
+        metadata.append(metadata_row)
+        balances.extend(balance_rows)
+
+    return DefillamaStablecoins(
+        metadata_df=pl.DataFrame(metadata, infer_schema_length=len(metadata)),
+        balances_df=pl.DataFrame(balances, infer_schema_length=len(balances)),
+    )
+
+
+def single_stablecoin_metadata(data: dict) -> dict:
+    """Extract metadata for a single stablecoin.
+
+    Will fail if the response data from the API is missing any of the "must-have"
+    metadata fields.
+
+    Args:
+        data: Data for this stablecoin as returned by the API
+
+    Returns:
+        The metadata dictionary.
+    """
+    metadata: dict[str, Optional[str]] = {}
+
+    # Collect required metadata fields
+    for key in MUST_HAVE_METADATA_FIELDS:
+        metadata[key] = data[key]
+
+    # Collect additional optional metadata fields
+    for key in OPTIONAL_METADATA_FIELDS:
+        metadata[key] = data.get(key)
+
+    return metadata
+
+
+def single_stablecoin_balances(data: dict) -> tuple[dict, list[dict]]:
+    """Extract balances for a single stablecoin.
+
+    Args:
+        data: Data for this stablecoin as returned by the API
+
+    Returns:
+        A list of rows. Each row is information at a point in time.
+    """
+    metadata = single_stablecoin_metadata(data)
+    peg_type: str = data["pegType"]
+
+    def get_value(_datapoint, _metric_name):
+        """Helper to get a nested dict key with fallback."""
+        return _datapoint.get(_metric_name, {}).get(peg_type)
+
+    balances = []
+
+    for chain, balance in data["chainBalances"].items():
+        tokens = balance.get("tokens", [])
+
+        for datapoint in tokens:
+            row = {
+                "id": data["id"],
+                "chain": chain,
+                "dt": dt_fromepoch(datapoint["date"]),
+                "circulating": get_value(datapoint, "circulating"),
+                "bridged_to": get_value(datapoint, "bridgedTo"),
+                "minted": get_value(datapoint, "minted"),
+                "unreleased": get_value(datapoint, "unreleased"),
+                "name": metadata["name"],
+                "symbol": metadata["symbol"],
+            }
+            balances.append(row)
+
+    return metadata, balances
