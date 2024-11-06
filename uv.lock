@@ -1543,7 +1543,6 @@ dependencies = [
     { name = "polars" },
     { name = "py-markdown-table" },
     { name = "pyyaml" },
-    { name = "sqlfluff" },
     { name = "typer" },
     { name = "urllib3" },
 ]
@@ -1564,6 +1563,7 @@ dev = [
     { name = "selenium" },
     { name = "sphinx" },
     { name = "sphinxcontrib-typer" },
+    { name = "sqlfluff" },
     { name = "types-pyyaml" },
     { name = "types-requests" },
     { name = "webdriver-manager" },
@@ -1577,7 +1577,6 @@ requires-dist = [
     { name = "polars", specifier = ">=1.8.2" },
     { name = "py-markdown-table", specifier = ">=1.1.0" },
     { name = "pyyaml", specifier = ">=6.0.2" },
-    { name = "sqlfluff" },
     { name = "typer", specifier = ">=0.12.5" },
     { name = "urllib3", specifier = ">=2.2.3" },
 ]
@@ -1598,6 +1597,7 @@ dev = [
     { name = "selenium", specifier = ">=4.25.0" },
     { name = "sphinx", specifier = ">=8.0.2" },
     { name = "sphinxcontrib-typer", specifier = ">=0.5.0" },
+    { name = "sqlfluff", specifier = ">=3.2.5" },
     { name = "types-pyyaml", specifier = ">=6.0.12.20240917" },
     { name = "types-requests", specifier = ">=2.32.0.20241016" },
     { name = "webdriver-manager", specifier = ">=4.0.2" },

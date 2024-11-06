@@ -11,7 +11,6 @@ dependencies = [
     "polars>=1.8.2",
     "py-markdown-table>=1.1.0",
     "pyyaml>=6.0.2",
-    "sqlfluff>=3.2.5",
     "typer>=0.12.5",
     "urllib3>=2.2.3",
 ]
@@ -46,6 +45,7 @@ dev-dependencies = [
     "ruff>=0.6.7",
     "selenium>=4.25.0",
     "sphinx>=8.0.2",
+    "sqlfluff>=3.2.5",
     "sphinxcontrib-typer>=0.5.0",
     "types-pyyaml>=6.0.12.20240917",
     "types-requests>=2.32.0.20241016",
