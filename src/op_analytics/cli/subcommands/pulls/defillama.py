@@ -102,6 +102,14 @@ def process_breakdown_stables(
         else pl.DataFrame()
     )
 
+    if not result.is_empty():
+        raise ValueError(
+            "result is empty. Expected non-empty data to write to BigQuery."
+        )
+    if not metadata:
+        raise ValueError(
+            "metadata is empty. Expected non-empty data to write to BigQuery."
+        )
     return result, metadata
 
 
@@ -138,10 +146,9 @@ def pull_stables(
 
     for data in stablecoin_data.values():
         breakdown_df, metadata = process_breakdown_stables(data, days=days)
-        if not breakdown_df.is_empty():
-            breakdown_dfs.append(breakdown_df)
-            if metadata:
-                metadata_rows.append(metadata)
+
+        breakdown_dfs.append(breakdown_df)
+        metadata_rows.append(metadata)
 
     breakdown_df = (
         pl.concat(breakdown_dfs, how="diagonal_relaxed")
