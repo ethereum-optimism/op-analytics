@@ -74,7 +74,7 @@ unite,Unite,,,,,,,yes,,,https://www.unite.io/,,,,unite,,UNITE,L3,2,,base,,,,,,,,
 hemi,Hemi,,,,,,,,,,https://hemi.xyz/,,,,,,ETH,L2,,ethereum,ethereum,,,,,,,,,,,,,
 nal,Nal,328527,,,,,,,,https://rpc.nal.network/,https://www.nal.network/,https://scan.nal.network/,,,nal,,ETH,L2,,ethereum,ethereum,0xD32FbeaC71164D71Aa62640231D022e285472D1E,,,,,,0xB1b676357de100c5bd846299CF6C85436803e839,0xfF00000000000000000000000000000000328527,0x33197820Bf657b33A0BEb86384fD4a0d2c87F538,0xaE25ea4Cc185585Fa6abf344F3354bf8207Cd7D1,,0x872902b91fB2aa95147fCDc346a567B7970DBe47,
 clique,Clique STP,8853,,,,,,,,https://rpc.myclique.io,https://clique.stp.network/,https://explorer.myclique.io/,,,clique,,ETH,L3,,celestia,base,,,,,,,,,0x956c929272847F089268f0530D15C6b876260443,0x47f9FDa2ff7C2354E8D6400733041eE6C56BbA19,,,
-unichain,Unichain,130,FF08A8,,modern,TBD,,yes,,,https://www.unichain.org/,,,,unichain,,ETH,L2,1,ethereum,ethereum,,,,,,,0x2f60a5184c63ca94f82a27100643dbabe4f3f7fd,0xff00000000000000000000000000000000000130,,,,,
+unichain,Unichain,130,FF08A8,,modern,TBD,,yes,,,https://www.unichain.org/,,,,unichain,,ETH,L2,1,ethereum,ethereum,0xc407398d063f942feBbcC6F80a156b47F3f1BDA6,,,,,,0x2f60a5184c63ca94f82a27100643dbabe4f3f7fd,0xff00000000000000000000000000000000000130,0xD5F0E2912C70771C589CD8bB087EDE0Dab4AFA9A,,0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA,0x0bd48f6B86a26D3a217d0Fa6FfE2B491B956A7a2,0x2F12d621a16e2d3285929C9996f478508951dFe4
 ink,Ink,,5848d5,,modern,TBD,,yes,Gelato,,https://inkonchain.com,,,,ink,,ETH,L2,1,ethereum,ethereum,,,,,,,,,,,,,
 odyssey,Odyssey,,,,,,,,,,https://www.ithaca.xyz/updates/odyssey,,,,odyssey,,,L2,,,,,,,,,,,,,,,,
 swell,Swell,,,,,Standard,,,AltLayer,,https://app.swellnetwork.io/,,,,swell,,ETH,L2,,ethereum,ethereum,,,,,,,,,,,,,
