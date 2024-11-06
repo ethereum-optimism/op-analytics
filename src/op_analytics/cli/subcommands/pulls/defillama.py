@@ -38,9 +38,6 @@ def process_breakdown_stables(
         A tuple containing a Polars DataFrame with breakdown data and a metadata dictionary.
     """
 
-    if "pegType" not in data or "chainBalances" not in data:
-        raise ValueError("Missing required fields: 'pegType' or 'chainBalances'")
-
     peg_type: str = data["pegType"]
     balances: Dict[str, dict] = data["chainBalances"]
 
@@ -123,9 +120,6 @@ def pull_stables(
     """
     session = new_session()
     summary = get_data(session, SUMMARY_ENDPOINT)
-
-    if "peggedAssets" not in summary:
-        raise KeyError("The 'peggedAssets' key is missing from the summary data.")
 
     urls = {}
     for stablecoin in summary["peggedAssets"]:
