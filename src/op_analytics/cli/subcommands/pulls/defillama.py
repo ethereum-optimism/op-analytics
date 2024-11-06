@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 import polars as pl
 from op_coreutils.bigquery.write import (
@@ -26,7 +26,7 @@ METADATA_TABLE = "defillama_stablecoins_metadata"
 
 def process_breakdown_stables(
     data: dict, days: int = 30
-) -> Tuple[pl.DataFrame, Dict[str, Optional[str]]]:
+) -> tuple[pl.DataFrame, dict[str, Optional[str]]]:
     """
     Processes breakdown data for stablecoins, filtering for the most recent N days.
 
@@ -39,10 +39,10 @@ def process_breakdown_stables(
     """
 
     peg_type: str = data["pegType"]
-    balances: Dict[str, dict] = data["chainBalances"]
+    balances: dict[str, dict] = data["chainBalances"]
 
     cutoff_date = now() - timedelta(days=days)
-    rows: List[Dict[str, Optional[str]]] = []
+    rows: list[dict[str, Optional[str]]] = []
 
     for chain, balance in balances.items():
         tokens = balance.get("tokens", [])
@@ -50,7 +50,7 @@ def process_breakdown_stables(
         for datapoint in tokens:
             if datetime_fromepoch(datapoint["date"]) < cutoff_date:
                 continue
-            row: Dict[str, Optional[str]] = {
+            row: dict[str, Optional[str]] = {
                 "chain": chain,
                 "dt": datetime_fromepoch(datapoint["date"]).strftime("%Y-%m-%d"),
                 "circulating": datapoint.get("circulating", {}).get(peg_type),
@@ -80,7 +80,7 @@ def process_breakdown_stables(
         "price",
     ]
 
-    metadata: Dict[str, Optional[str]] = {}
+    metadata: dict[str, Optional[str]] = {}
 
     # Collect required metadata fields
     for key in must_have_metadata_fields:
@@ -114,13 +114,13 @@ def process_breakdown_stables(
 
 
 def pull_stables(
-    stablecoin_ids: Optional[List[str]] = None, days: int = 30
-) -> Dict[str, pl.DataFrame]:
+    stablecoin_ids: Optional[list[str]] = None, days: int = 30
+) -> dict[str, pl.DataFrame]:
     """
     Pulls and processes stablecoin data from DeFiLlama.
 
     Args:
-        stablecoin_ids: List of stablecoin IDs to process. Defaults to None (process all).
+        stablecoin_ids: list of stablecoin IDs to process. Defaults to None (process all).
         days: Number of days of data to retrieve. Defaults to 30.
 
     Returns:
@@ -141,8 +141,8 @@ def pull_stables(
         lambda x: get_data(session, x), urls, max_workers=4
     )
 
-    breakdown_dfs: List[pl.DataFrame] = []
-    metadata_rows: List[Dict[str, Optional[str]]] = []
+    breakdown_dfs: list[pl.DataFrame] = []
+    metadata_rows: list[dict[str, Optional[str]]] = []
 
     for data in stablecoin_data.values():
         breakdown_df, metadata = process_breakdown_stables(data, days=days)
