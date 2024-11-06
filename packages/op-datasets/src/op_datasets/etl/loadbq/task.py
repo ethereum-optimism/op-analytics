@@ -50,4 +50,6 @@ def consolidate_chains(inputs: list[DataReader]) -> list[DateLoadTask]:
         for dataset, paths in inputdata.dataset_paths.items():
             task.dataset_paths[dataset].extend(paths)
 
-    return list(date_tasks.values())
+    result = list(date_tasks.values())
+    log.info(f"Consolidated to {len(result)} dateval tasks.")
+    return result
