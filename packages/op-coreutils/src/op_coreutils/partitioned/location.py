@@ -9,6 +9,7 @@ class DataLocation(str, Enum):
 
     GCS = "GCS"
     LOCAL = "LOCAL"
+    BIGQUERY = "BIGQUERY"
 
     def with_prefix(self, path: str) -> str:
         if self == DataLocation.GCS:
@@ -20,11 +21,15 @@ class DataLocation(str, Enum):
             # Prepend the default loal path.
             return os.path.join("ozone/warehouse", path)
 
+        raise NotImplementedError()
+
     def absolute(self, path: str) -> str:
         if self == DataLocation.GCS:
             return self.with_prefix(path)
         if self == DataLocation.LOCAL:
             return os.path.abspath(repo_path(self.with_prefix(path)))
+
+        raise NotImplementedError()
 
 
 class MarkersLocation(str, Enum):
@@ -45,5 +50,8 @@ def marker_location(data_location: DataLocation) -> MarkersLocation:
 
     if data_location == DataLocation.LOCAL:
         return MarkersLocation.DUCKDB_LOCAL
+
+    if data_location == DataLocation.BIGQUERY:
+        return MarkersLocation.OPLABS_CLICKHOUSE
 
     raise NotImplementedError(f"invalid data location: {data_location}")

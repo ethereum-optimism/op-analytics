@@ -4,7 +4,7 @@ import pyarrow as pa
 from op_coreutils.partitioned.location import DataLocation
 from op_coreutils.partitioned.marker import Marker, marker_exists, markers_for_dates
 from op_coreutils.partitioned.output import ExpectedOutput, KeyValue, OutputPartMeta
-from op_coreutils.partitioned.writer import write_marker
+from op_coreutils.partitioned.writehelper import write_marker
 from op_coreutils.partitioned.types import SinkMarkerPath, SinkOutputRootPath
 from op_coreutils.duckdb_local import run_query
 from op_coreutils.time import now
@@ -60,7 +60,8 @@ def test_marker():
 
     write_marker(
         data_location=DataLocation.LOCAL,
-        arrow_table=marker.to_pyarrow_table(),
+        expected_output=marker.expected_output,
+        written_parts=marker.written_parts,
         markers_table=MARKERS_TABLE,
     )
 
