@@ -84,6 +84,8 @@ def run_goldsky_query(
 def retry_logger(exc: Exception) -> bool:
     log.error(f"Retrying after encoutering exception: {exc}")
 
+    # TODO: Reinitialize the client on failure.
+
     return True
 
 

@@ -61,7 +61,7 @@ MICROBATCH_SIZE_CONFIGURATION = {
     ],
     "worldchain": [
         Delimiter(block_number=0, batch_size=20000),
-        # On 2024/10/13 after launching worldchain started having
+        # On 2024/10/13 (after launching) worldchain started having
         # sustained transaction count of ~600k/day.
         Delimiter(block_number=4700000, batch_size=4000),
     ],
