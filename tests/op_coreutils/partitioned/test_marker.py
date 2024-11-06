@@ -3,8 +3,9 @@ import pyarrow as pa
 
 from op_coreutils.partitioned.location import DataLocation
 from op_coreutils.partitioned.marker import Marker, marker_exists, markers_for_dates
-from op_coreutils.partitioned.output import WrittenParquetPath, KeyValue
-from op_coreutils.partitioned.writer import write_marker
+from op_coreutils.partitioned.output import ExpectedOutput, KeyValue, OutputPartMeta
+from op_coreutils.partitioned.writehelper import write_marker
+from op_coreutils.partitioned.types import SinkMarkerPath, SinkOutputRootPath
 from op_coreutils.duckdb_local import run_query
 from op_coreutils.time import now
 
@@ -15,22 +16,15 @@ def test_marker():
     run_query(f"DELETE FROM etl_monitor.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'")
 
     marker = Marker(
-        marker_path="markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
-        dataset_name="blocks",
-        root_path="ingestion/blocks_v1",
-        data_paths=[
-            WrittenParquetPath(
-                root="ingestion/blocks_v1",
-                basename="000011540000.parquet",
+        written_parts=[
+            OutputPartMeta(
                 partitions=[
                     KeyValue(key="chain", value="DUMMYCHAIN"),
                     KeyValue(key="dt", value="2024-10-25"),
                 ],
                 row_count=5045,
             ),
-            WrittenParquetPath(
-                root="ingestion/blocks_v1",
-                basename="000011540000.parquet",
+            OutputPartMeta(
                 partitions=[
                     KeyValue(key="chain", value="DUMMYCHAIN"),
                     KeyValue(key="dt", value="2024-10-26"),
@@ -38,15 +32,23 @@ def test_marker():
                 row_count=14955,
             ),
         ],
-        process_name="default",
-        additional_columns={"num_blocks": 20000, "min_block": 11540000, "max_block": 11560000},
-        additional_columns_schema=[
-            pa.field("chain", pa.string()),
-            pa.field("dt", pa.date32()),
-            pa.field("num_blocks", pa.int32()),
-            pa.field("min_block", pa.int64()),
-            pa.field("max_block", pa.int64()),
-        ],
+        expected_output=ExpectedOutput(
+            marker_path=SinkMarkerPath(
+                "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json"
+            ),
+            dataset_name="blocks",
+            root_path=SinkOutputRootPath("ingestion/blocks_v1"),
+            file_name="000011540000.parquet",
+            process_name="default",
+            additional_columns={"num_blocks": 20000, "min_block": 11540000, "max_block": 11560000},
+            additional_columns_schema=[
+                pa.field("chain", pa.string()),
+                pa.field("dt", pa.date32()),
+                pa.field("num_blocks", pa.int32()),
+                pa.field("min_block", pa.int64()),
+                pa.field("max_block", pa.int64()),
+            ],
+        ),
     )
 
     initially_exists = marker_exists(
@@ -58,7 +60,8 @@ def test_marker():
 
     write_marker(
         data_location=DataLocation.LOCAL,
-        arrow_table=marker.to_pyarrow_table(),
+        expected_output=marker.expected_output,
+        written_parts=marker.written_parts,
         markers_table=MARKERS_TABLE,
     )
 

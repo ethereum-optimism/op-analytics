@@ -30,7 +30,9 @@ def init_client():
     if _GSHEETS_CLIENT is None:
         _GSHEETS_LOCATIONS = env_get("gsheets")
 
-        if len(_GSHEETS_LOCATIONS) == 0:
+        if _GSHEETS_LOCATIONS is None:
+            _GSHEETS_CLIENT = MagicMock()
+        elif len(_GSHEETS_LOCATIONS) == 0:
             _GSHEETS_CLIENT = MagicMock()
         else:
             scoped_creds = get_credentials().with_scopes(gspread.auth.DEFAULT_SCOPES)

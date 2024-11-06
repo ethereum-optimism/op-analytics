@@ -1,4 +1,3 @@
-import time
 from dataclasses import dataclass
 from typing import Any, Callable
 
@@ -11,7 +10,7 @@ from op_coreutils.bigquery.write import (
     overwrite_unpartitioned_table,
 )
 from op_coreutils.logger import structlog
-from op_coreutils.request import new_session
+from op_coreutils.request import new_session, get_data
 from op_coreutils.threads import run_concurrently
 from op_coreutils.time import now_date
 
@@ -44,18 +43,6 @@ ACTIVITY_SCHEMA: dict[str, type[pl.DataType]] = {
 # Use "max" for backfill
 # Otherwise use 30d to get 6hr data intervals
 ACTIVITY_QUERY_RANGE = "30d"
-
-
-def get_data(session, url):
-    """Helper function to reuse an existing HTTP session to fetch data from a URL."""
-    start = time.time()
-    resp = session.request(
-        method="GET",
-        url=url,
-        headers={"Content-Type": "application/json"},
-    ).json()
-    log.info(f"Fetched from {url}: {time.time() - start:.2f} seconds")
-    return resp
 
 
 @dataclass(frozen=True)

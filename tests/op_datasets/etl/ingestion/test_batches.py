@@ -1,6 +1,5 @@
 import pytest
 
-from op_coreutils.partitioned import ExpectedOutput
 from op_datasets.etl.ingestion.batches import (
     BlockBatch,
     Delimiter,
@@ -159,23 +158,38 @@ def test_expected_markers():
     batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
 
     task = IngestionTask.new(batches[0], read_from=RawOnchainDataProvider.GOLDSKY, write_to=[])
-    assert task.data_writer.expected_outputs == {
-        "blocks": ExpectedOutput(
-            dataset_name="blocks",
-            marker_path="markers/ingestion/blocks_v1/chain=op/000000000000.json",
-        ),
-        "transactions": ExpectedOutput(
-            dataset_name="transactions",
-            marker_path="markers/ingestion/transactions_v1/chain=op/000000000000.json",
-        ),
-        "logs": ExpectedOutput(
-            dataset_name="logs", marker_path="markers/ingestion/logs_v1/chain=op/000000000000.json"
-        ),
-        "traces": ExpectedOutput(
-            dataset_name="traces",
-            marker_path="markers/ingestion/traces_v1/chain=op/000000000000.json",
-        ),
-    }
+
+    actual = [
+        dict(
+            dataset_name=_.dataset_name,
+            marker_path=_.marker_path,
+            additional_columns=_.additional_columns,
+        )
+        for _ in task.data_writer.expected_outputs.values()
+    ]
+
+    assert actual == [
+        {
+            "dataset_name": "blocks",
+            "marker_path": "markers/ingestion/blocks_v1/chain=op/000000000000.json",
+            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+        },
+        {
+            "dataset_name": "transactions",
+            "marker_path": "markers/ingestion/transactions_v1/chain=op/000000000000.json",
+            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+        },
+        {
+            "dataset_name": "logs",
+            "marker_path": "markers/ingestion/logs_v1/chain=op/000000000000.json",
+            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+        },
+        {
+            "dataset_name": "traces",
+            "marker_path": "markers/ingestion/traces_v1/chain=op/000000000000.json",
+            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+        },
+    ]
 
 
 def test_batches_base():
