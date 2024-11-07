@@ -65,6 +65,8 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # sustained transaction count of ~600k/day.
         Delimiter(block_number=4700000, batch_size=4000),
     ],
+    # Testnets
+    "op_sepolia": [Delimiter(0, 5000)],
     # Default
     "automata": [Delimiter(0, 20000)],
     "bob": [Delimiter(0, 20000)],

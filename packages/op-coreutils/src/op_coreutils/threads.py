@@ -36,8 +36,8 @@ def run_concurrently(
             key = futures[future]
             try:
                 results[key] = future.result()
-            except Exception:
-                log.error(f"Failed to run thread for {key}")
+            except Exception as ex:
+                log.error(f"Failed to run thread for {key}", exc_info=ex)
                 raise
 
     return results
