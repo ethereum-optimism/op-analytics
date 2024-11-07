@@ -21,6 +21,8 @@
 ### 🏄 OP Analytics Content - Additional Dashboards
 - [Supercharts - Charts overall and by chain](https://app.hex.tech/61bffa12-d60b-484c-80b9-14265e268538/app/a7697196-fdfd-4a59-88ef-d91d52801518/latest)
 - [App/Contract Usage](https://app.hex.tech/61bffa12-d60b-484c-80b9-14265e268538/app/cd3f1525-08f0-4a49-a15a-b72f46f2a0d8/latest)
+- [Chain Growth](https://app.hex.tech/61bffa12-d60b-484c-80b9-14265e268538/app/237e99a4-5cf5-4535-aa25-eb752c4e6028/latest)
 
 ![Supercharts - Charts overall and by chain as of Nov 1, 2024](images/superchartsnov124.png)
 ![App/Contract Usage Table, Last 7 days as of Nov 3, 2024](images/appdashnov324.png)
+![Chain Growth Treemap, Oct 2024 as of Nov 5, 2024](images/chaingrowthnov5.png)
