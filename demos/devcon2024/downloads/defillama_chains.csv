@@ -1,43 +1,43 @@
 name,chainId
 Harmony,1666600000
-Moonbeam,1284
 Aurora,1313161554
-Fraxtal,252
-Celo,42220
+Moonbeam,1284
 Mantle,5000
-BSC,56
 X Layer,
+BSC,56
+Celo,42220
+Fraxtal,252
 Kava,
 Optimism,10
 Base,8453
-Fantom,250
-Ethereum,1
-Gnosis,100
-Arbitrum,42161
 Avalanche,43114
+Gnosis,100
+Ethereum,1
+Fantom,250
+Arbitrum,42161
 Polygon,137
-Palm,11297108109
 Linea,
+Rootstock,30
+Palm,11297108109
+CORE,
+Bittorrent,199
+Polygon zkEVM,1101
+ThunderCore,108
+SKALE Europa,
+HAQQ,11235
 Boba_Bnb,
+ZetaChain,7000
 Boba,288
 Blast,81457
-CORE,
-ZetaChain,7000
-HAQQ,11235
-Metis,1088
-ThunderCore,108
-Rootstock,30
-SKALE Europa,
-Heco,128
-Bittorrent,199
-Telos,40
-Polygon zkEVM,1101
-Scroll,534352
-OKTChain,66
 Moonriver,1285
-Arbitrum Nova,42170
-Filecoin,
+Scroll,534352
 Fuse,122
+Telos,40
+Heco,128
+Metis,1088
+Arbitrum Nova,42170
+OKTChain,66
+Filecoin,
 Conflux,
 Taiko,167000
 Velas,106
@@ -47,10 +47,10 @@ ZKsync Era,324
 Binance,56
 Solana,
 Manta,169
-Doge,
 Litecoin,
-KCC,321
 IoTeX,4689
+KCC,321
+Doge,
 Bitcoin,
 Wanchain,888
 Ontology,
@@ -77,13 +77,13 @@ Cube,1818
 Bitgert,32520
 Sifchain,
 re.al,111188
-Elastos,20
 REI,47805
+Elastos,20
 Nuls,
 Osmosis,
 Shibarium,
-CosmosHub,
 Thorchain,
+CosmosHub,
 Bitcoincash,
 Hoo,70
 Q Protocol,35441
@@ -135,8 +135,8 @@ Everscale,
 VeChain,
 GodwokenV1,71402
 Godwoken,71394
-Callisto,820
 EthereumClassic,61
+Callisto,820
 Stacks,
 Echelon,
 CSC,52
@@ -155,13 +155,13 @@ Kujira,
 Goerli,
 Vite,
 Boba_Avax,
-zkLink Nova,810180
-Gravity,1625
-Merlin,
 Mode,34443
+zkLink Nova,810180
+Merlin,
 Bahamut,
-Sei,
+Gravity,1625
 BSquared,
+Sei,
 DFK,53935
 Milkomeda A1,2002
 Findora,2152
@@ -174,8 +174,8 @@ MultiVAC,
 ICP,
 Nova Network,87
 Ultron,1231
-Zkfair,42766
 Kroma,255
+Zkfair,42766
 OXFUN,6699
 Cronos zkEVM,388
 WEMIX3.0,
@@ -209,9 +209,9 @@ Kekchain,420420
 Immutable zkEVM,13371
 Astar zkEVM,3776
 MUUCHAIN,20402
-Rari,1380012617
 Reya Network,1729
 Xai,
+Rari,1380012617
 Sanko,1996
 ApeChain,33139
 TON,
@@ -261,8 +261,8 @@ Nolus,
 ETHF,
 MEER,
 Elysium,
-Mayachain,
 Dash,
+Mayachain,
 Bostrom,
 Degen,666666666
 Chainflip,
@@ -312,3 +312,4 @@ HeLa,8668
 Matchain,698
 Shape,360
 Fuel Ignition,
+Asset Chain,42420
