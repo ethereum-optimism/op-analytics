@@ -116,8 +116,14 @@ def construct_input_batches(
                 inputs_ready=inputs_ready,
             )
 
+            if inputs_ready:
+                log.info(f"{dateval} data input is ready.")
+            else:
+                log.warning(f"{dateval} data input is not ready.")
+
             inputs.append(obj)
 
+    log.info(f"Prepared {len(inputs)} input batches.")
     return inputs
 
 

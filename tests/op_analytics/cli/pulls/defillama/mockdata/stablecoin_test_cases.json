@@ -1,0 +1,68 @@
+{
+    "test_cases": [
+        {
+            "description": "Test TerraClassicUSD Metadata",
+            "input": {
+                "id": "3",
+                "name": "TerraClassicUSD",
+                "address": null,
+                "symbol": "USTC",
+                "url": "https://www.terra.money/",
+                "pegType": "peggedUSD",
+                "pegMechanism": "algorithmic"
+            },
+            "expected": {
+                "id": "3",
+                "name": "TerraClassicUSD",
+                "address": null,
+                "symbol": "USTC",
+                "url": "https://www.terra.money/",
+                "pegType": "peggedUSD",
+                "pegMechanism": "algorithmic"
+            }
+        },
+        {
+            "description": "Test Token Data on Optimism Chain",
+            "input": {
+                "chain": "Optimism",
+                "tokens": [
+                    {
+                        "date": 1654214400,
+                        "circulating": {
+                            "peggedUSD": 100326
+                        },
+                        "bridgedTo": {
+                            "peggedUSD": 100326,
+                            "bridges": {
+                                "synapse": {
+                                    "amount": 100326,
+                                    "source": "Terra"
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "expected": {
+                "chain": "Optimism",
+                "tokens": [
+                    {
+                        "date": 1654214400,
+                        "circulating": {
+                            "peggedUSD": 100326
+                        },
+                        "bridgedTo": {
+                            "peggedUSD": 100326,
+                            "bridges": {
+                                "synapse": {
+                                    "amount": 100326,
+                                    "source": "Terra"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
