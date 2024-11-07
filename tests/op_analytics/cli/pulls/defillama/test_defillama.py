@@ -1,25 +1,20 @@
-# -*- coding: utf-8 -*-
-from datetime import datetime, timezone
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
-import polars as pl
 import pytest
 from op_coreutils.testutils.inputdata import InputTestData
+
 
 from op_analytics.cli.subcommands.pulls import defillama
 
 TESTDATA = InputTestData.at(__file__)
 
-# Current timestamp for testing
-current_timestamp = int(datetime.now(timezone.utc).timestamp())
 
 # Sample data resembling the API response
 sample_summary = {
     "peggedAssets": [
-        {"id": "sample-stablecoin", "name": "Sample Stablecoin"},
-        {"id": "another-stablecoin", "name": "Another Stablecoin"},
-    ],
-    "pegType": "peggedUSD",
+        {"id": "sample-stablecoin", "name": "Sample Stablecoin", "symbol": "SSC"},
+        {"id": "another-stablecoin", "name": "Another Stablecoin", "symbol": "ANOTHER"},
+    ]
 }
 
 sample_breakdown_data = {
@@ -28,14 +23,14 @@ sample_breakdown_data = {
         "Ethereum": {
             "tokens": [
                 {
-                    "date": current_timestamp,
+                    "date": 1730923615,
                     "circulating": {"peggedUSD": 1000000},
                     "bridgedTo": {"peggedUSD": 200000},
                     "minted": {"peggedUSD": 1200000},
                     "unreleased": {"peggedUSD": 0},
                 },
                 {
-                    "date": current_timestamp - 86400 * 2,  # 2 days ago
+                    "date": 1730750815,  # 2 days ago
                     "circulating": {"peggedUSD": 900000},
                     "bridgedTo": {"peggedUSD": 180000},
                     "minted": {"peggedUSD": 1080000},
@@ -67,7 +62,7 @@ another_sample_breakdown_data = {
         "Binance Smart Chain": {
             "tokens": [
                 {
-                    "date": current_timestamp,
+                    "date": 1730923615,
                     "circulating": {"peggedUSD": 500000},
                     "bridgedTo": {"peggedUSD": 100000},
                     "minted": {"peggedUSD": 600000},
@@ -93,152 +88,190 @@ another_sample_breakdown_data = {
 }
 
 
-@pytest.mark.parametrize(
-    "data,days,expected_rows",
-    [
-        (sample_breakdown_data, 30, 2),
-        (sample_breakdown_data, 1, 1),  # Only recent data
-    ],
-)
-def test_process_breakdown_stables(data, days, expected_rows):
-    result_df, metadata_df = defillama.process_breakdown_stables(data, days=days)
-    assert isinstance(result_df, pl.DataFrame)
-    assert len(result_df) == expected_rows
-    assert metadata_df["id"].to_list()[0] == data["id"]
-    assert metadata_df["name"].to_list()[0] == data["name"]
+def test_process_breakdown_stables():
+    # Test with valid data
+    metadata, balances = defillama.single_stablecoin_balances(sample_breakdown_data)
+    assert len(balances) == 2  # Two data points within default 30 days
+    assert metadata["id"] == "sample-stablecoin"
+    assert metadata["name"] == "Sample Stablecoin"
 
-    if days == 30:
-        assert result_df["circulating"].to_list()[0] == 1000000
+    # Check data correctness
+    assert balances[0]["circulating"] == 1000000
+    assert balances[0]["bridged_to"] == 200000
+    assert balances[0]["minted"] == 1200000
+    assert balances[0]["unreleased"] == 0
 
-    # Missing required fields check
-    incomplete_data = data.copy()
+    # Test with missing required fields (should raise ValueError)
+    incomplete_data = sample_breakdown_data.copy()
     del incomplete_data["pegType"]
-    with pytest.raises(KeyError):
-        defillama.process_breakdown_stables(incomplete_data)
+    with pytest.raises(KeyError) as excinfo:
+        defillama.single_stablecoin_balances(incomplete_data)
+    assert excinfo.value.args == ("pegType",)
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.get_data")
-@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_unpartitioned_table")
-@patch("op_analytics.cli.subcommands.pulls.defillama.overwrite_partition_static")
+@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_unpartitioned_table")
 @patch("op_analytics.cli.subcommands.pulls.defillama.upsert_partitioned_table")
-@patch("op_analytics.cli.subcommands.pulls.defillama.new_session")
-def test_pull_stables(
-    mock_new_session,
+def test_pull_stables_single_stablecoin(
     mock_upsert_partitioned_table,
-    mock_overwrite_partition_static,
-    mock_overwrite_unpartitioned_table,
+    mock_upsert_unpartitioned_table,
     mock_get_data,
 ):
-    mock_session = MagicMock()
-    mock_new_session.return_value = mock_session
-
+    # Mock get_data to return sample summary and breakdown data
     mock_get_data.side_effect = [
-        sample_summary,
-        sample_breakdown_data,
-        another_sample_breakdown_data,
+        sample_summary,  # Summary data
+        sample_breakdown_data,  # Breakdown data for 'sample-stablecoin'
     ]
 
-    result = defillama.pull_stables(days=30)
+    # Call the function under test
+    result = defillama.pull_stablecoins(symbols=["SSC"])
 
-    # Assertions on the result dictionary
-    assert "metadata" in result
-    assert "breakdown" in result
-    assert isinstance(result["metadata"], pl.DataFrame)
-    assert isinstance(result["breakdown"], pl.DataFrame)
-    assert len(result["metadata"]) == 2
-    assert len(result["breakdown"]) >= 3
+    # Assertions
+    assert len(result.metadata_df) == 1  # Only 'sample-stablecoin'
+    assert len(result.balances_df) == 2  # Two data points
 
-    mock_overwrite_unpartitioned_table.assert_called_once()
-    mock_overwrite_partition_static.assert_called_once()
+    # Verify that get_data was called twice (summary and breakdown)
+    assert mock_get_data.call_count == 2
+
+    # Check that BigQuery functions were called
+    mock_upsert_unpartitioned_table.assert_called_once()
+    assert mock_upsert_unpartitioned_table.call_args.kwargs["unique_keys"] == [
+        "id",
+        "name",
+        "symbol",
+    ]
+
+    # Check that upsert_partitioned_table was called with correct parameters
     mock_upsert_partitioned_table.assert_called_once()
-
-
-@pytest.mark.parametrize(
-    "stablecoin_ids,raises_exception",
-    [(["non-existent-stablecoin"], True), (None, False)],
-)
-def test_pull_stables_no_valid_ids(stablecoin_ids, raises_exception):
-    with patch(
-        "op_analytics.cli.subcommands.pulls.defillama.get_data"
-    ) as mock_get_data:
-        # Creating mock data to ensure all required fields are present
-        sample_data_with_full_fields = {
-            "peggedAssets": [
-                {"id": "sample-stablecoin", "name": "Sample Stablecoin"},
-                {"id": "another-stablecoin", "name": "Another Stablecoin"},
-            ],
-            "pegType": "peggedUSD",
-            "chainBalances": {
-                "Ethereum": {
-                    "tokens": [
-                        {
-                            "date": current_timestamp,
-                            "circulating": {"peggedUSD": 1000000},
-                            "bridgedTo": {"peggedUSD": 200000},
-                            "minted": {"peggedUSD": 1200000},
-                            "unreleased": {"peggedUSD": 0},
-                        }
-                    ]
-                }
-            },
-            "id": "sample-stablecoin",
-            "name": "Sample Stablecoin",
-            "address": "0xSampleAddress",
-            "symbol": "ASC",
-            "url": "https://anotherstablecoin.com",
-            "pegMechanism": "algorithmic",
-            "description": "Another sample stablecoin for testing.",
-            "mintRedeemDescription": "Mint and redeem instructions.",
-            "onCoinGecko": True,
-            "gecko_id": "another-stablecoin",
-            "cmcId": "67890",
-            "priceSource": "coingecko",
-            "twitter": "@anotherstablecoin",
-            "price": 1.00,
-        }
-
-        # Mock get_data to return the corrected sample data
-        mock_get_data.return_value = sample_data_with_full_fields
-
-        if raises_exception:
-            with pytest.raises(ValueError):
-                defillama.pull_stables(stablecoin_ids=stablecoin_ids, days=30)
-        else:
-            # We expect no exceptions, so we just call the function
-            result = defillama.pull_stables(stablecoin_ids=stablecoin_ids, days=30)
-
-            # Assertions to ensure the expected keys are present in the result
-            assert "metadata" in result
-            assert "breakdown" in result
-            assert isinstance(result["metadata"], pl.DataFrame)
-            assert isinstance(result["breakdown"], pl.DataFrame)
+    assert len(mock_upsert_partitioned_table.call_args.kwargs["df"]) == 2
+    assert mock_upsert_partitioned_table.call_args.kwargs["unique_keys"] == ["dt", "id", "chain"]
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.get_data")
-def test_pull_stables_missing_pegged_assets(mock_get_data):
-    incomplete_summary = {"someOtherKey": []}
-    mock_get_data.return_value = incomplete_summary
-    with pytest.raises(KeyError):
-        defillama.pull_stables(days=30)
+@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_unpartitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_partitioned_table")
+def test_pull_stables_multiple_stablecoins(
+    mock_upsert_partitioned_table,
+    mock_upsert_unpartitioned_table,
+    mock_get_data,
+):
+    # Mock get_data to return sample summary and breakdown data for both stablecoins
+    mock_get_data.side_effect = [
+        sample_summary,  # Summary data
+        sample_breakdown_data,  # Breakdown data for 'sample-stablecoin'
+        another_sample_breakdown_data,  # Breakdown data for 'another-stablecoin'
+    ]
+
+    # Call the function under test without specifying stablecoin_ids (process all)
+    result = defillama.pull_stablecoins()
+
+    # Assertions
+    assert len(result.metadata_df) == 2  # Both stablecoins
+    assert len(result.balances_df) >= 3  # Data points from both stablecoins
+
+    # Verify that get_data was called three times (summary and two breakdowns)
+    assert mock_get_data.call_count == 3
+
+    # Check that BigQuery functions were called
+    mock_upsert_unpartitioned_table.assert_called_once()
+    mock_upsert_partitioned_table.assert_called_once()
+
+    # Check that metadata contains both stablecoins
+    assert set(result.metadata_df["id"].to_list()) == {
+        "sample-stablecoin",
+        "another-stablecoin",
+    }
+
+    # Check that breakdown contains data from both stablecoins
+    assert set(result.balances_df["id"].unique()) == {
+        "sample-stablecoin",
+        "another-stablecoin",
+    }
 
 
-@pytest.mark.parametrize(
-    "data,field",
-    [
-        (sample_breakdown_data, "name"),
-    ],
-)
-def test_process_breakdown_stables_missing_mandatory_metadata(data, field):
-    incomplete_data = data.copy()
-    del incomplete_data[field]
-    with pytest.raises(KeyError):
-        defillama.process_breakdown_stables(incomplete_data)
+def test_pull_stables_no_valid_ids():
+    # Test pull_stables with invalid stablecoin_ids (should raise ValueError)
+    with patch("op_analytics.cli.subcommands.pulls.defillama.get_data") as mock_get_data:
+        mock_get_data.return_value = sample_summary
+        with pytest.raises(ValueError) as excinfo:
+            defillama.pull_stablecoins(symbols=["NOEXIST"])
+        assert "No valid stablecoin IDs provided." in str(excinfo.value)
 
 
-@pytest.mark.parametrize("data,field", [(sample_breakdown_data, "description")])
-def test_process_breakdown_stables_optional_metadata(data, field):
-    incomplete_data = data.copy()
-    del incomplete_data[field]
-    result_df, metadata_df = defillama.process_breakdown_stables(incomplete_data)
-    assert field in metadata_df.columns
-    assert metadata_df[field][0] is None
+def test_pull_stables_missing_pegged_assets():
+    # Test pull_stables when 'peggedAssets' is missing (should raise KeyError)
+    with patch("op_analytics.cli.subcommands.pulls.defillama.get_data") as mock_get_data:
+        mock_get_data.return_value = {}
+        with pytest.raises(KeyError) as excinfo:
+            defillama.pull_stablecoins()
+        assert excinfo.value.args == ("peggedAssets",)
+
+
+def test_process_breakdown_stables_empty_balances():
+    # Test process_breakdown_stables with empty 'chainBalances' (should return empty DataFrame)
+    data_with_empty_balances = sample_breakdown_data.copy()
+    data_with_empty_balances["chainBalances"] = {}
+    metadata, balances = defillama.single_stablecoin_balances(data_with_empty_balances)
+    assert not balances
+    assert metadata["id"] == "sample-stablecoin"
+
+
+def test_process_breakdown_stables_missing_mandatory_metadata():
+    # Test process_breakdown_stables with missing mandatory metadata fields (should raise KeyError)
+    incomplete_data = sample_breakdown_data.copy()
+    del incomplete_data["name"]  # Remove a mandatory field
+    with pytest.raises(KeyError) as excinfo:
+        defillama.single_stablecoin_balances(incomplete_data)
+    assert excinfo.value.args == ("name",)
+
+
+def test_process_breakdown_stables_optional_metadata():
+    # Test process_breakdown_stables with missing optional metadata fields
+    incomplete_data = sample_breakdown_data.copy()
+    del incomplete_data["description"]  # Remove an optional field
+    metadata, balances = defillama.single_stablecoin_balances(incomplete_data)
+    assert "description" in metadata
+    assert metadata["description"] is None  # Should be None if missing
+
+
+def test_pull_stables_empty_metadata_df():
+    # Test pull_stables when metadata_df is empty (should raise ValueError)
+    with patch("op_analytics.cli.subcommands.pulls.defillama.get_data") as mock_get_data:
+        mock_get_data.side_effect = [
+            sample_summary,  # Summary data
+            # Data that causes process_breakdown_stables to return empty DataFrames
+            {
+                "pegType": "peggedUSD",
+                "chainBalances": {},
+                "id": "sample-stablecoin",
+                "name": "Sample Stablecoin",
+                "address": "0xSampleAddress",
+                "symbol": "SSC",
+                "url": "https://samplestablecoin.com",
+                "pegMechanism": "fiat-backed",
+            },
+        ]
+        with pytest.raises(ValueError) as excinfo:
+            defillama.pull_stablecoins(symbols=["SSC"])
+        assert excinfo.value.args == ("No balances for stablecoin=Sample Stablecoin",)
+
+
+def test_pull_stables_empty_breakdown_df():
+    # Test pull_stables when breakdown_df is empty (should raise ValueError)
+    with patch("op_analytics.cli.subcommands.pulls.defillama.get_data") as mock_get_data:
+        mock_get_data.side_effect = [
+            sample_summary,  # Summary data
+            {
+                "pegType": "peggedUSD",
+                "chainBalances": {},
+                "id": "sample-stablecoin",
+                "name": "Sample Stablecoin",
+                "address": "0xSampleAddress",
+                "symbol": "SSC",
+                "url": "https://samplestablecoin.com",
+                "pegMechanism": "fiat-backed",
+            },
+        ]
+        with pytest.raises(ValueError) as excinfo:
+            defillama.pull_stablecoins(symbols=["SSC"])
+        assert excinfo.value.args == ("No balances for stablecoin=Sample Stablecoin",)
