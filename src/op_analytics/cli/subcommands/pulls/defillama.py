@@ -20,7 +20,7 @@ BREAKDOWN_ENDPOINT = "https://stablecoins.llama.fi/stablecoin/{id}"
 BQ_DATASET = "uploads_api"
 
 METADATA_TABLE = "defillama_stablecoin_metadata"
-BALANCES_TABLE = "defillama_daily_stablecoin_balances"
+BALANCES_TABLE = "defillama_daily_stablecoins_breakdown_history"
 BALANCES_TABLE_LAST_N_DAYS = 7  # upsert only the last 7 days of balances fetched from the api
 
 
