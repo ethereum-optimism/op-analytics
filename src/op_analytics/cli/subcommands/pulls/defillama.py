@@ -102,6 +102,7 @@ def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
         dataset=BQ_DATASET,
         table_name=METADATA_TABLE,
         unique_keys=["id", "name", "symbol"],
+        create_if_not_exists=False,  # set to True on first run
     )
 
     # Upsert balances to BQ.
@@ -111,6 +112,7 @@ def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
         dataset=BQ_DATASET,
         table_name=BALANCES_TABLE,
         unique_keys=["dt", "id", "chain"],
+        create_if_not_exists=False,  # set to True on first run
     )
 
     return result
@@ -171,7 +173,8 @@ def single_stablecoin_balances(data: dict) -> tuple[dict, list[dict]]:
         data: Data for this stablecoin as returned by the API
 
     Returns:
-        A list of rows. Each row is information at a point in time.
+        Tuple of metadata dict and balances for this stablecoin.
+        Each item in balances is one data point obtained from DefiLlama.
     """
     metadata = single_stablecoin_metadata(data)
     peg_type: str = data["pegType"]

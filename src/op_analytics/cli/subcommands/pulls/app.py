@@ -23,11 +23,14 @@ def l2beat():
 @app.command()
 def defillama_stablecoins(
     symbols: Annotated[
-        str, typer.Argument(help="Comma-separated list of symbols to be processed.")
-    ],
+        str, typer.Option(help="Comma-separated list of symbols to be processed.")
+    ] = None,
 ):
     """Pull stablecoin data from Defillama."""
-    dfl_pull_stablecoins(symbols=[_.strip() for _ in symbols.split(",")])
+    if symbols is not None:
+        symbols = [_.strip() for _ in symbols.split(",")]
+
+    dfl_pull_stablecoins(symbols=symbols)
 
 
 @app.command()

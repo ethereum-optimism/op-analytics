@@ -49,12 +49,6 @@ def test_overwrite_unpartitioned_table():
     assert kwargs["destination"] == "test_dataset.test_table_staging"
     assert kwargs["job_config"].write_disposition == "WRITE_TRUNCATE"
 
-    # Testing with incorrect table name to raise custom error
-    with pytest.raises(
-        OPLabsBigQueryError, match="cannot overwrite data at test_dataset.test_table"
-    ):
-        overwrite_unpartitioned_table(test_df, "test_dataset", "test_table")
-
 
 def test_overwrite_partitioned_table():
     mock_client = init_client()
@@ -64,12 +58,6 @@ def test_overwrite_partitioned_table():
     args, kwargs = mock_client.load_table_from_file.call_args
     assert kwargs["destination"] == "test_dataset.test_table_staging"
     assert kwargs["job_config"].write_disposition == "WRITE_TRUNCATE"
-
-    # Testing with incorrect table name to raise custom error
-    with pytest.raises(
-        OPLabsBigQueryError, match="cannot overwrite data at test_dataset.test_table"
-    ):
-        overwrite_unpartitioned_table(test_df, "test_dataset", "test_table")
 
 
 def test_overwrite_partition_static():

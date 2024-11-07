@@ -51,6 +51,12 @@ class OPLabsBigQueryError(Exception):
     pass
 
 
+class OPLabsUpsertTableNotExists(Exception):
+    """Exception raised when an upserted table does not exist yet."""
+
+    pass
+
+
 def overwrite_unpartitioned_table(df: pl.DataFrame, dataset: str, table_name: str):
     """Overwrite an unpartitioned BigQuery table with the given DataFrame.
 
@@ -63,9 +69,6 @@ def overwrite_unpartitioned_table(df: pl.DataFrame, dataset: str, table_name: st
         OPLabsBigQueryError: If the table name does not end with '_staging' or '_latest'.
     """
     destination = f"{dataset}.{table_name}"
-
-    if not any([table_name.endswith("_staging"), table_name.endswith("_latest")]):
-        raise OPLabsBigQueryError(f"cannot overwrite data at {destination}")
 
     _write_df_to_bq(
         df,
@@ -268,6 +271,7 @@ def upsert_unpartitioned_table(
     dataset: str,
     table_name: str,
     unique_keys: list[str],
+    create_if_not_exists: bool = False,
 ):
     """Upsert data into an unpartitioned BigQuery table.
 
@@ -284,12 +288,23 @@ def upsert_unpartitioned_table(
     if "dt" in df.columns:
         raise ValueError("DataFrame should not contain 'dt' column for unpartitioned tables.")
 
-    _upsert_df_to_bq(
-        df=df,
-        dataset=dataset,
-        table_name=table_name,
-        unique_keys=unique_keys,
-    )
+    try:
+        _upsert_df_to_bq(
+            df=df,
+            dataset=dataset,
+            table_name=table_name,
+            unique_keys=unique_keys,
+        )
+    except OPLabsUpsertTableNotExists:
+        if create_if_not_exists:
+            log.info(f"Creating new table: {dataset}.{table_name}")
+            overwrite_unpartitioned_table(
+                df=df,
+                dataset=dataset,
+                table_name=table_name,
+            )
+        else:
+            raise
 
 
 def upsert_partitioned_table(
@@ -297,6 +312,7 @@ def upsert_partitioned_table(
     dataset: str,
     table_name: str,
     unique_keys: list[str],
+    create_if_not_exists: bool = False,
 ):
     """Upsert data into a partitioned BigQuery table.
 
@@ -312,15 +328,27 @@ def upsert_partitioned_table(
     Raises:
         ValueError: If the DataFrame is empty or if unique_keys are not in the DataFrame.
     """
-    for date_part in breakout_partitioned_df(df):
-        _upsert_df_to_bq(
-            df=date_part.date_df,
-            dataset=dataset,
-            table_name=f"{table_name}${date_part.date_suffix}",
-            unique_keys=unique_keys,
-            # For a partitioned table the staging table name has to include the date suffix.
-            staging_table_name=f"{table_name}_{date_part.date_suffix}",
-        )
+    try:
+        for date_part in breakout_partitioned_df(df):
+            _upsert_df_to_bq(
+                df=date_part.date_df,
+                dataset=dataset,
+                table_name=f"{table_name}${date_part.date_suffix}",
+                unique_keys=unique_keys,
+                # For a partitioned table the staging table name has to include the date suffix.
+                staging_table_name=f"{table_name}_{date_part.date_suffix}",
+            )
+
+    except OPLabsUpsertTableNotExists:
+        if create_if_not_exists:
+            log.info(f"Creating new table: {dataset}.{table_name}")
+            overwrite_partitioned_table(
+                df=df,
+                dataset=dataset,
+                table_name=table_name,
+            )
+        else:
+            raise
 
 
 def _upsert_df_to_bq(
@@ -359,7 +387,7 @@ def _upsert_df_to_bq(
     try:
         client.get_table(upsert_destination)
     except exceptions.NotFound:
-        raise OPLabsBigQueryError(
+        raise OPLabsUpsertTableNotExists(
             f"Cannot upsert into a table that does not exist yet: {upsert_destination}"
         )
 
