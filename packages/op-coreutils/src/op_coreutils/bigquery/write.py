@@ -203,6 +203,8 @@ def overwrite_partition_static(
 
 @dataclass
 class DatePart:
+    """Part of a dataframe corresponding to a single 'dt' value."""
+
     date_df: pl.DataFrame
     date_suffix: str
 
