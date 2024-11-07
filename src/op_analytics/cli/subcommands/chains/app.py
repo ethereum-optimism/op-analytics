@@ -2,16 +2,11 @@ import json
 
 import op_datasets.rpcs
 import typer
-from op_coreutils.clickhouse import run_goldsky_query
 
 from op_coreutils.logger import structlog
-from op_datasets.chains.across_bridge import upload_across_bridge_addresses
 from op_coreutils.partitioned import DataLocation
-from op_datasets.chains.chain_metadata import (
-    filter_to_goldsky_chains,
-    load_chain_metadata,
-    upload_chain_metadata,
-)
+from op_datasets.chains.upload import upload_all
+from op_datasets.chains import goldsky_chains
 from op_datasets.etl.ingestion import ingest
 from op_datasets.etl.ingestion.batches import split_block_range
 from op_datasets.etl.ingestion.sources import RawOnchainDataProvider
@@ -85,53 +80,20 @@ def chain_metadata_updates():
 
     TODO: Decide if we want to upload to Dune, Clickhouse, BigQuery. or op-analytics-static repo.
     """
-    clean_df = load_chain_metadata()
-
-    goldsky_df = filter_to_goldsky_chains(clean_df)
-
-    # Upload chain metadata.
-    upload_chain_metadata(chains_df=clean_df, goldsky_chains_df=goldsky_df)
-
-    # Upload the across bridge addresses.
-    # Makes sure they are consistent with Chain Metadata.
-    upload_across_bridge_addresses(chains_df=goldsky_df)
+    upload_all()
 
 
 @app.command()
 def verify_goldsky_tables():
     """Ensure Goldsky pipeline tables exist for all of the chains."""
-    clean_df = load_chain_metadata()
-    goldsky_df = filter_to_goldsky_chains(clean_df)
-    chains = goldsky_df["chain_name"].to_list()
 
-    tables = []
-    for chain in chains:
-        for _, dataset in ONCHAIN_CURRENT_VERSION.items():
-            tables.append(f"{chain}_{dataset.goldsky_table_suffix}")
-    tables_filter = ",\n".join([f"'{t}'" for t in tables])
+    log.info("MAINNET CHAINS")
+    mainnet = goldsky_chains.goldsky_mainnet_chains()
+    goldsky_chains.verify_goldsky_tables(mainnet)
 
-    query = f"""
-    SELECT 
-        name as table_name
-    FROM system.tables
-    WHERE name IN ({tables_filter})
-    """
-    results = run_goldsky_query(query)["table_name"].to_list()
-
-    expected_tables = set(tables)
-
-    missing_tables = expected_tables - set(results)
-
-    if missing_tables:
-        for name in sorted(missing_tables):
-            log.error(f"ERROR: Table missing in Goldsky Clickhouse: {name!r}")
-    else:
-        log.info("SUCCESS: All expected tables are present in Goldsky Clickhouse")
-        for name in sorted(expected_tables):
-            log.info("    " + name)
-
-    # Return the chain names only
-    return sorted(chains)
+    log.info("TESTNET CHAINS")
+    testnet = goldsky_chains.goldsky_testnet_chains()
+    goldsky_chains.verify_goldsky_tables(testnet)
 
 
 CHAINS_ARG = Annotated[str, typer.Argument(help="Comma-separated list of chains to be processed.")]
@@ -142,18 +104,23 @@ DRYRUN_ARG = Annotated[
 
 
 def normalize_chains(chains: str) -> list[str]:
+    # If for some reason we need to force exclude a chain, add it here.
+    not_included = set()
+
     result = set()
-
-    # TODO: Fix problems with automata and worldchain.
-    not_included = {"automata", "worldchain"}
-
     for chain in chains.split(","):
         if chain == "ALL":
-            result.update(verify_goldsky_tables())
+            result.update(goldsky_chains.goldsky_mainnet_chains())
+        if chain == "TESTNETS":
+            result.update(goldsky_chains.goldsky_testnet_chains())
         elif chain.startswith("-"):
             not_included.add(chain.removeprefix("-").strip())
         else:
             result.add(chain.strip())
+
+    excluded = result.intersection(not_included)
+    for chain in excluded:
+        log.warning(f"Excluding chain: {chain!r}")
 
     return list(result - not_included)
 

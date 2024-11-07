@@ -1,10 +1,12 @@
+from typing import Annotated
+
 import typer
 from op_coreutils.logger import structlog
 
 from .agora import agora_pull
-from .defillama import pull_stables as dfl_pull_stables
-from .l2beat import pull as l2beat_pull
+from .defillama import pull_stablecoins as dfl_pull_stablecoins
 from .github_analytics import pull as github_analytics_pull
+from .l2beat import pull as l2beat_pull
 
 log = structlog.get_logger()
 
@@ -19,9 +21,18 @@ def l2beat():
 
 
 @app.command()
-def dfl_stables():
+def defillama_stablecoins(
+    symbols: Annotated[
+        str | None, typer.Option(help="Comma-separated list of symbols to be processed.")
+    ] = None,
+):
     """Pull stablecoin data from Defillama."""
-    dfl_pull_stables()
+    if symbols is not None:
+        symbols_list = [_.strip() for _ in symbols.split(",")]
+    else:
+        symbols_list = None
+
+    dfl_pull_stablecoins(symbols=symbols_list)
 
 
 @app.command()

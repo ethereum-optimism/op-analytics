@@ -46,7 +46,11 @@ def datasets_join_to_blocks(dataframes: dict[str, pl.DataFrame]):
         )
 
         if len(joined_df.filter(failure_condition)) > 0:
-            print(joined_df.filter(failure_condition))  # helps debug failures
+            # print to debug failures
+            print()
+            print(f"dataset = {dataset}")
+            print(joined_df.filter(failure_condition))
+            print(joined_df.filter(failure_condition)["block_number"].unique().to_list())
 
         results.append(failures)
 
@@ -156,7 +160,9 @@ def transaction_count(dataframes: dict[str, pl.DataFrame]):
     )
 
     if len(joined.filter(failure_condition)) > 0:
-        print(joined.filter(failure_condition))  # helps debug failures
+        # print to debug failures
+        print(joined.filter(failure_condition))
+        print(joined.filter(failure_condition)["number"].to_list())
 
     return check
 
@@ -177,7 +183,9 @@ def logs_count(dataframes: dict[str, pl.DataFrame]):
     )
 
     if len(agged.filter(failure_condition)) > 0:
-        print(agged.filter(failure_condition))  # helps debug failures
+        # print to debug failures
+        print(agged.filter(failure_condition))
+        print(agged.filter(failure_condition)["block_number"].unique().to_list())
 
     return check
 

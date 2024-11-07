@@ -1,6 +1,7 @@
 import io
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
-from typing import List
+from typing import Generator
 from unittest.mock import MagicMock
 from uuid import uuid4
 
@@ -50,6 +51,12 @@ class OPLabsBigQueryError(Exception):
     pass
 
 
+class OPLabsUpsertTableNotExists(Exception):
+    """Exception raised when an upserted table does not exist yet."""
+
+    pass
+
+
 def overwrite_unpartitioned_table(df: pl.DataFrame, dataset: str, table_name: str):
     """Overwrite an unpartitioned BigQuery table with the given DataFrame.
 
@@ -62,9 +69,6 @@ def overwrite_unpartitioned_table(df: pl.DataFrame, dataset: str, table_name: st
         OPLabsBigQueryError: If the table name does not end with '_staging' or '_latest'.
     """
     destination = f"{dataset}.{table_name}"
-
-    if not any([table_name.endswith("_staging"), table_name.endswith("_latest")]):
-        raise OPLabsBigQueryError(f"cannot overwrite data at {destination}")
 
     _write_df_to_bq(
         df,
@@ -153,25 +157,10 @@ def overwrite_partitions_dynamic(
         expiration_days (int, optional): If provided sets the expiration time of the table.
     """
 
-    # Ensure "dt" is a DateTime
-    if df["dt"].dtype == pl.String:
-        df = df.with_columns(dt=pl.col("dt").str.strptime(pl.Datetime, "%Y-%m-%d"))
-
-    partitions = df["dt"].unique().sort().to_list()
-
-    log.info(f"Writing {len(partitions)} partitions to BQ [{partitions[0]} ... {partitions[-1]}]")
-
-    if len(partitions) > 10:
-        raise OPLabsBigQueryError(
-            "Dynamic Partition Overwrite detected more than 10 partitions. Aborting."
-        )
-
-    for date_partition in partitions:
-        part_df = df.filter(pl.col("dt") == date_partition)
-        date_suffix = date_partition.strftime("%Y%m%d")
+    for date_part in breakout_partitioned_df(df):
         _write_df_to_bq(
-            part_df,
-            destination=f"{dataset}.{table_name}${date_suffix}",
+            date_part.date_df,
+            destination=f"{dataset}.{table_name}${date_part.date_suffix}",
             job_config=bigquery.LoadJobConfig(
                 source_format=bigquery.SourceFormat.PARQUET,
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
@@ -212,6 +201,42 @@ def overwrite_partition_static(
     )
 
 
+@dataclass
+class DatePart:
+    """Part of a dataframe corresponding to a single 'dt' value."""
+
+    date_df: pl.DataFrame
+    date_suffix: str
+
+
+def breakout_partitioned_df(df: pl.DataFrame) -> Generator[DatePart, None, None]:
+    """Checks that the dataframe is suitable for writing to a partitioned table.
+
+    Yields each date part along with the date part suffix for each date present in
+    the data.
+    """
+
+    # Ensure "dt" is a DateTime
+    if df["dt"].dtype == pl.String:
+        df = df.with_columns(dt=pl.col("dt").str.strptime(pl.Datetime, "%Y-%m-%d"))
+
+    partitions = df["dt"].unique().sort().to_list()
+
+    log.info(
+        f"Found {len(partitions)} partitions in dataframe [{partitions[0]} ... {partitions[-1]}]"
+    )
+
+    if len(partitions) > 10:
+        raise OPLabsBigQueryError(
+            "Dynamic Partition Overwrite detected more than 10 partitions. Aborting."
+        )
+
+    for date_partition in partitions:
+        part_df = df.filter(pl.col("dt") == date_partition)
+        date_suffix = date_partition.strftime("%Y%m%d")
+        yield DatePart(date_df=part_df, date_suffix=date_suffix)
+
+
 def _days_to_ms(days: int | None) -> int | None:
     if days is None:
         return None
@@ -247,7 +272,8 @@ def upsert_unpartitioned_table(
     df: pl.DataFrame,
     dataset: str,
     table_name: str,
-    unique_keys: List[str],
+    unique_keys: list[str],
+    create_if_not_exists: bool = False,
 ):
     """Upsert data into an unpartitioned BigQuery table.
 
@@ -264,20 +290,31 @@ def upsert_unpartitioned_table(
     if "dt" in df.columns:
         raise ValueError("DataFrame should not contain 'dt' column for unpartitioned tables.")
 
-    _upsert_df_to_bq(
-        df=df,
-        dataset=dataset,
-        table_name=table_name,
-        unique_keys=unique_keys,
-    )
+    try:
+        _upsert_df_to_bq(
+            df=df,
+            dataset=dataset,
+            table_name=table_name,
+            unique_keys=unique_keys,
+        )
+    except OPLabsUpsertTableNotExists:
+        if create_if_not_exists:
+            log.info(f"Creating new table: {dataset}.{table_name}")
+            overwrite_unpartitioned_table(
+                df=df,
+                dataset=dataset,
+                table_name=table_name,
+            )
+        else:
+            raise
 
 
 def upsert_partitioned_table(
     df: pl.DataFrame,
     dataset: str,
     table_name: str,
-    unique_keys: List[str],
-    partition_dt: str,
+    unique_keys: list[str],
+    create_if_not_exists: bool = False,
 ):
     """Upsert data into a partitioned BigQuery table.
 
@@ -293,30 +330,44 @@ def upsert_partitioned_table(
     Raises:
         ValueError: If the DataFrame is empty or if unique_keys are not in the DataFrame.
     """
-    # Ensure 'dt' column is set to partition_dt
-    df = df.with_columns(dt=pl.lit(partition_dt).str.strptime(pl.Datetime, "%Y-%m-%d"))
+    try:
+        for date_part in breakout_partitioned_df(df):
+            _upsert_df_to_bq(
+                df=date_part.date_df,
+                dataset=dataset,
+                table_name=f"{table_name}${date_part.date_suffix}",
+                unique_keys=unique_keys,
+                # For a partitioned table the staging table name has to include the date suffix.
+                staging_table_name=f"{table_name}_{date_part.date_suffix}",
+            )
 
-    _upsert_df_to_bq(
-        df=df,
-        dataset=dataset,
-        table_name=table_name,
-        unique_keys=unique_keys,
-    )
+    except OPLabsUpsertTableNotExists:
+        if create_if_not_exists:
+            log.info(f"Creating new table: {dataset}.{table_name}")
+            overwrite_partitioned_table(
+                df=df,
+                dataset=dataset,
+                table_name=table_name,
+            )
+        else:
+            raise
 
 
 def _upsert_df_to_bq(
     df: pl.DataFrame,
     dataset: str,
     table_name: str,
-    unique_keys: List[str],
+    unique_keys: list[str],
+    staging_table_name: str | None = None,
 ):
     """Helper function to upsert data into a BigQuery table.
 
     Args:
-        df (pl.DataFrame): The DataFrame to upsert.
-        dataset (str): The BigQuery dataset name.
-        table_name (str): The BigQuery table name.
-        unique_keys (List[str]): Columns that uniquely identify rows.
+        df: The DataFrame to upsert.
+        dataset: The BigQuery dataset name.
+        table_name: The BigQuery table name.
+        unique_keys: Columns that uniquely identify rows.
+        staging_table_name: Can be provided to use a custom staging table name.
 
     Raises:
         ValueError: If the DataFrame is empty or if unique_keys are not in the DataFrame.
@@ -338,14 +389,19 @@ def _upsert_df_to_bq(
     try:
         client.get_table(upsert_destination)
     except exceptions.NotFound:
-        raise OPLabsBigQueryError(
+        raise OPLabsUpsertTableNotExists(
             f"Cannot upsert into a table that does not exist yet: {upsert_destination}"
         )
 
     # Generate a unique staging table name. Include the timestamp
     # in the name for debugging purposes.
     random_suffix = now().strftime("%Y%m%d%H%M-") + uuid4().hex[:8]
-    staging_table_name = f"{dataset}_{table_name}_{random_suffix}"
+
+    if staging_table_name is not None:
+        staging_table_name = f"{staging_table_name}_{random_suffix}"
+    else:
+        staging_table_name = f"{dataset}_{table_name}_{random_suffix}"
+
     staging_destination = f"{UPSERTS_TEMP_DATASET}.{staging_table_name}"
 
     # Write the incoming data to the staging table.

@@ -31,7 +31,7 @@ SELECT min(number) AS min_num, max(number) AS max_num
                 INNER JOIN (
                         SELECT * FROM @chain_db_name@_blocks
                         WHERE number >= (SELECT min_num FROM block_ranges)
-                        AND number < (SELECT max_num FROM block_ranges)
+                        AND number <= (SELECT max_num FROM block_ranges)
                         AND is_deleted = 0
                         AND network = 'mainnet'
                     ) b
@@ -41,7 +41,7 @@ SELECT min(number) AS min_num, max(number) AS max_num
 
                 WHERE 1=1
                     AND t.block_number >= (SELECT min_num FROM block_ranges)
-                    AND t.block_number < (SELECT max_num FROM block_ranges)
+                    AND t.block_number <= (SELECT max_num FROM block_ranges)
                     AND t.is_deleted = 0
                     AND t.network = 'mainnet'                    
 

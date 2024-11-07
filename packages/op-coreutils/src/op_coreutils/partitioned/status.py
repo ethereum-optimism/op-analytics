@@ -22,6 +22,8 @@ def all_outputs_complete(
     for location in sinks:
         complete = []
         incomplete = []
+
+        # TODO: Make a single query for all the markers.
         for marker in markers:
             if marker_exists(location, marker, markers_table):
                 complete.append(marker)

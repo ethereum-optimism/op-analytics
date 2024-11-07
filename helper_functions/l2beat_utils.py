@@ -207,7 +207,7 @@ def get_l2beat_metadata():
                         return 'Polygon CDK'
                 elif 'orbitStackL' in file_content:  # orbitStackL2 or orbitStackL3
                         return 'Arbitrum Orbit'
-                elif ("'zkSync'" in file_content) or ("'ZK Stack'" in file_content):
+                elif ("'zkSync'" in file_content) or ("'ZK Stack'" in file_content) or ("ZKstack" in file_content):
                         return 'ZK Stack'
                 else:
                         return extract_data(file_content, patterns['provider'])
@@ -246,7 +246,7 @@ def get_l2beat_metadata():
                                 
                                 layer_name = determine_layer(folder_name)
                                 # Prepare data with extracted values or defaults where necessary
-                                slug = extract_data(file_content, patterns['project_discovery'])
+                                slug = extract_data(file_content, patterns['slug'])
                                 if not slug:  # If project_discovery is not found, use slug pattern
                                         slug = extract_data(file_content, patterns['slug'])
                                 

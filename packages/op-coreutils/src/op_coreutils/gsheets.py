@@ -62,6 +62,7 @@ def get_worksheet(location_name: str, worksheet_name: str):
 def update_gsheet(location_name: str, worksheet_name: str, dataframe: pd.DataFrame):
     """Write a pandas dataframe to a Google Sheet."""
     worksheet = get_worksheet(location_name, worksheet_name)
+    worksheet.clear()
     worksheet.update([dataframe.columns.values.tolist()] + dataframe.values.tolist())
     log.info(f"Wrote {dataframe.shape} cells to Google Sheets: {location_name}#{worksheet_name}")
 
