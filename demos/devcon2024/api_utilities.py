@@ -30,7 +30,7 @@ def get_data(session: requests.Session, url: str, headers: dict[str, str] | None
     - Reports timing.
     - Raises for HTTP error status codes (>400) and checks for 200 status code.
     """
-    start = time.time()
+    # start = time.time()
 
     headers = headers or {"Content-Type": "application/json"}
 
