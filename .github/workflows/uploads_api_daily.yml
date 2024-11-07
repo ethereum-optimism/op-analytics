@@ -18,11 +18,18 @@ jobs:
         run: uv python install
       - name: Install the project
         run: uv sync --all-extras --dev
+
       - name: L2Beat
         run: OPLABS_ENV=prod uv run opdata pulls l2beat
         env:
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
-      - name: DefiLlama
+
+      - name: DefiLlama Stablecoins
         run: OPLABS_ENV=prod uv run opdata pulls defillama_stablecoins
+        env:
+          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
+
+      - name: GitHub Analytics
+        run: OPLABS_ENV=prod uv run opdata pulls github_analytics
         env:
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
