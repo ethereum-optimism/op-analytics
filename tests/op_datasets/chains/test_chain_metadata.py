@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 import polars as pl
 from op_coreutils.testutils.inputdata import InputTestData
 from op_coreutils.testutils.dataframe import compare_dataframes
 from unittest.mock import patch, MagicMock
-from op_datasets.chains import chain_metadata
+from op_datasets.chains import load, upload, goldsky_chains
 
 
 def test_clean():
@@ -14,7 +13,7 @@ def test_clean():
     expected_clean_df = pl.read_csv(testcase.path("case01/chain_metadata.csv"))
 
     # Clean the CSV.
-    actual_clean_df = chain_metadata._clean(raw_df)
+    actual_clean_df = load._clean(raw_df)
 
     # Chekc that results are as expected.
     compare_dataframes(actual_clean_df, expected_clean_df)
@@ -27,9 +26,9 @@ def test_to_pandas():
     raw_df = pl.read_csv(testcase.path("case01/chain_metadata_raw.csv"))
 
     # Clean the CSV.
-    actual_clean_df = chain_metadata._clean(raw_df)
+    actual_clean_df = load._clean(raw_df)
 
-    pddf = chain_metadata.to_pandas(actual_clean_df)
+    pddf = upload.to_pandas(actual_clean_df)
 
     assert pddf["mainnet_chain_id"].to_list() == [
         "10",
@@ -113,18 +112,14 @@ def test_to_pandas():
 def test_goldsky_chains():
     testcase = InputTestData.at(__file__)
     # Load the raw data you want to return from read_gsheet
-    raw_gsheet_data = pl.read_csv(
-        testcase.path("case01/chain_metadata_raw.csv")
-    ).to_dicts()
+    raw_gsheet_data = pl.read_csv(testcase.path("case01/chain_metadata_raw.csv")).to_dicts()
 
     with patch("op_coreutils.gsheets.get_worksheet") as mock_get_worksheet:
         mock_worksheet = MagicMock()
         mock_worksheet.get_all_records.return_value = raw_gsheet_data
         mock_get_worksheet.return_value = mock_worksheet
 
-        actual = chain_metadata.goldsky_chains(
-            testcase.path("case01/chain_metadata_raw.csv")
-        )
+        actual = goldsky_chains.goldsky_mainnet_chains()
 
         actual.sort()
         expected = [

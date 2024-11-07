@@ -20,7 +20,7 @@ from op_coreutils.partitioned import (
 )
 from overrides import override
 
-from op_datasets.chains.chain_metadata import goldsky_chains
+from op_datasets.chains.goldsky_chains import goldsky_mainnet_chains
 from op_datasets.etl.ingestion.markers import INGESTION_DATASETS, INGESTION_MARKERS_TABLE
 
 from .task import consolidate_chains
@@ -42,7 +42,7 @@ def load_superchain_raw_to_bq(
     # We do this because loading implies truncating any existing data in the date
     # partition.
 
-    chains = goldsky_chains()
+    chains = goldsky_mainnet_chains()
     inputs: list[DataReader] = construct_input_batches(
         chains=chains,
         range_spec=range_spec,
