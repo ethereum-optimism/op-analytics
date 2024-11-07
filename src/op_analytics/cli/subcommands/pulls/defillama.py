@@ -3,7 +3,6 @@ from typing import Optional
 
 import polars as pl
 from op_coreutils.bigquery.write import (
-    most_recent_dates,
     upsert_partitioned_table,
     upsert_unpartitioned_table,
 )
@@ -20,7 +19,7 @@ BREAKDOWN_ENDPOINT = "https://stablecoins.llama.fi/stablecoin/{id}"
 BQ_DATASET = "uploads_api"
 
 METADATA_TABLE = "defillama_stablecoin_metadata"
-BALANCES_TABLE = "defillama_daily_stablecoin_balances"
+BALANCES_TABLE = "defillama_daily_stablecoins_breakdown_history"
 BALANCES_TABLE_LAST_N_DAYS = 7  # upsert only the last 7 days of balances fetched from the api
 
 
@@ -102,17 +101,17 @@ def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
         dataset=BQ_DATASET,
         table_name=METADATA_TABLE,
         unique_keys=["id", "name", "symbol"],
-        create_if_not_exists=False,  # set to True on first run
+        create_if_not_exists=True,  # set to True on first run
     )
 
     # Upsert balances to BQ.
     # Only update balances on the most recent dates. Assume data further back in time is immutable.
     upsert_partitioned_table(
-        df=most_recent_dates(result.balances_df, n_dates=BALANCES_TABLE_LAST_N_DAYS),
+        df=result.balances_df,  # most_recent_dates(result.balances_df, n_dates=BALANCES_TABLE_LAST_N_DAYS),
         dataset=BQ_DATASET,
         table_name=BALANCES_TABLE,
         unique_keys=["dt", "id", "chain"],
-        create_if_not_exists=False,  # set to True on first run
+        create_if_not_exists=True,  # set to True on first run
     )
 
     return result
