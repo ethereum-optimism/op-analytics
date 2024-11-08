@@ -32,6 +32,11 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
 
     CREATE OR REPLACE MACRO safe_div(a, b) AS
     IF(b = 0, NULL, a / b);
+    
+    -- Fee scalars required division by 1e6.
+    -- The micro function makes the division convenient without losing precision.
+    CREATE OR REPLACE MACRO micro(a)
+    AS a / 1000000;
     """)
 
 
