@@ -54,3 +54,6 @@ zzzpython/
 # Local ozone warehouse folder
 ozone/
 .env_legacy
+
+# Rendered query templates
+*.actual.sql

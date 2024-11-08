@@ -7,7 +7,6 @@ from op_datasets.etl.intermediate.udfs import (
     safe_div,
     wei_to_eth,
     wei_to_gwei,
-    to_sql,
 )
 
 
@@ -31,8 +30,10 @@ def test_macros():
         Expression(alias="ans_division_ok", sql_expr=safe_div("receipt_gas_used", "fifty")),
         Expression(alias="ans_division_err", sql_expr=safe_div("receipt_gas_used", "zero")),
     ]
+
+    delimited_exprs = ",\n    ".join([_.expr for _ in exprs])
     result1 = client.sql(f"""
-    SELECT gas_price * receipt_gas_used, {to_sql(exprs)} FROM test_macros
+    SELECT gas_price * receipt_gas_used, {delimited_exprs} FROM test_macros
     """)
     actual1 = result1.fetchall()
     expected = [(20000, Decimal("2.00000E-14"), Decimal("0.0000200000"), 4.0, None)]

@@ -1,16 +1,17 @@
-# -*- coding: utf-8 -*-
 import duckdb
 
 from op_datasets.etl.intermediate.registry import register_model
+from op_datasets.etl.intermediate.querybuilder import (
+    TemplatedSQLQuery,
+    RenderedSQLQuery,
+)
 from op_datasets.etl.intermediate.types import NamedRelations
 from op_datasets.etl.intermediate.udfs import (
     Expression,
+    safe_div,
     wei_to_eth,
     wei_to_gwei,
-    safe_div,
-    to_sql,
 )
-
 
 # Reused expressions
 
@@ -213,42 +214,23 @@ AGGREGATION_EXPRS = [
 @register_model(
     input_datasets=["blocks", "transactions"],
     expected_outputs=["daily_address_summary_v1"],
+    query_templates=[
+        TemplatedSQLQuery(
+            template_name="daily_address_summary",
+            result_name="daily_address_summary_v1",
+            context={"aggregates": AGGREGATION_EXPRS},
+        ),
+    ],
 )
 def daily_address_summary(
     duckdb_client: duckdb.DuckDBPyConnection,
-    input_tables: NamedRelations,
+    rendered_queries: dict[str, RenderedSQLQuery],
 ) -> NamedRelations:
-    input_transactions: duckdb.DuckDBPyRelation = input_tables["transactions"]  # noqa: F841
-    input_blocks: duckdb.DuckDBPyRelation = input_tables["blocks"]  # noqa: F841
+    results = {}
+    for name, query in rendered_queries.items():
+        # Uncomment when debugging:
+        # print(query)
 
-    query = f"""
-    WITH blocks AS (
-        SELECT
-            number,
-            base_fee_per_gas
-        FROM input_blocks
-    )
-    SELECT
-        dt,
-        chain,
-        chain_id,
-        from_address AS address,
-        {to_sql(AGGREGATION_EXPRS)}
-    FROM input_transactions AS t
-    JOIN blocks AS b
-        ON t.block_number = b.number
-    WHERE gas_price > 0
+        results[name] = duckdb_client.sql(query.query)
 
-    -- Optional address filter for faster results when developing.
-    -- AND from_address LIKE '0x00%'
-
-    GROUP BY 1, 2, 3, 4
-    """
-
-    # Uncomment when debugging:
-    # print(query)
-
-    results = duckdb_client.sql(query)
-
-    # Model functions always return a dictionary of output results.
-    return {"daily_address_summary_v1": results}
+    return results

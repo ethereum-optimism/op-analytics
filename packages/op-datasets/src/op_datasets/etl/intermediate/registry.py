@@ -4,8 +4,9 @@ from dataclasses import dataclass
 from typing import Protocol
 
 import duckdb
-from op_coreutils.logger import structlog
+from op_coreutils.logger import structlog, bind_contextvars
 
+from .querybuilder import TemplatedSQLQuery, RenderedSQLQuery
 from .types import NamedRelations
 
 log = structlog.get_logger()
@@ -17,28 +18,77 @@ class ModelFunction(Protocol):
     def __call__(
         self,
         duckdb_client: duckdb.DuckDBPyConnection,
-        input_tables: NamedRelations,
+        rendered_queries: dict[str, RenderedSQLQuery] | None,
     ) -> NamedRelations: ...
 
 
+class ModelInputDataReader(Protocol):
+    def duckdb_relation(self, dataset) -> duckdb.DuckDBPyRelation: ...
+
+
 @dataclass
-class IntermediateModel:
+class PythonModel:
     name: str
     input_datasets: list[str]
-    func: ModelFunction
     expected_output_datasets: list[str]
+    rendered_queries: dict[str, RenderedSQLQuery]
+    model_func: ModelFunction
+
+    @property
+    def func(self) -> ModelFunction:
+        return self.model_func
 
 
-REGISTERED_INTERMEDIATE_MODELS: dict[str, IntermediateModel] = {}
+@dataclass
+class PythonModelExecutor:
+    model: PythonModel
+    client: duckdb.DuckDBPyConnection
+    data_reader: ModelInputDataReader
+
+    def input_view_name(self, dataset: str) -> str:
+        return dataset
+
+    def __enter__(self):
+        # Register input data as views on the duckdb client.
+        for dataset in self.model.input_datasets:
+            self.client.register(
+                view_name=self.input_view_name(dataset),
+                python_object=self.data_reader.duckdb_relation(dataset),
+            )
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # Unregister all views so client is good to run other models.
+        for dataset in self.model.input_datasets:
+            self.client.unregister(view_name=self.input_view_name(dataset))
+
+    def execute(self):
+        return self.model.func(self.client, self.model.rendered_queries)
 
 
-def register_model(input_datasets: list[str], expected_outputs: list[str]):
+REGISTERED_INTERMEDIATE_MODELS: dict[str, PythonModel] = {}
+
+
+def register_model(
+    input_datasets: list[str],
+    expected_outputs: list[str],
+    query_templates: list[TemplatedSQLQuery] | None = None,
+):
     def decorator(func):
-        REGISTERED_INTERMEDIATE_MODELS[func.__name__] = IntermediateModel(
-            name=func.__name__,
+        model_name = func.__name__
+        bind_contextvars(model=model_name)
+
+        rendered_queries = {}
+        for q in query_templates or []:
+            rendered = q.render()
+            rendered_queries[rendered.name] = rendered
+
+        REGISTERED_INTERMEDIATE_MODELS[model_name] = PythonModel(
+            name=model_name,
             input_datasets=input_datasets,
-            func=func,
             expected_output_datasets=expected_outputs,
+            rendered_queries=rendered_queries,
+            model_func=func,
         )
         return func
 

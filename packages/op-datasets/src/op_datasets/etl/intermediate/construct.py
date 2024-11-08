@@ -57,13 +57,13 @@ def construct_tasks(
         expected_outputs = {}
         for model in models:
             for dataset in REGISTERED_INTERMEDIATE_MODELS[model].expected_output_datasets:
-                dataset_name = f"{model}/{dataset}"
+                full_model_name = f"{model}/{dataset}"
 
-                expected_outputs[dataset_name] = ExpectedOutput(
-                    dataset_name=dataset_name,
-                    root_path=SinkOutputRootPath(f"intermediate/{dataset_name}"),
+                expected_outputs[full_model_name] = ExpectedOutput(
+                    dataset_name=full_model_name,
+                    root_path=SinkOutputRootPath(f"intermediate/{full_model_name}"),
                     file_name="out.parquet",
-                    marker_path=SinkMarkerPath(dataset_name),
+                    marker_path=SinkMarkerPath(full_model_name),
                     process_name="default",
                     additional_columns=dict(
                         mode_name=model,
