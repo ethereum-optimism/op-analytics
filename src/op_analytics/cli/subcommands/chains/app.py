@@ -111,7 +111,7 @@ def normalize_chains(chains: str) -> list[str]:
     for chain in chains.split(","):
         if chain == "ALL":
             result.update(goldsky_chains.goldsky_mainnet_chains())
-        if chain == "TESTNETS":
+        elif chain == "TESTNETS":
             result.update(goldsky_chains.goldsky_testnet_chains())
         elif chain.startswith("-"):
             not_included.add(chain.removeprefix("-").strip())

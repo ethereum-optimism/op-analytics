@@ -1,0 +1,29 @@
+WITH projected_blocks AS (
+  SELECT
+    number,
+    base_fee_per_gas
+  FROM
+    blocks
+)
+
+SELECT
+  t.dt,
+  t.chain,
+  t.chain_id,
+  t.from_address AS address,
+  -- Aggregates
+  {% for aggregate in aggregates %}
+  {{ aggregate.expr }},
+  {% endfor -%}
+FROM
+  transactions AS t
+INNER JOIN projected_blocks AS b ON t.block_number = b.number
+WHERE
+  t.gas_price > 0
+  -- Optional address filter for faster results when developing.
+  -- AND from_address LIKE '0x00%'
+GROUP BY
+  1,
+  2,
+  3,
+  4
