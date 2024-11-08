@@ -17,11 +17,6 @@ class Expression:
         return self.sql_expr + " AS " + self.alias
 
 
-def to_sql(exprs: list[Expression]):
-    """Convert a list of expressions to a string that can be used as part of a SELECT."""
-    return ",\n    ".join([_.expr for _ in exprs])
-
-
 def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     """Create general purpose macros on the DuckDB in-memory client.
 

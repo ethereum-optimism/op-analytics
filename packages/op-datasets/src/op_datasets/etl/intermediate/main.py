@@ -3,9 +3,8 @@ from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
 from op_coreutils.partitioned import DataLocation, OutputData
 
 from .construct import construct_tasks
-from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
+from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions, PythonModelExecutor
 from .task import IntermediateModelsTask
-from .types import NamedRelations
 from .udfs import create_duckdb_macros
 
 log = structlog.get_logger()
@@ -63,8 +62,6 @@ def compute_intermediate(
 
         executor(task)
 
-        writer(task)
-
 
 def executor(task: IntermediateModelsTask) -> None:
     """Execute the model computations."""
@@ -77,39 +74,25 @@ def executor(task: IntermediateModelsTask) -> None:
         # Get the model.
         im_model = REGISTERED_INTERMEDIATE_MODELS[model_name]
 
-        # Prepare input data.
-        input_tables: NamedRelations = {}
-        for dataset in im_model.input_datasets:
-            input_tables[dataset] = task.data_reader.duckdb_relation(dataset)
+        with PythonModelExecutor(im_model, client, task.data_reader) as m:
+            model_results = m.execute()
 
-        # Execute the model.
-        model_results = im_model.func(
-            duckdb_client=client,
-            input_tables=input_tables,
-        )
+            produced_datasets = set(model_results.keys())
+            if produced_datasets != set(im_model.expected_output_datasets):
+                raise RuntimeError(
+                    f"model {model_name!r} produced unexpected datasets: {produced_datasets}"
+                )
 
-        # Store outputs produced by the model.
-        for output_name, output in model_results.items():
-            task.store_output(model_name, output_name, output)
-
-        produced_datasets = set(task.output_duckdb_relations.keys())
-        if produced_datasets != set(im_model.expected_output_datasets):
-            raise RuntimeError(
-                f"model {model_name!r} produced unexpected datasets: {produced_datasets}"
-            )
-
-
-def writer(task: IntermediateModelsTask):
-    for dataset_name, rel in task.output_duckdb_relations.items():
-        for location in task.data_writer.write_to:
-            task.data_writer.write(
-                location=location,
-                output_data=OutputData(
-                    dataframe=rel.pl(),
-                    dataset_name=dataset_name,
-                    default_partition=None,
-                ),
-            )
+            for result_name, rel in model_results.items():
+                for location in task.data_writer.write_to:
+                    task.data_writer.write(
+                        location=location,
+                        output_data=OutputData(
+                            dataframe=rel.pl(),
+                            dataset_name=f"{model_name}/{result_name}",
+                            default_partition=None,
+                        ),
+                    )
 
 
 def checker(task: IntermediateModelsTask) -> None:

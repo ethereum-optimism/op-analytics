@@ -31,16 +31,3 @@ class IntermediateModelsTask:
             self.__class__.__name__
             + f"[ctx: {self.data_reader.contextvars}, datset_paths: {self.data_reader.paths_summary}]"
         )
-
-    def store_output(self, model_name, output_name: str, rel: duckdb.DuckDBPyRelation):
-        """Register output data.
-
-        The provided duckdb relation is stored in the task. All outputs that are stored
-        in the task will be written out by the DataWriter at the end of execution.
-        """
-        dataset_name = f"{model_name}/{output_name}"
-
-        if dataset_name in self.output_duckdb_relations:
-            raise ValueError(f"name already exists in task outputs: {dataset_name}")
-
-        self.output_duckdb_relations[dataset_name] = rel

@@ -2,6 +2,7 @@ import os
 import shutil
 import tempfile
 import unittest
+from dataclasses import dataclass
 from datetime import date
 from textwrap import dedent
 from op_coreutils.logger import structlog
@@ -12,11 +13,19 @@ from op_coreutils.partitioned.location import DataLocation
 import duckdb
 
 from .construct import construct_tasks
-from .types import NamedRelations
-from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
+from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions, PythonModelExecutor
 from .udfs import create_duckdb_macros
 
 log = structlog.get_logger()
+
+
+@dataclass
+class DataReaderTestUtil:
+    client: duckdb.DuckDBPyConnection
+
+    def duckdb_relation(self, dataset) -> duckdb.DuckDBPyRelation:
+        assert self.client is not None
+        return self.client.sql(f"SELECT * FROM input_data_{dataset}")
 
 
 class IntermediateModelTestBase(unittest.TestCase):
@@ -109,12 +118,18 @@ class IntermediateModelTestBase(unittest.TestCase):
         log.info("Executing model...")
         create_duckdb_macros(cls._duckdb_client)
         model = REGISTERED_INTERMEDIATE_MODELS["daily_address_summary"]
-        model_result = model.func(cls._duckdb_client, cls._input_relations())
 
-        # Create TEMP tables with the model results
-        for name, relation in model_result.items():
-            arrow_relation = relation.to_arrow_table()  # noqa: F841
-            cls._duckdb_client.sql(f"CREATE TEMP TABLE {name} AS SELECT * FROM arrow_relation")
+        with PythonModelExecutor(
+            model=model,
+            client=cls._duckdb_client,
+            data_reader=DataReaderTestUtil(cls._duckdb_client),
+        ) as m:
+            model_results = m.execute()
+
+            # Create TEMP tables with the model results
+            for name, relation in model_results.items():
+                arrow_relation = relation.to_arrow_table()  # noqa: F841
+                cls._duckdb_client.sql(f"CREATE TEMP TABLE {name} AS SELECT * FROM arrow_relation")
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -175,13 +190,3 @@ class IntermediateModelTestBase(unittest.TestCase):
             cls._duckdb_client.sql(f"CREATE TABLE {table_name} AS SELECT * FROM arrow_table")
 
             relations[dataset] = rel
-
-    @classmethod
-    def _input_relations(cls) -> NamedRelations:
-        """Return the datasets available for the test."""
-        assert cls._duckdb_client is not None
-        relations = {}
-        for dataset in cls.datasets:
-            table_name = cls.input_table_name(dataset)
-            relations[dataset] = cls._duckdb_client.sql(f"SELECT * FROM {table_name}")
-        return relations
