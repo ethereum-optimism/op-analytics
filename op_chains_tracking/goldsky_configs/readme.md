@@ -19,7 +19,7 @@ tl;dr: We set up a unique pipeline for each chain / network combination (i.e. fr
 goldsky pipeline create <pipeline-name> --definition-path <path_to_yml/file_name>.yml
 ```
 
-5. If successful, go to the goldksy app website returned and monitor the pipeline
+5. If successful, go to the goldsky app website returned and monitor the pipeline
 
 6. Have fun
 
