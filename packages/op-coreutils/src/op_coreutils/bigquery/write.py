@@ -331,11 +331,14 @@ def upsert_partitioned_table(
         ValueError: If the DataFrame is empty or if unique_keys are not in the DataFrame.
     """
     try:
+        # TODO: Consider not looping and doing it all in a single MERGE operation.
+        # Initially I considered looping because I thought you could specify the
+        # date partition on the date operation, but turns out you can't.
         for date_part in breakout_partitioned_df(df):
             _upsert_df_to_bq(
                 df=date_part.date_df,
                 dataset=dataset,
-                table_name=f"{table_name}${date_part.date_suffix}",
+                table_name=table_name,
                 unique_keys=unique_keys,
                 # For a partitioned table the staging table name has to include the date suffix.
                 staging_table_name=f"{table_name}_{date_part.date_suffix}",
