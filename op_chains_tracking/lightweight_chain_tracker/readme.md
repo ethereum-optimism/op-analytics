@@ -15,7 +15,7 @@ Our goal is to generate metrics comparable to what appears on [this OP Chains da
 - **Successful User Transactions**: Count of `User Transactions` with a successful status.
 - **System Transactions**: Count of transactions where `gas_price`` = 0, and the `to_address` = `0x4200000000000000000000000000000000000015`
 - **Deposit Transactions**: `User Transactions per Day` - `System Transactions per Day` (for simplicity)
-- **Blacks**: Count of blocks, used to understand how much of the day was active (i.e. day 1 and day n may be partial days).
+- **Blocks**: Count of blocks, used to understand how much of the day was active (i.e. day 1 and day n may be partial days).
 - **Avg Block Time**: Average time between blocks in seconds (standard config for OP Stack is 2s).
 
 ### L2 Execution Gas (in wei units)
