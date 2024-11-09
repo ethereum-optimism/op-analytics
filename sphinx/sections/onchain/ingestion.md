@@ -26,7 +26,7 @@ runs incrementally based on block number. For a given block range it will:
 4. If audits fail, alert the pipeline operators. 
 
 The audit process will help us ensure that the data is valid and self consistent. For example,
-there shouldn't be any block nubmer gaps, and the transaction count in a block should match
+there shouldn't be any block number gaps, and the transaction count in a block should match
 the number of records in the transactions table. 
 
 Audited datasets are stored in GCS as standalone iceberg tables. This makes it easy to access this
