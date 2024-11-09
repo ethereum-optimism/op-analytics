@@ -15,33 +15,50 @@ from op_datasets.etl.intermediate.udfs import (
 
 # Reused expressions
 
-BLOCK_HOUR = "datepart('hour', make_timestamp(block_timestamp::BIGINT * 1000000))"
+BLOCK_HOUR = "epoch_to_hour(block_timestamp)"
 TX_SUCCESS = "receipt_status = 1"
 
 
 # L2 Fee and breakdown into BASE and PRIORITY contributions.
-L2_CONTRIB_GAS_FEES = "(gas_price * receipt_gas_used)"
+L2_GAS_FEES = "(gas_price * receipt_gas_used)"
 L2_CONTRIB_PRIORITY = "(max_priority_fee_per_gas * receipt_gas_used)"
 L2_CONTRIB_BASE = "(base_fee_per_gas * receipt_gas_used)"
 
+# L1 Fee
+L1_GAS_FEES = "receipt_l1_fee"
 
-# L1 Fee and breakdown into BASE and BLOB contributions.
-L1_GAS_SCALAR = "COALESCE(16*micro(receipt_l1_base_fee_scalar), receipt_l1_fee_scalar)"
-L1_GAS_PRICE = f"{L1_GAS_SCALAR} * receipt_l1_gas_price"
+# The total fee is the sum of L2 + L1.
+TOTAL_GAS_FEES = f"{L2_GAS_FEES} + {L1_GAS_FEES}"
+
+# L1 Fee breakdown into BASE and BLOB contributions.
+L1_BASE_SCALAR = "COALESCE(16*micro(receipt_l1_base_fee_scalar), receipt_l1_fee_scalar)"
+L1_BASE_SCALED_PRICE = f"{L1_BASE_SCALAR} * receipt_l1_gas_price"
 
 L1_BLOB_SCALAR = "micro(receipt_l1_blob_base_fee_scalar)"
-L1_BLOB_PRICE = f"COALESCE({L1_BLOB_SCALAR} * receipt_l1_blob_base_fee, 0)"
+L1_BLOB_SCALED_PRICE = f"COALESCE({L1_BLOB_SCALAR} * receipt_l1_blob_base_fee, 0)"
 
+# Estimated L1 size of the transaction.
+WEIGHTED_L1_GAS_PRICE = f"({L1_BASE_SCALED_PRICE} + {L1_BLOB_SCALED_PRICE})"
+ESTIMATED_L1_SIZE = f"receipt_l1_fee / {WEIGHTED_L1_GAS_PRICE}"
 
-ESTIMATED_SIZE = f"receipt_l1_fee /({L1_GAS_PRICE} + {L1_BLOB_PRICE})"
+# Estimated gas used (16 per non-zero byte)
+ESTIMATED_L1_GAS_USED = f"16 * {ESTIMATED_L1_SIZE}"
 
-L1_CONTRIB_BLOB = f"({ESTIMATED_SIZE}) * {L1_BLOB_PRICE}"
-L1_CONTRIB_GAS = f"({ESTIMATED_SIZE}) * {L1_GAS_PRICE}"
+# Contributions to L1 Fee
+L1_CONTRIB_BASE = f"({ESTIMATED_L1_SIZE}) * {L1_BASE_SCALED_PRICE}"
+L1_CONTRIB_BLOB = f"({ESTIMATED_L1_SIZE}) * {L1_BLOB_SCALED_PRICE}"
 
+# Average L1 gas price
+AVERAGE_L1_GAS_PRICE = safe_div(
+    f"SUM(({ESTIMATED_L1_SIZE}) * {L1_BASE_SCALED_PRICE})",
+    f"SUM(({ESTIMATED_L1_SIZE}) * {L1_BASE_SCALAR})",
+)
 
-# The total fee is th sum of L2 + L1 fees.
-L1_CONTRIB_GAS_FEES = "receipt_l1_fee"
-TOTAL_GAS_FEES = f"{L2_CONTRIB_GAS_FEES} + {L1_CONTRIB_GAS_FEES}"
+# Average L1 blob fee
+AVERAGE_L1_BLOB_FEE = safe_div(
+    f"SUM(({ESTIMATED_L1_SIZE}) * {L1_BLOB_SCALED_PRICE})",
+    f"SUM(({ESTIMATED_L1_SIZE}) * {L1_BLOB_SCALAR})",
+)
 
 
 AGGREGATION_EXPRS = [
@@ -127,11 +144,11 @@ AGGREGATION_EXPRS = [
     ),
     Expression(
         alias="total_l1_gas_used",
-        sql_expr=f"SUM(COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE})))",
+        sql_expr=f"SUM(COALESCE(receipt_l1_gas_used, ({ESTIMATED_L1_GAS_USED})))",
     ),
     Expression(
         alias="total_l1_gas_used_success",
-        sql_expr=f"SUM(IF({TX_SUCCESS}, COALESCE(receipt_l1_gas_used, ({ESTIMATED_SIZE})), 0))",
+        sql_expr=f"SUM(IF({TX_SUCCESS}, COALESCE(receipt_l1_gas_used, ({ESTIMATED_L1_GAS_USED})), 0))",
     ),
     # Gas Fee Paid
     Expression(
@@ -145,11 +162,11 @@ AGGREGATION_EXPRS = [
     # Gas Fee Breakdown
     Expression(
         alias="l2_contrib_gas_fees",
-        sql_expr=wei_to_eth(f"SUM({L2_CONTRIB_GAS_FEES})"),
+        sql_expr=wei_to_eth(f"SUM({L2_GAS_FEES})"),
     ),
     Expression(
         alias="l1_contrib_gas_fees",
-        sql_expr=wei_to_eth(f"SUM({L1_CONTRIB_GAS_FEES})"),
+        sql_expr=wei_to_eth(f"SUM({L1_GAS_FEES})"),
     ),
     Expression(
         alias="l1_contrib_contrib_gas_fees_blobgas",
@@ -157,7 +174,7 @@ AGGREGATION_EXPRS = [
     ),
     Expression(
         alias="l1_contrib_gas_fees_l1gas",
-        sql_expr=wei_to_eth(f"SUM({L1_CONTRIB_GAS})"),
+        sql_expr=wei_to_eth(f"SUM({L1_CONTRIB_BASE})"),
     ),
     Expression(
         alias="l2_contrib_gas_fees_basefee",
@@ -178,7 +195,7 @@ AGGREGATION_EXPRS = [
         alias="avg_l2_gas_price_gwei",
         sql_expr=wei_to_gwei(
             safe_div(
-                f"SUM({L2_CONTRIB_GAS_FEES})",
+                f"SUM({L2_GAS_FEES})",
                 "SUM(receipt_gas_used)",
             )
         ),
@@ -203,21 +220,11 @@ AGGREGATION_EXPRS = [
     ),
     Expression(
         alias="avg_l1_gas_price_gwei",
-        sql_expr=wei_to_gwei(
-            safe_div(
-                f"SUM({L1_CONTRIB_GAS})",
-                f"SUM(({ESTIMATED_SIZE}) * {L1_GAS_SCALAR})",
-            )
-        ),
+        sql_expr=wei_to_gwei(AVERAGE_L1_GAS_PRICE),
     ),
     Expression(
         alias="avg_l1_blob_base_fee_gwei",
-        sql_expr=wei_to_gwei(
-            safe_div(
-                f"SUM({L1_CONTRIB_BLOB})",
-                f"SUM(({ESTIMATED_SIZE}) * {L1_BLOB_SCALAR})",
-            )
-        ),
+        sql_expr=wei_to_gwei(AVERAGE_L1_BLOB_FEE),
     ),
 ]
 

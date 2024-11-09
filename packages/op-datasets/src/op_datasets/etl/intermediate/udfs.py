@@ -37,6 +37,9 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     -- The micro function makes the division convenient without losing precision.
     CREATE OR REPLACE MACRO micro(a)
     AS a / 1000000;
+    
+    CREATE OR REPLACE MACRO epoch_to_hour(a) AS 
+    date_trunc('hour', make_timestamp(a * 1000000::BIGINT))
     """)
 
 

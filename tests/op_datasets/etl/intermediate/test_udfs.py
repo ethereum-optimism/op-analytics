@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 
 from op_coreutils.duckdb_inmem import init_client
@@ -10,7 +11,7 @@ from op_datasets.etl.intermediate.udfs import (
 )
 
 
-def test_macros():
+def test_macros_00():
     client = init_client()
     create_duckdb_macros(client)
 
@@ -52,3 +53,24 @@ def test_macros():
     """)
     actual2 = result2.fetchall()
     assert actual2 == expected
+
+
+def test_macros_01():
+    client = init_client()
+    create_duckdb_macros(client)
+
+    actual = client.sql("""
+    SELECT 
+        100::BIGINT AS timestamp,
+        epoch_to_hour(100::INT) as hour1,
+        epoch_to_hour(3700::INT) as hour2,
+        epoch_to_hour(1731176747) as hour3
+     """).fetchall()[0]
+
+    expected = (
+        100,
+        datetime(1970, 1, 1, 0, 0),
+        datetime(1970, 1, 1, 1, 0),
+        datetime(2024, 11, 9, 18, 0),
+    )
+    assert actual == expected
