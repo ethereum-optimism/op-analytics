@@ -3,7 +3,7 @@
 ## Data Pipeline
 
 ```{warning}
-Our data pipeline is currently under construction. The information below reflects our latests plans.
+Our data pipeline is currently under construction. The information below reflects our latest plans.
 ```
 
 ### Overview Diagram ([link](https://excalidraw.com/#json=1MWxonIgxwWNA5xGOLJuk,W2_v6uGd8zfk_yln9cno6w))
@@ -22,14 +22,14 @@ Our data pipeline is currently under construction. The information below reflect
 runs incrementally based on block number. For a given block range it will:
 1. Fetch raw onchain data
 2. Run audits.
-3. If audits pass, then write to audited datsets iceberg tables in GCS.
+3. If audits pass, then write to audited datasets iceberg tables in GCS.
 4. If audits fail, alert the pipeline operators. 
 
 The audit process will help us ensure that the data is valid and self consistent. For example,
 there shouldn't be any block nubmer gaps, and the transaction count in a block should match
-the number of records in the transactiosn table. 
+the number of records in the transactions table. 
 
-Audited datsets are stored in GCS as standalone iceberg tables. This makes it easy to access this
+Audited datasets are stored in GCS as standalone iceberg tables. This makes it easy to access this
 data with a variety of query engines, which should future-proof our operations. 
 
 ### Processed Datasets
@@ -41,9 +41,9 @@ also written to GCS as iceberg at this point.
 
 Note that the Ingestion and Processing steps can be fused for efficiency. After auditing we can
 run processing with the data in-hand, saving us one write-read trip to GCS. Our plan is to process
-data using block batches small enough so that all of the core datsets (transactions, logs, traces)
-fit in-memory. Any logic that requires joning across core datasets should be executed during
-processing, to take advantage of data locality.  Performing joins downstream after core datsets have
+data using block batches small enough so that all of the core datasets (transactions, logs, traces)
+fit in-memory. Any logic that requires joining across core datasets should be executed during
+processing, to take advantage of data locality.  Performing joins downstream after core datasets have
 been written out can lead to expensive data shuffling.
 
 The intermediate iceberg tables stored in GCS will be useful when iterating on the processing logic.
@@ -58,5 +58,5 @@ into BQ.
 
 ### Downstream Data Modeling
 
-For models downstream of public BigQuery datsets we will use a more standard dbt setup. This
+For models downstream of public BigQuery datasets we will use a more standard dbt setup. This
 would be similar to other solutions available in the ecosystem, such as [OSO](https://docs.opensource.observer/docs/how-oso-works/architecture#dbt-pipeline) or [Dune Spellbook](https://github.com/duneanalytics/spellbook).
