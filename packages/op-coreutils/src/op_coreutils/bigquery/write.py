@@ -335,7 +335,7 @@ def upsert_partitioned_table(
             _upsert_df_to_bq(
                 df=date_part.date_df,
                 dataset=dataset,
-                table_name=f"{table_name}${date_part.date_suffix}",
+                table_name=table_name,
                 unique_keys=unique_keys,
                 # For a partitioned table the staging table name has to include the date suffix.
                 staging_table_name=f"{table_name}_{date_part.date_suffix}",
