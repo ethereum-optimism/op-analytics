@@ -1,4 +1,4 @@
-## *Note: This is NOT an "offical" registry.*
+## *Note: This is NOT an "official" registry.*
 
 #### Chain Metadata
 This file aims to capture all OP Chains & OP Stack Forks. See [Key Definitions for Chain Segments](https://community.optimism.io/docs/contribute/important-terms/#the-superchain)
