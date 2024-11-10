@@ -13,5 +13,11 @@
         "editor.rulers": [
             100
         ]
-    }
+    },
+    "[sql]": {
+        "editor.defaultFormatter": "dorzey.vscode-sqlfluff",
+        "editor.formatOnSave": false
+    },
+    "sqlfluff.format.arguments": ["--FIX-EVEN-UNPARSABLE"],
+    "sqlfluff.executablePath": ".venv/bin/sqlfluff"
 }

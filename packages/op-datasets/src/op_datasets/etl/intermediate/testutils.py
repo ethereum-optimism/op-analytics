@@ -62,10 +62,11 @@ class IntermediateModelTestBase(unittest.TestCase):
     # Specify blocks that should be included in the test data.
     block_filters: list[str]
 
-    # Internal duckdb_client
+    # Internal variables
     _enable_fetching = False
     _duckdb_client = None
     _tempdir = None
+    _model_executor = None
 
     @classmethod
     def setUpClass(cls):
@@ -119,23 +120,27 @@ class IntermediateModelTestBase(unittest.TestCase):
         create_duckdb_macros(cls._duckdb_client)
         model = REGISTERED_INTERMEDIATE_MODELS["daily_address_summary"]
 
-        with PythonModelExecutor(
+        cls._model_executor = PythonModelExecutor(
             model=model,
             client=cls._duckdb_client,
             data_reader=DataReaderTestUtil(cls._duckdb_client),
-        ) as m:
-            model_results = m.execute()
+        )
 
-            # Create TEMP tables with the model results
-            for name, relation in model_results.items():
-                arrow_relation = relation.to_arrow_table()  # noqa: F841
-                cls._duckdb_client.sql(f"CREATE TEMP TABLE {name} AS SELECT * FROM arrow_relation")
+        cls._model_executor.__enter__()
+        model_results = cls._model_executor.execute()
+
+        # Create TEMP tables with the model results
+        for name, relation in model_results.items():
+            arrow_relation = relation.to_arrow_table()  # noqa: F841
+            cls._duckdb_client.sql(f"CREATE TEMP TABLE {name} AS SELECT * FROM arrow_relation")
 
     @classmethod
     def tearDownClass(cls) -> None:
         """Ensure duckb client is closed after running the test."""
-        assert cls._duckdb_client is not None
+        assert cls._model_executor is not None
+        cls._model_executor.__exit__(None, None, None)
 
+        assert cls._duckdb_client is not None
         cls._duckdb_client.close()
 
     @classmethod
