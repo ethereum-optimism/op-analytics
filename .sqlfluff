@@ -1,0 +1,19 @@
+[sqlfluff]
+templater = jinja
+dialect = duckdb
+sql_file_exts = .sql.j2
+ignore = templating
+runaway_limit = 10
+max_line_length = 120
+
+[sqlfluff:indentation]
+indented_joins = false
+indented_using_on = true
+template_blocks_indent = false
+tab_space_size = 2
+
+[sqlfluff:templater]
+unwrap_wrapped_queries = true
+
+[sqlfluff:templater:jinja]
+apply_dbt_builtins = true
