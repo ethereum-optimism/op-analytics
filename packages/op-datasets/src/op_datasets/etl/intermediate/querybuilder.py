@@ -50,7 +50,7 @@ class TemplatedSQLQuery:
         template = env.get_template(self.template_file)
 
         log.info("Rendering query", template=self.template_name)
-        rendered = template.render(self.context)
+        rendered = template.render(self.context) + "\n"
 
         with open(self.rendered_file, "r") as fobj:
             expected = fobj.read()
