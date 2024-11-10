@@ -6,15 +6,15 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Expression:
+class Expr:
     """Helper class to hold the definition of an expression along with its alias."""
 
     alias: str
-    sql_expr: str
+    expr: str
 
     @property
-    def expr(self):
-        return self.sql_expr + " AS " + self.alias
+    def aliased(self):
+        return self.expr + " AS " + self.alias
 
 
 def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
@@ -36,7 +36,7 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     -- Fee scalars required division by 1e6.
     -- The micro function makes the division convenient without losing precision.
     CREATE OR REPLACE MACRO micro(a)
-    AS a / 1000000;
+    AS a * 0.000001::DECIMAL(7, 7);
     
     CREATE OR REPLACE MACRO epoch_to_hour(a) AS 
     date_trunc('hour', make_timestamp(a * 1000000::BIGINT))
