@@ -65,7 +65,14 @@ class Marker:
             for partition in parquet_out.partitions:
                 sch = schema.field(partition.key)
                 if sch.type == pa.date32():
-                    parquet_out_row[partition.key] = date_fromstr(partition.value)
+                    if isinstance(partition.value, str):
+                        parquet_out_row[partition.key] = date_fromstr(partition.value)
+                    elif isinstance(partition.value, date):
+                        parquet_out_row[partition.key] = partition.value
+                    else:
+                        raise NotImplementedError(
+                            f"unsupported value for date partition: {partition.value}"
+                        )
                 else:
                     parquet_out_row[partition.key] = partition.value
 
