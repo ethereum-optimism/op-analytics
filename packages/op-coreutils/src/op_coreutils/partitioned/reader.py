@@ -49,7 +49,7 @@ class DataReader:
     def contextvars(self):
         return dict(
             chain=self.chain,
-            date=self.dateval,
+            date=self.dateval.strftime("%Y-%m-%d"),
         )
 
     @property

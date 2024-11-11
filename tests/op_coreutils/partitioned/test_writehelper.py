@@ -1,6 +1,6 @@
 import polars as pl
 import pyarrow as pa
-from datetime import date
+import datetime
 from unittest.mock import patch
 
 
@@ -18,13 +18,13 @@ def test_parquet_writer():
     df = pl.DataFrame(
         {
             "dt": [
-                date.fromisoformat("2024-01-01"),
-                date.fromisoformat("2024-01-01"),
-                date.fromisoformat("2024-01-01"),
-                date.fromisoformat("2024-01-01"),
-                date.fromisoformat("2024-01-02"),
-                date.fromisoformat("2024-01-02"),
-                date.fromisoformat("2024-01-03"),
+                datetime.date.fromisoformat("2024-01-01"),
+                datetime.date.fromisoformat("2024-01-01"),
+                datetime.date.fromisoformat("2024-01-01"),
+                datetime.date.fromisoformat("2024-01-01"),
+                datetime.date.fromisoformat("2024-01-02"),
+                datetime.date.fromisoformat("2024-01-02"),
+                datetime.date.fromisoformat("2024-01-03"),
             ],
             "chain": [
                 "DUMMYOP",
@@ -45,9 +45,9 @@ def test_parquet_writer():
             dataset_name="daily_address_summary/daily_address_summary_v1",
             root_path="intermediate/daily_address_summary/daily_address_summary_v1",
             file_name="out.parquet",
-            marker_path="daily_address_summary/daily_address_summary_v1",
+            marker_path="BLAH",
             process_name="default",
-            additional_columns={"mode_name": "daily_address_summary"},
+            additional_columns={"model_name": "MYMODEL"},
             additional_columns_schema=[
                 pa.field("chain", pa.string()),
                 pa.field("dt", pa.date32()),
@@ -94,5 +94,70 @@ def test_parquet_writer():
         {
             "path": "ozone/warehouse/intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYOP/dt=2024-01-03/out.parquet",
             "num_rows": 1,
+        },
+    ]
+
+    markers = (
+        run_query(
+            "SELECT * FROM etl_monitor.intermediate_model_markers WHERE chain IN ('DUMMYOP', 'DUMMYBASE')"
+        )
+        .pl()
+        .sort("dt", "chain")
+        .to_dicts()
+    )
+
+    for marker in markers:
+        # Remove keys that change depending on machine or time.
+        del marker["writer_name"]
+        del marker["updated_at"]
+
+    assert markers == [
+        {
+            "marker_path": "BLAH",
+            "dataset_name": "daily_address_summary/daily_address_summary_v1",
+            "root_path": "intermediate/daily_address_summary/daily_address_summary_v1",
+            "num_parts": 4,
+            "data_path": "intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYBASE/dt=2024-01-01/out.parquet",
+            "row_count": 2,
+            "process_name": "default",
+            "chain": "DUMMYBASE",
+            "dt": datetime.date(2024, 1, 1),
+            "model_name": "MYMODEL",
+        },
+        {
+            "marker_path": "BLAH",
+            "dataset_name": "daily_address_summary/daily_address_summary_v1",
+            "root_path": "intermediate/daily_address_summary/daily_address_summary_v1",
+            "num_parts": 4,
+            "data_path": "intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYOP/dt=2024-01-01/out.parquet",
+            "row_count": 2,
+            "process_name": "default",
+            "chain": "DUMMYOP",
+            "dt": datetime.date(2024, 1, 1),
+            "model_name": "MYMODEL",
+        },
+        {
+            "marker_path": "BLAH",
+            "dataset_name": "daily_address_summary/daily_address_summary_v1",
+            "root_path": "intermediate/daily_address_summary/daily_address_summary_v1",
+            "num_parts": 4,
+            "data_path": "intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYBASE/dt=2024-01-02/out.parquet",
+            "row_count": 2,
+            "process_name": "default",
+            "chain": "DUMMYBASE",
+            "dt": datetime.date(2024, 1, 2),
+            "model_name": "MYMODEL",
+        },
+        {
+            "marker_path": "BLAH",
+            "dataset_name": "daily_address_summary/daily_address_summary_v1",
+            "root_path": "intermediate/daily_address_summary/daily_address_summary_v1",
+            "num_parts": 4,
+            "data_path": "intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYOP/dt=2024-01-03/out.parquet",
+            "row_count": 1,
+            "process_name": "default",
+            "chain": "DUMMYOP",
+            "dt": datetime.date(2024, 1, 3),
+            "model_name": "MYMODEL",
         },
     ]
