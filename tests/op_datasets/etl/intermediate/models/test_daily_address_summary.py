@@ -70,42 +70,42 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
             "chain": "VARCHAR",
             "chain_id": "INTEGER",
             "address": "VARCHAR",
-            "total_txs": "BIGINT",
-            "total_txs_success": "BIGINT",
-            "total_blocks": "BIGINT",
-            "total_blocks_success": "BIGINT",
-            "min_block_number": "BIGINT",
-            "max_block_number": "BIGINT",
-            "block_interval_active": "BIGINT",
-            "min_nonce": "BIGINT",
-            "max_nonce": "BIGINT",
-            "nonce_interval_active": "BIGINT",
-            "min_block_timestamp": "UINTEGER",
-            "max_block_timestamp": "UINTEGER",
-            "time_interval_active": "UINTEGER",
-            "unique_hours_active": "BIGINT",
-            "num_to_addresses": "BIGINT",
-            "num_to_addresses_success": "BIGINT",
-            "num_method_ids": "BIGINT",
-            "total_l2_gas_used": "DECIMAL(38,0)",
-            "total_l2_gas_used_success": "DECIMAL(38,0)",
-            # TODO: Should l1_gas_used values be DECIMAL(38,0) instead of DOUBLE ???
-            "total_l1_gas_used": "DOUBLE",
-            "total_l1_gas_used_success": "DOUBLE",
-            "total_gas_fees": "DECIMAL(38,19)",
-            "total_gas_fees_success": "DECIMAL(38,19)",
-            "l2_contrib_gas_fees": "DECIMAL(38,19)",
-            "l1_contrib_gas_fees": "DECIMAL(38,19)",
-            "l1_contrib_contrib_gas_fees_blobgas": "DECIMAL(38,19)",
-            "l1_contrib_gas_fees_l1gas": "DECIMAL(38,19)",
-            "l2_contrib_gas_fees_basefee": "DECIMAL(38,19)",
-            "l2_contrib_gas_fees_priorityfee": "DECIMAL(38,19)",
-            "l2_contrib_gas_fees_legacyfee": "DECIMAL(38,19)",
-            "avg_l2_gas_price_gwei": "DECIMAL(38,10)",
-            "avg_l2_base_fee_gwei": "DECIMAL(38,10)",
-            "avg_l2_priority_fee_gwei": "DECIMAL(38,10)",
-            "avg_l1_gas_price_gwei": "DECIMAL(38,10)",
-            "avg_l1_blob_base_fee_gwei": "DECIMAL(38,10)",
+            "tx_cnt": "BIGINT",
+            "success_tx_cnt": "BIGINT",
+            "block_cnt": "BIGINT",
+            "success_block_cnt": "BIGINT",
+            "block_number_min": "BIGINT",
+            "block_number_max": "BIGINT",
+            "active_block_range": "BIGINT",
+            "nonce_min": "BIGINT",
+            "nonce_max": "BIGINT",
+            "active_nonce_range": "BIGINT",
+            "block_timestamp_min": "UINTEGER",
+            "block_timestamp_max": "UINTEGER",
+            "active_time_range": "UINTEGER",
+            "active_hours_ucnt": "BIGINT",
+            "to_address_ucnt": "BIGINT",
+            "success_to_address_ucnt": "BIGINT",
+            "method_id_ucnt": "BIGINT",
+            "l2_gas_used_sum": "DECIMAL(38,0)",
+            "success_l2_gas_used_sum": "DECIMAL(38,0)",
+            # TODO: Make sure these are DECIMAL and not DOUBLE
+            "l1_gas_used_sum": "DOUBLE",
+            "success_l1_gas_used_sum": "DOUBLE",
+            "tx_fee_sum_eth": "DECIMAL(38,19)",
+            "success_tx_fee_sum_eth": "DECIMAL(38,19)",
+            "l2_fee_sum_eth": "DECIMAL(38,19)",
+            "l2_base_fee_sum_eth": "DECIMAL(38,19)",
+            "l2_priority_fee_sum_eth": "DECIMAL(38,19)",
+            "l2_base_legacy_fee_sum_eth": "DECIMAL(38,19)",
+            "l1_fee_sum_eth": "DECIMAL(38,19)",
+            "l1_base_fee_sum_eth": "DECIMAL(38,19)",
+            "l1_blob_fee_sum_eth": "DECIMAL(38,19)",
+            "l2_gas_price_avg_gwei": "DECIMAL(38,10)",
+            "l2_base_price_avg_gwei": "DECIMAL(38,10)",
+            "l2_priority_price_avg_gwei": "DECIMAL(38,10)",
+            "l1_base_price_avg_gwei": "DECIMAL(38,10)",
+            "l1_blob_fee_avg_gwei": "DECIMAL(38,10)",
         }
 
     def test_single_txs_output(self):
@@ -128,73 +128,73 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
                 "chain": "op",
                 "chain_id": 10,
                 "address": "0xd666115c3d251bece7896297bf446ea908caf035",
-                "total_txs": 1,
-                "total_txs_success": 1,
-                "total_blocks": 1,
-                "total_blocks_success": 1,
-                "min_block_number": 126078000,
-                "max_block_number": 126078000,
-                "block_interval_active": 1,
-                "min_nonce": 52,
-                "max_nonce": 52,
-                "nonce_interval_active": 1,
-                "min_block_timestamp": 1727754777,
-                "max_block_timestamp": 1727754777,
-                "time_interval_active": 0,
-                "unique_hours_active": 1,
-                "num_to_addresses": 1,
-                "num_to_addresses_success": 1,
-                "num_method_ids": 1,
-                "total_l2_gas_used": Decimal("47038"),
-                "total_l2_gas_used_success": Decimal("47038"),
-                "total_l1_gas_used": 1600.0,
-                "total_l1_gas_used_success": 1600.0,
-                "total_gas_fees": Decimal("2.723088381200E-7"),
-                "total_gas_fees_success": Decimal("2.723088381200E-7"),
-                "l2_contrib_gas_fees": Decimal("2.59593784780E-8"),
-                "l1_contrib_gas_fees": Decimal("2.463494596420E-7"),
-                "l1_contrib_contrib_gas_fees_blobgas": Decimal("1.010E-16"),
-                "l1_contrib_gas_fees_l1gas": Decimal("2.463494595410E-7"),
-                "l2_contrib_gas_fees_basefee": Decimal("2.12555784780E-8"),
-                "l2_contrib_gas_fees_priorityfee": Decimal("4.7038000000E-9"),
-                "l2_contrib_gas_fees_legacyfee": Decimal("0E-19"),
-                "avg_l2_gas_price_gwei": Decimal("0.0005518810"),
-                "avg_l2_base_fee_gwei": Decimal("0.0004518810"),
-                "avg_l2_priority_fee_gwei": Decimal("0.0001000000"),
-                "avg_l1_gas_price_gwei": Decimal("29.4563635380"),
-                "avg_l1_blob_base_fee_gwei": Decimal("1.0E-9"),
+                "tx_cnt": 1,
+                "success_tx_cnt": 1,
+                "block_cnt": 1,
+                "success_block_cnt": 1,
+                "block_number_min": 126078000,
+                "block_number_max": 126078000,
+                "active_block_range": 1,
+                "nonce_min": 52,
+                "nonce_max": 52,
+                "active_nonce_range": 1,
+                "block_timestamp_min": 1727754777,
+                "block_timestamp_max": 1727754777,
+                "active_time_range": 0,
+                "active_hours_ucnt": 1,
+                "to_address_ucnt": 1,
+                "success_to_address_ucnt": 1,
+                "method_id_ucnt": 1,
+                "l2_gas_used_sum": Decimal("47038"),
+                "success_l2_gas_used_sum": Decimal("47038"),
+                "l1_gas_used_sum": 1600.0,
+                "success_l1_gas_used_sum": 1600.0,
+                "tx_fee_sum_eth": Decimal("2.723088381200E-7"),
+                "success_tx_fee_sum_eth": Decimal("2.723088381200E-7"),
+                "l2_fee_sum_eth": Decimal("2.59593784780E-8"),
+                "l2_base_fee_sum_eth": Decimal("2.12555784780E-8"),
+                "l2_priority_fee_sum_eth": Decimal("4.7038000000E-9"),
+                "l2_base_legacy_fee_sum_eth": Decimal("0E-19"),
+                "l1_fee_sum_eth": Decimal("2.463494596420E-7"),
+                "l1_base_fee_sum_eth": Decimal("2.463494595410E-7"),
+                "l1_blob_fee_sum_eth": Decimal("1.010E-16"),
+                "l2_gas_price_avg_gwei": Decimal("0.0005518810"),
+                "l2_base_price_avg_gwei": Decimal("0.0004518810"),
+                "l2_priority_price_avg_gwei": Decimal("0.0001000000"),
+                "l1_base_price_avg_gwei": Decimal("29.4563635380"),
+                "l1_blob_fee_avg_gwei": Decimal("1.0E-9"),
             }
         ]
 
         assert (
             sum(
                 [
-                    actual[0]["l1_contrib_gas_fees"],
-                    actual[0]["l2_contrib_gas_fees"],
+                    actual[0]["l1_fee_sum_eth"],
+                    actual[0]["l2_fee_sum_eth"],
                 ]
             )
-            == actual[0]["total_gas_fees"]
+            == actual[0]["tx_fee_sum_eth"]
         )
 
         assert (
             sum(
                 [
-                    actual[0]["l1_contrib_contrib_gas_fees_blobgas"],
-                    actual[0]["l1_contrib_gas_fees_l1gas"],
+                    actual[0]["l1_blob_fee_sum_eth"],
+                    actual[0]["l1_base_fee_sum_eth"],
                 ]
             )
-            == actual[0]["l1_contrib_gas_fees"]
+            == actual[0]["l1_fee_sum_eth"]
         )
 
         assert (
             sum(
                 [
-                    actual[0]["l2_contrib_gas_fees_basefee"],
-                    actual[0]["l2_contrib_gas_fees_priorityfee"],
-                    actual[0]["l2_contrib_gas_fees_legacyfee"],
+                    actual[0]["l2_base_fee_sum_eth"],
+                    actual[0]["l2_priority_fee_sum_eth"],
+                    actual[0]["l2_base_legacy_fee_sum_eth"],
                 ]
             )
-            == actual[0]["l2_contrib_gas_fees"]
+            == actual[0]["l2_fee_sum_eth"]
         )
 
     def test_multiple_txs_output(self):
@@ -218,65 +218,70 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
                 "chain": "op",
                 "chain_id": 10,
                 "address": "0xcef6d40144b0d76617664357a15559ecb145374f",
-                "total_txs": 2,
-                "total_txs_success": 2,
-                "total_blocks": 2,
-                "total_blocks_success": 2,
-                "min_block_number": 126073799,
-                "max_block_number": 126090026,
-                "block_interval_active": 16228,
-                "min_nonce": 54,
-                "max_nonce": 55,
-                "nonce_interval_active": 2,
-                "min_block_timestamp": 1727746375,
-                "max_block_timestamp": 1727778829,
-                "time_interval_active": 32454,
-                "unique_hours_active": 2,
-                "num_to_addresses": 1,
-                "num_to_addresses_success": 1,
-                "num_method_ids": 1,
-                "total_l2_gas_used": Decimal("59852"),
-                "total_l2_gas_used_success": Decimal("59852"),
-                "total_l1_gas_used": 3200.0,
-                "total_l1_gas_used_success": 3200.0,
-                "total_gas_fees": Decimal("0.0000037408546364060"),
-                "total_gas_fees_success": Decimal("0.0000037408546364060"),
-                "l2_contrib_gas_fees": Decimal("0.0000035911200000000"),
-                "l1_contrib_gas_fees": Decimal("1.497346364060E-7"),
-                "l1_contrib_contrib_gas_fees_blobgas": Decimal("2.030E-16"),
-                "l1_contrib_gas_fees_l1gas": Decimal("1.497346362030E-7"),
-                "l2_contrib_gas_fees_basefee": Decimal("2.38530270420E-8"),
-                "l2_contrib_gas_fees_priorityfee": Decimal("0E-19"),
-                "l2_contrib_gas_fees_legacyfee": Decimal("0.0000037170016093640"),
-                "avg_l2_gas_price_gwei": Decimal("0.0600000000"),
-                "avg_l2_base_fee_gwei": Decimal("0.0003985340"),
-                "avg_l2_priority_fee_gwei": Decimal("0E-10"),
-                "avg_l1_gas_price_gwei": Decimal("8.9519942250"),
-                "avg_l1_blob_base_fee_gwei": Decimal("1.0E-9"),
+                "tx_cnt": 2,
+                "success_tx_cnt": 2,
+                "block_cnt": 2,
+                "success_block_cnt": 2,
+                "block_number_min": 126073799,
+                "block_number_max": 126090026,
+                "active_block_range": 16228,
+                "nonce_min": 54,
+                "nonce_max": 55,
+                "active_nonce_range": 2,
+                "block_timestamp_min": 1727746375,
+                "block_timestamp_max": 1727778829,
+                "active_time_range": 32454,
+                "active_hours_ucnt": 2,
+                "to_address_ucnt": 1,
+                "success_to_address_ucnt": 1,
+                "method_id_ucnt": 1,
+                "l2_gas_used_sum": Decimal("59852"),
+                "success_l2_gas_used_sum": Decimal("59852"),
+                "l1_gas_used_sum": 3200.0,
+                "success_l1_gas_used_sum": 3200.0,
+                "tx_fee_sum_eth": Decimal("0.0000037408546364060"),
+                "success_tx_fee_sum_eth": Decimal("0.0000037408546364060"),
+                "l2_fee_sum_eth": Decimal("0.0000035911200000000"),
+                "l2_base_fee_sum_eth": Decimal("2.38530270420E-8"),
+                "l2_priority_fee_sum_eth": Decimal("0E-19"),
+                "l2_base_legacy_fee_sum_eth": Decimal("0.0000037170016093640"),
+                "l1_fee_sum_eth": Decimal("1.497346364060E-7"),
+                "l1_base_fee_sum_eth": Decimal("1.497346362030E-7"),
+                "l1_blob_fee_sum_eth": Decimal("2.030E-16"),
+                "l2_gas_price_avg_gwei": Decimal("0.0600000000"),
+                "l2_base_price_avg_gwei": Decimal("0.0003985340"),
+                "l2_priority_price_avg_gwei": Decimal("0E-10"),
+                "l1_base_price_avg_gwei": Decimal("8.9519942250"),
+                "l1_blob_fee_avg_gwei": Decimal("1.0E-9"),
             }
         ]
 
-        assert actual[0]["block_interval_active"] == (
-            actual[0]["max_block_number"] - actual[0]["min_block_number"] + 1
+        assert actual[0]["active_block_range"] == (
+            actual[0]["block_number_max"] - actual[0]["block_number_min"] + 1
         )
 
-        assert actual[0]["nonce_interval_active"] == (
-            actual[0]["max_nonce"] - actual[0]["min_nonce"] + 1
+        assert actual[0]["active_nonce_range"] == (
+            actual[0]["nonce_max"] - actual[0]["nonce_min"] + 1
         )
 
-        assert actual[0]["time_interval_active"] == (
-            actual[0]["max_block_timestamp"] - actual[0]["min_block_timestamp"]
+        assert actual[0]["active_time_range"] == (
+            actual[0]["block_timestamp_max"] - actual[0]["block_timestamp_min"]
         )
+
+        # TODO: Finish this after fixing types to DECIMAL
+        # total_l1_fee = actual[0]["total_l1_gas_used"] * actual[0]["avg_l1_gas_price_gwei"]
+        # l1_fee_sum_eth = actual[0]["l1_fee_sum_eth"]
+        # assert total_l1_fee == l1_fee_sum_eth
 
     def test_overall_totals(self):
         assert self._duckdb_client is not None
 
         actual = (
-            self._duckdb_client.sql("SELECT SUM(total_txs) FROM daily_address_summary_v1")
+            self._duckdb_client.sql("SELECT SUM(tx_cnt) FROM daily_address_summary_v1")
             .pl()
             .to_dicts()
         )
-        assert actual == [{"sum(total_txs)": Decimal("2397")}]
+        assert actual == [{"sum(tx_cnt)": Decimal("2397")}]
 
     def test_consistency(self):
         assert self._duckdb_client is not None
@@ -285,26 +290,26 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
             self._duckdb_client.sql("""
             WITH checks AS (
                 SELECT
-                    true                                                      AS check0,
+                    true                                             AS check0,
 
-                    l1_contrib_gas_fees
-                    + l2_contrib_gas_fees = total_gas_fees                    AS check1,
+                    l1_fee_sum_eth
+                    + l2_fee_sum_eth = tx_fee_sum_eth                AS check1,
 
-                    l1_contrib_contrib_gas_fees_blobgas
-                    + l1_contrib_gas_fees_l1gas = l1_contrib_gas_fees         AS check2,
+                    l1_blob_fee_sum_eth
+                    + l1_base_fee_sum_eth = l1_fee_sum_eth           AS check2,
 
-                    l2_contrib_gas_fees_basefee
-                    + l2_contrib_gas_fees_priorityfee
-                    + l2_contrib_gas_fees_legacyfee  = l2_contrib_gas_fees    AS check3,
+                    l2_base_fee_sum_eth
+                    + l2_priority_fee_sum_eth
+                    + l2_base_legacy_fee_sum_eth  = l2_fee_sum_eth   AS check3,
 
-                    block_interval_active =
-                    max_block_number - min_block_number + 1                   AS check4,
+                    active_block_range =
+                    block_number_max - block_number_min + 1          AS check4,
 
-                    nonce_interval_active =
-                    max_nonce - min_nonce + 1                                 AS check5,
+                    active_nonce_range =
+                    nonce_max - nonce_min + 1                        AS check5,
 
-                    time_interval_active =
-                    max_block_timestamp - min_block_timestamp                 AS check6
+                    active_time_range =
+                    block_timestamp_max - block_timestamp_min        AS check6
 
                 FROM daily_address_summary_v1
             )
