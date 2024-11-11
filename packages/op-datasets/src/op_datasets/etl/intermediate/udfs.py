@@ -32,14 +32,19 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
 
     CREATE OR REPLACE MACRO safe_div(a, b) AS
     IF(b = 0, NULL, a / b);
-    
+
     -- Fee scalars required division by 1e6.
     -- The micro function makes the division convenient without losing precision.
     CREATE OR REPLACE MACRO micro(a)
     AS a * 0.000001::DECIMAL(7, 7);
-    
-    CREATE OR REPLACE MACRO epoch_to_hour(a) AS 
-    date_trunc('hour', make_timestamp(a * 1000000::BIGINT))
+
+    -- Truncate a timestamp to hour.
+    CREATE OR REPLACE MACRO epoch_to_hour(a) AS
+    date_trunc('hour', make_timestamp(a * 1000000::BIGINT));
+
+    -- Division by 16 for DECIMAL types.
+    CREATE OR REPLACE MACRO div16(a)
+    AS a * 0.0625::DECIMAL(5, 5);
     """)
 
 
