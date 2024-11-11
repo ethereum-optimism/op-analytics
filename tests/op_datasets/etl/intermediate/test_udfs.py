@@ -91,3 +91,20 @@ def test_micro():
         Decimal("1.0000000"),
     )
     assert actual == expected
+
+
+def test_div16():
+    client = init_client()
+    create_duckdb_macros(client)
+
+    actual = client.sql("""
+    SELECT 
+        div16(128) AS m1,
+        div16(1) as m2
+     """).fetchall()[0]
+
+    expected = (
+        Decimal("8.00000"),
+        Decimal("0.06250"),
+    )
+    assert actual == expected
