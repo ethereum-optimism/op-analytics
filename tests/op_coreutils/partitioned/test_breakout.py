@@ -71,6 +71,9 @@ def test_breakout_partitions():
         "warehouse/dt=2024-01-03/chain=op/myfile.parquet",
     ]
 
+    sizes = [len(_.df) for _ in outputs]
+    assert sizes == [2, 2, 2, 1]
+
 
 def test_breakout_partitions_empty():
     df = pl.DataFrame(
@@ -109,3 +112,6 @@ def test_breakout_partitions_empty():
 
     paths = [_.meta.full_path("warehouse", "myfile.parquet") for _ in outputs]
     assert paths == ["warehouse/chain=op/dt=2023-10-30/myfile.parquet"]
+
+    sizes = [len(_.df) for _ in outputs]
+    assert sizes == [0]

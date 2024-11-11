@@ -32,7 +32,7 @@ def breakout_partitions(
             part_df = df.filter(pl.all_horizontal(pl.col(col) == val for col, val in part.items()))
 
             yield OutputPart(
-                df=df.drop(*partition_cols),
+                df=part_df.drop(*partition_cols),
                 meta=OutputPartMeta(
                     partitions=[KeyValue(key=col, value=val) for col, val in part.items()],
                     row_count=len(part_df),
