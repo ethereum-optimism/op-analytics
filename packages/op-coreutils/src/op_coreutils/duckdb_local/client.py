@@ -32,7 +32,10 @@ def init_client():
         _CLIENT.sql("CREATE SCHEMA IF NOT EXISTS etl_monitor")
 
         # Create the tables we need.
-        for database, table in [("etl_monitor", "raw_onchain_ingestion_markers")]:
+        for database, table in [
+            ("etl_monitor", "raw_onchain_ingestion_markers"),
+            ("etl_monitor", "intermediate_model_markers"),
+        ]:
             with open(repo_path(f"ddl/duckdb_local/{database}.{table}.sql"), "r") as fobj:
                 _CLIENT.sql(fobj.read())
 
