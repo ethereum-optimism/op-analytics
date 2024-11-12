@@ -1,12 +1,12 @@
 import datetime
-import pyarrow as pa
 
-from op_coreutils.partitioned.location import DataLocation
+import pyarrow as pa
+from op_coreutils.duckdb_local import run_query
 from op_coreutils.partitioned.dataaccess import init_data_access
+from op_coreutils.partitioned.location import DataLocation
 from op_coreutils.partitioned.marker import Marker
 from op_coreutils.partitioned.output import ExpectedOutput, KeyValue, OutputPartMeta
 from op_coreutils.partitioned.types import SinkMarkerPath, SinkOutputRootPath
-from op_coreutils.duckdb_local import run_query
 from op_coreutils.time import now
 
 MARKERS_TABLE = "raw_onchain_ingestion_markers"
@@ -15,7 +15,7 @@ MARKERS_TABLE = "raw_onchain_ingestion_markers"
 def test_marker():
     client = init_data_access()
 
-    run_query(f"DELETE FROM etl_monitor.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'")
+    run_query(f"DELETE FROM etl_monitor_dev.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'")
 
     marker = Marker(
         written_parts=[
@@ -69,7 +69,7 @@ def test_marker():
 
     result = (
         run_query(
-            "SELECT * FROM etl_monitor.raw_onchain_ingestion_markers WHERE chain = 'DUMMYCHAIN'"
+            "SELECT * FROM etl_monitor_dev.raw_onchain_ingestion_markers WHERE chain = 'DUMMYCHAIN'"
         )
         .pl()
         .to_dicts()
@@ -122,10 +122,10 @@ def test_marker():
     assert exists
 
     markers_df = client.markers_for_raw_ingestion(
-        DataLocation.LOCAL,
+        data_location=DataLocation.LOCAL,
+        markers_table=MARKERS_TABLE,
         datevals=[datetime.date(2024, 10, 25)],
         chains=["DUMMYCHAIN"],
-        markers_table=MARKERS_TABLE,
         dataset_names=["blocks"],
     )
     assert len(markers_df) == 1

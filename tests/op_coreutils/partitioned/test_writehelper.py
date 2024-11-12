@@ -12,9 +12,7 @@ from op_coreutils.partitioned.types import SinkOutputRootPath, SinkMarkerPath
 
 
 def test_parquet_writer():
-    run_query(
-        "DELETE FROM etl_monitor.intermediate_model_markers WHERE chain IN ('DUMMYOP', 'DUMMYBASE')"
-    )
+    run_query("TRUNCATE TABLE etl_monitor_dev.intermediate_model_markers")
 
     df = pl.DataFrame(
         {
@@ -102,7 +100,7 @@ def test_parquet_writer():
 
     markers = (
         run_query(
-            "SELECT * FROM etl_monitor.intermediate_model_markers WHERE chain IN ('DUMMYOP', 'DUMMYBASE')"
+            "SELECT * FROM etl_monitor_dev.intermediate_model_markers WHERE chain IN ('DUMMYOP', 'DUMMYBASE')"
         )
         .pl()
         .sort("dt", "chain")
