@@ -1,18 +1,20 @@
 import datetime
-import pyarrow as pa
 
+import pyarrow as pa
+from op_coreutils.duckdb_local import run_query
 from op_coreutils.partitioned.dataaccess import init_data_access
 from op_coreutils.partitioned.location import DataLocation
 from op_coreutils.partitioned.marker import Marker
 from op_coreutils.partitioned.output import ExpectedOutput, KeyValue, OutputPartMeta
 from op_coreutils.partitioned.types import SinkMarkerPath, SinkOutputRootPath
-from op_coreutils.duckdb_local import run_query
 from op_coreutils.time import now
 
 MARKERS_TABLE = "raw_onchain_ingestion_markers"
 
 
 def test_marker():
+    client = init_data_access()
+
     run_query(f"DELETE FROM etl_monitor_dev.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'")
 
     marker = Marker(
@@ -50,9 +52,6 @@ def test_marker():
             ],
         ),
     )
-
-    # OK to use the real data access client since we are using DUMMYCHAIN values.
-    client = init_data_access()
 
     initially_exists = client.marker_exists(
         data_location=DataLocation.LOCAL,

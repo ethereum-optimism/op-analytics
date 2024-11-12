@@ -27,6 +27,7 @@ from .marker import Marker
 from .output import ExpectedOutput, OutputPartMeta
 from .types import SinkMarkerPath
 
+
 _CLIENT = None
 
 _INIT_LOCK = Lock()
@@ -154,6 +155,11 @@ class PartitionedDataAccess:
         chains: list[str],
         dataset_names: list[str],
     ) -> pl.DataFrame:
+        """Query completion markers for a list of dates and chains.
+
+        Returns a dataframe with the markers and all of the parquet output paths
+        associated with them.
+        """
         paths_df = self.markers_for_dates(
             data_location=data_location,
             markers_table=markers_table,
@@ -199,10 +205,10 @@ class PartitionedDataAccess:
         projections: list[str],
         filters=dict[str, MarkerFilter],
     ) -> pl.DataFrame:
-        """Query completion markers for a list of dates and chains.
+        """Query completion markers.
 
-        Returns a dataframe with the markers and all of the parquet output paths
-        associated with them.
+        Returns a dataframe with the markers that match the provided filters
+        including only the columns specified in projections.
         """
         store = marker_location(data_location)
 
