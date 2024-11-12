@@ -121,7 +121,7 @@ def test_marker():
     )
     assert exists
 
-    markers_df = client.markers_for_dates(
+    markers_df = client.markers_for_raw_ingestion(
         DataLocation.LOCAL,
         datevals=[datetime.date(2024, 10, 25)],
         chains=["DUMMYCHAIN"],
@@ -135,7 +135,7 @@ def test_marker():
         == "ingestion/blocks_v1/chain=DUMMYCHAIN/dt=2024-10-25/000011540000.parquet"
     )
 
-    markers_df = client.markers_for_dates(
+    markers_df = client.markers_for_raw_ingestion(
         DataLocation.LOCAL,
         datevals=[datetime.date(2024, 10, 25)],
         chains=["DUMMYCHAIN"],
