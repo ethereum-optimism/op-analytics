@@ -2,7 +2,7 @@ from op_coreutils.logger import structlog
 
 from .location import DataLocation
 from .types import SinkMarkerPath
-from .marker import marker_exists
+from .dataaccess import marker_exists
 
 log = structlog.get_logger()
 

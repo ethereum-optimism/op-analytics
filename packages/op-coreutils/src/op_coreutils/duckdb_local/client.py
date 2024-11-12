@@ -24,20 +24,10 @@ def init_client():
     global _CLIENT
 
     with _INIT_LOCK:
-        path = repo_path("ozone/duck.db")
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        _CLIENT = duckdb.connect(path)
-
-        # Create the schemas we need.
-        _CLIENT.sql("CREATE SCHEMA IF NOT EXISTS etl_monitor")
-
-        # Create the tables we need.
-        for database, table in [
-            ("etl_monitor", "raw_onchain_ingestion_markers"),
-            ("etl_monitor", "intermediate_model_markers"),
-        ]:
-            with open(repo_path(f"ddl/duckdb_local/{database}.{table}.sql"), "r") as fobj:
-                _CLIENT.sql(fobj.read())
+        if _CLIENT is None:
+            path = repo_path("ozone/duck.db")
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            _CLIENT = duckdb.connect(path)
 
     if _CLIENT is None:
         raise RuntimeError("DuckDB client was not properly initialized.")
