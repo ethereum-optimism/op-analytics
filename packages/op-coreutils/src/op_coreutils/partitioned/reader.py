@@ -67,10 +67,14 @@ def construct_input_batches(
     markers_table: str,
     dataset_names: list[str],
 ) -> list[DataReader]:
-    """Construct a list of InputData for the given parameters.
+    """Construct a list of DataReader for the given parameters.
 
     The parameters specify a set of chains, dates, and datasets that we are
     interested in processing.
+
+    The DataReader will have knowledge of the parquet uris that comprise the
+    input data. It can be used to load the data onto BigQuery or to run an
+    intermediate model over the date.
     """
     client = init_data_access()
 
