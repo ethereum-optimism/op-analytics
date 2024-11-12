@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Protocol
 
 import duckdb
-from op_coreutils.logger import structlog, bind_contextvars
+from op_coreutils.logger import structlog, bound_contextvars
 
 from .querybuilder import TemplatedSQLQuery, RenderedSQLQuery
 from .types import NamedRelations
@@ -76,20 +76,19 @@ def register_model(
 ):
     def decorator(func):
         model_name = func.__name__
-        bind_contextvars(model=model_name)
+        with bound_contextvars(model=model_name):
+            rendered_queries = {}
+            for q in query_templates or []:
+                rendered = q.render()
+                rendered_queries[rendered.name] = rendered
 
-        rendered_queries = {}
-        for q in query_templates or []:
-            rendered = q.render()
-            rendered_queries[rendered.name] = rendered
-
-        REGISTERED_INTERMEDIATE_MODELS[model_name] = PythonModel(
-            name=model_name,
-            input_datasets=input_datasets,
-            expected_output_datasets=expected_outputs,
-            rendered_queries=rendered_queries,
-            model_func=func,
-        )
+            REGISTERED_INTERMEDIATE_MODELS[model_name] = PythonModel(
+                name=model_name,
+                input_datasets=input_datasets,
+                expected_output_datasets=expected_outputs,
+                rendered_queries=rendered_queries,
+                model_func=func,
+            )
         return func
 
     return decorator

@@ -1,5 +1,5 @@
 from op_coreutils.duckdb_inmem import init_client
-from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog
+from op_coreutils.logger import bind_contextvars, clear_contextvars, structlog, bound_contextvars
 from op_coreutils.partitioned import DataLocation, OutputData
 
 from .construct import construct_tasks
@@ -57,7 +57,7 @@ def compute_intermediate(
         if task.data_writer.is_complete and not force:
             continue
         if force:
-            log.info("Force flag detected. Forcing execution.")
+            log.info("forced execution despite complete marker")
             task.data_writer.force = True
 
         executor(task)
@@ -75,24 +75,27 @@ def executor(task: IntermediateModelsTask) -> None:
         im_model = REGISTERED_INTERMEDIATE_MODELS[model_name]
 
         with PythonModelExecutor(im_model, client, task.data_reader) as m:
-            model_results = m.execute()
+            with bound_contextvars(model=model_name):
+                log.info("running model")
+                model_results = m.execute()
 
-            produced_datasets = set(model_results.keys())
-            if produced_datasets != set(im_model.expected_output_datasets):
-                raise RuntimeError(
-                    f"model {model_name!r} produced unexpected datasets: {produced_datasets}"
-                )
-
-            for result_name, rel in model_results.items():
-                for location in task.data_writer.write_to:
-                    task.data_writer.write(
-                        location=location,
-                        output_data=OutputData(
-                            dataframe=rel.pl(),
-                            dataset_name=f"{model_name}/{result_name}",
-                            default_partition=None,
-                        ),
+                produced_datasets = set(model_results.keys())
+                if produced_datasets != set(im_model.expected_output_datasets):
+                    raise RuntimeError(
+                        f"model {model_name!r} produced unexpected datasets: {produced_datasets}"
                     )
+
+                for result_name, rel in model_results.items():
+                    for location in task.data_writer.write_to:
+                        log.info("writing model", result=result_name, location=location)
+                        task.data_writer.write(
+                            location=location,
+                            output_data=OutputData(
+                                dataframe=rel.pl(),
+                                dataset_name=f"{model_name}/{result_name}",
+                                default_partition=None,
+                            ),
+                        )
 
 
 def checker(task: IntermediateModelsTask) -> None:
