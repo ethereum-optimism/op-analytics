@@ -10,7 +10,7 @@ from op_coreutils.logger import bind_contextvars, structlog
 from op_coreutils.time import surrounding_dates
 
 from .location import DataLocation
-from .marker import markers_for_dates
+from .dataaccess import markers_for_dates
 
 log = structlog.get_logger()
 

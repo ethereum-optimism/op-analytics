@@ -13,7 +13,8 @@ from op_coreutils.storage.gcs_parquet import (
 
 from .breakout import breakout_partitions
 from .location import DataLocation
-from .marker import MARKERS_DB, marker_exists, Marker
+from .dataaccess import MARKERS_DB, marker_exists
+from .marker import Marker
 from .output import OutputData, ExpectedOutput, OutputPartMeta
 
 log = structlog.get_logger()

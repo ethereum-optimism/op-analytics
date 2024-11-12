@@ -2,7 +2,8 @@ import datetime
 import pyarrow as pa
 
 from op_coreutils.partitioned.location import DataLocation
-from op_coreutils.partitioned.marker import Marker, marker_exists, markers_for_dates
+from op_coreutils.partitioned.dataaccess import marker_exists, markers_for_dates
+from op_coreutils.partitioned.marker import Marker
 from op_coreutils.partitioned.output import ExpectedOutput, KeyValue, OutputPartMeta
 from op_coreutils.partitioned.writehelper import write_marker
 from op_coreutils.partitioned.types import SinkMarkerPath, SinkOutputRootPath
