@@ -8,7 +8,7 @@ from op_coreutils.logger import structlog
 from .breakout import breakout_partitions
 from .dataaccess import init_data_access
 from .location import DataLocation
-from .output import OutputData, ExpectedOutput, OutputPartMeta
+from .output import ExpectedOutput, OutputData, OutputPartMeta
 
 log = structlog.get_logger()
 

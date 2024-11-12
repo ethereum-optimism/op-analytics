@@ -14,29 +14,25 @@ from threading import Lock
 
 import polars as pl
 
-from op_coreutils.path import repo_path
-from op_coreutils.env.aware import OPLabsEnvironment, current_environment
 from op_coreutils import clickhouse, duckdb_local
-
-from .location import DataLocation, MarkersLocation, marker_location
-from .output import OutputPartMeta, ExpectedOutput
-from .types import SinkMarkerPath
-
-
+from op_coreutils.env.aware import OPLabsEnvironment, current_environment
+from op_coreutils.path import repo_path
 from op_coreutils.storage.gcs_parquet import (
     gcs_upload_parquet,
     local_upload_parquet,
 )
 
+from .location import DataLocation, MarkersLocation, marker_location
 from .marker import Marker
-
+from .output import ExpectedOutput, OutputPartMeta
+from .types import SinkMarkerPath
 
 _CLIENT = None
 
 _INIT_LOCK = Lock()
 
 
-def init_data_access():
+def init_data_access() -> "PartitionedDataAccess":
     global _CLIENT
 
     with _INIT_LOCK:

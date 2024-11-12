@@ -19,6 +19,7 @@ def all_outputs_complete(
     of the data sinks.
     """
     client = init_data_access()
+
     result = True
     for location in sinks:
         complete = []
