@@ -13,10 +13,15 @@ from datetime import date
 import polars as pl
 
 from op_coreutils import clickhouse, duckdb_local
+from op_coreutils.storage.gcs_parquet import (
+    gcs_upload_parquet,
+    local_upload_parquet,
+)
 
 from .location import DataLocation, MarkersLocation, marker_location
+from .marker import Marker
+from .output import ExpectedOutput, OutputPartMeta
 from .types import SinkMarkerPath
-
 
 MARKERS_DB = "etl_monitor"
 
@@ -26,6 +31,59 @@ def init_data_access():
 
 
 class Access:
+    def write_single_part(
+        self,
+        location: DataLocation,
+        dataframe: pl.DataFrame,
+        full_path: str,
+    ):
+        """Write a single parquet output file for a partitioned output."""
+        if location == DataLocation.GCS:
+            gcs_upload_parquet(full_path, dataframe)
+            return
+
+        elif location == DataLocation.LOCAL:
+            local_upload_parquet(
+                path=location.with_prefix(full_path),
+                df=dataframe,
+            )
+
+            return
+
+        raise NotImplementedError()
+
+    def write_marker(
+        self,
+        data_location: DataLocation,
+        expected_output: ExpectedOutput,
+        written_parts: list[OutputPartMeta],
+        markers_table: str,
+    ):
+        """Write marker.
+
+        Having markers allows us to quickly check completion and perform analytics
+        over previous iterations of the ingestion process.
+
+        Markers for GCS output are written to Clickhouse.
+        Markers for local output are written to DuckDB
+
+        """
+        marker = Marker(
+            expected_output=expected_output,
+            written_parts=written_parts,
+        )
+        arrow_table = marker.to_pyarrow_table()
+
+        if data_location in (DataLocation.GCS, DataLocation.BIGQUERY):
+            clickhouse.insert_arrow("OPLABS", MARKERS_DB, markers_table, arrow_table)
+            return
+
+        elif data_location == DataLocation.LOCAL:
+            duckdb_local.insert_arrow(MARKERS_DB, markers_table, arrow_table)
+            return
+
+        raise NotImplementedError()
+
     def marker_exists(
         self,
         data_location: DataLocation,

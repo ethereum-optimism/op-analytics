@@ -61,7 +61,7 @@ def test_parquet_writer():
         force=False,
     )
 
-    with patch("op_coreutils.partitioned.writehelper.local_upload_parquet") as mock:
+    with patch("op_coreutils.partitioned.dataaccess.local_upload_parquet") as mock:
         manager.write(
             OutputData(
                 dataframe=df,
