@@ -5,7 +5,6 @@ from op_coreutils.partitioned.location import DataLocation
 from op_coreutils.partitioned.dataaccess import init_data_access
 from op_coreutils.partitioned.marker import Marker
 from op_coreutils.partitioned.output import ExpectedOutput, KeyValue, OutputPartMeta
-from op_coreutils.partitioned.writehelper import write_marker
 from op_coreutils.partitioned.types import SinkMarkerPath, SinkOutputRootPath
 from op_coreutils.duckdb_local import run_query
 from op_coreutils.time import now
@@ -61,7 +60,7 @@ def test_marker():
     )
     assert not initially_exists
 
-    write_marker(
+    client.write_marker(
         data_location=DataLocation.LOCAL,
         expected_output=marker.expected_output,
         written_parts=marker.written_parts,
