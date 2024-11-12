@@ -10,6 +10,7 @@ class DataLocation(str, Enum):
     GCS = "GCS"
     LOCAL = "LOCAL"
     BIGQUERY = "BIGQUERY"
+    BIGQUERY_LOCAL_MARKERS = "BIGQUERY_LOCAL_MARKERS"
 
     def with_prefix(self, path: str) -> str:
         if self == DataLocation.GCS:
@@ -30,6 +31,10 @@ class DataLocation(str, Enum):
             return os.path.abspath(repo_path(self.with_prefix(path)))
 
         raise NotImplementedError()
+
+    def ensure_biguqery(self):
+        if self not in (DataLocation.BIGQUERY, DataLocation.BIGQUERY_LOCAL_MARKERS):
+            raise ValueError(f"invalid location for bigquery load: {self}")
 
 
 class MarkersLocation(str, Enum):
@@ -53,5 +58,8 @@ def marker_location(data_location: DataLocation) -> MarkersLocation:
 
     if data_location == DataLocation.BIGQUERY:
         return MarkersLocation.OPLABS_CLICKHOUSE
+
+    if data_location == DataLocation.BIGQUERY_LOCAL_MARKERS:
+        return MarkersLocation.DUCKDB_LOCAL
 
     raise NotImplementedError(f"invalid data location: {data_location}")

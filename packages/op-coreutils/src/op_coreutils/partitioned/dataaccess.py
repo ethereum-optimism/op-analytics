@@ -57,7 +57,7 @@ def init_data_access() -> "PartitionedDataAccess":
                     query = fobj.read().replace(database, markers_db)
                     duckdb_local.run_query(query)
 
-            _CLIENT = PartitionedDataAccess(markers_db)
+            _CLIENT = PartitionedDataAccess(markers_db=markers_db)
 
     if _CLIENT is None:
         raise RuntimeError("Partitioned data access client was not properly initialized.")
@@ -124,7 +124,7 @@ class PartitionedDataAccess:
             clickhouse.insert_arrow("OPLABS", self.markers_db, markers_table, arrow_table)
             return
 
-        elif data_location == DataLocation.LOCAL:
+        elif data_location in (DataLocation.LOCAL, DataLocation.BIGQUERY_LOCAL_MARKERS):
             duckdb_local.insert_arrow(self.markers_db, markers_table, arrow_table)
             return
 
@@ -205,10 +205,10 @@ class PartitionedDataAccess:
         projections: list[str],
         filters=dict[str, MarkerFilter],
     ) -> pl.DataFrame:
-        """Query completion markers for a list of dates and chains.
+        """Query completion markers.
 
-        Returns a dataframe with the markers and all of the parquet output paths
-        associated with them.
+        Returns a dataframe with the markers that match the provided filters
+        including only the columns specified in projections.
         """
         store = marker_location(data_location)
 

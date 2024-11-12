@@ -136,10 +136,10 @@ def test_marker():
     )
 
     markers_df = client.markers_for_raw_ingestion(
-        DataLocation.LOCAL,
+        data_location=DataLocation.LOCAL,
+        markers_table=MARKERS_TABLE,
         datevals=[datetime.date(2024, 10, 25)],
         chains=["DUMMYCHAIN"],
-        markers_table=MARKERS_TABLE,
         dataset_names=["transactions"],
     )
     assert len(markers_df) == 0

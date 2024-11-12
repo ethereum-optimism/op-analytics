@@ -67,10 +67,14 @@ def construct_input_batches(
     markers_table: str,
     dataset_names: list[str],
 ) -> list[DataReader]:
-    """Construct a list of InputData for the given parameters.
+    """Construct a list of DataReader for the given parameters.
 
     The parameters specify a set of chains, dates, and datasets that we are
     interested in processing.
+
+    The DataReader will have knowledge of the parquet uris that comprise the
+    input data. It can be used to load the data onto BigQuery or to run an
+    intermediate model over the date.
     """
     client = init_data_access()
 
@@ -89,6 +93,7 @@ def construct_input_batches(
         dataset_names=dataset_names,
     )
 
+    skipped = 0
     inputs = []
     for dateval in date_range.dates:
         for chain in chains:
@@ -118,13 +123,15 @@ def construct_input_batches(
             )
 
             if inputs_ready:
-                log.info(f"{dateval} data input is ready.")
+                log.info("data input is ready.")
+                inputs.append(obj)
             else:
-                log.warning(f"{dateval} data input is not ready.")
+                log.warning("data input is not ready. skipping")
+                skipped += 1
 
-            inputs.append(obj)
-
-    log.info(f"Prepared {len(inputs)} input batches.")
+    log.info(
+        f"Prepared {len(inputs)} input batches. Skippped {skipped} batches where input was not ready."
+    )
     return inputs
 
 
