@@ -2,7 +2,7 @@ from op_coreutils.logger import structlog
 
 from .location import DataLocation
 from .types import SinkMarkerPath
-from .dataaccess import marker_exists
+from .dataaccess import init_data_access
 
 log = structlog.get_logger()
 
@@ -18,6 +18,8 @@ def all_outputs_complete(
     markers that we are looking for. It checks that those markers are present in all
     of the data sinks.
     """
+    client = init_data_access()
+
     result = True
     for location in sinks:
         complete = []
@@ -25,7 +27,7 @@ def all_outputs_complete(
 
         # TODO: Make a single query for all the markers.
         for marker in markers:
-            if marker_exists(location, marker, markers_table):
+            if client.marker_exists(location, marker, markers_table):
                 complete.append(marker)
             else:
                 incomplete.append(marker)

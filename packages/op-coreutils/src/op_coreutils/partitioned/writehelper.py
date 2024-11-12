@@ -13,7 +13,7 @@ from op_coreutils.storage.gcs_parquet import (
 
 from .breakout import breakout_partitions
 from .location import DataLocation
-from .dataaccess import MARKERS_DB, marker_exists
+from .dataaccess import MARKERS_DB, init_data_access
 from .marker import Marker
 from .output import OutputData, ExpectedOutput, OutputPartMeta
 
@@ -37,7 +37,9 @@ class WriteManager(EnforceOverrides):
         raise NotImplementedError()
 
     def write(self, output_data: Any):
-        is_complete = marker_exists(
+        client = init_data_access()
+
+        is_complete = client.marker_exists(
             data_location=self.location,
             marker_path=self.expected_output.marker_path,
             markers_table=self.markers_table,
