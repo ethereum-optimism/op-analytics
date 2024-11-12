@@ -10,7 +10,7 @@ from op_coreutils.logger import bind_contextvars, structlog
 from op_coreutils.time import surrounding_dates
 
 from .location import DataLocation
-from .marker import markers_for_dates
+from .dataaccess import init_data_access
 
 log = structlog.get_logger()
 
@@ -72,6 +72,7 @@ def construct_input_batches(
     The parameters specify a set of chains, dates, and datasets that we are
     interested in processing.
     """
+    client = init_data_access()
 
     date_range = DateRange.from_spec(range_spec)
 
@@ -80,14 +81,15 @@ def construct_input_batches(
     # We use the +/- 1 day padded dates so that we can use the query results to
     # check if there is data on boths ends. This allows us to confirm that the
     # data is ready to be processed.
-    markers_df = markers_for_dates(
+    markers_df = client.markers_for_raw_ingestion(
         data_location=read_from,
+        markers_table=markers_table,
         datevals=date_range.padded_dates(),
         chains=chains,
-        markers_table=markers_table,
         dataset_names=dataset_names,
     )
 
+    skipped = 0
     inputs = []
     for dateval in date_range.dates:
         for chain in chains:
@@ -117,13 +119,15 @@ def construct_input_batches(
             )
 
             if inputs_ready:
-                log.info(f"{dateval} data input is ready.")
+                log.info("data input is ready.")
+                inputs.append(obj)
             else:
-                log.warning(f"{dateval} data input is not ready.")
+                log.warning("data input is not ready. skipping")
+                skipped += 1
 
-            inputs.append(obj)
-
-    log.info(f"Prepared {len(inputs)} input batches.")
+    log.info(
+        f"Prepared {len(inputs)} input batches. Skippped {skipped} batches where input was not ready."
+    )
     return inputs
 
 

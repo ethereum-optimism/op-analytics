@@ -1,10 +1,10 @@
 import datetime
 import pyarrow as pa
 
+from op_coreutils.partitioned.dataaccess import init_data_access
 from op_coreutils.partitioned.location import DataLocation
-from op_coreutils.partitioned.marker import Marker, marker_exists, markers_for_dates
+from op_coreutils.partitioned.marker import Marker
 from op_coreutils.partitioned.output import ExpectedOutput, KeyValue, OutputPartMeta
-from op_coreutils.partitioned.writehelper import write_marker
 from op_coreutils.partitioned.types import SinkMarkerPath, SinkOutputRootPath
 from op_coreutils.duckdb_local import run_query
 from op_coreutils.time import now
@@ -13,7 +13,7 @@ MARKERS_TABLE = "raw_onchain_ingestion_markers"
 
 
 def test_marker():
-    run_query(f"DELETE FROM etl_monitor.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'")
+    run_query(f"DELETE FROM etl_monitor_dev.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'")
 
     marker = Marker(
         written_parts=[
@@ -51,14 +51,17 @@ def test_marker():
         ),
     )
 
-    initially_exists = marker_exists(
+    # OK to use the real data access client since we are using DUMMYCHAIN values.
+    client = init_data_access()
+
+    initially_exists = client.marker_exists(
         data_location=DataLocation.LOCAL,
         marker_path=marker.marker_path,
         markers_table=MARKERS_TABLE,
     )
     assert not initially_exists
 
-    write_marker(
+    client.write_marker(
         data_location=DataLocation.LOCAL,
         expected_output=marker.expected_output,
         written_parts=marker.written_parts,
@@ -67,7 +70,7 @@ def test_marker():
 
     result = (
         run_query(
-            "SELECT * FROM etl_monitor.raw_onchain_ingestion_markers WHERE chain = 'DUMMYCHAIN'"
+            "SELECT * FROM etl_monitor_dev.raw_onchain_ingestion_markers WHERE chain = 'DUMMYCHAIN'"
         )
         .pl()
         .to_dicts()
@@ -112,18 +115,18 @@ def test_marker():
         },
     ]
 
-    exists = marker_exists(
+    exists = client.marker_exists(
         data_location=DataLocation.LOCAL,
         marker_path=marker.marker_path,
         markers_table=MARKERS_TABLE,
     )
     assert exists
 
-    markers_df = markers_for_dates(
-        DataLocation.LOCAL,
+    markers_df = client.markers_for_raw_ingestion(
+        data_location=DataLocation.LOCAL,
+        markers_table=MARKERS_TABLE,
         datevals=[datetime.date(2024, 10, 25)],
         chains=["DUMMYCHAIN"],
-        markers_table=MARKERS_TABLE,
         dataset_names=["blocks"],
     )
     assert len(markers_df) == 1
@@ -133,11 +136,11 @@ def test_marker():
         == "ingestion/blocks_v1/chain=DUMMYCHAIN/dt=2024-10-25/000011540000.parquet"
     )
 
-    markers_df = markers_for_dates(
-        DataLocation.LOCAL,
+    markers_df = client.markers_for_raw_ingestion(
+        data_location=DataLocation.LOCAL,
+        markers_table=MARKERS_TABLE,
         datevals=[datetime.date(2024, 10, 25)],
         chains=["DUMMYCHAIN"],
-        markers_table=MARKERS_TABLE,
         dataset_names=["transactions"],
     )
     assert len(markers_df) == 0
