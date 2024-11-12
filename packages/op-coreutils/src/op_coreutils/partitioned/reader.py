@@ -10,7 +10,7 @@ from op_coreutils.logger import bind_contextvars, structlog
 from op_coreutils.time import surrounding_dates
 
 from .location import DataLocation
-from .dataaccess import markers_for_dates
+from .dataaccess import init_data_access
 
 log = structlog.get_logger()
 
@@ -72,6 +72,7 @@ def construct_input_batches(
     The parameters specify a set of chains, dates, and datasets that we are
     interested in processing.
     """
+    client = init_data_access()
 
     date_range = DateRange.from_spec(range_spec)
 
@@ -80,7 +81,7 @@ def construct_input_batches(
     # We use the +/- 1 day padded dates so that we can use the query results to
     # check if there is data on boths ends. This allows us to confirm that the
     # data is ready to be processed.
-    markers_df = markers_for_dates(
+    markers_df = client.markers_for_dates(
         data_location=read_from,
         datevals=date_range.padded_dates(),
         chains=chains,
