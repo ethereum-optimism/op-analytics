@@ -83,9 +83,9 @@ def construct_input_batches(
     # data is ready to be processed.
     markers_df = client.markers_for_raw_ingestion(
         data_location=read_from,
+        markers_table=markers_table,
         datevals=date_range.padded_dates(),
         chains=chains,
-        markers_table=markers_table,
         dataset_names=dataset_names,
     )
 

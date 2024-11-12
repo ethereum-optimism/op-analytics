@@ -27,22 +27,20 @@ from .marker import Marker
 from .output import ExpectedOutput, OutputPartMeta
 from .types import SinkMarkerPath
 
-MARKERS_DB = "etl_monitor"
-
 
 _CLIENT = None
 
 _INIT_LOCK = Lock()
 
 
-def init_data_access() -> "Access":
+def init_data_access() -> "PartitionedDataAccess":
     global _CLIENT
 
     with _INIT_LOCK:
         if _CLIENT is None:
             current_env = current_environment()
             if current_env == OPLabsEnvironment.UNITTEST:
-                markers_db = "etl_monitor"
+                markers_db = "etl_monitor_dev"
             else:
                 markers_db = "etl_monitor"
 
@@ -59,7 +57,7 @@ def init_data_access() -> "Access":
                     query = fobj.read().replace(database, markers_db)
                     duckdb_local.run_query(query)
 
-            _CLIENT = Access()
+            _CLIENT = PartitionedDataAccess(markers_db)
 
     if _CLIENT is None:
         raise RuntimeError("Partitioned data access client was not properly initialized.")
@@ -75,7 +73,10 @@ class MarkerFilter:
         return "AND %s in {%s:Array(String)}" % (self.column, param)
 
 
-class Access:
+@dataclass
+class PartitionedDataAccess:
+    markers_db: str
+
     def write_single_part(
         self,
         location: DataLocation,
@@ -120,11 +121,11 @@ class Access:
         arrow_table = marker.to_pyarrow_table()
 
         if data_location in (DataLocation.GCS, DataLocation.BIGQUERY):
-            clickhouse.insert_arrow("OPLABS", MARKERS_DB, markers_table, arrow_table)
+            clickhouse.insert_arrow("OPLABS", self.markers_db, markers_table, arrow_table)
             return
 
         elif data_location == DataLocation.LOCAL:
-            duckdb_local.insert_arrow(MARKERS_DB, markers_table, arrow_table)
+            duckdb_local.insert_arrow(self.markers_db, markers_table, arrow_table)
             return
 
         raise NotImplementedError()
@@ -149,9 +150,9 @@ class Access:
     def markers_for_raw_ingestion(
         self,
         data_location: DataLocation,
+        markers_table: str,
         datevals: list[date],
         chains: list[str],
-        markers_table: str,
         dataset_names: list[str],
     ) -> pl.DataFrame:
         """Query completion markers for a list of dates and chains.
@@ -199,8 +200,8 @@ class Access:
     def markers_for_dates(
         self,
         data_location: DataLocation,
-        datevals: list[date],
         markers_table: str,
+        datevals: list[date],
         projections: list[str],
         filters=dict[str, MarkerFilter],
     ) -> pl.DataFrame:
@@ -233,13 +234,13 @@ class Access:
         where = "marker_path = {search_value:String}"
 
         return clickhouse.run_oplabs_query(
-            query=f"SELECT marker_path FROM {MARKERS_DB}.{markers_table} WHERE {where}",
+            query=f"SELECT marker_path FROM {self.markers_db}.{markers_table} WHERE {where}",
             parameters={"search_value": marker_path},
         )
 
     def _query_one_duckdb(self, marker_path: SinkMarkerPath, markers_table: str):
         return duckdb_local.run_query(
-            query=f"SELECT marker_path FROM {MARKERS_DB}.{markers_table} WHERE marker_path = ?",
+            query=f"SELECT marker_path FROM {self.markers_db}.{markers_table} WHERE marker_path = ?",
             params=[marker_path],
         )
 
@@ -265,7 +266,7 @@ class Access:
             query=f"""
             SELECT
                 {cols}
-            FROM {MARKERS_DB}.{markers_table}
+            FROM {self.markers_db}.{markers_table}
             WHERE {where}
             """,
             parameters=parameters,
@@ -296,7 +297,7 @@ class Access:
             query=f"""
             SELECT
                 {cols}
-            FROM {MARKERS_DB}.{markers_table}
+            FROM {self.markers_db}.{markers_table}
             WHERE {where}
             """,
         )

@@ -6,9 +6,9 @@ from overrides import EnforceOverrides, override
 from op_coreutils.logger import structlog
 
 from .breakout import breakout_partitions
-from .location import DataLocation
 from .dataaccess import init_data_access
-from .output import OutputData, ExpectedOutput, OutputPartMeta
+from .location import DataLocation
+from .output import ExpectedOutput, OutputData, OutputPartMeta
 
 log = structlog.get_logger()
 
