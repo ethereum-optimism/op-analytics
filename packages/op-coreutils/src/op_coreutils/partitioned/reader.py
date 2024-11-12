@@ -81,7 +81,7 @@ def construct_input_batches(
     # We use the +/- 1 day padded dates so that we can use the query results to
     # check if there is data on boths ends. This allows us to confirm that the
     # data is ready to be processed.
-    markers_df = client.markers_for_dates(
+    markers_df = client.markers_for_raw_ingestion(
         data_location=read_from,
         datevals=date_range.padded_dates(),
         chains=chains,
