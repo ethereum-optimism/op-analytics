@@ -4,6 +4,7 @@ from threading import Lock
 import duckdb
 import pyarrow as pa
 
+from op_coreutils.env.aware import OPLabsEnvironment, current_environment
 from op_coreutils.path import repo_path
 from op_coreutils.logger import structlog, human_rows
 
@@ -29,9 +30,32 @@ def init_client():
             os.makedirs(os.path.dirname(path), exist_ok=True)
             _CLIENT = duckdb.connect(path)
 
+            current_env = current_environment()
+            if current_env == OPLabsEnvironment.UNITTEST:
+                markers_db = "etl_monitor_dev"
+            else:
+                markers_db = "etl_monitor"
+
+            create_local_tables(_CLIENT, markers_db)
+
     if _CLIENT is None:
         raise RuntimeError("DuckDB client was not properly initialized.")
     return _CLIENT
+
+
+def create_local_tables(client, markers_db):
+    # Create the schemas we need.
+    client.sql(f"CREATE SCHEMA IF NOT EXISTS {markers_db}")
+
+    # Create the tables we need.
+    for database, table in [
+        ("etl_monitor", "raw_onchain_ingestion_markers"),
+        ("etl_monitor", "intermediate_model_markers"),
+        ("etl_monitor", "superchain_raw_bigquery_markers"),
+    ]:
+        with open(repo_path(f"ddl/duckdb_local/{database}.{table}.sql"), "r") as fobj:
+            query = fobj.read().replace(database, markers_db)
+            client.sql(query)
 
 
 def run_query(query: str, params: object = None):
