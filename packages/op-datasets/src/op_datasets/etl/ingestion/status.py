@@ -90,7 +90,7 @@ def is_safe(
         log.warning(
             "Batch is not safe to process: provider may be significantly lagging behind",
             provider_max_ts=chain_max.isoformat(),
-            current_ts=requested_time.isoformat(),
+            requested_time=requested_time.isoformat(),
             diff=f"{ts_diff_hours}hrs",
         )
         return False
