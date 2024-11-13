@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from op_coreutils import clickhouse
 from op_coreutils.logger import structlog
-from op_coreutils.time import datetime_fromepoch, now_seconds
+from op_coreutils.time import datetime_fromepoch, now_trunc
 
 from .batches import BlockBatch
 from .sources import RawOnchainDataProvider
@@ -78,7 +78,10 @@ def is_safe(
         return False
 
     chain_max = datetime_fromepoch(chain_max_ts)
-    requested_time = max_requested_timestamp or now_seconds()
+    if max_requested_timestamp is not None:
+        requested_time = datetime_fromepoch(max_requested_timestamp)
+    else:
+        requested_time = now_trunc()
 
     ts_diff = requested_time - chain_max
     ts_diff_hours = round(ts_diff.total_seconds() / 3600.0, 1)

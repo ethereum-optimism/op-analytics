@@ -7,20 +7,20 @@ def now() -> datetime:
     return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
-def now_seconds() -> datetime:
-    """Returns a naive datetime object with the current UTC timestamp in seconds resolution."""
+def now_trunc() -> datetime:
+    """Returns a naive datetime object with the current UTC timestamp truncated to the nearest second."""
 
     return now().replace(microsecond=0)
 
 
 def now_dt() -> str:
     """Return the date value in YYYY-MM-DD format for the current time."""
-    return now_seconds().strftime("%Y-%m-%d")
+    return now_trunc().strftime("%Y-%m-%d")
 
 
 def now_date() -> date:
     """Return the current date."""
-    return now_seconds().date()
+    return now_trunc().date()
 
 
 def dt_fromepoch(epoch: int) -> str:

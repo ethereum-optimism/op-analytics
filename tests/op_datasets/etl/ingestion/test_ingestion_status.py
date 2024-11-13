@@ -5,7 +5,7 @@ from op_datasets.etl.ingestion.batches import BlockBatch
 from op_datasets.etl.ingestion.status import is_safe
 
 
-@patch("op_datasets.etl.ingestion.status.now_seconds", lambda: datetime(2024, 10, 24, 19, 44))
+@patch("op_datasets.etl.ingestion.status.now_trunc", lambda: datetime(2024, 10, 24, 19, 44))
 def test_is_safe():
     batch = BlockBatch(chain="fraxtal", min=11320000, max=11340000)
 
@@ -21,7 +21,7 @@ def test_is_safe():
     assert ans
 
 
-@patch("op_datasets.etl.ingestion.status.now_seconds", lambda: datetime(2024, 10, 24, 19, 44))
+@patch("op_datasets.etl.ingestion.status.now_trunc", lambda: datetime(2024, 10, 24, 19, 44))
 def test_is_not_safe_for_number():
     batch = BlockBatch(chain="fraxtal", min=0, max=1100)
 
@@ -37,7 +37,7 @@ def test_is_not_safe_for_number():
     assert not ans
 
 
-@patch("op_datasets.etl.ingestion.status.now_seconds", lambda: datetime(2024, 10, 24, 23, 44))
+@patch("op_datasets.etl.ingestion.status.now_trunc", lambda: datetime(2024, 10, 24, 23, 44))
 def test_is_not_safe_for_provider():
     batch = BlockBatch(chain="fraxtal", min=11320000, max=11340000)
 
