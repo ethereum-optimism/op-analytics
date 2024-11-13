@@ -157,7 +157,12 @@ def test_expected_markers():
 
     batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
 
-    task = IngestionTask.new(batches[0], read_from=RawOnchainDataProvider.GOLDSKY, write_to=[])
+    task = IngestionTask.new(
+        max_requested_timestamp=None,
+        block_batch=batches[0],
+        read_from=RawOnchainDataProvider.GOLDSKY,
+        write_to=[],
+    )
 
     actual = [
         dict(

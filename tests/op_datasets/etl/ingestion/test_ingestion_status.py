@@ -13,6 +13,7 @@ def test_is_safe():
     chain_max_ts = 1729797569
 
     ans = is_safe(
+        max_requested_timestamp=None,
         block_batch=batch,
         chain_max_block=chain_max_block,
         chain_max_ts=chain_max_ts,
@@ -28,6 +29,7 @@ def test_is_not_safe_for_number():
     chain_max_ts = 1729797569
 
     ans = is_safe(
+        max_requested_timestamp=None,
         block_batch=batch,
         chain_max_block=chain_max_block,
         chain_max_ts=chain_max_ts,
@@ -43,6 +45,7 @@ def test_is_not_safe_for_provider():
     chain_max_ts = 1729797569
 
     ans = is_safe(
+        max_requested_timestamp=None,
         block_batch=batch,
         chain_max_block=chain_max_block,
         chain_max_ts=chain_max_ts,

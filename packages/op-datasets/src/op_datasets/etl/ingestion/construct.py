@@ -26,15 +26,17 @@ def construct_tasks(
         blocks_by_chain = {}
         for chain in chains:
             blocks_by_chain[chain] = block_range
+        max_requested_timestamp = None
 
     except NotImplementedError:
         # Ensure range_spec is a valid DateRange.
-        DateRange.from_spec(range_spec)
+        date_range = DateRange.from_spec(range_spec)
 
         def blocks_for_chain(ch):
             return block_range_for_dates(chain=ch, date_spec=range_spec)
 
         blocks_by_chain = run_concurrently(blocks_for_chain, targets=chains, max_workers=4)
+        max_requested_timestamp = date_range.max_ts
 
     # Batches to be ingested for each chain.
     chain_batches: dict[str, list[BlockBatch]] = {}
@@ -57,6 +59,7 @@ def construct_tasks(
         for batch in batches:
             all_tasks.append(
                 IngestionTask.new(
+                    max_requested_timestamp=max_requested_timestamp,
                     block_batch=batch,
                     read_from=read_from,
                     write_to=write_to,
