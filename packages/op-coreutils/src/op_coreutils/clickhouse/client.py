@@ -82,9 +82,13 @@ def run_goldsky_query(
 
 
 def retry_logger(exc: Exception) -> bool:
-    log.error(f"Retrying after encoutering exception: {exc}")
+    global _OPLABS_CLIENT
 
-    # TODO: Reinitialize the client on failure.
+    log.error(f"Encountered exception: {exc}")
+
+    _OPLABS_CLIENT = None
+    log.warning("Attempting to reconnect OPLABS client.")
+    init_client("OPLABS")
 
     return True
 

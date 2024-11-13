@@ -16,7 +16,6 @@ import polars as pl
 
 from op_coreutils import clickhouse, duckdb_local
 from op_coreutils.env.aware import OPLabsEnvironment, current_environment
-from op_coreutils.path import repo_path
 from op_coreutils.storage.gcs_parquet import (
     gcs_upload_parquet,
     local_upload_parquet,
@@ -43,19 +42,6 @@ def init_data_access() -> "PartitionedDataAccess":
                 markers_db = "etl_monitor_dev"
             else:
                 markers_db = "etl_monitor"
-
-            # Create the schemas we need.
-            duckdb_local.run_query(f"CREATE SCHEMA IF NOT EXISTS {markers_db}")
-
-            # Create the tables we need.
-            for database, table in [
-                ("etl_monitor", "raw_onchain_ingestion_markers"),
-                ("etl_monitor", "intermediate_model_markers"),
-                ("etl_monitor", "superchain_raw_bigquery_markers"),
-            ]:
-                with open(repo_path(f"ddl/duckdb_local/{database}.{table}.sql"), "r") as fobj:
-                    query = fobj.read().replace(database, markers_db)
-                    duckdb_local.run_query(query)
 
             _CLIENT = PartitionedDataAccess(markers_db=markers_db)
 
