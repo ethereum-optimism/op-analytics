@@ -30,6 +30,10 @@ class IngestionTask:
 
     This object is mutated during the ingestion process."""
 
+    # If the task was constructed with a DateRange specification we store
+    # the max timestamp of the range.
+    max_requested_timestamp: int | None
+
     # Batch
     block_batch: BlockBatch
 
@@ -64,6 +68,7 @@ class IngestionTask:
     @classmethod
     def new(
         cls,
+        max_requested_timestamp: int | None,
         block_batch: BlockBatch,
         read_from: RawOnchainDataProvider,
         write_to: list[DataLocation],
@@ -96,6 +101,7 @@ class IngestionTask:
             )
 
         return cls(
+            max_requested_timestamp=max_requested_timestamp,
             block_batch=block_batch,
             input_datasets={},
             input_dataframes={},

@@ -35,9 +35,6 @@ def all_outputs_complete(
         log.info(f"{len(complete)} complete, {len(incomplete)} incomplete on sink={location.name}")
 
         if incomplete:
-            log.info(f"Showing the first 5 incomplete locations at {location.name}")
-            for marker_location in sorted(incomplete)[:5]:
-                log.info(f"{location.name} is incomplete: {marker_location!r}")
             result = False
 
     return result

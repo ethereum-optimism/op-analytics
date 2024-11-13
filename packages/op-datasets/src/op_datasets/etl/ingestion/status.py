@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from op_coreutils import clickhouse
 from op_coreutils.logger import structlog
-from op_coreutils.time import datetime_fromepoch, now_seconds
+from op_coreutils.time import datetime_fromepoch, now_trunc
 
 from .batches import BlockBatch
 from .sources import RawOnchainDataProvider
@@ -10,7 +10,11 @@ from .sources import RawOnchainDataProvider
 log = structlog.get_logger()
 
 
-def all_inputs_ready(provider: RawOnchainDataProvider, block_batch: BlockBatch) -> bool:
+def all_inputs_ready(
+    provider: RawOnchainDataProvider,
+    block_batch: BlockBatch,
+    max_requested_timestamp: int | None,
+) -> bool:
     """Very that a block batch is safe to ingest.
 
     We don't want to ingest data that is too close to the tip of the chain
@@ -37,6 +41,7 @@ def all_inputs_ready(provider: RawOnchainDataProvider, block_batch: BlockBatch) 
     max_block: int = row["block_max"]
 
     return is_safe(
+        max_requested_timestamp=max_requested_timestamp,
         block_batch=block_batch,
         chain_max_block=max_block,
         chain_max_ts=max_ts,
@@ -48,7 +53,12 @@ SAFE_BLOCK_LAG = 1000
 SAFE_PROVIDER_SLA = timedelta(hours=3)
 
 
-def is_safe(block_batch: BlockBatch, chain_max_block: int, chain_max_ts: int):
+def is_safe(
+    max_requested_timestamp: int | None,
+    block_batch: BlockBatch,
+    chain_max_block: int,
+    chain_max_ts: int,
+):
     """Check if the block batch is safe to process.
 
     Reasons for not being safe:
@@ -68,15 +78,19 @@ def is_safe(block_batch: BlockBatch, chain_max_block: int, chain_max_ts: int):
         return False
 
     chain_max = datetime_fromepoch(chain_max_ts)
-    current_time = now_seconds()
-    ts_diff = current_time - chain_max
+    if max_requested_timestamp is not None:
+        requested_time = datetime_fromepoch(max_requested_timestamp)
+    else:
+        requested_time = now_trunc()
+
+    ts_diff = requested_time - chain_max
     ts_diff_hours = round(ts_diff.total_seconds() / 3600.0, 1)
 
     if ts_diff > SAFE_PROVIDER_SLA:
         log.warning(
             "Batch is not safe to process: provider may be significantly lagging behind",
             provider_max_ts=chain_max.isoformat(),
-            current_ts=current_time.isoformat(),
+            current_ts=requested_time.isoformat(),
             diff=f"{ts_diff_hours}hrs",
         )
         return False

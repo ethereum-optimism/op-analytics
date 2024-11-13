@@ -184,6 +184,10 @@ def checker(task: IngestionTask):
         task.inputs_ready = True
         return
 
-    if all_inputs_ready(task.read_from, task.block_batch):
+    if all_inputs_ready(
+        provider=task.read_from,
+        block_batch=task.block_batch,
+        max_requested_timestamp=task.max_requested_timestamp,
+    ):
         task.inputs_ready = True
         return
