@@ -22,7 +22,6 @@ CHAIN_METADATA_TABLE = "defillama_chains_metadata"
 HISTORICAL_CHAIN_TVL_TABLE = "defillama_daily_historical_chain_tvl"
 TVL_TABLE_LAST_N_DAYS = 100_000  # upsert only the last 7 days of tvl records fetched from the api
 
-
 CHAINS_COLUMN_MAPPING = {
     "name": "chain",
     "chainId": "chain_id",

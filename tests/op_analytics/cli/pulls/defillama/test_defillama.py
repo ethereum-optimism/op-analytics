@@ -4,7 +4,7 @@ import pytest
 from op_coreutils.testutils.inputdata import InputTestData
 
 
-from op_analytics.cli.subcommands.pulls import defillama
+from op_analytics.cli.subcommands.pulls.defillama import defillama_stablecoins
 
 TESTDATA = InputTestData.at(__file__)
 
@@ -90,7 +90,7 @@ another_sample_breakdown_data = {
 
 def test_process_breakdown_stables():
     # Test with valid data
-    metadata, balances = defillama.single_stablecoin_balances(sample_breakdown_data)
+    metadata, balances = defillama_stablecoins.single_stablecoin_balances(sample_breakdown_data)
     assert len(balances) == 2  # Two data points within default 30 days
     assert metadata["id"] == "sample-stablecoin"
     assert metadata["name"] == "Sample Stablecoin"
@@ -105,7 +105,7 @@ def test_process_breakdown_stables():
     incomplete_data = sample_breakdown_data.copy()
     del incomplete_data["pegType"]
     with pytest.raises(KeyError) as excinfo:
-        defillama.single_stablecoin_balances(incomplete_data)
+        defillama_stablecoins.single_stablecoin_balances(incomplete_data)
     assert excinfo.value.args == ("pegType",)
 
 
@@ -124,7 +124,7 @@ def test_pull_stables_single_stablecoin(
     ]
 
     # Call the function under test
-    result = defillama.pull_stablecoins(symbols=["SSC"])
+    result = defillama_stablecoins.pull_stablecoins(symbols=["SSC"])
 
     # Assertions
     assert len(result.metadata_df) == 1  # Only 'sample-stablecoin'
@@ -163,7 +163,7 @@ def test_pull_stables_multiple_stablecoins(
     ]
 
     # Call the function under test without specifying stablecoin_ids (process all)
-    result = defillama.pull_stablecoins()
+    result = defillama_stablecoins.pull_stablecoins()
 
     # Assertions
     assert len(result.metadata_df) == 2  # Both stablecoins
@@ -194,7 +194,7 @@ def test_pull_stables_no_valid_ids():
     with patch("op_analytics.cli.subcommands.pulls.defillama.get_data") as mock_get_data:
         mock_get_data.return_value = sample_summary
         with pytest.raises(ValueError) as excinfo:
-            defillama.pull_stablecoins(symbols=["NOEXIST"])
+            defillama_stablecoins.pull_stablecoins(symbols=["NOEXIST"])
         assert "No valid stablecoin IDs provided." in str(excinfo.value)
 
 
@@ -203,7 +203,7 @@ def test_pull_stables_missing_pegged_assets():
     with patch("op_analytics.cli.subcommands.pulls.defillama.get_data") as mock_get_data:
         mock_get_data.return_value = {}
         with pytest.raises(KeyError) as excinfo:
-            defillama.pull_stablecoins()
+            defillama_stablecoins.pull_stablecoins()
         assert excinfo.value.args == ("peggedAssets",)
 
 
@@ -211,7 +211,7 @@ def test_process_breakdown_stables_empty_balances():
     # Test process_breakdown_stables with empty 'chainBalances' (should return empty DataFrame)
     data_with_empty_balances = sample_breakdown_data.copy()
     data_with_empty_balances["chainBalances"] = {}
-    metadata, balances = defillama.single_stablecoin_balances(data_with_empty_balances)
+    metadata, balances = defillama_stablecoins.single_stablecoin_balances(data_with_empty_balances)
     assert not balances
     assert metadata["id"] == "sample-stablecoin"
 
@@ -221,7 +221,7 @@ def test_process_breakdown_stables_missing_mandatory_metadata():
     incomplete_data = sample_breakdown_data.copy()
     del incomplete_data["name"]  # Remove a mandatory field
     with pytest.raises(KeyError) as excinfo:
-        defillama.single_stablecoin_balances(incomplete_data)
+        defillama_stablecoins.single_stablecoin_balances(incomplete_data)
     assert excinfo.value.args == ("name",)
 
 
@@ -229,7 +229,7 @@ def test_process_breakdown_stables_optional_metadata():
     # Test process_breakdown_stables with missing optional metadata fields
     incomplete_data = sample_breakdown_data.copy()
     del incomplete_data["description"]  # Remove an optional field
-    metadata, balances = defillama.single_stablecoin_balances(incomplete_data)
+    metadata, balances = defillama_stablecoins.single_stablecoin_balances(incomplete_data)
     assert "description" in metadata
     assert metadata["description"] is None  # Should be None if missing
 
@@ -252,7 +252,7 @@ def test_pull_stables_empty_metadata_df():
             },
         ]
         with pytest.raises(ValueError) as excinfo:
-            defillama.pull_stablecoins(symbols=["SSC"])
+            defillama_stablecoins.pull_stablecoins(symbols=["SSC"])
         assert excinfo.value.args == ("No balances for stablecoin=Sample Stablecoin",)
 
 
@@ -273,5 +273,5 @@ def test_pull_stables_empty_breakdown_df():
             },
         ]
         with pytest.raises(ValueError) as excinfo:
-            defillama.pull_stablecoins(symbols=["SSC"])
+            defillama_stablecoins.pull_stablecoins(symbols=["SSC"])
         assert excinfo.value.args == ("No balances for stablecoin=Sample Stablecoin",)
