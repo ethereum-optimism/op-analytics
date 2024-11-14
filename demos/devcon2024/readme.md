@@ -1,7 +1,6 @@
-# Building Ecosystem Health Metrics with Open Data Sources
-### DevCon 2024
+# Building Ecosystem Health Metrics with Open Data Sources - Devcon 2024
 
-### Session Links!
+## Session Links!
 - [Sample Data Google Sheet (Copy this to build your charts!)](https://docs.google.com/spreadsheets/d/1qHQ4pLWiZ_xT8ofJcYZZoNxh7_B1TW_XqeBm6xwE8Z8/edit?gid=0#gid=0)
 - [Optimism Superchain Health Dashboard](https://docs.google.com/spreadsheets/d/1f-uIW_PzlGQ_XFAmsf9FYiUf0N9l_nePwDVrw0D5MXY/edit?gid=584971628#gid=584971628)
 
