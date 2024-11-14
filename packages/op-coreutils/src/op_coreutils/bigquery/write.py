@@ -209,7 +209,7 @@ class DatePart:
     date_suffix: str
 
 
-def breakout_partitioned_df(df: pl.DataFrame) -> Generator[DatePart, None, None]:
+def breakout_partitioned_df(df: pl.DataFrame, run_check=True) -> Generator[DatePart, None, None]:
     """Checks that the dataframe is suitable for writing to a partitioned table.
 
     Yields each date part along with the date part suffix for each date present in
@@ -226,7 +226,7 @@ def breakout_partitioned_df(df: pl.DataFrame) -> Generator[DatePart, None, None]
         f"Found {len(partitions)} partitions in dataframe [{partitions[0]} ... {partitions[-1]}]"
     )
 
-    if len(partitions) > 10:
+    if len(partitions) > 10 and run_check:
         raise OPLabsBigQueryError(
             "Dynamic Partition Overwrite detected more than 10 partitions. Aborting."
         )
@@ -334,7 +334,8 @@ def upsert_partitioned_table(
         # TODO: Consider not looping and doing it all in a single MERGE operation.
         # Initially I considered looping because I thought you could specify the
         # date partition on the date operation, but turns out you can't.
-        for date_part in breakout_partitioned_df(df):
+        run_check = not create_if_not_exists
+        for date_part in breakout_partitioned_df(df, run_check):
             _upsert_df_to_bq(
                 df=date_part.date_df,
                 dataset=dataset,
