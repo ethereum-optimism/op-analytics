@@ -8,7 +8,7 @@ from op_coreutils.bigquery.write import (
     overwrite_unpartitioned_table,
     upsert_unpartitioned_table,
 )
-from op_coreutils.logger import structlog
+from op_coreutils.logger import structlog, bound_contextvars
 from op_coreutils.request import new_session, get_data
 from op_coreutils.time import now_date
 from op_coreutils.threads import run_concurrently
@@ -20,7 +20,18 @@ log = structlog.get_logger()
 REPOS_BASE_URL = "https://api.github.com/repos/ethereum-optimism"
 
 # Repos to track
-REPOS = ["supersim", "superchainerc20-starter", "optimism", "op-geth", "superchain-registry", "superchain-ops", "docs", "specs", "design-docs", "infra"]
+REPOS = [
+    "supersim",
+    "superchainerc20-starter",
+    "optimism",
+    "op-geth",
+    "superchain-registry",
+    "superchain-ops",
+    "docs",
+    "specs",
+    "design-docs",
+    "infra",
+]
 
 # Dataset and Tables
 BQ_DATASET = "uploads_api"
@@ -90,37 +101,40 @@ def pull():
 
 
 def process_repo(session: requests.Session, headers: dict[str, str], repo: str):
-    views = get_data(
-        session=session,
-        url=REPOS_BASE_URL + f"/{repo}/traffic/views",
-        headers=headers,
-    )
-    clones = get_data(
-        session=session,
-        url=REPOS_BASE_URL + f"/{repo}/traffic/clones",
-        headers=headers,
-    )
-    forks = get_data(
-        session=session,
-        url=REPOS_BASE_URL + f"/{repo}/forks?sort=oldest",
-        headers=headers,
-    )
-    referrers = get_data(
-        session=session,
-        url=REPOS_BASE_URL + f"/{repo}/traffic/popular/referrers",
-        headers=headers,
-    )
+    with bound_contextvars(repo=repo):
+        views = get_data(
+            session=session,
+            url=REPOS_BASE_URL + f"/{repo}/traffic/views",
+            headers=headers,
+        )
+        clones = get_data(
+            session=session,
+            url=REPOS_BASE_URL + f"/{repo}/traffic/clones",
+            headers=headers,
+        )
+        forks = get_data(
+            session=session,
+            url=REPOS_BASE_URL + f"/{repo}/forks?sort=oldest",
+            headers=headers,
+        )
+        referrers = get_data(
+            session=session,
+            url=REPOS_BASE_URL + f"/{repo}/traffic/popular/referrers",
+            headers=headers,
+        )
 
-    views_df = process_views(views)
-    clones_df = process_clones(clones)
-    forks_df = process_forks(forks)
-    metrics_df = (
-        pl.concat([views_df, clones_df, forks_df]).sort("date").with_columns(repo_name=pl.lit(repo))
-    )
+        views_df = process_views(views)
+        clones_df = process_clones(clones)
+        forks_df = process_forks(forks)
+        metrics_df = (
+            pl.concat([views_df, clones_df, forks_df])
+            .sort("date")
+            .with_columns(repo_name=pl.lit(repo))
+        )
 
-    referrers_df = process_referrers(referrers).with_columns(repo_name=pl.lit(repo))
+        referrers_df = process_referrers(referrers).with_columns(repo_name=pl.lit(repo))
 
-    return referrers_df, metrics_df
+        return referrers_df, metrics_df
 
 
 METRIC_SCHEMA = {
@@ -132,7 +146,10 @@ METRIC_SCHEMA = {
 
 def process_views(views):
     views_data = []
-    for item in views["views"]:
+
+    items = views["views"]
+    log.info(f"process views: {len(items)} items")
+    for item in items:
         dateval = datetime.fromisoformat(item["timestamp"]).date()
         views_data.append(
             {
@@ -154,6 +171,9 @@ def process_views(views):
 
 def process_clones(clones):
     clones_data = []
+
+    items = clones["clones"]
+    log.info(f"process clones: {len(items)} items")
     for item in clones["clones"]:
         dateval = datetime.fromisoformat(item["timestamp"]).date()
         clones_data.append(
@@ -176,6 +196,7 @@ def process_clones(clones):
 
 def process_forks(forks):
     forks_data = []
+    log.info(f"process forks: {len(forks)} items")
     for item in forks:
         forks_data.append(
             {
@@ -198,6 +219,7 @@ def process_forks(forks):
 
 def process_referrers(referrers):
     referrers_data = []
+    log.info(f"process forks: {len(referrers)} items")
     for item in referrers:
         referrers_data.append(
             {
