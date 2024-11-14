@@ -3,7 +3,6 @@ import polars as pl
 from op_coreutils.bigquery.write import (
     most_recent_dates,
     upsert_unpartitioned_table,
-    upsert_partitioned_table,
 )
 from op_coreutils.logger import structlog
 from op_coreutils.request import get_data, new_session
@@ -80,23 +79,24 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
 
     # Upsert balances to BQ.
     # Only update balances on the most recent dates. Assume data further back in time is immutable.
-    upsert_partitioned_table(
+    upsert_unpartitioned_table(
         df=most_recent_dates(tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS),
         dataset=BQ_DATASET,
         table_name=HISTORICAL_CHAIN_TVL_TABLE,
         unique_keys=["dt", "chain_id", "chain"],
         create_if_not_exists=True,  # set to True on first run
+        allow_unpartitioned_dt=True,  # set to True for unpartitioned dt dataframe
     )
 
     return DefillamaChains(
         metadata_df=metadata_df,
-        balances_df=tvl_df,
+        tvl_df=tvl_df,
     )
 
 
-def extract_evm(row: dict) -> int:
+def extract_category_data(row: dict, category_type: str) -> int:
     """Checks to see if chain metadata contains an EVM category"""
-    return 1 if "categories" in row and "EVM" in row["categories"] else 0
+    return 1 if "categories" in row and category_type in row["categories"] else 0
 
 
 def extract_layer(row: dict) -> str:
@@ -135,7 +135,8 @@ def extract_chain_metadata(chain_metadata: dict, df: pl.DataFrame) -> pl.DataFra
         gecko_id = chain_data.get("geckoId")
         cmc_id = chain_data.get("cmcId")
         symbol = chain_data.get("symbol")
-        is_evm = extract_evm(chain_data)
+        is_evm = extract_category_data(chain_data, "EVM")
+        is_superchain = extract_category_data(chain_data, "Superchain")
         layer = extract_layer(chain_data)
 
         chain_metadata_records.append(
@@ -144,6 +145,7 @@ def extract_chain_metadata(chain_metadata: dict, df: pl.DataFrame) -> pl.DataFra
                 "chain_id": chain_id,
                 "dfl_tracks_tvl": 1 if chain in dfl_chains else 0,
                 "is_evm": is_evm,
+                "is_superchain": is_superchain,
                 "layer": layer,
                 "is_rollup": 0 if layer == "L1" else 1,
                 "gecko_id": gecko_id,

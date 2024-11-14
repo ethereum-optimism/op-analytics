@@ -274,6 +274,7 @@ def upsert_unpartitioned_table(
     table_name: str,
     unique_keys: list[str],
     create_if_not_exists: bool = False,
+    allow_unpartitioned_dt: bool = False,
 ):
     """Upsert data into an unpartitioned BigQuery table.
 
@@ -287,7 +288,7 @@ def upsert_unpartitioned_table(
     Raises:
         ValueError: If the DataFrame is empty or if unique_keys are not in the DataFrame.
     """
-    if "dt" in df.columns:
+    if "dt" in df.columns and not allow_unpartitioned_dt:
         raise ValueError("DataFrame should not contain 'dt' column for unpartitioned tables.")
 
     try:
