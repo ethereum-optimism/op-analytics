@@ -6,7 +6,7 @@ import polars as pl
 from op_datasets.utils.daterange import DateRange
 
 from op_coreutils.duckdb_inmem import parquet_relation
-from op_coreutils.logger import bind_contextvars, structlog
+from op_coreutils.logger import bound_contextvars, structlog
 from op_coreutils.time import surrounding_dates
 
 from .location import DataLocation
@@ -97,37 +97,37 @@ def construct_input_batches(
     inputs = []
     for dateval in date_range.dates:
         for chain in chains:
-            bind_contextvars(chain=chain, date=dateval.isoformat())
-            filtered_df = markers_df.filter(
-                pl.col("chain") == chain,
-                pl.col("dt").is_in(surrounding_dates(dateval)),
-            )
+            with bound_contextvars(chain=chain, date=dateval.isoformat()):
+                filtered_df = markers_df.filter(
+                    pl.col("chain") == chain,
+                    pl.col("dt").is_in(surrounding_dates(dateval)),
+                )
 
-            # IMPORTANT: At this point the filtered_df contains data for more
-            # dates than pertain to this task. This is so we can check data
-            # continuity on the day before and after and determine if the input
-            # is safe to consume.
-            inputs_ready, dataset_paths = are_inputs_ready(
-                markers_df=filtered_df,
-                dateval=dateval,
-                input_datasets=set(dataset_names),
-                storage_location=read_from,
-            )
+                # IMPORTANT: At this point the filtered_df contains data for more
+                # dates than pertain to this task. This is so we can check data
+                # continuity on the day before and after and determine if the input
+                # is safe to consume.
+                inputs_ready, dataset_paths = are_inputs_ready(
+                    markers_df=filtered_df,
+                    dateval=dateval,
+                    input_datasets=set(dataset_names),
+                    storage_location=read_from,
+                )
 
-            obj = DataReader(
-                dateval=dateval,
-                chain=chain,
-                read_from=read_from,
-                dataset_paths=dataset_paths or {},
-                inputs_ready=inputs_ready,
-            )
+                obj = DataReader(
+                    dateval=dateval,
+                    chain=chain,
+                    read_from=read_from,
+                    dataset_paths=dataset_paths or {},
+                    inputs_ready=inputs_ready,
+                )
 
-            if inputs_ready:
-                log.info("data input is ready.")
-                inputs.append(obj)
-            else:
-                log.warning("data input is not ready. skipping")
-                skipped += 1
+                if inputs_ready:
+                    log.info("data input is ready.")
+                    inputs.append(obj)
+                else:
+                    log.warning("data input is not ready. skipping")
+                    skipped += 1
 
     log.info(
         f"Prepared {len(inputs)} input batches. Skippped {skipped} batches where input was not ready."
