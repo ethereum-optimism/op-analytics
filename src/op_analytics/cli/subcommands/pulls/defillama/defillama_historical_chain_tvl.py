@@ -112,7 +112,7 @@ def extract_layer(row: dict) -> str:
         return "L1"
 
 
-# TODO: Check with Michael to see if extracting "rolup" string is necessary
+# TODO: Check with Michael to see if extracting "rollup" string is necessary
 def extract_chain_metadata(chain_metadata: dict, df: pl.DataFrame) -> pl.DataFrame:
     """
     Extracts metadata from the config end point.
