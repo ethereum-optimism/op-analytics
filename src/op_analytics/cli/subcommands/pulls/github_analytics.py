@@ -22,15 +22,15 @@ REPOS_BASE_URL = "https://api.github.com/repos/ethereum-optimism"
 # Repos to track
 REPOS = [
     "supersim",
-    "superchainerc20-starter",
-    "optimism",
-    "op-geth",
-    "superchain-registry",
-    "superchain-ops",
-    "docs",
-    "specs",
-    "design-docs",
-    "infra",
+    # "superchainerc20-starter",
+    # "optimism",
+    # "op-geth",
+    # "superchain-registry",
+    # "superchain-ops",
+    # "docs",
+    # "specs",
+    # "design-docs",
+    # "infra",
 ]
 
 # Dataset and Tables
