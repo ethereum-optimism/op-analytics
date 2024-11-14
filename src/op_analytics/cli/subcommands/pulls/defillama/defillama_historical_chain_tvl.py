@@ -19,7 +19,7 @@ BQ_DATASET = "temp"
 
 CHAIN_METADATA_TABLE = "defillama_chains_metadata"
 HISTORICAL_CHAIN_TVL_TABLE = "defillama_daily_historical_chain_tvl"
-TVL_TABLE_LAST_N_DAYS = 100_000  # upsert only the last 7 days of tvl records fetched from the api
+TVL_TABLE_LAST_N_DAYS = 7  # upsert only the last 7 days of tvl records fetched from the api
 
 CHAINS_COLUMN_MAPPING = {
     "name": "chain",
@@ -83,9 +83,8 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
         df=most_recent_dates(tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS),
         dataset=BQ_DATASET,
         table_name=HISTORICAL_CHAIN_TVL_TABLE,
-        unique_keys=["dt", "chain_id", "chain"],
+        unique_keys=["date", "chain_id", "chain"],
         create_if_not_exists=True,  # set to True on first run
-        allow_unpartitioned_dt=True,  # set to True for unpartitioned dt dataframe
     )
 
     return DefillamaChains(
@@ -193,7 +192,7 @@ def construct_urls(
 def extract_chain_tvl_to_dataframe(data) -> pl.DataFrame:
     """Extract historical TVL and transform into dataframe"""
     records = [
-        {"chain": chain, "dt": dt_fromepoch(entry["date"]), "tvl": entry["tvl"]}
+        {"chain": chain, "date": dt_fromepoch(entry["date"]), "tvl": entry["tvl"]}
         for chain, entries in data.items()
         for entry in entries
     ]
