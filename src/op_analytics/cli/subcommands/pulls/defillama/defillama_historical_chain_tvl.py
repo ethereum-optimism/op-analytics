@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 import polars as pl
-from op_coreutils.bigquery.write import (
+from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
     upsert_unpartitioned_table,
 )
-from op_coreutils.logger import structlog
-from op_coreutils.request import get_data, new_session
-from op_coreutils.threads import run_concurrently
-from op_coreutils.time import dt_fromepoch
+from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.request import get_data, new_session
+from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.time import dt_fromepoch
 
 log = structlog.get_logger()
 
@@ -74,17 +74,17 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
         dataset=BQ_DATASET,
         table_name=CHAIN_METADATA_TABLE,
         unique_keys=["chain_id", "chain"],
-        create_if_not_exists=True,  # set to True on first run
+        create_if_not_exists=False,  # set to True on first run
     )
 
     # Upsert balances to BQ.
     # Only update balances on the most recent dates. Assume data further back in time is immutable.
     upsert_unpartitioned_table(
-        df=most_recent_dates(tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS),
+        df=most_recent_dates(tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="date"),
         dataset=BQ_DATASET,
         table_name=HISTORICAL_CHAIN_TVL_TABLE,
         unique_keys=["date", "chain_id", "chain"],
-        create_if_not_exists=True,  # set to True on first run
+        create_if_not_exists=False,  # set to True on first run
     )
 
     return DefillamaChains(
@@ -130,7 +130,7 @@ def extract_chain_metadata(chain_metadata: dict, df: pl.DataFrame) -> pl.DataFra
     for chain in chain_metadata:
         chain_data = chain_metadata[chain]
 
-        chain_id = chain_data.get("chain_id")
+        chain_id = chain_data.get("chainId")
         gecko_id = chain_data.get("geckoId")
         cmc_id = chain_data.get("cmcId")
         symbol = chain_data.get("symbol")

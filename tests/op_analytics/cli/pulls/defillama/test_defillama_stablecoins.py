@@ -109,9 +109,13 @@ def test_process_breakdown_stables():
     assert excinfo.value.args == ("pegType",)
 
 
-@patch("op_analytics.cli.subcommands.pulls.defillama.get_data")
-@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_unpartitioned_table")
-@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_partitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.defillama_stablecoins.get_data")
+@patch(
+    "op_analytics.cli.subcommands.pulls.defillama.defillama_stablecoins.upsert_unpartitioned_table"
+)
+@patch(
+    "op_analytics.cli.subcommands.pulls.defillama.defillama_stablecoins.upsert_partitioned_table"
+)
 def test_pull_stables_single_stablecoin(
     mock_upsert_partitioned_table,
     mock_upsert_unpartitioned_table,
@@ -147,9 +151,13 @@ def test_pull_stables_single_stablecoin(
     assert mock_upsert_partitioned_table.call_args.kwargs["unique_keys"] == ["dt", "id", "chain"]
 
 
-@patch("op_analytics.cli.subcommands.pulls.defillama.get_data")
-@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_unpartitioned_table")
-@patch("op_analytics.cli.subcommands.pulls.defillama.upsert_partitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.defillama_stablecoins.get_data")
+@patch(
+    "op_analytics.cli.subcommands.pulls.defillama.defillama_stablecoins.upsert_unpartitioned_table"
+)
+@patch(
+    "op_analytics.cli.subcommands.pulls.defillama.defillama_stablecoins.upsert_partitioned_table"
+)
 def test_pull_stables_multiple_stablecoins(
     mock_upsert_partitioned_table,
     mock_upsert_unpartitioned_table,
@@ -191,7 +199,9 @@ def test_pull_stables_multiple_stablecoins(
 
 def test_pull_stables_no_valid_ids():
     # Test pull_stables with invalid stablecoin_ids (should raise ValueError)
-    with patch("op_analytics.cli.subcommands.pulls.defillama.get_data") as mock_get_data:
+    with patch(
+        "op_analytics.cli.subcommands.pulls.defillama.defillama_stablecoins.get_data"
+    ) as mock_get_data:
         mock_get_data.return_value = sample_summary
         with pytest.raises(ValueError) as excinfo:
             defillama_stablecoins.pull_stablecoins(symbols=["NOEXIST"])
@@ -200,7 +210,9 @@ def test_pull_stables_no_valid_ids():
 
 def test_pull_stables_missing_pegged_assets():
     # Test pull_stables when 'peggedAssets' is missing (should raise KeyError)
-    with patch("op_analytics.cli.subcommands.pulls.defillama.get_data") as mock_get_data:
+    with patch(
+        "op_analytics.cli.subcommands.pulls.defillama.defillama_stablecoins.get_data"
+    ) as mock_get_data:
         mock_get_data.return_value = {}
         with pytest.raises(KeyError) as excinfo:
             defillama_stablecoins.pull_stablecoins()
@@ -236,7 +248,9 @@ def test_process_breakdown_stables_optional_metadata():
 
 def test_pull_stables_empty_metadata_df():
     # Test pull_stables when metadata_df is empty (should raise ValueError)
-    with patch("op_analytics.cli.subcommands.pulls.defillama.get_data") as mock_get_data:
+    with patch(
+        "op_analytics.cli.subcommands.pulls.defillama.defillama_stablecoins.get_data"
+    ) as mock_get_data:
         mock_get_data.side_effect = [
             sample_summary,  # Summary data
             # Data that causes process_breakdown_stables to return empty DataFrames
@@ -258,7 +272,9 @@ def test_pull_stables_empty_metadata_df():
 
 def test_pull_stables_empty_breakdown_df():
     # Test pull_stables when breakdown_df is empty (should raise ValueError)
-    with patch("op_analytics.cli.subcommands.pulls.defillama.get_data") as mock_get_data:
+    with patch(
+        "op_analytics.cli.subcommands.pulls.defillama.defillama_stablecoins.get_data"
+    ) as mock_get_data:
         mock_get_data.side_effect = [
             sample_summary,  # Summary data
             {
