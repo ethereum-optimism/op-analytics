@@ -3,6 +3,7 @@ import multiprocessing as mp
 import polars as pl
 from op_analytics.coreutils.logger import (
     bind_contextvars,
+    bound_contextvars,
     clear_contextvars,
     human_interval,
     structlog,
@@ -54,14 +55,14 @@ def ingest(
 
         # Decide if we can run this task.
         if not task.inputs_ready:
-            log.warning("Task inputs are not ready. Skipping this task.")
+            log.debug("skipping task")
             continue
 
         # Decide if we need to run this task.
         if task.data_writer.is_complete and not force:
             continue
         if force:
-            log.info("Force flag detected. Forcing execution.")
+            log.info("force flag detected")
             task.data_writer.force = True
 
         executed += 1
@@ -69,10 +70,10 @@ def ingest(
         executed_ok += 1 if success else 0
 
         if max_tasks is not None and executed >= max_tasks:
-            log.warning(f"Stopping after executing {executed} tasks")
+            log.warning(f"stopping after {executed} tasks")
             break
 
-    log.info(f"Execuded {executed} tasks. {executed_ok} succeeded.")
+    log.info(f"done. {executed_ok} OK / {executed} TOTAL tasks")
 
 
 def execute(task, fork_process: bool) -> bool:
@@ -84,10 +85,10 @@ def execute(task, fork_process: bool) -> bool:
         p.join()
 
         if p.exitcode != 0:
-            log.error(f"Process terminated with exit code: {p.exitcode}")
+            log.error(f"task execute process exit code: {p.exitcode}")
             return False
         else:
-            log.info("Process terminated successfully.")
+            log.info("task execute process exit 0")
             return True
     else:
         steps(task)
@@ -95,20 +96,20 @@ def execute(task, fork_process: bool) -> bool:
 
 
 def steps(task):
-    bind_contextvars(**task.contextvars)
+    with bound_contextvars(**task.contextvars):
+        # Read the data (updates the task in-place with the input dataframes).
+        reader(task)
 
-    # Read the data (updates the task in-place with the input dataframes).
-    reader(task)
+        # Run audits (updates the task in-pace with the output dataframes).
+        auditor(task)
 
-    # Run audits (updates the task in-pace with the output dataframes).
-    auditor(task)
-
-    # Write outputs and markers.
-    writer(task)
+        # Write outputs and markers.
+        writer(task)
 
 
 def reader(task: IngestionTask):
     """Read core datasets from the specified source."""
+    log.info("reading core datasets")
     dataframes = read_from_source(
         provider=task.read_from,
         datasets=ONCHAIN_CURRENT_VERSION,
@@ -130,7 +131,7 @@ def auditor(task: IngestionTask):
     )
 
     log.info(
-        f"Auditing {num_blocks} {task.chain!r} blocks spanning {human_interval(num_seconds)} starting at block={task.block_batch.min}"
+        f"auditing {num_blocks} {task.chain!r} blocks spanning {human_interval(num_seconds)} starting at block={task.block_batch.min}"
     )
 
     # Iterate over all the registered audits.
@@ -157,7 +158,7 @@ def auditor(task: IngestionTask):
             else:
                 passing_audits += 1
 
-    log.info(f"PASS {passing_audits} audits.")
+    log.info(f"audits OK [{passing_audits} checks]")
 
     # Default values for "chain" and "dt" to be used in cases where one of the
     # other datsets is empty.  On chains with very low throughput (e.g. race) we

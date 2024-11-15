@@ -4,7 +4,7 @@ from op_analytics.coreutils.partitioned import DataLocation
 from op_analytics.coreutils.threads import run_concurrently
 
 from op_analytics.datapipeline.utils.blockrange import BlockRange
-from op_analytics.datapipeline.utils.daterange import DateRange
+from op_analytics.datapipeline.utils.timerange import TimeRange
 
 from .batches import BlockBatch, split_block_range
 from .sources import RawOnchainDataProvider
@@ -30,13 +30,17 @@ def construct_tasks(
 
     except NotImplementedError:
         # Ensure range_spec is a valid DateRange.
-        date_range = DateRange.from_spec(range_spec)
+        time_range = TimeRange.from_spec(range_spec)
 
         def blocks_for_chain(ch):
-            return block_range_for_dates(chain=ch, date_spec=range_spec)
+            return block_range_for_dates(
+                chain=ch,
+                min_ts=time_range.min_ts,
+                max_ts=time_range.max_ts,
+            )
 
         blocks_by_chain = run_concurrently(blocks_for_chain, targets=chains, max_workers=4)
-        max_requested_timestamp = date_range.max_requested_timestamp
+        max_requested_timestamp = time_range.max_requested_timestamp
 
     # Batches to be ingested for each chain.
     chain_batches: dict[str, list[BlockBatch]] = {}
@@ -69,8 +73,8 @@ def construct_tasks(
     return all_tasks
 
 
-def block_range_for_dates(chain: str, date_spec: str):
-    """Find the block range required to cover the provided dates.
+def block_range_for_dates(chain: str, min_ts: int, max_ts: int):
+    """Find the block range required to cover the provided timestamps.
 
     Uses the raw blocks dataset in Goldsky Clickhouse to find out which blocks have
     timestamps in the required dates.
@@ -82,7 +86,6 @@ def block_range_for_dates(chain: str, date_spec: str):
     In this way we can run ingestion by date instead of by block number, which makes it
     easier to generalize the process across chains.
     """
-    date_range = DateRange.from_spec(date_spec)
 
     # Not an f-string to preserve the curly brackets for query params
     where = "timestamp >= {mints:UInt64} AND timestamp < {maxts:UInt64}"
@@ -96,8 +99,8 @@ def block_range_for_dates(chain: str, date_spec: str):
         WHERE {where}
         """,
         parameters={
-            "mints": date_range.min_ts,
-            "maxts": date_range.max_ts,
+            "mints": min_ts,
+            "maxts": max_ts,
         },
     )
 

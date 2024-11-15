@@ -56,7 +56,7 @@ def _read_from_goldsky(
 
     def func(key):
         start = time.time()
-        log.info(
+        log.debug(
             "Querying...",
             dataset=key,
             **block_batch.contextvars,

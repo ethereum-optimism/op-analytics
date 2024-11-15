@@ -30,7 +30,7 @@ useradd -r -d /app -g app -N app
 EOT
 
 
-COPY docker-entrypoint.sh /app/docker-entrypoint.sh
-ENTRYPOINT ["tini", "-v", "--", "/app/docker-entrypoint.sh"]
+# This is a dummy entrypoing. Override it in kubernetes manifest.
+ENTRYPOINT ["tini", "-v", "--", "opdata", "chains", "health"]
 # See <https://hynek.me/articles/docker-signals/>.
 STOPSIGNAL SIGINT

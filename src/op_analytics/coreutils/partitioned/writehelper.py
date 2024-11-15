@@ -29,7 +29,7 @@ class WriteManager(EnforceOverrides):
     def write_implementation(self, output_data: Any) -> list[OutputPartMeta]:
         raise NotImplementedError()
 
-    def write(self, output_data: Any):
+    def write(self, output_data: Any) -> list[OutputPartMeta]:
         client = init_data_access()
 
         is_complete = client.marker_exists(
@@ -42,7 +42,7 @@ class WriteManager(EnforceOverrides):
             log.info(
                 f"[{self.location.name}] Skipping already complete output at {self.expected_output.marker_path}"
             )
-            return
+            return []
 
         written_parts = self.write_implementation(output_data)
 
@@ -52,7 +52,9 @@ class WriteManager(EnforceOverrides):
             written_parts=written_parts,
             markers_table=self.markers_table,
         )
-        log.info(f"Wrote {self.expected_output.dataset_name} to {self.location.name}")
+        log.debug(f"done writing {self.expected_output.dataset_name} to {self.location.name}")
+
+        return written_parts
 
 
 class ParqueWriteManager(WriteManager):
