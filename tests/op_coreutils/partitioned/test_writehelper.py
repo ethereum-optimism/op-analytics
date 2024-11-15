@@ -4,17 +4,15 @@ import datetime
 from unittest.mock import patch
 
 
-from op_coreutils.duckdb_local import run_query
-from op_coreutils.partitioned.location import DataLocation
-from op_coreutils.partitioned.writehelper import ParqueWriteManager
-from op_coreutils.partitioned.output import ExpectedOutput, OutputData
-from op_coreutils.partitioned.types import SinkOutputRootPath, SinkMarkerPath
+from op_analytics.coreutils.duckdb_local import run_query
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.writehelper import ParqueWriteManager
+from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
+from op_analytics.coreutils.partitioned.types import SinkOutputRootPath, SinkMarkerPath
 
 
 def test_parquet_writer():
-    run_query(
-        "DELETE FROM etl_monitor.intermediate_model_markers WHERE chain IN ('DUMMYOP', 'DUMMYBASE')"
-    )
+    run_query("TRUNCATE TABLE etl_monitor_dev.intermediate_model_markers")
 
     df = pl.DataFrame(
         {
@@ -61,7 +59,7 @@ def test_parquet_writer():
         force=False,
     )
 
-    with patch("op_coreutils.partitioned.dataaccess.local_upload_parquet") as mock:
+    with patch("op_analytics.coreutils.partitioned.dataaccess.local_upload_parquet") as mock:
         manager.write(
             OutputData(
                 dataframe=df,
@@ -102,7 +100,7 @@ def test_parquet_writer():
 
     markers = (
         run_query(
-            "SELECT * FROM etl_monitor.intermediate_model_markers WHERE chain IN ('DUMMYOP', 'DUMMYBASE')"
+            "SELECT * FROM etl_monitor_dev.intermediate_model_markers WHERE chain IN ('DUMMYOP', 'DUMMYBASE')"
         )
         .pl()
         .sort("dt", "chain")

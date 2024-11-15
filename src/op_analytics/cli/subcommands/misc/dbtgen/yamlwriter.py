@@ -1,5 +1,5 @@
 import yaml
-from op_coreutils.logger import structlog
+from op_analytics.coreutils.logger import structlog
 from yaml.representer import SafeRepresenter
 
 log = structlog.get_logger()

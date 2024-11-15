@@ -1,4 +1,4 @@
-from op_coreutils.path import repo_path
+from op_analytics.coreutils.path import repo_path
 
 from op_analytics.cli.subcommands.misc.dbtgen.yamlwriter import write_sources_yaml
 

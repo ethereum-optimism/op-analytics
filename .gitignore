@@ -57,3 +57,6 @@ ozone/
 
 # Rendered query templates
 *.actual.sql
+
+# Dist
+dist/

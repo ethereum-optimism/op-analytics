@@ -1,8 +1,8 @@
 import polars as pl
-from op_coreutils.testutils.inputdata import InputTestData
-from op_coreutils.testutils.dataframe import compare_dataframes
+from op_analytics.coreutils.testutils.inputdata import InputTestData
+from op_analytics.coreutils.testutils.dataframe import compare_dataframes
 from unittest.mock import patch, MagicMock
-from op_datasets.chains import load, upload, goldsky_chains
+from op_analytics.datapipeline.chains import load, upload, goldsky_chains
 
 
 def test_clean():
@@ -114,7 +114,7 @@ def test_goldsky_chains():
     # Load the raw data you want to return from read_gsheet
     raw_gsheet_data = pl.read_csv(testcase.path("case01/chain_metadata_raw.csv")).to_dicts()
 
-    with patch("op_coreutils.gsheets.get_worksheet") as mock_get_worksheet:
+    with patch("op_analytics.coreutils.gsheets.get_worksheet") as mock_get_worksheet:
         mock_worksheet = MagicMock()
         mock_worksheet.get_all_records.return_value = raw_gsheet_data
         mock_get_worksheet.return_value = mock_worksheet

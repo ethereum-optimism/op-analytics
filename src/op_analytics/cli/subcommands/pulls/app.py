@@ -1,7 +1,7 @@
 from typing import Annotated
 
 import typer
-from op_coreutils.logger import structlog
+from op_analytics.coreutils.logger import structlog
 
 from .agora import agora_pull
 from .defillama.defillama_stablecoins import pull_stablecoins as dfl_pull_stablecoins

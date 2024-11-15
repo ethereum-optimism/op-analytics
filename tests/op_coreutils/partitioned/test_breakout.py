@@ -1,8 +1,8 @@
 import polars as pl
 
 
-from op_coreutils.partitioned.breakout import breakout_partitions
-from op_coreutils.partitioned.output import OutputPart, OutputPartMeta, KeyValue
+from op_analytics.coreutils.partitioned.breakout import breakout_partitions
+from op_analytics.coreutils.partitioned.output import OutputPart, OutputPartMeta, KeyValue
 
 
 def test_breakout_partitions():

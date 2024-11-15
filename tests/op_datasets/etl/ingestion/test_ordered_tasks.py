@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from op_datasets.etl.ingestion.task import ordered_task_list
+from op_analytics.datapipeline.etl.ingestion.task import ordered_task_list
 
 
 @dataclass

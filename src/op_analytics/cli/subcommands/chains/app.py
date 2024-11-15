@@ -1,21 +1,21 @@
 import json
 
-import op_datasets.rpcs
 import typer
-
-from op_coreutils.logger import structlog
-from op_coreutils.partitioned import DataLocation
-from op_datasets.chains.upload import upload_all
-from op_datasets.chains import goldsky_chains
-from op_datasets.etl.ingestion import ingest
-from op_datasets.etl.ingestion.batches import split_block_range
-from op_datasets.etl.ingestion.sources import RawOnchainDataProvider
-from op_datasets.etl.intermediate import compute_intermediate
-from op_datasets.etl.loadbq import load_superchain_raw_to_bq
-from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
-from op_datasets.utils.blockrange import BlockRange
 from rich import print
 from typing_extensions import Annotated
+
+import op_analytics.datapipeline.rpcs as rpcs
+from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned import DataLocation
+from op_analytics.datapipeline.chains import goldsky_chains
+from op_analytics.datapipeline.chains.upload import upload_all
+from op_analytics.datapipeline.etl.ingestion import ingest
+from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
+from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
+from op_analytics.datapipeline.etl.intermediate import compute_intermediate
+from op_analytics.datapipeline.etl.loadbq import PipelineStage, load_to_bq
+from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
+from op_analytics.datapipeline.utils.blockrange import BlockRange
 
 log = structlog.get_logger()
 
@@ -28,23 +28,28 @@ app = typer.Typer(
 
 
 @app.command()
+def health():
+    print("HEALTH OK.")
+
+
+@app.command()
 def get_block(chain: str, block_number: str):
     """Get a single block."""
-    blocks = op_datasets.rpcs.get_block(chain, block_number)
+    blocks = rpcs.get_block(chain, block_number)
     print(json.dumps(blocks, indent=2))
 
 
 @app.command()
 def get_txs(chain: str, tx_hashes: list[str]):
     """Get transactions."""
-    txs = op_datasets.rpcs.get_transactions(chain, tx_hashes)
+    txs = rpcs.get_transactions(chain, tx_hashes)
     print(json.dumps(txs, indent=2))
 
 
 @app.command()
 def get_receipts(chain: str, tx_hashes: list[str]):
     """Get transaction receipts."""
-    txs = op_datasets.rpcs.get_receipts(chain, tx_hashes)
+    txs = rpcs.get_receipts(chain, tx_hashes)
     print(json.dumps(txs, indent=2))
 
 
@@ -214,10 +219,26 @@ def load_superchain_raw(
     force: Annotated[
         bool, typer.Option(help="Run load jobs even if some input data is not ready yet.")
     ] = False,
+    write_to: Annotated[
+        DataLocation,
+        typer.Option(
+            help="Where data will be written to.",
+            case_sensitive=False,
+        ),
+    ] = DataLocation.BIGQUERY,
+    data: Annotated[
+        PipelineStage,
+        typer.Option(
+            help="Data that will be uploaded to BQ.",
+            case_sensitive=False,
+        ),
+    ] = PipelineStage.RAW_ONCHAIN,
 ):
     """Load superchain_raw tables to BigQuery."""
 
-    load_superchain_raw_to_bq(
+    load_to_bq(
+        stage=data,
+        location=write_to,
         range_spec=range_spec,
         dryrun=dryrun,
         force=force,

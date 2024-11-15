@@ -72,3 +72,11 @@ html-copies:
 sphinx-serve: .makemarkers/sphinx-docs
 	cd docs && uv run python -m http.server
 
+
+# ----------------------------------------------------------------------------#
+#     DOCKER IMAGE
+# ----------------------------------------------------------------------------#
+
+.PHONY: docker-image
+docker-image:
+	docker build --platform linux/amd64 -t ghcr.io/lithium323/op-analytics:v20241114.1 .
