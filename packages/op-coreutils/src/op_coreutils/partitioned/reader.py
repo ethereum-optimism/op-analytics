@@ -93,7 +93,7 @@ def construct_input_batches(
         dataset_names=dataset_names,
     )
 
-    skipped = 0
+    num_suspect = 0
     inputs = []
     for dateval in date_range.dates:
         for chain in chains:
@@ -122,15 +122,13 @@ def construct_input_batches(
                     inputs_ready=inputs_ready,
                 )
 
-                if inputs_ready:
-                    log.info("data input is ready.")
-                    inputs.append(obj)
-                else:
-                    log.warning("data input is not ready. skipping")
-                    skipped += 1
+                inputs.append(obj)
+                if not inputs_ready:
+                    log.warning("MISSING DATA")
+                    num_suspect += 1
 
     log.info(
-        f"Prepared {len(inputs)} input batches. Skippped {skipped} batches where input was not ready."
+        f"Prepared {len(inputs)} input batches. {num_suspect} batches where input was not ready but will be ingested anyways."
     )
     return inputs
 
@@ -182,34 +180,39 @@ def are_inputs_ready(
 
 
 def is_dataset_ready(dataset_name: str, dataset_df: pl.DataFrame, dateval: date) -> bool:
-    if dataset_df.is_empty():
-        return False
-
-    block_intervals = (
-        dataset_df.select("min_block", "max_block", "dt").sort("min_block", "dt").to_dicts()
-    )
-
-    dates_covered = set()
-    running_block = block_intervals[0]["max_block"]
-
-    for block_interval in block_intervals:
-        next_block = block_interval["min_block"]
-        if next_block > running_block:
-            log.warning(
-                f"Detected a gap in block numbers: jumps from:#{running_block} to #{next_block}, gap={next_block - running_block}"
-            )
+    with bound_contextvars(dataset=dataset_name):
+        if dataset_df.is_empty():
+            log.warning("no data")
             return False
 
-        running_block = block_interval["max_block"]
-        dates_covered.add(block_interval["dt"])
+        block_intervals = (
+            dataset_df.select("min_block", "max_block", "dt").sort("min_block", "dt").to_dicts()
+        )
 
-    # Check that there is coverage from the day before the dateval
-    # to the day after the dateval.
-    expected = surrounding_dates(dateval)
-    is_ready = sorted(dates_covered) == expected
+        dates_covered = set()
+        running_block = block_intervals[0]["max_block"]
 
-    if not is_ready:
-        missing = [_.isoformat() for _ in sorted(set(expected) - dates_covered)]
-        log.warning(f"Input data is not complete for {dataset_name!r}. Missing {missing}")
+        for block_interval in block_intervals:
+            next_block = block_interval["min_block"]
+            if next_block > running_block:
+                log.warning(
+                    "gap in block numbers",
+                    gap_start=running_block,
+                    gap_end=next_block,
+                    gap_size=next_block - running_block,
+                )
+                return False
 
-    return is_ready
+            running_block = block_interval["max_block"]
+            dates_covered.add(block_interval["dt"])
+
+        # Check that there is coverage from the day before the dateval
+        # to the day after the dateval.
+        expected = surrounding_dates(dateval)
+        is_ready = sorted(dates_covered) == expected
+
+        if not is_ready:
+            missing = [_.isoformat() for _ in sorted(set(expected) - dates_covered)]
+            log.warning("missing date coverage", missing=missing)
+
+        return is_ready
