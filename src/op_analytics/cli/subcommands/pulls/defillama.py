@@ -2,15 +2,15 @@ from dataclasses import dataclass
 from typing import Optional
 
 import polars as pl
-from op_coreutils.bigquery.write import (
+from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
     upsert_partitioned_table,
     upsert_unpartitioned_table,
 )
-from op_coreutils.logger import structlog
-from op_coreutils.request import get_data, new_session
-from op_coreutils.threads import run_concurrently
-from op_coreutils.time import dt_fromepoch
+from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.request import get_data, new_session
+from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.time import dt_fromepoch
 
 log = structlog.get_logger()
 

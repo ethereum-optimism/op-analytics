@@ -1,29 +1,33 @@
 [project]
 name = "op-analytics"
-version = "0.1.0"
+version = "24.11.140"
 description = "Data analysys tools by OP Labs."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "op-coreutils",
-    "op-datasets",
+    "clickhouse-connect>=0.8.1",
+    "duckdb>=1.1.1",
+    "gcsfs>=2024.9.0.post1",
+    "google-cloud-bigquery>=3.26.0",
+    "google-cloud-storage>=2.18.2",
+    "gspread>=6.1.2",
+    "jinja2>=3.1.4",
+    "overrides>=7.7.0",
     "pandas>=2.2.3",
-    "polars>=1.8.2",
+    "polars>=1.13.1",
     "py-markdown-table>=1.1.0",
+    "pyarrow>=17.0.0",
+    "pydantic>=2.9.2",
     "pyyaml>=6.0.2",
+    "stamina>=24.3.0",
+    "structlog>=24.4.0",
     "typer>=0.12.5",
     "urllib3>=2.2.3",
 ]
 
-[tool.uv.sources]
-op-coreutils = { workspace = true }
-op-datasets = { workspace = true }
-
-[tool.uv.workspace]
-members = ["packages/op-datasets", "packages/op-coreutils"]
 
 [tool.mypy]
-files = ["src/**/*.py", "packages/**/*.py", "tests/**/*.py"]
+files = ["src/**/*.py", "tests/**/*.py"]
 ignore_missing_imports = true
 check_untyped_defs = true
 
@@ -55,18 +59,23 @@ dev-dependencies = [
     "nbformat>=4.2.0",
 ]
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
 [tool.ruff]
 # Allow lines to be as long as 100.
 line-length = 100
-
 
 [tool.pytest.ini_options]
 filterwarnings = [
     # Ignore some google bigquery deprecation warnings
     'ignore:Type google._upb._message:',
 ]
-addopts = "--cov=src/ --cov=packages/ --cov-report html"
+addopts = "--cov=src/ --cov-report html"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+only-include = ["src/op_analytics"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/op_analytics"]

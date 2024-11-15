@@ -3,8 +3,8 @@ import shlex
 import subprocess
 
 import typer
-from op_coreutils.logger import structlog
-from op_coreutils.env import env_get
+from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.env import env_get
 
 from op_analytics.cli.subcommands.misc.dbtgen import (
     dbt_docs,

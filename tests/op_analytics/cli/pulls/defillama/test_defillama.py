@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 import pytest
-from op_coreutils.testutils.inputdata import InputTestData
+from op_analytics.coreutils.testutils.inputdata import InputTestData
 
 
 from op_analytics.cli.subcommands.pulls import defillama

@@ -2,17 +2,17 @@ from dataclasses import dataclass
 from typing import Any, Callable
 
 import polars as pl
-from op_coreutils.bigquery.write import (
+from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
     overwrite_partition_static,
     overwrite_partitioned_table,
     overwrite_partitions_dynamic,
     overwrite_unpartitioned_table,
 )
-from op_coreutils.logger import structlog
-from op_coreutils.request import new_session, get_data
-from op_coreutils.threads import run_concurrently
-from op_coreutils.time import now_date
+from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.request import new_session, get_data
+from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.time import now_date
 
 log = structlog.get_logger()
 

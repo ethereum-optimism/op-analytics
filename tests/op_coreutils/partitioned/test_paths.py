@@ -1,6 +1,6 @@
 from datetime import date
 
-from op_coreutils.partitioned.paths import get_root_path, get_dt
+from op_analytics.coreutils.partitioned.paths import get_root_path, get_dt
 
 
 def test_get_root_01():

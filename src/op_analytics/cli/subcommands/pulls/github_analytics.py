@@ -3,16 +3,16 @@ import requests
 from datetime import datetime
 
 import polars as pl
-from op_coreutils.bigquery.write import (
+from op_analytics.coreutils.bigquery.write import (
     overwrite_partition_static,
     overwrite_unpartitioned_table,
     upsert_unpartitioned_table,
 )
-from op_coreutils.logger import structlog, bound_contextvars
-from op_coreutils.request import new_session, get_data
-from op_coreutils.time import now_date
-from op_coreutils.threads import run_concurrently
-from op_coreutils.env.vault import env_get
+from op_analytics.coreutils.logger import structlog, bound_contextvars
+from op_analytics.coreutils.request import new_session, get_data
+from op_analytics.coreutils.time import now_date
+from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.env.vault import env_get
 
 log = structlog.get_logger()
 

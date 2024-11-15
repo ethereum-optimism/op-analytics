@@ -3,7 +3,7 @@ import os
 import time
 
 import typer
-from op_coreutils.logger import structlog
+from op_analytics.coreutils.logger import structlog
 
 from op_analytics.cli.mainhelpers import find_apps
 
