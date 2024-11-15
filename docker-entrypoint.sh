@@ -22,7 +22,7 @@ case "$1" in
         ;;
     ingest)
         echo "Executing Ingestion..."
-        exec env GOLDSKY_FINAL=true uv run opdata chains ingest_blocks ALL m2days --read_from goldsky --write_to gcs
+        exec opdata chains ingest_blocks ALL m2days --read_from goldsky --write_to gcs
         ;;
     intermediate)
         echo "Executing Intermediate..."

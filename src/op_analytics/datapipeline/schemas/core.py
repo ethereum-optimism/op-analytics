@@ -30,8 +30,13 @@ def to_bigquery_type(arrow_type: pa.DataType) -> str:
         return f"ARRAY<{element}>"
 
     if pa.types.is_struct(arrow_type):
-        fields = ", ".join([f"{_.name} {to_bigquery_type(_.type)}" for _ in arrow_type.fields])
-        return f"STRUCT<{fields}>"
+        fields = []
+        for i in range(arrow_type.num_fields):
+            field = arrow_type[i]
+            fields.append(f"{field.name} {to_bigquery_type(field.type)}")
+
+        fields_str = ", ".join(fields)
+        return f"STRUCT<{fields_str}>"
 
     raise NotImplementedError()
 
