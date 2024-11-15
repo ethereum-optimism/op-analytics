@@ -14,7 +14,7 @@ def load_dotenv() -> dict:
     """Load env vars from the .env file.
 
     At the moment this is only used to pick up the value of the OP_ANALYTICS_VAULT
-    environment variable.m
+    environment variable.
     """
     dotenv_path = repo_path(".env")
 
