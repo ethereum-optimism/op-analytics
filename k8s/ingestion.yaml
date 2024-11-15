@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: op-analytics-ingestion
+  namespace: op-analytics
+  labels:
+    app: op-analytics
+    component: ingestion
+spec:
+  schedule: "8 * * * *"  # Runs every hour at minute 8
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: op-analytics-service-account
+          containers:
+          - name: python-runner
+            imagePullPolicy: IfNotPresent
+            image: ghcr.io/lithium323/op-analytics:v20241114.1
+            command: ["sleep"]
+            args: ["300"]
+            env:
+            - name: OPLABS_ENV
+              value: "prod"
+            - name: OPLABS_RUNTIME
+              value: "k8s"
+            resources:
+              limits:
+                cpu: 1
+                ephemeral-storage: 10Gi
+                memory: 4Gi
+              requests:
+                cpu: 1
+                ephemeral-storage: 10Gi
+                memory: 2Gi
+            volumeMounts:
+            - mountPath: "/var/secrets"
+              name: opanalyticsvault
+          restartPolicy: OnFailure 
+          volumes:
+          - name: opanalyticsvault
+            csi:
+              driver: secrets-store-gke.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: op-analytics-secret-provider-class
+  successfulJobsHistoryLimit: 3  # Retains the last 3 successful jobs
+  failedJobsHistoryLimit: 1      # Retains the last failed job
