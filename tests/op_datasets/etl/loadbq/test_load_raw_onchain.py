@@ -3,10 +3,10 @@ from unittest.mock import patch
 
 import polars as pl
 
-from op_coreutils.duckdb_local.client import init_client as duckb_local_client
-from op_coreutils.partitioned.dataaccess import init_data_access
-from op_datasets.etl.loadbq.superchain_raw import load_superchain_raw_to_bq
-from op_coreutils.partitioned import DataLocation
+from op_analytics.coreutils.duckdb_local.client import init_client as duckb_local_client
+from op_analytics.coreutils.partitioned.dataaccess import init_data_access
+from op_analytics.datapipeline.etl.loadbq.superchain_raw import load_superchain_raw_to_bq
+from op_analytics.coreutils.partitioned import DataLocation
 
 MOCK_MARKERS = [
     {
@@ -559,9 +559,9 @@ def test_load_tasks():
     duckdb_client.sql("TRUNCATE TABLE etl_monitor_dev.superchain_raw_bigquery_markers")
 
     with (
-        patch("op_datasets.etl.loadbq.superchain_raw.goldsky_mainnet_chains") as m1,
+        patch("op_analytics.datapipeline.etl.loadbq.superchain_raw.goldsky_mainnet_chains") as m1,
         patch.object(client, "markers_for_dates") as m2,
-        patch("op_datasets.etl.loadbq.loader.load_from_parquet_uris") as m3,
+        patch("op_analytics.datapipeline.etl.loadbq.loader.load_from_parquet_uris") as m3,
     ):
         m1.return_value = ["fraxtal"]
         m2.return_value = pl.DataFrame(

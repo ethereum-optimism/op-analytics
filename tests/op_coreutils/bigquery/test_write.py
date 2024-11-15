@@ -10,7 +10,7 @@ import polars as pl
 import pytest
 from google.cloud import bigquery
 
-from op_coreutils.bigquery.write import (
+from op_analytics.coreutils.bigquery.write import (
     OPLabsBigQueryError,
     init_client,
     most_recent_dates,

@@ -1,14 +1,12 @@
 from collections import defaultdict
 
-from op_datasets.schemas.core import CoreDataset
-from op_datasets.schemas import ONCHAIN_CURRENT_VERSION
-from op_coreutils.path import repo_path
-from op_coreutils.gsheets import update_gsheet
-
 import pandas as pd
-
 from py_markdown_table.markdown_table import markdown_table
 
+from op_analytics.coreutils.gsheets import update_gsheet
+from op_analytics.coreutils.path import repo_path
+from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
+from op_analytics.datapipeline.schemas.core import CoreDataset
 
 EXCLUDED_COLS = {"ingestion_metadata"}
 
@@ -23,6 +21,9 @@ def column_details_df(schema: CoreDataset) -> pd.DataFrame:
 def generate():
     template_path = repo_path("src/op_analytics/cli/subcommands/misc/docsgen/coreschemas.md")
     output_path = repo_path("sphinx/sections/onchain/coreschemas.md")
+
+    assert template_path is not None
+    assert output_path is not None
 
     with open(template_path) as fobj:
         template = fobj.read()

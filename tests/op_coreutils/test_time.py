@@ -1,5 +1,5 @@
 from datetime import datetime
-from op_coreutils.time import dt_fromepoch, datetime_fromepoch
+from op_analytics.coreutils.time import dt_fromepoch, datetime_fromepoch
 
 
 def test_epoch_dt():

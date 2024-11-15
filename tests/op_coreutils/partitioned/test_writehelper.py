@@ -4,11 +4,11 @@ import datetime
 from unittest.mock import patch
 
 
-from op_coreutils.duckdb_local import run_query
-from op_coreutils.partitioned.location import DataLocation
-from op_coreutils.partitioned.writehelper import ParqueWriteManager
-from op_coreutils.partitioned.output import ExpectedOutput, OutputData
-from op_coreutils.partitioned.types import SinkOutputRootPath, SinkMarkerPath
+from op_analytics.coreutils.duckdb_local import run_query
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.writehelper import ParqueWriteManager
+from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
+from op_analytics.coreutils.partitioned.types import SinkOutputRootPath, SinkMarkerPath
 
 
 def test_parquet_writer():
@@ -59,7 +59,7 @@ def test_parquet_writer():
         force=False,
     )
 
-    with patch("op_coreutils.partitioned.dataaccess.local_upload_parquet") as mock:
+    with patch("op_analytics.coreutils.partitioned.dataaccess.local_upload_parquet") as mock:
         manager.write(
             OutputData(
                 dataframe=df,

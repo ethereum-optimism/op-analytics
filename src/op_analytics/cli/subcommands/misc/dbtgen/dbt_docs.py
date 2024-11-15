@@ -1,7 +1,7 @@
 import json
 
-from op_coreutils.logger import structlog
-from op_coreutils.path import repo_path
+from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.path import repo_path
 
 log = structlog.get_logger()
 
@@ -17,6 +17,12 @@ def customize():
     catalog_path = repo_path("dbt/target/catalog.json")
     stylesheet_path = repo_path("docs/dbt/optimism.css")
     html_new_path = repo_path("docs/dbt/index.html")
+
+    assert html_path is not None
+    assert manifest_path is not None
+    assert catalog_path is not None
+    assert stylesheet_path is not None
+    assert html_new_path is not None
 
     with open(html_path, "r") as f:
         html_content = f.read()

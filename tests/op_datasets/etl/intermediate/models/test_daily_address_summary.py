@@ -1,8 +1,8 @@
 from datetime import date
 from decimal import Decimal
 
-from op_coreutils.testutils.inputdata import InputTestData
-from op_datasets.etl.intermediate.testutils import IntermediateModelTestBase
+from op_analytics.coreutils.testutils.inputdata import InputTestData
+from op_analytics.datapipeline.etl.intermediate.testutils import IntermediateModelTestBase
 
 
 SYSTEM_ADDRESS = "0xdeaddeaddeaddeaddeaddeaddeaddeaddead0001"
