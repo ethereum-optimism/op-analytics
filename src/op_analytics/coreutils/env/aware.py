@@ -52,5 +52,4 @@ def current_runtime():
 
 
 def is_k8s():
-    return True
-    # return current_runtime() == OPLabsRuntime.K8S
+    return current_runtime() == OPLabsRuntime.K8S
