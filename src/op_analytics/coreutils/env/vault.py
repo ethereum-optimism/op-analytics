@@ -11,6 +11,11 @@ _STORE: dict | None = None
 
 
 def load_dotenv() -> dict:
+    """Load env vars from the .env file.
+
+    At the moment this is only used to pick up the value of the OP_ANALYTICS_VAULT
+    environment variable.m
+    """
     dotenv_path = repo_path(".env")
 
     if dotenv_path is None:
@@ -29,18 +34,20 @@ def load_dotenv() -> dict:
 def load_vault() -> dict:
     default: bytes = base64.b64encode("{}".encode())
 
+    def _decode(x):
+        return json.loads(base64.b64decode(raw).decode())
+
     if is_k8s():
         with open("/var/secrets/op-analytics-vault.txt", "r") as fobj:
             raw = fobj.read()
-            result = json.loads(base64.b64decode(raw).decode())
+            result = _decode(raw)
     else:
-        dotenv = load_dotenv()
-        var_name = "OP_ANALYTICS_VAULT"
-        result = json.loads(base64.b64decode(dotenv.get(var_name, default)).decode())
+        raw = load_dotenv().get("OP_ANALYTICS_VAULT", default)
+        result = _decode(raw)
 
     if not isinstance(result, dict):
         # FOR SECURITY DO NOT PRINT THE LOADED "result".
-        raise ValueError(f"was expecting a dictionary at {var_name}")
+        raise ValueError("was expecting a dictionary")
     return result
 
 
