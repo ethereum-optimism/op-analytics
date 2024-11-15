@@ -1,6 +1,6 @@
 import io
 import re
-from datetime import date
+from datetime import date, datetime
 from unittest.mock import MagicMock
 
 
@@ -257,3 +257,123 @@ def test_upsert_partitioned_table():
     merge_query = mock_client.query.call_args[0][0]
     assert "MERGE" in merge_query
     assert "ON T.id = S.id AND T.dt = S.dt" in merge_query
+
+
+def test_most_recent_dates():
+    assert test_df["dt"].unique().to_list() == [
+        datetime(2024, 1, 1, 0, 0),
+        datetime(2024, 1, 2, 0, 0),
+        datetime(2024, 1, 3, 0, 0),
+        datetime(2024, 1, 4, 0, 0),
+        datetime(2024, 1, 5, 0, 0),
+        datetime(2024, 1, 6, 0, 0),
+        datetime(2024, 1, 7, 0, 0),
+        datetime(2024, 1, 8, 0, 0),
+        datetime(2024, 1, 9, 0, 0),
+        datetime(2024, 1, 10, 0, 0),
+        datetime(2024, 1, 11, 0, 0),
+        datetime(2024, 1, 12, 0, 0),
+        datetime(2024, 1, 13, 0, 0),
+        datetime(2024, 1, 14, 0, 0),
+        datetime(2024, 1, 15, 0, 0),
+        datetime(2024, 1, 16, 0, 0),
+        datetime(2024, 1, 17, 0, 0),
+        datetime(2024, 1, 18, 0, 0),
+        datetime(2024, 1, 19, 0, 0),
+        datetime(2024, 1, 20, 0, 0),
+        datetime(2024, 1, 21, 0, 0),
+        datetime(2024, 1, 22, 0, 0),
+        datetime(2024, 1, 23, 0, 0),
+        datetime(2024, 1, 24, 0, 0),
+        datetime(2024, 1, 25, 0, 0),
+        datetime(2024, 1, 26, 0, 0),
+        datetime(2024, 1, 27, 0, 0),
+        datetime(2024, 1, 28, 0, 0),
+        datetime(2024, 1, 29, 0, 0),
+        datetime(2024, 1, 30, 0, 0),
+        datetime(2024, 1, 31, 0, 0),
+        datetime(2024, 2, 1, 0, 0),
+        datetime(2024, 2, 2, 0, 0),
+        datetime(2024, 2, 3, 0, 0),
+        datetime(2024, 2, 4, 0, 0),
+        datetime(2024, 2, 5, 0, 0),
+        datetime(2024, 2, 6, 0, 0),
+        datetime(2024, 2, 7, 0, 0),
+        datetime(2024, 2, 8, 0, 0),
+        datetime(2024, 2, 9, 0, 0),
+        datetime(2024, 2, 10, 0, 0),
+        datetime(2024, 2, 11, 0, 0),
+        datetime(2024, 2, 12, 0, 0),
+        datetime(2024, 2, 13, 0, 0),
+        datetime(2024, 2, 14, 0, 0),
+        datetime(2024, 2, 15, 0, 0),
+        datetime(2024, 2, 16, 0, 0),
+        datetime(2024, 2, 17, 0, 0),
+        datetime(2024, 2, 18, 0, 0),
+        datetime(2024, 2, 19, 0, 0),
+        datetime(2024, 2, 20, 0, 0),
+        datetime(2024, 2, 21, 0, 0),
+        datetime(2024, 2, 22, 0, 0),
+        datetime(2024, 2, 23, 0, 0),
+        datetime(2024, 2, 24, 0, 0),
+        datetime(2024, 2, 25, 0, 0),
+        datetime(2024, 2, 26, 0, 0),
+        datetime(2024, 2, 27, 0, 0),
+        datetime(2024, 2, 28, 0, 0),
+        datetime(2024, 2, 29, 0, 0),
+        datetime(2024, 3, 1, 0, 0),
+        datetime(2024, 3, 2, 0, 0),
+        datetime(2024, 3, 3, 0, 0),
+        datetime(2024, 3, 4, 0, 0),
+        datetime(2024, 3, 5, 0, 0),
+        datetime(2024, 3, 6, 0, 0),
+        datetime(2024, 3, 7, 0, 0),
+        datetime(2024, 3, 8, 0, 0),
+        datetime(2024, 3, 9, 0, 0),
+        datetime(2024, 3, 10, 0, 0),
+        datetime(2024, 3, 11, 0, 0),
+        datetime(2024, 3, 12, 0, 0),
+        datetime(2024, 3, 13, 0, 0),
+        datetime(2024, 3, 14, 0, 0),
+        datetime(2024, 3, 15, 0, 0),
+        datetime(2024, 3, 16, 0, 0),
+        datetime(2024, 3, 17, 0, 0),
+        datetime(2024, 3, 18, 0, 0),
+        datetime(2024, 3, 19, 0, 0),
+        datetime(2024, 3, 20, 0, 0),
+        datetime(2024, 3, 21, 0, 0),
+        datetime(2024, 3, 22, 0, 0),
+        datetime(2024, 3, 23, 0, 0),
+        datetime(2024, 3, 24, 0, 0),
+        datetime(2024, 3, 25, 0, 0),
+        datetime(2024, 3, 26, 0, 0),
+        datetime(2024, 3, 27, 0, 0),
+        datetime(2024, 3, 28, 0, 0),
+        datetime(2024, 3, 29, 0, 0),
+        datetime(2024, 3, 30, 0, 0),
+        datetime(2024, 3, 31, 0, 0),
+        datetime(2024, 4, 1, 0, 0),
+        datetime(2024, 4, 2, 0, 0),
+        datetime(2024, 4, 3, 0, 0),
+        datetime(2024, 4, 4, 0, 0),
+        datetime(2024, 4, 5, 0, 0),
+        datetime(2024, 4, 6, 0, 0),
+        datetime(2024, 4, 7, 0, 0),
+        datetime(2024, 4, 8, 0, 0),
+        datetime(2024, 4, 9, 0, 0),
+    ]
+
+    actual = most_recent_dates(test_df, n_dates=3)["dt"].unique().to_list()
+    expected = [
+        datetime(2024, 4, 7, 0, 0),
+        datetime(2024, 4, 8, 0, 0),
+        datetime(2024, 4, 9, 0, 0),
+    ]
+    assert actual == expected
+
+    actual2 = (
+        most_recent_dates(test_df.rename({"dt": "date"}), n_dates=3, date_column="date")["date"]
+        .unique()
+        .to_list()
+    )
+    assert actual2 == expected

@@ -80,25 +80,26 @@ def overwrite_unpartitioned_table(df: pl.DataFrame, dataset: str, table_name: st
     )
 
 
-def most_recent_dates(df: pl.DataFrame, n_dates: int) -> pl.DataFrame:
+def most_recent_dates(df: pl.DataFrame, n_dates: int, date_column: str = "dt") -> pl.DataFrame:
     """Limit dataframe to the most recent N dates present in the data.
 
     This function is helpful when doing a dynamic partition overwrite. It allows us
     to select only recent partitions to update.
 
-    Assumes the input dataframe has a "dt" column.
+    Usually operates on partitioned datasets so the default date_column is "dt". If
+    needed for other purposes callers can specify a different date_column name.
     """
     delta = timedelta(days=n_dates)
 
-    if df.schema["dt"] == pl.String():
-        max_dt = date_fromstr(df.select(pl.col("dt").max()).item())
+    if df.schema[date_column] == pl.String():
+        max_dt = date_fromstr(df.select(pl.col(date_column).max()).item())
         min_dt = max_dt - delta
-        return df.filter(pl.col("dt") > min_dt.strftime("%Y-%m-%d"))
+        return df.filter(pl.col(date_column) > min_dt.strftime("%Y-%m-%d"))
 
-    elif isinstance(df.schema["dt"], (pl.Date, pl.Datetime)):
-        max_dt = df.select(pl.col("dt").max()).item()
+    elif isinstance(df.schema[date_column], (pl.Date, pl.Datetime)):
+        max_dt = df.select(pl.col(date_column).max()).item()
         min_dt = max_dt - delta
-        return df.filter(pl.col("dt") > min_dt)
+        return df.filter(pl.col(date_column) > min_dt)
 
     raise NotImplementedError()
 
