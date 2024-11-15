@@ -18,7 +18,7 @@ spec:
             imagePullPolicy: IfNotPresent
             image: ghcr.io/lithium323/op-analytics:v20241115.2
             command: ["tini", "-v", "--", "opdata"]
-            args: ["ingest_blocks", "ALL", "m18hours", "--read_from", "goldsky", "--write_to", "gcs"]
+            args: ["chains", "ingest_blocks", "ALL", "m18hours", "--read_from", "goldsky", "--write_to", "gcs"]
             env:
             - name: OPLABS_ENV
               value: "prod"
