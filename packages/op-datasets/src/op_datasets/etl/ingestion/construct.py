@@ -36,7 +36,7 @@ def construct_tasks(
             return block_range_for_dates(chain=ch, date_spec=range_spec)
 
         blocks_by_chain = run_concurrently(blocks_for_chain, targets=chains, max_workers=4)
-        max_requested_timestamp = date_range.max_ts
+        max_requested_timestamp = date_range.max_requested_timestamp
 
     # Batches to be ingested for each chain.
     chain_batches: dict[str, list[BlockBatch]] = {}

@@ -17,6 +17,8 @@ class DateRange:
     min: date  # inclusive
     max: date  # exclusive
 
+    max_requested_timestamp: int | None
+
     def __len__(self):
         diff = self.max - self.min
         return diff.days
@@ -49,20 +51,34 @@ class DateRange:
         if minmax := MIN_MAX_RE.fullmatch(date_range_spec):
             min_str = minmax.groupdict()["min"]
             max_str = minmax.groupdict()["max"]
-            return cls(date.fromisoformat(min_str), date.fromisoformat(max_str))
+            max_date = date.fromisoformat(max_str)
+            return cls(
+                min=date.fromisoformat(min_str),
+                max=max_date,
+                max_requested_timestamp=date_toepoch(max_date),
+            )
 
         if plusstr := PLUS_RE.fullmatch(date_range_spec):
             min_val = date.fromisoformat(plusstr.groupdict()["min"])
             plus_val = int(plusstr.groupdict()["plus"])
-            return cls(min_val, min_val + timedelta(days=plus_val))
+
+            max_date = min_val + timedelta(days=plus_val)
+            return cls(
+                min=min_val,
+                max=max_date,
+                max_requested_timestamp=date_toepoch(max_date),
+            )
 
         if mdaysstr := MDAYS_RE.fullmatch(date_range_spec):
             num_days = int(mdaysstr.groupdict()["num"])
 
-            # The max_val should be understood as "up to that date"
-            # because it is not inclusive.
+            # NOTE: Remember that max is exclusive.
             max_val = now_date() + timedelta(days=1)
 
-            return cls(max_val - timedelta(days=num_days), max_val)
+            return cls(
+                min=max_val - timedelta(days=num_days),
+                max=max_val,
+                max_requested_timestamp=None,  # the max was not explicitly requested
+            )
 
         raise NotImplementedError()
