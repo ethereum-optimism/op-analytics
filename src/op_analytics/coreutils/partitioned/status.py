@@ -32,7 +32,7 @@ def all_outputs_complete(
             else:
                 incomplete.append(marker)
 
-        log.info(f"{len(complete)} complete, {len(incomplete)} incomplete on sink={location.name}")
+        log.debug(f"{len(complete)} complete, {len(incomplete)} incomplete on sink={location.name}")
 
         if incomplete:
             result = False

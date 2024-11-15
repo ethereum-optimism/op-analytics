@@ -36,6 +36,15 @@ def date_toepoch(dateval: date) -> int:
     return int(dtval.timestamp())
 
 
+def datetime_toepoch(datetimeval: datetime) -> int:
+    assert datetimeval.tzinfo is None
+    return int(datetimeval.replace(tzinfo=timezone.utc).timestamp())
+
+
+def datetime_fromdate(dateval: date) -> datetime:
+    return datetime(year=dateval.year, month=dateval.month, day=dateval.day, tzinfo=None)
+
+
 def date_fromstr(val: str) -> date:
     return date.fromisoformat(val)
 

@@ -12,13 +12,13 @@ def get_credentials():
         msg = "Found vault variable GOOGLE_SERVICE_ACCOUNT"
 
         if isinstance(credentials, str) and os.path.isfile(credentials):
-            log.info(f"{msg} (points to file)")
+            log.debug(f"{msg} (points to file)")
             return service_account.Credentials.from_service_account_file(credentials)
         else:
-            log.info(f"{msg} (has JSON key)")
+            log.debug(f"{msg} (has JSON key)")
             return service_account.Credentials.from_service_account_info(credentials)
 
-    log.info(
+    log.warning(
         "gcpauth.py: vault variable GOOGLE_SERVICE_ACCOUNT is not configured. Will use default auth process."
     )
     return None
