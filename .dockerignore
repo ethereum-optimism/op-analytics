@@ -1,0 +1,6 @@
+# Ignore everything
+*
+
+# Include only what's needed
+!dist/*.whl
+!docker-entrypoint.sh
