@@ -32,6 +32,9 @@ def load_dotenv() -> dict:
     return result
 
 
+VAULT_ENV_VAR = "OP_ANALYTICS_VAULT"
+
+
 def load_vault() -> dict:
     default: bytes = base64.b64encode("{}".encode())
 
@@ -43,7 +46,10 @@ def load_vault() -> dict:
             raw = fobj.read()
             result = _decode(raw)
     else:
-        raw = load_dotenv().get("OP_ANALYTICS_VAULT", default)
+        if VAULT_ENV_VAR in os.environ:
+            raw = os.environ[VAULT_ENV_VAR]
+        else:
+            raw = load_dotenv().get("OP_ANALYTICS_VAULT", default)
         result = _decode(raw)
 
     if not isinstance(result, dict):
