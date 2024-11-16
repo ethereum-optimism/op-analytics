@@ -19,7 +19,7 @@ EOT
 COPY dist/ /_dist/
 RUN --mount=type=cache,target=/root/.cache <<EOT
 cd /_dist
-pip install op_analytics-24.11.140-py3-none-any.whl
+pip install *.whl
 EOT
 
 

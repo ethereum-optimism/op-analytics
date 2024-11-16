@@ -1,5 +1,6 @@
 import json
 import base64
+import os
 
 from op_analytics.coreutils.env.aware import is_k8s
 from op_analytics.coreutils.logger import structlog
@@ -18,8 +19,8 @@ def load_dotenv() -> dict:
     """
     dotenv_path = repo_path(".env")
 
-    if dotenv_path is None:
-        log.error("Did not find .env. No env vars will be loaded.")
+    if dotenv_path is None or not os.path.isfile(dotenv_path):
+        log.warning("Did not find .env. No env vars will be loaded.")
         return {}
 
     result = {}
