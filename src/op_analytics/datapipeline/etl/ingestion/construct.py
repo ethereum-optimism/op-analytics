@@ -56,7 +56,6 @@ def construct_tasks(
             )
         else:
             log.info(f"prepared chain={chain!r}: {len(batches)} batch(es)")
-        breakpoint()
 
     # Collect a single list of tasks to perform across all chains.
     all_tasks: list[IngestionTask] = []
