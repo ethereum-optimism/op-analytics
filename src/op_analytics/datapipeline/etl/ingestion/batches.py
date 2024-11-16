@@ -65,6 +65,17 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # sustained transaction count of ~600k/day.
         Delimiter(block_number=4700000, batch_size=4000),
     ],
+    "ham": [
+        Delimiter(block_number=0, batch_size=20000),
+        # Reducing due to large memory usage fetchin traces.
+        Delimiter(block_number=15160000, batch_size=8000),
+    ],
+    "swan": [
+        Delimiter(block_number=0, batch_size=20000),
+        # Reducing to decrease pipeline latency. Swan has less blocks per second so
+        # 20k blocks means more hours.
+        Delimiter(block_number=2620000, batch_size=8000),
+    ],
     # Testnets
     "op_sepolia": [Delimiter(0, 5000)],
     # Default
@@ -72,7 +83,6 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "bob": [Delimiter(0, 20000)],
     "cyber": [Delimiter(0, 20000)],
     "fraxtal": [Delimiter(0, 20000)],
-    "ham": [Delimiter(0, 20000)],
     "kroma": [Delimiter(0, 20000)],
     "lisk": [Delimiter(0, 20000)],
     "lyra": [Delimiter(0, 20000)],
@@ -83,7 +93,6 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "race": [Delimiter(0, 20000)],
     "redstone": [Delimiter(0, 20000)],
     "shape": [Delimiter(0, 20000)],
-    "swan": [Delimiter(0, 20000)],
     "xterio": [Delimiter(0, 20000)],
     "zora": [Delimiter(0, 20000)],
 }

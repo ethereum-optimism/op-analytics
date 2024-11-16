@@ -128,7 +128,7 @@ def construct_input_batches(
                     num_suspect += 1
 
     log.info(
-        f"Prepared {len(inputs)} input batches. {num_suspect} batches where input was not ready but will be ingested anyways."
+        f"prepared {len(inputs)} input batches. {num_suspect} batches where input was not ready but will be ingested anyways."
     )
     return inputs
 
