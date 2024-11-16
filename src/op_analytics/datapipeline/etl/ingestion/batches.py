@@ -74,7 +74,7 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=0, batch_size=20000),
         # Reducing to decrease pipeline latency. Swan has less blocks per second so
         # 20k blocks means more hours.
-        Delimiter(block_number=2620000, batch_size=8000),
+        Delimiter(block_number=2640000, batch_size=8000),
     ],
     # Testnets
     "op_sepolia": [Delimiter(0, 5000)],
