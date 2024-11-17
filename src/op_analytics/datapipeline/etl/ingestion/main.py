@@ -38,7 +38,7 @@ def ingest(
     clear_contextvars()
 
     tasks = construct_tasks(chains, range_spec, read_from, write_to)
-    log.info(f"Constructed {len(tasks)} tasks.")
+    log.info(f"constructed {len(tasks)} tasks.")
 
     if dryrun:
         log.info("DRYRUN: No work will be done.")

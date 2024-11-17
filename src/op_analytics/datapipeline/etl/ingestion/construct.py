@@ -52,7 +52,7 @@ def construct_tasks(
         if batches:
             total_blocks = batches[-1].max - batches[0].min
             log.info(
-                f"Prepared chain={chain!r}: {len(batches)} batch(es) {total_blocks} total blocks starting at #{batches[0].min}"
+                f"prepared chain={chain}: {len(batches)} batch(es) {total_blocks} total blocks starting at #{batches[0].min}"
             )
         else:
             log.info(f"prepared chain={chain!r}: {len(batches)} batch(es)")
