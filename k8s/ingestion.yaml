@@ -29,11 +29,11 @@ spec:
             resources:
               limits:
                 cpu: 1
-                ephemeral-storage: 20Gi
+                ephemeral-storage: 10Gi
                 memory: 8Gi
               requests:
                 cpu: 1
-                ephemeral-storage: 20Gi
+                ephemeral-storage: 10Gi
                 memory: 4Gi
             volumeMounts:
             - mountPath: "/var/secrets"
