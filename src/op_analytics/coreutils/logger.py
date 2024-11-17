@@ -1,5 +1,6 @@
 import logging
 
+import orjson
 import structlog
 from structlog.contextvars import bind_contextvars, bound_contextvars, clear_contextvars
 from structlog.typing import EventDict
@@ -38,11 +39,7 @@ def configuration():
                 structlog.processors.add_log_level,
                 structlog.dev.set_exc_info,
                 structlog.processors.TimeStamper(fmt="iso", utc=True),
-                # structlog.processors.JSONRenderer(serializer=orjson.dumps),
-                structlog.processors.LogfmtRenderer(
-                    key_order=["event"],
-                    drop_missing=False,
-                ),
+                structlog.processors.JSONRenderer(serializer=orjson.dumps),
             ],
             wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
             context_class=dict,
