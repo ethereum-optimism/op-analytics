@@ -1,8 +1,8 @@
 import multiprocessing as mp
+import resource
 
 import polars as pl
 from op_analytics.coreutils.logger import (
-    bind_contextvars,
     bound_contextvars,
     clear_contextvars,
     human_interval,
@@ -48,32 +48,31 @@ def ingest(
     executed_ok = 0
     for i, task in enumerate(tasks):
         task.progress_indicator = f"{i+1}/{len(tasks)}"
-        bind_contextvars(**task.contextvars)
+        with bound_contextvars(**task.contextvars):
+            # Check output/input status for the task.
+            checker(task)
 
-        # Check output/input status for the task.
-        checker(task)
+            # Decide if we can run this task.
+            if not task.inputs_ready:
+                log.debug("skipping task")
+                continue
 
-        # Decide if we can run this task.
-        if not task.inputs_ready:
-            log.debug("skipping task")
-            continue
+            # Decide if we need to run this task.
+            if task.data_writer.is_complete and not force:
+                continue
+            if force:
+                log.info("force flag detected")
+                task.data_writer.force = True
 
-        # Decide if we need to run this task.
-        if task.data_writer.is_complete and not force:
-            continue
-        if force:
-            log.info("force flag detected")
-            task.data_writer.force = True
+            executed += 1
+            success = execute(task, fork_process)
+            executed_ok += 1 if success else 0
 
-        executed += 1
-        success = execute(task, fork_process)
-        executed_ok += 1 if success else 0
+            if max_tasks is not None and executed >= max_tasks:
+                log.warning(f"stopping after {executed} tasks")
+                break
 
-        if max_tasks is not None and executed >= max_tasks:
-            log.warning(f"stopping after {executed} tasks")
-            break
-
-    log.info(f"done. {executed_ok} OK / {executed} TOTAL tasks")
+    log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
 
 
 def execute(task, fork_process: bool) -> bool:
@@ -84,11 +83,13 @@ def execute(task, fork_process: bool) -> bool:
         p.start()
         p.join()
 
+        max_rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+
         if p.exitcode != 0:
-            log.error(f"task execute process exit code: {p.exitcode}")
+            log.error(f"task exit code: {p.exitcode}", maxrss=max_rss)
             return False
         else:
-            log.info("task execute process exit 0")
+            log.info("task exit 0", maxrss=max_rss)
             return True
     else:
         steps(task)
@@ -109,7 +110,7 @@ def steps(task):
 
 def reader(task: IngestionTask):
     """Read core datasets from the specified source."""
-    log.info("reading core datasets")
+    log.info("querying core datasets")
     dataframes = read_from_source(
         provider=task.read_from,
         datasets=ONCHAIN_CURRENT_VERSION,
@@ -158,7 +159,7 @@ def auditor(task: IngestionTask):
             else:
                 passing_audits += 1
 
-    log.info(f"audits OK [{passing_audits} checks]")
+    log.info(f"audit {passing_audits} checks OK")
 
     # Default values for "chain" and "dt" to be used in cases where one of the
     # other datsets is empty.  On chains with very low throughput (e.g. race) we

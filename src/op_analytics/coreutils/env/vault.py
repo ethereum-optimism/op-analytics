@@ -71,7 +71,7 @@ def init() -> None:
     _STORE = {}
     for key, val in data.items():
         _STORE[key] = val
-    log.info(f"loaded vault: {len(_STORE)} items")
+    log.debug(f"loaded vault: {len(_STORE)} items")
 
 
 def env_get(key: str):
