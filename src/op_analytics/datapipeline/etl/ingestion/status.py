@@ -71,9 +71,7 @@ def is_safe(
     diff = chain_max_block - block_batch.max
     if diff < SAFE_BLOCK_LAG:
         log.warning(
-            "skipping unsafe batch: too close to max block",
-            chain_max=f"#{chain_max_block}",
-            diff=diff,
+            f"skipping unsafe batch: too close to max block: chain {chain_max_block} is {diff} ahead"
         )
         return False
 
@@ -85,13 +83,14 @@ def is_safe(
 
     ts_diff = requested_time - chain_max
     ts_diff_hours = round(ts_diff.total_seconds() / 3600.0, 1)
+    diffstr = f"{ts_diff_hours}hrs"
 
     if ts_diff > SAFE_PROVIDER_SLA:
         log.warning(
-            "skipping unsafe batch: provider may be significantly lagging behind",
+            f"skipping unsafe batch: provider lag: {diffstr}",
             provider_max_ts=chain_max.isoformat(),
             requested_time=requested_time.isoformat(),
-            diff=f"{ts_diff_hours}hrs",
+            diff=diffstr,
         )
         return False
     return True
