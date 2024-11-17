@@ -49,6 +49,11 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # Traces filed size is ~25MB.
         Delimiter(block_number=21200000, batch_size=400),
     ],
+    "ham": [
+        Delimiter(block_number=0, batch_size=20000),
+        # Reducing due to large memory usage fetchin traces.
+        Delimiter(block_number=15160000, batch_size=8000),
+    ],
     "op": [
         Delimiter(block_number=0, batch_size=10000),
         Delimiter(block_number=62000000, batch_size=5000),
@@ -59,22 +64,22 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # of ~130k transactions per second.
         Delimiter(block_number=0, batch_size=5000),
     ],
-    "worldchain": [
+    "redstone": [
         Delimiter(block_number=0, batch_size=20000),
-        # On 2024/10/13 (after launching) worldchain started having
-        # sustained transaction count of ~600k/day.
-        Delimiter(block_number=4700000, batch_size=4000),
-    ],
-    "ham": [
-        Delimiter(block_number=0, batch_size=20000),
-        # Reducing due to large memory usage fetchin traces.
-        Delimiter(block_number=15160000, batch_size=8000),
+        # Reduce memory use for Redstone batches.
+        Delimiter(block_number=9820000, batch_size=10000),
     ],
     "swan": [
         Delimiter(block_number=0, batch_size=20000),
         # Reducing to decrease pipeline latency. Swan has less blocks per second so
         # 20k blocks means more hours.
         Delimiter(block_number=2640000, batch_size=8000),
+    ],
+    "worldchain": [
+        Delimiter(block_number=0, batch_size=20000),
+        # On 2024/10/13 (after launching) worldchain started having
+        # sustained transaction count of ~600k/day.
+        Delimiter(block_number=4700000, batch_size=4000),
     ],
     # Testnets
     "op_sepolia": [Delimiter(0, 5000)],
@@ -91,7 +96,6 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "mode": [Delimiter(0, 20000)],
     "polynomial": [Delimiter(0, 20000)],
     "race": [Delimiter(0, 20000)],
-    "redstone": [Delimiter(0, 20000)],
     "shape": [Delimiter(0, 20000)],
     "xterio": [Delimiter(0, 20000)],
     "zora": [Delimiter(0, 20000)],

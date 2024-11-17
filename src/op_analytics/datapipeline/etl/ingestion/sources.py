@@ -57,13 +57,13 @@ def _read_from_goldsky(
     def func(key):
         start = time.time()
         log.debug(
-            "Querying...",
+            "querying...",
             dataset=key,
             **block_batch.contextvars,
         )
         result = run_goldsky_query(queries[key])
-        log.info(
-            f"Query success {time.time() - start:.2f}s {len(result)} rows",
+        log.debug(
+            f"query success {time.time() - start:.2f}s {len(result)} rows",
             dataset=key,
             **block_batch.contextvars,
         )

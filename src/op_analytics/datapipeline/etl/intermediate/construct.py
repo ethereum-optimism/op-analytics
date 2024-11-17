@@ -99,5 +99,5 @@ def construct_tasks(
             )
         )
 
-    log.info(f"Constructed {len(tasks)} tasks.")
+    log.info(f"constructed {len(tasks)} tasks.")
     return tasks
