@@ -75,4 +75,4 @@ def insert_arrow(database: str, table: str, df_arrow: pa.Table):
 
     my_table = df_arrow
     client.sql(f"INSERT INTO {database}.{table} SELECT * FROM my_table")
-    log.info(f"Inserted [{human_rows(len(my_table))}] to {database}.{table}")
+    log.info(f"done inserting [{human_rows(len(my_table))}] to {database}.{table}")

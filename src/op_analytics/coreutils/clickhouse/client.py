@@ -23,7 +23,7 @@ _INIT_LOCK = Lock()
 
 
 def connect(instance: ClickHouseInstance):
-    log.info(f"Connecting to {instance} Clickhouse client...")
+    log.debug(f"connecting to {instance} Clickhouse client...")
     # Server-generated ids (as opoosed to client-generated) are required for running
     # concurrent queries. See https://clickhouse.com/docs/en/integrations/python#managing-clickhouse-session-ids.
     clickhouse_connect.common.set_setting("autogenerate_session_id", False)
@@ -33,7 +33,7 @@ def connect(instance: ClickHouseInstance):
         username=env_get(f"CLICKHOUSE_{instance}_USER"),
         password=env_get(f"CLICKHOUSE_{instance}_PASSWORD"),
     )
-    log.info(f"Initialized {instance} Clickhouse client.")
+    log.debug(f"initialized {instance} Clickhouse client.")
     return client
 
 
@@ -131,5 +131,5 @@ def insert_arrow(
 
     log.log(
         log_level,
-        f"Inserted [{human_rows(result.written_rows)} {human_size(result.written_bytes())}] to {database}.{table}",
+        f"done inserting [{human_rows(result.written_rows)} {human_size(result.written_bytes())}] to {database}.{table}",
     )

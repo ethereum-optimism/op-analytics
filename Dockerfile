@@ -19,7 +19,7 @@ EOT
 COPY dist/ /_dist/
 RUN --mount=type=cache,target=/root/.cache <<EOT
 cd /_dist
-pip install op_analytics-24.11.140-py3-none-any.whl
+pip install *.whl
 EOT
 
 
@@ -30,7 +30,7 @@ useradd -r -d /app -g app -N app
 EOT
 
 
-COPY docker-entrypoint.sh /app/docker-entrypoint.sh
-ENTRYPOINT ["tini", "-v", "--", "/app/docker-entrypoint.sh"]
+# This is a dummy entrypoint. Override it in kubernetes manifest.
+ENTRYPOINT ["tini", "-v", "--", "opdata", "chains", "health"]
 # See <https://hynek.me/articles/docker-signals/>.
 STOPSIGNAL SIGINT

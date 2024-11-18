@@ -49,6 +49,11 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # Traces filed size is ~25MB.
         Delimiter(block_number=21200000, batch_size=400),
     ],
+    "ham": [
+        Delimiter(block_number=0, batch_size=20000),
+        # Reducing due to large memory usage fetchin traces.
+        Delimiter(block_number=15160000, batch_size=8000),
+    ],
     "op": [
         Delimiter(block_number=0, batch_size=10000),
         Delimiter(block_number=62000000, batch_size=5000),
@@ -58,6 +63,17 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # At various times during 2024 orderly had a sustained peak
         # of ~130k transactions per second.
         Delimiter(block_number=0, batch_size=5000),
+    ],
+    "redstone": [
+        Delimiter(block_number=0, batch_size=20000),
+        # Reduce memory use for Redstone batches.
+        Delimiter(block_number=9820000, batch_size=10000),
+    ],
+    "swan": [
+        Delimiter(block_number=0, batch_size=20000),
+        # Reducing to decrease pipeline latency. Swan has less blocks per second so
+        # 20k blocks means more hours.
+        Delimiter(block_number=2640000, batch_size=8000),
     ],
     "worldchain": [
         Delimiter(block_number=0, batch_size=20000),
@@ -72,7 +88,6 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "bob": [Delimiter(0, 20000)],
     "cyber": [Delimiter(0, 20000)],
     "fraxtal": [Delimiter(0, 20000)],
-    "ham": [Delimiter(0, 20000)],
     "kroma": [Delimiter(0, 20000)],
     "lisk": [Delimiter(0, 20000)],
     "lyra": [Delimiter(0, 20000)],
@@ -81,9 +96,7 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "mode": [Delimiter(0, 20000)],
     "polynomial": [Delimiter(0, 20000)],
     "race": [Delimiter(0, 20000)],
-    "redstone": [Delimiter(0, 20000)],
     "shape": [Delimiter(0, 20000)],
-    "swan": [Delimiter(0, 20000)],
     "xterio": [Delimiter(0, 20000)],
     "zora": [Delimiter(0, 20000)],
 }

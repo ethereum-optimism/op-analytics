@@ -1,9 +1,11 @@
 import logging
+
+import orjson
 import structlog
-from structlog.contextvars import bind_contextvars, clear_contextvars, bound_contextvars
+from structlog.contextvars import bind_contextvars, bound_contextvars, clear_contextvars
 from structlog.typing import EventDict
 
-from op_analytics.coreutils.env.aware import current_environment
+from op_analytics.coreutils.env.aware import current_environment, is_k8s
 
 CURRENT_ENV = current_environment().name
 
@@ -15,21 +17,56 @@ def add_oplabs_env(logger: logging.Logger, method_name: str, event_dict: EventDi
     return event_dict
 
 
-structlog.configure(
-    processors=[
-        structlog.contextvars.merge_contextvars,
-        add_oplabs_env,
-        structlog.processors.add_log_level,
-        structlog.processors.StackInfoRenderer(),
-        structlog.dev.set_exc_info,
-        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
-        structlog.dev.ConsoleRenderer(),
-    ],
-    wrapper_class=structlog.make_filtering_bound_logger(logging.DEBUG),
-    context_class=dict,
-    logger_factory=structlog.PrintLoggerFactory(),
-    cache_logger_on_first_use=False,
+def pass_through(logger: logging.Logger, method_name: str, event_dict: EventDict) -> EventDict:
+    return event_dict
+
+
+CALLSITE_PARAMETERS = structlog.processors.CallsiteParameterAdder(
+    [
+        structlog.processors.CallsiteParameter.FILENAME,
+        structlog.processors.CallsiteParameter.LINENO,
+    ]
 )
+
+
+def configuration():
+    if is_k8s():
+        return dict(
+            processors=[
+                CALLSITE_PARAMETERS,
+                structlog.contextvars.merge_contextvars,
+                add_oplabs_env,
+                structlog.processors.add_log_level,
+                structlog.dev.set_exc_info,
+                structlog.processors.TimeStamper(fmt="iso", utc=True),
+                structlog.processors.JSONRenderer(serializer=orjson.dumps),
+            ],
+            wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
+            context_class=dict,
+            logger_factory=structlog.BytesLoggerFactory(),
+            cache_logger_on_first_use=True,
+        )
+    else:
+        return dict(
+            processors=[
+                CALLSITE_PARAMETERS,
+                structlog.contextvars.merge_contextvars,
+                add_oplabs_env,
+                structlog.processors.add_log_level,
+                structlog.processors.StackInfoRenderer(),
+                structlog.dev.set_exc_info,
+                structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
+                structlog.dev.ConsoleRenderer(),
+            ],
+            wrapper_class=structlog.make_filtering_bound_logger(logging.DEBUG),
+            context_class=dict,
+            logger_factory=structlog.PrintLoggerFactory(),
+            cache_logger_on_first_use=False,
+        )
+
+
+structlog.configure(**configuration())
+
 
 __all__ = ["structlog", "bind_contextvars", "clear_contextvars", "bound_contextvars"]
 

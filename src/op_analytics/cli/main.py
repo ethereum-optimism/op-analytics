@@ -29,7 +29,7 @@ for subapp in find_apps(os.path.join(os.path.dirname(__file__), "subcommands")):
     app.add_typer(subapp_module.app, name=subapp, no_args_is_help=True)
 
     elapsed = time.time() - start
-    log.info(f"Loaded subcommand: {subapp} ... {elapsed:.2f} seconds")
+    log.debug(f"Loaded subcommand: {subapp} ... {elapsed:.2f} seconds")
 
 
 def entrypoint():
