@@ -1,4 +1,5 @@
 import logging
+import resource
 import warnings
 
 import gcsfs
@@ -51,10 +52,13 @@ def fsclient_upload_parquet(client, path: str, df: pl.DataFrame, log_level=loggi
     with client.open(path, "wb") as fobj:
         df.write_parquet(fobj)
         size = fobj.tell()
+
+        max_rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
         log.log(
             log_level,
             f"done writing {human_rows(len(df))} {human_size(size)}",
             rows=len(df),
             size=size,
             path=path,
+            maxrss=max_rss,
         )

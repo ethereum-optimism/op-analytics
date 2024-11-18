@@ -21,6 +21,7 @@ def pass_through(logger: logging.Logger, method_name: str, event_dict: EventDict
     return event_dict
 
 
+# If needed for debugging adding this processor will provide filename and line for the log.
 CALLSITE_PARAMETERS = structlog.processors.CallsiteParameterAdder(
     [
         structlog.processors.CallsiteParameter.FILENAME,
@@ -33,9 +34,8 @@ def configuration():
     if is_k8s():
         return dict(
             processors=[
-                CALLSITE_PARAMETERS,
+                # CALLSITE_PARAMETERS,
                 structlog.contextvars.merge_contextvars,
-                add_oplabs_env,
                 structlog.processors.add_log_level,
                 structlog.dev.set_exc_info,
                 structlog.processors.TimeStamper(fmt="iso", utc=True),
