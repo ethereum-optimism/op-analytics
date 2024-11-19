@@ -13,7 +13,7 @@ log = structlog.get_logger()
 class RenderedSQLQuery:
     """Results of rendering a TemplatedSQLQuery"""
 
-    name: str
+    template_name: str
     query: str
 
 
@@ -24,7 +24,6 @@ class TemplatedSQLQuery:
     Models can utilize templated sql queries as part of their processing logic."""
 
     template_name: str
-    result_name: str
     context: dict[str, Any]
 
     @property
@@ -60,13 +59,13 @@ class TemplatedSQLQuery:
                 fobj.write(rendered)
 
             msg = f"Rendered SQL template does not match expectation. Please update: {self.rendered_file}"
-            if current_environment() == OPLabsEnvironment.UNITTEST:
+            if current_environment() == OPLabsEnvironment.CI:
                 raise SQLRenderError(msg)
             else:
                 log.warning(msg)
 
         return RenderedSQLQuery(
-            name=self.result_name,
+            template_name=self.template_name,
             query=rendered,
         )
 

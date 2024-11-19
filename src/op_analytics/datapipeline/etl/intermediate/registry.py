@@ -15,11 +15,7 @@ _LOADED = False
 
 
 class ModelFunction(Protocol):
-    def __call__(
-        self,
-        duckdb_client: duckdb.DuckDBPyConnection,
-        rendered_queries: dict[str, RenderedSQLQuery] | None,
-    ) -> NamedRelations: ...
+    def __call__(self, duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations: ...
 
 
 class ModelInputDataReader(Protocol):
@@ -31,7 +27,7 @@ class PythonModel:
     name: str
     input_datasets: list[str]
     expected_output_datasets: list[str]
-    rendered_queries: dict[str, RenderedSQLQuery]
+    duckdb_views: list[RenderedSQLQuery]
     model_func: ModelFunction
 
     @property
@@ -45,25 +41,33 @@ class PythonModelExecutor:
     client: duckdb.DuckDBPyConnection
     data_reader: ModelInputDataReader
 
-    def input_view_name(self, dataset: str) -> str:
-        return dataset
-
     def __enter__(self):
         # Register input data as views on the duckdb client.
         for dataset in self.model.input_datasets:
             self.client.register(
-                view_name=self.input_view_name(dataset),
+                view_name=dataset,
                 python_object=self.data_reader.duckdb_relation(dataset),
             )
+
+        # Register the rendered views.
+        for view in self.model.duckdb_views:
+            self.client.register(
+                view_name=view.template_name,
+                python_object=self.client.sql(view.query),
+            )
+
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         # Unregister all views so client is good to run other models.
         for dataset in self.model.input_datasets:
-            self.client.unregister(view_name=self.input_view_name(dataset))
+            self.client.unregister(view_name=dataset)
+
+        for view in self.model.duckdb_views:
+            self.client.unregister(view_name=view.template_name)
 
     def execute(self):
-        return self.model.func(self.client, self.model.rendered_queries)
+        return self.model.func(self.client)
 
 
 REGISTERED_INTERMEDIATE_MODELS: dict[str, PythonModel] = {}
@@ -72,21 +76,21 @@ REGISTERED_INTERMEDIATE_MODELS: dict[str, PythonModel] = {}
 def register_model(
     input_datasets: list[str],
     expected_outputs: list[str],
-    query_templates: list[TemplatedSQLQuery] | None = None,
+    duckdb_views: list[TemplatedSQLQuery],
 ):
     def decorator(func):
         model_name = func.__name__
         with bound_contextvars(model=model_name):
-            rendered_queries = {}
-            for q in query_templates or []:
+            rendered_views = []
+            for q in duckdb_views or []:
                 rendered = q.render()
-                rendered_queries[rendered.name] = rendered
+                rendered_views.append(rendered)
 
             REGISTERED_INTERMEDIATE_MODELS[model_name] = PythonModel(
                 name=model_name,
                 input_datasets=input_datasets,
                 expected_output_datasets=expected_outputs,
-                rendered_queries=rendered_queries,
+                duckdb_views=rendered_views,
                 model_func=func,
             )
         return func
