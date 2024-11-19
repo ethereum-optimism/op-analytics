@@ -14,12 +14,12 @@ log = structlog.get_logger()
 PROTOCOLS_ENDPOINT = "https://api.llama.fi/protocols"
 PROTOCOL_DETAILS_ENDPOINT = "https://api.llama.fi/protocol/{slug}"
 
-BQ_DATASET = "temp"
+BQ_DATASET = "uploads_api"
 PROTOCOL_METADATA_TABLE = "defillama_protocols_metadata"
 PROTOCOL_TVL_DATA_TABLE = "defillama_protocols_tvl"
 PROTOCOL_TOKEN_TVL_DATA_TABLE = "defillama_protocols_token_tvl"
 
-TVL_TABLE_LAST_N_DAYS = 100_000
+TVL_TABLE_LAST_N_DAYS = 7
 
 
 @dataclass
@@ -57,7 +57,7 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
         dataset=BQ_DATASET,
         table_name=PROTOCOL_METADATA_TABLE,
         unique_keys=["protocol_slug"],
-        create_if_not_exists=True,  # Set to True on first run
+        create_if_not_exists=False,  # Set to True on first run
     )
 
     upsert_unpartitioned_table(
@@ -65,7 +65,7 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
         dataset=BQ_DATASET,
         table_name=PROTOCOL_TVL_DATA_TABLE,
         unique_keys=["protocol_slug", "chain", "date"],
-        create_if_not_exists=True,  # Set to True on first run
+        create_if_not_exists=False,  # Set to True on first run
     )
 
     upsert_unpartitioned_table(
@@ -73,7 +73,7 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
         dataset=BQ_DATASET,
         table_name=PROTOCOL_TOKEN_TVL_DATA_TABLE,
         unique_keys=["protocol_slug", "chain", "date", "token"],
-        create_if_not_exists=True,  # Set to True on first run
+        create_if_not_exists=False,  # Set to True on first run
     )
 
     return DefillamaProtocols(

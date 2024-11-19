@@ -15,7 +15,7 @@ CHAINS_METADATA_ENDPOINT = "https://api.llama.fi/config"
 CHAINS_ENDPOINT = "https://api.llama.fi/v2/chains"
 CHAINS_TVL_ENDPOINT = "https://api.llama.fi/v2/historicalChainTvl/{slug}"
 
-BQ_DATASET = "temp"
+BQ_DATASET = "uploads_api"
 
 CHAIN_METADATA_TABLE = "defillama_chains_metadata"
 HISTORICAL_CHAIN_TVL_TABLE = "defillama_daily_historical_chain_tvl"
