@@ -3,7 +3,7 @@ from op_analytics.coreutils.testutils.inputdata import InputTestData
 from unittest.mock import patch
 
 
-from op_analytics.cli.subcommands.pulls.defillama import defillama_protocols
+from op_analytics.cli.subcommands.pulls.defillama import protocols
 
 TESTDATA = InputTestData.at(__file__)
 
@@ -86,7 +86,7 @@ sample_protocol_data = {
 
 
 def test_extract_protocol_metadata():
-    metadata_df = defillama_protocols.extract_protocol_metadata(sample_protocols)
+    metadata_df = protocols.extract_protocol_metadata(sample_protocols)
     expected_dicts = [
         {
             "protocol_name": "ProtocolOne",
@@ -111,9 +111,7 @@ def test_construct_urls():
             {"protocol_slug": "protocol_two"},
         ]
     )
-    urls = defillama_protocols.construct_urls(
-        metadata_df, None, "https://api.llama.fi/protocol/{slug}"
-    )
+    urls = protocols.construct_urls(metadata_df, None, "https://api.llama.fi/protocol/{slug}")
     expected_urls = {
         "protocol_one": "https://api.llama.fi/protocol/protocol_one",
         "protocol_two": "https://api.llama.fi/protocol/protocol_two",
@@ -122,7 +120,7 @@ def test_construct_urls():
 
 
 def test_extract_protocol_tvl_to_dataframes_app_tvl():
-    app_tvl_df, _ = defillama_protocols.extract_protocol_tvl_to_dataframes(sample_protocol_data)
+    app_tvl_df, _ = protocols.extract_protocol_tvl_to_dataframes(sample_protocol_data)
 
     # Expected App TVL Data
     expected_app_tvl = [
@@ -167,9 +165,7 @@ def test_extract_protocol_tvl_to_dataframes_app_tvl():
 
 
 def test_extract_protocol_tvl_to_dataframes_app_token_tvl():
-    _, app_token_tvl_df = defillama_protocols.extract_protocol_tvl_to_dataframes(
-        sample_protocol_data
-    )
+    _, app_token_tvl_df = protocols.extract_protocol_tvl_to_dataframes(sample_protocol_data)
     expected_app_token_tvl = [
         {
             "protocol_slug": "protocol_one",
@@ -259,10 +255,8 @@ def test_extract_protocol_tvl_to_dataframes_app_token_tvl():
     assert app_token_tvl_df.to_dicts() == expected_app_token_tvl
 
 
-@patch("op_analytics.cli.subcommands.pulls.defillama.defillama_protocols.get_data")
-@patch(
-    "op_analytics.cli.subcommands.pulls.defillama.defillama_protocols.upsert_unpartitioned_table"
-)
+@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
+@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_unpartitioned_table")
 def test_pull_single_protocol_tvl(
     mock_upsert_unpartitioned_table,
     mock_get_data,
@@ -274,7 +268,7 @@ def test_pull_single_protocol_tvl(
     ]
 
     # Call the function under test
-    result = defillama_protocols.pull_protocol_tvl(pull_protocols=["protocol_one"])
+    result = protocols.pull_protocol_tvl(pull_protocols=["protocol_one"])
 
     # Assertions
     assert len(result.metadata_df) == 2
@@ -303,10 +297,8 @@ def test_pull_single_protocol_tvl(
     ]
 
 
-@patch("op_analytics.cli.subcommands.pulls.defillama.defillama_protocols.get_data")
-@patch(
-    "op_analytics.cli.subcommands.pulls.defillama.defillama_protocols.upsert_unpartitioned_table"
-)
+@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
+@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_unpartitioned_table")
 def test_pull_all_protocol_tvl(
     mock_upsert_unpartitioned_table,
     mock_get_data,
@@ -319,7 +311,7 @@ def test_pull_all_protocol_tvl(
     ]
 
     # Call the function under test
-    result = defillama_protocols.pull_protocol_tvl()
+    result = protocols.pull_protocol_tvl()
 
     # Assertions
     assert len(result.metadata_df) == 2  # Only 'Layer_Two'
@@ -346,55 +338,3 @@ def test_pull_all_protocol_tvl(
         "date",
         "token",
     ]
-
-
-# @patch("op_analytics.cli.subcommands.pulls.defillama.defillama_historical_chain_tvl.get_data")
-# @patch(
-#     "op_analytics.cli.subcommands.pulls.defillama.defillama_historical_chain_tvl.upsert_unpartitioned_table"
-# )
-# def test_pull_historical_all_chain_tvl(
-#     mock_upsert_unpartitioned_table,
-#     mock_get_data,
-# ):
-#     # Mock get_data to return sample summary and breakdown data for both stablecoins
-#     mock_get_data.side_effect = [
-#         sample_summary,  # Summary data
-#         sample_metadata,  # Metadata
-#         [
-#             {"date": 1731542400, "tvl": 12340000.00},
-#             {"date": 1731628800, "tvl": 12345678.90},
-#         ],
-#         [
-#             {"date": 1731542400, "tvl": 1000000000.00},
-#             {"date": 1731628800, "tvl": 1000000001.00},
-#         ],  # TVL historical data
-#     ]
-#     # Call the function under test without specifying stablecoin_ids (process all)
-#     result = defillama_historical_chain_tvl.pull_historical_chain_tvl()
-
-#     # Assertions
-#     assert len(result.metadata_df) == 3  # All three chains
-#     assert len(result.tvl_df) >= 3  # Data points from both chains
-
-#     # Verify that get_data was called four times (summary, metadata, and two chain tvls)
-#     assert mock_get_data.call_count == 4
-
-#     # Check that BigQuery functions were called with correct parameters
-#     mock_upsert_unpartitioned_table.call_count == 2
-#     assert mock_upsert_unpartitioned_table.call_args_list[0].kwargs["unique_keys"] == [
-#         "chain_id",
-#         "chain",
-#     ]
-#     assert mock_upsert_unpartitioned_table.call_args_list[1].kwargs["unique_keys"] == [
-#         "date",
-#         "chain_id",
-#         "chain",
-#     ]
-#     # Check that metadata contains all three chains
-#     assert set(result.metadata_df["chain"].to_list()) == {"Layer_One", "Layer_Two", "Layer_Three"}
-
-#     # Check that breakdown contains data from both stablecoins
-#     assert set(result.tvl_df["chain"].unique()) == {
-#         "Layer_One",
-#         "Layer_Two",
-#     }

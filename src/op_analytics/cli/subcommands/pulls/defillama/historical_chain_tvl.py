@@ -21,11 +21,6 @@ CHAIN_METADATA_TABLE = "defillama_chains_metadata"
 HISTORICAL_CHAIN_TVL_TABLE = "defillama_daily_historical_chain_tvl"
 TVL_TABLE_LAST_N_DAYS = 7  # upsert only the last 7 days of tvl records fetched from the api
 
-CHAINS_COLUMN_MAPPING = {
-    "name": "chain",
-    "chainId": "chain_id",
-}
-
 
 @dataclass
 class DefillamaChains:
@@ -49,15 +44,15 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
     session = new_session()
 
     # Call the chains endpoint to find the list of chains tracked by DefiLLama.
-    summary = get_data(session, CHAINS_ENDPOINT)
-    summary_df = format_chain_summary(summary)
+    chains_data = get_data(session, CHAINS_ENDPOINT)
+    dfl_chains_list = get_dfl_chains(chains_data)
 
     # Call the config endpoint to find metadata for chains.
     metadata = get_data(session, CHAINS_METADATA_ENDPOINT)
-    metadata_df = extract_chain_metadata(metadata["chainCoingeckoIds"], summary_df)
+    metadata_df = extract_chain_metadata(metadata["chainCoingeckoIds"], dfl_chains_list)
 
     # Call the API endpoint for each stablecoin in parallel.
-    urls = construct_urls(summary_df, pull_chains, CHAINS_TVL_ENDPOINT)
+    urls = construct_urls(dfl_chains_list, pull_chains, CHAINS_TVL_ENDPOINT)
     historical_chain_tvl_data = run_concurrently(
         lambda x: get_data(session, x), urls, max_workers=4
     )
@@ -65,15 +60,12 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
     # Extract daily tvl from historical chains tvl data
     tvl_df = extract_chain_tvl_to_dataframe(historical_chain_tvl_data)
 
-    # Join summary_df onto tvl to upsert chain_id with tvl data
-    tvl_df = tvl_df.join(summary_df, on="chain", how="left")
-
     # Upsert metadata to BQ.
     upsert_unpartitioned_table(
         df=metadata_df,
         dataset=BQ_DATASET,
         table_name=CHAIN_METADATA_TABLE,
-        unique_keys=["chain_id", "chain"],
+        unique_keys=["chain_id", "chain_name"],
         create_if_not_exists=False,  # set to True on first run
     )
 
@@ -83,7 +75,7 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
         df=most_recent_dates(tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="date"),
         dataset=BQ_DATASET,
         table_name=HISTORICAL_CHAIN_TVL_TABLE,
-        unique_keys=["date", "chain_id", "chain"],
+        unique_keys=["date", "chain_name"],
         create_if_not_exists=False,  # set to True on first run
     )
 
@@ -111,8 +103,7 @@ def extract_layer(row: dict) -> str:
         return "L1"
 
 
-# TODO: Check with Michael to see if extracting "rollup" string is necessary
-def extract_chain_metadata(chain_metadata: dict, df: pl.DataFrame) -> pl.DataFrame:
+def extract_chain_metadata(chain_metadata: dict, dfl_chains: list) -> pl.DataFrame:
     """
     Extracts metadata from the config end point.
     Data includes extra chains that Defillama does not track TVL for.
@@ -125,7 +116,6 @@ def extract_chain_metadata(chain_metadata: dict, df: pl.DataFrame) -> pl.DataFra
 
     """
     chain_metadata_records = []
-    dfl_chains = df.get_column("chain").to_list()
 
     for chain in chain_metadata:
         chain_data = chain_metadata[chain]
@@ -140,7 +130,7 @@ def extract_chain_metadata(chain_metadata: dict, df: pl.DataFrame) -> pl.DataFra
 
         chain_metadata_records.append(
             {
-                "chain": chain,
+                "chain_name": chain,
                 "chain_id": chain_id,
                 "dfl_tracks_tvl": 1 if chain in dfl_chains else 0,
                 "is_evm": is_evm,
@@ -156,17 +146,15 @@ def extract_chain_metadata(chain_metadata: dict, df: pl.DataFrame) -> pl.DataFra
     return pl.DataFrame(chain_metadata_records)
 
 
-def format_chain_summary(summary) -> pl.DataFrame:
+def get_dfl_chains(summary) -> list[str]:
     """
-    Converts input data to a polars dataframe, renames columns, and returns a subset of renamed columns
+    Extracts chain names from defillama chains end point
     """
-    return (
-        pl.DataFrame(summary).rename(CHAINS_COLUMN_MAPPING).select(CHAINS_COLUMN_MAPPING.values())
-    )
+    return [chain.get("name") for chain in summary]
 
 
 def construct_urls(
-    summary_df: pl.DataFrame, pull_chains: list[str] | None, endpoint: str
+    chain_list: list[str], pull_chains: list[str] | None, endpoint: str
 ) -> dict[str, str]:
     """Build the collection of urls that we will fetch from DefiLlama.
 
@@ -176,11 +164,9 @@ def construct_urls(
     """
 
     if pull_chains is None:
-        slugs = summary_df.get_column("chain").to_list()
+        slugs = chain_list
     else:
-        slugs = [
-            chain for chain in summary_df.get_column("chain").to_list() if chain in pull_chains
-        ]
+        slugs = [chain for chain in chain_list if chain in pull_chains]
 
     urls = {slug: endpoint.format(slug=slug) for slug in slugs}
 
@@ -192,7 +178,7 @@ def construct_urls(
 def extract_chain_tvl_to_dataframe(data) -> pl.DataFrame:
     """Extract historical TVL and transform into dataframe"""
     records = [
-        {"chain": chain, "date": dt_fromepoch(entry["date"]), "tvl": entry["tvl"]}
+        {"chain_name": chain, "date": dt_fromepoch(entry["date"]), "tvl": entry["tvl"]}
         for chain, entries in data.items()
         for entry in entries
     ]

@@ -3,7 +3,7 @@ from unittest.mock import patch
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 
 
-from op_analytics.cli.subcommands.pulls.defillama import defillama_historical_chain_tvl
+from op_analytics.cli.subcommands.pulls.defillama import historical_chain_tvl
 
 TESTDATA = InputTestData.at(__file__)
 
@@ -79,24 +79,21 @@ sample_tvl_data = {
 
 
 def test_format_summary():
-    summary_df = defillama_historical_chain_tvl.format_chain_summary(sample_summary)
-    expected_dict = [
-        {"chain": "Layer_One", "chain_id": 1111},
-        {"chain": "Layer_Two", "chain_id": 9},
-    ]
+    chains_list = historical_chain_tvl.get_dfl_chains(sample_summary)
+    expected_list = ["Layer_One", "Layer_Two"]
 
-    assert summary_df.to_dicts() == expected_dict
+    assert chains_list == expected_list
 
 
 def test_extract_metadata():
-    summary_df = defillama_historical_chain_tvl.format_chain_summary(sample_summary)
-    metadata_df = defillama_historical_chain_tvl.extract_chain_metadata(
-        sample_metadata["chainCoingeckoIds"], summary_df
+    chain_list = historical_chain_tvl.get_dfl_chains(sample_summary)
+    metadata_df = historical_chain_tvl.extract_chain_metadata(
+        sample_metadata["chainCoingeckoIds"], chain_list
     )
 
     expected_dicts = [
         {
-            "chain": "Layer_One",
+            "chain_name": "Layer_One",
             "chain_id": 1,
             "dfl_tracks_tvl": 1,
             "is_evm": 0,
@@ -108,7 +105,7 @@ def test_extract_metadata():
             "symbol": "L1",
         },
         {
-            "chain": "Layer_Two",
+            "chain_name": "Layer_Two",
             "chain_id": 2,
             "dfl_tracks_tvl": 1,
             "is_evm": 1,
@@ -120,7 +117,7 @@ def test_extract_metadata():
             "symbol": None,
         },
         {
-            "chain": "Layer_Three",
+            "chain_name": "Layer_Three",
             "chain_id": None,
             "dfl_tracks_tvl": 0,
             "is_evm": 1,
@@ -137,9 +134,9 @@ def test_extract_metadata():
 
 
 def test_construct_urls():
-    summary_df = defillama_historical_chain_tvl.format_chain_summary(sample_summary)
-    urls = defillama_historical_chain_tvl.construct_urls(
-        summary_df, None, defillama_historical_chain_tvl.CHAINS_TVL_ENDPOINT
+    chain_list = historical_chain_tvl.get_dfl_chains(sample_summary)
+    urls = historical_chain_tvl.construct_urls(
+        chain_list, None, historical_chain_tvl.CHAINS_TVL_ENDPOINT
     )
 
     expected_urls = {
@@ -151,20 +148,20 @@ def test_construct_urls():
 
 
 def test_extract_chain_tvl_to_dataframe():
-    extracted_df = defillama_historical_chain_tvl.extract_chain_tvl_to_dataframe(sample_tvl_data)
+    extracted_df = historical_chain_tvl.extract_chain_tvl_to_dataframe(sample_tvl_data)
     expected_dict = [
-        {"chain": "Layer_One", "date": "2024-11-14", "tvl": 12340000.0},
-        {"chain": "Layer_One", "date": "2024-11-15", "tvl": 12345678.9},
-        {"chain": "Layer_Two", "date": "2024-11-14", "tvl": 1000000000.0},
-        {"chain": "Layer_Two", "date": "2024-11-15", "tvl": 1000000001.0},
+        {"chain_name": "Layer_One", "date": "2024-11-14", "tvl": 12340000.0},
+        {"chain_name": "Layer_One", "date": "2024-11-15", "tvl": 12345678.9},
+        {"chain_name": "Layer_Two", "date": "2024-11-14", "tvl": 1000000000.0},
+        {"chain_name": "Layer_Two", "date": "2024-11-15", "tvl": 1000000001.0},
     ]
 
     assert extracted_df.to_dicts() == expected_dict
 
 
-@patch("op_analytics.cli.subcommands.pulls.defillama.defillama_historical_chain_tvl.get_data")
+@patch("op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.get_data")
 @patch(
-    "op_analytics.cli.subcommands.pulls.defillama.defillama_historical_chain_tvl.upsert_unpartitioned_table"
+    "op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.upsert_unpartitioned_table"
 )
 def test_pull_historical_single_chain_tvl(
     mock_upsert_unpartitioned_table,
@@ -182,7 +179,7 @@ def test_pull_historical_single_chain_tvl(
     ]
 
     # Call the function under test
-    result = defillama_historical_chain_tvl.pull_historical_chain_tvl(pull_chains=["Layer_One"])
+    result = historical_chain_tvl.pull_historical_chain_tvl(pull_chains=["Layer_One"])
 
     # Assertions
     assert len(result.metadata_df) == 3  # Only 'Layer_Two'
@@ -195,20 +192,19 @@ def test_pull_historical_single_chain_tvl(
     mock_upsert_unpartitioned_table.call_count == 2
     assert mock_upsert_unpartitioned_table.call_args_list[0].kwargs["unique_keys"] == [
         "chain_id",
-        "chain",
+        "chain_name",
     ]
     assert mock_upsert_unpartitioned_table.call_args_list[1].kwargs["unique_keys"] == [
         "date",
-        "chain_id",
-        "chain",
+        "chain_name",
     ]
 
 
-@patch("op_analytics.cli.subcommands.pulls.defillama.defillama_historical_chain_tvl.get_data")
+@patch("op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.get_data")
 @patch(
-    "op_analytics.cli.subcommands.pulls.defillama.defillama_historical_chain_tvl.upsert_unpartitioned_table"
+    "op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.upsert_unpartitioned_table"
 )
-def test_pull_protocol_tvl(
+def test_pull_historical_all_chain_tvl(
     mock_upsert_unpartitioned_table,
     mock_get_data,
 ):
@@ -226,7 +222,7 @@ def test_pull_protocol_tvl(
         ],  # TVL historical data
     ]
     # Call the function under test without specifying stablecoin_ids (process all)
-    result = defillama_historical_chain_tvl.pull_historical_chain_tvl()
+    result = historical_chain_tvl.pull_historical_chain_tvl()
 
     # Assertions
     assert len(result.metadata_df) == 3  # All three chains
@@ -239,18 +235,21 @@ def test_pull_protocol_tvl(
     mock_upsert_unpartitioned_table.call_count == 2
     assert mock_upsert_unpartitioned_table.call_args_list[0].kwargs["unique_keys"] == [
         "chain_id",
-        "chain",
+        "chain_name",
     ]
     assert mock_upsert_unpartitioned_table.call_args_list[1].kwargs["unique_keys"] == [
         "date",
-        "chain_id",
-        "chain",
+        "chain_name",
     ]
     # Check that metadata contains all three chains
-    assert set(result.metadata_df["chain"].to_list()) == {"Layer_One", "Layer_Two", "Layer_Three"}
+    assert set(result.metadata_df["chain_name"].to_list()) == {
+        "Layer_One",
+        "Layer_Two",
+        "Layer_Three",
+    }
 
     # Check that breakdown contains data from both stablecoins
-    assert set(result.tvl_df["chain"].unique()) == {
+    assert set(result.tvl_df["chain_name"].unique()) == {
         "Layer_One",
         "Layer_Two",
     }

@@ -4,11 +4,11 @@ import typer
 from op_analytics.coreutils.logger import structlog
 
 from .agora import agora_pull
-from .defillama.defillama_stablecoins import pull_stablecoins as dfl_pull_stablecoins
-from .defillama.defillama_historical_chain_tvl import (
+from .defillama.stablecoins import pull_stablecoins as dfl_pull_stablecoins
+from .defillama.historical_chain_tvl import (
     pull_historical_chain_tvl as dfl_pull_historical_chain_tvl,
 )
-from .defillama.defillama_protocols import pull_protocol_tvl as dfl_pull_protocol_tvl
+from .defillama.protocols import pull_protocol_tvl as dfl_pull_protocol_tvl
 from .github_analytics import pull as github_analytics_pull
 from .l2beat import pull as l2beat_pull
 
