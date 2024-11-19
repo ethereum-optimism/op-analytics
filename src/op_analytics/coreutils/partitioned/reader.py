@@ -131,9 +131,12 @@ def construct_input_batches(
                     log.warning("MISSING DATA")
                     num_suspect += 1
 
-    log.info(
-        f"prepared {len(inputs)} input batches. {num_suspect} batches where input was not ready but will be ingested anyways."
-    )
+    if num_suspect > 0:
+        log.info(
+            f"prepared {len(inputs)} input batches. {num_suspect} batches where input was not ready but will be ingested anyways."
+        )
+    else:
+        log.info(f"prepared {len(inputs)} input batches.")
     return inputs
 
 

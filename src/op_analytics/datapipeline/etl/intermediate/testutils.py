@@ -13,7 +13,13 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 
 from .construct import construct_tasks
-from .registry import REGISTERED_INTERMEDIATE_MODELS, PythonModelExecutor, load_model_definitions
+from .registry import (
+    REGISTERED_INTERMEDIATE_MODELS,
+    PythonModel,
+    PythonModelExecutor,
+    load_model_definitions,
+    ModelInputDataReader,
+)
 from .udfs import create_duckdb_macros
 
 log = structlog.get_logger()
@@ -116,23 +122,13 @@ class IntermediateModelTestBase(unittest.TestCase):
         cls._duckdb_client = duckdb.connect(tmp_db_path)
 
         # Execute the model on the temporary duckdb instance.
-        log.info("Executing model...")
-        create_duckdb_macros(cls._duckdb_client)
         model = REGISTERED_INTERMEDIATE_MODELS["daily_address_summary"]
 
-        cls._model_executor = PythonModelExecutor(
+        cls._model_executor = execute_model_in_memory(
+            duckdb_client=cls._duckdb_client,
             model=model,
-            client=cls._duckdb_client,
             data_reader=DataReaderTestUtil(cls._duckdb_client),
         )
-
-        cls._model_executor.__enter__()
-        model_results = cls._model_executor.execute()
-
-        # Create TEMP tables with the model results
-        for name, relation in model_results.items():
-            arrow_relation = relation.to_arrow_table()  # noqa: F841
-            cls._duckdb_client.sql(f"CREATE TEMP TABLE {name} AS SELECT * FROM arrow_relation")
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -195,3 +191,33 @@ class IntermediateModelTestBase(unittest.TestCase):
             cls._duckdb_client.sql(f"CREATE TABLE {table_name} AS SELECT * FROM arrow_table")
 
             relations[dataset] = rel
+
+
+def execute_model_in_memory(
+    duckdb_client: duckdb.DuckDBPyConnection,
+    model: PythonModel,
+    data_reader: ModelInputDataReader,
+):
+    """Execute a model and register results as views."""
+    log.info("Executing model...")
+    create_duckdb_macros(duckdb_client)
+
+    model_executor = PythonModelExecutor(
+        model=model,
+        client=duckdb_client,
+        data_reader=data_reader,
+    )
+
+    model_executor.__enter__()
+    model_results = model_executor.execute()
+
+    print(model_results.keys())
+
+    # Create views with the model results
+    for name, relation in model_results.items():
+        duckdb_client.register(
+            view_name=name,
+            python_object=relation.to_arrow_table(),
+        )
+
+    return model_executor
