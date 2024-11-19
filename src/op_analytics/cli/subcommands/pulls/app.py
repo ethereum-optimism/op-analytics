@@ -8,6 +8,7 @@ from .defillama.defillama_stablecoins import pull_stablecoins as dfl_pull_stable
 from .defillama.defillama_historical_chain_tvl import (
     pull_historical_chain_tvl as dfl_pull_historical_chain_tvl,
 )
+from .defillama.defillama_protocols import pull_protocol_tvl as dfl_pull_protocol_tvl
 from .github_analytics import pull as github_analytics_pull
 from .l2beat import pull as l2beat_pull
 
@@ -51,6 +52,21 @@ def defillama_historical_chain_tvl(
         pull_chains_list = None
 
     dfl_pull_historical_chain_tvl(pull_chains=pull_chains_list)
+
+
+@app.command()
+def defillama_protocol_tvl(
+    pull_protocols: Annotated[
+        str | None, typer.Option(help="Comma-separated list of chains to be processed.")
+    ] = None,
+):
+    """Pull historical chain tvl data from Defillama."""
+    if pull_protocols is not None:
+        pull_protocols_list = [_.strip() for _ in pull_protocols.split(",")]
+    else:
+        pull_protocols_list = None
+
+    dfl_pull_protocol_tvl(pull_protocols=pull_protocols_list)
 
 
 @app.command()
