@@ -1,9 +1,12 @@
 import os
+import re
 from dataclasses import dataclass
 from typing import Any
 
 import polars as pl
 import pyarrow as pa
+
+from op_analytics.coreutils.time import date_fromstr
 
 from .types import SinkMarkerPath, SinkOutputRootPath
 
@@ -36,6 +39,9 @@ class ExpectedOutput:
     additional_columns_schema: list[pa.Field]
 
 
+DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
 @dataclass
 class OutputData:
     dataframe: pl.DataFrame
@@ -52,6 +58,21 @@ class OutputData:
 class KeyValue:
     key: str
     value: str
+
+    def __post_init__(self):
+        if not isinstance(self.value, str):
+            raise ValueError(f"partition value must be a string: {self.value!r}")
+        if not isinstance(self.key, str):
+            raise ValueError(f"partition key must be a string: {self.key!r}")
+
+        if self.key == "dt":
+            if not DATE_RE.match(self.value):
+                raise ValueError(f"partition value must be a date pattern: {self.value!r}")
+
+            try:
+                date_fromstr(self.value)
+            except Exception as ex:
+                raise ValueError(f"partition value must be a valid date: {self.value!r}") from ex
 
 
 @dataclass

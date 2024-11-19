@@ -17,13 +17,13 @@ def test_parquet_writer():
     df = pl.DataFrame(
         {
             "dt": [
-                datetime.date.fromisoformat("2024-01-01"),
-                datetime.date.fromisoformat("2024-01-01"),
-                datetime.date.fromisoformat("2024-01-01"),
-                datetime.date.fromisoformat("2024-01-01"),
-                datetime.date.fromisoformat("2024-01-02"),
-                datetime.date.fromisoformat("2024-01-02"),
-                datetime.date.fromisoformat("2024-01-03"),
+                "2024-01-01",
+                "2024-01-01",
+                "2024-01-01",
+                "2024-01-01",
+                "2024-01-02",
+                "2024-01-02",
+                "2024-01-03",
             ],
             "chain": [
                 "DUMMYOP",

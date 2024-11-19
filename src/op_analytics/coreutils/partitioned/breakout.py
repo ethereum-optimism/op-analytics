@@ -1,4 +1,4 @@
-from typing import Any, Generator
+from typing import Generator
 
 import polars as pl
 
@@ -9,7 +9,7 @@ from .output import KeyValue, OutputPart, OutputPartMeta
 def breakout_partitions(
     df: pl.DataFrame,
     partition_cols: list[str],
-    default_partition: dict[str, Any] | None = None,
+    default_partition: dict[str, str] | None = None,
 ) -> Generator[OutputPart, None, None]:
     """Split a dataframe into partitions.
 
