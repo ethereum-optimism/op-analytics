@@ -23,7 +23,7 @@ from .task import IntermediateModelsTask
 log = structlog.get_logger()
 
 
-def construnct_intermediate_model_batches(
+def construct_data_readers(
     chains: list[str],
     range_spec: str,
     read_from: DataLocation,
@@ -50,7 +50,7 @@ def construct_tasks(
     shared duckdb macros that are used across models.
     """
 
-    batches: list[DataReader] = construnct_intermediate_model_batches(
+    batches: list[DataReader] = construct_data_readers(
         chains=chains,
         range_spec=range_spec,
         read_from=read_from,
