@@ -41,10 +41,8 @@ def test_parquet_writer():
     manager = ParqueWriteManager(
         location=DataLocation.LOCAL,
         expected_output=ExpectedOutput(
-            dataset_name="daily_address_summary/daily_address_summary_v1",
-            root_path=SinkOutputRootPath(
-                "intermediate/daily_address_summary/daily_address_summary_v1"
-            ),
+            dataset_name="daily_address_summary/summary_v1",
+            root_path=SinkOutputRootPath("intermediate/daily_address_summary/summary_v1"),
             file_name="out.parquet",
             marker_path=SinkMarkerPath("BLAH"),
             process_name="default",
@@ -63,7 +61,7 @@ def test_parquet_writer():
         manager.write(
             OutputData(
                 dataframe=df,
-                dataset_name="daily_address_summary/daily_address_summary_v1",
+                dataset_name="daily_address_summary/summary_v1",
                 default_partition=None,
             )
         )
@@ -81,19 +79,19 @@ def test_parquet_writer():
 
     assert calls == [
         {
-            "path": "ozone/warehouse/intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYBASE/dt=2024-01-01/out.parquet",
+            "path": "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYBASE/dt=2024-01-01/out.parquet",
             "num_rows": 2,
         },
         {
-            "path": "ozone/warehouse/intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYBASE/dt=2024-01-02/out.parquet",
+            "path": "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYBASE/dt=2024-01-02/out.parquet",
             "num_rows": 2,
         },
         {
-            "path": "ozone/warehouse/intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYOP/dt=2024-01-01/out.parquet",
+            "path": "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYOP/dt=2024-01-01/out.parquet",
             "num_rows": 2,
         },
         {
-            "path": "ozone/warehouse/intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYOP/dt=2024-01-03/out.parquet",
+            "path": "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYOP/dt=2024-01-03/out.parquet",
             "num_rows": 1,
         },
     ]
@@ -115,10 +113,10 @@ def test_parquet_writer():
     assert markers == [
         {
             "marker_path": "BLAH",
-            "dataset_name": "daily_address_summary/daily_address_summary_v1",
-            "root_path": "intermediate/daily_address_summary/daily_address_summary_v1",
+            "dataset_name": "daily_address_summary/summary_v1",
+            "root_path": "intermediate/daily_address_summary/summary_v1",
             "num_parts": 4,
-            "data_path": "intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYBASE/dt=2024-01-01/out.parquet",
+            "data_path": "intermediate/daily_address_summary/summary_v1/chain=DUMMYBASE/dt=2024-01-01/out.parquet",
             "row_count": 2,
             "process_name": "default",
             "chain": "DUMMYBASE",
@@ -127,10 +125,10 @@ def test_parquet_writer():
         },
         {
             "marker_path": "BLAH",
-            "dataset_name": "daily_address_summary/daily_address_summary_v1",
-            "root_path": "intermediate/daily_address_summary/daily_address_summary_v1",
+            "dataset_name": "daily_address_summary/summary_v1",
+            "root_path": "intermediate/daily_address_summary/summary_v1",
             "num_parts": 4,
-            "data_path": "intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYOP/dt=2024-01-01/out.parquet",
+            "data_path": "intermediate/daily_address_summary/summary_v1/chain=DUMMYOP/dt=2024-01-01/out.parquet",
             "row_count": 2,
             "process_name": "default",
             "chain": "DUMMYOP",
@@ -139,10 +137,10 @@ def test_parquet_writer():
         },
         {
             "marker_path": "BLAH",
-            "dataset_name": "daily_address_summary/daily_address_summary_v1",
-            "root_path": "intermediate/daily_address_summary/daily_address_summary_v1",
+            "dataset_name": "daily_address_summary/summary_v1",
+            "root_path": "intermediate/daily_address_summary/summary_v1",
             "num_parts": 4,
-            "data_path": "intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYBASE/dt=2024-01-02/out.parquet",
+            "data_path": "intermediate/daily_address_summary/summary_v1/chain=DUMMYBASE/dt=2024-01-02/out.parquet",
             "row_count": 2,
             "process_name": "default",
             "chain": "DUMMYBASE",
@@ -151,10 +149,10 @@ def test_parquet_writer():
         },
         {
             "marker_path": "BLAH",
-            "dataset_name": "daily_address_summary/daily_address_summary_v1",
-            "root_path": "intermediate/daily_address_summary/daily_address_summary_v1",
+            "dataset_name": "daily_address_summary/summary_v1",
+            "root_path": "intermediate/daily_address_summary/summary_v1",
             "num_parts": 4,
-            "data_path": "intermediate/daily_address_summary/daily_address_summary_v1/chain=DUMMYOP/dt=2024-01-03/out.parquet",
+            "data_path": "intermediate/daily_address_summary/summary_v1/chain=DUMMYOP/dt=2024-01-03/out.parquet",
             "row_count": 1,
             "process_name": "default",
             "chain": "DUMMYOP",

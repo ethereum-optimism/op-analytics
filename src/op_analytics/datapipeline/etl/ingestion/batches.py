@@ -46,12 +46,12 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # Traces file can be ~70MB.
         Delimiter(block_number=20900000, batch_size=1000),
         # Decided to go to 400 blocks per batch to give us more room.
-        # Traces filed size is ~25MB.
+        # Traces file size is ~25MB.
         Delimiter(block_number=21200000, batch_size=400),
     ],
     "ham": [
         Delimiter(block_number=0, batch_size=20000),
-        # Reducing due to large memory usage fetchin traces.
+        # Reducing due to large memory usage fetching traces.
         Delimiter(block_number=15160000, batch_size=8000),
     ],
     "op": [
