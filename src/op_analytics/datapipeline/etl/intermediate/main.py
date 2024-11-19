@@ -100,7 +100,7 @@ def executor(task: IntermediateModelsTask) -> None:
                                 dataset_name=f"{model_name}/{result_name}",
                                 default_partition={
                                     "chain": task.data_reader.chain,
-                                    "dt": task.data_reader.dateval,
+                                    "dt": task.data_reader.datestr,
                                 },
                             ),
                         )
