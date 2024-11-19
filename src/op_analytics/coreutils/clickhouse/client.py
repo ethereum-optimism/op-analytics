@@ -33,7 +33,7 @@ def connect(instance: ClickHouseInstance):
         username=env_get(f"CLICKHOUSE_{instance}_USER"),
         password=env_get(f"CLICKHOUSE_{instance}_PASSWORD"),
     )
-    log.info(f"initialized {instance} Clickhouse client.")
+    log.debug(f"initialized {instance} Clickhouse client.")
     return client
 
 

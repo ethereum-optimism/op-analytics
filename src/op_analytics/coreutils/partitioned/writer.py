@@ -65,7 +65,10 @@ class DataWriter:
         # The default partition value is included in logs because it includes
         # the dt value, which helps keep track of where we are when we run a
         # backfill.
-        with bound_contextvars(**(output_data.default_partition or {})):
+
+        with bound_contextvars(
+            dataset=output_data.dataset_name, **(output_data.default_partition or {})
+        ):
             manager = ParqueWriteManager(
                 location=location,
                 expected_output=expected_output,

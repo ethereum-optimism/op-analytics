@@ -31,7 +31,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         assert self._duckdb_client is not None
 
         ans = self._duckdb_client.sql(f"""
-        SELECT * FROM daily_address_summary_v1 WHERE address = '{SYSTEM_ADDRESS}'
+        SELECT * FROM summary_v1 WHERE address = '{SYSTEM_ADDRESS}'
         """)
 
         assert len(ans) == 0
@@ -41,11 +41,11 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
 
         unique_count = self._duckdb_client.sql("""
         SELECT COUNT(*) FROM (
-            SELECT DISTINCT address, chain_id, dt FROM daily_address_summary_v1
+            SELECT DISTINCT address, chain_id, dt FROM summary_v1
         )
         """)
         total_count = self._duckdb_client.sql("""
-        SELECT COUNT(*) FROM daily_address_summary_v1
+        SELECT COUNT(*) FROM summary_v1
         """)
 
         unique_count_val = (unique_count.fetchone() or [None])[0]
@@ -58,7 +58,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         assert self._duckdb_client is not None
 
         schema = (
-            self._duckdb_client.sql("DESCRIBE daily_address_summary_v1")
+            self._duckdb_client.sql("DESCRIBE summary_v1")
             .pl()
             .select("column_name", "column_type")
             .to_dicts()
@@ -115,7 +115,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
 
         actual = (
             self._duckdb_client.sql(f"""
-        SELECT * FROM daily_address_summary_v1 WHERE address == '{SINGLE_TX_ADDRESS}'
+        SELECT * FROM summary_v1 WHERE address == '{SINGLE_TX_ADDRESS}'
         """)
             .pl()
             .to_dicts()
@@ -205,7 +205,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
 
         actual = (
             self._duckdb_client.sql(f"""
-        SELECT * FROM daily_address_summary_v1 WHERE address == '{MULTI_TXS_ADDRESS}'
+        SELECT * FROM summary_v1 WHERE address == '{MULTI_TXS_ADDRESS}'
         """)
             .pl()
             .to_dicts()
@@ -275,11 +275,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
     def test_overall_totals(self):
         assert self._duckdb_client is not None
 
-        actual = (
-            self._duckdb_client.sql("SELECT SUM(tx_cnt) FROM daily_address_summary_v1")
-            .pl()
-            .to_dicts()
-        )
+        actual = self._duckdb_client.sql("SELECT SUM(tx_cnt) FROM summary_v1").pl().to_dicts()
         assert actual == [{"sum(tx_cnt)": Decimal("2397")}]
 
     def test_consistency(self):
@@ -310,7 +306,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
                     active_time_range =
                     block_timestamp_max - block_timestamp_min        AS check6
 
-                FROM daily_address_summary_v1
+                FROM summary_v1
             )
 
             SELECT

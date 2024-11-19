@@ -1,6 +1,5 @@
 import socket
 from dataclasses import dataclass
-from datetime import date
 
 import pyarrow as pa
 
@@ -63,8 +62,6 @@ class Marker:
                 if sch.type == pa.date32():
                     if isinstance(partition.value, str):
                         parquet_out_row[partition.key] = date_fromstr(partition.value)
-                    elif isinstance(partition.value, date):
-                        parquet_out_row[partition.key] = partition.value
                     else:
                         raise NotImplementedError(
                             f"unsupported value for date partition: {partition.value}"
