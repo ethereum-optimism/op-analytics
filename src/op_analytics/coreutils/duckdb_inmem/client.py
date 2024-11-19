@@ -39,5 +39,8 @@ def parquet_relation(parquet_paths) -> duckdb.DuckDBPyRelation:
     """Return a DuckDB relation from a list of parquet files."""
     client = init_client()
 
-    paths = ", ".join(f"'{_}'" for _ in parquet_paths)
-    return client.sql(f"SELECT * FROM read_parquet([{paths}])")
+    paths_str = ", ".join(f"'{_}'" for _ in parquet_paths)
+
+    return client.sql(
+        f"SELECT * FROM read_parquet([{paths_str}], hive_partitioning = true, hive_types_autocast = 0)"
+    )

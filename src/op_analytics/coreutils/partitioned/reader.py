@@ -46,10 +46,14 @@ class DataReader:
     inputs_ready: bool
 
     @property
+    def datestr(self):
+        return self.dateval.strftime("%Y-%m-%d")
+
+    @property
     def contextvars(self):
         return dict(
             chain=self.chain,
-            date=self.dateval.strftime("%Y-%m-%d"),
+            date=self.datestr,
         )
 
     @property

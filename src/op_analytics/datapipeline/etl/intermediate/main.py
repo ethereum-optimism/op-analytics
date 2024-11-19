@@ -98,7 +98,10 @@ def executor(task: IntermediateModelsTask) -> None:
                             output_data=OutputData(
                                 dataframe=rel.pl(),
                                 dataset_name=f"{model_name}/{result_name}",
-                                default_partition=None,
+                                default_partition={
+                                    "chain": task.data_reader.chain,
+                                    "dt": task.data_reader.datestr,
+                                },
                             ),
                         )
 
