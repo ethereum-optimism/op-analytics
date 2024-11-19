@@ -117,6 +117,7 @@ def run_query(
     return pl.from_arrow(arrow_result)
 
 
+@stamina.retry(on=retry_logger, attempts=3)
 def insert_arrow(
     instance: ClickHouseInstance,
     database: str,
