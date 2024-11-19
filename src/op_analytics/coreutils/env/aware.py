@@ -7,6 +7,7 @@ class OPLabsEnvironment(Enum):
     UNITTEST = 1
     DEV = 2
     PROD = 3
+    CI = 4
 
 
 class OPLabsRuntime(Enum):

@@ -260,7 +260,8 @@ def test_upsert_partitioned_table():
 
 
 def test_most_recent_dates():
-    assert test_df["dt"].unique().to_list() == [
+    actual_dates = test_df["dt"].unique().to_list()
+    expected_dates = [
         datetime(2024, 1, 1, 0, 0),
         datetime(2024, 1, 2, 0, 0),
         datetime(2024, 1, 3, 0, 0),
@@ -362,6 +363,7 @@ def test_most_recent_dates():
         datetime(2024, 4, 8, 0, 0),
         datetime(2024, 4, 9, 0, 0),
     ]
+    assert actual_dates == expected_dates
 
     actual = most_recent_dates(test_df, n_dates=3)["dt"].unique().to_list()
     expected = [
