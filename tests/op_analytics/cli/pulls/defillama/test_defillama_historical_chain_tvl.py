@@ -208,7 +208,7 @@ def test_pull_historical_single_chain_tvl(
 @patch(
     "op_analytics.cli.subcommands.pulls.defillama.defillama_historical_chain_tvl.upsert_unpartitioned_table"
 )
-def test_pull_historical_all_chain_tvl(
+def test_pull_protocol_tvl(
     mock_upsert_unpartitioned_table,
     mock_get_data,
 ):
