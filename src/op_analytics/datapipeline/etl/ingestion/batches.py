@@ -37,7 +37,14 @@ class Delimiter:
 
 
 MICROBATCH_SIZE_CONFIGURATION = {
-    # Non-default
+    "automata": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=5440000, batch_size=8000),
+    ],
+    "bob": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=9600000, batch_size=8000),
+    ],
     "base": [
         Delimiter(block_number=0, batch_size=10000),
         Delimiter(block_number=10000000, batch_size=5000),
@@ -49,10 +56,42 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # Traces file size is ~25MB.
         Delimiter(block_number=21200000, batch_size=400),
     ],
+    "cyber": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=9280000, batch_size=8000),
+    ],
+    "fraxtal": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=12600000, batch_size=8000),
+    ],
     "ham": [
         Delimiter(block_number=0, batch_size=20000),
         # Reducing due to large memory usage fetching traces.
         Delimiter(block_number=15160000, batch_size=8000),
+    ],
+    "kroma": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=19080000, batch_size=8000),
+    ],
+    "lisk": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=8640000, batch_size=8000),
+    ],
+    "lyra": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=16000000, batch_size=8000),
+    ],
+    "metal": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=10240000, batch_size=8000),
+    ],
+    "mint": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=8200000, batch_size=8000),
+    ],
+    "mode": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=15920000, batch_size=8000),
     ],
     "op": [
         Delimiter(block_number=0, batch_size=10000),
@@ -64,10 +103,24 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # of ~130k transactions per second.
         Delimiter(block_number=0, batch_size=5000),
     ],
+    "polynomial": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=7000000, batch_size=8000),
+    ],
+    "race": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=5800000, batch_size=8000),
+    ],
     "redstone": [
         Delimiter(block_number=0, batch_size=20000),
         # Reduce memory use for Redstone batches.
         Delimiter(block_number=9820000, batch_size=10000),
+        # More memory reduction. Saw one batch with many logs got stuck due to memory issues.
+        Delimiter(block_number=9920000, batch_size=4000),
+    ],
+    "shape": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=5160000, batch_size=8000),
     ],
     "swan": [
         Delimiter(block_number=0, batch_size=20000),
@@ -81,24 +134,16 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # sustained transaction count of ~600k/day.
         Delimiter(block_number=4700000, batch_size=4000),
     ],
+    "xterio": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=7760000, batch_size=8000),
+    ],
+    "zora": [
+        Delimiter(0, 20000),
+        Delimiter(block_number=22680000, batch_size=8000),
+    ],
     # Testnets
     "op_sepolia": [Delimiter(0, 5000)],
-    # Default
-    "automata": [Delimiter(0, 20000)],
-    "bob": [Delimiter(0, 20000)],
-    "cyber": [Delimiter(0, 20000)],
-    "fraxtal": [Delimiter(0, 20000)],
-    "kroma": [Delimiter(0, 20000)],
-    "lisk": [Delimiter(0, 20000)],
-    "lyra": [Delimiter(0, 20000)],
-    "metal": [Delimiter(0, 20000)],
-    "mint": [Delimiter(0, 20000)],
-    "mode": [Delimiter(0, 20000)],
-    "polynomial": [Delimiter(0, 20000)],
-    "race": [Delimiter(0, 20000)],
-    "shape": [Delimiter(0, 20000)],
-    "xterio": [Delimiter(0, 20000)],
-    "zora": [Delimiter(0, 20000)],
 }
 
 
