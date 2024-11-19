@@ -178,7 +178,7 @@ def logs_count(dataframes: dict[str, pl.DataFrame]):
 
     failure_condition = pl.col("max_log_idx") != pl.col("count")
     check = agged.select(
-        pl.lit("log max index must max log count").alias("audit_name"),
+        pl.lit("log max index must equal log count").alias("audit_name"),
         failure_condition.sum().alias("failure_count"),
     )
 
