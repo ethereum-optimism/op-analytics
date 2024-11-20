@@ -20,26 +20,31 @@ jobs:
         run: uv sync --all-extras --dev
 
       - name: L2Beat
-        run: OPLABS_ENV=prod uv run opdata pulls l2beat
+        run: uv run opdata pulls l2beat
         env:
+          OPLABS_ENV: "prod"
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
 
       - name: DefiLlama Stablecoins
-        run: OPLABS_ENV=prod uv run opdata pulls defillama_stablecoins
+        run: uv run opdata pulls defillama_stablecoins
         env:
+          OPLABS_ENV: "prod"
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
 
       - name: DefiLlama Historical Chain TVL
-        run: OPLABS_ENV=prod uv run opdata pulls defillama_historical_chain_tvl
+        run: uv run opdata pulls defillama_historical_chain_tvl
         env:
+          OPLABS_ENV: "prod"
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
 
       - name: DefiLlama Protocol TVL
-        run: OPLABS_ENV=prod uv run opdata pulls defillama_protocol_tvl
+        run: uv run opdata pulls defillama_protocol_tvl
         env:
+          OPLABS_ENV: "prod"
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
 
       - name: GitHub Analytics
-        run: OPLABS_ENV=prod uv run opdata pulls github_analytics
+        run: uv run opdata pulls github_analytics
         env:
+          OPLABS_ENV: "prod"
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
