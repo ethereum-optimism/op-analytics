@@ -48,9 +48,9 @@ def get_data(
     for attempt in stamina.retry_context(
         on=requests.JSONDecodeError,
         attempts=retry_attempts,
-        timeout=60,
-        wait_initial=2,
-        wait_max=15,
+        timeout=180,
+        wait_initial=10,
+        wait_max=30,
     ):
         with attempt:
             if attempt.num > 1:

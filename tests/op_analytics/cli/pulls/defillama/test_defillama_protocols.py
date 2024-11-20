@@ -132,37 +132,37 @@ def test_extract_protocol_tvl_to_dataframes_app_tvl():
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainAlpha",
-            "date": "2024-11-14",
+            "dt": "2024-11-14",
             "total_app_tvl": 12345.67,
         },
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainAlpha",
-            "date": "2024-11-15",
+            "dt": "2024-11-15",
             "total_app_tvl": 23456.78,
         },
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainBeta",
-            "date": "2024-11-14",
+            "dt": "2024-11-14",
             "total_app_tvl": 34567.89,
         },
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainBeta",
-            "date": "2024-11-15",
+            "dt": "2024-11-15",
             "total_app_tvl": 45678.90,
         },
         {
             "protocol_slug": "protocol_two",
             "chain": "ChainGamma",
-            "date": "2024-11-14",
+            "dt": "2024-11-14",
             "total_app_tvl": 56789.01,
         },
         {
             "protocol_slug": "protocol_two",
             "chain": "ChainGamma",
-            "date": "2024-11-15",
+            "dt": "2024-11-15",
             "total_app_tvl": 67890.12,
         },
     ]
@@ -175,84 +175,84 @@ def test_extract_protocol_tvl_to_dataframes_app_token_tvl():
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainAlpha",
-            "date": "2024-11-14",
+            "dt": "2024-11-14",
             "token": "TokenA",
             "app_token_tvl": 5555.55,
         },
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainAlpha",
-            "date": "2024-11-14",
+            "dt": "2024-11-14",
             "token": "TokenB",
             "app_token_tvl": 6666.66,
         },
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainAlpha",
-            "date": "2024-11-15",
+            "dt": "2024-11-15",
             "token": "TokenA",
             "app_token_tvl": 7777.77,
         },
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainAlpha",
-            "date": "2024-11-15",
+            "dt": "2024-11-15",
             "token": "TokenB",
             "app_token_tvl": 8888.88,
         },
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainBeta",
-            "date": "2024-11-14",
+            "dt": "2024-11-14",
             "token": "TokenC",
             "app_token_tvl": 1234.56,
         },
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainBeta",
-            "date": "2024-11-14",
+            "dt": "2024-11-14",
             "token": "TokenD",
             "app_token_tvl": 2345.67,
         },
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainBeta",
-            "date": "2024-11-15",
+            "dt": "2024-11-15",
             "token": "TokenC",
             "app_token_tvl": 3456.78,
         },
         {
             "protocol_slug": "protocol_one",
             "chain": "ChainBeta",
-            "date": "2024-11-15",
+            "dt": "2024-11-15",
             "token": "TokenD",
             "app_token_tvl": 4567.89,
         },
         {
             "protocol_slug": "protocol_two",
             "chain": "ChainGamma",
-            "date": "2024-11-14",
+            "dt": "2024-11-14",
             "token": "TokenX",
             "app_token_tvl": 11111.11,
         },
         {
             "protocol_slug": "protocol_two",
             "chain": "ChainGamma",
-            "date": "2024-11-14",
+            "dt": "2024-11-14",
             "token": "TokenY",
             "app_token_tvl": 22222.22,
         },
         {
             "protocol_slug": "protocol_two",
             "chain": "ChainGamma",
-            "date": "2024-11-15",
+            "dt": "2024-11-15",
             "token": "TokenX",
             "app_token_tvl": 33333.33,
         },
         {
             "protocol_slug": "protocol_two",
             "chain": "ChainGamma",
-            "date": "2024-11-15",
+            "dt": "2024-11-15",
             "token": "TokenY",
             "app_token_tvl": 44444.44,
         },
@@ -262,7 +262,9 @@ def test_extract_protocol_tvl_to_dataframes_app_token_tvl():
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_unpartitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_partitioned_table")
 def test_pull_single_protocol_tvl(
+    mock_upsert_partitioned_table,
     mock_upsert_unpartitioned_table,
     mock_get_data,
 ):
@@ -289,22 +291,24 @@ def test_pull_single_protocol_tvl(
     assert mock_upsert_unpartitioned_table.call_args_list[0].kwargs["unique_keys"] == [
         "protocol_slug",
     ]
-    assert mock_upsert_unpartitioned_table.call_args_list[1].kwargs["unique_keys"] == [
+    assert mock_upsert_partitioned_table.call_args_list[0].kwargs["unique_keys"] == [
+        "dt",
         "protocol_slug",
         "chain",
-        "date",
     ]
-    assert mock_upsert_unpartitioned_table.call_args_list[2].kwargs["unique_keys"] == [
+    assert mock_upsert_partitioned_table.call_args_list[1].kwargs["unique_keys"] == [
+        "dt",
         "protocol_slug",
         "chain",
-        "date",
         "token",
     ]
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_unpartitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_partitioned_table")
 def test_pull_all_protocol_tvl(
+    mock_upsert_partitioned_table,
     mock_upsert_unpartitioned_table,
     mock_get_data,
 ):
@@ -332,14 +336,14 @@ def test_pull_all_protocol_tvl(
     assert mock_upsert_unpartitioned_table.call_args_list[0].kwargs["unique_keys"] == [
         "protocol_slug",
     ]
-    assert mock_upsert_unpartitioned_table.call_args_list[1].kwargs["unique_keys"] == [
+    assert mock_upsert_partitioned_table.call_args_list[0].kwargs["unique_keys"] == [
+        "dt",
         "protocol_slug",
         "chain",
-        "date",
     ]
-    assert mock_upsert_unpartitioned_table.call_args_list[2].kwargs["unique_keys"] == [
+    assert mock_upsert_partitioned_table.call_args_list[1].kwargs["unique_keys"] == [
+        "dt",
         "protocol_slug",
         "chain",
-        "date",
         "token",
     ]

@@ -6,6 +6,7 @@ import polars as pl
 from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
     upsert_unpartitioned_table,
+    upsert_partitioned_table,
 )
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
@@ -17,7 +18,7 @@ log = structlog.get_logger()
 PROTOCOLS_ENDPOINT = "https://api.llama.fi/protocols"
 PROTOCOL_DETAILS_ENDPOINT = "https://api.llama.fi/protocol/{slug}"
 
-BQ_DATASET = "uploads_api"
+BQ_DATASET = "upload_api"
 PROTOCOL_METADATA_TABLE = "defillama_protocols_metadata"
 PROTOCOL_TVL_DATA_TABLE = "defillama_protocols_tvl"
 PROTOCOL_TOKEN_TVL_DATA_TABLE = "defillama_protocols_token_tvl"
@@ -72,19 +73,19 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
         create_if_not_exists=False,  # Set to True on first run
     )
 
-    upsert_unpartitioned_table(
-        df=most_recent_dates(app_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="date"),
+    upsert_partitioned_table(
+        df=most_recent_dates(app_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
         dataset=BQ_DATASET,
         table_name=PROTOCOL_TVL_DATA_TABLE,
-        unique_keys=["protocol_slug", "chain", "date"],
+        unique_keys=["dt", "protocol_slug", "chain"],
         create_if_not_exists=False,  # Set to True on first run
     )
 
-    upsert_unpartitioned_table(
-        df=most_recent_dates(app_token_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="date"),
+    upsert_partitioned_table(
+        df=most_recent_dates(app_token_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
         dataset=BQ_DATASET,
         table_name=PROTOCOL_TOKEN_TVL_DATA_TABLE,
-        unique_keys=["protocol_slug", "chain", "date", "token"],
+        unique_keys=["dt", "protocol_slug", "chain", "token"],
         create_if_not_exists=False,  # Set to True on first run
     )
 
@@ -182,7 +183,7 @@ def extract_protocol_tvl_to_dataframes(protocol_data: dict) -> pl.DataFrame:
                     {
                         "protocol_slug": slug,
                         "chain": chain,
-                        "date": dateval,
+                        "dt": dateval,
                         "total_app_tvl": tvl_entry.get("totalLiquidityUSD"),
                     }
                 )
@@ -205,7 +206,7 @@ def extract_protocol_tvl_to_dataframes(protocol_data: dict) -> pl.DataFrame:
                         {
                             "protocol_slug": slug,
                             "chain": chain,
-                            "date": dateval,
+                            "dt": dateval,
                             "token": token,
                             "app_token_tvl": token_tvls[token],
                         }
