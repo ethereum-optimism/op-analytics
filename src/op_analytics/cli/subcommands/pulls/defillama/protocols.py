@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import timedelta, datetime
+from datetime import timedelta
 
 import polars as pl
 
@@ -11,14 +11,14 @@ from op_analytics.coreutils.bigquery.write import (
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
-from op_analytics.coreutils.time import date_fromstr, dt_fromepoch, datetime_fromepoch, now_date
+from op_analytics.coreutils.time import date_fromstr, dt_fromepoch, epoch_is_date, now_date
 
 log = structlog.get_logger()
 
 PROTOCOLS_ENDPOINT = "https://api.llama.fi/protocols"
 PROTOCOL_DETAILS_ENDPOINT = "https://api.llama.fi/protocol/{slug}"
 
-BQ_DATASET = "upload_api"
+BQ_DATASET = "uploads_api"
 PROTOCOL_METADATA_TABLE = "defillama_protocols_metadata"
 PROTOCOL_TVL_DATA_TABLE = "defillama_protocols_tvl"
 PROTOCOL_TOKEN_TVL_DATA_TABLE = "defillama_protocols_token_tvl"
@@ -171,12 +171,11 @@ def extract_protocol_tvl_to_dataframes(protocol_data: dict) -> pl.DataFrame:
             tvl_entries = chain_data.get("tvl", [])
             for tvl_entry in tvl_entries:
                 dateval = dt_fromepoch(tvl_entry["date"])
-                timeval = datetime_fromepoch(tvl_entry["date"]).time()
 
                 if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
                     continue
 
-                if timeval != datetime.min.time():
+                if not epoch_is_date(tvl_entry["date"]):
                     continue
 
                 app_tvl_records.append(
@@ -192,12 +191,11 @@ def extract_protocol_tvl_to_dataframes(protocol_data: dict) -> pl.DataFrame:
             tokens_entries = chain_data.get("tokensInUsd", [])
             for tokens_entry in tokens_entries:
                 dateval = dt_fromepoch(tokens_entry["date"])
-                timeval = datetime_fromepoch(tokens_entry["date"]).time()
 
                 if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
                     continue
 
-                if timeval != datetime.min.time():
+                if not epoch_is_date(tokens_entry["date"]):
                     continue
 
                 token_tvls = tokens_entry.get("tokens", [])
