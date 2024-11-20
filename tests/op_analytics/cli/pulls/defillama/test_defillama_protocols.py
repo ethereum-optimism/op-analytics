@@ -47,6 +47,7 @@ sample_protocol_data = {
                 "tvl": [
                     {"date": 1731542400, "totalLiquidityUSD": 34567.89},
                     {"date": 1731628800, "totalLiquidityUSD": 45678.90},
+                    {"date": 1731628801, "totalLiquidityUSD": 45678.91},
                 ],
                 "tokensInUsd": [
                     {
@@ -77,6 +78,10 @@ sample_protocol_data = {
                     {
                         "date": 1731628800,
                         "tokens": {"TokenX": 33333.33, "TokenY": 44444.44},
+                    },
+                    {
+                        "date": 1731628801,
+                        "tokens": {"TokenX": 55555.55, "TokenY": 66666.66},
                     },
                 ],
             }
