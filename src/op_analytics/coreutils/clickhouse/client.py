@@ -32,6 +32,8 @@ def connect(instance: ClickHouseInstance):
         port=int(env_get(f"CLICKHOUSE_{instance}_PORT")),
         username=env_get(f"CLICKHOUSE_{instance}_USER"),
         password=env_get(f"CLICKHOUSE_{instance}_PASSWORD"),
+        connect_timeout=60,
+        send_receive_timeout=300,
     )
     log.debug(f"initialized {instance} Clickhouse client.")
     return client
