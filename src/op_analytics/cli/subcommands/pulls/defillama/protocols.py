@@ -170,12 +170,12 @@ def extract_protocol_tvl_to_dataframes(protocol_data: dict) -> pl.DataFrame:
             tvl_entries = chain_data.get("tvl", [])
             for tvl_entry in tvl_entries:
                 dateval = dt_fromepoch(tvl_entry["date"])
-                timeeval = datetime_fromepoch(tvl_entry["date"]).time()
+                timeval = datetime_fromepoch(tvl_entry["date"]).time()
 
                 if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
                     continue
 
-                if timeeval != datetime.min.time():
+                if timeval != datetime.min.time():
                     continue
 
                 app_tvl_records.append(
@@ -191,12 +191,12 @@ def extract_protocol_tvl_to_dataframes(protocol_data: dict) -> pl.DataFrame:
             tokens_entries = chain_data.get("tokensInUsd", [])
             for tokens_entry in tokens_entries:
                 dateval = dt_fromepoch(tokens_entry["date"])
-                timeeval = datetime_fromepoch(tokens_entry["date"]).time()
+                timeval = datetime_fromepoch(tokens_entry["date"]).time()
 
                 if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
                     continue
 
-                if timeeval != datetime.min.time():
+                if timeval != datetime.min.time():
                     continue
 
                 token_tvls = tokens_entry.get("tokens", [])
