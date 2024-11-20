@@ -57,7 +57,7 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
         dataset=BQ_DATASET,
         table_name=PROTOCOL_METADATA_TABLE,
         unique_keys=["protocol_slug"],
-        create_if_not_exists=True,  # Set to True on first run
+        create_if_not_exists=False,  # Set to True on first run
     )
 
     upsert_unpartitioned_table(
