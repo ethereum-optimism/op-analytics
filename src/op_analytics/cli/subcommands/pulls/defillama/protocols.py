@@ -19,7 +19,7 @@ PROTOCOL_METADATA_TABLE = "defillama_protocols_metadata"
 PROTOCOL_TVL_DATA_TABLE = "defillama_protocols_tvl"
 PROTOCOL_TOKEN_TVL_DATA_TABLE = "defillama_protocols_token_tvl"
 
-TVL_TABLE_LAST_N_DAYS = 100_000
+TVL_TABLE_LAST_N_DAYS = 7
 
 
 @dataclass
