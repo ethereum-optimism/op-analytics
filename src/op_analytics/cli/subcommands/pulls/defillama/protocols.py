@@ -6,11 +6,12 @@ import polars as pl
 from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
     upsert_unpartitioned_table,
+    upsert_partitioned_table,
 )
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
-from op_analytics.coreutils.time import date_fromstr, dt_fromepoch, now_date
+from op_analytics.coreutils.time import date_fromstr, dt_fromepoch, epoch_is_date, now_date
 
 log = structlog.get_logger()
 
@@ -72,19 +73,19 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
         create_if_not_exists=False,  # Set to True on first run
     )
 
-    upsert_unpartitioned_table(
-        df=most_recent_dates(app_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="date"),
+    upsert_partitioned_table(
+        df=most_recent_dates(app_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
         dataset=BQ_DATASET,
         table_name=PROTOCOL_TVL_DATA_TABLE,
-        unique_keys=["protocol_slug", "chain", "date"],
+        unique_keys=["dt", "protocol_slug", "chain"],
         create_if_not_exists=False,  # Set to True on first run
     )
 
-    upsert_unpartitioned_table(
-        df=most_recent_dates(app_token_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="date"),
+    upsert_partitioned_table(
+        df=most_recent_dates(app_token_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
         dataset=BQ_DATASET,
         table_name=PROTOCOL_TOKEN_TVL_DATA_TABLE,
-        unique_keys=["protocol_slug", "chain", "date", "token"],
+        unique_keys=["dt", "protocol_slug", "chain", "token"],
         create_if_not_exists=False,  # Set to True on first run
     )
 
@@ -174,11 +175,14 @@ def extract_protocol_tvl_to_dataframes(protocol_data: dict) -> pl.DataFrame:
                 if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
                     continue
 
+                if not epoch_is_date(tvl_entry["date"]):
+                    continue
+
                 app_tvl_records.append(
                     {
                         "protocol_slug": slug,
                         "chain": chain,
-                        "date": dateval,
+                        "dt": dateval,
                         "total_app_tvl": tvl_entry.get("totalLiquidityUSD"),
                     }
                 )
@@ -191,13 +195,16 @@ def extract_protocol_tvl_to_dataframes(protocol_data: dict) -> pl.DataFrame:
                 if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
                     continue
 
+                if not epoch_is_date(tokens_entry["date"]):
+                    continue
+
                 token_tvls = tokens_entry.get("tokens", [])
                 for token in token_tvls:
                     app_token_tvl_records.append(
                         {
                             "protocol_slug": slug,
                             "chain": chain,
-                            "date": dateval,
+                            "dt": dateval,
                             "token": token,
                             "app_token_tvl": token_tvls[token],
                         }

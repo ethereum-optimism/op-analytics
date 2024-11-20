@@ -54,3 +54,8 @@ def surrounding_dates(dateval: date) -> list[date]:
     day_after = dateval + timedelta(days=1)
 
     return [day_before, dateval, day_after]
+
+
+def epoch_is_date(epoch: int) -> bool:
+    """Return true if seconds since epoch is at exactly midnight."""
+    return epoch % 86400 == 0
