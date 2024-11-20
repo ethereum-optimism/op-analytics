@@ -103,9 +103,13 @@ def verify_goldsky_tables():
 
 CHAINS_ARG = Annotated[str, typer.Argument(help="Comma-separated list of chains to be processed.")]
 DATES_ARG = Annotated[str, typer.Argument(help="Range of dates to be processed.")]
-DRYRUN_ARG = Annotated[
+DRYRUN_OPTION = Annotated[
     bool, typer.Option(help="Dryrun shows a summary of the data that will be processed.")
 ]
+FORCE_COMPLETE_OPTION = Annotated[
+    bool, typer.Option(help="Run even if completion markers already exist.")
+]
+FORCE_NOT_READY_OPTION = Annotated[bool, typer.Option(help="Run even if inputs are notready.")]
 
 
 def normalize_chains(chains: str) -> list[str]:
@@ -148,10 +152,8 @@ def ingest_blocks(
             case_sensitive=False,
         ),
     ] = None,
-    dryrun: DRYRUN_ARG = False,
-    force: Annotated[
-        bool, typer.Option(help="Run the full process ignore any existing completion markers.")
-    ] = False,
+    dryrun: DRYRUN_OPTION = False,
+    force_complete: FORCE_COMPLETE_OPTION = False,
     fork_process: Annotated[
         bool, typer.Option(help="If true, execute task in a forked subprocess.")
     ] = True,
@@ -168,7 +170,7 @@ def ingest_blocks(
         read_from=read_from,
         write_to=write_to or [DataLocation.LOCAL],
         dryrun=dryrun,
-        force=force,
+        force_complete=force_complete,
         fork_process=fork_process,
     )
 
@@ -192,10 +194,8 @@ def intermediate_models(
             case_sensitive=False,
         ),
     ] = None,
-    dryrun: DRYRUN_ARG = False,
-    force: Annotated[
-        bool, typer.Option(help="Run the full process ignore any existing completion markers.")
-    ] = False,
+    dryrun: DRYRUN_OPTION = False,
+    force_complete: FORCE_COMPLETE_OPTION = False,
 ):
     """Compute intermediate models for a range of dates."""
     chain_list = normalize_chains(chains)
@@ -208,17 +208,16 @@ def intermediate_models(
         read_from=read_from,
         write_to=write_to or [DataLocation.LOCAL],
         dryrun=dryrun,
-        force=force,
+        force_complete=force_complete,
     )
 
 
 @app.command()
 def load_superchain_raw(
     range_spec: DATES_ARG,
-    dryrun: DRYRUN_ARG = False,
-    force: Annotated[
-        bool, typer.Option(help="Run load jobs even if some input data is not ready yet.")
-    ] = False,
+    dryrun: DRYRUN_OPTION = False,
+    force_complete: FORCE_COMPLETE_OPTION = False,
+    force_not_ready: FORCE_NOT_READY_OPTION = False,
     write_to: Annotated[
         DataLocation,
         typer.Option(
@@ -241,5 +240,6 @@ def load_superchain_raw(
         location=write_to,
         range_spec=range_spec,
         dryrun=dryrun,
-        force=force,
+        force_complete=force_complete,
+        force_not_ready=force_not_ready,
     )

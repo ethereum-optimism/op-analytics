@@ -7,7 +7,8 @@ from op_analytics.datapipeline.utils.daterange import DateRange
 
 from op_analytics.coreutils.duckdb_inmem import parquet_relation
 from op_analytics.coreutils.logger import bound_contextvars, structlog
-from op_analytics.coreutils.time import surrounding_dates
+from op_analytics.coreutils.time import surrounding_dates, date_fromstr
+
 
 from .location import DataLocation
 from .dataaccess import init_data_access
@@ -101,6 +102,12 @@ def construct_input_batches(
     inputs = []
     for dateval in date_range.dates:
         for chain in chains:
+            if not is_chain_active(chain, dateval):
+                log.info(
+                    f"skipping inactive chain: {str(dateval)} {chain} ",
+                )
+                continue
+
             with bound_contextvars(chain=chain, date=dateval.isoformat()):
                 filtered_df = markers_df.filter(
                     pl.col("chain") == chain,
@@ -223,3 +230,38 @@ def is_dataset_ready(dataset_name: str, dataset_df: pl.DataFrame, dateval: date)
             log.warning("missing date coverage", missing=missing)
 
         return is_ready
+
+
+CHAIN_ACTIVATION_DATES = {
+    "automata": date_fromstr("2024-07-17"),
+    "base": date_fromstr("2023-06-15"),
+    "bob": date_fromstr("2024-04-11"),
+    "cyber": date_fromstr("2024-04-18"),
+    "fraxtal": date_fromstr("2024-02-01"),
+    "ham": date_fromstr("2024-05-24"),
+    "kroma": date_fromstr("2023-09-05"),
+    "lisk": date_fromstr("2024-05-03"),
+    "lyra": date_fromstr("2023-11-15"),
+    "metal": date_fromstr("2024-03-27"),
+    "mint": date_fromstr("2024-05-13"),
+    "mode": date_fromstr("2023-11-16"),
+    "op": date_fromstr("2021-11-12"),
+    "orderly": date_fromstr("2023-10-06"),
+    "polynomial": date_fromstr("2024-06-10"),
+    "race": date_fromstr("2024-07-08"),
+    "redstone": date_fromstr("2024-04-03"),
+    "shape": date_fromstr("2024-07-23"),
+    "swan": date_fromstr("2024-06-18"),
+    "unichain": date_fromstr("2024-11-04"),
+    "worldchain": date_fromstr("2024-06-25"),
+    "xterio": date_fromstr("2024-05-24"),
+    "zora": date_fromstr("2023-06-13"),
+    # TESTNETS
+    "op_sepolia": date_fromstr("2024-01-01"),
+}
+
+
+def is_chain_active(chain: str, dateval: date) -> bool:
+    activation = CHAIN_ACTIVATION_DATES[chain]
+
+    return dateval >= activation
