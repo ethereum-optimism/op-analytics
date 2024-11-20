@@ -28,7 +28,8 @@ def load_superchain_raw_to_bq(
     location: DataLocation,
     range_spec: str,
     dryrun: bool,
-    force: bool,
+    force_complete: bool,
+    force_not_ready: bool,
 ):
     # IMPORTANT: When loading to BigQuery we always load all the chains at once.
     # We do this because loading implies truncating any existing data in the date
@@ -58,9 +59,10 @@ def load_superchain_raw_to_bq(
         )
 
         if task.chains_not_ready:
-            log.warning(f"INPUTS NOT READY: {sorted(task.chains_not_ready)}")
-            if not force:
-                return
+            log.warning(f"some chains are not ready to load to bq: {sorted(task.chains_not_ready)}")
+
+        if task.chains_not_ready and not force_not_ready:
+            continue
 
         for dataset, parquet_paths in task.dataset_paths.items():
             # Get the common root path for all the source parquet paths.
@@ -84,5 +86,5 @@ def load_superchain_raw_to_bq(
                 markers_table=MARKERS_TABLE,
                 source_uris=parquet_paths,
                 source_uris_root_path=source_uris_root_path,
-                force=force,
+                force_complete=force_complete,
             )

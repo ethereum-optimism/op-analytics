@@ -581,7 +581,8 @@ def test_load_tasks():
             location=DataLocation.BIGQUERY_LOCAL_MARKERS,
             range_spec="@20241001:+3",
             dryrun=False,
-            force=True,
+            force_complete=True,
+            force_not_ready=False,
         )
 
         load_calls = []

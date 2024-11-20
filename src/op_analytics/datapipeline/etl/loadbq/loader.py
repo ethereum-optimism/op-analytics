@@ -66,7 +66,7 @@ def bq_load(
     markers_table: str,
     source_uris: list[str],
     source_uris_root_path: str,
-    force: bool,
+    force_complete: bool,
 ):
     """Use a WriteManager class to handle writing completion markers."""
     location.ensure_biguqery()
@@ -87,7 +87,7 @@ def bq_load(
             ],
         ),
         markers_table=markers_table,
-        force=force,
+        force=force_complete,
     )
 
     manager.write(

@@ -31,7 +31,7 @@ def ingest(
     read_from: RawOnchainDataProvider,
     write_to: list[DataLocation],
     dryrun: bool,
-    force: bool = False,
+    force_complete: bool = False,
     fork_process: bool = True,
     max_tasks: int | None = None,
 ):
@@ -58,10 +58,11 @@ def ingest(
                 continue
 
             # Decide if we need to run this task.
-            if task.data_writer.is_complete and not force:
+            if task.data_writer.is_complete and not force_complete:
                 continue
-            if force:
-                log.info("force flag detected")
+
+            if force_complete:
+                log.info("force_complete flag detected")
                 task.data_writer.force = True
 
             executed += 1

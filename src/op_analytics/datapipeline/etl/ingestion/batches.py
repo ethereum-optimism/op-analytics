@@ -128,6 +128,9 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # 20k blocks means more hours.
         Delimiter(block_number=2640000, batch_size=8000),
     ],
+    "unichain": [
+        Delimiter(0, 8000),
+    ],
     "worldchain": [
         Delimiter(block_number=0, batch_size=20000),
         # On 2024/10/13 (after launching) worldchain started having

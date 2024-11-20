@@ -22,7 +22,7 @@ def compute_intermediate(
     read_from: DataLocation,
     write_to: list[DataLocation],
     dryrun: bool,
-    force: bool = False,
+    force_complete: bool = False,
 ):
     clear_contextvars()
 
@@ -59,9 +59,9 @@ def compute_intermediate(
             continue
 
         # Decide if we need to run this task.
-        if task.data_writer.is_complete and not force:
+        if task.data_writer.is_complete and not force_complete:
             continue
-        if force:
+        if force_complete:
             log.info("forced execution despite complete marker")
             task.data_writer.force = True
 

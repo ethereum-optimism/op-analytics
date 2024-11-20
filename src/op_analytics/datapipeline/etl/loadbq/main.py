@@ -16,14 +16,16 @@ def load_to_bq(
     location: DataLocation,
     range_spec: str,
     dryrun: bool,
-    force: bool,
+    force_complete: bool,
+    force_not_ready: bool,
 ):
     if stage == PipelineStage.RAW_ONCHAIN:
         return load_superchain_raw_to_bq(
             location=location,
             range_spec=range_spec,
             dryrun=dryrun,
-            force=force,
+            force_complete=force_complete,
+            force_not_ready=force_not_ready,
         )
 
     raise NotImplementedError()
