@@ -15,6 +15,14 @@ rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 EOT
 
 
+# Install dependencies
+COPY dummydeps/pyproject.toml /_dummydeps/pyproject.toml
+RUN --mount=type=cache,target=/root/.cache <<EOT
+cd /_dummydeps
+pip install .
+EOT
+
+
 # Install the package
 COPY dist/ /_dist/
 RUN --mount=type=cache,target=/root/.cache <<EOT

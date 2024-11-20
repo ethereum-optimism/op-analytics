@@ -77,11 +77,13 @@ sphinx-serve: .makemarkers/sphinx-docs
 #     DOCKER IMAGE
 # ----------------------------------------------------------------------------#
 
-IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20241120.1
+IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20241120.2
 
 .PHONY: docker-image
 docker-image:
+	rm -rf dummydeps || true
 	rm -rf dist || true
+	./scripts/python_deps.sh
 	uv sync
 	uv build
 	docker build --platform linux/amd64 -t ${IMAGE_TAG} .

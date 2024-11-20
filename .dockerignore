@@ -3,3 +3,4 @@
 
 # Include only what's needed
 !dist/*.whl
+!dummydeps/pyproject.toml
