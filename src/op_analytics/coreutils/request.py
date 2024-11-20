@@ -2,6 +2,7 @@ import time
 from urllib3.util.retry import Retry
 
 import requests
+import stamina
 from requests.adapters import HTTPAdapter
 
 from op_analytics.coreutils.logger import structlog
@@ -25,16 +26,40 @@ def new_session() -> requests.Session:
     return session
 
 
-def get_data(session: requests.Session, url: str, headers: dict[str, str] | None = None):
+def get_data(
+    session: requests.Session,
+    url: str,
+    headers: dict[str, str] | None = None,
+    retry_attempts: int | None = None,
+):
     """Helper function to reuse an existing HTTP session to fetch data from a URL.
 
     - Reports timing.
     - Raises for HTTP error status codes (>400) and checks for 200 status code.
     """
-    start = time.time()
 
     headers = headers or {"Content-Type": "application/json"}
 
+    # Do not retry on invalid json responses.
+    if retry_attempts is None:
+        return _get_data(session, url, headers)
+
+    # Retry if the endpoint returns invalid json.
+    for attempt in stamina.retry_context(
+        on=requests.JSONDecodeError,
+        attempts=retry_attempts,
+        timeout=60,
+        wait_initial=2,
+        wait_max=15,
+    ):
+        with attempt:
+            if attempt.num > 1:
+                log.warning(f"retrying {url}")
+            return _get_data(session, url, headers)
+
+
+def _get_data(session: requests.Session, url: str, headers: dict[str, str]):
+    start = time.time()
     resp = session.request(method="GET", url=url, headers=headers)
 
     resp.raise_for_status()

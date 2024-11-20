@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+
 import polars as pl
+
 from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
     upsert_unpartitioned_table,
@@ -46,10 +48,17 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
 
     # Construct URLs for protocol-specific data
     urls = construct_urls(metadata_df, pull_protocols, PROTOCOL_DETAILS_ENDPOINT)
+
     # Fetch protocol details in parallel
-    protocol_data = run_concurrently(lambda url: get_data(session, url), urls, max_workers=4)
+    log.info(f"fetching data for {len(urls)} protocols")
+    protocol_data = run_concurrently(
+        function=lambda url: get_data(session, url, retry_attempts=3),
+        targets=urls,
+        max_workers=8,
+    )
 
     # Extract protocol data into a dataframe
+    log.info("begin extract protocol tvl")
     app_tvl_df, app_token_tvl_df = extract_protocol_tvl_to_dataframes(protocol_data)
 
     upsert_unpartitioned_table(
