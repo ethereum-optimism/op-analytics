@@ -53,6 +53,9 @@ class IntermediateModelTestBase(unittest.TestCase):
 
     # Input parameters (must be set by child class)
 
+    # The name of the model under test
+    model: str
+
     # The path where input data will be stored.
     inputdata: InputTestData
 
@@ -122,7 +125,7 @@ class IntermediateModelTestBase(unittest.TestCase):
         cls._duckdb_client = duckdb.connect(tmp_db_path)
 
         # Execute the model on the temporary duckdb instance.
-        model = REGISTERED_INTERMEDIATE_MODELS["daily_address_summary"]
+        model = REGISTERED_INTERMEDIATE_MODELS[cls.model]
 
         cls._model_executor = execute_model_in_memory(
             duckdb_client=cls._duckdb_client,

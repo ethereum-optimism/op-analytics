@@ -16,7 +16,7 @@ SELECT
     ,tr.value_64
     ,tr.value_lossless
     ,tr.input AS code
-    ,STRLEN(tr.input) AS code_bytelength
+    ,hexstr_bytelen(tr.input) AS code_bytelength
     ,tr.output
     ,tr.trace_type
     ,tr.call_type

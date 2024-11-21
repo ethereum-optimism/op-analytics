@@ -29,6 +29,7 @@ class PythonModel:
     expected_output_datasets: list[str]
     duckdb_views: list[RenderedSQLQuery]
     model_func: ModelFunction
+    block_filter_pct: int
 
     @property
     def func(self) -> ModelFunction:
@@ -44,9 +45,24 @@ class PythonModelExecutor:
     def __enter__(self):
         # Register input data as views on the duckdb client.
         for dataset in self.model.input_datasets:
+            if self.model.block_filter_pct is not None:
+                if dataset == "blocks":
+                    blockfilter = f"number % 100 <= {self.model.block_filter_pct}"
+                elif dataset in ("logs", "transactions", "traces"):
+                    blockfilter = f"block_number % 100 <= {self.model.block_filter_pct}"
+                else:
+                    blockfilter = None
+            else:
+                blockfilter = None
+
+            relation = self.data_reader.duckdb_relation(dataset)
+
+            if blockfilter is not None:
+                relation = relation.filter(blockfilter)
+
             self.client.register(
                 view_name=dataset,
-                python_object=self.data_reader.duckdb_relation(dataset),
+                python_object=relation,
             )
 
         # Register the rendered views.
@@ -77,6 +93,7 @@ def register_model(
     input_datasets: list[str],
     expected_outputs: list[str],
     duckdb_views: list[TemplatedSQLQuery],
+    block_filter_pct: int | None = None,
 ):
     def decorator(func):
         model_name = func.__name__
@@ -92,6 +109,7 @@ def register_model(
                 expected_output_datasets=expected_outputs,
                 duckdb_views=rendered_views,
                 model_func=func,
+                block_filter_pct=block_filter_pct,
             )
         return func
 

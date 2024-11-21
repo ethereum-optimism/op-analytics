@@ -62,7 +62,13 @@ class DataReader:
         return {dataset_name: len(paths) for dataset_name, paths in self.dataset_paths.items()}
 
     def duckdb_relation(self, dataset) -> duckdb.DuckDBPyRelation:
-        return parquet_relation(self.dataset_paths[dataset])
+        paths = self.dataset_paths[dataset]
+
+        log.info(
+            f"creating duckdb relation {dataset!r} from {len(paths)} paths, first path is {paths[0]}"
+        )
+
+        return parquet_relation(paths)
 
 
 def construct_input_batches(
