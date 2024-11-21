@@ -11,7 +11,7 @@ log = structlog.get_logger()
 _STORE: dict | None = None
 
 
-def load_dotenv() -> dict:
+def load_dotenv() -> dict | None:
     """Load env vars from the .env file.
 
     At the moment this is only used to pick up the value of the OP_ANALYTICS_VAULT
@@ -21,7 +21,7 @@ def load_dotenv() -> dict:
 
     if dotenv_path is None or not os.path.isfile(dotenv_path):
         log.warning("Did not find .env. No env vars will be loaded.")
-        return {}
+        return None
 
     result = {}
     with open(dotenv_path, "r") as fobj:
@@ -46,10 +46,15 @@ def load_vault() -> dict:
             raw = fobj.read()
             result = _decode(raw)
     else:
-        if VAULT_ENV_VAR in os.environ:
+        dotenvfile = load_dotenv()
+
+        if dotenvfile is not None:
+            raw = load_dotenv().get("OP_ANALYTICS_VAULT", default)
+        elif VAULT_ENV_VAR in os.environ:
             raw = os.environ[VAULT_ENV_VAR]
         else:
-            raw = load_dotenv().get("OP_ANALYTICS_VAULT", default)
+            raw = default
+
         result = _decode(raw)
 
     if not isinstance(result, dict):
