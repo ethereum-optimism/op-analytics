@@ -37,12 +37,6 @@ jobs:
           OPLABS_ENV: "prod"
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
 
-      - name: DefiLlama Protocol TVL
-        run: uv run opdata pulls defillama_protocol_tvl
-        env:
-          OPLABS_ENV: "prod"
-          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
-
       - name: GitHub Analytics
         run: uv run opdata pulls github_analytics
         env:
