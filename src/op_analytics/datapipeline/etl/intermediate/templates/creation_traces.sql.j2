@@ -30,5 +30,7 @@ SELECT
 FROM traces AS tr
 JOIN transactions AS t
     ON tr.transaction_hash = t.hash
+    AND tr.block_number = t.block_number
+    AND t.chain_id = tr.chain_id
 WHERE
     tr.trace_type like 'create%'
