@@ -24,11 +24,11 @@ REPOS = [
     "supersim",
     "superchainerc20-starter",
     "optimism",
-    # "op-geth",
+    "op-geth",
     "superchain-registry",
     "superchain-ops",
     "docs",
-    # "specs",
+    "specs",
     "design-docs",
     "infra",
 ]
