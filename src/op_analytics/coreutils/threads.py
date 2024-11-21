@@ -1,6 +1,8 @@
 import concurrent.futures
+from functools import wraps
 from typing import Any, Callable
-from op_analytics.coreutils.logger import structlog
+
+from op_analytics.coreutils.logger import bound_contextvars, structlog
 
 log = structlog.get_logger()
 
@@ -25,11 +27,15 @@ def run_concurrently(
     if max_workers == -1:
         return run_serially(function, targets)
 
+    num_targets = len(targets)
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {}
 
-        for key, target in targets.items():
-            future = executor.submit(function, target)
+        for i, (key, target) in enumerate(targets.items()):
+            future = executor.submit(
+                progress_wrapper(function, total=num_targets, current=i + 1), target
+            )
             futures[future] = key
 
         for future in concurrent.futures.as_completed(futures):
@@ -41,6 +47,25 @@ def run_concurrently(
                 raise
 
     return results
+
+
+def progress_wrapper(func, total: int, current: int):
+    """Function wrapper that binds the target_id contextvar.
+
+    Helps keep track of progress when a large number of tasks are executed
+    concurrently.
+
+    Note that the target_id is assigned in the order in which the task gets
+    submitted. Since tasks run on different threads then the taarget_id will
+    often show out out of order in the logs.
+    """
+
+    @wraps(func)
+    def wrapper(*args, **kwds):
+        with bound_contextvars(target_id=f"{current:03d}/{total:03d}"):
+            return func(*args, **kwds)
+
+    return wrapper
 
 
 def run_serially(function: Callable, targets: dict[str, Any]) -> dict[str, Any]:

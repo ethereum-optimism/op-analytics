@@ -1,12 +1,14 @@
+import itertools
 from dataclasses import dataclass
 from datetime import timedelta
+from typing import Iterable
 
 import polars as pl
 
 from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
-    upsert_unpartitioned_table,
     upsert_partitioned_table,
+    upsert_unpartitioned_table,
 )
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
@@ -37,6 +39,14 @@ class DefillamaProtocols:
     app_token_tvl_df: pl.DataFrame
 
 
+@dataclass
+class SingleProtocolRecords:
+    """Records obtained for a single protocol."""
+
+    tvl_records: list[dict]
+    token_tvl_records: list[dict]
+
+
 def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProtocols:
     """
     Pulls and processes protocol data from DeFiLlama.
@@ -50,20 +60,23 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     protocols = get_data(session, PROTOCOLS_ENDPOINT)
     metadata_df = extract_protocol_metadata(protocols)
 
-    # Construct URLs for protocol-specific data
-    urls = construct_urls(metadata_df, pull_protocols, PROTOCOL_DETAILS_ENDPOINT)
+    # Create list of slugs to fetch protocol-specific data
+    slugs = construct_slugs(metadata_df, pull_protocols)
 
-    # Fetch protocol details in parallel
-    log.info(f"fetching data for {len(urls)} protocols")
-    protocol_data = run_concurrently(
-        function=lambda url: get_data(session, url, retry_attempts=3),
-        targets=urls,
+    # Fetch and extract protocol details in parallel.
+    # The single protocol extraction filters data to only the dates of
+    # interest, which helps control memory usage.
+    log.info(f"fetching data for {len(slugs)} protocols")
+    protocol_data: dict[str, SingleProtocolRecords] = run_concurrently(
+        function=lambda slug: extract_single_protocol(session, slug),
+        targets=slugs,
         max_workers=8,
     )
+    log.info("done fetching and preprocessing data")
 
-    # Extract protocol data into a dataframe
-    log.info("begin extract protocol tvl")
-    app_tvl_df, app_token_tvl_df = extract_protocol_tvl_to_dataframes(protocol_data)
+    # Load protocol data into dataframes.
+    app_tvl_df = create_dataframe(_.tvl_records for _ in protocol_data.values())
+    app_token_tvl_df = create_dataframe(_.token_tvl_records for _ in protocol_data.values())
 
     upsert_unpartitioned_table(
         df=metadata_df,
@@ -120,94 +133,94 @@ def extract_protocol_metadata(protocols: list[dict]) -> pl.DataFrame:
     return pl.DataFrame(metadata_records)
 
 
-def construct_urls(
-    metadata_df: pl.DataFrame, pull_protocols: list[str] | None, endpoint: str
-) -> dict[str, str]:
-    """Build the collection of URLs for fetching protocol details.
+def construct_slugs(metadata_df: pl.DataFrame, pull_protocols: list[str] | None) -> list[str]:
+    """Build the collection of slugs for fetching protocol details.
 
     Args:
         metadata_df: DataFrame containing protocol metadata.
         pull_protocols: List of protocol slugs to process. Defaults to None (process all).
-        endpoint: The API endpoint for protocol details.
-
-    Returns:
-        A dictionary of protocol slugs and their corresponding URLs.
     """
     if pull_protocols is None:
-        slugs = metadata_df.get_column("protocol_slug").to_list()
+        return metadata_df.get_column("protocol_slug").to_list()
     else:
-        slugs = [
+        return [
             slug
             for slug in metadata_df.get_column("protocol_slug").to_list()
             if slug in pull_protocols
         ]
 
-    urls = {slug: endpoint.format(slug=slug) for slug in slugs}
-    if not urls:
-        raise ValueError("No valid slugs provided.")
-    return urls
 
+def extract_single_protocol(session, slug) -> SingleProtocolRecords:
+    """Fetch and extract for a single protocol.
 
-def extract_protocol_tvl_to_dataframes(protocol_data: dict) -> pl.DataFrame:
+    Calls the DefiLLama endpoint and extracts daily 'tvl' and 'tokensInUsd' for the
+    given slug.
     """
-    Extracts daily 'tvl' and 'tokensInUsd' data for each protocol across chains.
 
-    Args:
-        protocol_data: A dictionary where each key is a protocol slug, and the value contains protocol details.
+    # Fetch data
+    url = PROTOCOL_DETAILS_ENDPOINT.format(slug=slug)
+    data = get_data(session, url, retry_attempts=3)
 
-    Returns:
-        Two polars dataframes containing app tvl data and app token tvl data
-    """
-    app_tvl_records = []
-    app_token_tvl_records = []
+    # Initialize extracted records.
+    tvl_records = []
+    token_tvl_records = []
 
-    # Loop through each entry in protocol_data
-    for slug, details in protocol_data.items():
-        chain_tvls = details.get("chainTvls", {})
+    # Each app entry can have tvl data in multiple chains. Loop through each chain
+    chain_tvls = data.get("chainTvls", {})
+    for chain, chain_data in chain_tvls.items():
+        # Extract total app tvl
+        tvl_entries = chain_data.get("tvl", [])
+        for tvl_entry in tvl_entries:
+            dateval = dt_fromepoch(tvl_entry["date"])
 
-        # Each app entry can have tvl data in multiple chains. Loop through each chain
-        for chain, chain_data in chain_tvls.items():
-            # Extract total app tvl
-            tvl_entries = chain_data.get("tvl", [])
-            for tvl_entry in tvl_entries:
-                dateval = dt_fromepoch(tvl_entry["date"])
+            if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
+                continue
 
-                if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
-                    continue
+            if not epoch_is_date(tvl_entry["date"]):
+                continue
 
-                if not epoch_is_date(tvl_entry["date"]):
-                    continue
+            tvl_records.append(
+                {
+                    "protocol_slug": slug,
+                    "chain": chain,
+                    "dt": dateval,
+                    "total_app_tvl": tvl_entry.get("totalLiquidityUSD"),
+                }
+            )
 
-                app_tvl_records.append(
+        # Extract token tvl for each app
+        tokens_entries = chain_data.get("tokensInUsd", [])
+        for tokens_entry in tokens_entries:
+            dateval = dt_fromepoch(tokens_entry["date"])
+
+            if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
+                continue
+
+            if not epoch_is_date(tokens_entry["date"]):
+                continue
+
+            token_tvls = tokens_entry.get("tokens", [])
+            for token in token_tvls:
+                token_tvl_records.append(
                     {
                         "protocol_slug": slug,
                         "chain": chain,
                         "dt": dateval,
-                        "total_app_tvl": tvl_entry.get("totalLiquidityUSD"),
+                        "token": token,
+                        "app_token_tvl": token_tvls[token],
                     }
                 )
 
-            # Extract token tvl for each app
-            tokens_entries = chain_data.get("tokensInUsd", [])
-            for tokens_entry in tokens_entries:
-                dateval = dt_fromepoch(tokens_entry["date"])
+    return SingleProtocolRecords(
+        tvl_records=tvl_records,
+        token_tvl_records=token_tvl_records,
+    )
 
-                if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
-                    continue
 
-                if not epoch_is_date(tokens_entry["date"]):
-                    continue
+def create_dataframe(parts: Iterable[list[dict]]) -> pl.DataFrame:
+    """Create a dataframe from parts.
 
-                token_tvls = tokens_entry.get("tokens", [])
-                for token in token_tvls:
-                    app_token_tvl_records.append(
-                        {
-                            "protocol_slug": slug,
-                            "chain": chain,
-                            "dt": dateval,
-                            "token": token,
-                            "app_token_tvl": token_tvls[token],
-                        }
-                    )
-
-    return pl.DataFrame(app_tvl_records), pl.DataFrame(app_token_tvl_records)
+    Given an iterable of datafram parts (list of dicts) concatenates all the parts
+    togethr into a single dataframe.
+    """
+    return pl.DataFrame(itertools.chain.from_iterable(parts))
