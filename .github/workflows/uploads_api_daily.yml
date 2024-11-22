@@ -1,9 +1,6 @@
 name: Daily API Uploads
 run-name: ${{ github.event.created_at }}
 on:
-  push:
-    branches:
-      - "pedrod/debug-github-analytics-pt2"
   schedule:
     - cron: '15 3 * * *'
   workflow_dispatch:
@@ -11,6 +8,22 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  run-defillama-protocols:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+      - name: Set up Python
+        run: uv python install
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: DefiLlama Protocol TVL
+        run: uv run opdata pulls defillama_protocol_tvl
+        env:
+          OPLABS_ENV: "prod"
+          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
 
   run-other:
     runs-on: ubuntu-latest
@@ -23,6 +36,23 @@ jobs:
       - name: Install the project
         run: uv sync --all-extras --dev
 
+      - name: L2Beat
+        run: uv run opdata pulls l2beat
+        env:
+          OPLABS_ENV: "prod"
+          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
+
+      - name: DefiLlama Stablecoins
+        run: uv run opdata pulls defillama_stablecoins
+        env:
+          OPLABS_ENV: "prod"
+          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
+
+      - name: DefiLlama Historical Chain TVL
+        run: uv run opdata pulls defillama_historical_chain_tvl
+        env:
+          OPLABS_ENV: "prod"
+          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
 
       - name: GitHub Analytics
         run: uv run opdata pulls github_analytics
