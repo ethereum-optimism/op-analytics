@@ -29,11 +29,11 @@ def load_vault_env_var() -> str | None:
             for line in fobj:
                 key, val = line.split("=", maxsplit=1)
                 if key == VAULT_ENV_VAR:
-                    log.info("loaded vault env far from .env file")
+                    log.info("loaded vault from .env file")
                     vault_env_var = val.strip()
 
     if vault_env_var is None and VAULT_ENV_VAR in os.environ:
-        log.info("loaded vault env far from environment")
+        log.info("loaded vault from environment")
         vault_env_var = os.environ[VAULT_ENV_VAR]
 
     return vault_env_var
@@ -47,6 +47,7 @@ def load_vault() -> dict:
 
     if is_k8s():
         with open("/var/secrets/op-analytics-vault.txt", "r") as fobj:
+            log.info("loaded vault from secrets volume")
             raw = fobj.read()
             result = _decode(raw)
     else:
