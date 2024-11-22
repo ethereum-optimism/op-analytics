@@ -4,7 +4,7 @@
 - [Sample Data Google Sheet (Copy this to build your charts!)](https://docs.google.com/spreadsheets/d/1qHQ4pLWiZ_xT8ofJcYZZoNxh7_B1TW_XqeBm6xwE8Z8/edit?gid=0#gid=0)
 - [Optimism Superchain Health Dashboard](https://docs.google.com/spreadsheets/d/1f-uIW_PzlGQ_XFAmsf9FYiUf0N9l_nePwDVrw0D5MXY/edit?gid=584971628#gid=584971628)
 
-## [Devcon 7 Video - Nov 14, 2024](https://www.youtube.com/watch?v=M9EQ-adPTrI)**
+### [Devcon 7 Video - Nov 14, 2024](https://www.youtube.com/watch?v=M9EQ-adPTrI)
 [![](https://i.ytimg.com/vi/M9EQ-adPTrI/hqdefault.jpg)]([https://youtu.be/M9EQ-adPTrI](https://www.youtube.com/watch?v=M9EQ-adPTrI))
 ---
 
