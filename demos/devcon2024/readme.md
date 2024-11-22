@@ -5,7 +5,7 @@
 - [Optimism Superchain Health Dashboard](https://docs.google.com/spreadsheets/d/1f-uIW_PzlGQ_XFAmsf9FYiUf0N9l_nePwDVrw0D5MXY/edit?gid=584971628#gid=584971628)
 
 ### [Devcon 7 Video - Nov 14, 2024](https://www.youtube.com/watch?v=M9EQ-adPTrI)
-[!][https://youtu.be/M9EQ-adPTrI](https://i.ytimg.com/vi/M9EQ-adPTrI/hqdefault.jpg)
+  [![](https://i.ytimg.com/vi/M9EQ-adPTrI/hqdefault.jpg)](https://www.youtube.com/watch?v=M9EQ-adPTrI)
 ---
 
 ### [📊 See the Superchain Ecosystem Health Dashboard ✨](https://docs.google.com/spreadsheets/d/1f-uIW_PzlGQ_XFAmsf9FYiUf0N9l_nePwDVrw0D5MXY/edit?gid=584971628#gid=584971628)
