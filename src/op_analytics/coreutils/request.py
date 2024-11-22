@@ -4,7 +4,7 @@ from urllib3.util.retry import Retry
 import requests
 import stamina
 from requests.adapters import HTTPAdapter
-
+from typing import Any
 from op_analytics.coreutils.logger import structlog
 
 log = structlog.get_logger()
@@ -31,7 +31,7 @@ def get_data(
     url: str,
     headers: dict[str, str] | None = None,
     retry_attempts: int | None = None,
-    params: dict[str, str] | None = None,
+    params: dict[str, Any] | None = None,
 ):
     """Helper function to reuse an existing HTTP session to fetch data from a URL.
 
