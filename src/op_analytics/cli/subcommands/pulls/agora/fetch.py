@@ -1,7 +1,5 @@
-from typing import List, Dict
-from threading import Lock
+from typing import List
 import os
-import json
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data
 
@@ -27,39 +25,7 @@ HEADERS = {
     "Content-Type": "application/json",
 }
 
-
-# Unused, exists for future use regarding pagination
-class CheckpointManager:
-    def __init__(self, checkpoint_file="api_checkpoints.json"):
-        self.checkpoint_file = checkpoint_file
-        self._lock = Lock()
-        self._checkpoints = self._load_checkpoints()
-
-    def _load_checkpoints(self) -> Dict[str, int]:
-        if os.path.exists(self.checkpoint_file):
-            with open(self.checkpoint_file, "r") as f:
-                checkpoints = json.load(f)
-                log.info(f"Loaded checkpoints: {checkpoints}")
-                return checkpoints
-        else:
-            return {}
-
-    def get_checkpoint(self, key: str) -> int:
-        return self._checkpoints.get(key, 0)
-
-    def update_checkpoint(self, key: str, value: int):
-        with self._lock:
-            self._checkpoints[key] = value
-            self._save_checkpoints()
-
-    def _save_checkpoints(self):
-        with open(self.checkpoint_file, "w") as f:
-            json.dump(self._checkpoints, f)
-            log.info(f"Saved checkpoints: {self._checkpoints}")
-
-
 log = structlog.get_logger()
-checkpoint_manager = CheckpointManager()
 
 
 # Todo: Transport to coreutils
