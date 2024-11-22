@@ -8,7 +8,6 @@ from op_analytics.coreutils.request import get_data
 
 log = structlog.get_logger()
 
-# API Endpoints
 BASE_URL = "https://vote.optimism.io/api/v1"
 ENDPOINTS = {
     "delegates": f"{BASE_URL}/delegates",
@@ -18,7 +17,6 @@ ENDPOINTS = {
     "delegatees": f"{BASE_URL}/delegates/{{addressOrEnsName}}/delegatees",
 }
 
-# Authentication
 AUTH_TOKEN = os.getenv("AGORA_API_KEY")
 
 if not AUTH_TOKEN:
@@ -64,7 +62,6 @@ log = structlog.get_logger()
 checkpoint_manager = CheckpointManager()
 
 
-# Fetch Functions with Checkpoint Logic using Offset
 # Todo: Transport to coreutils
 def fetch_paginated_data_with_offset(
     session, url: str, offset: int = 0, params: dict = {}
