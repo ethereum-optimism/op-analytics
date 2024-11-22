@@ -67,7 +67,7 @@ checkpoint_manager = CheckpointManager()
 # Fetch Functions with Checkpoint Logic using Offset
 # Todo: Transport to coreutils
 def fetch_paginated_data_with_offset(
-    session, url: str, offset: int = 0, params: dict = None
+    session, url: str, offset: int = 0, params: dict = {}
 ) -> List[dict]:
     data = []
     limit = params.get("limit", 100)
