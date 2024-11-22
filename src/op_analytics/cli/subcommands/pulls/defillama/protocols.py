@@ -1,7 +1,5 @@
-import itertools
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import Iterable
 
 import polars as pl
 
@@ -28,6 +26,34 @@ PROTOCOL_TOKEN_TVL_DATA_TABLE = "defillama_protocols_token_tvl"
 TVL_TABLE_LAST_N_DAYS = 7
 
 TVL_TABLE_CUTOFF_DATE = now_date() - timedelta(TVL_TABLE_LAST_N_DAYS)
+EXCLUDE_CATEGORIES = ["CEX", "Chain"]
+
+DUMMY_TVL_DF = pl.DataFrame(
+    {
+        "protocol_slug": [],
+        "chain": [],
+        "dt": [],
+        "total_app_tvl": [],
+    }
+)
+DUMMY_TOKEN_TVL_DF = pl.DataFrame(
+    {
+        "protocol_slug": [],
+        "chain": [],
+        "dt": [],
+        "token": [],
+        "app_token_tvl": [],
+    }
+)
+DUMMY_TOKEN_USD_TVL_DF = pl.DataFrame(
+    {
+        "protocol_slug": [],
+        "chain": [],
+        "dt": [],
+        "token": [],
+        "app_token_tvl_usd": [],
+    }
+)
 
 
 @dataclass
@@ -129,11 +155,12 @@ def extract_protocol_metadata(protocols: list[dict]) -> pl.DataFrame:
             else protocol.get("slug"),
         }
         for protocol in protocols
+        if protocol.get("category")
     ]
     return pl.DataFrame(metadata_records)
 
 
-def construct_slugs(metadata_df: pl.DataFrame, pull_protocols: list[str] | None) -> list[str]:
+def construct_slugs(metadata_df: pl.DataFrame, pull_protocols: list[str]) -> list[str]:
     """Build the collection of slugs for fetching protocol details.
 
     Args:
@@ -185,7 +212,7 @@ def extract_single_protocol(session, slug) -> SingleProtocolRecords:
                     "protocol_slug": slug,
                     "chain": chain,
                     "dt": dateval,
-                    "total_app_tvl": tvl_entry.get("totalLiquidityUSD"),
+                    "total_app_tvl": float(tvl_entry.get("totalLiquidityUSD")),
                 }
             )
 
@@ -208,7 +235,7 @@ def extract_single_protocol(session, slug) -> SingleProtocolRecords:
                         "chain": chain,
                         "dt": dateval,
                         "token": token,
-                        "app_token_tvl": token_tvls[token],
+                        "app_token_tvl": float(token_tvls[token]),
                     }
                 )
 
@@ -231,12 +258,19 @@ def extract_single_protocol(session, slug) -> SingleProtocolRecords:
                         "chain": chain,
                         "dt": dateval,
                         "token": token,
-                        "app_token_tvl_usd": token_usd_tvls[token],
+                        "app_token_tvl_usd": float(token_usd_tvls[token]),
                     }
                 )
-        tvl_df = pl.DataFrame(tvl_records)
-        token_tvl_df = pl.DataFrame(token_tvl_records)
-        token_usd_tvl_df = pl.DataFrame(token_usd_tvl_records)
+
+        tvl_df = pl.DataFrame(tvl_records) if len(tvl_records) > 0 else DUMMY_TVL_DF
+        token_tvl_df = (
+            pl.DataFrame(token_tvl_records) if len(token_tvl_records) > 0 else DUMMY_TOKEN_TVL_DF
+        )
+        token_usd_tvl_df = (
+            pl.DataFrame(token_usd_tvl_records)
+            if len(token_usd_tvl_records) > 0
+            else DUMMY_TOKEN_USD_TVL_DF
+        )
 
         combined_df = token_tvl_df.join(
             token_usd_tvl_df,
@@ -249,12 +283,3 @@ def extract_single_protocol(session, slug) -> SingleProtocolRecords:
         tvl_df=tvl_df,
         token_tvl_df=combined_df,
     )
-
-
-def concat_dataframe(parts: Iterable[list[dict]]) -> pl.DataFrame:
-    """Create a dataframe from parts.
-
-    Given an iterable of datafram parts (list of dicts) concatenates all the parts
-    togethr into a single dataframe.
-    """
-    return pl.concat(itertools.chain.from_iterable(parts))
