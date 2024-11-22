@@ -8,7 +8,8 @@ from op_analytics.coreutils.logger import (
 from op_analytics.coreutils.partitioned import DataLocation, OutputData
 
 from .construct import construct_tasks
-from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions, PythonModelExecutor
+from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
+from .modelexecute import PythonModelExecutor
 from .task import IntermediateModelsTask
 from .udfs import create_duckdb_macros
 

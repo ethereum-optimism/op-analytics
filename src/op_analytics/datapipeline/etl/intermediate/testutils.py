@@ -5,6 +5,7 @@ import unittest
 from dataclasses import dataclass
 from datetime import date
 from textwrap import dedent
+from unittest.mock import patch
 
 import duckdb
 
@@ -13,13 +14,8 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 
 from .construct import construct_tasks
-from .registry import (
-    REGISTERED_INTERMEDIATE_MODELS,
-    PythonModel,
-    PythonModelExecutor,
-    load_model_definitions,
-    ModelInputDataReader,
-)
+from .modelexecute import PythonModelExecutor, ModelInputDataReader
+from .registry import REGISTERED_INTERMEDIATE_MODELS, PythonModel, load_model_definitions
 from .udfs import create_duckdb_macros
 
 log = structlog.get_logger()
@@ -29,7 +25,11 @@ log = structlog.get_logger()
 class DataReaderTestUtil:
     client: duckdb.DuckDBPyConnection
 
-    def duckdb_relation(self, dataset) -> duckdb.DuckDBPyRelation:
+    def duckdb_relation(
+        self,
+        dataset,
+        first_n_parquet_files: int | None = None,
+    ) -> duckdb.DuckDBPyRelation:
         assert self.client is not None
         return self.client.sql(f"SELECT * FROM input_data_{dataset}")
 
@@ -53,6 +53,9 @@ class IntermediateModelTestBase(unittest.TestCase):
 
     # Input parameters (must be set by child class)
 
+    # The name of the model under test
+    model: str
+
     # The path where input data will be stored.
     inputdata: InputTestData
 
@@ -61,9 +64,6 @@ class IntermediateModelTestBase(unittest.TestCase):
 
     # Date that should be included in the test data.
     dateval: date
-
-    # Datasets that should be included in the test data.
-    datasets: list[str]
 
     # Specify blocks that should be included in the test data.
     block_filters: list[str]
@@ -86,11 +86,14 @@ class IntermediateModelTestBase(unittest.TestCase):
         """
         load_model_definitions()
 
+        # Execute the model on the temporary duckdb instance.
+        model = REGISTERED_INTERMEDIATE_MODELS[cls.model]
+
         db_path = cls.inputdata.path(f"testdata/{cls.__name__}.duck.db")
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
         cls._duckdb_client = duckdb.connect(db_path)
-        tables_exist = cls._tables_exist()
+        tables_exist = cls._tables_exist(datasets=model.input_datasets)
 
         if not tables_exist:
             if not cls._enable_fetching:
@@ -108,7 +111,14 @@ class IntermediateModelTestBase(unittest.TestCase):
 
             else:
                 log.info("Fetching test data from GCS.")
-                cls._fetch_test_data()
+
+                # We patch the markers database to use the real production database.
+                # This allows us to fetch test data straight from production.
+                with patch(
+                    "op_analytics.coreutils.partitioned.dataaccess.etl_monitor_markers_database",
+                    lambda: "etl_monitor",
+                ):
+                    cls._fetch_test_data(model.input_datasets)
                 log.info("Fetched test data from GCS.")
         else:
             log.info(f"Using local test data from: {db_path}")
@@ -120,9 +130,6 @@ class IntermediateModelTestBase(unittest.TestCase):
         tmp_db_path = os.path.join(cls._tempdir.name, os.path.basename(db_path))
         shutil.copyfile(db_path, tmp_db_path)
         cls._duckdb_client = duckdb.connect(tmp_db_path)
-
-        # Execute the model on the temporary duckdb instance.
-        model = REGISTERED_INTERMEDIATE_MODELS["daily_address_summary"]
 
         cls._model_executor = execute_model_in_memory(
             duckdb_client=cls._duckdb_client,
@@ -144,7 +151,7 @@ class IntermediateModelTestBase(unittest.TestCase):
         return f"input_data_{dataset_name}"
 
     @classmethod
-    def _tables_exist(cls) -> bool:
+    def _tables_exist(cls, datasets: list[str]) -> bool:
         """Helper function to check if the test database already contains the test data."""
         assert cls._duckdb_client is not None
         tables = (
@@ -152,13 +159,13 @@ class IntermediateModelTestBase(unittest.TestCase):
             .df()["table_name"]
             .to_list()
         )
-        for dataset in cls.datasets:
+        for dataset in datasets:
             if cls.input_table_name(dataset) not in tables:
                 return False
         return True
 
     @classmethod
-    def _fetch_test_data(cls):
+    def _fetch_test_data(cls, datasets: list[str]):
         """Fetch test data from GCS and save it to the local duckdb."""
         datestr = cls.dateval.strftime("%Y%m%d")
         tasks = construct_tasks(
@@ -172,7 +179,7 @@ class IntermediateModelTestBase(unittest.TestCase):
         task = tasks[0]
 
         relations = {}
-        for dataset in cls.datasets:
+        for dataset in datasets:
             rel = task.data_reader.duckdb_relation(dataset)
 
             if dataset == "blocks":
@@ -197,6 +204,7 @@ def execute_model_in_memory(
     duckdb_client: duckdb.DuckDBPyConnection,
     model: PythonModel,
     data_reader: ModelInputDataReader,
+    limit_input_parquet_files: int | None = None,
 ):
     """Execute a model and register results as views."""
     log.info("Executing model...")
@@ -206,6 +214,7 @@ def execute_model_in_memory(
         model=model,
         client=duckdb_client,
         data_reader=data_reader,
+        limit_input_parquet_files=limit_input_parquet_files,
     )
 
     model_executor.__enter__()
