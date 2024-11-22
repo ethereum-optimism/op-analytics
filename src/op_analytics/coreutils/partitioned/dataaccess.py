@@ -15,7 +15,7 @@ from threading import Lock
 import polars as pl
 
 from op_analytics.coreutils import clickhouse, duckdb_local
-from op_analytics.coreutils.env.aware import OPLabsEnvironment, current_environment
+from op_analytics.coreutils.env.aware import etl_monitor_markers_database
 from op_analytics.coreutils.storage.gcs_parquet import (
     gcs_upload_parquet,
     local_upload_parquet,
@@ -25,7 +25,6 @@ from .location import DataLocation, MarkersLocation, marker_location
 from .marker import Marker
 from .output import ExpectedOutput, OutputPartMeta
 from .types import SinkMarkerPath
-
 
 _CLIENT = None
 
@@ -37,13 +36,7 @@ def init_data_access() -> "PartitionedDataAccess":
 
     with _INIT_LOCK:
         if _CLIENT is None:
-            current_env = current_environment()
-            if current_env == OPLabsEnvironment.UNITTEST:
-                markers_db = "etl_monitor_dev"
-            else:
-                markers_db = "etl_monitor"
-
-            _CLIENT = PartitionedDataAccess(markers_db=markers_db)
+            _CLIENT = PartitionedDataAccess(markers_db=etl_monitor_markers_database())
 
     if _CLIENT is None:
         raise RuntimeError("Partitioned data access client was not properly initialized.")

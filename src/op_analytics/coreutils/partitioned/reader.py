@@ -61,11 +61,21 @@ class DataReader:
     def paths_summary(self) -> dict[str, int]:
         return {dataset_name: len(paths) for dataset_name, paths in self.dataset_paths.items()}
 
-    def duckdb_relation(self, dataset) -> duckdb.DuckDBPyRelation:
-        paths = self.dataset_paths[dataset]
+    def duckdb_relation(
+        self,
+        dataset,
+        first_n_parquet_files: int | None = None,
+    ) -> duckdb.DuckDBPyRelation:
+        paths = sorted(self.dataset_paths[dataset])
+        num_paths = len(paths)
+
+        if first_n_parquet_files is not None:
+            paths = paths[:first_n_parquet_files]
+
+        num_used_paths = len(paths)
 
         log.info(
-            f"creating duckdb relation {dataset!r} from {len(paths)} paths, first path is {paths[0]}"
+            f"duckdb dataset={dataset!r} using {num_used_paths}/{num_paths} parquet paths, first path is {paths[0]}"
         )
 
         return parquet_relation(paths)

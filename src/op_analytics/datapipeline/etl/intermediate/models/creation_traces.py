@@ -14,7 +14,6 @@ from op_analytics.datapipeline.etl.intermediate.types import NamedRelations
             context={},
         ),
     ],
-    # block_filter_pct=2,  # <-- development mode
 )
 def creation_traces(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
     return {
