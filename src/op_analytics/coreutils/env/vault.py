@@ -11,32 +11,36 @@ log = structlog.get_logger()
 _STORE: dict | None = None
 
 
-def load_dotenv() -> dict | None:
-    """Load env vars from the .env file.
+VAULT_ENV_VAR = "OP_ANALYTICS_VAULT"
+
+
+def load_vault_env_var() -> str | None:
+    """Load environment variables.
 
     At the moment this is only used to pick up the value of the OP_ANALYTICS_VAULT
     environment variable.
     """
     dotenv_path = repo_path(".env")
 
-    if dotenv_path is None or not os.path.isfile(dotenv_path):
-        log.warning("Did not find .env. No env vars will be loaded.")
-        return None
+    vault_env_var: str | None = None
 
-    result = {}
-    with open(dotenv_path, "r") as fobj:
-        for line in fobj:
-            key, val = line.split("=", maxsplit=1)
-            result[key] = val.strip()
+    if dotenv_path is not None and os.path.isfile(dotenv_path):
+        with open(dotenv_path, "r") as fobj:
+            for line in fobj:
+                key, val = line.split("=", maxsplit=1)
+                if key == VAULT_ENV_VAR:
+                    log.info("loaded vault env far from .env file")
+                    vault_env_var = val.strip()
 
-    return result
+    if vault_env_var is None and VAULT_ENV_VAR in os.environ:
+        log.info("loaded vault env far from environment")
+        vault_env_var = os.environ[VAULT_ENV_VAR]
 
-
-VAULT_ENV_VAR = "OP_ANALYTICS_VAULT"
+    return vault_env_var
 
 
 def load_vault() -> dict:
-    default: bytes = base64.b64encode("{}".encode())
+    default: str = base64.b64encode("{}".encode()).decode()
 
     def _decode(x):
         return json.loads(base64.b64decode(raw).decode())
@@ -46,15 +50,7 @@ def load_vault() -> dict:
             raw = fobj.read()
             result = _decode(raw)
     else:
-        dotenvfile = load_dotenv()
-
-        if dotenvfile is not None:
-            raw = load_dotenv().get("OP_ANALYTICS_VAULT", default)
-        elif VAULT_ENV_VAR in os.environ:
-            raw = os.environ[VAULT_ENV_VAR]
-        else:
-            raw = default
-
+        raw = load_vault_env_var() or default
         result = _decode(raw)
 
     if not isinstance(result, dict):
