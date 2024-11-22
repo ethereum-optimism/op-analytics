@@ -8,7 +8,24 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  run-daily-tasks:
+  run-defillama-protocols:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+      - name: Set up Python
+        run: uv python install
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: DefiLlama Protocol TVL
+        run: uv run opdata pulls defillama_protocol_tvl
+        env:
+          OPLABS_ENV: "prod"
+          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
+
+  run-other:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,12 +50,6 @@ jobs:
 
       - name: DefiLlama Historical Chain TVL
         run: uv run opdata pulls defillama_historical_chain_tvl
-        env:
-          OPLABS_ENV: "prod"
-          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
-
-      - name: DefiLlama Protocol TVL
-        run: uv run opdata pulls defillama_protocol_tvl
         env:
           OPLABS_ENV: "prod"
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
