@@ -4,7 +4,7 @@ Onchain Data, Utilities, References, and other Analytics on Optimism. Join the c
 ## Key Links
 - 📄[OP Analytics Repo Documentation](https://static.optimism.io/op-analytics/sphinx/html/index.html)
 - ⚕️[Optimism Superchain Health Dashboard](https://docs.google.com/spreadsheets/d/1f-uIW_PzlGQ_XFAmsf9FYiUf0N9l_nePwDVrw0D5MXY/edit?gid=584971628#gid=584971628)
-  ![image](https://github.com/user-attachments/assets/692759b0-32ec-43db-8bea-e22aa8611d92)(https://docs.google.com/spreadsheets/d/1f-uIW_PzlGQ_XFAmsf9FYiUf0N9l_nePwDVrw0D5MXY/edit?gid=584971628#gid=584971628)
+  ![https://docs.google.com/spreadsheets/d/1f-uIW_PzlGQ_XFAmsf9FYiUf0N9l_nePwDVrw0D5MXY/edit?gid=584971628#gid=584971628](https://github.com/user-attachments/assets/692759b0-32ec-43db-8bea-e22aa8611d92)
 - 🧮[Superchain Top Contracts by Transactions to](https://app.hex.tech/61bffa12-d60b-484c-80b9-14265e268538/app/cd3f1525-08f0-4a49-a15a-b72f46f2a0d8/latest)
 
 ---
