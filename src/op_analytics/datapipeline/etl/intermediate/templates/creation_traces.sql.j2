@@ -1,36 +1,37 @@
 SELECT
-    tr.network
-    ,tr.chain_id
-    ,tr.chain
-    ,tr.dt
-    ,tr.block_timestamp AS created_timestamp
-    ,tr.block_number AS created_block_number
-    ,tr.block_hash AS created_block_hash
-    ,tr.transaction_hash AS created_tx_hash
-    ,tr.transaction_index AS created_tx_index
-    ,tr.from_address AS trace_creator_address
-    ,t.from_address AS created_tx_from
-    ,tr.to_address AS contract_address
-    ,t.to_address AS created_tx_to
-    ,SUBSTRING(t.input, 1, 10) AS created_tx_method_id
-    ,tr.value_64
-    ,tr.value_lossless
-    ,tr.input AS code
-    ,hexstr_bytelen(tr.input) AS code_bytelength
-    ,tr.output
-    ,tr.trace_type
-    ,tr.call_type
-    ,tr.reward_type
-    ,tr.gas
-    ,tr.gas_used
-    ,tr.subtraces
-    ,tr.trace_address
-    ,tr.error
-    ,tr.status
+  tr.network,
+  tr.chain_id,
+  tr.chain,
+  tr.dt,
+  tr.block_timestamp AS created_timestamp,
+  tr.block_number AS created_block_number,
+  tr.block_hash AS created_block_hash,
+  tr.transaction_hash AS created_tx_hash,
+  tr.transaction_index AS created_tx_index,
+  tr.from_address AS trace_creator_address,
+  t.from_address AS created_tx_from,
+  tr.to_address AS contract_address,
+  t.to_address AS created_tx_to,
+  tr.value_64,
+  tr.value_lossless,
+  tr.input AS code,
+  tr.output,
+  tr.trace_type,
+  tr.call_type,
+  tr.reward_type,
+  tr.gas,
+  tr.gas_used,
+  tr.subtraces,
+  tr.trace_address,
+  tr.error,
+  tr.status,
+  SUBSTRING(t.input, 1, 10) AS created_tx_method_id,
+  HEXSTR_BYTELEN(tr.input) AS code_bytelength
 FROM traces AS tr
-JOIN transactions AS t
-    ON tr.transaction_hash = t.hash
+INNER JOIN transactions AS t
+  ON
+    tr.transaction_hash = t.hash
     AND tr.block_number = t.block_number
-    AND t.chain_id = tr.chain_id
+    AND tr.chain_id = t.chain_id
 WHERE
-    tr.trace_type like 'create%'
+  tr.trace_type LIKE 'create%'
