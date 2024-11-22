@@ -31,6 +31,7 @@ def get_data(
     url: str,
     headers: dict[str, str] | None = None,
     retry_attempts: int | None = None,
+    params: dict[str, str] | None = None,
 ):
     """Helper function to reuse an existing HTTP session to fetch data from a URL.
 
@@ -42,7 +43,7 @@ def get_data(
 
     # Do not retry on invalid json responses.
     if retry_attempts is None:
-        return _get_data(session, url, headers)
+        return _get_data(session, url, headers, params)
 
     # Retry if the endpoint returns invalid json.
     for attempt in stamina.retry_context(
@@ -55,12 +56,12 @@ def get_data(
         with attempt:
             if attempt.num > 1:
                 log.warning(f"retrying {url}")
-            return _get_data(session, url, headers)
+            return _get_data(session, url, headers, params)
 
 
-def _get_data(session: requests.Session, url: str, headers: dict[str, str]):
+def _get_data(session: requests.Session, url: str, headers: dict[str, str], params: dict[str, str]):
     start = time.time()
-    resp = session.request(method="GET", url=url, headers=headers)
+    resp = session.request(method="GET", url=url, headers=headers, params=params)
 
     resp.raise_for_status()
 
