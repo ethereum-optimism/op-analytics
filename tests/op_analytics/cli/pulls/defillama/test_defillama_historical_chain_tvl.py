@@ -1,9 +1,7 @@
 from unittest.mock import patch
 
-from op_analytics.coreutils.testutils.inputdata import InputTestData
-
-
 from op_analytics.cli.subcommands.pulls.defillama import historical_chain_tvl
+from op_analytics.coreutils.testutils.inputdata import InputTestData
 
 TESTDATA = InputTestData.at(__file__)
 
@@ -87,8 +85,10 @@ def test_format_summary():
 
 def test_extract_metadata():
     chain_list = historical_chain_tvl.get_dfl_chains(sample_summary)
+
     metadata_df = historical_chain_tvl.extract_chain_metadata(
-        sample_metadata["chainCoingeckoIds"], chain_list
+        chain_metadat=sample_metadata["chainCoingeckoIds"],  # type: ignore
+        dfl_chains=chain_list,
     )
 
     expected_dicts = [

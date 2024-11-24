@@ -1,14 +1,15 @@
-import polars as pl
-from op_analytics.coreutils.testutils.inputdata import InputTestData
+from typing import Any
 from unittest.mock import patch
 
+import polars as pl
 
 from op_analytics.cli.subcommands.pulls.defillama import protocols
+from op_analytics.coreutils.testutils.inputdata import InputTestData
 
 TESTDATA = InputTestData.at(__file__)
 
 
-sample_protocols = [
+sample_protocols: list[dict[str, Any]] = [
     {
         "name": "ProtocolOne",
         "slug": "protocol_one",

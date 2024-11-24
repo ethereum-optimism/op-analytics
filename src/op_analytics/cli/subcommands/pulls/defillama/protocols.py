@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import timedelta
+from typing import Any
 
 import polars as pl
 
@@ -135,7 +136,15 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     )
 
 
-def extract_protocol_metadata(protocols: list[dict]) -> pl.DataFrame:
+def extract_parent(protocol: dict[str, Any]) -> str | None:
+    if parent_protcol := protocol.get("parentProtocol"):
+        assert isinstance(parent_protcol, str)
+        return parent_protcol.replace("parent#", "")
+    else:
+        return protocol.get("slug")
+
+
+def extract_protocol_metadata(protocols: list[dict[str, Any]]) -> pl.DataFrame:
     """
     Extracts metadata from the protocols API response.
 
@@ -149,10 +158,8 @@ def extract_protocol_metadata(protocols: list[dict]) -> pl.DataFrame:
         {
             "protocol_name": protocol.get("name"),
             "protocol_slug": protocol.get("slug"),
-            "protocol_category": protocol.get("category"),
-            "parent_protocol": protocol.get("parentProtocol").replace("parent#", "")
-            if protocol.get("parentProtocol")
-            else protocol.get("slug"),
+            "protocol_category": protocol["category"],
+            "parent_protocol": extract_parent(protocol),
         }
         for protocol in protocols
         if protocol.get("category")
@@ -160,7 +167,7 @@ def extract_protocol_metadata(protocols: list[dict]) -> pl.DataFrame:
     return pl.DataFrame(metadata_records)
 
 
-def construct_slugs(metadata_df: pl.DataFrame, pull_protocols: list[str]) -> list[str]:
+def construct_slugs(metadata_df: pl.DataFrame, pull_protocols: list[str] | None) -> list[str]:
     """Build the collection of slugs for fetching protocol details.
 
     Args:
