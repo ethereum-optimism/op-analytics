@@ -57,7 +57,7 @@ class WriteManager(EnforceOverrides):
         return written_parts
 
 
-class ParqueWriteManager(WriteManager):
+class ParquetWriteManager(WriteManager):
     @override
     def write_implementation(self, output_data: Any) -> list[OutputPartMeta]:
         assert isinstance(output_data, OutputData)
