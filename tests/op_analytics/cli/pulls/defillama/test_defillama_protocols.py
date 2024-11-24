@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Any
 from unittest.mock import patch
 
@@ -296,11 +297,15 @@ def test_construct_urls():
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_unpartitioned_table")
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_partitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.now_date")
 def test_pull_single_protocol_tvl(
+    mock_now_date,
     mock_upsert_partitioned_table,
     mock_upsert_unpartitioned_table,
     mock_get_data,
 ):
+    mock_now_date.return_value = date(2024, 11, 22)
+
     # Mock get_data to return sample summary and breakdown data
     mock_get_data.side_effect = [
         sample_protocols,  # metadata

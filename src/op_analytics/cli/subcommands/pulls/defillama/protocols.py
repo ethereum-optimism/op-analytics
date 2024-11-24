@@ -1,14 +1,10 @@
-from dataclasses import dataclass
-from datetime import timedelta
+from dataclasses import dataclass, asdict
+from datetime import timedelta, date
+from collections import defaultdict
 from typing import Any
 
 import polars as pl
 
-from op_analytics.coreutils.bigquery.write import (
-    most_recent_dates,
-    upsert_partitioned_table,
-    upsert_unpartitioned_table,
-)
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
@@ -24,37 +20,9 @@ PROTOCOL_METADATA_TABLE = "defillama_protocols_metadata"
 PROTOCOL_TVL_DATA_TABLE = "defillama_protocols_tvl"
 PROTOCOL_TOKEN_TVL_DATA_TABLE = "defillama_protocols_token_tvl"
 
-TVL_TABLE_LAST_N_DAYS = 7
+TVL_TABLE_LAST_N_DAYS = 7300
 
-TVL_TABLE_CUTOFF_DATE = now_date() - timedelta(TVL_TABLE_LAST_N_DAYS)
 EXCLUDE_CATEGORIES = ["CEX", "Chain"]
-
-DUMMY_TVL_DF = pl.DataFrame(
-    {
-        "protocol_slug": [],
-        "chain": [],
-        "dt": [],
-        "total_app_tvl": [],
-    }
-)
-DUMMY_TOKEN_TVL_DF = pl.DataFrame(
-    {
-        "protocol_slug": [],
-        "chain": [],
-        "dt": [],
-        "token": [],
-        "app_token_tvl": [],
-    }
-)
-DUMMY_TOKEN_USD_TVL_DF = pl.DataFrame(
-    {
-        "protocol_slug": [],
-        "chain": [],
-        "dt": [],
-        "token": [],
-        "app_token_tvl_usd": [],
-    }
-)
 
 
 @dataclass
@@ -70,8 +38,8 @@ class DefillamaProtocols:
 class SingleProtocolRecords:
     """Records obtained for a single protocol."""
 
-    tvl_df: pl.DataFrame
-    token_tvl_df: pl.DataFrame
+    tvl_df: pl.DataFrame | None
+    token_tvl_df: pl.DataFrame | None
 
 
 def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProtocols:
@@ -102,38 +70,47 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     log.info("done fetching and preprocessing data")
 
     # Load protocol data into dataframes.
-    app_tvl_df = pl.concat([_.tvl_df for _ in protocol_data.values()])
-    app_token_tvl_df = pl.concat([_.token_tvl_df for _ in protocol_data.values()])
-
-    upsert_unpartitioned_table(
-        df=metadata_df,
-        dataset=BQ_DATASET,
-        table_name=PROTOCOL_METADATA_TABLE,
-        unique_keys=["protocol_slug"],
-        create_if_not_exists=False,  # Set to True on first run
+    app_tvl_df = pl.concat(_.tvl_df for _ in protocol_data.values() if _.tvl_df is not None)
+    app_token_tvl_df = pl.concat(
+        _.token_tvl_df for _ in protocol_data.values() if _.token_tvl_df is not None
     )
 
-    upsert_partitioned_table(
-        df=most_recent_dates(app_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
-        dataset=BQ_DATASET,
-        table_name=PROTOCOL_TVL_DATA_TABLE,
-        unique_keys=["dt", "protocol_slug", "chain"],
-        create_if_not_exists=False,  # Set to True on first run
-    )
+    app_tvl_df.write_parquet("defillama_app_tvl_df.parquet")
+    app_token_tvl_df.write_parquet("defillama_app_token_tvl_df.parquet")
 
-    upsert_partitioned_table(
-        df=most_recent_dates(app_token_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
-        dataset=BQ_DATASET,
-        table_name=PROTOCOL_TOKEN_TVL_DATA_TABLE,
-        unique_keys=["dt", "protocol_slug", "chain", "token"],
-        create_if_not_exists=False,  # Set to True on first run
-    )
+    # upsert_unpartitioned_table(
+    #     df=metadata_df,
+    #     dataset=BQ_DATASET,
+    #     table_name=PROTOCOL_METADATA_TABLE,
+    #     unique_keys=["protocol_slug"],
+    #     create_if_not_exists=False,  # Set to True on first run
+    # )
+
+    # upsert_partitioned_table(
+    #     df=most_recent_dates(app_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
+    #     dataset=BQ_DATASET,
+    #     table_name=PROTOCOL_TVL_DATA_TABLE,
+    #     unique_keys=["dt", "protocol_slug", "chain"],
+    #     create_if_not_exists=False,  # Set to True on first run
+    # )
+
+    # upsert_partitioned_table(
+    #     df=most_recent_dates(app_token_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
+    #     dataset=BQ_DATASET,
+    #     table_name=PROTOCOL_TOKEN_TVL_DATA_TABLE,
+    #     unique_keys=["dt", "protocol_slug", "chain", "token"],
+    #     create_if_not_exists=False,  # Set to True on first run
+    # )
 
     return DefillamaProtocols(
         metadata_df=metadata_df,
         app_tvl_df=app_tvl_df,
         app_token_tvl_df=app_token_tvl_df,
     )
+
+
+def table_cutoff_date() -> date:
+    return now_date() - timedelta(TVL_TABLE_LAST_N_DAYS)
 
 
 def extract_parent(protocol: dict[str, Any]) -> str | None:
@@ -184,6 +161,14 @@ def construct_slugs(metadata_df: pl.DataFrame, pull_protocols: list[str] | None)
         ]
 
 
+@dataclass(frozen=True, slots=True)
+class PrimaryKey:
+    protocol_slug: str
+    chain: str
+    dt: str
+    token: str
+
+
 def extract_single_protocol(session, slug) -> SingleProtocolRecords:
     """Fetch and extract for a single protocol.
 
@@ -197,18 +182,20 @@ def extract_single_protocol(session, slug) -> SingleProtocolRecords:
 
     # Initialize extracted records.
     tvl_records = []
-    token_tvl_records = []
-    token_usd_tvl_records = []
+
+    token_tvl_records: dict[PrimaryKey, list[dict]] = defaultdict(list)
 
     # Each app entry can have tvl data in multiple chains. Loop through each chain
     chain_tvls = data.get("chainTvls", {})
+
+    cutoff_date = table_cutoff_date()
     for chain, chain_data in chain_tvls.items():
         # Extract total app tvl
         tvl_entries = chain_data.get("tvl", [])
         for tvl_entry in tvl_entries:
             dateval = dt_fromepoch(tvl_entry["date"])
 
-            if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
+            if date_fromstr(dateval) < cutoff_date:
                 continue
 
             if not epoch_is_date(tvl_entry["date"]):
@@ -228,7 +215,7 @@ def extract_single_protocol(session, slug) -> SingleProtocolRecords:
         for tokens_entry in tokens_entries:
             dateval = dt_fromepoch(tokens_entry["date"])
 
-            if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
+            if date_fromstr(dateval) < cutoff_date:
                 continue
 
             if not epoch_is_date(tokens_entry["date"]):
@@ -236,22 +223,20 @@ def extract_single_protocol(session, slug) -> SingleProtocolRecords:
 
             token_tvls = tokens_entry.get("tokens", [])
             for token in token_tvls:
-                token_tvl_records.append(
-                    {
-                        "protocol_slug": slug,
-                        "chain": chain,
-                        "dt": dateval,
-                        "token": token,
-                        "app_token_tvl": float(token_tvls[token]),
-                    }
+                pkey = PrimaryKey(
+                    protocol_slug=slug,
+                    chain=chain,
+                    dt=dateval,
+                    token=token,
                 )
+                token_tvl_records[pkey].append({"app_token_tvl": float(token_tvls[token])})
 
         # Extract token usd tvl for each app
         tokens_usd_entries = chain_data.get("tokensInUsd", [])
         for tokens_usd_entry in tokens_usd_entries:
             dateval = dt_fromepoch(tokens_usd_entry["date"])
 
-            if date_fromstr(dateval) < TVL_TABLE_CUTOFF_DATE:
+            if date_fromstr(dateval) < cutoff_date:
                 continue
 
             if not epoch_is_date(tokens_usd_entry["date"]):
@@ -259,34 +244,56 @@ def extract_single_protocol(session, slug) -> SingleProtocolRecords:
 
             token_usd_tvls = tokens_usd_entry.get("tokens", [])
             for token in token_usd_tvls:
-                token_usd_tvl_records.append(
-                    {
-                        "protocol_slug": slug,
-                        "chain": chain,
-                        "dt": dateval,
-                        "token": token,
-                        "app_token_tvl_usd": float(token_usd_tvls[token]),
-                    }
+                pkey = PrimaryKey(
+                    protocol_slug=slug,
+                    chain=chain,
+                    dt=dateval,
+                    token=token,
                 )
+                token_tvl_records[pkey].append({"app_token_tvl_usd": float(token_usd_tvls[token])})
 
-        tvl_df = pl.DataFrame(tvl_records) if len(tvl_records) > 0 else DUMMY_TVL_DF
-        token_tvl_df = (
-            pl.DataFrame(token_tvl_records) if len(token_tvl_records) > 0 else DUMMY_TOKEN_TVL_DF
-        )
-        token_usd_tvl_df = (
-            pl.DataFrame(token_usd_tvl_records)
-            if len(token_usd_tvl_records) > 0
-            else DUMMY_TOKEN_USD_TVL_DF
+    if len(tvl_records) == 0:
+        tvl_df = None
+    else:
+        tvl_df = pl.DataFrame(
+            tvl_records,
+            schema={
+                "protocol_slug": pl.String(),
+                "chain": pl.String(),
+                "dt": pl.String(),
+                "total_app_tvl": pl.Float64(),
+            },
         )
 
-        combined_df = token_tvl_df.join(
-            token_usd_tvl_df,
-            on=["protocol_slug", "chain", "dt", "token"],
-            how="full",  # Use "outer" so we don't lose data in situations where tvl and tvl usd differ
-            coalesce=True,
+    if not token_tvl_records:
+        token_tvl_df = None
+    else:
+        token_tvl_df = pl.DataFrame(
+            join_datapoints(token_tvl_records),
+            schema={
+                "protocol_slug": pl.String(),
+                "chain": pl.String(),
+                "dt": pl.String(),
+                "token": pl.String(),
+                "app_token_tvl": pl.Float64(),
+                "app_token_tvl_usd": pl.Float64(),
+            },
         )
 
     return SingleProtocolRecords(
         tvl_df=tvl_df,
-        token_tvl_df=combined_df,
+        token_tvl_df=token_tvl_df,
     )
+
+
+def join_datapoints(token_tvl_records: dict[PrimaryKey, list[dict]]):
+    """Helper function.
+
+    Yields the separate TVL and TVL_USD values as a single row (join) so
+    they can be assembled in a a single dataframe for each PrimaryKey.
+    """
+    for pkey, datapoints in token_tvl_records.items():
+        row = asdict(pkey)
+        for datapoint in datapoints:
+            row |= datapoint
+        yield row
