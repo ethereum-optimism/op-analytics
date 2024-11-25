@@ -29,7 +29,7 @@ def ingest(
     chains: list[str],
     range_spec: str,
     read_from: RawOnchainDataProvider,
-    write_to: list[DataLocation],
+    write_to: DataLocation,
     dryrun: bool,
     force_complete: bool = False,
     fork_process: bool = True,

@@ -8,7 +8,8 @@ from op_analytics.coreutils.logger import (
 from op_analytics.coreutils.partitioned import DataLocation, OutputData
 
 from .construct import construct_tasks
-from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions, PythonModelExecutor
+from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
+from .modelexecute import PythonModelExecutor
 from .task import IntermediateModelsTask
 from .udfs import create_duckdb_macros
 
@@ -20,7 +21,7 @@ def compute_intermediate(
     models: list[str],
     range_spec: str,
     read_from: DataLocation,
-    write_to: list[DataLocation],
+    write_to: DataLocation,
     dryrun: bool,
     force_complete: bool = False,
 ):
@@ -91,19 +92,19 @@ def executor(task: IntermediateModelsTask) -> None:
                     )
 
                 for result_name, rel in model_results.items():
-                    for location in task.data_writer.write_to:
-                        log.info("writing model", result=result_name, location=location)
-                        task.data_writer.write(
-                            location=location,
-                            output_data=OutputData(
-                                dataframe=rel.pl(),
-                                dataset_name=f"{model_name}/{result_name}",
-                                default_partition={
-                                    "chain": task.data_reader.chain,
-                                    "dt": task.data_reader.datestr,
-                                },
-                            ),
-                        )
+                    location = task.data_writer.write_to
+                    log.info("writing model", result=result_name, location=location)
+                    task.data_writer.write(
+                        location=location,
+                        output_data=OutputData(
+                            dataframe=rel.pl(),
+                            dataset_name=f"{model_name}/{result_name}",
+                            default_partition={
+                                "chain": task.data_reader.chain,
+                                "dt": task.data_reader.datestr,
+                            },
+                        ),
+                    )
 
 
 def checker(task: IntermediateModelsTask) -> None:

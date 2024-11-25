@@ -1,12 +1,11 @@
 # OP Analytics
-Onchain Data, Utilities, References, and other Analytics on Optimism. Join the conversation with other numba nerds in the #analytics channel in the Optimism Discord.
 
-## Key Links
 #### 📄 [OP Analytics Repo Documentation](https://static.optimism.io/op-analytics/sphinx/html/index.html)
 
-#### ⚕️ [Optimism Superchain Health Dashboard](https://docs.google.com/spreadsheets/d/1f-uIW_PzlGQ_XFAmsf9FYiUf0N9l_nePwDVrw0D5MXY/edit?gid=584971628#gid=584971628)
-  ![https://docs.google.com/spreadsheets/d/1f-uIW_PzlGQ_XFAmsf9FYiUf0N9l_nePwDVrw0D5MXY/edit?gid=584971628#gid=584971628](https://github.com/user-attachments/assets/692759b0-32ec-43db-8bea-e22aa8611d92)
+#### ⚕️ [Optimism Superchain Health Scorecard & Dashboard](https://docs.google.com/spreadsheets/d/1f-uIW_PzlGQ_XFAmsf9FYiUf0N9l_nePwDVrw0D5MXY/edit?gid=584971628#gid=584971628)
+#### 🦸‍♂️ [Detailed Superchain Metrics | Overall & By Chain](https://app.hex.tech/61bffa12-d60b-484c-80b9-14265e268538/app/a7697196-fdfd-4a59-88ef-d91d52801518/latest)
 #### 🧮 [Superchain Top Contracts by Transactions to](https://app.hex.tech/61bffa12-d60b-484c-80b9-14265e268538/app/cd3f1525-08f0-4a49-a15a-b72f46f2a0d8/latest)
+#### ⛓️ [All Chains Ecosystem Growth](https://app.hex.tech/61bffa12-d60b-484c-80b9-14265e268538/app/237e99a4-5cf5-4535-aa25-eb752c4e6028/latest?)
 
 ---
 

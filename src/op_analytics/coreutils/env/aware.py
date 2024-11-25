@@ -54,3 +54,11 @@ def current_runtime():
 
 def is_k8s():
     return current_runtime() == OPLabsRuntime.K8S
+
+
+def etl_monitor_markers_database():
+    current_env = current_environment()
+    if current_env == OPLabsEnvironment.UNITTEST:
+        return "etl_monitor_dev"
+    else:
+        return "etl_monitor"

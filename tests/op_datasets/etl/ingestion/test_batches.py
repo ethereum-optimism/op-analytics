@@ -1,5 +1,6 @@
 import pytest
 
+from op_analytics.coreutils.partitioned import DataLocation
 from op_analytics.datapipeline.etl.ingestion.batches import (
     BlockBatch,
     Delimiter,
@@ -161,7 +162,7 @@ def test_expected_markers():
         max_requested_timestamp=None,
         block_batch=batches[0],
         read_from=RawOnchainDataProvider.GOLDSKY,
-        write_to=[],
+        write_to=DataLocation.DISABLED,
     )
 
     actual = [

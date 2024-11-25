@@ -7,6 +7,7 @@ from op_analytics.coreutils.path import repo_path
 class DataLocation(str, Enum):
     """Supported storage locations for partitioned data."""
 
+    DISABLED = "DISABLED"
     GCS = "GCS"
     LOCAL = "LOCAL"
     BIGQUERY = "BIGQUERY"

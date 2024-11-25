@@ -42,7 +42,7 @@ def construct_tasks(
     models: list[str],
     range_spec: str,
     read_from: DataLocation,
-    write_to: list[DataLocation],
+    write_to: DataLocation,
 ) -> list[IntermediateModelsTask]:
     """Construct a collection of tasks to compute intermediate models.
 

@@ -6,7 +6,7 @@ from op_analytics.coreutils.logger import bound_contextvars, structlog, human_ro
 from .location import DataLocation
 from .output import ExpectedOutput, OutputData, OutputPartMeta
 from .status import all_outputs_complete
-from .writehelper import ParqueWriteManager
+from .writehelper import ParquetWriteManager
 
 log = structlog.get_logger()
 
@@ -15,8 +15,8 @@ log = structlog.get_logger()
 class DataWriter:
     """Manages writing data and markers consistently."""
 
-    # Sinks
-    write_to: list[DataLocation]
+    # Data store where we write the data.
+    write_to: DataLocation
 
     # Markers Table
     markers_table: str
@@ -33,7 +33,7 @@ class DataWriter:
     def all_complete(self) -> bool:
         """Check if all expected markers are complete."""
         return all_outputs_complete(
-            sinks=self.write_to,
+            location=self.write_to,
             markers=[_.marker_path for _ in self.expected_outputs.values()],
             markers_table=self.markers_table,
         )
@@ -44,20 +44,18 @@ class DataWriter:
         The data is provided as a list of functions that return a dataframe. This lets us generalize
         the way in which different tasks produce OutputDataFrame.
         """
-        write_results = []
-        for location in self.write_to:
-            total_rows: dict[str, int] = defaultdict(int)
-            for output_data in outputs:
-                parts = self.write(location, output_data)
 
-                for part in parts:
-                    total_rows[output_data.dataset_name] += part.row_count
+        total_rows: dict[str, int] = defaultdict(int)
 
-            result = " ".join(f"{key}={human_rows(val)}" for key, val in total_rows.items())
-            write_results.append(f"{location.name}::{result}")
+        for output_data in outputs:
+            parts = self.write(self.write_to, output_data)
 
-        all_results = " ".join(write_results)
-        log.info(f"done writing. {all_results}")
+            for part in parts:
+                total_rows[output_data.dataset_name] += part.row_count
+
+        summary = " ".join(f"{key}={human_rows(val)}" for key, val in total_rows.items())
+        summary = f"{self.write_to.name}::{summary}"
+        log.info(f"done writing. {summary}")
 
     def write(self, location: DataLocation, output_data: OutputData) -> list[OutputPartMeta]:
         expected_output = self.expected_outputs[output_data.dataset_name]
@@ -69,7 +67,7 @@ class DataWriter:
         with bound_contextvars(
             dataset=output_data.dataset_name, **(output_data.default_partition or {})
         ):
-            manager = ParqueWriteManager(
+            manager = ParquetWriteManager(
                 location=location,
                 expected_output=expected_output,
                 markers_table=self.markers_table,

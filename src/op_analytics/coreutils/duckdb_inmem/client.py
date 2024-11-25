@@ -41,6 +41,7 @@ def parquet_relation(parquet_paths) -> duckdb.DuckDBPyRelation:
 
     paths_str = ", ".join(f"'{_}'" for _ in parquet_paths)
 
+    # TODO: Investigate if using read_parquet is more performant.
     return client.sql(
         f"SELECT * FROM read_parquet([{paths_str}], hive_partitioning = true, hive_types_autocast = 0)"
     )
