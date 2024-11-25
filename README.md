@@ -1,7 +1,5 @@
 # OP Analytics
-Onchain Data, Utilities, References, and other Analytics on Optimism. Join the conversation with other numba nerds in the #analytics channel in the Optimism Discord.
 
-## Key Links
 #### 📄 [OP Analytics Repo Documentation](https://static.optimism.io/op-analytics/sphinx/html/index.html)
 
 #### ⚕️ [Optimism Superchain Health Scorecard & Dashboard](https://docs.google.com/spreadsheets/d/1f-uIW_PzlGQ_XFAmsf9FYiUf0N9l_nePwDVrw0D5MXY/edit?gid=584971628#gid=584971628)
