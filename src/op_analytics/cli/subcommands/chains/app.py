@@ -243,3 +243,41 @@ def load_superchain_raw(
         force_complete=force_complete,
         force_not_ready=force_not_ready,
     )
+
+
+@app.command()
+def hourly():
+    """Hourly command that runs on kubernetes to keep systems current."""
+
+    all_chains = normalize_chains("ALL")
+
+    ingest(
+        chains=all_chains,
+        range_spec="m18hours",
+        read_from=RawOnchainDataProvider.GOLDSKY,
+        write_to=DataLocation.GCS,
+        dryrun=False,
+        force_complete=False,
+        fork_process=True,
+    )
+
+    compute_intermediate(
+        chains=all_chains,
+        models=[
+            "daily_address_summary",
+        ],
+        range_spec="m2days",
+        read_from=DataLocation.GCS,
+        write_to=DataLocation.GCS,
+        dryrun=False,
+        force_complete=False,
+    )
+
+    load_to_bq(
+        stage=PipelineStage.RAW_ONCHAIN,
+        location=DataLocation.BIGQUERY,
+        range_spec="m2days",
+        dryrun=False,
+        force_complete=False,
+        force_not_ready=False,
+    )
