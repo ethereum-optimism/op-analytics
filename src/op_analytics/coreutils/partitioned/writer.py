@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from overrides import override
@@ -31,19 +31,20 @@ class DataWriter:
     # Expected Outputs
     expected_outputs: dict[str, ExpectedOutput]
 
-    # Is set to true if all markers already exist.
-    is_complete: bool
-
     # If true, writes data even if markers already exist.
     force: bool
 
-    def all_complete(self) -> bool:
-        """Check if all expected markers are complete."""
-        return all_outputs_complete(
-            location=self.write_to,
-            markers=[_.marker_path for _ in self.expected_outputs.values()],
-            markers_table=self.markers_table,
-        )
+    # Internal state for status of completion markers.
+    _is_complete: bool | None = field(default=None, init=False)
+
+    def is_complete(self) -> bool:
+        if self._is_complete is None:
+            self._is_complete = all_outputs_complete(
+                location=self.write_to,
+                markers=[_.marker_path for _ in self.expected_outputs.values()],
+                markers_table=self.markers_table,
+            )
+        return self._is_complete
 
     def write(self, output_data: OutputData) -> list[OutputPartMeta]:
         """Write data and corresponding marker."""

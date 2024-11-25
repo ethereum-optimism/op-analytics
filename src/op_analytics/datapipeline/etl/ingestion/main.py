@@ -51,16 +51,17 @@ def ingest(
     for i, task in enumerate(tasks):
         task.progress_indicator = f"{i+1}/{len(tasks)}"
         with bound_contextvars(**task.contextvars):
-            # Check output/input status for the task.
-            checker(task)
-
-            # Decide if we can run this task.
-            if not task.inputs_ready:
-                log.debug("skipping task")
+            # Decide if we need to run this task.
+            if task.data_writer.is_complete() and not force_complete:
                 continue
 
-            # Decide if we need to run this task.
-            if task.data_writer.is_complete and not force_complete:
+            # Decide if we can run this task.
+            if not all_inputs_ready(
+                provider=task.read_from,
+                block_batch=task.block_batch,
+                max_requested_timestamp=task.max_requested_timestamp,
+            ):
+                log.debug("skipping task: inputs not ready")
                 continue
 
             if force_complete:
@@ -196,18 +197,3 @@ def writer(task: IngestionTask):
     summary = " ".join(f"{key}={human_rows(val)}" for key, val in total_rows.items())
     summary = f"{task.data_writer.write_to.name}::{summary}"
     log.info(f"done writing. {summary}")
-
-
-def checker(task: IngestionTask):
-    if task.data_writer.all_complete():
-        task.data_writer.is_complete = True
-        task.inputs_ready = True
-        return
-
-    if all_inputs_ready(
-        provider=task.read_from,
-        block_batch=task.block_batch,
-        max_requested_timestamp=task.max_requested_timestamp,
-    ):
-        task.inputs_ready = True
-        return

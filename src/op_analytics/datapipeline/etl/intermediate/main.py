@@ -51,17 +51,15 @@ def compute_intermediate(
             **task.data_reader.contextvars,
         )
 
-        # Check output/input status for the task.
-        checker(task)
+        # Decide if we need to run this task.
+        if task.data_writer.is_complete() and not force_complete:
+            continue
 
         # Decide if we can run this task.
         if not task.data_reader.inputs_ready:
             log.warning("Task inputs are not ready. Skipping this task.")
             continue
 
-        # Decide if we need to run this task.
-        if task.data_writer.is_complete and not force_complete:
-            continue
         if force_complete:
             log.info("forced execution despite complete marker")
             task.data_writer.force = True
@@ -102,10 +100,3 @@ def executor(task: IntermediateModelsTask) -> None:
                             },
                         ),
                     )
-
-
-def checker(task: IntermediateModelsTask) -> None:
-    if task.data_writer.all_complete():
-        task.data_writer.is_complete = True
-        task.data_reader.inputs_ready = True
-        return
