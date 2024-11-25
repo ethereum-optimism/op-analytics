@@ -90,10 +90,10 @@ def construct_tasks(
                 models=models,
                 output_duckdb_relations={},
                 data_writer=DataWriter(
+                    partition_cols=["chain", "dt"],
                     write_to=write_to,
                     markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
                     expected_outputs=expected_outputs,
-                    is_complete=False,
                     force=False,
                 ),
             )
