@@ -1,18 +1,20 @@
 import multiprocessing as mp
 import resource
+from collections import defaultdict
 
 import polars as pl
+
 from op_analytics.coreutils.logger import (
     bound_contextvars,
     clear_contextvars,
     human_interval,
+    human_rows,
     structlog,
 )
 from op_analytics.coreutils.partitioned import (
     DataLocation,
     OutputData,
 )
-
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
@@ -49,16 +51,17 @@ def ingest(
     for i, task in enumerate(tasks):
         task.progress_indicator = f"{i+1}/{len(tasks)}"
         with bound_contextvars(**task.contextvars):
-            # Check output/input status for the task.
-            checker(task)
-
-            # Decide if we can run this task.
-            if not task.inputs_ready:
-                log.debug("skipping task")
+            # Decide if we need to run this task.
+            if task.data_writer.is_complete() and not force_complete:
                 continue
 
-            # Decide if we need to run this task.
-            if task.data_writer.is_complete and not force_complete:
+            # Decide if we can run this task.
+            if not all_inputs_ready(
+                provider=task.read_from,
+                block_batch=task.block_batch,
+                max_requested_timestamp=task.max_requested_timestamp,
+            ):
+                log.debug("skipping task: inputs not ready")
                 continue
 
             if force_complete:
@@ -183,19 +186,14 @@ def auditor(task: IngestionTask):
 
 
 def writer(task: IngestionTask):
-    task.data_writer.write_all(outputs=task.output_dataframes)
+    total_rows: dict[str, int] = defaultdict(int)
 
+    for output_data in task.output_dataframes:
+        parts = task.data_writer.write(output_data)
 
-def checker(task: IngestionTask):
-    if task.data_writer.all_complete():
-        task.data_writer.is_complete = True
-        task.inputs_ready = True
-        return
+        for part in parts:
+            total_rows[output_data.dataset_name] += part.row_count
 
-    if all_inputs_ready(
-        provider=task.read_from,
-        block_batch=task.block_batch,
-        max_requested_timestamp=task.max_requested_timestamp,
-    ):
-        task.inputs_ready = True
-        return
+    summary = " ".join(f"{key}={human_rows(val)}" for key, val in total_rows.items())
+    summary = f"{task.data_writer.write_to.name}::{summary}"
+    log.info(f"done writing. {summary}")

@@ -253,7 +253,7 @@ def hourly():
 
     ingest(
         chains=all_chains,
-        range_spec="m18hours",
+        range_spec="m8hours",
         read_from=RawOnchainDataProvider.GOLDSKY,
         write_to=DataLocation.GCS,
         dryrun=False,

@@ -43,7 +43,6 @@ class IngestionTask:
     # Inputs
     input_datasets: dict[str, CoreDataset]
     input_dataframes: dict[str, pl.DataFrame]
-    inputs_ready: bool
 
     # Outputs
     output_dataframes: list[OutputData]
@@ -105,14 +104,13 @@ class IngestionTask:
             block_batch=block_batch,
             input_datasets={},
             input_dataframes={},
-            inputs_ready=False,
             output_dataframes=[],
             read_from=read_from,
             data_writer=DataWriter(
+                partition_cols=["chain", "dt"],
                 write_to=write_to,
                 markers_table=INGESTION_MARKERS_TABLE,
                 expected_outputs=expected_outputs,
-                is_complete=False,
                 force=False,
             ),
             progress_indicator="",
