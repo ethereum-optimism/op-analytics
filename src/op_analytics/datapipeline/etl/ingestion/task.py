@@ -71,7 +71,7 @@ class IngestionTask:
         max_requested_timestamp: int | None,
         block_batch: BlockBatch,
         read_from: RawOnchainDataProvider,
-        write_to: list[DataLocation],
+        write_to: DataLocation,
     ):
         expected_outputs = {}
         for name, dataset in ONCHAIN_CURRENT_VERSION.items():

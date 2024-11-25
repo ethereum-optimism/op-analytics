@@ -17,7 +17,7 @@ def construct_tasks(
     chains: list[str],
     range_spec: str,
     read_from: RawOnchainDataProvider,
-    write_to: list[DataLocation],
+    write_to: DataLocation,
 ):
     blocks_by_chain: dict[str, BlockRange]
 
