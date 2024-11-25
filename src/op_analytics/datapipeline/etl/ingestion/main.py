@@ -1,18 +1,20 @@
 import multiprocessing as mp
 import resource
+from collections import defaultdict
 
 import polars as pl
+
 from op_analytics.coreutils.logger import (
     bound_contextvars,
     clear_contextvars,
     human_interval,
+    human_rows,
     structlog,
 )
 from op_analytics.coreutils.partitioned import (
     DataLocation,
     OutputData,
 )
-
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
@@ -183,7 +185,17 @@ def auditor(task: IngestionTask):
 
 
 def writer(task: IngestionTask):
-    task.data_writer.write_all(outputs=task.output_dataframes)
+    total_rows: dict[str, int] = defaultdict(int)
+
+    for output_data in task.output_dataframes:
+        parts = task.data_writer.write(output_data)
+
+        for part in parts:
+            total_rows[output_data.dataset_name] += part.row_count
+
+    summary = " ".join(f"{key}={human_rows(val)}" for key, val in total_rows.items())
+    summary = f"{task.data_writer.write_to.name}::{summary}"
+    log.info(f"done writing. {summary}")
 
 
 def checker(task: IngestionTask):

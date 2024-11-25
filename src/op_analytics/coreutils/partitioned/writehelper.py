@@ -1,14 +1,13 @@
 from dataclasses import dataclass
 from typing import Any
 
-from overrides import EnforceOverrides, override
+from overrides import EnforceOverrides
 
 from op_analytics.coreutils.logger import structlog
 
-from .breakout import breakout_partitions
 from .dataaccess import init_data_access
 from .location import DataLocation
-from .output import ExpectedOutput, OutputData, OutputPartMeta
+from .output import ExpectedOutput, OutputPartMeta
 
 log = structlog.get_logger()
 
@@ -17,7 +16,7 @@ log = structlog.get_logger()
 class WriteManager(EnforceOverrides):
     """Helper class that allows arbitrary write logic and handles completion markers.
 
-    - If complention markers exist no data is written.
+    - If completion markers exist no data is written.
     - If data is written correctly commpletion markers are created.
     """
 
@@ -55,30 +54,3 @@ class WriteManager(EnforceOverrides):
         log.debug(f"done writing {self.expected_output.dataset_name} to {self.location.name}")
 
         return written_parts
-
-
-class ParquetWriteManager(WriteManager):
-    @override
-    def write_implementation(self, output_data: Any) -> list[OutputPartMeta]:
-        assert isinstance(output_data, OutputData)
-
-        client = init_data_access()
-
-        parts = breakout_partitions(
-            df=output_data.dataframe,
-            partition_cols=["chain", "dt"],
-            default_partition=output_data.default_partition,
-        )
-
-        parts_meta: list[OutputPartMeta] = []
-        for part in parts:
-            client.write_single_part(
-                location=self.location,
-                dataframe=part.df,
-                full_path=part.meta.full_path(
-                    self.expected_output.root_path, self.expected_output.file_name
-                ),
-            )
-            parts_meta.append(part.meta)
-
-        return parts_meta

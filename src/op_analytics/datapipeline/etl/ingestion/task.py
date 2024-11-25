@@ -109,6 +109,7 @@ class IngestionTask:
             output_dataframes=[],
             read_from=read_from,
             data_writer=DataWriter(
+                partition_cols=["chain", "dt"],
                 write_to=write_to,
                 markers_table=INGESTION_MARKERS_TABLE,
                 expected_outputs=expected_outputs,
