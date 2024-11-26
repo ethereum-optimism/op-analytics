@@ -7,15 +7,15 @@ from op_analytics.datapipeline.etl.intermediate.types import NamedRelations
 
 @register_model(
     input_datasets=["traces", "transactions"],
-    expected_outputs=["creation_traces_v1"],
+    expected_outputs=["create_traces_v1"],
     duckdb_views=[
         TemplatedSQLQuery(
-            template_name="creation_traces",
+            template_name="contract_creation_traces",
             context={},
         ),
     ],
 )
-def creation_traces(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
+def contract_creation(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
     return {
-        "creation_traces_v1": duckdb_client.view("creation_traces"),
+        "create_traces_v1": duckdb_client.view("contract_creation_traces"),
     }
