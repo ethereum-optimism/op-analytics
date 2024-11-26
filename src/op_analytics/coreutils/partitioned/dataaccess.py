@@ -292,6 +292,8 @@ class PartitionedDataAccess:
         """ClickHouse version of query many."""
 
         where, parameters = datefilter.sql_clickhouse()
+        if not where:
+            where = "1=1"
 
         for param, item in filters.items():
             where += item.clickhouse_filter(param)
@@ -322,6 +324,8 @@ class PartitionedDataAccess:
         """DuckDB version of query many."""
 
         where = datefilter.sql_duckdb()
+        if not where:
+            where = "1=1"
 
         for _, item in filters.items():
             valueslist = ", ".join(f"'{_}'" for _ in item.values)
