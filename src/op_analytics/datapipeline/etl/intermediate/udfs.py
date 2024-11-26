@@ -45,6 +45,10 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     -- Division by 16 for DECIMAL types.
     CREATE OR REPLACE MACRO div16(a)
     AS a * 0.0625::DECIMAL(5, 5);
+    
+    --Get the length in bytes for binary data that is encoded as a hex string
+    CREATE OR REPLACE MACRO hexstr_bytelen(x)
+    AS (length(x) - 2) / 2 
     """)
 
 

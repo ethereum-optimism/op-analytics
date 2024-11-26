@@ -108,3 +108,20 @@ def test_div16():
         Decimal("0.06250"),
     )
     assert actual == expected
+
+
+def test_hexstr_bytelen():
+    client = init_client()
+    create_duckdb_macros(client)
+
+    actual = client.sql("""
+    SELECT 
+        hexstr_bytelen('0x3d602d80600a3d3981f3363d3d373d3d3d363d739ec1c3dcf667f2035fb4cd2eb42a1566fd54d2b75af43d82803e903d91602b57fd5bf3') AS m1,
+        hexstr_bytelen('0x3d60')
+     """).fetchall()[0]
+
+    expected = (
+        55,
+        2,
+    )
+    assert actual == expected

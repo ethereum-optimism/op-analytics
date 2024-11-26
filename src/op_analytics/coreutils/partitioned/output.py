@@ -89,6 +89,12 @@ class OutputPartMeta:
     def full_path(self, root_path: str, file_name: str):
         return os.path.join(root_path, self.partitions_path, file_name)
 
+    def partition_value(self, partition_name: str) -> str:
+        for partition in self.partitions:
+            if partition.key == partition_name:
+                return partition.value
+        raise ValueError(f"partition not found: {partition_name}")
+
 
 @dataclass
 class OutputPart:
