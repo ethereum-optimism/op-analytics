@@ -51,9 +51,10 @@ zzzjson/
 zzzsql/
 zzzpython/
 
-# Local ozone warehouse folder
+# Local ozone warehouse folder and parquet dump folder
 ozone/
 .env_legacy
+parquet/
 
 # Rendered query templates
 *.actual.sql
