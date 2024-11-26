@@ -193,6 +193,7 @@ def load(
     partitioned_data_access = init_data_access()
     duckdb_client = init_client()
 
+    paths: str | list[str]
     if datefilter.is_undefined:
         paths = location.absolute(f"defillama/{dataset_name}/dt=*/out.parquet")
         summary = f"using uri wildcard {paths!r}"

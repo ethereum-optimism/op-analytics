@@ -211,12 +211,12 @@ def test_pull_historical_single_chain_tvl(
             "num_rows": 3,
         },
         {
-            "dataset_name": "protocols_tvl_v1",
+            "dataset_name": "historical_chain_tvl_v1",
             "df_columns": ["chain_name", "tvl", "dt"],
             "num_rows": 1,
         },
         {
-            "dataset_name": "protocols_tvl_v1",
+            "dataset_name": "historical_chain_tvl_v1",
             "df_columns": ["chain_name", "tvl", "dt"],
             "num_rows": 1,
         },
@@ -290,12 +290,12 @@ def test_pull_historical_all_chain_tvl(
             "num_rows": 3,
         },
         {
-            "dataset_name": "protocols_tvl_v1",
+            "dataset_name": "historical_chain_tvl_v1",
             "df_columns": ["chain_name", "tvl", "dt"],
             "num_rows": 2,
         },
         {
-            "dataset_name": "protocols_tvl_v1",
+            "dataset_name": "historical_chain_tvl_v1",
             "df_columns": ["chain_name", "tvl", "dt"],
             "num_rows": 2,
         },
