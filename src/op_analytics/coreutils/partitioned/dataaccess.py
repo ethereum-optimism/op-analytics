@@ -16,7 +16,7 @@ from typing import Any
 import polars as pl
 
 from op_analytics.coreutils import clickhouse, duckdb_local
-from op_analytics.coreutils.env.aware import etl_monitor_markers_database
+from op_analytics.coreutils.env.aware import etl_monitor_markers_database, is_k8s
 from op_analytics.coreutils.storage.gcs_parquet import (
     gcs_upload_parquet,
     local_upload_parquet,
