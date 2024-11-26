@@ -29,7 +29,7 @@ class DataWriter:
     markers_table: str
 
     # Expected Outputs
-    expected_outputs: dict[str, ExpectedOutput]
+    expected_outputs: list[ExpectedOutput]
 
     # If true, writes data even if markers already exist.
     force: bool
@@ -37,18 +37,28 @@ class DataWriter:
     # Internal state for status of completion markers.
     _is_complete: bool | None = field(default=None, init=False)
 
+    # Expected outputs by name (post-init).
+    _keyed_outputs: dict[str, ExpectedOutput] = field(init=False, default_factory=dict)
+
+    def __post_init__(self):
+        for output in self.expected_outputs:
+            self._keyed_outputs[output.dataset_name] = output
+
+        if len(self.expected_outputs) != len(self._keyed_outputs):
+            raise ValueError("expected output names are not unique")
+
     def is_complete(self) -> bool:
         if self._is_complete is None:
             self._is_complete = all_outputs_complete(
                 location=self.write_to,
-                markers=[_.marker_path for _ in self.expected_outputs.values()],
+                markers=[_.marker_path for _ in self.expected_outputs],
                 markers_table=self.markers_table,
             )
         return self._is_complete
 
     def write(self, output_data: OutputData) -> list[OutputPartMeta]:
         """Write data and corresponding marker."""
-        expected_output = self.expected_outputs[output_data.dataset_name]
+        expected_output = self._keyed_outputs[output_data.dataset_name]
 
         # The default partition value is included in logs because it includes
         # the dt value, which helps keep track of where we are when we run a

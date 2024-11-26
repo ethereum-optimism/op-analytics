@@ -23,6 +23,11 @@ def now_date() -> date:
     return now_trunc().date()
 
 
+def now_friendly_timestamp() -> str:
+    """Return the current time as a string that is ok to use in filenames."""
+    return now_trunc().strftime("%Y%m%dT%H%M%S")
+
+
 def dt_fromepoch(epoch: int) -> str:
     return datetime_fromepoch(epoch).strftime("%Y-%m-%d")
 

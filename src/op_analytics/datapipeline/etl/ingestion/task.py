@@ -72,31 +72,33 @@ class IngestionTask:
         read_from: RawOnchainDataProvider,
         write_to: DataLocation,
     ):
-        expected_outputs = {}
+        expected_outputs = []
         for name, dataset in ONCHAIN_CURRENT_VERSION.items():
             # Determine the marker path for this dataset.
             marker_path = block_batch.construct_marker_path()
             full_marker_path = SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
 
             # Construct expected output for the dataset.
-            expected_outputs[name] = ExpectedOutput(
-                dataset_name=name,
-                root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
-                file_name=block_batch.construct_parquet_filename(),
-                marker_path=full_marker_path,
-                process_name="default",
-                additional_columns=dict(
-                    num_blocks=block_batch.num_blocks(),
-                    min_block=block_batch.min,
-                    max_block=block_batch.max,
-                ),
-                additional_columns_schema=[
-                    pa.field("chain", pa.string()),
-                    pa.field("dt", pa.date32()),
-                    pa.field("num_blocks", pa.int32()),
-                    pa.field("min_block", pa.int64()),
-                    pa.field("max_block", pa.int64()),
-                ],
+            expected_outputs.append(
+                ExpectedOutput(
+                    dataset_name=name,
+                    root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
+                    file_name=block_batch.construct_parquet_filename(),
+                    marker_path=full_marker_path,
+                    process_name="default",
+                    additional_columns=dict(
+                        num_blocks=block_batch.num_blocks(),
+                        min_block=block_batch.min,
+                        max_block=block_batch.max,
+                    ),
+                    additional_columns_schema=[
+                        pa.field("chain", pa.string()),
+                        pa.field("dt", pa.date32()),
+                        pa.field("num_blocks", pa.int32()),
+                        pa.field("min_block", pa.int64()),
+                        pa.field("max_block", pa.int64()),
+                    ],
+                )
             )
 
         return cls(
