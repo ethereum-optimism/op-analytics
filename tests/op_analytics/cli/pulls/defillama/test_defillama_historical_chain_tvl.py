@@ -87,7 +87,7 @@ def test_extract_metadata():
     chain_list = historical_chain_tvl.get_dfl_chains(sample_summary)
 
     metadata_df = historical_chain_tvl.extract_chain_metadata(
-        chain_metadat=sample_metadata["chainCoingeckoIds"],  # type: ignore
+        chain_metadata=sample_metadata["chainCoingeckoIds"],  # type: ignore
         dfl_chains=chain_list,
     )
 
@@ -150,21 +150,19 @@ def test_construct_urls():
 def test_extract_chain_tvl_to_dataframe():
     extracted_df = historical_chain_tvl.extract_chain_tvl_to_dataframe(sample_tvl_data)
     expected_dict = [
-        {"chain_name": "Layer_One", "date": "2024-11-14", "tvl": 12340000.0},
-        {"chain_name": "Layer_One", "date": "2024-11-15", "tvl": 12345678.9},
-        {"chain_name": "Layer_Two", "date": "2024-11-14", "tvl": 1000000000.0},
-        {"chain_name": "Layer_Two", "date": "2024-11-15", "tvl": 1000000001.0},
+        {"chain_name": "Layer_One", "dt": "2024-11-14", "tvl": 12340000.0},
+        {"chain_name": "Layer_One", "dt": "2024-11-15", "tvl": 12345678.9},
+        {"chain_name": "Layer_Two", "dt": "2024-11-14", "tvl": 1000000000.0},
+        {"chain_name": "Layer_Two", "dt": "2024-11-15", "tvl": 1000000001.0},
     ]
 
     assert extracted_df.to_dicts() == expected_dict
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.get_data")
-@patch(
-    "op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.upsert_unpartitioned_table"
-)
+@patch("op_analytics.cli.subcommands.pulls.defillama.dataaccess.DataWriter.write")
 def test_pull_historical_single_chain_tvl(
-    mock_upsert_unpartitioned_table,
+    mock_write,
     mock_get_data,
 ):
     sample_tvl = [
@@ -185,27 +183,50 @@ def test_pull_historical_single_chain_tvl(
     assert len(result.metadata_df) == 3  # Only 'Layer_Two'
     assert len(result.tvl_df) == 2  # Two data points
 
-    # Verify that get_data was called twice (summary, metadata, and tvl)
-    assert mock_get_data.call_count == 3
-
-    # Check that BigQuery functions were called with correct parameters
-    mock_upsert_unpartitioned_table.call_count == 2
-    assert mock_upsert_unpartitioned_table.call_args_list[0].kwargs["unique_keys"] == [
-        "chain_id",
-        "chain_name",
+    # Check write calls
+    write_calls = [
+        dict(
+            dataset_name=_.kwargs["output_data"].dataset_name,
+            df_columns=_.kwargs["output_data"].dataframe.columns,
+            num_rows=len(_.kwargs["output_data"].dataframe),
+        )
+        for _ in mock_write.call_args_list
     ]
-    assert mock_upsert_unpartitioned_table.call_args_list[1].kwargs["unique_keys"] == [
-        "date",
-        "chain_name",
+    assert write_calls == [
+        {
+            "dataset_name": "chains_metadata_v1",
+            "df_columns": [
+                "chain_name",
+                "chain_id",
+                "dfl_tracks_tvl",
+                "is_evm",
+                "is_superchain",
+                "layer",
+                "is_rollup",
+                "gecko_id",
+                "cmc_id",
+                "symbol",
+                "dt",
+            ],
+            "num_rows": 3,
+        },
+        {
+            "dataset_name": "protocols_tvl_v1",
+            "df_columns": ["chain_name", "tvl", "dt"],
+            "num_rows": 1,
+        },
+        {
+            "dataset_name": "protocols_tvl_v1",
+            "df_columns": ["chain_name", "tvl", "dt"],
+            "num_rows": 1,
+        },
     ]
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.get_data")
-@patch(
-    "op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.upsert_unpartitioned_table"
-)
+@patch("op_analytics.cli.subcommands.pulls.defillama.dataaccess.DataWriter.write")
 def test_pull_historical_all_chain_tvl(
-    mock_upsert_unpartitioned_table,
+    mock_write,
     mock_get_data,
 ):
     # Mock get_data to return sample summary and breakdown data for both stablecoins
@@ -228,19 +249,6 @@ def test_pull_historical_all_chain_tvl(
     assert len(result.metadata_df) == 3  # All three chains
     assert len(result.tvl_df) >= 3  # Data points from both chains
 
-    # Verify that get_data was called four times (summary, metadata, and two chain tvls)
-    assert mock_get_data.call_count == 4
-
-    # Check that BigQuery functions were called with correct parameters
-    mock_upsert_unpartitioned_table.call_count == 2
-    assert mock_upsert_unpartitioned_table.call_args_list[0].kwargs["unique_keys"] == [
-        "chain_id",
-        "chain_name",
-    ]
-    assert mock_upsert_unpartitioned_table.call_args_list[1].kwargs["unique_keys"] == [
-        "date",
-        "chain_name",
-    ]
     # Check that metadata contains all three chains
     assert set(result.metadata_df["chain_name"].to_list()) == {
         "Layer_One",
@@ -253,3 +261,42 @@ def test_pull_historical_all_chain_tvl(
         "Layer_One",
         "Layer_Two",
     }
+
+    # Check write calls
+    write_calls = [
+        dict(
+            dataset_name=_.kwargs["output_data"].dataset_name,
+            df_columns=_.kwargs["output_data"].dataframe.columns,
+            num_rows=len(_.kwargs["output_data"].dataframe),
+        )
+        for _ in mock_write.call_args_list
+    ]
+    assert write_calls == [
+        {
+            "dataset_name": "chains_metadata_v1",
+            "df_columns": [
+                "chain_name",
+                "chain_id",
+                "dfl_tracks_tvl",
+                "is_evm",
+                "is_superchain",
+                "layer",
+                "is_rollup",
+                "gecko_id",
+                "cmc_id",
+                "symbol",
+                "dt",
+            ],
+            "num_rows": 3,
+        },
+        {
+            "dataset_name": "protocols_tvl_v1",
+            "df_columns": ["chain_name", "tvl", "dt"],
+            "num_rows": 2,
+        },
+        {
+            "dataset_name": "protocols_tvl_v1",
+            "df_columns": ["chain_name", "tvl", "dt"],
+            "num_rows": 2,
+        },
+    ]

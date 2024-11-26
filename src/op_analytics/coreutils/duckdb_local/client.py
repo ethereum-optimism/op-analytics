@@ -48,6 +48,7 @@ def create_local_tables(client, markers_db):
         ("etl_monitor", "raw_onchain_ingestion_markers"),
         ("etl_monitor", "intermediate_model_markers"),
         ("etl_monitor", "superchain_raw_bigquery_markers"),
+        ("etl_monitor", "daily_data_markers"),
     ]:
         ddl_path = repo_path(f"ddl/duckdb_local/{database}.{table}.sql")
         assert ddl_path is not None

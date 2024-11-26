@@ -8,21 +8,18 @@ import polars as pl
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
-from op_analytics.coreutils.time import date_fromstr, dt_fromepoch, epoch_is_date, now_date
+from op_analytics.coreutils.time import date_fromstr, dt_fromepoch, epoch_is_date, now_date, now_dt
+
+from .dataaccess import write, DefiLlama
+
 
 log = structlog.get_logger()
 
 PROTOCOLS_ENDPOINT = "https://api.llama.fi/protocols"
 PROTOCOL_DETAILS_ENDPOINT = "https://api.llama.fi/protocol/{slug}"
 
-BQ_DATASET = "uploads_api"
-PROTOCOL_METADATA_TABLE = "defillama_protocols_metadata"
-PROTOCOL_TVL_DATA_TABLE = "defillama_protocols_tvl"
-PROTOCOL_TOKEN_TVL_DATA_TABLE = "defillama_protocols_token_tvl"
 
-TVL_TABLE_LAST_N_DAYS = 7300
-
-EXCLUDE_CATEGORIES = ["CEX", "Chain"]
+TVL_TABLE_LAST_N_DAYS = 3
 
 
 @dataclass
@@ -35,7 +32,7 @@ class DefillamaProtocols:
 
 
 @dataclass
-class SingleProtocolRecords:
+class SingleProtocolDFs:
     """Records obtained for a single protocol."""
 
     tvl_df: pl.DataFrame | None
@@ -49,11 +46,18 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     Args:
         pull_protocols: list of protocol slugs to process. Defaults to None (process all).
     """
+
     session = new_session()
 
     # Fetch the list of protocols and their metadata
     protocols = get_data(session, PROTOCOLS_ENDPOINT)
     metadata_df = extract_protocol_metadata(protocols)
+
+    write(
+        dataset=DefiLlama.PROTOCOLS_METADATA,
+        dataframe=metadata_df.with_columns(dt=pl.lit(now_dt())),
+        sort_by=["protocol_slug"],
+    )
 
     # Create list of slugs to fetch protocol-specific data
     slugs = construct_slugs(metadata_df, pull_protocols)
@@ -62,7 +66,7 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     # The single protocol extraction filters data to only the dates of
     # interest, which helps control memory usage.
     log.info(f"fetching data for {len(slugs)} protocols")
-    protocol_data: dict[str, SingleProtocolRecords] = run_concurrently(
+    protocol_data: dict[str, SingleProtocolDFs] = run_concurrently(
         function=lambda slug: extract_single_protocol(session, slug),
         targets=slugs,
         max_workers=8,
@@ -75,32 +79,19 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
         _.token_tvl_df for _ in protocol_data.values() if _.token_tvl_df is not None
     )
 
-    app_tvl_df.write_parquet("defillama_app_tvl_df.parquet")
-    app_token_tvl_df.write_parquet("defillama_app_token_tvl_df.parquet")
+    # Write tvl.
+    write(
+        dataset=DefiLlama.PROTOCOLS_TVL,
+        dataframe=app_tvl_df,
+        sort_by=["protocol_slug", "chain"],
+    )
 
-    # upsert_unpartitioned_table(
-    #     df=metadata_df,
-    #     dataset=BQ_DATASET,
-    #     table_name=PROTOCOL_METADATA_TABLE,
-    #     unique_keys=["protocol_slug"],
-    #     create_if_not_exists=False,  # Set to True on first run
-    # )
-
-    # upsert_partitioned_table(
-    #     df=most_recent_dates(app_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
-    #     dataset=BQ_DATASET,
-    #     table_name=PROTOCOL_TVL_DATA_TABLE,
-    #     unique_keys=["dt", "protocol_slug", "chain"],
-    #     create_if_not_exists=False,  # Set to True on first run
-    # )
-
-    # upsert_partitioned_table(
-    #     df=most_recent_dates(app_token_tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
-    #     dataset=BQ_DATASET,
-    #     table_name=PROTOCOL_TOKEN_TVL_DATA_TABLE,
-    #     unique_keys=["dt", "protocol_slug", "chain", "token"],
-    #     create_if_not_exists=False,  # Set to True on first run
-    # )
+    # Write token tvl.
+    write(
+        dataset=DefiLlama.PROTOCOLS_TOKEN_TVL,
+        dataframe=app_token_tvl_df,
+        sort_by=["protocol_slug", "chain", "token"],
+    )
 
     return DefillamaProtocols(
         metadata_df=metadata_df,
@@ -122,8 +113,7 @@ def extract_parent(protocol: dict[str, Any]) -> str | None:
 
 
 def extract_protocol_metadata(protocols: list[dict[str, Any]]) -> pl.DataFrame:
-    """
-    Extracts metadata from the protocols API response.
+    """Extract metadata from the protocols API response.
 
     Args:
         protocols: List of protocol dictionaries from the API response.
@@ -135,8 +125,10 @@ def extract_protocol_metadata(protocols: list[dict[str, Any]]) -> pl.DataFrame:
         {
             "protocol_name": protocol.get("name"),
             "protocol_slug": protocol.get("slug"),
-            "protocol_category": protocol["category"],
+            "protocol_category": protocol.get("category"),
             "parent_protocol": extract_parent(protocol),
+            "wrong_liquidity": protocol.get("wrongLiquidity"),
+            "misrepresented_tokens": protocol.get("misrepresentedTokens"),
         }
         for protocol in protocols
         if protocol.get("category")
@@ -169,7 +161,7 @@ class PrimaryKey:
     token: str
 
 
-def extract_single_protocol(session, slug) -> SingleProtocolRecords:
+def extract_single_protocol(session, slug) -> SingleProtocolDFs:
     """Fetch and extract for a single protocol.
 
     Calls the DefiLLama endpoint and extracts daily 'tvl' and 'tokensInUsd' for the
@@ -280,7 +272,7 @@ def extract_single_protocol(session, slug) -> SingleProtocolRecords:
             },
         )
 
-    return SingleProtocolRecords(
+    return SingleProtocolDFs(
         tvl_df=tvl_df,
         token_tvl_df=token_tvl_df,
     )

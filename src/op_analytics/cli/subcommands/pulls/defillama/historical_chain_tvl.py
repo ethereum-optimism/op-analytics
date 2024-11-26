@@ -1,13 +1,14 @@
 from dataclasses import dataclass
+
 import polars as pl
-from op_analytics.coreutils.bigquery.write import (
-    most_recent_dates,
-    upsert_unpartitioned_table,
-)
+
+from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
-from op_analytics.coreutils.time import dt_fromepoch
+from op_analytics.coreutils.time import dt_fromepoch, now_dt
+
+from .dataaccess import DefiLlama, write
 
 log = structlog.get_logger()
 
@@ -15,11 +16,8 @@ CHAINS_METADATA_ENDPOINT = "https://api.llama.fi/config"
 CHAINS_ENDPOINT = "https://api.llama.fi/v2/chains"
 CHAINS_TVL_ENDPOINT = "https://api.llama.fi/v2/historicalChainTvl/{slug}"
 
-BQ_DATASET = "uploads_api"
 
-CHAIN_METADATA_TABLE = "defillama_chains_metadata"
-HISTORICAL_CHAIN_TVL_TABLE = "defillama_daily_historical_chain_tvl"
-TVL_TABLE_LAST_N_DAYS = 7  # upsert only the last 7 days of tvl records fetched from the api
+TVL_TABLE_LAST_N_DAYS = 3
 
 
 @dataclass
@@ -51,32 +49,26 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
     metadata = get_data(session, CHAINS_METADATA_ENDPOINT)
     metadata_df = extract_chain_metadata(metadata["chainCoingeckoIds"], dfl_chains_list)
 
+    write(
+        dataset=DefiLlama.CHAINS_METADATA,
+        dataframe=metadata_df.with_columns(dt=pl.lit(now_dt())),
+        sort_by=["chain_name"],
+    )
+
     # Call the API endpoint for each stablecoin in parallel.
     urls = construct_urls(dfl_chains_list, pull_chains, CHAINS_TVL_ENDPOINT)
     historical_chain_tvl_data = run_concurrently(
         lambda x: get_data(session, x), urls, max_workers=4
     )
 
-    # Extract daily tvl from historical chains tvl data
+    # Extract daily tvl from historical chains tvl data.
     tvl_df = extract_chain_tvl_to_dataframe(historical_chain_tvl_data)
 
-    # Upsert metadata to BQ.
-    upsert_unpartitioned_table(
-        df=metadata_df,
-        dataset=BQ_DATASET,
-        table_name=CHAIN_METADATA_TABLE,
-        unique_keys=["chain_id", "chain_name"],
-        create_if_not_exists=False,  # set to True on first run
-    )
-
-    # Upsert balances to BQ.
-    # Only update balances on the most recent dates. Assume data further back in time is immutable.
-    upsert_unpartitioned_table(
-        df=most_recent_dates(tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="date"),
-        dataset=BQ_DATASET,
-        table_name=HISTORICAL_CHAIN_TVL_TABLE,
-        unique_keys=["date", "chain_name"],
-        create_if_not_exists=False,  # set to True on first run
+    # Write balances.
+    write(
+        dataset=DefiLlama.HISTORICAL_CHAIN_TVL,
+        dataframe=most_recent_dates(tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
+        sort_by=["chain_name"],
     )
 
     return DefillamaChains(
@@ -178,7 +170,7 @@ def construct_urls(
 def extract_chain_tvl_to_dataframe(data) -> pl.DataFrame:
     """Extract historical TVL and transform into dataframe"""
     records = [
-        {"chain_name": chain, "date": dt_fromepoch(entry["date"]), "tvl": entry["tvl"]}
+        {"chain_name": chain, "dt": dt_fromepoch(entry["date"]), "tvl": entry["tvl"]}
         for chain, entries in data.items()
         for entry in entries
     ]
