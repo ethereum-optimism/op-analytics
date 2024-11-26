@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 from op_analytics.coreutils.duckdb_local import run_query
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.writehelper import ParqueWriteManager
+from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
 from op_analytics.coreutils.partitioned.types import SinkOutputRootPath, SinkMarkerPath
 
@@ -38,7 +38,8 @@ def test_parquet_writer():
         }
     )
 
-    manager = ParqueWriteManager(
+    manager = PartitionedWriteManager(
+        partition_cols=["chain", "dt"],
         location=DataLocation.LOCAL,
         expected_output=ExpectedOutput(
             dataset_name="daily_address_summary/summary_v1",

@@ -15,7 +15,7 @@ from threading import Lock
 import polars as pl
 
 from op_analytics.coreutils import clickhouse, duckdb_local
-from op_analytics.coreutils.env.aware import etl_monitor_markers_database
+from op_analytics.coreutils.env.aware import etl_monitor_markers_database, is_k8s
 from op_analytics.coreutils.storage.gcs_parquet import (
     gcs_upload_parquet,
     local_upload_parquet,
@@ -64,6 +64,8 @@ class PartitionedDataAccess:
     ):
         """Write a single parquet output file for a partitioned output."""
         if location == DataLocation.GCS:
+            if not is_k8s():
+                raise Exception("GCS data can only be written from a k8s runtime.")
             gcs_upload_parquet(full_path, dataframe)
             return
 

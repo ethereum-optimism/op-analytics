@@ -42,7 +42,7 @@ def construct_tasks(
     models: list[str],
     range_spec: str,
     read_from: DataLocation,
-    write_to: list[DataLocation],
+    write_to: DataLocation,
 ) -> list[IntermediateModelsTask]:
     """Construct a collection of tasks to compute intermediate models.
 
@@ -90,10 +90,10 @@ def construct_tasks(
                 models=models,
                 output_duckdb_relations={},
                 data_writer=DataWriter(
+                    partition_cols=["chain", "dt"],
                     write_to=write_to,
                     markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
                     expected_outputs=expected_outputs,
-                    is_complete=False,
                     force=False,
                 ),
             )

@@ -21,7 +21,7 @@ def compute_intermediate(
     models: list[str],
     range_spec: str,
     read_from: DataLocation,
-    write_to: list[DataLocation],
+    write_to: DataLocation,
     dryrun: bool,
     force_complete: bool = False,
 ):
@@ -51,17 +51,15 @@ def compute_intermediate(
             **task.data_reader.contextvars,
         )
 
-        # Check output/input status for the task.
-        checker(task)
+        # Decide if we need to run this task.
+        if task.data_writer.is_complete() and not force_complete:
+            continue
 
         # Decide if we can run this task.
         if not task.data_reader.inputs_ready:
             log.warning("Task inputs are not ready. Skipping this task.")
             continue
 
-        # Decide if we need to run this task.
-        if task.data_writer.is_complete and not force_complete:
-            continue
         if force_complete:
             log.info("forced execution despite complete marker")
             task.data_writer.force = True
@@ -92,23 +90,13 @@ def executor(task: IntermediateModelsTask) -> None:
                     )
 
                 for result_name, rel in model_results.items():
-                    for location in task.data_writer.write_to:
-                        log.info("writing model", result=result_name, location=location)
-                        task.data_writer.write(
-                            location=location,
-                            output_data=OutputData(
-                                dataframe=rel.pl(),
-                                dataset_name=f"{model_name}/{result_name}",
-                                default_partition={
-                                    "chain": task.data_reader.chain,
-                                    "dt": task.data_reader.datestr,
-                                },
-                            ),
-                        )
-
-
-def checker(task: IntermediateModelsTask) -> None:
-    if task.data_writer.all_complete():
-        task.data_writer.is_complete = True
-        task.data_reader.inputs_ready = True
-        return
+                    task.data_writer.write(
+                        output_data=OutputData(
+                            dataframe=rel.pl(),
+                            dataset_name=f"{model_name}/{result_name}",
+                            default_partition={
+                                "chain": task.data_reader.chain,
+                                "dt": task.data_reader.datestr,
+                            },
+                        ),
+                    )
