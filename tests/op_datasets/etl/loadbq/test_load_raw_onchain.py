@@ -4,7 +4,7 @@ from unittest.mock import patch
 import polars as pl
 
 from op_analytics.coreutils.duckdb_local.client import init_client as duckb_local_client
-from op_analytics.coreutils.partitioned.dataaccess import init_data_access
+from op_analytics.coreutils.partitioned.dataaccess import init_data_access, DateFilter
 from op_analytics.datapipeline.etl.loadbq.superchain_raw import load_superchain_raw_to_bq
 from op_analytics.coreutils.partitioned import DataLocation
 
@@ -711,7 +711,11 @@ def test_load_tasks():
     markers = client.markers_for_dates(
         data_location=DataLocation.BIGQUERY_LOCAL_MARKERS,
         markers_table="superchain_raw_bigquery_markers",
-        datevals=[datetime.date(2024, 10, 2)],
+        datefilter=DateFilter(
+            min_date=None,
+            max_date=None,
+            datevals=[datetime.date(2024, 10, 2)],
+        ),
         projections=["dt", "marker_path", "data_path", "row_count"],
         filters={},
     ).to_dicts()

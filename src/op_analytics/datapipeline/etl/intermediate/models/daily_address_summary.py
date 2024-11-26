@@ -21,5 +21,5 @@ from op_analytics.datapipeline.etl.intermediate.types import NamedRelations
 )
 def daily_address_summary(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
     return {
-        "summary_v1": duckdb_client.sql("SELECT * FROM daily_address_summary"),
+        "summary_v1": duckdb_client.view("daily_address_summary"),
     }

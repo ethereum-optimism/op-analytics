@@ -11,11 +11,12 @@ The main goals are:
 from dataclasses import dataclass
 from datetime import date
 from threading import Lock
+from typing import Any
 
 import polars as pl
 
 from op_analytics.coreutils import clickhouse, duckdb_local
-from op_analytics.coreutils.env.aware import etl_monitor_markers_database, is_k8s
+from op_analytics.coreutils.env.aware import etl_monitor_markers_database
 from op_analytics.coreutils.storage.gcs_parquet import (
     gcs_upload_parquet,
     local_upload_parquet,
@@ -49,7 +50,56 @@ class MarkerFilter:
     values: list[str]
 
     def clickhouse_filter(self, param: str):
-        return "AND %s in {%s:Array(String)}" % (self.column, param)
+        return " AND %s in {%s:Array(String)}" % (self.column, param)
+
+
+@dataclass
+class DateFilter:
+    min_date: date | None
+    max_date: date | None
+    datevals: list[date] | None
+
+    @property
+    def is_undefined(self):
+        return all(
+            [
+                self.min_date is None,
+                self.max_date is None,
+                self.datevals is None,
+            ]
+        )
+
+    def sql_clickhouse(self):
+        where = []
+        parameters: dict[str, Any] = {}
+
+        if self.datevals is not None and len(self.datevals) > 0:
+            where.append("dt IN {dates:Array(Date)}")
+            parameters["dates"] = self.datevals
+
+        if self.min_date is not None:
+            where.append("dt >= {mindate:Date}")
+            parameters["mindate"] = self.min_date
+
+        if self.max_date is not None:
+            where.append("dt < {maxdate:Date}")
+            parameters["maxdate"] = self.max_date
+
+        return " AND ".join(where), parameters
+
+    def sql_duckdb(self):
+        where = []
+        if self.datevals is not None and len(self.datevals) > 0:
+            datelist = ", ".join([f"'{_.strftime("%Y-%m-%d")}'" for _ in self.datevals])
+            where.append(f"dt IN ({datelist})")
+
+        if self.min_date is not None:
+            where.append(f"dt >= '{self.min_date.strftime("%Y-%m-%d")}'")
+
+        if self.max_date is not None:
+            where.append(f"dt < '{self.max_date.strftime("%Y-%m-%d")}'")
+
+        return " AND ".join(where)
 
 
 @dataclass
@@ -144,7 +194,11 @@ class PartitionedDataAccess:
         paths_df = self.markers_for_dates(
             data_location=data_location,
             markers_table=markers_table,
-            datevals=datevals,
+            datefilter=DateFilter(
+                min_date=None,
+                max_date=None,
+                datevals=datevals,
+            ),
             projections=[
                 "dt",
                 "chain",
@@ -182,7 +236,7 @@ class PartitionedDataAccess:
         self,
         data_location: DataLocation,
         markers_table: str,
-        datevals: list[date],
+        datefilter: DateFilter,
         projections: list[str],
         filters=dict[str, MarkerFilter],
     ) -> pl.DataFrame:
@@ -193,10 +247,13 @@ class PartitionedDataAccess:
         """
         store = marker_location(data_location)
 
+        if "dt" not in projections:
+            raise ValueError("projections must include 'dt'")
+
         if store == MarkersLocation.OPLABS_CLICKHOUSE:
             paths_df = self._query_many_clickhouse(
                 markers_table=markers_table,
-                datevals=datevals,
+                datefilter=datefilter,
                 projections=projections,
                 filters=filters,
             )
@@ -204,7 +261,7 @@ class PartitionedDataAccess:
             # default to DUCKDB_LOCAL
             paths_df = self._query_many_duckdb(
                 markers_table=markers_table,
-                datevals=datevals,
+                datefilter=datefilter,
                 projections=projections,
                 filters=filters,
             )
@@ -228,14 +285,13 @@ class PartitionedDataAccess:
     def _query_many_clickhouse(
         self,
         markers_table: str,
-        datevals: list[date],
+        datefilter: DateFilter,
         projections=list[str],
         filters=dict[str, MarkerFilter],
     ):
         """ClickHouse version of query many."""
 
-        where = "dt IN {dates:Array(Date)}"
-        parameters = {"dates": datevals}
+        where, parameters = datefilter.sql_clickhouse()
 
         for param, item in filters.items():
             where += item.clickhouse_filter(param)
@@ -259,14 +315,13 @@ class PartitionedDataAccess:
     def _query_many_duckdb(
         self,
         markers_table: str,
-        datevals: list[date],
+        datefilter: DateFilter,
         projections=list[str],
         filters=dict[str, MarkerFilter],
     ):
         """DuckDB version of query many."""
 
-        datelist = ", ".join([f"'{_.strftime("%Y-%m-%d")}'" for _ in datevals])
-        where = f"dt IN ({datelist})"
+        where = datefilter.sql_duckdb()
 
         for _, item in filters.items():
             valueslist = ", ".join(f"'{_}'" for _ in item.values)
