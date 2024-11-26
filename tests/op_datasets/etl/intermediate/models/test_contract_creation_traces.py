@@ -7,7 +7,7 @@ CONTRACT_ADDRESS = "0xa16b2bc8053a320620a1ef33da325491ec064e4b"
 
 
 class TestCreationTraces001(IntermediateModelTestBase):
-    model = "creation_traces"
+    model = "contract_creation"
     inputdata = InputTestData.at(__file__)
     chains = ["op"]
     dateval = date(2024, 11, 18)
@@ -28,16 +28,14 @@ class TestCreationTraces001(IntermediateModelTestBase):
         )
 
         num_creation_traces = (
-            self._duckdb_client.sql(
-                "SELECT COUNT(*) AS num_creation_traces FROM creation_traces_v1"
-            )
+            self._duckdb_client.sql("SELECT COUNT(*) AS num_creation_traces FROM create_traces_v1")
             .pl()
             .to_dicts()[0]["num_creation_traces"]
         )
 
         num_unique_contracts = (
             self._duckdb_client.sql(
-                "SELECT COUNT(DISTINCT contract_address) AS num_unique_contracts FROM creation_traces_v1"
+                "SELECT COUNT(DISTINCT contract_address) AS num_unique_contracts FROM create_traces_v1"
             )
             .pl()
             .to_dicts()[0]["num_unique_contracts"]
@@ -54,7 +52,7 @@ class TestCreationTraces001(IntermediateModelTestBase):
         assert self._duckdb_client is not None
 
         schema = (
-            self._duckdb_client.sql("DESCRIBE creation_traces_v1")
+            self._duckdb_client.sql("DESCRIBE create_traces_v1")
             .pl()
             .select("column_name", "column_type")
             .to_dicts()
@@ -97,7 +95,7 @@ class TestCreationTraces001(IntermediateModelTestBase):
 
         output = (
             self._duckdb_client.sql(f"""
-        SELECT * FROM creation_traces_v1 WHERE contract_address = '{CONTRACT_ADDRESS}'
+        SELECT * FROM create_traces_v1 WHERE contract_address = '{CONTRACT_ADDRESS}'
         """)
             .pl()
             .to_dicts()
