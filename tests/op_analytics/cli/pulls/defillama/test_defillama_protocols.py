@@ -1,14 +1,16 @@
-import polars as pl
-from op_analytics.coreutils.testutils.inputdata import InputTestData
+from datetime import date
+from typing import Any
 from unittest.mock import patch
 
+import polars as pl
 
 from op_analytics.cli.subcommands.pulls.defillama import protocols
+from op_analytics.coreutils.testutils.inputdata import InputTestData
 
 TESTDATA = InputTestData.at(__file__)
 
 
-sample_protocols = [
+sample_protocols: list[dict[str, Any]] = [
     {
         "name": "ProtocolOne",
         "slug": "protocol_one",
@@ -129,12 +131,16 @@ expected_metadata_dicts = [
         "protocol_slug": "protocol_one",
         "protocol_category": "Finance",
         "parent_protocol": "protocol_one",
+        "wrong_liquidity": None,
+        "misrepresented_tokens": None,
     },
     {
         "protocol_name": "ProtocolTwo",
         "protocol_slug": "protocol_two",
         "protocol_category": "Gaming",
         "parent_protocol": "protocol_two",
+        "wrong_liquidity": None,
+        "misrepresented_tokens": None,
     },
 ]
 
@@ -190,12 +196,6 @@ expected_single_protocol_app_token_tvl_dicts = [
 
 expected_all_protocol_app_tvl_dicts = [
     {
-        "protocol_slug": "protocol_two",
-        "chain": "ChainGamma",
-        "dt": "2024-11-15",
-        "total_app_tvl": 67890.12,
-    },
-    {
         "protocol_slug": "protocol_one",
         "chain": "ChainAlpha",
         "dt": "2024-11-15",
@@ -207,25 +207,15 @@ expected_all_protocol_app_tvl_dicts = [
         "dt": "2024-11-15",
         "total_app_tvl": 45678.9,
     },
+    {
+        "protocol_slug": "protocol_two",
+        "chain": "ChainGamma",
+        "dt": "2024-11-15",
+        "total_app_tvl": 67890.12,
+    },
 ]
 
 expected_all_protocol_app_token_tvl_dicts = [
-    {
-        "protocol_slug": "protocol_two",
-        "chain": "ChainGamma",
-        "dt": "2024-11-15",
-        "token": "TokenX",
-        "app_token_tvl": 7.7,
-        "app_token_tvl_usd": 33333.33,
-    },
-    {
-        "protocol_slug": "protocol_two",
-        "chain": "ChainGamma",
-        "dt": "2024-11-15",
-        "token": "TokenY",
-        "app_token_tvl": 6.6,
-        "app_token_tvl_usd": 44444.44,
-    },
     {
         "protocol_slug": "protocol_one",
         "chain": "ChainAlpha",
@@ -258,6 +248,22 @@ expected_all_protocol_app_token_tvl_dicts = [
         "app_token_tvl": 6.6,
         "app_token_tvl_usd": 4567.89,
     },
+    {
+        "protocol_slug": "protocol_two",
+        "chain": "ChainGamma",
+        "dt": "2024-11-15",
+        "token": "TokenX",
+        "app_token_tvl": 7.7,
+        "app_token_tvl_usd": 33333.33,
+    },
+    {
+        "protocol_slug": "protocol_two",
+        "chain": "ChainGamma",
+        "dt": "2024-11-15",
+        "token": "TokenY",
+        "app_token_tvl": 6.6,
+        "app_token_tvl_usd": 44444.44,
+    },
 ]
 
 
@@ -269,12 +275,16 @@ def test_extract_protocol_metadata():
             "protocol_slug": "protocol_one",
             "protocol_category": "Finance",
             "parent_protocol": "protocol_one",
+            "wrong_liquidity": None,
+            "misrepresented_tokens": None,
         },
         {
             "protocol_name": "ProtocolTwo",
             "protocol_slug": "protocol_two",
             "protocol_category": "Gaming",
             "parent_protocol": "protocol_two",
+            "wrong_liquidity": None,
+            "misrepresented_tokens": None,
         },
     ]
     assert metadata_df.to_dicts() == expected_dicts
@@ -293,13 +303,15 @@ def test_construct_urls():
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
-@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_unpartitioned_table")
-@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_partitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.now_date")
+@patch("op_analytics.cli.subcommands.pulls.defillama.dataaccess.DataWriter.write")
 def test_pull_single_protocol_tvl(
-    mock_upsert_partitioned_table,
-    mock_upsert_unpartitioned_table,
+    mock_write,
+    mock_now_date,
     mock_get_data,
 ):
+    mock_now_date.return_value = date(2024, 11, 18)
+
     # Mock get_data to return sample summary and breakdown data
     mock_get_data.side_effect = [
         sample_protocols,  # metadata
@@ -311,40 +323,71 @@ def test_pull_single_protocol_tvl(
 
     # Assertions
     assert result.metadata_df.to_dicts() == expected_metadata_dicts
-    assert result.app_tvl_df.to_dicts() == expected_single_protocol_app_tvl_dicts
-    assert result.app_token_tvl_df.to_dicts() == expected_single_protocol_app_token_tvl_dicts
+    assert (
+        result.app_tvl_df.sort("dt", "protocol_slug", "chain").to_dicts()
+        == expected_single_protocol_app_tvl_dicts
+    )
+    assert (
+        result.app_token_tvl_df.sort("dt", "protocol_slug", "chain", "token").to_dicts()
+        == expected_single_protocol_app_token_tvl_dicts
+    )
 
     # Verify that get_data was called twice (summary, metadata, and tvl)
     assert mock_get_data.call_count == 2
 
-    # Check that BigQuery functions were called with correct parameters
-    mock_upsert_unpartitioned_table.call_count == 1
-    mock_upsert_partitioned_table.call_count == 2
-
-    assert mock_upsert_unpartitioned_table.call_args_list[0].kwargs["unique_keys"] == [
-        "protocol_slug",
+    # Check that writer functions were called with correct parameters
+    write_calls = [
+        dict(
+            dataset_name=_.kwargs["output_data"].dataset_name,
+            df_columns=_.kwargs["output_data"].dataframe.columns,
+            num_rows=len(_.kwargs["output_data"].dataframe),
+        )
+        for _ in mock_write.call_args_list
     ]
-    assert mock_upsert_partitioned_table.call_args_list[0].kwargs["unique_keys"] == [
-        "dt",
-        "protocol_slug",
-        "chain",
-    ]
-    assert mock_upsert_partitioned_table.call_args_list[1].kwargs["unique_keys"] == [
-        "dt",
-        "protocol_slug",
-        "chain",
-        "token",
+    assert write_calls == [
+        {
+            "dataset_name": "protocols_metadata_v1",
+            "df_columns": [
+                "protocol_name",
+                "protocol_slug",
+                "protocol_category",
+                "parent_protocol",
+                "wrong_liquidity",
+                "misrepresented_tokens",
+                "dt",
+            ],
+            "num_rows": 2,
+        },
+        {
+            "dataset_name": "protocols_tvl_v1",
+            "df_columns": ["protocol_slug", "chain", "total_app_tvl", "dt"],
+            "num_rows": 2,
+        },
+        {
+            "dataset_name": "protocols_token_tvl_v1",
+            "df_columns": [
+                "protocol_slug",
+                "chain",
+                "token",
+                "app_token_tvl",
+                "app_token_tvl_usd",
+                "dt",
+            ],
+            "num_rows": 4,
+        },
     ]
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
-@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_unpartitioned_table")
-@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_partitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.now_date")
+@patch("op_analytics.cli.subcommands.pulls.defillama.dataaccess.DataWriter.write")
 def test_pull_all_protocol_tvl(
-    mock_upsert_partitioned_table,
-    mock_upsert_unpartitioned_table,
+    mock_write,
+    mock_now_date,
     mock_get_data,
 ):
+    mock_now_date.return_value = date(2024, 11, 18)
+
     # Mock get_data to return sample summary and breakdown data
     mock_get_data.side_effect = [
         sample_protocols,  # metadata
@@ -357,26 +400,56 @@ def test_pull_all_protocol_tvl(
 
     # Assertions
     assert result.metadata_df.to_dicts() == expected_metadata_dicts
-    assert result.app_tvl_df.to_dicts() == expected_all_protocol_app_tvl_dicts
-    assert result.app_token_tvl_df.to_dicts() == expected_all_protocol_app_token_tvl_dicts
+    assert (
+        result.app_tvl_df.sort("dt", "protocol_slug", "chain").to_dicts()
+        == expected_all_protocol_app_tvl_dicts
+    )
+    assert (
+        result.app_token_tvl_df.sort("dt", "protocol_slug", "chain", "token").to_dicts()
+        == expected_all_protocol_app_token_tvl_dicts
+    )
 
     # Verify that get_data was called twice (summary, metadata, and tvl)
     assert mock_get_data.call_count == 3
 
     # Check that BigQuery functions were called with correct parameters
-    mock_upsert_unpartitioned_table.call_count == 3
-
-    assert mock_upsert_unpartitioned_table.call_args_list[0].kwargs["unique_keys"] == [
-        "protocol_slug",
+    write_calls = [
+        dict(
+            dataset_name=_.kwargs["output_data"].dataset_name,
+            df_columns=_.kwargs["output_data"].dataframe.columns,
+            num_rows=len(_.kwargs["output_data"].dataframe),
+        )
+        for _ in mock_write.call_args_list
     ]
-    assert mock_upsert_partitioned_table.call_args_list[0].kwargs["unique_keys"] == [
-        "dt",
-        "protocol_slug",
-        "chain",
-    ]
-    assert mock_upsert_partitioned_table.call_args_list[1].kwargs["unique_keys"] == [
-        "dt",
-        "protocol_slug",
-        "chain",
-        "token",
+    assert write_calls == [
+        {
+            "dataset_name": "protocols_metadata_v1",
+            "df_columns": [
+                "protocol_name",
+                "protocol_slug",
+                "protocol_category",
+                "parent_protocol",
+                "wrong_liquidity",
+                "misrepresented_tokens",
+                "dt",
+            ],
+            "num_rows": 2,
+        },
+        {
+            "dataset_name": "protocols_tvl_v1",
+            "df_columns": ["protocol_slug", "chain", "total_app_tvl", "dt"],
+            "num_rows": 3,
+        },
+        {
+            "dataset_name": "protocols_token_tvl_v1",
+            "df_columns": [
+                "protocol_slug",
+                "chain",
+                "token",
+                "app_token_tvl",
+                "app_token_tvl_usd",
+                "dt",
+            ],
+            "num_rows": 6,
+        },
     ]
