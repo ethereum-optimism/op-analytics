@@ -109,7 +109,7 @@ def run_query(
     query: str,
     parameters: dict[str, Any] | None = None,
     settings: dict[str, Any] | None = None,
-):
+) -> pl.DataFrame | pl.Series:
     """Return arrow table with clickhouse results"""
     client = init_client(instance)
 
