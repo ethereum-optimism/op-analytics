@@ -32,9 +32,9 @@ CREATE TABLE IF NOT EXISTS etl_monitor.intermediate_model_markers
     model_name String,
 
     INDEX dt_idx dt TYPE minmax GRANULARITY 1,
-    INDEX chain_idx chain TYPE minmax GRANULARITY 1,
+    INDEX chain_idx chain TYPE minmax GRANULARITY 1
 )
 -- Use a merge tree so that we keep around all markers ever written
 -- could be useful for auditing purposes.
 ENGINE = MergeTree
-ORDER BY (marker_path)
+ORDER BY (marker_path);
