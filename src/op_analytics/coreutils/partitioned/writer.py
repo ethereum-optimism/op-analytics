@@ -47,6 +47,8 @@ class DataWriter:
         if len(self.expected_outputs) != len(self._keyed_outputs):
             raise ValueError("expected output names are not unique")
 
+        self.write_to.check_write_allowed()
+
     def is_complete(self) -> bool:
         if self._is_complete is None:
             self._is_complete = all_outputs_complete(
