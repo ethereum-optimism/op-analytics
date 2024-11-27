@@ -7,7 +7,7 @@
         },
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.insertSpaces": true,
-        "files.insertFinalNewline": true,
+        "files.insertFinalNewline": true
     },
     "[markdown]": {
         "editor.rulers": [
