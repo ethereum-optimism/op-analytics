@@ -20,6 +20,9 @@ CREATE TABLE {view_name}
     integrator String,
     log_index   UInt64,
     insert_time DateTime,
+    l2_fee_eth Float64,
+    l1_fee_eth Float64,
+    total_fee_eth Float64,
     dst_chain String
 )
 ENGINE = ReplacingMergeTree(insert_time)
