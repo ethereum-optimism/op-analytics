@@ -39,5 +39,5 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
 
     -- Min and max block numbers in this batch
     min_block Int64,
-    max_block Int64,
-)
+    max_block Int64
+);
