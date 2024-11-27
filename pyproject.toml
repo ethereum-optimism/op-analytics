@@ -1,6 +1,6 @@
 [project]
 name = "op-analytics"
-version = "20241127.1"
+version = "20241127.2"
 description = "Data analysis tools by OP Labs."
 readme = "README.md"
 requires-python = ">=3.12"

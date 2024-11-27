@@ -6,7 +6,6 @@ import polars as pl
 
 from op_analytics.coreutils.logger import (
     bound_contextvars,
-    clear_contextvars,
     human_interval,
     human_rows,
     structlog,
@@ -27,6 +26,7 @@ from .task import IngestionTask
 log = structlog.get_logger()
 
 
+@bound_contextvars(pipeline_step="ingest")
 def ingest(
     chains: list[str],
     range_spec: str,
@@ -37,8 +37,6 @@ def ingest(
     fork_process: bool = True,
     max_tasks: int | None = None,
 ):
-    clear_contextvars()
-
     tasks = construct_tasks(chains, range_spec, read_from, write_to)
     log.info(f"constructed {len(tasks)} tasks.")
 
