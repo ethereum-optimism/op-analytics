@@ -37,8 +37,9 @@ from (
         END AS integrator
         , l.log_index
         , l.insert_time
-        ,t.gas_price * t.gas_used as l2_fee
-        ,t.receipt_l1_fee as l1_fee
+        ,(t.gas_price * t.gas_used) / 1e18 as l2_fee_eth
+        ,(t.receipt_l1_fee) / 1e18 as l1_fee_eth
+        ,(t.gas_price * t.gas_used) / 1e18 + (t.receipt_l1_fee) / 1e18 as total_fee_eth
     from {chain}_logs as l
     join (
             SELECT * FROM {chain}_transactions
