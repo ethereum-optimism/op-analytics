@@ -16,6 +16,7 @@ from .udfs import create_duckdb_macros
 log = structlog.get_logger()
 
 
+@bound_contextvars(pipeline_step="compute_intermediate")
 def compute_intermediate(
     chains: list[str],
     models: list[str],
@@ -65,6 +66,8 @@ def compute_intermediate(
             task.data_writer.force = True
 
         executor(task)
+
+    log.info("done", total=len(tasks), success=len(tasks), fail=0)
 
 
 def executor(task: IntermediateModelsTask) -> None:

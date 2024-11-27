@@ -265,6 +265,7 @@ def hourly():
         chains=all_chains,
         models=[
             "daily_address_summary",
+            "contract_creation",
         ],
         range_spec="m2days",
         read_from=DataLocation.GCS,
