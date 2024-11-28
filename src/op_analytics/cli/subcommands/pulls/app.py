@@ -3,6 +3,7 @@ from typing import Annotated
 import typer
 from op_analytics.coreutils.logger import structlog
 
+from .agora import agora_pull
 from .defillama.stablecoins import pull_stablecoins as dfl_pull_stablecoins
 from .defillama.historical_chain_tvl import (
     pull_historical_chain_tvl as dfl_pull_historical_chain_tvl,
@@ -68,7 +69,10 @@ def defillama_protocol_tvl(
     dfl_pull_protocol_tvl(pull_protocols=pull_protocols_list)
 
 
-# Todo: Add agora pull commands
+@app.command()
+def agora():
+    """Pull data from Agora."""
+    agora_pull()
 
 
 @app.command()
