@@ -8,7 +8,7 @@ log = structlog.get_logger()
 
 
 def all_outputs_complete(
-    sinks: list[DataLocation],
+    location: DataLocation,
     markers: list[SinkMarkerPath],
     markers_table: str,
 ) -> bool:
@@ -20,21 +20,19 @@ def all_outputs_complete(
     """
     client = init_data_access()
 
-    result = True
-    for location in sinks:
-        complete = []
-        incomplete = []
+    complete = []
+    incomplete = []
 
-        # TODO: Make a single query for all the markers.
-        for marker in markers:
-            if client.marker_exists(location, marker, markers_table):
-                complete.append(marker)
-            else:
-                incomplete.append(marker)
+    # TODO: Make a single query for all the markers.
+    for marker in markers:
+        if client.marker_exists(location, marker, markers_table):
+            complete.append(marker)
+        else:
+            incomplete.append(marker)
 
-        log.debug(f"{len(complete)} complete, {len(incomplete)} incomplete on sink={location.name}")
+    log.debug(f"{len(complete)} complete, {len(incomplete)} incomplete")
 
-        if incomplete:
-            result = False
+    if incomplete:
+        return False
 
-    return result
+    return True

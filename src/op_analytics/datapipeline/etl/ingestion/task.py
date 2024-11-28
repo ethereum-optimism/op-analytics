@@ -43,7 +43,6 @@ class IngestionTask:
     # Inputs
     input_datasets: dict[str, CoreDataset]
     input_dataframes: dict[str, pl.DataFrame]
-    inputs_ready: bool
 
     # Outputs
     output_dataframes: list[OutputData]
@@ -71,33 +70,35 @@ class IngestionTask:
         max_requested_timestamp: int | None,
         block_batch: BlockBatch,
         read_from: RawOnchainDataProvider,
-        write_to: list[DataLocation],
+        write_to: DataLocation,
     ):
-        expected_outputs = {}
+        expected_outputs = []
         for name, dataset in ONCHAIN_CURRENT_VERSION.items():
             # Determine the marker path for this dataset.
             marker_path = block_batch.construct_marker_path()
             full_marker_path = SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
 
             # Construct expected output for the dataset.
-            expected_outputs[name] = ExpectedOutput(
-                dataset_name=name,
-                root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
-                file_name=block_batch.construct_parquet_filename(),
-                marker_path=full_marker_path,
-                process_name="default",
-                additional_columns=dict(
-                    num_blocks=block_batch.num_blocks(),
-                    min_block=block_batch.min,
-                    max_block=block_batch.max,
-                ),
-                additional_columns_schema=[
-                    pa.field("chain", pa.string()),
-                    pa.field("dt", pa.date32()),
-                    pa.field("num_blocks", pa.int32()),
-                    pa.field("min_block", pa.int64()),
-                    pa.field("max_block", pa.int64()),
-                ],
+            expected_outputs.append(
+                ExpectedOutput(
+                    dataset_name=name,
+                    root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
+                    file_name=block_batch.construct_parquet_filename(),
+                    marker_path=full_marker_path,
+                    process_name="default",
+                    additional_columns=dict(
+                        num_blocks=block_batch.num_blocks(),
+                        min_block=block_batch.min,
+                        max_block=block_batch.max,
+                    ),
+                    additional_columns_schema=[
+                        pa.field("chain", pa.string()),
+                        pa.field("dt", pa.date32()),
+                        pa.field("num_blocks", pa.int32()),
+                        pa.field("min_block", pa.int64()),
+                        pa.field("max_block", pa.int64()),
+                    ],
+                )
             )
 
         return cls(
@@ -105,14 +106,13 @@ class IngestionTask:
             block_batch=block_batch,
             input_datasets={},
             input_dataframes={},
-            inputs_ready=False,
             output_dataframes=[],
             read_from=read_from,
             data_writer=DataWriter(
+                partition_cols=["chain", "dt"],
                 write_to=write_to,
                 markers_table=INGESTION_MARKERS_TABLE,
                 expected_outputs=expected_outputs,
-                is_complete=False,
                 force=False,
             ),
             progress_indicator="",

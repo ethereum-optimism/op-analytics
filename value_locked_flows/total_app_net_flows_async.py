@@ -24,7 +24,8 @@ import google_bq_utils as bqu
 
 
 # date ranges to build charts for
-drange = [1, 3, 7, 14, 30, 90]
+do_write = True#False
+drange = [7, 30, 90, 365]
 load_num_days = 14
 # Do we count net flows marked at the lastest token price (1) or the price on each day (0)
 # By default, we opt to 1, so that price movement isn't accidentally counted as + or - flow remainder
@@ -62,18 +63,21 @@ df_all = dfl.get_all_protocol_tvls_by_chain_and_token(
 )
 
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
+# In[4]:
 
 
 df_all['token'] = df_all['token'].fillna('0').astype(str)
 df_all['token_value'] = df_all['token_value'].fillna(0).astype('float64')
 df_all.dtypes
+
+# Filter to complete dates
+df_all = df_all[df_all['date'].dt.time == pd.Timestamp('00:00:00').time()]
+
+
+# In[ ]:
+
+
+df_all.tail(5)
 
 
 # In[ ]:
@@ -83,13 +87,15 @@ df_all.dtypes
 unique_cols = ['date','chain','token','protocol']
 # df_recent = df_all[df_all['date'] >= pd.to_datetime(start_date)]
 df_recent = df_all[df_all['date'] >= pd.to_datetime(load_start_date)]
+
 # df_recent = df_all
 # df_recent = df_all[df_all['date'] >= last_date - timedelta(days = 30)]
 print(f'Number of Rows: {len(df_recent)}')
-bqu.append_and_upsert_df_to_bq_table(df_recent, 'daily_defillama_tvl_full_breakdown',unique_keys = unique_cols)
+if do_write == True:
+    bqu.append_and_upsert_df_to_bq_table(df_recent, 'daily_defillama_tvl_full_breakdown',unique_keys = unique_cols)
 
 
-# In[6]:
+# In[9]:
 
 
 # Filter down for the visuals
@@ -100,7 +106,7 @@ df_all = None
 # df_df_all[(df_df_all['protocol'] == 'app_name') & (df_df_all['date'] == '2023-01-27')]
 
 
-# In[7]:
+# In[10]:
 
 
 # df_df[(df_df['protocol'] == 'blast')].sort_values(by='date',ascending=False).head(10)
@@ -117,7 +123,7 @@ df_df = df_df[
 ]  
 
 
-# In[9]:
+# In[12]:
 
 
 # display(df_df_all)
@@ -128,7 +134,7 @@ df_df.loc[:, 'usd_value'] = df_df['usd_value'].astype("float64")
 # display(df_df_all2)
 
 
-# In[10]:
+# In[13]:
 
 
 # df_df[(df_df['protocol'] == 'blast')].sort_values(by='date',ascending=False).head(15)
@@ -136,7 +142,7 @@ df_df.loc[:, 'usd_value'] = df_df['usd_value'].astype("float64")
 # df_df = df_backup.copy()
 
 
-# In[11]:
+# In[14]:
 
 
 # create an extra day to handle for tokens dropping to 0
@@ -157,7 +163,7 @@ df_df_shift['date'] = df_df_shift['date'] + timedelta(days=1)
 #del df_df_shift_bwd #Free Up memory
 
 
-# In[12]:
+# In[15]:
 
 
 # Use query for filtering instead of boolean indexing
@@ -197,7 +203,7 @@ print("done api")
 # df_df[(df_df['protocol'] == 'uniswap-v3')].sort_values(by='date',ascending=False).head(15)
 
 
-# In[14]:
+# In[17]:
 
 
 # trailing comparison
@@ -208,7 +214,7 @@ df_df["last_token_value"] = df_df.groupby(["token", "protocol", "chain"])[
 df_df = df_df[df_df['date'] >= start_date]
 
 
-# In[15]:
+# In[18]:
 
 
 # df_df[df_df['date'] == '2023-12-05']
@@ -216,7 +222,7 @@ df_df = df_df[df_df['date'] >= start_date]
 # print(df_df[df_df['date'] == '2023-12-05'].sum())
 
 
-# In[16]:
+# In[19]:
 
 
 data_df = df_df.copy()
@@ -239,7 +245,7 @@ data_df["price_usd"] = data_df[["price_usd", "last_price_usd"]].bfill(axis=1).il
 # data_df.sample(10)
 
 
-# In[17]:
+# In[20]:
 
 
 # Find what is the latest token price. This sometimes gets skewed if tokens disappear or supply locked goes to 0
@@ -353,7 +359,7 @@ del prices_df  # Free Up memory
 print("prices map done")
 
 
-# In[20]:
+# In[23]:
 
 
 # Fix Price Choice Errors
@@ -399,13 +405,13 @@ data_df = data_df[~data_df["net_dollar_flow"].isna()]
 print('flow columns done')
 
 
-# In[22]:
+# In[25]:
 
 
 # data_df[ (data_df['protocol'] == 'sushi-bentobox') & (data_df['date'] >= '2023-09-10') & (data_df['chain'] == 'Ethereum') & (data_df['token'] == 'VOLT') ]#.sort_values(by='net_dollar_flow_latest_price',ascending=True)
 
 
-# In[23]:
+# In[26]:
 
 
 # data_df[(data_df['protocol'] == 'uniswap-v3')].sort_values(by=['date','net_dollar_flow_latest_price'],ascending=[False,False]).head(50)
@@ -413,7 +419,7 @@ print('flow columns done')
 # data_df[ (data_df['protocol'] == 'sushi-bentobox') & (data_df['date'] == '2023-09-11') & (data_df['chain'] == 'Ethereum') ].sort_values(by='net_dollar_flow_latest_price',ascending=True)
 
 
-# In[24]:
+# In[27]:
 
 
 # data_df[(data_df['protocol'] == 'uniswap-v3')].groupby(['date','chain']).sum().tail(20)
@@ -492,12 +498,12 @@ netdf_df["rank_desc"] = (
 print('rank done')
 
 
-# In[28]:
+# In[31]:
 
 
 # netdf_df.columns
 
-for i in ("svg", "png", "html"):
+for i in ("html"):#("svg", "png", "html"):
     dir_path = "img_outputs/" + i
     # clear out folder
     if os.path.exists(dir_path):
@@ -506,7 +512,7 @@ for i in ("svg", "png", "html"):
     os.mkdir(dir_path)
 
 
-# In[29]:
+# In[32]:
 
 
 summary_df = netdf_df.copy()
@@ -689,13 +695,13 @@ for i in drange:
         "img_outputs/html/" + saveval_app + ".html", include_plotlyjs="cdn"
     )
 
-    if i == 30:
+    if i == 365:
         fig.show()
 # fig.data[0].textinfo = 'label+text+value'
 # fig.update_layout(tickprefix = '$')
 
 
-# In[32]:
+# In[35]:
 
 
 # final_summary_df.dtypes

@@ -1,4 +1,9 @@
-from op_analytics.coreutils.logger import bind_contextvars, clear_contextvars, structlog
+from op_analytics.coreutils.logger import (
+    bind_contextvars,
+    bound_contextvars,
+    clear_contextvars,
+    structlog,
+)
 from op_analytics.coreutils.partitioned import (
     DataLocation,
     DataReader,
@@ -6,7 +11,6 @@ from op_analytics.coreutils.partitioned import (
     get_dt,
     get_root_path,
 )
-
 from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chains
 from op_analytics.datapipeline.etl.ingestion.markers import (
     INGESTION_DATASETS,
@@ -24,6 +28,7 @@ MARKERS_TABLE = "superchain_raw_bigquery_markers"
 BQ_PUBLIC_DATASET = "superchain_raw"
 
 
+@bound_contextvars(pipeline_step="load_superchain_raw_to_bq")
 def load_superchain_raw_to_bq(
     location: DataLocation,
     range_spec: str,
@@ -88,3 +93,5 @@ def load_superchain_raw_to_bq(
                 source_uris_root_path=source_uris_root_path,
                 force_complete=force_complete,
             )
+
+    log.info("done", total=len(date_tasks), success=len(date_tasks), fail=0)

@@ -102,13 +102,25 @@ def verify_goldsky_tables():
 
 
 CHAINS_ARG = Annotated[str, typer.Argument(help="Comma-separated list of chains to be processed.")]
+
 DATES_ARG = Annotated[str, typer.Argument(help="Range of dates to be processed.")]
+
+WRITE_TO_OPTION = Annotated[
+    DataLocation,
+    typer.Option(
+        help="Where data will be written to.",
+        case_sensitive=False,
+    ),
+]
+
 DRYRUN_OPTION = Annotated[
     bool, typer.Option(help="Dryrun shows a summary of the data that will be processed.")
 ]
+
 FORCE_COMPLETE_OPTION = Annotated[
     bool, typer.Option(help="Run even if completion markers already exist.")
 ]
+
 FORCE_NOT_READY_OPTION = Annotated[bool, typer.Option(help="Run even if inputs are notready.")]
 
 
@@ -141,17 +153,11 @@ def ingest_blocks(
     read_from: Annotated[
         RawOnchainDataProvider,
         typer.Option(
-            help="Where datda will be read from.",
+            help="Where data will be read from.",
             case_sensitive=False,
         ),
     ] = RawOnchainDataProvider.GOLDSKY,
-    write_to: Annotated[
-        list[DataLocation] | None,
-        typer.Option(
-            help="Where data will be written to.",
-            case_sensitive=False,
-        ),
-    ] = None,
+    write_to: WRITE_TO_OPTION = DataLocation.DISABLED,
     dryrun: DRYRUN_OPTION = False,
     force_complete: FORCE_COMPLETE_OPTION = False,
     fork_process: Annotated[
@@ -168,7 +174,7 @@ def ingest_blocks(
         chains=chain_list,
         range_spec=range_spec,
         read_from=read_from,
-        write_to=write_to or [DataLocation.LOCAL],
+        write_to=write_to,
         dryrun=dryrun,
         force_complete=force_complete,
         fork_process=fork_process,
@@ -183,17 +189,11 @@ def intermediate_models(
     read_from: Annotated[
         DataLocation,
         typer.Option(
-            help="Where datda will be read from.",
+            help="Where data will be read from.",
             case_sensitive=False,
         ),
     ] = DataLocation.GCS,
-    write_to: Annotated[
-        list[DataLocation] | None,
-        typer.Option(
-            help="Where data will be written to.",
-            case_sensitive=False,
-        ),
-    ] = None,
+    write_to: WRITE_TO_OPTION = DataLocation.DISABLED,
     dryrun: DRYRUN_OPTION = False,
     force_complete: FORCE_COMPLETE_OPTION = False,
 ):
@@ -206,7 +206,7 @@ def intermediate_models(
         models=model_list,
         range_spec=range_spec,
         read_from=read_from,
-        write_to=write_to or [DataLocation.LOCAL],
+        write_to=write_to,
         dryrun=dryrun,
         force_complete=force_complete,
     )
@@ -242,4 +242,43 @@ def load_superchain_raw(
         dryrun=dryrun,
         force_complete=force_complete,
         force_not_ready=force_not_ready,
+    )
+
+
+@app.command()
+def hourly():
+    """Hourly command that runs on kubernetes to keep systems current."""
+
+    all_chains = normalize_chains("ALL")
+
+    ingest(
+        chains=all_chains,
+        range_spec="m8hours",
+        read_from=RawOnchainDataProvider.GOLDSKY,
+        write_to=DataLocation.GCS,
+        dryrun=False,
+        force_complete=False,
+        fork_process=True,
+    )
+
+    compute_intermediate(
+        chains=all_chains,
+        models=[
+            "daily_address_summary",
+            "contract_creation",
+        ],
+        range_spec="m2days",
+        read_from=DataLocation.GCS,
+        write_to=DataLocation.GCS,
+        dryrun=False,
+        force_complete=False,
+    )
+
+    load_to_bq(
+        stage=PipelineStage.RAW_ONCHAIN,
+        location=DataLocation.BIGQUERY,
+        range_spec="m2days",
+        dryrun=False,
+        force_complete=False,
+        force_not_ready=False,
     )

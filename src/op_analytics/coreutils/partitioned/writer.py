@@ -1,12 +1,16 @@
-from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any
 
-from op_analytics.coreutils.logger import bound_contextvars, structlog, human_rows
+from overrides import override
 
+from op_analytics.coreutils.logger import bound_contextvars, structlog
+
+from .breakout import breakout_partitions
+from .dataaccess import init_data_access
 from .location import DataLocation
 from .output import ExpectedOutput, OutputData, OutputPartMeta
 from .status import all_outputs_complete
-from .writehelper import ParqueWriteManager
+from .writehelper import WriteManager
 
 log = structlog.get_logger()
 
@@ -15,52 +19,48 @@ log = structlog.get_logger()
 class DataWriter:
     """Manages writing data and markers consistently."""
 
-    # Sinks
-    write_to: list[DataLocation]
+    # Data store where we write the data.
+    write_to: DataLocation
+
+    # Partition columns
+    partition_cols: list[str]
 
     # Markers Table
     markers_table: str
 
     # Expected Outputs
-    expected_outputs: dict[str, ExpectedOutput]
-
-    # Is set to true if all markers already exist.
-    is_complete: bool
+    expected_outputs: list[ExpectedOutput]
 
     # If true, writes data even if markers already exist.
     force: bool
 
-    def all_complete(self) -> bool:
-        """Check if all expected markers are complete."""
-        return all_outputs_complete(
-            sinks=self.write_to,
-            markers=[_.marker_path for _ in self.expected_outputs.values()],
-            markers_table=self.markers_table,
-        )
+    # Internal state for status of completion markers.
+    _is_complete: bool | None = field(default=None, init=False)
 
-    def write_all(self, outputs: list[OutputData]):
-        """Write data and markers to all the specified locations.
+    # Expected outputs by name (post-init).
+    _keyed_outputs: dict[str, ExpectedOutput] = field(init=False, default_factory=dict)
 
-        The data is provided as a list of functions that return a dataframe. This lets us generalize
-        the way in which different tasks produce OutputDataFrame.
-        """
-        write_results = []
-        for location in self.write_to:
-            total_rows: dict[str, int] = defaultdict(int)
-            for output_data in outputs:
-                parts = self.write(location, output_data)
+    def __post_init__(self):
+        for output in self.expected_outputs:
+            self._keyed_outputs[output.dataset_name] = output
 
-                for part in parts:
-                    total_rows[output_data.dataset_name] += part.row_count
+        if len(self.expected_outputs) != len(self._keyed_outputs):
+            raise ValueError("expected output names are not unique")
 
-            result = " ".join(f"{key}={human_rows(val)}" for key, val in total_rows.items())
-            write_results.append(f"{location.name}::{result}")
+        self.write_to.check_write_allowed()
 
-        all_results = " ".join(write_results)
-        log.info(f"done writing. {all_results}")
+    def is_complete(self) -> bool:
+        if self._is_complete is None:
+            self._is_complete = all_outputs_complete(
+                location=self.write_to,
+                markers=[_.marker_path for _ in self.expected_outputs],
+                markers_table=self.markers_table,
+            )
+        return self._is_complete
 
-    def write(self, location: DataLocation, output_data: OutputData) -> list[OutputPartMeta]:
-        expected_output = self.expected_outputs[output_data.dataset_name]
+    def write(self, output_data: OutputData) -> list[OutputPartMeta]:
+        """Write data and corresponding marker."""
+        expected_output = self._keyed_outputs[output_data.dataset_name]
 
         # The default partition value is included in logs because it includes
         # the dt value, which helps keep track of where we are when we run a
@@ -69,11 +69,42 @@ class DataWriter:
         with bound_contextvars(
             dataset=output_data.dataset_name, **(output_data.default_partition or {})
         ):
-            manager = ParqueWriteManager(
-                location=location,
+            manager = PartitionedWriteManager(
+                partition_cols=self.partition_cols,
+                location=self.write_to,
                 expected_output=expected_output,
                 markers_table=self.markers_table,
                 force=self.force,
             )
 
             return manager.write(output_data)
+
+
+@dataclass
+class PartitionedWriteManager(WriteManager):
+    partition_cols: list[str]
+
+    @override
+    def write_implementation(self, output_data: Any) -> list[OutputPartMeta]:
+        assert isinstance(output_data, OutputData)
+
+        client = init_data_access()
+
+        parts = breakout_partitions(
+            df=output_data.dataframe,
+            partition_cols=self.partition_cols,
+            default_partition=output_data.default_partition,
+        )
+
+        parts_meta: list[OutputPartMeta] = []
+        for part in parts:
+            client.write_single_part(
+                location=self.location,
+                dataframe=part.df,
+                full_path=part.meta.full_path(
+                    self.expected_output.root_path, self.expected_output.file_name
+                ),
+            )
+            parts_meta.append(part.meta)
+
+        return parts_meta

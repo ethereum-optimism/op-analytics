@@ -13,6 +13,7 @@ class OPLabsEnvironment(Enum):
 class OPLabsRuntime(Enum):
     LOCAL = 0
     K8S = 1
+    GITHUB_ACTIONS = 2
 
 
 _CURRENT_ENV = None
@@ -46,6 +47,9 @@ def current_runtime():
         if oplabs_runtime == "k8s":
             _CURRENT_RUNTIME = OPLabsRuntime.K8S
 
+        elif oplabs_runtime == "gha":
+            _CURRENT_RUNTIME = OPLabsRuntime.GITHUB_ACTIONS
+
         else:
             _CURRENT_RUNTIME = OPLabsRuntime.LOCAL
 
@@ -54,3 +58,19 @@ def current_runtime():
 
 def is_k8s():
     return current_runtime() == OPLabsRuntime.K8S
+
+
+def is_github_actions():
+    return current_runtime() == OPLabsRuntime.GITHUB_ACTIONS
+
+
+def is_bot():
+    return is_k8s() or is_github_actions()
+
+
+def etl_monitor_markers_database():
+    current_env = current_environment()
+    if current_env == OPLabsEnvironment.UNITTEST:
+        return "etl_monitor_dev"
+    else:
+        return "etl_monitor"

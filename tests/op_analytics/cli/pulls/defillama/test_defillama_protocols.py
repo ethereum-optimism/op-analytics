@@ -1,14 +1,16 @@
-import polars as pl
-from op_analytics.coreutils.testutils.inputdata import InputTestData
+from datetime import date
+from typing import Any
 from unittest.mock import patch
 
+import polars as pl
 
 from op_analytics.cli.subcommands.pulls.defillama import protocols
+from op_analytics.coreutils.testutils.inputdata import InputTestData
 
 TESTDATA = InputTestData.at(__file__)
 
 
-sample_protocols = [
+sample_protocols: list[dict[str, Any]] = [
     {
         "name": "ProtocolOne",
         "slug": "protocol_one",
@@ -32,6 +34,16 @@ sample_protocol_data = {
                     {"date": 1731542400, "totalLiquidityUSD": 12345.67},
                     {"date": 1731628800, "totalLiquidityUSD": 23456.78},
                 ],
+                "tokens": [
+                    {
+                        "date": 1731542400,
+                        "tokens": {"TokenA": 1.1, "TokenB": 2.2},
+                    },
+                    {
+                        "date": 1731628800,
+                        "tokens": {"TokenA": 3.3, "TokenB": 4.4},
+                    },
+                ],
                 "tokensInUsd": [
                     {
                         "date": 1731542400,
@@ -48,6 +60,16 @@ sample_protocol_data = {
                     {"date": 1731542400, "totalLiquidityUSD": 34567.89},
                     {"date": 1731628800, "totalLiquidityUSD": 45678.90},
                     {"date": 1731628801, "totalLiquidityUSD": 45678.91},
+                ],
+                "tokens": [
+                    {
+                        "date": 1731542400,
+                        "tokens": {"TokenC": 1.2, "TokenD": 3.4},
+                    },
+                    {
+                        "date": 1731628800,
+                        "tokens": {"TokenC": 4.5, "TokenD": 6.6},
+                    },
                 ],
                 "tokensInUsd": [
                     {
@@ -70,6 +92,20 @@ sample_protocol_data = {
                     {"date": 1731542400, "totalLiquidityUSD": 56789.01},
                     {"date": 1731628800, "totalLiquidityUSD": 67890.12},
                 ],
+                "tokens": [
+                    {
+                        "date": 1731542400,
+                        "tokens": {"TokenX": 9.9, "TokenY": 8.8},
+                    },
+                    {
+                        "date": 1731628800,
+                        "tokens": {"TokenX": 7.7, "TokenY": 6.6},
+                    },
+                    {
+                        "date": 1731628801,
+                        "tokens": {"TokenX": 5.5, "TokenY": 4.4},
+                    },
+                ],
                 "tokensInUsd": [
                     {
                         "date": 1731542400,
@@ -89,6 +125,147 @@ sample_protocol_data = {
     },
 }
 
+expected_metadata_dicts = [
+    {
+        "protocol_name": "ProtocolOne",
+        "protocol_slug": "protocol_one",
+        "protocol_category": "Finance",
+        "parent_protocol": "protocol_one",
+        "wrong_liquidity": None,
+        "misrepresented_tokens": None,
+    },
+    {
+        "protocol_name": "ProtocolTwo",
+        "protocol_slug": "protocol_two",
+        "protocol_category": "Gaming",
+        "parent_protocol": "protocol_two",
+        "wrong_liquidity": None,
+        "misrepresented_tokens": None,
+    },
+]
+
+expected_single_protocol_app_tvl_dicts = [
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
+        "dt": "2024-11-15",
+        "total_app_tvl": 23456.78,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-15",
+        "total_app_tvl": 45678.9,
+    },
+]
+
+expected_single_protocol_app_token_tvl_dicts = [
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
+        "dt": "2024-11-15",
+        "token": "TokenA",
+        "app_token_tvl": 3.3,
+        "app_token_tvl_usd": 7777.77,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
+        "dt": "2024-11-15",
+        "token": "TokenB",
+        "app_token_tvl": 4.4,
+        "app_token_tvl_usd": 8888.88,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-15",
+        "token": "TokenC",
+        "app_token_tvl": 4.5,
+        "app_token_tvl_usd": 3456.78,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-15",
+        "token": "TokenD",
+        "app_token_tvl": 6.6,
+        "app_token_tvl_usd": 4567.89,
+    },
+]
+
+expected_all_protocol_app_tvl_dicts = [
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
+        "dt": "2024-11-15",
+        "total_app_tvl": 23456.78,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-15",
+        "total_app_tvl": 45678.9,
+    },
+    {
+        "protocol_slug": "protocol_two",
+        "chain": "ChainGamma",
+        "dt": "2024-11-15",
+        "total_app_tvl": 67890.12,
+    },
+]
+
+expected_all_protocol_app_token_tvl_dicts = [
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
+        "dt": "2024-11-15",
+        "token": "TokenA",
+        "app_token_tvl": 3.3,
+        "app_token_tvl_usd": 7777.77,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
+        "dt": "2024-11-15",
+        "token": "TokenB",
+        "app_token_tvl": 4.4,
+        "app_token_tvl_usd": 8888.88,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-15",
+        "token": "TokenC",
+        "app_token_tvl": 4.5,
+        "app_token_tvl_usd": 3456.78,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-15",
+        "token": "TokenD",
+        "app_token_tvl": 6.6,
+        "app_token_tvl_usd": 4567.89,
+    },
+    {
+        "protocol_slug": "protocol_two",
+        "chain": "ChainGamma",
+        "dt": "2024-11-15",
+        "token": "TokenX",
+        "app_token_tvl": 7.7,
+        "app_token_tvl_usd": 33333.33,
+    },
+    {
+        "protocol_slug": "protocol_two",
+        "chain": "ChainGamma",
+        "dt": "2024-11-15",
+        "token": "TokenY",
+        "app_token_tvl": 6.6,
+        "app_token_tvl_usd": 44444.44,
+    },
+]
+
 
 def test_extract_protocol_metadata():
     metadata_df = protocols.extract_protocol_metadata(sample_protocols)
@@ -98,12 +275,16 @@ def test_extract_protocol_metadata():
             "protocol_slug": "protocol_one",
             "protocol_category": "Finance",
             "parent_protocol": "protocol_one",
+            "wrong_liquidity": None,
+            "misrepresented_tokens": None,
         },
         {
             "protocol_name": "ProtocolTwo",
             "protocol_slug": "protocol_two",
             "protocol_category": "Gaming",
             "parent_protocol": "protocol_two",
+            "wrong_liquidity": None,
+            "misrepresented_tokens": None,
         },
     ]
     assert metadata_df.to_dicts() == expected_dicts
@@ -116,158 +297,21 @@ def test_construct_urls():
             {"protocol_slug": "protocol_two"},
         ]
     )
-    urls = protocols.construct_urls(metadata_df, None, "https://api.llama.fi/protocol/{slug}")
-    expected_urls = {
-        "protocol_one": "https://api.llama.fi/protocol/protocol_one",
-        "protocol_two": "https://api.llama.fi/protocol/protocol_two",
-    }
-    assert urls == expected_urls
-
-
-def test_extract_protocol_tvl_to_dataframes_app_tvl():
-    app_tvl_df, _ = protocols.extract_protocol_tvl_to_dataframes(sample_protocol_data)
-
-    # Expected App TVL Data
-    expected_app_tvl = [
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainAlpha",
-            "dt": "2024-11-14",
-            "total_app_tvl": 12345.67,
-        },
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainAlpha",
-            "dt": "2024-11-15",
-            "total_app_tvl": 23456.78,
-        },
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainBeta",
-            "dt": "2024-11-14",
-            "total_app_tvl": 34567.89,
-        },
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainBeta",
-            "dt": "2024-11-15",
-            "total_app_tvl": 45678.90,
-        },
-        {
-            "protocol_slug": "protocol_two",
-            "chain": "ChainGamma",
-            "dt": "2024-11-14",
-            "total_app_tvl": 56789.01,
-        },
-        {
-            "protocol_slug": "protocol_two",
-            "chain": "ChainGamma",
-            "dt": "2024-11-15",
-            "total_app_tvl": 67890.12,
-        },
-    ]
-    assert app_tvl_df.to_dicts() == expected_app_tvl
-
-
-def test_extract_protocol_tvl_to_dataframes_app_token_tvl():
-    _, app_token_tvl_df = protocols.extract_protocol_tvl_to_dataframes(sample_protocol_data)
-    expected_app_token_tvl = [
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainAlpha",
-            "dt": "2024-11-14",
-            "token": "TokenA",
-            "app_token_tvl": 5555.55,
-        },
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainAlpha",
-            "dt": "2024-11-14",
-            "token": "TokenB",
-            "app_token_tvl": 6666.66,
-        },
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainAlpha",
-            "dt": "2024-11-15",
-            "token": "TokenA",
-            "app_token_tvl": 7777.77,
-        },
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainAlpha",
-            "dt": "2024-11-15",
-            "token": "TokenB",
-            "app_token_tvl": 8888.88,
-        },
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainBeta",
-            "dt": "2024-11-14",
-            "token": "TokenC",
-            "app_token_tvl": 1234.56,
-        },
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainBeta",
-            "dt": "2024-11-14",
-            "token": "TokenD",
-            "app_token_tvl": 2345.67,
-        },
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainBeta",
-            "dt": "2024-11-15",
-            "token": "TokenC",
-            "app_token_tvl": 3456.78,
-        },
-        {
-            "protocol_slug": "protocol_one",
-            "chain": "ChainBeta",
-            "dt": "2024-11-15",
-            "token": "TokenD",
-            "app_token_tvl": 4567.89,
-        },
-        {
-            "protocol_slug": "protocol_two",
-            "chain": "ChainGamma",
-            "dt": "2024-11-14",
-            "token": "TokenX",
-            "app_token_tvl": 11111.11,
-        },
-        {
-            "protocol_slug": "protocol_two",
-            "chain": "ChainGamma",
-            "dt": "2024-11-14",
-            "token": "TokenY",
-            "app_token_tvl": 22222.22,
-        },
-        {
-            "protocol_slug": "protocol_two",
-            "chain": "ChainGamma",
-            "dt": "2024-11-15",
-            "token": "TokenX",
-            "app_token_tvl": 33333.33,
-        },
-        {
-            "protocol_slug": "protocol_two",
-            "chain": "ChainGamma",
-            "dt": "2024-11-15",
-            "token": "TokenY",
-            "app_token_tvl": 44444.44,
-        },
-    ]
-    assert app_token_tvl_df.to_dicts() == expected_app_token_tvl
+    slugs = protocols.construct_slugs(metadata_df, None)
+    expected_slugs = ["protocol_one", "protocol_two"]
+    assert slugs == expected_slugs
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
-@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_unpartitioned_table")
-@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_partitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.now_date")
+@patch("op_analytics.cli.subcommands.pulls.defillama.dataaccess.DataWriter.write")
 def test_pull_single_protocol_tvl(
-    mock_upsert_partitioned_table,
-    mock_upsert_unpartitioned_table,
+    mock_write,
+    mock_now_date,
     mock_get_data,
 ):
+    mock_now_date.return_value = date(2024, 11, 18)
+
     # Mock get_data to return sample summary and breakdown data
     mock_get_data.side_effect = [
         sample_protocols,  # metadata
@@ -278,40 +322,72 @@ def test_pull_single_protocol_tvl(
     result = protocols.pull_protocol_tvl(pull_protocols=["protocol_one"])
 
     # Assertions
-    assert len(result.metadata_df) == 2
-    assert len(result.app_tvl_df) == 4
-    assert len(result.app_token_tvl_df) == 8
+    assert result.metadata_df.to_dicts() == expected_metadata_dicts
+    assert (
+        result.app_tvl_df.sort("dt", "protocol_slug", "chain").to_dicts()
+        == expected_single_protocol_app_tvl_dicts
+    )
+    assert (
+        result.app_token_tvl_df.sort("dt", "protocol_slug", "chain", "token").to_dicts()
+        == expected_single_protocol_app_token_tvl_dicts
+    )
 
     # Verify that get_data was called twice (summary, metadata, and tvl)
     assert mock_get_data.call_count == 2
 
-    # Check that BigQuery functions were called with correct parameters
-    mock_upsert_unpartitioned_table.call_count == 3
-
-    assert mock_upsert_unpartitioned_table.call_args_list[0].kwargs["unique_keys"] == [
-        "protocol_slug",
+    # Check that writer functions were called with correct parameters
+    write_calls = [
+        dict(
+            dataset_name=_.kwargs["output_data"].dataset_name,
+            df_columns=_.kwargs["output_data"].dataframe.columns,
+            num_rows=len(_.kwargs["output_data"].dataframe),
+        )
+        for _ in mock_write.call_args_list
     ]
-    assert mock_upsert_partitioned_table.call_args_list[0].kwargs["unique_keys"] == [
-        "dt",
-        "protocol_slug",
-        "chain",
-    ]
-    assert mock_upsert_partitioned_table.call_args_list[1].kwargs["unique_keys"] == [
-        "dt",
-        "protocol_slug",
-        "chain",
-        "token",
+    assert write_calls == [
+        {
+            "dataset_name": "protocols_metadata_v1",
+            "df_columns": [
+                "protocol_name",
+                "protocol_slug",
+                "protocol_category",
+                "parent_protocol",
+                "wrong_liquidity",
+                "misrepresented_tokens",
+                "dt",
+            ],
+            "num_rows": 2,
+        },
+        {
+            "dataset_name": "protocols_tvl_v1",
+            "df_columns": ["protocol_slug", "chain", "total_app_tvl", "dt"],
+            "num_rows": 2,
+        },
+        {
+            "dataset_name": "protocols_token_tvl_v1",
+            "df_columns": [
+                "protocol_slug",
+                "chain",
+                "token",
+                "app_token_tvl",
+                "app_token_tvl_usd",
+                "dt",
+            ],
+            "num_rows": 4,
+        },
     ]
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
-@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_unpartitioned_table")
-@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.upsert_partitioned_table")
+@patch("op_analytics.cli.subcommands.pulls.defillama.protocols.now_date")
+@patch("op_analytics.cli.subcommands.pulls.defillama.dataaccess.DataWriter.write")
 def test_pull_all_protocol_tvl(
-    mock_upsert_partitioned_table,
-    mock_upsert_unpartitioned_table,
+    mock_write,
+    mock_now_date,
     mock_get_data,
 ):
+    mock_now_date.return_value = date(2024, 11, 18)
+
     # Mock get_data to return sample summary and breakdown data
     mock_get_data.side_effect = [
         sample_protocols,  # metadata
@@ -323,27 +399,57 @@ def test_pull_all_protocol_tvl(
     result = protocols.pull_protocol_tvl()
 
     # Assertions
-    assert len(result.metadata_df) == 2  # Only 'Layer_Two'
-    assert len(result.app_tvl_df) == 6  # Two data points
-    assert len(result.app_token_tvl_df) == 12  # Two data points
+    assert result.metadata_df.to_dicts() == expected_metadata_dicts
+    assert (
+        result.app_tvl_df.sort("dt", "protocol_slug", "chain").to_dicts()
+        == expected_all_protocol_app_tvl_dicts
+    )
+    assert (
+        result.app_token_tvl_df.sort("dt", "protocol_slug", "chain", "token").to_dicts()
+        == expected_all_protocol_app_token_tvl_dicts
+    )
 
     # Verify that get_data was called twice (summary, metadata, and tvl)
     assert mock_get_data.call_count == 3
 
     # Check that BigQuery functions were called with correct parameters
-    mock_upsert_unpartitioned_table.call_count == 3
-
-    assert mock_upsert_unpartitioned_table.call_args_list[0].kwargs["unique_keys"] == [
-        "protocol_slug",
+    write_calls = [
+        dict(
+            dataset_name=_.kwargs["output_data"].dataset_name,
+            df_columns=_.kwargs["output_data"].dataframe.columns,
+            num_rows=len(_.kwargs["output_data"].dataframe),
+        )
+        for _ in mock_write.call_args_list
     ]
-    assert mock_upsert_partitioned_table.call_args_list[0].kwargs["unique_keys"] == [
-        "dt",
-        "protocol_slug",
-        "chain",
-    ]
-    assert mock_upsert_partitioned_table.call_args_list[1].kwargs["unique_keys"] == [
-        "dt",
-        "protocol_slug",
-        "chain",
-        "token",
+    assert write_calls == [
+        {
+            "dataset_name": "protocols_metadata_v1",
+            "df_columns": [
+                "protocol_name",
+                "protocol_slug",
+                "protocol_category",
+                "parent_protocol",
+                "wrong_liquidity",
+                "misrepresented_tokens",
+                "dt",
+            ],
+            "num_rows": 2,
+        },
+        {
+            "dataset_name": "protocols_tvl_v1",
+            "df_columns": ["protocol_slug", "chain", "total_app_tvl", "dt"],
+            "num_rows": 3,
+        },
+        {
+            "dataset_name": "protocols_token_tvl_v1",
+            "df_columns": [
+                "protocol_slug",
+                "chain",
+                "token",
+                "app_token_tvl",
+                "app_token_tvl_usd",
+                "dt",
+            ],
+            "num_rows": 6,
+        },
     ]

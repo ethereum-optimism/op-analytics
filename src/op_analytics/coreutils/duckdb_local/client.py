@@ -4,9 +4,9 @@ from threading import Lock
 import duckdb
 import pyarrow as pa
 
-from op_analytics.coreutils.env.aware import OPLabsEnvironment, current_environment
+from op_analytics.coreutils.env.aware import etl_monitor_markers_database
+from op_analytics.coreutils.logger import human_rows, structlog
 from op_analytics.coreutils.path import repo_path
-from op_analytics.coreutils.logger import structlog, human_rows
 
 log = structlog.get_logger()
 
@@ -32,13 +32,7 @@ def init_client():
             os.makedirs(os.path.dirname(path), exist_ok=True)
             _CLIENT = duckdb.connect(path)
 
-            current_env = current_environment()
-            if current_env == OPLabsEnvironment.UNITTEST:
-                markers_db = "etl_monitor_dev"
-            else:
-                markers_db = "etl_monitor"
-
-            create_local_tables(_CLIENT, markers_db)
+            create_local_tables(_CLIENT, markers_db=etl_monitor_markers_database())
 
     if _CLIENT is None:
         raise RuntimeError("DuckDB client was not properly initialized.")
@@ -54,6 +48,7 @@ def create_local_tables(client, markers_db):
         ("etl_monitor", "raw_onchain_ingestion_markers"),
         ("etl_monitor", "intermediate_model_markers"),
         ("etl_monitor", "superchain_raw_bigquery_markers"),
+        ("etl_monitor", "daily_data_markers"),
     ]:
         ddl_path = repo_path(f"ddl/duckdb_local/{database}.{table}.sql")
         assert ddl_path is not None

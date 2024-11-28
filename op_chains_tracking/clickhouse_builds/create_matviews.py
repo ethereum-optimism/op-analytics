@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 # List of materialized view names
@@ -46,7 +46,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[3]:
+# In[ ]:
 
 
 topic0_maps = [
@@ -65,7 +65,7 @@ def check_topic0(client,chain):
         return topic0_func
 
 
-# In[4]:
+# In[ ]:
 
 
 mv_names = [item['mv_name'] for item in mvs]
@@ -97,14 +97,14 @@ end_date = datetime.date.today() #+ datetime.timedelta(days=1)
 print(end_date)
 
 
-# In[6]:
+# In[ ]:
 
 
 og_start_date = start_date
 og_end_date = end_date
 
 
-# In[7]:
+# In[ ]:
 
 
 def get_query_from_file(mv_name):
@@ -126,7 +126,7 @@ def get_query_from_file(mv_name):
         raise
 
 
-# In[8]:
+# In[ ]:
 
 
 def set_optimize_on_insert(option_int = 1):
@@ -142,7 +142,7 @@ def do_optimize_final(client, chain_name, mv_name):
     client.command(opcmd)
 
 
-# In[9]:
+# In[ ]:
 
 
 import clickhouse_connect
@@ -223,7 +223,7 @@ def ensure_backfill_tracking_table_exists(client):
         print("backfill_tracking table already exists.")
 
 
-# In[10]:
+# In[ ]:
 
 
 # LEGACY FUNCTIONS
@@ -382,7 +382,7 @@ def ensure_backfill_tracking_table_exists(client):
 #         print(f"  Error: {str(e)}")
 
 
-# In[11]:
+# In[ ]:
 
 
 def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date='', set_days_batch_size=7):
@@ -503,7 +503,7 @@ def backfill_data(client, chain, mv_name, end_date, block_time=2, mod_start_date
         current_date = batch_end + datetime.timedelta(days=1)
 
 
-# In[12]:
+# In[ ]:
 
 
 def detach_reset_materialized_view(client, chain, mv_name):
@@ -553,7 +553,7 @@ def reset_materialized_view(client, chain, mv_name,):
         print(f"Error resetting materialized view {full_view_name}: {str(e)}")
 
 
-# In[13]:
+# In[ ]:
 
 
 def print_backfill_gaps(client):
@@ -573,7 +573,7 @@ def print_backfill_gaps(client):
 # In[ ]:
 
 
-# # # # To reset a view
+# # # To reset a view
 # for row in chain_configs.itertuples(index=False):
 #         chain = row.chain_name
 #         reset_materialized_view(client, chain, 'across_bridging_txs_v3')
@@ -601,7 +601,7 @@ def print_backfill_gaps(client):
 # #                 detach_reset_materialized_view(client, chain, mv)
 
 
-# In[15]:
+# In[ ]:
 
 
 # # Optimize
@@ -611,7 +611,7 @@ def print_backfill_gaps(client):
 #                 do_optimize_final(client, chain, mv)
 
 
-# In[16]:
+# In[ ]:
 
 
 og_chain_configs = chain_configs
@@ -621,7 +621,7 @@ chain_configs_if_agg = pd.DataFrame({
 })
 
 
-# In[17]:
+# In[ ]:
 
 
 # chain_configs_if_agg

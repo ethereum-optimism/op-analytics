@@ -2,11 +2,13 @@ import os
 from enum import Enum
 
 from op_analytics.coreutils.path import repo_path
+from op_analytics.coreutils.env.aware import is_bot
 
 
 class DataLocation(str, Enum):
     """Supported storage locations for partitioned data."""
 
+    DISABLED = "DISABLED"
     GCS = "GCS"
     LOCAL = "LOCAL"
     BIGQUERY = "BIGQUERY"
@@ -38,6 +40,15 @@ class DataLocation(str, Enum):
     def ensure_biguqery(self):
         if self not in (DataLocation.BIGQUERY, DataLocation.BIGQUERY_LOCAL_MARKERS):
             raise ValueError(f"invalid location for bigquery load: {self}")
+
+    def check_write_allowed(self):
+        if self == DataLocation.GCS and not is_bot():
+            if os.environ["ALLOW_WRITE"] == "true":
+                return
+
+            raise Exception("GCS data can only be written from a bot runtime.")
+
+        return
 
 
 class MarkersLocation(str, Enum):
