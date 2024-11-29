@@ -25,7 +25,7 @@ from op_analytics.coreutils.storage.gcs_parquet import (
 from .location import DataLocation, MarkersLocation, marker_location
 from .marker import Marker
 from .output import ExpectedOutput, OutputPartMeta
-from .types import SinkMarkerPath
+from .types import PartitionedMarkerPath
 
 _CLIENT = None
 
@@ -163,7 +163,7 @@ class PartitionedDataAccess:
     def marker_exists(
         self,
         data_location: DataLocation,
-        marker_path: SinkMarkerPath,
+        marker_path: PartitionedMarkerPath,
         markers_table: str,
     ) -> bool:
         """Run a query to find if a marker already exists."""
@@ -267,7 +267,7 @@ class PartitionedDataAccess:
 
         return paths_df
 
-    def _query_one_clickhouse(self, marker_path: SinkMarkerPath, markers_table: str):
+    def _query_one_clickhouse(self, marker_path: PartitionedMarkerPath, markers_table: str):
         where = "marker_path = {search_value:String}"
 
         return clickhouse.run_oplabs_query(
@@ -275,7 +275,7 @@ class PartitionedDataAccess:
             parameters={"search_value": marker_path},
         )
 
-    def _query_one_duckdb(self, marker_path: SinkMarkerPath, markers_table: str):
+    def _query_one_duckdb(self, marker_path: PartitionedMarkerPath, markers_table: str):
         return duckdb_local.run_query(
             query=f"SELECT marker_path FROM {self.markers_db}.{markers_table} WHERE marker_path = ?",
             params=[marker_path],

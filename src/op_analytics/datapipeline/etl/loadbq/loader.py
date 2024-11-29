@@ -12,8 +12,8 @@ from op_analytics.coreutils.partitioned import (
     KeyValue,
     OutputPartMeta,
     WriteManager,
-    SinkOutputRootPath,
-    SinkMarkerPath,
+    PartitionedRootPath,
+    PartitionedMarkerPath,
 )
 from overrides import override
 
@@ -75,9 +75,9 @@ def bq_load(
         location=location,
         expected_output=ExpectedOutput(
             dataset_name=bq_table_name,
-            root_path=SinkOutputRootPath(""),  # Not meaningful for BQ Load
+            root_path=PartitionedRootPath(""),  # Not meaningful for BQ Load
             file_name="",  # Not meaningful for BQ Load
-            marker_path=SinkMarkerPath(
+            marker_path=PartitionedMarkerPath(
                 f"{bq_dataset_name}/{bq_table_name}/{dateval.strftime("%Y-%m-%d")}"
             ),
             process_name="default",

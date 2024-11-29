@@ -10,8 +10,8 @@ from op_analytics.coreutils.partitioned import (
     DataLocation,
     OutputData,
     ExpectedOutput,
-    SinkMarkerPath,
-    SinkOutputRootPath,
+    PartitionedMarkerPath,
+    PartitionedRootPath,
     DataWriter,
 )
 
@@ -76,13 +76,15 @@ class IngestionTask:
         for name, dataset in ONCHAIN_CURRENT_VERSION.items():
             # Determine the marker path for this dataset.
             marker_path = block_batch.construct_marker_path()
-            full_marker_path = SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
+            full_marker_path = PartitionedMarkerPath(
+                f"markers/{dataset.versioned_location}/{marker_path}"
+            )
 
             # Construct expected output for the dataset.
             expected_outputs.append(
                 ExpectedOutput(
                     dataset_name=name,
-                    root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
+                    root_path=PartitionedRootPath(f"{dataset.versioned_location}"),
                     file_name=block_batch.construct_parquet_filename(),
                     marker_path=full_marker_path,
                     process_name="default",
