@@ -1,7 +1,6 @@
 from op_analytics.coreutils.logger import (
     bind_contextvars,
     bound_contextvars,
-    clear_contextvars,
     structlog,
 )
 from op_analytics.coreutils.partitioned import (
@@ -57,7 +56,6 @@ def load_superchain_raw_to_bq(
     date_tasks = consolidate_chains(inputs)
 
     for i, task in enumerate(date_tasks):
-        clear_contextvars()
         bind_contextvars(
             task=f"{i+1}/{len(date_tasks)}",
             **task.contextvars,
