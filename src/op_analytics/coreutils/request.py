@@ -26,6 +26,11 @@ def new_session() -> requests.Session:
     return session
 
 
+def retry_logger(exc: Exception) -> bool:
+    log.error(f"retrying exception {exc}")
+    return True
+
+
 def get_data(
     session: requests.Session,
     url: str,
@@ -44,9 +49,9 @@ def get_data(
     if retry_attempts is None:
         return _get_data(session, url, headers)
 
-    # Retry if the endpoint returns invalid json.
+    # Retry on exceptions.
     for attempt in stamina.retry_context(
-        on=requests.JSONDecodeError,
+        on=retry_logger,
         attempts=retry_attempts,
         timeout=180,
         wait_initial=10,
