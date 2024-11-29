@@ -1,7 +1,6 @@
 from op_analytics.coreutils.duckdb_inmem import init_client
 from op_analytics.coreutils.logger import (
     bind_contextvars,
-    clear_contextvars,
     structlog,
     bound_contextvars,
 )
@@ -26,8 +25,6 @@ def compute_intermediate(
     dryrun: bool,
     force_complete: bool = False,
 ):
-    clear_contextvars()
-
     # Load python functions that define registered data models.
     load_model_definitions()
 
