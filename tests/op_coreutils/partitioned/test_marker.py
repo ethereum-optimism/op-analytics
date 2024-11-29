@@ -6,7 +6,7 @@ from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.marker import Marker
 from op_analytics.coreutils.partitioned.output import ExpectedOutput, KeyValue, OutputPartMeta
-from op_analytics.coreutils.partitioned.types import SinkMarkerPath, SinkOutputRootPath
+from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
 from op_analytics.coreutils.time import now
 
 MARKERS_TABLE = "raw_onchain_ingestion_markers"
@@ -35,11 +35,11 @@ def test_marker():
             ),
         ],
         expected_output=ExpectedOutput(
-            marker_path=SinkMarkerPath(
+            marker_path=PartitionedMarkerPath(
                 "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json"
             ),
             dataset_name="blocks",
-            root_path=SinkOutputRootPath("ingestion/blocks_v1"),
+            root_path=PartitionedRootPath("ingestion/blocks_v1"),
             file_name="000011540000.parquet",
             process_name="default",
             additional_columns={"num_blocks": 20000, "min_block": 11540000, "max_block": 11560000},

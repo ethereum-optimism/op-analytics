@@ -14,8 +14,8 @@ from op_analytics.coreutils.partitioned import (
     DataWriter,
     ExpectedOutput,
     OutputData,
-    SinkMarkerPath,
-    SinkOutputRootPath,
+    PartitionedMarkerPath,
+    PartitionedRootPath,
 )
 from op_analytics.coreutils.partitioned.breakout import breakout_partitions
 from op_analytics.coreutils.partitioned.dataaccess import DateFilter, MarkerFilter, init_data_access
@@ -154,9 +154,9 @@ def write(
             expected_outputs=[
                 ExpectedOutput(
                     dataset_name=dataset.value,
-                    root_path=SinkOutputRootPath(root),
+                    root_path=PartitionedRootPath(root),
                     file_name="out.parquet",
-                    marker_path=SinkMarkerPath(f"{datestr}/{root}"),
+                    marker_path=PartitionedMarkerPath(f"{datestr}/{root}"),
                     process_name="default",
                     additional_columns=dict(),
                     additional_columns_schema=[
