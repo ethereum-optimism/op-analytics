@@ -31,7 +31,8 @@ session = requests.Session()  # Create a session object
 class AgoraDelegates:
     """Agora delegates data."""
 
-    delegates_df: pl.DataFrame
+    delegates_with_voting_power_df: pl.DataFrame
+    delegates_without_voting_power_df: pl.DataFrame
 
 
 @dataclass
@@ -177,4 +178,27 @@ def pull_delegates():
         dataframe=delegates_without_voting_power,
     )
 
-    return AgoraDelegates(delegates_df=delegate_data)
+    return AgoraDelegates(
+        delegates_with_voting_power_df=delegates_with_voting_power,
+        delegates_without_voting_power_df=delegates_without_voting_power,
+    )
+
+
+# Todo: move to app.py
+def pull_delegate_data():
+    """Pull and write agora data."""
+    from op_analytics.cli.subcommands.pulls.agora.delegate_events import (
+        fetch_delegate_votes,
+        fetch_proposals,
+    )
+
+    delegates_with_voting_power, _ = pull_delegates()
+
+    log.info(f"Found {len(delegates_with_voting_power)} delegates with voting power.")
+    delegate_addresses = delegates_with_voting_power.address.to_list()
+
+    delegate_votes = fetch_delegate_votes(delegate_addresses)
+    log.info(f"Found {len(delegate_votes)} delegate votes.")
+
+    proposals = fetch_proposals()
+    log.info(f"Found {len(proposals)} proposals.")

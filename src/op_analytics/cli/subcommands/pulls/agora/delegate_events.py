@@ -144,13 +144,21 @@ def fetch_delegate_votes(delegates: list, batch_size: int = 1000, workers: int =
     votes.index = votes.index.map(parse_isoformat_with_z)
     votes.columns = votes.columns.map(_camelcase_to_snakecase)
 
-    # Write to GCS
     write(dataset=Agora.DELEGATE_VOTES, dataframe=votes, sort_by=["dt"])
 
     return AgoraDelegateVotes(votes_df=votes)
 
 
-# Function to fetch proposals
+def fetch_delegate_delegators(delegates: list, batch_size: int = 1000, workers: int = 12):
+    """Placeholder until the endpoint is available"""
+    pass
+
+
+def fetch_delegate_delegatees(delegates: list, batch_size: int = 1000, workers: int = 12):
+    """Placeholder until the endpoint is available"""
+    pass
+
+
 def fetch_proposals():
     paginator = SimplePaginator(url=f"{BASE_URL}/proposals", limit=50)
     proposals = paginator.fetch_all()
