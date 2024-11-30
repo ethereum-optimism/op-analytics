@@ -53,14 +53,14 @@ class ChainNetwork(Enum):
     TESTNET = 1
 
 
-def determine_network(chains: list[str]) -> ChainNetwork:
-    if set(chains).issubset(goldsky_mainnet_chains()):
+def determine_network(chain: str) -> ChainNetwork:
+    if chain in goldsky_mainnet_chains():
         return ChainNetwork.MAINNET
 
-    if set(chains).issubset(goldsky_testnet_chains()):
+    if chain in goldsky_testnet_chains():
         return ChainNetwork.TESTNET
 
-    raise ValueError("chain list contains both MAINNET and TESTNET chains.")
+    raise ValueError(f"could not determine network for chain: {chain!r}")
 
 
 def verify_goldsky_tables(chains: list[str]) -> None:

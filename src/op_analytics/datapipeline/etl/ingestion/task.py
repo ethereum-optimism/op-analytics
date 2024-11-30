@@ -15,6 +15,7 @@ from op_analytics.coreutils.partitioned import (
     DataWriter,
 )
 
+from op_analytics.datapipeline.chains.goldsky_chains import determine_network
 from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
@@ -30,9 +31,6 @@ class IngestionTask:
     """Contains all the information and data required to ingest a batch.
 
     This object is mutated during the ingestion process."""
-
-    # Network this chain belongs to (mainnet/testnet)
-    network: ChainNetwork
 
     # If the task was constructed with a DateRange specification we store
     # the max timestamp of the range.
@@ -69,7 +67,9 @@ class IngestionTask:
         return ctx
 
     @staticmethod
-    def network_directory(dataset_name: str, network: ChainNetwork) -> str:
+    def network_directory(chain: str, dataset_name: str) -> str:
+        network = determine_network(chain)
+
         if network == ChainNetwork.MAINNET:
             prefix = "ingestion"
         elif network == ChainNetwork.TESTNET:
@@ -91,7 +91,6 @@ class IngestionTask:
     @classmethod
     def new(
         cls,
-        network: ChainNetwork,
         max_requested_timestamp: int | None,
         block_batch: BlockBatch,
         read_from: RawOnchainDataProvider,
@@ -100,7 +99,7 @@ class IngestionTask:
         expected_outputs = []
         for name, dataset in ONCHAIN_CURRENT_VERSION.items():
             # Determine the directory where we will write this dataset.
-            data_directory = cls.network_directory(dataset_name=name, network=network)
+            data_directory = cls.network_directory(chain=block_batch.chain, dataset_name=name)
 
             # Determine the marker path for this dataset.
             marker_path = block_batch.construct_marker_path()
@@ -130,7 +129,6 @@ class IngestionTask:
             )
 
         return cls(
-            network=network,
             max_requested_timestamp=max_requested_timestamp,
             block_batch=block_batch,
             input_datasets={},
