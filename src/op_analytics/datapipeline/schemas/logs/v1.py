@@ -11,7 +11,6 @@ from op_analytics.datapipeline.schemas.core import Column, JsonRPCMethod, CoreDa
 
 LOGS_V1_SCHEMA = CoreDataset(
     name="logs",
-    versioned_location="ingestion/logs_v1",
     goldsky_table_suffix="logs",
     block_number_col="block_number",
     doc=dedent("""Indexed Logs. See [eth_getlogs](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getlogs) for more info.

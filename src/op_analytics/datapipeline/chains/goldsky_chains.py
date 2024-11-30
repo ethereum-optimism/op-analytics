@@ -1,3 +1,6 @@
+from enum import Enum
+from functools import cache
+
 import polars as pl
 
 from op_analytics.coreutils.clickhouse import run_goldsky_query
@@ -26,11 +29,13 @@ def goldsky_mainnet_chains_df() -> pl.DataFrame:
     )
 
 
+@cache
 def goldsky_mainnet_chains() -> list[str]:
     """List of mainnet chains ingested from Goldsky."""
     return sorted(goldsky_mainnet_chains_df()["oplabs_db_schema"].to_list())
 
 
+@cache
 def goldsky_testnet_chains() -> list[str]:
     """List of testnet chains ingested from Goldsky."""
     df = load_chain_metadata()
@@ -39,6 +44,23 @@ def goldsky_testnet_chains() -> list[str]:
             "oplabs_testnet_db_schema"
         ].to_list()
     )
+
+
+class ChainNetwork(Enum):
+    """The network of a chain."""
+
+    MAINNET = 0
+    TESTNET = 1
+
+
+def determine_network(chain: str) -> ChainNetwork:
+    if chain in goldsky_mainnet_chains():
+        return ChainNetwork.MAINNET
+
+    if chain in goldsky_testnet_chains():
+        return ChainNetwork.TESTNET
+
+    raise ValueError(f"could not determine network for chain: {chain!r}")
 
 
 def verify_goldsky_tables(chains: list[str]) -> None:

@@ -55,6 +55,7 @@ def load_superchain_raw_to_bq(
 
     date_tasks = consolidate_chains(inputs)
 
+    success = 0
     for i, task in enumerate(date_tasks):
         bind_contextvars(
             task=f"{i+1}/{len(date_tasks)}",
@@ -91,5 +92,6 @@ def load_superchain_raw_to_bq(
                 source_uris_root_path=source_uris_root_path,
                 force_complete=force_complete,
             )
+            success += 1
 
-    log.info("done", total=len(date_tasks), success=len(date_tasks), fail=0)
+    log.info("done", total=len(date_tasks), success=success, fail=0)

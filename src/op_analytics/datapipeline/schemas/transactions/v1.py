@@ -11,7 +11,6 @@ from op_analytics.datapipeline.schemas.core import Column, JsonRPCMethod, CoreDa
 
 TRANSACTIONS_V1_SCHEMA = CoreDataset(
     name="transactions",
-    versioned_location="ingestion/transactions_v1",
     goldsky_table_suffix="transactions",
     block_number_col="block_number",
     doc=dedent("""Indexed Transactions. See [eth_gettransactionreceipt](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionreceipt) for more info.
