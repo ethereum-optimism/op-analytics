@@ -47,7 +47,7 @@ def goldsky_testnet_chains() -> list[str]:
 
 
 class ChainNetwork(Enum):
-    """Supported storage locations for partitioned data."""
+    """The network of a chain."""
 
     MAINNET = 0
     TESTNET = 1

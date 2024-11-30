@@ -198,6 +198,60 @@ def test_expected_markers():
     ]
 
 
+def test_expected_markers_testnet():
+    br = BlockRange.from_spec("210:+2600")
+    boundaries = boundaries = [
+        Delimiter(block_number=0, batch_size=800),
+        Delimiter(1600, 400),
+        Delimiter(2800, 200),
+    ]
+
+    batches = split_block_range_from_boundaries(
+        chain="op_sepolia",
+        boundaries=boundaries,
+        block_range=br,
+    )
+
+    task = IngestionTask.new(
+        max_requested_timestamp=None,
+        block_batch=batches[0],
+        read_from=RawOnchainDataProvider.GOLDSKY,
+        write_to=DataLocation.DISABLED,
+    )
+
+    actual = [
+        dict(
+            dataset_name=_.dataset_name,
+            marker_path=_.marker_path,
+            additional_columns=_.additional_columns,
+        )
+        for _ in task.data_writer.expected_outputs
+    ]
+
+    assert actual == [
+        {
+            "dataset_name": "blocks",
+            "marker_path": "markers/ingestion_testnets/blocks_v1/chain=op_sepolia/000000000000.json",
+            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+        },
+        {
+            "dataset_name": "transactions",
+            "marker_path": "markers/ingestion_testnets/transactions_v1/chain=op_sepolia/000000000000.json",
+            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+        },
+        {
+            "dataset_name": "logs",
+            "marker_path": "markers/ingestion_testnets/logs_v1/chain=op_sepolia/000000000000.json",
+            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+        },
+        {
+            "dataset_name": "traces",
+            "marker_path": "markers/ingestion_testnets/traces_v1/chain=op_sepolia/000000000000.json",
+            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+        },
+    ]
+
+
 def test_batches_base():
     # Switching over from 2k -> 1k blocks per batch.
     br = BlockRange.from_spec("20894000:20904000")

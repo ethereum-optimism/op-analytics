@@ -73,7 +73,7 @@ class IngestionTask:
         if network == ChainNetwork.MAINNET:
             prefix = "ingestion"
         elif network == ChainNetwork.TESTNET:
-            prefix = "ingestion_testnet"
+            prefix = "ingestion_testnets"
         else:
             raise NotImplementedError(f"invalid network: {network}")
 

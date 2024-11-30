@@ -61,15 +61,11 @@ class DataWriter:
     def write(self, output_data: OutputData) -> list[OutputPartMeta]:
         """Write data and corresponding marker."""
 
-        # The corresponding expected output is determined by
-        # "output_data.dataset_name". In the expected output we will find the
-        # path where we need to write out the data.
+        # Locate the expected output that coresponds to the given output_data.
         expected_output = self._keyed_outputs[output_data.dataset_name]
 
-        # The default partition value is included in logs because it includes
-        # the dt value, which helps keep track of where we are when we run a
-        # backfill.
-
+        # The default partition value is included in log context to help keep
+        # track of which data we are processing.
         with bound_contextvars(
             dataset=output_data.dataset_name, **(output_data.default_partition or {})
         ):
