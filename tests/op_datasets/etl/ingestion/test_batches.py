@@ -1,6 +1,7 @@
 import pytest
 
 from op_analytics.coreutils.partitioned import DataLocation
+from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork
 from op_analytics.datapipeline.etl.ingestion.batches import (
     BlockBatch,
     Delimiter,
@@ -9,8 +10,8 @@ from op_analytics.datapipeline.etl.ingestion.batches import (
     split_block_range,
     split_block_range_from_boundaries,
 )
-from op_analytics.datapipeline.etl.ingestion.task import IngestionTask
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
+from op_analytics.datapipeline.etl.ingestion.task import IngestionTask
 from op_analytics.datapipeline.utils.blockrange import BlockRange
 
 
@@ -159,6 +160,7 @@ def test_expected_markers():
     batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
 
     task = IngestionTask.new(
+        network=ChainNetwork.MAINNET,
         max_requested_timestamp=None,
         block_batch=batches[0],
         read_from=RawOnchainDataProvider.GOLDSKY,

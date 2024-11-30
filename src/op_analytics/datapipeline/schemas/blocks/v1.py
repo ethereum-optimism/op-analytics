@@ -11,7 +11,6 @@ from op_analytics.datapipeline.schemas.core import Column, JsonRPCMethod, CoreDa
 
 BLOCKS_V1_SCHEMA = CoreDataset(
     name="blocks",
-    versioned_location="ingestion/blocks_v1",
     goldsky_table_suffix="blocks",
     block_number_col="number",
     doc=dedent("""Indexed Blocks. See [eth_getblockbyhash](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getblockbyhash) for more info.

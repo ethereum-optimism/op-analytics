@@ -10,11 +10,12 @@ from op_analytics.coreutils.partitioned import (
     DataLocation,
     OutputData,
     ExpectedOutput,
-    SinkMarkerPath,
-    SinkOutputRootPath,
+    PartitionedMarkerPath,
+    PartitionedRootPath,
     DataWriter,
 )
 
+from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
 from .batches import BlockBatch
@@ -29,6 +30,9 @@ class IngestionTask:
     """Contains all the information and data required to ingest a batch.
 
     This object is mutated during the ingestion process."""
+
+    # Network this chain belongs to (mainnet/testnet)
+    network: ChainNetwork
 
     # If the task was constructed with a DateRange specification we store
     # the max timestamp of the range.
@@ -64,9 +68,30 @@ class IngestionTask:
             ctx["task"] = self.progress_indicator
         return ctx
 
+    @staticmethod
+    def network_directory(dataset_name: str, network: ChainNetwork) -> str:
+        if network == ChainNetwork.MAINNET:
+            prefix = "ingestion"
+        elif network == ChainNetwork.TESTNET:
+            prefix = "ingestion_testnet"
+        else:
+            raise NotImplementedError(f"invalid network: {network}")
+
+        if dataset_name == "blocks":
+            return f"{prefix}/blocks_v1"
+        elif dataset_name == "logs":
+            return f"{prefix}/logs_v1"
+        elif dataset_name == "transactions":
+            return f"{prefix}/transactions_v1"
+        elif dataset_name == "traces":
+            return f"{prefix}/traces_v1"
+        else:
+            raise NotImplementedError(f"invalid dataset: {dataset_name}")
+
     @classmethod
     def new(
         cls,
+        network: ChainNetwork,
         max_requested_timestamp: int | None,
         block_batch: BlockBatch,
         read_from: RawOnchainDataProvider,
@@ -74,15 +99,18 @@ class IngestionTask:
     ):
         expected_outputs = []
         for name, dataset in ONCHAIN_CURRENT_VERSION.items():
+            # Determine the directory where we will write this dataset.
+            data_directory = cls.network_directory(dataset_name=name, network=network)
+
             # Determine the marker path for this dataset.
             marker_path = block_batch.construct_marker_path()
-            full_marker_path = SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
+            full_marker_path = PartitionedMarkerPath(f"markers/{data_directory}/{marker_path}")
 
             # Construct expected output for the dataset.
             expected_outputs.append(
                 ExpectedOutput(
                     dataset_name=name,
-                    root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
+                    root_path=PartitionedRootPath(data_directory),
                     file_name=block_batch.construct_parquet_filename(),
                     marker_path=full_marker_path,
                     process_name="default",
@@ -102,6 +130,7 @@ class IngestionTask:
             )
 
         return cls(
+            network=network,
             max_requested_timestamp=max_requested_timestamp,
             block_batch=block_batch,
             input_datasets={},

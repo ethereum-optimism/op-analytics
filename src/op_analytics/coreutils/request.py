@@ -44,9 +44,9 @@ def get_data(
     if retry_attempts is None:
         return _get_data(session, url, headers)
 
-    # Retry if the endpoint returns invalid json.
+    # Retry on any exceptions
     for attempt in stamina.retry_context(
-        on=requests.JSONDecodeError,
+        on=Exception,
         attempts=retry_attempts,
         timeout=180,
         wait_initial=10,

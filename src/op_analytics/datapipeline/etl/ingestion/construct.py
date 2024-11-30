@@ -3,6 +3,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned import DataLocation
 from op_analytics.coreutils.threads import run_concurrently
 
+from op_analytics.datapipeline.chains.goldsky_chains import determine_network
 from op_analytics.datapipeline.utils.blockrange import BlockRange
 from op_analytics.datapipeline.utils.timerange import TimeRange
 
@@ -19,6 +20,7 @@ def construct_tasks(
     read_from: RawOnchainDataProvider,
     write_to: DataLocation,
 ):
+    network = determine_network(chains)
     blocks_by_chain: dict[str, BlockRange]
 
     try:
@@ -63,6 +65,7 @@ def construct_tasks(
         for batch in batches:
             all_tasks.append(
                 IngestionTask.new(
+                    network=network,
                     max_requested_timestamp=max_requested_timestamp,
                     block_batch=batch,
                     read_from=read_from,

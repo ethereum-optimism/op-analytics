@@ -60,6 +60,10 @@ class DataWriter:
 
     def write(self, output_data: OutputData) -> list[OutputPartMeta]:
         """Write data and corresponding marker."""
+
+        # The corresponding expected output is determined by
+        # "output_data.dataset_name". In the expected output we will find the
+        # path where we need to write out the data.
         expected_output = self._keyed_outputs[output_data.dataset_name]
 
         # The default partition value is included in logs because it includes

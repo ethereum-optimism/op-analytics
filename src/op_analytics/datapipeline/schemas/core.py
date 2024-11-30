@@ -93,7 +93,6 @@ class Column:
 @dataclass
 class CoreDataset:
     name: str
-    versioned_location: str
     goldsky_table_suffix: str
     block_number_col: str
     doc: str
