@@ -52,11 +52,12 @@ def compute_intermediate(
 
         # Decide if we need to run this task.
         if task.data_writer.is_complete() and not force_complete:
+            log.info("task", status="already_complete")
             continue
 
         # Decide if we can run this task.
         if not task.data_reader.inputs_ready:
-            log.warning("Task inputs are not ready. Skipping this task.")
+            log.warning("task", status="input_not_ready")
             continue
 
         if force_complete:
@@ -64,6 +65,7 @@ def compute_intermediate(
             task.data_writer.force = True
 
         executor(task)
+        log.info("task", status="success")
         success += 1
 
     log.info("done", total=len(tasks), success=success, fail=0)
