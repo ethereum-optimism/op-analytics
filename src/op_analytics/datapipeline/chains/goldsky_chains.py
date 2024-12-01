@@ -53,6 +53,7 @@ class ChainNetwork(Enum):
     TESTNET = 1
 
 
+@cache
 def determine_network(chain: str) -> ChainNetwork:
     if chain in goldsky_mainnet_chains():
         return ChainNetwork.MAINNET
