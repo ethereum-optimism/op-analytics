@@ -168,22 +168,13 @@ def auditor(task: IngestionTask):
     # other datsets is empty.  On chains with very low throughput (e.g. race) we
     # sometimes see no logs for a range of blocks. We still need to create a
     # marker for these empty dataframes.
-    default_partition = (
-        task.input_dataframes["blocks"].sort("number").select("chain", "dt").limit(1).to_dicts()[0]
-    )
+    blocks_df = update_chain_name(task=task, df=task.input_dataframes["blocks"])
+    default_partition = blocks_df.sort("number").select("chain", "dt").limit(1).to_dicts()[0]
 
     # Set up the output dataframes now that the audits have passed
     # (ingestion process: outputs are the same as inputs)
     for name, dataset in task.input_datasets.items():
-        df = task.input_dataframes[name]
-
-        # On testnet data we want the "chain" partition value to
-        # include the "sepolia" suffix. This makes downstream easier
-        # because with only the "chain" column we can disambiguate
-        # mainnet and testnet.
-        if task.is_testnet:
-            assert df["chain"].unique().to_list() == [task.chain_parent]
-            df = df.with_columns(chain=task.chain)
+        df = update_chain_name(task=task, df=task.input_dataframes[name])
 
         task.store_output(
             OutputData(
@@ -192,6 +183,24 @@ def auditor(task: IngestionTask):
                 default_partition=default_partition,
             )
         )
+
+
+def update_chain_name(task, df):
+    # On testnet data we want the "chain" partition value to
+    # include the "sepolia" suffix. This makes downstream easier
+    # because with only the "chain" column we can disambiguate
+    # mainnet and testnet.
+    if task.is_testnet:
+        if df.is_empty():
+            expected = []
+        else:
+            expected = [task.chain_parent]
+        chains_in_df = df["chain"].unique().to_list()
+        assert chains_in_df == expected, f"{chains_in_df} != {expected}"
+        return df.with_columns(chain=pl.lit(task.chain))
+
+    else:
+        return df
 
 
 def writer(task: IngestionTask):
