@@ -170,6 +170,11 @@ def overwrite_partitions_dynamic(
                     field="dt",  # Name of the column to use for partitioning.
                     expiration_ms=_days_to_ms(expiration_days),
                 ),
+                # NOTE: Use if schema evolution is needed.
+                # schema_update_options=[
+                #     bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
+                #     bigquery.SchemaUpdateOption.ALLOW_FIELD_RELAXATION,
+                # ],
             ),
         )
 

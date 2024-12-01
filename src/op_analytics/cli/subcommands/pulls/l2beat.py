@@ -39,6 +39,7 @@ ACTIVITY_TABLE = "l2beat_daily_activity_history"
 ACTIVITY_SCHEMA: dict[str, type[pl.DataType]] = {
     "timestamp": pl.Int64,
     "count": pl.Int64,
+    "uopsCount": pl.Int64,
 }
 # Use "max" for backfill
 # Otherwise use 30d to get 6hr data intervals
@@ -129,7 +130,12 @@ def _process_activity(session, projects: list[L2BeatProject]):
         projects=projects,
         fetch=fetch_activity,
         column_schemas=ACTIVITY_SCHEMA,
-    ).rename({"count": "transaction_count"})
+    ).rename(
+        {
+            "count": "transaction_count",
+            "uopsCount": "userops_count",
+        }
+    )
 
     if ACTIVITY_QUERY_RANGE == "max":
         overwrite_partitioned_table(
