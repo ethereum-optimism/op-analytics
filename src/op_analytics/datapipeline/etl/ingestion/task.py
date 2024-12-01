@@ -15,8 +15,7 @@ from op_analytics.coreutils.partitioned import (
     DataWriter,
 )
 
-from op_analytics.datapipeline.chains.goldsky_chains import determine_network
-from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork
+
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
 from .batches import BlockBatch
@@ -60,33 +59,20 @@ class IngestionTask:
         return self.block_batch.chain
 
     @property
+    def is_testnet(self):
+        return self.block_batch.is_testnet
+
+    @property
+    def chain_parent(self):
+        """For TESTNET chains returns the chain name without the sepolia prfix."""
+        return self.chain.removesuffix("_sepolia")
+
+    @property
     def contextvars(self):
         ctx = self.block_batch.contextvars
         if self.progress_indicator:
             ctx["task"] = self.progress_indicator
         return ctx
-
-    @staticmethod
-    def network_directory(chain: str, dataset_name: str) -> str:
-        network = determine_network(chain)
-
-        if network == ChainNetwork.MAINNET:
-            prefix = "ingestion"
-        elif network == ChainNetwork.TESTNET:
-            prefix = "ingestion_testnets"
-        else:
-            raise NotImplementedError(f"invalid network: {network}")
-
-        if dataset_name == "blocks":
-            return f"{prefix}/blocks_v1"
-        elif dataset_name == "logs":
-            return f"{prefix}/logs_v1"
-        elif dataset_name == "transactions":
-            return f"{prefix}/transactions_v1"
-        elif dataset_name == "traces":
-            return f"{prefix}/traces_v1"
-        else:
-            raise NotImplementedError(f"invalid dataset: {dataset_name}")
 
     @classmethod
     def new(
@@ -99,7 +85,7 @@ class IngestionTask:
         expected_outputs = []
         for name, dataset in ONCHAIN_CURRENT_VERSION.items():
             # Determine the directory where we will write this dataset.
-            data_directory = cls.network_directory(chain=block_batch.chain, dataset_name=name)
+            data_directory = block_batch.dataset_directory(dataset_name=name)
 
             # Determine the marker path for this dataset.
             marker_path = block_batch.construct_marker_path()

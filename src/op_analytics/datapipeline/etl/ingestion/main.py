@@ -175,9 +175,19 @@ def auditor(task: IngestionTask):
     # Set up the output dataframes now that the audits have passed
     # (ingestion process: outputs are the same as inputs)
     for name, dataset in task.input_datasets.items():
+        df = task.input_dataframes[name]
+
+        # On testnet data we want the "chain" partition value to
+        # include the "sepolia" suffix. This makes downstream easier
+        # because with only the "chain" column we can disambiguate
+        # mainnet and testnet.
+        if task.is_testnet:
+            assert df["chain"].unique().to_list() == [task.chain_parent]
+            df = df.with_columns(chain=task.chain)
+
         task.store_output(
             OutputData(
-                dataframe=task.input_dataframes[name],
+                dataframe=df,
                 dataset_name=name,
                 default_partition=default_partition,
             )

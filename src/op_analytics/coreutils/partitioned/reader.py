@@ -272,6 +272,7 @@ CHAIN_ACTIVATION_DATES = {
     "zora": date_fromstr("2023-06-13"),
     # TESTNETS
     "op_sepolia": date_fromstr("2024-01-01"),
+    "unichain_sepolia": date_fromstr("2024-09-19"),
 }
 
 

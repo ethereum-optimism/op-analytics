@@ -219,6 +219,11 @@ def test_expected_markers_testnet():
         write_to=DataLocation.DISABLED,
     )
 
+    assert task.is_testnet
+    assert task.chain == "op_sepolia"
+    assert task.chain_parent == "op"
+    assert task.block_batch.dataset_directory("blocks") == "ingestion_testnets/blocks_v1"
+
     actual = [
         dict(
             dataset_name=_.dataset_name,
