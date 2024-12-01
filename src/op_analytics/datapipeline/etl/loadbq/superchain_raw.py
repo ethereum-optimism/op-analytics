@@ -63,6 +63,7 @@ def load_superchain_raw_to_bq(
         )
 
         if task.chains_not_ready:
+            log.warning("task", status="input_not_ready")
             log.warning(f"some chains are not ready to load to bq: {sorted(task.chains_not_ready)}")
 
         if task.chains_not_ready and not force_not_ready:
@@ -92,6 +93,7 @@ def load_superchain_raw_to_bq(
                 source_uris_root_path=source_uris_root_path,
                 force_complete=force_complete,
             )
+            log.info("task", status="success")
             success += 1
 
     log.info("done", total=len(date_tasks), success=success, fail=0)

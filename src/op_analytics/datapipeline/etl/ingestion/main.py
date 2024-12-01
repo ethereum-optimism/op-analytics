@@ -51,7 +51,11 @@ def ingest(
         with bound_contextvars(**task.contextvars):
             # Decide if we need to run this task.
             if task.data_writer.is_complete() and not force_complete:
+                log.info("task", status="already_complete")
                 continue
+
+            if force_complete:
+                task.data_writer.force = True
 
             # Decide if we can run this task.
             if not all_inputs_ready(
@@ -59,15 +63,12 @@ def ingest(
                 block_batch=task.block_batch,
                 max_requested_timestamp=task.max_requested_timestamp,
             ):
-                log.debug("skipping task: inputs not ready")
+                log.warning("task", status="input_not_ready")
                 continue
-
-            if force_complete:
-                log.info("force_complete flag detected")
-                task.data_writer.force = True
 
             executed += 1
             success = execute(task, fork_process)
+            log.info("task", status="success")
             executed_ok += 1 if success else 0
 
             if max_tasks is not None and executed >= max_tasks:
