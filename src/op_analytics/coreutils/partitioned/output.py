@@ -98,7 +98,7 @@ class OutputPartMeta:
 
 @dataclass
 class OutputPart:
-    """Data and metadadta for a single part in a a partitioned output."""
+    """Data and metadata for a single part in a a partitioned output."""
 
     df: pl.DataFrame
     meta: OutputPartMeta

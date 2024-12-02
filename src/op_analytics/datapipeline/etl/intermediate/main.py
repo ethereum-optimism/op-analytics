@@ -64,11 +64,15 @@ def compute_intermediate(
             log.info("forced execution despite complete marker")
             task.data_writer.force = True
 
-        executor(task)
-        log.info("task", status="success")
-        success += 1
+        try:
+            executor(task)
+        except Exception as ex:
+            log.error("task", status="exception")
+            log.error("intermediate model exception", exc_info=ex)
+        else:
+            log.info("task", status="success")
 
-    log.info("done", total=len(tasks), success=success, fail=0)
+        success += 1
 
 
 def executor(task: IntermediateModelsTask) -> None:
