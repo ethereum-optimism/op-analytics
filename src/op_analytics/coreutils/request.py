@@ -12,7 +12,7 @@ log = structlog.get_logger()
 
 DEFAULT_RETRY_STRATEGY = Retry(
     total=5,  # Total number of retries
-    backoff_factor=1,  # The backoff factor (1 second, then 2, 4, 8...)
+    backoff_factor=2,  # The backoff factor (2 seconds, then 4, 8...)
     status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to retry on
 )
 
@@ -53,7 +53,7 @@ def get_data(
     for attempt in stamina.retry_context(
         on=retry_logger,
         attempts=retry_attempts,
-        timeout=180,
+        timeout=240,
         wait_initial=10,
         wait_max=30,
     ):

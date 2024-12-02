@@ -134,7 +134,6 @@ def write(
     dataset: DefiLlama,
     dataframe: pl.DataFrame,
     sort_by: list[str] | None = None,
-    force_complete: bool = False,
 ):
     """Write date partitioned defillama dataset."""
     parts = breakout_partitions(
@@ -164,7 +163,9 @@ def write(
                     ],
                 )
             ],
-            force=force_complete,
+            # Always overwrite data. If we pull data in early for a given date
+            # a subsequent data pull will overwrite with more complete data.
+            force=True,
         )
 
         part_df = part.df.with_columns(dt=pl.lit(datestr))
@@ -215,7 +216,11 @@ def load(
         )
         log.info(f"{len(markers)} markers found")
 
-        paths = [location.absolute(path) for path in markers["data_path"].to_list()]
+        # Ensure that the paths we select are distinct paths.
+        # The same path can appear under two different markers if it was
+        # re-written as part of a backfill.
+        paths = sorted(set([location.absolute(path) for path in markers["data_path"].to_list()]))
+        log.info(f"{len(set(paths))} distinct paths")
         summary = f"using {len(paths)} parquet paths"
 
     duckdb_client.register(

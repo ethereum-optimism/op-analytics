@@ -1,4 +1,5 @@
 import concurrent.futures
+from dataclasses import dataclass
 from functools import wraps
 from typing import Any, Callable
 
@@ -73,3 +74,63 @@ def run_serially(function: Callable, targets: dict[str, Any]) -> dict[str, Any]:
     for key, target in targets.items():
         results[key] = function(target)
     return results
+
+
+@dataclass
+class RunResults:
+    """Helper class for when we want to proceed despite failures."""
+
+    results: dict[Any, Any]
+    failures: dict[Any, str]
+
+
+def run_concurrently_store_failures(
+    function: Callable,
+    targets: dict[str, Any] | list[Any],
+    max_workers: int | None = None,
+) -> RunResults:
+    """Same as run_concurrently but do not fail if a target results in an Exception."""
+    max_workers = max_workers or 4
+
+    results = {}
+    failures = {}
+
+    if isinstance(targets, list):
+        targets = {k: k for k in targets}
+
+    if max_workers == -1:
+        return run_serially_store_failures(function, targets)
+
+    num_targets = len(targets)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {}
+
+        for i, (key, target) in enumerate(targets.items()):
+            future = executor.submit(
+                progress_wrapper(function, total=num_targets, current=i + 1), target
+            )
+            futures[future] = key
+
+        for future in concurrent.futures.as_completed(futures):
+            key = futures[future]
+            try:
+                results[key] = future.result()
+            except Exception as ex:
+                log.error(f"Failed to run thread for {key}", exc_info=ex)
+                failures[key] = str(ex)
+
+    return RunResults(results=results, failures=failures)
+
+
+def run_serially_store_failures(function: Callable, targets: dict[str, Any]) -> RunResults:
+    """Same as run_serially but do not fail if a target results in an Exception."""
+    results = {}
+    failures = {}
+    for key, target in targets.items():
+        try:
+            results[key] = function(target)
+        except Exception as ex:
+            log.error(f"Failed to run {key}", exc_info=ex)
+            failures[key] = str(ex)
+    return RunResults(results=results, failures=failures)
