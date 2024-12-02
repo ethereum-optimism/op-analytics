@@ -101,9 +101,7 @@ class PartitionedWriteManager(WriteManager):
             client.write_single_part(
                 location=self.location,
                 dataframe=part.df,
-                full_path=part.meta.full_path(
-                    self.expected_output.root_path, self.expected_output.file_name
-                ),
+                full_path=self.expected_output.full_path(part.partitions),
             )
             parts_meta.append(part.meta)
 

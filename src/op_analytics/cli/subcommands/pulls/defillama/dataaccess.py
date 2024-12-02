@@ -145,7 +145,7 @@ def write(
 
     for part in parts:
         root = f"defillama/{dataset.value}"
-        datestr = part.meta.partition_value("dt")
+        datestr = part.partition_value("dt")
 
         writer = DataWriter(
             write_to=write_location(),

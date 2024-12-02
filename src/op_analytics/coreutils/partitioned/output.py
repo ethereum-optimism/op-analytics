@@ -12,6 +12,49 @@ from .types import PartitionedMarkerPath, PartitionedRootPath
 
 
 @dataclass
+class PartitionColumn:
+    """The name and value of a single partition column."""
+
+    name: str
+    value: str
+
+    def __post_init__(self):
+        if not isinstance(self.value, str):
+            raise ValueError(f"partition value must be a string: {self.value!r}")
+        if not isinstance(self.name, str):
+            raise ValueError(f"partition key must be a string: {self.name!r}")
+
+        if self.name == "dt":
+            if not DATE_RE.match(self.value):
+                raise ValueError(f"partition value must be a date pattern: {self.value!r}")
+
+            try:
+                date_fromstr(self.value)
+            except Exception as ex:
+                raise ValueError(f"partition value must be a valid date: {self.value!r}") from ex
+
+
+@dataclass
+class PartitionColumns:
+    """All the partition columns for a specific partition in a dataset."""
+
+    cols: list[PartitionColumn]
+
+    def __iter__(self):
+        return iter(self.cols)
+
+    @property
+    def path(self):
+        return "/".join(f"{col.name}={col.value}" for col in self.cols)
+
+    def column_value(self, column_name: str) -> str:
+        for partition in self.cols:
+            if partition.name == column_name:
+                return partition.value
+        raise ValueError(f"partition not found: {column_name}")
+
+
+@dataclass
 class ExpectedOutput:
     """Information about a dataset that is expectd to be produced by a task."""
 
@@ -38,6 +81,21 @@ class ExpectedOutput:
     # into the markers table.
     additional_columns_schema: list[pa.Field]
 
+    def full_path(self, partitions: PartitionColumns):
+        """Produce the full path for this expected output.
+
+        The full path is a combination of:
+
+        - root_path   ex: ingestion
+        - partitions  ex: chain=op/dt=2024-11-01
+        - file name   ex: 00001000.parquet
+
+        Full path:
+
+        ingestion/chain=op/dt=2024-11-01/00001000.parquet
+        """
+        return os.path.join(self.root_path, partitions.path, self.file_name)
+
 
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
@@ -55,50 +113,42 @@ class OutputData:
 
 
 @dataclass
-class KeyValue:
-    key: str
-    value: str
-
-    def __post_init__(self):
-        if not isinstance(self.value, str):
-            raise ValueError(f"partition value must be a string: {self.value!r}")
-        if not isinstance(self.key, str):
-            raise ValueError(f"partition key must be a string: {self.key!r}")
-
-        if self.key == "dt":
-            if not DATE_RE.match(self.value):
-                raise ValueError(f"partition value must be a date pattern: {self.value!r}")
-
-            try:
-                date_fromstr(self.value)
-            except Exception as ex:
-                raise ValueError(f"partition value must be a valid date: {self.value!r}") from ex
-
-
-@dataclass
 class OutputPartMeta:
     """Metadata for an output part."""
 
-    partitions: list[KeyValue]
+    partitions: PartitionColumns
     row_count: int
 
-    @property
-    def partitions_path(self):
-        return "/".join(f"{col.key}={col.value}" for col in self.partitions)
-
-    def full_path(self, root_path: str, file_name: str):
-        return os.path.join(root_path, self.partitions_path, file_name)
-
-    def partition_value(self, partition_name: str) -> str:
-        for partition in self.partitions:
-            if partition.key == partition_name:
-                return partition.value
-        raise ValueError(f"partition not found: {partition_name}")
+    @classmethod
+    def from_tuples(cls, partitions: list[tuple[str, str]], row_count: int):
+        return cls(
+            partitions=PartitionColumns([PartitionColumn(name=k, value=v) for k, v in partitions]),
+            row_count=row_count,
+        )
 
 
 @dataclass
-class OutputPart:
-    """Data and metadata for a single part in a a partitioned output."""
+class PartitionData:
+    """The dataframe with all the data for a given partition."""
 
+    partitions: PartitionColumns
     df: pl.DataFrame
-    meta: OutputPartMeta
+
+    def partition_value(self, partition_name: str) -> str:
+        return self.partitions.column_value(partition_name)
+
+    @property
+    def meta(self):
+        return OutputPartMeta(
+            partitions=self.partitions,
+            row_count=len(self.df),
+        )
+
+    @classmethod
+    def from_dict(cls, partitions_dict: dict[str, str], df: pl.DataFrame) -> "PartitionData":
+        return cls(
+            partitions=PartitionColumns(
+                [PartitionColumn(name=col, value=val) for col, val in partitions_dict.items()]
+            ),
+            df=df,
+        )

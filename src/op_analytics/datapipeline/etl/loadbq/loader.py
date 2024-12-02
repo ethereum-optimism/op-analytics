@@ -9,7 +9,6 @@ from op_analytics.coreutils.bigquery.load import load_from_parquet_uris
 from op_analytics.coreutils.partitioned import (
     DataLocation,
     ExpectedOutput,
-    KeyValue,
     OutputPartMeta,
     WriteManager,
     PartitionedRootPath,
@@ -48,8 +47,8 @@ class BQLoader(WriteManager):
             clustering_fields=["chain"],
         )
 
-        written_part = OutputPartMeta(
-            partitions=[KeyValue(key="dt", value=output_data.dateval.strftime("%Y-%m-%d"))],
+        written_part = OutputPartMeta.from_tuples(
+            partitions=[("dt", output_data.dateval.strftime("%Y-%m-%d"))],
             row_count=num_parquet,  # Not the actual row count, but the number of paths loaded.
         )
 
