@@ -20,11 +20,11 @@ log = structlog.get_logger()
 class DataReader:
     """Manages reading partitioned data.
 
-    When objects of this class are created the creator must be aware of whether
-    the data is ready to be consumed.
+    Consumers must know if the data is ready to use (this class does not check
+    markers).
 
-    A specfic task may decide what to do with the current parquet paths in GCS
-    on cases when the data is not yet ready to be consumed.
+    If data is incomplete any current parquet paths in GCS will be returned. It's
+    up to the consumer to decide what to do with them.
 
     On some cases it will be preferable to do no processing for incomplete data
     (e.g. when processing intermediate models).

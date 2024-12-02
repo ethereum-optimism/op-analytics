@@ -5,7 +5,12 @@ from op_analytics.coreutils.duckdb_local import run_query
 from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.marker import Marker
-from op_analytics.coreutils.partitioned.output import ExpectedOutput, KeyValue, OutputPartMeta
+from op_analytics.coreutils.partitioned.output import (
+    ExpectedOutput,
+    PartitionColumn,
+    OutputPartMeta,
+    PartitionColumns,
+)
 from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
 from op_analytics.coreutils.time import now
 
@@ -20,17 +25,21 @@ def test_marker():
     marker = Marker(
         written_parts=[
             OutputPartMeta(
-                partitions=[
-                    KeyValue(key="chain", value="DUMMYCHAIN"),
-                    KeyValue(key="dt", value="2024-10-25"),
-                ],
+                partitions=PartitionColumns(
+                    [
+                        PartitionColumn(name="chain", value="DUMMYCHAIN"),
+                        PartitionColumn(name="dt", value="2024-10-25"),
+                    ]
+                ),
                 row_count=5045,
             ),
             OutputPartMeta(
-                partitions=[
-                    KeyValue(key="chain", value="DUMMYCHAIN"),
-                    KeyValue(key="dt", value="2024-10-26"),
-                ],
+                partitions=PartitionColumns(
+                    [
+                        PartitionColumn(name="chain", value="DUMMYCHAIN"),
+                        PartitionColumn(name="dt", value="2024-10-26"),
+                    ]
+                ),
                 row_count=14955,
             ),
         ],

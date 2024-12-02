@@ -49,25 +49,23 @@ class Marker:
                 "root_path": self.expected_output.root_path,
                 "num_parts": len(self.written_parts),
                 "dataset_name": self.expected_output.dataset_name,
-                "data_path": parquet_out.full_path(
-                    self.expected_output.root_path, self.expected_output.file_name
-                ),
+                "data_path": self.expected_output.full_path(parquet_out.partitions),
                 "row_count": parquet_out.row_count,
                 "process_name": self.expected_output.process_name,
                 "writer_name": hostname,
             }
 
             for partition in parquet_out.partitions:
-                sch = schema.field(partition.key)
+                sch = schema.field(partition.name)
                 if sch.type == pa.date32():
                     if isinstance(partition.value, str):
-                        parquet_out_row[partition.key] = date_fromstr(partition.value)
+                        parquet_out_row[partition.name] = date_fromstr(partition.value)
                     else:
                         raise NotImplementedError(
                             f"unsupported value for date partition: {partition.value}"
                         )
                 else:
-                    parquet_out_row[partition.key] = partition.value
+                    parquet_out_row[partition.name] = partition.value
 
             rows.append(parquet_out_row)
 
