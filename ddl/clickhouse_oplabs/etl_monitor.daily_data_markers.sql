@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS etl_monitor.daily_data_markers
 
     dt Date,
 
-    INDEX dt_idx dt TYPE minmax GRANULARITY 1,
+    INDEX dt_idx dt TYPE minmax GRANULARITY 1
 )
 -- Use a merge tree so that we keep around all markers ever written
 -- could be useful for auditing purposes.
 ENGINE = MergeTree
-ORDER BY (marker_path)
+ORDER BY (marker_path);

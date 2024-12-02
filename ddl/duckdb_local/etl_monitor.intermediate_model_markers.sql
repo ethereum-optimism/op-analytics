@@ -32,5 +32,5 @@ CREATE TABLE IF NOT EXISTS etl_monitor.intermediate_model_markers
     dt Date,
 
     -- Name of the model that produced the dataset
-    model_name String,
-)
+    model_name String
+);

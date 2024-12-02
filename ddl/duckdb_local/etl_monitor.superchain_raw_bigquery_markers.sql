@@ -25,6 +25,5 @@ CREATE TABLE IF NOT EXISTS etl_monitor.superchain_raw_bigquery_markers
 
     -- NON-STANDARD FIELDS BELOW
 
-    dt Date,
-
-)
+    dt DATE
+);

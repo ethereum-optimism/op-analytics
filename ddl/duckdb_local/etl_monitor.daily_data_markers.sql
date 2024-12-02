@@ -25,6 +25,5 @@ CREATE TABLE IF NOT EXISTS etl_monitor.daily_data_markers
 
     -- NON-STANDARD FIELDS BELOW
 
-    dt Date,
-
-)
+    dt Date
+);

@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
     max_block Int64,
 
     INDEX dt_idx dt TYPE minmax GRANULARITY 1,
-    INDEX chain_idx chain TYPE minmax GRANULARITY 1,
+    INDEX chain_idx chain TYPE minmax GRANULARITY 1
 )
 -- Use a merge tree so that we keep around all markers ever written
 -- could be useful for auditing purposes.
@@ -47,4 +47,5 @@ ENGINE = MergeTree
 ORDER BY (marker_path)
 
 -- The number of parts covered by this marker
-ALTER TABLE etl_monitor.raw_onchain_ingestion_markers ADD COLUMN IF NOT EXISTS num_parts UInt32 AFTER root_path
+ALTER TABLE etl_monitor.raw_onchain_ingestion_markers
+ADD COLUMN IF NOT EXISTS num_parts UInt32 AFTER root_path;
