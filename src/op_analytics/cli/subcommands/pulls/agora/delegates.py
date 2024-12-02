@@ -1,21 +1,20 @@
 from dataclasses import dataclass
-
-import polars as pl
-
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data
 from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.time import now_dt
 import itertools
-from typing import Any, List
+from typing import Any
 import requests
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 import requests.exceptions
 import time
 import pandas as pd
+import polars as pl
 from op_analytics.cli.subcommands.pulls.agora.data_access import (
     Agora,
     write,
-    _camelcase_to_snakecase,
+    camelcase_to_snakecase,
 )
 import os
 
@@ -43,13 +42,11 @@ class PaginatedResponse:
 
 
 class Paginator:
-    url: str
-    limit: int = 100
-    params: dict = None
-    failed_offsets: List[int] = None
-    max_workers: int = 16
-
-    def __post_init__(self):
+    def __init__(self, url: str, params: dict = None, max_workers: int = 16):
+        self.url = url
+        self.params = params or {}
+        self.max_workers = max_workers
+        self.limit = 100
         self.failed_offsets = []
 
     @retry(
@@ -133,7 +130,7 @@ class Paginator:
 
     def concurrent_fetch(self):
         self.max_offset = self.binary_search_max_offset()
-        offsets = list(range(0, self.max_offset, self.limit))
+        offsets = list(range(0, self.max_offset, self.limit))[:10]
         data = run_concurrently(
             function=lambda offset: self.request(offset).data,
             targets=offsets,
@@ -149,20 +146,29 @@ def pull_delegates():
 
     # Clean and transform to Pandas
     df = pd.json_normalize(delegate_data, sep="_")
-    df.columns = df.columns.map(_camelcase_to_snakecase)
+    df.columns = df.columns.map(camelcase_to_snakecase)
     df = df.convert_dtypes()
     # In order to be able to drop duplicates we cannot have iterables in the dataframe
-    df = df.applymap(lambda x: str(x) if isinstance(x, list) else x)
+    df = df.map(lambda x: str(x) if isinstance(x, list) else x)
     # Check for duplicates
     if df.shape[0] != len(df["address"].drop_duplicates()):
         df = df.drop_duplicates()
         log.warning(
             f"Found duplicates in delegates data. Dropped {df.shape[0] - len(df['address'].drop_duplicates())} rows."
         )
+    # Convert voting power columns to numeric
+    for col in ["voting_power_total", "voting_power_direct", "voting_power_advanced"]:
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+
+    df["dt"] = (
+        now_dt()
+    )  # Todo: This is to partition by pull date. Figure out if this is the correct way to do this.
+    # Convert to polars
+    df = pl.from_pandas(df)
 
     # Split to delegates that have voting power and those that don't
-    delegates_with_voting_power = df[df["voting_power_total"] > 0]
-    delegates_without_voting_power = df[df["voting_power_total"] == 0]
+    delegates_with_voting_power = df.filter(pl.col("voting_power_total") > 0)
+    delegates_without_voting_power = df.filter(pl.col("voting_power_total") == 0)
 
     # Write to GCS
     write(dataset=Agora.DELEGATES, dataframe=df, sort_by=["voting_power_total"])
@@ -192,7 +198,10 @@ def pull_delegate_data():
         fetch_proposals,
     )
 
-    delegates_with_voting_power, _ = pull_delegates()
+    delegates = pull_delegates()
+
+    delegates_with_voting_power = delegates.delegates_with_voting_power_df
+    delegates_without_voting_power = delegates.delegates_without_voting_power_df
 
     log.info(f"Found {len(delegates_with_voting_power)} delegates with voting power.")
     delegate_addresses = delegates_with_voting_power.address.to_list()

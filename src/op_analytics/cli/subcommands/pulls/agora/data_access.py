@@ -109,17 +109,17 @@ class Agora(str, Enum):
         )
 
     def _local_path(self):
-        path = repo_path(f"parquet/defillama/{self.value}__{now_friendly_timestamp()}.parquet")
+        path = repo_path(f"parquet/agora/{self.value}__{now_friendly_timestamp()}.parquet")
         assert path is not None
         os.makedirs(os.path.dirname(path), exist_ok=True)
         return path
 
 
-def _camelcase_to_snakecase(string):
+def camelcase_to_snakecase(string):  # Todo: Move to coreutils
     return re.sub(r"([A-Z])", r"_\1", string).lower()
 
 
-def parse_isoformat_with_z(iso_string):
+def parse_isoformat_with_z(iso_string):  # Todo: Move to time utils
     from datetime import datetime
 
     if iso_string.endswith("Z"):
@@ -141,7 +141,7 @@ def write(
     sort_by: list[str] | None = None,
     force_complete: bool = False,
 ):
-    """Write date partitioned defillama dataset."""
+    """Write date partitioned agora dataset."""
     parts = breakout_partitions(
         df=dataframe,
         partition_cols=["dt"],
@@ -149,7 +149,7 @@ def write(
     )
 
     for part in parts:
-        root = f"defillama/{dataset.value}"
+        root = f"agora/{dataset.value}"
         datestr = part.meta.partition_value("dt")
 
         writer = DataWriter(
@@ -192,7 +192,7 @@ def load(
     location: DataLocation = DataLocation.GCS,
     root_path_name: str = "agora",
 ):
-    """Load date partitioned defillama dataset from the specified location.
+    """Load date partitioned agora dataset from the specified location.
 
     The loaded data is registered as duckdb view.
     """
