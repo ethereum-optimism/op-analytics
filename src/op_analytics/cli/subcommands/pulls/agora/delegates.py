@@ -3,6 +3,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import now_dt
+from op_analytics.coreutils.env.vault import env_get
 import itertools
 from typing import Any
 import requests
@@ -16,13 +17,12 @@ from op_analytics.cli.subcommands.pulls.agora.data_access import (
     write,
     camelcase_to_snakecase,
 )
-import os
 
 log = structlog.get_logger()
 
 BASE_URL = "https://vote.optimism.io/api/v1"
 DELEGATES_ENDPOINT = f"{BASE_URL}/delegates"
-API_KEY = os.environ["AGORA_API_KEY"]
+API_KEY = env_get("AGORA_API_TOKEN")
 session = requests.Session()  # Create a session object
 
 
