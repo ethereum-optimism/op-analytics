@@ -68,14 +68,12 @@ def ingest(
 
             executed += 1
             success = execute(task, fork_process)
-            log.info("task", status="success")
+            log.info("task", status="success" if success else "fail")
             executed_ok += 1 if success else 0
 
             if max_tasks is not None and executed >= max_tasks:
                 log.warning(f"stopping after {executed} tasks")
                 break
-
-    log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
 
 
 def execute(task, fork_process: bool) -> bool:

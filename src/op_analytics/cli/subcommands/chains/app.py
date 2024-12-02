@@ -132,6 +132,9 @@ def normalize_chains(chains: str) -> list[str]:
     for chain in chains.split(","):
         if chain == "ALL":
             result.update(goldsky_chains.goldsky_mainnet_chains())
+            result.update(goldsky_chains.goldsky_testnet_chains())
+        elif chain == "MAINNETS":
+            result.update(goldsky_chains.goldsky_mainnet_chains())
         elif chain == "TESTNETS":
             result.update(goldsky_chains.goldsky_testnet_chains())
         elif chain.startswith("-"):
@@ -249,10 +252,8 @@ def load_superchain_raw(
 def hourly():
     """Hourly command that runs on kubernetes to keep systems current."""
 
-    all_chains = normalize_chains("ALL")
-
     ingest(
-        chains=all_chains,
+        chains=normalize_chains("ALL"),
         range_spec="m8hours",
         read_from=RawOnchainDataProvider.GOLDSKY,
         write_to=DataLocation.GCS,
@@ -262,12 +263,12 @@ def hourly():
     )
 
     compute_intermediate(
-        chains=all_chains,
+        chains=normalize_chains("MAINNETS"),
         models=[
             "daily_address_summary",
             "contract_creation",
         ],
-        range_spec="m2days",
+        range_spec="m3days",
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,
@@ -277,7 +278,7 @@ def hourly():
     load_to_bq(
         stage=PipelineStage.RAW_ONCHAIN,
         location=DataLocation.BIGQUERY,
-        range_spec="m2days",
+        range_spec="m3days",
         dryrun=False,
         force_complete=False,
         force_not_ready=False,

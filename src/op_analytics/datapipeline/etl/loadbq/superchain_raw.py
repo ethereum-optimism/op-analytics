@@ -95,5 +95,3 @@ def load_superchain_raw_to_bq(
             )
             log.info("task", status="success")
             success += 1
-
-    log.info("done", total=len(date_tasks), success=success, fail=0)
