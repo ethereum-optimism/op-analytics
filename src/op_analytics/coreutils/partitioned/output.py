@@ -8,7 +8,7 @@ import pyarrow as pa
 
 from op_analytics.coreutils.time import date_fromstr
 
-from .types import SinkMarkerPath, SinkOutputRootPath
+from .types import PartitionedMarkerPath, PartitionedRootPath
 
 
 @dataclass
@@ -19,13 +19,13 @@ class ExpectedOutput:
     dataset_name: str
 
     # Root path that will be used for the partitioned output.
-    root_path: SinkOutputRootPath
+    root_path: PartitionedRootPath
 
     # File name that will be used for the parquet file.
     file_name: str
 
     # Completion marker path.
-    marker_path: SinkMarkerPath
+    marker_path: PartitionedMarkerPath
 
     # Identifier for the process that produced the datset.
     process_name: str

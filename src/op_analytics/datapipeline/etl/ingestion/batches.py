@@ -12,7 +12,7 @@ data for those blocks is stored in GCS.
 from dataclasses import dataclass
 
 from op_analytics.coreutils.logger import structlog
-
+from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determine_network
 from op_analytics.datapipeline.utils.blockrange import BlockRange
 
 log = structlog.get_logger()
@@ -147,6 +147,7 @@ MICROBATCH_SIZE_CONFIGURATION = {
     ],
     # Testnets
     "op_sepolia": [Delimiter(0, 5000)],
+    "unichain_sepolia": [Delimiter(0, 5000)],
 }
 
 
@@ -223,20 +224,42 @@ class BlockBatch:
     def construct_filename(self):
         return f"{self.min:012d}"
 
-    def construct_dataset_path(self):
-        return f"chain={self}"
-
-    def construct_date_path(self, dt: str):
-        return f"chain={self.chain}/dt={dt}"
-
-    def construct_parquet_path(self, dt: str):
-        return f"chain={self.chain}/dt={dt}/{self.construct_filename()}.parquet"
-
     def construct_parquet_filename(self):
         return f"{self.construct_filename()}.parquet"
 
     def construct_marker_path(self):
         return f"chain={self.chain}/{self.construct_filename()}.json"
+
+    @property
+    def network(self):
+        return determine_network(self.chain)
+
+    @property
+    def is_testnet(self):
+        return self.network == ChainNetwork.TESTNET
+
+    def storage_directory(self):
+        network = self.network
+
+        if network == ChainNetwork.MAINNET:
+            return "ingestion"
+        if network == ChainNetwork.TESTNET:
+            return "ingestion_testnets"
+        raise NotImplementedError(f"invalid network: {network}")
+
+    def dataset_directory(self, dataset_name: str) -> str:
+        prefix = self.storage_directory()
+
+        if dataset_name == "blocks":
+            return f"{prefix}/blocks_v1"
+        elif dataset_name == "logs":
+            return f"{prefix}/logs_v1"
+        elif dataset_name == "transactions":
+            return f"{prefix}/transactions_v1"
+        elif dataset_name == "traces":
+            return f"{prefix}/traces_v1"
+        else:
+            raise NotImplementedError(f"invalid dataset: {dataset_name}")
 
 
 def split_block_range(chain: str, block_range: BlockRange) -> list[BlockBatch]:

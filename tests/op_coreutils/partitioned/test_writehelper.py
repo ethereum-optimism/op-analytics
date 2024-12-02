@@ -8,7 +8,7 @@ from op_analytics.coreutils.duckdb_local import run_query
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
-from op_analytics.coreutils.partitioned.types import SinkOutputRootPath, SinkMarkerPath
+from op_analytics.coreutils.partitioned.types import PartitionedRootPath, PartitionedMarkerPath
 
 
 def test_parquet_writer():
@@ -43,9 +43,9 @@ def test_parquet_writer():
         location=DataLocation.LOCAL,
         expected_output=ExpectedOutput(
             dataset_name="daily_address_summary/summary_v1",
-            root_path=SinkOutputRootPath("intermediate/daily_address_summary/summary_v1"),
+            root_path=PartitionedRootPath("intermediate/daily_address_summary/summary_v1"),
             file_name="out.parquet",
-            marker_path=SinkMarkerPath("BLAH"),
+            marker_path=PartitionedMarkerPath("BLAH"),
             process_name="default",
             additional_columns={"model_name": "MYMODEL"},
             additional_columns_schema=[

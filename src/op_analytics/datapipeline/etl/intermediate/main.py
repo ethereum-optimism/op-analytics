@@ -1,7 +1,6 @@
 from op_analytics.coreutils.duckdb_inmem import init_client
 from op_analytics.coreutils.logger import (
     bind_contextvars,
-    clear_contextvars,
     structlog,
     bound_contextvars,
 )
@@ -26,8 +25,6 @@ def compute_intermediate(
     dryrun: bool,
     force_complete: bool = False,
 ):
-    clear_contextvars()
-
     # Load python functions that define registered data models.
     load_model_definitions()
 
@@ -46,6 +43,7 @@ def compute_intermediate(
         log.info("DRYRUN: No work will be done.")
         return
 
+    success = 0
     for i, task in enumerate(tasks):
         bind_contextvars(
             task=f"{i+1}/{len(tasks)}",
@@ -54,11 +52,12 @@ def compute_intermediate(
 
         # Decide if we need to run this task.
         if task.data_writer.is_complete() and not force_complete:
+            log.info("task", status="already_complete")
             continue
 
         # Decide if we can run this task.
         if not task.data_reader.inputs_ready:
-            log.warning("Task inputs are not ready. Skipping this task.")
+            log.warning("task", status="input_not_ready")
             continue
 
         if force_complete:
@@ -66,8 +65,10 @@ def compute_intermediate(
             task.data_writer.force = True
 
         executor(task)
+        log.info("task", status="success")
+        success += 1
 
-    log.info("done", total=len(tasks), success=len(tasks), fail=0)
+    log.info("done", total=len(tasks), success=success, fail=0)
 
 
 def executor(task: IntermediateModelsTask) -> None:

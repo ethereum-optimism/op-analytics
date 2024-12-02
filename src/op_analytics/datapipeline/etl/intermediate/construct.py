@@ -5,8 +5,8 @@ from op_analytics.coreutils.partitioned import (
     DataLocation,
     DataReader,
     construct_input_batches,
-    SinkMarkerPath,
-    SinkOutputRootPath,
+    PartitionedMarkerPath,
+    PartitionedRootPath,
     DataWriter,
     ExpectedOutput,
 )
@@ -66,12 +66,12 @@ def construct_tasks(
 
                 datestr = batch.dateval.strftime("%Y%m%d")
                 chain = batch.chain
-                marker_path = SinkMarkerPath(f"{datestr}/{chain}/{model}/{dataset}")
+                marker_path = PartitionedMarkerPath(f"{datestr}/{chain}/{model}/{dataset}")
 
                 expected_outputs.append(
                     ExpectedOutput(
                         dataset_name=full_model_name,
-                        root_path=SinkOutputRootPath(f"intermediate/{full_model_name}"),
+                        root_path=PartitionedRootPath(f"intermediate/{full_model_name}"),
                         file_name="out.parquet",
                         marker_path=marker_path,
                         process_name="default",

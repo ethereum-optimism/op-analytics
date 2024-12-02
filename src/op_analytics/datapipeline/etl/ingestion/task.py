@@ -10,10 +10,11 @@ from op_analytics.coreutils.partitioned import (
     DataLocation,
     OutputData,
     ExpectedOutput,
-    SinkMarkerPath,
-    SinkOutputRootPath,
+    PartitionedMarkerPath,
+    PartitionedRootPath,
     DataWriter,
 )
+
 
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
@@ -58,6 +59,15 @@ class IngestionTask:
         return self.block_batch.chain
 
     @property
+    def is_testnet(self):
+        return self.block_batch.is_testnet
+
+    @property
+    def chain_parent(self):
+        """For TESTNET chains returns the chain name without the sepolia prfix."""
+        return self.chain.removesuffix("_sepolia")
+
+    @property
     def contextvars(self):
         ctx = self.block_batch.contextvars
         if self.progress_indicator:
@@ -74,15 +84,18 @@ class IngestionTask:
     ):
         expected_outputs = []
         for name, dataset in ONCHAIN_CURRENT_VERSION.items():
+            # Determine the directory where we will write this dataset.
+            data_directory = block_batch.dataset_directory(dataset_name=name)
+
             # Determine the marker path for this dataset.
             marker_path = block_batch.construct_marker_path()
-            full_marker_path = SinkMarkerPath(f"markers/{dataset.versioned_location}/{marker_path}")
+            full_marker_path = PartitionedMarkerPath(f"markers/{data_directory}/{marker_path}")
 
             # Construct expected output for the dataset.
             expected_outputs.append(
                 ExpectedOutput(
                     dataset_name=name,
-                    root_path=SinkOutputRootPath(f"{dataset.versioned_location}"),
+                    root_path=PartitionedRootPath(data_directory),
                     file_name=block_batch.construct_parquet_filename(),
                     marker_path=full_marker_path,
                     process_name="default",

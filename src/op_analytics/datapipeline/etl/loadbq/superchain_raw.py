@@ -1,7 +1,6 @@
 from op_analytics.coreutils.logger import (
     bind_contextvars,
     bound_contextvars,
-    clear_contextvars,
     structlog,
 )
 from op_analytics.coreutils.partitioned import (
@@ -56,14 +55,15 @@ def load_superchain_raw_to_bq(
 
     date_tasks = consolidate_chains(inputs)
 
+    success = 0
     for i, task in enumerate(date_tasks):
-        clear_contextvars()
         bind_contextvars(
             task=f"{i+1}/{len(date_tasks)}",
             **task.contextvars,
         )
 
         if task.chains_not_ready:
+            log.warning("task", status="input_not_ready")
             log.warning(f"some chains are not ready to load to bq: {sorted(task.chains_not_ready)}")
 
         if task.chains_not_ready and not force_not_ready:
@@ -93,5 +93,7 @@ def load_superchain_raw_to_bq(
                 source_uris_root_path=source_uris_root_path,
                 force_complete=force_complete,
             )
+            log.info("task", status="success")
+            success += 1
 
-    log.info("done", total=len(date_tasks), success=len(date_tasks), fail=0)
+    log.info("done", total=len(date_tasks), success=success, fail=0)
