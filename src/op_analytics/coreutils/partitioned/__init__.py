@@ -2,8 +2,8 @@
 
 from .reader import DataReader
 from .location import DataLocation, MarkersLocation
-from .marker import Marker
-from .output import OutputData, ExpectedOutput, OutputPartMeta, PartitionColumn
+from .marker import Marker, OutputPartMeta
+from .output import OutputData, ExpectedOutput
 from .paths import get_dt, get_root_path
 from .types import PartitionedMarkerPath, PartitionedRootPath
 from .writer import DataWriter

@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from op_analytics.coreutils.partitioned.output import PartitionColumn
+from op_analytics.coreutils.partitioned.partition import PartitionColumn
 
 
 def test_01():

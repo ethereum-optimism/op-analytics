@@ -8,7 +8,8 @@ from op_analytics.coreutils.logger import bound_contextvars, structlog
 from .breakout import breakout_partitions
 from .dataaccess import init_data_access
 from .location import DataLocation
-from .output import ExpectedOutput, OutputData, OutputPartMeta
+from .marker import OutputPartMeta
+from .output import ExpectedOutput, OutputData
 from .status import all_outputs_complete
 from .writehelper import WriteManager
 
@@ -103,6 +104,11 @@ class PartitionedWriteManager(WriteManager):
                 dataframe=part.df,
                 full_path=self.expected_output.full_path(part.partitions),
             )
-            parts_meta.append(part.meta)
+            parts_meta.append(
+                OutputPartMeta(
+                    partitions=part.partitions,
+                    row_count=len(part.df),
+                )
+            )
 
         return parts_meta

@@ -1,64 +1,12 @@
 import os
-import re
 from dataclasses import dataclass
 from typing import Any
 
 import polars as pl
 import pyarrow as pa
 
-from op_analytics.coreutils.time import date_fromstr
-
+from .partition import PartitionColumns
 from .types import PartitionedMarkerPath, PartitionedRootPath
-
-
-@dataclass
-class PartitionColumn:
-    """The name and value of a single partition column."""
-
-    name: str
-    value: str
-
-    def __post_init__(self):
-        if not isinstance(self.value, str):
-            raise ValueError(f"partition value must be a string: {self.value!r}")
-        if not isinstance(self.name, str):
-            raise ValueError(f"partition key must be a string: {self.name!r}")
-
-        if self.name == "dt":
-            if not DATE_RE.match(self.value):
-                raise ValueError(f"partition value must be a date pattern: {self.value!r}")
-
-            try:
-                date_fromstr(self.value)
-            except Exception as ex:
-                raise ValueError(f"partition value must be a valid date: {self.value!r}") from ex
-
-
-@dataclass
-class PartitionColumns:
-    """All the partition columns for a specific partition in a dataset."""
-
-    cols: list[PartitionColumn]
-
-    @classmethod
-    def from_tuples(cls, partitions: list[tuple[str, str]]):
-        return cls(cols=[PartitionColumn(name=k, value=v) for k, v in partitions])
-
-    def __iter__(self):
-        return iter(self.cols)
-
-    def as_dict(self):
-        return {col.name: col.value for col in self.cols}
-
-    @property
-    def path(self):
-        return "/".join(f"{col.name}={col.value}" for col in self.cols)
-
-    def column_value(self, column_name: str) -> str:
-        for partition in self.cols:
-            if partition.name == column_name:
-                return partition.value
-        raise ValueError(f"partition not found: {column_name}")
 
 
 @dataclass
@@ -104,9 +52,6 @@ class ExpectedOutput:
         return os.path.join(self.root_path, partitions.path, self.file_name)
 
 
-DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-
-
 @dataclass
 class OutputData:
     dataframe: pl.DataFrame
@@ -117,45 +62,3 @@ class OutputData:
     # Default partition values for cases when the output datafarame is empty
     # and therefore has no implicit partition values.
     default_partition: dict[str, Any] | None
-
-
-@dataclass
-class OutputPartMeta:
-    """Metadata for an output part."""
-
-    partitions: PartitionColumns
-    row_count: int
-
-    @classmethod
-    def from_tuples(cls, partitions: list[tuple[str, str]], row_count: int):
-        return cls(
-            partitions=PartitionColumns.from_tuples(partitions),
-            row_count=row_count,
-        )
-
-
-@dataclass
-class PartitionData:
-    """The dataframe with all the data for a given partition."""
-
-    partitions: PartitionColumns
-    df: pl.DataFrame
-
-    def partition_value(self, partition_name: str) -> str:
-        return self.partitions.column_value(partition_name)
-
-    @property
-    def meta(self):
-        return OutputPartMeta(
-            partitions=self.partitions,
-            row_count=len(self.df),
-        )
-
-    @classmethod
-    def from_dict(cls, partitions_dict: dict[str, str], df: pl.DataFrame) -> "PartitionData":
-        return cls(
-            partitions=PartitionColumns(
-                [PartitionColumn(name=col, value=val) for col, val in partitions_dict.items()]
-            ),
-            df=df,
-        )

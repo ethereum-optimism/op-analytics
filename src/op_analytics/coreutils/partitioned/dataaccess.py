@@ -23,8 +23,8 @@ from op_analytics.coreutils.storage.gcs_parquet import (
 )
 
 from .location import DataLocation, MarkersLocation, marker_location
-from .marker import Marker
-from .output import ExpectedOutput, OutputPartMeta
+from .marker import Marker, OutputPartMeta
+from .output import ExpectedOutput
 from .types import PartitionedMarkerPath
 
 _CLIENT = None

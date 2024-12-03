@@ -7,7 +7,8 @@ from op_analytics.coreutils.logger import structlog
 
 from .dataaccess import init_data_access
 from .location import DataLocation
-from .output import ExpectedOutput, OutputPartMeta
+from .marker import OutputPartMeta
+from .output import ExpectedOutput
 
 log = structlog.get_logger()
 

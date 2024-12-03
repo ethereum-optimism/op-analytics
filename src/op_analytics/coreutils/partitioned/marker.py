@@ -5,7 +5,23 @@ import pyarrow as pa
 
 from op_analytics.coreutils.time import date_fromstr, now
 
-from .output import OutputPartMeta, ExpectedOutput
+from .partition import PartitionColumns
+from .output import ExpectedOutput
+
+
+@dataclass
+class OutputPartMeta:
+    """Metadata for an output part."""
+
+    partitions: PartitionColumns
+    row_count: int
+
+    @classmethod
+    def from_tuples(cls, partitions: list[tuple[str, str]], row_count: int):
+        return cls(
+            partitions=PartitionColumns.from_tuples(partitions),
+            row_count=row_count,
+        )
 
 
 @dataclass

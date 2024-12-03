@@ -1,16 +1,13 @@
 import datetime
 
 import pyarrow as pa
+
 from op_analytics.coreutils.duckdb_local import run_query
 from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.marker import Marker
-from op_analytics.coreutils.partitioned.output import (
-    ExpectedOutput,
-    PartitionColumn,
-    OutputPartMeta,
-    PartitionColumns,
-)
+from op_analytics.coreutils.partitioned.marker import Marker, OutputPartMeta
+from op_analytics.coreutils.partitioned.output import ExpectedOutput, PartitionColumns
+from op_analytics.coreutils.partitioned.partition import PartitionColumn
 from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
 from op_analytics.coreutils.time import now
 

@@ -3,7 +3,7 @@ from typing import Generator
 import polars as pl
 
 
-from .output import PartitionData
+from .partition import PartitionData
 
 
 def breakout_partitions(
