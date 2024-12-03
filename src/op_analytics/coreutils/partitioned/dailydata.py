@@ -1,7 +1,8 @@
-import duckdb
 import polars as pl
 import pyarrow as pa
+from functools import cache
 
+from op_analytics.coreutils.env.aware import OPLabsEnvironment, current_environment
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
@@ -20,8 +21,15 @@ log = structlog.get_logger()
 MARKERS_TABLE = "daily_data_markers"
 
 
+@cache
+def write_location():
+    if current_environment() == OPLabsEnvironment.UNITTEST:
+        return DataLocation.LOCAL
+    else:
+        return DataLocation.GCS
+
+
 def write_daily_data(
-    location: DataLocation,
     root_path: str,
     dataframe: pl.DataFrame,
     sort_by: list[str] | None = None,
@@ -38,7 +46,7 @@ def write_daily_data(
         datestr = part.partition_value("dt")
 
         writer = DataWriter(
-            write_to=location,
+            write_to=write_location(),
             partition_cols=["dt"],
             markers_table=MARKERS_TABLE,
             expected_outputs=[
@@ -76,10 +84,12 @@ def read_daily_data(
     max_date: str | None = None,
     date_range_spec: str | None = None,
     location: DataLocation = DataLocation.GCS,
-) -> duckdb.DuckDBPyConnection:
+) -> str:
     """Load date partitioned defillama dataset from the specified location.
 
     The loaded data is registered as duckdb view.
+
+    The name of the registered view is returned.
     """
     partitioned_data_access = init_data_access()
     duckdb_client = init_client()
@@ -113,9 +123,9 @@ def read_daily_data(
         paths = sorted(set([location.absolute(path) for path in markers["data_path"].to_list()]))
         log.info(f"{len(set(paths))} distinct paths")
 
-    register_parquet_relation(dataset=root_path, parquet_paths=paths)
+    view_name = register_parquet_relation(dataset=root_path, parquet_paths=paths)
     print(duckdb_client.sql("SHOW TABLES"))
-    return duckdb_client
+    return view_name
 
 
 def make_date_filter(
