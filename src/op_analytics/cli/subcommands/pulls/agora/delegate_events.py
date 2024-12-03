@@ -9,7 +9,6 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data
 from op_analytics.coreutils.threads import run_concurrently
 
-# from op_analytics.coreutils.time import parse_isoformat_with_tz
 from typing import Any
 import requests
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type

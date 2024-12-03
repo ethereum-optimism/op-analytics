@@ -163,6 +163,17 @@ def pull_delegates():
     df["dt"] = (
         now_dt()
     )  # Todo: This is to partition by pull date. Figure out if this is the correct way to do this.
+
+    schema = {
+        "address": "string",
+        "citizen": "boolean",
+        "voting_power_total": "Float64",
+        "voting_power_direct": "Float64",
+        "voting_power_advanced": "Float64",
+    }
+
+    df = df.astype(schema)
+
     # Convert to polars
     df = pl.from_pandas(df)
 
@@ -200,6 +211,7 @@ def pull_delegate_data():
 
     delegates = pull_delegates()
 
+    # Todo: Figure out if we need to pull for all delegates or just those with voting power.
     delegates_with_voting_power = delegates.delegates_with_voting_power_df
     delegates_without_voting_power = delegates.delegates_without_voting_power_df
 
