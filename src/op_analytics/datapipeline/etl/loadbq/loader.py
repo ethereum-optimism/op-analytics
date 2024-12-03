@@ -66,7 +66,7 @@ def bq_load(
     source_uris: list[str],
     source_uris_root_path: str,
     force_complete: bool,
-):
+) -> list[OutputPartMeta]:
     """Use a WriteManager class to handle writing completion markers."""
     location.ensure_biguqery()
 
@@ -89,7 +89,7 @@ def bq_load(
         force=force_complete,
     )
 
-    manager.write(
+    return manager.write(
         output_data=BQOutputData(
             source_uris=source_uris,
             source_uris_root_path=source_uris_root_path,

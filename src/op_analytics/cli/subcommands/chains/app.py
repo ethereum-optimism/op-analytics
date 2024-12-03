@@ -268,7 +268,7 @@ def hourly():
             "daily_address_summary",
             "contract_creation",
         ],
-        range_spec="m3days",
+        range_spec="m8days",
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,
@@ -278,7 +278,7 @@ def hourly():
     load_to_bq(
         stage=PipelineStage.RAW_ONCHAIN,
         location=DataLocation.BIGQUERY,
-        range_spec="m3days",
+        range_spec="m8days",
         dryrun=False,
         force_complete=False,
         force_not_ready=False,
