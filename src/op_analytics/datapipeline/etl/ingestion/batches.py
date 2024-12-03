@@ -136,6 +136,8 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # On 2024/10/13 (after launching) worldchain started having
         # sustained transaction count of ~600k/day.
         Delimiter(block_number=4700000, batch_size=4000),
+        # Decreased on 2024/12/03.
+        Delimiter(block_number=6948000, batch_size=2000),
     ],
     "xterio": [
         Delimiter(0, 20000),
@@ -146,7 +148,11 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=22680000, batch_size=8000),
     ],
     # Testnets
-    "op_sepolia": [Delimiter(0, 5000)],
+    "op_sepolia": [
+        Delimiter(0, 5000),
+        # Decreased on 2024/12/03.
+        Delimiter(block_number=20710000, batch_size=2000),
+    ],
     "unichain_sepolia": [Delimiter(0, 5000)],
 }
 
