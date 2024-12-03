@@ -310,7 +310,7 @@ def test_pull_single_protocol_tvl(
     mock_now_date,
     mock_get_data,
 ):
-    mock_now_date.return_value = date(2024, 11, 18)
+    mock_now_date.return_value = date(2024, 11, 22)
 
     # Mock get_data to return sample summary and breakdown data
     mock_get_data.side_effect = [
@@ -386,7 +386,7 @@ def test_pull_all_protocol_tvl(
     mock_now_date,
     mock_get_data,
 ):
-    mock_now_date.return_value = date(2024, 11, 18)
+    mock_now_date.return_value = date(2024, 11, 22)
 
     # Mock get_data to return sample summary and breakdown data
     mock_get_data.side_effect = [
