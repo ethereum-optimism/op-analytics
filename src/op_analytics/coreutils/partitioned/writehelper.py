@@ -7,7 +7,8 @@ from op_analytics.coreutils.logger import structlog
 
 from .dataaccess import init_data_access
 from .location import DataLocation
-from .output import ExpectedOutput, OutputPartMeta
+from .marker import OutputPartMeta
+from .output import ExpectedOutput
 
 log = structlog.get_logger()
 
@@ -51,6 +52,6 @@ class WriteManager(EnforceOverrides):
             written_parts=written_parts,
             markers_table=self.markers_table,
         )
-        log.debug(f"done writing {self.expected_output.dataset_name} to {self.location.name}")
+        log.debug(f"done writing {self.expected_output.root_path} to {self.location.name}")
 
         return written_parts

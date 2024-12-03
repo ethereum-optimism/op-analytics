@@ -38,10 +38,4 @@ def init_client():
 def parquet_relation(parquet_paths) -> duckdb.DuckDBPyRelation:
     """Return a DuckDB relation from a list of parquet files."""
     client = init_client()
-
-    paths_str = ", ".join(f"'{_}'" for _ in parquet_paths)
-
-    # TODO: Investigate if using read_parquet is more performant.
-    return client.sql(
-        f"SELECT * FROM read_parquet([{paths_str}], hive_partitioning = true, hive_types_autocast = 0)"
-    )
+    return client.read_parquet(parquet_paths, hive_partitioning=True)

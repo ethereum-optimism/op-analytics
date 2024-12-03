@@ -6,7 +6,7 @@ from op_analytics.datapipeline.etl.intermediate.types import NamedRelations
 
 
 @register_model(
-    input_datasets=["traces", "transactions"],
+    input_datasets=["ingestion/traces_v1", "ingestion/transactions_v1"],
     expected_outputs=["create_traces_v1"],
     duckdb_views=[
         TemplatedSQLQuery(

@@ -1,6 +1,6 @@
 import pytest
 
-from op_analytics.coreutils.partitioned import DataLocation
+from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.etl.ingestion.batches import (
     BlockBatch,
     Delimiter,
@@ -167,7 +167,7 @@ def test_expected_markers():
 
     actual = [
         dict(
-            dataset_name=_.dataset_name,
+            root_path=_.root_path,
             marker_path=_.marker_path,
             additional_columns=_.additional_columns,
         )
@@ -176,22 +176,22 @@ def test_expected_markers():
 
     assert actual == [
         {
-            "dataset_name": "blocks",
+            "root_path": "ingestion/blocks_v1",
             "marker_path": "markers/ingestion/blocks_v1/chain=op/000000000000.json",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
-            "dataset_name": "transactions",
+            "root_path": "ingestion/transactions_v1",
             "marker_path": "markers/ingestion/transactions_v1/chain=op/000000000000.json",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
-            "dataset_name": "logs",
+            "root_path": "ingestion/logs_v1",
             "marker_path": "markers/ingestion/logs_v1/chain=op/000000000000.json",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
-            "dataset_name": "traces",
+            "root_path": "ingestion/traces_v1",
             "marker_path": "markers/ingestion/traces_v1/chain=op/000000000000.json",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
@@ -226,7 +226,7 @@ def test_expected_markers_testnet():
 
     actual = [
         dict(
-            dataset_name=_.dataset_name,
+            dataset_name=_.root_path,
             marker_path=_.marker_path,
             additional_columns=_.additional_columns,
         )
@@ -235,22 +235,22 @@ def test_expected_markers_testnet():
 
     assert actual == [
         {
-            "dataset_name": "blocks",
+            "dataset_name": "ingestion_testnets/blocks_v1",
             "marker_path": "markers/ingestion_testnets/blocks_v1/chain=op_sepolia/000000000000.json",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
-            "dataset_name": "transactions",
+            "dataset_name": "ingestion_testnets/transactions_v1",
             "marker_path": "markers/ingestion_testnets/transactions_v1/chain=op_sepolia/000000000000.json",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
-            "dataset_name": "logs",
+            "dataset_name": "ingestion_testnets/logs_v1",
             "marker_path": "markers/ingestion_testnets/logs_v1/chain=op_sepolia/000000000000.json",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
-            "dataset_name": "traces",
+            "dataset_name": "ingestion_testnets/traces_v1",
             "marker_path": "markers/ingestion_testnets/traces_v1/chain=op_sepolia/000000000000.json",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },

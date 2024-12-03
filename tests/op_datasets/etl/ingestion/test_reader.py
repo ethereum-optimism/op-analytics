@@ -2,14 +2,14 @@ import datetime
 
 import polars as pl
 
-from op_analytics.coreutils.partitioned import DataLocation
+from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.etl.ingestion.reader import are_inputs_ready
 
 MARKER_PATHS_DATA = [
     {
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-22/000011400000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
         "dt": datetime.date(2024, 10, 22),
         "max_block": 11420000,
         "min_block": 11400000,
@@ -18,7 +18,7 @@ MARKER_PATHS_DATA = [
     {
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011400000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
         "dt": datetime.date(2024, 10, 23),
         "max_block": 11420000,
         "min_block": 11400000,
@@ -27,7 +27,7 @@ MARKER_PATHS_DATA = [
     {
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011420000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
         "dt": datetime.date(2024, 10, 23),
         "max_block": 11440000,
         "min_block": 11420000,
@@ -36,7 +36,7 @@ MARKER_PATHS_DATA = [
     {
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011440000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
         "dt": datetime.date(2024, 10, 23),
         "max_block": 11460000,
         "min_block": 11440000,
@@ -45,7 +45,7 @@ MARKER_PATHS_DATA = [
     {
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-24/000011440000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
         "dt": datetime.date(2024, 10, 24),
         "max_block": 11460000,
         "min_block": 11440000,
@@ -54,7 +54,7 @@ MARKER_PATHS_DATA = [
     {
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-24/000011460000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
         "dt": datetime.date(2024, 10, 24),
         "max_block": 11480000,
         "min_block": 11460000,
@@ -63,7 +63,7 @@ MARKER_PATHS_DATA = [
     {
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-24/000011480000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
         "dt": datetime.date(2024, 10, 24),
         "max_block": 11500000,
         "min_block": 11480000,
@@ -72,7 +72,7 @@ MARKER_PATHS_DATA = [
     {
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-24/000011500000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
         "dt": datetime.date(2024, 10, 24),
         "max_block": 11520000,
         "min_block": 11500000,
@@ -88,14 +88,14 @@ def test_are_inputs_ready():
     is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        input_datasets={
-            "traces",
+        input_root_paths={
+            "ingestion/traces_v1",
         },
         storage_location=DataLocation.GCS,
     )
     assert is_ready
     assert actual == {
-        "traces": [
+        "ingestion/traces_v1": [
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011400000.parquet",
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011420000.parquet",
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011440000.parquet",
@@ -110,14 +110,14 @@ def test_not_ready_01():
     is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        input_datasets={
-            "traces",
+        input_root_paths={
+            "ingestion/traces_v1",
         },
         storage_location=DataLocation.GCS,
     )
     assert not is_ready
     assert actual == {
-        "traces": [
+        "ingestion/traces_v1": [
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011400000.parquet",
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011420000.parquet",
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011440000.parquet",
@@ -132,13 +132,16 @@ def test_not_ready_02():
     is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        input_datasets={"traces", "logs"},
+        input_root_paths={
+            "ingestion/traces_v1",
+            "ingestion/logs_v1",
+        },
         storage_location=DataLocation.GCS,
     )
     assert not is_ready
     assert actual == {
-        "logs": [],
-        "traces": [
+        "ingestion/logs_v1": [],
+        "ingestion/traces_v1": [
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011400000.parquet",
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011420000.parquet",
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011440000.parquet",

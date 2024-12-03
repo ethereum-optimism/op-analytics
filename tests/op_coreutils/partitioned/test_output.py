@@ -1,17 +1,12 @@
 import pyarrow as pa
 
-
-from op_analytics.coreutils.partitioned.output import (
-    ExpectedOutput,
-    PartitionColumns,
-    PartitionColumn,
-)
-from op_analytics.coreutils.partitioned.types import PartitionedRootPath, PartitionedMarkerPath
+from op_analytics.coreutils.partitioned.output import ExpectedOutput
+from op_analytics.coreutils.partitioned.partition import PartitionColumn, PartitionColumns
+from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
 
 
 def test_01():
     expected_output = ExpectedOutput(
-        dataset_name="daily_address_summary/summary_v1",
         root_path=PartitionedRootPath("intermediate/daily_address_summary/summary_v1"),
         file_name="out.parquet",
         marker_path=PartitionedMarkerPath("BLAH"),

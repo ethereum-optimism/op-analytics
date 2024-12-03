@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import date
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned import DataReader
+from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.time import date_fromstr
 
 

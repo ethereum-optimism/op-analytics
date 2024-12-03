@@ -1,16 +1,13 @@
 import datetime
 
 import pyarrow as pa
+
 from op_analytics.coreutils.duckdb_local import run_query
 from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.marker import Marker
-from op_analytics.coreutils.partitioned.output import (
-    ExpectedOutput,
-    PartitionColumn,
-    OutputPartMeta,
-    PartitionColumns,
-)
+from op_analytics.coreutils.partitioned.marker import Marker, OutputPartMeta
+from op_analytics.coreutils.partitioned.output import ExpectedOutput, PartitionColumns
+from op_analytics.coreutils.partitioned.partition import PartitionColumn
 from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
 from op_analytics.coreutils.time import now
 
@@ -47,7 +44,6 @@ def test_marker():
             marker_path=PartitionedMarkerPath(
                 "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json"
             ),
-            dataset_name="blocks",
             root_path=PartitionedRootPath("ingestion/blocks_v1"),
             file_name="000011540000.parquet",
             process_name="default",
@@ -95,7 +91,7 @@ def test_marker():
     assert result == [
         {
             "marker_path": "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
-            "dataset_name": "blocks",
+            "dataset_name": "",
             "root_path": "ingestion/blocks_v1",
             "num_parts": 2,
             "data_path": "ingestion/blocks_v1/chain=DUMMYCHAIN/dt=2024-10-25/000011540000.parquet",
@@ -109,7 +105,7 @@ def test_marker():
         },
         {
             "marker_path": "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
-            "dataset_name": "blocks",
+            "dataset_name": "",
             "root_path": "ingestion/blocks_v1",
             "num_parts": 2,
             "data_path": "ingestion/blocks_v1/chain=DUMMYCHAIN/dt=2024-10-26/000011540000.parquet",
@@ -135,7 +131,7 @@ def test_marker():
         markers_table=MARKERS_TABLE,
         datevals=[datetime.date(2024, 10, 25)],
         chains=["DUMMYCHAIN"],
-        dataset_names=["blocks"],
+        root_paths=["ingestion/blocks_v1"],
     )
     assert len(markers_df) == 1
 
@@ -149,6 +145,6 @@ def test_marker():
         markers_table=MARKERS_TABLE,
         datevals=[datetime.date(2024, 10, 25)],
         chains=["DUMMYCHAIN"],
-        dataset_names=["transactions"],
+        root_paths=["ingestion/transactions_v1"],
     )
     assert len(markers_df) == 0

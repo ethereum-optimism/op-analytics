@@ -1,26 +1,29 @@
 import pyarrow as pa
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned import (
-    DataLocation,
-    DataReader,
-    PartitionedMarkerPath,
-    PartitionedRootPath,
-    DataWriter,
-    ExpectedOutput,
-)
-
-from op_analytics.datapipeline.etl.ingestion.reader import construct_readers
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.output import ExpectedOutput
+from op_analytics.coreutils.partitioned.reader import DataReader
+from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
+from op_analytics.coreutils.partitioned.writer import DataWriter
 from op_analytics.datapipeline.etl.ingestion.markers import (
-    INGESTION_DATASETS,
     INGESTION_MARKERS_TABLE,
 )
+from op_analytics.datapipeline.etl.ingestion.reader import construct_readers
 
 from .markers import INTERMEDIATE_MODELS_MARKERS_TABLE
 from .registry import REGISTERED_INTERMEDIATE_MODELS
 from .task import IntermediateModelsTask
 
 log = structlog.get_logger()
+
+
+INGESTION_ROOT_PATHS = [
+    "ingestion/blocks_v1",
+    "ingestion/transactions_v1",
+    "ingestion/logs_v1",
+    "ingestion/traces_v1",
+]
 
 
 def construct_data_readers(
@@ -33,7 +36,7 @@ def construct_data_readers(
         range_spec=range_spec,
         read_from=read_from,
         markers_table=INGESTION_MARKERS_TABLE,
-        dataset_names=INGESTION_DATASETS,
+        root_paths=INGESTION_ROOT_PATHS,
     )
 
 
@@ -71,7 +74,6 @@ def construct_tasks(
 
                 expected_outputs.append(
                     ExpectedOutput(
-                        dataset_name=full_model_name,
                         root_path=PartitionedRootPath(f"intermediate/{full_model_name}"),
                         file_name="out.parquet",
                         marker_path=marker_path,

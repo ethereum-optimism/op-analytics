@@ -1,14 +1,15 @@
 from op_analytics.coreutils.duckdb_inmem import init_client
 from op_analytics.coreutils.logger import (
     bind_contextvars,
-    structlog,
     bound_contextvars,
+    structlog,
 )
-from op_analytics.coreutils.partitioned import DataLocation, OutputData
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.output import OutputData
 
 from .construct import construct_tasks
-from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .modelexecute import PythonModelExecutor
+from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .task import IntermediateModelsTask
 from .udfs import create_duckdb_macros
 
@@ -32,7 +33,7 @@ def compute_intermediate(
         should_exit = False
         if model not in REGISTERED_INTERMEDIATE_MODELS:
             should_exit = True
-            log.error("Model is not registered: {model}")
+            log.error(f"Model is not registered: {model}")
         if should_exit:
             log.error("Cannot run on unregistered models. Will exit.")
             exit(1)
@@ -101,7 +102,7 @@ def executor(task: IntermediateModelsTask) -> None:
                     task.data_writer.write(
                         output_data=OutputData(
                             dataframe=rel.pl(),
-                            dataset_name=f"{model_name}/{result_name}",
+                            root_path=f"intermediate/{model_name}/{result_name}",
                             default_partition=task.data_reader.partitions_dict(),
                         ),
                     )

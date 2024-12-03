@@ -8,7 +8,8 @@ from op_analytics.coreutils.logger import bound_contextvars, structlog
 from .breakout import breakout_partitions
 from .dataaccess import init_data_access
 from .location import DataLocation
-from .output import ExpectedOutput, OutputData, OutputPartMeta
+from .marker import OutputPartMeta
+from .output import ExpectedOutput, OutputData
 from .status import all_outputs_complete
 from .writehelper import WriteManager
 
@@ -42,7 +43,7 @@ class DataWriter:
 
     def __post_init__(self):
         for output in self.expected_outputs:
-            self._keyed_outputs[output.dataset_name] = output
+            self._keyed_outputs[output.root_path] = output
 
         if len(self.expected_outputs) != len(self._keyed_outputs):
             raise ValueError("expected output names are not unique")
@@ -62,13 +63,11 @@ class DataWriter:
         """Write data and corresponding marker."""
 
         # Locate the expected output that coresponds to the given output_data.
-        expected_output = self._keyed_outputs[output_data.dataset_name]
+        expected_output = self._keyed_outputs[output_data.root_path]
 
         # The default partition value is included in log context to help keep
         # track of which data we are processing.
-        with bound_contextvars(
-            dataset=output_data.dataset_name, **(output_data.default_partition or {})
-        ):
+        with bound_contextvars(root=output_data.root_path, **(output_data.default_partition or {})):
             manager = PartitionedWriteManager(
                 partition_cols=self.partition_cols,
                 location=self.write_to,
@@ -103,6 +102,11 @@ class PartitionedWriteManager(WriteManager):
                 dataframe=part.df,
                 full_path=self.expected_output.full_path(part.partitions),
             )
-            parts_meta.append(part.meta)
+            parts_meta.append(
+                OutputPartMeta(
+                    partitions=part.partitions,
+                    row_count=len(part.df),
+                )
+            )
 
         return parts_meta
