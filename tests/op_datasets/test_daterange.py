@@ -1,7 +1,7 @@
 import datetime
 from unittest.mock import patch
 
-from op_analytics.datapipeline.utils.daterange import DateRange
+from op_analytics.coreutils.rangeutils.daterange import DateRange
 
 
 def test_daterange():
@@ -24,7 +24,7 @@ def test_blockrange_plus():
     assert len(dr) == 30
 
 
-@patch("op_analytics.datapipeline.utils.daterange.now_date", lambda: datetime.date(2024, 11, 17))
+@patch("op_analytics.coreutils.rangeutils.daterange.now_date", lambda: datetime.date(2024, 11, 17))
 def test_minus_days():
     dr = DateRange.from_spec("m3days")  # 3 days from the current date
     assert dr == DateRange(

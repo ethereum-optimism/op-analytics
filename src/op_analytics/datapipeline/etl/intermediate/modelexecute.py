@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Protocol
 
 import duckdb
@@ -12,11 +12,11 @@ class ModelFunction(Protocol):
 
 
 class ModelInputDataReader(Protocol):
-    def duckdb_relation(
+    def register_duckdb_relation(
         self,
         dataset: str,
         first_n_parquet_files: int | None = None,
-    ) -> duckdb.DuckDBPyRelation: ...
+    ) -> str: ...
 
 
 @dataclass
@@ -32,10 +32,6 @@ class PythonModel:
         return self.model_func
 
 
-def sanitized_table_name(dataset_name: str) -> str:
-    return dataset_name.replace("/", "_")
-
-
 @dataclass
 class PythonModelExecutor:
     model: PythonModel
@@ -43,16 +39,18 @@ class PythonModelExecutor:
     data_reader: ModelInputDataReader
     limit_input_parquet_files: int | None = None
 
+    # Keep track of registered views so they can be unregistered
+    # at exit.
+    registered_views: list[str] = field(default_factory=list, init=False)
+
     def __enter__(self):
         # Register input data as views on the duckdb client.
         for dataset in self.model.input_datasets:
-            self.client.register(
-                view_name=sanitized_table_name(dataset),
-                python_object=self.data_reader.duckdb_relation(
-                    dataset=dataset,
-                    first_n_parquet_files=self.limit_input_parquet_files,
-                ),
+            view_name = self.data_reader.register_duckdb_relation(
+                dataset=dataset,
+                first_n_parquet_files=self.limit_input_parquet_files,
             )
+            self.registered_views.append(view_name)
 
         # Register the rendered views.
         for view in self.model.duckdb_views:
@@ -60,16 +58,14 @@ class PythonModelExecutor:
                 view_name=view.template_name,
                 python_object=self.client.sql(view.query),
             )
+            self.registered_views.append(view.template_name)
 
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         # Unregister all views so client is good to run other models.
-        for dataset in self.model.input_datasets:
-            self.client.unregister(view_name=dataset)
-
-        for view in self.model.duckdb_views:
-            self.client.unregister(view_name=view.template_name)
+        for view in self.registered_views:
+            self.client.unregister(view_name=view)
 
     def execute(self):
         return self.model.func(self.client)

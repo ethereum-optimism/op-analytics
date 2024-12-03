@@ -1,7 +1,7 @@
 import datetime
 
 from op_analytics.coreutils.partitioned.dataaccess import DateFilter
-from op_analytics.datapipeline.utils.daterange import DateRange
+from op_analytics.coreutils.rangeutils.daterange import DateRange
 
 
 def test01():

@@ -7,6 +7,7 @@ from typing_extensions import Annotated
 import op_analytics.datapipeline.rpcs as rpcs
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.datapipeline.chains import goldsky_chains
 from op_analytics.datapipeline.chains.upload import upload_all
 from op_analytics.datapipeline.etl.ingestion import ingest
@@ -15,7 +16,6 @@ from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvid
 from op_analytics.datapipeline.etl.intermediate import compute_intermediate
 from op_analytics.datapipeline.etl.loadbq import PipelineStage, load_to_bq
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
-from op_analytics.datapipeline.utils.blockrange import BlockRange
 
 log = structlog.get_logger()
 
