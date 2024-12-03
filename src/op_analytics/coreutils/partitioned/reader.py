@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 
-import duckdb
 
-from op_analytics.coreutils.duckdb_inmem import parquet_relation
+from op_analytics.coreutils.duckdb_inmem import register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 
 
@@ -48,11 +47,11 @@ class DataReader:
     def partition_value(self, column_name: str) -> str:
         return self.partitions.column_value(column_name)
 
-    def duckdb_relation(
+    def register_duckdb_relation(
         self,
         dataset,
         first_n_parquet_files: int | None = None,
-    ) -> duckdb.DuckDBPyRelation:
+    ) -> str:
         paths = sorted(self.dataset_paths[dataset])
         num_paths = len(paths)
 
@@ -65,4 +64,7 @@ class DataReader:
             f"duckdb dataset={dataset!r} using {num_used_paths}/{num_paths} parquet paths, first path is {paths[0]}"
         )
 
-        return parquet_relation(paths)
+        return register_parquet_relation(
+            dataset=dataset,
+            parquet_paths=paths,
+        )

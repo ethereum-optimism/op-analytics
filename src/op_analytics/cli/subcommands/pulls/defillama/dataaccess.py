@@ -4,25 +4,16 @@ from enum import Enum
 from functools import cache
 
 import polars as pl
-import pyarrow as pa
 
 from op_analytics.coreutils.duckdb_inmem import init_client
 from op_analytics.coreutils.env.aware import OPLabsEnvironment, current_environment
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.breakout import breakout_partitions
-from op_analytics.coreutils.partitioned.dataaccess import DateFilter, MarkerFilter, init_data_access
+from op_analytics.coreutils.partitioned.dailydata import read_daily_data, write_daily_data
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
-from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
-from op_analytics.coreutils.partitioned.writer import DataWriter
 from op_analytics.coreutils.path import repo_path
-from op_analytics.coreutils.time import date_fromstr, now_friendly_timestamp
-from op_analytics.datapipeline.utils.daterange import DateRange
+from op_analytics.coreutils.time import now_friendly_timestamp
 
 log = structlog.get_logger()
-
-
-MARKERS_TABLE = "daily_data_markers"
 
 
 class DefiLlama(str, Enum):
@@ -40,6 +31,25 @@ class DefiLlama(str, Enum):
     PROTOCOLS_TVL = "protocols_tvl_v1"
     PROTOCOLS_TOKEN_TVL = "protocols_token_tvl_v1"
 
+    @property
+    def root_path(self):
+        return f"defillama/{self.value}"
+
+    def write(
+        self,
+        dataframe: pl.DataFrame,
+        sort_by: list[str] | None = None,
+    ):
+        return write_daily_data(
+            location=write_location(),
+            root_path=self.root_path,
+            dataframe=dataframe,
+            sort_by=sort_by,
+            # Always overwrite data. If we pull data in early for a given date
+            # a subsequent data pull will overwrite with more complete data.
+            force_complete=True,
+        )
+
     def read(
         self,
         min_date: str | None = None,
@@ -47,9 +57,11 @@ class DefiLlama(str, Enum):
         date_range_spec: str | None = None,
     ):
         """Read defillama data. Optionally filtered by date."""
-        return load(
-            dataset_name=self.value,
-            datefilter=self._date_filter(min_date, max_date, date_range_spec),
+        return read_daily_data(
+            root_path=self.root_path,
+            min_date=min_date,
+            max_date=max_date,
+            date_range_spec=date_range_spec,
             location=DataLocation.GCS,
         )
 
@@ -99,18 +111,6 @@ class DefiLlama(str, Enum):
         print(client.sql("SHOW TABLES"))
         return client
 
-    @staticmethod
-    def _date_filter(
-        min_date: str | None = None, max_date: str | None = None, date_range_spec: str | None = None
-    ) -> DateFilter:
-        return DateFilter(
-            min_date=None if min_date is None else date_fromstr(min_date),
-            max_date=None if max_date is None else date_fromstr(max_date),
-            datevals=None
-            if date_range_spec is None
-            else DateRange.from_spec(date_range_spec).dates,
-        )
-
     def _local_path(self):
         path = repo_path(f"parquet/defillama/{self.value}__{now_friendly_timestamp()}.parquet")
         assert path is not None
@@ -124,108 +124,3 @@ def write_location():
         return DataLocation.LOCAL
     else:
         return DataLocation.GCS
-
-
-def write(
-    dataset: DefiLlama,
-    dataframe: pl.DataFrame,
-    sort_by: list[str] | None = None,
-):
-    """Write date partitioned defillama dataset."""
-    parts = breakout_partitions(
-        df=dataframe,
-        partition_cols=["dt"],
-        default_partition=None,
-    )
-
-    for part in parts:
-        root = f"defillama/{dataset.value}"
-        datestr = part.partition_value("dt")
-
-        writer = DataWriter(
-            write_to=write_location(),
-            partition_cols=["dt"],
-            markers_table=MARKERS_TABLE,
-            expected_outputs=[
-                ExpectedOutput(
-                    root_path=PartitionedRootPath(root),
-                    file_name="out.parquet",
-                    marker_path=PartitionedMarkerPath(f"{datestr}/{root}"),
-                    process_name="default",
-                    additional_columns=dict(),
-                    additional_columns_schema=[
-                        pa.field("dt", pa.date32()),
-                    ],
-                )
-            ],
-            # Always overwrite data. If we pull data in early for a given date
-            # a subsequent data pull will overwrite with more complete data.
-            force=True,
-        )
-
-        part_df = part.df.with_columns(dt=pl.lit(datestr))
-
-        if sort_by is not None:
-            part_df = part_df.sort(*sort_by)
-
-        writer.write(
-            output_data=OutputData(
-                dataframe=part.df.with_columns(dt=pl.lit(datestr)),
-                root_path=f"defillama/{dataset.value}",
-                default_partition=None,
-            )
-        )
-
-
-def load(
-    dataset_name: str,
-    datefilter: DateFilter,
-    location: DataLocation = DataLocation.GCS,
-):
-    """Load date partitioned defillama dataset from the specified location.
-
-    The loaded data is registered as duckdb view.
-    """
-    partitioned_data_access = init_data_access()
-    duckdb_client = init_client()
-
-    paths: str | list[str]
-    if datefilter.is_undefined:
-        paths = location.absolute(f"defillama/{dataset_name}/dt=*/out.parquet")
-        summary = f"using uri wildcard {paths!r}"
-
-    else:
-        log.info(f"querying markers for {dataset_name!r} {datefilter}")
-
-        markers = partitioned_data_access.markers_for_dates(
-            data_location=location,
-            markers_table=MARKERS_TABLE,
-            datefilter=datefilter,
-            projections=["dt", "data_path"],
-            filters={
-                "datasets": MarkerFilter(
-                    column="dataset_name",
-                    values=[dataset_name],
-                ),
-            },
-        )
-        log.info(f"{len(markers)} markers found")
-
-        # Ensure that the paths we select are distinct paths.
-        # The same path can appear under two different markers if it was
-        # re-written as part of a backfill.
-        paths = sorted(set([location.absolute(path) for path in markers["data_path"].to_list()]))
-        log.info(f"{len(set(paths))} distinct paths")
-        summary = f"using {len(paths)} parquet paths"
-
-    duckdb_client.register(
-        view_name=dataset_name,
-        python_object=duckdb_client.read_parquet(
-            paths,
-            hive_partitioning=True,
-        ),
-    )
-    log.info(f"registered view {dataset_name!r} {summary}")
-
-    print(duckdb_client.sql("SHOW TABLES"))
-    return duckdb_client

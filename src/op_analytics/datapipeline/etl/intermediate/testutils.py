@@ -12,6 +12,7 @@ import duckdb
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.testutils.inputdata import InputTestData
+from op_analytics.coreutils.duckdb_inmem.client import register_dataset_relation
 
 from .construct import construct_tasks
 from .modelexecute import PythonModelExecutor, ModelInputDataReader
@@ -30,13 +31,14 @@ def input_table_name(dataset_name: str) -> str:
 class DataReaderTestUtil:
     client: duckdb.DuckDBPyConnection
 
-    def duckdb_relation(
+    def register_duckdb_relation(
         self,
         dataset,
         first_n_parquet_files: int | None = None,
-    ) -> duckdb.DuckDBPyRelation:
+    ) -> str:
         assert self.client is not None
-        return self.client.sql(f"SELECT * FROM {input_table_name(dataset)}")
+        rel = self.client.sql(f"SELECT * FROM {input_table_name(dataset)}")
+        return register_dataset_relation(self.client, dataset, rel)
 
 
 class IntermediateModelTestBase(unittest.TestCase):
@@ -181,7 +183,10 @@ class IntermediateModelTestBase(unittest.TestCase):
 
         relations = {}
         for dataset in datasets:
-            rel = task.data_reader.duckdb_relation(dataset)
+            dataset_view = task.data_reader.register_duckdb_relation(dataset)
+
+            assert cls._duckdb_client is not None
+            rel = cls._duckdb_client.view(dataset_view)
 
             if "blocks" in dataset:
                 block_number_col = "number"

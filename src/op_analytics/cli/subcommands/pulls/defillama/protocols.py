@@ -10,7 +10,7 @@ from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently_store_failures
 from op_analytics.coreutils.time import date_fromstr, dt_fromepoch, epoch_is_date, now_date, now_dt
 
-from .dataaccess import write, DefiLlama
+from .dataaccess import DefiLlama
 
 
 log = structlog.get_logger()
@@ -53,8 +53,7 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     protocols = get_data(session, PROTOCOLS_ENDPOINT)
     metadata_df = extract_protocol_metadata(protocols)
 
-    write(
-        dataset=DefiLlama.PROTOCOLS_METADATA,
+    DefiLlama.PROTOCOLS_METADATA.write(
         dataframe=metadata_df.with_columns(dt=pl.lit(now_dt())),
         sort_by=["protocol_slug"],
     )
@@ -89,15 +88,13 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     )
 
     # Write tvl.
-    write(
-        dataset=DefiLlama.PROTOCOLS_TVL,
+    DefiLlama.PROTOCOLS_TVL.write(
         dataframe=app_tvl_df,
         sort_by=["protocol_slug", "chain"],
     )
 
     # Write token tvl.
-    write(
-        dataset=DefiLlama.PROTOCOLS_TOKEN_TVL,
+    DefiLlama.PROTOCOLS_TOKEN_TVL.write(
         dataframe=app_token_tvl_df,
         sort_by=["protocol_slug", "chain", "token"],
     )
