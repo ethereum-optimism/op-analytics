@@ -7,10 +7,16 @@ from op_analytics.coreutils.logger import structlog
 
 from .dataaccess import init_data_access
 from .location import DataLocation
-from .marker import OutputPartMeta
+from .marker import OutputPartMeta, Marker
 from .output import ExpectedOutput
 
 log = structlog.get_logger()
+
+
+@dataclass
+class WriteResult:
+    status: str
+    written_parts: list[OutputPartMeta]
 
 
 @dataclass
@@ -29,7 +35,7 @@ class WriteManager(EnforceOverrides):
     def write_implementation(self, output_data: Any) -> list[OutputPartMeta]:
         raise NotImplementedError()
 
-    def write(self, output_data: Any) -> list[OutputPartMeta]:
+    def write(self, output_data: Any) -> WriteResult:
         client = init_data_access()
 
         is_complete = client.marker_exists(
@@ -42,16 +48,20 @@ class WriteManager(EnforceOverrides):
             log.info(
                 f"[{self.location.name}] Skipping already complete output at {self.expected_output.marker_path}"
             )
-            return []
+            return WriteResult(status="skipped", written_parts=[])
 
         written_parts = self.write_implementation(output_data)
 
-        client.write_marker(
-            data_location=self.location,
+        marker = Marker(
             expected_output=self.expected_output,
             written_parts=written_parts,
+        )
+
+        client.write_marker(
+            data_location=self.location,
+            marker=marker,
             markers_table=self.markers_table,
         )
         log.debug(f"done writing {self.expected_output.root_path} to {self.location.name}")
 
-        return written_parts
+        return WriteResult(status="success", written_parts=written_parts)

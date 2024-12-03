@@ -67,8 +67,10 @@ def test_marker():
 
     client.write_marker(
         data_location=DataLocation.LOCAL,
-        expected_output=marker.expected_output,
-        written_parts=marker.written_parts,
+        marker=Marker(
+            expected_output=marker.expected_output,
+            written_parts=marker.written_parts,
+        ),
         markers_table=MARKERS_TABLE,
     )
 

@@ -204,9 +204,9 @@ def writer(task: IngestionTask):
     total_rows: dict[str, int] = defaultdict(int)
 
     for output_data in task.output_dataframes:
-        parts = task.data_writer.write(output_data)
+        write_result = task.data_writer.write(output_data)
 
-        for part in parts:
+        for part in write_result.written_parts:
             total_rows[output_data.root_path] += part.row_count
 
     summary = " ".join(f"{key}={human_rows(val)}" for key, val in total_rows.items())

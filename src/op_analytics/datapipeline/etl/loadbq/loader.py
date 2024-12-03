@@ -11,7 +11,7 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.marker import OutputPartMeta
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
-from op_analytics.coreutils.partitioned.writehelper import WriteManager
+from op_analytics.coreutils.partitioned.writehelper import WriteManager, WriteResult
 
 log = structlog.get_logger()
 
@@ -62,7 +62,7 @@ def bq_load(
     source_uris: list[str],
     source_uris_root_path: str,
     force_complete: bool,
-) -> list[OutputPartMeta]:
+) -> WriteResult:
     """Use a WriteManager class to handle writing completion markers."""
     location.ensure_biguqery()
 

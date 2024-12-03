@@ -86,7 +86,7 @@ def load_superchain_raw_to_bq(
             # root_path = "ingestion/traces_v1"  --> traces
             bq_table_name = root_path.split("/")[-1].split("_")[0]
 
-            bq_load(
+            write_result = bq_load(
                 location=location,
                 dateval=dateval,
                 bq_dataset_name=BQ_PUBLIC_DATASET,
@@ -96,5 +96,5 @@ def load_superchain_raw_to_bq(
                 source_uris_root_path=source_uris_root_path,
                 force_complete=force_complete,
             )
-            log.info("task", status="success")
+            log.info("task", status=write_result.status)
             success += 1

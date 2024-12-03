@@ -11,7 +11,7 @@ from .location import DataLocation
 from .marker import OutputPartMeta
 from .output import ExpectedOutput, OutputData
 from .status import all_outputs_complete
-from .writehelper import WriteManager
+from .writehelper import WriteManager, WriteResult
 
 log = structlog.get_logger()
 
@@ -59,7 +59,7 @@ class DataWriter:
             )
         return self._is_complete
 
-    def write(self, output_data: OutputData) -> list[OutputPartMeta]:
+    def write(self, output_data: OutputData) -> WriteResult:
         """Write data and corresponding marker."""
 
         # Locate the expected output that coresponds to the given output_data.
