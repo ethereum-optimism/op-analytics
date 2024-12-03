@@ -4,7 +4,7 @@ import pyarrow as pa
 
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
-from op_analytics.datapipeline.utils.daterange import DateRange
+from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_fromstr
 
 from .breakout import breakout_partitions

@@ -1,6 +1,7 @@
 import pytest
 
 from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.datapipeline.etl.ingestion.batches import (
     BlockBatch,
     Delimiter,
@@ -11,7 +12,6 @@ from op_analytics.datapipeline.etl.ingestion.batches import (
 )
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
 from op_analytics.datapipeline.etl.ingestion.task import IngestionTask
-from op_analytics.datapipeline.utils.blockrange import BlockRange
 
 
 def test_batches_01():

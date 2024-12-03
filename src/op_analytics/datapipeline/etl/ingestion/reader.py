@@ -7,8 +7,8 @@ from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
+from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_fromstr, surrounding_dates
-from op_analytics.datapipeline.utils.daterange import DateRange
 
 log = structlog.get_logger()
 

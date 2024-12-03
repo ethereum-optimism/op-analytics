@@ -12,8 +12,8 @@ data for those blocks is stored in GCS.
 from dataclasses import dataclass
 
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determine_network
-from op_analytics.datapipeline.utils.blockrange import BlockRange
 
 log = structlog.get_logger()
 
