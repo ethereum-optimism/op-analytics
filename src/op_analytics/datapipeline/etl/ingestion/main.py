@@ -206,8 +206,9 @@ def writer(task: IngestionTask):
     for output_data in task.output_dataframes:
         write_result = task.data_writer.write(output_data)
 
-        for part in write_result.written_parts:
-            total_rows[output_data.root_path] += part.row_count
+        for partition_metadata in write_result.written_parts.values():
+            if partition_metadata.row_count is not None:
+                total_rows[output_data.root_path] += partition_metadata.row_count
 
     summary = " ".join(f"{key}={human_rows(val)}" for key, val in total_rows.items())
     summary = f"{task.data_writer.write_to.name}::{summary}"

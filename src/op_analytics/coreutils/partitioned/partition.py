@@ -34,17 +34,20 @@ class PartitionColumn:
 
 
 @dataclass
-class PartitionColumns:
+class Partition:
     """All the partition columns for a specific partition in a dataset."""
 
     cols: list[PartitionColumn]
 
-    @classmethod
-    def from_tuples(cls, partitions: list[tuple[str, str]]):
-        return cls(cols=[PartitionColumn(name=k, value=v) for k, v in partitions])
+    def __hash__(self):
+        return hash(self.path)
 
     def __iter__(self):
         return iter(self.cols)
+
+    @classmethod
+    def from_tuples(cls, partitions: list[tuple[str, str]]):
+        return cls(cols=[PartitionColumn(name=k, value=v) for k, v in partitions])
 
     def as_dict(self):
         return {col.name: col.value for col in self.cols}
@@ -64,11 +67,11 @@ class PartitionColumns:
 class PartitionData:
     """DataFrame data for a given partition."""
 
-    partitions: PartitionColumns
+    partition: Partition
     df: pl.DataFrame
 
     def partition_value(self, partition_name: str) -> str:
-        return self.partitions.column_value(partition_name)
+        return self.partition.column_value(partition_name)
 
     @classmethod
     def from_dict(cls, partitions_dict: dict[str, str], df: pl.DataFrame) -> "PartitionData":
@@ -79,4 +82,12 @@ class PartitionData:
             else:
                 cols.append(PartitionColumn(name=col, value=val))
 
-        return cls(partitions=PartitionColumns(cols), df=df)
+        return cls(partition=Partition(cols), df=df)
+
+
+@dataclass
+class PartitionMetadata:
+    row_count: int | None = None
+
+
+type WrittenParts = dict[Partition, PartitionMetadata]

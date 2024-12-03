@@ -5,9 +5,13 @@ import pyarrow as pa
 from op_analytics.coreutils.duckdb_local import run_query
 from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.marker import Marker, OutputPartMeta
-from op_analytics.coreutils.partitioned.output import ExpectedOutput, PartitionColumns
-from op_analytics.coreutils.partitioned.partition import PartitionColumn
+from op_analytics.coreutils.partitioned.marker import Marker
+from op_analytics.coreutils.partitioned.output import ExpectedOutput
+from op_analytics.coreutils.partitioned.partition import (
+    PartitionColumn,
+    Partition,
+    PartitionMetadata,
+)
 from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
 from op_analytics.coreutils.time import now
 
@@ -20,26 +24,20 @@ def test_marker():
     run_query(f"DELETE FROM etl_monitor_dev.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'")
 
     marker = Marker(
-        written_parts=[
-            OutputPartMeta(
-                partitions=PartitionColumns(
-                    [
-                        PartitionColumn(name="chain", value="DUMMYCHAIN"),
-                        PartitionColumn(name="dt", value="2024-10-25"),
-                    ]
-                ),
-                row_count=5045,
-            ),
-            OutputPartMeta(
-                partitions=PartitionColumns(
-                    [
-                        PartitionColumn(name="chain", value="DUMMYCHAIN"),
-                        PartitionColumn(name="dt", value="2024-10-26"),
-                    ]
-                ),
-                row_count=14955,
-            ),
-        ],
+        written_parts={
+            Partition(
+                [
+                    PartitionColumn(name="chain", value="DUMMYCHAIN"),
+                    PartitionColumn(name="dt", value="2024-10-25"),
+                ]
+            ): PartitionMetadata(row_count=5045),
+            Partition(
+                [
+                    PartitionColumn(name="chain", value="DUMMYCHAIN"),
+                    PartitionColumn(name="dt", value="2024-10-26"),
+                ]
+            ): PartitionMetadata(row_count=14955),
+        },
         expected_output=ExpectedOutput(
             marker_path=PartitionedMarkerPath(
                 "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json"

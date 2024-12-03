@@ -5,7 +5,7 @@ import polars as pl
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.output import PartitionColumns
+from op_analytics.coreutils.partitioned.output import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.time import date_fromstr, surrounding_dates
 from op_analytics.datapipeline.utils.daterange import DateRange
@@ -74,7 +74,7 @@ def construct_readers(
                 )
 
                 obj = DataReader(
-                    partitions=PartitionColumns.from_tuples(
+                    partitions=Partition.from_tuples(
                         [
                             ("chain", chain),
                             ("dt", dateval.strftime("%Y-%m-%d")),

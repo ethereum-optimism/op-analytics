@@ -8,8 +8,8 @@ from overrides import override
 from op_analytics.coreutils.bigquery.load import load_from_parquet_uris
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.marker import OutputPartMeta
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
+from op_analytics.coreutils.partitioned.partition import WrittenParts, Partition, PartitionMetadata
 from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
 from op_analytics.coreutils.partitioned.writehelper import WriteManager, WriteResult
 
@@ -27,7 +27,7 @@ class BQOutputData:
 
 class BQLoader(WriteManager):
     @override
-    def write_implementation(self, output_data: Any) -> list[OutputPartMeta]:
+    def write_implementation(self, output_data: Any) -> WrittenParts:
         assert isinstance(output_data, BQOutputData)
 
         num_parquet = len(output_data.source_uris)
@@ -43,14 +43,14 @@ class BQLoader(WriteManager):
             clustering_fields=["chain"],
         )
 
-        written_part = OutputPartMeta.from_tuples(
-            partitions=[("dt", output_data.dateval.strftime("%Y-%m-%d"))],
-            row_count=num_parquet,  # Not the actual row count, but the number of paths loaded.
-        )
-
         log.info(f"DONE Loading {num_parquet} files to {bq_destination}")
 
-        return [written_part]
+        return {
+            # Not the actual row count, but the number of paths loaded.
+            Partition.from_tuples(
+                [("dt", output_data.dateval.strftime("%Y-%m-%d"))]
+            ): PartitionMetadata(row_count=num_parquet)
+        }
 
 
 def bq_load(

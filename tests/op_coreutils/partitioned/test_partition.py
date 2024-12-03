@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from op_analytics.coreutils.partitioned.partition import PartitionColumn
+from op_analytics.coreutils.partitioned.partition import PartitionColumn, Partition
 
 
 def test_01():
@@ -29,3 +29,16 @@ def test_04():
 
 def test_05():
     PartitionColumn(name="chain", value="op")
+
+
+def test_hashable():
+    partitions = Partition.from_tuples(
+        [
+            ("chain", "op"),
+            ("dt", "2024-11-22"),
+        ]
+    )
+
+    # Check that PartitionColumns is hashable.
+    d = {}
+    d[partitions] = 0
