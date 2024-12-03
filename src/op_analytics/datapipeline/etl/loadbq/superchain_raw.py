@@ -3,12 +3,9 @@ from op_analytics.coreutils.logger import (
     bound_contextvars,
     structlog,
 )
-from op_analytics.coreutils.partitioned import (
-    DataLocation,
-    DataReader,
-    get_dt,
-    get_root_path,
-)
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.paths import get_dt, get_root_path
+from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chains
 from op_analytics.datapipeline.etl.ingestion.markers import (
     INGESTION_DATASETS,

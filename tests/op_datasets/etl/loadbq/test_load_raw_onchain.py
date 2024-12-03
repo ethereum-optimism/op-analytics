@@ -4,9 +4,9 @@ from unittest.mock import patch
 import polars as pl
 
 from op_analytics.coreutils.duckdb_local.client import init_client as duckb_local_client
-from op_analytics.coreutils.partitioned.dataaccess import init_data_access, DateFilter
+from op_analytics.coreutils.partitioned.dataaccess import DateFilter, init_data_access
+from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.etl.loadbq.superchain_raw import load_superchain_raw_to_bq
-from op_analytics.coreutils.partitioned import DataLocation
 
 MOCK_MARKERS = [
     {

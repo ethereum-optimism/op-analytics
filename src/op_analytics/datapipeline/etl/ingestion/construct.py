@@ -1,8 +1,7 @@
 from op_analytics.coreutils import clickhouse
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned import DataLocation
+from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.threads import run_concurrently
-
 from op_analytics.datapipeline.utils.blockrange import BlockRange
 from op_analytics.datapipeline.utils.timerange import TimeRange
 

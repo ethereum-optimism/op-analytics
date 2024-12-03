@@ -9,16 +9,12 @@ import pyarrow as pa
 from op_analytics.coreutils.duckdb_inmem import init_client
 from op_analytics.coreutils.env.aware import OPLabsEnvironment, current_environment
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned import (
-    DataLocation,
-    DataWriter,
-    ExpectedOutput,
-    OutputData,
-    PartitionedMarkerPath,
-    PartitionedRootPath,
-)
 from op_analytics.coreutils.partitioned.breakout import breakout_partitions
 from op_analytics.coreutils.partitioned.dataaccess import DateFilter, MarkerFilter, init_data_access
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
+from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
+from op_analytics.coreutils.partitioned.writer import DataWriter
 from op_analytics.coreutils.path import repo_path
 from op_analytics.coreutils.time import date_fromstr, now_friendly_timestamp
 from op_analytics.datapipeline.utils.daterange import DateRange

@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from typing import NewType
 
 import duckdb
-from op_analytics.coreutils.partitioned import DataReader, DataWriter
+
+from op_analytics.coreutils.partitioned.reader import DataReader
+from op_analytics.coreutils.partitioned.writer import DataWriter
 
 BatchDate = NewType("BatchDate", str)
 

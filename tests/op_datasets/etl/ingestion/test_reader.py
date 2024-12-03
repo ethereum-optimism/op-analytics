@@ -2,7 +2,7 @@ import datetime
 
 import polars as pl
 
-from op_analytics.coreutils.partitioned import DataLocation
+from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.etl.ingestion.reader import are_inputs_ready
 
 MARKER_PATHS_DATA = [

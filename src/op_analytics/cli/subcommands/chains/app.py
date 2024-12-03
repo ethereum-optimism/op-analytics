@@ -6,7 +6,7 @@ from typing_extensions import Annotated
 
 import op_analytics.datapipeline.rpcs as rpcs
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned import DataLocation
+from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.chains import goldsky_chains
 from op_analytics.datapipeline.chains.upload import upload_all
 from op_analytics.datapipeline.etl.ingestion import ingest

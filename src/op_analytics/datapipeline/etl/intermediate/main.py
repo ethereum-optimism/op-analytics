@@ -1,14 +1,15 @@
 from op_analytics.coreutils.duckdb_inmem import init_client
 from op_analytics.coreutils.logger import (
     bind_contextvars,
-    structlog,
     bound_contextvars,
+    structlog,
 )
-from op_analytics.coreutils.partitioned import DataLocation, OutputData
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.output import OutputData
 
 from .construct import construct_tasks
-from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .modelexecute import PythonModelExecutor
+from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .task import IntermediateModelsTask
 from .udfs import create_duckdb_macros
 

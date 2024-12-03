@@ -1,20 +1,16 @@
 import pyarrow as pa
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned import (
-    DataLocation,
-    DataReader,
-    PartitionedMarkerPath,
-    PartitionedRootPath,
-    DataWriter,
-    ExpectedOutput,
-)
-
-from op_analytics.datapipeline.etl.ingestion.reader import construct_readers
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.output import ExpectedOutput
+from op_analytics.coreutils.partitioned.reader import DataReader
+from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
+from op_analytics.coreutils.partitioned.writer import DataWriter
 from op_analytics.datapipeline.etl.ingestion.markers import (
     INGESTION_DATASETS,
     INGESTION_MARKERS_TABLE,
 )
+from op_analytics.datapipeline.etl.ingestion.reader import construct_readers
 
 from .markers import INTERMEDIATE_MODELS_MARKERS_TABLE
 from .registry import REGISTERED_INTERMEDIATE_MODELS

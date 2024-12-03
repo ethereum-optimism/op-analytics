@@ -1,6 +1,6 @@
 import pytest
 
-from op_analytics.coreutils.partitioned import DataLocation
+from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.etl.ingestion.batches import (
     BlockBatch,
     Delimiter,

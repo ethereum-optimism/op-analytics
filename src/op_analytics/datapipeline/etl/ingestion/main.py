@@ -10,10 +10,9 @@ from op_analytics.coreutils.logger import (
     human_rows,
     structlog,
 )
-from op_analytics.coreutils.partitioned import (
-    DataLocation,
-    OutputData,
-)
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.output import OutputData
+
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS

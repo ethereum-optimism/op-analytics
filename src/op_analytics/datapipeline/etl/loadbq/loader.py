@@ -3,19 +3,15 @@ from datetime import date
 from typing import Any
 
 import pyarrow as pa
-
-from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.bigquery.load import load_from_parquet_uris
-from op_analytics.coreutils.partitioned import (
-    DataLocation,
-    ExpectedOutput,
-    OutputPartMeta,
-    WriteManager,
-    PartitionedRootPath,
-    PartitionedMarkerPath,
-)
 from overrides import override
 
+from op_analytics.coreutils.bigquery.load import load_from_parquet_uris
+from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.marker import OutputPartMeta
+from op_analytics.coreutils.partitioned.output import ExpectedOutput
+from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
+from op_analytics.coreutils.partitioned.writehelper import WriteManager
 
 log = structlog.get_logger()
 

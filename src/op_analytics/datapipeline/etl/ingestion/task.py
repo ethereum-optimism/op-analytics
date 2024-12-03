@@ -3,19 +3,14 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
 
-import pyarrow as pa
 import polars as pl
+import pyarrow as pa
+
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned import (
-    DataLocation,
-    OutputData,
-    ExpectedOutput,
-    PartitionedMarkerPath,
-    PartitionedRootPath,
-    DataWriter,
-)
-
-
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
+from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
+from op_analytics.coreutils.partitioned.writer import DataWriter
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
 from .batches import BlockBatch
