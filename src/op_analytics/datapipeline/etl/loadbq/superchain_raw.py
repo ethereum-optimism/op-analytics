@@ -6,7 +6,6 @@ from op_analytics.coreutils.logger import (
 from op_analytics.coreutils.partitioned import (
     DataLocation,
     DataReader,
-    construct_input_batches,
     get_dt,
     get_root_path,
 )
@@ -15,6 +14,7 @@ from op_analytics.datapipeline.etl.ingestion.markers import (
     INGESTION_DATASETS,
     INGESTION_MARKERS_TABLE,
 )
+from op_analytics.datapipeline.etl.ingestion.reader import construct_readers
 
 from .loader import bq_load
 from .task import consolidate_chains
@@ -41,7 +41,7 @@ def load_superchain_raw_to_bq(
     location.ensure_biguqery()
 
     chains = goldsky_mainnet_chains()
-    inputs: list[DataReader] = construct_input_batches(
+    inputs: list[DataReader] = construct_readers(
         chains=chains,
         range_spec=range_spec,
         read_from=DataLocation.GCS,

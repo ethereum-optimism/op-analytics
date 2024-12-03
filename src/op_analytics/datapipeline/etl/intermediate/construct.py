@@ -4,13 +4,13 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned import (
     DataLocation,
     DataReader,
-    construct_input_batches,
     PartitionedMarkerPath,
     PartitionedRootPath,
     DataWriter,
     ExpectedOutput,
 )
 
+from op_analytics.datapipeline.etl.ingestion.reader import construct_readers
 from op_analytics.datapipeline.etl.ingestion.markers import (
     INGESTION_DATASETS,
     INGESTION_MARKERS_TABLE,
@@ -28,7 +28,7 @@ def construct_data_readers(
     range_spec: str,
     read_from: DataLocation,
 ) -> list[DataReader]:
-    return construct_input_batches(
+    return construct_readers(
         chains=chains,
         range_spec=range_spec,
         read_from=read_from,
@@ -50,22 +50,23 @@ def construct_tasks(
     shared duckdb macros that are used across models.
     """
 
-    batches: list[DataReader] = construct_data_readers(
+    readers: list[DataReader] = construct_data_readers(
         chains=chains,
         range_spec=range_spec,
         read_from=read_from,
     )
 
     tasks = []
-    for batch in batches:
+    for reader in readers:
         # Each model can have one or more outputs. There is 1 marker per output.
         expected_outputs = []
         for model in models:
             for dataset in REGISTERED_INTERMEDIATE_MODELS[model].expected_output_datasets:
                 full_model_name = f"{model}/{dataset}"
 
-                datestr = batch.dateval.strftime("%Y%m%d")
-                chain = batch.chain
+                datestr = reader.partition_value("dt")
+                chain = reader.partition_value("chain")
+
                 marker_path = PartitionedMarkerPath(f"{datestr}/{chain}/{model}/{dataset}")
 
                 expected_outputs.append(
@@ -88,7 +89,7 @@ def construct_tasks(
 
         tasks.append(
             IntermediateModelsTask(
-                data_reader=batch,
+                data_reader=reader,
                 models=models,
                 output_duckdb_relations={},
                 data_writer=DataWriter(
