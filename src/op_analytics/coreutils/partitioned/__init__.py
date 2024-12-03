@@ -1,6 +1,6 @@
 """Utilities for partitioned storage."""
 
-from .reader import DataReader, construct_input_batches
+from .reader import DataReader
 from .location import DataLocation, MarkersLocation
 from .marker import Marker
 from .output import OutputData, ExpectedOutput, OutputPartMeta, PartitionColumn

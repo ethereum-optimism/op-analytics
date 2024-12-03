@@ -40,8 +40,15 @@ class PartitionColumns:
 
     cols: list[PartitionColumn]
 
+    @classmethod
+    def from_tuples(cls, partitions: list[tuple[str, str]]):
+        return cls(cols=[PartitionColumn(name=k, value=v) for k, v in partitions])
+
     def __iter__(self):
         return iter(self.cols)
+
+    def as_dict(self):
+        return {col.name: col.value for col in self.cols}
 
     @property
     def path(self):
@@ -122,7 +129,7 @@ class OutputPartMeta:
     @classmethod
     def from_tuples(cls, partitions: list[tuple[str, str]], row_count: int):
         return cls(
-            partitions=PartitionColumns([PartitionColumn(name=k, value=v) for k, v in partitions]),
+            partitions=PartitionColumns.from_tuples(partitions),
             row_count=row_count,
         )
 

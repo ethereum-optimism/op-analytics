@@ -47,7 +47,7 @@ def compute_intermediate(
     for i, task in enumerate(tasks):
         bind_contextvars(
             task=f"{i+1}/{len(tasks)}",
-            **task.data_reader.contextvars,
+            **task.data_reader.partitions_dict(),
         )
 
         # Decide if we need to run this task.
@@ -102,9 +102,6 @@ def executor(task: IntermediateModelsTask) -> None:
                         output_data=OutputData(
                             dataframe=rel.pl(),
                             dataset_name=f"{model_name}/{result_name}",
-                            default_partition={
-                                "chain": task.data_reader.chain,
-                                "dt": task.data_reader.datestr,
-                            },
+                            default_partition=task.data_reader.partitions_dict(),
                         ),
                     )
