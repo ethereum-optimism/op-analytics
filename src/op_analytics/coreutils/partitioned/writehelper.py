@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Any
 
 from overrides import EnforceOverrides
 
@@ -7,14 +6,21 @@ from op_analytics.coreutils.logger import structlog
 
 from .dataaccess import init_data_access
 from .location import DataLocation
-from .marker import OutputPartMeta
+from .marker import Marker
 from .output import ExpectedOutput
+from .partition import WrittenParts
 
 log = structlog.get_logger()
 
 
 @dataclass
-class WriteManager(EnforceOverrides):
+class WriteResult:
+    status: str
+    written_parts: WrittenParts
+
+
+@dataclass
+class WriteManager[T](EnforceOverrides):
     """Helper class that allows arbitrary write logic and handles completion markers.
 
     - If completion markers exist no data is written.
@@ -26,10 +32,10 @@ class WriteManager(EnforceOverrides):
     markers_table: str
     force: bool
 
-    def write_implementation(self, output_data: Any) -> list[OutputPartMeta]:
+    def write_implementation(self, output_data: T) -> WrittenParts:
         raise NotImplementedError()
 
-    def write(self, output_data: Any) -> list[OutputPartMeta]:
+    def write(self, output_data: T) -> WriteResult:
         client = init_data_access()
 
         is_complete = client.marker_exists(
@@ -42,16 +48,20 @@ class WriteManager(EnforceOverrides):
             log.info(
                 f"[{self.location.name}] Skipping already complete output at {self.expected_output.marker_path}"
             )
-            return []
+            return WriteResult(status="skipped", written_parts={})
 
         written_parts = self.write_implementation(output_data)
 
-        client.write_marker(
-            data_location=self.location,
+        marker = Marker(
             expected_output=self.expected_output,
             written_parts=written_parts,
+        )
+
+        client.write_marker(
+            data_location=self.location,
+            marker=marker,
             markers_table=self.markers_table,
         )
         log.debug(f"done writing {self.expected_output.root_path} to {self.location.name}")
 
-        return written_parts
+        return WriteResult(status="success", written_parts=written_parts)

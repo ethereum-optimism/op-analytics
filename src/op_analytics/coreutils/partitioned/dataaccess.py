@@ -23,8 +23,7 @@ from op_analytics.coreutils.storage.gcs_parquet import (
 )
 
 from .location import DataLocation, MarkersLocation, marker_location
-from .marker import Marker, OutputPartMeta
-from .output import ExpectedOutput
+from .marker import Marker
 from .types import PartitionedMarkerPath
 
 _CLIENT = None
@@ -133,8 +132,7 @@ class PartitionedDataAccess:
     def write_marker(
         self,
         data_location: DataLocation,
-        expected_output: ExpectedOutput,
-        written_parts: list[OutputPartMeta],
+        marker: Marker,
         markers_table: str,
     ):
         """Write marker.
@@ -146,10 +144,7 @@ class PartitionedDataAccess:
         Markers for local output are written to DuckDB
 
         """
-        marker = Marker(
-            expected_output=expected_output,
-            written_parts=written_parts,
-        )
+
         arrow_table = marker.to_pyarrow_table()
 
         if data_location in (DataLocation.GCS, DataLocation.BIGQUERY):

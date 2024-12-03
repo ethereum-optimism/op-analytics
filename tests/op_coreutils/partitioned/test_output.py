@@ -1,7 +1,7 @@
 import pyarrow as pa
 
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
-from op_analytics.coreutils.partitioned.partition import PartitionColumn, PartitionColumns
+from op_analytics.coreutils.partitioned.partition import PartitionColumn, Partition
 from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
 
 
@@ -20,7 +20,7 @@ def test_01():
     )
 
     actual = expected_output.full_path(
-        partitions=PartitionColumns(
+        partition=Partition(
             [
                 PartitionColumn(name="chain", value="op"),
                 PartitionColumn(name="dt", value="2023-10-30"),

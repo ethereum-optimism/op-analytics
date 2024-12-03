@@ -5,32 +5,21 @@ import pyarrow as pa
 
 from op_analytics.coreutils.time import date_fromstr, now
 
-from .partition import PartitionColumns
 from .output import ExpectedOutput
-
-
-@dataclass
-class OutputPartMeta:
-    """Metadata for an output part."""
-
-    partitions: PartitionColumns
-    row_count: int
-
-    @classmethod
-    def from_tuples(cls, partitions: list[tuple[str, str]], row_count: int):
-        return cls(
-            partitions=PartitionColumns.from_tuples(partitions),
-            row_count=row_count,
-        )
+from .partition import WrittenParts
 
 
 @dataclass
 class Marker:
-    """Represent a marker for a collection of objects written to storage."""
+    """Marks that data has been processed and written out.
+
+    A marker is associated with a single ExpectedOutput and one or more
+    parquet files written to storage.
+    """
 
     expected_output: ExpectedOutput
 
-    written_parts: list[OutputPartMeta]
+    written_parts: WrittenParts
 
     @property
     def marker_path(self):
@@ -58,30 +47,30 @@ class Marker:
         current_time = now()
         hostname = socket.gethostname()
         rows = []
-        for parquet_out in self.written_parts:
+        for partition, partition_metadata in self.written_parts.items():
             parquet_out_row = {
                 "updated_at": current_time,
                 "marker_path": self.expected_output.marker_path,
                 "root_path": self.expected_output.root_path,
                 "num_parts": len(self.written_parts),
                 "dataset_name": "",
-                "data_path": self.expected_output.full_path(parquet_out.partitions),
-                "row_count": parquet_out.row_count,
+                "data_path": self.expected_output.full_path(partition),
+                "row_count": partition_metadata.row_count,
                 "process_name": self.expected_output.process_name,
                 "writer_name": hostname,
             }
 
-            for partition in parquet_out.partitions:
-                sch = schema.field(partition.name)
+            for col in partition:
+                sch = schema.field(col.name)
                 if sch.type == pa.date32():
-                    if isinstance(partition.value, str):
-                        parquet_out_row[partition.name] = date_fromstr(partition.value)
+                    if isinstance(col.value, str):
+                        parquet_out_row[col.name] = date_fromstr(col.value)
                     else:
                         raise NotImplementedError(
-                            f"unsupported value for date partition: {partition.value}"
+                            f"unsupported value for date partition: {col.value}"
                         )
                 else:
-                    parquet_out_row[partition.name] = partition.value
+                    parquet_out_row[col.name] = col.value
 
             rows.append(parquet_out_row)
 

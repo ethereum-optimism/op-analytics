@@ -7,7 +7,7 @@ from op_analytics.coreutils.logger import structlog
 
 
 from .location import DataLocation
-from .output import PartitionColumns
+from .output import Partition
 
 log = structlog.get_logger()
 
@@ -29,7 +29,7 @@ class DataReader:
     data into BigQuery).
     """
 
-    partitions: PartitionColumns
+    partitions: Partition
 
     # Source
     read_from: DataLocation

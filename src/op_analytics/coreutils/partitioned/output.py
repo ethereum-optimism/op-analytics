@@ -5,7 +5,7 @@ from typing import Any
 import polars as pl
 import pyarrow as pa
 
-from .partition import PartitionColumns
+from .partition import Partition
 from .types import PartitionedMarkerPath, PartitionedRootPath
 
 
@@ -33,7 +33,7 @@ class ExpectedOutput:
     # into the markers table.
     additional_columns_schema: list[pa.Field]
 
-    def full_path(self, partitions: PartitionColumns):
+    def full_path(self, partition: Partition):
         """Produce the full path for this expected output.
 
         The full path is a combination of:
@@ -46,7 +46,7 @@ class ExpectedOutput:
 
         ingestion/chain=op/dt=2024-11-01/00001000.parquet
         """
-        return os.path.join(self.root_path, partitions.path, self.file_name)
+        return os.path.join(self.root_path, partition.path, self.file_name)
 
 
 @dataclass

@@ -8,10 +8,10 @@ from op_analytics.coreutils.logger import bound_contextvars, structlog
 from .breakout import breakout_partitions
 from .dataaccess import init_data_access
 from .location import DataLocation
-from .marker import OutputPartMeta
 from .output import ExpectedOutput, OutputData
+from .partition import WrittenParts, PartitionMetadata
 from .status import all_outputs_complete
-from .writehelper import WriteManager
+from .writehelper import WriteManager, WriteResult
 
 log = structlog.get_logger()
 
@@ -59,7 +59,7 @@ class DataWriter:
             )
         return self._is_complete
 
-    def write(self, output_data: OutputData) -> list[OutputPartMeta]:
+    def write(self, output_data: OutputData) -> WriteResult:
         """Write data and corresponding marker."""
 
         # Locate the expected output that coresponds to the given output_data.
@@ -84,7 +84,7 @@ class PartitionedWriteManager(WriteManager):
     partition_cols: list[str]
 
     @override
-    def write_implementation(self, output_data: Any) -> list[OutputPartMeta]:
+    def write_implementation(self, output_data: Any) -> WrittenParts:
         assert isinstance(output_data, OutputData)
 
         client = init_data_access()
@@ -95,18 +95,13 @@ class PartitionedWriteManager(WriteManager):
             default_partition=output_data.default_partition,
         )
 
-        parts_meta: list[OutputPartMeta] = []
+        written = {}
         for part in parts:
             client.write_single_part(
                 location=self.location,
                 dataframe=part.df,
-                full_path=self.expected_output.full_path(part.partitions),
+                full_path=self.expected_output.full_path(part.partition),
             )
-            parts_meta.append(
-                OutputPartMeta(
-                    partitions=part.partitions,
-                    row_count=len(part.df),
-                )
-            )
+            written[part.partition] = PartitionMetadata(row_count=len(part.df))
 
-        return parts_meta
+        return written
