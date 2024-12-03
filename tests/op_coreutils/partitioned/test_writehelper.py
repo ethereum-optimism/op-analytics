@@ -42,7 +42,6 @@ def test_parquet_writer():
         partition_cols=["chain", "dt"],
         location=DataLocation.LOCAL,
         expected_output=ExpectedOutput(
-            dataset_name="daily_address_summary/summary_v1",
             root_path=PartitionedRootPath("intermediate/daily_address_summary/summary_v1"),
             file_name="out.parquet",
             marker_path=PartitionedMarkerPath("BLAH"),
@@ -62,7 +61,7 @@ def test_parquet_writer():
         manager.write(
             OutputData(
                 dataframe=df,
-                dataset_name="daily_address_summary/summary_v1",
+                root_path="intermediate/daily_address_summary/summary_v1",
                 default_partition=None,
             )
         )
@@ -114,7 +113,7 @@ def test_parquet_writer():
     assert markers == [
         {
             "marker_path": "BLAH",
-            "dataset_name": "daily_address_summary/summary_v1",
+            "dataset_name": "",
             "root_path": "intermediate/daily_address_summary/summary_v1",
             "num_parts": 4,
             "data_path": "intermediate/daily_address_summary/summary_v1/chain=DUMMYBASE/dt=2024-01-01/out.parquet",
@@ -126,7 +125,7 @@ def test_parquet_writer():
         },
         {
             "marker_path": "BLAH",
-            "dataset_name": "daily_address_summary/summary_v1",
+            "dataset_name": "",
             "root_path": "intermediate/daily_address_summary/summary_v1",
             "num_parts": 4,
             "data_path": "intermediate/daily_address_summary/summary_v1/chain=DUMMYOP/dt=2024-01-01/out.parquet",
@@ -138,7 +137,7 @@ def test_parquet_writer():
         },
         {
             "marker_path": "BLAH",
-            "dataset_name": "daily_address_summary/summary_v1",
+            "dataset_name": "",
             "root_path": "intermediate/daily_address_summary/summary_v1",
             "num_parts": 4,
             "data_path": "intermediate/daily_address_summary/summary_v1/chain=DUMMYBASE/dt=2024-01-02/out.parquet",
@@ -150,7 +149,7 @@ def test_parquet_writer():
         },
         {
             "marker_path": "BLAH",
-            "dataset_name": "daily_address_summary/summary_v1",
+            "dataset_name": "",
             "root_path": "intermediate/daily_address_summary/summary_v1",
             "num_parts": 4,
             "data_path": "intermediate/daily_address_summary/summary_v1/chain=DUMMYOP/dt=2024-01-03/out.parquet",

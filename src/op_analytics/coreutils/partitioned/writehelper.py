@@ -52,6 +52,6 @@ class WriteManager(EnforceOverrides):
             written_parts=written_parts,
             markers_table=self.markers_table,
         )
-        log.debug(f"done writing {self.expected_output.dataset_name} to {self.location.name}")
+        log.debug(f"done writing {self.expected_output.root_path} to {self.location.name}")
 
         return written_parts

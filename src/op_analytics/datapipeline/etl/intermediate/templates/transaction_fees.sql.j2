@@ -5,7 +5,7 @@ pb AS (
     number,
     base_fee_per_gas
   FROM
-    blocks
+    ingestion_blocks_v1
 ),
 
 -- Select the columns that we want from transactions joined to blocks.
@@ -40,7 +40,7 @@ pt1 AS (
     coalesce(16 * micro(t.receipt_l1_base_fee_scalar), t.receipt_l1_fee_scalar::DECIMAL(12, 6))
       AS l1_base_scalar,
     coalesce(micro(t.receipt_l1_blob_base_fee_scalar), 0) AS l1_blob_scalar
-  FROM transactions AS t
+  FROM ingestion_transactions_v1 AS t
   INNER JOIN pb AS b ON t.block_number = b.number
   WHERE
     t.gas_price > 0

@@ -21,6 +21,11 @@ from .udfs import create_duckdb_macros
 log = structlog.get_logger()
 
 
+def input_table_name(dataset_name: str) -> str:
+    valid_table_name = dataset_name.replace("/", "_")
+    return f"input_data_{valid_table_name}"
+
+
 @dataclass
 class DataReaderTestUtil:
     client: duckdb.DuckDBPyConnection
@@ -31,7 +36,7 @@ class DataReaderTestUtil:
         first_n_parquet_files: int | None = None,
     ) -> duckdb.DuckDBPyRelation:
         assert self.client is not None
-        return self.client.sql(f"SELECT * FROM input_data_{dataset}")
+        return self.client.sql(f"SELECT * FROM {input_table_name(dataset)}")
 
 
 class IntermediateModelTestBase(unittest.TestCase):
@@ -147,10 +152,6 @@ class IntermediateModelTestBase(unittest.TestCase):
         cls._duckdb_client.close()
 
     @classmethod
-    def input_table_name(self, dataset_name: str) -> str:
-        return f"input_data_{dataset_name}"
-
-    @classmethod
     def _tables_exist(cls, datasets: list[str]) -> bool:
         """Helper function to check if the test database already contains the test data."""
         assert cls._duckdb_client is not None
@@ -160,7 +161,7 @@ class IntermediateModelTestBase(unittest.TestCase):
             .to_list()
         )
         for dataset in datasets:
-            if cls.input_table_name(dataset) not in tables:
+            if input_table_name(dataset) not in tables:
                 return False
         return True
 
@@ -182,7 +183,7 @@ class IntermediateModelTestBase(unittest.TestCase):
         for dataset in datasets:
             rel = task.data_reader.duckdb_relation(dataset)
 
-            if dataset == "blocks":
+            if "blocks" in dataset:
                 block_number_col = "number"
             else:
                 block_number_col = "block_number"
@@ -192,7 +193,7 @@ class IntermediateModelTestBase(unittest.TestCase):
             )
 
             arrow_table = rel.filter(block_filter).to_arrow_table()  # noqa: F841
-            table_name = cls.input_table_name(dataset)
+            table_name = input_table_name(dataset)
 
             assert cls._duckdb_client is not None
             cls._duckdb_client.sql(f"CREATE TABLE {table_name} AS SELECT * FROM arrow_table")

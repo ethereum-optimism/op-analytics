@@ -32,6 +32,10 @@ class PythonModel:
         return self.model_func
 
 
+def sanitized_table_name(dataset_name: str) -> str:
+    return dataset_name.replace("/", "_")
+
+
 @dataclass
 class PythonModelExecutor:
     model: PythonModel
@@ -43,7 +47,7 @@ class PythonModelExecutor:
         # Register input data as views on the duckdb client.
         for dataset in self.model.input_datasets:
             self.client.register(
-                view_name=dataset,
+                view_name=sanitized_table_name(dataset),
                 python_object=self.data_reader.duckdb_relation(
                     dataset=dataset,
                     first_n_parquet_files=self.limit_input_parquet_files,

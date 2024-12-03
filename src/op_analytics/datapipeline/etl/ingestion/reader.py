@@ -18,7 +18,7 @@ def construct_readers(
     range_spec: str,
     read_from: DataLocation,
     markers_table: str,
-    dataset_names: list[str],
+    root_paths: list[str],
 ) -> list[DataReader]:
     """Construct a list of DataReader for the given parameters.
 
@@ -43,7 +43,7 @@ def construct_readers(
         markers_table=markers_table,
         datevals=date_range.padded_dates(),
         chains=chains,
-        dataset_names=dataset_names,
+        root_paths=root_paths,
     )
 
     num_suspect = 0
@@ -69,7 +69,7 @@ def construct_readers(
                 inputs_ready, dataset_paths = are_inputs_ready(
                     markers_df=filtered_df,
                     dateval=dateval,
-                    input_datasets=set(dataset_names),
+                    input_root_paths=set(root_paths),
                     storage_location=read_from,
                 )
 
@@ -100,7 +100,7 @@ def construct_readers(
 def are_inputs_ready(
     markers_df: pl.DataFrame,
     dateval: date,
-    input_datasets: set[str],
+    input_root_paths: set[str],
     storage_location: DataLocation,
 ) -> tuple[bool, dict[str, list[str]]]:
     """Decide if we the input data for a given date is complete.
@@ -117,17 +117,17 @@ def are_inputs_ready(
         "num_blocks": pl.Int32,
         "min_block": pl.Int64,
         "max_block": pl.Int64,
-        "dataset_name": pl.String,
+        "root_path": pl.String,
         "data_path": pl.String,
     }
     all_ready = True
 
     dataset_paths = {}
-    for dataset in input_datasets:
-        dataset_df = markers_df.filter(pl.col("dataset_name") == dataset)
+    for root_path in input_root_paths:
+        dataset_df = markers_df.filter(pl.col("root_path") == root_path)
 
         dataset_ready = is_dataset_ready(
-            dataset_name=dataset,
+            root_path=root_path,
             dataset_df=dataset_df,
             dateval=dateval,
         )
@@ -138,13 +138,13 @@ def are_inputs_ready(
         for row in dataset_df.filter(pl.col("dt") == dateval).to_dicts():
             parquet_paths.append(storage_location.absolute(row["data_path"]))
 
-        dataset_paths[dataset] = sorted(set(parquet_paths))
+        dataset_paths[root_path] = sorted(set(parquet_paths))
 
     return all_ready, dataset_paths
 
 
-def is_dataset_ready(dataset_name: str, dataset_df: pl.DataFrame, dateval: date) -> bool:
-    with bound_contextvars(dataset=dataset_name):
+def is_dataset_ready(root_path: str, dataset_df: pl.DataFrame, dateval: date) -> bool:
+    with bound_contextvars(dataset=root_path):
         if dataset_df.is_empty():
             log.warning("no data")
             return False

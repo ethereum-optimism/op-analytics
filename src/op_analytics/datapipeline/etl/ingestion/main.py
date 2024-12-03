@@ -176,7 +176,7 @@ def auditor(task: IngestionTask):
         task.store_output(
             OutputData(
                 dataframe=df,
-                dataset_name=name,
+                root_path=task.block_batch.dataset_directory(dataset_name=name),
                 default_partition=default_partition,
             )
         )
@@ -207,7 +207,7 @@ def writer(task: IngestionTask):
         parts = task.data_writer.write(output_data)
 
         for part in parts:
-            total_rows[output_data.dataset_name] += part.row_count
+            total_rows[output_data.root_path] += part.row_count
 
     summary = " ".join(f"{key}={human_rows(val)}" for key, val in total_rows.items())
     summary = f"{task.data_writer.write_to.name}::{summary}"

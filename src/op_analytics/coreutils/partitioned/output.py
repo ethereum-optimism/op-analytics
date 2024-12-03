@@ -13,9 +13,6 @@ from .types import PartitionedMarkerPath, PartitionedRootPath
 class ExpectedOutput:
     """Information about a dataset that is expectd to be produced by a task."""
 
-    # Name of the datset.
-    dataset_name: str
-
     # Root path that will be used for the partitioned output.
     root_path: PartitionedRootPath
 
@@ -56,8 +53,8 @@ class ExpectedOutput:
 class OutputData:
     dataframe: pl.DataFrame
 
-    # Name of the datset.
-    dataset_name: str
+    # Root path
+    root_path: str
 
     # Default partition values for cases when the output datafarame is empty
     # and therefore has no implicit partition values.

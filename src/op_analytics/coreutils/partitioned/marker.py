@@ -64,7 +64,7 @@ class Marker:
                 "marker_path": self.expected_output.marker_path,
                 "root_path": self.expected_output.root_path,
                 "num_parts": len(self.written_parts),
-                "dataset_name": self.expected_output.dataset_name,
+                "dataset_name": "",
                 "data_path": self.expected_output.full_path(parquet_out.partitions),
                 "row_count": parquet_out.row_count,
                 "process_name": self.expected_output.process_name,

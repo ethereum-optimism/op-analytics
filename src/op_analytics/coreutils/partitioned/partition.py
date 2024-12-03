@@ -1,5 +1,6 @@
 import re
 from dataclasses import dataclass
+from datetime import date
 
 import polars as pl
 
@@ -71,9 +72,11 @@ class PartitionData:
 
     @classmethod
     def from_dict(cls, partitions_dict: dict[str, str], df: pl.DataFrame) -> "PartitionData":
-        return cls(
-            partitions=PartitionColumns(
-                [PartitionColumn(name=col, value=val) for col, val in partitions_dict.items()]
-            ),
-            df=df,
-        )
+        cols = []
+        for col, val in partitions_dict.items():
+            if col == "dt" and isinstance(val, date):
+                cols.append(PartitionColumn(name=col, value=val.strftime("%Y-%m-%d")))
+            else:
+                cols.append(PartitionColumn(name=col, value=val))
+
+        return cls(partitions=PartitionColumns(cols), df=df)

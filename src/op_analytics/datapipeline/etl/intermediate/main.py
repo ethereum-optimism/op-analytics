@@ -33,7 +33,7 @@ def compute_intermediate(
         should_exit = False
         if model not in REGISTERED_INTERMEDIATE_MODELS:
             should_exit = True
-            log.error("Model is not registered: {model}")
+            log.error(f"Model is not registered: {model}")
         if should_exit:
             log.error("Cannot run on unregistered models. Will exit.")
             exit(1)
@@ -102,7 +102,7 @@ def executor(task: IntermediateModelsTask) -> None:
                     task.data_writer.write(
                         output_data=OutputData(
                             dataframe=rel.pl(),
-                            dataset_name=f"{model_name}/{result_name}",
+                            root_path=f"intermediate/{model_name}/{result_name}",
                             default_partition=task.data_reader.partitions_dict(),
                         ),
                     )

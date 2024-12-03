@@ -89,7 +89,6 @@ class IngestionTask:
             # Construct expected output for the dataset.
             expected_outputs.append(
                 ExpectedOutput(
-                    dataset_name=name,
                     root_path=PartitionedRootPath(data_directory),
                     file_name=block_batch.construct_parquet_filename(),
                     marker_path=full_marker_path,

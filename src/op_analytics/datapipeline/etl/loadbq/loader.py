@@ -69,7 +69,6 @@ def bq_load(
     manager = BQLoader(
         location=location,
         expected_output=ExpectedOutput(
-            dataset_name=bq_table_name,
             root_path=PartitionedRootPath(""),  # Not meaningful for BQ Load
             file_name="",  # Not meaningful for BQ Load
             marker_path=PartitionedMarkerPath(

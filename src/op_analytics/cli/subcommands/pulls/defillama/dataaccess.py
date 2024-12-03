@@ -148,7 +148,6 @@ def write(
             markers_table=MARKERS_TABLE,
             expected_outputs=[
                 ExpectedOutput(
-                    dataset_name=dataset.value,
                     root_path=PartitionedRootPath(root),
                     file_name="out.parquet",
                     marker_path=PartitionedMarkerPath(f"{datestr}/{root}"),
@@ -172,7 +171,7 @@ def write(
         writer.write(
             output_data=OutputData(
                 dataframe=part.df.with_columns(dt=pl.lit(datestr)),
-                dataset_name=dataset.value,
+                root_path=f"defillama/{dataset.value}",
                 default_partition=None,
             )
         )

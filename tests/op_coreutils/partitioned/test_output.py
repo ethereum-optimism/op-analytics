@@ -7,7 +7,6 @@ from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, Part
 
 def test_01():
     expected_output = ExpectedOutput(
-        dataset_name="daily_address_summary/summary_v1",
         root_path=PartitionedRootPath("intermediate/daily_address_summary/summary_v1"),
         file_name="out.parquet",
         marker_path=PartitionedMarkerPath("BLAH"),
