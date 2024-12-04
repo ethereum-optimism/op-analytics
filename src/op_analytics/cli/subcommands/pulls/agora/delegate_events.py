@@ -7,11 +7,10 @@ from op_analytics.cli.subcommands.pulls.agora.data_access import (
 )
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data
-from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.threads import run_concurrently_store_failures
 
 from typing import Any
 import requests
-import requests.exceptions
 import pandas as pd
 import os
 
@@ -73,43 +72,26 @@ class SimplePaginator:
         return all_data
 
 
-def fetch_event_data(delegates: list, batch_size: int, endpoint: str, workers: int) -> pd.DataFrame:
-    failed_addresses = []
-
-    def _fetch_with_fallback(address: str, endpoint: str) -> list:
+def fetch_event_data(delegates: list, endpoint: str, workers: int) -> pd.DataFrame:
+    def fetch_delegate_data(address: str, endpoint: str) -> list:
         paginator = SimplePaginator(url=f"{BASE_URL}/delegates/{address}/{endpoint}", limit=50)
         try:
             return paginator.fetch_all()
         except requests.exceptions.HTTPError as e:
-            if e.response.status_code == 500:
-                log.error(f"Internal Server Error for address: {address}, URL: {e.response.url}")
-            else:
-                log.error(
-                    f"HTTP Error for address: {address}, URL: {e.response.url}, Status Code: {e.response.status_code}"
-                )
-            failed_addresses.append(address)
+            log.error(
+                f"HTTP Error for address: {address}, URL: {e.response.url}, Status Code: {e.response.status_code}"
+            )
             return []
 
-    all_delegate_data = []
+    run_results = run_concurrently_store_failures(
+        function=fetch_delegate_data,
+        targets=delegates,
+        max_workers=workers,
+        function_args=(endpoint,),
+    )
 
-    for i in range(0, len(delegates), batch_size):
-        delegate_data = run_concurrently(
-            function=_fetch_with_fallback,
-            targets=delegates[i : i + batch_size],
-            max_workers=workers,
-        )
-
-        all_delegate_data.append(delegate_data)
-        log.info(f"Fetched {endpoint} for {i} -- {i+batch_size}")
-    # Retry the failed addresses
-    for address in failed_addresses:
-        delegate_data = run_concurrently(
-            function=_fetch_with_fallback,
-            targets=[address],
-            max_workers=workers,
-        )
-        failed_addresses.remove(address)
-        all_delegate_data.append(delegate_data)
+    all_delegate_data = run_results.results.values()
+    failed_addresses = run_results.failures.keys()
 
     if len(failed_addresses) > 0:
         log.error(f"Failed to fetch data for {len(failed_addresses)} addresses")
@@ -128,7 +110,7 @@ def _flatten_data(data):
 
 
 def fetch_delegate_votes(delegates: list, batch_size: int = 1000, workers: int = 12):
-    votes = fetch_event_data(delegates, batch_size, endpoint="votes", workers=workers)
+    votes = fetch_event_data(delegates, endpoint="votes", workers=workers)
     votes = pd.DataFrame(_flatten_data(votes))
     votes.rename(columns={"timestamp": "dt"}, inplace=True)
     votes.set_index("dt", inplace=True)
