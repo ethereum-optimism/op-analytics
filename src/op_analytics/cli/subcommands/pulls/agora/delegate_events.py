@@ -109,7 +109,7 @@ def _flatten_data(data):
     return flattened_data
 
 
-def fetch_delegate_votes(delegates: list, batch_size: int = 1000, workers: int = 12):
+def fetch_delegate_votes(delegates: list, workers: int = 12):
     votes = fetch_event_data(delegates, endpoint="votes", workers=workers)
     votes = pd.DataFrame(_flatten_data(votes))
     votes.rename(columns={"timestamp": "dt"}, inplace=True)
@@ -122,12 +122,12 @@ def fetch_delegate_votes(delegates: list, batch_size: int = 1000, workers: int =
     return AgoraDelegateVotes(votes_df=votes)
 
 
-def fetch_delegate_delegators(delegates: list, batch_size: int = 1000, workers: int = 12):
+def fetch_delegate_delegators(delegates: list, workers: int = 12):
     """Placeholder until the endpoint is available"""
     pass
 
 
-def fetch_delegate_delegatees(delegates: list, batch_size: int = 1000, workers: int = 12):
+def fetch_delegate_delegatees(delegates: list, workers: int = 12):
     """Placeholder until the endpoint is available"""
     pass
 
