@@ -15,7 +15,8 @@ from typing import Any
 
 import polars as pl
 
-from op_analytics.coreutils import clickhouse, duckdb_local
+from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
+from op_analytics.coreutils import duckdb_local
 from op_analytics.coreutils.env.aware import etl_monitor_markers_database
 from op_analytics.coreutils.storage.gcs_parquet import (
     gcs_upload_parquet,
@@ -148,7 +149,7 @@ class PartitionedDataAccess:
         arrow_table = marker.to_pyarrow_table()
 
         if data_location in (DataLocation.GCS, DataLocation.BIGQUERY):
-            clickhouse.insert_arrow("OPLABS", self.markers_db, markers_table, arrow_table)
+            insert_oplabs(self.markers_db, markers_table, arrow_table)
             return
 
         elif data_location in (DataLocation.LOCAL, DataLocation.BIGQUERY_LOCAL_MARKERS):
@@ -267,7 +268,7 @@ class PartitionedDataAccess:
     def _query_one_clickhouse(self, marker_path: PartitionedMarkerPath, markers_table: str):
         where = "marker_path = {search_value:String}"
 
-        return clickhouse.run_oplabs_query(
+        return run_query_oplabs(
             query=f"SELECT marker_path FROM {self.markers_db}.{markers_table} WHERE {where}",
             parameters={"search_value": marker_path},
         )
@@ -297,7 +298,7 @@ class PartitionedDataAccess:
 
         cols = ",\n".join(projections)
 
-        markers = clickhouse.run_oplabs_query(
+        markers = run_query_oplabs(
             query=f"""
             SELECT
                 {cols}

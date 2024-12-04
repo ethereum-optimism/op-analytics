@@ -2,6 +2,7 @@ from op_analytics.coreutils.duckdb_inmem import init_client
 from op_analytics.coreutils.logger import (
     bind_contextvars,
     bound_contextvars,
+    memory_usage,
     structlog,
 )
 from op_analytics.coreutils.partitioned.location import DataLocation
@@ -66,7 +67,9 @@ def compute_intermediate(
             task.data_writer.force = True
 
         try:
+            log.info("memory usage", max_rss=memory_usage(), when="before task")
             executor(task)
+            log.info("memory usage", max_rss=memory_usage(), when="after task")
         except Exception as ex:
             log.error("task", status="exception")
             log.error("intermediate model exception", exc_info=ex)

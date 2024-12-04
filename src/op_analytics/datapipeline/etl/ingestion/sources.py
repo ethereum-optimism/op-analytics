@@ -3,7 +3,7 @@ import time
 from enum import Enum
 
 import polars as pl
-from op_analytics.coreutils.clickhouse import run_goldsky_query
+from op_analytics.coreutils.clickhouse.goldsky import run_query_goldsky
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.threads import run_concurrently
 
@@ -61,7 +61,7 @@ def _read_from_goldsky(
             dataset=key,
             **block_batch.contextvars,
         )
-        result = run_goldsky_query(queries[key])
+        result = run_query_goldsky(queries[key])
         log.debug(
             f"query success {time.time() - start:.2f}s {len(result)} rows",
             dataset=key,

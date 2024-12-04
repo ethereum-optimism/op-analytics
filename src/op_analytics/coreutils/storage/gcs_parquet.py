@@ -7,7 +7,7 @@ import polars as pl
 from fsspec.implementations.local import LocalFileSystem
 
 from op_analytics.coreutils.gcpauth import get_credentials
-from op_analytics.coreutils.logger import human_rows, human_size, structlog
+from op_analytics.coreutils.logger import human_rows, human_size, memory_usage, structlog
 
 log = structlog.get_logger()
 warnings.filterwarnings("ignore", message="Polars found a filename")
@@ -62,3 +62,4 @@ def fsclient_upload_parquet(client, path: str, df: pl.DataFrame, log_level=loggi
             path=path,
             maxrss=max_rss,
         )
+        log.info("memory usage", max_rss=memory_usage())
