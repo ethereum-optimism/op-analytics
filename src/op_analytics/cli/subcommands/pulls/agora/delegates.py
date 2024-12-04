@@ -4,11 +4,10 @@ from op_analytics.coreutils.request import get_data
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import now_dt
 from op_analytics.coreutils.env.vault import env_get
-import itertools
 from typing import Any
 import requests
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 import requests.exceptions
+import itertools
 import time
 import pandas as pd
 import polars as pl
@@ -23,15 +22,13 @@ log = structlog.get_logger()
 BASE_URL = "https://vote.optimism.io/api/v1"
 DELEGATES_ENDPOINT = f"{BASE_URL}/delegates"
 API_KEY = env_get("AGORA_API_TOKEN")
-session = requests.Session()  # Create a session object
 
 
 @dataclass
 class AgoraDelegates:
     """Agora delegates data."""
 
-    delegates_with_voting_power_df: pl.DataFrame
-    delegates_without_voting_power_df: pl.DataFrame
+    delegates_df: pl.DataFrame
 
 
 @dataclass
@@ -49,12 +46,8 @@ class Paginator:
         self.limit = 100
         self.failed_offsets = []
 
-    @retry(
-        stop=stop_after_attempt(5),
-        wait=wait_exponential(multiplier=1, min=4, max=20),
-        retry=retry_if_exception_type(requests.exceptions.HTTPError),
-    )
     def request(self, offset):
+        session = requests.Session()  # Create a session object
         if self.params is None:
             self.params = {}
         self.params.update({"offset": offset, "limit": self.limit})
@@ -64,6 +57,7 @@ class Paginator:
                 url=self.url,
                 headers={"Authorization": f"Bearer {API_KEY}"},
                 params=self.params,
+                retry_attempts=5,
             )
 
             assert "meta" in result
@@ -177,28 +171,10 @@ def pull_delegates():
     # Convert to polars
     df = pl.from_pandas(df)
 
-    # Split to delegates that have voting power and those that don't
-    delegates_with_voting_power = df.filter(pl.col("voting_power_total") > 0)
-    delegates_without_voting_power = df.filter(pl.col("voting_power_total") == 0)
-
     # Write to GCS
     write(dataset=Agora.DELEGATES, dataframe=df, sort_by=["voting_power_total"])
-    # Why do this? Because the sizes are assymetrical and we want to optimize downstream
-    # performance.
-    write(
-        dataset=Agora.DELEGATES_WITH_VOTING_POWER,
-        dataframe=delegates_with_voting_power,
-        sort_by=["voting_power_total"],
-    )
-    write(
-        dataset=Agora.DELEGATES_WITHOUT_VOTING_POWER,
-        dataframe=delegates_without_voting_power,
-    )
 
-    return AgoraDelegates(
-        delegates_with_voting_power_df=delegates_with_voting_power,
-        delegates_without_voting_power_df=delegates_without_voting_power,
-    )
+    return AgoraDelegates(delegates_df=df)
 
 
 # Todo: move to app.py
@@ -211,9 +187,10 @@ def pull_delegate_data():
 
     delegates = pull_delegates()
 
-    # Todo: Figure out if we need to pull for all delegates or just those with voting power.
-    delegates_with_voting_power = delegates.delegates_with_voting_power_df
-    delegates_without_voting_power = delegates.delegates_without_voting_power_df
+    delegates_with_voting_power = delegates.delegates_df.filter(pl.col("voting_power_total") > 0)
+    delegates_without_voting_power = delegates.delegates_df.filter(
+        pl.col("voting_power_total") == 0
+    )
 
     log.info(f"Found {len(delegates_with_voting_power)} delegates with voting power.")
     delegate_addresses = delegates_with_voting_power.address.to_list()

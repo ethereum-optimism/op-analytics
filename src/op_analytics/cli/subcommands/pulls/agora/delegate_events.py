@@ -11,7 +11,6 @@ from op_analytics.coreutils.threads import run_concurrently
 
 from typing import Any
 import requests
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 import requests.exceptions
 import pandas as pd
 import os
@@ -41,13 +40,6 @@ class SimplePaginator:
     url: str
     limit: int = 50
 
-    @retry(
-        stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=10, max=40),
-        retry=retry_if_exception_type(
-            (requests.exceptions.Timeout, requests.exceptions.ConnectionError)
-        ),
-    )
     def request(self, offset):
         result = get_data(
             session,

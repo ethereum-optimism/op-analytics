@@ -21,7 +21,7 @@ from op_analytics.coreutils.partitioned.breakout import breakout_partitions
 from op_analytics.coreutils.partitioned.dataaccess import DateFilter, MarkerFilter, init_data_access
 from op_analytics.coreutils.path import repo_path
 from op_analytics.coreutils.time import date_fromstr, now_friendly_timestamp
-from op_analytics.datapipeline.utils.daterange import DateRange
+from op_analytics.coreutils.rangeutils import DateRange
 
 log = structlog.get_logger()
 
@@ -32,8 +32,6 @@ class Agora(str, Enum):
     """Supported agora datasets."""
 
     DELEGATES = "delegates_v1"
-    DELEGATES_WITH_VOTING_POWER = "delegates_with_voting_power_v1"
-    DELEGATES_WITHOUT_VOTING_POWER = "delegates_without_voting_power_v1"
     DELEGATE_VOTES = "delegate_votes_v1"
     PROPOSALS = "proposals_v1"
 
