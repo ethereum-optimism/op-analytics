@@ -6,7 +6,6 @@ import polars as pl
 import pyarrow as pa
 
 from .partition import Partition
-from .types import PartitionedMarkerPath, PartitionedRootPath
 
 
 @dataclass
@@ -14,13 +13,13 @@ class ExpectedOutput:
     """Information about a dataset that is expectd to be produced by a task."""
 
     # Root path that will be used for the partitioned output.
-    root_path: PartitionedRootPath
+    root_path: str
 
     # File name that will be used for the parquet file.
     file_name: str
 
     # Completion marker path.
-    marker_path: PartitionedMarkerPath
+    marker_path: str
 
     # Identifier for the process that produced the datset.
     process_name: str

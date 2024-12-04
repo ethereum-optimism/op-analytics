@@ -10,7 +10,7 @@ from op_analytics.coreutils.partitioned.output import OutputData
 
 from .construct import construct_tasks
 from .modelexecute import PythonModelExecutor
-from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
+from .registry import REGISTERED_INTERMEDIATE_MODELS
 from .task import IntermediateModelsTask
 from .udfs import create_duckdb_macros
 
@@ -27,18 +27,6 @@ def compute_intermediate(
     dryrun: bool,
     force_complete: bool = False,
 ):
-    # Load python functions that define registered data models.
-    load_model_definitions()
-
-    for model in models:
-        should_exit = False
-        if model not in REGISTERED_INTERMEDIATE_MODELS:
-            should_exit = True
-            log.error(f"Model is not registered: {model}")
-        if should_exit:
-            log.error("Cannot run on unregistered models. Will exit.")
-            exit(1)
-
     tasks = construct_tasks(chains, models, range_spec, read_from, write_to)
 
     if dryrun:

@@ -9,7 +9,6 @@ import pyarrow as pa
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
-from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
 from op_analytics.coreutils.partitioned.writer import DataWriter
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
@@ -84,12 +83,12 @@ class IngestionTask:
 
             # Determine the marker path for this dataset.
             marker_path = block_batch.construct_marker_path()
-            full_marker_path = PartitionedMarkerPath(f"markers/{data_directory}/{marker_path}")
+            full_marker_path = f"markers/{data_directory}/{marker_path}"
 
             # Construct expected output for the dataset.
             expected_outputs.append(
                 ExpectedOutput(
-                    root_path=PartitionedRootPath(data_directory),
+                    root_path=data_directory,
                     file_name=block_batch.construct_parquet_filename(),
                     marker_path=full_marker_path,
                     process_name="default",

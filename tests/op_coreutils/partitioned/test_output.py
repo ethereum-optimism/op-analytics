@@ -2,14 +2,13 @@ import pyarrow as pa
 
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.partition import PartitionColumn, Partition
-from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
 
 
 def test_01():
     expected_output = ExpectedOutput(
-        root_path=PartitionedRootPath("intermediate/daily_address_summary/summary_v1"),
+        root_path="intermediate/daily_address_summary/summary_v1",
         file_name="out.parquet",
-        marker_path=PartitionedMarkerPath("BLAH"),
+        marker_path="BLAH",
         process_name="default",
         additional_columns={"model_name": "MYMODEL"},
         additional_columns_schema=[

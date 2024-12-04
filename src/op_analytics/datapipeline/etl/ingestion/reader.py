@@ -3,14 +3,71 @@ from datetime import date
 import polars as pl
 
 from op_analytics.coreutils.logger import bound_contextvars, structlog
-from op_analytics.coreutils.partitioned.dataaccess import init_data_access
+from op_analytics.coreutils.partitioned.dataaccess import init_data_access, DateFilter, MarkerFilter
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_fromstr, surrounding_dates
+from op_analytics.datapipeline.chains.goldsky_chains import ensure_single_network
 
 log = structlog.get_logger()
+
+
+def markers_for_raw_ingestion(
+    data_location: DataLocation,
+    markers_table: str,
+    datevals: list[date],
+    chains: list[str],
+    root_paths: list[str],
+) -> pl.DataFrame:
+    """Query completion markers for a list of dates and chains.
+
+    Returns a dataframe with the markers and all of the parquet output paths
+    associated with them.
+    """
+    client = init_data_access()
+
+    paths_df = client.markers_for_dates(
+        data_location=data_location,
+        markers_table=markers_table,
+        datefilter=DateFilter(
+            min_date=None,
+            max_date=None,
+            datevals=datevals,
+        ),
+        projections=[
+            "dt",
+            "chain",
+            "num_blocks",
+            "min_block",
+            "max_block",
+            "data_path",
+            "root_path",
+        ],
+        filters={
+            "chains": MarkerFilter(
+                column="chain",
+                values=chains,
+            ),
+            "datasets": MarkerFilter(
+                column="root_path",
+                values=root_paths,
+            ),
+        },
+    )
+
+    assert dict(paths_df.schema) == {
+        "dt": pl.Date,
+        "chain": pl.String,
+        "num_blocks": pl.Int32,
+        "min_block": pl.Int64,
+        "max_block": pl.Int64,
+        "root_path": pl.String,
+        "data_path": pl.String,
+    }
+
+    return paths_df
 
 
 def construct_readers(
@@ -29,16 +86,18 @@ def construct_readers(
     input data. It can be used to load the data onto BigQuery or to run an
     intermediate model over the date.
     """
-    client = init_data_access()
-
     date_range = DateRange.from_spec(range_spec)
+
+    # Root paths are different for mainnet and testnet.
+    # TODO: Update paths if network is MAINNET.
+    network = ensure_single_network(chains)
 
     # Make one query for all dates and chains.
     #
     # We use the +/- 1 day padded dates so that we can use the query results to
     # check if there is data on boths ends. This allows us to confirm that the
     # data is ready to be processed.
-    markers_df = client.markers_for_raw_ingestion(
+    markers_df = markers_for_raw_ingestion(
         data_location=read_from,
         markers_table=markers_table,
         datevals=date_range.padded_dates(),
