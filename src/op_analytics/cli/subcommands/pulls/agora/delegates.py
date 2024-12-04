@@ -14,7 +14,6 @@ import polars as pl
 from op_analytics.cli.subcommands.pulls.agora.data_access import (
     Agora,
     write,
-    camelcase_to_snakecase,
 )
 
 log = structlog.get_logger()
@@ -139,34 +138,65 @@ def pull_delegates():
     delegate_data = p.concurrent_fetch()
 
     # Clean and transform to Pandas
-    df = pd.json_normalize(delegate_data, sep="_")
-    df.columns = df.columns.map(camelcase_to_snakecase)
-    df = df.convert_dtypes()
-    # In order to be able to drop duplicates we cannot have iterables in the dataframe
-    df = df.map(lambda x: str(x) if isinstance(x, list) else x)
+    normalized_data = []
+    for item in delegate_data:
+        # Extract fields from the item dictionary
+        address = item.get("address", "")
+        voting_power = item.get("votingPower", {})
+        citizen = item.get("citizen", False)
+        statement = item.get("statement", {})
+
+        # Make sure voting_power is a dictionary
+        if not isinstance(voting_power, dict):
+            continue
+
+        flattened = {
+            "address": address,
+            "voting_power_total": voting_power.get("total", "0"),
+            "voting_power_direct": voting_power.get("direct", "0"),
+            "voting_power_advanced": voting_power.get("advanced", "0"),
+            "is_citizen": citizen,
+        }
+
+        if isinstance(statement, dict):
+            flattened.update(
+                {
+                    "statement_signature": statement.get("signature", ""),
+                    "statement_created_at": statement.get("created_at", ""),
+                    "statement_updated_at": statement.get("updated_at", ""),
+                    "statement_text": statement.get("payload", {}).get("delegateStatement", ""),
+                    "twitter": statement.get("payload", {}).get("twitter", ""),
+                    "discord": statement.get("payload", {}).get("discord", ""),
+                }
+            )
+
+        normalized_data.append(flattened)
+    df = pd.DataFrame(normalized_data)
+    df = df.astype(
+        {
+            "address": "string",
+            "voting_power_total": "Float64",
+            "voting_power_direct": "Float64",
+            "voting_power_advanced": "Float64",
+            "is_citizen": "bool",
+            "statement_signature": "string",
+            "statement_created_at": "string",
+            "statement_updated_at": "string",
+            "statement_text": "string",
+            "twitter": "string",
+            "discord": "string",
+        },
+        errors="coerce",
+    )
     # Check for duplicates
     if df.shape[0] != len(df["address"].drop_duplicates()):
         df = df.drop_duplicates()
         log.warning(
             f"Found duplicates in delegates data. Dropped {df.shape[0] - len(df['address'].drop_duplicates())} rows."
         )
-    # Convert voting power columns to numeric
-    for col in ["voting_power_total", "voting_power_direct", "voting_power_advanced"]:
-        df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    df["dt"] = (
-        now_dt()
-    )  # Todo: This is to partition by pull date. Figure out if this is the correct way to do this.
-
-    schema = {
-        "address": "string",
-        "citizen": "boolean",
-        "voting_power_total": "Float64",
-        "voting_power_direct": "Float64",
-        "voting_power_advanced": "Float64",
-    }
-
-    df = df.astype(schema)
+    # Todo: This is to partition by pull date. Figure out if this is the correct way to do this.
+    df["dt"] = now_dt()
 
     # Convert to polars
     df = pl.from_pandas(df)
