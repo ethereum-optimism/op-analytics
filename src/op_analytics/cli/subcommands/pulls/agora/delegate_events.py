@@ -20,7 +20,6 @@ log = structlog.get_logger()
 BASE_URL = "https://vote.optimism.io/api/v1"
 DELEGATES_ENDPOINT = f"{BASE_URL}/delegates"
 API_KEY = os.environ["AGORA_API_KEY"]
-session = requests.Session()  # Create a session object
 
 
 @dataclass
@@ -41,6 +40,7 @@ class SimplePaginator:
     limit: int = 50
 
     def request(self, offset):
+        session = requests.Session()
         result = get_data(
             session,
             url=self.url,
