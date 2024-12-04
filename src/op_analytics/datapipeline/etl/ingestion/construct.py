@@ -1,4 +1,4 @@
-from op_analytics.coreutils import clickhouse
+from op_analytics.coreutils.clickhouse.goldsky import run_query_goldsky
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange
@@ -89,7 +89,7 @@ def block_range_for_dates(chain: str, min_ts: int, max_ts: int):
     # Not an f-string to preserve the curly brackets for query params
     where = "timestamp >= {mints:UInt64} AND timestamp < {maxts:UInt64}"
 
-    result = clickhouse.run_goldsky_query(
+    result = run_query_goldsky(
         query=f"""
         SELECT
             min(number) as block_min,

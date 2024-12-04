@@ -3,28 +3,27 @@ from threading import Lock
 from typing import Any, Literal
 
 import clickhouse_connect
+import clickhouse_connect.driver.client
 import polars as pl
 import pyarrow as pa
-import stamina
-from clickhouse_connect.driver.client import Client
 
 from op_analytics.coreutils.env import env_get
 from op_analytics.coreutils.logger import human_rows, human_size, structlog
 
 log = structlog.get_logger()
 
-
 ClickHouseInstance = Literal["GOLDSKY", "OPLABS"]
 
-_GOLDSKY_CLIENT: Client | None = None
-_OPLABS_CLIENT: Client | None = None
+
+_CLIENTS: dict[ClickHouseInstance, clickhouse_connect.driver.client.Client] = {}
+
 
 _INIT_LOCK = Lock()
 
 
 def connect(instance: ClickHouseInstance):
     log.debug(f"connecting to {instance} Clickhouse client...")
-    # Server-generated ids (as opoosed to client-generated) are required for running
+    # Server-generated ids (as opposed to client-generated) are required for running
     # concurrent queries. See https://clickhouse.com/docs/en/integrations/python#managing-clickhouse-session-ids.
     clickhouse_connect.common.set_setting("autogenerate_session_id", False)
     client = clickhouse_connect.get_client(
@@ -39,69 +38,21 @@ def connect(instance: ClickHouseInstance):
     return client
 
 
-def init_client(instance: ClickHouseInstance):
+def init_client(instance: ClickHouseInstance, reconnect=False):
     """Idempotent client initialization.
 
     This function guarantess only one global instance exists.
     """
-    global _GOLDSKY_CLIENT
-    global _OPLABS_CLIENT
+    global _CLIENTS
 
     with _INIT_LOCK:
-        if instance == "GOLDSKY":
-            if _GOLDSKY_CLIENT is None:
-                _GOLDSKY_CLIENT = connect(instance)
+        if _CLIENTS.get(instance) is None or reconnect:
+            _CLIENTS[instance] = connect(instance=instance)
 
-        if instance == "OPLABS":
-            if _OPLABS_CLIENT is None:
-                _OPLABS_CLIENT = connect(instance)
+    if _CLIENTS.get(instance) is None:
+        raise RuntimeError(f"{instance} Clickhouse client was not properly initialized.")
 
-    if instance == "GOLDSKY":
-        if _GOLDSKY_CLIENT is None:
-            raise RuntimeError(f"{instance} Clickhouse client was not properly initialized.")
-        return _GOLDSKY_CLIENT
-
-    if instance == "OPLABS":
-        if _OPLABS_CLIENT is None:
-            raise RuntimeError(f"{instance} Clickhouse client was not properly initialized.")
-        return _OPLABS_CLIENT
-
-    raise NotImplementedError()
-
-
-def run_goldsky_statement(statement):
-    """A statement does not return results."""
-    client = init_client("GOLDSKY")
-    client.query(statement)
-
-
-def run_goldsky_query(
-    query: str,
-    parameters: dict[str, Any] | None = None,
-    settings: dict[str, Any] | None = None,
-):
-    return run_query("GOLDSKY", query, parameters, settings)
-
-
-def retry_logger(exc: Exception) -> bool:
-    global _OPLABS_CLIENT
-
-    log.error(f"Encountered exception: {exc}")
-
-    _OPLABS_CLIENT = None
-    log.warning("Attempting to reconnect OPLABS client.")
-    init_client("OPLABS")
-
-    return True
-
-
-@stamina.retry(on=retry_logger, attempts=3)
-def run_oplabs_query(
-    query: str,
-    parameters: dict[str, Any] | None = None,
-    settings: dict[str, Any] | None = None,
-):
-    return run_query("OPLABS", query, parameters, settings)
+    return _CLIENTS[instance]
 
 
 def run_query(
@@ -114,13 +65,22 @@ def run_query(
     client = init_client(instance)
 
     arrow_result = client.query_arrow(
-        query=query, parameters=parameters, settings=settings, use_strings=True
+        query=query,
+        parameters=parameters,
+        settings=settings,
+        use_strings=True,
     )
     return pl.from_arrow(arrow_result)
 
 
-@stamina.retry(on=retry_logger, attempts=3)
-def insert_arrow(
+def run_statement(instance: ClickHouseInstance, statement: str):
+    """A statement does not return results."""
+    client = init_client(instance)
+
+    client.query(statement)
+
+
+def insert(
     instance: ClickHouseInstance,
     database: str,
     table: str,
@@ -130,7 +90,11 @@ def insert_arrow(
     """Write arrow table to clickhouse."""
     client = init_client(instance)
 
-    result = client.insert_arrow(table=table, arrow_table=df_arrow, database=database)
+    result = client.insert_arrow(
+        table=table,
+        arrow_table=df_arrow,
+        database=database,
+    )
 
     log.log(
         log_level,

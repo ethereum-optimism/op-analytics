@@ -1,4 +1,5 @@
 import logging
+import resource
 
 import orjson
 import structlog
@@ -103,3 +104,8 @@ def human_interval(num_seconds: int) -> str:
     else:
         num_days = num_seconds / (24 * 3600)
         return f"{num_days:.1f} days"
+
+
+def memory_usage():
+    """Return max_rss / 1e6 rounded to make it easier to eyeball."""
+    return round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6, 2)

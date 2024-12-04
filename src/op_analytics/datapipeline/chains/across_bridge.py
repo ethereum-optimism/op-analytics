@@ -1,7 +1,7 @@
 import polars as pl
 
+from op_analytics.coreutils.clickhouse.goldsky import insert_goldsky, run_statement_goldsky
 from op_analytics.coreutils.gsheets import read_gsheet, record_changes
-from op_analytics.coreutils.clickhouse import insert_arrow, run_goldsky_statement
 
 DATABASE = "default"
 TABLE = "across_bridge_metadata"
@@ -28,10 +28,9 @@ def upload_across_bridge_addresses(chains_df: pl.DataFrame):
     )
 
     # Truncate is necessary so we avoid duplicates when inserting values.
-    run_goldsky_statement(f"TRUNCATE TABLE {DATABASE}.{TABLE}")
+    run_statement_goldsky(f"TRUNCATE TABLE {DATABASE}.{TABLE}")
 
-    insert_arrow(
-        instance="GOLDSKY",
+    insert_goldsky(
         database=DATABASE,
         table=TABLE,
         df_arrow=clickhouse_df.to_arrow(),
