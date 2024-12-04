@@ -10,22 +10,26 @@ The main goals are:
 
 from dataclasses import dataclass
 from datetime import date
+from functools import cache
 from threading import Lock
-from typing import Any
+from typing import Any, Protocol
 
 import polars as pl
+import pyarrow as pa
 
-from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
 from op_analytics.coreutils import duckdb_local
+from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
 from op_analytics.coreutils.env.aware import etl_monitor_markers_database
+from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.storage.gcs_parquet import (
     gcs_upload_parquet,
     local_upload_parquet,
 )
 
-from .location import DataLocation, MarkersLocation, marker_location
+from .location import DataLocation
 from .marker import Marker
-from .types import PartitionedMarkerPath
+
+log = structlog.get_logger()
 
 _CLIENT = None
 
@@ -102,12 +106,52 @@ class DateFilter:
         return " AND ".join(where)
 
 
+class MarkerStore(Protocol):
+    def write_marker(
+        self,
+        markers_table: str,
+        marker_df: pa.Table,
+    ) -> None: ...
+
+    def marker_exists(
+        self,
+        marker_path: str,
+        markers_table: str,
+    ) -> bool: ...
+
+    def query_markers(
+        self,
+        markers_table: str,
+        datefilter: DateFilter,
+        projections=list[str],
+        filters=dict[str, MarkerFilter],
+    ) -> pl.DataFrame: ...
+
+
+@cache
+def marker_store(data_location: DataLocation) -> MarkerStore:
+    """Store to use for a given DataLocation.
+
+    - GCS markers go to ClickHouse
+    - LOCAL markers to got local DuckDB
+    """
+    if data_location == DataLocation.GCS:
+        return ClickHouseMarkers()
+
+    if data_location == DataLocation.BIGQUERY:
+        return ClickHouseMarkers()
+
+    if data_location == DataLocation.LOCAL:
+        return LocalMarkers()
+
+    if data_location == DataLocation.BIGQUERY_LOCAL_MARKERS:
+        return LocalMarkers()
+
+    raise NotImplementedError(f"invalid data location: {data_location}")
+
+
 @dataclass
 class PartitionedDataAccess:
-    @property
-    def markers_db(self):
-        return etl_monitor_markers_database()
-
     def write_single_part(
         self,
         location: DataLocation,
@@ -145,89 +189,23 @@ class PartitionedDataAccess:
         Markers for local output are written to DuckDB
 
         """
+        marker_df = marker.to_pyarrow_table()
 
-        arrow_table = marker.to_pyarrow_table()
-
-        if data_location in (DataLocation.GCS, DataLocation.BIGQUERY):
-            insert_oplabs(self.markers_db, markers_table, arrow_table)
-            return
-
-        elif data_location in (DataLocation.LOCAL, DataLocation.BIGQUERY_LOCAL_MARKERS):
-            duckdb_local.insert_arrow(self.markers_db, markers_table, arrow_table)
-            return
-
-        raise NotImplementedError()
+        store = marker_store(data_location)
+        store.write_marker(markers_table, marker_df)
 
     def marker_exists(
         self,
         data_location: DataLocation,
-        marker_path: PartitionedMarkerPath,
+        marker_path: str,
         markers_table: str,
     ) -> bool:
         """Run a query to find if a marker already exists."""
-        store = marker_location(data_location)
-
-        if store == MarkersLocation.OPLABS_CLICKHOUSE:
-            result = self._query_one_clickhouse(marker_path, markers_table)
-        else:
-            # default to DUCKDB_LOCAL
-            result = self._query_one_duckdb(marker_path, markers_table)
-
-        return len(result) > 0
-
-    def markers_for_raw_ingestion(
-        self,
-        data_location: DataLocation,
-        markers_table: str,
-        datevals: list[date],
-        chains: list[str],
-        root_paths: list[str],
-    ) -> pl.DataFrame:
-        """Query completion markers for a list of dates and chains.
-
-        Returns a dataframe with the markers and all of the parquet output paths
-        associated with them.
-        """
-        paths_df = self.markers_for_dates(
-            data_location=data_location,
+        store = marker_store(data_location)
+        return store.marker_exists(
+            marker_path=marker_path,
             markers_table=markers_table,
-            datefilter=DateFilter(
-                min_date=None,
-                max_date=None,
-                datevals=datevals,
-            ),
-            projections=[
-                "dt",
-                "chain",
-                "num_blocks",
-                "min_block",
-                "max_block",
-                "data_path",
-                "root_path",
-            ],
-            filters={
-                "chains": MarkerFilter(
-                    column="chain",
-                    values=chains,
-                ),
-                "datasets": MarkerFilter(
-                    column="root_path",
-                    values=root_paths,
-                ),
-            },
         )
-
-        assert dict(paths_df.schema) == {
-            "dt": pl.Date,
-            "chain": pl.String,
-            "num_blocks": pl.Int32,
-            "min_block": pl.Int64,
-            "max_block": pl.Int64,
-            "root_path": pl.String,
-            "data_path": pl.String,
-        }
-
-        return paths_df
 
     def markers_for_dates(
         self,
@@ -242,50 +220,66 @@ class PartitionedDataAccess:
         Returns a dataframe with the markers that match the provided filters
         including only the columns specified in projections.
         """
-        store = marker_location(data_location)
-
         if "dt" not in projections:
             raise ValueError("projections must include 'dt'")
 
-        if store == MarkersLocation.OPLABS_CLICKHOUSE:
-            paths_df = self._query_many_clickhouse(
-                markers_table=markers_table,
-                datefilter=datefilter,
-                projections=projections,
-                filters=filters,
-            )
-        else:
-            # default to DUCKDB_LOCAL
-            paths_df = self._query_many_duckdb(
-                markers_table=markers_table,
-                datefilter=datefilter,
-                projections=projections,
-                filters=filters,
-            )
+        store = marker_store(data_location)
+        return store.query_markers(
+            markers_table=markers_table,
+            datefilter=datefilter,
+            projections=projections,
+            filters=filters,
+        )
 
-        return paths_df
 
-    def _query_one_clickhouse(self, marker_path: PartitionedMarkerPath, markers_table: str):
+def check_marker_results(df: pl.DataFrame) -> bool:
+    """Check query results for a single marker.
+
+    Datermien whether the marker is complete and correct."""
+    if len(df) == 0:
+        return False
+
+    assert len(df) == 1
+    row = df.to_dicts()[0]
+
+    if row["num_parts"] == row["num_paths"]:
+        return True
+    else:
+        marker_path = row["marker_path"]
+        log.error(f"distinct data paths do not match expeted num parts for marker: {marker_path!r}")
+        return False
+
+
+class ClickHouseMarkers:
+    @property
+    def markers_db(self):
+        return etl_monitor_markers_database()
+
+    def write_marker(self, markers_table: str, marker_df: pa.Table):
+        insert_oplabs(self.markers_db, markers_table, marker_df)
+
+    def marker_exists(self, marker_path: str, markers_table: str) -> bool:
         where = "marker_path = {search_value:String}"
 
-        return run_query_oplabs(
-            query=f"SELECT marker_path FROM {self.markers_db}.{markers_table} WHERE {where}",
+        df = run_query_oplabs(
+            query=f"""
+            SELECT
+                marker_path, num_parts, count(DISTINCT data_path) as num_paths
+            FROM {self.markers_db}.{markers_table} 
+            WHERE {where}
+            GROUP BY marker_path, num_parts
+            """,
             parameters={"search_value": marker_path},
         )
+        return check_marker_results(df)
 
-    def _query_one_duckdb(self, marker_path: PartitionedMarkerPath, markers_table: str):
-        return duckdb_local.run_query(
-            query=f"SELECT marker_path FROM {self.markers_db}.{markers_table} WHERE marker_path = ?",
-            params=[marker_path],
-        )
-
-    def _query_many_clickhouse(
+    def query_markers(
         self,
         markers_table: str,
         datefilter: DateFilter,
         projections=list[str],
         filters=dict[str, MarkerFilter],
-    ):
+    ) -> pl.DataFrame:
         """ClickHouse version of query many."""
 
         where, parameters = datefilter.sql_clickhouse()
@@ -311,13 +305,35 @@ class PartitionedDataAccess:
         # ClickHouse returns the Date type as u16 days from epoch.
         return markers.with_columns(dt=pl.from_epoch(pl.col("dt"), time_unit="d"))
 
-    def _query_many_duckdb(
+
+class LocalMarkers:
+    @property
+    def markers_db(self):
+        return etl_monitor_markers_database()
+
+    def write_marker(self, markers_table: str, marker_df: pa.Table):
+        duckdb_local.insert_arrow(self.markers_db, markers_table, marker_df)
+
+    def marker_exists(self, marker_path: str, markers_table: str) -> bool:
+        df = duckdb_local.run_query(
+            query=f"""
+            SELECT
+                marker_path, num_parts, count(DISTINCT data_path) as num_paths
+            FROM {self.markers_db}.{markers_table} 
+            WHERE marker_path = ?
+            GROUP BY marker_path, num_parts
+            """,
+            params=[marker_path],
+        ).pl()
+        return check_marker_results(df)
+
+    def query_markers(
         self,
         markers_table: str,
         datefilter: DateFilter,
         projections=list[str],
         filters=dict[str, MarkerFilter],
-    ):
+    ) -> pl.DataFrame:
         """DuckDB version of query many."""
 
         where = datefilter.sql_duckdb()

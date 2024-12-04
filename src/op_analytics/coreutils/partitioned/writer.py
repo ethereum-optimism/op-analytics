@@ -36,10 +36,10 @@ class DataWriter:
     force: bool
 
     # Internal state for status of completion markers.
-    _is_complete: bool | None = field(default=None, init=False)
+    _is_complete: bool | None = field(default=None, init=False, repr=False)
 
     # Expected outputs by name (post-init).
-    _keyed_outputs: dict[str, ExpectedOutput] = field(init=False, default_factory=dict)
+    _keyed_outputs: dict[str, ExpectedOutput] = field(init=False, repr=False, default_factory=dict)
 
     def __post_init__(self):
         for output in self.expected_outputs:
@@ -47,8 +47,6 @@ class DataWriter:
 
         if len(self.expected_outputs) != len(self._keyed_outputs):
             raise ValueError("expected output names are not unique")
-
-        self.write_to.check_write_allowed()
 
     def is_complete(self) -> bool:
         if self._is_complete is None:
@@ -61,6 +59,7 @@ class DataWriter:
 
     def write(self, output_data: OutputData) -> WriteResult:
         """Write data and corresponding marker."""
+        self.write_to.check_write_allowed()
 
         # Locate the expected output that coresponds to the given output_data.
         expected_output = self._keyed_outputs[output_data.root_path]

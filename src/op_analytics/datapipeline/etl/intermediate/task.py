@@ -27,9 +27,3 @@ class IntermediateModelsTask:
 
     # DataWriter
     data_writer: DataWriter
-
-    def __repr__(self):
-        return (
-            self.__class__.__name__
-            + f"[ctx: {self.data_reader.partitions_dict()}, datset_paths: {self.data_reader.paths_summary}]"
-        )

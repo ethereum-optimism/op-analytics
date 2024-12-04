@@ -1,7 +1,6 @@
 from op_analytics.coreutils.logger import structlog
 
 from .location import DataLocation
-from .types import PartitionedMarkerPath
 from .dataaccess import init_data_access
 
 log = structlog.get_logger()
@@ -9,7 +8,7 @@ log = structlog.get_logger()
 
 def all_outputs_complete(
     location: DataLocation,
-    markers: list[PartitionedMarkerPath],
+    markers: list[str],
     markers_table: str,
 ) -> bool:
     """Check if all outputs are complete.

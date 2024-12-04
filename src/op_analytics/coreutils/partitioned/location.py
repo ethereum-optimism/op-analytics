@@ -43,7 +43,7 @@ class DataLocation(str, Enum):
 
     def check_write_allowed(self):
         if self == DataLocation.GCS and not is_bot():
-            if os.environ["ALLOW_WRITE"] == "true":
+            if os.environ.get("ALLOW_WRITE") == "true":
                 return
 
             raise Exception("GCS data can only be written from a bot runtime.")
@@ -56,24 +56,3 @@ class MarkersLocation(str, Enum):
 
     OPLABS_CLICKHOUSE = "OPLABS_CLICKHOUSE"
     DUCKDB_LOCAL = "DUCKDB_LOCAL"
-
-
-def marker_location(data_location: DataLocation) -> MarkersLocation:
-    """Location of markers for a given DataLocation.
-
-    - GCS markers go to ClickHouse
-    - LOCAL markers to got local DuckDB
-    """
-    if data_location == DataLocation.GCS:
-        return MarkersLocation.OPLABS_CLICKHOUSE
-
-    if data_location == DataLocation.LOCAL:
-        return MarkersLocation.DUCKDB_LOCAL
-
-    if data_location == DataLocation.BIGQUERY:
-        return MarkersLocation.OPLABS_CLICKHOUSE
-
-    if data_location == DataLocation.BIGQUERY_LOCAL_MARKERS:
-        return MarkersLocation.DUCKDB_LOCAL
-
-    raise NotImplementedError(f"invalid data location: {data_location}")
