@@ -1,5 +1,4 @@
 import multiprocessing as mp
-import resource
 from collections import defaultdict
 
 import polars as pl
@@ -8,6 +7,7 @@ from op_analytics.coreutils.logger import (
     bound_contextvars,
     human_interval,
     human_rows,
+    memory_usage,
     structlog,
 )
 from op_analytics.coreutils.partitioned.location import DataLocation
@@ -83,13 +83,13 @@ def execute(task, fork_process: bool) -> bool:
         p.start()
         p.join()
 
-        max_rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        log.info("memory usage", max_rss=memory_usage())
 
         if p.exitcode != 0:
-            log.error(f"task exit code: {p.exitcode}", maxrss=max_rss)
+            log.error(f"task exit code: {p.exitcode}")
             return False
         else:
-            log.info("task exit 0", maxrss=max_rss)
+            log.info("task exit 0")
             return True
     else:
         steps(task)

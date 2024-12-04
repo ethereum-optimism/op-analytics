@@ -3,7 +3,7 @@ from functools import cache
 
 import polars as pl
 
-from op_analytics.coreutils.clickhouse import run_goldsky_query
+from op_analytics.coreutils.clickhouse.goldsky import run_query_goldsky
 from op_analytics.coreutils.logger import structlog
 
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
@@ -78,7 +78,7 @@ def verify_goldsky_tables(chains: list[str]) -> None:
     FROM system.tables
     WHERE name IN ({tables_filter})
     """
-    results = run_goldsky_query(query)["table_name"].to_list()
+    results = run_query_goldsky(query)["table_name"].to_list()
 
     expected_tables = set(tables)
 

@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from op_analytics.coreutils import clickhouse
+from op_analytics.coreutils.clickhouse.goldsky import run_query_goldsky
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import datetime_fromepoch, now_trunc
 
@@ -25,7 +25,7 @@ def all_inputs_ready(
     if provider != RawOnchainDataProvider.GOLDSKY:
         raise ValueError(f"only goldsky is a suppported provider: {provider}")
 
-    result = clickhouse.run_goldsky_query(
+    result = run_query_goldsky(
         query=f"""
         SELECT
             max(number) as block_max,
