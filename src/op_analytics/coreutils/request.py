@@ -4,7 +4,7 @@ from urllib3.util.retry import Retry
 import requests
 import stamina
 from requests.adapters import HTTPAdapter
-
+from typing import Any
 from op_analytics.coreutils.logger import structlog
 
 log = structlog.get_logger()
@@ -36,6 +36,7 @@ def get_data(
     url: str,
     headers: dict[str, str] | None = None,
     retry_attempts: int | None = None,
+    params: dict[str, Any] | None = None,
 ):
     """Helper function to reuse an existing HTTP session to fetch data from a URL.
 
@@ -47,7 +48,7 @@ def get_data(
 
     # Do not retry on invalid json responses.
     if retry_attempts is None:
-        return _get_data(session, url, headers)
+        return _get_data(session, url, headers, params)
 
     # Retry on exceptions.
     for attempt in stamina.retry_context(
@@ -60,12 +61,12 @@ def get_data(
         with attempt:
             if attempt.num > 1:
                 log.warning(f"retrying {url}")
-            return _get_data(session, url, headers)
+            return _get_data(session, url, headers, params)
 
 
-def _get_data(session: requests.Session, url: str, headers: dict[str, str]):
+def _get_data(session: requests.Session, url: str, headers: dict[str, str], params: dict[str, Any]):
     start = time.time()
-    resp = session.request(method="GET", url=url, headers=headers)
+    resp = session.request(method="GET", url=url, headers=headers, params=params)
 
     resp.raise_for_status()
 
