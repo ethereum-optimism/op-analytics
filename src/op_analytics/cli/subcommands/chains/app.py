@@ -6,7 +6,8 @@ from typing_extensions import Annotated
 
 import op_analytics.datapipeline.rpcs as rpcs
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned import DataLocation
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.datapipeline.chains import goldsky_chains
 from op_analytics.datapipeline.chains.upload import upload_all
 from op_analytics.datapipeline.etl.ingestion import ingest
@@ -15,7 +16,6 @@ from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvid
 from op_analytics.datapipeline.etl.intermediate import compute_intermediate
 from op_analytics.datapipeline.etl.loadbq import PipelineStage, load_to_bq
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
-from op_analytics.datapipeline.utils.blockrange import BlockRange
 
 log = structlog.get_logger()
 
@@ -131,6 +131,9 @@ def normalize_chains(chains: str) -> list[str]:
     result = set()
     for chain in chains.split(","):
         if chain == "ALL":
+            result.update(goldsky_chains.goldsky_mainnet_chains())
+            result.update(goldsky_chains.goldsky_testnet_chains())
+        elif chain == "MAINNETS":
             result.update(goldsky_chains.goldsky_mainnet_chains())
         elif chain == "TESTNETS":
             result.update(goldsky_chains.goldsky_testnet_chains())
@@ -249,10 +252,8 @@ def load_superchain_raw(
 def hourly():
     """Hourly command that runs on kubernetes to keep systems current."""
 
-    all_chains = normalize_chains("ALL")
-
     ingest(
-        chains=all_chains,
+        chains=normalize_chains("ALL"),
         range_spec="m8hours",
         read_from=RawOnchainDataProvider.GOLDSKY,
         write_to=DataLocation.GCS,
@@ -262,12 +263,12 @@ def hourly():
     )
 
     compute_intermediate(
-        chains=all_chains,
+        chains=normalize_chains("MAINNETS"),
         models=[
             "daily_address_summary",
             "contract_creation",
         ],
-        range_spec="m2days",
+        range_spec="m8days",
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,
@@ -277,7 +278,7 @@ def hourly():
     load_to_bq(
         stage=PipelineStage.RAW_ONCHAIN,
         location=DataLocation.BIGQUERY,
-        range_spec="m2days",
+        range_spec="m8days",
         dryrun=False,
         force_complete=False,
         force_not_ready=False,

@@ -10,10 +10,9 @@ from op_analytics.coreutils.logger import (
     human_rows,
     structlog,
 )
-from op_analytics.coreutils.partitioned import (
-    DataLocation,
-    OutputData,
-)
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.output import OutputData
+
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
@@ -68,14 +67,12 @@ def ingest(
 
             executed += 1
             success = execute(task, fork_process)
-            log.info("task", status="success")
+            log.info("task", status="success" if success else "fail")
             executed_ok += 1 if success else 0
 
             if max_tasks is not None and executed >= max_tasks:
                 log.warning(f"stopping after {executed} tasks")
                 break
-
-    log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
 
 
 def execute(task, fork_process: bool) -> bool:
@@ -179,7 +176,7 @@ def auditor(task: IngestionTask):
         task.store_output(
             OutputData(
                 dataframe=df,
-                dataset_name=name,
+                root_path=task.block_batch.dataset_directory(dataset_name=name),
                 default_partition=default_partition,
             )
         )
@@ -207,10 +204,11 @@ def writer(task: IngestionTask):
     total_rows: dict[str, int] = defaultdict(int)
 
     for output_data in task.output_dataframes:
-        parts = task.data_writer.write(output_data)
+        write_result = task.data_writer.write(output_data)
 
-        for part in parts:
-            total_rows[output_data.dataset_name] += part.row_count
+        for partition_metadata in write_result.written_parts.values():
+            if partition_metadata.row_count is not None:
+                total_rows[output_data.root_path] += partition_metadata.row_count
 
     summary = " ".join(f"{key}={human_rows(val)}" for key, val in total_rows.items())
     summary = f"{task.data_writer.write_to.name}::{summary}"

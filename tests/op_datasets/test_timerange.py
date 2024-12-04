@@ -1,7 +1,7 @@
 import datetime
 from unittest.mock import patch
 
-from op_analytics.datapipeline.utils.timerange import TimeRange
+from op_analytics.coreutils.rangeutils.timerange import TimeRange
 
 
 def test_daterange_01():
@@ -14,7 +14,8 @@ def test_daterange_01():
 
 
 @patch(
-    "op_analytics.datapipeline.utils.timerange.now", lambda: datetime.datetime(2024, 11, 17, 5, 30)
+    "op_analytics.coreutils.rangeutils.timerange.now",
+    lambda: datetime.datetime(2024, 11, 17, 5, 30),
 )
 def test_daterange_02():
     dr = TimeRange.from_spec("m12hours")

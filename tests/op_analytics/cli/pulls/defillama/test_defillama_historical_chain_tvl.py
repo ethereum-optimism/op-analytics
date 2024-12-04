@@ -160,7 +160,7 @@ def test_extract_chain_tvl_to_dataframe():
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.get_data")
-@patch("op_analytics.cli.subcommands.pulls.defillama.dataaccess.DataWriter.write")
+@patch("op_analytics.coreutils.partitioned.dailydata.DataWriter.write")
 def test_pull_historical_single_chain_tvl(
     mock_write,
     mock_get_data,
@@ -186,7 +186,7 @@ def test_pull_historical_single_chain_tvl(
     # Check write calls
     write_calls = [
         dict(
-            dataset_name=_.kwargs["output_data"].dataset_name,
+            dataset_name=_.kwargs["output_data"].root_path,
             df_columns=_.kwargs["output_data"].dataframe.columns,
             num_rows=len(_.kwargs["output_data"].dataframe),
         )
@@ -194,7 +194,7 @@ def test_pull_historical_single_chain_tvl(
     ]
     assert write_calls == [
         {
-            "dataset_name": "chains_metadata_v1",
+            "dataset_name": "defillama/chains_metadata_v1",
             "df_columns": [
                 "chain_name",
                 "chain_id",
@@ -211,12 +211,12 @@ def test_pull_historical_single_chain_tvl(
             "num_rows": 3,
         },
         {
-            "dataset_name": "historical_chain_tvl_v1",
+            "dataset_name": "defillama/historical_chain_tvl_v1",
             "df_columns": ["chain_name", "tvl", "dt"],
             "num_rows": 1,
         },
         {
-            "dataset_name": "historical_chain_tvl_v1",
+            "dataset_name": "defillama/historical_chain_tvl_v1",
             "df_columns": ["chain_name", "tvl", "dt"],
             "num_rows": 1,
         },
@@ -224,7 +224,7 @@ def test_pull_historical_single_chain_tvl(
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.get_data")
-@patch("op_analytics.cli.subcommands.pulls.defillama.dataaccess.DataWriter.write")
+@patch("op_analytics.coreutils.partitioned.dailydata.DataWriter.write")
 def test_pull_historical_all_chain_tvl(
     mock_write,
     mock_get_data,
@@ -265,7 +265,7 @@ def test_pull_historical_all_chain_tvl(
     # Check write calls
     write_calls = [
         dict(
-            dataset_name=_.kwargs["output_data"].dataset_name,
+            dataset_name=_.kwargs["output_data"].root_path,
             df_columns=_.kwargs["output_data"].dataframe.columns,
             num_rows=len(_.kwargs["output_data"].dataframe),
         )
@@ -273,7 +273,7 @@ def test_pull_historical_all_chain_tvl(
     ]
     assert write_calls == [
         {
-            "dataset_name": "chains_metadata_v1",
+            "dataset_name": "defillama/chains_metadata_v1",
             "df_columns": [
                 "chain_name",
                 "chain_id",
@@ -290,12 +290,12 @@ def test_pull_historical_all_chain_tvl(
             "num_rows": 3,
         },
         {
-            "dataset_name": "historical_chain_tvl_v1",
+            "dataset_name": "defillama/historical_chain_tvl_v1",
             "df_columns": ["chain_name", "tvl", "dt"],
             "num_rows": 2,
         },
         {
-            "dataset_name": "historical_chain_tvl_v1",
+            "dataset_name": "defillama/historical_chain_tvl_v1",
             "df_columns": ["chain_name", "tvl", "dt"],
             "num_rows": 2,
         },

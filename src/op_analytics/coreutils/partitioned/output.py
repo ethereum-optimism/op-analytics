@@ -1,22 +1,17 @@
 import os
-import re
 from dataclasses import dataclass
 from typing import Any
 
 import polars as pl
 import pyarrow as pa
 
-from op_analytics.coreutils.time import date_fromstr
-
+from .partition import Partition
 from .types import PartitionedMarkerPath, PartitionedRootPath
 
 
 @dataclass
 class ExpectedOutput:
     """Information about a dataset that is expectd to be produced by a task."""
-
-    # Name of the datset.
-    dataset_name: str
 
     # Root path that will be used for the partitioned output.
     root_path: PartitionedRootPath
@@ -38,67 +33,29 @@ class ExpectedOutput:
     # into the markers table.
     additional_columns_schema: list[pa.Field]
 
+    def full_path(self, partition: Partition):
+        """Produce the full path for this expected output.
 
-DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+        The full path is a combination of:
+
+        - root_path   ex: ingestion
+        - partitions  ex: chain=op/dt=2024-11-01
+        - file name   ex: 00001000.parquet
+
+        Full path:
+
+        ingestion/chain=op/dt=2024-11-01/00001000.parquet
+        """
+        return os.path.join(self.root_path, partition.path, self.file_name)
 
 
 @dataclass
 class OutputData:
     dataframe: pl.DataFrame
 
-    # Name of the datset.
-    dataset_name: str
+    # Root path
+    root_path: str
 
     # Default partition values for cases when the output datafarame is empty
     # and therefore has no implicit partition values.
     default_partition: dict[str, Any] | None
-
-
-@dataclass
-class KeyValue:
-    key: str
-    value: str
-
-    def __post_init__(self):
-        if not isinstance(self.value, str):
-            raise ValueError(f"partition value must be a string: {self.value!r}")
-        if not isinstance(self.key, str):
-            raise ValueError(f"partition key must be a string: {self.key!r}")
-
-        if self.key == "dt":
-            if not DATE_RE.match(self.value):
-                raise ValueError(f"partition value must be a date pattern: {self.value!r}")
-
-            try:
-                date_fromstr(self.value)
-            except Exception as ex:
-                raise ValueError(f"partition value must be a valid date: {self.value!r}") from ex
-
-
-@dataclass
-class OutputPartMeta:
-    """Metadata for an output part."""
-
-    partitions: list[KeyValue]
-    row_count: int
-
-    @property
-    def partitions_path(self):
-        return "/".join(f"{col.key}={col.value}" for col in self.partitions)
-
-    def full_path(self, root_path: str, file_name: str):
-        return os.path.join(root_path, self.partitions_path, file_name)
-
-    def partition_value(self, partition_name: str) -> str:
-        for partition in self.partitions:
-            if partition.key == partition_name:
-                return partition.value
-        raise ValueError(f"partition not found: {partition_name}")
-
-
-@dataclass
-class OutputPart:
-    """Data and metadadta for a single part in a a partitioned output."""
-
-    df: pl.DataFrame
-    meta: OutputPartMeta

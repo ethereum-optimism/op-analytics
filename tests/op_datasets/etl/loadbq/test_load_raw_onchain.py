@@ -4,9 +4,9 @@ from unittest.mock import patch
 import polars as pl
 
 from op_analytics.coreutils.duckdb_local.client import init_client as duckb_local_client
-from op_analytics.coreutils.partitioned.dataaccess import init_data_access, DateFilter
+from op_analytics.coreutils.partitioned.dataaccess import DateFilter, init_data_access
+from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.etl.loadbq.superchain_raw import load_superchain_raw_to_bq
-from op_analytics.coreutils.partitioned import DataLocation
 
 MOCK_MARKERS = [
     {
@@ -16,7 +16,7 @@ MOCK_MARKERS = [
         "min_block": 10420000,
         "max_block": 10440000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-09-30/000010420000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 9, 30),
@@ -25,7 +25,7 @@ MOCK_MARKERS = [
         "min_block": 10440000,
         "max_block": 10460000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-09-30/000010440000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 9, 30),
@@ -34,7 +34,7 @@ MOCK_MARKERS = [
         "min_block": 10460000,
         "max_block": 10480000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-09-30/000010460000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -43,7 +43,7 @@ MOCK_MARKERS = [
         "min_block": 10460000,
         "max_block": 10480000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-01/000010460000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -52,7 +52,7 @@ MOCK_MARKERS = [
         "min_block": 10480000,
         "max_block": 10500000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-01/000010480000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -61,7 +61,7 @@ MOCK_MARKERS = [
         "min_block": 10500000,
         "max_block": 10520000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-02/000010500000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -70,7 +70,7 @@ MOCK_MARKERS = [
         "min_block": 10500000,
         "max_block": 10520000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-01/000010500000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -79,7 +79,7 @@ MOCK_MARKERS = [
         "min_block": 10520000,
         "max_block": 10540000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-02/000010520000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -88,7 +88,7 @@ MOCK_MARKERS = [
         "min_block": 10540000,
         "max_block": 10560000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-02/000010540000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -97,7 +97,7 @@ MOCK_MARKERS = [
         "min_block": 10540000,
         "max_block": 10560000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-03/000010540000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -106,7 +106,7 @@ MOCK_MARKERS = [
         "min_block": 10560000,
         "max_block": 10580000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-03/000010560000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -115,7 +115,7 @@ MOCK_MARKERS = [
         "min_block": 10580000,
         "max_block": 10600000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-04/000010580000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -124,7 +124,7 @@ MOCK_MARKERS = [
         "min_block": 10580000,
         "max_block": 10600000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-03/000010580000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -133,7 +133,7 @@ MOCK_MARKERS = [
         "min_block": 10600000,
         "max_block": 10620000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-04/000010600000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -142,7 +142,7 @@ MOCK_MARKERS = [
         "min_block": 10620000,
         "max_block": 10640000,
         "data_path": "ingestion/blocks_v1/chain=fraxtal/dt=2024-10-04/000010620000.parquet",
-        "dataset_name": "blocks",
+        "root_path": "ingestion/blocks_v1",
     },
     {
         "dt": datetime.date(2024, 9, 30),
@@ -151,7 +151,7 @@ MOCK_MARKERS = [
         "min_block": 10420000,
         "max_block": 10440000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-09-30/000010420000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 9, 30),
@@ -160,7 +160,7 @@ MOCK_MARKERS = [
         "min_block": 10440000,
         "max_block": 10460000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-09-30/000010440000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -169,7 +169,7 @@ MOCK_MARKERS = [
         "min_block": 10460000,
         "max_block": 10480000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-01/000010460000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 9, 30),
@@ -178,7 +178,7 @@ MOCK_MARKERS = [
         "min_block": 10460000,
         "max_block": 10480000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-09-30/000010460000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -187,7 +187,7 @@ MOCK_MARKERS = [
         "min_block": 10480000,
         "max_block": 10500000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-01/000010480000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -196,7 +196,7 @@ MOCK_MARKERS = [
         "min_block": 10500000,
         "max_block": 10520000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-01/000010500000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -205,7 +205,7 @@ MOCK_MARKERS = [
         "min_block": 10500000,
         "max_block": 10520000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-02/000010500000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -214,7 +214,7 @@ MOCK_MARKERS = [
         "min_block": 10520000,
         "max_block": 10540000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-02/000010520000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -223,7 +223,7 @@ MOCK_MARKERS = [
         "min_block": 10540000,
         "max_block": 10560000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-03/000010540000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -232,7 +232,7 @@ MOCK_MARKERS = [
         "min_block": 10540000,
         "max_block": 10560000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-02/000010540000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -241,7 +241,7 @@ MOCK_MARKERS = [
         "min_block": 10560000,
         "max_block": 10580000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-03/000010560000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -250,7 +250,7 @@ MOCK_MARKERS = [
         "min_block": 10580000,
         "max_block": 10600000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-03/000010580000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -259,7 +259,7 @@ MOCK_MARKERS = [
         "min_block": 10580000,
         "max_block": 10600000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-04/000010580000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -268,7 +268,7 @@ MOCK_MARKERS = [
         "min_block": 10600000,
         "max_block": 10620000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-04/000010600000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -277,7 +277,7 @@ MOCK_MARKERS = [
         "min_block": 10620000,
         "max_block": 10640000,
         "data_path": "ingestion/logs_v1/chain=fraxtal/dt=2024-10-04/000010620000.parquet",
-        "dataset_name": "logs",
+        "root_path": "ingestion/logs_v1",
     },
     {
         "dt": datetime.date(2024, 9, 30),
@@ -286,7 +286,7 @@ MOCK_MARKERS = [
         "min_block": 10420000,
         "max_block": 10440000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-09-30/000010420000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 9, 30),
@@ -295,7 +295,7 @@ MOCK_MARKERS = [
         "min_block": 10440000,
         "max_block": 10460000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-09-30/000010440000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -304,7 +304,7 @@ MOCK_MARKERS = [
         "min_block": 10460000,
         "max_block": 10480000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-01/000010460000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 9, 30),
@@ -313,7 +313,7 @@ MOCK_MARKERS = [
         "min_block": 10460000,
         "max_block": 10480000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-09-30/000010460000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -322,7 +322,7 @@ MOCK_MARKERS = [
         "min_block": 10480000,
         "max_block": 10500000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-01/000010480000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -331,7 +331,7 @@ MOCK_MARKERS = [
         "min_block": 10500000,
         "max_block": 10520000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-02/000010500000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -340,7 +340,7 @@ MOCK_MARKERS = [
         "min_block": 10500000,
         "max_block": 10520000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-01/000010500000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -349,7 +349,7 @@ MOCK_MARKERS = [
         "min_block": 10520000,
         "max_block": 10540000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-02/000010520000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -358,7 +358,7 @@ MOCK_MARKERS = [
         "min_block": 10540000,
         "max_block": 10560000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-03/000010540000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -367,7 +367,7 @@ MOCK_MARKERS = [
         "min_block": 10540000,
         "max_block": 10560000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-02/000010540000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -376,7 +376,7 @@ MOCK_MARKERS = [
         "min_block": 10560000,
         "max_block": 10580000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-03/000010560000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -385,7 +385,7 @@ MOCK_MARKERS = [
         "min_block": 10580000,
         "max_block": 10600000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-03/000010580000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -394,7 +394,7 @@ MOCK_MARKERS = [
         "min_block": 10580000,
         "max_block": 10600000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-04/000010580000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -403,7 +403,7 @@ MOCK_MARKERS = [
         "min_block": 10600000,
         "max_block": 10620000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-04/000010600000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -412,7 +412,7 @@ MOCK_MARKERS = [
         "min_block": 10620000,
         "max_block": 10640000,
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-04/000010620000.parquet",
-        "dataset_name": "traces",
+        "root_path": "ingestion/traces_v1",
     },
     {
         "dt": datetime.date(2024, 9, 30),
@@ -421,7 +421,7 @@ MOCK_MARKERS = [
         "min_block": 10420000,
         "max_block": 10440000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-09-30/000010420000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 9, 30),
@@ -430,7 +430,7 @@ MOCK_MARKERS = [
         "min_block": 10440000,
         "max_block": 10460000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-09-30/000010440000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -439,7 +439,7 @@ MOCK_MARKERS = [
         "min_block": 10460000,
         "max_block": 10480000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-01/000010460000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 9, 30),
@@ -448,7 +448,7 @@ MOCK_MARKERS = [
         "min_block": 10460000,
         "max_block": 10480000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-09-30/000010460000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -457,7 +457,7 @@ MOCK_MARKERS = [
         "min_block": 10480000,
         "max_block": 10500000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-01/000010480000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 1),
@@ -466,7 +466,7 @@ MOCK_MARKERS = [
         "min_block": 10500000,
         "max_block": 10520000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-01/000010500000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -475,7 +475,7 @@ MOCK_MARKERS = [
         "min_block": 10500000,
         "max_block": 10520000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-02/000010500000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -484,7 +484,7 @@ MOCK_MARKERS = [
         "min_block": 10520000,
         "max_block": 10540000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-02/000010520000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -493,7 +493,7 @@ MOCK_MARKERS = [
         "min_block": 10540000,
         "max_block": 10560000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-03/000010540000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 2),
@@ -502,7 +502,7 @@ MOCK_MARKERS = [
         "min_block": 10540000,
         "max_block": 10560000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-02/000010540000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -511,7 +511,7 @@ MOCK_MARKERS = [
         "min_block": 10560000,
         "max_block": 10580000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-03/000010560000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 3),
@@ -520,7 +520,7 @@ MOCK_MARKERS = [
         "min_block": 10580000,
         "max_block": 10600000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-03/000010580000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -529,7 +529,7 @@ MOCK_MARKERS = [
         "min_block": 10580000,
         "max_block": 10600000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-04/000010580000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -538,7 +538,7 @@ MOCK_MARKERS = [
         "min_block": 10600000,
         "max_block": 10620000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-04/000010600000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
     {
         "dt": datetime.date(2024, 10, 4),
@@ -547,7 +547,7 @@ MOCK_MARKERS = [
         "min_block": 10620000,
         "max_block": 10640000,
         "data_path": "ingestion/transactions_v1/chain=fraxtal/dt=2024-10-04/000010620000.parquet",
-        "dataset_name": "transactions",
+        "root_path": "ingestion/transactions_v1",
     },
 ]
 
@@ -572,7 +572,7 @@ def test_load_tasks():
                 "num_blocks": pl.Int32,
                 "min_block": pl.Int64,
                 "max_block": pl.Int64,
-                "dataset_name": pl.String,
+                "root_path": pl.String,
                 "data_path": pl.String,
             },
         )

@@ -7,10 +7,10 @@ import polars as pl
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
-from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.threads import run_concurrently_store_failures
 from op_analytics.coreutils.time import date_fromstr, dt_fromepoch, epoch_is_date, now_date, now_dt
 
-from .dataaccess import write, DefiLlama
+from .dataaccess import DefiLlama
 
 
 log = structlog.get_logger()
@@ -19,7 +19,7 @@ PROTOCOLS_ENDPOINT = "https://api.llama.fi/protocols"
 PROTOCOL_DETAILS_ENDPOINT = "https://api.llama.fi/protocol/{slug}"
 
 
-TVL_TABLE_LAST_N_DAYS = 3
+TVL_TABLE_LAST_N_DAYS = 7
 
 
 @dataclass
@@ -53,8 +53,7 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     protocols = get_data(session, PROTOCOLS_ENDPOINT)
     metadata_df = extract_protocol_metadata(protocols)
 
-    write(
-        dataset=DefiLlama.PROTOCOLS_METADATA,
+    DefiLlama.PROTOCOLS_METADATA.write(
         dataframe=metadata_df.with_columns(dt=pl.lit(now_dt())),
         sort_by=["protocol_slug"],
     )
@@ -66,11 +65,20 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     # The single protocol extraction filters data to only the dates of
     # interest, which helps control memory usage.
     log.info(f"fetching data for {len(slugs)} protocols")
-    protocol_data: dict[str, SingleProtocolDFs] = run_concurrently(
+    run_results = run_concurrently_store_failures(
         function=lambda slug: extract_single_protocol(session, slug),
         targets=slugs,
         max_workers=8,
     )
+
+    # Tolerate some failures due to DefiLlama API instabilities.
+    if num_failures := len(run_results.failures) < 3:
+        log.warning("proceeding despite failures", num_failures=num_failures)
+    else:
+        raise Exception(f"too many single protocol failures: {num_failures}")
+
+    protocol_data: dict[str, SingleProtocolDFs] = run_results.results
+
     log.info("done fetching and preprocessing data")
 
     # Load protocol data into dataframes.
@@ -80,15 +88,13 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     )
 
     # Write tvl.
-    write(
-        dataset=DefiLlama.PROTOCOLS_TVL,
+    DefiLlama.PROTOCOLS_TVL.write(
         dataframe=app_tvl_df,
         sort_by=["protocol_slug", "chain"],
     )
 
     # Write token tvl.
-    write(
-        dataset=DefiLlama.PROTOCOLS_TOKEN_TVL,
+    DefiLlama.PROTOCOLS_TOKEN_TVL.write(
         dataframe=app_token_tvl_df,
         sort_by=["protocol_slug", "chain", "token"],
     )
@@ -170,7 +176,7 @@ def extract_single_protocol(session, slug) -> SingleProtocolDFs:
 
     # Fetch data
     url = PROTOCOL_DETAILS_ENDPOINT.format(slug=slug)
-    data = get_data(session, url, retry_attempts=3)
+    data = get_data(session, url, retry_attempts=5)
 
     # Initialize extracted records.
     tvl_records = []

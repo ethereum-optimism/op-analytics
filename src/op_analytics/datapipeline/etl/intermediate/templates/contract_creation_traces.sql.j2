@@ -27,8 +27,8 @@ SELECT
   tr.status,
   SUBSTRING(t.input, 1, 10) AS tx_method_id,
   HEXSTR_BYTELEN(tr.input) AS code_bytelength
-FROM traces AS tr
-INNER JOIN transactions AS t
+FROM ingestion_traces_v1 AS tr
+INNER JOIN ingestion_transactions_v1 AS t
   ON
     tr.transaction_hash = t.hash
     AND tr.block_number = t.block_number

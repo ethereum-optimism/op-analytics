@@ -22,7 +22,7 @@ class TestCreationTraces001(IntermediateModelTestBase):
         assert self._duckdb_client is not None
 
         num_traces = (
-            self._duckdb_client.sql("SELECT COUNT(*) as num_traces FROM traces")
+            self._duckdb_client.sql("SELECT COUNT(*) as num_traces FROM ingestion_traces_v1")
             .pl()
             .to_dicts()[0]["num_traces"]
         )
@@ -63,7 +63,7 @@ class TestCreationTraces001(IntermediateModelTestBase):
             "network": "VARCHAR",
             "chain_id": "INTEGER",
             "chain": "VARCHAR",
-            "dt": "VARCHAR",
+            "dt": "DATE",
             "block_timestamp": "UINTEGER",
             "block_number": "BIGINT",
             "block_hash": "VARCHAR",
@@ -106,7 +106,7 @@ class TestCreationTraces001(IntermediateModelTestBase):
                 "network": "mainnet",
                 "chain_id": 10,
                 "chain": "op",
-                "dt": "2024-11-18",
+                "dt": date(2024, 11, 18),
                 "block_timestamp": 1731898779,
                 "block_number": 128150001,
                 "block_hash": "0xd7dfaaf7e5b8eb3b7b19094a3081ed97ca0120a920141062258d5c2375d8465f",

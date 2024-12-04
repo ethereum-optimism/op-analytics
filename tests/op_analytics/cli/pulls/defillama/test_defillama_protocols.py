@@ -304,13 +304,13 @@ def test_construct_urls():
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.now_date")
-@patch("op_analytics.cli.subcommands.pulls.defillama.dataaccess.DataWriter.write")
+@patch("op_analytics.coreutils.partitioned.dailydata.DataWriter.write")
 def test_pull_single_protocol_tvl(
     mock_write,
     mock_now_date,
     mock_get_data,
 ):
-    mock_now_date.return_value = date(2024, 11, 18)
+    mock_now_date.return_value = date(2024, 11, 22)
 
     # Mock get_data to return sample summary and breakdown data
     mock_get_data.side_effect = [
@@ -338,7 +338,7 @@ def test_pull_single_protocol_tvl(
     # Check that writer functions were called with correct parameters
     write_calls = [
         dict(
-            dataset_name=_.kwargs["output_data"].dataset_name,
+            dataset_name=_.kwargs["output_data"].root_path,
             df_columns=_.kwargs["output_data"].dataframe.columns,
             num_rows=len(_.kwargs["output_data"].dataframe),
         )
@@ -346,7 +346,7 @@ def test_pull_single_protocol_tvl(
     ]
     assert write_calls == [
         {
-            "dataset_name": "protocols_metadata_v1",
+            "dataset_name": "defillama/protocols_metadata_v1",
             "df_columns": [
                 "protocol_name",
                 "protocol_slug",
@@ -359,12 +359,12 @@ def test_pull_single_protocol_tvl(
             "num_rows": 2,
         },
         {
-            "dataset_name": "protocols_tvl_v1",
+            "dataset_name": "defillama/protocols_tvl_v1",
             "df_columns": ["protocol_slug", "chain", "total_app_tvl", "dt"],
             "num_rows": 2,
         },
         {
-            "dataset_name": "protocols_token_tvl_v1",
+            "dataset_name": "defillama/protocols_token_tvl_v1",
             "df_columns": [
                 "protocol_slug",
                 "chain",
@@ -380,13 +380,13 @@ def test_pull_single_protocol_tvl(
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.now_date")
-@patch("op_analytics.cli.subcommands.pulls.defillama.dataaccess.DataWriter.write")
+@patch("op_analytics.coreutils.partitioned.dailydata.DataWriter.write")
 def test_pull_all_protocol_tvl(
     mock_write,
     mock_now_date,
     mock_get_data,
 ):
-    mock_now_date.return_value = date(2024, 11, 18)
+    mock_now_date.return_value = date(2024, 11, 22)
 
     # Mock get_data to return sample summary and breakdown data
     mock_get_data.side_effect = [
@@ -415,7 +415,7 @@ def test_pull_all_protocol_tvl(
     # Check that BigQuery functions were called with correct parameters
     write_calls = [
         dict(
-            dataset_name=_.kwargs["output_data"].dataset_name,
+            dataset_name=_.kwargs["output_data"].root_path,
             df_columns=_.kwargs["output_data"].dataframe.columns,
             num_rows=len(_.kwargs["output_data"].dataframe),
         )
@@ -423,7 +423,7 @@ def test_pull_all_protocol_tvl(
     ]
     assert write_calls == [
         {
-            "dataset_name": "protocols_metadata_v1",
+            "dataset_name": "defillama/protocols_metadata_v1",
             "df_columns": [
                 "protocol_name",
                 "protocol_slug",
@@ -436,12 +436,12 @@ def test_pull_all_protocol_tvl(
             "num_rows": 2,
         },
         {
-            "dataset_name": "protocols_tvl_v1",
+            "dataset_name": "defillama/protocols_tvl_v1",
             "df_columns": ["protocol_slug", "chain", "total_app_tvl", "dt"],
             "num_rows": 3,
         },
         {
-            "dataset_name": "protocols_token_tvl_v1",
+            "dataset_name": "defillama/protocols_token_tvl_v1",
             "df_columns": [
                 "protocol_slug",
                 "chain",

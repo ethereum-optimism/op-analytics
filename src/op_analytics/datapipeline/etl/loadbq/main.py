@@ -1,7 +1,8 @@
 from enum import Enum
-from .superchain_raw import load_superchain_raw_to_bq
 
-from op_analytics.coreutils.partitioned import DataLocation
+from op_analytics.coreutils.partitioned.location import DataLocation
+
+from .superchain_raw import load_superchain_raw_to_bq
 
 
 class PipelineStage(str, Enum):

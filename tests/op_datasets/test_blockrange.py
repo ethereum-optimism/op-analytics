@@ -1,4 +1,4 @@
-from op_analytics.datapipeline.utils.blockrange import BlockRange
+from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 
 
 def test_blockrange():

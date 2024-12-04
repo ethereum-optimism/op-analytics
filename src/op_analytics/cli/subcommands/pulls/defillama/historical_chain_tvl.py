@@ -8,7 +8,7 @@ from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import dt_fromepoch, now_dt
 
-from .dataaccess import DefiLlama, write
+from .dataaccess import DefiLlama
 
 log = structlog.get_logger()
 
@@ -49,8 +49,7 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
     metadata = get_data(session, CHAINS_METADATA_ENDPOINT)
     metadata_df = extract_chain_metadata(metadata["chainCoingeckoIds"], dfl_chains_list)
 
-    write(
-        dataset=DefiLlama.CHAINS_METADATA,
+    DefiLlama.CHAINS_METADATA.write(
         dataframe=metadata_df.with_columns(dt=pl.lit(now_dt())),
         sort_by=["chain_name"],
     )
@@ -65,8 +64,7 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
     tvl_df = extract_chain_tvl_to_dataframe(historical_chain_tvl_data)
 
     # Write balances.
-    write(
-        dataset=DefiLlama.HISTORICAL_CHAIN_TVL,
+    DefiLlama.HISTORICAL_CHAIN_TVL.write(
         dataframe=most_recent_dates(tvl_df, n_dates=TVL_TABLE_LAST_N_DAYS, date_column="dt"),
         sort_by=["chain_name"],
     )

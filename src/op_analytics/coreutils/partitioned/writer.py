@@ -8,9 +8,10 @@ from op_analytics.coreutils.logger import bound_contextvars, structlog
 from .breakout import breakout_partitions
 from .dataaccess import init_data_access
 from .location import DataLocation
-from .output import ExpectedOutput, OutputData, OutputPartMeta
+from .output import ExpectedOutput, OutputData
+from .partition import WrittenParts, PartitionMetadata
 from .status import all_outputs_complete
-from .writehelper import WriteManager
+from .writehelper import WriteManager, WriteResult
 
 log = structlog.get_logger()
 
@@ -42,7 +43,7 @@ class DataWriter:
 
     def __post_init__(self):
         for output in self.expected_outputs:
-            self._keyed_outputs[output.dataset_name] = output
+            self._keyed_outputs[output.root_path] = output
 
         if len(self.expected_outputs) != len(self._keyed_outputs):
             raise ValueError("expected output names are not unique")
@@ -58,17 +59,15 @@ class DataWriter:
             )
         return self._is_complete
 
-    def write(self, output_data: OutputData) -> list[OutputPartMeta]:
+    def write(self, output_data: OutputData) -> WriteResult:
         """Write data and corresponding marker."""
 
         # Locate the expected output that coresponds to the given output_data.
-        expected_output = self._keyed_outputs[output_data.dataset_name]
+        expected_output = self._keyed_outputs[output_data.root_path]
 
         # The default partition value is included in log context to help keep
         # track of which data we are processing.
-        with bound_contextvars(
-            dataset=output_data.dataset_name, **(output_data.default_partition or {})
-        ):
+        with bound_contextvars(root=output_data.root_path, **(output_data.default_partition or {})):
             manager = PartitionedWriteManager(
                 partition_cols=self.partition_cols,
                 location=self.write_to,
@@ -85,7 +84,7 @@ class PartitionedWriteManager(WriteManager):
     partition_cols: list[str]
 
     @override
-    def write_implementation(self, output_data: Any) -> list[OutputPartMeta]:
+    def write_implementation(self, output_data: Any) -> WrittenParts:
         assert isinstance(output_data, OutputData)
 
         client = init_data_access()
@@ -96,15 +95,13 @@ class PartitionedWriteManager(WriteManager):
             default_partition=output_data.default_partition,
         )
 
-        parts_meta: list[OutputPartMeta] = []
+        written = {}
         for part in parts:
             client.write_single_part(
                 location=self.location,
                 dataframe=part.df,
-                full_path=part.meta.full_path(
-                    self.expected_output.root_path, self.expected_output.file_name
-                ),
+                full_path=self.expected_output.full_path(part.partition),
             )
-            parts_meta.append(part.meta)
+            written[part.partition] = PartitionMetadata(row_count=len(part.df))
 
-        return parts_meta
+        return written

@@ -24,7 +24,6 @@ from op_analytics.coreutils.storage.gcs_parquet import (
 
 from .location import DataLocation, MarkersLocation, marker_location
 from .marker import Marker
-from .output import ExpectedOutput, OutputPartMeta
 from .types import PartitionedMarkerPath
 
 _CLIENT = None
@@ -37,7 +36,7 @@ def init_data_access() -> "PartitionedDataAccess":
 
     with _INIT_LOCK:
         if _CLIENT is None:
-            _CLIENT = PartitionedDataAccess(markers_db=etl_monitor_markers_database())
+            _CLIENT = PartitionedDataAccess()
 
     if _CLIENT is None:
         raise RuntimeError("Partitioned data access client was not properly initialized.")
@@ -104,7 +103,9 @@ class DateFilter:
 
 @dataclass
 class PartitionedDataAccess:
-    markers_db: str
+    @property
+    def markers_db(self):
+        return etl_monitor_markers_database()
 
     def write_single_part(
         self,
@@ -131,8 +132,7 @@ class PartitionedDataAccess:
     def write_marker(
         self,
         data_location: DataLocation,
-        expected_output: ExpectedOutput,
-        written_parts: list[OutputPartMeta],
+        marker: Marker,
         markers_table: str,
     ):
         """Write marker.
@@ -144,10 +144,7 @@ class PartitionedDataAccess:
         Markers for local output are written to DuckDB
 
         """
-        marker = Marker(
-            expected_output=expected_output,
-            written_parts=written_parts,
-        )
+
         arrow_table = marker.to_pyarrow_table()
 
         if data_location in (DataLocation.GCS, DataLocation.BIGQUERY):
@@ -183,7 +180,7 @@ class PartitionedDataAccess:
         markers_table: str,
         datevals: list[date],
         chains: list[str],
-        dataset_names: list[str],
+        root_paths: list[str],
     ) -> pl.DataFrame:
         """Query completion markers for a list of dates and chains.
 
@@ -205,7 +202,7 @@ class PartitionedDataAccess:
                 "min_block",
                 "max_block",
                 "data_path",
-                "dataset_name",
+                "root_path",
             ],
             filters={
                 "chains": MarkerFilter(
@@ -213,8 +210,8 @@ class PartitionedDataAccess:
                     values=chains,
                 ),
                 "datasets": MarkerFilter(
-                    column="dataset_name",
-                    values=dataset_names,
+                    column="root_path",
+                    values=root_paths,
                 ),
             },
         )
@@ -225,7 +222,7 @@ class PartitionedDataAccess:
             "num_blocks": pl.Int32,
             "min_block": pl.Int64,
             "max_block": pl.Int64,
-            "dataset_name": pl.String,
+            "root_path": pl.String,
             "data_path": pl.String,
         }
 

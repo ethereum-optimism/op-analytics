@@ -1,8 +1,11 @@
 from threading import Lock
 
-
 import duckdb
+
 from op_analytics.coreutils.env.vault import env_get
+from op_analytics.coreutils.logger import structlog
+
+log = structlog.get_logger()
 
 
 _DUCK_DB: duckdb.DuckDBPyConnection | None = None
@@ -35,13 +38,41 @@ def init_client():
     return _DUCK_DB
 
 
-def parquet_relation(parquet_paths) -> duckdb.DuckDBPyRelation:
+def register_parquet_relation(dataset: str, parquet_paths: list[str] | str) -> str:
     """Return a DuckDB relation from a list of parquet files."""
     client = init_client()
 
-    paths_str = ", ".join(f"'{_}'" for _ in parquet_paths)
+    rel = client.read_parquet(parquet_paths, hive_partitioning=True)
 
-    # TODO: Investigate if using read_parquet is more performant.
-    return client.sql(
-        f"SELECT * FROM read_parquet([{paths_str}], hive_partitioning = true, hive_types_autocast = 0)"
+    if isinstance(parquet_paths, str):
+        summary = f"using uri wildcard {parquet_paths!r}"
+    elif isinstance(parquet_paths, list):
+        summary = f"using {len(parquet_paths)} parquet paths"
+
+    view_name = register_dataset_relation(client, dataset, rel)
+    log.info(f"registered view: {view_name!r} {summary}")
+    return view_name
+
+
+def register_dataset_relation(
+    client: duckdb.DuckDBPyConnection,
+    dataset: str,
+    rel: duckdb.DuckDBPyRelation,
+) -> str:
+    """Single entrypoing for view registration.
+
+    Going through this function to registere all views lets us centralize the
+    table sanitization function so we don't have to worry that dataset names
+    are sanitized correctly on various calling points.
+    """
+    view_name = sanitized_table_name(dataset)
+
+    client.register(
+        view_name=view_name,
+        python_object=rel,
     )
+    return view_name
+
+
+def sanitized_table_name(dataset_name: str) -> str:
+    return dataset_name.replace("/", "_")

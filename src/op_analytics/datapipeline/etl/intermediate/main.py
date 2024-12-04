@@ -1,14 +1,15 @@
 from op_analytics.coreutils.duckdb_inmem import init_client
 from op_analytics.coreutils.logger import (
     bind_contextvars,
-    structlog,
     bound_contextvars,
+    structlog,
 )
-from op_analytics.coreutils.partitioned import DataLocation, OutputData
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.output import OutputData
 
 from .construct import construct_tasks
-from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .modelexecute import PythonModelExecutor
+from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .task import IntermediateModelsTask
 from .udfs import create_duckdb_macros
 
@@ -32,7 +33,7 @@ def compute_intermediate(
         should_exit = False
         if model not in REGISTERED_INTERMEDIATE_MODELS:
             should_exit = True
-            log.error("Model is not registered: {model}")
+            log.error(f"Model is not registered: {model}")
         if should_exit:
             log.error("Cannot run on unregistered models. Will exit.")
             exit(1)
@@ -47,7 +48,7 @@ def compute_intermediate(
     for i, task in enumerate(tasks):
         bind_contextvars(
             task=f"{i+1}/{len(tasks)}",
-            **task.data_reader.contextvars,
+            **task.data_reader.partitions_dict(),
         )
 
         # Decide if we need to run this task.
@@ -64,11 +65,15 @@ def compute_intermediate(
             log.info("forced execution despite complete marker")
             task.data_writer.force = True
 
-        executor(task)
-        log.info("task", status="success")
-        success += 1
+        try:
+            executor(task)
+        except Exception as ex:
+            log.error("task", status="exception")
+            log.error("intermediate model exception", exc_info=ex)
+        else:
+            log.info("task", status="success")
 
-    log.info("done", total=len(tasks), success=success, fail=0)
+        success += 1
 
 
 def executor(task: IntermediateModelsTask) -> None:
@@ -97,10 +102,7 @@ def executor(task: IntermediateModelsTask) -> None:
                     task.data_writer.write(
                         output_data=OutputData(
                             dataframe=rel.pl(),
-                            dataset_name=f"{model_name}/{result_name}",
-                            default_partition={
-                                "chain": task.data_reader.chain,
-                                "dt": task.data_reader.datestr,
-                            },
+                            root_path=f"intermediate/{model_name}/{result_name}",
+                            default_partition=task.data_reader.partitions_dict(),
                         ),
                     )
