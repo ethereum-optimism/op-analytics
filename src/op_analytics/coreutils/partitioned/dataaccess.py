@@ -17,7 +17,7 @@ from typing import Any, Protocol
 import polars as pl
 import pyarrow as pa
 
-from op_analytics.coreutils import duckdb_local
+from op_analytics.coreutils.duckdb_local.client import insert_duckdb_local, run_query_duckdb_local
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
 from op_analytics.coreutils.env.aware import etl_monitor_markers_database
 from op_analytics.coreutils.logger import structlog
@@ -312,10 +312,10 @@ class LocalMarkers:
         return etl_monitor_markers_database()
 
     def write_marker(self, markers_table: str, marker_df: pa.Table):
-        duckdb_local.insert_arrow(self.markers_db, markers_table, marker_df)
+        insert_duckdb_local(self.markers_db, markers_table, marker_df)
 
     def marker_exists(self, marker_path: str, markers_table: str) -> bool:
-        df = duckdb_local.run_query(
+        df = run_query_duckdb_local(
             query=f"""
             SELECT
                 marker_path, num_parts, count(DISTINCT data_path) as num_paths
@@ -346,7 +346,7 @@ class LocalMarkers:
 
         cols = ",\n".join(projections)
 
-        markers = duckdb_local.run_query(
+        markers = run_query_duckdb_local(
             query=f"""
             SELECT
                 {cols}
@@ -356,3 +356,34 @@ class LocalMarkers:
         )
 
         return markers.pl()
+
+
+def all_outputs_complete(
+    location: DataLocation,
+    markers: list[str],
+    markers_table: str,
+) -> bool:
+    """Check if all outputs are complete.
+
+    This function is somewhat low-level in that it receives the explicit completion
+    markers that we are looking for. It checks that those markers are present in all
+    of the data sinks.
+    """
+    client = init_data_access()
+
+    complete = []
+    incomplete = []
+
+    # TODO: Make a single query for all the markers.
+    for marker in markers:
+        if client.marker_exists(location, marker, markers_table):
+            complete.append(marker)
+        else:
+            incomplete.append(marker)
+
+    log.debug(f"{len(complete)} complete, {len(incomplete)} incomplete")
+
+    if incomplete:
+        return False
+
+    return True
