@@ -10,12 +10,15 @@ from op_analytics.coreutils.logger import (
 )
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import OutputData
+from op_analytics.datapipeline.models.compute.modelexecute import PythonModelExecutor
+from op_analytics.datapipeline.models.compute.registry import (
+    REGISTERED_INTERMEDIATE_MODELS,
+    load_model_definitions,
+)
+from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros, set_memory_limit
 
 from .construct import construct_tasks
-from .modelexecute import PythonModelExecutor
-from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .task import IntermediateModelsTask
-from .udfs import create_duckdb_macros, set_memory_limit
 
 log = structlog.get_logger()
 

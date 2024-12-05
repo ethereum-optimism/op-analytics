@@ -47,15 +47,15 @@ def load_model_definitions():
     if _LOADED:
         return
 
-    # Python modules under the "models" directory are imported to populate the model registry.
-    MODELS_PATH = os.path.join(os.path.dirname(__file__), "models")
+    # Python modules under the "code" directory are imported to populate the model registry.
+    MODELS_PATH = os.path.join(os.path.dirname(__file__), "../code")
 
     count = 0
     for fname in os.listdir(MODELS_PATH):
         name = os.path.join(MODELS_PATH, fname)
-        if os.path.isfile(name) and fname not in ("__init__.py", "registry.py"):
+        if os.path.isfile(name) and fname not in ("__init__.py"):
             importlib.import_module(
-                f"op_analytics.datapipeline.etl.intermediate.models.{fname.removesuffix(".py")}"
+                f"op_analytics.datapipeline.models.code.{fname.removesuffix(".py")}"
             )
             count += 1
 

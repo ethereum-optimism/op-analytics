@@ -11,12 +11,16 @@ from op_analytics.datapipeline.etl.ingestion.markers import (
 )
 from op_analytics.datapipeline.etl.ingestion.reader import construct_readers
 from op_analytics.datapipeline.chains.goldsky_chains import determine_network, ChainNetwork
+from op_analytics.datapipeline.models.compute.registry import (
+    REGISTERED_INTERMEDIATE_MODELS,
+    load_model_definitions,
+)
 
-from .markers import INTERMEDIATE_MODELS_MARKERS_TABLE
-from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .task import IntermediateModelsTask
 
 log = structlog.get_logger()
+
+INTERMEDIATE_MODELS_MARKERS_TABLE = "intermediate_model_markers"
 
 
 def construct_tasks(
