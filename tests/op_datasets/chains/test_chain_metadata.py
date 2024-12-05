@@ -157,8 +157,7 @@ def test_goldsky_chains():
 
     with (
         patch("op_analytics.coreutils.gsheets.get_worksheet") as mock_get_worksheet,
-        # Patch load_chain_metadata() so that its cache is not corrupted by running
-        # this test.
+        # Patch load_chain_metadata() so its cache is not changed by this test.
         patch(
             "op_analytics.datapipeline.chains.goldsky_chains.load_chain_metadata",
             load.load_chain_metadata_impl,
