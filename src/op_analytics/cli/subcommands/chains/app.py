@@ -266,23 +266,24 @@ def hourly():
         fork_process=True,
     )
 
-    compute_intermediate(
-        chains=normalize_chains("MAINNETS"),
-        models=[
-            "daily_address_summary",
-            "contract_creation",
-        ],
-        range_spec="m8days",
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-    )
+    for network in ["MAINNETS", "TESTNETS"]:
+        compute_intermediate(
+            chains=normalize_chains(network),
+            models=[
+                "daily_address_summary",
+                "contract_creation",
+            ],
+            range_spec="m3days",
+            read_from=DataLocation.GCS,
+            write_to=DataLocation.GCS,
+            dryrun=False,
+            force_complete=False,
+        )
 
     load_to_bq(
         stage=PipelineStage.RAW_ONCHAIN,
         location=DataLocation.BIGQUERY,
-        range_spec="m8days",
+        range_spec="m3days",
         dryrun=False,
         force_complete=False,
         force_not_ready=False,

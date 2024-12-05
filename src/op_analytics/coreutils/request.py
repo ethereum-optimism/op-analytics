@@ -54,17 +54,22 @@ def get_data(
     for attempt in stamina.retry_context(
         on=retry_logger,
         attempts=retry_attempts,
-        timeout=240,
+        timeout=600,
         wait_initial=10,
-        wait_max=30,
+        wait_max=60,
     ):
         with attempt:
             if attempt.num > 1:
-                log.warning(f"retrying {url}")
+                log.warning(f"retry attempt {url}", attempt=attempt.num)
             return _get_data(session, url, headers, params)
 
 
-def _get_data(session: requests.Session, url: str, headers: dict[str, str], params: dict[str, Any] | None):
+def _get_data(
+    session: requests.Session,
+    url: str,
+    headers: dict[str, str],
+    params: dict[str, Any] | None,
+):
     start = time.time()
     resp = session.request(method="GET", url=url, headers=headers, params=params)
 
