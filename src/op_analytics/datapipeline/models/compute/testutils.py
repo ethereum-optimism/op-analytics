@@ -21,7 +21,6 @@ from op_analytics.datapipeline.models.compute.modelexecute import (
 )
 from op_analytics.datapipeline.models.compute.registry import (
     REGISTERED_INTERMEDIATE_MODELS,
-    PythonModel,
     load_model_definitions,
 )
 
@@ -219,16 +218,19 @@ class IntermediateModelTestBase(unittest.TestCase):
 
 def execute_model_in_memory(
     duckdb_client: duckdb.DuckDBPyConnection,
-    model: PythonModel,
+    model: str,
     data_reader: ModelInputDataReader,
     limit_input_parquet_files: int | None = None,
 ):
     """Execute a model and register results as views."""
     log.info("Executing model...")
+
+    model_obj = REGISTERED_INTERMEDIATE_MODELS[model]
+
     create_duckdb_macros(duckdb_client)
 
     model_executor = PythonModelExecutor(
-        model=model,
+        model=model_obj,
         client=duckdb_client,
         data_reader=data_reader,
         limit_input_parquet_files=limit_input_parquet_files,

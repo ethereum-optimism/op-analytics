@@ -14,6 +14,7 @@ from op_analytics.datapipeline.chains.goldsky_chains import determine_network, C
 from op_analytics.datapipeline.models.compute.registry import (
     REGISTERED_INTERMEDIATE_MODELS,
     load_model_definitions,
+    vefify_models,
 )
 
 from .task import IntermediateModelsTask
@@ -21,6 +22,29 @@ from .task import IntermediateModelsTask
 log = structlog.get_logger()
 
 INTERMEDIATE_MODELS_MARKERS_TABLE = "intermediate_model_markers"
+
+
+def construct_data_readers(
+    chains: list[str],
+    models: list[str],
+    range_spec: str,
+    read_from: DataLocation,
+) -> list[DataReader]:
+    # Load python functions that define registered data models.
+    load_model_definitions()
+    vefify_models(models)
+
+    input_datasets = set()
+    for model in models:
+        input_datasets.update(REGISTERED_INTERMEDIATE_MODELS[model].input_datasets)
+
+    return construct_readers(
+        chains=chains,
+        range_spec=range_spec,
+        read_from=read_from,
+        markers_table=INGESTION_MARKERS_TABLE,
+        root_paths=sorted(input_datasets),
+    )
 
 
 def construct_tasks(
@@ -35,29 +59,8 @@ def construct_tasks(
     While constructing tasks we also go ahead and load the model definitions and create the
     shared duckdb macros that are used across models.
     """
-    # Load python functions that define registered data models.
-    load_model_definitions()
 
-    for model in models:
-        should_exit = False
-        if model not in REGISTERED_INTERMEDIATE_MODELS:
-            should_exit = True
-            log.error(f"Model is not registered: {model}")
-        if should_exit:
-            log.error("Cannot run on unregistered models. Will exit.")
-            exit(1)
-
-    input_datasets = set()
-    for model in models:
-        input_datasets.update(REGISTERED_INTERMEDIATE_MODELS[model].input_datasets)
-
-    readers: list[DataReader] = construct_readers(
-        chains=chains,
-        range_spec=range_spec,
-        read_from=read_from,
-        markers_table=INGESTION_MARKERS_TABLE,
-        root_paths=sorted(input_datasets),
-    )
+    readers: list[DataReader] = construct_data_readers()
 
     tasks = []
     for reader in readers:

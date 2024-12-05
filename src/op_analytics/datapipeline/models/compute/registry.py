@@ -61,3 +61,14 @@ def load_model_definitions():
 
     log.info(f"Loaded {count} python modules with intermediate model definitions.")
     _LOADED = True
+
+
+def vefify_models(models: list[str]):
+    for model in models:
+        should_exit = False
+        if model not in REGISTERED_INTERMEDIATE_MODELS:
+            should_exit = True
+            log.error(f"Model is not registered: {model}")
+        if should_exit:
+            log.error("Cannot run on unregistered models. Will exit.")
+            raise Exception("unregistered intermediate model")
