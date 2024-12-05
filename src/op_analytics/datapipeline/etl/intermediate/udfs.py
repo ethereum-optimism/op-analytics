@@ -2,20 +2,6 @@
 
 import duckdb
 
-from dataclasses import dataclass
-
-
-@dataclass
-class Expr:
-    """Helper class to hold the definition of an expression along with its alias."""
-
-    alias: str
-    expr: str
-
-    @property
-    def aliased(self):
-        return self.expr + " AS " + self.alias
-
 
 def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     """Create general purpose macros on the DuckDB in-memory client.

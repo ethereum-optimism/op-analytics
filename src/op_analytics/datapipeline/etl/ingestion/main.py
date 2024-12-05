@@ -44,6 +44,7 @@ def ingest(
         return
 
     executed = 0
+    executed_ok = 0
     for i, task in enumerate(tasks):
         task.progress_indicator = f"{i+1}/{len(tasks)}"
         with bound_contextvars(**task.contextvars):
@@ -65,11 +66,15 @@ def ingest(
                 continue
 
             executed += 1
-            execute(task, fork_process)
+            success = execute(task, fork_process)
+            if success:
+                executed_ok += 1
 
             if max_tasks is not None and executed >= max_tasks:
                 log.warning(f"stopping after {executed} tasks")
                 break
+
+    log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
 
 
 def execute(task, fork_process: bool) -> bool:

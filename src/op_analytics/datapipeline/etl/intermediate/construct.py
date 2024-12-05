@@ -1,5 +1,6 @@
 import pyarrow as pa
 
+
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
@@ -9,6 +10,7 @@ from op_analytics.datapipeline.etl.ingestion.markers import (
     INGESTION_MARKERS_TABLE,
 )
 from op_analytics.datapipeline.etl.ingestion.reader import construct_readers
+from op_analytics.datapipeline.chains.goldsky_chains import determine_network, ChainNetwork
 
 from .markers import INTERMEDIATE_MODELS_MARKERS_TABLE
 from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
@@ -64,9 +66,15 @@ def construct_tasks(
                 datestr = reader.partition_value("dt")
                 chain = reader.partition_value("chain")
 
+                network = determine_network(chain)
+                if network == ChainNetwork.TESTNET:
+                    root_path_prefix = "intermediate_testnets"
+                else:
+                    root_path_prefix = "intermediate"
+
                 expected_outputs.append(
                     ExpectedOutput(
-                        root_path=f"intermediate/{full_model_name}",
+                        root_path=f"{root_path_prefix}/{full_model_name}",
                         file_name="out.parquet",
                         marker_path=f"{datestr}/{chain}/{model}/{dataset}",
                         process_name="default",
@@ -93,6 +101,7 @@ def construct_tasks(
                         expected_outputs=expected_outputs,
                         force=False,
                     ),
+                    root_path_prefix=root_path_prefix,
                 )
             )
 

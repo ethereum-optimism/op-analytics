@@ -37,6 +37,8 @@ def compute_intermediate(
         log.info("DRYRUN: No work will be done.")
         return
 
+    executed = 0
+    executed_ok = 0
     for i, task in enumerate(tasks):
         bind_contextvars(
             task=f"{i+1}/{len(tasks)}",
@@ -61,7 +63,12 @@ def compute_intermediate(
         if task.data_writer.write_to == DataLocation.LOCAL:
             disconnect_duckdb_local()
 
-        execute(task, fork_process)
+        executed += 1
+        success = execute(task, fork_process)
+        if success:
+            executed_ok += 1
+
+    log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
 
 
 def execute(task: IntermediateModelsTask, fork_process: bool) -> bool:
@@ -115,7 +122,7 @@ def steps(task: IntermediateModelsTask) -> None:
                 task.data_writer.write(
                     output_data=OutputData(
                         dataframe=rel.pl(),
-                        root_path=f"intermediate/{task.model}/{result_name}",
+                        root_path=f"{task.root_path_prefix}/{task.model}/{result_name}",
                         default_partition=task.data_reader.partitions_dict(),
                     ),
                 )
