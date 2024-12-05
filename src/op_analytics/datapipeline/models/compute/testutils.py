@@ -14,9 +14,16 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.coreutils.duckdb_inmem.client import register_dataset_relation
 
-from .construct import construct_tasks
-from .modelexecute import PythonModelExecutor, ModelInputDataReader
-from .registry import REGISTERED_INTERMEDIATE_MODELS, PythonModel, load_model_definitions
+
+from op_analytics.datapipeline.models.compute.modelexecute import (
+    PythonModelExecutor,
+    ModelInputDataReader,
+)
+from op_analytics.datapipeline.models.compute.registry import (
+    REGISTERED_INTERMEDIATE_MODELS,
+    load_model_definitions,
+)
+
 from .udfs import create_duckdb_macros
 
 log = structlog.get_logger()
@@ -171,6 +178,9 @@ class IntermediateModelTestBase(unittest.TestCase):
     def _fetch_test_data(cls, datasets: list[str]):
         """Fetch test data from GCS and save it to the local duckdb."""
         datestr = cls.dateval.strftime("%Y%m%d")
+
+        from op_analytics.datapipeline.etl.intermediate.construct import construct_tasks
+
         tasks = construct_tasks(
             chains=cls.chains,
             models=[],
@@ -208,16 +218,19 @@ class IntermediateModelTestBase(unittest.TestCase):
 
 def execute_model_in_memory(
     duckdb_client: duckdb.DuckDBPyConnection,
-    model: PythonModel,
+    model: str,
     data_reader: ModelInputDataReader,
     limit_input_parquet_files: int | None = None,
 ):
     """Execute a model and register results as views."""
     log.info("Executing model...")
+
+    model_obj = REGISTERED_INTERMEDIATE_MODELS[model]
+
     create_duckdb_macros(duckdb_client)
 
     model_executor = PythonModelExecutor(
-        model=model,
+        model=model_obj,
         client=duckdb_client,
         data_reader=data_reader,
         limit_input_parquet_files=limit_input_parquet_files,

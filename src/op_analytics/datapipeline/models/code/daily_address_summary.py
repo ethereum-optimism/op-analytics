@@ -1,8 +1,8 @@
 import duckdb
 
-from op_analytics.datapipeline.etl.intermediate.querybuilder import TemplatedSQLQuery
-from op_analytics.datapipeline.etl.intermediate.registry import register_model
-from op_analytics.datapipeline.etl.intermediate.types import NamedRelations
+from op_analytics.datapipeline.models.compute.querybuilder import TemplatedSQLQuery
+from op_analytics.datapipeline.models.compute.registry import register_model
+from op_analytics.datapipeline.models.compute.types import NamedRelations
 
 
 @register_model(

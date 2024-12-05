@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from op_analytics.coreutils.duckdb_inmem import init_client
-from op_analytics.datapipeline.etl.intermediate.udfs import (
+from op_analytics.datapipeline.models.compute.udfs import (
     create_duckdb_macros,
 )
 
