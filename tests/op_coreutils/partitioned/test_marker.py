@@ -12,7 +12,7 @@ from op_analytics.coreutils.partitioned.partition import (
     Partition,
     PartitionMetadata,
 )
-from op_analytics.datapipeline.etl.ingestion.reader import markers_for_raw_ingestion
+from op_analytics.datapipeline.etl.ingestion.reader_bydate import markers_for_raw_ingestion
 from op_analytics.coreutils.time import now
 
 MARKERS_TABLE = "raw_onchain_ingestion_markers"

@@ -10,7 +10,7 @@ from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chai
 from op_analytics.datapipeline.etl.ingestion.markers import (
     INGESTION_MARKERS_TABLE,
 )
-from op_analytics.datapipeline.etl.ingestion.reader import construct_readers
+from op_analytics.datapipeline.etl.ingestion.reader_bydate import construct_readers_bydate
 
 from .loader import bq_load
 from .task import consolidate_chains
@@ -44,7 +44,7 @@ def load_superchain_raw_to_bq(
     location.ensure_biguqery()
 
     chains = goldsky_mainnet_chains()
-    inputs: list[DataReader] = construct_readers(
+    inputs: list[DataReader] = construct_readers_bydate(
         chains=chains,
         range_spec=range_spec,
         read_from=DataLocation.GCS,

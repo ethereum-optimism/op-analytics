@@ -103,7 +103,7 @@ def update_root_paths(chains: list[str], root_paths: list[str]) -> dict[str, str
     return updated_root_paths
 
 
-def construct_readers(
+def construct_readers_bydate(
     chains: list[str],
     range_spec: str,
     read_from: DataLocation,
