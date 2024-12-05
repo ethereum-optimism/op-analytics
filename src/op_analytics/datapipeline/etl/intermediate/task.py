@@ -27,3 +27,6 @@ class IntermediateModelsTask:
 
     # DataWriter
     data_writer: DataWriter
+
+    # Top directory where the results of the model will be stored.
+    root_path_prefix: str

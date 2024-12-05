@@ -1,0 +1,992 @@
+[
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6070000,
+        "max_block": 6075000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006070000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6075000,
+        "max_block": 6080000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006075000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6080000,
+        "max_block": 6085000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006080000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6085000,
+        "max_block": 6090000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006085000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6090000,
+        "max_block": 6095000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006090000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6095000,
+        "max_block": 6100000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006095000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6100000,
+        "max_block": 6105000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006100000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6105000,
+        "max_block": 6110000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006105000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6110000,
+        "max_block": 6115000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006110000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6115000,
+        "max_block": 6120000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006115000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6120000,
+        "max_block": 6125000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006120000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6125000,
+        "max_block": 6130000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006125000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6130000,
+        "max_block": 6135000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006130000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6135000,
+        "max_block": 6140000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006135000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6140000,
+        "max_block": 6145000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006140000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6145000,
+        "max_block": 6150000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006145000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6150000,
+        "max_block": 6155000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006150000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6155000,
+        "max_block": 6160000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-11-30/000006155000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6155000,
+        "max_block": 6160000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006155000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6160000,
+        "max_block": 6165000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006160000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6165000,
+        "max_block": 6170000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006165000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6170000,
+        "max_block": 6175000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006170000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6175000,
+        "max_block": 6180000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006175000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6180000,
+        "max_block": 6185000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006180000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6185000,
+        "max_block": 6190000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006185000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6190000,
+        "max_block": 6195000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006190000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6195000,
+        "max_block": 6200000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006195000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6200000,
+        "max_block": 6205000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006200000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6205000,
+        "max_block": 6210000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006205000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6210000,
+        "max_block": 6215000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006210000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6215000,
+        "max_block": 6220000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006215000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6220000,
+        "max_block": 6225000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006220000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6225000,
+        "max_block": 6230000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006225000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6230000,
+        "max_block": 6235000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006230000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6235000,
+        "max_block": 6240000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006235000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6240000,
+        "max_block": 6245000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006240000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6245000,
+        "max_block": 6250000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006245000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6245000,
+        "max_block": 6250000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006245000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6250000,
+        "max_block": 6255000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006250000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6255000,
+        "max_block": 6260000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006255000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6260000,
+        "max_block": 6265000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006260000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6265000,
+        "max_block": 6270000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006265000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6270000,
+        "max_block": 6275000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006270000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6275000,
+        "max_block": 6280000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006275000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6280000,
+        "max_block": 6285000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006280000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6285000,
+        "max_block": 6290000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006285000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6290000,
+        "max_block": 6295000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006290000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6295000,
+        "max_block": 6300000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006295000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6300000,
+        "max_block": 6305000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006300000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6305000,
+        "max_block": 6310000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006305000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6310000,
+        "max_block": 6315000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006310000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6315000,
+        "max_block": 6320000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006315000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6320000,
+        "max_block": 6325000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006320000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6325000,
+        "max_block": 6330000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006325000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6330000,
+        "max_block": 6335000,
+        "data_path": "ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-02/000006330000.parquet",
+        "root_path": "ingestion_testnets/traces_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6070000,
+        "max_block": 6075000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006070000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6075000,
+        "max_block": 6080000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006075000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6080000,
+        "max_block": 6085000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006080000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6085000,
+        "max_block": 6090000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006085000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6090000,
+        "max_block": 6095000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006090000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6095000,
+        "max_block": 6100000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006095000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6100000,
+        "max_block": 6105000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006100000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6105000,
+        "max_block": 6110000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006105000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6110000,
+        "max_block": 6115000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006110000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6115000,
+        "max_block": 6120000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006115000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6120000,
+        "max_block": 6125000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006120000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6125000,
+        "max_block": 6130000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006125000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6130000,
+        "max_block": 6135000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006130000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6135000,
+        "max_block": 6140000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006135000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6140000,
+        "max_block": 6145000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006140000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6145000,
+        "max_block": 6150000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006145000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6150000,
+        "max_block": 6155000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006150000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20057,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6155000,
+        "max_block": 6160000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-11-30/000006155000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6155000,
+        "max_block": 6160000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006155000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6160000,
+        "max_block": 6165000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006160000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6165000,
+        "max_block": 6170000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006165000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6170000,
+        "max_block": 6175000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006170000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6175000,
+        "max_block": 6180000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006175000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6180000,
+        "max_block": 6185000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006180000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6185000,
+        "max_block": 6190000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006185000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6190000,
+        "max_block": 6195000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006190000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6195000,
+        "max_block": 6200000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006195000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6200000,
+        "max_block": 6205000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006200000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6205000,
+        "max_block": 6210000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006205000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6210000,
+        "max_block": 6215000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006210000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6215000,
+        "max_block": 6220000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006215000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6220000,
+        "max_block": 6225000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006220000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6225000,
+        "max_block": 6230000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006225000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6230000,
+        "max_block": 6235000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006230000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6235000,
+        "max_block": 6240000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006235000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6240000,
+        "max_block": 6245000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006240000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6245000,
+        "max_block": 6250000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006245000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6245000,
+        "max_block": 6250000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006245000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6250000,
+        "max_block": 6255000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006250000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6255000,
+        "max_block": 6260000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006255000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6260000,
+        "max_block": 6265000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006260000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6265000,
+        "max_block": 6270000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006265000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6270000,
+        "max_block": 6275000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006270000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6275000,
+        "max_block": 6280000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006275000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6280000,
+        "max_block": 6285000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006280000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6285000,
+        "max_block": 6290000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006285000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6290000,
+        "max_block": 6295000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006290000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6295000,
+        "max_block": 6300000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006295000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6300000,
+        "max_block": 6305000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006300000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6305000,
+        "max_block": 6310000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006305000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6310000,
+        "max_block": 6315000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006310000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6315000,
+        "max_block": 6320000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006315000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6320000,
+        "max_block": 6325000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006320000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6325000,
+        "max_block": 6330000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006325000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    },
+    {
+        "dt": 20059,
+        "chain": "unichain_sepolia",
+        "num_blocks": 5000,
+        "min_block": 6330000,
+        "max_block": 6335000,
+        "data_path": "ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-02/000006330000.parquet",
+        "root_path": "ingestion_testnets/transactions_v1"
+    }
+]

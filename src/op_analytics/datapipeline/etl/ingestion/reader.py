@@ -9,7 +9,7 @@ from op_analytics.coreutils.partitioned.output import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_fromstr, surrounding_dates
-from op_analytics.datapipeline.chains.goldsky_chains import ensure_single_network
+from op_analytics.datapipeline.chains.goldsky_chains import ensure_single_network, ChainNetwork
 
 log = structlog.get_logger()
 
@@ -70,6 +70,26 @@ def markers_for_raw_ingestion(
     return paths_df
 
 
+def updated_root_paths(chains: list[str], root_paths: list[str]):
+    """Update root paths to account for TESTNET network."""
+
+    # Root paths are different for mainnet and testnet.
+    # TODO: Update paths if network is MAINNET.
+    network = ensure_single_network(chains)
+
+    updated_root_paths = []
+    if network == ChainNetwork.TESTNET:
+        for path in root_paths:
+            if path.startswith("ingestion/"):
+                updated_root_paths.append("ingestion_testnets/" + path.removeprefix("ingestion/"))
+            else:
+                updated_root_paths.append(path)
+    else:
+        updated_root_paths.extend(root_paths)
+
+    return updated_root_paths
+
+
 def construct_readers(
     chains: list[str],
     range_spec: str,
@@ -87,10 +107,7 @@ def construct_readers(
     intermediate model over the date.
     """
     date_range = DateRange.from_spec(range_spec)
-
-    # Root paths are different for mainnet and testnet.
-    # TODO: Update paths if network is MAINNET.
-    network = ensure_single_network(chains)
+    root_paths = updated_root_paths(chains=chains, root_paths=root_paths)
 
     # Make one query for all dates and chains.
     #

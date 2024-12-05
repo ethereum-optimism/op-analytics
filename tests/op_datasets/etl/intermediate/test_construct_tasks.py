@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 
 import polars as pl
@@ -9,364 +10,25 @@ from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.partition import Partition, PartitionColumn
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import DataWriter
+from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.etl.intermediate.construct import construct_tasks
 from op_analytics.datapipeline.etl.intermediate.task import IntermediateModelsTask
 
-MARKERS_DF = pl.DataFrame(
-    [
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16424000,
-            "max_block": 16432000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16432000,
-            "max_block": 16440000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16440000,
-            "max_block": 16448000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16448000,
-            "max_block": 16456000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16456000,
-            "max_block": 16464000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16464000,
-            "max_block": 16472000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-02/000016464000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16464000,
-            "max_block": 16472000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16472000,
-            "max_block": 16480000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-02/000016472000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16480000,
-            "max_block": 16488000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-02/000016480000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16488000,
-            "max_block": 16496000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-02/000016488000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16496000,
-            "max_block": 16504000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-02/000016496000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16504000,
-            "max_block": 16512000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-02/000016504000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16424000,
-            "max_block": 16432000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16432000,
-            "max_block": 16440000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16440000,
-            "max_block": 16448000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16448000,
-            "max_block": 16456000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16456000,
-            "max_block": 16464000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16464000,
-            "max_block": 16472000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16464000,
-            "max_block": 16472000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-02/000016464000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16472000,
-            "max_block": 16480000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-02/000016472000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16480000,
-            "max_block": 16488000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-02/000016480000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16488000,
-            "max_block": 16496000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-02/000016488000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16496000,
-            "max_block": 16504000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-02/000016496000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20059,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16504000,
-            "max_block": 16512000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-02/000016504000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16376000,
-            "max_block": 16384000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-11-30/000016376000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16384000,
-            "max_block": 16392000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-11-30/000016384000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16392000,
-            "max_block": 16400000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-11-30/000016392000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16400000,
-            "max_block": 16408000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-11-30/000016400000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16408000,
-            "max_block": 16416000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-11-30/000016408000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16416000,
-            "max_block": 16424000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16416000,
-            "max_block": 16424000,
-            "data_path": "ingestion/traces_v1/chain=mode/dt=2024-11-30/000016416000.parquet",
-            "root_path": "ingestion/traces_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16376000,
-            "max_block": 16384000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-11-30/000016376000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16384000,
-            "max_block": 16392000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-11-30/000016384000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16392000,
-            "max_block": 16400000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-11-30/000016392000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16400000,
-            "max_block": 16408000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-11-30/000016400000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16408000,
-            "max_block": 16416000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-11-30/000016408000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20057,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16416000,
-            "max_block": 16424000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-11-30/000016416000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-        {
-            "dt": 20058,
-            "chain": "mode",
-            "num_blocks": 8000,
-            "min_block": 16416000,
-            "max_block": 16424000,
-            "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
-            "root_path": "ingestion/transactions_v1",
-        },
-    ],
-    schema={
-        "dt": pl.UInt16(),
-        "chain": pl.String(),
-        "num_blocks": pl.Int32(),
-        "min_block": pl.Int64(),
-        "max_block": pl.Int64(),
-        "data_path": pl.String(),
-        "root_path": pl.String(),
-    },
-)
+
+def make_dataframe(path: str):
+    with open(InputTestData.at(__file__).path(f"testdata/{path}")) as fobj:
+        return pl.DataFrame(
+            json.load(fobj),
+            schema={
+                "dt": pl.UInt16(),
+                "chain": pl.String(),
+                "num_blocks": pl.Int32(),
+                "min_block": pl.Int64(),
+                "max_block": pl.Int64(),
+                "data_path": pl.String(),
+                "root_path": pl.String(),
+            },
+        )
 
 
 def test_construct_mixed_chains():
@@ -383,7 +45,7 @@ def test_construct_mixed_chains():
 
 def test_construct():
     with patch("op_analytics.coreutils.partitioned.dataaccess.run_query_oplabs") as m1:
-        m1.return_value = MARKERS_DF
+        m1.return_value = make_dataframe("mainnet_markers.json")
 
         tasks = construct_tasks(
             chains=["mode"],
@@ -447,5 +109,101 @@ def test_construct():
                 ],
                 force=False,
             ),
+            root_path_prefix="intermediate",
+        )
+    ]
+
+
+def test_construct_testnet():
+    with patch("op_analytics.coreutils.partitioned.dataaccess.run_query_oplabs") as m1:
+        m1.return_value = make_dataframe("testnet_markers.json")
+
+        tasks = construct_tasks(
+            chains=["unichain_sepolia"],
+            models=["contract_creation"],
+            range_spec="@20241201:+1",
+            read_from=DataLocation.GCS,
+            write_to=DataLocation.GCS,
+        )
+
+    assert tasks == [
+        IntermediateModelsTask(
+            data_reader=DataReader(
+                partitions=Partition(
+                    cols=[
+                        PartitionColumn(name="chain", value="unichain_sepolia"),
+                        PartitionColumn(name="dt", value="2024-12-01"),
+                    ]
+                ),
+                read_from=DataLocation.GCS,
+                dataset_paths={
+                    "ingestion_testnets/traces_v1": [
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006155000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006160000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006165000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006170000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006175000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006180000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006185000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006190000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006195000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006200000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006205000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006210000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006215000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006220000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006225000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006230000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006235000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006240000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006245000.parquet",
+                    ],
+                    "ingestion_testnets/transactions_v1": [
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006155000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006160000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006165000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006170000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006175000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006180000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006185000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006190000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006195000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006200000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006205000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006210000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006215000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006220000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006225000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006230000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006235000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006240000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006245000.parquet",
+                    ],
+                },
+                inputs_ready=True,
+            ),
+            model="contract_creation",
+            output_duckdb_relations={},
+            data_writer=DataWriter(
+                write_to=DataLocation.GCS,
+                partition_cols=["chain", "dt"],
+                markers_table="intermediate_model_markers",
+                expected_outputs=[
+                    ExpectedOutput(
+                        root_path="intermediate_testnets/contract_creation/create_traces_v1",
+                        file_name="out.parquet",
+                        marker_path="2024-12-01/unichain_sepolia/contract_creation/create_traces_v1",
+                        process_name="default",
+                        additional_columns={"model_name": "contract_creation"},
+                        additional_columns_schema=[
+                            pa.field("chain", pa.string()),
+                            pa.field("dt", pa.date32()),
+                            pa.field("model_name", pa.string()),
+                        ],
+                    )
+                ],
+                force=False,
+            ),
+            root_path_prefix="intermediate_testnets",
         )
     ]
