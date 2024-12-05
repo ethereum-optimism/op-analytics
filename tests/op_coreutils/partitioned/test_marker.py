@@ -2,7 +2,7 @@ import datetime
 
 import pyarrow as pa
 
-from op_analytics.coreutils.duckdb_local import run_query
+from op_analytics.coreutils.duckdb_local.client import run_query_duckdb_local
 from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.marker import Marker
@@ -21,7 +21,9 @@ MARKERS_TABLE = "raw_onchain_ingestion_markers"
 def test_marker():
     client = init_data_access()
 
-    run_query(f"DELETE FROM etl_monitor_dev.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'")
+    run_query_duckdb_local(
+        f"DELETE FROM etl_monitor_dev.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'"
+    )
 
     marker = Marker(
         written_parts={
@@ -71,7 +73,7 @@ def test_marker():
     )
 
     result = (
-        run_query(
+        run_query_duckdb_local(
             "SELECT * FROM etl_monitor_dev.raw_onchain_ingestion_markers WHERE chain = 'DUMMYCHAIN'"
         )
         .pl()

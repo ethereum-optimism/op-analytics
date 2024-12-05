@@ -6,11 +6,10 @@ from overrides import override
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 
 from .breakout import breakout_partitions
-from .dataaccess import init_data_access
+from .dataaccess import init_data_access, all_outputs_complete
 from .location import DataLocation
 from .output import ExpectedOutput, OutputData
 from .partition import WrittenParts, PartitionMetadata
-from .status import all_outputs_complete
 from .writehelper import WriteManager, WriteResult
 
 log = structlog.get_logger()

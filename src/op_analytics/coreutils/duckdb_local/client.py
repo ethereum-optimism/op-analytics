@@ -39,6 +39,15 @@ def init_client():
     return _CLIENT
 
 
+def disconnect_duckdb_local():
+    global _CLIENT
+
+    with _INIT_LOCK:
+        if _CLIENT is not None:
+            _CLIENT.close()
+            _CLIENT = None
+
+
 def create_local_tables(client, markers_db):
     # Create the schemas we need.
     client.sql(f"CREATE SCHEMA IF NOT EXISTS {markers_db}")
@@ -57,14 +66,14 @@ def create_local_tables(client, markers_db):
             client.sql(query)
 
 
-def run_query(query: str, params: object = None):
+def run_query_duckdb_local(query: str, params: object = None):
     """Run query"""
     client = init_client()
 
     return client.sql(query, params=params)
 
 
-def insert_arrow(database: str, table: str, df_arrow: pa.Table):
+def insert_duckdb_local(database: str, table: str, df_arrow: pa.Table):
     """Write arrow table to local duckdb database."""
     client = init_client()
 

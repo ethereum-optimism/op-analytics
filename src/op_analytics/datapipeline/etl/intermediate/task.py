@@ -19,8 +19,8 @@ class IntermediateModelsTask:
     # DataReader
     data_reader: DataReader
 
-    # Models to compute
-    models: list[str]
+    # Model to compute
+    model: str
 
     # Output duckdb relations
     output_duckdb_relations: dict[str, duckdb.DuckDBPyRelation]

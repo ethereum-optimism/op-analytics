@@ -55,9 +55,9 @@ def construct_tasks(
 
     tasks = []
     for reader in readers:
-        # Each model can have one or more outputs. There is 1 marker per output.
-        expected_outputs = []
         for model in models:
+            # Each model can have one or more outputs. There is 1 marker per output.
+            expected_outputs = []
             for dataset in REGISTERED_INTERMEDIATE_MODELS[model].expected_output_datasets:
                 full_model_name = f"{model}/{dataset}"
 
@@ -81,20 +81,20 @@ def construct_tasks(
                     )
                 )
 
-        tasks.append(
-            IntermediateModelsTask(
-                data_reader=reader,
-                models=models,
-                output_duckdb_relations={},
-                data_writer=DataWriter(
-                    partition_cols=["chain", "dt"],
-                    write_to=write_to,
-                    markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
-                    expected_outputs=expected_outputs,
-                    force=False,
-                ),
+            tasks.append(
+                IntermediateModelsTask(
+                    data_reader=reader,
+                    model=model,
+                    output_duckdb_relations={},
+                    data_writer=DataWriter(
+                        partition_cols=["chain", "dt"],
+                        write_to=write_to,
+                        markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
+                        expected_outputs=expected_outputs,
+                        force=False,
+                    ),
+                )
             )
-        )
 
     log.info(f"constructed {len(tasks)} tasks.")
     return tasks

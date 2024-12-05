@@ -52,17 +52,5 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     """)
 
 
-# The functions below are defined for cosmetic purposes. When used they add syntax highlighting
-# to SQL expressions which makes them easier to read.
-
-
-def wei_to_eth(x):
-    return f"wei_to_eth({x})"
-
-
-def wei_to_gwei(x):
-    return f"wei_to_gwei({x})"
-
-
-def safe_div(x, y):
-    return f"safe_div({x}, {y})"
+def set_memory_limit(duckdb_client: duckdb.DuckDBPyConnection, gb: int):
+    duckdb_client.sql(f"SET memory_limit = '{gb}GB'")

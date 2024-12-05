@@ -425,7 +425,7 @@ def test_construct():
                 },
                 inputs_ready=True,
             ),
-            models=["contract_creation"],
+            model="contract_creation",
             output_duckdb_relations={},
             data_writer=DataWriter(
                 write_to=DataLocation.GCS,
