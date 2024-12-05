@@ -88,7 +88,7 @@ def test_are_inputs_ready():
     is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        input_root_paths={
+        root_paths_to_check={
             "ingestion/traces_v1",
         },
         storage_location=DataLocation.GCS,
@@ -110,7 +110,7 @@ def test_not_ready_01():
     is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        input_root_paths={
+        root_paths_to_check={
             "ingestion/traces_v1",
         },
         storage_location=DataLocation.GCS,
@@ -132,7 +132,7 @@ def test_not_ready_02():
     is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        input_root_paths={
+        root_paths_to_check={
             "ingestion/traces_v1",
             "ingestion/logs_v1",
         },

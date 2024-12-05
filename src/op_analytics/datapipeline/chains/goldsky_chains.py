@@ -71,7 +71,7 @@ def ensure_single_network(chains: list[str]) -> ChainNetwork:
     if set(chains).issubset(goldsky_testnet_chains()):
         return ChainNetwork.TESTNET
 
-    raise ValueError("chain list contains both MAINNET and TESTNET chains.")
+    raise ValueError(f"could not determine MAINNET/TESTNET for chains: {chains}")
 
 
 def verify_goldsky_tables(chains: list[str]) -> None:
