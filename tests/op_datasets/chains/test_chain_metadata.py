@@ -9,7 +9,6 @@ def test_clean():
 
     # Load the raw and cleaned up CSVs from the test path.
     raw_df = pl.read_csv(testcase.path("case01/chain_metadata_raw.csv"))
-    expected_clean_df = pl.read_csv(testcase.path("case01/chain_metadata.csv"))
 
     # Clean the CSV.
     actual_clean_df = load._clean(raw_df)
@@ -156,7 +155,15 @@ def test_goldsky_chains():
     # Load the raw data you want to return from read_gsheet
     raw_gsheet_data = pl.read_csv(testcase.path("case01/chain_metadata_raw.csv")).to_dicts()
 
-    with patch("op_analytics.coreutils.gsheets.get_worksheet") as mock_get_worksheet:
+    with (
+        patch("op_analytics.coreutils.gsheets.get_worksheet") as mock_get_worksheet,
+        # Patch load_chain_metadata() so that its cache is not corrupted by running
+        # this test.
+        patch(
+            "op_analytics.datapipeline.chains.goldsky_chains.load_chain_metadata",
+            load.load_chain_metadata_impl,
+        ),
+    ):
         mock_worksheet = MagicMock()
         mock_worksheet.get_all_records.return_value = raw_gsheet_data
         mock_get_worksheet.return_value = mock_worksheet

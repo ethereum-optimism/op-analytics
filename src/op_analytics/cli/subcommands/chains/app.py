@@ -123,6 +123,10 @@ FORCE_COMPLETE_OPTION = Annotated[
 
 FORCE_NOT_READY_OPTION = Annotated[bool, typer.Option(help="Run even if inputs are notready.")]
 
+FORK_PROCESS_OPTION = Annotated[
+    bool, typer.Option(help="If true, execute task in a forked subprocess.")
+]
+
 
 def normalize_chains(chains: str) -> list[str]:
     # If for some reason we need to force exclude a chain, add it here.
@@ -163,9 +167,7 @@ def ingest_blocks(
     write_to: WRITE_TO_OPTION = DataLocation.DISABLED,
     dryrun: DRYRUN_OPTION = False,
     force_complete: FORCE_COMPLETE_OPTION = False,
-    fork_process: Annotated[
-        bool, typer.Option(help="If true, execute task in a forked subprocess.")
-    ] = True,
+    fork_process: FORK_PROCESS_OPTION = True,
 ):
     """Ingest a range of blocks.
 
@@ -199,6 +201,7 @@ def intermediate_models(
     write_to: WRITE_TO_OPTION = DataLocation.DISABLED,
     dryrun: DRYRUN_OPTION = False,
     force_complete: FORCE_COMPLETE_OPTION = False,
+    fork_process: FORK_PROCESS_OPTION = True,
 ):
     """Compute intermediate models for a range of dates."""
     chain_list = normalize_chains(chains)
@@ -212,6 +215,7 @@ def intermediate_models(
         write_to=write_to,
         dryrun=dryrun,
         force_complete=force_complete,
+        fork_process=fork_process,
     )
 
 

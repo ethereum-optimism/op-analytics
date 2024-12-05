@@ -40,7 +40,9 @@ def test_construct_mixed_chains():
             read_from=DataLocation.GCS,
             write_to=DataLocation.GCS,
         )
-    assert ex.value.args == ("chain list contains both MAINNET and TESTNET chains.",)
+    assert ex.value.args == (
+        "could not determine MAINNET/TESTNET for chains: ['mode', 'unichain_sepolia']",
+    )
 
 
 def test_construct():
@@ -137,7 +139,7 @@ def test_construct_testnet():
                 ),
                 read_from=DataLocation.GCS,
                 dataset_paths={
-                    "ingestion_testnets/traces_v1": [
+                    "ingestion/traces_v1": [
                         "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006155000.parquet",
                         "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006160000.parquet",
                         "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006165000.parquet",
@@ -158,7 +160,7 @@ def test_construct_testnet():
                         "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006240000.parquet",
                         "gs://oplabs-tools-data-sink/ingestion_testnets/traces_v1/chain=unichain_sepolia/dt=2024-12-01/000006245000.parquet",
                     ],
-                    "ingestion_testnets/transactions_v1": [
+                    "ingestion/transactions_v1": [
                         "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006155000.parquet",
                         "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006160000.parquet",
                         "gs://oplabs-tools-data-sink/ingestion_testnets/transactions_v1/chain=unichain_sepolia/dt=2024-12-01/000006165000.parquet",

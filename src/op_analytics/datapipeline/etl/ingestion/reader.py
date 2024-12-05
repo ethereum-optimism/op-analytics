@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Iterable
 
 import polars as pl
 
@@ -70,22 +71,34 @@ def markers_for_raw_ingestion(
     return paths_df
 
 
-def updated_root_paths(chains: list[str], root_paths: list[str]):
-    """Update root paths to account for TESTNET network."""
+def update_root_paths(chains: list[str], root_paths: list[str]) -> dict[str, str]:
+    """Update root paths to account for TESTNET network.
 
-    # Root paths are different for mainnet and testnet.
-    # TODO: Update paths if network is MAINNET.
+    Returns a dictionary where keys are the updated root_paths and values are the
+    original root_paths.
+
+    Root paths are different for mainnet and testnet:
+
+      MAINNET  :  ingestion/
+      TESTNET :  ingestion_testnets/
+
+    We update the root paths to account for TESTNET chains, keeping a reference to the
+    original root_path that was requested to the reader.
+
+    This lets model implementations always refer to data with the mainnet path, for example
+    "ingestion/traces_v1". When running on testnet we use the correct location for the data.
+    """
     network = ensure_single_network(chains)
-
-    updated_root_paths = []
+    updated_root_paths = {}
     if network == ChainNetwork.TESTNET:
         for path in root_paths:
             if path.startswith("ingestion/"):
-                updated_root_paths.append("ingestion_testnets/" + path.removeprefix("ingestion/"))
+                updated_root_paths["ingestion_testnets/" + path.removeprefix("ingestion/")] = path
             else:
-                updated_root_paths.append(path)
+                updated_root_paths[path] = path
     else:
-        updated_root_paths.extend(root_paths)
+        for path in root_paths:
+            updated_root_paths[path] = path
 
     return updated_root_paths
 
@@ -107,7 +120,8 @@ def construct_readers(
     intermediate model over the date.
     """
     date_range = DateRange.from_spec(range_spec)
-    root_paths = updated_root_paths(chains=chains, root_paths=root_paths)
+    root_path_mapping: dict[str, str] = update_root_paths(chains=chains, root_paths=root_paths)
+    updated_root_paths_list = sorted(root_path_mapping.keys())
 
     # Make one query for all dates and chains.
     #
@@ -119,7 +133,7 @@ def construct_readers(
         markers_table=markers_table,
         datevals=date_range.padded_dates(),
         chains=chains,
-        root_paths=root_paths,
+        root_paths=updated_root_paths_list,
     )
 
     num_suspect = 0
@@ -145,9 +159,13 @@ def construct_readers(
                 inputs_ready, dataset_paths = are_inputs_ready(
                     markers_df=filtered_df,
                     dateval=dateval,
-                    input_root_paths=set(root_paths),
+                    root_paths_to_check=updated_root_paths_list,
                     storage_location=read_from,
                 )
+
+                updated_dataset_paths = {}
+                for root_path, data_paths in (dataset_paths or {}).items():
+                    updated_dataset_paths[root_path_mapping[root_path]] = data_paths
 
                 obj = DataReader(
                     partitions=Partition.from_tuples(
@@ -157,7 +175,7 @@ def construct_readers(
                         ]
                     ),
                     read_from=read_from,
-                    dataset_paths=dataset_paths or {},
+                    dataset_paths=updated_dataset_paths,
                     inputs_ready=inputs_ready,
                 )
 
@@ -176,15 +194,15 @@ def construct_readers(
 def are_inputs_ready(
     markers_df: pl.DataFrame,
     dateval: date,
-    input_root_paths: set[str],
+    root_paths_to_check: Iterable[str],
     storage_location: DataLocation,
 ) -> tuple[bool, dict[str, list[str]]]:
     """Decide if we the input data for a given date is complete.
 
-    If the input data is complete, returns a map from datset to list of parquet paths that
-    contain data for each dataset.
+    If the input data is complete, returns a map from root_path to list of parquet
+    data paths for the root_path.
 
-    If the input data is not complete returns None.
+    If the input data is not complete returns None instead of the paths dict.
     """
 
     assert dict(markers_df.schema) == {
@@ -199,7 +217,8 @@ def are_inputs_ready(
     all_ready = True
 
     dataset_paths = {}
-    for root_path in input_root_paths:
+
+    for root_path in root_paths_to_check:
         dataset_df = markers_df.filter(pl.col("root_path") == root_path)
 
         dataset_ready = is_dataset_ready(
