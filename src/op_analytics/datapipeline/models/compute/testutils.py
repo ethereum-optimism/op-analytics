@@ -147,7 +147,7 @@ class IntermediateModelTestBase(unittest.TestCase):
 
         cls._model_executor = execute_model_in_memory(
             duckdb_client=cls._duckdb_client,
-            model=model,
+            model=cls.model,
             data_reader=DataReaderTestUtil(cls._duckdb_client),
         )
 

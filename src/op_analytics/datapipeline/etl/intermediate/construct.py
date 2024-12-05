@@ -9,7 +9,7 @@ from op_analytics.coreutils.partitioned.writer import DataWriter
 from op_analytics.datapipeline.etl.ingestion.markers import (
     INGESTION_MARKERS_TABLE,
 )
-from op_analytics.datapipeline.etl.ingestion.reader import construct_readers
+from op_analytics.datapipeline.etl.ingestion.reader_bydate import construct_readers_bydate
 from op_analytics.datapipeline.chains.goldsky_chains import determine_network, ChainNetwork
 from op_analytics.datapipeline.models.compute.registry import (
     REGISTERED_INTERMEDIATE_MODELS,
@@ -38,7 +38,7 @@ def construct_data_readers(
     for model in models:
         input_datasets.update(REGISTERED_INTERMEDIATE_MODELS[model].input_datasets)
 
-    return construct_readers(
+    return construct_readers_bydate(
         chains=chains,
         range_spec=range_spec,
         read_from=read_from,
@@ -60,7 +60,12 @@ def construct_tasks(
     shared duckdb macros that are used across models.
     """
 
-    readers: list[DataReader] = construct_data_readers()
+    readers: list[DataReader] = construct_data_readers(
+        chains=chains,
+        models=models,
+        range_spec=range_spec,
+        read_from=read_from,
+    )
 
     tasks = []
     for reader in readers:
