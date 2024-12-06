@@ -31,7 +31,6 @@ class DateRange:
     def max_ts(self) -> int:
         return date_toepoch(self.max)
 
-    @property
     def dates(self) -> list[date]:
         result = []
         current = self.min
@@ -42,7 +41,7 @@ class DateRange:
 
     def padded_dates(self) -> list[date]:
         result = [self.min - timedelta(days=1)]
-        result.extend(self.dates)
+        result.extend(self.dates())
         result.append(self.max)
         return result
 
