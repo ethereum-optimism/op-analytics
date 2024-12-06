@@ -111,7 +111,7 @@ def test_construct():
                 ],
                 force=False,
             ),
-            root_path_prefix="intermediate",
+            output_root_path_prefix="intermediate",
         )
     ]
 
@@ -206,6 +206,6 @@ def test_construct_testnet():
                 ],
                 force=False,
             ),
-            root_path_prefix="intermediate_testnets",
+            output_root_path_prefix="intermediate_testnets",
         )
     ]

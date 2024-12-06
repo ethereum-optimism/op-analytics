@@ -113,7 +113,7 @@ def construct_tasks(
                         expected_outputs=expected_outputs,
                         force=False,
                     ),
-                    root_path_prefix=root_path_prefix,
+                    output_root_path_prefix=root_path_prefix,
                 )
             )
 
