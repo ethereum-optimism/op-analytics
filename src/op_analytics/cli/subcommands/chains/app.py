@@ -13,7 +13,7 @@ from op_analytics.datapipeline.chains.upload import upload_all
 from op_analytics.datapipeline.etl.ingestion import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
-from op_analytics.datapipeline.etl.intermediate import compute_intermediate
+from op_analytics.datapipeline.etl.intermediate.main import compute_intermediate
 from op_analytics.datapipeline.etl.loadbq import PipelineStage, load_to_bq
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 

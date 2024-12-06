@@ -1,12 +1,9 @@
 from dataclasses import dataclass
-from typing import NewType
 
 import duckdb
 
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import DataWriter
-
-BatchDate = NewType("BatchDate", str)
 
 
 @dataclass(kw_only=True)
@@ -16,17 +13,17 @@ class IntermediateModelsTask:
     This object is mutated during processing.
     """
 
-    # DataReader
-    data_reader: DataReader
-
     # Model to compute
     model: str
 
-    # Output duckdb relations
-    output_duckdb_relations: dict[str, duckdb.DuckDBPyRelation]
+    # DataReader
+    data_reader: DataReader
 
     # DataWriter
     data_writer: DataWriter
 
+    # Output duckdb relations
+    output_duckdb_relations: dict[str, duckdb.DuckDBPyRelation]
+
     # Top directory where the results of the model will be stored.
-    root_path_prefix: str
+    output_root_path_prefix: str

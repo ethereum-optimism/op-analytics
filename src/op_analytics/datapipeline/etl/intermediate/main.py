@@ -125,7 +125,7 @@ def steps(task: IntermediateModelsTask) -> None:
                 task.data_writer.write(
                     output_data=OutputData(
                         dataframe=rel.pl(),
-                        root_path=f"{task.root_path_prefix}/{task.model}/{result_name}",
+                        root_path=f"{task.output_root_path_prefix}/{task.model}/{result_name}",
                         default_partition=task.data_reader.partitions_dict(),
                     ),
                 )
