@@ -177,22 +177,22 @@ def test_expected_markers():
     assert actual == [
         {
             "root_path": "ingestion/blocks_v1",
-            "marker_path": "markers/ingestion/blocks_v1/chain=op/000000000000.json",
+            "marker_path": "ingestion/blocks_v1/op/000000000000",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
             "root_path": "ingestion/transactions_v1",
-            "marker_path": "markers/ingestion/transactions_v1/chain=op/000000000000.json",
+            "marker_path": "ingestion/transactions_v1/op/000000000000",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
             "root_path": "ingestion/logs_v1",
-            "marker_path": "markers/ingestion/logs_v1/chain=op/000000000000.json",
+            "marker_path": "ingestion/logs_v1/op/000000000000",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
             "root_path": "ingestion/traces_v1",
-            "marker_path": "markers/ingestion/traces_v1/chain=op/000000000000.json",
+            "marker_path": "ingestion/traces_v1/op/000000000000",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
     ]
@@ -236,22 +236,22 @@ def test_expected_markers_testnet():
     assert actual == [
         {
             "dataset_name": "ingestion_testnets/blocks_v1",
-            "marker_path": "markers/ingestion_testnets/blocks_v1/chain=op_sepolia/000000000000.json",
+            "marker_path": "ingestion_testnets/blocks_v1/op_sepolia/000000000000",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
             "dataset_name": "ingestion_testnets/transactions_v1",
-            "marker_path": "markers/ingestion_testnets/transactions_v1/chain=op_sepolia/000000000000.json",
+            "marker_path": "ingestion_testnets/transactions_v1/op_sepolia/000000000000",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
             "dataset_name": "ingestion_testnets/logs_v1",
-            "marker_path": "markers/ingestion_testnets/logs_v1/chain=op_sepolia/000000000000.json",
+            "marker_path": "ingestion_testnets/logs_v1/op_sepolia/000000000000",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
         {
             "dataset_name": "ingestion_testnets/traces_v1",
-            "marker_path": "markers/ingestion_testnets/traces_v1/chain=op_sepolia/000000000000.json",
+            "marker_path": "ingestion_testnets/traces_v1/op_sepolia/000000000000",
             "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
         },
     ]

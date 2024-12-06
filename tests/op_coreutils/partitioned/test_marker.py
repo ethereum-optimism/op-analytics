@@ -41,7 +41,7 @@ def test_marker():
             ): PartitionMetadata(row_count=14955),
         },
         expected_output=ExpectedOutput(
-            marker_path="markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
+            marker_path="ingestion/blocks_v1/DUMMYCHAIN/000011540000",
             root_path="ingestion/blocks_v1",
             file_name="000011540000.parquet",
             process_name="default",
@@ -90,7 +90,7 @@ def test_marker():
 
     assert result == [
         {
-            "marker_path": "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
+            "marker_path": "ingestion/blocks_v1/DUMMYCHAIN/000011540000",
             "dataset_name": "",
             "root_path": "ingestion/blocks_v1",
             "num_parts": 2,
@@ -104,7 +104,7 @@ def test_marker():
             "max_block": 11560000,
         },
         {
-            "marker_path": "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
+            "marker_path": "ingestion/blocks_v1/DUMMYCHAIN/000011540000",
             "dataset_name": "",
             "root_path": "ingestion/blocks_v1",
             "num_parts": 2,
