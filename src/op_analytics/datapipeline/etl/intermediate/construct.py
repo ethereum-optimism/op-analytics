@@ -6,9 +6,6 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import DataWriter
-from op_analytics.datapipeline.etl.ingestion.markers import (
-    INGESTION_MARKERS_TABLE,
-)
 from op_analytics.datapipeline.etl.ingestion.reader_bydate import construct_readers_bydate
 from op_analytics.datapipeline.chains.goldsky_chains import determine_network, ChainNetwork
 from op_analytics.datapipeline.models.compute.registry import (
@@ -42,8 +39,7 @@ def construct_data_readers(
         chains=chains,
         range_spec=range_spec,
         read_from=read_from,
-        markers_table=INGESTION_MARKERS_TABLE,
-        root_paths=sorted(input_datasets),
+        root_paths_to_read=sorted(input_datasets),
     )
 
 

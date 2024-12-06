@@ -32,7 +32,7 @@ def test_minus_days():
         max=datetime.date(2024, 11, 18),
         max_requested_timestamp=None,
     )
-    assert dr.dates == [
+    assert dr.dates() == [
         datetime.date(2024, 11, 15),
         datetime.date(2024, 11, 16),
         datetime.date(2024, 11, 17),

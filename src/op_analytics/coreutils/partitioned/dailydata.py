@@ -133,5 +133,5 @@ def make_date_filter(
     return DateFilter(
         min_date=None if min_date is None else date_fromstr(min_date),
         max_date=None if max_date is None else date_fromstr(max_date),
-        datevals=None if date_range_spec is None else DateRange.from_spec(date_range_spec).dates,
+        datevals=None if date_range_spec is None else DateRange.from_spec(date_range_spec).dates(),
     )
