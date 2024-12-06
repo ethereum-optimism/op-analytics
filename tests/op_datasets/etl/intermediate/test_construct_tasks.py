@@ -20,7 +20,6 @@ def make_dataframe(path: str):
         return pl.DataFrame(
             json.load(fobj),
             schema={
-                "marker_path": pl.String(),
                 "dt": pl.UInt16(),
                 "chain": pl.String(),
                 "num_blocks": pl.Int32(),

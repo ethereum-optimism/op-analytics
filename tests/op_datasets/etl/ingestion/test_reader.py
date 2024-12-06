@@ -7,7 +7,6 @@ from op_analytics.datapipeline.etl.ingestion.reader_bydate import are_inputs_rea
 
 MARKER_PATHS_DATA = [
     {
-        "marker_path": "dummy",
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-22/000011400000.parquet",
         "root_path": "ingestion/traces_v1",
@@ -17,7 +16,6 @@ MARKER_PATHS_DATA = [
         "num_blocks": 20000,
     },
     {
-        "marker_path": "dummy",
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011400000.parquet",
         "root_path": "ingestion/traces_v1",
@@ -27,7 +25,6 @@ MARKER_PATHS_DATA = [
         "num_blocks": 20000,
     },
     {
-        "marker_path": "dummy",
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011420000.parquet",
         "root_path": "ingestion/traces_v1",
@@ -46,7 +43,6 @@ MARKER_PATHS_DATA = [
         "num_blocks": 20000,
     },
     {
-        "marker_path": "dummy",
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-24/000011440000.parquet",
         "root_path": "ingestion/traces_v1",
@@ -56,7 +52,6 @@ MARKER_PATHS_DATA = [
         "num_blocks": 20000,
     },
     {
-        "marker_path": "dummy",
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-24/000011460000.parquet",
         "root_path": "ingestion/traces_v1",
@@ -66,7 +61,6 @@ MARKER_PATHS_DATA = [
         "num_blocks": 20000,
     },
     {
-        "marker_path": "dummy",
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-24/000011480000.parquet",
         "root_path": "ingestion/traces_v1",
@@ -76,7 +70,6 @@ MARKER_PATHS_DATA = [
         "num_blocks": 20000,
     },
     {
-        "marker_path": "dummy",
         "chain": "fraxtal",
         "data_path": "ingestion/traces_v1/chain=fraxtal/dt=2024-10-24/000011500000.parquet",
         "root_path": "ingestion/traces_v1",

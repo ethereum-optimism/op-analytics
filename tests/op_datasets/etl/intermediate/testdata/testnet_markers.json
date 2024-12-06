@@ -1,6 +1,5 @@
 [
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006070000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -10,7 +9,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006075000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -20,7 +18,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006080000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -30,7 +27,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006085000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -40,7 +36,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006090000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -50,7 +45,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006095000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -60,7 +54,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006100000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -70,7 +63,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006105000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -80,7 +72,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006110000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -90,7 +81,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006115000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -100,7 +90,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006120000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -110,7 +99,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006125000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -120,7 +108,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006130000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -130,7 +117,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006135000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -140,7 +126,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006140000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -150,7 +135,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006145000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -160,7 +144,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006150000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -170,7 +153,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006155000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -180,7 +162,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006155000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -190,7 +171,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006160000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -200,7 +180,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006165000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -210,7 +189,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006170000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -220,7 +198,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006175000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -230,7 +207,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006180000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -240,7 +216,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006185000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -250,7 +225,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006190000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -260,7 +234,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006195000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -270,7 +243,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006200000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -280,7 +252,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006205000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -290,7 +261,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006210000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -300,7 +270,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006215000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -310,7 +279,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006220000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -320,7 +288,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006225000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -330,7 +297,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006230000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -340,7 +306,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006235000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -350,7 +315,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006240000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -360,7 +324,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006245000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -370,7 +333,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006245000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -380,7 +342,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006250000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -390,7 +351,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006255000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -400,7 +360,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006260000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -410,7 +369,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006265000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -420,7 +378,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006270000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -430,7 +387,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006275000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -440,7 +396,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006280000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -450,7 +405,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006285000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -460,7 +414,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006290000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -470,7 +423,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006295000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -480,7 +432,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006300000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -490,7 +441,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006305000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -500,7 +450,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006310000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -510,7 +459,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006315000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -520,7 +468,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006320000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -530,7 +477,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006325000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -540,7 +486,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/traces_v1/chain=unichain_sepolia/000006330000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -550,7 +495,6 @@
         "root_path": "ingestion_testnets/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006070000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -560,7 +504,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006075000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -570,7 +513,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006080000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -580,7 +522,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006085000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -590,7 +531,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006090000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -600,7 +540,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006095000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -610,7 +549,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006100000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -620,7 +558,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006105000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -630,7 +567,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006110000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -640,7 +576,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006115000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -650,7 +585,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006120000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -660,7 +594,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006125000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -670,7 +603,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006130000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -680,7 +612,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006135000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -690,7 +621,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006140000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -700,7 +630,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006145000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -710,7 +639,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006150000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -720,7 +648,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006155000.json",
         "dt": 20057,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -730,7 +657,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006155000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -740,7 +666,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006160000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -750,7 +675,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006165000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -760,7 +684,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006170000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -770,7 +693,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006175000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -780,7 +702,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006180000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -790,7 +711,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006185000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -800,7 +720,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006190000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -810,7 +729,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006195000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -820,7 +738,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006200000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -830,7 +747,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006205000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -840,7 +756,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006210000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -850,7 +765,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006215000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -860,7 +774,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006220000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -870,7 +783,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006225000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -880,7 +792,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006230000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -890,7 +801,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006235000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -900,7 +810,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006240000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -910,7 +819,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006245000.json",
         "dt": 20058,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -920,7 +828,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006245000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -930,7 +837,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006250000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -940,7 +846,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006255000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -950,7 +855,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006260000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -960,7 +864,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006265000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -970,7 +873,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006270000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -980,7 +882,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006275000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -990,7 +891,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006280000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -1000,7 +900,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006285000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -1010,7 +909,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006290000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -1020,7 +918,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006295000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -1030,7 +927,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006300000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -1040,7 +936,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006305000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -1050,7 +945,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006310000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -1060,7 +954,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006315000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -1070,7 +963,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006320000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -1080,7 +972,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006325000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,
@@ -1090,7 +981,6 @@
         "root_path": "ingestion_testnets/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion_testnets/transactions_v1/chain=unichain_sepolia/000006330000.json",
         "dt": 20059,
         "chain": "unichain_sepolia",
         "num_blocks": 5000,

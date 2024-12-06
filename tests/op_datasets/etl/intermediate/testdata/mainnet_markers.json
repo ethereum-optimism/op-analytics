@@ -1,6 +1,5 @@
 [
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016424000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -10,7 +9,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016432000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -20,7 +18,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016440000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -30,7 +27,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016448000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -40,7 +36,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016456000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -50,7 +45,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016464000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -60,7 +54,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016464000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -70,7 +63,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016472000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -80,7 +72,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016480000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -90,7 +81,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016488000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -100,7 +90,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016496000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -110,7 +99,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016504000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -120,7 +108,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016424000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -130,7 +117,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016432000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -140,7 +126,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016440000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -150,7 +135,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016448000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -160,7 +144,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016456000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -170,7 +153,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016464000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -180,7 +162,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016464000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -190,7 +171,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016472000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -200,7 +180,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016480000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -210,7 +189,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016488000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -220,7 +198,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016496000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -230,7 +207,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016504000.json",
         "dt": 20059,
         "chain": "mode",
         "num_blocks": 8000,
@@ -240,7 +216,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016376000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -250,7 +225,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016384000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -260,7 +234,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016392000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -270,7 +243,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016400000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -280,7 +252,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016408000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -290,7 +261,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016416000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,
@@ -300,7 +270,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/traces_v1/chain=mode/000016416000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -310,7 +279,6 @@
         "root_path": "ingestion/traces_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016376000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -320,7 +288,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016384000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -330,7 +297,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016392000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -340,7 +306,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016400000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -350,7 +315,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016408000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -360,7 +324,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016416000.json",
         "dt": 20057,
         "chain": "mode",
         "num_blocks": 8000,
@@ -370,7 +333,6 @@
         "root_path": "ingestion/transactions_v1"
     },
     {
-        "marker_path": "markers/ingestion/transactions_v1/chain=mode/000016416000.json",
         "dt": 20058,
         "chain": "mode",
         "num_blocks": 8000,

@@ -106,7 +106,6 @@ def markers_for_raw_ingestion(
             datevals=datevals,
         ),
         projections=[
-            "marker_path",
             "dt",
             "chain",
             "num_blocks",
@@ -128,7 +127,6 @@ def markers_for_raw_ingestion(
     )
 
     assert dict(paths_df.schema) == {
-        "marker_path": pl.String,
         "dt": pl.Date,
         "chain": pl.String,
         "num_blocks": pl.Int32,

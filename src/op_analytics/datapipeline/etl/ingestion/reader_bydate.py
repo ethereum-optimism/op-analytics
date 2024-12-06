@@ -116,7 +116,6 @@ def are_inputs_ready(
     """
 
     assert dict(markers_df.schema) == {
-        "marker_path": pl.String,
         "dt": pl.Date,
         "chain": pl.String,
         "num_blocks": pl.Int32,
