@@ -67,12 +67,14 @@ def ingest(
 
             executed += 1
             success = execute(task, fork_process)
-            log.info("task", status="success" if success else "fail")
-            executed_ok += 1 if success else 0
+            if success:
+                executed_ok += 1
 
             if max_tasks is not None and executed >= max_tasks:
                 log.warning(f"stopping after {executed} tasks")
                 break
+
+    log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
 
 
 def execute(task, fork_process: bool) -> bool:
@@ -83,14 +85,13 @@ def execute(task, fork_process: bool) -> bool:
         p.start()
         p.join()
 
-        log.info("memory usage", max_rss=memory_usage())
-
         if p.exitcode != 0:
-            log.error(f"task exit code: {p.exitcode}")
+            log.error("task", status="fail", exitcode=p.exitcode)
             return False
         else:
-            log.info("task exit 0")
+            log.info("task", status="success", exitcode=0)
             return True
+
     else:
         steps(task)
         return True
@@ -106,6 +107,8 @@ def steps(task):
 
         # Write outputs and markers.
         writer(task)
+
+        log.info("memory usage", max_rss=memory_usage())
 
 
 def reader(task: IngestionTask):

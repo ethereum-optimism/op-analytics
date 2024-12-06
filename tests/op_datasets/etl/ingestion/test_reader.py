@@ -3,7 +3,7 @@ import datetime
 import polars as pl
 
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.datapipeline.etl.ingestion.reader import are_inputs_ready
+from op_analytics.datapipeline.etl.ingestion.reader_bydate import are_inputs_ready
 
 MARKER_PATHS_DATA = [
     {
@@ -88,7 +88,7 @@ def test_are_inputs_ready():
     is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        input_root_paths={
+        root_paths_to_check={
             "ingestion/traces_v1",
         },
         storage_location=DataLocation.GCS,
@@ -110,7 +110,7 @@ def test_not_ready_01():
     is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        input_root_paths={
+        root_paths_to_check={
             "ingestion/traces_v1",
         },
         storage_location=DataLocation.GCS,
@@ -132,7 +132,7 @@ def test_not_ready_02():
     is_ready, actual = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
-        input_root_paths={
+        root_paths_to_check={
             "ingestion/traces_v1",
             "ingestion/logs_v1",
         },

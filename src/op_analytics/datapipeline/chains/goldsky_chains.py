@@ -64,6 +64,16 @@ def determine_network(chain: str) -> ChainNetwork:
     raise ValueError(f"could not determine network for chain: {chain!r}")
 
 
+def ensure_single_network(chains: list[str]) -> ChainNetwork:
+    if set(chains).issubset(goldsky_mainnet_chains()):
+        return ChainNetwork.MAINNET
+
+    if set(chains).issubset(goldsky_testnet_chains()):
+        return ChainNetwork.TESTNET
+
+    raise ValueError(f"could not determine MAINNET/TESTNET for chains: {chains}")
+
+
 def verify_goldsky_tables(chains: list[str]) -> None:
     """Run queries to esnure the required tables exist for the listed chains."""
     tables = []

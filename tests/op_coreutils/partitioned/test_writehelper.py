@@ -4,15 +4,14 @@ import datetime
 from unittest.mock import patch
 
 
-from op_analytics.coreutils.duckdb_local import run_query
+from op_analytics.coreutils.duckdb_local.client import run_query_duckdb_local
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
-from op_analytics.coreutils.partitioned.types import PartitionedRootPath, PartitionedMarkerPath
 
 
 def test_parquet_writer():
-    run_query("TRUNCATE TABLE etl_monitor_dev.intermediate_model_markers")
+    run_query_duckdb_local("TRUNCATE TABLE etl_monitor_dev.intermediate_model_markers")
 
     df = pl.DataFrame(
         {
@@ -42,9 +41,9 @@ def test_parquet_writer():
         partition_cols=["chain", "dt"],
         location=DataLocation.LOCAL,
         expected_output=ExpectedOutput(
-            root_path=PartitionedRootPath("intermediate/daily_address_summary/summary_v1"),
+            root_path="intermediate/daily_address_summary/summary_v1",
             file_name="out.parquet",
-            marker_path=PartitionedMarkerPath("BLAH"),
+            marker_path="BLAH",
             process_name="default",
             additional_columns={"model_name": "MYMODEL"},
             additional_columns_schema=[
@@ -97,7 +96,7 @@ def test_parquet_writer():
     ]
 
     markers = (
-        run_query(
+        run_query_duckdb_local(
             "SELECT * FROM etl_monitor_dev.intermediate_model_markers WHERE chain IN ('DUMMYOP', 'DUMMYBASE')"
         )
         .pl()

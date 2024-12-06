@@ -12,7 +12,6 @@ from .breakout import breakout_partitions
 from .dataaccess import DateFilter, MarkerFilter, init_data_access
 from .location import DataLocation
 from .output import ExpectedOutput, OutputData
-from .types import PartitionedMarkerPath, PartitionedRootPath
 from .writer import DataWriter
 
 log = structlog.get_logger()
@@ -51,9 +50,9 @@ def write_daily_data(
             markers_table=MARKERS_TABLE,
             expected_outputs=[
                 ExpectedOutput(
-                    root_path=PartitionedRootPath(root_path),
+                    root_path=root_path,
                     file_name="out.parquet",
-                    marker_path=PartitionedMarkerPath(f"{datestr}/{root_path}"),
+                    marker_path=f"{datestr}/{root_path}",
                     process_name="default",
                     additional_columns=dict(),
                     additional_columns_schema=[

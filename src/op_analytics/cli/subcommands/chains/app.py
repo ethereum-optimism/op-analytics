@@ -13,7 +13,7 @@ from op_analytics.datapipeline.chains.upload import upload_all
 from op_analytics.datapipeline.etl.ingestion import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
-from op_analytics.datapipeline.etl.intermediate import compute_intermediate
+from op_analytics.datapipeline.etl.intermediate.main import compute_intermediate
 from op_analytics.datapipeline.etl.loadbq import PipelineStage, load_to_bq
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 
@@ -123,6 +123,10 @@ FORCE_COMPLETE_OPTION = Annotated[
 
 FORCE_NOT_READY_OPTION = Annotated[bool, typer.Option(help="Run even if inputs are notready.")]
 
+FORK_PROCESS_OPTION = Annotated[
+    bool, typer.Option(help="If true, execute task in a forked subprocess.")
+]
+
 
 def normalize_chains(chains: str) -> list[str]:
     # If for some reason we need to force exclude a chain, add it here.
@@ -163,9 +167,7 @@ def ingest_blocks(
     write_to: WRITE_TO_OPTION = DataLocation.DISABLED,
     dryrun: DRYRUN_OPTION = False,
     force_complete: FORCE_COMPLETE_OPTION = False,
-    fork_process: Annotated[
-        bool, typer.Option(help="If true, execute task in a forked subprocess.")
-    ] = True,
+    fork_process: FORK_PROCESS_OPTION = True,
 ):
     """Ingest a range of blocks.
 
@@ -199,6 +201,7 @@ def intermediate_models(
     write_to: WRITE_TO_OPTION = DataLocation.DISABLED,
     dryrun: DRYRUN_OPTION = False,
     force_complete: FORCE_COMPLETE_OPTION = False,
+    fork_process: FORK_PROCESS_OPTION = True,
 ):
     """Compute intermediate models for a range of dates."""
     chain_list = normalize_chains(chains)
@@ -212,6 +215,7 @@ def intermediate_models(
         write_to=write_to,
         dryrun=dryrun,
         force_complete=force_complete,
+        fork_process=fork_process,
     )
 
 
@@ -262,23 +266,24 @@ def hourly():
         fork_process=True,
     )
 
-    compute_intermediate(
-        chains=normalize_chains("MAINNETS"),
-        models=[
-            "daily_address_summary",
-            "contract_creation",
-        ],
-        range_spec="m8days",
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-    )
+    for network in ["MAINNETS", "TESTNETS"]:
+        compute_intermediate(
+            chains=normalize_chains(network),
+            models=[
+                "daily_address_summary",
+                "contract_creation",
+            ],
+            range_spec="m3days",
+            read_from=DataLocation.GCS,
+            write_to=DataLocation.GCS,
+            dryrun=False,
+            force_complete=False,
+        )
 
     load_to_bq(
         stage=PipelineStage.RAW_ONCHAIN,
         location=DataLocation.BIGQUERY,
-        range_spec="m8days",
+        range_spec="m3days",
         dryrun=False,
         force_complete=False,
         force_not_ready=False,

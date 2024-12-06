@@ -59,6 +59,16 @@ RAW_CHAIN_METADATA_SCHEMA = pl.Schema(
 
 @cache
 def load_chain_metadata() -> pl.DataFrame:
+    """Cached version of load chain metadata."""
+    return load_chain_metadata_impl()
+
+
+def load_chain_metadata_impl() -> pl.DataFrame:
+    """Uncached version of load chain metadata.
+
+    For use in unittests wehre read_gsheet is mocked and we don't want
+    the cache in load_chain_metadata() to be updated.
+    """
     # Read CSV from Google Sheets Input
     raw_records = read_gsheet(
         location_name="chain_metadata",

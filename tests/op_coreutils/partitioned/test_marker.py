@@ -2,7 +2,7 @@ import datetime
 
 import pyarrow as pa
 
-from op_analytics.coreutils.duckdb_local import run_query
+from op_analytics.coreutils.duckdb_local.client import run_query_duckdb_local
 from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.marker import Marker
@@ -12,7 +12,7 @@ from op_analytics.coreutils.partitioned.partition import (
     Partition,
     PartitionMetadata,
 )
-from op_analytics.coreutils.partitioned.types import PartitionedMarkerPath, PartitionedRootPath
+from op_analytics.datapipeline.etl.ingestion.reader_bydate import markers_for_raw_ingestion
 from op_analytics.coreutils.time import now
 
 MARKERS_TABLE = "raw_onchain_ingestion_markers"
@@ -21,7 +21,9 @@ MARKERS_TABLE = "raw_onchain_ingestion_markers"
 def test_marker():
     client = init_data_access()
 
-    run_query(f"DELETE FROM etl_monitor_dev.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'")
+    run_query_duckdb_local(
+        f"DELETE FROM etl_monitor_dev.{MARKERS_TABLE} WHERE chain = 'DUMMYCHAIN'"
+    )
 
     marker = Marker(
         written_parts={
@@ -39,10 +41,8 @@ def test_marker():
             ): PartitionMetadata(row_count=14955),
         },
         expected_output=ExpectedOutput(
-            marker_path=PartitionedMarkerPath(
-                "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json"
-            ),
-            root_path=PartitionedRootPath("ingestion/blocks_v1"),
+            marker_path="markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
+            root_path="ingestion/blocks_v1",
             file_name="000011540000.parquet",
             process_name="default",
             additional_columns={"num_blocks": 20000, "min_block": 11540000, "max_block": 11560000},
@@ -73,7 +73,7 @@ def test_marker():
     )
 
     result = (
-        run_query(
+        run_query_duckdb_local(
             "SELECT * FROM etl_monitor_dev.raw_onchain_ingestion_markers WHERE chain = 'DUMMYCHAIN'"
         )
         .pl()
@@ -126,7 +126,7 @@ def test_marker():
     )
     assert exists
 
-    markers_df = client.markers_for_raw_ingestion(
+    markers_df = markers_for_raw_ingestion(
         data_location=DataLocation.LOCAL,
         markers_table=MARKERS_TABLE,
         datevals=[datetime.date(2024, 10, 25)],
@@ -140,7 +140,7 @@ def test_marker():
         == "ingestion/blocks_v1/chain=DUMMYCHAIN/dt=2024-10-25/000011540000.parquet"
     )
 
-    markers_df = client.markers_for_raw_ingestion(
+    markers_df = markers_for_raw_ingestion(
         data_location=DataLocation.LOCAL,
         markers_table=MARKERS_TABLE,
         datevals=[datetime.date(2024, 10, 25)],

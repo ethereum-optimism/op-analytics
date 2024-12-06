@@ -1,4 +1,7 @@
+import multiprocessing as mp
+
 from op_analytics.coreutils.duckdb_inmem import init_client
+from op_analytics.coreutils.duckdb_local.client import disconnect_duckdb_local
 from op_analytics.coreutils.logger import (
     bind_contextvars,
     bound_contextvars,
@@ -7,12 +10,15 @@ from op_analytics.coreutils.logger import (
 )
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import OutputData
+from op_analytics.datapipeline.models.compute.modelexecute import PythonModelExecutor
+from op_analytics.datapipeline.models.compute.registry import (
+    REGISTERED_INTERMEDIATE_MODELS,
+    load_model_definitions,
+)
+from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros, set_memory_limit
 
 from .construct import construct_tasks
-from .modelexecute import PythonModelExecutor
-from .registry import REGISTERED_INTERMEDIATE_MODELS, load_model_definitions
 from .task import IntermediateModelsTask
-from .udfs import create_duckdb_macros
 
 log = structlog.get_logger()
 
@@ -26,26 +32,16 @@ def compute_intermediate(
     write_to: DataLocation,
     dryrun: bool,
     force_complete: bool = False,
+    fork_process: bool = True,
 ):
-    # Load python functions that define registered data models.
-    load_model_definitions()
-
-    for model in models:
-        should_exit = False
-        if model not in REGISTERED_INTERMEDIATE_MODELS:
-            should_exit = True
-            log.error(f"Model is not registered: {model}")
-        if should_exit:
-            log.error("Cannot run on unregistered models. Will exit.")
-            exit(1)
-
     tasks = construct_tasks(chains, models, range_spec, read_from, write_to)
 
     if dryrun:
         log.info("DRYRUN: No work will be done.")
         return
 
-    success = 0
+    executed = 0
+    executed_ok = 0
     for i, task in enumerate(tasks):
         bind_contextvars(
             task=f"{i+1}/{len(tasks)}",
@@ -66,46 +62,71 @@ def compute_intermediate(
             log.info("forced execution despite complete marker")
             task.data_writer.force = True
 
-        try:
-            log.info("memory usage", max_rss=memory_usage(), when="before task")
-            executor(task)
-            log.info("memory usage", max_rss=memory_usage(), when="after task")
-        except Exception as ex:
-            log.error("task", status="exception")
-            log.error("intermediate model exception", exc_info=ex)
+        # If running locally release duckdb lock before forking.
+        if task.data_writer.write_to == DataLocation.LOCAL:
+            disconnect_duckdb_local()
+
+        executed += 1
+        success = execute(task, fork_process)
+        if success:
+            executed_ok += 1
+
+    log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
+
+
+def execute(task: IntermediateModelsTask, fork_process: bool) -> bool:
+    """Returns true if task succeeds."""
+    if fork_process:
+        ctx = mp.get_context("spawn")
+        p = ctx.Process(target=steps, args=(task,))
+        p.start()
+        p.join()
+
+        if p.exitcode != 0:
+            log.error("task", status="fail", exitcode=p.exitcode)
+            return False
         else:
-            log.info("task", status="success")
+            log.info("task", status="success", exitcode=0)
+            return True
+    else:
+        steps(task)
+        return True
 
-        success += 1
 
-
-def executor(task: IntermediateModelsTask) -> None:
+def steps(task: IntermediateModelsTask) -> None:
     """Execute the model computations."""
 
     # Load shared DuckDB UDFs.
     client = init_client()
     create_duckdb_macros(client)
 
-    for model_name in task.models:
-        # Get the model.
-        im_model = REGISTERED_INTERMEDIATE_MODELS[model_name]
+    # Set duckdb memory limit. This lets us get an error from duckb instead of
+    # OOMing the container.
+    set_memory_limit(client, gb=9)
 
-        with PythonModelExecutor(im_model, client, task.data_reader) as m:
-            with bound_contextvars(model=model_name):
-                log.info("running model")
-                model_results = m.execute()
+    # Load models
+    load_model_definitions()
 
-                produced_datasets = set(model_results.keys())
-                if produced_datasets != set(im_model.expected_output_datasets):
-                    raise RuntimeError(
-                        f"model {model_name!r} produced unexpected datasets: {produced_datasets}"
-                    )
+    # Get the model.
+    im_model = REGISTERED_INTERMEDIATE_MODELS[task.model]
 
-                for result_name, rel in model_results.items():
-                    task.data_writer.write(
-                        output_data=OutputData(
-                            dataframe=rel.pl(),
-                            root_path=f"intermediate/{model_name}/{result_name}",
-                            default_partition=task.data_reader.partitions_dict(),
-                        ),
-                    )
+    with PythonModelExecutor(im_model, client, task.data_reader) as m:
+        with bound_contextvars(model=task.model, **task.data_reader.partitions_dict()):
+            log.info("running model")
+            model_results = m.execute()
+
+            produced_datasets = set(model_results.keys())
+            if produced_datasets != set(im_model.expected_output_datasets):
+                raise RuntimeError(
+                    f"model {task.model!r} produced unexpected datasets: {produced_datasets}"
+                )
+
+            for result_name, rel in model_results.items():
+                task.data_writer.write(
+                    output_data=OutputData(
+                        dataframe=rel.pl(),
+                        root_path=f"{task.output_root_path_prefix}/{task.model}/{result_name}",
+                        default_partition=task.data_reader.partitions_dict(),
+                    ),
+                )
+            log.info("memory usage", max_rss=memory_usage(), when="before task")
