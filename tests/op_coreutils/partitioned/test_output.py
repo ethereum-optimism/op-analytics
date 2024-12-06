@@ -1,5 +1,3 @@
-import pyarrow as pa
-
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.partition import PartitionColumn, Partition
 
@@ -10,12 +8,6 @@ def test_01():
         file_name="out.parquet",
         marker_path="BLAH",
         process_name="default",
-        additional_columns={"model_name": "MYMODEL"},
-        additional_columns_schema=[
-            pa.field("chain", pa.string()),
-            pa.field("dt", pa.date32()),
-            pa.field("model_name", pa.string()),
-        ],
     )
 
     partition = Partition(

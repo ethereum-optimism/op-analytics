@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Any
 
 import polars as pl
-import pyarrow as pa
 
 
 @dataclass
@@ -21,13 +20,6 @@ class ExpectedOutput:
     # Identifier for the process that produced the datset.
     process_name: str
 
-    # Values for additional columns stored in the markers table.
-    additional_columns: dict[str, Any]
-
-    # Schema for additional columns stored in the markers table.
-    # This schema is used to create a pyarrow table to write markers
-    # into the markers table.
-    additional_columns_schema: list[pa.Field]
 
 
 @dataclass

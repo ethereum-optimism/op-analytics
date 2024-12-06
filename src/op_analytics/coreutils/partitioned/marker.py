@@ -25,7 +25,7 @@ class Marker:
     def marker_path(self):
         return self.expected_output.marker_path
 
-    def arrow_schema(self) -> pa.Schema:
+    def arrow_schema(self, extra_marker_columns_schema: list[pa.Field]) -> pa.Schema:
         return pa.schema(
             [
                 pa.field("updated_at", pa.timestamp(unit="us", tz=None)),
@@ -38,11 +38,11 @@ class Marker:
                 pa.field("process_name", pa.string()),
                 pa.field("writer_name", pa.string()),
             ]
-            + self.expected_output.additional_columns_schema
+            + extra_marker_columns_schema
         )
 
-    def to_pyarrow_table(self) -> pa.Table:
-        schema = self.arrow_schema()
+    def to_pyarrow_table(self, extra_marker_columns_schema: list[pa.Field]) -> pa.Table:
+        schema = self.arrow_schema(extra_marker_columns_schema)
 
         current_time = now()
         hostname = socket.gethostname()

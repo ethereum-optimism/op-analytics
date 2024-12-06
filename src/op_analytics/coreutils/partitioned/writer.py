@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+import pyarrow as pa
 from overrides import override
 
 from op_analytics.coreutils.logger import structlog
