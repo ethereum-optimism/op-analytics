@@ -102,7 +102,7 @@ def steps(task: IntermediateModelsTask) -> None:
 
     # Set duckdb memory limit. This lets us get an error from duckb instead of
     # OOMing the container.
-    set_memory_limit(client, gb=9)
+    set_memory_limit(client, gb=10)
 
     # Load models
     load_model_definitions()

@@ -381,7 +381,9 @@ def all_outputs_complete(
         else:
             incomplete.append(marker)
 
-    log.debug(f"{len(complete)} complete, {len(incomplete)} incomplete")
+    num_complete = len(complete)
+    total = len(incomplete) + len(complete)
+    log.debug(f"{num_complete}/{total} complete")
 
     if incomplete:
         return False
