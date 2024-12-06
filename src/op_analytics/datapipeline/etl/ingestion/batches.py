@@ -9,9 +9,12 @@ Given a range of block numbers we want to have a deterministic way of locating w
 data for those blocks is stored in GCS.
 """
 
+import pyarrow as pa
+
 from dataclasses import dataclass
 
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determine_network
 
@@ -227,14 +230,29 @@ class BlockBatch:
     def filter(self, number_column: str = "number"):
         return f" {number_column} >= {self.min} and {number_column} < {self.max}"
 
-    def construct_filename(self):
-        return f"{self.min:012d}"
+    def construct_expected_output(self, root_path: str):
+        padded_min_block = f"{self.min:012d}"
+        marker = f"{root_path}/{self.chain}/{padded_min_block}"
+        parquet_name = f"{padded_min_block}.parquet"
 
-    def construct_parquet_filename(self):
-        return f"{self.construct_filename()}.parquet"
-
-    def construct_marker_path(self):
-        return f"chain={self.chain}/{self.construct_filename()}.json"
+        return ExpectedOutput(
+            root_path=root_path,
+            file_name=parquet_name,
+            marker_path=marker,
+            process_name="default",
+            additional_columns=dict(
+                num_blocks=self.num_blocks(),
+                min_block=self.min,
+                max_block=self.max,
+            ),
+            additional_columns_schema=[
+                pa.field("chain", pa.string()),
+                pa.field("dt", pa.date32()),
+                pa.field("num_blocks", pa.int32()),
+                pa.field("min_block", pa.int64()),
+                pa.field("max_block", pa.int64()),
+            ],
+        )
 
     @property
     def network(self):
