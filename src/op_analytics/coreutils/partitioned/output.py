@@ -1,11 +1,8 @@
-import os
 from dataclasses import dataclass
 from typing import Any
 
 import polars as pl
 import pyarrow as pa
-
-from .partition import Partition
 
 
 @dataclass
@@ -31,21 +28,6 @@ class ExpectedOutput:
     # This schema is used to create a pyarrow table to write markers
     # into the markers table.
     additional_columns_schema: list[pa.Field]
-
-    def full_path(self, partition: Partition):
-        """Produce the full path for this expected output.
-
-        The full path is a combination of:
-
-        - root_path   ex: ingestion
-        - partitions  ex: chain=op/dt=2024-11-01
-        - file name   ex: 00001000.parquet
-
-        Full path:
-
-        ingestion/chain=op/dt=2024-11-01/00001000.parquet
-        """
-        return os.path.join(self.root_path, partition.path, self.file_name)
 
 
 @dataclass

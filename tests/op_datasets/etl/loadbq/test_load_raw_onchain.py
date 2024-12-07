@@ -726,25 +726,25 @@ def test_load_tasks():
         {
             "dt": datetime.date(2024, 10, 2),
             "marker_path": "superchain_raw/blocks/2024-10-02",
-            "data_path": "dt=2024-10-02/",
+            "data_path": "superchain_raw/blocks/dt=2024-10-02/",
             "row_count": 3,
         },
         {
             "dt": datetime.date(2024, 10, 2),
             "marker_path": "superchain_raw/logs/2024-10-02",
-            "data_path": "dt=2024-10-02/",
+            "data_path": "superchain_raw/logs/dt=2024-10-02/",
             "row_count": 3,
         },
         {
             "dt": datetime.date(2024, 10, 2),
             "marker_path": "superchain_raw/traces/2024-10-02",
-            "data_path": "dt=2024-10-02/",
+            "data_path": "superchain_raw/traces/dt=2024-10-02/",
             "row_count": 3,
         },
         {
             "dt": datetime.date(2024, 10, 2),
             "marker_path": "superchain_raw/transactions/2024-10-02",
-            "data_path": "dt=2024-10-02/",
+            "data_path": "superchain_raw/transactions/dt=2024-10-02/",
             "row_count": 3,
         },
     ]

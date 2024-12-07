@@ -8,7 +8,8 @@ import polars as pl
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import OutputData
-from op_analytics.coreutils.partitioned.writer import DataWriter
+from op_analytics.coreutils.partitioned.writehelper import WriteManager
+from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
 from .batches import BlockBatch
@@ -41,8 +42,8 @@ class IngestionTask:
     # Outputs
     output_dataframes: list[OutputData]
 
-    # DataWriter
-    data_writer: DataWriter
+    # Write Manager
+    write_manager: WriteManager
 
     # Progress Indicator
     progress_indicator: str
@@ -90,12 +91,12 @@ class IngestionTask:
             input_dataframes={},
             output_dataframes=[],
             read_from=read_from,
-            data_writer=DataWriter(
-                partition_cols=["chain", "dt"],
-                write_to=write_to,
-                markers_table=INGESTION_MARKERS_TABLE,
+            write_manager=PartitionedWriteManager(
+                location=write_to,
                 expected_outputs=expected_outputs,
+                markers_table=INGESTION_MARKERS_TABLE,
                 force=False,
+                partition_cols=["chain", "dt"],
             ),
             progress_indicator="",
         )
