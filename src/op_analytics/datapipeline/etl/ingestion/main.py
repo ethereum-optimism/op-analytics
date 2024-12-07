@@ -35,7 +35,7 @@ def ingest(
     force_complete: bool = False,
     fork_process: bool = True,
     max_tasks: int | None = None,
-):
+) -> None:
     tasks = construct_tasks(chains, range_spec, read_from, write_to)
     log.info(f"constructed {len(tasks)} tasks.")
 
@@ -49,12 +49,12 @@ def ingest(
         task.progress_indicator = f"{i+1}/{len(tasks)}"
         with bound_contextvars(**task.contextvars):
             # Decide if we need to run this task.
-            if task.data_writer.is_complete() and not force_complete:
+            if task.write_manager.is_complete() and not force_complete:
                 log.info("task", status="already_complete")
                 continue
 
             if force_complete:
-                task.data_writer.force = True
+                task.write_manager.force = True
 
             # Decide if we can run this task.
             if not all_inputs_ready(
