@@ -54,7 +54,10 @@ class Marker:
                 "root_path": self.expected_output.root_path,
                 "num_parts": len(self.written_parts),
                 "dataset_name": "",
-                "data_path": self.expected_output.full_path(partition),
+                "data_path": partition.full_path(
+                    root_path=self.expected_output.root_path,
+                    file_name=self.expected_output.file_name,
+                ),
                 "row_count": partition_metadata.row_count,
                 "process_name": self.expected_output.process_name,
                 "writer_name": hostname,

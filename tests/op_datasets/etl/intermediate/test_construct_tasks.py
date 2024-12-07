@@ -9,7 +9,7 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.partition import Partition, PartitionColumn
 from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.partitioned.writer import DataWriter
+from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.etl.intermediate.construct import construct_tasks
 from op_analytics.datapipeline.etl.intermediate.task import IntermediateModelsTask
@@ -91,8 +91,8 @@ def test_construct():
             ),
             model="contract_creation",
             output_duckdb_relations={},
-            data_writer=DataWriter(
-                write_to=DataLocation.GCS,
+            write_manager=PartitionedWriteManager(
+                location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 markers_table="intermediate_model_markers",
                 expected_outputs=[
@@ -186,8 +186,8 @@ def test_construct_testnet():
             ),
             model="contract_creation",
             output_duckdb_relations={},
-            data_writer=DataWriter(
-                write_to=DataLocation.GCS,
+            write_manager=PartitionedWriteManager(
+                location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 markers_table="intermediate_model_markers",
                 expected_outputs=[

@@ -6,7 +6,7 @@ import pyarrow as pa
 
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
-from op_analytics.coreutils.partitioned.writer import DataWriter
+from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.etl.ingestion.construct import construct_tasks
@@ -50,8 +50,8 @@ def test_construct():
             input_datasets={},
             input_dataframes={},
             output_dataframes=[],
-            data_writer=DataWriter(
-                write_to=DataLocation.GCS,
+            write_manager=PartitionedWriteManager(
+                location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 markers_table="raw_onchain_ingestion_markers",
                 expected_outputs=[
@@ -139,8 +139,8 @@ def test_construct():
             input_datasets={},
             input_dataframes={},
             output_dataframes=[],
-            data_writer=DataWriter(
-                write_to=DataLocation.GCS,
+            write_manager=PartitionedWriteManager(
+                location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 markers_table="raw_onchain_ingestion_markers",
                 expected_outputs=[
@@ -228,8 +228,8 @@ def test_construct():
             input_datasets={},
             input_dataframes={},
             output_dataframes=[],
-            data_writer=DataWriter(
-                write_to=DataLocation.GCS,
+            write_manager=PartitionedWriteManager(
+                location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 markers_table="raw_onchain_ingestion_markers",
                 expected_outputs=[

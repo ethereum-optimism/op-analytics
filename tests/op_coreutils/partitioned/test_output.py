@@ -18,14 +18,14 @@ def test_01():
         ],
     )
 
-    actual = expected_output.full_path(
-        partition=Partition(
-            [
-                PartitionColumn(name="chain", value="op"),
-                PartitionColumn(name="dt", value="2023-10-30"),
-            ]
-        )
+    partition = Partition(
+        [
+            PartitionColumn(name="chain", value="op"),
+            PartitionColumn(name="dt", value="2023-10-30"),
+        ]
     )
+    actual = partition.full_path(expected_output.root_path, expected_output.file_name)
+
     assert (
         actual == "intermediate/daily_address_summary/summary_v1/chain=op/dt=2023-10-30/out.parquet"
     )

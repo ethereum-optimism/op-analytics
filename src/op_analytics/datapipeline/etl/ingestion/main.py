@@ -207,12 +207,12 @@ def writer(task: IngestionTask):
     total_rows: dict[str, int] = defaultdict(int)
 
     for output_data in task.output_dataframes:
-        write_result = task.data_writer.write(output_data)
+        write_result = task.write_manager.write(output_data)
 
         for partition_metadata in write_result.written_parts.values():
             if partition_metadata.row_count is not None:
                 total_rows[output_data.root_path] += partition_metadata.row_count
 
     summary = " ".join(f"{key}={human_rows(val)}" for key, val in total_rows.items())
-    summary = f"{task.data_writer.write_to.name}::{summary}"
+    summary = f"{task.write_manager.location.name}::{summary}"
     log.info(f"done writing. {summary}")

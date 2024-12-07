@@ -9,6 +9,7 @@ from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chains
 from op_analytics.datapipeline.etl.ingestion.reader_bydate import construct_readers_bydate
 
+
 from .loader import bq_load
 from .task import consolidate_chains
 

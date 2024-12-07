@@ -12,7 +12,7 @@ from .breakout import breakout_partitions
 from .dataaccess import DateFilter, MarkerFilter, init_data_access
 from .location import DataLocation
 from .output import ExpectedOutput, OutputData
-from .writer import DataWriter
+from .writer import PartitionedWriteManager
 
 log = structlog.get_logger()
 
@@ -44,9 +44,8 @@ def write_daily_data(
     for part in parts:
         datestr = part.partition_value("dt")
 
-        writer = DataWriter(
-            write_to=write_location(),
-            partition_cols=["dt"],
+        writer = PartitionedWriteManager(
+            location=write_location(),
             markers_table=MARKERS_TABLE,
             expected_outputs=[
                 ExpectedOutput(
@@ -61,6 +60,7 @@ def write_daily_data(
                 )
             ],
             force=force_complete,
+            partition_cols=["dt"],
         )
 
         part_df = part.df.with_columns(dt=pl.lit(datestr))

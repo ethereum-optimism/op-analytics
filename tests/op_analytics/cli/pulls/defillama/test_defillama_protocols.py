@@ -304,7 +304,7 @@ def test_construct_urls():
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.now_date")
-@patch("op_analytics.coreutils.partitioned.dailydata.DataWriter.write")
+@patch("op_analytics.coreutils.partitioned.dailydata.PartitionedWriteManager.write")
 def test_pull_single_protocol_tvl(
     mock_write,
     mock_now_date,
@@ -380,7 +380,7 @@ def test_pull_single_protocol_tvl(
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.get_data")
 @patch("op_analytics.cli.subcommands.pulls.defillama.protocols.now_date")
-@patch("op_analytics.coreutils.partitioned.dailydata.DataWriter.write")
+@patch("op_analytics.coreutils.partitioned.dailydata.PartitionedWriteManager.write")
 def test_pull_all_protocol_tvl(
     mock_write,
     mock_now_date,

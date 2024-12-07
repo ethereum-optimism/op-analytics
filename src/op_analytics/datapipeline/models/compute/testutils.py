@@ -186,7 +186,7 @@ class IntermediateModelTestBase(unittest.TestCase):
             models=[],
             range_spec=f"@{datestr}:+1",
             read_from=DataLocation.GCS,
-            write_to=DataLocation.DISABLED,  # we will not write out the data using the DataWriter
+            write_to=DataLocation.DISABLED,
         )
         assert len(tasks) == 1
         task = tasks[0]

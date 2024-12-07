@@ -5,7 +5,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.partitioned.writer import DataWriter
+from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.datapipeline.etl.ingestion.reader_bydate import construct_readers_bydate
 from op_analytics.datapipeline.chains.goldsky_chains import determine_network, ChainNetwork
 from op_analytics.datapipeline.models.compute.registry import (
@@ -102,12 +102,12 @@ def construct_tasks(
                     data_reader=reader,
                     model=model,
                     output_duckdb_relations={},
-                    data_writer=DataWriter(
-                        partition_cols=["chain", "dt"],
-                        write_to=write_to,
+                    write_manager=PartitionedWriteManager(
+                        location=write_to,
                         markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
                         expected_outputs=expected_outputs,
                         force=False,
+                        partition_cols=["chain", "dt"],
                     ),
                     output_root_path_prefix=root_path_prefix,
                 )

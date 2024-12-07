@@ -171,7 +171,7 @@ def test_expected_markers():
             marker_path=_.marker_path,
             additional_columns=_.additional_columns,
         )
-        for _ in task.data_writer.expected_outputs
+        for _ in task.write_manager.expected_outputs
     ]
 
     assert actual == [
@@ -230,7 +230,7 @@ def test_expected_markers_testnet():
             marker_path=_.marker_path,
             additional_columns=_.additional_columns,
         )
-        for _ in task.data_writer.expected_outputs
+        for _ in task.write_manager.expected_outputs
     ]
 
     assert actual == [

@@ -5,7 +5,7 @@ import polars as pl
 
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.output import Partition
+from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import surrounding_dates
