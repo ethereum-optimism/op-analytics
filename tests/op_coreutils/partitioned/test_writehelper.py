@@ -40,21 +40,20 @@ def test_parquet_writer():
     manager = PartitionedWriteManager(
         partition_cols=["chain", "dt"],
         location=DataLocation.LOCAL,
+        extra_marker_columns={"model_name": "MYMODEL"},
+        extra_marker_columns_schema=[
+            pa.field("chain", pa.string()),
+            pa.field("dt", pa.date32()),
+            pa.field("model_name", pa.string()),
+        ],
+        markers_table="intermediate_model_markers",
         expected_outputs=[
             ExpectedOutput(
                 root_path="intermediate/daily_address_summary/summary_v1",
                 file_name="out.parquet",
                 marker_path="BLAH",
-                process_name="default",
-                additional_columns={"model_name": "MYMODEL"},
-                additional_columns_schema=[
-                    pa.field("chain", pa.string()),
-                    pa.field("dt", pa.date32()),
-                    pa.field("model_name", pa.string()),
-                ],
             )
         ],
-        markers_table="intermediate_model_markers",
         force=False,
     )
 

@@ -15,8 +15,6 @@ log = structlog.get_logger()
 
 @dataclass
 class PartitionedWriteManager(WriteManager):
-    partition_cols: list[str]
-
     @override
     def write_implementation(self, output_data: OutputData) -> WrittenParts:
         assert isinstance(output_data, OutputData)

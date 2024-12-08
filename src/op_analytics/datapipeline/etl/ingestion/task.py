@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any
 
 import polars as pl
+import pyarrow as pa
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
@@ -93,10 +94,22 @@ class IngestionTask:
             read_from=read_from,
             write_manager=PartitionedWriteManager(
                 location=write_to,
-                expected_outputs=expected_outputs,
-                markers_table=INGESTION_MARKERS_TABLE,
-                force=False,
                 partition_cols=["chain", "dt"],
+                extra_marker_columns=dict(
+                    num_blocks=block_batch.num_blocks(),
+                    min_block=block_batch.min,
+                    max_block=block_batch.max,
+                ),
+                extra_marker_columns_schema=[
+                    pa.field("chain", pa.string()),
+                    pa.field("dt", pa.date32()),
+                    pa.field("num_blocks", pa.int32()),
+                    pa.field("min_block", pa.int64()),
+                    pa.field("max_block", pa.int64()),
+                ],
+                markers_table=INGESTION_MARKERS_TABLE,
+                expected_outputs=expected_outputs,
+                force=False,
             ),
             progress_indicator="",
         )

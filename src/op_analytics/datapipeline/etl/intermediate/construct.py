@@ -85,15 +85,6 @@ def construct_tasks(
                         root_path=f"{root_path_prefix}/{full_model_name}",
                         file_name="out.parquet",
                         marker_path=f"{datestr}/{chain}/{model}/{dataset}",
-                        process_name="default",
-                        additional_columns=dict(
-                            model_name=model,
-                        ),
-                        additional_columns_schema=[
-                            pa.field("chain", pa.string()),
-                            pa.field("dt", pa.date32()),
-                            pa.field("model_name", pa.string()),
-                        ],
                     )
                 )
 
@@ -104,10 +95,18 @@ def construct_tasks(
                     output_duckdb_relations={},
                     write_manager=PartitionedWriteManager(
                         location=write_to,
+                        partition_cols=["chain", "dt"],
+                        extra_marker_columns=dict(
+                            model_name=model,
+                        ),
+                        extra_marker_columns_schema=[
+                            pa.field("chain", pa.string()),
+                            pa.field("dt", pa.date32()),
+                            pa.field("model_name", pa.string()),
+                        ],
                         markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
                         expected_outputs=expected_outputs,
                         force=False,
-                        partition_cols=["chain", "dt"],
                     ),
                     output_root_path_prefix=root_path_prefix,
                 )
