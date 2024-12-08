@@ -77,19 +77,19 @@ def bq_load(
 
     manager = BQLoader(
         location=location,
+        partition_cols=["dt"],
+        extra_marker_columns={},
+        extra_marker_columns_schema=[
+            pa.field("dt", pa.date32()),
+        ],
+        markers_table=markers_table,
         expected_outputs=[
             ExpectedOutput(
                 root_path=bq_root_path,
                 file_name="",  # Not meaningful for BQ Load
                 marker_path=f"{bq_dataset_name}/{bq_table_name}/{dateval.strftime("%Y-%m-%d")}",
-                process_name="default",
-                additional_columns={},
-                additional_columns_schema=[
-                    pa.field("dt", pa.date32()),
-                ],
             )
         ],
-        markers_table=markers_table,
         force=force_complete,
     )
 
