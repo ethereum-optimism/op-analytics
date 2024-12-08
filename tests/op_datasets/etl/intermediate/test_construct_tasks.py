@@ -94,6 +94,12 @@ def test_construct():
             write_manager=PartitionedWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
+                extra_marker_columns={"model_name": "contract_creation"},
+                extra_marker_columns_schema=[
+                    pa.field("chain", pa.string()),
+                    pa.field("dt", pa.date32()),
+                    pa.field("model_name", pa.string()),
+                ],
                 markers_table="intermediate_model_markers",
                 expected_outputs=[
                     ExpectedOutput(
@@ -101,12 +107,6 @@ def test_construct():
                         file_name="out.parquet",
                         marker_path="2024-12-01/mode/contract_creation/create_traces_v1",
                         process_name="default",
-                        additional_columns={"model_name": "contract_creation"},
-                        additional_columns_schema=[
-                            pa.field("chain", pa.string()),
-                            pa.field("dt", pa.date32()),
-                            pa.field("model_name", pa.string()),
-                        ],
                     )
                 ],
                 force=False,
@@ -189,6 +189,12 @@ def test_construct_testnet():
             write_manager=PartitionedWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
+                extra_marker_columns={"model_name": "contract_creation"},
+                extra_marker_columns_schema=[
+                    pa.field("chain", pa.string()),
+                    pa.field("dt", pa.date32()),
+                    pa.field("model_name", pa.string()),
+                ],
                 markers_table="intermediate_model_markers",
                 expected_outputs=[
                     ExpectedOutput(
@@ -196,12 +202,6 @@ def test_construct_testnet():
                         file_name="out.parquet",
                         marker_path="2024-12-01/unichain_sepolia/contract_creation/create_traces_v1",
                         process_name="default",
-                        additional_columns={"model_name": "contract_creation"},
-                        additional_columns_schema=[
-                            pa.field("chain", pa.string()),
-                            pa.field("dt", pa.date32()),
-                            pa.field("model_name", pa.string()),
-                        ],
                     )
                 ],
                 force=False,

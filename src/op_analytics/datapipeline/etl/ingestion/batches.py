@@ -9,8 +9,6 @@ Given a range of block numbers we want to have a deterministic way of locating w
 data for those blocks is stored in GCS.
 """
 
-import pyarrow as pa
-
 from dataclasses import dataclass
 
 from op_analytics.coreutils.logger import structlog
@@ -240,18 +238,6 @@ class BlockBatch:
             file_name=parquet_name,
             marker_path=marker,
             process_name="default",
-            additional_columns=dict(
-                num_blocks=self.num_blocks(),
-                min_block=self.min,
-                max_block=self.max,
-            ),
-            additional_columns_schema=[
-                pa.field("chain", pa.string()),
-                pa.field("dt", pa.date32()),
-                pa.field("num_blocks", pa.int32()),
-                pa.field("min_block", pa.int64()),
-                pa.field("max_block", pa.int64()),
-            ],
         )
 
     @property

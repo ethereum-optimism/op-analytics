@@ -1,5 +1,6 @@
 import socket
 from dataclasses import dataclass
+from typing import Any
 
 import pyarrow as pa
 
@@ -41,7 +42,11 @@ class Marker:
             + extra_marker_columns_schema
         )
 
-    def to_pyarrow_table(self, extra_marker_columns_schema: list[pa.Field]) -> pa.Table:
+    def to_pyarrow_table(
+        self,
+        extra_marker_columns: dict[str, Any],
+        extra_marker_columns_schema: list[pa.Field],
+    ) -> pa.Table:
         schema = self.arrow_schema(extra_marker_columns_schema)
 
         current_time = now()
@@ -78,7 +83,7 @@ class Marker:
             rows.append(parquet_out_row)
 
         for row in rows:
-            for name, value in self.expected_output.additional_columns.items():
+            for name, value in extra_marker_columns.items():
                 row[name] = value
 
         return pa.Table.from_pylist(rows, schema=schema)

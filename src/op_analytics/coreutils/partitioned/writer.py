@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-import pyarrow as pa
 from overrides import override
 
 from op_analytics.coreutils.logger import structlog
@@ -16,8 +15,6 @@ log = structlog.get_logger()
 
 @dataclass
 class PartitionedWriteManager(WriteManager):
-    partition_cols: list[str]
-
     @override
     def write_implementation(self, output_data: OutputData) -> WrittenParts:
         assert isinstance(output_data, OutputData)
