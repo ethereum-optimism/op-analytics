@@ -85,7 +85,6 @@ def construct_tasks(
                         root_path=f"{root_path_prefix}/{full_model_name}",
                         file_name="out.parquet",
                         marker_path=f"{datestr}/{chain}/{model}/{dataset}",
-                        process_name="default",
                     )
                 )
 

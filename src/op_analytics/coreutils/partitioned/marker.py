@@ -44,6 +44,7 @@ class Marker:
 
     def to_pyarrow_table(
         self,
+        process_name: str,
         extra_marker_columns: dict[str, Any],
         extra_marker_columns_schema: list[pa.Field],
     ) -> pa.Table:
@@ -64,7 +65,7 @@ class Marker:
                     file_name=self.expected_output.file_name,
                 ),
                 "row_count": partition_metadata.row_count,
-                "process_name": self.expected_output.process_name,
+                "process_name": process_name,
                 "writer_name": hostname,
             }
 

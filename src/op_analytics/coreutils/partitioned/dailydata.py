@@ -45,6 +45,7 @@ def write_daily_data(
         datestr = part.partition_value("dt")
 
         writer = PartitionedWriteManager(
+            process_name="default",
             location=write_location(),
             partition_cols=["dt"],
             extra_marker_columns=dict(),
@@ -57,7 +58,6 @@ def write_daily_data(
                     root_path=root_path,
                     file_name="out.parquet",
                     marker_path=f"{datestr}/{root_path}",
-                    process_name="default",
                 )
             ],
             force=force_complete,

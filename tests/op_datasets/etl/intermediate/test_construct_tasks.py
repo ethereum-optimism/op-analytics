@@ -106,7 +106,6 @@ def test_construct():
                         root_path="intermediate/contract_creation/create_traces_v1",
                         file_name="out.parquet",
                         marker_path="2024-12-01/mode/contract_creation/create_traces_v1",
-                        process_name="default",
                     )
                 ],
                 force=False,
@@ -201,7 +200,6 @@ def test_construct_testnet():
                         root_path="intermediate_testnets/contract_creation/create_traces_v1",
                         file_name="out.parquet",
                         marker_path="2024-12-01/unichain_sepolia/contract_creation/create_traces_v1",
-                        process_name="default",
                     )
                 ],
                 force=False,

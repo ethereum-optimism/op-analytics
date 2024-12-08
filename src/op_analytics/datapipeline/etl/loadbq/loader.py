@@ -88,7 +88,6 @@ def bq_load(
                 root_path=bq_root_path,
                 file_name="",  # Not meaningful for BQ Load
                 marker_path=f"{bq_dataset_name}/{bq_table_name}/{dateval.strftime("%Y-%m-%d")}",
-                process_name="default",
             )
         ],
         force=force_complete,

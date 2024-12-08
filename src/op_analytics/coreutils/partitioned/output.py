@@ -17,10 +17,6 @@ class ExpectedOutput:
     # Completion marker path.
     marker_path: str
 
-    # Identifier for the process that produced the datset.
-    process_name: str
-
-
 
 @dataclass
 class OutputData:

@@ -237,7 +237,6 @@ class BlockBatch:
             root_path=root_path,
             file_name=parquet_name,
             marker_path=marker,
-            process_name="default",
         )
 
     @property

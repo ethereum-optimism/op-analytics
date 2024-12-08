@@ -61,6 +61,9 @@ class WriteManager[T: Writeable](EnforceOverrides):
     # If true, writes data even if markers already exist.
     force: bool
 
+    # Process that is writing data. This can be used to identify backfills for example.
+    process_name: str = field(default="default")
+
     # Internal state for status of completion markers.
     _is_complete: bool | None = field(default=None, init=False, repr=False)
 
@@ -120,6 +123,7 @@ class WriteManager[T: Writeable](EnforceOverrides):
             )
 
             marker_df = marker.to_pyarrow_table(
+                process_name=self.process_name,
                 extra_marker_columns=self.extra_marker_columns,
                 extra_marker_columns_schema=self.extra_marker_columns_schema,
             )

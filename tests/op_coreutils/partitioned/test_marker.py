@@ -44,7 +44,6 @@ def test_marker():
             marker_path="ingestion/blocks_v1/DUMMYCHAIN/000011540000",
             root_path="ingestion/blocks_v1",
             file_name="000011540000.parquet",
-            process_name="default",
         ),
     )
 
@@ -56,6 +55,7 @@ def test_marker():
     assert not initially_exists
 
     marker_df = marker.to_pyarrow_table(
+        process_name="default",
         extra_marker_columns={"num_blocks": 20000, "min_block": 11540000, "max_block": 11560000},
         extra_marker_columns_schema=[
             pa.field("chain", pa.string()),

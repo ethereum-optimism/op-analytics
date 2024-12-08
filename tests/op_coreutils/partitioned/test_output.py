@@ -7,7 +7,6 @@ def test_01():
         root_path="intermediate/daily_address_summary/summary_v1",
         file_name="out.parquet",
         marker_path="BLAH",
-        process_name="default",
     )
 
     partition = Partition(
