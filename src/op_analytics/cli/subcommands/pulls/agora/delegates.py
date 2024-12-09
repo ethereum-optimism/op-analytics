@@ -149,12 +149,11 @@ def pull_delegates():
         # Make sure voting_power is a dictionary
         if not isinstance(voting_power, dict):
             continue
-
         flattened = {
             "address": address,
-            "voting_power_total": voting_power.get("total", "0"),
-            "voting_power_direct": voting_power.get("direct", "0"),
-            "voting_power_advanced": voting_power.get("advanced", "0"),
+            "voting_power_total": voting_power["total"],
+            "voting_power_direct": voting_power["direct"],
+            "voting_power_advanced": voting_power["advanced"],
             "is_citizen": citizen,
         }
 
