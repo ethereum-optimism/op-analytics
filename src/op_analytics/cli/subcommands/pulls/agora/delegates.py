@@ -142,6 +142,7 @@ def pull_delegates():
         voting_power = item.get("votingPower", {})
         citizen = item.get("citizen", False)
         statement = item.get("statement", {})
+        payload = statement.get("payload", {})
 
         # Raise an exception if 'voting_power' is not a dict
         if not isinstance(voting_power, dict):
@@ -155,21 +156,13 @@ def pull_delegates():
             "voting_power_direct": voting_power["direct"],
             "voting_power_advanced": voting_power["advanced"],
             "is_citizen": citizen,
-            "statement_signature": "",
-            "statement_created_at": "",
-            "statement_updated_at": "",
-            "statement_text": "",
-            "twitter": "",
-            "discord": "",
+            "statement_signature": statement.get("signature", ""),
+            "statement_created_at": statement.get("created_at", ""),
+            "statement_updated_at": statement.get("updated_at", ""),
+            "statement_text": payload.get("delegateStatement", ""),
+            "twitter": payload.get("twitter", ""),
+            "discord": payload.get("discord", ""),
         }
-
-        if isinstance(statement, dict):
-            flattened["statement_signature"] = statement.get("signature", "")
-            flattened["statement_created_at"] = statement.get("created_at", "")
-            flattened["statement_updated_at"] = statement.get("updated_at", "")
-            flattened["statement_text"] = statement.get("payload", {}).get("delegateStatement", "")
-            flattened["twitter"] = statement.get("payload", {}).get("twitter", "")
-            flattened["discord"] = statement.get("payload", {}).get("discord", "")
 
         normalized_data.append(flattened)
 
