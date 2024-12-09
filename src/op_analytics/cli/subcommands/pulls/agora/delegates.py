@@ -11,7 +11,7 @@ import itertools
 import time
 import pandas as pd
 import polars as pl
-from op_analytics.cli.subcommands.pulls.agora.data_access import (
+from op_analytics.cli.subcommands.pulls.agora.dataacess import (
     Agora,
     write,
 )
