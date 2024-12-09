@@ -3,7 +3,6 @@ from typing import Any, List
 import os
 import requests
 import polars as pl
-from datetime import datetime
 
 from op_analytics.cli.subcommands.pulls.agora.dataacess import Agora
 from op_analytics.coreutils.logger import structlog
@@ -63,6 +62,15 @@ class SimplePaginator:
         return all_data
 
 
+def parse_isoformat_with_z(iso_string):
+    from datetime import datetime
+
+    # Replace 'Z' with '+00:00' to make it compatible with fromisoformat
+    if iso_string.endswith("Z"):
+        iso_string = iso_string[:-1] + "+00:00"
+    return datetime.fromisoformat(iso_string)
+
+
 def fetch_event_data(delegates: List[str], endpoint: str, workers: int) -> List[Any]:
     def fetch_delegate_data(address: str, endpoint: str) -> List[Any]:
         paginator = SimplePaginator(url=f"{BASE_URL}/delegates/{address}/{endpoint}", limit=50)
@@ -81,11 +89,6 @@ def fetch_event_data(delegates: List[str], endpoint: str, workers: int) -> List[
     return list(run_results.results.values())
 
 
-def parse_datetime(value: str) -> datetime:
-    """Parse datetime strings in ISO format with 'Z'."""
-    return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
-
-
 def _flatten_vote_data(data: List[Any]) -> List[dict]:
     return [
         {
@@ -99,7 +102,7 @@ def _flatten_vote_data(data: List[Any]) -> List[dict]:
             "proposal_value": value["proposalValue"],
             "proposal_title": value["proposalTitle"],
             "proposal_type": value["proposalType"],
-            "dt": parse_datetime(value["timestamp"]),
+            "dt": parse_isoformat_with_z(value["timestamp"]),
         }
         for record in data
         for value in record
@@ -119,15 +122,15 @@ def fetch_proposals() -> None:
     proposals = paginator.fetch_all()
 
     def parse_optional_time(time_str: str) -> Any:
-        return parse_datetime(time_str) if time_str else None
+        return parse_isoformat_with_z(time_str) if time_str else None
 
     def extract_proposal_data(proposal: dict) -> dict:
         return {
             "id": proposal["id"],
             "proposer": proposal["proposer"],
             "snapshot_block_number": proposal["snapshotBlockNumber"],
-            "created_time": parse_datetime(proposal["createdTime"]),
-            "start_time": parse_datetime(proposal["startTime"]),
+            "created_time": parse_isoformat_with_z(proposal["createdTime"]),
+            "start_time": parse_isoformat_with_z(proposal["startTime"]),
             "end_time": parse_optional_time(proposal.get("endTime")),
             "cancelled_time": parse_optional_time(proposal.get("cancelledTime")),
             "executed_time": parse_optional_time(proposal.get("executedTime")),
@@ -173,13 +176,14 @@ def fetch_delegate_data(delegates: List[str], endpoint: str, workers: int) -> pl
         max_workers=workers,
     )
 
-    all_data = [record for v in run_results.results.values() for record in v]
+    all_data = [data for v in run_results.results.values() for record in v for data in record]
+
     rows = [
         {
             "from_address": record["from"],
             "to_address": record["to"],
             "allowance": record["allowance"],
-            "dt": parse_datetime(record["timestamp"]),
+            "dt": parse_isoformat_with_z(record["timestamp"]),
             "type": record["type"],
             "amount": record["amount"],
             "transaction_hash": record["transaction_hash"],
