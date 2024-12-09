@@ -9,7 +9,6 @@ import requests
 import requests.exceptions
 import itertools
 import time
-import pandas as pd
 import polars as pl
 from op_analytics.cli.subcommands.pulls.agora.dataacess import (
     Agora,
@@ -46,7 +45,7 @@ class Paginator:
         self.failed_offsets = []
 
     def request(self, offset):
-        session = requests.Session()  # Create a session object
+        session = requests.Session()
         if self.params is None:
             self.params = {}
         self.params.update({"offset": offset, "limit": self.limit})
@@ -102,7 +101,7 @@ class Paginator:
             print(f"max offset search range {lo} -- {hi}")
 
             diff = hi - lo
-            midpoint = lo + (diff) // 2
+            midpoint = lo + (diff // 2)
 
             if resp_lo.has_next and resp_hi.has_next:
                 lower_bound.add(hi)
@@ -137,70 +136,57 @@ def pull_delegates():
     p = Paginator(url=f"{BASE_URL}/delegates", params={"sort": "voting_power"}, max_workers=32)
     delegate_data = p.concurrent_fetch()
 
-    # Clean and transform to Pandas
     normalized_data = []
     for item in delegate_data:
-        # Extract fields from the item dictionary
         address = item.get("address", "")
         voting_power = item.get("votingPower", {})
         citizen = item.get("citizen", False)
         statement = item.get("statement", {})
 
-        # Make sure voting_power is a dictionary
+        # Raise an exception if 'voting_power' is not a dict
         if not isinstance(voting_power, dict):
-            continue
+            raise ValueError(
+                f"Expected 'votingPower' to be a dict for address {address}, got {type(voting_power)}"
+            )
+
         flattened = {
             "address": address,
             "voting_power_total": voting_power["total"],
             "voting_power_direct": voting_power["direct"],
             "voting_power_advanced": voting_power["advanced"],
             "is_citizen": citizen,
+            "statement_signature": "",
+            "statement_created_at": "",
+            "statement_updated_at": "",
+            "statement_text": "",
+            "twitter": "",
+            "discord": "",
         }
 
         if isinstance(statement, dict):
-            flattened.update(
-                {
-                    "statement_signature": statement.get("signature", ""),
-                    "statement_created_at": statement.get("created_at", ""),
-                    "statement_updated_at": statement.get("updated_at", ""),
-                    "statement_text": statement.get("payload", {}).get("delegateStatement", ""),
-                    "twitter": statement.get("payload", {}).get("twitter", ""),
-                    "discord": statement.get("payload", {}).get("discord", ""),
-                }
-            )
+            flattened["statement_signature"] = statement.get("signature", "")
+            flattened["statement_created_at"] = statement.get("created_at", "")
+            flattened["statement_updated_at"] = statement.get("updated_at", "")
+            flattened["statement_text"] = statement.get("payload", {}).get("delegateStatement", "")
+            flattened["twitter"] = statement.get("payload", {}).get("twitter", "")
+            flattened["discord"] = statement.get("payload", {}).get("discord", "")
 
         normalized_data.append(flattened)
-    df = pd.DataFrame(normalized_data)
-    df = df.astype(
-        {
-            "address": "string",
-            "voting_power_total": "Float64",
-            "voting_power_direct": "Float64",
-            "voting_power_advanced": "Float64",
-            "is_citizen": "bool",
-            "statement_signature": "string",
-            "statement_created_at": "string",
-            "statement_updated_at": "string",
-            "statement_text": "string",
-            "twitter": "string",
-            "discord": "string",
-        },
-        errors="coerce",
-    )
-    # Check for duplicates
-    if df.shape[0] != len(df["address"].drop_duplicates()):
-        df = df.drop_duplicates()
-        log.warning(
-            f"Found duplicates in delegates data. Dropped {df.shape[0] - len(df['address'].drop_duplicates())} rows."
-        )
 
-    # Todo: This is to partition by pull date. Figure out if this is the correct way to do this.
-    df["dt"] = now_dt()
+    # Construct polars DataFrame directly
+    df = pl.DataFrame(normalized_data)
 
-    # Convert to polars
-    df = pl.from_pandas(df)
+    # Deduplicate by address if needed
+    initial_count = df.height
+    df = df.unique(subset=["address"])
+    final_count = df.height
+    if final_count < initial_count:
+        log.warning(f"Dropped {initial_count - final_count} duplicate rows based on 'address'.")
 
-    # Write to GCS
+    # Add a dt column for partitioning
+    df = df.with_columns(pl.lit(now_dt()).alias("dt"))
+
+    # Write to GCS using Agora's write
     write(dataset=Agora.DELEGATES, dataframe=df, sort_by=["voting_power_total"])
 
     return AgoraDelegates(delegates_df=df)
