@@ -12,7 +12,7 @@ from .breakout import breakout_partitions
 from .dataaccess import DateFilter, MarkerFilter, init_data_access
 from .location import DataLocation
 from .output import ExpectedOutput, OutputData
-from .writer import DataWriter
+from .writer import PartitionedWriteManager
 
 log = structlog.get_logger()
 
@@ -44,20 +44,20 @@ def write_daily_data(
     for part in parts:
         datestr = part.partition_value("dt")
 
-        writer = DataWriter(
-            write_to=write_location(),
+        writer = PartitionedWriteManager(
+            process_name="default",
+            location=write_location(),
             partition_cols=["dt"],
+            extra_marker_columns=dict(),
+            extra_marker_columns_schema=[
+                pa.field("dt", pa.date32()),
+            ],
             markers_table=MARKERS_TABLE,
             expected_outputs=[
                 ExpectedOutput(
                     root_path=root_path,
                     file_name="out.parquet",
                     marker_path=f"{datestr}/{root_path}",
-                    process_name="default",
-                    additional_columns=dict(),
-                    additional_columns_schema=[
-                        pa.field("dt", pa.date32()),
-                    ],
                 )
             ],
             force=force_complete,
@@ -133,5 +133,5 @@ def make_date_filter(
     return DateFilter(
         min_date=None if min_date is None else date_fromstr(min_date),
         max_date=None if max_date is None else date_fromstr(max_date),
-        datevals=None if date_range_spec is None else DateRange.from_spec(date_range_spec).dates,
+        datevals=None if date_range_spec is None else DateRange.from_spec(date_range_spec).dates(),
     )

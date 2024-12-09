@@ -165,35 +165,36 @@ def test_expected_markers():
         write_to=DataLocation.DISABLED,
     )
 
+    assert task.write_manager.extra_marker_columns == {
+        "num_blocks": 800,
+        "min_block": 0,
+        "max_block": 800,
+    }
+
     actual = [
         dict(
             root_path=_.root_path,
             marker_path=_.marker_path,
-            additional_columns=_.additional_columns,
         )
-        for _ in task.data_writer.expected_outputs
+        for _ in task.write_manager.expected_outputs
     ]
 
     assert actual == [
         {
             "root_path": "ingestion/blocks_v1",
-            "marker_path": "markers/ingestion/blocks_v1/chain=op/000000000000.json",
-            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+            "marker_path": "ingestion/blocks_v1/op/000000000000",
         },
         {
             "root_path": "ingestion/transactions_v1",
-            "marker_path": "markers/ingestion/transactions_v1/chain=op/000000000000.json",
-            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+            "marker_path": "ingestion/transactions_v1/op/000000000000",
         },
         {
             "root_path": "ingestion/logs_v1",
-            "marker_path": "markers/ingestion/logs_v1/chain=op/000000000000.json",
-            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+            "marker_path": "ingestion/logs_v1/op/000000000000",
         },
         {
             "root_path": "ingestion/traces_v1",
-            "marker_path": "markers/ingestion/traces_v1/chain=op/000000000000.json",
-            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+            "marker_path": "ingestion/traces_v1/op/000000000000",
         },
     ]
 
@@ -224,35 +225,36 @@ def test_expected_markers_testnet():
     assert task.chain_parent == "op"
     assert task.block_batch.dataset_directory("blocks") == "ingestion_testnets/blocks_v1"
 
+    assert task.write_manager.extra_marker_columns == {
+        "num_blocks": 800,
+        "min_block": 0,
+        "max_block": 800,
+    }
+
     actual = [
         dict(
             dataset_name=_.root_path,
             marker_path=_.marker_path,
-            additional_columns=_.additional_columns,
         )
-        for _ in task.data_writer.expected_outputs
+        for _ in task.write_manager.expected_outputs
     ]
 
     assert actual == [
         {
             "dataset_name": "ingestion_testnets/blocks_v1",
-            "marker_path": "markers/ingestion_testnets/blocks_v1/chain=op_sepolia/000000000000.json",
-            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+            "marker_path": "ingestion_testnets/blocks_v1/op_sepolia/000000000000",
         },
         {
             "dataset_name": "ingestion_testnets/transactions_v1",
-            "marker_path": "markers/ingestion_testnets/transactions_v1/chain=op_sepolia/000000000000.json",
-            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+            "marker_path": "ingestion_testnets/transactions_v1/op_sepolia/000000000000",
         },
         {
             "dataset_name": "ingestion_testnets/logs_v1",
-            "marker_path": "markers/ingestion_testnets/logs_v1/chain=op_sepolia/000000000000.json",
-            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+            "marker_path": "ingestion_testnets/logs_v1/op_sepolia/000000000000",
         },
         {
             "dataset_name": "ingestion_testnets/traces_v1",
-            "marker_path": "markers/ingestion_testnets/traces_v1/chain=op_sepolia/000000000000.json",
-            "additional_columns": {"num_blocks": 800, "min_block": 0, "max_block": 800},
+            "marker_path": "ingestion_testnets/traces_v1/op_sepolia/000000000000",
         },
     ]
 

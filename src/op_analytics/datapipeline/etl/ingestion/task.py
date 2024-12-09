@@ -8,8 +8,9 @@ import pyarrow as pa
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
-from op_analytics.coreutils.partitioned.writer import DataWriter
+from op_analytics.coreutils.partitioned.output import OutputData
+from op_analytics.coreutils.partitioned.writehelper import WriteManager
+from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION, CoreDataset
 
 from .batches import BlockBatch
@@ -42,8 +43,8 @@ class IngestionTask:
     # Outputs
     output_dataframes: list[OutputData]
 
-    # DataWriter
-    data_writer: DataWriter
+    # Write Manager
+    write_manager: WriteManager
 
     # Progress Indicator
     progress_indicator: str
@@ -81,31 +82,8 @@ class IngestionTask:
             # Determine the directory where we will write this dataset.
             data_directory = block_batch.dataset_directory(dataset_name=name)
 
-            # Determine the marker path for this dataset.
-            marker_path = block_batch.construct_marker_path()
-            full_marker_path = f"markers/{data_directory}/{marker_path}"
-
-            # Construct expected output for the dataset.
-            expected_outputs.append(
-                ExpectedOutput(
-                    root_path=data_directory,
-                    file_name=block_batch.construct_parquet_filename(),
-                    marker_path=full_marker_path,
-                    process_name="default",
-                    additional_columns=dict(
-                        num_blocks=block_batch.num_blocks(),
-                        min_block=block_batch.min,
-                        max_block=block_batch.max,
-                    ),
-                    additional_columns_schema=[
-                        pa.field("chain", pa.string()),
-                        pa.field("dt", pa.date32()),
-                        pa.field("num_blocks", pa.int32()),
-                        pa.field("min_block", pa.int64()),
-                        pa.field("max_block", pa.int64()),
-                    ],
-                )
-            )
+            # Construct the ExpectedOutput.
+            expected_outputs.append(block_batch.construct_expected_output(root_path=data_directory))
 
         return cls(
             max_requested_timestamp=max_requested_timestamp,
@@ -114,9 +92,21 @@ class IngestionTask:
             input_dataframes={},
             output_dataframes=[],
             read_from=read_from,
-            data_writer=DataWriter(
+            write_manager=PartitionedWriteManager(
+                location=write_to,
                 partition_cols=["chain", "dt"],
-                write_to=write_to,
+                extra_marker_columns=dict(
+                    num_blocks=block_batch.num_blocks(),
+                    min_block=block_batch.min,
+                    max_block=block_batch.max,
+                ),
+                extra_marker_columns_schema=[
+                    pa.field("chain", pa.string()),
+                    pa.field("dt", pa.date32()),
+                    pa.field("num_blocks", pa.int32()),
+                    pa.field("min_block", pa.int64()),
+                    pa.field("max_block", pa.int64()),
+                ],
                 markers_table=INGESTION_MARKERS_TABLE,
                 expected_outputs=expected_outputs,
                 force=False,

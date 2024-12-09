@@ -5,10 +5,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.partitioned.writer import DataWriter
-from op_analytics.datapipeline.etl.ingestion.markers import (
-    INGESTION_MARKERS_TABLE,
-)
+from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.datapipeline.etl.ingestion.reader_bydate import construct_readers_bydate
 from op_analytics.datapipeline.chains.goldsky_chains import determine_network, ChainNetwork
 from op_analytics.datapipeline.models.compute.registry import (
@@ -42,8 +39,7 @@ def construct_data_readers(
         chains=chains,
         range_spec=range_spec,
         read_from=read_from,
-        markers_table=INGESTION_MARKERS_TABLE,
-        root_paths=sorted(input_datasets),
+        root_paths_to_read=sorted(input_datasets),
     )
 
 
@@ -89,15 +85,6 @@ def construct_tasks(
                         root_path=f"{root_path_prefix}/{full_model_name}",
                         file_name="out.parquet",
                         marker_path=f"{datestr}/{chain}/{model}/{dataset}",
-                        process_name="default",
-                        additional_columns=dict(
-                            model_name=model,
-                        ),
-                        additional_columns_schema=[
-                            pa.field("chain", pa.string()),
-                            pa.field("dt", pa.date32()),
-                            pa.field("model_name", pa.string()),
-                        ],
                     )
                 )
 
@@ -106,9 +93,17 @@ def construct_tasks(
                     data_reader=reader,
                     model=model,
                     output_duckdb_relations={},
-                    data_writer=DataWriter(
+                    write_manager=PartitionedWriteManager(
+                        location=write_to,
                         partition_cols=["chain", "dt"],
-                        write_to=write_to,
+                        extra_marker_columns=dict(
+                            model_name=model,
+                        ),
+                        extra_marker_columns_schema=[
+                            pa.field("chain", pa.string()),
+                            pa.field("dt", pa.date32()),
+                            pa.field("model_name", pa.string()),
+                        ],
                         markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
                         expected_outputs=expected_outputs,
                         force=False,

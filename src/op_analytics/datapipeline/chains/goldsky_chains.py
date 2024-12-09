@@ -55,20 +55,24 @@ class ChainNetwork(Enum):
 
 @cache
 def determine_network(chain: str) -> ChainNetwork:
-    if chain in goldsky_mainnet_chains():
+    if chain in {"op_sepolia", "unichain_sepolia"}:
+        return ChainNetwork.TESTNET
+    else:
         return ChainNetwork.MAINNET
 
-    if chain in goldsky_testnet_chains():
-        return ChainNetwork.TESTNET
-
-    raise ValueError(f"could not determine network for chain: {chain!r}")
+    # NOTE: The implementation below relies on reading the chain metadata gsheet.
+    # if chain in goldsky_mainnet_chains():
+    #     return ChainNetwork.MAINNET
+    # if chain in goldsky_testnet_chains():
+    #     return ChainNetwork.TESTNET
+    # raise ValueError(f"could not determine network for chain: {chain!r}")
 
 
 def ensure_single_network(chains: list[str]) -> ChainNetwork:
-    if set(chains).issubset(goldsky_mainnet_chains()):
+    if all(determine_network(_) == ChainNetwork.MAINNET for _ in chains):
         return ChainNetwork.MAINNET
 
-    if set(chains).issubset(goldsky_testnet_chains()):
+    if all(determine_network(_) == ChainNetwork.TESTNET for _ in chains):
         return ChainNetwork.TESTNET
 
     raise ValueError(f"could not determine MAINNET/TESTNET for chains: {chains}")

@@ -12,7 +12,7 @@ from op_analytics.coreutils.partitioned.partition import (
     Partition,
     PartitionMetadata,
 )
-from op_analytics.datapipeline.etl.ingestion.reader_bydate import markers_for_raw_ingestion
+from op_analytics.datapipeline.etl.ingestion.reader_markers import markers_for_raw_ingestion
 from op_analytics.coreutils.time import now
 
 MARKERS_TABLE = "raw_onchain_ingestion_markers"
@@ -41,18 +41,9 @@ def test_marker():
             ): PartitionMetadata(row_count=14955),
         },
         expected_output=ExpectedOutput(
-            marker_path="markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
+            marker_path="ingestion/blocks_v1/DUMMYCHAIN/000011540000",
             root_path="ingestion/blocks_v1",
             file_name="000011540000.parquet",
-            process_name="default",
-            additional_columns={"num_blocks": 20000, "min_block": 11540000, "max_block": 11560000},
-            additional_columns_schema=[
-                pa.field("chain", pa.string()),
-                pa.field("dt", pa.date32()),
-                pa.field("num_blocks", pa.int32()),
-                pa.field("min_block", pa.int64()),
-                pa.field("max_block", pa.int64()),
-            ],
         ),
     )
 
@@ -63,12 +54,21 @@ def test_marker():
     )
     assert not initially_exists
 
+    marker_df = marker.to_pyarrow_table(
+        process_name="default",
+        extra_marker_columns={"num_blocks": 20000, "min_block": 11540000, "max_block": 11560000},
+        extra_marker_columns_schema=[
+            pa.field("chain", pa.string()),
+            pa.field("dt", pa.date32()),
+            pa.field("num_blocks", pa.int32()),
+            pa.field("min_block", pa.int64()),
+            pa.field("max_block", pa.int64()),
+        ],
+    )
+
     client.write_marker(
+        marker_df=marker_df,
         data_location=DataLocation.LOCAL,
-        marker=Marker(
-            expected_output=marker.expected_output,
-            written_parts=marker.written_parts,
-        ),
         markers_table=MARKERS_TABLE,
     )
 
@@ -90,7 +90,7 @@ def test_marker():
 
     assert result == [
         {
-            "marker_path": "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
+            "marker_path": "ingestion/blocks_v1/DUMMYCHAIN/000011540000",
             "dataset_name": "",
             "root_path": "ingestion/blocks_v1",
             "num_parts": 2,
@@ -104,7 +104,7 @@ def test_marker():
             "max_block": 11560000,
         },
         {
-            "marker_path": "markers/ingestion/blocks_v1/chain=DUMMYCHAIN/000011540000.json",
+            "marker_path": "ingestion/blocks_v1/DUMMYCHAIN/000011540000",
             "dataset_name": "",
             "root_path": "ingestion/blocks_v1",
             "num_parts": 2,

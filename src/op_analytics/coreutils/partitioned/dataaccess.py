@@ -27,7 +27,6 @@ from op_analytics.coreutils.storage.gcs_parquet import (
 )
 
 from .location import DataLocation
-from .marker import Marker
 
 log = structlog.get_logger()
 
@@ -176,8 +175,8 @@ class PartitionedDataAccess:
 
     def write_marker(
         self,
+        marker_df: pl.DataFrame,
         data_location: DataLocation,
-        marker: Marker,
         markers_table: str,
     ):
         """Write marker.
@@ -189,8 +188,6 @@ class PartitionedDataAccess:
         Markers for local output are written to DuckDB
 
         """
-        marker_df = marker.to_pyarrow_table()
-
         store = marker_store(data_location)
         store.write_marker(markers_table, marker_df)
 
@@ -381,7 +378,9 @@ def all_outputs_complete(
         else:
             incomplete.append(marker)
 
-    log.debug(f"{len(complete)} complete, {len(incomplete)} incomplete")
+    num_complete = len(complete)
+    total = len(incomplete) + len(complete)
+    log.debug(f"{num_complete}/{total} complete")
 
     if incomplete:
         return False

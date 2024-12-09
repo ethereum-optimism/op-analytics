@@ -85,7 +85,7 @@ def test_are_inputs_ready():
     markers_df = pl.DataFrame(MARKER_PATHS_DATA, schema_overrides={"num_blocks": pl.Int32})
     dateval = datetime.date(2024, 10, 23)
 
-    is_ready, actual = are_inputs_ready(
+    input_data = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
         root_paths_to_check={
@@ -93,8 +93,8 @@ def test_are_inputs_ready():
         },
         storage_location=DataLocation.GCS,
     )
-    assert is_ready
-    assert actual == {
+    assert input_data.is_complete
+    assert input_data.data_paths == {
         "ingestion/traces_v1": [
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011400000.parquet",
             "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011420000.parquet",
@@ -107,7 +107,7 @@ def test_not_ready_01():
     markers_df = pl.DataFrame(MARKER_PATHS_DATA[:-4], schema_overrides={"num_blocks": pl.Int32})
     dateval = datetime.date(2024, 10, 23)
 
-    is_ready, actual = are_inputs_ready(
+    input_data = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
         root_paths_to_check={
@@ -115,21 +115,15 @@ def test_not_ready_01():
         },
         storage_location=DataLocation.GCS,
     )
-    assert not is_ready
-    assert actual == {
-        "ingestion/traces_v1": [
-            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011400000.parquet",
-            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011420000.parquet",
-            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011440000.parquet",
-        ]
-    }
+    assert not input_data.is_complete
+    assert input_data.data_paths is None
 
 
 def test_not_ready_02():
     markers_df = pl.DataFrame(MARKER_PATHS_DATA, schema_overrides={"num_blocks": pl.Int32})
     dateval = datetime.date(2024, 10, 23)
 
-    is_ready, actual = are_inputs_ready(
+    input_data = are_inputs_ready(
         markers_df=markers_df,
         dateval=dateval,
         root_paths_to_check={
@@ -138,12 +132,5 @@ def test_not_ready_02():
         },
         storage_location=DataLocation.GCS,
     )
-    assert not is_ready
-    assert actual == {
-        "ingestion/logs_v1": [],
-        "ingestion/traces_v1": [
-            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011400000.parquet",
-            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011420000.parquet",
-            "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=fraxtal/dt=2024-10-23/000011440000.parquet",
-        ],
-    }
+    assert not input_data.is_complete
+    assert input_data.data_paths is None

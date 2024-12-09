@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from datetime import date
-from typing import Any
 
 import pyarrow as pa
 from overrides import override
@@ -17,16 +16,25 @@ log = structlog.get_logger()
 
 @dataclass
 class BQOutputData:
+    # Root path does not include the gs://{BUCKET}/ prefix
+    root_path: str
+
+    # URIs include the gs://{BUCKET}/ prefix
     source_uris: list[str]
     source_uris_root_path: str
+
     dateval: date
     bq_dataset_name: str
     bq_table_name: str
 
+    @property
+    def default_partition(self) -> dict[str, str] | None:
+        return None
+
 
 class BQLoader(WriteManager):
     @override
-    def write_implementation(self, output_data: Any) -> WrittenParts:
+    def write_implementation(self, output_data: BQOutputData) -> WrittenParts:
         assert isinstance(output_data, BQOutputData)
 
         num_parquet = len(output_data.source_uris)
@@ -65,24 +73,29 @@ def bq_load(
     """Use a WriteManager class to handle writing completion markers."""
     location.ensure_biguqery()
 
+    bq_root_path = f"{bq_dataset_name}/{bq_table_name}"
+
     manager = BQLoader(
         location=location,
-        expected_output=ExpectedOutput(
-            root_path="",  # Not meaningful for BQ Load
-            file_name="",  # Not meaningful for BQ Load
-            marker_path=f"{bq_dataset_name}/{bq_table_name}/{dateval.strftime("%Y-%m-%d")}",
-            process_name="default",
-            additional_columns={},
-            additional_columns_schema=[
-                pa.field("dt", pa.date32()),
-            ],
-        ),
+        partition_cols=["dt"],
+        extra_marker_columns={},
+        extra_marker_columns_schema=[
+            pa.field("dt", pa.date32()),
+        ],
         markers_table=markers_table,
+        expected_outputs=[
+            ExpectedOutput(
+                root_path=bq_root_path,
+                file_name="",  # Not meaningful for BQ Load
+                marker_path=f"{bq_dataset_name}/{bq_table_name}/{dateval.strftime("%Y-%m-%d")}",
+            )
+        ],
         force=force_complete,
     )
 
     return manager.write(
         output_data=BQOutputData(
+            root_path=bq_root_path,
             source_uris=source_uris,
             source_uris_root_path=source_uris_root_path,
             dateval=dateval,

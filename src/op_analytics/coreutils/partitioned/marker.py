@@ -1,5 +1,6 @@
 import socket
 from dataclasses import dataclass
+from typing import Any
 
 import pyarrow as pa
 
@@ -25,7 +26,7 @@ class Marker:
     def marker_path(self):
         return self.expected_output.marker_path
 
-    def arrow_schema(self) -> pa.Schema:
+    def arrow_schema(self, extra_marker_columns_schema: list[pa.Field]) -> pa.Schema:
         return pa.schema(
             [
                 pa.field("updated_at", pa.timestamp(unit="us", tz=None)),
@@ -38,11 +39,16 @@ class Marker:
                 pa.field("process_name", pa.string()),
                 pa.field("writer_name", pa.string()),
             ]
-            + self.expected_output.additional_columns_schema
+            + extra_marker_columns_schema
         )
 
-    def to_pyarrow_table(self) -> pa.Table:
-        schema = self.arrow_schema()
+    def to_pyarrow_table(
+        self,
+        process_name: str,
+        extra_marker_columns: dict[str, Any],
+        extra_marker_columns_schema: list[pa.Field],
+    ) -> pa.Table:
+        schema = self.arrow_schema(extra_marker_columns_schema)
 
         current_time = now()
         hostname = socket.gethostname()
@@ -54,9 +60,12 @@ class Marker:
                 "root_path": self.expected_output.root_path,
                 "num_parts": len(self.written_parts),
                 "dataset_name": "",
-                "data_path": self.expected_output.full_path(partition),
+                "data_path": partition.full_path(
+                    root_path=self.expected_output.root_path,
+                    file_name=self.expected_output.file_name,
+                ),
                 "row_count": partition_metadata.row_count,
-                "process_name": self.expected_output.process_name,
+                "process_name": process_name,
                 "writer_name": hostname,
             }
 
@@ -75,7 +84,7 @@ class Marker:
             rows.append(parquet_out_row)
 
         for row in rows:
-            for name, value in self.expected_output.additional_columns.items():
+            for name, value in extra_marker_columns.items():
                 row[name] = value
 
         return pa.Table.from_pylist(rows, schema=schema)

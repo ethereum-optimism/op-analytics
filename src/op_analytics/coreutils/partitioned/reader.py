@@ -6,7 +6,7 @@ from op_analytics.coreutils.logger import structlog
 
 
 from .location import DataLocation
-from .output import Partition
+from .partition import Partition
 
 log = structlog.get_logger()
 

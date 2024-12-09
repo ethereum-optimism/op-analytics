@@ -8,7 +8,7 @@ def test01():
     df = DateFilter(
         min_date=None,
         max_date=None,
-        datevals=DateRange.from_spec("@20241001:+5").dates,
+        datevals=DateRange.from_spec("@20241001:+5").dates(),
     )
 
     ch_where, ch_parameters = df.sql_clickhouse()

@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
     marker_path String,
     dataset_name String,
     root_path String,
+    num_parts UInt32,
 
     -- Details for each parquet output saved under this marker.
     data_path String,
@@ -45,6 +46,3 @@ CREATE TABLE IF NOT EXISTS etl_monitor.raw_onchain_ingestion_markers
 -- could be useful for auditing purposes.
 ENGINE = MergeTree
 ORDER BY (marker_path)
-
--- The number of parts covered by this marker
-ALTER TABLE etl_monitor.raw_onchain_ingestion_markers ADD COLUMN IF NOT EXISTS num_parts UInt32 AFTER root_path

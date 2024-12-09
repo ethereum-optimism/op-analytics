@@ -1,3 +1,4 @@
+import os
 import re
 from dataclasses import dataclass
 from datetime import date
@@ -61,6 +62,21 @@ class Partition:
             if partition.name == column_name:
                 return partition.value
         raise ValueError(f"partition not found: {column_name}")
+
+    def full_path(self, root_path: str, file_name: str):
+        """Produce the full path for this expected output.
+
+        The full path is a combination of:
+
+        - root_path   ex: ingestion
+        - partitions  ex: chain=op/dt=2024-11-01
+        - file name   ex: 00001000.parquet
+
+        Full path:
+
+        ingestion/chain=op/dt=2024-11-01/00001000.parquet
+        """
+        return os.path.join(root_path, self.path, file_name)
 
 
 @dataclass
