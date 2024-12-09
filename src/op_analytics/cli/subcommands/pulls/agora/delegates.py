@@ -10,10 +10,7 @@ import requests.exceptions
 import itertools
 import time
 import polars as pl
-from op_analytics.cli.subcommands.pulls.agora.dataacess import (
-    Agora,
-    write,
-)
+from op_analytics.cli.subcommands.pulls.agora.dataacess import Agora
 
 log = structlog.get_logger()
 
@@ -180,7 +177,7 @@ def pull_delegates():
     df = df.with_columns(pl.lit(now_dt()).alias("dt"))
 
     # Write to GCS using Agora's write
-    write(dataset=Agora.DELEGATES, dataframe=df, sort_by=["voting_power_total"])
+    Agora.DELEGATES.write(dataframe=df, sort_by=["voting_power_total"])
 
     return AgoraDelegates(delegates_df=df)
 
