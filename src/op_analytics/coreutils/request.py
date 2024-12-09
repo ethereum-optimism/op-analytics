@@ -64,12 +64,7 @@ def get_data(
             return _get_data(session, url, headers, params)
 
 
-def _get_data(
-    session: requests.Session,
-    url: str,
-    headers: dict[str, str],
-    params: dict[str, Any] | None,
-):
+def _get_data(session: requests.Session, url: str, headers: dict[str, str], params: dict[str, Any]):
     start = time.time()
     resp = session.request(method="GET", url=url, headers=headers, params=params)
 
