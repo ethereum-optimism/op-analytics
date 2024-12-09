@@ -5,7 +5,7 @@ import requests
 import pandas as pd
 import polars as pl
 
-from op_analytics.cli.subcommands.pulls.agora.dataaccess import (
+from op_analytics.cli.subcommands.pulls.agora.dataacess import (
     Agora,
     write,
     _camelcase_to_snakecase,
