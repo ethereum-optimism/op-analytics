@@ -139,6 +139,8 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=4700000, batch_size=4000),
         # Decreased on 2024/12/03.
         Delimiter(block_number=6948000, batch_size=2000),
+        # Decreased on 2024/12/09
+        Delimiter(block_number=7216000, batch_size=800),
     ],
     "xterio": [
         Delimiter(0, 20000),
