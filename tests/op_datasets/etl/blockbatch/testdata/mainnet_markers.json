@@ -1,0 +1,128 @@
+[
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16416000,
+        "max_block": 16424000,
+        "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
+        "root_path": "ingestion/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16416000,
+        "max_block": 16424000,
+        "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
+        "root_path": "ingestion/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16424000,
+        "max_block": 16432000,
+        "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
+        "root_path": "ingestion/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16432000,
+        "max_block": 16440000,
+        "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
+        "root_path": "ingestion/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16440000,
+        "max_block": 16448000,
+        "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
+        "root_path": "ingestion/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16448000,
+        "max_block": 16456000,
+        "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
+        "root_path": "ingestion/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16456000,
+        "max_block": 16464000,
+        "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
+        "root_path": "ingestion/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16464000,
+        "max_block": 16472000,
+        "data_path": "ingestion/traces_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
+        "root_path": "ingestion/traces_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16424000,
+        "max_block": 16432000,
+        "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
+        "root_path": "ingestion/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16432000,
+        "max_block": 16440000,
+        "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
+        "root_path": "ingestion/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16440000,
+        "max_block": 16448000,
+        "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
+        "root_path": "ingestion/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16448000,
+        "max_block": 16456000,
+        "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
+        "root_path": "ingestion/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16456000,
+        "max_block": 16464000,
+        "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
+        "root_path": "ingestion/transactions_v1"
+    },
+    {
+        "dt": 20058,
+        "chain": "mode",
+        "num_blocks": 8000,
+        "min_block": 16464000,
+        "max_block": 16472000,
+        "data_path": "ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
+        "root_path": "ingestion/transactions_v1"
+    }
+]

@@ -46,7 +46,7 @@ def construct_readers_byblock(
         read_from=read_from,
     )
 
-    readers = []
+    readers: list[DataReader] = []
     for (chain, dateval, min_block), group_df in markers_df.group_by("chain", "dt", "min_block"):
         assert isinstance(dateval, date)
         assert isinstance(chain, str)
@@ -66,6 +66,10 @@ def construct_readers_byblock(
             # Update data path mapping so keys are logical paths.
             dataset_paths = data_spec.data_paths(input_data.data_paths)
 
+            extra_columns_df = group_df.select("num_blocks", "min_block", "max_block").unique()
+            assert len(extra_columns_df) == 1
+            extra_columns = extra_columns_df.to_dicts()[0]
+
             obj = DataReader(
                 partitions=Partition.from_tuples(
                     [
@@ -76,12 +80,18 @@ def construct_readers_byblock(
                 read_from=read_from,
                 dataset_paths=dataset_paths,
                 inputs_ready=input_data.is_complete,
+                extra_marker_data=extra_columns,
             )
 
             readers.append(obj)
 
     log.info(f"prepared {len(readers)} input batches.")
-    return readers
+
+    def _sort(x: DataReader):
+        assert x.extra_marker_data is not None
+        return (x.partition_value("chain"), x.extra_marker_data["min_block"])
+
+    return sorted(readers, key=_sort)
 
 
 def are_markers_complete(
