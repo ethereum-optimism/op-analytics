@@ -1,5 +1,3 @@
-# File: src/op_analytics/cli/subcommands/pulls/agora/dataaccess.py
-
 from enum import Enum
 import polars as pl
 
@@ -16,10 +14,11 @@ class Agora(str, Enum):
     DELEGATES = "delegates_v1"
     DELEGATE_VOTES = "delegate_votes_v1"
     PROPOSALS = "proposals_v1"
+    DELEGATORS = "delegators_v1"
+    DELEGATEES = "delegatees_v1"
 
     @property
     def root_path(self) -> str:
-        # Store under "agora" prefix for consistency
         return f"agora/{self.value}"
 
     def write(
@@ -28,11 +27,7 @@ class Agora(str, Enum):
         sort_by: list[str] | None = None,
         force_complete: bool = False,
     ):
-        """Write Agora dataset using daily partitioning.
-
-        We assume there's a 'dt' column in the dataframe used for partitioning.
-        For different partitioning strategies, adjust write_daily_data call accordingly.
-        """
+        """Write Agora dataset using daily partitioning."""
         log.info(f"Writing dataset {self.value!r} to {self.root_path!r}")
         return write_daily_data(
             root_path=self.root_path,

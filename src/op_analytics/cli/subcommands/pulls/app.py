@@ -4,7 +4,6 @@ import typer
 
 from op_analytics.coreutils.logger import structlog
 
-from .agora import agora_pull
 from .defillama.historical_chain_tvl import (
     pull_historical_chain_tvl as dfl_pull_historical_chain_tvl,
 )
@@ -12,6 +11,13 @@ from .defillama.protocols import pull_protocol_tvl as dfl_pull_protocol_tvl
 from .defillama.stablecoins import pull_stablecoins as dfl_pull_stablecoins
 from .github_analytics import pull as github_analytics_pull
 from .l2beat import pull as l2beat_pull
+from .agora.delegates import pull_delegates
+from .agora.delegate_events import (
+    fetch_delegate_votes,
+    fetch_proposals,
+    fetch_delegate_delegatees,
+    fetch_delegate_delegators,
+)
 
 log = structlog.get_logger()
 
@@ -71,12 +77,24 @@ def defillama_protocol_tvl(
 
 
 @app.command()
-def agora():
-    """Pull data from Agora."""
-    agora_pull()
-
-
-@app.command()
 def github_analytics():
     """Pull repo analytics data from GitHub."""
     github_analytics_pull()
+
+
+@app.command()
+def pull_agora_delegate_data():
+    """Pull and write agora data."""
+    delegates = pull_delegates()
+
+    delegate_votes = fetch_delegate_votes(delegates)
+    log.info(f"Found {len(delegate_votes)} delegate votes.")
+
+    delegate_delegatees = fetch_delegate_delegatees(delegates)
+    log.info(f"Found {len(delegate_delegatees)} delegate delegatees.")
+
+    delegate_delegators = fetch_delegate_delegators(delegates)
+    log.info(f"Found {len(delegate_delegators)} delegate delegators.")
+
+    proposals = fetch_proposals()
+    log.info(f"Found {len(proposals)} proposals.")
