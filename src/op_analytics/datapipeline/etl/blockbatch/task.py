@@ -4,7 +4,7 @@ from typing import Protocol
 import duckdb
 
 from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.partitioned.writer import DataWriter
+from op_analytics.coreutils.partitioned.writehelper import WriteManager
 
 
 class ModelsTask(Protocol):
@@ -14,8 +14,8 @@ class ModelsTask(Protocol):
     # DataReader
     data_reader: DataReader
 
-    # DataWriter
-    data_writer: DataWriter
+    # Write Manager
+    write_manager: WriteManager
 
     # Output duckdb relations
     output_duckdb_relations: dict[str, duckdb.DuckDBPyRelation]
@@ -37,8 +37,8 @@ class BlockBatchModelsTask:
     # DataReader
     data_reader: DataReader
 
-    # DataWriter
-    data_writer: DataWriter
+    # Write Manager
+    write_manager: WriteManager
 
     # Output duckdb relations
     output_duckdb_relations: dict[str, duckdb.DuckDBPyRelation]

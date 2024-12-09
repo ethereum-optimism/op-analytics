@@ -63,7 +63,7 @@ def compute(
         )
 
         # Decide if we need to run this task.
-        if task.data_writer.is_complete() and not force_complete:
+        if task.write_manager.is_complete() and not force_complete:
             log.info("task", status="already_complete")
             continue
 
@@ -74,10 +74,10 @@ def compute(
 
         if force_complete:
             log.info("forced execution despite complete marker")
-            task.data_writer.force = True
+            task.write_manager.force = True
 
         # If running locally release duckdb lock before forking.
-        if task.data_writer.write_to == DataLocation.LOCAL:
+        if task.write_manager.location == DataLocation.LOCAL:
             disconnect_duckdb_local()
 
         executed += 1
@@ -136,7 +136,7 @@ def steps(task: ModelsTask) -> None:
                 )
 
             for result_name, rel in model_results.items():
-                task.data_writer.write(
+                task.write_manager.write(
                     output_data=OutputData(
                         dataframe=rel.pl(),
                         root_path=f"{task.output_root_path_prefix}/{task.model}/{result_name}",

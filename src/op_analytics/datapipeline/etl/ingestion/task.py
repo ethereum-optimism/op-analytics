@@ -132,7 +132,7 @@ def ordered_task_list(tasks: list[Any]):
     for task in tasks:
         chain_tasks[task.chain].append(task)
 
-    # Get the num number of tasks for a chain.
+    # Get the number of tasks for a chain.
     chain_min_tasks = min([len(_) for _ in chain_tasks.values()])
 
     chain_iters = {}

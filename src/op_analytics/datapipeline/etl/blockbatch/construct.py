@@ -4,7 +4,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.partitioned.writer import DataWriter
+from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determine_network
 from op_analytics.datapipeline.etl.ingestion.reader_byblock import construct_readers_byblock
 from op_analytics.datapipeline.models.compute.registry import (
@@ -46,6 +46,8 @@ def construct_tasks(
 
     tasks = []
     for reader in readers:
+        assert reader.extra_marker_data is not None
+
         for model in models:
             # Each model can have one or more outputs. There is 1 marker per output.
             expected_outputs = []
@@ -57,24 +59,18 @@ def construct_tasks(
 
                 network = determine_network(chain)
                 if network == ChainNetwork.TESTNET:
-                    root_path_prefix = "intermediate_testnets"
+                    root_path_prefix = "blockbatch_testnets"
                 else:
-                    root_path_prefix = "intermediate"
+                    root_path_prefix = "blockbatch"
+
+                min_block = reader.extra_marker_data["min_block"]
+                min_block_str = f"{min_block:012d}"
 
                 expected_outputs.append(
                     ExpectedOutput(
                         root_path=f"{root_path_prefix}/{full_model_name}",
-                        file_name="out.parquet",
-                        marker_path=f"{datestr}/{chain}/{model}/{dataset}",
-                        process_name="default",
-                        additional_columns=dict(
-                            model_name=model,
-                        ),
-                        additional_columns_schema=[
-                            pa.field("chain", pa.string()),
-                            pa.field("dt", pa.date32()),
-                            pa.field("model_name", pa.string()),
-                        ],
+                        file_name=f"{min_block_str}.parquet",
+                        marker_path=f"{root_path_prefix}/{full_model_name}/{chain}/{datestr}/{min_block_str}",
                     )
                 )
 
@@ -83,9 +79,23 @@ def construct_tasks(
                     data_reader=reader,
                     model=model,
                     output_duckdb_relations={},
-                    data_writer=DataWriter(
+                    write_manager=PartitionedWriteManager(
+                        location=write_to,
                         partition_cols=["chain", "dt"],
-                        write_to=write_to,
+                        extra_marker_columns=dict(
+                            model_name=model,
+                            num_blocks=reader.extra_marker_data["num_blocks"],
+                            min_block=reader.extra_marker_data["min_block"],
+                            max_block=reader.extra_marker_data["max_block"],
+                        ),
+                        extra_marker_columns_schema=[
+                            pa.field("chain", pa.string()),
+                            pa.field("dt", pa.date32()),
+                            pa.field("num_blocks", pa.int32()),
+                            pa.field("min_block", pa.int64()),
+                            pa.field("max_block", pa.int64()),
+                            pa.field("model_name", pa.string()),
+                        ],
                         markers_table=BLOCKBATCH_MODELS_MARKERS_TABLE,
                         expected_outputs=expected_outputs,
                         force=False,

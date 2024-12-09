@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 
 from op_analytics.coreutils.duckdb_inmem import register_parquet_relation
@@ -36,6 +37,10 @@ class DataReader:
     # Input data as parquet paths for each dataset.
     dataset_paths: dict[str, list[str]]
     inputs_ready: bool
+
+    # Additional columns stored in the marker table.
+    # The dictionary is column name to column value.
+    extra_marker_data: dict[str, Any] | None = None
 
     def partitions_dict(self):
         return self.partitions.as_dict()

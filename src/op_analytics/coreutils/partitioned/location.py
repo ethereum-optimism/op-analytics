@@ -14,6 +14,9 @@ class DataLocation(str, Enum):
     BIGQUERY = "BIGQUERY"
     BIGQUERY_LOCAL_MARKERS = "BIGQUERY_LOCAL_MARKERS"
 
+    def __repr__(self):
+        return f"DataLocation.{self.name}"
+
     def with_prefix(self, path: str) -> str:
         if self == DataLocation.GCS:
             # Prepend the GCS bucket scheme and bucket name to make the paths
