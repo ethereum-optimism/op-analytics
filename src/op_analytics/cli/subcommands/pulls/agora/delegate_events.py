@@ -4,10 +4,11 @@ import os
 import requests
 import polars as pl
 
-from op_analytics.cli.subcommands.pulls.agora.dataacess import Agora
+from op_analytics.cli.subcommands.pulls.agora.dataaccess import Agora
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data
 from op_analytics.coreutils.threads import run_concurrently_store_failures
+from op_analytics.cli.subcommands.pulls.agora.delegates import AgoraDelegates
 
 log = structlog.get_logger()
 
@@ -109,8 +110,13 @@ def _flatten_vote_data(data: List[Any]) -> List[dict]:
     ]
 
 
-def fetch_delegate_votes(delegates: List[str], workers: int = 12) -> AgoraDelegateVotes:
-    votes_data = fetch_event_data(delegates, endpoint="votes", workers=workers)
+def fetch_delegate_votes(delegates: AgoraDelegates, workers: int = 12) -> AgoraDelegateVotes:
+    """Considers only delegates with voting power."""
+    delegates_with_voting_power = delegates.delegates_df.filter(pl.col("voting_power_total") > 0)
+    log.info(f"Found {len(delegates_with_voting_power)} delegates with voting power.")
+    delegate_addresses = delegates_with_voting_power["address"].to_list()
+
+    votes_data = fetch_event_data(delegate_addresses, endpoint="votes", workers=workers)
     flattened = _flatten_vote_data(votes_data)
     df = pl.DataFrame(flattened).sort("dt")
     Agora.DELEGATE_VOTES.write(dataframe=df, sort_by=["dt"])
@@ -180,10 +186,10 @@ def fetch_delegate_data(delegates: List[str], endpoint: str, workers: int) -> pl
 
     rows = [
         {
+            "dt": parse_isoformat_with_z(record["timestamp"]),
             "from_address": record["from"],
             "to_address": record["to"],
             "allowance": record["allowance"],
-            "dt": parse_isoformat_with_z(record["timestamp"]),
             "type": record["type"],
             "amount": record["amount"],
             "transaction_hash": record["transaction_hash"],
@@ -194,9 +200,15 @@ def fetch_delegate_data(delegates: List[str], endpoint: str, workers: int) -> pl
     return pl.DataFrame(rows)
 
 
-def fetch_delegate_delegators(delegates: List[str], workers: int = 12) -> pl.DataFrame:
-    return fetch_delegate_data(delegates, endpoint="delegators", workers=workers)
+def fetch_delegate_delegators(delegates: AgoraDelegates, workers: int = 12) -> pl.DataFrame:
+    delegate_addresses = delegates.delegates_df["address"].to_list()
+    delegator_data = fetch_delegate_data(delegate_addresses, endpoint="delegators", workers=workers)
+    Agora.DELEGATORS.write(dataframe=delegator_data, sort_by=["dt"])
+    return delegator_data
 
 
-def fetch_delegate_delegatees(delegates: List[str], workers: int = 12) -> pl.DataFrame:
-    return fetch_delegate_data(delegates, endpoint="delegatees", workers=workers)
+def fetch_delegate_delegatees(delegates: AgoraDelegates, workers: int = 12) -> pl.DataFrame:
+    delegate_addresses = delegates.delegates_df["address"].to_list()
+    delegatee_data = fetch_delegate_data(delegate_addresses, endpoint="delegatees", workers=workers)
+    Agora.DELEGATEES.write(dataframe=delegatee_data, sort_by=["dt"])
+    return delegatee_data
