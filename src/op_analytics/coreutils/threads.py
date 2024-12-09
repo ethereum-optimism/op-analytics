@@ -12,6 +12,7 @@ def run_concurrently(
     function: Callable,
     targets: dict[str, Any] | list[Any],
     max_workers: int | None = None,
+    function_args: tuple[Any, ...] = (),
 ) -> dict[Any, Any]:
     """Concurrently call function on the provided targets.
 
@@ -26,7 +27,7 @@ def run_concurrently(
         targets = {k: k for k in targets}
 
     if max_workers == -1:
-        return run_serially(function, targets)
+        return run_serially(function, targets, function_args)
 
     num_targets = len(targets)
 
@@ -35,7 +36,7 @@ def run_concurrently(
 
         for i, (key, target) in enumerate(targets.items()):
             future = executor.submit(
-                progress_wrapper(function, total=num_targets, current=i + 1), target
+                progress_wrapper(function, total=num_targets, current=i + 1), target, *function_args
             )
             futures[future] = key
 
@@ -69,10 +70,12 @@ def progress_wrapper(func, total: int, current: int):
     return wrapper
 
 
-def run_serially(function: Callable, targets: dict[str, Any]) -> dict[str, Any]:
+def run_serially(
+    function: Callable, targets: dict[str, Any], function_args: tuple[Any, ...] = ()
+) -> dict[str, Any]:
     results = {}
     for key, target in targets.items():
-        results[key] = function(target)
+        results[key] = function(target, *function_args)
     return results
 
 
@@ -88,6 +91,7 @@ def run_concurrently_store_failures(
     function: Callable,
     targets: dict[str, Any] | list[Any],
     max_workers: int | None = None,
+    function_args: tuple[Any, ...] = (),
 ) -> RunResults:
     """Same as run_concurrently but do not fail if a target results in an Exception."""
     max_workers = max_workers or 4
@@ -99,7 +103,7 @@ def run_concurrently_store_failures(
         targets = {k: k for k in targets}
 
     if max_workers == -1:
-        return run_serially_store_failures(function, targets)
+        return run_serially_store_failures(function, targets, function_args)
 
     num_targets = len(targets)
 
@@ -108,7 +112,7 @@ def run_concurrently_store_failures(
 
         for i, (key, target) in enumerate(targets.items()):
             future = executor.submit(
-                progress_wrapper(function, total=num_targets, current=i + 1), target
+                progress_wrapper(function, total=num_targets, current=i + 1), target, *function_args
             )
             futures[future] = key
 
@@ -123,13 +127,15 @@ def run_concurrently_store_failures(
     return RunResults(results=results, failures=failures)
 
 
-def run_serially_store_failures(function: Callable, targets: dict[str, Any]) -> RunResults:
+def run_serially_store_failures(
+    function: Callable, targets: dict[str, Any], function_args: tuple[Any, ...] = ()
+) -> RunResults:
     """Same as run_serially but do not fail if a target results in an Exception."""
     results = {}
     failures = {}
     for key, target in targets.items():
         try:
-            results[key] = function(target)
+            results[key] = function(target, *function_args)
         except Exception as ex:
             log.error(f"Failed to run {key}", exc_info=ex)
             failures[key] = str(ex)
