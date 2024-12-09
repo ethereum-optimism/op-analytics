@@ -64,3 +64,10 @@ def surrounding_dates(dateval: date) -> list[date]:
 def epoch_is_date(epoch: int) -> bool:
     """Return true if seconds since epoch is at exactly midnight."""
     return epoch % 86400 == 0
+
+
+def parse_isoformat_with_z(iso_string):
+    """Parse ISO format strings with 'Z' to datetime objects."""
+    if iso_string.endswith("Z"):
+        iso_string = iso_string[:-1] + "+00:00"
+    return datetime.fromisoformat(iso_string)
