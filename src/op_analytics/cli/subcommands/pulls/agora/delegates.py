@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data
-from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.threads import run_concurrently_store_failures
 from op_analytics.coreutils.time import now_dt
 from op_analytics.coreutils.env.vault import env_get
 from typing import Any
@@ -120,12 +120,15 @@ class Paginator:
     def concurrent_fetch(self):
         self.max_offset = self.binary_search_max_offset()
         offsets = list(range(0, self.max_offset, self.limit))[:10]
-        data = run_concurrently(
+        results = run_concurrently_store_failures(
             function=lambda offset: self.request(offset).data,
             targets=offsets,
             max_workers=self.max_workers,
         )
-        return list(itertools.chain.from_iterable(data.values()))
+        data = results.results.values()
+        if results.failures:
+            log.warning(f"Failed to fetch data for offsets: {results.failures}")
+        return list(itertools.chain.from_iterable(data))
 
 
 def pull_delegates():
