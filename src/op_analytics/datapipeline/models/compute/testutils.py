@@ -98,7 +98,7 @@ class IntermediateModelTestBase(unittest.TestCase):
         This method executes the model under test and creates temporary tables in DuckDB
         with the model results.
         """
-        load_model_definitions()
+        load_model_definitions(force=True)
 
         # Execute the model on the temporary duckdb instance.
         model = REGISTERED_INTERMEDIATE_MODELS[cls.model]

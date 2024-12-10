@@ -30,7 +30,7 @@ def construct_tasks(
 ) -> list[BlockBatchModelsTask]:
     """Construct a collection of tasks to compute intermediate models."""
     # Load python functions that define registered data models.
-    load_model_definitions()
+    load_model_definitions(module_names=models)
     vefify_models(models)
 
     input_datasets = set()

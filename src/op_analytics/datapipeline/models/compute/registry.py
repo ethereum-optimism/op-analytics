@@ -40,11 +40,14 @@ def register_model(
     return decorator
 
 
-def load_model_definitions():
-    """Import python modules under the models directory so the model registry is populated."""
+def load_model_definitions(module_names: list[str] | None = None, force=False):
+    """Import python modules under the models directory so the model registry is populated.
+
+    If module_names is provided only the requested python modules are loaded.
+    """
     global _LOADED
 
-    if _LOADED:
+    if _LOADED and not force:
         return
 
     # Python modules under the "code" directory are imported to populate the model registry.
@@ -54,6 +57,11 @@ def load_model_definitions():
     for fname in os.listdir(MODELS_PATH):
         name = os.path.join(MODELS_PATH, fname)
         if os.path.isfile(name) and fname not in ("__init__.py"):
+            module_name = fname.removesuffix(".py")
+
+            if module_names is not None and module_name not in module_names:
+                continue
+
             importlib.import_module(
                 f"op_analytics.datapipeline.models.code.{fname.removesuffix(".py")}"
             )
