@@ -1,5 +1,7 @@
 import logging
 import resource
+from op_analytics.coreutils.time import now
+import sys
 
 import orjson
 import structlog
@@ -10,11 +12,14 @@ from op_analytics.coreutils.env.aware import current_environment, is_k8s
 
 CURRENT_ENV = current_environment().name
 
+# Global variables to track ETA
+start_time = None
+total_tasks = None
+
 
 def add_oplabs_env(logger: logging.Logger, method_name: str, event_dict: EventDict) -> EventDict:
     if CURRENT_ENV != "UNDEFINED":
         event_dict["env"] = CURRENT_ENV
-
     return event_dict
 
 
@@ -22,7 +27,6 @@ def pass_through(logger: logging.Logger, method_name: str, event_dict: EventDict
     return event_dict
 
 
-# If needed for debugging adding this processor will provide filename and line for the log.
 CALLSITE_PARAMETERS = structlog.processors.CallsiteParameterAdder(
     [
         structlog.processors.CallsiteParameter.FILENAME,
@@ -31,15 +35,56 @@ CALLSITE_PARAMETERS = structlog.processors.CallsiteParameterAdder(
 )
 
 
+def human_readable_time(seconds: int) -> str:
+    """Convert seconds into a human-readable format like '5m 34s'."""
+    minutes, secs = divmod(seconds, 60)
+    if minutes > 0:
+        return f"{minutes}m {secs}s"
+    return f"{secs}s"
+
+
+def eta_processor(logger: logging.Logger, method_name: str, event_dict: EventDict) -> EventDict:
+    """
+    Adds ETA estimation to log messages containing `target_id` and "Fetched from".
+    Resets tracking variables when a new session or batch is detected.
+    """
+    global start_time, total_tasks
+
+    target_id = event_dict.get("target_id")
+    event_msg = event_dict.get("event", "")
+
+    if target_id and "Fetched from" in event_msg:
+        try:
+            current_str, total_str = target_id.split("/")
+            current_num = int(current_str)
+            total_num = int(total_str)
+        except ValueError:
+            # If parsing fails, just return without modification
+            return event_dict
+
+        if total_tasks is None or total_tasks != total_num:
+            start_time = now()
+            total_tasks = total_num
+
+        elapsed_time = now() - start_time
+        avg_time_per_task = elapsed_time / current_num if current_num > 0 else 0
+        remaining_time = avg_time_per_task * (total_num - current_num)
+        eta = human_readable_time(int(remaining_time))
+
+        event_dict["event"] = f"{event_msg} (ETA: {eta})"
+
+    return event_dict
+
+
 def configuration():
     if is_k8s():
         return dict(
             processors=[
-                # CALLSITE_PARAMETERS,
                 structlog.contextvars.merge_contextvars,
                 structlog.processors.add_log_level,
                 structlog.dev.set_exc_info,
                 structlog.processors.TimeStamper(fmt="iso", utc=True),
+                eta_processor,
                 structlog.processors.JSONRenderer(serializer=orjson.dumps),
             ],
             wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
@@ -57,17 +102,17 @@ def configuration():
                 structlog.processors.StackInfoRenderer(),
                 structlog.dev.set_exc_info,
                 structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
+                eta_processor,
                 structlog.dev.ConsoleRenderer(),
             ],
             wrapper_class=structlog.make_filtering_bound_logger(logging.DEBUG),
             context_class=dict,
-            logger_factory=structlog.PrintLoggerFactory(),
+            logger_factory=structlog.PrintLoggerFactory(file=sys.stdout),
             cache_logger_on_first_use=False,
         )
 
 
 structlog.configure(**configuration())
-
 
 __all__ = ["structlog", "bind_contextvars", "clear_contextvars", "bound_contextvars"]
 
