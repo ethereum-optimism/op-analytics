@@ -69,7 +69,7 @@ def eta_processor(logger: logging.Logger, method_name: str, event_dict: EventDic
         elapsed_time = now() - start_time
         avg_time_per_task = elapsed_time / current_num if current_num > 0 else 0
         remaining_time = avg_time_per_task * (total_num - current_num)
-        eta = human_readable_time(int(remaining_time))
+        eta = human_readable_time(int(remaining_time.total_seconds()))
 
         event_dict["event"] = f"{event_msg} (ETA: {eta})"
 
