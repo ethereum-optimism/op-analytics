@@ -93,6 +93,8 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "mode": [
         Delimiter(0, 20000),
         Delimiter(block_number=15920000, batch_size=8000),
+        # Decreased on 2024/12/10.
+        Delimiter(block_number=16832000, batch_size=2000),
     ],
     "op": [
         Delimiter(block_number=0, batch_size=10000),
@@ -139,7 +141,7 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=4700000, batch_size=4000),
         # Decreased on 2024/12/03.
         Delimiter(block_number=6948000, batch_size=2000),
-        # Decreased on 2024/12/09
+        # Decreased on 2024/12/09.
         Delimiter(block_number=7216000, batch_size=800),
     ],
     "xterio": [
