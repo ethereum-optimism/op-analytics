@@ -17,6 +17,10 @@ def run_concurrently(
 
     "targets" is a dictionary from key to function parameters. The key is used to identify the result in
     the results dictionary.
+
+    Sometimes you have function that accepts arguments in addition to the function target
+    that you need to run concurrently. For those cases we recommend that you create a
+    single arg function wrapper at the call site which you can then pass to run_concurrently.
     """
 
     max_workers = max_workers or 4

@@ -1,26 +1,24 @@
 from dataclasses import dataclass
+from decimal import Decimal
 from typing import Optional
 
 import polars as pl
 from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
-    upsert_partitioned_table,
-    upsert_unpartitioned_table,
 )
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
-from op_analytics.coreutils.time import dt_fromepoch
+from op_analytics.coreutils.time import dt_fromepoch, now_dt
+
+from .dataaccess import DefiLlama
 
 log = structlog.get_logger()
 
 SUMMARY_ENDPOINT = "https://stablecoins.llama.fi/stablecoins?includePrices=true"
 BREAKDOWN_ENDPOINT = "https://stablecoins.llama.fi/stablecoin/{id}"
 
-BQ_DATASET = "uploads_api"
 
-METADATA_TABLE = "defillama_stablecoin_metadata"
-BALANCES_TABLE = "defillama_daily_stablecoins_breakdown_history"
 BALANCES_TABLE_LAST_N_DAYS = 7  # upsert only the last 7 days of balances fetched from the api
 
 
@@ -44,6 +42,36 @@ OPTIONAL_METADATA_FIELDS = [
     "twitter",
     "price",
 ]
+
+METADATA_DF_SCHEMA = {
+    "id": pl.String,
+    "name": pl.String,
+    "address": pl.String,
+    "symbol": pl.String,
+    "url": pl.String,
+    "pegType": pl.String,
+    "pegMechanism": pl.String,
+    "description": pl.String,
+    "mintRedeemDescription": pl.String,
+    "onCoinGecko": pl.String,
+    "gecko_id": pl.String,
+    "cmcId": pl.String,
+    "priceSource": pl.String,
+    "twitter": pl.String,
+    "price": pl.Float64,
+}
+
+BALANCES_DF_SCHEMA = {
+    "id": pl.String(),
+    "chain": pl.String(),
+    "dt": pl.String(),
+    "circulating": pl.Decimal(scale=18),
+    "bridged_to": pl.Decimal(scale=18),
+    "minted": pl.Decimal(scale=18),
+    "unreleased": pl.Decimal(scale=18),
+    "name": pl.String(),
+    "symbol": pl.String(),
+}
 
 
 @dataclass
@@ -96,23 +124,16 @@ def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
     # Extract all the balances (includes metadata).
     result = extract(stablecoins_data)
 
-    # Upsert metadata to BQ.
-    upsert_unpartitioned_table(
-        df=result.metadata_df,
-        dataset=BQ_DATASET,
-        table_name=METADATA_TABLE,
-        unique_keys=["id", "name", "symbol"],
-        create_if_not_exists=False,  # set to True on first run
+    # Write metadata.
+    DefiLlama.STABLECOINS_METADATA.write(
+        dataframe=result.metadata_df.with_columns(dt=pl.lit(now_dt())),
+        sort_by=["symbol"],
     )
 
-    # Upsert balances to BQ.
-    # Only update balances on the most recent dates. Assume data further back in time is immutable.
-    upsert_partitioned_table(
-        df=most_recent_dates(result.balances_df, n_dates=BALANCES_TABLE_LAST_N_DAYS),
-        dataset=BQ_DATASET,
-        table_name=BALANCES_TABLE,
-        unique_keys=["dt", "id", "chain"],
-        create_if_not_exists=False,  # set to True on first run
+    # Write balances.
+    DefiLlama.STABLECOINS_BALANCE.write(
+        dataframe=most_recent_dates(result.balances_df, n_dates=BALANCES_TABLE_LAST_N_DAYS),
+        sort_by=["symbol", "chain"],
     )
 
     return result
@@ -135,10 +156,14 @@ def extract(stablecoins_data) -> DefillamaStablecoins:
         metadata.append(metadata_row)
         balances.extend(balance_rows)
 
-    return DefillamaStablecoins(
-        metadata_df=pl.DataFrame(metadata, infer_schema_length=len(metadata)),
-        balances_df=pl.DataFrame(balances, infer_schema_length=len(balances)),
-    )
+    metadata_df = pl.DataFrame(metadata, infer_schema_length=len(metadata))
+    balances_df = pl.DataFrame(balances, schema=BALANCES_DF_SCHEMA)
+
+    # Schema assertions to help our future selves reading this code.
+    assert metadata_df.schema == METADATA_DF_SCHEMA
+    assert balances_df.schema == BALANCES_DF_SCHEMA
+
+    return DefillamaStablecoins(metadata_df=metadata_df, balances_df=balances_df)
 
 
 def single_stablecoin_metadata(data: dict) -> dict:
@@ -164,6 +189,18 @@ def single_stablecoin_metadata(data: dict) -> dict:
         metadata[key] = data.get(key)
 
     return metadata
+
+
+def safe_decimal(float_val):
+    """Safely convert DefiLLama balance values to Decimal.
+
+    Balance values can be int or float. This function converts values to Decimal,
+    so we don't have to rely on polars schema inference.
+    """
+    if float_val is None:
+        return None
+
+    return Decimal(str(float_val))
 
 
 def single_stablecoin_balances(data: dict) -> tuple[dict, list[dict]]:
@@ -193,10 +230,10 @@ def single_stablecoin_balances(data: dict) -> tuple[dict, list[dict]]:
                 "id": data["id"],
                 "chain": chain,
                 "dt": dt_fromepoch(datapoint["date"]),
-                "circulating": get_value(datapoint, "circulating"),
-                "bridged_to": get_value(datapoint, "bridgedTo"),
-                "minted": get_value(datapoint, "minted"),
-                "unreleased": get_value(datapoint, "unreleased"),
+                "circulating": safe_decimal(get_value(datapoint, "circulating")),
+                "bridged_to": safe_decimal(get_value(datapoint, "bridgedTo")),
+                "minted": safe_decimal(get_value(datapoint, "minted")),
+                "unreleased": safe_decimal(get_value(datapoint, "unreleased")),
                 "name": metadata["name"],
                 "symbol": metadata["symbol"],
             }

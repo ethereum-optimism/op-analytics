@@ -10,6 +10,7 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.datapipeline.chains import goldsky_chains
 from op_analytics.datapipeline.chains.upload import upload_all
+from op_analytics.datapipeline.etl.blockbatch.main import compute_blockbatch
 from op_analytics.datapipeline.etl.ingestion import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
@@ -208,6 +209,39 @@ def intermediate_models(
     model_list = [_.strip() for _ in models.split(",")]
 
     compute_intermediate(
+        chains=chain_list,
+        models=model_list,
+        range_spec=range_spec,
+        read_from=read_from,
+        write_to=write_to,
+        dryrun=dryrun,
+        force_complete=force_complete,
+        fork_process=fork_process,
+    )
+
+
+@app.command()
+def blockbatch_models(
+    chains: CHAINS_ARG,
+    models: Annotated[str, typer.Argument(help="Comma-separated list of models to be processed.")],
+    range_spec: DATES_ARG,
+    read_from: Annotated[
+        DataLocation,
+        typer.Option(
+            help="Where data will be read from.",
+            case_sensitive=False,
+        ),
+    ] = DataLocation.GCS,
+    write_to: WRITE_TO_OPTION = DataLocation.DISABLED,
+    dryrun: DRYRUN_OPTION = False,
+    force_complete: FORCE_COMPLETE_OPTION = False,
+    fork_process: FORK_PROCESS_OPTION = True,
+):
+    """Compute blockbatch models for a range of dates."""
+    chain_list = normalize_chains(chains)
+    model_list = [_.strip() for _ in models.split(",")]
+
+    compute_blockbatch(
         chains=chain_list,
         models=model_list,
         range_spec=range_spec,

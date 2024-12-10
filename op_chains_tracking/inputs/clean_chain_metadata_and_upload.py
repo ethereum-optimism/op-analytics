@@ -18,7 +18,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[9]:
+# In[ ]:
 
 
 # Read the CSV file
@@ -27,7 +27,7 @@ df = pd.read_csv('chain_metadata_raw.csv')
 table_name = 'op_stack_chain_metadata'
 
 
-# In[10]:
+# In[ ]:
 
 
 import math
@@ -57,6 +57,7 @@ df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 # Datetime
 df['public_mainnet_launch_date'] = pd.to_datetime(df['public_mainnet_launch_date'], errors='coerce')
 df['op_chain_start'] = pd.to_datetime(df['op_chain_start'], errors='coerce')
+df['op_governed_start'] = pd.to_datetime(df['op_governed_start'], errors='coerce')
 # ChainID
 # Apply the function to the column
 df['mainnet_chain_id'] = df['mainnet_chain_id'].apply(convert_to_int_or_keep_string)
@@ -72,7 +73,7 @@ df[object_columns] = df[object_columns].fillna('')
 df.to_csv('../outputs/chain_metadata.csv', index=False)
 
 
-# In[12]:
+# In[ ]:
 
 
 # df.dtypes

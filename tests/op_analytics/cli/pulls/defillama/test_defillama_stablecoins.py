@@ -47,7 +47,7 @@ sample_breakdown_data = {
     "pegMechanism": "fiat-backed",
     "description": "A sample stablecoin for testing.",
     "mintRedeemDescription": "Mint and redeem instructions.",
-    "onCoinGecko": True,
+    "onCoinGecko": "true",
     "gecko_id": "sample-stablecoin",
     "cmcId": "12345",
     "priceSource": "coingecko",
@@ -63,7 +63,7 @@ another_sample_breakdown_data = {
             "tokens": [
                 {
                     "date": 1730923615,
-                    "circulating": {"peggedUSD": 500000},
+                    "circulating": {"peggedUSD": 167489338},
                     "bridgedTo": {"peggedUSD": 100000},
                     "minted": {"peggedUSD": 600000},
                     "unreleased": {"peggedUSD": 0},
@@ -79,7 +79,7 @@ another_sample_breakdown_data = {
     "pegMechanism": "algorithmic",
     "description": "Another sample stablecoin for testing.",
     "mintRedeemDescription": "Mint and redeem instructions.",
-    "onCoinGecko": True,
+    "onCoinGecko": "true",
     "gecko_id": "another-stablecoin",
     "cmcId": "67890",
     "priceSource": "coingecko",
@@ -110,11 +110,9 @@ def test_process_breakdown_stables():
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.stablecoins.get_data")
-@patch("op_analytics.cli.subcommands.pulls.defillama.stablecoins.upsert_unpartitioned_table")
-@patch("op_analytics.cli.subcommands.pulls.defillama.stablecoins.upsert_partitioned_table")
+@patch("op_analytics.coreutils.partitioned.dailydata.PartitionedWriteManager.write")
 def test_pull_stables_single_stablecoin(
-    mock_upsert_partitioned_table,
-    mock_upsert_unpartitioned_table,
+    mock_write,
     mock_get_data,
 ):
     # Mock get_data to return sample summary and breakdown data
@@ -133,26 +131,75 @@ def test_pull_stables_single_stablecoin(
     # Verify that get_data was called twice (summary and breakdown)
     assert mock_get_data.call_count == 2
 
-    # Check that BigQuery functions were called
-    mock_upsert_unpartitioned_table.assert_called_once()
-    assert mock_upsert_unpartitioned_table.call_args.kwargs["unique_keys"] == [
-        "id",
-        "name",
-        "symbol",
+    # Check that writer functions were called with correct parameters
+    write_calls = [
+        dict(
+            dataset_name=_.kwargs["output_data"].root_path,
+            df_columns=_.kwargs["output_data"].dataframe.columns,
+            num_rows=len(_.kwargs["output_data"].dataframe),
+        )
+        for _ in mock_write.call_args_list
     ]
-
-    # Check that upsert_partitioned_table was called with correct parameters
-    mock_upsert_partitioned_table.assert_called_once()
-    assert len(mock_upsert_partitioned_table.call_args.kwargs["df"]) == 2
-    assert mock_upsert_partitioned_table.call_args.kwargs["unique_keys"] == ["dt", "id", "chain"]
+    assert write_calls == [
+        {
+            "dataset_name": "defillama/stablecoins_metadata_v1",
+            "df_columns": [
+                "id",
+                "name",
+                "address",
+                "symbol",
+                "url",
+                "pegType",
+                "pegMechanism",
+                "description",
+                "mintRedeemDescription",
+                "onCoinGecko",
+                "gecko_id",
+                "cmcId",
+                "priceSource",
+                "twitter",
+                "price",
+                "dt",
+            ],
+            "num_rows": 1,
+        },
+        {
+            "dataset_name": "defillama/stablecoins_balances_v1",
+            "df_columns": [
+                "id",
+                "chain",
+                "circulating",
+                "bridged_to",
+                "minted",
+                "unreleased",
+                "name",
+                "symbol",
+                "dt",
+            ],
+            "num_rows": 1,
+        },
+        {
+            "dataset_name": "defillama/stablecoins_balances_v1",
+            "df_columns": [
+                "id",
+                "chain",
+                "circulating",
+                "bridged_to",
+                "minted",
+                "unreleased",
+                "name",
+                "symbol",
+                "dt",
+            ],
+            "num_rows": 1,
+        },
+    ]
 
 
 @patch("op_analytics.cli.subcommands.pulls.defillama.stablecoins.get_data")
-@patch("op_analytics.cli.subcommands.pulls.defillama.stablecoins.upsert_unpartitioned_table")
-@patch("op_analytics.cli.subcommands.pulls.defillama.stablecoins.upsert_partitioned_table")
+@patch("op_analytics.coreutils.partitioned.dailydata.PartitionedWriteManager.write")
 def test_pull_stables_multiple_stablecoins(
-    mock_upsert_partitioned_table,
-    mock_upsert_unpartitioned_table,
+    mock_write,
     mock_get_data,
 ):
     # Mock get_data to return sample summary and breakdown data for both stablecoins
@@ -172,10 +219,6 @@ def test_pull_stables_multiple_stablecoins(
     # Verify that get_data was called three times (summary and two breakdowns)
     assert mock_get_data.call_count == 3
 
-    # Check that BigQuery functions were called
-    mock_upsert_unpartitioned_table.assert_called_once()
-    mock_upsert_partitioned_table.assert_called_once()
-
     # Check that metadata contains both stablecoins
     assert set(result.metadata_df["id"].to_list()) == {
         "sample-stablecoin",
@@ -187,6 +230,70 @@ def test_pull_stables_multiple_stablecoins(
         "sample-stablecoin",
         "another-stablecoin",
     }
+
+    # Check that writer functions were called with correct parameters
+    write_calls = [
+        dict(
+            dataset_name=_.kwargs["output_data"].root_path,
+            df_columns=_.kwargs["output_data"].dataframe.columns,
+            num_rows=len(_.kwargs["output_data"].dataframe),
+        )
+        for _ in mock_write.call_args_list
+    ]
+    assert write_calls == [
+        {
+            "dataset_name": "defillama/stablecoins_metadata_v1",
+            "df_columns": [
+                "id",
+                "name",
+                "address",
+                "symbol",
+                "url",
+                "pegType",
+                "pegMechanism",
+                "description",
+                "mintRedeemDescription",
+                "onCoinGecko",
+                "gecko_id",
+                "cmcId",
+                "priceSource",
+                "twitter",
+                "price",
+                "dt",
+            ],
+            "num_rows": 2,
+        },
+        {
+            "dataset_name": "defillama/stablecoins_balances_v1",
+            "df_columns": [
+                "id",
+                "chain",
+                "circulating",
+                "bridged_to",
+                "minted",
+                "unreleased",
+                "name",
+                "symbol",
+                "dt",
+            ],
+            "num_rows": 2,
+        },
+        {
+            "dataset_name": "defillama/stablecoins_balances_v1",
+            "df_columns": [
+                "id",
+                "chain",
+                "circulating",
+                "bridged_to",
+                "minted",
+                "unreleased",
+                "name",
+                "symbol",
+                "dt",
+            ],
+            "num_rows": 1,
+        },
+    ]
 
 
 def test_pull_stables_no_valid_ids():
