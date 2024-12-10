@@ -93,8 +93,6 @@ class WriteManager[T: Writeable](EnforceOverrides):
         raise NotImplementedError()
 
     def write(self, output_data: T) -> WriteResult:
-        self.location.check_write_allowed()
-
         # Locate the expected output that coresponds to the given output_data.
         expected_output = self.expected_output(output_data)
 
@@ -115,6 +113,7 @@ class WriteManager[T: Writeable](EnforceOverrides):
                 )
                 return WriteResult(status="skipped", written_parts={})
 
+            self.location.check_write_allowed()
             written_parts = self.write_implementation(output_data)
 
             marker = Marker(

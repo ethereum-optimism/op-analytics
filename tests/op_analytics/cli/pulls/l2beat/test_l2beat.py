@@ -39,7 +39,7 @@ def mock_get_data(session, url):
 
 @patch("op_analytics.cli.subcommands.pulls.l2beat.get_data", mock_get_data)
 def test_extract():
-    actual = l2beat.pull()
+    actual = l2beat.pull_l2beat()
     summary_df = actual["summary"]
     assert len(summary_df) == 105
 
