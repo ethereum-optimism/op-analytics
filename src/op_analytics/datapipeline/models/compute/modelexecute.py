@@ -3,7 +3,7 @@ from typing import Protocol
 
 import duckdb
 
-from .querybuilder import RenderedSQLQuery
+from .querybuilder import TemplatedSQLQuery, RenderedSQLQuery
 from .types import NamedRelations
 
 
@@ -24,12 +24,19 @@ class PythonModel:
     name: str
     input_datasets: list[str]
     expected_output_datasets: list[str]
-    duckdb_views: list[RenderedSQLQuery]
+    auxiliary_views: list[TemplatedSQLQuery]
     model_func: ModelFunction
 
     @property
     def func(self) -> ModelFunction:
         return self.model_func
+
+    def rendered_views(self) -> list[RenderedSQLQuery]:
+        result = []
+        for q in self.auxiliary_views or []:
+            rendered = q.render()
+            result.append(rendered)
+        return result
 
 
 @dataclass
@@ -53,7 +60,7 @@ class PythonModelExecutor:
             self.registered_views.append(view_name)
 
         # Register the rendered views.
-        for view in self.model.duckdb_views:
+        for view in self.model.rendered_views():
             self.client.register(
                 view_name=view.template_name,
                 python_object=self.client.sql(view.query),
