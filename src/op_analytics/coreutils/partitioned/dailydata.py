@@ -21,11 +21,11 @@ MARKERS_TABLE = "daily_data_markers"
 
 
 @cache
-def write_location():
+def ensure_local(location: DataLocation):
     if current_environment() == OPLabsEnvironment.UNITTEST:
         return DataLocation.LOCAL
     else:
-        return DataLocation.GCS
+        return location
 
 
 def write_daily_data(
@@ -33,6 +33,7 @@ def write_daily_data(
     dataframe: pl.DataFrame,
     sort_by: list[str] | None = None,
     force_complete: bool = False,
+    location: DataLocation = DataLocation.LOCAL,
 ):
     """Write date partitioned defillama dataset."""
     parts = breakout_partitions(
@@ -41,12 +42,15 @@ def write_daily_data(
         default_partition=None,
     )
 
+    # Ensure write location for tests is LOCAL.
+    location = ensure_local(location)
+
     for part in parts:
         datestr = part.partition_value("dt")
 
         writer = PartitionedWriteManager(
             process_name="default",
-            location=write_location(),
+            location=location,
             partition_cols=["dt"],
             extra_marker_columns=dict(),
             extra_marker_columns_schema=[

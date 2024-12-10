@@ -16,13 +16,18 @@ class DefiLlama(str, Enum):
     for ad-hoc use cases.
     """
 
+    # Chain TVL
     CHAINS_METADATA = "chains_metadata_v1"
-
     HISTORICAL_CHAIN_TVL = "historical_chain_tvl_v1"
 
+    # Protocol TVL
     PROTOCOLS_METADATA = "protocols_metadata_v1"
     PROTOCOLS_TVL = "protocols_tvl_v1"
     PROTOCOLS_TOKEN_TVL = "protocols_token_tvl_v1"
+
+    # Stablecoins TVL
+    STABLECOINS_METADATA = "stablecoins_metadata_v1"
+    STABLECOINS_BALANCE = "stablecoins_balances_v1"
 
     @property
     def root_path(self):
@@ -40,6 +45,9 @@ class DefiLlama(str, Enum):
             # Always overwrite data. If we pull data in early for a given date
             # a subsequent data pull will overwrite with more complete data.
             force_complete=True,
+            # Override the location value here. To write to the local file system
+            # use DataLocation.LOCAL
+            location=DataLocation.GCS,
         )
 
     def read(

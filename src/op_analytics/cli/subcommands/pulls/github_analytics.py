@@ -39,7 +39,7 @@ ANALYTICS_TABLE = "github_daily_analytics"
 REFERRERS_TABLE = "github_daily_referrers_snapshot"
 
 
-def pull():
+def pull_github_analytics():
     session = new_session()
 
     token = env_get("GITHUB_API_TOKEN")
