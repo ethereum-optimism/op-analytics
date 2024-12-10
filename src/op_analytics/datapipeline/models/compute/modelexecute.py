@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Protocol
+from typing import ClassVar, Protocol
 
 import duckdb
 
@@ -21,11 +21,21 @@ class ModelInputDataReader(Protocol):
 
 @dataclass
 class PythonModel:
+    # The registry stores all instances of PythonModel
+    _registry: ClassVar[dict[str, "PythonModel"]] = {}
+
     name: str
     input_datasets: list[str]
     expected_output_datasets: list[str]
     auxiliary_views: list[TemplatedSQLQuery]
     model_func: ModelFunction
+
+    def __post_init__(self):
+        self._registry[self.name] = self
+
+    @classmethod
+    def get(cls, model_name: str) -> "PythonModel":
+        return cls._registry[model_name]
 
     @property
     def func(self) -> ModelFunction:

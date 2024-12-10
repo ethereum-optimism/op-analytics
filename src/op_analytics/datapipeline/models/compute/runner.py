@@ -15,18 +15,15 @@ from op_analytics.coreutils.partitioned.output import OutputData
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writehelper import WriteManager
 from op_analytics.datapipeline.models.compute.modelexecute import PythonModelExecutor
-from op_analytics.datapipeline.models.compute.registry import (
-    REGISTERED_INTERMEDIATE_MODELS,
-    load_model_definitions,
-)
 from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros, set_memory_limit
+from op_analytics.datapipeline.models.compute.modelexecute import PythonModel
 
 log = structlog.get_logger()
 
 
 class ModelsTask(Protocol):
     # Model to compute
-    model: str
+    model: PythonModel
 
     # DataReader
     data_reader: DataReader
@@ -115,19 +112,13 @@ def steps(task: ModelsTask) -> None:
     # OOMing the container.
     set_memory_limit(client, gb=10)
 
-    # Load models
-    load_model_definitions(module_names=[task.model])
-
-    # Get the model.
-    im_model = REGISTERED_INTERMEDIATE_MODELS[task.model]
-
-    with PythonModelExecutor(im_model, client, task.data_reader) as m:
-        with bound_contextvars(model=task.model, **task.data_reader.partitions_dict()):
+    with PythonModelExecutor(task.model, client, task.data_reader) as m:
+        with bound_contextvars(model=task.model.name, **task.data_reader.partitions_dict()):
             log.info("running model")
             model_results = m.execute()
 
             produced_datasets = set(model_results.keys())
-            if produced_datasets != set(im_model.expected_output_datasets):
+            if produced_datasets != set(task.model.expected_output_datasets):
                 raise RuntimeError(
                     f"model {task.model!r} produced unexpected datasets: {produced_datasets}"
                 )
@@ -136,7 +127,7 @@ def steps(task: ModelsTask) -> None:
                 task.write_manager.write(
                     output_data=OutputData(
                         dataframe=rel.pl(),
-                        root_path=f"{task.output_root_path_prefix}/{task.model}/{result_name}",
+                        root_path=f"{task.output_root_path_prefix}/{task.model.name}/{result_name}",
                         default_partition=task.data_reader.partitions_dict(),
                     ),
                 )

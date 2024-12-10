@@ -34,8 +34,8 @@ def construct_tasks(
     vefify_models(models)
 
     input_datasets = set()
-    for model in models:
-        input_datasets.update(REGISTERED_INTERMEDIATE_MODELS[model].input_datasets)
+    for _ in models:
+        input_datasets.update(REGISTERED_INTERMEDIATE_MODELS[_].input_datasets)
 
     readers: list[DataReader] = construct_readers_byblock(
         chains=chains,
@@ -48,11 +48,13 @@ def construct_tasks(
     for reader in readers:
         assert reader.extra_marker_data is not None
 
-        for model in models:
+        for model_name in models:
+            model_obj = REGISTERED_INTERMEDIATE_MODELS[model_name]
+
             # Each model can have one or more outputs. There is 1 marker per output.
             expected_outputs = []
-            for dataset in REGISTERED_INTERMEDIATE_MODELS[model].expected_output_datasets:
-                full_model_name = f"{model}/{dataset}"
+            for dataset in model_obj.expected_output_datasets:
+                full_model_name = f"{model_name}/{dataset}"
 
                 datestr = reader.partition_value("dt")
                 chain = reader.partition_value("chain")
@@ -77,13 +79,13 @@ def construct_tasks(
             tasks.append(
                 BlockBatchModelsTask(
                     data_reader=reader,
-                    model=model,
+                    model=model_obj,
                     output_duckdb_relations={},
                     write_manager=PartitionedWriteManager(
                         location=write_to,
                         partition_cols=["chain", "dt"],
                         extra_marker_columns=dict(
-                            model_name=model,
+                            model_name=model_name,
                             num_blocks=reader.extra_marker_data["num_blocks"],
                             min_block=reader.extra_marker_data["min_block"],
                             max_block=reader.extra_marker_data["max_block"],

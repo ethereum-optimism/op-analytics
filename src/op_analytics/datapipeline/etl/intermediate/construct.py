@@ -65,11 +65,13 @@ def construct_tasks(
 
     tasks = []
     for reader in readers:
-        for model in models:
+        for model_name in models:
+            model_obj = REGISTERED_INTERMEDIATE_MODELS[model_name]
+
             # Each model can have one or more outputs. There is 1 marker per output.
             expected_outputs = []
-            for dataset in REGISTERED_INTERMEDIATE_MODELS[model].expected_output_datasets:
-                full_model_name = f"{model}/{dataset}"
+            for dataset in model_obj.expected_output_datasets:
+                full_model_name = f"{model_name}/{dataset}"
 
                 datestr = reader.partition_value("dt")
                 chain = reader.partition_value("chain")
@@ -84,20 +86,20 @@ def construct_tasks(
                     ExpectedOutput(
                         root_path=f"{root_path_prefix}/{full_model_name}",
                         file_name="out.parquet",
-                        marker_path=f"{datestr}/{chain}/{model}/{dataset}",
+                        marker_path=f"{datestr}/{chain}/{model_name}/{dataset}",
                     )
                 )
 
             tasks.append(
                 IntermediateModelsTask(
                     data_reader=reader,
-                    model=model,
+                    model=model_obj,
                     output_duckdb_relations={},
                     write_manager=PartitionedWriteManager(
                         location=write_to,
                         partition_cols=["chain", "dt"],
                         extra_marker_columns=dict(
-                            model_name=model,
+                            model_name=model_name,
                         ),
                         extra_marker_columns_schema=[
                             pa.field("chain", pa.string()),
