@@ -66,8 +66,11 @@ def epoch_is_date(epoch: int) -> bool:
     return epoch % 86400 == 0
 
 
-def parse_isoformat_with_z(iso_string):
-    """Parse ISO format strings with 'Z' to datetime objects."""
+def parse_isoformat(iso_string):
+    """Add 'Z' suffix if not present and parse ISO format strings to datetime objects."""
     if iso_string.endswith("Z"):
-        iso_string = iso_string[:-1] + "+00:00"
-    return datetime.fromisoformat(iso_string)
+        iso_string = iso_string[:-1] + "+00:00"  # Replace 'Z' with '+00:00' for parsing
+    parsed_datetime = datetime.fromisoformat(iso_string)
+    if parsed_datetime.tzinfo is None:  # If tzinfo is missing, assign UTC
+        parsed_datetime = parsed_datetime.replace(tzinfo=timezone.utc)
+    return parsed_datetime
