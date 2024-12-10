@@ -23,15 +23,18 @@ def l2beat():
 
 
 @app.command()
-def defillama_stablecoins():
-    """Pull stablecoin data from Defillama."""
+def defillama_stablecoins_bq():
+    """Pull stablecoin data from Defillama.
+
+    NOTE: This is deprecated. Readers should use the GCS dataset.
+    """
     # Always pull all symbols from the CLI.
     # You can temporarily modify the code if a partial pull is needed.
     pull_stablecoins_bq(symbols=None)
 
 
 @app.command()
-def defillama_stablecoins_gcs():
+def defillama_stablecoins():
     """Pull stablecoin data from Defillama."""
     # Always pull all symbols from the CLI.
     # You can temporarily modify the code if a partial pull is needed.
