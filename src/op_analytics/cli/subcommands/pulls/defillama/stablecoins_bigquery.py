@@ -76,7 +76,7 @@ def construct_urls(stablecoins_summary, symbols: list[str] | None) -> dict[str, 
     return urls
 
 
-def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
+def pull_stablecoins_bq(symbols: list[str] | None = None) -> DefillamaStablecoins:
     """
     Pulls and processes stablecoin data from DeFiLlama.
 

@@ -412,7 +412,7 @@ def test_pull_all_protocol_tvl(
     # Verify that get_data was called twice (summary, metadata, and tvl)
     assert mock_get_data.call_count == 3
 
-    # Check that BigQuery functions were called with correct parameters
+    # Check that write functions were called with correct parameters
     write_calls = [
         dict(
             dataset_name=_.kwargs["output_data"].root_path,

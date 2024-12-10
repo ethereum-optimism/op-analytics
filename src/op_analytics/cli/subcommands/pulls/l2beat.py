@@ -54,7 +54,7 @@ class L2BeatProject:
     slug: str
 
 
-def pull():
+def pull_l2beat():
     """Pull data from L2Beat.
 
     - Fetch the L2Beat summary endpoint.
