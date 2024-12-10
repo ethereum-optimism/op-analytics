@@ -28,7 +28,7 @@ def construct_data_readers(
     read_from: DataLocation,
 ) -> list[DataReader]:
     # Load python functions that define registered data models.
-    load_model_definitions()
+    load_model_definitions(module_names=models)
     vefify_models(models)
 
     input_datasets = set()

@@ -62,15 +62,15 @@ METADATA_DF_SCHEMA = {
 }
 
 BALANCES_DF_SCHEMA = {
-    "id": pl.String,
-    "chain": pl.String,
-    "dt": pl.String,
+    "id": pl.String(),
+    "chain": pl.String(),
+    "dt": pl.String(),
     "circulating": pl.Decimal(scale=18),
     "bridged_to": pl.Decimal(scale=18),
     "minted": pl.Decimal(scale=18),
     "unreleased": pl.Decimal(scale=18),
-    "name": pl.String,
-    "symbol": pl.String,
+    "name": pl.String(),
+    "symbol": pl.String(),
 }
 
 
