@@ -16,7 +16,7 @@ log = structlog.get_logger()
 
 BASE_URL = "https://vote.optimism.io/api/v1"
 DELEGATES_ENDPOINT = f"{BASE_URL}/delegates"
-API_KEY = env_get("AGORA_API_TOKEN")
+API_KEY = env_get("AGORA_API_KEY")
 
 
 @dataclass
