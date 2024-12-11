@@ -75,7 +75,10 @@ def run_tasks(
         with concurrent.futures.ProcessPoolExecutor(
             max_workers=num_processes,
             mp_context=ctx,
-            max_tasks_per_child=20,
+            # NOTE: I tried using max tasks to avoid memory build up on reused executors
+            # but every time I tried it execution ran into a deadlock that I couldn't
+            # debug. So not enabling it for now.
+            # max_tasks_per_child=20,
         ) as executor:
             futures = {}
             for item in pending_items(tasks, force_complete=force_complete):
