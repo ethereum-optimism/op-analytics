@@ -1,10 +1,50 @@
 import concurrent.futures
 from dataclasses import dataclass
 from typing import Any, Callable
+from op_analytics.coreutils.time import now
 
-from op_analytics.coreutils.logger import structlog, ProgressTracker
+from op_analytics.coreutils.logger import structlog, bound_contextvars
 
 log = structlog.get_logger()
+
+
+class ProgressTracker:
+    """
+    Tracks progress and ETA for a batch of tasks.
+    Instead of logging a separate "Task progress" line, we bind context variables
+    so that when the wrapped function logs, the ETA and progress fields are included
+    in that log line.
+    """
+
+    def __init__(self, total_tasks: int):
+        self.total_tasks = total_tasks
+        self.completed_tasks = 0
+        self.start_time = None
+        self.eta = None
+
+    def wrap(self, func, current_index: int):
+        def wrapper(target_item):
+            self.completed_tasks += 1
+            if self.completed_tasks == 2:
+                self.start_time = now()
+
+            if self.start_time is not None:
+                elapsed = (now() - self.start_time).total_seconds()
+                avg_time_per_task = elapsed / self.completed_tasks
+                remaining_tasks = self.total_tasks - self.completed_tasks
+                self.eta = remaining_tasks * avg_time_per_task
+
+            # Bind progress and ETA as context vars, so when func logs, these fields appear
+            with bound_contextvars(
+                target_id=f"{current_index:03d}/{self.total_tasks:03d}",
+                # completed=self.completed_tasks,
+                # total=self.total_tasks,
+                # elapsed=f"{elapsed:.1f}s",
+                eta=f"{self.eta:.1f}s" if self.eta is not None else "N/A",
+            ):
+                return func(target_item)
+
+        return wrapper
 
 
 def run_concurrently(

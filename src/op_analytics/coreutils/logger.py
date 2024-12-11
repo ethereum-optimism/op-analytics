@@ -5,7 +5,6 @@ import orjson
 import structlog
 from structlog.contextvars import bind_contextvars, bound_contextvars, clear_contextvars
 from structlog.typing import EventDict
-from op_analytics.coreutils.time import now
 from op_analytics.coreutils.env.aware import current_environment, is_k8s
 
 CURRENT_ENV = current_environment().name
@@ -109,37 +108,3 @@ def human_interval(num_seconds: int) -> str:
 def memory_usage():
     """Return max_rss / 1e6 rounded to make it easier to eyeball."""
     return round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6, 2)
-
-
-class ProgressTracker:
-    """
-    Tracks progress and ETA for a batch of tasks.
-    Instead of logging a separate "Task progress" line, we bind context variables
-    so that when the wrapped function logs, the ETA and progress fields are included
-    in that log line.
-    """
-
-    def __init__(self, total_tasks: int):
-        self.total_tasks = total_tasks
-        self.completed_tasks = 0
-        self.start_time = now()
-
-    def wrap(self, func, current_index: int):
-        def wrapper(target_item):
-            self.completed_tasks += 1
-            elapsed = (now() - self.start_time).total_seconds()
-            avg_time_per_task = elapsed / self.completed_tasks
-            remaining_tasks = self.total_tasks - self.completed_tasks
-            eta = remaining_tasks * avg_time_per_task
-
-            # Bind progress and ETA as context vars, so when func logs, these fields appear
-            with bound_contextvars(
-                target_id=f"{current_index:03d}/{self.total_tasks:03d}",
-                completed=self.completed_tasks,
-                total=self.total_tasks,
-                elapsed=f"{elapsed:.1f}s",
-                eta=f"{eta:.1f}s",
-            ):
-                return func(target_item)
-
-        return wrapper
