@@ -10,8 +10,6 @@ from .loader import BQLoader, BQOutputData
 
 log = structlog.get_logger()
 
-MARKERS_TABLE = "superchain_raw_bigquery_markers"
-
 
 @dataclass
 class DateLoadTask:
