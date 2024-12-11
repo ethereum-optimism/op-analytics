@@ -1,13 +1,16 @@
-from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date
 
+
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.time import date_fromstr
+from op_analytics.coreutils.partitioned.paths import get_dt, get_root_path
+
+from .loader import BQLoader, BQOutputData
 
 
 log = structlog.get_logger()
+
+MARKERS_TABLE = "superchain_raw_bigquery_markers"
 
 
 @dataclass
@@ -18,40 +21,42 @@ class DateLoadTask:
     dataset_paths: dict[str, list[str]]
     chains_ready: set[str]
     chains_not_ready: set[str]
+    write_manager: BQLoader
 
     @property
     def contextvars(self):
         return {"date": self.dateval.strftime("%Y-%m-%d")}
 
+    def output_tables(self, bq_dataset: str) -> list[BQOutputData]:
+        tables: list[BQOutputData] = []
 
-def consolidate_chains(inputs: list[DataReader]) -> list[DateLoadTask]:
-    """Consolidate inputs.
+        for root_path, parquet_paths in self.dataset_paths.items():
+            # Get the common root path for all the source parquet paths.
+            source_uris_root_path = get_root_path(parquet_paths)
+            assert source_uris_root_path.endswith(root_path + "/")
 
-    list[InputData] has separate entries for each chain and date. This function goes over
-    it and collects a single DateLoadTask which covers all chains.
-    """
-    date_tasks: dict[date, DateLoadTask] = {}
-    for inputdata in inputs:
-        dateval = date_fromstr(inputdata.partition_value("dt"))
-        chain = inputdata.partition_value("chain")
+            # Get the common date partition for all the source parquet paths
+            # and make sure it agrees with the task.
+            dateval = get_dt(parquet_paths)
+            assert self.dateval == dateval
 
-        if dateval not in date_tasks:
-            date_tasks[dateval] = DateLoadTask(
-                dateval=dateval,
-                dataset_paths=defaultdict(list),
-                chains_ready=set(),
-                chains_not_ready=set(),
+            # Compute the BQ table name from the root path. For example:
+            # root_path = "ingestion/traces_v1"  --> traces
+            bq_table_name = root_path.split("/")[-1].split("_")[0]
+
+            self.write_manager.location.ensure_biguqery()
+
+            bq_root_path = f"{bq_dataset}/{bq_table_name}"
+
+            tables.append(
+                BQOutputData(
+                    root_path=bq_root_path,
+                    source_uris=parquet_paths,
+                    source_uris_root_path=source_uris_root_path,
+                    dateval=dateval,
+                    bq_dataset_name=bq_dataset,
+                    bq_table_name=bq_table_name,
+                )
             )
 
-        task = date_tasks[dateval]
-        if not inputdata.inputs_ready:
-            task.chains_not_ready.add(chain)
-        else:
-            task.chains_ready.add(chain)
-
-        for dataset, paths in inputdata.dataset_paths.items():
-            task.dataset_paths[dataset].extend(paths)
-
-    result = list(date_tasks.values())
-    log.info(f"Consolidated to {len(result)} dateval tasks.")
-    return result
+        return tables

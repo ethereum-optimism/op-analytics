@@ -1,15 +1,12 @@
 from dataclasses import dataclass
 from datetime import date
 
-import pyarrow as pa
 from overrides import override
 
 from op_analytics.coreutils.bigquery.load import load_from_parquet_uris
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.partition import Partition, PartitionMetadata, WrittenParts
-from op_analytics.coreutils.partitioned.writehelper import WriteManager, WriteResult
+from op_analytics.coreutils.partitioned.writehelper import WriteManager
 
 log = structlog.get_logger()
 
@@ -58,48 +55,3 @@ class BQLoader(WriteManager):
                 [("dt", output_data.dateval.strftime("%Y-%m-%d"))]
             ): PartitionMetadata(row_count=num_parquet)
         }
-
-
-def bq_load(
-    location: DataLocation,
-    dateval: date,
-    bq_dataset_name: str,
-    bq_table_name: str,
-    markers_table: str,
-    source_uris: list[str],
-    source_uris_root_path: str,
-    force_complete: bool,
-) -> WriteResult:
-    """Use a WriteManager class to handle writing completion markers."""
-    location.ensure_biguqery()
-
-    bq_root_path = f"{bq_dataset_name}/{bq_table_name}"
-
-    manager = BQLoader(
-        location=location,
-        partition_cols=["dt"],
-        extra_marker_columns={},
-        extra_marker_columns_schema=[
-            pa.field("dt", pa.date32()),
-        ],
-        markers_table=markers_table,
-        expected_outputs=[
-            ExpectedOutput(
-                root_path=bq_root_path,
-                file_name="",  # Not meaningful for BQ Load
-                marker_path=f"{bq_dataset_name}/{bq_table_name}/{dateval.strftime("%Y-%m-%d")}",
-            )
-        ],
-        force=force_complete,
-    )
-
-    return manager.write(
-        output_data=BQOutputData(
-            root_path=bq_root_path,
-            source_uris=source_uris,
-            source_uris_root_path=source_uris_root_path,
-            dateval=dateval,
-            bq_dataset_name=bq_dataset_name,
-            bq_table_name=bq_table_name,
-        )
-    )
