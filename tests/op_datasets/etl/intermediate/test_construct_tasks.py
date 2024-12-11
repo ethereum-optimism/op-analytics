@@ -47,7 +47,7 @@ def test_construct_mixed_chains():
 
 
 def test_construct():
-    with patch("op_analytics.coreutils.partitioned.dataaccess.run_query_oplabs") as m1:
+    with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
         m1.return_value = make_dataframe("mainnet_markers.json")
 
         tasks = construct_tasks(
@@ -117,7 +117,7 @@ def test_construct():
 
 
 def test_construct_testnet():
-    with patch("op_analytics.coreutils.partitioned.dataaccess.run_query_oplabs") as m1:
+    with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
         m1.return_value = make_dataframe("testnet_markers.json")
 
         tasks = construct_tasks(

@@ -6,7 +6,7 @@ from overrides import EnforceOverrides
 
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 
-from .dataaccess import all_outputs_complete, init_data_access
+from .dataaccess import init_data_access, all_outputs_complete
 from .location import DataLocation
 from .marker import Marker
 from .output import ExpectedOutput

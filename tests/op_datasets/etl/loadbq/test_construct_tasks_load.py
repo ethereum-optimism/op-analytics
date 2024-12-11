@@ -30,7 +30,7 @@ def make_dataframe(path: str):
 
 
 def test_construct():
-    with patch("op_analytics.coreutils.partitioned.dataaccess.run_query_oplabs") as m1:
+    with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
         m1.return_value = make_dataframe("mainnet_markers.json")
 
         tasks = construct_date_load_tasks(
