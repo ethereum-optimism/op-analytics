@@ -1,3 +1,4 @@
+import importlib
 from dataclasses import dataclass, field
 from typing import ClassVar, Protocol
 
@@ -24,6 +25,10 @@ class PythonModel:
     # The registry stores all instances of PythonModel
     _registry: ClassVar[dict[str, "PythonModel"]] = {}
 
+    # Rendered views caches rendered views so we don't have
+    # to load and render templates each time.
+    _rendered_views: list[RenderedSQLQuery] | None = field(init=False, default=None)
+
     name: str
     input_datasets: list[str]
     expected_output_datasets: list[str]
@@ -35,6 +40,12 @@ class PythonModel:
 
     @classmethod
     def get(cls, model_name: str) -> "PythonModel":
+        if model_name not in cls._registry:
+            # Import the module so that the model gets registered.
+            # For now the module and model name are the same by convention, but
+            # that can change if we need to.
+            importlib.import_module(f"op_analytics.datapipeline.models.code.{model_name}")
+
         return cls._registry[model_name]
 
     @property
@@ -42,11 +53,14 @@ class PythonModel:
         return self.model_func
 
     def rendered_views(self) -> list[RenderedSQLQuery]:
-        result = []
-        for q in self.auxiliary_views or []:
-            rendered = q.render()
-            result.append(rendered)
-        return result
+        if self._rendered_views is None:
+            result = []
+            for q in self.auxiliary_views or []:
+                rendered = q.render()
+                result.append(rendered)
+            self._rendered_views = result
+
+        return self._rendered_views
 
 
 @dataclass
@@ -82,6 +96,15 @@ class PythonModelExecutor:
     def __exit__(self, exc_type, exc_val, exc_tb):
         # Unregister all views so client is good to run other models.
         for view in self.registered_views:
+            self.client.unregister(view_name=view)
+
+        # Ensure there are no user views remaining.
+        remaining_views = (
+            self.client.sql("SELECT view_name FROM duckdb_views() WHERE NOT internal")
+            .pl()["view_name"]
+            .to_list()
+        )
+        for view in remaining_views:
             self.client.unregister(view_name=view)
 
     def execute(self):

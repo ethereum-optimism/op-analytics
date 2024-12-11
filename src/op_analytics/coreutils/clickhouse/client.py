@@ -8,7 +8,7 @@ import polars as pl
 import pyarrow as pa
 
 from op_analytics.coreutils.env import env_get
-from op_analytics.coreutils.logger import human_rows, human_size, structlog
+from op_analytics.coreutils.logger import structlog
 
 log = structlog.get_logger()
 
@@ -90,13 +90,8 @@ def insert(
     """Write arrow table to clickhouse."""
     client = init_client(instance)
 
-    result = client.insert_arrow(
+    client.insert_arrow(
         table=table,
         arrow_table=df_arrow,
         database=database,
-    )
-
-    log.log(
-        log_level,
-        f"done inserting [{human_rows(result.written_rows)} {human_size(result.written_bytes())}] to {database}.{table}",
     )

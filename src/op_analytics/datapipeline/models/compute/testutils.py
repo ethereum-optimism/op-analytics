@@ -9,19 +9,14 @@ from unittest.mock import patch
 
 import duckdb
 
+from op_analytics.coreutils.duckdb_inmem.client import register_dataset_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.testutils.inputdata import InputTestData
-from op_analytics.coreutils.duckdb_inmem.client import register_dataset_relation
-
-
 from op_analytics.datapipeline.models.compute.modelexecute import (
-    PythonModelExecutor,
     ModelInputDataReader,
-)
-from op_analytics.datapipeline.models.compute.registry import (
-    REGISTERED_INTERMEDIATE_MODELS,
-    load_model_definitions,
+    PythonModel,
+    PythonModelExecutor,
 )
 
 from .udfs import create_duckdb_macros
@@ -98,10 +93,9 @@ class IntermediateModelTestBase(unittest.TestCase):
         This method executes the model under test and creates temporary tables in DuckDB
         with the model results.
         """
-        load_model_definitions(force=True)
 
         # Execute the model on the temporary duckdb instance.
-        model = REGISTERED_INTERMEDIATE_MODELS[cls.model]
+        model = PythonModel.get(cls.model)
 
         db_path = cls.inputdata.path(f"testdata/{cls.__name__}.duck.db")
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
@@ -225,7 +219,7 @@ def execute_model_in_memory(
     """Execute a model and register results as views."""
     log.info("Executing model...")
 
-    model_obj = REGISTERED_INTERMEDIATE_MODELS[model]
+    model_obj = PythonModel.get(model)
 
     create_duckdb_macros(duckdb_client)
 

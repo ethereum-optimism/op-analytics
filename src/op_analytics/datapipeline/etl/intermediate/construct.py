@@ -8,11 +8,7 @@ from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.datapipeline.etl.ingestion.reader_bydate import construct_readers_bydate
 from op_analytics.datapipeline.chains.goldsky_chains import determine_network, ChainNetwork
-from op_analytics.datapipeline.models.compute.registry import (
-    REGISTERED_INTERMEDIATE_MODELS,
-    load_model_definitions,
-    vefify_models,
-)
+from op_analytics.datapipeline.models.compute.modelexecute import PythonModel
 
 from .task import IntermediateModelsTask
 
@@ -27,13 +23,11 @@ def construct_data_readers(
     range_spec: str,
     read_from: DataLocation,
 ) -> list[DataReader]:
-    # Load python functions that define registered data models.
-    load_model_definitions(module_names=models)
-    vefify_models(models)
+    model_objs = [PythonModel.get(_) for _ in models]
 
     input_datasets = set()
-    for model in models:
-        input_datasets.update(REGISTERED_INTERMEDIATE_MODELS[model].input_datasets)
+    for _ in model_objs:
+        input_datasets.update(_.input_datasets)
 
     return construct_readers_bydate(
         chains=chains,
@@ -55,7 +49,6 @@ def construct_tasks(
     While constructing tasks we also go ahead and load the model definitions and create the
     shared duckdb macros that are used across models.
     """
-
     readers: list[DataReader] = construct_data_readers(
         chains=chains,
         models=models,
@@ -63,10 +56,12 @@ def construct_tasks(
         read_from=read_from,
     )
 
+    model_objs = [PythonModel.get(_) for _ in models]
+
     tasks = []
     for reader in readers:
-        for model_name in models:
-            model_obj = REGISTERED_INTERMEDIATE_MODELS[model_name]
+        for model_obj in model_objs:
+            model_name = model_obj.name
 
             # Each model can have one or more outputs. There is 1 marker per output.
             expected_outputs = []

@@ -7,11 +7,7 @@ from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determine_network
 from op_analytics.datapipeline.etl.ingestion.reader_byblock import construct_readers_byblock
-from op_analytics.datapipeline.models.compute.registry import (
-    REGISTERED_INTERMEDIATE_MODELS,
-    load_model_definitions,
-    vefify_models,
-)
+from op_analytics.datapipeline.models.compute.modelexecute import PythonModel
 
 from .task import BlockBatchModelsTask
 
@@ -29,13 +25,11 @@ def construct_tasks(
     write_to: DataLocation,
 ) -> list[BlockBatchModelsTask]:
     """Construct a collection of tasks to compute intermediate models."""
-    # Load python functions that define registered data models.
-    load_model_definitions(module_names=models)
-    vefify_models(models)
+    model_objs = [PythonModel.get(_) for _ in models]
 
     input_datasets = set()
-    for _ in models:
-        input_datasets.update(REGISTERED_INTERMEDIATE_MODELS[_].input_datasets)
+    for _ in model_objs:
+        input_datasets.update(_.input_datasets)
 
     readers: list[DataReader] = construct_readers_byblock(
         chains=chains,
@@ -48,8 +42,8 @@ def construct_tasks(
     for reader in readers:
         assert reader.extra_marker_data is not None
 
-        for model_name in models:
-            model_obj = REGISTERED_INTERMEDIATE_MODELS[model_name]
+        for model_obj in model_objs:
+            model_name = model_obj.name
 
             # Each model can have one or more outputs. There is 1 marker per output.
             expected_outputs = []

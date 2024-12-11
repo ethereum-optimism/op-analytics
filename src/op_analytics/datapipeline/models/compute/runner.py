@@ -1,12 +1,13 @@
+import concurrent.futures
 import multiprocessing as mp
-from typing import Protocol, Sequence
+from dataclasses import dataclass
+from typing import Generator, Protocol, Sequence
 
 import duckdb
 
 from op_analytics.coreutils.duckdb_inmem import init_client
 from op_analytics.coreutils.duckdb_local.client import disconnect_duckdb_local
 from op_analytics.coreutils.logger import (
-    bind_contextvars,
     bound_contextvars,
     structlog,
 )
@@ -14,9 +15,8 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import OutputData
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writehelper import WriteManager
-from op_analytics.datapipeline.models.compute.modelexecute import PythonModelExecutor
+from op_analytics.datapipeline.models.compute.modelexecute import PythonModel, PythonModelExecutor
 from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros, set_memory_limit
-from op_analytics.datapipeline.models.compute.modelexecute import PythonModel
 
 log = structlog.get_logger()
 
@@ -38,11 +38,30 @@ class ModelsTask(Protocol):
     output_root_path_prefix: str
 
 
+@dataclass
+class WorkItem:
+    task: ModelsTask
+    index: int
+    total: int
+
+    @property
+    def progress(self):
+        return f"{self.index+1}/{self.total}"
+
+    def context(self):
+        return dict(
+            model=self.task.model.name,
+            task=self.progress,
+            **self.task.data_reader.partitions_dict(),
+        )
+
+
 def run_tasks(
     tasks: Sequence[ModelsTask],
     dryrun: bool,
     force_complete: bool = False,
     fork_process: bool = True,
+    num_processes: int = 1,
 ):
     if dryrun:
         log.info("DRYRUN: No work will be done.")
@@ -50,70 +69,83 @@ def run_tasks(
 
     executed = 0
     executed_ok = 0
-    for i, task in enumerate(tasks):
-        bind_contextvars(
-            task=f"{i+1}/{len(tasks)}",
-            **task.data_reader.partitions_dict(),
-        )
 
-        # Decide if we need to run this task.
-        if task.write_manager.is_complete() and not force_complete:
-            log.info("task", status="already_complete")
-            continue
+    if fork_process:
+        ctx = mp.get_context("spawn")
+        with concurrent.futures.ProcessPoolExecutor(
+            max_workers=num_processes,
+            mp_context=ctx,
+            max_tasks_per_child=20,
+        ) as executor:
+            futures = {}
+            for item in pending_items(tasks, force_complete=force_complete):
+                future = executor.submit(steps, item)
+                futures[future] = item.progress
+                executed += 1
 
-        # Decide if we can run this task.
-        if not task.data_reader.inputs_ready:
-            log.warning("task", status="input_not_ready")
-            continue
+            for future in concurrent.futures.as_completed(futures):
+                key = futures[future]
+                try:
+                    future.result()
+                    executed_ok += 1
+                except Exception as ex:
+                    log.error(f"Failed to run process for {key}", exc_info=ex)
 
-        if force_complete:
-            log.info("forced execution despite complete marker")
-            task.write_manager.force = True
-
-        # If running locally release duckdb lock before forking.
-        if task.write_manager.location == DataLocation.LOCAL:
-            disconnect_duckdb_local()
-
-        executed += 1
-        success = execute(task, fork_process)
-        if success:
+    else:
+        for item in pending_items(tasks, force_complete=force_complete):
+            steps(item)
             executed_ok += 1
 
     log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
 
 
-def execute(task: ModelsTask, fork_process: bool) -> bool:
-    """Returns true if task succeeds."""
-    if fork_process:
-        ctx = mp.get_context("spawn")
-        p = ctx.Process(target=steps, args=(task,))
-        p.start()
-        p.join()
+def pending_items(
+    tasks: Sequence[ModelsTask], force_complete: bool
+) -> Generator[WorkItem, None, None]:
+    """Yield only work items that need to be executed."""
+    for i, task in enumerate(tasks):
+        item = WorkItem(
+            task=task,
+            index=i,
+            total=len(tasks),
+        )
 
-        if p.exitcode != 0:
-            log.error("task", status="fail", exitcode=p.exitcode)
-            return False
-        else:
-            log.info("task", status="success", exitcode=0)
-            return True
-    else:
-        steps(task)
-        return True
+        with bound_contextvars(**item.context()):
+            # Decide if we need to run this task.
+            if task.write_manager.is_complete() and not force_complete:
+                log.info("task", status="already_complete")
+                continue
+
+            # Decide if we can run this task.
+            if not task.data_reader.inputs_ready:
+                log.warning("task", status="input_not_ready")
+                continue
+
+            if force_complete:
+                log.info("forced execution despite complete marker")
+                task.write_manager.force = True
+
+            # If running locally release duckdb lock before forking.
+            if task.write_manager.location == DataLocation.LOCAL:
+                disconnect_duckdb_local()
+
+        yield item
 
 
-def steps(task: ModelsTask) -> None:
+def steps(item: WorkItem) -> None:
     """Execute the model computations."""
+    with bound_contextvars(**item.context()):
+        # Load shared DuckDB UDFs.
+        client = init_client()
+        create_duckdb_macros(client)
 
-    # Load shared DuckDB UDFs.
-    client = init_client()
-    create_duckdb_macros(client)
+        # Set duckdb memory limit. This lets us get an error from duckb instead of
+        # OOMing the container.
+        set_memory_limit(client, gb=10)
 
-    # Set duckdb memory limit. This lets us get an error from duckb instead of
-    # OOMing the container.
-    set_memory_limit(client, gb=10)
+        task = item.task
 
-    with PythonModelExecutor(task.model, client, task.data_reader) as m:
-        with bound_contextvars(model=task.model.name, **task.data_reader.partitions_dict()):
+        with PythonModelExecutor(task.model, client, task.data_reader) as m:
             log.info("running model")
             model_results = m.execute()
 
