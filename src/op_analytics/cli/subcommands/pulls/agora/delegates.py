@@ -119,7 +119,7 @@ class Paginator:
 
     def concurrent_fetch(self):
         self.max_offset = self.binary_search_max_offset()
-        offsets = list(range(0, self.max_offset, self.limit))[:10]
+        offsets = list(range(0, self.max_offset, self.limit))
         results = run_concurrently_store_failures(
             function=lambda offset: self.request(offset).data,
             targets=offsets,
@@ -179,7 +179,7 @@ def pull_delegates():
     # Add a dt column for partitioning
     df = df.with_columns(pl.lit(now_dt()).alias("dt"))
 
-    # Write to GCS using Agora's write
+    # Write to Storage using Agora's write
     Agora.DELEGATES.write(dataframe=df, sort_by=["voting_power_total"])
 
     return AgoraDelegates(delegates_df=df)
