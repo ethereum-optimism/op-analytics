@@ -5,15 +5,14 @@ import pyarrow as pa
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
-from op_analytics.coreutils.time import date_fromstr
 from op_analytics.coreutils.partitioned.paths import get_dt, get_root_path
+from op_analytics.coreutils.partitioned.reader import DataReader
+from op_analytics.coreutils.time import date_fromstr
 from op_analytics.datapipeline.etl.ingestion.reader_bydate import construct_readers_bydate
 
-from .loader import BQLoader
+from .loader import BQLoader, BQOutputData
 from .task import DateLoadTask
-
 
 log = structlog.get_logger()
 
@@ -63,8 +62,13 @@ def construct_date_load_tasks(
     # For each date build a DateLoadTask.
     result: list[DateLoadTask] = []
     for dateval, dataset_paths in date_paths.items():
-        # Each date will load multiple datasets into BQ (blocks, logs, transactions, traces).
-        # Each dataset is an expected output in the date task.
+        #
+        # We load multiple datasets into BQ (blocks, logs, transactions, traces) for each date.
+        #
+        # Here we produce the expected_output (needed for markers) and output (needed for loading)
+        # for each date.
+        #
+        outputs = []
         expected_outputs = []
         for root_path, parquet_paths in dataset_paths.items():
             # Get the common root path for all the source parquet paths.
@@ -89,10 +93,20 @@ def construct_date_load_tasks(
                 )
             )
 
+            outputs.append(
+                BQOutputData(
+                    root_path=bq_root_path,
+                    source_uris=parquet_paths,
+                    source_uris_root_path=source_uris_root_path,
+                    dateval=dateval,
+                    bq_dataset_name=bq_dataset_name,
+                    bq_table_name=bq_table_name,
+                )
+            )
+
         result.append(
             DateLoadTask(
                 dateval=dateval,
-                dataset_paths=dict(dataset_paths),
                 chains_ready=date_chains_ready[dateval],
                 chains_not_ready=date_chains_not_ready[dateval],
                 write_manager=BQLoader(
@@ -106,6 +120,7 @@ def construct_date_load_tasks(
                     expected_outputs=expected_outputs,
                     force=force_complete,
                 ),
+                outputs=outputs,
             )
         )
 

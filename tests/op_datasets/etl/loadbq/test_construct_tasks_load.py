@@ -9,7 +9,7 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.etl.loadbq.construct import construct_date_load_tasks
-from op_analytics.datapipeline.etl.loadbq.loader import BQLoader
+from op_analytics.datapipeline.etl.loadbq.loader import BQLoader, BQOutputData
 from op_analytics.datapipeline.etl.loadbq.task import DateLoadTask
 
 
@@ -44,44 +44,6 @@ def test_construct():
     assert tasks == [
         DateLoadTask(
             dateval=datetime.date(2024, 12, 1),
-            dataset_paths={
-                "ingestion/blocks_v1": [
-                    "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
-                ],
-                "ingestion/logs_v1": [
-                    "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
-                ],
-                "ingestion/traces_v1": [
-                    "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
-                ],
-                "ingestion/transactions_v1": [
-                    "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
-                    "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
-                ],
-            },
             chains_ready={"mode"},
             chains_not_ready=set(),
             write_manager=BQLoader(
@@ -117,5 +79,71 @@ def test_construct():
                 force=False,
                 process_name="default",
             ),
+            outputs=[
+                BQOutputData(
+                    root_path="dummy_dataset/blocks",
+                    source_uris=[
+                        "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/blocks_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
+                    ],
+                    source_uris_root_path="gs://oplabs-tools-data-sink/ingestion/blocks_v1/",
+                    dateval=datetime.date(2024, 12, 1),
+                    bq_dataset_name="dummy_dataset",
+                    bq_table_name="blocks",
+                ),
+                BQOutputData(
+                    root_path="dummy_dataset/logs",
+                    source_uris=[
+                        "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/logs_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
+                    ],
+                    source_uris_root_path="gs://oplabs-tools-data-sink/ingestion/logs_v1/",
+                    dateval=datetime.date(2024, 12, 1),
+                    bq_dataset_name="dummy_dataset",
+                    bq_table_name="logs",
+                ),
+                BQOutputData(
+                    root_path="dummy_dataset/traces",
+                    source_uris=[
+                        "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
+                    ],
+                    source_uris_root_path="gs://oplabs-tools-data-sink/ingestion/traces_v1/",
+                    dateval=datetime.date(2024, 12, 1),
+                    bq_dataset_name="dummy_dataset",
+                    bq_table_name="traces",
+                ),
+                BQOutputData(
+                    root_path="dummy_dataset/transactions",
+                    source_uris=[
+                        "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016416000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016424000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016432000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016440000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016448000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016456000.parquet",
+                        "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=mode/dt=2024-12-01/000016464000.parquet",
+                    ],
+                    source_uris_root_path="gs://oplabs-tools-data-sink/ingestion/transactions_v1/",
+                    dateval=datetime.date(2024, 12, 1),
+                    bq_dataset_name="dummy_dataset",
+                    bq_table_name="transactions",
+                ),
+            ],
         )
     ]

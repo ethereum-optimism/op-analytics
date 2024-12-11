@@ -1,5 +1,4 @@
 from op_analytics.coreutils.logger import (
-    bind_contextvars,
     bound_contextvars,
     structlog,
 )
@@ -44,20 +43,21 @@ def load_superchain_raw_to_bq(
 
     success = 0
     for i, task in enumerate(date_tasks):
-        bind_contextvars(
+        with bound_contextvars(
             task=f"{i+1}/{len(date_tasks)}",
             **task.contextvars,
-        )
+        ):
+            if task.chains_not_ready:
+                log.warning("task", status="input_not_ready")
+                log.warning(
+                    f"some chains are not ready to load to bq: {sorted(task.chains_not_ready)}"
+                )
 
-        if task.chains_not_ready:
-            log.warning("task", status="input_not_ready")
-            log.warning(f"some chains are not ready to load to bq: {sorted(task.chains_not_ready)}")
+            if task.chains_not_ready and not force_not_ready:
+                continue
 
-        if task.chains_not_ready and not force_not_ready:
-            continue
+            for output in task.outputs:
+                write_result = task.write_manager.write(output)
 
-        for output in task.output_tables(bq_dataset=BQ_PUBLIC_DATASET):
-            write_result = task.write_manager.write(output)
-
-            log.info("task", status=write_result.status)
-            success += 1
+                log.info("task", status=write_result.status)
+                success += 1
