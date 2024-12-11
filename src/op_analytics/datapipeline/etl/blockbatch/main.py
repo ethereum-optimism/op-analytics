@@ -24,4 +24,5 @@ def compute_blockbatch(
         dryrun=dryrun,
         force_complete=force_complete,
         fork_process=fork_process,
+        num_processes=4,
     )

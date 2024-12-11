@@ -13,6 +13,7 @@ from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.etl.intermediate.construct import construct_tasks
 from op_analytics.datapipeline.etl.intermediate.task import IntermediateModelsTask
+from op_analytics.datapipeline.models.compute.modelexecute import PythonModel
 
 
 def make_dataframe(path: str):
@@ -89,7 +90,7 @@ def test_construct():
                 },
                 inputs_ready=True,
             ),
-            model="contract_creation",
+            model=PythonModel.get("contract_creation"),
             output_duckdb_relations={},
             write_manager=PartitionedWriteManager(
                 location=DataLocation.GCS,
@@ -183,7 +184,7 @@ def test_construct_testnet():
                 },
                 inputs_ready=True,
             ),
-            model="contract_creation",
+            model=PythonModel.get("contract_creation"),
             output_duckdb_relations={},
             write_manager=PartitionedWriteManager(
                 location=DataLocation.GCS,

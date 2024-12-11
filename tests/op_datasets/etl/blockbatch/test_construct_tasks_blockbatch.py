@@ -12,6 +12,7 @@ from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.partitioned.partition import Partition, PartitionColumn
+from op_analytics.datapipeline.models.compute.modelexecute import PythonModel
 
 
 def make_dataframe(path: str):
@@ -43,7 +44,7 @@ def test_construct():
 
     assert tasks == [
         BlockBatchModelsTask(
-            model="contract_creation",
+            model=PythonModel.get("contract_creation"),
             data_reader=DataReader(
                 partitions=Partition(
                     cols=[
@@ -99,7 +100,7 @@ def test_construct():
             output_root_path_prefix="blockbatch",
         ),
         BlockBatchModelsTask(
-            model="contract_creation",
+            model=PythonModel.get("contract_creation"),
             data_reader=DataReader(
                 partitions=Partition(
                     cols=[
@@ -155,7 +156,7 @@ def test_construct():
             output_root_path_prefix="blockbatch",
         ),
         BlockBatchModelsTask(
-            model="contract_creation",
+            model=PythonModel.get("contract_creation"),
             data_reader=DataReader(
                 partitions=Partition(
                     cols=[
@@ -211,7 +212,7 @@ def test_construct():
             output_root_path_prefix="blockbatch",
         ),
         BlockBatchModelsTask(
-            model="contract_creation",
+            model=PythonModel.get("contract_creation"),
             data_reader=DataReader(
                 partitions=Partition(
                     cols=[
@@ -267,7 +268,7 @@ def test_construct():
             output_root_path_prefix="blockbatch",
         ),
         BlockBatchModelsTask(
-            model="contract_creation",
+            model=PythonModel.get("contract_creation"),
             data_reader=DataReader(
                 partitions=Partition(
                     cols=[
@@ -323,7 +324,7 @@ def test_construct():
             output_root_path_prefix="blockbatch",
         ),
         BlockBatchModelsTask(
-            model="contract_creation",
+            model=PythonModel.get("contract_creation"),
             data_reader=DataReader(
                 partitions=Partition(
                     cols=[
@@ -379,7 +380,7 @@ def test_construct():
             output_root_path_prefix="blockbatch",
         ),
         BlockBatchModelsTask(
-            model="contract_creation",
+            model=PythonModel.get("contract_creation"),
             data_reader=DataReader(
                 partitions=Partition(
                     cols=[

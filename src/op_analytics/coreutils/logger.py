@@ -27,6 +27,7 @@ CALLSITE_PARAMETERS = structlog.processors.CallsiteParameterAdder(
     [
         structlog.processors.CallsiteParameter.FILENAME,
         structlog.processors.CallsiteParameter.LINENO,
+        structlog.processors.CallsiteParameter.PROCESS,
     ]
 )
 

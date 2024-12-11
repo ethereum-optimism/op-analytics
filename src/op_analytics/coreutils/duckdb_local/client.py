@@ -5,7 +5,7 @@ import duckdb
 import pyarrow as pa
 
 from op_analytics.coreutils.env.aware import etl_monitor_markers_database
-from op_analytics.coreutils.logger import human_rows, structlog
+from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.path import repo_path
 
 log = structlog.get_logger()
@@ -78,6 +78,5 @@ def insert_duckdb_local(database: str, table: str, df_arrow: pa.Table):
     """Write arrow table to local duckdb database."""
     client = init_client()
 
-    my_table = df_arrow
+    my_table = df_arrow  # noqa: F841
     client.sql(f"INSERT INTO {database}.{table} SELECT * FROM my_table")
-    log.info(f"done inserting [{human_rows(len(my_table))}] to {database}.{table}")
