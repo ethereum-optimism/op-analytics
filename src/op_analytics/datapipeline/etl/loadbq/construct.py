@@ -27,10 +27,10 @@ def construct_date_load_tasks(
     bq_dataset_name: str,
     force_complete: bool,
 ) -> list[DateLoadTask]:
-    """Consolidate inputs.
+    """Consolidate chain/date combinations into one task per date.
 
-    list[InputData] has separate entries for each chain and date. This function goes over
-    it and collects a single DateLoadTask which covers all chains.
+    Readers are built for each chain/date pair. We go over them collecting all the data that
+    needs to be loaded from all chains for each date.
     """
     readers: list[DataReader] = construct_readers_bydate(
         chains=chains,
@@ -47,6 +47,7 @@ def construct_date_load_tasks(
     # For each date, keep track of chains that are not ready to load.
     date_chains_not_ready = defaultdict(set)
 
+    # Collect information from all readers grouped by date.
     for inputdata in readers:
         dateval = date_fromstr(inputdata.partition_value("dt"))
         chain = inputdata.partition_value("chain")
@@ -59,8 +60,11 @@ def construct_date_load_tasks(
         for dataset, paths in inputdata.dataset_paths.items():
             date_paths[dateval][dataset].extend(paths)
 
+    # For each date build a DateLoadTask.
     result: list[DateLoadTask] = []
     for dateval, dataset_paths in date_paths.items():
+        # Each date will load multiple datasets into BQ (blocks, logs, transactions, traces).
+        # Each dataset is an expected output in the date task.
         expected_outputs = []
         for root_path, parquet_paths in dataset_paths.items():
             # Get the common root path for all the source parquet paths.
