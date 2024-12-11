@@ -72,5 +72,5 @@ def parse_isoformat(iso_string):
         iso_string = iso_string[:-1] + "+00:00"  # Replace 'Z' with '+00:00' for parsing
     parsed_datetime = datetime.fromisoformat(iso_string)
     if parsed_datetime.tzinfo is None:  # If tzinfo is missing, assign UTC
-        parsed_datetime = parsed_datetime.replace(tzinfo=timezone.utc)
+        parsed_datetime = parsed_datetime.replace(tzinfo=None)
     return parsed_datetime
