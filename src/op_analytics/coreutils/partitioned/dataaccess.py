@@ -102,12 +102,37 @@ class PartitionedDataAccess:
         marker_path: str,
         markers_table: str,
     ) -> bool:
-        """Run a query to find if a marker already exists."""
+        """Run a query to find if a marker already exists.
+
+        Determine if the marker is complete and correct.
+        """
         store: MarkerStore = marker_store(data_location)
-        return store.marker_exists(
+        marker_df = store.query_single_marker(
             marker_path=marker_path,
             markers_table=markers_table,
         )
+
+        df = marker_df.sql("""
+            SELECT
+                marker_path, num_parts, count(DISTINCT data_path) as num_paths
+            FROM self
+            GROUP BY marker_path, num_parts
+            """)
+
+        if len(df) == 0:
+            return False
+
+        assert len(df) == 1
+        row = df.to_dicts()[0]
+
+        if row["num_parts"] == row["num_paths"]:
+            return True
+        else:
+            marker_path = row["marker_path"]
+            log.error(
+                f"distinct data paths do not match expeted num parts for marker: {marker_path!r}"
+            )
+            return False
 
     def all_markers_exist(
         self,
@@ -159,12 +184,12 @@ class PartitionedDataAccess:
         )
 
 
-def all_outputs_complete(
+def complete_markers(
     location: DataLocation,
     markers: list[str],
     markers_table: str,
-) -> bool:
-    """Check if all outputs are complete.
+) -> list[str]:
+    """List of markers that are complete.
 
     This function is somewhat low-level in that it receives the explicit completion
     markers that we are looking for. It checks that those markers are present in all
@@ -173,20 +198,13 @@ def all_outputs_complete(
     client = init_data_access()
 
     complete = []
-    incomplete = []
 
     # TODO: Make a single query for all the markers.
     for marker in markers:
         if client.marker_exists(location, marker, markers_table):
             complete.append(marker)
-        else:
-            incomplete.append(marker)
 
     num_complete = len(complete)
-    total = len(incomplete) + len(complete)
-    log.debug(f"{num_complete}/{total} complete")
+    log.debug(f"{num_complete}/{len(markers)} complete")
 
-    if incomplete:
-        return False
-
-    return True
+    return complete

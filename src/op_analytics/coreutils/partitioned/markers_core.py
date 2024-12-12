@@ -85,11 +85,11 @@ class MarkerStore(Protocol):
         marker_df: pa.Table,
     ) -> None: ...
 
-    def marker_exists(
+    def query_single_marker(
         self,
         marker_path: str,
         markers_table: str,
-    ) -> bool: ...
+    ) -> pl.DataFrame: ...
 
     def query_markers(
         self,
@@ -98,21 +98,3 @@ class MarkerStore(Protocol):
         projections=list[str],
         filters=dict[str, MarkerFilter],
     ) -> pl.DataFrame: ...
-
-
-def check_marker_results(df: pl.DataFrame) -> bool:
-    """Check query results for a single marker.
-
-    Datermien whether the marker is complete and correct."""
-    if len(df) == 0:
-        return False
-
-    assert len(df) == 1
-    row = df.to_dicts()[0]
-
-    if row["num_parts"] == row["num_paths"]:
-        return True
-    else:
-        marker_path = row["marker_path"]
-        log.error(f"distinct data paths do not match expeted num parts for marker: {marker_path!r}")
-        return False

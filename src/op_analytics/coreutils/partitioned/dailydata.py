@@ -32,10 +32,13 @@ def write_daily_data(
     root_path: str,
     dataframe: pl.DataFrame,
     sort_by: list[str] | None = None,
-    force_complete: bool = False,
     location: DataLocation = DataLocation.LOCAL,
 ):
-    """Write date partitioned defillama dataset."""
+    """Write date partitioned defillama dataset.
+
+    NOTE: This method always overwrites data. If we had already pulled in data for
+    a given date a subseequent data pull will always overwrite it.
+    """
     parts = breakout_partitions(
         df=dataframe,
         partition_cols=["dt"],
@@ -64,7 +67,6 @@ def write_daily_data(
                     marker_path=f"{datestr}/{root_path}",
                 )
             ],
-            force=force_complete,
         )
 
         part_df = part.df.with_columns(dt=pl.lit(datestr))

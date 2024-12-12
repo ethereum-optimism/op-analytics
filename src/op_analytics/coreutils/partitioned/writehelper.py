@@ -6,7 +6,7 @@ from overrides import EnforceOverrides
 
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 
-from .dataaccess import init_data_access, all_outputs_complete
+from .dataaccess import init_data_access, complete_markers
 from .location import DataLocation
 from .marker import Marker
 from .output import ExpectedOutput
@@ -58,8 +58,10 @@ class WriteManager[T: Writeable](EnforceOverrides):
     # Expected Outputs
     expected_outputs: list[ExpectedOutput]
 
-    # If true, writes data even if markers already exist.
-    force: bool
+    # Complete Markers. A list of markers that are already complete.
+    # If a marker is already complete then we can skip writing its
+    # corresponding output.
+    complete_markers: list[str] = field(default_factory=list)
 
     # Process that is writing data. This can be used to identify backfills for example.
     process_name: str = field(default="default")
@@ -77,13 +79,18 @@ class WriteManager[T: Writeable](EnforceOverrides):
         if len(self.expected_outputs) != len(self._keyed_outputs):
             raise ValueError("expected output names are not unique")
 
-    def is_complete(self) -> bool:
+    def all_outputs_complete(self) -> bool:
         if self._is_complete is None:
-            self._is_complete = all_outputs_complete(
+            expected_markers = [_.marker_path for _ in self.expected_outputs]
+
+            self.complete_markers = complete_markers(
                 location=self.location,
-                markers=[_.marker_path for _ in self.expected_outputs],
+                markers=expected_markers,
                 markers_table=self.markers_table,
             )
+
+            self._is_complete = set(self.complete_markers) == set(expected_markers)
+
         return self._is_complete
 
     def expected_output(self, output_data: T) -> ExpectedOutput:
@@ -99,19 +106,11 @@ class WriteManager[T: Writeable](EnforceOverrides):
         # The default partition value is included in log context to help keep
         # track of which data we are processing.
         with bound_contextvars(root=output_data.root_path, **(output_data.default_partition or {})):
-            client = init_data_access()
-
-            is_complete = client.marker_exists(
-                data_location=self.location,
-                marker_path=expected_output.marker_path,
-                markers_table=self.markers_table,
-            )
-
-            if is_complete and not self.force:
-                log.info(
-                    f"[{self.location.name}] Skipping already complete output at {expected_output.marker_path}"
-                )
+            if expected_output.marker_path in self.complete_markers:
+                log.warning(f"skipping complete output {expected_output.marker_path}")
                 return WriteResult(status="skipped", written_parts={})
+
+            client = init_data_access()
 
             self.location.check_write_allowed()
             written_parts = self.write_implementation(output_data)

@@ -38,7 +38,6 @@ def load_superchain_raw_to_bq(
         range_spec=range_spec,
         write_to=location,
         bq_dataset_name=BQ_PUBLIC_DATASET,
-        force_complete=force_complete,
     )
 
     success = 0
@@ -54,6 +53,12 @@ def load_superchain_raw_to_bq(
                 )
 
             if task.chains_not_ready and not force_not_ready:
+                log.warning("task", status="input_not_ready")
+                continue
+
+            # TODO: remove side effects from all_outputs_complete()
+            if not force_complete and task.write_manager.all_outputs_complete():
+                log.info("task", status="already_complete")
                 continue
 
             for output in task.outputs:
