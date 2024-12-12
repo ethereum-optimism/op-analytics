@@ -28,6 +28,10 @@ class Agora(str, Enum):
         force_complete: bool = False,
     ):
         """Write Agora dataset using daily partitioning."""
+        if dataframe.height == 0:
+            log.warning(f"Skipping write of empty dataframe for {self.value!r}")
+            return
+
         log.info(f"Writing dataset {self.value!r} to {self.root_path!r}")
         return write_daily_data(
             root_path=self.root_path,
@@ -55,5 +59,5 @@ class Agora(str, Enum):
             min_date=min_date,
             max_date=max_date,
             date_range_spec=date_range_spec,
-            location=DataLocation.GCS,
+            location=DataLocation.LOCAL,
         )
