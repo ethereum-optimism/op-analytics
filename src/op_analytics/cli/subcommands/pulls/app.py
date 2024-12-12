@@ -2,7 +2,11 @@ import typer
 
 from op_analytics.coreutils.logger import structlog
 
-from .github_analytics import pull as github_analytics_pull
+from .github_analytics import pull_github_analytics
+from .l2beat import pull_l2beat
+from .defillama.stablecoins import pull_stablecoins
+from .defillama.historical_chain_tvl import pull_historical_chain_tvl
+from .defillama.protocols import pull_protocol_tvl
 from .agora.delegates import pull_delegates
 from .agora.delegate_events import (
     fetch_delegate_votes,
@@ -31,7 +35,7 @@ def defillama_stablecoins_bq():
     """
     # Always pull all symbols from the CLI.
     # You can temporarily modify the code if a partial pull is needed.
-    pull_stablecoins_bq(symbols=None)
+    pull_stablecoins(symbols=None)
 
 
 @app.command()
@@ -61,7 +65,7 @@ def defillama_protocol_tvl():
 @app.command()
 def github_analytics():
     """Pull repo analytics data from GitHub."""
-    github_analytics_pull()
+    pull_github_analytics()
 
 
 @app.command()
@@ -69,14 +73,10 @@ def pull_agora_delegate_data():
     """Pull and write agora data."""
     delegates = pull_delegates()
 
-    delegate_votes = fetch_delegate_votes(delegates)
-    log.info(f"Found {len(delegate_votes)} delegate votes.")
+    fetch_delegate_votes(delegates)
 
-    delegate_delegatees = fetch_delegate_delegatees(delegates)
-    log.info(f"Found {len(delegate_delegatees)} delegate delegatees.")
+    fetch_delegate_delegatees(delegates)
 
-    delegate_delegators = fetch_delegate_delegators(delegates)
-    log.info(f"Found {len(delegate_delegators)} delegate delegators.")
+    fetch_delegate_delegators(delegates)
 
-    proposals = fetch_proposals()
-    log.info(f"Found {len(proposals)} proposals.")
+    fetch_proposals()

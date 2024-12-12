@@ -37,7 +37,6 @@ class Agora(str, Enum):
             root_path=self.root_path,
             dataframe=dataframe,
             sort_by=sort_by,
-            force_complete=force_complete,
         )
 
     def read(

@@ -34,12 +34,12 @@ class PaginatedResponse:
 
 
 class Paginator:
-    def __init__(self, url: str, params: dict = None, max_workers: int = 16):
+    def __init__(self, url: str, params: dict = {}, max_workers: int = 16):
         self.url = url
         self.params = params or {}
         self.max_workers = max_workers
         self.limit = 100
-        self.failed_offsets = []
+        self.failed_offsets: list[int] = []
 
     def request(self, offset):
         session = requests.Session()
@@ -71,7 +71,8 @@ class Paginator:
 
     def binary_search_max_offset(self):
         lo, hi = 0, self.limit
-        lower_bound, upper_bound = set(), set()
+        lower_bound: set[int] = set()
+        upper_bound: set[int] = set()
         num_iterations, max_iterations = 0, 40
 
         while True:
