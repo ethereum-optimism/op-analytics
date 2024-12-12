@@ -37,7 +37,7 @@ def write_daily_data(
     """Write date partitioned defillama dataset.
 
     NOTE: This method always overwrites data. If we had already pulled in data for
-    a given date a subseequent data pull will always overwrite it.
+    a given date a subsequent data pull will always overwrite it.
     """
     parts = breakout_partitions(
         df=dataframe,

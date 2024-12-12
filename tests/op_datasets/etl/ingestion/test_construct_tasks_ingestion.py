@@ -47,7 +47,6 @@ def test_construct():
             max_requested_timestamp=1733097600,
             block_batch=BlockBatch(chain="mode", min=16416000, max=16424000),
             read_from=RawOnchainDataProvider.GOLDSKY,
-            input_datasets={},
             input_dataframes={},
             output_dataframes=[],
             write_manager=PartitionedWriteManager(
@@ -95,7 +94,6 @@ def test_construct():
             max_requested_timestamp=1733097600,
             block_batch=BlockBatch(chain="mode", min=16424000, max=16432000),
             read_from=RawOnchainDataProvider.GOLDSKY,
-            input_datasets={},
             input_dataframes={},
             output_dataframes=[],
             write_manager=PartitionedWriteManager(
@@ -143,7 +141,6 @@ def test_construct():
             max_requested_timestamp=1733097600,
             block_batch=BlockBatch(chain="mode", min=16432000, max=16440000),
             read_from=RawOnchainDataProvider.GOLDSKY,
-            input_datasets={},
             input_dataframes={},
             output_dataframes=[],
             write_manager=PartitionedWriteManager(

@@ -9,10 +9,10 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.chains.goldsky_chains import ensure_single_network, ChainNetwork
 from op_analytics.coreutils.time import date_fromstr
 
-from .markers import INGESTION_MARKERS_TABLE
 
 log = structlog.get_logger()
 
+INGESTION_MARKERS_TABLE = "raw_onchain_ingestion_markers"
 
 DEFAULT_INGESTION_ROOT_PATHS = [
     "ingestion/blocks_v1",
@@ -56,20 +56,58 @@ class IngestionDataSpec:
         datevals: list[date],
         read_from: DataLocation,
     ) -> pl.DataFrame:
+        """Query completion markers for a list of dates and chains.
+
+        Returns a dataframe with the markers and all of the parquet output paths
+        associated with them.
+        """
         # Make one query for all dates and chains.
         #
         # We use the +/- 1 day padded dates so that we can use the query results to
         # check if there is data on boths ends. This allows us to confirm that the
         # data is ready to be processed.
-        markers_df = markers_for_raw_ingestion(
+        client = init_data_access()
+
+        paths_df = client.markers_for_dates(
             data_location=read_from,
             markers_table=INGESTION_MARKERS_TABLE,
-            datevals=datevals,
-            chains=self.chains,
-            root_paths=self.root_paths_physical,
+            datefilter=DateFilter(
+                min_date=None,
+                max_date=None,
+                datevals=datevals,
+            ),
+            projections=[
+                "dt",
+                "chain",
+                "num_blocks",
+                "min_block",
+                "max_block",
+                "data_path",
+                "root_path",
+            ],
+            filters={
+                "chains": MarkerFilter(
+                    column="chain",
+                    values=self.chains,
+                ),
+                "datasets": MarkerFilter(
+                    column="root_path",
+                    values=self.root_paths_physical,
+                ),
+            },
         )
 
-        return markers_df
+        assert dict(paths_df.schema) == {
+            "dt": pl.Date,
+            "chain": pl.String,
+            "num_blocks": pl.Int32,
+            "min_block": pl.Int64,
+            "max_block": pl.Int64,
+            "root_path": pl.String,
+            "data_path": pl.String,
+        }
+
+        return paths_df
 
     def data_paths(self, physical_data_paths: dict[str, list[str]] | None) -> dict[str, list[str]]:
         """Updates keys to be logical pahts.
@@ -81,62 +119,6 @@ class IngestionDataSpec:
         for root_path, data_paths in (physical_data_paths or {}).items():
             updated_dataset_paths[self.root_path_mapping[root_path]] = data_paths
         return updated_dataset_paths
-
-
-def markers_for_raw_ingestion(
-    data_location: DataLocation,
-    markers_table: str,
-    datevals: list[date],
-    chains: list[str],
-    root_paths: list[str],
-) -> pl.DataFrame:
-    """Query completion markers for a list of dates and chains.
-
-    Returns a dataframe with the markers and all of the parquet output paths
-    associated with them.
-    """
-    client = init_data_access()
-
-    paths_df = client.markers_for_dates(
-        data_location=data_location,
-        markers_table=markers_table,
-        datefilter=DateFilter(
-            min_date=None,
-            max_date=None,
-            datevals=datevals,
-        ),
-        projections=[
-            "dt",
-            "chain",
-            "num_blocks",
-            "min_block",
-            "max_block",
-            "data_path",
-            "root_path",
-        ],
-        filters={
-            "chains": MarkerFilter(
-                column="chain",
-                values=chains,
-            ),
-            "datasets": MarkerFilter(
-                column="root_path",
-                values=root_paths,
-            ),
-        },
-    )
-
-    assert dict(paths_df.schema) == {
-        "dt": pl.Date,
-        "chain": pl.String,
-        "num_blocks": pl.Int32,
-        "min_block": pl.Int64,
-        "max_block": pl.Int64,
-        "root_path": pl.String,
-        "data_path": pl.String,
-    }
-
-    return paths_df
 
 
 def update_root_paths(chains: list[str], root_paths: list[str]) -> dict[str, str]:

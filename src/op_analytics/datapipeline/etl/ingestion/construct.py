@@ -1,10 +1,14 @@
+import pyarrow as pa
+
 from op_analytics.coreutils.clickhouse.goldsky import run_query_goldsky
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.coreutils.rangeutils.timerange import TimeRange
 from op_analytics.coreutils.threads import run_concurrently
 
+from .reader.markers import INGESTION_MARKERS_TABLE
 from .batches import BlockBatch, split_block_range
 from .sources import RawOnchainDataProvider
 from .task import IngestionTask
@@ -61,7 +65,7 @@ def construct_tasks(
     for batches in chain_batches.values():
         for batch in batches:
             all_tasks.append(
-                IngestionTask.new(
+                new_task(
                     max_requested_timestamp=max_requested_timestamp,
                     block_batch=batch,
                     read_from=read_from,
@@ -106,3 +110,45 @@ def block_range_for_dates(chain: str, min_ts: int, max_ts: int):
     assert len(result) == 1
     row = result.to_dicts()[0]
     return BlockRange(row["block_min"], row["block_max"])
+
+
+def new_task(
+    max_requested_timestamp: int | None,
+    block_batch: BlockBatch,
+    read_from: RawOnchainDataProvider,
+    write_to: DataLocation,
+) -> IngestionTask:
+    expected_outputs = []
+    for name in ["blocks", "transactions", "logs", "traces"]:
+        # Determine the directory where we will write this dataset.
+        data_directory = block_batch.dataset_directory(dataset_name=name)
+
+        # Construct the ExpectedOutput.
+        expected_outputs.append(block_batch.construct_expected_output(root_path=data_directory))
+
+    return IngestionTask(
+        max_requested_timestamp=max_requested_timestamp,
+        block_batch=block_batch,
+        input_dataframes={},
+        output_dataframes=[],
+        read_from=read_from,
+        write_manager=PartitionedWriteManager(
+            location=write_to,
+            partition_cols=["chain", "dt"],
+            extra_marker_columns=dict(
+                num_blocks=block_batch.num_blocks(),
+                min_block=block_batch.min,
+                max_block=block_batch.max,
+            ),
+            extra_marker_columns_schema=[
+                pa.field("chain", pa.string()),
+                pa.field("dt", pa.date32()),
+                pa.field("num_blocks", pa.int32()),
+                pa.field("min_block", pa.int64()),
+                pa.field("max_block", pa.int64()),
+            ],
+            markers_table=INGESTION_MARKERS_TABLE,
+            expected_outputs=expected_outputs,
+        ),
+        progress_indicator="",
+    )

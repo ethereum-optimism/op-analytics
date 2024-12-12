@@ -10,7 +10,7 @@ from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import surrounding_dates
 
-from .reader_markers import (
+from .markers import (
     is_chain_active,
     IngestionDataSpec,
     DEFAULT_INGESTION_ROOT_PATHS,
