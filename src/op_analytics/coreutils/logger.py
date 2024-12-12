@@ -5,7 +5,6 @@ import orjson
 import structlog
 from structlog.contextvars import bind_contextvars, bound_contextvars, clear_contextvars
 from structlog.typing import EventDict
-
 from op_analytics.coreutils.env.aware import current_environment, is_k8s
 
 CURRENT_ENV = current_environment().name
