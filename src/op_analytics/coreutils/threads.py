@@ -19,30 +19,26 @@ class ProgressTracker:
     def __init__(self, total_tasks: int):
         self.total_tasks = total_tasks
         self.completed_tasks = 0
-        self.start_time = None
-        self.eta = None
+        self.start_time = now()
+
+    def counter(self, current_index: int) -> str:
+        return f"{current_index:03d}/{self.total_tasks:03d}"
+
+    def eta(self) -> str | None:
+        if self.completed_tasks < 3:
+            return None
+
+        elapsed = (now() - self.start_time).total_seconds()
+        seconds_per_task = elapsed / self.completed_tasks
+        remaining_tasks = self.total_tasks - self.completed_tasks
+        eta_seconds = remaining_tasks * seconds_per_task
+        return human_interval(eta_seconds)
 
     def wrap(self, func, current_index: int):
         def wrapper(target_item):
-            self.completed_tasks += 1
-            if self.completed_tasks == 2:
-                self.start_time = now()
-
-            if self.start_time is not None:
-                elapsed = (now() - self.start_time).total_seconds()
-                avg_time_per_task = elapsed / self.completed_tasks
-                remaining_tasks = self.total_tasks - self.completed_tasks
-                self.eta = remaining_tasks * avg_time_per_task
-
-            # Bind progress and ETA as context vars, so when func logs, these fields appear
-            with bound_contextvars(
-                target_id=f"{current_index:03d}/{self.total_tasks:03d}",
-                # completed=self.completed_tasks,
-                # total=self.total_tasks,
-                # elapsed=f"{elapsed:.1f}s",
-                eta=f"{self.eta:.1f}s" if self.eta is not None else "N/A",
-            ):
+            with bound_contextvars(counter=self.counter(current_index), eta=self.eta()):
                 return func(target_item)
+            self.completed_tasks += 1
 
         return wrapper
 
