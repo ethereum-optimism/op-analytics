@@ -102,12 +102,37 @@ class PartitionedDataAccess:
         marker_path: str,
         markers_table: str,
     ) -> bool:
-        """Run a query to find if a marker already exists."""
+        """Run a query to find if a marker already exists.
+
+        Determine if the marker is complete and correct.
+        """
         store: MarkerStore = marker_store(data_location)
-        return store.marker_exists(
+        marker_df = store.query_single_marker(
             marker_path=marker_path,
             markers_table=markers_table,
         )
+
+        df = marker_df.sql("""
+            SELECT
+                marker_path, num_parts, count(DISTINCT data_path) as num_paths
+            FROM self
+            GROUP BY marker_path, num_parts
+            """)
+
+        if len(df) == 0:
+            return False
+
+        assert len(df) == 1
+        row = df.to_dicts()[0]
+
+        if row["num_parts"] == row["num_paths"]:
+            return True
+        else:
+            marker_path = row["marker_path"]
+            log.error(
+                f"distinct data paths do not match expeted num parts for marker: {marker_path!r}"
+            )
+            return False
 
     def all_markers_exist(
         self,

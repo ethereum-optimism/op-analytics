@@ -80,7 +80,6 @@ class WriteManager[T: Writeable](EnforceOverrides):
             raise ValueError("expected output names are not unique")
 
     def all_outputs_complete(self) -> bool:
-        breakpoint()
         if self._is_complete is None:
             expected_markers = [_.marker_path for _ in self.expected_outputs]
 

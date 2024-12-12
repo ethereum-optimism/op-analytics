@@ -5,7 +5,7 @@ from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_op
 from op_analytics.coreutils.env.aware import etl_monitor_markers_database
 from op_analytics.coreutils.logger import structlog
 
-from .markers_core import DateFilter, MarkerFilter, check_marker_results
+from .markers_core import DateFilter, MarkerFilter
 
 log = structlog.get_logger()
 
@@ -26,20 +26,18 @@ class ClickHouseMarkers:
     def write_marker(self, markers_table: str, marker_df: pa.Table):
         insert_oplabs(self.markers_db, markers_table, marker_df)
 
-    def marker_exists(self, marker_path: str, markers_table: str) -> bool:
+    def query_single_marker(self, marker_path: str, markers_table: str) -> pl.DataFrame:
         where = "marker_path = {search_value:String}"
 
-        df = run_query_oplabs(
+        return run_query_oplabs(
             query=f"""
             SELECT
-                marker_path, num_parts, count(DISTINCT data_path) as num_paths
+                marker_path, num_parts, data_path
             FROM {self.markers_db}.{markers_table} 
             WHERE {where}
-            GROUP BY marker_path, num_parts
             """,
             parameters={"search_value": marker_path},
         )
-        return check_marker_results(df)
 
     def query_markers(
         self,
