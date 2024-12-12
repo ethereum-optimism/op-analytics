@@ -1,0 +1,117 @@
+WITH
+
+pb AS (
+  SELECT
+    number,
+    base_fee_per_gas
+  FROM
+    enriched_transasctions_v1
+),
+
+-- Select the columns that we want from transactions joined to blocks.
+-- Include some minor transformations that are needed for further calculations.
+base_level_traces AS (
+  SELECT
+    -- Raw Trace fields
+    r.*,
+    -- Computed Trace Fields
+    hexstr_method_id(r.input) AS trace_method_id, 
+      -- Find the next level up in the trace tree, so that we can subtract out subtract gas.
+    CASE WHEN trace_address IS NULL OR trace_address = '' THEN '-1' --if trace address is null, we don't want to go uplevel
+    ELSE 
+      CASE 
+        WHEN LENGTH(trace_address) - LENGTH(REPLACE(trace_address, ',', '')) = 0 THEN trace_address
+        ELSE SUBSTR(trace_address, 1, LENGTH(trace_address) - LENGTH(SPLIT(trace_address, ',')[ORDINAL(ARRAY_LENGTH(SPLIT(trace_address, ',')))]) - 1)
+      END
+  END AS trace_address_uplevel,
+    -- Raw Transaction Fields
+    t.receipt_gas_used AS transaction_gas_used,
+    t.receipt_l1_gas_used AS transaction_l1_gas_used,
+    t.from_address AS transaction_from_address,
+    t.to_address AS transaction_to_address,
+    t.receipt_gas_used AS transaction_gas_used,
+    t.derived_l1_gas_used AS transaction_l1_gas_used
+    -- Computed Transaction Fee Fields
+    total_gas_fee_native AS transaction_total_gas_fee_native,
+    l1_fee_native AS transaction_l1_fee_native,
+    l2_fee_native AS transaction_l2_fee_native,
+    l2_priority_fee_native AS transaction_l2_priority_fee_native,
+    l2_base_fee_native AS transaction_l2_base_fee_native,
+    transaction_method_id,
+    -- Computed Transaction Gas Price Fields
+    l2_gas_price_gwei,
+    l2_base_gas_price_gwei,
+    l2_priority_gas_price_gwei,
+    l1_base_gas_price_gwei,
+    l1_blob_base_gas_price_gwei,
+
+    hexstr_method_id(t.input) AS transaction_method_id,
+    hexstr_method_id(r.input) AS trace_method_id, 
+    ---
+    toDecimal128(t.receipt_l1_gas_price, 18) / 1e9 AS transaction_l1_gas_price_gwei,
+    toDecimal128(t.gas_price, 18) / 1e9 AS transaction_gas_price_gwei,
+    toDecimal128(b.base_fee_per_gas, 18) / 1e9 AS transaction_base_gas_price_gwei,
+    (toDecimal128(t.gas_price, 18) - toDecimal128(b.base_fee_per_gas, 18)) / 1e9 AS transaction_priority_gas_price_gwei,
+    ---
+    toDecimal128(t.receipt_l1_fee, 18) / 1e18 + (toDecimal128(t.gas_price, 18) * toDecimal128(t.receipt_gas_used, 0)) / 1e18 AS transaction_gas_fee_native,
+    toDecimal128(t.receipt_l1_fee, 18) / 1e18 AS transaction_l1_fee_native,
+    toDecimal128(t.receipt_l1_fee, 18) / 1e18 + (toDecimal128(t.gas_price, 18) * toDecimal128(t.receipt_gas_used, 0)) / 1e18 AS transaction_l2_fee_native,
+    (toDecimal128(b.base_fee_per_gas, 18) * toDecimal128(t.receipt_gas_used, 0)) / 1e18 AS transaction_base_fee_native,
+    ((toDecimal128(t.gas_price, 18) - toDecimal128(b.base_fee_per_gas, 18)) * toDecimal128(t.receipt_gas_used, 0)) / 1e18 AS transaction_priority_fee_native
+
+    FROM traces_v1 r 
+    INNER JOIN enriched_transasctions_v1 t 
+      ON r.block_number = t.block_number 
+      AND r.transaction_hash = t.hash
+    
+    WHERE r.trace_type = 'call'
+)
+
+ --get amount of calls per transcation, to use for amortizing
+, get_traces_per_tansaction AS (
+    SELECT block_number, block_timestamp, transaction_hash
+        , COUNT(*) AS count_traces_in_transaction
+    FROM base_level_traces
+    GROUP BY 1,2,3
+)
+
+ --get subtrace gas used, for isolating each call
+, get_subtraces_gas_per_trace AS (
+    SELECT block_number, block_timestamp, transaction_hash, trace_address_uplevel
+        , SUM(trace_gas_used) AS gas_used_in_subtraces, COUNT(*) AS count_subtraces
+    FROM base_level_traces
+    GROUP BY 1,2,3,4
+)
+
+
+SELECT 
+bl.*
+--
+, st.gas_used_in_subtraces AS gas_used_in_subtraces
+, tpt.count_traces_in_transaction AS count_traces_in_transaction
+--
+, bl.trace_gas_used - st.gas_used_in_subtraces AS trace_gas_used_minus_subtraces
+
+-- the subtraces will never add up to part of whole, but leave as is
+, (bl.trace_gas_used - st.gas_used_in_subtraces) * gwei_to_eth(bl.transaction_gas_price_gwei) AS trace_l2_fee_native_minus_subtraces
+, (bl.trace_gas_used - st.gas_used_in_subtraces) * bl.transaction_base_gas_price_gwei/1e9 AS trace_base_fee_native_minus_subtraces
+, (bl.trace_gas_used - st.gas_used_in_subtraces) * bl.transaction_priority_gas_price_gwei/1e9 AS trace_priority_fee_native_minus_subtraces
+--
+, (bl.transaction_gas_used) / tpt.count_traces AS transaction_gas_used_per_call_amortized
+, (bl.transaction_l1_gas_used) / tpt.count_traces AS transaction_l1_gas_used_per_call_amortized
+
+, bl.transaction_gas_fee_native / tpt.count_traces AS transaction_gas_fee_native_per_call_amortized
+, bl.transaction_l2_fee_native / tpt.count_traces AS transaction_l2_fee_native_per_call_amortized
+, bl.transaction_l1_fee_native / tpt.count_traces AS transaction_l1_fee_native_per_call_amortized
+, bl.transaction_base_fee_native / tpt.count_traces AS transaction_base_fee_native_per_call_amortized
+, bl.transaction_priority_fee_native / tpt.count_traces AS transaction_priority_fee_native_per_call_amortized
+
+
+FROM base_level_traces bl
+INNER JOIN get_traces_per_tansaction tpt -- join on txn level
+    ON bl.block_number = tpt.block_number
+    AND bl.transaction_hash = tpt.transaction_hash
+LEFT JOIN get_subtraces_gas_per_trace st -- join on trace level 1 level down
+    ON bl.block_number = st.block_number
+    AND bl.transaction_hash = st.transaction_hash
+    AND bl.trace_address = st.trace_address_uplevel
