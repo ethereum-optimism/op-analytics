@@ -73,7 +73,7 @@ def parse_isoformat_with_z(iso_string):
 
 
 def fetch_event_data(delegates: List[str], endpoint: str, workers: int) -> List[Any]:
-    def fetch_delegate_data(address: str, endpoint: str) -> List[Any]:
+    def fetch_delegate_data(address: str) -> List[Any]:
         paginator = SimplePaginator(url=f"{BASE_URL}/delegates/{address}/{endpoint}", limit=50)
         return paginator.fetch_all()
 
@@ -81,7 +81,6 @@ def fetch_event_data(delegates: List[str], endpoint: str, workers: int) -> List[
         function=fetch_delegate_data,
         targets=delegates,
         max_workers=workers,
-        function_args=(endpoint,),
     )
 
     if run_results.failures:
@@ -127,15 +126,18 @@ def fetch_proposals() -> None:
     paginator = SimplePaginator(url=f"{BASE_URL}/proposals", limit=50)
     proposals = paginator.fetch_all()
 
-    def parse_optional_time(time_str: str) -> Any:
+    def parse_optional_time(time_str: str | None) -> Any:
         return parse_isoformat_with_z(time_str) if time_str else None
 
     def extract_proposal_data(proposal: dict) -> dict:
+        # Extract proposal results with default values
+        results = proposal.get("proposalResults", {})
+
         return {
             "id": proposal["id"],
+            "dt": parse_isoformat_with_z(proposal["createdTime"]),
             "proposer": proposal["proposer"],
             "snapshot_block_number": proposal["snapshotBlockNumber"],
-            "created_time": parse_isoformat_with_z(proposal["createdTime"]),
             "start_time": parse_isoformat_with_z(proposal["startTime"]),
             "end_time": parse_optional_time(proposal.get("endTime")),
             "cancelled_time": parse_optional_time(proposal.get("cancelledTime")),
@@ -143,20 +145,46 @@ def fetch_proposals() -> None:
             "queued_time": parse_optional_time(proposal.get("queuedTime")),
             "markdowntitle": proposal["markdowntitle"],
             "description": proposal["description"],
-            "quorum": proposal["quorum"],
-            "approval_threshold": proposal["approvalThreshold"],
+            "quorum": float(proposal["quorum"]) if proposal.get("quorum") else 0.0,
             "proposal_type": proposal["proposalType"],
             "status": proposal["status"],
             "created_transaction_hash": proposal["createdTransactionHash"],
-            "cancelled_transaction_hash": proposal["cancelledTransactionHash"],
-            "executed_transaction_hash": proposal["executedTransactionHash"],
-            "proposal_results_for": proposal["proposalResults"]["for"],
-            "proposal_results_against": proposal["proposalResults"]["against"],
-            "proposal_results_abstain": proposal["proposalResults"]["abstain"],
+            "cancelled_transaction_hash": proposal.get("cancelledTransactionHash"),
+            "executed_transaction_hash": proposal.get("executedTransactionHash"),
+            "proposal_results_for": float(results.get("for", 0)),
+            "proposal_results_against": float(results.get("against", 0)),
+            "proposal_results_abstain": float(results.get("abstain", 0)),
+            "proposal_data": proposal.get("proposalData"),
+            "unformatted_proposal_data": proposal.get("unformattedProposalData"),
         }
 
+    schema = {
+        "id": pl.Utf8,
+        "dt": pl.Datetime,
+        "proposer": pl.Utf8,
+        "snapshot_block_number": pl.UInt64,
+        "start_time": pl.Datetime,
+        "end_time": pl.Datetime,
+        "cancelled_time": pl.Datetime,
+        "executed_time": pl.Datetime,
+        "queued_time": pl.Datetime,
+        "markdowntitle": pl.Utf8,
+        "description": pl.Utf8,
+        "quorum": pl.Float64,
+        "proposal_type": pl.Utf8,
+        "status": pl.Utf8,
+        "created_transaction_hash": pl.Utf8,
+        "cancelled_transaction_hash": pl.Utf8,
+        "executed_transaction_hash": pl.Utf8,
+        "proposal_results_for": pl.Float64,
+        "proposal_results_against": pl.Float64,
+        "proposal_results_abstain": pl.Float64,
+        "proposal_data": pl.Struct,
+        "unformatted_proposal_data": pl.Struct,
+    }
+
     cleaned_rows = [extract_proposal_data(p) for p in proposals]
-    df = pl.DataFrame(cleaned_rows).sort("start_time")
+    df = pl.DataFrame(cleaned_rows, schema=schema).sort("start_time")
     Agora.PROPOSALS.write(dataframe=df, sort_by=["start_time"])
 
 
@@ -183,6 +211,15 @@ def fetch_delegate_data(delegates: List[str], endpoint: str, workers: int) -> pl
     )
 
     all_data = [data for v in run_results.results.values() for record in v for data in record]
+    schema = {
+        "dt": pl.Datetime,
+        "from_address": pl.Utf8,
+        "to_address": pl.Utf8,
+        "allowance": pl.Float64,
+        "type": pl.Utf8,
+        "amount": pl.Utf8,
+        "transaction_hash": pl.Utf8,
+    }
 
     rows = [
         {
@@ -197,12 +234,13 @@ def fetch_delegate_data(delegates: List[str], endpoint: str, workers: int) -> pl
         for record in all_data
     ]
 
-    return pl.DataFrame(rows)
+    return pl.DataFrame(rows, schema=schema)
 
 
 def fetch_delegate_delegators(delegates: AgoraDelegates, workers: int = 12) -> pl.DataFrame:
     delegate_addresses = delegates.delegates_df["address"].to_list()
     delegator_data = fetch_delegate_data(delegate_addresses, endpoint="delegators", workers=workers)
+    print(delegator_data.to_pandas().head())
     Agora.DELEGATORS.write(dataframe=delegator_data, sort_by=["dt"])
     return delegator_data
 
@@ -210,5 +248,6 @@ def fetch_delegate_delegators(delegates: AgoraDelegates, workers: int = 12) -> p
 def fetch_delegate_delegatees(delegates: AgoraDelegates, workers: int = 12) -> pl.DataFrame:
     delegate_addresses = delegates.delegates_df["address"].to_list()
     delegatee_data = fetch_delegate_data(delegate_addresses, endpoint="delegatees", workers=workers)
+    print(delegatee_data.to_pandas().head())
     Agora.DELEGATEES.write(dataframe=delegatee_data, sort_by=["dt"])
     return delegatee_data

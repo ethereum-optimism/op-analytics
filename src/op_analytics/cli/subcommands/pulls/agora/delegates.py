@@ -139,10 +139,10 @@ def pull_delegates():
     normalized_data = []
     for item in delegate_data:
         address = item.get("address", "")
-        voting_power = item.get("votingPower", {})
+        voting_power = item.get("votingPower") or {}
         citizen = item.get("citizen", False)
-        statement = item.get("statement", {})
-        payload = statement.get("payload", {})
+        statement = item.get("statement") or {}
+        payload = statement.get("payload") or {}
 
         # Raise an exception if 'voting_power' is not a dict
         if not isinstance(voting_power, dict):
@@ -166,8 +166,20 @@ def pull_delegates():
 
         normalized_data.append(flattened)
 
-    # Construct polars DataFrame directly
-    df = pl.DataFrame(normalized_data)
+    schema = {
+        "address": pl.Utf8,
+        "voting_power_total": pl.Float64,
+        "voting_power_direct": pl.Float64,
+        "voting_power_advanced": pl.Float64,
+        "is_citizen": pl.Boolean,
+        "statement_signature": pl.Utf8,
+        "statement_created_at": pl.Utf8,
+        "statement_updated_at": pl.Utf8,
+        "statement_text": pl.Utf8,
+        "twitter": pl.Utf8,
+        "discord": pl.Utf8,
+    }
+    df = pl.DataFrame(normalized_data, schema=schema)
 
     # Deduplicate by address if needed
     initial_count = df.height
