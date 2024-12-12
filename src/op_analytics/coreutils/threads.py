@@ -1,11 +1,46 @@
 import concurrent.futures
 from dataclasses import dataclass
-from functools import wraps
 from typing import Any, Callable
+from op_analytics.coreutils.time import now
 
-from op_analytics.coreutils.logger import bound_contextvars, structlog
+from op_analytics.coreutils.logger import structlog, bound_contextvars
 
 log = structlog.get_logger()
+
+
+class ProgressTracker:
+    """
+    Tracks progress and ETA for a batch of tasks.
+    Instead of logging a separate "Task progress" line, we bind context variables
+    so that when the wrapped function logs, the ETA and progress fields are included
+    in that log line.
+    """
+
+    def __init__(self, total_tasks: int):
+        self.total_tasks = total_tasks
+        self.completed_tasks = 0
+        self.start_time = now()
+
+    def counter(self, current_index: int) -> str:
+        return f"{current_index:03d}/{self.total_tasks:03d}"
+
+    def eta(self) -> str | None:
+        if self.completed_tasks < 3:
+            return None
+
+        elapsed = (now() - self.start_time).total_seconds()
+        seconds_per_task = elapsed / self.completed_tasks
+        remaining_tasks = self.total_tasks - self.completed_tasks
+        eta_seconds = remaining_tasks * seconds_per_task
+        return human_interval(eta_seconds)
+
+    def wrap(self, func, current_index: int):
+        def wrapper(target_item):
+            with bound_contextvars(counter=self.counter(current_index), eta=self.eta()):
+                return func(target_item)
+            self.completed_tasks += 1
+
+        return wrapper
 
 
 def run_concurrently(
@@ -33,14 +68,14 @@ def run_concurrently(
         return run_serially(function, targets)
 
     num_targets = len(targets)
+    tracker = ProgressTracker(total_tasks=num_targets)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {}
 
         for i, (key, target) in enumerate(targets.items()):
-            future = executor.submit(
-                progress_wrapper(function, total=num_targets, current=i + 1), target
-            )
+            task_callable = tracker.wrap(function, current_index=i + 1)
+            future = executor.submit(task_callable, target)
             futures[future] = key
 
         for future in concurrent.futures.as_completed(futures):
@@ -52,25 +87,6 @@ def run_concurrently(
                 raise
 
     return results
-
-
-def progress_wrapper(func, total: int, current: int):
-    """Function wrapper that binds the target_id contextvar.
-
-    Helps keep track of progress when a large number of tasks are executed
-    concurrently.
-
-    Note that the target_id is assigned in the order in which the task gets
-    submitted. Since tasks run on different threads then the taarget_id will
-    often show out out of order in the logs.
-    """
-
-    @wraps(func)
-    def wrapper(*args, **kwds):
-        with bound_contextvars(target_id=f"{current:03d}/{total:03d}"):
-            return func(*args, **kwds)
-
-    return wrapper
 
 
 def run_serially(function: Callable, targets: dict[str, Any]) -> dict[str, Any]:
@@ -106,14 +122,14 @@ def run_concurrently_store_failures(
         return run_serially_store_failures(function, targets)
 
     num_targets = len(targets)
+    tracker = ProgressTracker(total_tasks=num_targets)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {}
 
         for i, (key, target) in enumerate(targets.items()):
-            future = executor.submit(
-                progress_wrapper(function, total=num_targets, current=i + 1), target
-            )
+            task_callable = tracker.wrap(function, current_index=i + 1)
+            future = executor.submit(task_callable, target)
             futures[future] = key
 
         for future in concurrent.futures.as_completed(futures):

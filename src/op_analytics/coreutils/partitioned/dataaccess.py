@@ -8,126 +8,24 @@ The main goals are:
 - Prevent accidental data access to real data from tests or local scripts.
 """
 
-from dataclasses import dataclass
-from datetime import date
-from functools import cache
-from threading import Lock
-from typing import Any, Protocol
-
 import polars as pl
-import pyarrow as pa
 
-from op_analytics.coreutils.duckdb_local.client import insert_duckdb_local, run_query_duckdb_local
-from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
-from op_analytics.coreutils.env.aware import etl_monitor_markers_database
+
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.storage.gcs_parquet import (
-    gcs_upload_parquet,
-    local_upload_parquet,
-)
+from op_analytics.coreutils.storage.gcs_parquet import gcs_upload_parquet, local_upload_parquet
 
 from .location import DataLocation
+from .markers_clickhouse import ClickHouseMarkers
+from .markers_core import DateFilter, MarkerFilter, MarkerStore
+from .markers_local import LocalMarkers
 
 log = structlog.get_logger()
 
-_CLIENT = None
-
-_INIT_LOCK = Lock()
-
 
 def init_data_access() -> "PartitionedDataAccess":
-    global _CLIENT
-
-    with _INIT_LOCK:
-        if _CLIENT is None:
-            _CLIENT = PartitionedDataAccess()
-
-    if _CLIENT is None:
-        raise RuntimeError("Partitioned data access client was not properly initialized.")
-    return _CLIENT
+    return PartitionedDataAccess.get_instance()
 
 
-@dataclass
-class MarkerFilter:
-    column: str
-    values: list[str]
-
-    def clickhouse_filter(self, param: str):
-        return " AND %s in {%s:Array(String)}" % (self.column, param)
-
-
-@dataclass
-class DateFilter:
-    min_date: date | None
-    max_date: date | None
-    datevals: list[date] | None
-
-    @property
-    def is_undefined(self):
-        return all(
-            [
-                self.min_date is None,
-                self.max_date is None,
-                self.datevals is None,
-            ]
-        )
-
-    def sql_clickhouse(self):
-        where = []
-        parameters: dict[str, Any] = {}
-
-        if self.datevals is not None and len(self.datevals) > 0:
-            where.append("dt IN {dates:Array(Date)}")
-            parameters["dates"] = self.datevals
-
-        if self.min_date is not None:
-            where.append("dt >= {mindate:Date}")
-            parameters["mindate"] = self.min_date
-
-        if self.max_date is not None:
-            where.append("dt < {maxdate:Date}")
-            parameters["maxdate"] = self.max_date
-
-        return " AND ".join(where), parameters
-
-    def sql_duckdb(self):
-        where = []
-        if self.datevals is not None and len(self.datevals) > 0:
-            datelist = ", ".join([f"'{_.strftime("%Y-%m-%d")}'" for _ in self.datevals])
-            where.append(f"dt IN ({datelist})")
-
-        if self.min_date is not None:
-            where.append(f"dt >= '{self.min_date.strftime("%Y-%m-%d")}'")
-
-        if self.max_date is not None:
-            where.append(f"dt < '{self.max_date.strftime("%Y-%m-%d")}'")
-
-        return " AND ".join(where)
-
-
-class MarkerStore(Protocol):
-    def write_marker(
-        self,
-        markers_table: str,
-        marker_df: pa.Table,
-    ) -> None: ...
-
-    def marker_exists(
-        self,
-        marker_path: str,
-        markers_table: str,
-    ) -> bool: ...
-
-    def query_markers(
-        self,
-        markers_table: str,
-        datefilter: DateFilter,
-        projections=list[str],
-        filters=dict[str, MarkerFilter],
-    ) -> pl.DataFrame: ...
-
-
-@cache
 def marker_store(data_location: DataLocation) -> MarkerStore:
     """Store to use for a given DataLocation.
 
@@ -135,22 +33,29 @@ def marker_store(data_location: DataLocation) -> MarkerStore:
     - LOCAL markers to got local DuckDB
     """
     if data_location == DataLocation.GCS:
-        return ClickHouseMarkers()
+        return ClickHouseMarkers.get_instance()
 
     if data_location == DataLocation.BIGQUERY:
-        return ClickHouseMarkers()
+        return ClickHouseMarkers.get_instance()
 
     if data_location == DataLocation.LOCAL:
-        return LocalMarkers()
+        return LocalMarkers.get_instance()
 
     if data_location == DataLocation.BIGQUERY_LOCAL_MARKERS:
-        return LocalMarkers()
+        return LocalMarkers.get_instance()
 
     raise NotImplementedError(f"invalid data location: {data_location}")
 
 
-@dataclass
 class PartitionedDataAccess:
+    _instance = None  # This class is a singleton
+
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+
     def write_single_part(
         self,
         location: DataLocation,
@@ -198,11 +103,36 @@ class PartitionedDataAccess:
         markers_table: str,
     ) -> bool:
         """Run a query to find if a marker already exists."""
-        store = marker_store(data_location)
+        store: MarkerStore = marker_store(data_location)
         return store.marker_exists(
             marker_path=marker_path,
             markers_table=markers_table,
         )
+
+    def all_markers_exist(
+        self,
+        data_location: DataLocation,
+        marker_paths: list[str],
+        markers_table: str,
+    ) -> bool:
+        complete = []
+        incomplete = []
+
+        # TODO: Make a single query for all the markers.
+        for marker_path in marker_paths:
+            if self.marker_exists(data_location, marker_path, markers_table):
+                complete.append(marker_path)
+            else:
+                incomplete.append(marker_path)
+
+        num_complete = len(complete)
+        total = len(incomplete) + len(complete)
+        log.debug(f"{num_complete}/{total} complete")
+
+        if incomplete:
+            return False
+
+        return True
 
     def markers_for_dates(
         self,
@@ -220,139 +150,13 @@ class PartitionedDataAccess:
         if "dt" not in projections:
             raise ValueError("projections must include 'dt'")
 
-        store = marker_store(data_location)
+        store: MarkerStore = marker_store(data_location)
         return store.query_markers(
             markers_table=markers_table,
             datefilter=datefilter,
             projections=projections,
             filters=filters,
         )
-
-
-def check_marker_results(df: pl.DataFrame) -> bool:
-    """Check query results for a single marker.
-
-    Datermien whether the marker is complete and correct."""
-    if len(df) == 0:
-        return False
-
-    assert len(df) == 1
-    row = df.to_dicts()[0]
-
-    if row["num_parts"] == row["num_paths"]:
-        return True
-    else:
-        marker_path = row["marker_path"]
-        log.error(f"distinct data paths do not match expeted num parts for marker: {marker_path!r}")
-        return False
-
-
-class ClickHouseMarkers:
-    @property
-    def markers_db(self):
-        return etl_monitor_markers_database()
-
-    def write_marker(self, markers_table: str, marker_df: pa.Table):
-        insert_oplabs(self.markers_db, markers_table, marker_df)
-
-    def marker_exists(self, marker_path: str, markers_table: str) -> bool:
-        where = "marker_path = {search_value:String}"
-
-        df = run_query_oplabs(
-            query=f"""
-            SELECT
-                marker_path, num_parts, count(DISTINCT data_path) as num_paths
-            FROM {self.markers_db}.{markers_table} 
-            WHERE {where}
-            GROUP BY marker_path, num_parts
-            """,
-            parameters={"search_value": marker_path},
-        )
-        return check_marker_results(df)
-
-    def query_markers(
-        self,
-        markers_table: str,
-        datefilter: DateFilter,
-        projections=list[str],
-        filters=dict[str, MarkerFilter],
-    ) -> pl.DataFrame:
-        """ClickHouse version of query many."""
-
-        where, parameters = datefilter.sql_clickhouse()
-        if not where:
-            where = "1=1"
-
-        for param, item in filters.items():
-            where += item.clickhouse_filter(param)
-            parameters[param] = item.values
-
-        cols = ",\n".join(projections)
-
-        markers = run_query_oplabs(
-            query=f"""
-            SELECT
-                {cols}
-            FROM {self.markers_db}.{markers_table}
-            WHERE {where}
-            """,
-            parameters=parameters,
-        )
-
-        # ClickHouse returns the Date type as u16 days from epoch.
-        return markers.with_columns(dt=pl.from_epoch(pl.col("dt"), time_unit="d"))
-
-
-class LocalMarkers:
-    @property
-    def markers_db(self):
-        return etl_monitor_markers_database()
-
-    def write_marker(self, markers_table: str, marker_df: pa.Table):
-        insert_duckdb_local(self.markers_db, markers_table, marker_df)
-
-    def marker_exists(self, marker_path: str, markers_table: str) -> bool:
-        df = run_query_duckdb_local(
-            query=f"""
-            SELECT
-                marker_path, num_parts, count(DISTINCT data_path) as num_paths
-            FROM {self.markers_db}.{markers_table} 
-            WHERE marker_path = ?
-            GROUP BY marker_path, num_parts
-            """,
-            params=[marker_path],
-        ).pl()
-        return check_marker_results(df)
-
-    def query_markers(
-        self,
-        markers_table: str,
-        datefilter: DateFilter,
-        projections=list[str],
-        filters=dict[str, MarkerFilter],
-    ) -> pl.DataFrame:
-        """DuckDB version of query many."""
-
-        where = datefilter.sql_duckdb()
-        if not where:
-            where = "1=1"
-
-        for _, item in filters.items():
-            valueslist = ", ".join(f"'{_}'" for _ in item.values)
-            where += f" AND {item.column} in ({valueslist})"
-
-        cols = ",\n".join(projections)
-
-        markers = run_query_duckdb_local(
-            query=f"""
-            SELECT
-                {cols}
-            FROM {self.markers_db}.{markers_table}
-            WHERE {where}
-            """,
-        )
-
-        return markers.pl()
 
 
 def all_outputs_complete(

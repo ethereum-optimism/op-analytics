@@ -240,7 +240,39 @@ def test_pull_stables_multiple_stablecoins(
         )
         for _ in mock_write.call_args_list
     ]
+    write_calls = sorted(write_calls, key=lambda x: (x["dataset_name"], x["num_rows"]))
+
     assert write_calls == [
+        {
+            "dataset_name": "defillama/stablecoins_balances_v1",
+            "df_columns": [
+                "id",
+                "chain",
+                "circulating",
+                "bridged_to",
+                "minted",
+                "unreleased",
+                "name",
+                "symbol",
+                "dt",
+            ],
+            "num_rows": 1,
+        },
+        {
+            "dataset_name": "defillama/stablecoins_balances_v1",
+            "df_columns": [
+                "id",
+                "chain",
+                "circulating",
+                "bridged_to",
+                "minted",
+                "unreleased",
+                "name",
+                "symbol",
+                "dt",
+            ],
+            "num_rows": 2,
+        },
         {
             "dataset_name": "defillama/stablecoins_metadata_v1",
             "df_columns": [
@@ -262,36 +294,6 @@ def test_pull_stables_multiple_stablecoins(
                 "dt",
             ],
             "num_rows": 2,
-        },
-        {
-            "dataset_name": "defillama/stablecoins_balances_v1",
-            "df_columns": [
-                "id",
-                "chain",
-                "circulating",
-                "bridged_to",
-                "minted",
-                "unreleased",
-                "name",
-                "symbol",
-                "dt",
-            ],
-            "num_rows": 2,
-        },
-        {
-            "dataset_name": "defillama/stablecoins_balances_v1",
-            "df_columns": [
-                "id",
-                "chain",
-                "circulating",
-                "bridged_to",
-                "minted",
-                "unreleased",
-                "name",
-                "symbol",
-                "dt",
-            ],
-            "num_rows": 1,
         },
     ]
 
