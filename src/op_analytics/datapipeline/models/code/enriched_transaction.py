@@ -19,7 +19,7 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         ),
     ],
 )
-def daily_address_summary(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
+def enriched_transactions(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
     return {
         "enriched_transactions_v1": duckdb_client.view("enriched_transactions"),
     }
