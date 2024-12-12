@@ -109,7 +109,6 @@ class IngestionTask:
                 ],
                 markers_table=INGESTION_MARKERS_TABLE,
                 expected_outputs=expected_outputs,
-                force=False,
             ),
             progress_indicator="",
         )

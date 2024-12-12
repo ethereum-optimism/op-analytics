@@ -114,19 +114,19 @@ def pending_items(
         )
 
         with bound_contextvars(**item.context()):
-            # Decide if we need to run this task.
-            if task.write_manager.is_complete() and not force_complete:
-                log.info("task", status="already_complete")
-                continue
-
             # Decide if we can run this task.
             if not task.data_reader.inputs_ready:
                 log.warning("task", status="input_not_ready")
                 continue
 
-            if force_complete:
-                log.info("forced execution despite complete marker")
-                task.write_manager.force = True
+            # Decide if we need to run this task.
+            # TODO: remove side effects from all_outputs_complete()
+            if not force_complete and task.write_manager.all_outputs_complete():
+                if not force_complete:
+                    log.info("task", status="already_complete")
+                    continue
+                else:
+                    log.info("forced execution despite complete markers")
 
             # If running locally release duckdb lock before forking.
             if task.write_manager.location == DataLocation.LOCAL:

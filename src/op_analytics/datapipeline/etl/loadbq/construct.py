@@ -24,7 +24,6 @@ def construct_date_load_tasks(
     range_spec: str,
     write_to: DataLocation,
     bq_dataset_name: str,
-    force_complete: bool,
 ) -> list[DateLoadTask]:
     """Consolidate chain/date combinations into one task per date.
 
@@ -118,7 +117,6 @@ def construct_date_load_tasks(
                     ],
                     markers_table=MARKERS_TABLE,
                     expected_outputs=expected_outputs,
-                    force=force_complete,
                 ),
                 outputs=outputs,
             )

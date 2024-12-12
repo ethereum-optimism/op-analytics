@@ -93,7 +93,6 @@ def test_construct():
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016416000",
                     )
                 ],
-                force=False,
                 process_name="default",
             ),
             output_duckdb_relations={},
@@ -149,7 +148,6 @@ def test_construct():
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016424000",
                     )
                 ],
-                force=False,
                 process_name="default",
             ),
             output_duckdb_relations={},
@@ -205,7 +203,6 @@ def test_construct():
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016432000",
                     )
                 ],
-                force=False,
                 process_name="default",
             ),
             output_duckdb_relations={},
@@ -261,7 +258,6 @@ def test_construct():
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016440000",
                     )
                 ],
-                force=False,
                 process_name="default",
             ),
             output_duckdb_relations={},
@@ -317,7 +313,6 @@ def test_construct():
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016448000",
                     )
                 ],
-                force=False,
                 process_name="default",
             ),
             output_duckdb_relations={},
@@ -373,7 +368,6 @@ def test_construct():
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016456000",
                     )
                 ],
-                force=False,
                 process_name="default",
             ),
             output_duckdb_relations={},
@@ -429,7 +423,6 @@ def test_construct():
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016464000",
                     )
                 ],
-                force=False,
                 process_name="default",
             ),
             output_duckdb_relations={},

@@ -97,13 +97,13 @@ def human_interval(num_seconds: int) -> str:
         return f"{num_seconds:.0f} secs"
     elif num_seconds < 7200:
         num_minutes = num_seconds / 60
-        return f"{num_minutes:.1f} mins"
+        return f"{num_minutes:.1f}m"
     elif num_seconds < 24 * 3600 * 3:
         num_hours = num_seconds / 3600
-        return f"{num_hours:.1f} hrs"
+        return f"{num_hours:.1f}h"
     else:
         num_days = num_seconds / (24 * 3600)
-        return f"{num_days:.1f} days"
+        return f"{num_days:.1f}d"
 
 
 def memory_usage():

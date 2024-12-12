@@ -103,7 +103,6 @@ def construct_tasks(
                         ],
                         markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
                         expected_outputs=expected_outputs,
-                        force=False,
                     ),
                     output_root_path_prefix=root_path_prefix,
                 )
