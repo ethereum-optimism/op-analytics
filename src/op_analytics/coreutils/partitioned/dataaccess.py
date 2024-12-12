@@ -159,12 +159,12 @@ class PartitionedDataAccess:
         )
 
 
-def all_outputs_complete(
+def complete_markers(
     location: DataLocation,
     markers: list[str],
     markers_table: str,
-) -> bool:
-    """Check if all outputs are complete.
+) -> list[str]:
+    """List of markers that are complete.
 
     This function is somewhat low-level in that it receives the explicit completion
     markers that we are looking for. It checks that those markers are present in all
@@ -173,20 +173,13 @@ def all_outputs_complete(
     client = init_data_access()
 
     complete = []
-    incomplete = []
 
     # TODO: Make a single query for all the markers.
     for marker in markers:
         if client.marker_exists(location, marker, markers_table):
             complete.append(marker)
-        else:
-            incomplete.append(marker)
 
     num_complete = len(complete)
-    total = len(incomplete) + len(complete)
-    log.debug(f"{num_complete}/{total} complete")
+    log.debug(f"{num_complete}/{len(markers)} complete")
 
-    if incomplete:
-        return False
-
-    return True
+    return complete

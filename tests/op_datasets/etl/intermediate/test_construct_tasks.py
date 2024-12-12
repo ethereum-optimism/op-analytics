@@ -109,7 +109,6 @@ def test_construct():
                         marker_path="2024-12-01/mode/contract_creation/create_traces_v1",
                     )
                 ],
-                force=False,
             ),
             output_root_path_prefix="intermediate",
         )
@@ -203,7 +202,6 @@ def test_construct_testnet():
                         marker_path="2024-12-01/unichain_sepolia/contract_creation/create_traces_v1",
                     )
                 ],
-                force=False,
             ),
             output_root_path_prefix="intermediate_testnets",
         )
