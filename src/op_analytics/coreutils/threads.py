@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Any, Callable
 from op_analytics.coreutils.time import now
 
-from op_analytics.coreutils.logger import structlog, bound_contextvars
+from op_analytics.coreutils.logger import structlog, human_interval, bound_contextvars
 
 log = structlog.get_logger()
 
@@ -37,8 +37,9 @@ class ProgressTracker:
     def wrap(self, func, current_index: int):
         def wrapper(target_item):
             with bound_contextvars(counter=self.counter(current_index), eta=self.eta()):
-                return func(target_item)
-            self.completed_tasks += 1
+                result = func(target_item)
+                self.completed_tasks += 1
+                return result
 
         return wrapper
 
