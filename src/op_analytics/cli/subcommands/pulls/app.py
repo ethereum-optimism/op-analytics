@@ -9,6 +9,7 @@ from .defillama.stablecoins import pull_stablecoins
 from .defillama.stablecoins_bigquery import pull_stablecoins_bq
 from .github_analytics import pull_github_analytics
 from .l2beat import pull_l2beat
+from .growthepie.chains_daily_fundamentals import pull_growthepie_summary
 
 log = structlog.get_logger()
 
