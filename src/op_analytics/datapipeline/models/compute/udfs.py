@@ -58,27 +58,6 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     --Get the method id for input data. This is the first 4 bytes, or first 10 string characters for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_method_id(x)
     AS substring(x,1,10);
-    
-    -- TODO: Is there some way that we could or should pass in the alias for each table?
-    -- Calculate total gas fee in native units, given transactions t and blocks b
-    CREATE OR REPLACE MACRO total_gas_fee_native()
-    AS CASE WHEN t.gas_price = 0 THEN 0 ELSE wei_to_eth(t.receipt_l1_fee + t.gas_price * t.receipt_gas_used) END;
-    
-    -- Calculate l2 base fee gas fee in native units, given transactions t and blocks b
-    CREATE OR REPLACE MACRO l2_base_gas_fee_native()
-    AS CASE WHEN t.gas_price = 0 THEN 0 ELSE wei_to_eth(t.receipt_l1_fee + t.gas_price * t.receipt_gas_used) END;
-    
-    -- Calculate l2 priority fee gas fee in native units, given transactions t and blocks b
-    CREATE OR REPLACE MACRO l2_priority_gas_fee_native()
-    AS CASE WHEN t.gas_price = 0 THEN 0 ELSE wei_to_eth(t.receipt_l1_fee + t.gas_price * t.receipt_gas_used) END;
-
-    -- Calculate l1 data fee gas fee in native units, given transactions t and blocks b
-    CREATE OR REPLACE MACRO l2_gas_fee_native()                 
-    AS wei_to_eth(t.gas_price * t.receipt_gas_used
-    
-    -- Calculate l1 data fee gas fee in native units, given transactions t and blocks b
-    CREATE OR REPLACE MACRO l1_gas_fee_native()                 
-    AS CASE WHEN t.gas_price = 0 THEN 0 ELSE wei_to_eth(t.receipt_l1_fee) END
     """)
 
 
