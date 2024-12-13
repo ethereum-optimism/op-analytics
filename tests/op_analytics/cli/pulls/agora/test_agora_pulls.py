@@ -147,12 +147,13 @@ def test_fetch_proposals():
         mock_fetch_all.return_value = sample_proposals_data
 
         # Mock the write method to prevent actual file I/O
-        with patch.object(delegates.Agora.PROPOSALS, "write"):
-            delegate_events.fetch_proposals()
+        with patch.object(delegates.Agora.PROPOSALS, "write") as mock_write:
+            result = delegate_events.fetch_proposals()
 
             # Assertions
-            # Ensure the write method was called with a DataFrame that includes our sample data
-            args, kwargs = delegates.Agora.PROPOSALS.write.call_args
+            assert result is None  # Assuming fetch_proposals does not return anything
+            mock_write.assert_called_once()
+            args, kwargs = mock_write.call_args
             df_written = kwargs["dataframe"]
             assert len(df_written) == 1
             assert df_written["id"][0] == "1"
