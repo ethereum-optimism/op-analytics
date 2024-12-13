@@ -23,18 +23,32 @@ pt1 AS (
     t.to_address,
     t.block_number,
     t.block_timestamp,
-    -- Transaction Attributes
+    t.hash,
     t.transaction_type,
     t.gas_price,
     t.gas AS gas_limit,
     t.receipt_gas_used,
     t.receipt_l1_gas_used,
-    -- Gas
+    -- L1 Fees
+    CASE WHEN t.gas_price = 0 THEN 0 ELSE t.receipt_l1_fee END AS l1_fee,
     t.receipt_l1_gas_price,
     t.receipt_l1_blob_base_fee,
+    -- L2 Fees and breakdown into BASE and PRIORITY contributions
     b.base_fee_per_gas,
     t.max_priority_fee_per_gas,
-    -- Fees
+    if(t.max_priority_fee_per_gas = 0, t.gas_price - b.base_fee_per_gas, 0) AS base_legacy_fee_per_gas,
+    CASE WHEN t.gas_price = 0 THEN 0 ELSE t.gas_price * t.receipt_gas_used END AS l2_fee,
+    CASE WHEN t.gas_price = 0 THEN 0 ELSE t.max_priority_fee_per_gas * t.receipt_gas_used END AS l2_priority_fee,
+    CASE WHEN t.gas_price = 0 THEN 0 ELSE b.base_fee_per_gas * t.receipt_gas_used END AS l2_base_fee,
+    -- Convenience columns
+    epoch_to_hour(t.block_timestamp) AS block_hour,
+    -- L1 Fee BASE and BLOB scalars
+    t.receipt_status = 1 AS success,
+    coalesce(16 * micro(t.receipt_l1_base_fee_scalar), t.receipt_l1_fee_scalar::DECIMAL(12, 6))
+      AS l1_base_fee_scalar,
+    coalesce(micro(t.receipt_l1_blob_base_fee_scalar), 0) AS l1_blob_base_fee_scalar,
+    -- Transaction Attributes
+    hexstr_method_id(t.input) AS method_id,
     hexstr_bytelen(t.input) AS input_byte_length,
     hexstr_calldata_gas(t.input) AS input_calldata_gas,
     t.transaction_type = 126 AS is_system_transaction,
@@ -42,25 +56,11 @@ pt1 AS (
       t.transaction_type = 126
       AND t.from_address = lower('0xDeaDDEaDDeAdDeAdDEAdDEaddeAddEAdDEAd0001')
       AND t.to_address = lower('0x4200000000000000000000000000000000000015')
-    ) AS is_attributes_deposited_transaction,
-    CASE WHEN t.gas_price = 0 THEN 0 ELSE t.receipt_l1_fee END AS l1_fee,
-    if(t.max_priority_fee_per_gas = 0, t.gas_price - t.max_priority_fee_per_gas, 0) AS base_legacy_fee_per_gas,
-    -- L2 Fees and breakdown into BASE and PRIORITY contributions
-    CASE WHEN t.gas_price = 0 THEN 0 ELSE t.gas_price * t.receipt_gas_used END AS l2_fee,
-    CASE WHEN t.gas_price = 0 THEN 0 ELSE t.max_priority_fee_per_gas * t.receipt_gas_used END AS l2_priority_fee,
-    CASE WHEN t.gas_price = 0 THEN 0 ELSE b.base_fee_per_gas * t.receipt_gas_used END AS l2_base_fee,
-    -- Convenience columns
-    epoch_to_hour(t.block_timestamp) AS block_hour,
-    hexstr_method_id(t.input) AS method_id,
-    t.receipt_status = 1 AS success,
-    -- L1 Fee BASE and BLOB scalars
-    coalesce(16 * micro(t.receipt_l1_base_fee_scalar), t.receipt_l1_fee_scalar::DECIMAL(12, 6))
-      AS l1_base_fee_scalar,
-    coalesce(micro(t.receipt_l1_blob_base_fee_scalar), 0) AS l1_blob_base_fee_scalar
+    ) AS is_attributes_deposited_transaction
+
   FROM ingestion_transactions_v1 AS t
   INNER JOIN pb AS b ON t.block_number = b.number
   WHERE 1 = 1
-
 ),
 
 
@@ -89,7 +89,7 @@ pt3 AS (
     l2_fee + l1_fee AS tx_fee,
     -- 
     -- L2 Legacy Fee
-    if(l2_priority_fee = 0, l2_fee + l1_fee - l2_base_fee, 0) AS l2_base_legacy_fee,
+    if(l2_priority_fee = 0, l2_fee - l2_base_fee, 0) AS l2_base_legacy_fee,
     -- 
     -- L1 Base 
     div16(l1_gas_used) * l1_base_fee_scalar * receipt_l1_gas_price AS l1_base_fee,
