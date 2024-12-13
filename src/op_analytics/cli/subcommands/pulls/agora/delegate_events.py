@@ -122,7 +122,7 @@ def fetch_delegate_votes(delegates: AgoraDelegates, workers: int = 12) -> AgoraD
     return AgoraDelegateVotes(votes_df=df)
 
 
-def fetch_proposals() -> None:
+def fetch_proposals() -> pl.DataFrame:
     paginator = SimplePaginator(url=f"{BASE_URL}/proposals", limit=50)
     proposals = paginator.fetch_all()
 
@@ -186,6 +186,7 @@ def fetch_proposals() -> None:
     cleaned_rows = [extract_proposal_data(p) for p in proposals]
     df = pl.DataFrame(cleaned_rows, schema=schema).sort("start_time")
     Agora.PROPOSALS.write(dataframe=df, sort_by=["start_time"])
+    return df
 
 
 def _fetch_single_address_data(address: str, endpoint: str) -> List[dict]:

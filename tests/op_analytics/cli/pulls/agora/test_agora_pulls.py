@@ -151,7 +151,7 @@ def test_fetch_proposals():
             result = delegate_events.fetch_proposals()
 
             # Assertions
-            assert result is None  # Assuming fetch_proposals does not return anything
+            assert type(result) is pl.DataFrame
             mock_write.assert_called_once()
             args, kwargs = mock_write.call_args
             df_written = kwargs["dataframe"]
