@@ -15,6 +15,9 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
 
     CREATE OR REPLACE MACRO wei_to_gwei(a)
     AS a::DECIMAL(28, 0) * 0.000000001::DECIMAL(10, 10);
+    
+    CREATE OR REPLACE MACRO gwei_to_eth(a)
+    AS wei_to_gwei(a);
 
     CREATE OR REPLACE MACRO safe_div(a, b) AS
     IF(b = 0, NULL, a / b);
@@ -27,6 +30,10 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     -- Truncate a timestamp to hour.
     CREATE OR REPLACE MACRO epoch_to_hour(a) AS
     date_trunc('hour', make_timestamp(a * 1000000::BIGINT));
+    
+    -- Truncate a timestamp to day.
+    CREATE OR REPLACE MACRO epoch_to_day(a) AS
+    date_trunc('day', make_timestamp(a * 1000000::BIGINT));
 
     -- Division by 16 for DECIMAL types.
     CREATE OR REPLACE MACRO div16(a)
@@ -34,7 +41,23 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     
     --Get the length in bytes for binary data that is encoded as a hex string
     CREATE OR REPLACE MACRO hexstr_bytelen(x)
-    AS (length(x) - 2) / 2 
+    AS (length(x) - 2) / 2;
+                      
+    --Count non-zero bytes for binary data that is encoded as a hex string. We don't use hexstr_bytelen because we need to substring the input data.
+    CREATE OR REPLACE MACRO hexstr_nonzero_bytes(x)
+    AS length(replace(hex(unhex(substr(x, 3))), '00', '')) / 2;
+    
+    --Count non-zero bytes for binary data that is encoded as a hex string
+    CREATE OR REPLACE MACRO hexstr_zero_bytes(x)
+    AS hexstr_bytelen(x) - hexstr_nonzero_bytes(x);
+    
+    --Calculate calldata gas used for binary data that is encoded as a hex string (can be updated by an EIP)
+    CREATE OR REPLACE MACRO hexstr_calldata_gas(x)
+    AS 16*hexstr_nonzero_bytes(x) + 4*hexstr_zero_bytes(x);
+    
+    --Get the method id for input data. This is the first 4 bytes, or first 10 string characters for binary data that is encoded as a hex string.
+    CREATE OR REPLACE MACRO hexstr_method_id(x)
+    AS substring(x,1,10)
     """)
 
 

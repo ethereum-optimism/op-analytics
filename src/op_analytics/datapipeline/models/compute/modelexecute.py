@@ -88,7 +88,9 @@ class PythonModelExecutor:
             try:
                 obj = self.client.sql(view.query)
             except Exception as ex:
-                raise Exception(f"sql error on rendered view: {view!r}") from ex
+                raise Exception(
+                    f"sql error on rendered view: {view.template_name!r}\n{str(ex)} "
+                ) from ex
 
             self.client.register(
                 view_name=view.template_name,

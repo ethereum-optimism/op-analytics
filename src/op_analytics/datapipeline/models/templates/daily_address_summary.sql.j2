@@ -58,7 +58,7 @@ SELECT
 
   wei_to_eth(sum(l2_priority_fee)) AS l2_priority_fee_sum_eth,
 
-  wei_to_eth(sum(l2_base_legacy)) AS l2_base_legacy_fee_sum_eth,
+  wei_to_eth(sum(l2_base_legacy_fee)) AS l2_base_legacy_fee_sum_eth,
 
   -- L1 Fee and breakdown into BASE + BLOB
   wei_to_eth(sum(l1_fee)) AS l1_fee_sum_eth,
@@ -85,6 +85,7 @@ SELECT
     AS l1_blob_fee_avg_gwei
 FROM
   transaction_fees
+WHERE gas_price > 0
 GROUP BY
   1,
   2,
