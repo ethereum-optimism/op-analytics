@@ -59,7 +59,7 @@ SELECT
 
   wei_to_eth(sum(l2_priority_fee)) AS l2_priority_fee_sum_eth,
 
-  wei_to_eth(sum(l2_base_legacy_fee)) AS l2_base_legacy_fee_sum_eth,
+  wei_to_eth(sum(l2_legacy_extra_fee)) AS l2_base_legacy_fee_sum_eth,
 
   -- L1 Fee and breakdown into BASE + BLOB
   wei_to_eth(sum(l1_fee)) AS l1_fee_sum_eth,
@@ -83,11 +83,7 @@ SELECT
   ) AS l1_base_price_avg_gwei,
 
   wei_to_gwei(safe_div(sum(l1_blob_fee), sum(l1_blob_scaled_size)))
-    AS l1_blob_fee_avg_gwei,
-
-  -- Qualified Transactions Variants
-  count(if(is_qualified_tx_not_approval_wrapping_transfer, 1, NULL)) AS qualified_tx_not_approval_wrapping_transfer_cnt,
-  count(if(is_qualified_tx_not_approval_wrapping, 1, NULL)) AS qualified_tx_not_approval_wrapping_cnt
+    AS l1_blob_fee_avg_gwei
 
 FROM
   refined_transactions_fees

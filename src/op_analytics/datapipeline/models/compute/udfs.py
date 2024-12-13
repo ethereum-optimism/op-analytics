@@ -17,7 +17,7 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     AS a::DECIMAL(28, 0) * 0.000000001::DECIMAL(10, 10);
     
     CREATE OR REPLACE MACRO gwei_to_eth(a)
-    AS wei_to_gwei(a);
+    AS a::DECIMAL(28, 10) * 0.000000001::DECIMAL(10, 10);
 
     CREATE OR REPLACE MACRO safe_div(a, b) AS
     IF(b = 0, NULL, a / b);

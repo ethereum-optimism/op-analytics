@@ -18,11 +18,10 @@ base_level_trace_calls AS (
     r.gas AS gas_limit,
     r.gas_used,
     r.trace_address,
-    r.error,
     r.trace_type,
     -- Raw Transaction Fields
     t.receipt_gas_used AS tx_gas_used,
-    t.receipt_l1_gas_used AS tx_l1_gas_used,
+    t.l1_gas_used AS tx_l1_gas_used,
     t.from_address AS tx_from_address,
     t.to_address AS tx_to_address,
     -- Computed Transaction Fee Fields
@@ -31,91 +30,124 @@ base_level_trace_calls AS (
     t.l2_fee_native AS tx_l2_fee_native,
     t.l2_priority_fee_native AS tx_l2_priority_fee_native,
     t.l2_base_fee_native AS tx_l2_base_fee_native,
-    t.l2_base_legacy_native AS tx_l2_base_legacy_native,
+    t.l2_legacy_extra_fee_native AS tx_l2_legacy_extra_fee_native,
     -- Computed Transaction Gas Price Fields
-    t.l2_gas_price_gwei,
-    t.l2_base_gas_price_gwei,
-    t.l2_priority_gas_price_gwei,
-    t.l2_base_legacy_gas_price_gwei,
-    t.l1_base_gas_price_gwei,
-    t.l1_blob_base_gas_price_gwei,
+    t.l2_gas_price_gwei AS tx_l2_gas_price_gwei,
+    t.l2_base_gas_price_gwei AS tx_l2_base_gas_price_gwei,
+    t.l2_priority_gas_price_gwei AS tx_l2_priority_gas_price_gwei,
+    t.l2_legacy_extra_gas_price_gwei AS tx_l2_legacy_extra_gas_price_gwei,
+    t.l1_base_gas_price_gwei AS tx_l1_base_gas_price_gwei,
+    t.l1_blob_base_gas_price_gwei AS tx_l1_blob_base_gas_price_gwei,
 
     t.method_id AS tx_method_id,
-    hexstr_method_id(r.input) AS trc_method_id,
-
-    -- Event Columns
-    t.log_count_total_events,
-    t.log_count_approval_events,
-    t.log_count_wrapping_events,
-    t.log_count_transfer_events,
-    
-    -- Convenience columns
     t.block_hour,
+
+    -- Convenience columns
     t.success AS tx_success,
-    t.receipt_status = 1 AS trc_success,
+    r.error,
+    hexstr_method_id(r.input) AS method_id,
+    r.status = 1 AS success,
 
     --Get the next trace level up so that we can subtract subtrace gas
-    CASE WHEN r.trace_address IS NULL OR r.trace_address = '' THEN '-1'
-    ELSE 
-      CASE 
-        WHEN LENGTH(r.trace_address) - LENGTH(REPLACE(r.trace_address, ',', '')) = 0 THEN r.trace_address
-        ELSE SUBSTR(r.trace_address, 1, LENGTH(r.trace_address) - LENGTH(SPLIT(r.trace_address, ',')[ORDINAL(ARRAY_LENGTH(SPLIT(r.trace_address, ',')))]) - 1)
-      END
-  END AS trace_address_uplevel
+    CASE
+      WHEN r.trace_address = '' THEN 0
+      ELSE length(r.trace_address) - length(replace(r.trace_address, ',', '')) + 1
+    END AS trace_address_cardinality,
 
-    FROM ingestion_traces_v1 r
-    INNER JOIN extended_transactions_v1 t
-      ON r.block_number = t.block_number
+    CASE
+      WHEN r.trace_address = '' THEN '-1'
+      WHEN strpos(r.trace_address, ',') = 0 THEN ''  -- No comma found
+      WHEN length(r.trace_address) - length(replace(r.trace_address, ',', '')) = 1
+        THEN
+          split_part(r.trace_address, ',', 1)  -- Only one comma, return first part
+      ELSE
+        substr(
+          r.trace_address,
+          1,
+          length(r.trace_address)
+          - length(split_part(r.trace_address, ',', array_length(string_split(r.trace_address, ','))))
+          - 1
+        )
+    END AS trace_address_uplevel
+
+
+
+  FROM ingestion_traces_v1 AS r
+  INNER JOIN refined_transactions_fees AS t
+    ON
+      r.block_number = t.block_number
       AND r.transaction_hash = t.hash
-    
-    WHERE r.trace_type = 'call'
+
+  WHERE r.trace_type = 'call'
+),
+
+--get amount of calls per transcation, to use for amortizing
+get_traces_per_tansaction AS (
+  SELECT
+    block_number,
+    block_timestamp,
+    transaction_hash,
+    count(*) AS count_traces_in_transaction
+  FROM base_level_trace_calls
+  GROUP BY 1, 2, 3
+),
+
+--get subtrace gas used, for isolating each call
+get_subtraces_gas_per_trace AS (
+  SELECT
+    block_number,
+    block_timestamp,
+    transaction_hash,
+    trace_address_uplevel,
+    trace_address_cardinality,
+    sum(gas_used) AS gas_used_in_subtraces,
+    count(*) AS count_subtraces_in_trace
+  FROM base_level_trace_calls
+  GROUP BY 1, 2, 3, 4, 5
 )
 
- --get amount of calls per transcation, to use for amortizing
-, get_traces_per_tansaction AS (
-    SELECT block_number, block_timestamp, transaction_hash
-        , COUNT(*) AS count_traces_in_transaction
-    FROM base_level_traces
-    GROUP BY 1,2,3
-)
 
- --get subtrace gas used, for isolating each call
-, get_subtraces_gas_per_trace AS (
-    SELECT block_number, block_timestamp, transaction_hash, trace_address_uplevel
-        , SUM(trc_gas_used) AS gas_used_in_subtraces, COUNT(*) AS count_subtraces
-    FROM base_level_traces
-    GROUP BY 1,2,3,4
-)
+SELECT
+  bl.*,
+  --
+  tpt.count_traces_in_transaction,
+  coalesce(st.gas_used_in_subtraces, 0) AS gas_used_in_subtraces,
+  --
+  bl.gas_used - coalesce(st.gas_used_in_subtraces, 0) AS gas_used_minus_subtraces,
 
+  -- the subtraces will never add up to part of whole, but leave as is
+  (bl.gas_used - coalesce(st.gas_used_in_subtraces, 0))
+  * gwei_to_eth(bl.tx_l2_gas_price_gwei)::DOUBLE AS tx_l2_fee_native_minus_subtraces,
+  (bl.gas_used - coalesce(st.gas_used_in_subtraces, 0))
+  * gwei_to_eth(bl.tx_l2_base_gas_price_gwei)::DOUBLE AS tx_l2_base_fee_native_minus_subtraces,
+  (bl.gas_used - coalesce(st.gas_used_in_subtraces, 0))
+  * gwei_to_eth(bl.tx_l2_priority_gas_price_gwei)::DOUBLE AS tx_l2_priority_fee_native_minus_subtraces,
+  (bl.gas_used - coalesce(st.gas_used_in_subtraces, 0))
+  * gwei_to_eth(bl.tx_l2_legacy_extra_gas_price_gwei)::DOUBLE AS tx_l2_legacy_base_fee_native_minus_subtraces,
+  --
+  bl.tx_gas_used / tpt.count_traces_in_transaction AS tx_gas_used_per_call_amortized,
+  bl.tx_l1_gas_used / tpt.count_traces_in_transaction AS tx_l1_gas_used_per_call_amortized,
 
-SELECT 
-bl.*
---
-, st.gas_used_in_subtraces AS gas_used_in_subtraces
-, tpt.count_traces_in_transaction AS count_traces_in_transaction
---
-, bl.trc_gas_used - st.gas_used_in_subtraces AS trc_gas_used_minus_subtraces
+  bl.tx_fee_native / tpt.count_traces_in_transaction AS tx_fee_native_per_call_amortized,
+  bl.tx_l2_fee_native / tpt.count_traces_in_transaction AS tx_l2_fee_native_per_call_amortized,
+  bl.tx_l1_fee_native / tpt.count_traces_in_transaction AS tx_l1_fee_native_per_call_amortized,
+  bl.tx_l2_base_fee_native / tpt.count_traces_in_transaction AS tx_l2_base_fee_native_per_call_amortized,
+  bl.tx_l2_priority_fee_native / tpt.count_traces_in_transaction AS tx_l2_priority_fee_native_per_call_amortized,
 
--- the subtraces will never add up to part of whole, but leave as is
-, (bl.trc_gas_used - st.gas_used_in_subtraces) * gwei_to_eth(bl.tx_gas_price_gwei) AS trc_l2_fee_native_minus_subtraces
-, (bl.trc_gas_used - st.gas_used_in_subtraces) * gwei_to_eth(bl.tx_base_gas_price_gwei) AS trc_base_fee_native_minus_subtraces
-, (bl.trc_gas_used - st.gas_used_in_subtraces) * gwei_to_eth(bl.tx_priority_gas_price_gwei) AS trc_priority_fee_native_minus_subtraces
---
-, (bl.tx_gas_used) / tpt.count_traces AS tx_gas_used_per_call_amortized
-, (bl.tx_l1_gas_used) / tpt.count_traces AS tx_l1_gas_used_per_call_amortized
-
-, bl.tx_gas_fee_native / tpt.count_traces AS tx_gas_fee_native_per_call_amortized
-, bl.tx_l2_fee_native / tpt.count_traces AS tx_l2_fee_native_per_call_amortized
-, bl.tx_l1_fee_native / tpt.count_traces AS tx_l1_fee_native_per_call_amortized
-, bl.tx_base_fee_native / tpt.count_traces AS tx_base_fee_native_per_call_amortized
-, bl.tx_priority_fee_native / tpt.count_traces AS tx_priority_fee_native_per_call_amortized
+  --
+  (bl.tx_l1_fee_native / tpt.count_traces_in_transaction)
+  + (bl.gas_used - coalesce(st.gas_used_in_subtraces, 0))
+  * gwei_to_eth(bl.tx_l2_gas_price_gwei) AS tx_fee_native_l1_amortized_l2_minus_subtraces
 
 
-FROM base_level_trace_calls bl
-INNER JOIN get_traces_per_tansaction tpt -- join on txn level
-    ON bl.block_number = tpt.block_number
+FROM base_level_trace_calls AS bl
+INNER JOIN get_traces_per_tansaction AS tpt -- join on txn level
+  ON
+    bl.block_number = tpt.block_number
     AND bl.transaction_hash = tpt.transaction_hash
-LEFT JOIN get_subtraces_gas_per_trace st -- join on trace level 1 level down
-    ON bl.block_number = st.block_number
+LEFT JOIN get_subtraces_gas_per_trace AS st -- join on trace level 1 level down
+  ON
+    bl.block_number = st.block_number
     AND bl.transaction_hash = st.transaction_hash
+    AND bl.trace_address_cardinality = (st.trace_address_cardinality - 1)
     AND bl.trace_address = st.trace_address_uplevel
