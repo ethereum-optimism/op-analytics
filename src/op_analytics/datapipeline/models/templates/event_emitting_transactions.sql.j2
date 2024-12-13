@@ -1,0 +1,61 @@
+-- Select the columns for joining back to transactions and sum event types
+-- Calculate types of events emitted for downstream "qualified transaction" filtering
+
+WITH event_emitting AS (
+SELECT
+        l.dt
+        ,epoch_to_hour(l.block_timestamp) AS block_hour
+        ,l.block_timestamp
+        ,l.network, l.chain, l.chain_id
+        ,l.block_number
+        ,l.transaction_hash
+
+        ,COUNT(*) AS count_total_events
+        ,SUM(CASE WHEN f.category = 'Approval' THEN 1 ELSE 0 END) AS count_approval_events
+        ,SUM(CASE WHEN f.category = 'Wrapping' THEN 1 ELSE 0 END) AS count_wrapping_events
+        ,SUM(CASE WHEN f.category = 'Transfer' THEN 1 ELSE 0 END) AS count_transfer_events
+
+FROM ingestion_logs_v1 AS l
+LEFT JOIN logs_topic0_filters AS f
+        ON l.topic0 = f.topic
+
+GROUP BY 1,2,3,4,5,6,7,8
+)
+
+SELECT
+        ee.*
+
+        ,ee.count_total_events
+                > ee.count_approval_events + ee.count_wrapping_events + ee.count_transfer_events
+        AS is_qualified_tx_not_approval_wrapping_transfer
+
+        ,ee.count_total_events
+                > ee.count_approval_events + ee.count_wrapping_events
+        AS is_qualified_tx_not_approval_wrapping
+
+        -- Join Transaction Fields
+        ,t.transaction_index
+        ,t.transaction_type
+        -- gas fees
+        ,t.tx_fee_native
+
+        ,t.l1_fee_native
+        ,t.l2_fee_native
+
+        ,t.l1_base_fee_native
+        ,t.l1_blob_fee_native
+
+        ,t.l2_base_fee_native
+        ,t.l2_priority_fee_native
+        ,t.l2_base_legacy_fee_native
+        -- transaction attributes
+        ,t.input_byte_length
+        ,t.input_calldata_gas
+        ,t.l1_gas_used
+        ,t.receipt_gas_used
+
+
+FROM event_emitting ee
+INNER JOIN refined_transactions_fees AS t 
+        ON ee.block_number = t.block_number
+        AND ee.transaction_hash = t.hash

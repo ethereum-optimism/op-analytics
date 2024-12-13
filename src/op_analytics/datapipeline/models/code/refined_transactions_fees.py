@@ -14,14 +14,6 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
     expected_outputs=["refined_transactions_fees_v1"],
     auxiliary_views=[
         TemplatedSQLQuery(
-            template_name="base_transactions_fees",
-            context={},
-        ),
-        TemplatedSQLQuery(
-            template_name="event_emitting_transactions_list",
-            context={},
-        ),
-        TemplatedSQLQuery(
             template_name="refined_transactions_fees",
             context={},
         ),

@@ -15,32 +15,4 @@ WITH topic0_filters AS ( -- list of events that we want to indicate for possible
         ) a (topic, description, category)
 )
 
--- Select the columns for joining back to transactions and sum event types
--- Calculate types of events emitted for downstream "qualified transaction" filtering
-
-SELECT
-        l.dt
-        ,epoch_to_hour(l.block_timestamp) AS block_hour
-        ,l.block_timestamp
-        ,l.network, l.chain, l.chain_id
-        ,l.block_number
-        ,l.transaction_hash
-        ,t.transaction_index
-        ,t.transaction_type
-
-        ,COUNT(*) AS count_total_events
-        ,SUM(CASE WHEN f.category = 'Approval' THEN 1 ELSE 0 END) AS count_approval_events
-        ,SUM(CASE WHEN f.category = 'Wrapping' THEN 1 ELSE 0 END) AS count_wrapping_events
-        ,SUM(CASE WHEN f.category = 'Transfer' THEN 1 ELSE 0 END) AS count_transfer_events
-
-FROM ingestion_logs_v1 AS l
-INNER JOIN ingestion_transactions_v1 AS t 
-        ON l.block_number = t.block_number
-        AND l.transaction_index = t.transaction_index 
-        AND l.transaction_hash = t.hash
-LEFT JOIN topic0_filters AS f
-        ON l.topic0 = f.topic
-
-GROUP BY 1,2,3,4,5,6,7,8,9,10
-
-
+SELECT * FROM topic0_filters
