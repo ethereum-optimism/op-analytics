@@ -65,7 +65,7 @@ pt1 AS (
 
   FROM ingestion_transactions_v1 AS t
   INNER JOIN pb AS b ON t.block_number = b.number
-  LEFT JOIN event_emitting_transactions eet
+  LEFT JOIN event_emitting_transactions_v1 eet
         ON eet.block_number = bl.block_number
         AND eet.transaction_hash = bl.transaction_hash
   WHERE 1=1

@@ -6,8 +6,8 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
 
 
 @register_model(
-    input_datasets=["ingestion/logs_v1"],
-    expected_outputs=["refined_transactions_fees.sql_v1"],
+    input_datasets=["ingestion/logs_v1", "event_emitting_transactions_v1"],
+    expected_outputs=["refined_transactions_fees_v1"],
     auxiliary_views=[
         TemplatedSQLQuery(
             template_name="refined_transactions_fees",

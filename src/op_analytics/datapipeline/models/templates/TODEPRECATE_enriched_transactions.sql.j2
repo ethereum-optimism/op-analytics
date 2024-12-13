@@ -1,13 +1,5 @@
 WITH
 
-pb AS (
-  SELECT
-    number,
-    base_fee_per_gas
-  FROM
-    ingestion_blocks_v1
-),
-
 -- Select the columns that we want from transactions joined to blocks.
 -- Include some minor transformations that are needed for further calculations.
 base_level_transactions AS (
