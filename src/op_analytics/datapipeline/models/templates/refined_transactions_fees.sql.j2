@@ -9,8 +9,8 @@ WITH base_refined AS (
     COALESCE(eet.count_wrapping_events,0) AS log_count_wrapping_events,
     COALESCE(eet.count_transfer_events,0) AS log_count_transfer_events
 
-  FROM base_transaction_fees AS bt
-  LEFT JOIN event_emitting_transactions_v1 eet
+  FROM base_transactions_fees AS bt
+  LEFT JOIN event_emitting_transactions_list AS eet
         ON eet.block_number = bt.block_number
         AND eet.transaction_index = bt.transaction_index
         AND eet.transaction_hash = bt.hash

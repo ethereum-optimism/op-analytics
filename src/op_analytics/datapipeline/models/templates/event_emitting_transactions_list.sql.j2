@@ -25,6 +25,7 @@ SELECT
         ,l.network, l.chain, l.chain_id
         ,l.block_number
         ,l.transaction_hash
+        ,t.transaction_index
         ,t.transaction_type
 
         ,COUNT(*) AS count_total_events
@@ -40,6 +41,6 @@ INNER JOIN ingestion_transactions_v1 AS t
 LEFT JOIN topic0_filters AS f
         ON l.topic0 = f.topic
 
-GROUP BY 1,2,3,4,5,6,7,8,9
+GROUP BY 1,2,3,4,5,6,7,8,9,10
 
 

@@ -1,3 +1,5 @@
+# TO DEPRECATE?
+
 import duckdb
 
 from op_analytics.datapipeline.models.compute.querybuilder import TemplatedSQLQuery
