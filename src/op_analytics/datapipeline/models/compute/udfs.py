@@ -45,7 +45,7 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
                       
     --Count non-zero bytes for binary data that is encoded as a hex string. We don't use hexstr_bytelen because we need to substring the input data.
     CREATE OR REPLACE MACRO hexstr_nonzero_bytes(x)
-    AS length( REPLACE(TO_HEX(FROM_HEX(SUBSTR(x, 3))), '00', '') ) / 2;
+    AS length(replace(hex(unhex(substr(x, 3))), '00', '')) / 2;
     
     --Count non-zero bytes for binary data that is encoded as a hex string
     CREATE OR REPLACE MACRO hexstr_zero_bytes(x)
@@ -57,7 +57,7 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     
     --Get the method id for input data. This is the first 4 bytes, or first 10 string characters for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_method_id(x)
-    AS substring(x,1,10);
+    AS substring(x,1,10)
     """)
 
 
