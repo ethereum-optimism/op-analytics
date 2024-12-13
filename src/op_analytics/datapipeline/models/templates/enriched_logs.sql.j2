@@ -8,19 +8,25 @@ pb AS (
     ingestion_blocks_v1
 ),
 
--- Select the columns that we want from transactions joined to blocks.
+-- Select the columns that we want from logs joined to blocks and transactions.
 -- Include some minor transformations that are needed for further calculations.
-base_level_transactions AS (
+base_level_logs AS (
   SELECT
-    -- Raw Transaction fields
-    t.*,
+    -- Raw Logs fields
+    l.*,
+    -- Raw Transaction Fields
+    t.receipt_gas_used AS tx_gas_used,
+    t.receipt_l1_gas_used AS tx_l1_gas_used,
+    t.from_address AS tx_from_address,
+    t.to_address AS tx_to_address,
+    t.receipt_gas_used AS tx_gas_used,
+    t.derived_l1_gas_used AS tx_l1_gas_used
     -- Fees
     total_gas_fee_native() AS total_gas_fee_native
         l1_gas_fee_native() END AS l1_fee_native,
         l2_gas_fee_native() AS l2_fee_native,
                 l2_priority_gas_fee_native() AS l2_priority_fee_native,
                 l2_base_gas_fee_native() AS l2_base_fee_native,
-    -- TODO: Separate L1 Fee in to Blobs vs L1 Fee Contribution - TBD if we do this here or in the next step
     -- Gas Prices
     wei_to_gwei(b.gas_price) AS l2_gas_price_gwei,
         wei_to_gwei(b.base_fee_per_gas) AS l2_base_gas_price_gwei,
@@ -33,22 +39,13 @@ base_level_transactions AS (
       AS l1_base_scalar,
     coalesce(micro(t.receipt_l1_blob_base_fee_scalar), 0) AS l1_blob_scalar,
 
-    -- Transaction Attributes
-    hexstr_bytelen(t.input) AS input_byte_length,
-    hexstr_bytelen(t.input) AS input_calldata_gas,
-    hexstr_method_id(t.input) AS method_id,
-    transaction_type = 126 AS is_system_transaction,
-    ( -- Attributes Deposited Spec https://specs.optimism.io/protocol/deposits.html#l1-attributes-deposited-transaction
-        transaction_type = 126
-        AND from_address = lower('0xDeaDDEaDDeAdDeAdDEAdDEaddeAddEAdDEAd0001')
-        AND to_address = lower('0x4200000000000000000000000000000000000015')
-     ) AS is_attributes_deposited_transaction,
-
     -- Convenience columns
     epoch_to_hour(t.block_timestamp) AS block_hour,
     epoch_to_day(t.block_timestamp) AS block_date,
     t.receipt_status = 1 AS success,
-  FROM ingestion_transactions_v1 AS t
+
+  FROM ingestion_logs_v1 AS l
+  INNER JOIN ingestion_transactions_v1 AS t
   INNER JOIN pb AS b ON t.block_number = b.number
   WHERE 1=1
     -- Optional address filter for faster results when developing.
