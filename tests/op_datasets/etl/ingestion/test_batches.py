@@ -11,7 +11,7 @@ from op_analytics.datapipeline.etl.ingestion.batches import (
     split_block_range_from_boundaries,
 )
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
-from op_analytics.datapipeline.etl.ingestion.task import IngestionTask
+from op_analytics.datapipeline.etl.ingestion.construct import new_task
 
 
 def test_batches_01():
@@ -158,7 +158,7 @@ def test_expected_markers():
 
     batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
 
-    task = IngestionTask.new(
+    task = new_task(
         max_requested_timestamp=None,
         block_batch=batches[0],
         read_from=RawOnchainDataProvider.GOLDSKY,
@@ -213,7 +213,7 @@ def test_expected_markers_testnet():
         block_range=br,
     )
 
-    task = IngestionTask.new(
+    task = new_task(
         max_requested_timestamp=None,
         block_batch=batches[0],
         read_from=RawOnchainDataProvider.GOLDSKY,
