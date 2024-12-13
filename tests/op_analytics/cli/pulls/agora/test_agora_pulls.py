@@ -45,7 +45,7 @@ sample_votes_data = [
             "support": 1,
             "weight": 1000,
             "reason": "Support proposal",
-            "params": {},
+            "params": {"dummy": "value"},
             "proposalValue": "Proposal Value",
             "proposalTitle": "Proposal Title",
             "proposalType": "Type1",
@@ -60,7 +60,7 @@ sample_votes_data = [
             "support": 0,
             "weight": 500,
             "reason": "Against proposal",
-            "params": {},
+            "params": {"dummy": "value"},
             "proposalValue": "Proposal Value",
             "proposalTitle": "Proposal Title",
             "proposalType": "Type2",
@@ -90,33 +90,36 @@ sample_proposals_data = [
         "cancelledTransactionHash": None,
         "executedTransactionHash": None,
         "proposalResults": {"for": 600, "against": 400, "abstain": 0},
+        "proposalData": {},  # Added empty dict to prevent empty Struct error
+        "unformattedProposalData": {},  # Added empty dict
     }
 ]
 
 
 def test_pull_delegates():
-    with patch(
-        "op_analytics.cli.subcommands.pulls.agora.delegates.Paginator.request"
-    ) as mock_request:
-        # Mock the paginator's request method to return sample data
+    with patch.object(delegates.Paginator, "request") as mock_request:
         mock_response = delegates.PaginatedResponse(
             has_next=False, next_offset=0, data=sample_delegates_data
         )
         mock_request.return_value = mock_response
 
-        result = delegates.pull_delegates()
+        # Corrected the patching of binary_search_max_offset
+        with patch.object(delegates.Paginator, "binary_search_max_offset", return_value=100):
+            # Mock the write method to prevent actual file I/O
+            with patch.object(delegates.Agora.DELEGATES, "write"):
+                result = delegates.pull_delegates()
 
-        # Assertions
-        assert isinstance(result, delegates.AgoraDelegates)
-        assert len(result.delegates_df) == 2
-        assert set(result.delegates_df["address"]) == {"0xDelegate1", "0xDelegate2"}
+                # Assertions
+                assert isinstance(result, delegates.AgoraDelegates)
+                assert len(result.delegates_df) == 2
+                assert set(result.delegates_df["address"]) == {"0xDelegate1", "0xDelegate2"}
+                assert "voting_power_total" in result.delegates_df.columns
 
 
 def test_fetch_delegate_votes():
     with patch(
         "op_analytics.cli.subcommands.pulls.agora.delegate_events.fetch_event_data"
     ) as mock_fetch:
-        # Mock fetch_event_data to return sample votes data
         mock_fetch.return_value = sample_votes_data
 
         delegates_df = pl.DataFrame(
@@ -127,31 +130,29 @@ def test_fetch_delegate_votes():
         )
         mock_delegates = delegates.AgoraDelegates(delegates_df=delegates_df)
 
-        result = delegate_events.fetch_delegate_votes(mock_delegates)
+        # Mock the write method to prevent actual file I/O
+        with patch.object(delegates.Agora.DELEGATE_VOTES, "write"):
+            result = delegate_events.fetch_delegate_votes(mock_delegates)
 
-        # Assertions
-        assert isinstance(result, delegate_events.AgoraDelegateVotes)
-        assert len(result.votes_df) == 2
-        assert set(result.votes_df["address"]) == {"0xDelegate1", "0xDelegate2"}
+            # Assertions
+            assert isinstance(result, delegate_events.AgoraDelegateVotes)
+            assert len(result.votes_df) == 2
+            assert set(result.votes_df["address"]) == {"0xDelegate1", "0xDelegate2"}
 
 
 def test_fetch_proposals():
     with patch(
         "op_analytics.cli.subcommands.pulls.agora.delegate_events.SimplePaginator.fetch_all"
     ) as mock_fetch_all:
-        # Mock fetch_all to return sample proposals data
         mock_fetch_all.return_value = sample_proposals_data
 
         # Mock the write method to prevent actual file I/O
-        with patch(
-            "op_analytics.cli.subcommands.pulls.agora.dataaccess.Agora.PROPOSALS.write"
-        ) as mock_write:
-            # Call the function under test
+        with patch.object(delegates.Agora.PROPOSALS, "write"):
             delegate_events.fetch_proposals()
 
             # Assertions
-            assert mock_write.called
-            args, kwargs = mock_write.call_args
+            # Ensure the write method was called with a DataFrame that includes our sample data
+            args, kwargs = delegates.Agora.PROPOSALS.write.call_args
             df_written = kwargs["dataframe"]
             assert len(df_written) == 1
             assert df_written["id"][0] == "1"
@@ -163,7 +164,7 @@ def test_fetch_delegate_delegators():
     ) as mock_fetch_data:
         sample_delegators = pl.DataFrame(
             {
-                "dt": ["2023-10-05T00:00:00Z"],
+                "dt": ["2023-10-05"],  # Corrected date format
                 "from_address": ["0xDelegator1"],
                 "to_address": ["0xDelegate1"],
                 "allowance": [100],
@@ -182,12 +183,13 @@ def test_fetch_delegate_delegators():
         )
         mock_delegates = delegates.AgoraDelegates(delegates_df=delegates_df)
 
-        # Call the function under test
-        result = delegate_events.fetch_delegate_delegators(mock_delegates)
+        # Mock the write method to prevent actual file I/O
+        with patch.object(delegates.Agora.DELEGATORS, "write"):
+            result = delegate_events.fetch_delegate_delegators(mock_delegates)
 
-        # Assertions
-        assert len(result) == 1
-        assert result["from_address"][0] == "0xDelegator1"
+            # Assertions
+            assert len(result) == 1
+            assert result["from_address"][0] == "0xDelegator1"
 
 
 def test_fetch_delegate_delegatees():
@@ -196,7 +198,7 @@ def test_fetch_delegate_delegatees():
     ) as mock_fetch_data:
         sample_delegatees = pl.DataFrame(
             {
-                "dt": ["2023-10-06T00:00:00Z"],
+                "dt": ["2023-10-06"],  # Corrected date format
                 "from_address": ["0xDelegate1"],
                 "to_address": ["0xDelegatee1"],
                 "allowance": [200],
@@ -207,7 +209,6 @@ def test_fetch_delegate_delegatees():
         )
         mock_fetch_data.return_value = sample_delegatees
 
-        # Create a mock AgoraDelegates object
         delegates_df = pl.DataFrame(
             {
                 "address": ["0xDelegate1"],
@@ -216,8 +217,10 @@ def test_fetch_delegate_delegatees():
         )
         mock_delegates = delegates.AgoraDelegates(delegates_df=delegates_df)
 
-        result = delegate_events.fetch_delegate_delegatees(mock_delegates)
+        # Mock the write method to prevent actual file I/O
+        with patch.object(delegates.Agora.DELEGATEES, "write"):
+            result = delegate_events.fetch_delegate_delegatees(mock_delegates)
 
-        # Assertions
-        assert len(result) == 1
-        assert result["to_address"][0] == "0xDelegatee1"
+            # Assertions
+            assert len(result) == 1
+            assert result["to_address"][0] == "0xDelegatee1"
