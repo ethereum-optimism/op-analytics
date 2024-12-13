@@ -85,9 +85,14 @@ class PythonModelExecutor:
 
         # Register the rendered views.
         for view in self.model.rendered_views():
+            try:
+                obj = self.client.sql(view.query)
+            except Exception as ex:
+                raise Exception(f"sql error on rendered view: {view!r}") from ex
+
             self.client.register(
                 view_name=view.template_name,
-                python_object=self.client.sql(view.query),
+                python_object=obj,
             )
             self.registered_views.append(view.template_name)
 
