@@ -62,9 +62,6 @@ base_level_trace_calls AS (
     INNER JOIN enriched_transasctions_v1 t 
       ON r.block_number = t.block_number 
       AND r.transaction_hash = t.hash
-    LEFT JOIN event_emitting_transactions eet
-      ON eet.block_number = t.block_number
-      AND eet.transaction_hash = t.transaction_hash
     
     WHERE r.trace_type = 'call'
 )
