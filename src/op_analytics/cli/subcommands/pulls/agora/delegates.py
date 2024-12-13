@@ -16,7 +16,6 @@ log = structlog.get_logger()
 
 BASE_URL = "https://vote.optimism.io/api/v1"
 DELEGATES_ENDPOINT = f"{BASE_URL}/delegates"
-API_KEY = env_get("AGORA_API_KEY")
 
 
 @dataclass
@@ -40,6 +39,7 @@ class Paginator:
         self.max_workers = max_workers
         self.limit = 100
         self.failed_offsets: list[int] = []
+        self._api_key = env_get("AGORA_API_TOKEN")
 
     def request(self, offset):
         session = requests.Session()
@@ -50,7 +50,7 @@ class Paginator:
             result = get_data(
                 session,
                 url=self.url,
-                headers={"Authorization": f"Bearer {API_KEY}"},
+                headers={"Authorization": f"Bearer {self._api_key}"},
                 params=self.params,
                 retry_attempts=5,
             )

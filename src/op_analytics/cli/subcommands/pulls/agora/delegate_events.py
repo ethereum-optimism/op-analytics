@@ -13,7 +13,6 @@ from op_analytics.coreutils.env.vault import env_get
 log = structlog.get_logger()
 
 BASE_URL = "https://vote.optimism.io/api/v1"
-API_KEY = env_get("AGORA_API_KEY")
 
 
 @dataclass
@@ -33,12 +32,15 @@ class SimplePaginator:
     url: str
     limit: int = 50
 
+    def __post_init__(self):
+        self._api_key = env_get("AGORA_API_TOKEN")
+
     def request(self, offset: int) -> PaginatedResponse:
         session = requests.Session()
         result = get_data(
             session,
             url=self.url,
-            headers={"Authorization": f"Bearer {API_KEY}"},
+            headers={"Authorization": f"Bearer {self._api_key}"},
             params={"offset": offset, "limit": self.limit},
         )
 
@@ -192,10 +194,11 @@ def fetch_proposals() -> pl.DataFrame:
 def _fetch_single_address_data(address: str, endpoint: str) -> List[dict]:
     session = requests.Session()
     url = f"{BASE_URL}/delegates/{address}/{endpoint}"
+    api_key = env_get("AGORA_API_TOKEN")
     result = get_data(
         session,
         url=url,
-        headers={"Authorization": f"Bearer {API_KEY}"},
+        headers={"Authorization": f"Bearer {api_key}"},
         params={},
     )
     return result.get("votes", []) if endpoint == "delegators" else [result]
