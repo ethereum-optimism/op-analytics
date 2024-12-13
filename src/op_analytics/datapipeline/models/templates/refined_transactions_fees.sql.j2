@@ -4,22 +4,29 @@ WITH base_refined AS (
     -- Transaction fields
     bt.*,
 
-    COALESCE(eet.count_total_events,0) AS log_count_total_events,
-    COALESCE(eet.count_approval_events,0) AS log_count_approval_events,
-    COALESCE(eet.count_wrapping_events,0) AS log_count_wrapping_events,
-    COALESCE(eet.count_transfer_events,0) AS log_count_transfer_events
+    COALESCE(eet.count_total_events, 0) AS log_count_total_events,
+    COALESCE(eet.count_approval_events, 0) AS log_count_approval_events,
+    COALESCE(eet.count_wrapping_events, 0) AS log_count_wrapping_events,
+    COALESCE(eet.count_transfer_events, 0) AS log_count_transfer_events
 
   FROM base_transactions_fees AS bt
   LEFT JOIN event_emitting_transactions_list AS eet
-        ON eet.block_number = bt.block_number
-        AND eet.transaction_index = bt.transaction_index
-        AND eet.transaction_hash = bt.hash
-  WHERE 1=1
+    ON
+      bt.block_number = eet.block_number
+      AND bt.transaction_index = eet.transaction_index
+      AND bt.hash = eet.transaction_hash
+  WHERE 1 = 1
 )
 
 SELECT
-  *
-  , log_count_total_events > log_count_approval_events + log_count_wrapping_events + log_count_transfer_events AS is_qualified_tx_not_approval_wrapping_transfer
-  , log_count_total_events > log_count_approval_events + log_count_wrapping_events AS is_qualified_tx_not_approval_wrapping
+  *,
+  
+  log_count_total_events
+    > log_count_approval_events + log_count_wrapping_events + log_count_transfer_events
+  AS is_qualified_tx_not_approval_wrapping_transfer,
+
+  log_count_total_events
+    > log_count_approval_events + log_count_wrapping_events
+  AS is_qualified_tx_not_approval_wrapping
 
 FROM base_refined

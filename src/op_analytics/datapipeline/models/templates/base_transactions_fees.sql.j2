@@ -34,7 +34,7 @@ pt1 AS (
     t.receipt_l1_blob_base_fee,
     b.base_fee_per_gas,
     t.max_priority_fee_per_gas,
-    if(t.max_priority_fee_per_gas = 0, t.gas_price - t.max_priority_fee_per_gas, 0) AS base_legacy_fee_per_gas,
+    if(t.max_priority_fee_per_gas = 0, t.gas_price - b.base_fee_per_gas, 0) AS base_legacy_fee_per_gas,
     -- L2 Fees and breakdown into BASE and PRIORITY contributions
     CASE WHEN t.gas_price = 0 THEN 0 ELSE t.gas_price * t.receipt_gas_used END AS l2_fee,
     CASE WHEN t.gas_price = 0 THEN 0 ELSE t.max_priority_fee_per_gas * t.receipt_gas_used END AS l2_priority_fee,
@@ -93,7 +93,7 @@ SELECT
   l2_fee + l1_fee AS tx_fee,
   -- 
   -- L2 Legacy Fee
-  if(l2_priority_fee = 0, l2_fee + l1_fee - l2_base_fee, 0) AS l2_base_legacy_fee,
+  if(l2_priority_fee = 0, l2_fee - l2_base_fee, 0) AS l2_base_legacy_fee,
   -- 
   -- L1 Base 
   div16(l1_gas_used) * l1_base_fee_scalar * receipt_l1_gas_price AS l1_base_fee,
