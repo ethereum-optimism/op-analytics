@@ -94,7 +94,7 @@ def human_rows(num_rows):
 
 def human_interval(num_seconds: int) -> str:
     if num_seconds < 120:
-        return f"{num_seconds}s"
+        return f"{num_seconds:.0f} secs"
     elif num_seconds < 7200:
         num_minutes = num_seconds / 60
         return f"{num_minutes:.1f}m"
