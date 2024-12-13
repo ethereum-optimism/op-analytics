@@ -82,7 +82,12 @@ SELECT
   ) AS l1_base_price_avg_gwei,
 
   wei_to_gwei(safe_div(sum(l1_blob_fee), sum(l1_blob_scaled_size)))
-    AS l1_blob_fee_avg_gwei
+    AS l1_blob_fee_avg_gwei,
+
+  -- Qualified Transactions Variants
+  count(if(is_qualified_tx_not_approval_wrapping_transfer, 1, NULL)) AS qualified_tx_not_approval_wrapping_transfer_cnt,
+  count(if(is_qualified_tx_not_approval_wrapping, 1, NULL)) AS qualified_tx_not_approval_wrapping_cnt
+
 FROM
   refined_transactions_fees
   WHERE gas_price > 0
