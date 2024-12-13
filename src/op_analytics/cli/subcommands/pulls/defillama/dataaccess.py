@@ -42,9 +42,6 @@ class DefiLlama(str, Enum):
             root_path=self.root_path,
             dataframe=dataframe,
             sort_by=sort_by,
-            # Override the location value here. To write to the local file system
-            # use DataLocation.LOCAL
-            location=DataLocation.GCS,
         )
 
     def read(
