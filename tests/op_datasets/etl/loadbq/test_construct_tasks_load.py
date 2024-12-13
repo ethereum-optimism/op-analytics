@@ -38,7 +38,6 @@ def test_construct():
             range_spec="@20241201:+1",
             write_to=DataLocation.GCS,
             bq_dataset_name="dummy_dataset",
-            force_complete=False,
         )
 
     assert tasks == [
@@ -76,7 +75,6 @@ def test_construct():
                         marker_path="dummy_dataset/transactions/2024-12-01",
                     ),
                 ],
-                force=False,
                 process_name="default",
             ),
             outputs=[

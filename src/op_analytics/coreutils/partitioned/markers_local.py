@@ -5,7 +5,7 @@ from op_analytics.coreutils.duckdb_local.client import insert_duckdb_local, run_
 from op_analytics.coreutils.env.aware import etl_monitor_markers_database
 from op_analytics.coreutils.logger import structlog
 
-from .markers_core import DateFilter, MarkerFilter, check_marker_results
+from .markers_core import DateFilter, MarkerFilter
 
 log = structlog.get_logger()
 
@@ -26,18 +26,16 @@ class LocalMarkers:
     def write_marker(self, markers_table: str, marker_df: pa.Table):
         insert_duckdb_local(self.markers_db, markers_table, marker_df)
 
-    def marker_exists(self, marker_path: str, markers_table: str) -> bool:
-        df = run_query_duckdb_local(
+    def query_single_marker(self, marker_path: str, markers_table: str) -> pl.DataFrame:
+        return run_query_duckdb_local(
             query=f"""
             SELECT
-                marker_path, num_parts, count(DISTINCT data_path) as num_paths
+                marker_path, num_parts, data_path
             FROM {self.markers_db}.{markers_table} 
             WHERE marker_path = ?
-            GROUP BY marker_path, num_parts
             """,
             params=[marker_path],
         ).pl()
-        return check_marker_results(df)
 
     def query_markers(
         self,

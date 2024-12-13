@@ -1,19 +1,19 @@
 import concurrent.futures
+import math
 from dataclasses import dataclass
 from typing import Any, Callable
-from op_analytics.coreutils.time import now
 
-from op_analytics.coreutils.logger import structlog, bound_contextvars
+from op_analytics.coreutils.logger import bound_contextvars, human_interval, structlog
+from op_analytics.coreutils.time import now
 
 log = structlog.get_logger()
 
 
 class ProgressTracker:
-    """
-    Tracks progress and ETA for a batch of tasks.
-    Instead of logging a separate "Task progress" line, we bind context variables
-    so that when the wrapped function logs, the ETA and progress fields are included
-    in that log line.
+    """Counter and ETA tracking when running tasks concurrently.
+
+    Wraps the user provided task function with bound context vars so that all
+    logs include counter and ETA infor.
     """
 
     def __init__(self, total_tasks: int):
@@ -31,14 +31,16 @@ class ProgressTracker:
         elapsed = (now() - self.start_time).total_seconds()
         seconds_per_task = elapsed / self.completed_tasks
         remaining_tasks = self.total_tasks - self.completed_tasks
-        eta_seconds = remaining_tasks * seconds_per_task
+        eta_seconds = math.ceil(remaining_tasks * seconds_per_task)
         return human_interval(eta_seconds)
 
     def wrap(self, func, current_index: int):
         def wrapper(target_item):
             with bound_contextvars(counter=self.counter(current_index), eta=self.eta()):
-                return func(target_item)
-            self.completed_tasks += 1
+                try:
+                    return func(target_item)
+                finally:
+                    self.completed_tasks += 1
 
         return wrapper
 
