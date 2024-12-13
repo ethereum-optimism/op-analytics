@@ -4,6 +4,7 @@ import polars as pl
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
+from op_analytics.coreutils.time import now_dt
 
 from .dataaccess import GrowThePie
 
@@ -36,7 +37,7 @@ def pull_growthepie_summary() -> GrowthepieFundamentalSummary:
     summary_raw_data = get_data(session, f"{URL_BASE}{FUNDAMENTALS_ENDPOINT}")
     summary_df = pl.DataFrame(summary_raw_data)
 
-    summary_df.rename({"date": "dt"})
+    summary_df = summary_df.rename({"date": "dt"})
 
     GrowThePie.FUNDAMENTALS_SUMMARY.write(
         dataframe=summary_df,
