@@ -87,7 +87,7 @@ class TestCreationTraces001(IntermediateModelTestBase):
             "error": "VARCHAR",
             "status": "BIGINT",
             "tx_method_id": "VARCHAR",
-            "code_bytelength": "DOUBLE",
+            "code_bytelength": "INTEGER",
         }
 
     def test_single_tx(self):
