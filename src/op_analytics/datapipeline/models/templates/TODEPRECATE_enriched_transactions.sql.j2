@@ -24,7 +24,10 @@ base_level_transactions AS (
     -- Gas Prices
     wei_to_gwei(b.gas_price) AS l2_gas_price_gwei,
         wei_to_gwei(b.base_fee_per_gas) AS l2_base_gas_price_gwei,
-        wei_to_gwei(t.gas_price - b.base_fee_per_gas) AS l2_priority_gas_price_gwei,
+        CASE WHEN t.max_priority_fee_per_gas = 0 THEN 0
+                ELSE wei_to_gwei(t.gas_price - b.base_fee_per_gas)
+        END AS l2_priority_gas_price_gwei,
+        wei_to_gwei(t.gas_price - b.base_fee_per_gas) AS l2_legacy_priority_gas_price_gwei,
 
     wei_to_gwei(t.receipt_l1_gas_price) AS l1_base_gas_price_gwei,
     wei_to_gwei(t.receipt_l1_blob_base_fee) AS l1_blob_base_gas_price_gwei,
@@ -35,7 +38,7 @@ base_level_transactions AS (
 
     -- Transaction Attributes
     hexstr_bytelen(t.input) AS input_byte_length,
-    hexstr_bytelen(t.input) AS input_calldata_gas,
+    hexstr_calldata_gas(t.input) AS input_calldata_gas,
     hexstr_method_id(t.input) AS method_id,
     transaction_type = 126 AS is_system_transaction,
     ( -- Attributes Deposited Spec https://specs.optimism.io/protocol/deposits.html#l1-attributes-deposited-transaction

@@ -13,7 +13,22 @@ pb AS (
 base_level_trace_calls AS (
   SELECT
     -- Raw Trace fields
-    r.*,
+    r.dt,
+    r.chain,
+    r.chain_id,
+    r.network,
+    r.block_number,
+    r.block_timestamp,
+    r.transaction_hash,
+    r.transaction_index,
+    r.from_address,
+    r.to_address,
+    r.gas AS gas_limit,
+    r.gas_used,
+    r.trace_address,
+    r.error,
+    r.trace_type,
+
     -- Computed Trace Fields
     hexstr_method_id(r.input) AS trc_method_id, 
       -- Find the next level up in the trace tree, so that we can subtract out subtract gas.
@@ -32,7 +47,7 @@ base_level_trace_calls AS (
     t.receipt_gas_used AS tx_gas_used,
     t.derived_l1_gas_used AS tx_l1_gas_used
     -- Computed Transaction Fee Fields
-    total_gas_fee_native AS tx_total_gas_fee_native,
+    tx_fee_native AS tx_fee_native,
     l1_fee_native AS tx_l1_fee_native,
     l2_fee_native AS tx_l2_fee_native,
     l2_priority_fee_native AS tx_l2_priority_fee_native,
