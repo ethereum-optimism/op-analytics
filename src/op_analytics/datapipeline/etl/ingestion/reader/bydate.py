@@ -69,12 +69,12 @@ def construct_readers_bydate(
                 input_data = are_inputs_ready(
                     markers_df=filtered_df,
                     dateval=dateval,
-                    root_paths_to_check=data_spec.root_paths_physical,
+                    root_paths_to_check=data_spec.root_paths_physical(chain),
                     storage_location=read_from,
                 )
 
                 # Update data path mapping so keys are logical paths.
-                dataset_paths = data_spec.data_paths(input_data.data_paths)
+                dataset_paths = data_spec.data_paths(chain, input_data.data_paths)
 
                 obj = DataReader(
                     partitions=Partition.from_tuples(

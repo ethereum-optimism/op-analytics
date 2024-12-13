@@ -61,21 +61,12 @@ def determine_network(chain: str) -> ChainNetwork:
         return ChainNetwork.MAINNET
 
     # NOTE: The implementation below relies on reading the chain metadata gsheet.
+    #       For now it is simpler to use the "_sepolia" suffix to split testenets.
     # if chain in goldsky_mainnet_chains():
     #     return ChainNetwork.MAINNET
     # if chain in goldsky_testnet_chains():
     #     return ChainNetwork.TESTNET
     # raise ValueError(f"could not determine network for chain: {chain!r}")
-
-
-def ensure_single_network(chains: list[str]) -> ChainNetwork:
-    if all(determine_network(_) == ChainNetwork.MAINNET for _ in chains):
-        return ChainNetwork.MAINNET
-
-    if all(determine_network(_) == ChainNetwork.TESTNET for _ in chains):
-        return ChainNetwork.TESTNET
-
-    raise ValueError(f"could not determine MAINNET/TESTNET for chains: {chains}")
 
 
 def verify_goldsky_tables(chains: list[str]) -> None:

@@ -39,7 +39,7 @@ def construct_tasks(
             blocks_by_chain[chain] = block_range
         max_requested_timestamp = None
 
-        # Determine the time range.
+        # Determine the time range for the provided block range.
         time_range = time_range_for_blocks(
             chain=chains[0],
             min_block=block_range.min,
@@ -51,7 +51,7 @@ def construct_tasks(
         time_range = TimeRange.from_spec(range_spec)
 
         # We need datevals to query completion markers so we can determine
-        # which data is not ingested yet. Datevals are padded since the block
+        # which data is not ingested yet. Datevals are padded since block
         # batches may straddle a date boundary on either end.
         output_marker_datevals = time_range.to_date_range().padded_dates()
         block_range = None

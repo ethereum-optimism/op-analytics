@@ -58,14 +58,14 @@ def construct_readers_byblock(
                 continue
 
             # Check if all markers present are ready.
-            input_data = are_markers_complete(
+            input_data = is_batch_ready(
                 markers_df=group_df,
-                root_paths_to_check=data_spec.root_paths_physical,
+                root_paths_to_check=data_spec.root_paths_physical(chain),
                 storage_location=read_from,
             )
 
             # Update data path mapping so keys are logical paths.
-            dataset_paths = data_spec.data_paths(input_data.data_paths)
+            dataset_paths = data_spec.data_paths(chain, input_data.data_paths)
 
             extra_columns_df = group_df.select("num_blocks", "min_block", "max_block").unique()
             assert len(extra_columns_df) == 1
@@ -95,7 +95,7 @@ def construct_readers_byblock(
     return sorted(readers, key=_sort)
 
 
-def are_markers_complete(
+def is_batch_ready(
     markers_df: pl.DataFrame,
     root_paths_to_check: Iterable[str],
     storage_location: DataLocation,

@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date
 
 import polars as pl
@@ -6,7 +6,7 @@ import polars as pl
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dataaccess import init_data_access, DateFilter, MarkerFilter
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.datapipeline.chains.goldsky_chains import ensure_single_network, ChainNetwork
+from op_analytics.datapipeline.chains.goldsky_chains import determine_network, ChainNetwork
 from op_analytics.coreutils.time import date_fromstr
 
 
@@ -52,21 +52,28 @@ class IngestionDataSpec:
     # than physical names where the data is actualy stored.
     root_paths_to_read: list[str] | None = None
 
-    # Mapping from actual physical paths that will be read to logical paths
-    # to read. Physical paths can be different for TESTNET chains.
-    root_path_mapping: dict[str, str] = field(init=False)
+    def root_path_mapping(self, chain: str) -> dict[str, str]:
+        """Mapping from actual physical paths that will be read to logical paths.
 
-    # List of physical root paths that are checked and read from storage.
-    root_paths_physical: list[str] = field(init=False)
-
-    def __post_init__(self):
+        Physical paths can be different for TESTNET chains.
+        """
         if self.root_paths_to_read is None:
             root_paths_to_read = DEFAULT_INGESTION_ROOT_PATHS
         else:
             root_paths_to_read = self.root_paths_to_read
 
-        self.root_path_mapping = update_root_paths(self.chains, root_paths_to_read)
-        self.root_paths_physical = sorted(self.root_path_mapping.keys())
+        return update_root_paths(chain, root_paths_to_read)
+
+    def root_paths_physical(self, chain: str) -> list[str]:
+        """Physical root paths that are checked and read from storage."""
+        return sorted(self.root_path_mapping(chain).keys())
+
+    def root_paths_query_filter(self):
+        """Root path filter used when querying markers."""
+        physical_root_paths = set()
+        for chain in self.chains:
+            physical_root_paths.update(self.root_paths_physical(chain))
+        return sorted(physical_root_paths)
 
     def query_markers(
         self,
@@ -111,7 +118,7 @@ class IngestionDataSpec:
                 ),
                 "datasets": MarkerFilter(
                     column="root_path",
-                    values=self.root_paths_physical,
+                    values=self.root_paths_query_filter(),
                 ),
             },
         )
@@ -120,7 +127,11 @@ class IngestionDataSpec:
 
         return paths_df
 
-    def data_paths(self, physical_data_paths: dict[str, list[str]] | None) -> dict[str, list[str]]:
+    def data_paths(
+        self,
+        chain,
+        physical_data_paths: dict[str, list[str]] | None,
+    ) -> dict[str, list[str]]:
         """Updates keys to be logical pahts.
 
         The input dictionary is a map from physical root path to physical data paths.
@@ -128,11 +139,11 @@ class IngestionDataSpec:
         """
         updated_dataset_paths = {}
         for root_path, data_paths in (physical_data_paths or {}).items():
-            updated_dataset_paths[self.root_path_mapping[root_path]] = data_paths
+            updated_dataset_paths[self.root_path_mapping(chain)[root_path]] = data_paths
         return updated_dataset_paths
 
 
-def update_root_paths(chains: list[str], root_paths: list[str]) -> dict[str, str]:
+def update_root_paths(chain: str, root_paths: list[str]) -> dict[str, str]:
     """Update root paths to account for TESTNET network.
 
     Returns a dictionary where keys are the updated root_paths and values are the
@@ -149,7 +160,7 @@ def update_root_paths(chains: list[str], root_paths: list[str]) -> dict[str, str
     This lets model implementations always refer to data with the mainnet path, for example
     "ingestion/traces_v1". When running on testnet we use the correct location for the data.
     """
-    network = ensure_single_network(chains)
+    network = determine_network(chain)
     updated_root_paths = {}
     if network == ChainNetwork.TESTNET:
         for path in root_paths:
