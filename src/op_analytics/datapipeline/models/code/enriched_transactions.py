@@ -10,6 +10,10 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
     expected_outputs=["enriched_transactions_v1"],
     auxiliary_views=[
         TemplatedSQLQuery(
+            template_name="event_emitting_transactions",
+            context={},
+        ),
+        TemplatedSQLQuery(
             template_name="enriched_transactions",
             context={},
         ),
@@ -17,5 +21,5 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
 )
 def enriched_transactions(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
     return {
-        "enriched_transactions_v1": duckdb_client.view("enriched_transactions.sql"),
+        "enriched_transactions_v1": duckdb_client.view("enriched_transactions"),
     }

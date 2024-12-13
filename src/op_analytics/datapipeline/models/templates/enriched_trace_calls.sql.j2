@@ -10,7 +10,7 @@ pb AS (
 
 -- Select the columns that we want from transactions joined to blocks.
 -- Include some minor transformations that are needed for further calculations.
-base_level_traces AS (
+base_level_trace_calls AS (
   SELECT
     -- Raw Trace fields
     r.*,
@@ -37,7 +37,6 @@ base_level_traces AS (
     l2_fee_native AS tx_l2_fee_native,
     l2_priority_fee_native AS tx_l2_priority_fee_native,
     l2_base_fee_native AS tx_l2_base_fee_native,
-    tx_method_id,
     -- Computed Transaction Gas Price Fields
     l2_gas_price_gwei,
     l2_base_gas_price_gwei,
@@ -45,30 +44,27 @@ base_level_traces AS (
     l1_base_gas_price_gwei,
     l1_blob_base_gas_price_gwei,
 
-    hexstr_method_id(t.input) AS tx_method_id,
-    hexstr_method_id(r.input) AS trc_method_id, 
-    ---
-    toDecimal128(t.receipt_l1_gas_price, 18) / 1e9 AS tx_l1_gas_price_gwei,
-    toDecimal128(t.gas_price, 18) / 1e9 AS tx_gas_price_gwei,
-    toDecimal128(b.base_fee_per_gas, 18) / 1e9 AS tx_base_gas_price_gwei,
-    (toDecimal128(t.gas_price, 18) - toDecimal128(b.base_fee_per_gas, 18)) / 1e9 AS tx_priority_gas_price_gwei,
-    ---
-    toDecimal128(t.receipt_l1_fee, 18) / 1e18 + (toDecimal128(t.gas_price, 18) * toDecimal128(t.receipt_gas_used, 0)) / 1e18 AS tx_gas_fee_native,
-    toDecimal128(t.receipt_l1_fee, 18) / 1e18 AS tx_l1_fee_native,
-    toDecimal128(t.receipt_l1_fee, 18) / 1e18 + (toDecimal128(t.gas_price, 18) * toDecimal128(t.receipt_gas_used, 0)) / 1e18 AS tx_l2_fee_native,
-    (toDecimal128(b.base_fee_per_gas, 18) * toDecimal128(t.receipt_gas_used, 0)) / 1e18 AS tx_base_fee_native,
-    ((toDecimal128(t.gas_price, 18) - toDecimal128(b.base_fee_per_gas, 18)) * toDecimal128(t.receipt_gas_used, 0)) / 1e18 AS tx_priority_fee_native
+    t.method_id AS tx_method_id,
+    hexstr_method_id(r.input) AS trc_method_id,
 
+    -- Event Columns
+    log_count_total_events,
+    log_count_approval_events,
+    log_count_wrapping_events,
+    log_count_transfer_events,
+    
     -- Convenience columns
-    epoch_to_hour(t.block_timestamp) AS block_hour,
-    epoch_to_day(t.block_timestamp) AS block_date,
-    t.receipt_status = 1 AS tx_success,
+    t.block_hour,
+    t.success AS tx_success,
     t.receipt_status = 1 AS trc_success,
 
-    FROM traces_v1 r 
+    FROM ingestion_traces_v1 r 
     INNER JOIN enriched_transasctions_v1 t 
       ON r.block_number = t.block_number 
       AND r.transaction_hash = t.hash
+    LEFT JOIN event_emitting_transactions eet
+      ON eet.block_number = t.block_number
+      AND eet.transaction_hash = t.transaction_hash
     
     WHERE r.trace_type = 'call'
 )
@@ -113,7 +109,7 @@ bl.*
 , bl.tx_priority_fee_native / tpt.count_traces AS tx_priority_fee_native_per_call_amortized
 
 
-FROM base_level_traces bl
+FROM base_level_trace_calls bl
 INNER JOIN get_traces_per_tansaction tpt -- join on txn level
     ON bl.block_number = tpt.block_number
     AND bl.transaction_hash = tpt.transaction_hash

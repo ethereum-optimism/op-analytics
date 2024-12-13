@@ -6,16 +6,16 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
 
 
 @register_model(
-    input_datasets=["ingestion/logs_v1", "ingestion/transactions_v1", "ingestion/blocks_v1"],
-    expected_outputs=["enriched_logs_v1"],
+    input_datasets=["ingestion/logs_v1"],
+    expected_outputs=["event_emitting_transactions_list_v1"],
     auxiliary_views=[
         TemplatedSQLQuery(
-            template_name="enriched_logs",
+            template_name="event_emitting_transactions_list",
             context={},
         ),
     ],
 )
-def enriched_transactions(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
+def event_emitting_transactions_list(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
     return {
-        "enriched_logs_v1": duckdb_client.view("enriched_logs.sql"),
+        "event_emitting_transactions_list_v1": duckdb_client.view("event_emitting_transactions_list"),
     }

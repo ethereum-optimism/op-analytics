@@ -46,8 +46,8 @@ base_level_transactions AS (
 
     -- Convenience columns
     epoch_to_hour(t.block_timestamp) AS block_hour,
-    epoch_to_day(t.block_timestamp) AS block_date,
-    t.receipt_status = 1 AS success,
+    t.receipt_status = 1 AS success
+
   FROM ingestion_transactions_v1 AS t
   INNER JOIN pb AS b ON t.block_number = b.number
   WHERE 1=1
@@ -56,15 +56,25 @@ base_level_transactions AS (
 ),
 
 
--- Add fallback l1 gas estimate based on observed fee and weighted gas and blob prices.
 
-  SELECT
-    *,
-    coalesce(
-      receipt_l1_gas_used,
-      round(16 * l1_fee / (
-        (l1_base_scalar * receipt_l1_gas_price)
-        + (l1_blob_scalar * receipt_l1_blob_base_fee)
-      ))::INT64
-    ) AS derived_l1_gas_used
-  FROM base_level_transactions
+
+SELECT
+        bl.*
+        -- Add fallback l1 gas estimate based on observed fee and weighted gas and blob prices.
+        , coalesce(
+        receipt_l1_gas_used,
+        round(16 * receipt_l1_fee / (
+                (l1_base_scalar * receipt_l1_gas_price)
+                + (l1_blob_scalar * receipt_l1_blob_base_fee)
+        ))::INT64
+        ) AS derived_l1_gas_used
+        -- Add event emitting transaction fields
+        , COALESCE(eet.count_total_events,0) AS log_count_total_events
+        , COALESCE(eet.count_approval_events,0) AS log_count_approval_events
+        , COALESCE(eet.count_wrapping_events,0) AS log_count_wrapping_events
+        , COALESCE(eet.count_transfer_events,0) AS log_count_transfer_events
+
+  FROM base_level_transactions bl 
+  LEFT JOIN event_emitting_transactions eet
+        ON eet.block_number = bl.block_number
+        AND eet.transaction_hash = bl.transaction_hash
