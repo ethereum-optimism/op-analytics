@@ -21,6 +21,18 @@ DEFAULT_INGESTION_ROOT_PATHS = [
     "ingestion/traces_v1",
 ]
 
+INGESTION_MARKERS_QUERY_SCHEMA = {
+    "dt": pl.Date,
+    "chain": pl.String,
+    "marker_path": pl.String,
+    "num_parts": pl.UInt32,
+    "num_blocks": pl.Int32,
+    "min_block": pl.Int64,
+    "max_block": pl.Int64,
+    "root_path": pl.String,
+    "data_path": pl.String,
+}
+
 
 @dataclass
 class IngestionData:
@@ -38,7 +50,7 @@ class IngestionDataSpec:
 
     # Root paths that will be read. Logical names which may be different
     # than physical names where the data is actualy stored.
-    root_paths_to_read: list[str]
+    root_paths_to_read: list[str] | None = None
 
     # Mapping from actual physical paths that will be read to logical paths
     # to read. Physical paths can be different for TESTNET chains.
@@ -48,7 +60,12 @@ class IngestionDataSpec:
     root_paths_physical: list[str] = field(init=False)
 
     def __post_init__(self):
-        self.root_path_mapping = update_root_paths(self.chains, self.root_paths_to_read)
+        if self.root_paths_to_read is None:
+            root_paths_to_read = DEFAULT_INGESTION_ROOT_PATHS
+        else:
+            root_paths_to_read = self.root_paths_to_read
+
+        self.root_path_mapping = update_root_paths(self.chains, root_paths_to_read)
         self.root_paths_physical = sorted(self.root_path_mapping.keys())
 
     def query_markers(
@@ -79,6 +96,8 @@ class IngestionDataSpec:
             projections=[
                 "dt",
                 "chain",
+                "marker_path",
+                "num_parts",
                 "num_blocks",
                 "min_block",
                 "max_block",
@@ -97,15 +116,7 @@ class IngestionDataSpec:
             },
         )
 
-        assert dict(paths_df.schema) == {
-            "dt": pl.Date,
-            "chain": pl.String,
-            "num_blocks": pl.Int32,
-            "min_block": pl.Int64,
-            "max_block": pl.Int64,
-            "root_path": pl.String,
-            "data_path": pl.String,
-        }
+        assert dict(paths_df.schema) == INGESTION_MARKERS_QUERY_SCHEMA
 
         return paths_df
 

@@ -22,6 +22,8 @@ def make_dataframe(path: str):
             schema={
                 "dt": pl.UInt16(),
                 "chain": pl.String(),
+                "marker_path": pl.String(),
+                "num_parts": pl.UInt32(),
                 "num_blocks": pl.Int32(),
                 "min_block": pl.Int64(),
                 "max_block": pl.Int64(),

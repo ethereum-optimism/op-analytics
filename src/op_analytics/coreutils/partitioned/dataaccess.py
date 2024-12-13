@@ -107,32 +107,14 @@ class PartitionedDataAccess:
         Determine if the marker is complete and correct.
         """
         store: MarkerStore = marker_store(data_location)
-        marker_df = store.query_single_marker(
+        markers_df = store.query_single_marker(
             marker_path=marker_path,
             markers_table=markers_table,
         )
-
-        df = marker_df.sql("""
-            SELECT
-                marker_path, num_parts, count(DISTINCT data_path) as num_paths
-            FROM self
-            GROUP BY marker_path, num_parts
-            """)
-
-        if len(df) == 0:
-            return False
-
-        assert len(df) == 1
-        row = df.to_dicts()[0]
-
-        if row["num_parts"] == row["num_paths"]:
-            return True
-        else:
-            marker_path = row["marker_path"]
-            log.error(
-                f"distinct data paths do not match expeted num parts for marker: {marker_path!r}"
-            )
-            return False
+        return check_marker(
+            markers_df=markers_df,
+            marker_path=marker_path,
+        )
 
     def all_markers_exist(
         self,
@@ -208,3 +190,30 @@ def complete_markers(
     log.debug(f"{num_complete}/{len(markers)} complete")
 
     return complete
+
+
+def check_marker(markers_df: pl.DataFrame | None, marker_path: str) -> bool:
+    """Check if the marker is complete and correct."""
+    if markers_df is None:
+        return False
+
+    df = markers_df.sql(f"""
+        SELECT
+            marker_path, num_parts, count(DISTINCT data_path) as num_paths
+        FROM self
+        WHERE marker_path = '{marker_path}'
+        GROUP BY marker_path, num_parts
+        """)
+
+    if len(df) == 0:
+        return False
+
+    assert len(df) == 1
+    row = df.to_dicts()[0]
+
+    if row["num_parts"] == row["num_paths"]:
+        return True
+    else:
+        marker_path = row["marker_path"]
+        log.error(f"distinct data paths do not match expeted num parts for marker: {marker_path!r}")
+        return False

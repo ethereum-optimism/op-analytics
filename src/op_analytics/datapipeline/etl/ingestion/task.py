@@ -61,6 +61,11 @@ class IngestionTask:
         ctx = self.block_batch.contextvars
         if self.progress_indicator:
             ctx["task"] = self.progress_indicator
+
+        if self.write_manager.complete_markers is not None:
+            ctx["complete_markers"] = (
+                f"{len(self.write_manager.complete_markers)}/{len(self.write_manager.expected_outputs)}"
+            )
         return ctx
 
     def store_output(self, output: OutputData):

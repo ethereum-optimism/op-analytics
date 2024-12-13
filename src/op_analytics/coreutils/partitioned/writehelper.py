@@ -61,7 +61,7 @@ class WriteManager[T: Writeable](EnforceOverrides):
     # Complete Markers. A list of markers that are already complete.
     # If a marker is already complete then we can skip writing its
     # corresponding output.
-    complete_markers: list[str] = field(default_factory=list)
+    complete_markers: list[str] | None = None
 
     # Process that is writing data. This can be used to identify backfills for example.
     process_name: str = field(default="default")
@@ -80,6 +80,15 @@ class WriteManager[T: Writeable](EnforceOverrides):
             raise ValueError("expected output names are not unique")
 
     def all_outputs_complete(self) -> bool:
+        expected_markers = [_.marker_path for _ in self.expected_outputs]
+
+        # Use complete markers stored in the task.
+        if self.complete_markers is not None:
+            return set(self.complete_markers) == set(expected_markers)
+
+        # Query the markers database to find out which markers are complete.
+        # TODO: Delete this code. We should always pre-fetch completion markers
+        #       so we don't have to make repeated database queries for each task.
         if self._is_complete is None:
             expected_markers = [_.marker_path for _ in self.expected_outputs]
 

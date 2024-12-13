@@ -22,6 +22,8 @@ def make_dataframe(path: str):
             schema={
                 "dt": pl.UInt16(),
                 "chain": pl.String(),
+                "marker_path": pl.String(),
+                "num_parts": pl.UInt32(),
                 "num_blocks": pl.Int32(),
                 "min_block": pl.Int64(),
                 "max_block": pl.Int64(),
@@ -32,8 +34,12 @@ def make_dataframe(path: str):
 
 
 def test_construct():
-    with patch("op_analytics.datapipeline.etl.ingestion.construct.block_range_for_dates") as m1:
+    with (
+        patch("op_analytics.datapipeline.etl.ingestion.construct.block_range_for_dates") as m1,
+        patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m2,
+    ):
         m1.return_value = BlockRange(min=16421809, max=16439980)
+        m2.return_value = make_dataframe("sample_ingestion_markers.json")
 
         tasks = construct_tasks(
             chains=["mode"],
@@ -87,6 +93,12 @@ def test_construct():
                         marker_path="ingestion/traces_v1/mode/000016416000",
                     ),
                 ],
+                complete_markers=[
+                    "ingestion/blocks_v1/mode/000016416000",
+                    "ingestion/transactions_v1/mode/000016416000",
+                    "ingestion/logs_v1/mode/000016416000",
+                    "ingestion/traces_v1/mode/000016416000",
+                ],
             ),
             progress_indicator="",
         ),
@@ -134,6 +146,12 @@ def test_construct():
                         marker_path="ingestion/traces_v1/mode/000016424000",
                     ),
                 ],
+                complete_markers=[
+                    "ingestion/blocks_v1/mode/000016424000",
+                    "ingestion/transactions_v1/mode/000016424000",
+                    "ingestion/logs_v1/mode/000016424000",
+                    "ingestion/traces_v1/mode/000016424000",
+                ],
             ),
             progress_indicator="",
         ),
@@ -180,6 +198,12 @@ def test_construct():
                         file_name="000016432000.parquet",
                         marker_path="ingestion/traces_v1/mode/000016432000",
                     ),
+                ],
+                complete_markers=[
+                    "ingestion/blocks_v1/mode/000016432000",
+                    "ingestion/transactions_v1/mode/000016432000",
+                    "ingestion/logs_v1/mode/000016432000",
+                    "ingestion/traces_v1/mode/000016432000",
                 ],
             ),
             progress_indicator="",

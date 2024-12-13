@@ -1,18 +1,19 @@
 from datetime import date
 from typing import Iterable
+
 import polars as pl
 
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.partition import Partition
+from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 
 from .markers import (
-    is_chain_active,
-    IngestionDataSpec,
-    DEFAULT_INGESTION_ROOT_PATHS,
+    INGESTION_MARKERS_QUERY_SCHEMA,
     IngestionData,
+    IngestionDataSpec,
+    is_chain_active,
 )
 
 log = structlog.get_logger()
@@ -38,7 +39,7 @@ def construct_readers_byblock(
 
     data_spec = IngestionDataSpec(
         chains=chains,
-        root_paths_to_read=root_paths_to_read or DEFAULT_INGESTION_ROOT_PATHS,
+        root_paths_to_read=root_paths_to_read,
     )
 
     markers_df = data_spec.query_markers(
@@ -107,15 +108,7 @@ def are_markers_complete(
     If the input data is not complete returns None instead of the paths dict.
     """
 
-    assert dict(markers_df.schema) == {
-        "dt": pl.Date,
-        "chain": pl.String,
-        "num_blocks": pl.Int32,
-        "min_block": pl.Int64,
-        "max_block": pl.Int64,
-        "root_path": pl.String,
-        "data_path": pl.String,
-    }
+    assert dict(markers_df.schema) == INGESTION_MARKERS_QUERY_SCHEMA
 
     dataset_paths = {}
     for root_path in root_paths_to_check:

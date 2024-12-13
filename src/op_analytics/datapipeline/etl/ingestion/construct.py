@@ -1,14 +1,18 @@
+import polars as pl
 import pyarrow as pa
 
 from op_analytics.coreutils.clickhouse.goldsky import run_query_goldsky
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dataaccess import check_marker
 from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.coreutils.rangeutils.timerange import TimeRange
 from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.time import datetime_fromepoch
 
-from .reader.markers import INGESTION_MARKERS_TABLE
+from .reader.markers import INGESTION_MARKERS_TABLE, IngestionDataSpec
 from .batches import BlockBatch, split_block_range
 from .sources import RawOnchainDataProvider
 from .task import IngestionTask
@@ -26,14 +30,31 @@ def construct_tasks(
 
     try:
         block_range = BlockRange.from_spec(range_spec)
+
+        if len(chains) != 1:
+            raise Exception("Ingesting by block_range is only supported for one chain at a time.")
+
         blocks_by_chain = {}
         for chain in chains:
             blocks_by_chain[chain] = block_range
         max_requested_timestamp = None
 
+        # Determine the time range.
+        time_range = time_range_for_blocks(
+            chain=chains[0],
+            min_block=block_range.min,
+            max_block=block_range.max,
+        )
+        output_marker_datevals = time_range.to_date_range().dates()
+
     except NotImplementedError:
-        # Ensure range_spec is a valid DateRange.
         time_range = TimeRange.from_spec(range_spec)
+
+        # We need datevals to query completion markers so we can determine
+        # which data is not ingested yet. Datevals are padded since the block
+        # batches may straddle a date boundary on either end.
+        output_marker_datevals = time_range.to_date_range().padded_dates()
+        block_range = None
 
         def blocks_for_chain(ch):
             return block_range_for_dates(
@@ -60,6 +81,13 @@ def construct_tasks(
         else:
             log.info(f"prepared chain={chain!r}: {len(batches)} batch(es)")
 
+    # Pre-fetch completion markers so we can skip completed tasks.
+    data_spec = IngestionDataSpec(chains=chains)
+    markers_df = data_spec.query_markers(
+        datevals=output_marker_datevals,
+        read_from=write_to,
+    )
+
     # Collect a single list of tasks to perform across all chains.
     all_tasks: list[IngestionTask] = []
     for batches in chain_batches.values():
@@ -70,13 +98,14 @@ def construct_tasks(
                     block_batch=batch,
                     read_from=read_from,
                     write_to=write_to,
+                    output_markers_df=markers_df,
                 )
             )
 
     return all_tasks
 
 
-def block_range_for_dates(chain: str, min_ts: int, max_ts: int):
+def block_range_for_dates(chain: str, min_ts: int, max_ts: int) -> BlockRange:
     """Find the block range required to cover the provided timestamps.
 
     Uses the raw blocks dataset in Goldsky Clickhouse to find out which blocks have
@@ -112,19 +141,57 @@ def block_range_for_dates(chain: str, min_ts: int, max_ts: int):
     return BlockRange(row["block_min"], row["block_max"])
 
 
+def time_range_for_blocks(chain: str, min_block: int, max_block: int) -> TimeRange:
+    """Find the time range spanned by the block interval."""
+
+    # Not an f-string to preserve the curly brackets for query params
+    where = "number >= {minb:UInt64} AND number < {maxb:UInt64}"
+
+    result = run_query_goldsky(
+        query=f"""
+        SELECT
+            min(timestamp) as time_min,
+            max(timestamp) as time_max
+        FROM {chain}_blocks
+        WHERE {where}
+        """,
+        parameters={
+            "minb": min_block,
+            "maxb": max_block,
+        },
+    )
+
+    assert len(result) == 1
+    row = result.to_dicts()[0]
+    return TimeRange(
+        min=datetime_fromepoch(row["time_min"]),
+        max=datetime_fromepoch(row["time_max"]),
+        max_requested_timestamp=row["time_max"],
+    )
+
+
 def new_task(
     max_requested_timestamp: int | None,
     block_batch: BlockBatch,
     read_from: RawOnchainDataProvider,
     write_to: DataLocation,
+    output_markers_df: pl.DataFrame | None = None,
 ) -> IngestionTask:
-    expected_outputs = []
+    """Create a new IngestionTask instance."""
+
+    expected_outputs: list[ExpectedOutput] = []
+    complete_markers: list[str] = []
+
     for name in ["blocks", "transactions", "logs", "traces"]:
         # Determine the directory where we will write this dataset.
         data_directory = block_batch.dataset_directory(dataset_name=name)
 
         # Construct the ExpectedOutput.
-        expected_outputs.append(block_batch.construct_expected_output(root_path=data_directory))
+        eo: ExpectedOutput = block_batch.construct_expected_output(root_path=data_directory)
+        expected_outputs.append(eo)
+
+        if check_marker(markers_df=output_markers_df, marker_path=eo.marker_path):
+            complete_markers.append(eo.marker_path)
 
     return IngestionTask(
         max_requested_timestamp=max_requested_timestamp,
@@ -149,6 +216,7 @@ def new_task(
             ],
             markers_table=INGESTION_MARKERS_TABLE,
             expected_outputs=expected_outputs,
+            complete_markers=complete_markers,
         ),
         progress_indicator="",
     )
