@@ -9,7 +9,7 @@ from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.paths import get_dt, get_root_path
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.time import date_fromstr
-from op_analytics.datapipeline.etl.ingestion.reader_bydate import construct_readers_bydate
+from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_readers_bydate
 
 from .loader import BQLoader, BQOutputData
 from .task import DateLoadTask

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS etl_monitor.intermediate_model_markers
     root_path STRING,
 
     -- The number of parts covered by this marker
-    num_parts INT32,
+    num_parts UINT32,
 
     -- Details for each parquet output saved under this marker.
     data_path String,

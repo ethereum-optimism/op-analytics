@@ -17,7 +17,6 @@ from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
 from .construct import construct_tasks
-from .markers import INGESTION_DATASETS
 from .sources import RawOnchainDataProvider, read_from_source
 from .status import all_inputs_ready
 from .task import IngestionTask
@@ -118,8 +117,8 @@ def reader(task: IngestionTask):
         block_batch=task.block_batch,
     )
 
-    assert set(ONCHAIN_CURRENT_VERSION.keys()) == set(INGESTION_DATASETS)
-    task.add_inputs(ONCHAIN_CURRENT_VERSION, dataframes)
+    for name in ONCHAIN_CURRENT_VERSION.keys():
+        task.input_dataframes[name] = dataframes[name]
 
 
 def auditor(task: IngestionTask):
@@ -171,7 +170,7 @@ def auditor(task: IngestionTask):
 
     # Set up the output dataframes now that the audits have passed
     # (ingestion process: outputs are the same as inputs)
-    for name, dataset in task.input_datasets.items():
+    for name in task.input_dataframes.keys():
         df = update_chain_name(task=task, df=task.input_dataframes[name])
 
         task.store_output(

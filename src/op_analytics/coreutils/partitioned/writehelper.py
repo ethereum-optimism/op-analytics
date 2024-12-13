@@ -61,7 +61,7 @@ class WriteManager[T: Writeable](EnforceOverrides):
     # Complete Markers. A list of markers that are already complete.
     # If a marker is already complete then we can skip writing its
     # corresponding output.
-    complete_markers: list[str] = field(default_factory=list)
+    complete_markers: list[str] | None = None
 
     # Process that is writing data. This can be used to identify backfills for example.
     process_name: str = field(default="default")
@@ -80,9 +80,16 @@ class WriteManager[T: Writeable](EnforceOverrides):
             raise ValueError("expected output names are not unique")
 
     def all_outputs_complete(self) -> bool:
-        if self._is_complete is None:
-            expected_markers = [_.marker_path for _ in self.expected_outputs]
+        expected_markers = [_.marker_path for _ in self.expected_outputs]
 
+        # Use complete markers stored in the task.
+        if self.complete_markers is not None:
+            return set(self.complete_markers) == set(expected_markers)
+
+        if self._is_complete is None:
+            # Query the markers database to find out which markers are complete.
+            # TODO: Delete this code. We should always pre-fetch completion markers
+            #       so we don't have to make repeated database queries for each task.
             self.complete_markers = complete_markers(
                 location=self.location,
                 markers=expected_markers,
@@ -106,7 +113,10 @@ class WriteManager[T: Writeable](EnforceOverrides):
         # The default partition value is included in log context to help keep
         # track of which data we are processing.
         with bound_contextvars(root=output_data.root_path, **(output_data.default_partition or {})):
-            if expected_output.marker_path in self.complete_markers:
+            # TODO: This should not be necessary once we fully migrate to pre-fetched markers.
+            complete_markers = self.complete_markers or []
+
+            if expected_output.marker_path in complete_markers:
                 log.warning(f"skipping complete output {expected_output.marker_path}")
                 return WriteResult(status="skipped", written_parts={})
 

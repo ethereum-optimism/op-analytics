@@ -10,13 +10,12 @@ from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import surrounding_dates
 
-from .reader_markers import (
-    is_chain_active,
-    IngestionDataSpec,
-    DEFAULT_INGESTION_ROOT_PATHS,
+from .markers import (
+    INGESTION_MARKERS_QUERY_SCHEMA,
     IngestionData,
+    IngestionDataSpec,
+    is_chain_active,
 )
-
 
 log = structlog.get_logger()
 
@@ -41,7 +40,7 @@ def construct_readers_bydate(
 
     data_spec = IngestionDataSpec(
         chains=chains,
-        root_paths_to_read=root_paths_to_read or DEFAULT_INGESTION_ROOT_PATHS,
+        root_paths_to_read=root_paths_to_read,
     )
 
     markers_df = data_spec.query_markers(
@@ -70,12 +69,12 @@ def construct_readers_bydate(
                 input_data = are_inputs_ready(
                     markers_df=filtered_df,
                     dateval=dateval,
-                    root_paths_to_check=data_spec.root_paths_physical,
+                    root_paths_to_check=data_spec.root_paths_physical(chain),
                     storage_location=read_from,
                 )
 
                 # Update data path mapping so keys are logical paths.
-                dataset_paths = data_spec.data_paths(input_data.data_paths)
+                dataset_paths = data_spec.data_paths(chain, input_data.data_paths)
 
                 obj = DataReader(
                     partitions=Partition.from_tuples(
@@ -115,15 +114,7 @@ def are_inputs_ready(
     If the input data is not complete returns None instead of the paths dict.
     """
 
-    assert dict(markers_df.schema) == {
-        "dt": pl.Date,
-        "chain": pl.String,
-        "num_blocks": pl.Int32,
-        "min_block": pl.Int64,
-        "max_block": pl.Int64,
-        "root_path": pl.String,
-        "data_path": pl.String,
-    }
+    assert dict(markers_df.schema) == INGESTION_MARKERS_QUERY_SCHEMA
 
     dataset_paths = {}
 
