@@ -12,7 +12,7 @@ WITH topic0_filters AS ( -- list of events that we want to indicate for possible
         ,('0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb', 'ERC1155 Transfer Batch', 'Transfer')
         ,('0xe6497e3ee548a3372136af2fcb0696db31fc6cf20260707645068bd3fe97f3c4', 'Polygon Log Transfer', 'Transfer')
         ,('0x4dfe1bbbcf077ddc3e01291eea2d5c70c2b422b415d95645b9adcfd678cb1d63', 'Polygon Log Fee Transfer', 'Transfer')
-        ) a (topic, description)
+        ) a (topic, description, category)
 )
 
 -- Select the columns for joining back to transactions and sum event types
@@ -25,6 +25,7 @@ SELECT
         ,l.network, l.chain, l.chain_id
         ,l.block_number
         ,l.transaction_hash
+        ,t.transaction_type
 
         ,COUNT(*) AS count_total_events
         ,SUM(CASE WHEN f.category = 'Approval' THEN 1 ELSE 0 END) AS count_approval_events
@@ -32,10 +33,13 @@ SELECT
         ,SUM(CASE WHEN f.category = 'Transfer' THEN 1 ELSE 0 END) AS count_transfer_events
 
 FROM ingestion_logs_v1 AS l
-        
+INNER JOIN ingestion_transactions_v1 AS t 
+        ON l.block_number = t.block_number
+        AND l.transaction_index = t.transaction_index 
+        AND l.transaction_hash = t.hash
 LEFT JOIN topic0_filters AS f
         ON l.topic0 = f.topic
 
-GROUP BY 1,2,3,4,5,6,7,8
+GROUP BY 1,2,3,4,5,6,7,8,9
 
 

@@ -64,10 +64,12 @@ pt1 AS (
     COALESCE(eet.count_transfer_events,0) AS log_count_transfer_events
 
   FROM ingestion_transactions_v1 AS t
-  INNER JOIN pb AS b ON t.block_number = b.number
+  INNER JOIN pb AS b
+    ON t.block_number = b.number
   LEFT JOIN event_emitting_transactions_v1 eet
-        ON eet.block_number = bl.block_number
-        AND eet.transaction_hash = bl.transaction_hash
+        ON eet.block_number = t.block_number
+        AND eet.transaction_index = t.transaction_index
+        AND eet.transaction_hash = t.hash
   WHERE 1=1
     -- Optional address filter for faster results when developing.
     -- AND from_address LIKE '0x00%'  
