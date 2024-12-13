@@ -39,23 +39,31 @@ def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
     CREATE OR REPLACE MACRO div16(a)
     AS a * 0.0625::DECIMAL(5, 5);
     
-    --Get the length in bytes for binary data that is encoded as a hex string
+    -- Get the length in bytes for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_bytelen(x)
-    AS (length(x) - 2) / 2;
+    AS CAST((length(x) - 2) / 2 AS INT);
+    
+    -- Split a hex string into an array of individual bytes.
+    -- Example: 0x3d602d80000a --> [3d, 60, 2d, 80, 00, 0a]
+    CREATE OR REPLACE MACRO hexstr_array(a)
+    AS generate_series(1, (a).substr(3).length(), 2).list_transform(x -> (a).substr(3).substr(x, 2));
                       
-    --Count non-zero bytes for binary data that is encoded as a hex string. We don't use hexstr_bytelen because we need to substring the input data.
-    CREATE OR REPLACE MACRO hexstr_nonzero_bytes(x)
-    AS length(replace(hex(unhex(substr(x, 3))), '00', '')) / 2;
+    -- Count non-zero bytes for binary data that is encoded as a hex string.
+    -- We don't use hexstr_bytelen because we need to substring the input data.
+    CREATE OR REPLACE MACRO hexstr_nonzero_bytes(a)
+    AS hexstr_array(a).list_filter(x -> x != '00').length();
     
-    --Count non-zero bytes for binary data that is encoded as a hex string
-    CREATE OR REPLACE MACRO hexstr_zero_bytes(x)
-    AS hexstr_bytelen(x) - hexstr_nonzero_bytes(x);
+    -- Count zero bytes for binary data that is encoded as a hex string.
+    CREATE OR REPLACE MACRO hexstr_zero_bytes(a)
+    AS hexstr_array(a).list_filter(x -> x == '00').length();
     
-    --Calculate calldata gas used for binary data that is encoded as a hex string (can be updated by an EIP)
+    -- Calculate calldata gas used for binary data that is encoded as a hex
+    -- string (can be updated by an EIP).
     CREATE OR REPLACE MACRO hexstr_calldata_gas(x)
-    AS 16*hexstr_nonzero_bytes(x) + 4*hexstr_zero_bytes(x);
+    AS 16 * hexstr_nonzero_bytes(x) + 4 * hexstr_zero_bytes(x);
     
-    --Get the method id for input data. This is the first 4 bytes, or first 10 string characters for binary data that is encoded as a hex string.
+    --Get the method id for input data. This is the first 4 bytes, or first 10
+    -- string characters for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_method_id(x)
     AS substring(x,1,10)
     """)

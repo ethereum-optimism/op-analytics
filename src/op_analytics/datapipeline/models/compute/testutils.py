@@ -217,7 +217,7 @@ def execute_model_in_memory(
     limit_input_parquet_files: int | None = None,
 ):
     """Execute a model and register results as views."""
-    log.info("Executing model...")
+    log.info("Executing model function...")
 
     model_obj = PythonModel.get(model)
 
