@@ -86,12 +86,10 @@ class WriteManager[T: Writeable](EnforceOverrides):
         if self.complete_markers is not None:
             return set(self.complete_markers) == set(expected_markers)
 
-        # Query the markers database to find out which markers are complete.
-        # TODO: Delete this code. We should always pre-fetch completion markers
-        #       so we don't have to make repeated database queries for each task.
         if self._is_complete is None:
-            expected_markers = [_.marker_path for _ in self.expected_outputs]
-
+            # Query the markers database to find out which markers are complete.
+            # TODO: Delete this code. We should always pre-fetch completion markers
+            #       so we don't have to make repeated database queries for each task.
             self.complete_markers = complete_markers(
                 location=self.location,
                 markers=expected_markers,
