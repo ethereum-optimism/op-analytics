@@ -6,6 +6,12 @@ ignore = templating
 runaway_limit = 10
 max_line_length = 120
 
+# Comma separated list of rules to exclude, or None
+# See https://docs.sqlfluff.com/en/stable/perma/rule_disabling.html
+# AM04 (ambiguous.column_count) and ST06 (structure.column_order) are
+# two of the more controversial rules included to illustrate usage.
+exclude_rules = structure.column_order
+
 [sqlfluff:indentation]
 indented_joins = false
 indented_using_on = true

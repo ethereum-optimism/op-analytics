@@ -243,7 +243,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
                 "l2_fee_sum_eth": Decimal("0.0000035911200000000"),
                 "l2_base_fee_sum_eth": Decimal("2.38530270420E-8"),
                 "l2_priority_fee_sum_eth": Decimal("0E-19"),
-                "l2_base_legacy_fee_sum_eth": Decimal("0.0000037170016093640"),
+                "l2_base_legacy_fee_sum_eth": Decimal("0.0000035672669729580"),
                 "l1_fee_sum_eth": Decimal("1.497346364060E-7"),
                 "l1_base_fee_sum_eth": Decimal("1.497346362050E-7"),
                 "l1_blob_fee_sum_eth": Decimal("2.030E-16"),
