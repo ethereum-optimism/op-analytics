@@ -39,6 +39,18 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
             template_name="daily_address_summary",
             context={},
         ),
+        TemplatedSQLQuery(
+            template_name="refined_trace_calls_agg_from_to_hash",
+            context={},
+        ),
+        TemplatedSQLQuery(
+            template_name="refined_trace_calls_agg_to_hash",
+            context={},
+        ),
+        TemplatedSQLQuery(
+            template_name="daily_trace_calls_agg_to",
+            context={},
+        ),
     ],
 )
 def refined_transactions_traces_address_models(
@@ -49,4 +61,9 @@ def refined_transactions_traces_address_models(
         "refined_trace_calls_v1": duckdb_client.view("refined_trace_calls"),
         "event_emitting_transactions_v1": duckdb_client.view("event_emitting_transactions"),
         "summary_v1": duckdb_client.view("daily_address_summary"),
+        "refined_trace_calls_agg_from_to_hash_v1": duckdb_client.view(
+            "refined_trace_calls_agg_from_to_hash"
+        ),
+        "refined_trace_calls_agg_to_hash_v1": duckdb_client.view("refined_trace_calls_agg_to_hash"),
+        "daily_trace_calls_agg_to_v1": duckdb_client.view("daily_trace_calls_agg_to"),
     }

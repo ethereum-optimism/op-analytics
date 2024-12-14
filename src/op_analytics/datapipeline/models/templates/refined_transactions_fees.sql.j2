@@ -34,31 +34,33 @@ pt1 AS (
     b.base_fee_per_gas,
     t.max_priority_fee_per_gas,
     t.transaction_type,
-    CASE WHEN t.gas_price = 0 THEN 0 ELSE t.receipt_l1_fee END AS l1_fee,
     -- L2 Fees and breakdown into BASE and PRIORITY contributions
-    if(t.max_priority_fee_per_gas = 0, t.gas_price - b.base_fee_per_gas, 0) AS legacy_extra_fee_per_gas,
+    t.receipt_l1_fee_scalar::DECIMAL(12, 6) AS l1_fee_scalar,
+    CASE WHEN t.gas_price = 0 THEN 0
+      ELSE t.receipt_l1_fee END AS l1_fee,
+    if(t.max_priority_fee_per_gas = 0 AND t.gas_price > 0, t.gas_price - b.base_fee_per_gas, 0) AS legacy_extra_fee_per_gas,
+    -- Convenience columns
     CASE WHEN t.gas_price = 0 THEN 0 ELSE t.gas_price * t.receipt_gas_used END AS l2_fee,
     CASE WHEN t.gas_price = 0 THEN 0 ELSE t.max_priority_fee_per_gas * t.receipt_gas_used END AS l2_priority_fee,
-    -- Convenience columns
     CASE WHEN t.gas_price = 0 THEN 0 ELSE b.base_fee_per_gas * t.receipt_gas_used END AS l2_base_fee,
-    epoch_to_hour(t.block_timestamp) AS block_hour,
-    hexstr_method_id(t.input) AS method_id,
     -- L1 Fee BASE and BLOB scalars
-    t.receipt_status = 1 AS success,
-    micro(t.receipt_l1_base_fee_scalar) AS l1_base_fee_scalar,
-    t.receipt_l1_fee_scalar::DECIMAL(12, 6) AS l1_fee_scalar,
 
-    -- Transaction Attributes
-    coalesce(micro(t.receipt_l1_blob_base_fee_scalar), 0) AS l1_blob_base_fee_scalar,
+    micro(t.receipt_l1_base_fee_scalar) AS l1_base_fee_scalar,
+    micro(t.receipt_l1_blob_base_fee_scalar) AS l1_blob_base_fee_scalar,
+
+    hexstr_method_id(t.input) AS method_id,
+    t.receipt_status = 1 AS success,
     hexstr_bytelen(t.input) AS input_byte_length,
     hexstr_zero_bytes(t.input) AS input_zero_bytes,
     hexstr_nonzero_bytes(t.input) AS input_nonzero_bytes,
-    t.transaction_type = 126 AS is_system_transaction,
+    t.transaction_type = 126 OR t.gas_price = 0 AS is_system_transaction,
     ( -- Attributes Deposited Spec https://specs.optimism.io/protocol/deposits.html#l1-attributes-deposited-transaction
-      t.transaction_type = 126
+      (t.transaction_type = 126 OR t.gas_price = 0)
       AND t.from_address = lower('0xDeaDDEaDDeAdDeAdDEAdDEaddeAddEAdDEAd0001')
       AND t.to_address = lower('0x4200000000000000000000000000000000000015')
-    ) AS is_attributes_deposited_transaction
+    ) AS is_attributes_deposited_transaction,
+  
+  epoch_to_hour(t.block_timestamp) AS block_hour
 
   FROM ingestion_transactions_v1 AS t
   INNER JOIN pb AS b
@@ -68,24 +70,27 @@ pt1 AS (
 -- AND from_address LIKE '0x00%'  
 ),
 
-
 -- Add fallback l1 gas estimate based on observed fee and weighted gas and blob prices.
+-- Ecotone+ specs on L1 Fee Calculations: https://specs.optimism.io/protocol/exec-engine.html#l1-cost-fees-l1-fee-vault
+-- Fjord+ specs on Estimated Size: https://specs.optimism.io/protocol/fjord/predeploys.html#l1-gas-usage-estimation
 pt2 AS (
   SELECT
     *,
+    -- Note that this is the "unified" L1 Gas Used, since the meaning of the field has changed in Fjord.
     coalesce(
       receipt_l1_gas_used,
-      round(16 * estimated_size)::INT64
-    ) AS l1_gas_used
+      16 * estimated_size
+    ) AS l1_gas_used_unified
   FROM (
     SELECT
       *,
       -- Estimated Size in bytes calculation, post-Fjord. This is not equivalent to L1 Gas Used
-      l1_fee / (
-        (16 * l1_base_fee_scalar * receipt_l1_gas_price)
-        + (l1_blob_base_fee_scalar * receipt_l1_blob_base_fee)
-      ) AS estimated_size_bytes
-    FROM pt1
+      (l1_fee / (
+          (16 * l1_base_fee_scalar * receipt_l1_gas_price)
+          + (l1_blob_base_fee_scalar * receipt_l1_blob_base_fee)
+      ))::INT64
+    AS estimated_size
+  FROM pt1
   )
 ),
 
@@ -103,12 +108,12 @@ pt3 AS (
     if(l2_priority_fee = 0, l2_fee - l2_base_fee, 0) AS l2_legacy_extra_fee,
     -- 
     -- L1 Base 
-    div16(l1_gas_used) * COALESCE(16*l1_base_fee_scalar,l1_fee_scalar) * receipt_l1_gas_price AS l1_base_fee,
-    div16(l1_gas_used) * COALESCE(16*l1_base_fee_scalar,l1_fee_scalar) AS l1_base_scaled_size,
+    div16(l1_gas_used_unified) * coalesce(16 * l1_base_fee_scalar, l1_fee_scalar) * receipt_l1_gas_price AS l1_base_fee,
+    div16(l1_gas_used_unified) * coalesce(16 * l1_base_fee_scalar, l1_fee_scalar) AS l1_base_scaled_size,
     -- 
     -- L1 Blob
-    div16(l1_gas_used) * l1_blob_base_fee_scalar * receipt_l1_blob_base_fee AS l1_blob_fee,
-    div16(l1_gas_used) * l1_blob_base_fee_scalar AS l1_blob_scaled_size
+    coalesce(div16(l1_gas_used_unified) * l1_blob_base_fee_scalar * receipt_l1_blob_base_fee,0) AS l1_blob_fee,
+    coalesce(div16(l1_gas_used_unified) * l1_blob_base_fee_scalar,0) AS l1_blob_scaled_size
 
   FROM pt2
 )

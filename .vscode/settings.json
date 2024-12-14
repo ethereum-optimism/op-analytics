@@ -22,5 +22,8 @@
     "sqlfluff.executablePath": ".venv/bin/sqlfluff",
     "files.associations": {
         "*.sql.j2": "sql"
-    }
+    },
+    "sqlfluff.excludeRules": [
+        "LT04"
+    ]
 }

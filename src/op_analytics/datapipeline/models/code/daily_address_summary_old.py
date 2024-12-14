@@ -15,7 +15,7 @@
 #         ),
 #     ],
 # )
-# def daily_address_summary(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
+# def daily_address_summary_old(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
 #     return {
 #         "summary_v1": duckdb_client.view("daily_address_summary"),
 #     }

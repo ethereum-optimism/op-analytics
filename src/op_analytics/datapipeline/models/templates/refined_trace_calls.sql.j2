@@ -13,15 +13,16 @@ base_level_trace_calls AS (
     r.block_timestamp,
     r.transaction_hash,
     r.transaction_index,
-    r.from_address,
-    r.to_address,
-    r.gas AS gas_limit,
-    r.gas_used,
+    r.from_address AS trace_from_address,
+    r.to_address AS trace_to_address,
+    r.gas AS trace_gas_limit,
+    r.gas_used AS trace_gas_used,
     r.trace_address,
-    r.trace_type,
+    r.call_type,
     -- Raw Transaction Fields
     t.receipt_gas_used AS tx_gas_used,
-    t.l1_gas_used AS tx_l1_gas_used,
+    t.l1_gas_used_unified AS tx_l1_gas_used_unified,
+    t.estimated_size AS tx_estimated_size,
     t.from_address AS tx_from_address,
     t.to_address AS tx_to_address,
     -- Computed Transaction Fee Fields
@@ -38,6 +39,12 @@ base_level_trace_calls AS (
     t.l2_legacy_extra_gas_price_gwei AS tx_l2_legacy_extra_gas_price_gwei,
     t.l1_base_gas_price_gwei AS tx_l1_base_gas_price_gwei,
     t.l1_blob_base_gas_price_gwei AS tx_l1_blob_base_gas_price_gwei,
+    -- Computed Transaction Size Fields
+    t.input_byte_length AS tx_input_byte_length,
+    t.input_zero_bytes AS tx_input_zero_bytes,
+    t.input_nonzero_bytes AS tx_input_nonzero_bytes,
+    t.l1_base_scaled_size AS tx_l1_base_scaled_size,
+    t.l1_blob_scaled_size AS tx_l1_blob_scaled_size,
 
     t.method_id AS tx_method_id,
     t.block_hour,
@@ -45,8 +52,8 @@ base_level_trace_calls AS (
     -- Convenience columns
     t.success AS tx_success,
     r.error,
-    hexstr_method_id(r.input) AS method_id,
-    r.status = 1 AS success,
+    hexstr_method_id(r.input) AS trace_method_id,
+    r.status = 1 AS trace_success,
 
     --Get the next trace level up so that we can subtract subtrace gas
     CASE
@@ -84,26 +91,28 @@ base_level_trace_calls AS (
 --get amount of calls per transcation, to use for amortizing
 get_traces_per_tansaction AS (
   SELECT
+    dt, chain_id,
     block_number,
     block_timestamp,
     transaction_hash,
     count(*) AS count_traces_in_transaction
   FROM base_level_trace_calls
-  GROUP BY 1, 2, 3
+  GROUP BY 1, 2, 3, 4, 5
 ),
 
 --get subtrace gas used, for isolating each call
 get_subtraces_gas_per_trace AS (
   SELECT
+    dt, chain_id,
     block_number,
     block_timestamp,
     transaction_hash,
     trace_address_uplevel,
     trace_address_cardinality,
-    sum(gas_used) AS gas_used_in_subtraces,
+    sum(trace_gas_used) AS trace_gas_used_in_subtraces,
     count(*) AS count_subtraces_in_trace
   FROM base_level_trace_calls
-  GROUP BY 1, 2, 3, 4, 5
+  GROUP BY 1, 2, 3, 4, 5, 6, 7
 )
 
 
@@ -111,43 +120,49 @@ SELECT
   bl.*,
   --
   tpt.count_traces_in_transaction,
-  coalesce(st.gas_used_in_subtraces, 0) AS gas_used_in_subtraces,
+  coalesce(st.trace_gas_used_in_subtraces, 0) AS trace_gas_used_in_subtraces,
   --
-  bl.gas_used - coalesce(st.gas_used_in_subtraces, 0) AS gas_used_minus_subtraces,
+  bl.trace_gas_used - coalesce(st.trace_gas_used_in_subtraces, 0) AS trace_gas_used_minus_subtraces,
 
   -- the subtraces will never add up to part of whole, but leave as is
-  (bl.gas_used - coalesce(st.gas_used_in_subtraces, 0))
-  * gwei_to_eth(bl.tx_l2_gas_price_gwei)::DOUBLE AS tx_l2_fee_native_minus_subtraces,
-  (bl.gas_used - coalesce(st.gas_used_in_subtraces, 0))
-  * gwei_to_eth(bl.tx_l2_base_gas_price_gwei)::DOUBLE AS tx_l2_base_fee_native_minus_subtraces,
-  (bl.gas_used - coalesce(st.gas_used_in_subtraces, 0))
-  * gwei_to_eth(bl.tx_l2_priority_gas_price_gwei)::DOUBLE AS tx_l2_priority_fee_native_minus_subtraces,
-  (bl.gas_used - coalesce(st.gas_used_in_subtraces, 0))
-  * gwei_to_eth(bl.tx_l2_legacy_extra_gas_price_gwei)::DOUBLE AS tx_l2_legacy_base_fee_native_minus_subtraces,
-  --
-  bl.tx_gas_used / tpt.count_traces_in_transaction AS tx_gas_used_per_call_amortized,
-  bl.tx_l1_gas_used / tpt.count_traces_in_transaction AS tx_l1_gas_used_per_call_amortized,
+  (bl.trace_gas_used - coalesce(st.trace_gas_used_in_subtraces, 0))
+  * gwei_to_eth(bl.tx_l2_gas_price_gwei) AS tx_l2_fee_native_minus_subtraces,
+  (bl.trace_gas_used - coalesce(st.trace_gas_used_in_subtraces, 0))
+  * gwei_to_eth(bl.tx_l2_base_gas_price_gwei) AS tx_l2_base_fee_native_minus_subtraces,
+  (bl.trace_gas_used - coalesce(st.trace_gas_used_in_subtraces, 0))
+  * gwei_to_eth(bl.tx_l2_priority_gas_price_gwei) AS tx_l2_priority_fee_native_minus_subtraces,
+  (bl.trace_gas_used - coalesce(st.trace_gas_used_in_subtraces, 0))
+  * gwei_to_eth(bl.tx_l2_legacy_extra_gas_price_gwei) AS tx_l2_legacy_base_fee_native_minus_subtraces,
 
-  bl.tx_fee_native / tpt.count_traces_in_transaction AS tx_fee_native_per_call_amortized,
-  bl.tx_l2_fee_native / tpt.count_traces_in_transaction AS tx_l2_fee_native_per_call_amortized,
-  bl.tx_l1_fee_native / tpt.count_traces_in_transaction AS tx_l1_fee_native_per_call_amortized,
-  bl.tx_l2_base_fee_native / tpt.count_traces_in_transaction AS tx_l2_base_fee_native_per_call_amortized,
-  bl.tx_l2_priority_fee_native / tpt.count_traces_in_transaction AS tx_l2_priority_fee_native_per_call_amortized,
+  -- Amortize evenly across all calls
+  bl.tx_gas_used / tpt.count_traces_in_transaction AS tx_gas_used_amortized_by_call,
+  bl.tx_l1_gas_used_unified / tpt.count_traces_in_transaction AS tx_l1_gas_used_unified_amortized_by_call,
+  bl.tx_l1_base_scaled_size / tpt.count_traces_in_transaction AS tx_l1_base_scaled_size_amortized_by_call,
+  bl.tx_l1_blob_scaled_size / tpt.count_traces_in_transaction AS tx_l1_blob_scaled_size_amortized_by_call,
+  bl.tx_estimated_size / tpt.count_traces_in_transaction AS tx_estimated_size_amortized_by_call,
+
+  bl.tx_fee_native / tpt.count_traces_in_transaction AS tx_fee_native_amortized_by_call,
+  bl.tx_l2_fee_native / tpt.count_traces_in_transaction AS tx_l2_fee_native_amortized_by_call,
+  bl.tx_l1_fee_native / tpt.count_traces_in_transaction AS tx_l1_fee_native_amortized_by_call,
+  bl.tx_l2_base_fee_native / tpt.count_traces_in_transaction AS tx_l2_base_fee_native_amortized_by_call,
+  bl.tx_l2_priority_fee_native / tpt.count_traces_in_transaction AS tx_l2_priority_fee_native_amortized_by_call,
 
   --
   (bl.tx_l1_fee_native / tpt.count_traces_in_transaction)
-  + (bl.gas_used - coalesce(st.gas_used_in_subtraces, 0))
+  + (bl.trace_gas_used - coalesce(st.trace_gas_used_in_subtraces, 0))
   * gwei_to_eth(bl.tx_l2_gas_price_gwei) AS tx_fee_native_l1_amortized_l2_minus_subtraces
 
 
 FROM base_level_trace_calls AS bl
 INNER JOIN get_traces_per_tansaction AS tpt -- join on txn level
-  ON
-    bl.block_number = tpt.block_number
+  ON bl.dt = tpt.dt
+    AND bl.chain_id = tpt.chain_id
+    AND bl.block_number = tpt.block_number
     AND bl.transaction_hash = tpt.transaction_hash
 LEFT JOIN get_subtraces_gas_per_trace AS st -- join on trace level 1 level down
-  ON
-    bl.block_number = st.block_number
+  ON bl.dt = st.dt
+    AND bl.chain_id = st.chain_id
+    AND bl.block_number = st.block_number
     AND bl.transaction_hash = st.transaction_hash
     AND bl.trace_address_cardinality = (st.trace_address_cardinality - 1)
     AND bl.trace_address = st.trace_address_uplevel
