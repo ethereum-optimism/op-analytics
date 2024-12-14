@@ -16,36 +16,51 @@ pt1 AS (
     t.dt,
     t.chain,
     t.chain_id,
+    t.network,
     t.nonce,
+    t.transaction_index,
     t.from_address,
     t.to_address,
     t.block_number,
     t.block_timestamp,
+    t.hash,
+    t.transaction_type,
     t.gas_price,
+    t.gas AS gas_limit,
     t.receipt_gas_used,
     t.receipt_l1_gas_used,
-    -- Fees
-    t.receipt_l1_fee AS l1_fee,
+    -- L1 Fees
+    CASE WHEN t.gas_price = 0 THEN 0 ELSE t.receipt_l1_fee END AS l1_fee,
     t.receipt_l1_gas_price,
     t.receipt_l1_blob_base_fee,
     -- L2 Fees and breakdown into BASE and PRIORITY contributions
-    t.gas_price * t.receipt_gas_used AS l2_fee,
-    t.max_priority_fee_per_gas * t.receipt_gas_used AS l2_priority_fee,
-    b.base_fee_per_gas * t.receipt_gas_used AS l2_base_fee,
+    b.base_fee_per_gas,
+    t.max_priority_fee_per_gas,
+    if(t.max_priority_fee_per_gas = 0, t.gas_price - b.base_fee_per_gas, 0) AS base_legacy_fee_per_gas,
+    CASE WHEN t.gas_price = 0 THEN 0 ELSE t.gas_price * t.receipt_gas_used END AS l2_fee,
+    CASE WHEN t.gas_price = 0 THEN 0 ELSE t.max_priority_fee_per_gas * t.receipt_gas_used END AS l2_priority_fee,
+    CASE WHEN t.gas_price = 0 THEN 0 ELSE b.base_fee_per_gas * t.receipt_gas_used END AS l2_base_fee,
     -- Convenience columns
     epoch_to_hour(t.block_timestamp) AS block_hour,
-    substring(t.input, 1, 10) AS method_id,
-    t.receipt_status = 1 AS success,
     -- L1 Fee BASE and BLOB scalars
+    t.receipt_status = 1 AS success,
     coalesce(16 * micro(t.receipt_l1_base_fee_scalar), t.receipt_l1_fee_scalar::DECIMAL(12, 6))
-      AS l1_base_scalar,
-    coalesce(micro(t.receipt_l1_blob_base_fee_scalar), 0) AS l1_blob_scalar
+      AS l1_base_fee_scalar,
+    coalesce(micro(t.receipt_l1_blob_base_fee_scalar), 0) AS l1_blob_base_fee_scalar,
+    -- Transaction Attributes
+    hexstr_method_id(t.input) AS method_id,
+    hexstr_bytelen(t.input) AS input_byte_length,
+    hexstr_calldata_gas(t.input) AS input_calldata_gas,
+    t.transaction_type = 126 AS is_system_transaction,
+    ( -- Attributes Deposited Spec https://specs.optimism.io/protocol/deposits.html#l1-attributes-deposited-transaction
+      t.transaction_type = 126
+      AND t.from_address = lower('0xDeaDDEaDDeAdDeAdDEAdDEaddeAddEAdDEAd0001')
+      AND t.to_address = lower('0x4200000000000000000000000000000000000015')
+    ) AS is_attributes_deposited_transaction
+
   FROM ingestion_transactions_v1 AS t
   INNER JOIN pb AS b ON t.block_number = b.number
-  WHERE
-    t.gas_price > 0
-    -- Optional address filter for faster results when developing.
-    -- AND from_address LIKE '0x00%'  
+  WHERE 1 = 1
 ),
 
 
@@ -56,32 +71,66 @@ pt2 AS (
     coalesce(
       receipt_l1_gas_used,
       round(16 * l1_fee / (
-        (l1_base_scalar * receipt_l1_gas_price)
-        + (l1_blob_scalar * receipt_l1_blob_base_fee)
+        (l1_base_fee_scalar * receipt_l1_gas_price)
+        + (l1_blob_base_fee_scalar * receipt_l1_blob_base_fee)
       ))::INT64
     ) AS l1_gas_used
   FROM pt1
-)
+),
 
 -- Add more fee calculations.
 -- Reuses results from the previous CTEs.
 
+pt3 AS (
+  SELECT
+    *,
+    --
+    -- Total fee
+    l2_fee + l1_fee AS tx_fee,
+    -- 
+    -- L2 Legacy Fee
+    if(l2_priority_fee = 0, l2_fee - l2_base_fee, 0) AS l2_base_legacy_fee,
+    -- 
+    -- L1 Base 
+    div16(l1_gas_used) * l1_base_fee_scalar * receipt_l1_gas_price AS l1_base_fee,
+    div16(l1_gas_used) * l1_base_fee_scalar AS l1_base_scaled_size,
+    -- 
+    -- L1 Blob
+    div16(l1_gas_used) * l1_blob_base_fee_scalar * receipt_l1_blob_base_fee AS l1_blob_fee,
+    div16(l1_gas_used) * l1_blob_base_fee_scalar AS l1_blob_scaled_size
+
+  FROM pt2
+)
+
+
+-- Generate gas fee breakdowns in native terms, for later aggregation
+-- Generate gas prices in gwei terms
 SELECT
   *,
-  --
-  -- Total fee
-  l2_fee + l1_fee AS tx_fee,
-  -- 
-  -- L2 Legacy Fee
-  if(l2_priority_fee = 0, l2_fee + l1_fee - l2_base_fee, 0) AS l2_base_legacy,
-  -- 
-  -- L1 Base 
-  div16(l1_gas_used) * l1_base_scalar * receipt_l1_gas_price AS l1_base_fee,
-  div16(l1_gas_used) * l1_base_scalar AS l1_base_scaled_size,
-  -- 
-  -- L1 Blob
-  div16(l1_gas_used) * l1_blob_scalar * receipt_l1_blob_base_fee AS l1_blob_fee,
-  div16(l1_gas_used) * l1_blob_scalar AS l1_blob_scaled_size
 
+  -- Fees
+  wei_to_eth(tx_fee) AS tx_fee_native,
 
-FROM pt2
+  -- Native Breakdown
+  wei_to_eth(l1_fee) AS l1_fee_native,
+  wei_to_eth(l2_fee) AS l2_fee_native,
+
+  -- L1 Breakdown
+  wei_to_eth(l1_base_fee) AS l1_base_fee_native,
+  wei_to_eth(l1_blob_fee) AS l1_blob_fee_native,
+
+  -- L2 Breakdown
+  wei_to_eth(l2_base_fee) AS l2_base_fee_native,
+  wei_to_eth(l2_priority_fee) AS l2_priority_fee_native,
+  wei_to_eth(l2_base_legacy_fee) AS l2_base_legacy_fee_native,
+
+  -- Gas Prices
+  wei_to_gwei(gas_price) AS l2_gas_price_gwei,
+  wei_to_gwei(base_fee_per_gas) AS l2_base_gas_price_gwei,
+  wei_to_gwei(max_priority_fee_per_gas) AS l2_priority_gas_price_gwei,
+  wei_to_gwei(base_legacy_fee_per_gas) AS l2_base_legacy_gas_price_gwei,
+
+  wei_to_gwei(receipt_l1_gas_price) AS l1_base_gas_price_gwei,
+  wei_to_gwei(receipt_l1_blob_base_fee) AS l1_blob_base_gas_price_gwei
+
+FROM pt3
