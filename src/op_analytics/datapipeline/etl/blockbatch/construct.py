@@ -1,6 +1,7 @@
 import pyarrow as pa
 
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
@@ -10,6 +11,7 @@ from op_analytics.datapipeline.etl.ingestion.reader.byblock import construct_rea
 from op_analytics.datapipeline.models.compute.model import PythonModel
 
 from .task import BlockBatchModelsTask
+from .reader.markers import BlockBatchDataSpec
 
 log = structlog.get_logger()
 
@@ -38,6 +40,13 @@ def construct_tasks(
         root_paths_to_read=sorted(input_datasets),
     )
 
+    # Pre-fetch completion markers so we can skip completed tasks.
+    data_spec = BlockBatchDataSpec(chains=chains, models=models)
+    markers_df = data_spec.query_markers(
+        datevals=DateRange.from_spec(range_spec).dates(),
+        read_from=write_to,
+    )
+
     tasks = []
     for reader in readers:
         assert reader.extra_marker_data is not None
@@ -48,7 +57,7 @@ def construct_tasks(
             # Each model can have one or more outputs. There is 1 marker per output.
             expected_outputs = []
             for dataset in model_obj.expected_output_datasets:
-                full_model_name = f"{model_name}/{dataset}"
+                full_output_name = f"{model_name}/{dataset}"
 
                 datestr = reader.partition_value("dt")
                 chain = reader.partition_value("chain")
@@ -64,9 +73,9 @@ def construct_tasks(
 
                 expected_outputs.append(
                     ExpectedOutput(
-                        root_path=f"{root_path_prefix}/{full_model_name}",
+                        root_path=f"{root_path_prefix}/{full_output_name}",
                         file_name=f"{min_block_str}.parquet",
-                        marker_path=f"{root_path_prefix}/{full_model_name}/{chain}/{datestr}/{min_block_str}",
+                        marker_path=f"{root_path_prefix}/{full_output_name}/{chain}/{datestr}/{min_block_str}",
                     )
                 )
 
