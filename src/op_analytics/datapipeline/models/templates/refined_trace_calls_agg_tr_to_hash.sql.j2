@@ -1,4 +1,3 @@
-
 -- Base-Level Aggregation view to generate unique transaction & to combinations before we aggregate up
 
 WITH get_transactions_by_call_type AS (
@@ -6,7 +5,7 @@ WITH get_transactions_by_call_type AS (
 SELECT dt, chain_id, block_number, transaction_hash
   , SUM(count_internal_calls_call_type) > 0 AS is_transaction_with_internal_call_type_call
   , SUM(coalesce(count_internal_calls_call_type,0)+coalesce(count_internal_calls_delegate_type,0)) > 0 AS is_transaction_with_internal_call_type_call_or_delegate
-  FROM refined_trace_calls_agg_from_to_hash
+  FROM refined_trace_calls_agg_tr_from_tr_to_hash
   GROUP BY
   dt, chain_id, block_number, transaction_hash
 
@@ -18,7 +17,7 @@ dt, chain, network, chain_id,
   trace_to_address, transaction_hash, block_timestamp, block_number,
   tx_from_address, tx_to_address, tx_method_id
 -- Transaction-Level gas & fees
-  , tx_gas_used
+  , tx_l2_gas_used
   , tx_fee_native, tx_l1_fee_native, tx_l2_fee_native
   , tx_l2_priority_fee_native, tx_l2_base_fee_native, tx_l2_legacy_extra_fee_native
   -- Transaction-Level Gas Prices
@@ -29,6 +28,7 @@ dt, chain, network, chain_id,
   , tx_l1_base_scaled_size, tx_l1_blob_scaled_size, tx_l1_gas_used_unified, tx_estimated_size
   -- Attributes
   , tx_success
+  , is_system_transaction
 
 -- Sum Internal Trace Gas
   , SUM(sum_trace_gas_used) AS sum_trace_gas_used
@@ -38,7 +38,7 @@ dt, chain, network, chain_id,
   , SUM(sum_tx_l2_priority_fee_native_minus_subtraces) AS sum_tx_l2_priority_fee_native_minus_subtraces
   , SUM(sum_tx_l2_legacy_base_fee_native_minus_subtraces) AS sum_tx_l2_legacy_base_fee_native_minus_subtraces
 
-  , SUM(sum_tx_gas_used_amortized_by_call) AS sum_tx_gas_used_amortized_by_call
+  , SUM(sum_tx_l2_gas_used_amortized_by_call) AS sum_tx_l2_gas_used_amortized_by_call
   , SUM(sum_tx_l1_gas_used_unified_amortized_by_call) AS sum_tx_l1_gas_used_unified_amortized_by_call
   , SUM(sum_tx_l1_base_scaled_size_amortized_by_call) AS sum_tx_l1_base_scaled_size_amortized_by_call
   , SUM(sum_tx_l1_blob_scaled_size_amortized_by_call) AS sum_tx_l1_blob_scaled_size_amortized_by_call
@@ -67,14 +67,14 @@ dt, chain, network, chain_id,
   , SUM(count_internal_calls_call_type) AS count_internal_calls_call_type
   , SUM(count_internal_calls_call_type_trace_success) AS count_internal_calls_call_type_trace_success
 
-FROM refined_trace_calls_agg_from_to_hash
+FROM refined_trace_calls_agg_tr_from_tr_to_hash
 
 GROUP BY
 dt, chain, network, chain_id,
   trace_to_address, transaction_hash, block_timestamp, block_number,
   tx_from_address, tx_to_address, tx_method_id
 -- Transaction-Level gas & fees
-  , tx_gas_used
+  , tx_l2_gas_used
   , tx_fee_native, tx_l1_fee_native, tx_l2_fee_native
   , tx_l2_priority_fee_native, tx_l2_base_fee_native, tx_l2_legacy_extra_fee_native
   -- Transaction-Level Gas Prices
@@ -85,6 +85,7 @@ dt, chain, network, chain_id,
   , tx_l1_base_scaled_size, tx_l1_blob_scaled_size, tx_l1_gas_used_unified, tx_estimated_size
   -- Attributes
   , tx_success
+  , is_system_transaction
 
 )
 

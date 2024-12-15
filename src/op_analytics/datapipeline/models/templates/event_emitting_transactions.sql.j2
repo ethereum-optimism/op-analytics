@@ -48,7 +48,7 @@ SELECT
   -- transaction attributes
   t.l1_gas_used_unified AS tx_l1_gas_used_unified,
   t.estimated_size AS tx_estimated_size,
-  t.receipt_gas_used AS tx_receipt_gas_used,
+  t.l2_gas_used AS tx_l2_gas_used,
   ee.count_total_events
   > ee.count_approval_events + ee.count_wrapping_events + ee.count_transfer_events
     AS is_qualified_tx_not_approval_wrapping_transfer,

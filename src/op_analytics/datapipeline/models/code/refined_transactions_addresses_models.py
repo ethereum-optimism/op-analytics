@@ -10,21 +10,18 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         "ingestion/transactions_v1",
         "ingestion/blocks_v1",
         "ingestion/logs_v1",
-        "ingestion/traces_v1",
     ],
     expected_outputs=[
         "refined_transactions_fees_v1",
-        "refined_trace_calls_v1",
         "event_emitting_transactions_v1",
         "summary_v1",
+        "daily_transactions_agg_tx_from_tx_to_method_v1",
+        "daily_transactions_agg_tx_to_method_v1",
+        "daily_transactions_agg_tx_to_v1",
     ],
     auxiliary_views=[
         TemplatedSQLQuery(
             template_name="refined_transactions_fees",
-            context={},
-        ),
-        TemplatedSQLQuery(
-            template_name="refined_trace_calls",
             context={},
         ),
         TemplatedSQLQuery(
@@ -40,30 +37,31 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
             context={},
         ),
         TemplatedSQLQuery(
-            template_name="refined_trace_calls_agg_from_to_hash",
+            template_name="daily_transactions_agg_tx_from_tx_to_method",
             context={},
         ),
         TemplatedSQLQuery(
-            template_name="refined_trace_calls_agg_to_hash",
+            template_name="daily_transactions_agg_tx_to_method",
             context={},
         ),
         TemplatedSQLQuery(
-            template_name="daily_trace_calls_agg_to",
+            template_name="daily_transactions_agg_tx_to",
             context={},
         ),
     ],
 )
-def refined_transactions_traces_address_models(
+def refined_transactions_addresses_models(
     duckdb_client: duckdb.DuckDBPyConnection,
 ) -> NamedRelations:
     return {
         "refined_transactions_fees_v1": duckdb_client.view("refined_transactions_fees"),
-        "refined_trace_calls_v1": duckdb_client.view("refined_trace_calls"),
         "event_emitting_transactions_v1": duckdb_client.view("event_emitting_transactions"),
         "summary_v1": duckdb_client.view("daily_address_summary"),
-        "refined_trace_calls_agg_from_to_hash_v1": duckdb_client.view(
-            "refined_trace_calls_agg_from_to_hash"
+        "daily_transactions_agg_tx_from_tx_to_method_v1": duckdb_client.view(
+            "daily_transactions_agg_tx_from_tx_to_method"
         ),
-        "refined_trace_calls_agg_to_hash_v1": duckdb_client.view("refined_trace_calls_agg_to_hash"),
-        "daily_trace_calls_agg_to_v1": duckdb_client.view("daily_trace_calls_agg_to"),
+        "daily_transactions_agg_tx_to_method_v1": duckdb_client.view(
+            "daily_transactions_agg_tx_to_method"
+        ),
+        "daily_transactions_agg_tx_to_v1": duckdb_client.view("daily_transactions_agg_tx_to"),
     }

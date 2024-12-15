@@ -40,9 +40,9 @@ SELECT
 
   count(DISTINCT method_id) AS method_id_ucnt,
 
-  sum(receipt_gas_used) AS l2_gas_used_sum,
+  sum(l2_gas_used) AS l2_gas_used_sum,
 
-  sum(if(success, receipt_gas_used, 0)) AS success_l2_gas_used_sum,
+  sum(if(success, l2_gas_used, 0)) AS success_l2_gas_used_sum,
 
   sum(l1_gas_used_unified) AS l1_gas_used_unified_sum,
 
@@ -69,13 +69,13 @@ SELECT
   wei_to_eth(sum(l1_blob_fee)) AS l1_blob_fee_sum_eth,
 
   -- L2 Price and breakdown into BASE + PRIORITY
-  wei_to_gwei(safe_div(sum(l2_fee), sum(receipt_gas_used)))
+  wei_to_gwei(safe_div(sum(l2_fee), sum(l2_gas_used)))
     AS l2_gas_price_avg_gwei,
 
-  wei_to_gwei(safe_div(sum(l2_base_fee), sum(receipt_gas_used)))
+  wei_to_gwei(safe_div(sum(l2_base_fee), sum(l2_gas_used)))
     AS l2_base_price_avg_gwei,
 
-  wei_to_gwei(safe_div(sum(l2_priority_fee), sum(receipt_gas_used)))
+  wei_to_gwei(safe_div(sum(l2_priority_fee), sum(l2_gas_used)))
     AS l2_priority_price_avg_gwei,
 
   -- L1 Price breakdown into BASE + BLOB
@@ -102,7 +102,6 @@ FROM
   refined_transactions_fees
 WHERE
   NOT is_system_transaction
-  AND gas_price > 0
 GROUP BY
   1,
   2,
