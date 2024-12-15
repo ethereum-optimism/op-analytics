@@ -6,7 +6,7 @@ def test_query_mixed_networks():
         chains=["op", "op_sepolia"],
     )
 
-    assert spec.root_paths_query_filter() == [
+    assert spec.adapter.root_paths_query_filter() == [
         "ingestion/blocks_v1",
         "ingestion/logs_v1",
         "ingestion/traces_v1",
@@ -23,7 +23,7 @@ def test_query_mainnet():
         chains=["op", "mode"],
     )
 
-    assert spec.root_paths_query_filter() == [
+    assert spec.adapter.root_paths_query_filter() == [
         "ingestion/blocks_v1",
         "ingestion/logs_v1",
         "ingestion/traces_v1",
@@ -36,7 +36,7 @@ def test_query_testnet():
         chains=["op_sepolia", "unichain_sepolia"],
     )
 
-    assert spec.root_paths_query_filter() == [
+    assert spec.adapter.root_paths_query_filter() == [
         "ingestion_testnets/blocks_v1",
         "ingestion_testnets/logs_v1",
         "ingestion_testnets/traces_v1",

@@ -7,7 +7,7 @@ from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determine_network
 from op_analytics.datapipeline.etl.ingestion.reader.byblock import construct_readers_byblock
-from op_analytics.datapipeline.models.compute.modelexecute import PythonModel
+from op_analytics.datapipeline.models.compute.model import PythonModel
 
 from .task import BlockBatchModelsTask
 

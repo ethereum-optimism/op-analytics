@@ -8,13 +8,9 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
+from op_analytics.datapipeline.chains.activation import is_chain_active
 
-from .markers import (
-    INGESTION_MARKERS_QUERY_SCHEMA,
-    IngestionData,
-    IngestionDataSpec,
-    is_chain_active,
-)
+from .markers import INGESTION_MARKERS_QUERY_SCHEMA, IngestionData, IngestionDataSpec
 
 log = structlog.get_logger()
 
@@ -60,12 +56,12 @@ def construct_readers_byblock(
             # Check if all markers present are ready.
             input_data = is_batch_ready(
                 markers_df=group_df,
-                root_paths_to_check=data_spec.root_paths_physical(chain),
+                root_paths_to_check=data_spec.adapter.root_paths_physical(chain),
                 storage_location=read_from,
             )
 
             # Update data path mapping so keys are logical paths.
-            dataset_paths = data_spec.data_paths(chain, input_data.data_paths)
+            dataset_paths = data_spec.adapter.data_paths(chain, input_data.data_paths)
 
             extra_columns_df = group_df.select("num_blocks", "min_block", "max_block").unique()
             assert len(extra_columns_df) == 1

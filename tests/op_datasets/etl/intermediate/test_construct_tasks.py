@@ -12,7 +12,7 @@ from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.etl.intermediate.construct import construct_tasks
 from op_analytics.datapipeline.etl.intermediate.task import IntermediateModelsTask
-from op_analytics.datapipeline.models.compute.modelexecute import PythonModel
+from op_analytics.datapipeline.models.compute.execute import PythonModel
 
 
 def make_dataframe(path: str):

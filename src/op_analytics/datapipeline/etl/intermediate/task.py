@@ -4,7 +4,7 @@ import duckdb
 
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writehelper import WriteManager
-from op_analytics.datapipeline.models.compute.modelexecute import PythonModel
+from op_analytics.datapipeline.models.compute.execute import PythonModel
 
 
 @dataclass(kw_only=True)

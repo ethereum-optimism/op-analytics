@@ -1,9 +1,13 @@
 from op_analytics.coreutils.logger import structlog, bound_contextvars
 
-from .modelexecute import PythonModel
+from .model import ModelPath
+from .execute import PythonModel
 from .querybuilder import TemplatedSQLQuery
 
 log = structlog.get_logger()
+
+# All model functions should be defined in modules under this prefix:
+MODULE_PREFIX = "op_analytics.datapipeline.models.code."
 
 
 def register_model(
@@ -12,10 +16,18 @@ def register_model(
     auxiliary_views: list[TemplatedSQLQuery],
 ):
     def decorator(func):
-        model_name = func.__name__
-        with bound_contextvars(model=model_name):
+        function_name = func.__name__
+
+        with bound_contextvars(model=function_name):
+            # Instantiating the model registers it on the PythonModel
+            # instance registry.
+            assert str(func.__module__).startswith(MODULE_PREFIX)
+
             PythonModel(
-                name=model_name,
+                path=ModelPath(
+                    module=str(func.__module__).removeprefix(MODULE_PREFIX),
+                    function_name=function_name,
+                ),
                 input_datasets=input_datasets,
                 expected_output_datasets=expected_outputs,
                 auxiliary_views=auxiliary_views,
