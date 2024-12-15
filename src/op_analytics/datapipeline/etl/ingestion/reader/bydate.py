@@ -9,13 +9,9 @@ from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import surrounding_dates
+from op_analytics.datapipeline.chains.activation import is_chain_active
 
-from .markers import (
-    INGESTION_MARKERS_QUERY_SCHEMA,
-    IngestionData,
-    IngestionDataSpec,
-    is_chain_active,
-)
+from .markers import INGESTION_MARKERS_QUERY_SCHEMA, IngestionData, IngestionDataSpec
 
 log = structlog.get_logger()
 
@@ -69,12 +65,12 @@ def construct_readers_bydate(
                 input_data = are_inputs_ready(
                     markers_df=filtered_df,
                     dateval=dateval,
-                    root_paths_to_check=data_spec.root_paths_physical(chain),
+                    root_paths_to_check=data_spec.adapter.root_paths_physical(chain),
                     storage_location=read_from,
                 )
 
                 # Update data path mapping so keys are logical paths.
-                dataset_paths = data_spec.data_paths(chain, input_data.data_paths)
+                dataset_paths = data_spec.adapter.data_paths(chain, input_data.data_paths)
 
                 obj = DataReader(
                     partitions=Partition.from_tuples(

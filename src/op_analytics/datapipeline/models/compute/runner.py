@@ -15,7 +15,7 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import OutputData
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writehelper import WriteManager
-from op_analytics.datapipeline.models.compute.modelexecute import PythonModel, PythonModelExecutor
+from op_analytics.datapipeline.models.compute.execute import PythonModel, PythonModelExecutor
 from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros, set_memory_limit
 
 log = structlog.get_logger()
@@ -162,7 +162,7 @@ def steps(item: WorkItem) -> None:
                 task.write_manager.write(
                     output_data=OutputData(
                         dataframe=rel.pl(),
-                        root_path=f"{task.output_root_path_prefix}/{task.model.name}/{result_name}",
+                        root_path=f"{task.output_root_path_prefix}/{task.model.fq_model_path}/{result_name}",
                         default_partition=task.data_reader.partitions_dict(),
                     ),
                 )
