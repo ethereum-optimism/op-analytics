@@ -47,6 +47,8 @@ def construct_tasks(
         datevals=DateRange.from_spec(range_spec).dates(),
         read_from=write_to,
     )
+    unique_chains = output_markers_df["chain"].n_unique()
+    log.info(f"pre-fetched {len(output_markers_df)} markers for {unique_chains} chains")
 
     tasks = []
     for reader in readers:
