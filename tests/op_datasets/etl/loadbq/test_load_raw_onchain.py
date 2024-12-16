@@ -4,9 +4,11 @@ from unittest.mock import patch
 import polars as pl
 
 from op_analytics.coreutils.duckdb_local.client import init_client as duckb_local_client
-from op_analytics.coreutils.partitioned.dataaccess import DateFilter, init_data_access
+from op_analytics.coreutils.partitioned.dataaccess import (
+    DateFilter,
+    init_data_access,
+)
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.datapipeline.etl.ingestion.reader.markers import INGESTION_MARKERS_QUERY_SCHEMA
 from op_analytics.datapipeline.etl.loadbq.superchain_raw import load_superchain_raw_to_bq
 
 MOCK_MARKERS = [
@@ -561,13 +563,23 @@ def test_load_tasks():
 
     with (
         patch("op_analytics.datapipeline.etl.loadbq.superchain_raw.goldsky_mainnet_chains") as m1,
-        patch.object(client, "markers_for_dates") as m2,
+        patch.object(client, "query_markers_with_filters") as m2,
         patch("op_analytics.datapipeline.etl.loadbq.loader.load_from_parquet_uris") as m3,
     ):
         m1.return_value = ["fraxtal"]
         m2.return_value = pl.DataFrame(
             MOCK_MARKERS,
-            INGESTION_MARKERS_QUERY_SCHEMA,
+            {
+                "dt": pl.Date,
+                "chain": pl.String,
+                "marker_path": pl.String,
+                "num_parts": pl.UInt32,
+                "num_blocks": pl.Int32,
+                "min_block": pl.Int64,
+                "max_block": pl.Int64,
+                "root_path": pl.String,
+                "data_path": pl.String,
+            },
         )
 
         load_superchain_raw_to_bq(
@@ -701,7 +713,7 @@ def test_load_tasks():
             },
         ]
 
-    markers = client.markers_for_dates(
+    markers = client.query_markers_with_filters(
         data_location=DataLocation.BIGQUERY_LOCAL_MARKERS,
         markers_table="superchain_raw_bigquery_markers",
         datefilter=DateFilter(

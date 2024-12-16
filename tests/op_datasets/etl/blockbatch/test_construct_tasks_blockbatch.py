@@ -16,7 +16,7 @@ from op_analytics.datapipeline.models.compute.execute import PythonModel
 
 
 def make_dataframe(path: str):
-    with open(InputTestData.at(__file__).path(path)) as fobj:
+    with open(InputTestData.at(__file__).path(f"../testdata/{path}")) as fobj:
         # The markers testdata used for intermediate models includes padded dates,
         # so it does not match the query that we are mocking to get markers. We
         # filter the data to a single data so that the mock is correct.
@@ -42,13 +42,13 @@ def test_construct():
             # Mock data for ingestion markers. This is used to create the data readers.
             pl.concat(
                 [
-                    make_dataframe("../intermediate/testdata/mainnet_markers.json"),
-                    make_dataframe("../intermediate/testdata/testnet_markers.json"),
+                    make_dataframe("ingestion_mode_markers.json"),
+                    make_dataframe("ingestion_unichain_sepolia_markers.json"),
                 ]
             ),
             # Mock data for blockbach markers. This is used to set complete_markers on
             # the write managers.
-            make_dataframe("testdata/mainnet_blockbatch_markers.json"),
+            make_dataframe("blockbatch_mode_markers.json"),
         ]
 
         tasks = construct_tasks(

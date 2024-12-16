@@ -104,7 +104,7 @@ def run_pool(
     force_complete: bool,
 ):
     # Task queue nad worker processes.
-    queue = mp.Queue(maxsize=num_processes)
+    queue: mp.Queue = mp.Queue(maxsize=num_processes)
     workers = [mp.Process(target=worker_function, args=(queue,)) for _ in range(num_processes)]
 
     executed = 0

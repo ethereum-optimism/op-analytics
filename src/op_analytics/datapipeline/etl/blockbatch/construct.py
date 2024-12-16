@@ -1,23 +1,20 @@
 import pyarrow as pa
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.rangeutils.daterange import DateRange
+from op_analytics.coreutils.partitioned.dataaccess import check_marker
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
+from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determine_network
 from op_analytics.datapipeline.etl.ingestion.reader.byblock import construct_readers_byblock
 from op_analytics.datapipeline.models.compute.model import PythonModel
-from op_analytics.coreutils.partitioned.dataaccess import check_marker
 
+from .reader.markers import BLOCKBATCH_MARKERS_TABLE, make_data_spec
 from .task import BlockBatchModelsTask
-from .reader.markers import BlockBatchDataSpec
 
 log = structlog.get_logger()
-
-
-BLOCKBATCH_MODELS_MARKERS_TABLE = "blockbatch_model_markers"
 
 
 def construct_tasks(
@@ -42,7 +39,7 @@ def construct_tasks(
     )
 
     # Pre-fetch completion markers so we can skip completed tasks.
-    data_spec = BlockBatchDataSpec(chains=chains, models=models)
+    data_spec = make_data_spec(chains=chains, models=models)
     output_markers_df = data_spec.query_markers(
         datevals=DateRange.from_spec(range_spec).dates(),
         read_from=write_to,
@@ -52,8 +49,6 @@ def construct_tasks(
 
     tasks = []
     for reader in readers:
-        assert reader.extra_marker_data is not None
-
         for model_obj in model_objs:
             model_name = model_obj.name
 
@@ -73,7 +68,7 @@ def construct_tasks(
                 else:
                     root_path_prefix = "blockbatch"
 
-                min_block = reader.extra_marker_data["min_block"]
+                min_block = reader.marker_data("min_block")
                 min_block_str = f"{min_block:012d}"
 
                 eo = ExpectedOutput(
@@ -96,9 +91,9 @@ def construct_tasks(
                         partition_cols=["chain", "dt"],
                         extra_marker_columns=dict(
                             model_name=model_name,
-                            num_blocks=reader.extra_marker_data["num_blocks"],
-                            min_block=reader.extra_marker_data["min_block"],
-                            max_block=reader.extra_marker_data["max_block"],
+                            num_blocks=reader.marker_data("num_blocks"),
+                            min_block=reader.marker_data("min_block"),
+                            max_block=reader.marker_data("max_block"),
                         ),
                         extra_marker_columns_schema=[
                             pa.field("chain", pa.string()),
@@ -108,7 +103,7 @@ def construct_tasks(
                             pa.field("max_block", pa.int64()),
                             pa.field("model_name", pa.string()),
                         ],
-                        markers_table=BLOCKBATCH_MODELS_MARKERS_TABLE,
+                        markers_table=BLOCKBATCH_MARKERS_TABLE,
                         expected_outputs=expected_outputs,
                         complete_markers=complete_markers,
                     ),

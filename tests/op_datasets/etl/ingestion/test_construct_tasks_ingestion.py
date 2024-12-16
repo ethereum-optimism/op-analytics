@@ -16,7 +16,7 @@ from op_analytics.datapipeline.etl.ingestion.batches import BlockBatch
 
 
 def make_dataframe(path: str):
-    with open(InputTestData.at(__file__).path(f"testdata/{path}")) as fobj:
+    with open(InputTestData.at(__file__).path(f"../testdata/{path}")) as fobj:
         return pl.DataFrame(
             json.load(fobj),
             schema={
@@ -39,7 +39,7 @@ def test_construct():
         patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m2,
     ):
         m1.return_value = BlockRange(min=16421809, max=16439980)
-        m2.return_value = make_dataframe("sample_ingestion_markers.json")
+        m2.return_value = make_dataframe("ingestion_mode_markers_padded_dates.json")
 
         tasks = construct_tasks(
             chains=["mode"],

@@ -42,6 +42,10 @@ class DataReader:
     # The dictionary is column name to column value.
     extra_marker_data: dict[str, Any] | None = None
 
+    def marker_data(self, key: str) -> Any:
+        assert self.extra_marker_data is not None
+        return self.extra_marker_data[key]
+
     def partitions_dict(self):
         return self.partitions.as_dict()
 

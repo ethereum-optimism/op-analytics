@@ -1,0 +1,10 @@
+[
+    {
+      "dt": 20058,
+      "chain": "mode",
+      "marker_path": "2024-12-01/mode/contract_creation/create_traces_v1",
+      "data_path": "intermediate/contract_creation/create_traces_v1/chain=mode/dt=2024-12-01/out.parquet",
+      "root_path": "intermediate/contract_creation/create_traces_v1",
+      "num_parts": 1
+    }
+  ]
