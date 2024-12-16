@@ -67,39 +67,54 @@ def run_tasks(
         log.info("DRYRUN: No work will be done.")
         return
 
-    executed = 0
-    executed_ok = 0
-
     if fork_process:
-        ctx = mp.get_context("spawn")
-        with concurrent.futures.ProcessPoolExecutor(
-            max_workers=num_processes,
-            mp_context=ctx,
-            # NOTE: I tried using max tasks to avoid memory build up on reused executors
-            # but every time I tried it execution ran into a deadlock that I couldn't
-            # debug. So not enabling it for now.
-            # max_tasks_per_child=20,
-        ) as executor:
-            futures = {}
-            for item in pending_items(tasks, force_complete=force_complete):
-                future = executor.submit(steps, item)
-                futures[future] = item.progress
-                executed += 1
-
-            for future in concurrent.futures.as_completed(futures):
-                key = futures[future]
-                try:
-                    future.result()
-                    executed_ok += 1
-                except Exception as ex:
-                    log.error(f"Failed to run process for {key}", exc_info=ex)
+        executed, executed_ok = run_pool_v0(
+            num_processes=num_processes,
+            tasks=tasks,
+            force_complete=force_complete,
+        )
 
     else:
+        executed = 0
+        executed_ok = 0
         for item in pending_items(tasks, force_complete=force_complete):
             steps(item)
+            executed += 1
             executed_ok += 1
 
     log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
+
+
+def run_pool_v0(
+    num_processes: int,
+    tasks: Sequence[ModelsTask],
+    force_complete: bool,
+):
+    executed = 0
+    executed_ok = 0
+    ctx = mp.get_context("spawn")
+    with concurrent.futures.ProcessPoolExecutor(
+        max_workers=num_processes,
+        mp_context=ctx,
+        # NOTE: I tried using max tasks to avoid memory build up on reused executors
+        # but every time I tried it execution ran into a deadlock that I couldn't
+        # debug. So not enabling it for now.
+        # max_tasks_per_child=20,
+    ) as executor:
+        futures = {}
+        for item in pending_items(tasks, force_complete=force_complete):
+            future = executor.submit(steps, item)
+            futures[future] = item.progress
+            executed += 1
+
+        for future in concurrent.futures.as_completed(futures):
+            key = futures[future]
+            try:
+                future.result()
+                executed_ok += 1
+            except Exception as ex:
+                log.error(f"Failed to run process for {key}", exc_info=ex)
+    return executed, executed_ok
 
 
 def pending_items(
