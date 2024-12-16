@@ -4,7 +4,7 @@ from datetime import date
 import polars as pl
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.dataaccess import DateFilter, MarkerFilter, init_data_access
+from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.chains.testnets import TestnetRootPathAdapter
 
@@ -18,18 +18,6 @@ DEFAULT_INGESTION_ROOT_PATHS = [
     "ingestion/logs_v1",
     "ingestion/traces_v1",
 ]
-
-INGESTION_MARKERS_QUERY_SCHEMA = {
-    "dt": pl.Date,
-    "chain": pl.String,
-    "marker_path": pl.String,
-    "num_parts": pl.UInt32,
-    "num_blocks": pl.Int32,
-    "min_block": pl.Int64,
-    "max_block": pl.Int64,
-    "root_path": pl.String,
-    "data_path": pl.String,
-}
 
 
 @dataclass
@@ -55,6 +43,7 @@ class IngestionDataSpec:
     def __post_init__(self):
         self.adapter = TestnetRootPathAdapter(
             chains=self.chains,
+            root_path_prefix="ingestion",
             root_paths_to_read=self.root_paths_to_read or DEFAULT_INGESTION_ROOT_PATHS,
         )
 
@@ -68,44 +57,17 @@ class IngestionDataSpec:
         Returns a dataframe with the markers and all of the parquet output paths
         associated with them.
         """
-        # Make one query for all dates and chains.
-        #
-        # We use the +/- 1 day padded dates so that we can use the query results to
-        # check if there is data on boths ends. This allows us to confirm that the
-        # data is ready to be processed.
         client = init_data_access()
 
-        paths_df = client.markers_for_dates(
+        return client.query_markers_by_root_path(
+            chains=self.chains,
+            datevals=datevals,
             data_location=read_from,
+            root_paths=self.adapter.root_paths_query_filter(),
             markers_table=INGESTION_MARKERS_TABLE,
-            datefilter=DateFilter(
-                min_date=None,
-                max_date=None,
-                datevals=datevals,
-            ),
-            projections=[
-                "dt",
-                "chain",
-                "marker_path",
-                "num_parts",
+            extra_columns=[
                 "num_blocks",
                 "min_block",
                 "max_block",
-                "data_path",
-                "root_path",
             ],
-            filters={
-                "chains": MarkerFilter(
-                    column="chain",
-                    values=self.chains,
-                ),
-                "datasets": MarkerFilter(
-                    column="root_path",
-                    values=self.adapter.root_paths_query_filter(),
-                ),
-            },
         )
-
-        assert dict(paths_df.schema) == INGESTION_MARKERS_QUERY_SCHEMA
-
-        return paths_df

@@ -10,7 +10,7 @@ from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.datapipeline.chains.activation import is_chain_active
 
-from .markers import INGESTION_MARKERS_QUERY_SCHEMA, IngestionData, IngestionDataSpec
+from .markers import IngestionData, IngestionDataSpec
 
 log = structlog.get_logger()
 
@@ -104,7 +104,17 @@ def is_batch_ready(
     If the input data is not complete returns None instead of the paths dict.
     """
 
-    assert dict(markers_df.schema) == INGESTION_MARKERS_QUERY_SCHEMA
+    assert dict(markers_df.schema) == {
+        "dt": pl.Date,
+        "chain": pl.String,
+        "marker_path": pl.String,
+        "num_parts": pl.UInt32,
+        "num_blocks": pl.Int32,
+        "min_block": pl.Int64,
+        "max_block": pl.Int64,
+        "root_path": pl.String,
+        "data_path": pl.String,
+    }
 
     dataset_paths = {}
     for root_path in root_paths_to_check:

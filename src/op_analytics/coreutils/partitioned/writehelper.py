@@ -6,7 +6,7 @@ from overrides import EnforceOverrides
 
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 
-from .dataaccess import init_data_access, complete_markers
+from .dataaccess import init_data_access
 from .location import DataLocation
 from .marker import Marker
 from .output import ExpectedOutput
@@ -61,13 +61,10 @@ class WriteManager[T: Writeable](EnforceOverrides):
     # Complete Markers. A list of markers that are already complete.
     # If a marker is already complete then we can skip writing its
     # corresponding output.
-    complete_markers: list[str] | None = None
+    complete_markers: list[str] = field(default_factory=list)
 
     # Process that is writing data. This can be used to identify backfills for example.
     process_name: str = field(default="default")
-
-    # Internal state for status of completion markers.
-    _is_complete: bool | None = field(default=None, init=False, repr=False)
 
     # Expected outputs by name (post-init).
     _keyed_outputs: dict[str, ExpectedOutput] = field(init=False, repr=False, default_factory=dict)
@@ -82,23 +79,7 @@ class WriteManager[T: Writeable](EnforceOverrides):
     def all_outputs_complete(self) -> bool:
         expected_markers = [_.marker_path for _ in self.expected_outputs]
 
-        # Use complete markers stored in the task.
-        if self.complete_markers is not None:
-            return set(self.complete_markers) == set(expected_markers)
-
-        if self._is_complete is None:
-            # Query the markers database to find out which markers are complete.
-            # TODO: Delete this code. We should always pre-fetch completion markers
-            #       so we don't have to make repeated database queries for each task.
-            self.complete_markers = complete_markers(
-                location=self.location,
-                markers=expected_markers,
-                markers_table=self.markers_table,
-            )
-
-            self._is_complete = set(self.complete_markers) == set(expected_markers)
-
-        return self._is_complete
+        return set(self.complete_markers) == set(expected_markers)
 
     def expected_output(self, output_data: T) -> ExpectedOutput:
         return self._keyed_outputs[output_data.root_path]

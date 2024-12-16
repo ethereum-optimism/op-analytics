@@ -11,7 +11,7 @@ from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import surrounding_dates
 from op_analytics.datapipeline.chains.activation import is_chain_active
 
-from .markers import INGESTION_MARKERS_QUERY_SCHEMA, IngestionData, IngestionDataSpec
+from .markers import IngestionData, IngestionDataSpec
 
 log = structlog.get_logger()
 
@@ -39,6 +39,9 @@ def construct_readers_bydate(
         root_paths_to_read=root_paths_to_read,
     )
 
+    # We use the +/- 1 day padded dates so that we can use the query results to
+    # check if there is data on boths ends. This allows us to confirm that the
+    # data is ready to be processed.
     markers_df = data_spec.query_markers(
         datevals=date_range.padded_dates(),
         read_from=read_from,
@@ -110,7 +113,17 @@ def are_inputs_ready(
     If the input data is not complete returns None instead of the paths dict.
     """
 
-    assert dict(markers_df.schema) == INGESTION_MARKERS_QUERY_SCHEMA
+    assert dict(markers_df.schema) == {
+        "dt": pl.Date,
+        "chain": pl.String,
+        "marker_path": pl.String,
+        "num_parts": pl.UInt32,
+        "num_blocks": pl.Int32,
+        "min_block": pl.Int64,
+        "max_block": pl.Int64,
+        "root_path": pl.String,
+        "data_path": pl.String,
+    }
 
     dataset_paths = {}
 

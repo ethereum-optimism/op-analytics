@@ -15,32 +15,39 @@ from op_analytics.datapipeline.etl.intermediate.task import IntermediateModelsTa
 from op_analytics.datapipeline.models.compute.execute import PythonModel
 
 
+SCHEMA = {
+    "dt": pl.UInt16(),
+    "chain": pl.String(),
+    "marker_path": pl.String(),
+    "num_parts": pl.UInt32(),
+    "num_blocks": pl.Int32(),
+    "min_block": pl.Int64(),
+    "max_block": pl.Int64(),
+    "data_path": pl.String(),
+    "root_path": pl.String(),
+}
+
+
 def make_dataframe(path: str):
-    with open(InputTestData.at(__file__).path(f"testdata/{path}")) as fobj:
-        return pl.DataFrame(
-            json.load(fobj),
-            schema={
-                "dt": pl.UInt16(),
-                "chain": pl.String(),
-                "marker_path": pl.String(),
-                "num_parts": pl.UInt32(),
-                "num_blocks": pl.Int32(),
-                "min_block": pl.Int64(),
-                "max_block": pl.Int64(),
-                "data_path": pl.String(),
-                "root_path": pl.String(),
-            },
-        )
+    with open(InputTestData.at(__file__).path(f"../testdata/{path}")) as fobj:
+        return pl.DataFrame(json.load(fobj), schema=SCHEMA)
+
+
+def make_empty_dataframe():
+    return pl.DataFrame([], schema=SCHEMA)
 
 
 def test_construct_mixed_chains():
     with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
-        m1.return_value = pl.concat(
-            [
-                make_dataframe("mainnet_markers.json"),
-                make_dataframe("testnet_markers.json"),
-            ]
-        )
+        m1.side_effect = [
+            pl.concat(
+                [
+                    make_dataframe("ingestion_mode_markers.json"),
+                    make_dataframe("ingestion_unichain_sepolia_markers.json"),
+                ]
+            ),
+            make_dataframe("intermediate_mode_markers.json"),
+        ]
 
         tasks = construct_tasks(
             chains=["mode", "unichain_sepolia"],
@@ -101,6 +108,7 @@ def test_construct_mixed_chains():
                         marker_path="2024-12-01/mode/contract_creation/create_traces_v1",
                     )
                 ],
+                complete_markers=["2024-12-01/mode/contract_creation/create_traces_v1"],
             ),
             output_root_path_prefix="intermediate",
         ),
@@ -178,6 +186,7 @@ def test_construct_mixed_chains():
                         marker_path="2024-12-01/unichain_sepolia/contract_creation/create_traces_v1",
                     )
                 ],
+                complete_markers=[],
             ),
             output_root_path_prefix="intermediate_testnets",
         ),
@@ -186,7 +195,10 @@ def test_construct_mixed_chains():
 
 def test_construct():
     with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
-        m1.return_value = make_dataframe("mainnet_markers.json")
+        m1.side_effect = [
+            make_dataframe("ingestion_mode_markers.json"),
+            make_empty_dataframe(),
+        ]
 
         tasks = construct_tasks(
             chains=["mode"],
@@ -247,6 +259,7 @@ def test_construct():
                         marker_path="2024-12-01/mode/contract_creation/create_traces_v1",
                     )
                 ],
+                complete_markers=[],
             ),
             output_root_path_prefix="intermediate",
         )
@@ -255,7 +268,10 @@ def test_construct():
 
 def test_construct_testnet():
     with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
-        m1.return_value = make_dataframe("testnet_markers.json")
+        m1.side_effect = [
+            make_dataframe("ingestion_unichain_sepolia_markers.json"),
+            make_empty_dataframe(),
+        ]
 
         tasks = construct_tasks(
             chains=["unichain_sepolia"],
@@ -340,6 +356,7 @@ def test_construct_testnet():
                         marker_path="2024-12-01/unichain_sepolia/contract_creation/create_traces_v1",
                     )
                 ],
+                complete_markers=[],
             ),
             output_root_path_prefix="intermediate_testnets",
         )

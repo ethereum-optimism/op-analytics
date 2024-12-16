@@ -9,6 +9,7 @@ class TestnetRootPathAdapter:
     """Utility to help us with TESTNET data which is stored in a different physical path."""
 
     chains: list[str]
+    root_path_prefix: str
 
     # Root paths that will be read. Logical names which may be different
     # than physical names where the data is actualy stored.
@@ -34,13 +35,15 @@ class TestnetRootPathAdapter:
         root_paths = self.root_paths_to_read
 
         network = determine_network(chain)
+
         updated_root_paths = {}
         if network == ChainNetwork.TESTNET:
             for path in root_paths:
-                if path.startswith("ingestion/"):
-                    updated_root_paths["ingestion_testnets/" + path.removeprefix("ingestion/")] = (
-                        path
-                    )
+                if path.startswith(f"{self.root_path_prefix}/"):
+                    updated_root_paths[
+                        f"{self.root_path_prefix}_testnets"
+                        + path.removeprefix(self.root_path_prefix)
+                    ] = path
                 else:
                     updated_root_paths[path] = path
         else:
@@ -65,7 +68,7 @@ class TestnetRootPathAdapter:
         chain,
         physical_data_paths: dict[str, list[str]] | None,
     ) -> dict[str, list[str]]:
-        """Updates keys to be logical pahts.
+        """Updates keys to be logical paths.
 
         The input dictionary is a map from physical root path to physical data paths.
         The output dictionary replaces the keys with logical root paths.

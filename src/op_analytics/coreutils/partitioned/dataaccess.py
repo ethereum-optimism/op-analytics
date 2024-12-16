@@ -8,8 +8,9 @@ The main goals are:
 - Prevent accidental data access to real data from tests or local scripts.
 """
 
-import polars as pl
+from datetime import date
 
+import polars as pl
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.storage.gcs_parquet import gcs_upload_parquet, local_upload_parquet
@@ -20,6 +21,15 @@ from .markers_core import DateFilter, MarkerFilter, MarkerStore
 from .markers_local import LocalMarkers
 
 log = structlog.get_logger()
+
+MARKERS_QUERY_SCHEMA = {
+    "dt": pl.Date,
+    "chain": pl.String,
+    "marker_path": pl.String,
+    "num_parts": pl.UInt32,
+    "root_path": pl.String,
+    "data_path": pl.String,
+}
 
 
 def init_data_access() -> "PartitionedDataAccess":
@@ -141,7 +151,7 @@ class PartitionedDataAccess:
 
         return True
 
-    def markers_for_dates(
+    def query_markers_with_filters(
         self,
         data_location: DataLocation,
         markers_table: str,
@@ -149,7 +159,7 @@ class PartitionedDataAccess:
         projections: list[str],
         filters=dict[str, MarkerFilter],
     ) -> pl.DataFrame:
-        """Query completion markers.
+        """Query completion markers with user provided filters and projections.
 
         Returns a dataframe with the markers that match the provided filters
         including only the columns specified in projections.
@@ -165,31 +175,56 @@ class PartitionedDataAccess:
             filters=filters,
         )
 
+    def query_markers_by_root_path(
+        self,
+        chains: list[str],
+        datevals: list[date],
+        root_paths: list[str],
+        data_location: DataLocation,
+        markers_table: str,
+        extra_columns: list[str],
+    ) -> pl.DataFrame:
+        """Query completion markers for a list of dates and chains.
 
-def complete_markers(
-    location: DataLocation,
-    markers: list[str],
-    markers_table: str,
-) -> list[str]:
-    """List of markers that are complete.
+        Returns a dataframe with the markers and all of the parquet output paths
+        associated with them.
+        """
 
-    This function is somewhat low-level in that it receives the explicit completion
-    markers that we are looking for. It checks that those markers are present in all
-    of the data sinks.
-    """
-    client = init_data_access()
+        paths_df = self.query_markers_with_filters(
+            data_location=data_location,
+            markers_table=markers_table,
+            datefilter=DateFilter(
+                min_date=None,
+                max_date=None,
+                datevals=datevals,
+            ),
+            projections=[
+                "dt",
+                "chain",
+                "marker_path",
+                "data_path",
+                "root_path",
+                "num_parts",
+            ]
+            + extra_columns,
+            filters={
+                "chains": MarkerFilter(
+                    column="chain",
+                    values=chains,
+                ),
+                "root_paths": MarkerFilter(
+                    column="root_path",
+                    values=root_paths,
+                ),
+            },
+        )
 
-    complete = []
+        default_columns_schema = {
+            k: v for k, v in paths_df.schema.items() if k in MARKERS_QUERY_SCHEMA
+        }
+        assert default_columns_schema == MARKERS_QUERY_SCHEMA
 
-    # TODO: Make a single query for all the markers.
-    for marker in markers:
-        if client.marker_exists(location, marker, markers_table):
-            complete.append(marker)
-
-    num_complete = len(complete)
-    log.debug(f"{num_complete}/{len(markers)} complete")
-
-    return complete
+        return paths_df
 
 
 def check_marker(markers_df: pl.DataFrame | None, marker_path: str) -> bool:
