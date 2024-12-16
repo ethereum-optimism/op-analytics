@@ -44,13 +44,15 @@ def test_gwei_to_eth():
     SELECT
         gwei_to_eth(1) AS m1,
         gwei_to_eth(10550003221200) as m2,
-        gwei_to_eth(600123.54::DECIMAL(28, 2)) as m3
+        gwei_to_eth(600123.54::DECIMAL(28, 2)) as m3,
+        gwei_to_eth(500000.554) as m4
      """).fetchall()[0]
 
     expected = (
         Decimal("1.0E-9"),
         Decimal("10550.0032212000"),
         Decimal("0.00060012354"),
+        Decimal("0.000500000554"),
     )
     assert actual == expected
 
