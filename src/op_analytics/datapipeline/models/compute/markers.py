@@ -12,9 +12,6 @@ from op_analytics.datapipeline.models.compute.model import PythonModel
 log = structlog.get_logger()
 
 
-INTERMEDIATE_MARKERS_TABLE = "intermediate_model_markers"
-
-
 @dataclass
 class ModelsDataSpec:
     chains: list[str]
@@ -52,6 +49,6 @@ class ModelsDataSpec:
             datevals=datevals,
             data_location=read_from,
             root_paths=self.adapter.root_paths_query_filter(),
-            markers_table=INTERMEDIATE_MARKERS_TABLE,
+            markers_table=self.markers_table,
             extra_columns=[],
         )

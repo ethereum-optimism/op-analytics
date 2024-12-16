@@ -227,32 +227,6 @@ class PartitionedDataAccess:
         return paths_df
 
 
-def complete_markers(
-    location: DataLocation,
-    markers: list[str],
-    markers_table: str,
-) -> list[str]:
-    """List of markers that are complete.
-
-    This function is somewhat low-level in that it receives the explicit completion
-    markers that we are looking for. It checks that those markers are present in all
-    of the data sinks.
-    """
-    client = init_data_access()
-
-    complete = []
-
-    # TODO: Make a single query for all the markers.
-    for marker in markers:
-        if client.marker_exists(location, marker, markers_table):
-            complete.append(marker)
-
-    num_complete = len(complete)
-    log.debug(f"{num_complete}/{len(markers)} complete")
-
-    return complete
-
-
 def check_marker(markers_df: pl.DataFrame | None, marker_path: str) -> bool:
     """Check if the marker is complete and correct."""
     if markers_df is None:
