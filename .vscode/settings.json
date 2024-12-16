@@ -18,9 +18,9 @@
         "editor.defaultFormatter": "dorzey.vscode-sqlfluff",
         "editor.formatOnSave": false
     },
-    "sqlfluff.format.arguments": ["--FIX-EVEN-UNPARSABLE"],
-    "sqlfluff.executablePath": ".venv/bin/sqlfluff",
     "files.associations": {
         "*.sql.j2": "sql"
-    }
+    },
+    "sqlfluff.format.arguments": ["--FIX-EVEN-UNPARSABLE"],
+    "sqlfluff.executablePath": ".venv/bin/sqlfluff",
 }
