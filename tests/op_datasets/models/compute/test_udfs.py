@@ -12,8 +12,8 @@ def test_macros_00():
     create_duckdb_macros(client)
 
     client.sql("""
-    CREATE TABLE test_macros AS 
-    SELECT 
+    CREATE TABLE test_macros AS
+    SELECT
         100::BIGINT AS gas_price,
         200::BIGINT AS receipt_gas_used,
         0 AS zero,
@@ -41,14 +41,16 @@ def test_gwei_to_eth():
     create_duckdb_macros(client)
 
     actual = client.sql("""
-    SELECT 
+    SELECT
         gwei_to_eth(1) AS m1,
-        gwei_to_eth(10550003221200) as m2
+        gwei_to_eth(10550003221200) as m2,
+        gwei_to_eth(600123.54::DECIMAL(28, 2)) as m3
      """).fetchall()[0]
 
     expected = (
         Decimal("1.0E-9"),
         Decimal("10550.0032212000"),
+        Decimal("0.00060012354"),
     )
     assert actual == expected
 
@@ -58,7 +60,7 @@ def test_epoch_to_hour_and_date():
     create_duckdb_macros(client)
 
     actual = client.sql("""
-    SELECT 
+    SELECT
         100::BIGINT AS timestamp,
         epoch_to_hour(100::INT) as hour1,
         epoch_to_hour(3700::INT) as hour2,
@@ -85,7 +87,7 @@ def test_micro():
     create_duckdb_macros(client)
 
     actual = client.sql("""
-    SELECT 
+    SELECT
         micro(100) AS m1,
         micro(1000000) as m2
      """).fetchall()[0]
@@ -102,7 +104,7 @@ def test_div16():
     create_duckdb_macros(client)
 
     actual = client.sql("""
-    SELECT 
+    SELECT
         div16(128) AS m1,
         div16(1) as m2
      """).fetchall()[0]
@@ -119,7 +121,7 @@ def test_hexstr_bytelen():
     create_duckdb_macros(client)
 
     actual = client.sql("""
-    SELECT 
+    SELECT
         hexstr_bytelen('0x3d602d80600a3d3981f3363d3d373d3d3d363d739ec1c3dcf667f2035fb4cd2eb42a1566fd54d2b75af43d82803e903d91602b57fd5bf3') AS m1,
         hexstr_bytelen('0x3d60')
      """).fetchall()[0]
@@ -146,7 +148,7 @@ def test_hexstr_byte_related():
     actual = []
     for test in test_inputs:
         result = client.sql("""
-            SELECT 
+            SELECT
                 hexstr_bytelen('{test}') as len,
                 hexstr_nonzero_bytes('{test}') as nonzero,
                 hexstr_zero_bytes('{test}') as zero,
@@ -168,7 +170,7 @@ def test_hexstr_method_id():
     create_duckdb_macros(client)
 
     actual = client.sql("""
-    SELECT 
+    SELECT
         hexstr_method_id('0x3d602d80600a3d3981f3363d3d373d3d3d363d739ec1c3dcf667f2035fb4cd2eb42a1566fd54d2b75af43d82803e903d91602b57fd5bf3') AS m1,
      """).fetchall()[0]
 
