@@ -1,5 +1,5 @@
-import concurrent.futures
 import multiprocessing as mp
+import sys
 from dataclasses import dataclass
 from typing import Generator, Protocol, Sequence
 
@@ -67,39 +67,75 @@ def run_tasks(
         log.info("DRYRUN: No work will be done.")
         return
 
-    executed = 0
-    executed_ok = 0
-
     if fork_process:
-        ctx = mp.get_context("spawn")
-        with concurrent.futures.ProcessPoolExecutor(
-            max_workers=num_processes,
-            mp_context=ctx,
-            # NOTE: I tried using max tasks to avoid memory build up on reused executors
-            # but every time I tried it execution ran into a deadlock that I couldn't
-            # debug. So not enabling it for now.
-            # max_tasks_per_child=20,
-        ) as executor:
-            futures = {}
-            for item in pending_items(tasks, force_complete=force_complete):
-                future = executor.submit(steps, item)
-                futures[future] = item.progress
-                executed += 1
-
-            for future in concurrent.futures.as_completed(futures):
-                key = futures[future]
-                try:
-                    future.result()
-                    executed_ok += 1
-                except Exception as ex:
-                    log.error(f"Failed to run process for {key}", exc_info=ex)
+        executed = run_pool(
+            num_processes=num_processes,
+            tasks=tasks,
+            force_complete=force_complete,
+        )
 
     else:
+        executed = 0
         for item in pending_items(tasks, force_complete=force_complete):
             steps(item)
-            executed_ok += 1
+            executed += 1
 
-    log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
+    log.info("done", total=executed, success=executed, fail=0)
+
+
+def worker_function(task_queue):
+    while True:
+        try:
+            # Fetch a task from the queue with timeout to allow clean shutdown
+            task = task_queue.get(timeout=1)
+            if task is None:  # Sentinel to terminate worker
+                break
+
+            log.info("worker task start")
+            steps(task)
+            log.info("worker task done")
+        except Exception:
+            continue
+
+
+def run_pool(
+    num_processes: int,
+    tasks: Sequence[ModelsTask],
+    force_complete: bool,
+):
+    # Task queue nad worker processes.
+    queue: mp.Queue = mp.Queue(maxsize=num_processes)
+    workers = [mp.Process(target=worker_function, args=(queue,)) for _ in range(num_processes)]
+
+    executed = 0
+    try:
+        # Start worker processes
+        for w in workers:
+            w.start()
+
+        # Submit work to queue.
+        for work in pending_items(tasks, force_complete=force_complete):
+            queue.put(work)
+            executed += 1
+
+        # Send stop sentinel to workers so they break out.
+        log.info(f"submitted {executed} tasks. Sending stop sentinel to workers.")
+        for _ in workers:
+            queue.put(None)
+
+        # Join worker processes.
+        for w in workers:
+            w.join()
+
+    except KeyboardInterrupt:
+        log.info("Keyboard interrupt received. Terminating workers...")
+        for w in workers:
+            w.terminate()  # Force terminate workers
+        for w in workers:
+            w.join()
+        sys.exit(1)
+
+    return executed
 
 
 def pending_items(

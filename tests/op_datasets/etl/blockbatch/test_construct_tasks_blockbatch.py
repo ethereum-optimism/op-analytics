@@ -16,7 +16,7 @@ from op_analytics.datapipeline.models.compute.execute import PythonModel
 
 
 def make_dataframe(path: str):
-    with open(InputTestData.at(__file__).path(f"../intermediate/testdata/{path}")) as fobj:
+    with open(InputTestData.at(__file__).path(f"../testdata/{path}")) as fobj:
         # The markers testdata used for intermediate models includes padded dates,
         # so it does not match the query that we are mocking to get markers. We
         # filter the data to a single data so that the mock is correct.
@@ -38,12 +38,19 @@ def make_dataframe(path: str):
 
 def test_construct():
     with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
-        m1.return_value = pl.concat(
-            [
-                make_dataframe("mainnet_markers.json"),
-                make_dataframe("testnet_markers.json"),
-            ]
-        )
+        m1.side_effect = [
+            # Mock data for ingestion markers. This is used to create the data readers.
+            pl.concat(
+                [
+                    make_dataframe("ingestion_mode_markers.json"),
+                    make_dataframe("ingestion_unichain_sepolia_markers.json"),
+                ]
+            ),
+            # Mock data for blockbach markers. This is used to set complete_markers on
+            # the write managers.
+            make_dataframe("blockbatch_mode_markers.json"),
+        ]
+
         tasks = construct_tasks(
             chains=["mode", "unichain_sepolia"],
             models=["contract_creation"],
@@ -109,6 +116,9 @@ def test_construct():
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016416000",
                     )
                 ],
+                complete_markers=[
+                    "blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016416000"
+                ],
                 process_name="default",
             ),
             output_duckdb_relations={},
@@ -163,6 +173,9 @@ def test_construct():
                         file_name="000016424000.parquet",
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016424000",
                     )
+                ],
+                complete_markers=[
+                    "blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016424000"
                 ],
                 process_name="default",
             ),
@@ -219,6 +232,9 @@ def test_construct():
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016432000",
                     )
                 ],
+                complete_markers=[
+                    "blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016432000"
+                ],
                 process_name="default",
             ),
             output_duckdb_relations={},
@@ -273,6 +289,9 @@ def test_construct():
                         file_name="000016440000.parquet",
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016440000",
                     )
+                ],
+                complete_markers=[
+                    "blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016440000"
                 ],
                 process_name="default",
             ),
@@ -329,6 +348,9 @@ def test_construct():
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016448000",
                     )
                 ],
+                complete_markers=[
+                    "blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016448000"
+                ],
                 process_name="default",
             ),
             output_duckdb_relations={},
@@ -383,6 +405,9 @@ def test_construct():
                         file_name="000016456000.parquet",
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016456000",
                     )
+                ],
+                complete_markers=[
+                    "blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016456000"
                 ],
                 process_name="default",
             ),
@@ -439,6 +464,9 @@ def test_construct():
                         marker_path="blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016464000",
                     )
                 ],
+                complete_markers=[
+                    "blockbatch/contract_creation/create_traces_v1/mode/2024-12-01/000016464000"
+                ],
                 process_name="default",
             ),
             output_duckdb_relations={},
@@ -492,7 +520,7 @@ def test_construct():
                     marker_path="blockbatch_testnets/contract_creation/create_traces_v1/unichain_sepolia/2024-12-01/000006155000",
                 )
             ],
-            complete_markers=None,
+            complete_markers=[],
             process_name="default",
         ),
         output_duckdb_relations={},

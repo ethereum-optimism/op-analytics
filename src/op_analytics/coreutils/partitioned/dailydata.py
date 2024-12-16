@@ -111,7 +111,7 @@ def read_daily_data(
     else:
         log.info(f"querying markers for {root_path!r} {datefilter}")
 
-        markers = partitioned_data_access.markers_for_dates(
+        markers = partitioned_data_access.query_markers_with_filters(
             data_location=location,
             markers_table=MARKERS_TABLE,
             datefilter=datefilter,
