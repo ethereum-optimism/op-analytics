@@ -13,7 +13,7 @@ from op_analytics.coreutils.duckdb_inmem.client import register_dataset_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.testutils.inputdata import InputTestData
-from op_analytics.datapipeline.models.compute.modelexecute import (
+from op_analytics.datapipeline.models.compute.execute import (
     ModelInputDataReader,
     PythonModel,
     PythonModelExecutor,

@@ -12,7 +12,7 @@ from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.partitioned.partition import Partition, PartitionColumn
-from op_analytics.datapipeline.models.compute.modelexecute import PythonModel
+from op_analytics.datapipeline.models.compute.execute import PythonModel
 
 
 def make_dataframe(path: str):
