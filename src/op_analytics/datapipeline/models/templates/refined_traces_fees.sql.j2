@@ -2,7 +2,7 @@ WITH
 
 -- Select the columns that we want from transactions joined to blocks.
 -- Include some minor transformations that are needed for further calculations.
-base_level_trace_calls AS (
+base_level_traces AS (
   SELECT
     -- Raw Trace fields
     r.dt,
@@ -18,7 +18,11 @@ base_level_trace_calls AS (
     r.gas AS trace_gas_limit,
     r.gas_used AS trace_gas_used,
     r.trace_address,
+    r.trace_type,
     r.call_type,
+    -- Trace i/o data - comment out for now to save on data space
+    -- r.input,
+    -- r.output,
     -- Raw Transaction Fields
     t.l2_gas_used AS tx_l2_gas_used,
     t.l1_gas_used_unified AS tx_l1_gas_used_unified,
@@ -76,7 +80,13 @@ base_level_trace_calls AS (
           - length(split_part(r.trace_address, ',', array_length(string_split(r.trace_address, ','))))
           - 1
         )
-    END AS trace_address_uplevel
+    END AS trace_address_uplevel,
+
+    -- get the first trace level, for downstream cases where we want to split by each action
+    CASE
+      WHEN r.trace_address = '' THEN ''
+      ELSE split_part(r.trace_address, ',', 1)
+    END AS trace_address_toplevel
 
 
 
@@ -86,7 +96,6 @@ base_level_trace_calls AS (
       r.block_number = t.block_number
       AND r.transaction_hash = t.hash
 
-  WHERE r.trace_type = 'call'
 ),
 
 --get amount of calls per transcation, to use for amortizing
@@ -97,7 +106,7 @@ get_traces_per_tansaction AS (
     block_timestamp,
     transaction_hash,
     count(*) AS count_traces_in_transaction
-  FROM base_level_trace_calls
+  FROM base_level_traces
   GROUP BY 1, 2, 3, 4, 5
 ),
 
@@ -112,7 +121,7 @@ get_subtraces_gas_per_trace AS (
     trace_address_cardinality,
     sum(trace_gas_used) AS trace_gas_used_in_subtraces,
     count(*) AS count_subtraces_in_trace
-  FROM base_level_trace_calls
+  FROM base_level_traces
   GROUP BY 1, 2, 3, 4, 5, 6, 7
 )
 
@@ -154,7 +163,7 @@ SELECT
   * gwei_to_eth(bl.tx_l2_gas_price_gwei) AS tx_fee_native_l1_amortized_l2_minus_subtraces
 
 
-FROM base_level_trace_calls AS bl
+FROM base_level_traces AS bl
 INNER JOIN get_traces_per_tansaction AS tpt -- join on txn level
   ON bl.dt = tpt.dt
     AND bl.chain_id = tpt.chain_id

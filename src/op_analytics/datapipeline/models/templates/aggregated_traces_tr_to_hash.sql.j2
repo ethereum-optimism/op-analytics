@@ -5,7 +5,7 @@ WITH get_transactions_by_call_type AS (
 SELECT dt, chain_id, block_number, transaction_hash
   , SUM(count_internal_calls_call_type) > 0 AS is_transaction_with_internal_call_type_call
   , SUM(coalesce(count_internal_calls_call_type,0)+coalesce(count_internal_calls_delegate_type,0)) > 0 AS is_transaction_with_internal_call_type_call_or_delegate
-  FROM refined_trace_calls_agg_tr_from_tr_to_hash
+  FROM aggregated_traces_tr_from_tr_to_hash
   GROUP BY
   dt, chain_id, block_number, transaction_hash
 
@@ -67,7 +67,15 @@ dt, chain, network, chain_id,
   , SUM(count_internal_calls_call_type) AS count_internal_calls_call_type
   , SUM(count_internal_calls_call_type_trace_success) AS count_internal_calls_call_type_trace_success
 
-FROM refined_trace_calls_agg_tr_from_tr_to_hash
+  --count by trace type
+  ,COUNT(*) AS count_traces_type_all_types
+  ,COUNT(*) FILTER (WHERE trace_type = 'call') AS count_traces_trace_type_call
+  ,COUNT(*) FILTER (WHERE trace_type = 'suicide') AS count_traces_trace_type_suicide
+  ,COUNT(*) FILTER (WHERE trace_type = 'create') AS count_traces_trace_type_create
+  ,COUNT(*) FILTER (WHERE trace_type = 'create2') AS count_traces_trace_type_create2
+  ,COUNT(*) FILTER (WHERE trace_type LIKE 'create%') AS count_traces_trace_type_create_any
+
+FROM aggregated_traces_tr_from_tr_to_hash
 
 GROUP BY
 dt, chain, network, chain_id,

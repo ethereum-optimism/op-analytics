@@ -1,19 +1,24 @@
--- Aggreagte traces by day and the contract called (to address)
--- This will be used as the final table for dashboards that show the most used contracts in aggregate
+/*Aggreagte traces by day,
+        The internal contract called (trace to address),
+        direct contract called (tx to address),
+        and direct function called (tx method id).
+        This will be used as the to show in what direct user action contracts are often called within
+        (i.e. see that an oracle contract was called within a lending market action)
+*/
 
 -- Get Unique contracts that call this contract, since we lose this granularity at the to_hash level
 WITH get_unique_callers AS (
         SELECT 
-                dt, chain_id, trace_to_address,
+                dt, chain_id, trace_to_address, tx_to_address, tx_method_id,
                 COUNT(DISTINCT trace_from_address) AS count_unique_trace_from_addresses
-        FROM refined_trace_calls_agg_tr_from_tr_to_hash
+        FROM aggregated_traces_tr_from_tr_to_hash
         GROUP BY 
-        dt, chain, network, chain_id, trace_to_address
+        dt, chain, network, chain_id, trace_to_address, tx_to_address, tx_method_id
 )
 
 , raw_aggregation AS (
 SELECT 
-dt, chain, network, chain_id, trace_to_address
+dt, chain, network, chain_id, trace_to_address, tx_to_address, tx_method_id
 -- Aggregate transaction metrics, in transactions when a given contract was called
 /*
         Note: We can NOT sum these up at the project level, since a project may have
@@ -24,12 +29,11 @@ dt, chain, network, chain_id, trace_to_address
         project name (i.e. a transaction may call 10 contracts, but this may only represent 3 projects).
 */
 -- Attributes
+  -- Since we're aggregating from the to & hash level, count(*) returns distinct transactions
   , COUNT(*) AS count_transactions_called
   , COUNT(*) FILTER (WHERE tx_success) AS count_transactions_called_tx_success
   , COUNT(DISTINCT block_number) AS count_unique_blocks_called
   , COUNT(DISTINCT tx_from_address) AS count_unique_tx_from_addresses
-  , COUNT(DISTINCT tx_to_address) AS count_unique_tx_to_addresses
-  , COUNT(DISTINCT tx_method_id) AS count_unique_tx_method_ids
 -- Transaction-Level gas & fees
   , SUM(tx_l2_gas_used) AS sum_tx_l2_gas_used_called
   , SUM(tx_l2_gas_used) FILTER (WHERE tx_success) AS sum_tx_l2_gas_used_called_tx_success
@@ -124,7 +128,7 @@ dt, chain, network, chain_id, trace_to_address
   --normal function calls
   , SUM(count_internal_calls_call_type) AS count_internal_calls_call_type
   , SUM(count_internal_calls_call_type_trace_success) AS count_internal_calls_call_type_trace_success
-  
+
   -- Experimental
   , COUNT(*) FILTER (WHERE is_transaction_with_internal_call_type_call) AS count_transactions_called_with_internal_type_call
   , COUNT(*) FILTER (WHERE is_transaction_with_internal_call_type_call_or_delegate) AS count_transactions_called_with_internal_type_call_or_delegate
@@ -145,12 +149,20 @@ dt, chain, network, chain_id, trace_to_address
         WHERE tx_success AND is_transaction_with_internal_call_type_call
         ) AS sum_tx_fee_native_amortized_by_call_tx_success_called_with_internal_type_call
 
+--count by trace type
+,SUM(count_traces_type_all_types) AS count_traces_type_all_types
+,SUM(count_traces_trace_type_call) AS count_traces_trace_type_call
+,SUM(count_traces_trace_type_suicide) AS count_traces_trace_type_suicide
+,SUM(count_traces_trace_type_create) AS count_traces_trace_type_create
+,SUM(count_traces_trace_type_create2) AS count_traces_trace_type_create2
+,SUM(count_traces_trace_type_create_any) AS count_traces_trace_type_create_any
 
-FROM refined_trace_calls_agg_tr_to_hash
+
+FROM aggregated_traces_tr_to_hash
 WHERE NOT is_system_transaction
 
 GROUP BY
-dt, chain, network, chain_id, trace_to_address
+dt, chain, network, chain_id, trace_to_address, tx_to_address, tx_method_id
 )
 
 SELECT 
@@ -159,5 +171,7 @@ ra.*, gu.count_unique_trace_from_addresses
 FROM raw_aggregation ra
 LEFT JOIN get_unique_callers gu
 ON ra.trace_to_address = gu.trace_to_address
+AND ra.tx_to_address = gu.tx_to_address
+AND ra.tx_method_id = gu.tx_method_id
 AND ra.dt = gu.dt
 AND ra.chain_id = gu.chain_id

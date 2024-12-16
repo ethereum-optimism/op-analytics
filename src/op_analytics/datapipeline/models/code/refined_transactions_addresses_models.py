@@ -15,9 +15,9 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         "refined_transactions_fees_v1",
         "event_emitting_transactions_v1",
         "summary_v1",
-        "daily_transactions_agg_tx_from_tx_to_method_v1",
-        "daily_transactions_agg_tx_to_method_v1",
-        "daily_transactions_agg_tx_to_v1",
+        "daily_transactions_tx_from_tx_to_method_v1",
+        "daily_transactions_tx_to_method_v1",
+        "daily_transactions_tx_to_v1",
     ],
     auxiliary_views=[
         TemplatedSQLQuery(
@@ -37,15 +37,15 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
             context={},
         ),
         TemplatedSQLQuery(
-            template_name="daily_transactions_agg_tx_from_tx_to_method",
+            template_name="daily_transactions_tx_from_tx_to_method",
             context={},
         ),
         TemplatedSQLQuery(
-            template_name="daily_transactions_agg_tx_to_method",
+            template_name="daily_transactions_tx_to_method",
             context={},
         ),
         TemplatedSQLQuery(
-            template_name="daily_transactions_agg_tx_to",
+            template_name="daily_transactions_tx_to",
             context={},
         ),
     ],
@@ -57,11 +57,9 @@ def refined_transactions_addresses_models(
         "refined_transactions_fees_v1": duckdb_client.view("refined_transactions_fees"),
         "event_emitting_transactions_v1": duckdb_client.view("event_emitting_transactions"),
         "summary_v1": duckdb_client.view("daily_address_summary"),
-        "daily_transactions_agg_tx_from_tx_to_method_v1": duckdb_client.view(
-            "daily_transactions_agg_tx_from_tx_to_method"
+        "daily_transactions_tx_from_tx_to_method_v1": duckdb_client.view(
+            "daily_transactions_tx_from_tx_to_method"
         ),
-        "daily_transactions_agg_tx_to_method_v1": duckdb_client.view(
-            "daily_transactions_agg_tx_to_method"
-        ),
-        "daily_transactions_agg_tx_to_v1": duckdb_client.view("daily_transactions_agg_tx_to"),
+        "daily_transactions_tx_to_method_v1": duckdb_client.view("daily_transactions_tx_to_method"),
+        "daily_transactions_tx_to_v1": duckdb_client.view("daily_transactions_tx_to"),
     }

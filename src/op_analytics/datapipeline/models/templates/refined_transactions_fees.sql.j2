@@ -28,12 +28,16 @@ pt1 AS (
     t.gas AS gas_limit,
     t.receipt_gas_used AS l2_gas_used,
     t.receipt_l1_gas_used,
+    -- Transaction input data - comment out for now to save on data space
+    -- t.input,
     -- Fees
     t.receipt_l1_gas_price AS l1_gas_price,
     t.receipt_l1_blob_base_fee AS l1_blob_base_fee,
     b.base_fee_per_gas,
     t.max_priority_fee_per_gas,
     t.transaction_type,
+    -- blob reference, comment out for now, but bring in if/when we aplly this to L1, or see L2 blobs
+    -- t.blob_versioned_hashes
     -- L2 Fees and breakdown into BASE and PRIORITY contributions
     t.receipt_l1_fee_scalar::DECIMAL(12, 6) AS l1_fee_scalar,
     CASE WHEN t.gas_price = 0 THEN 0

@@ -13,7 +13,8 @@
 SELECT
   -- Descriptors
   dt, chain, network, chain_id
-  , trace_from_address, trace_to_address, block_timestamp, block_number
+  , trace_from_address, trace_to_address, trace_type
+  , block_timestamp, block_number
   , tx_from_address, tx_to_address, transaction_hash, tx_method_id
   -- Transaction-Level gas & fees
   , tx_l2_gas_used
@@ -53,10 +54,10 @@ SELECT
   , SUM(tx_fee_native_l1_amortized_l2_minus_subtraces) AS sum_tx_fee_native_l1_amortized_l2_minus_subtraces
 
   -- Count Call Types
-  , COUNT(*) FILTER (WHERE trace_address = '') AS count_top_level_calls
+  , COUNT(*) FILTER (WHERE trace_address = '' AND call_type != '') AS count_top_level_calls
   --count non-null trace addresses, null is the transaction-level call.
-  , COUNT(*) FILTER (WHERE trace_address != '') AS count_internal_calls_all_types
-  , COUNT(*) FILTER (WHERE trace_address != '' AND trace_success) AS count_internal_calls_all_types_trace_success
+  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type != '') AS count_internal_calls_all_types
+  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type != '' AND trace_success) AS count_internal_calls_all_types_trace_success
   --static calls only read state, and can not write
   , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'staticcall') AS count_internal_calls_static_type
   , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'staticcall' AND trace_success) AS count_internal_calls_static_type_trace_success
@@ -67,12 +68,13 @@ SELECT
   , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'call') AS count_internal_calls_call_type
   , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'call' AND trace_success) AS count_internal_calls_call_type_trace_success
 
-FROM refined_trace_calls
+FROM refined_traces_fees
 
 GROUP BY
   -- Descriptors
   dt, chain, network, chain_id
-  , trace_from_address, trace_to_address, block_timestamp, block_number
+  , trace_from_address, trace_to_address, trace_type
+  , block_timestamp, block_number
   , tx_from_address, tx_to_address, transaction_hash, tx_method_id
   -- Transaction-Level gas & fees
   , tx_l2_gas_used
@@ -87,4 +89,3 @@ GROUP BY
   -- Attributes
   , tx_success
   , is_system_transaction
-  
