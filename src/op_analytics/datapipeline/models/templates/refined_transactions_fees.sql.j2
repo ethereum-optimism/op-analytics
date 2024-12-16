@@ -24,28 +24,27 @@ pb AS (
     , t.block_number
     , t.block_timestamp
     , t.hash
+    , t.transaction_type
     , t.gas_price
     , t.gas AS gas_limit
     , t.receipt_gas_used AS l2_gas_used
     , t.receipt_l1_gas_used
-    -- Transaction input data - comment out for now to save on data space
-    -- t.input,
-    -- Fees
+    -- EXCLUDED
+    -- t.input, --comment out for now to save on data space
+    -- t.blob_versioned_hashes -- bring in if/when we apply this to L1, or see L2 blobs
+    --
+    -- L1 Fees
+    , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.receipt_l1_fee END AS l1_fee
     , t.receipt_l1_gas_price AS l1_gas_price
     , t.receipt_l1_blob_base_fee AS l1_blob_base_fee
     , b.base_fee_per_gas
     , t.max_priority_fee_per_gas
-    , t.transaction_type
-    -- blob reference, comment out for now, but bring in if/when we aplly this to L1, or see L2 blobs
-    -- t.blob_versioned_hashes
+
+
     -- L2 Fees and breakdown into BASE and PRIORITY contributions
     , t.receipt_l1_fee_scalar::DECIMAL(12, 6) AS l1_fee_scalar
-    , CASE
-      WHEN t.gas_price = 0 THEN 0
-      ELSE t.receipt_l1_fee
-    END AS l1_fee
+
     , if(t.max_priority_fee_per_gas = 0 AND t.gas_price > 0, t.gas_price - b.base_fee_per_gas, 0) AS legacy_extra_fee_per_gas
-    -- Convenience columns
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.gas_price * t.receipt_gas_used END AS l2_fee
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.max_priority_fee_per_gas * t.receipt_gas_used END AS l2_priority_fee
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE b.base_fee_per_gas * t.receipt_gas_used END AS l2_base_fee
@@ -53,14 +52,16 @@ pb AS (
 
     , micro(t.receipt_l1_base_fee_scalar) AS l1_base_fee_scalar
     , micro(t.receipt_l1_blob_base_fee_scalar) AS l1_blob_base_fee_scalar
-
+    -- Transaction Attributes
     , hexstr_method_id(t.input) AS method_id
     , t.receipt_status = 1 AS success
     , hexstr_bytelen(t.input) AS input_byte_length
     , hexstr_zero_bytes(t.input) AS input_zero_bytes
     , hexstr_nonzero_bytes(t.input) AS input_nonzero_bytes
     , t.transaction_type = 126 OR t.gas_price = 0 AS is_system_transaction
-    , ( -- Attributes Deposited Spec https://specs.optimism.io/protocol/deposits.html#l1-attributes-deposited-transaction
+    -- Attributes Deposited Spec:
+    -- https://specs.optimism.io/protocol/deposits.html#l1-attributes-deposited-transaction
+    , (
       (t.transaction_type = 126 OR t.gas_price = 0)
       AND t.from_address = lower('0xDeaDDEaDDeAdDeAdDEAdDEaddeAddEAdDEAd0001')
       AND t.to_address = lower('0x4200000000000000000000000000000000000015')
