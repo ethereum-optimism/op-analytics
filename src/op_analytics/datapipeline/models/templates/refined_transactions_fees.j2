@@ -47,7 +47,7 @@ pb AS (
     , micro(t.receipt_l1_blob_base_fee_scalar) AS l1_blob_base_fee_scalar
 
     -- L2 Fees and breakdown into BASE and PRIORITY contributions
-    , if(t.max_priority_fee_per_gas = 0, t.gas_price - b.base_fee_per_gas, 0) AS legacy_extra_fee_per_gas
+    , if(t.max_priority_fee_per_gas = 0 AND t.gas_price > 0, t.gas_price - b.base_fee_per_gas, 0) AS legacy_extra_fee_per_gas
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.gas_price * t.receipt_gas_used END AS l2_fee
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.max_priority_fee_per_gas * t.receipt_gas_used END AS l2_priority_fee
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE b.base_fee_per_gas * t.receipt_gas_used END AS l2_base_fee
@@ -81,6 +81,8 @@ pb AS (
 , pt2 AS (
   SELECT
     *
+    -- Note that this is the "unified" L1 Gas Used.
+    -- The meaning of the field has changed in Fjord.
     , coalesce(receipt_l1_gas_used, 16 * estimated_size) AS l1_gas_used_unified
   FROM (
     SELECT
@@ -107,15 +109,15 @@ pb AS (
     , l2_fee + l1_fee AS tx_fee
 
     -- L2 Legacy Fee
-    , if(l2_priority_fee = 0, l2_fee - l2_base_fee, 0) AS l2_base_legacy_fee
+    , if(l2_priority_fee = 0, l2_fee - l2_base_fee, 0) AS l2_legacy_extra_fee
 
     -- L1 Base
     , div16(l1_gas_used_unified) * coalesce(16 * l1_base_fee_scalar, l1_fee_scalar) * l1_gas_price AS l1_base_fee
     , div16(l1_gas_used_unified) * coalesce(16 * l1_base_fee_scalar, l1_fee_scalar) AS l1_base_scaled_size
 
     -- L1 Blob
-    , div16(l1_gas_used_unified) * l1_blob_base_fee_scalar * l1_blob_base_fee AS l1_blob_fee
-    , div16(l1_gas_used_unified) * l1_blob_base_fee_scalar AS l1_blob_scaled_size
+    , coalesce(div16(l1_gas_used_unified) * l1_blob_base_fee_scalar * l1_blob_base_fee, 0) AS l1_blob_fee
+    , coalesce(div16(l1_gas_used_unified) * l1_blob_base_fee_scalar, 0) AS l1_blob_scaled_size
 
   FROM pt2
 )
@@ -140,7 +142,7 @@ SELECT
   -- L2 Breakdown
   , wei_to_eth(l2_base_fee) AS l2_base_fee_native
   , wei_to_eth(l2_priority_fee) AS l2_priority_fee_native
-  , wei_to_eth(l2_base_legacy_fee) AS l2_base_legacy_fee_native
+  , wei_to_eth(l2_legacy_extra_fee) AS l2_legacy_extra_fee_native
 
   -- Gas Prices
   , wei_to_gwei(gas_price) AS l2_gas_price_gwei
