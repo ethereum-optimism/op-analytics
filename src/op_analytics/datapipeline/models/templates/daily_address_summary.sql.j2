@@ -59,6 +59,10 @@ SELECT
 
   , wei_to_eth(sum(l2_priority_fee)) AS l2_priority_fee_sum_eth
 
+  -- 2024-12-16 (pedro): Consider renaming the output column. We updated the
+  -- transactions view and the column coming out of the view no longer matches
+  -- the name we used for the aggregation. If we do a backfill of the adress
+  -- summary model we can consider updating the column name.
   , wei_to_eth(sum(l2_legacy_extra_fee)) AS l2_base_legacy_fee_sum_eth
 
   -- L1 Fee and breakdown into BASE + BLOB

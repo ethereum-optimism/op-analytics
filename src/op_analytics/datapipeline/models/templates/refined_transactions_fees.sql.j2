@@ -81,7 +81,8 @@ pb AS (
 , pt2 AS (
   SELECT
     *
-    -- Note that this is the "unified" L1 Gas Used, since the meaning of the field has changed in Fjord.
+    -- Note that this is the "unified" L1 Gas Used.
+    -- The meaning of the field has changed in Fjord.
     , coalesce(receipt_l1_gas_used, 16 * estimated_size) AS l1_gas_used_unified
   FROM (
     SELECT
