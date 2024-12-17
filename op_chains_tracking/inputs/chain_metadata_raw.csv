@@ -56,7 +56,7 @@ ethxy,EthXY,969,,6/24/24,unknown,,,,unknown,,https://rpc.ethxy.com,https://ethxy
 matchain,Matchain,698,,7/18/24,,,,,yes,,https://rpc.matchain.io,https://www.matchain.io/,https://matchscan.io/,,,,,BNB,L2,,bnb,bnb,,,,,,,,,,,,,
 zircuit,Zircuit,48900,,8/5/24,unknown,,,,yes,,https://zircuit1-mainnet.p2pify.com/,https://www.zircuit.com/,https://explorer.zircuit.com/,,Zircuit,zircuit,,ETH,L2,2,ethereum,ethereum,0x30F82a1Ca89226E8b8815d6EbB728e3b18a428ff,,,,,,0xAF1E4f6a47af647F87C0Ec814d8032C4a4bFF145,0xFF00000000000000000000000000000000048900,0xE8C20EA8eF100d7aa3846616E5D07A5aBb067C65,0x92Ef6Af472b39F1b363da45E35530c24619245A4,0x386B76D9cA5F5Fb150B6BFB35CF5379B22B26dd8,,
 debank,DeBank,116,,,modern,,,,yes,,,https://debank.com/,,,,debank,,unknown,L2,2,unknown,unknown,,,,,,,,,,,,,
-superseed,SuperSeed,5330,,,unknown,,,,unknown,Conduit,https://mainnet.superseed.xyz,https://www.superseed.xyz/,,,,superseed,,ETH,L2,2,unknown,ethereum,,,,,,,,,,,,,
+superseed,SuperSeed,5330,,,unknown,Standard,9/12/24,,unknown,Conduit,https://mainnet.superseed.xyz,https://www.superseed.xyz/,,,,superseed,,ETH,L2,2,unknown,ethereum,,,,,,,,,,,,,
 vienna,Vienna,,,,modern,,,,yes,Caldera,,https://vienna.caldera.dev/,,,,,,ETH,L2,2,unknown,unknown,,,,,,,,,,,,,
 curio,Curio,,,,unknown,,,,yes,Caldera,,https://www.curio.gg/,,,,,,unknown,L2,2,unknown,unknown,,,,,,,,,,,,,
 giant_leap_gaming,Giant Leap,,,,unknown,,,,yes,Caldera,,https://giantleap.gg/underverse,,,,,,unknown,L2,2,unknown,unknown,,,,,,,,,,,,,
