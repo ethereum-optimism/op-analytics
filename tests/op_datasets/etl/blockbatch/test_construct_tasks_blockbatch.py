@@ -526,3 +526,195 @@ def test_construct():
         output_duckdb_relations={},
         output_root_path_prefix="blockbatch_testnets",
     )
+
+
+def test_construct_kroma():
+    # with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
+    #     m1.side_effect = [
+    #         # Mock data for ingestion markers. This is used to create the data readers.
+    #         pl.concat(
+    #             [
+    #                 make_dataframe("ingestion_mode_markers.json"),
+    #                 make_dataframe("ingestion_unichain_sepolia_markers.json"),
+    #             ]
+    #         ),
+    #         # Mock data for blockbach markers. This is used to set complete_markers on
+    #         # the write managers.
+    #         make_dataframe("blockbatch_mode_markers.json"),
+    #     ]
+
+    tasks = construct_tasks(
+        chains=["kroma"],
+        models=["contract_creation"],
+        range_spec="@20241101:+1",
+        read_from=DataLocation.GCS,
+        write_to=DataLocation.GCS,
+    )
+
+    assert tasks == [
+        BlockBatchModelsTask(
+            model=PythonModel.get("contract_creation"),
+            data_reader=DataReader(
+                partitions=Partition(
+                    cols=[
+                        PartitionColumn(name="chain", value="kroma"),
+                        PartitionColumn(name="dt", value="2024-11-01"),
+                    ]
+                ),
+                read_from=DataLocation.GCS,
+                dataset_paths={},
+                inputs_ready=False,
+                extra_marker_data={
+                    "num_blocks": 20000,
+                    "min_block": 18260000,
+                    "max_block": 18280000,
+                },
+            ),
+            write_manager=PartitionedWriteManager(
+                location=DataLocation.GCS,
+                partition_cols=["chain", "dt"],
+                extra_marker_columns={
+                    "model_name": "contract_creation",
+                    "num_blocks": 20000,
+                    "min_block": 18260000,
+                    "max_block": 18280000,
+                },
+                extra_marker_columns_schema=[
+                    pa.field("chain", pa.string()),
+                    pa.field("dt", pa.date32()),
+                    pa.field("num_blocks", pa.int32()),
+                    pa.field("min_block", pa.int64()),
+                    pa.field("max_block", pa.int64()),
+                    pa.field("model_name", pa.string()),
+                ],
+                markers_table="blockbatch_model_markers",
+                expected_outputs=[
+                    ExpectedOutput(
+                        root_path="blockbatch/contract_creation/create_traces_v1",
+                        file_name="000018260000.parquet",
+                        marker_path="blockbatch/contract_creation/create_traces_v1/kroma/2024-11-01/000018260000",
+                    )
+                ],
+                complete_markers=[],
+                process_name="default",
+            ),
+            output_duckdb_relations={},
+            output_root_path_prefix="blockbatch",
+        ),
+        BlockBatchModelsTask(
+            model=PythonModel.get("contract_creation"),
+            data_reader=DataReader(
+                partitions=Partition(
+                    cols=[
+                        PartitionColumn(name="chain", value="kroma"),
+                        PartitionColumn(name="dt", value="2024-11-01"),
+                    ]
+                ),
+                read_from=DataLocation.GCS,
+                dataset_paths={
+                    "ingestion/traces_v1": [
+                        "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=kroma/dt=2024-11-01/000018280000.parquet"
+                    ],
+                    "ingestion/transactions_v1": [
+                        "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=kroma/dt=2024-11-01/000018280000.parquet"
+                    ],
+                },
+                inputs_ready=True,
+                extra_marker_data={
+                    "num_blocks": 20000,
+                    "min_block": 18280000,
+                    "max_block": 18300000,
+                },
+            ),
+            write_manager=PartitionedWriteManager(
+                location=DataLocation.GCS,
+                partition_cols=["chain", "dt"],
+                extra_marker_columns={
+                    "model_name": "contract_creation",
+                    "num_blocks": 20000,
+                    "min_block": 18280000,
+                    "max_block": 18300000,
+                },
+                extra_marker_columns_schema=[
+                    pa.field("chain", pa.string()),
+                    pa.field("dt", pa.date32()),
+                    pa.field("num_blocks", pa.int32()),
+                    pa.field("min_block", pa.int64()),
+                    pa.field("max_block", pa.int64()),
+                    pa.field("model_name", pa.string()),
+                ],
+                markers_table="blockbatch_model_markers",
+                expected_outputs=[
+                    ExpectedOutput(
+                        root_path="blockbatch/contract_creation/create_traces_v1",
+                        file_name="000018280000.parquet",
+                        marker_path="blockbatch/contract_creation/create_traces_v1/kroma/2024-11-01/000018280000",
+                    )
+                ],
+                complete_markers=[
+                    "blockbatch/contract_creation/create_traces_v1/kroma/2024-11-01/000018280000"
+                ],
+                process_name="default",
+            ),
+            output_duckdb_relations={},
+            output_root_path_prefix="blockbatch",
+        ),
+        BlockBatchModelsTask(
+            model=PythonModel.get("contract_creation"),
+            data_reader=DataReader(
+                partitions=Partition(
+                    cols=[
+                        PartitionColumn(name="chain", value="kroma"),
+                        PartitionColumn(name="dt", value="2024-11-01"),
+                    ]
+                ),
+                read_from=DataLocation.GCS,
+                dataset_paths={
+                    "ingestion/traces_v1": [
+                        "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=kroma/dt=2024-11-01/000018300000.parquet"
+                    ],
+                    "ingestion/transactions_v1": [
+                        "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=kroma/dt=2024-11-01/000018300000.parquet"
+                    ],
+                },
+                inputs_ready=True,
+                extra_marker_data={
+                    "num_blocks": 20000,
+                    "min_block": 18300000,
+                    "max_block": 18320000,
+                },
+            ),
+            write_manager=PartitionedWriteManager(
+                location=DataLocation.GCS,
+                partition_cols=["chain", "dt"],
+                extra_marker_columns={
+                    "model_name": "contract_creation",
+                    "num_blocks": 20000,
+                    "min_block": 18300000,
+                    "max_block": 18320000,
+                },
+                extra_marker_columns_schema=[
+                    pa.field("chain", pa.string()),
+                    pa.field("dt", pa.date32()),
+                    pa.field("num_blocks", pa.int32()),
+                    pa.field("min_block", pa.int64()),
+                    pa.field("max_block", pa.int64()),
+                    pa.field("model_name", pa.string()),
+                ],
+                markers_table="blockbatch_model_markers",
+                expected_outputs=[
+                    ExpectedOutput(
+                        root_path="blockbatch/contract_creation/create_traces_v1",
+                        file_name="000018300000.parquet",
+                        marker_path="blockbatch/contract_creation/create_traces_v1/kroma/2024-11-01/000018300000",
+                    )
+                ],
+                complete_markers=[
+                    "blockbatch/contract_creation/create_traces_v1/kroma/2024-11-01/000018300000"
+                ],
+                process_name="default",
+            ),
+            output_duckdb_relations={},
+            output_root_path_prefix="blockbatch",
+        ),
+    ]

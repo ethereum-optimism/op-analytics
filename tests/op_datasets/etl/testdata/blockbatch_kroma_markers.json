@@ -1,0 +1,18 @@
+[
+    {
+        "dt": 20028,
+        "chain": "kroma",
+        "marker_path": "blockbatch/contract_creation/create_traces_v1/kroma/2024-11-01/000018280000",
+        "data_path": "blockbatch/contract_creation/create_traces_v1/chain=kroma/dt=2024-11-01/000018280000.parquet",
+        "root_path": "blockbatch/contract_creation/create_traces_v1",
+        "num_parts": 1
+    },
+    {
+        "dt": 20028,
+        "chain": "kroma",
+        "marker_path": "blockbatch/contract_creation/create_traces_v1/kroma/2024-11-01/000018300000",
+        "data_path": "blockbatch/contract_creation/create_traces_v1/chain=kroma/dt=2024-11-01/000018300000.parquet",
+        "root_path": "blockbatch/contract_creation/create_traces_v1",
+        "num_parts": 1
+    }
+]

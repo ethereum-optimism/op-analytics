@@ -1,0 +1,57 @@
+[
+    {
+        "dt": 20028,
+        "chain": "kroma",
+        "marker_path": "ingestion/traces_v1/kroma/000018280000",
+        "data_path": "ingestion/traces_v1/chain=kroma/dt=2024-11-01/000018280000.parquet",
+        "root_path": "ingestion/traces_v1",
+        "num_parts": 1,
+        "num_blocks": 20000,
+        "min_block": 18280000,
+        "max_block": 18300000
+    },
+    {
+        "dt": 20028,
+        "chain": "kroma",
+        "marker_path": "ingestion/traces_v1/kroma/000018300000",
+        "data_path": "ingestion/traces_v1/chain=kroma/dt=2024-11-01/000018300000.parquet",
+        "root_path": "ingestion/traces_v1",
+        "num_parts": 1,
+        "num_blocks": 20000,
+        "min_block": 18300000,
+        "max_block": 18320000
+    },
+    {
+        "dt": 20028,
+        "chain": "kroma",
+        "marker_path": "ingestion/transactions_v1/kroma/000018260000",
+        "data_path": "ingestion/transactions_v1/chain=kroma/dt=2024-11-01/000018260000.parquet",
+        "root_path": "ingestion/transactions_v1",
+        "num_parts": 2,
+        "num_blocks": 20000,
+        "min_block": 18260000,
+        "max_block": 18280000
+    },
+    {
+        "dt": 20028,
+        "chain": "kroma",
+        "marker_path": "ingestion/transactions_v1/kroma/000018280000",
+        "data_path": "ingestion/transactions_v1/chain=kroma/dt=2024-11-01/000018280000.parquet",
+        "root_path": "ingestion/transactions_v1",
+        "num_parts": 1,
+        "num_blocks": 20000,
+        "min_block": 18280000,
+        "max_block": 18300000
+    },
+    {
+        "dt": 20028,
+        "chain": "kroma",
+        "marker_path": "ingestion/transactions_v1/kroma/000018300000",
+        "data_path": "ingestion/transactions_v1/chain=kroma/dt=2024-11-01/000018300000.parquet",
+        "root_path": "ingestion/transactions_v1",
+        "num_parts": 2,
+        "num_blocks": 20000,
+        "min_block": 18300000,
+        "max_block": 18320000
+    }
+]

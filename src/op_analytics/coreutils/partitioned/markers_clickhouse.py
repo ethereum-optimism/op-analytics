@@ -21,6 +21,7 @@ class ClickHouseMarkers:
 
     @property
     def markers_db(self):
+        return "etl_monitor"
         return etl_monitor_markers_database()
 
     def write_marker(self, markers_table: str, marker_df: pa.Table):
@@ -67,6 +68,8 @@ class ClickHouseMarkers:
             """,
             parameters=parameters,
         )
+
+        breakpoint()
 
         # ClickHouse returns the Date type as u16 days from epoch.
         return markers.with_columns(
