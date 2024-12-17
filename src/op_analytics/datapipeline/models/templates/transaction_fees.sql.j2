@@ -40,20 +40,19 @@ pb AS (
     , t.receipt_l1_blob_base_fee AS l1_blob_base_fee
     , b.base_fee_per_gas
     , t.max_priority_fee_per_gas
+
     -- L1 Fee Scalars
     , t.receipt_l1_fee_scalar::DECIMAL(12, 6) AS l1_fee_scalar
     , micro(t.receipt_l1_base_fee_scalar) AS l1_base_fee_scalar
     , micro(t.receipt_l1_blob_base_fee_scalar) AS l1_blob_base_fee_scalar
+
     -- L2 Fees and breakdown into BASE and PRIORITY contributions
     , if(t.max_priority_fee_per_gas = 0, t.gas_price - b.base_fee_per_gas, 0) AS legacy_extra_fee_per_gas
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.gas_price * t.receipt_gas_used END AS l2_fee
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.max_priority_fee_per_gas * t.receipt_gas_used END AS l2_priority_fee
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE b.base_fee_per_gas * t.receipt_gas_used END AS l2_base_fee
 
-    -- L1 Fee BASE and BLOB scalars
-
-
-    -- Transaction Attributes
+    -- Transaction Information
     , hexstr_method_id(t.input) AS method_id
     , t.receipt_status = 1 AS success
     , hexstr_bytelen(t.input) AS input_byte_length
