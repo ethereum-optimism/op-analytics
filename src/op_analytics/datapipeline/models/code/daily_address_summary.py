@@ -10,7 +10,7 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
     expected_outputs=["summary_v1"],
     auxiliary_views=[
         TemplatedSQLQuery(
-            template_name="transaction_fees",
+            template_name="refined_transactions_fees",
             context={},
         ),
         TemplatedSQLQuery(

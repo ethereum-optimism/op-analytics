@@ -4,7 +4,7 @@ dialect = duckdb
 sql_file_exts = .sql.j2
 ignore = templating
 runaway_limit = 10
-max_line_length = 120
+max_line_length = 140
 
 # Comma separated list of rules to exclude, or None
 # See https://docs.sqlfluff.com/en/stable/perma/rule_disabling.html
