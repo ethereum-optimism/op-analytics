@@ -149,21 +149,20 @@ def test_hexstr_byte_related():
 
     actual = []
     for test in test_inputs:
-        result = client.sql("""
+        result = client.sql(f"""
             SELECT
                 hexstr_bytelen('{test}') as len,
-                hexstr_nonzero_bytes('{test}') as nonzero,
                 hexstr_zero_bytes('{test}') as zero,
                 hexstr_calldata_gas('{test}') as calldata_gas
             """).fetchall()[0]
         actual.append(result)
 
     assert actual == [
-        (2, 2, 0, 32),
-        (2, 2, 0, 32),
-        (2, 2, 0, 32),
-        (2, 2, 0, 32),
-        (2, 2, 0, 32),
+        (2, 0, 32),
+        (2, 1, 20),
+        (55, 0, 880),
+        (2, 0, 32),
+        (3, 3, 12),
     ]
 
 
@@ -178,3 +177,33 @@ def test_hexstr_method_id():
 
     expected = ("0x3d602d80",)
     assert actual == expected
+
+
+def test_py_udf():
+    client = init_client()
+    create_duckdb_macros(client)
+
+    test_inputs = [
+        "0x3006",
+        "0x3f00",
+        "0x3d602d80600a3d3981f3363d3d373d3d3d363d739ec1c3dcf667f2035fb4cd2eb42a1566fd54d2b75af43d82803e903d91602b57fd5bf3",
+        "0x3d60",
+        "0x000000",
+    ]
+
+    actual = []
+    for test in test_inputs:
+        result = client.sql(f"""
+            SELECT
+                hexstr_bytelen('{test}') as len,
+                hexstr_zero_bytes('{test}') as zero,
+            """).fetchall()[0]
+        actual.append(result)
+
+    assert actual == [
+        (2, 0),
+        (2, 1),
+        (55, 0),
+        (2, 0),
+        (3, 3),
+    ]
