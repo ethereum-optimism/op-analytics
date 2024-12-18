@@ -1,0 +1,35 @@
+SELECT
+  tr.network
+  , tr.chain_id
+  , tr.chain
+  , tr.dt
+  , tr.block_timestamp
+  , tr.block_number
+  , tr.transaction_hash
+  , tr.transaction_index
+  , tr.from_address AS transfer_from_address
+  , tr.to_address AS transfer_to_address
+  , hexstr_method_id(tr.input) AS trace_method_id
+  , tr.value_64
+  , tr.value_lossless
+  , tr.trace_type
+  , tr.call_type
+  , tr.gas AS trace_gas_limit
+  , tr.gas_used AS trace_gas_used
+  , tr.subtraces
+  , tr.trace_address
+  , t.from_address AS tx_from_address
+  , t.to_address AS tx_to_address
+  , hexstr_method_id(t.input) AS tx_method_id
+
+FROM ingestion_traces_v1 AS tr
+INNER JOIN ingestion_transactions_v1 AS t
+  ON
+    tr.transaction_hash = t.hash
+    AND tr.block_number = t.block_number
+    AND tr.chain_id = t.chain_id
+WHERE
+  (tr.call_type NOT IN ('delegatecall', 'callcode', 'staticcall') OR tr.call_type = '')
+  AND t.receipt_status = 1
+  AND tr.status = 1
+  AND tr.value_lossless != '0'
