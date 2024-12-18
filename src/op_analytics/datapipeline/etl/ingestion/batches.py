@@ -70,6 +70,9 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # Reducing due to large memory usage fetching traces.
         Delimiter(block_number=15160000, batch_size=8000),
     ],
+    "ink": [
+        Delimiter(block_number=0, batch_size=8000),
+    ],
     "kroma": [
         Delimiter(0, 20000),
         Delimiter(block_number=19080000, batch_size=8000),
@@ -153,6 +156,7 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=22680000, batch_size=8000),
     ],
     # Testnets
+    "ink_sepolia": [Delimiter(0, 5000)],
     "op_sepolia": [
         Delimiter(0, 5000),
         # Decreased on 2024/12/03.

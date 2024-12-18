@@ -55,7 +55,7 @@ class ChainNetwork(Enum):
 
 @cache
 def determine_network(chain: str) -> ChainNetwork:
-    if chain in {"op_sepolia", "unichain_sepolia"}:
+    if chain.endswith("_sepolia"):
         return ChainNetwork.TESTNET
     else:
         return ChainNetwork.MAINNET
