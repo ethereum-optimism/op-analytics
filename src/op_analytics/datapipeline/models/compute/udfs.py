@@ -17,12 +17,9 @@ def count_zero_bytes(x: bytes) -> int:
     return count
 
 
-breakpoint()
-
-
 @cache
 def create_python_udfs(duckdb_client: duckdb.DuckDBPyConnection):
-    """Decorated with cache so it only runs once."""
+    """Decorated with @cache so it only runs once."""
 
     duckdb_client.create_function(
         "count_zero_bytes",
