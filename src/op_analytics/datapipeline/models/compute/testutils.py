@@ -9,19 +9,19 @@ from unittest.mock import patch
 
 import duckdb
 
+from op_analytics.coreutils.duckdb_inmem.client import (
+    DuckDBContext,
+    register_dataset_relation,
+    init_client,
+)
+from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.testutils.inputdata import InputTestData
-from op_analytics.coreutils.duckdb_inmem.client import register_dataset_relation
-
-
-from op_analytics.datapipeline.models.compute.modelexecute import (
+from op_analytics.datapipeline.models.compute.execute import (
+    ModelDataReader,
+    PythonModel,
     PythonModelExecutor,
-    ModelInputDataReader,
-)
-from op_analytics.datapipeline.models.compute.registry import (
-    REGISTERED_INTERMEDIATE_MODELS,
-    load_model_definitions,
 )
 
 from .udfs import create_duckdb_macros
@@ -35,17 +35,30 @@ def input_table_name(dataset_name: str) -> str:
 
 
 @dataclass
-class DataReaderTestUtil:
-    client: duckdb.DuckDBPyConnection
+class MockRemoteParquetData:
+    context: DuckDBContext
+    dataset: str
 
-    def register_duckdb_relation(
+    def create_table(self) -> str:
+        assert self.context is not None
+        rel = self.context.client.sql(f"SELECT * FROM {input_table_name(self.dataset)}")
+        return register_dataset_relation(self.context.client, self.dataset, rel)
+
+    def create_view(self) -> str:
+        return self.create_table()
+
+
+@dataclass
+class DataReaderTestUtil:
+    context: DuckDBContext
+
+    def remote_parquet(
         self,
-        dataset,
+        dataset: str,
         first_n_parquet_files: int | None = None,
-    ) -> str:
-        assert self.client is not None
-        rel = self.client.sql(f"SELECT * FROM {input_table_name(dataset)}")
-        return register_dataset_relation(self.client, dataset, rel)
+    ) -> MockRemoteParquetData:
+        """Return a remote parquet data object for the given dataset."""
+        return MockRemoteParquetData(context=self.context, dataset=dataset)
 
 
 class IntermediateModelTestBase(unittest.TestCase):
@@ -84,7 +97,7 @@ class IntermediateModelTestBase(unittest.TestCase):
 
     # Internal variables
     _enable_fetching = False
-    _duckdb_client = None
+    _duckdb_context = None
     _tempdir = None
     _model_executor = None
 
@@ -98,15 +111,19 @@ class IntermediateModelTestBase(unittest.TestCase):
         This method executes the model under test and creates temporary tables in DuckDB
         with the model results.
         """
-        load_model_definitions(force=True)
 
         # Execute the model on the temporary duckdb instance.
-        model = REGISTERED_INTERMEDIATE_MODELS[cls.model]
+        model = PythonModel.get(cls.model)
 
-        db_path = cls.inputdata.path(f"testdata/{cls.__name__}.duck.db")
+        db_file_name = f"{cls.__name__}.duck.db"
+        db_path = cls.inputdata.path(f"testdata/{db_file_name}")
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
-        cls._duckdb_client = duckdb.connect(db_path)
+        cls._duckdb_context = DuckDBContext(
+            client=duckdb.connect(db_path),
+            dir_name=os.path.dirname(db_path),
+            db_file_name=db_file_name,
+        )
         tables_exist = cls._tables_exist(datasets=model.input_datasets)
 
         if not tables_exist:
@@ -137,18 +154,22 @@ class IntermediateModelTestBase(unittest.TestCase):
         else:
             log.info(f"Using local test data from: {db_path}")
 
-        cls._duckdb_client.close()
+        cls._duckdb_context.close()
 
         # Make a copy of the duck.db file, to prevent changing the input test data.
         cls._tempdir = tempfile.TemporaryDirectory()
         tmp_db_path = os.path.join(cls._tempdir.name, os.path.basename(db_path))
         shutil.copyfile(db_path, tmp_db_path)
-        cls._duckdb_client = duckdb.connect(tmp_db_path)
+        cls._duckdb_context = DuckDBContext(
+            client=duckdb.connect(tmp_db_path),
+            dir_name=os.path.dirname(tmp_db_path),
+            db_file_name=os.path.basename(db_path),
+        )
 
         cls._model_executor = execute_model_in_memory(
-            duckdb_client=cls._duckdb_client,
+            duckdb_context=cls._duckdb_context,
             model=cls.model,
-            data_reader=DataReaderTestUtil(cls._duckdb_client),
+            data_reader=DataReaderTestUtil(cls._duckdb_context),
         )
 
     @classmethod
@@ -157,15 +178,15 @@ class IntermediateModelTestBase(unittest.TestCase):
         assert cls._model_executor is not None
         cls._model_executor.__exit__(None, None, None)
 
-        assert cls._duckdb_client is not None
-        cls._duckdb_client.close()
+        assert cls._duckdb_context is not None
+        cls._duckdb_context.close()
 
     @classmethod
     def _tables_exist(cls, datasets: list[str]) -> bool:
         """Helper function to check if the test database already contains the test data."""
-        assert cls._duckdb_client is not None
+        assert cls._duckdb_context is not None
         tables = (
-            cls._duckdb_client.sql("SELECT table_name FROM duckdb_tables;")
+            cls._duckdb_context.client.sql("SELECT table_name FROM duckdb_tables;")
             .df()["table_name"]
             .to_list()
         )
@@ -193,10 +214,10 @@ class IntermediateModelTestBase(unittest.TestCase):
 
         relations = {}
         for dataset in datasets:
-            dataset_view = task.data_reader.register_duckdb_relation(dataset)
+            dataset_view = task.data_reader.remote_parquet(dataset).create_view()
 
-            assert cls._duckdb_client is not None
-            rel = cls._duckdb_client.view(dataset_view)
+            assert cls._duckdb_context is not None
+            rel = cls._duckdb_context.client.view(dataset_view)
 
             if "blocks" in dataset:
                 block_number_col = "number"
@@ -210,28 +231,30 @@ class IntermediateModelTestBase(unittest.TestCase):
             arrow_table = rel.filter(block_filter).to_arrow_table()  # noqa: F841
             table_name = input_table_name(dataset)
 
-            assert cls._duckdb_client is not None
-            cls._duckdb_client.sql(f"CREATE TABLE {table_name} AS SELECT * FROM arrow_table")
+            assert cls._duckdb_context is not None
+            cls._duckdb_context.client.sql(
+                f"CREATE TABLE {table_name} AS SELECT * FROM arrow_table"
+            )
 
             relations[dataset] = rel
 
 
 def execute_model_in_memory(
-    duckdb_client: duckdb.DuckDBPyConnection,
+    duckdb_context: DuckDBContext,
     model: str,
-    data_reader: ModelInputDataReader,
+    data_reader: ModelDataReader,
     limit_input_parquet_files: int | None = None,
 ):
     """Execute a model and register results as views."""
-    log.info("Executing model...")
+    log.info("Executing model function...")
 
-    model_obj = REGISTERED_INTERMEDIATE_MODELS[model]
+    model_obj = PythonModel.get(model)
 
-    create_duckdb_macros(duckdb_client)
+    create_duckdb_macros(duckdb_context)
 
     model_executor = PythonModelExecutor(
         model=model_obj,
-        client=duckdb_client,
+        duckdb_context=duckdb_context,
         data_reader=data_reader,
         limit_input_parquet_files=limit_input_parquet_files,
     )
@@ -243,9 +266,39 @@ def execute_model_in_memory(
 
     # Create views with the model results
     for name, relation in model_results.items():
-        duckdb_client.register(
+        duckdb_context.client.register(
             view_name=name,
             python_object=relation.to_arrow_table(),
         )
 
     return model_executor
+
+
+def setup_execution_context(model_name: str, data_reader: DataReader):
+    # Initialize duckdb.
+    ctx = init_client()
+    create_duckdb_macros(ctx)
+
+    # Initialize model execution context.
+    model_obj = PythonModel.get(model_name)
+    model_executor = PythonModelExecutor(
+        model=model_obj,
+        duckdb_context=ctx,
+        data_reader=data_reader,
+        limit_input_parquet_files=1,
+    )
+
+    # Enter the context and grab the handles we need to manipulate data.
+    model_executor.__enter__()
+    ctx, input_datasets, aux_views = model_executor.call_args()
+
+    # Show the names of input datasets and views that are used by the model.
+    print()
+    for _ in input_datasets:
+        print(f"INPUT: {_}")
+
+    print()
+    for _ in aux_views:
+        print(f"AUX VIEW: {_}")
+
+    return ctx, input_datasets, aux_views

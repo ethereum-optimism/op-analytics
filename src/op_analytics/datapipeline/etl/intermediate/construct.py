@@ -1,24 +1,20 @@
 import pyarrow as pa
 
-
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dataaccess import check_marker
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
-from op_analytics.datapipeline.etl.ingestion.reader_bydate import construct_readers_bydate
-from op_analytics.datapipeline.chains.goldsky_chains import determine_network, ChainNetwork
-from op_analytics.datapipeline.models.compute.registry import (
-    REGISTERED_INTERMEDIATE_MODELS,
-    load_model_definitions,
-    vefify_models,
-)
+from op_analytics.coreutils.rangeutils.daterange import DateRange
+from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determine_network
+from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_readers_bydate
+from op_analytics.datapipeline.models.compute.execute import PythonModel
 
+from .reader.markers import INTERMEDIATE_MARKERS_TABLE, make_data_spec
 from .task import IntermediateModelsTask
 
 log = structlog.get_logger()
-
-INTERMEDIATE_MODELS_MARKERS_TABLE = "intermediate_model_markers"
 
 
 def construct_data_readers(
@@ -27,13 +23,15 @@ def construct_data_readers(
     range_spec: str,
     read_from: DataLocation,
 ) -> list[DataReader]:
-    # Load python functions that define registered data models.
-    load_model_definitions(module_names=models)
-    vefify_models(models)
+    """Construct data readers for a list of models.
+
+    This function is exposed only so it can be used as part of a notebook.
+    """
+    model_objs = [PythonModel.get(_) for _ in models]
 
     input_datasets = set()
-    for model in models:
-        input_datasets.update(REGISTERED_INTERMEDIATE_MODELS[model].input_datasets)
+    for _ in model_objs:
+        input_datasets.update(_.input_datasets)
 
     return construct_readers_bydate(
         chains=chains,
@@ -55,6 +53,7 @@ def construct_tasks(
     While constructing tasks we also go ahead and load the model definitions and create the
     shared duckdb macros that are used across models.
     """
+    model_objs = [PythonModel.get(_) for _ in models]
 
     readers: list[DataReader] = construct_data_readers(
         chains=chains,
@@ -63,13 +62,26 @@ def construct_tasks(
         read_from=read_from,
     )
 
+    # Pre-fetch completion markers so we can skip completed tasks.
+    data_spec = make_data_spec(chains=chains, models=models)
+    output_markers_df = data_spec.query_markers(
+        datevals=DateRange.from_spec(range_spec).dates(),
+        read_from=write_to,
+    )
+    unique_chains = output_markers_df["chain"].n_unique()
+    log.info(f"pre-fetched {len(output_markers_df)} markers for {unique_chains} chains")
+
     tasks = []
     for reader in readers:
-        for model in models:
+        for model_obj in model_objs:
+            model_name = model_obj.name
+
             # Each model can have one or more outputs. There is 1 marker per output.
             expected_outputs = []
-            for dataset in REGISTERED_INTERMEDIATE_MODELS[model].expected_output_datasets:
-                full_model_name = f"{model}/{dataset}"
+            complete_markers: list[str] = []
+
+            for dataset in model_obj.expected_output_datasets:
+                full_model_name = f"{model_name}/{dataset}"
 
                 datestr = reader.partition_value("dt")
                 chain = reader.partition_value("chain")
@@ -80,33 +92,35 @@ def construct_tasks(
                 else:
                     root_path_prefix = "intermediate"
 
-                expected_outputs.append(
-                    ExpectedOutput(
-                        root_path=f"{root_path_prefix}/{full_model_name}",
-                        file_name="out.parquet",
-                        marker_path=f"{datestr}/{chain}/{model}/{dataset}",
-                    )
+                eo = ExpectedOutput(
+                    root_path=f"{root_path_prefix}/{full_model_name}",
+                    file_name="out.parquet",
+                    marker_path=f"{datestr}/{chain}/{model_name}/{dataset}",
                 )
+                expected_outputs.append(eo)
+
+                if check_marker(markers_df=output_markers_df, marker_path=eo.marker_path):
+                    complete_markers.append(eo.marker_path)
 
             tasks.append(
                 IntermediateModelsTask(
                     data_reader=reader,
-                    model=model,
+                    model=model_obj,
                     output_duckdb_relations={},
                     write_manager=PartitionedWriteManager(
                         location=write_to,
                         partition_cols=["chain", "dt"],
                         extra_marker_columns=dict(
-                            model_name=model,
+                            model_name=model_name,
                         ),
                         extra_marker_columns_schema=[
                             pa.field("chain", pa.string()),
                             pa.field("dt", pa.date32()),
                             pa.field("model_name", pa.string()),
                         ],
-                        markers_table=INTERMEDIATE_MODELS_MARKERS_TABLE,
+                        markers_table=INTERMEDIATE_MARKERS_TABLE,
                         expected_outputs=expected_outputs,
-                        force=False,
+                        complete_markers=complete_markers,
                     ),
                     output_root_path_prefix=root_path_prefix,
                 )

@@ -1,5 +1,5 @@
 from datetime import datetime
-from op_analytics.coreutils.time import dt_fromepoch, datetime_fromepoch
+from op_analytics.coreutils.time import dt_fromepoch, datetime_fromepoch, parse_isoformat
 
 
 def test_epoch_dt():
@@ -20,3 +20,51 @@ def test_epoch_dt_01():
 def test_epoch_datetime_01():
     actual = datetime_fromepoch(1729797569)
     assert actual == datetime(2024, 10, 24, 19, 19, 29)
+
+
+def test_iso_with_z():
+    # Z suffix should be interpreted as UTC and return a naive UTC datetime
+    actual = parse_isoformat("2024-12-10T15:30:00Z")
+    expected = datetime(2024, 12, 10, 15, 30, 0)
+    assert actual == expected, f"Expected {expected}, but got {actual}"
+
+
+def test_iso_without_z():
+    # No timezone info should be treated as UTC
+    actual = parse_isoformat("2024-12-10T15:30:00")
+    expected = datetime(2024, 12, 10, 15, 30, 0)
+    assert actual == expected, f"Expected {expected}, but got {actual}"
+
+
+def test_iso_with_offset():
+    # Convert 15:30:00+02:00 to UTC -> 13:30:00 UTC
+    actual = parse_isoformat("2024-12-10T15:30:00+02:00")
+    expected = datetime(2024, 12, 10, 13, 30, 0)
+    assert actual == expected, f"Expected {expected}, but got {actual}"
+
+
+def test_iso_with_milliseconds():
+    # Milliseconds should be preserved
+    actual = parse_isoformat("2024-12-10T15:30:00.123Z")
+    expected = datetime(2024, 12, 10, 15, 30, 0, 123000)
+    assert actual == expected, f"Expected {expected}, but got {actual}"
+
+
+def test_invalid_iso_string():
+    # Invalid strings should raise ValueError
+    try:
+        parse_isoformat("2024-12-10T15:30:00INVALID")
+    except ValueError:
+        pass
+    else:
+        assert False, "Expected ValueError for invalid ISO string"
+
+
+def test_empty_iso_string():
+    # Empty strings should raise ValueError
+    try:
+        parse_isoformat("")
+    except ValueError:
+        pass
+    else:
+        assert False, "Expected ValueError for empty ISO string"

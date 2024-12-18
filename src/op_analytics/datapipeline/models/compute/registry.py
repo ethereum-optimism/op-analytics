@@ -1,82 +1,38 @@
-import importlib
-import os
+from typing import Any, Callable
 
-from op_analytics.coreutils.logger import structlog, bound_contextvars
+from op_analytics.coreutils.logger import bound_contextvars, structlog
 
-from .modelexecute import PythonModel
-from .querybuilder import TemplatedSQLQuery
+from .model import ModelFunction, ModelPath, PythonModel
 
 log = structlog.get_logger()
 
-# Flag to prevent reloading model definitions.
-_LOADED = False
-
-
-REGISTERED_INTERMEDIATE_MODELS: dict[str, PythonModel] = {}
+# All model functions should be defined in modules under this prefix:
+MODULE_PREFIX = "op_analytics.datapipeline.models.code."
 
 
 def register_model(
     input_datasets: list[str],
     expected_outputs: list[str],
-    duckdb_views: list[TemplatedSQLQuery],
-):
+    auxiliary_views: list[str],
+) -> Callable[[ModelFunction], Any]:
     def decorator(func):
-        model_name = func.__name__
-        with bound_contextvars(model=model_name):
-            rendered_views = []
-            for q in duckdb_views or []:
-                rendered = q.render()
-                rendered_views.append(rendered)
+        function_name = func.__name__
 
-            REGISTERED_INTERMEDIATE_MODELS[model_name] = PythonModel(
-                name=model_name,
+        with bound_contextvars(model=function_name):
+            # Instantiating the model registers it on the PythonModel
+            # instance registry.
+            assert str(func.__module__).startswith(MODULE_PREFIX)
+
+            PythonModel(
+                path=ModelPath(
+                    module=str(func.__module__).removeprefix(MODULE_PREFIX),
+                    function_name=function_name,
+                ),
                 input_datasets=input_datasets,
                 expected_output_datasets=expected_outputs,
-                duckdb_views=rendered_views,
+                auxiliary_views=auxiliary_views,
                 model_func=func,
             )
         return func
 
     return decorator
-
-
-def load_model_definitions(module_names: list[str] | None = None, force=False):
-    """Import python modules under the models directory so the model registry is populated.
-
-    If module_names is provided only the requested python modules are loaded.
-    """
-    global _LOADED
-
-    if _LOADED and not force:
-        return
-
-    # Python modules under the "code" directory are imported to populate the model registry.
-    MODELS_PATH = os.path.join(os.path.dirname(__file__), "../code")
-
-    count = 0
-    for fname in os.listdir(MODELS_PATH):
-        name = os.path.join(MODELS_PATH, fname)
-        if os.path.isfile(name) and fname not in ("__init__.py"):
-            module_name = fname.removesuffix(".py")
-
-            if module_names is not None and module_name not in module_names:
-                continue
-
-            importlib.import_module(
-                f"op_analytics.datapipeline.models.code.{fname.removesuffix(".py")}"
-            )
-            count += 1
-
-    log.info(f"Loaded {count} python modules with intermediate model definitions.")
-    _LOADED = True
-
-
-def vefify_models(models: list[str]):
-    for model in models:
-        should_exit = False
-        if model not in REGISTERED_INTERMEDIATE_MODELS:
-            should_exit = True
-            log.error(f"Model is not registered: {model}")
-        if should_exit:
-            log.error("Cannot run on unregistered models. Will exit.")
-            raise Exception("unregistered intermediate model")

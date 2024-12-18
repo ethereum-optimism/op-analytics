@@ -1,19 +1,16 @@
 from datetime import date
 from typing import Iterable
+
 import polars as pl
 
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.partition import Partition
+from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
+from op_analytics.datapipeline.chains.activation import is_chain_active
 
-from .reader_markers import (
-    is_chain_active,
-    IngestionDataSpec,
-    DEFAULT_INGESTION_ROOT_PATHS,
-    IngestionData,
-)
+from .markers import IngestionData, IngestionDataSpec
 
 log = structlog.get_logger()
 
@@ -38,7 +35,7 @@ def construct_readers_byblock(
 
     data_spec = IngestionDataSpec(
         chains=chains,
-        root_paths_to_read=root_paths_to_read or DEFAULT_INGESTION_ROOT_PATHS,
+        root_paths_to_read=root_paths_to_read,
     )
 
     markers_df = data_spec.query_markers(
@@ -57,14 +54,14 @@ def construct_readers_byblock(
                 continue
 
             # Check if all markers present are ready.
-            input_data = are_markers_complete(
+            input_data = is_batch_ready(
                 markers_df=group_df,
-                root_paths_to_check=data_spec.root_paths_physical,
+                root_paths_to_check=data_spec.adapter.root_paths_physical(chain),
                 storage_location=read_from,
             )
 
             # Update data path mapping so keys are logical paths.
-            dataset_paths = data_spec.data_paths(input_data.data_paths)
+            dataset_paths = data_spec.adapter.data_paths(chain, input_data.data_paths)
 
             extra_columns_df = group_df.select("num_blocks", "min_block", "max_block").unique()
             assert len(extra_columns_df) == 1
@@ -94,7 +91,7 @@ def construct_readers_byblock(
     return sorted(readers, key=_sort)
 
 
-def are_markers_complete(
+def is_batch_ready(
     markers_df: pl.DataFrame,
     root_paths_to_check: Iterable[str],
     storage_location: DataLocation,
@@ -110,6 +107,8 @@ def are_markers_complete(
     assert dict(markers_df.schema) == {
         "dt": pl.Date,
         "chain": pl.String,
+        "marker_path": pl.String,
+        "num_parts": pl.UInt32,
         "num_blocks": pl.Int32,
         "min_block": pl.Int64,
         "max_block": pl.Int64,

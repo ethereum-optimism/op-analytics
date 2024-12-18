@@ -54,7 +54,6 @@ def test_parquet_writer():
                 marker_path="BLAH",
             )
         ],
-        force=False,
     )
 
     with patch("op_analytics.coreutils.partitioned.dataaccess.local_upload_parquet") as mock:

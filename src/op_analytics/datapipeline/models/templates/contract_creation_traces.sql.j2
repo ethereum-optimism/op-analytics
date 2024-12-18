@@ -1,34 +1,37 @@
 SELECT
-  tr.network,
-  tr.chain_id,
-  tr.chain,
-  tr.dt,
-  tr.block_timestamp,
-  tr.block_number,
-  tr.block_hash,
-  tr.transaction_hash,
-  tr.transaction_index,
-  tr.from_address AS tr_from_address,
-  t.from_address AS tx_from_address,
-  tr.to_address AS contract_address,
-  t.to_address AS tx_to_address,
-  tr.value_64,
-  tr.value_lossless,
-  tr.input AS code,
-  tr.output,
-  tr.trace_type,
-  tr.call_type,
-  tr.reward_type,
-  tr.gas,
-  tr.gas_used,
-  tr.subtraces,
-  tr.trace_address,
-  tr.error,
-  tr.status,
-  SUBSTRING(t.input, 1, 10) AS tx_method_id,
-  HEXSTR_BYTELEN(tr.input) AS code_bytelength
-FROM ingestion_traces_v1 AS tr
-INNER JOIN ingestion_transactions_v1 AS t
+  tr.network
+  , tr.chain_id
+  , tr.chain
+  , tr.dt
+  , tr.block_timestamp
+  , tr.block_number
+  , tr.block_hash
+  , tr.transaction_hash
+  , tr.transaction_index
+  , tr.from_address AS tr_from_address
+  , t.from_address AS tx_from_address
+  , tr.to_address AS contract_address
+  , t.to_address AS tx_to_address
+  , tr.value_64
+  , tr.value_lossless
+  , tr.input AS code
+  , tr.output
+  , tr.trace_type
+  , tr.call_type
+  , tr.reward_type
+  , tr.gas
+  , tr.gas_used
+  , tr.subtraces
+  , tr.trace_address
+  , tr.error
+  , tr.status
+  , SUBSTRING(t.input, 1, 10) AS tx_method_id
+  -- NOTE: The original implementation of hexstr_bytelen would return
+  --       DOUBLE instead of INT. We cast this as double so we don't 
+  --       have to backfill the results.
+  , CAST(HEXSTR_BYTELEN(tr.input) AS DOUBLE) AS code_bytelength
+FROM {{ raw_traces }} AS tr
+INNER JOIN {{ raw_transactions }} AS t
   ON
     tr.transaction_hash = t.hash
     AND tr.block_number = t.block_number

@@ -9,14 +9,9 @@ from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import surrounding_dates
+from op_analytics.datapipeline.chains.activation import is_chain_active
 
-from .reader_markers import (
-    is_chain_active,
-    IngestionDataSpec,
-    DEFAULT_INGESTION_ROOT_PATHS,
-    IngestionData,
-)
-
+from .markers import IngestionData, IngestionDataSpec
 
 log = structlog.get_logger()
 
@@ -41,9 +36,12 @@ def construct_readers_bydate(
 
     data_spec = IngestionDataSpec(
         chains=chains,
-        root_paths_to_read=root_paths_to_read or DEFAULT_INGESTION_ROOT_PATHS,
+        root_paths_to_read=root_paths_to_read,
     )
 
+    # We use the +/- 1 day padded dates so that we can use the query results to
+    # check if there is data on boths ends. This allows us to confirm that the
+    # data is ready to be processed.
     markers_df = data_spec.query_markers(
         datevals=date_range.padded_dates(),
         read_from=read_from,
@@ -70,12 +68,12 @@ def construct_readers_bydate(
                 input_data = are_inputs_ready(
                     markers_df=filtered_df,
                     dateval=dateval,
-                    root_paths_to_check=data_spec.root_paths_physical,
+                    root_paths_to_check=data_spec.adapter.root_paths_physical(chain),
                     storage_location=read_from,
                 )
 
                 # Update data path mapping so keys are logical paths.
-                dataset_paths = data_spec.data_paths(input_data.data_paths)
+                dataset_paths = data_spec.adapter.data_paths(chain, input_data.data_paths)
 
                 obj = DataReader(
                     partitions=Partition.from_tuples(
@@ -118,6 +116,8 @@ def are_inputs_ready(
     assert dict(markers_df.schema) == {
         "dt": pl.Date,
         "chain": pl.String,
+        "marker_path": pl.String,
+        "num_parts": pl.UInt32,
         "num_blocks": pl.Int32,
         "min_block": pl.Int64,
         "max_block": pl.Int64,
