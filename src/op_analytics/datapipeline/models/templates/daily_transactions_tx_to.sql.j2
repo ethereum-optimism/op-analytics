@@ -5,11 +5,11 @@ Downstream, we can use contracts tables to filter for transactions to contracts 
 */
 
 SELECT
-  dt,
-  chain,
-  chain_id,
-  network,
-  to_address
+  dt
+  , chain
+  , chain_id
+  , network
+  , to_address
 
   -- Aggregations
   , COUNT(*) AS count_transactions
@@ -61,5 +61,5 @@ FROM refined_transactions_fees
 WHERE NOT is_system_transaction
 
 GROUP BY
-  dt, chain, chain_id, network,
-  to_address
+  dt, chain, chain_id, network
+  , to_address

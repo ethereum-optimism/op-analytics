@@ -3,19 +3,19 @@
 
 WITH event_emitting AS (
   SELECT
-    l.dt,
-    epoch_to_hour(l.block_timestamp) AS block_hour,
-    l.block_timestamp,
-    l.network,
-    l.chain,
-    l.chain_id,
-    l.block_number,
-    l.transaction_hash,
+    l.dt
+    , epoch_to_hour(l.block_timestamp) AS block_hour
+    , l.block_timestamp
+    , l.network
+    , l.chain
+    , l.chain_id
+    , l.block_number
+    , l.transaction_hash
 
-    count(*) AS count_total_events,
-    sum(CASE WHEN f.category = 'Approval' THEN 1 ELSE 0 END) AS count_approval_events,
-    sum(CASE WHEN f.category = 'Wrapping' THEN 1 ELSE 0 END) AS count_wrapping_events,
-    sum(CASE WHEN f.category = 'Transfer' THEN 1 ELSE 0 END) AS count_transfer_events
+    , count(*) AS count_total_events
+    , sum(CASE WHEN f.category = 'Approval' THEN 1 ELSE 0 END) AS count_approval_events
+    , sum(CASE WHEN f.category = 'Wrapping' THEN 1 ELSE 0 END) AS count_wrapping_events
+    , sum(CASE WHEN f.category = 'Transfer' THEN 1 ELSE 0 END) AS count_transfer_events
 
   FROM ingestion_logs_v1 AS l
   LEFT JOIN logs_topic0_filters AS f
@@ -25,34 +25,34 @@ WITH event_emitting AS (
 )
 
 SELECT
-  ee.*,
+  ee.*
 
-  t.transaction_index,
+  , t.transaction_index
 
-  t.transaction_type,
+  , t.transaction_type
 
   -- Join Transaction Fields
-  t.tx_fee_native,
-  t.l1_fee_native AS tx_l1_fee_native,
+  , t.tx_fee_native
+  , t.l1_fee_native AS tx_l1_fee_native
   -- gas fees
-  t.l2_fee_native AS tx_l2_fee_native,
+  , t.l2_fee_native AS tx_l2_fee_native
 
-  t.l1_base_fee_native AS tx_l1_base_fee_native,
-  t.l1_blob_fee_native AS tx_l1_blob_fee_native,
+  , t.l1_base_fee_native AS tx_l1_base_fee_native
+  , t.l1_blob_fee_native AS tx_l1_blob_fee_native
 
-  t.l2_base_fee_native AS tx_l2_base_fee_native,
-  t.l2_priority_fee_native AS tx_l2_priority_fee_native,
+  , t.l2_base_fee_native AS tx_l2_base_fee_native
+  , t.l2_priority_fee_native AS tx_l2_priority_fee_native
 
-  t.l2_legacy_extra_fee_native AS tx_l2_legacy_extra_fee_native,
-  t.input_byte_length AS tx_input_byte_length,
+  , t.l2_legacy_extra_fee_native AS tx_l2_legacy_extra_fee_native
+  , t.input_byte_length AS tx_input_byte_length
   -- transaction attributes
-  t.l1_gas_used_unified AS tx_l1_gas_used_unified,
-  t.estimated_size AS tx_estimated_size,
-  t.l2_gas_used AS tx_l2_gas_used,
-  ee.count_total_events
+  , t.l1_gas_used_unified AS tx_l1_gas_used_unified
+  , t.estimated_size AS tx_estimated_size
+  , t.l2_gas_used AS tx_l2_gas_used
+  , ee.count_total_events
   > ee.count_approval_events + ee.count_wrapping_events + ee.count_transfer_events
-    AS is_qualified_tx_not_approval_wrapping_transfer,
-  ee.count_total_events
+    AS is_qualified_tx_not_approval_wrapping_transfer
+  , ee.count_total_events
   > ee.count_approval_events + ee.count_wrapping_events
     AS is_qualified_tx_not_approval_wrapping
 
