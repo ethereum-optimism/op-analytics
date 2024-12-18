@@ -103,7 +103,7 @@ SELECT
   , sum(if(success, estimated_size, 0)) AS success_estimated_size_sum
 
 FROM
-  refined_transactions_fees
+  {{ refined_transactions_fees }}
 WHERE
   NOT is_system_transaction
 GROUP BY

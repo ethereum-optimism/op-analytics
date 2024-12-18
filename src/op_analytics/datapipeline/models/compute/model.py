@@ -1,15 +1,32 @@
 import importlib
-from dataclasses import dataclass, field
-from typing import ClassVar, Protocol
+from dataclasses import dataclass
+from typing import ClassVar, Callable, Protocol
 
-import duckdb
 
-from .querybuilder import TemplatedSQLQuery, RenderedSQLQuery
+from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
+
+from .auxview import AuxiliaryView
 from .types import NamedRelations
 
 
-class ModelFunction(Protocol):
-    def __call__(self, duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations: ...
+class ParquetData(Protocol):
+    def create_table(self) -> str: ...
+    def create_view(self) -> str: ...
+
+
+class ModelDataReader(Protocol):
+    def remote_parquet(
+        self,
+        dataset: str,
+        first_n_parquet_files: int | None = None,
+    ) -> ParquetData:
+        """Return a remote parquet data object for the given dataset."""
+        ...
+
+
+type ModelFunction = Callable[
+    [DuckDBContext, dict[str, ParquetData], dict[str, AuxiliaryView]], NamedRelations
+]
 
 
 @dataclass(frozen=True)
@@ -41,14 +58,10 @@ class PythonModel:
     # The registry stores all instances of PythonModel
     _registry: ClassVar[dict[ModelPath, "PythonModel"]] = {}
 
-    # Rendered views caches rendered views so we don't have
-    # to load and render templates each time.
-    _rendered_views: list[RenderedSQLQuery] | None = field(init=False, default=None)
-
     path: ModelPath
     input_datasets: list[str]
     expected_output_datasets: list[str]
-    auxiliary_views: list[TemplatedSQLQuery]
+    auxiliary_views: list[str]
     model_func: ModelFunction
 
     def __post_init__(self):
@@ -85,13 +98,3 @@ class PythonModel:
     @property
     def func(self) -> ModelFunction:
         return self.model_func
-
-    def rendered_views(self) -> list[RenderedSQLQuery]:
-        if self._rendered_views is None:
-            result = []
-            for q in self.auxiliary_views or []:
-                rendered = q.render()
-                result.append(rendered)
-            self._rendered_views = result
-
-        return self._rendered_views

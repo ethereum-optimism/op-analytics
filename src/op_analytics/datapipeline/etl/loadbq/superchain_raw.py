@@ -56,10 +56,13 @@ def load_superchain_raw_to_bq(
                 log.warning("task", status="input_not_ready")
                 continue
 
-            # TODO: remove side effects from all_outputs_complete()
-            if not force_complete and task.write_manager.all_outputs_complete():
-                log.info("task", status="already_complete")
-                continue
+            if task.write_manager.all_outputs_complete():
+                if not force_complete:
+                    log.info("task", status="already_complete")
+                    continue
+                else:
+                    task.write_manager.clear_complete_markers()
+                    log.info("forced execution despite complete markers")
 
             for output in task.outputs:
                 write_result = task.write_manager.write(output)

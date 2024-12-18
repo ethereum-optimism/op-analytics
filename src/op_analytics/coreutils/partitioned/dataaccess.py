@@ -126,31 +126,6 @@ class PartitionedDataAccess:
             marker_path=marker_path,
         )
 
-    def all_markers_exist(
-        self,
-        data_location: DataLocation,
-        marker_paths: list[str],
-        markers_table: str,
-    ) -> bool:
-        complete = []
-        incomplete = []
-
-        # TODO: Make a single query for all the markers.
-        for marker_path in marker_paths:
-            if self.marker_exists(data_location, marker_path, markers_table):
-                complete.append(marker_path)
-            else:
-                incomplete.append(marker_path)
-
-        num_complete = len(complete)
-        total = len(incomplete) + len(complete)
-        log.debug(f"{num_complete}/{total} complete")
-
-        if incomplete:
-            return False
-
-        return True
-
     def query_markers_with_filters(
         self,
         data_location: DataLocation,

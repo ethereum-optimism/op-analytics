@@ -100,7 +100,7 @@ def read_daily_data(
     The name of the registered view is returned.
     """
     partitioned_data_access = init_data_access()
-    duckdb_client = init_client()
+    duckdb_context = init_client()
 
     datefilter = make_date_filter(min_date, max_date, date_range_spec)
 
@@ -132,7 +132,7 @@ def read_daily_data(
         log.info(f"{len(set(paths))} distinct paths")
 
     view_name = register_parquet_relation(dataset=root_path, parquet_paths=paths)
-    print(duckdb_client.sql("SHOW TABLES"))
+    print(duckdb_context.client.sql("SHOW TABLES"))
     return view_name
 
 
