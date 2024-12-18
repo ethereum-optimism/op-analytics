@@ -152,18 +152,17 @@ def test_hexstr_byte_related():
         result = client.sql(f"""
             SELECT
                 hexstr_bytelen('{test}') as len,
-                hexstr_nonzero_bytes('{test}') as nonzero,
                 hexstr_zero_bytes('{test}') as zero,
                 hexstr_calldata_gas('{test}') as calldata_gas
             """).fetchall()[0]
         actual.append(result)
 
     assert actual == [
-        (2, 2, 0, 32),
-        (2, 1, 1, 20),
-        (55, 55, 0, 880),
-        (2, 2, 0, 32),
-        (3, 0, 3, 12),
+        (2, 0, 32),
+        (2, 1, 20),
+        (55, 0, 880),
+        (2, 0, 32),
+        (3, 3, 12),
     ]
 
 

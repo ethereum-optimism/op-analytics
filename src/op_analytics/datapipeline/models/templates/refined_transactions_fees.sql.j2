@@ -57,7 +57,6 @@ pb AS (
     , t.receipt_status = 1 AS success
     , hexstr_bytelen(t.input) AS input_byte_length
     , hexstr_zero_bytes(t.input) AS input_zero_bytes
-    , hexstr_nonzero_bytes(t.input) AS input_nonzero_bytes
     , t.transaction_type = 126 OR t.gas_price = 0 AS is_system_transaction
     -- Attributes Deposited Spec:
     -- https://specs.optimism.io/protocol/deposits.html#l1-attributes-deposited-transaction
