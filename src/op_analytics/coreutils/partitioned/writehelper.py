@@ -81,6 +81,9 @@ class WriteManager[T: Writeable](EnforceOverrides):
 
         return set(self.complete_markers) == set(expected_markers)
 
+    def clear_complete_markers(self):
+        self.complete_markers.clear()
+
     def expected_output(self, output_data: T) -> ExpectedOutput:
         return self._keyed_outputs[output_data.root_path]
 
@@ -94,10 +97,7 @@ class WriteManager[T: Writeable](EnforceOverrides):
         # The default partition value is included in log context to help keep
         # track of which data we are processing.
         with bound_contextvars(root=output_data.root_path, **(output_data.default_partition or {})):
-            # TODO: This should not be necessary once we fully migrate to pre-fetched markers.
-            complete_markers = self.complete_markers or []
-
-            if expected_output.marker_path in complete_markers:
+            if expected_output.marker_path in self.complete_markers:
                 log.warning(f"skipping complete output {expected_output.marker_path}")
                 return WriteResult(status="skipped", written_parts={})
 
