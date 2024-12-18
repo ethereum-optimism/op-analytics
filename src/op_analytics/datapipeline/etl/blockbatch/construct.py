@@ -17,6 +17,30 @@ from .task import BlockBatchModelsTask
 log = structlog.get_logger()
 
 
+def construct_data_readers(
+    chains: list[str],
+    models: list[str],
+    range_spec: str,
+    read_from: DataLocation,
+) -> list[DataReader]:
+    """Construct data readers for a list of models.
+
+    This function is exposed only so it can be used as part of a notebook.
+    """
+    model_objs = [PythonModel.get(_) for _ in models]
+
+    input_datasets = set()
+    for _ in model_objs:
+        input_datasets.update(_.input_datasets)
+
+    return construct_readers_byblock(
+        chains=chains,
+        range_spec=range_spec,
+        read_from=read_from,
+        root_paths_to_read=sorted(input_datasets),
+    )
+
+
 def construct_tasks(
     chains: list[str],
     models: list[str],
@@ -25,17 +49,11 @@ def construct_tasks(
     write_to: DataLocation,
 ) -> list[BlockBatchModelsTask]:
     """Construct a collection of tasks to compute intermediate models."""
-    model_objs = [PythonModel.get(_) for _ in models]
-
-    input_datasets = set()
-    for _ in model_objs:
-        input_datasets.update(_.input_datasets)
-
-    readers: list[DataReader] = construct_readers_byblock(
+    readers: list[DataReader] = construct_data_readers(
         chains=chains,
+        models=models,
         range_spec=range_spec,
         read_from=read_from,
-        root_paths_to_read=sorted(input_datasets),
     )
 
     # Pre-fetch completion markers so we can skip completed tasks.
@@ -47,6 +65,7 @@ def construct_tasks(
     unique_chains = output_markers_df["chain"].n_unique()
     log.info(f"pre-fetched {len(output_markers_df)} markers for {unique_chains} chains")
 
+    model_objs = [PythonModel.get(_) for _ in models]
     tasks = []
     for reader in readers:
         for model_obj in model_objs:

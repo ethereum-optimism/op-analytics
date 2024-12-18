@@ -34,23 +34,36 @@ def init_client():
         _BUCKET = _CLIENT.bucket(BUCKET_NAME)
         log.info(f"Initialized GCS client for bucket=gs://{BUCKET_NAME}")
 
-
-def gcs_upload(blob_path: str, content: bytes | str, prefix=None):
-    """Uploads content to GCS."""
-    init_client()
-
     if _BUCKET is None:
         raise RuntimeError("GCS was not properly initialized.")
 
+    return _BUCKET
+
+
+def gcs_upload(blob_path: str, content: bytes | str, prefix=None):
+    """Uploads content to GCS."""
+    bucket = init_client()
+
+    # Lazy import to avoid slow google cloud package load.
     from google.cloud.storage import Blob
 
     key = os.path.join(prefix or _PATH_PREFIX, blob_path)
-    blob: Blob = _BUCKET.blob(key)
+    blob: Blob = bucket.blob(key)
     blob.upload_from_string(content)
-    log.info(f"Wrote {human_size(len(content))} to gs://{_BUCKET.name}/{key}")
+    log.info(f"Wrote {human_size(len(content))} to gs://{bucket.name}/{key}")
 
 
 def gcs_upload_csv(blob_path: str, df: pl.DataFrame):
     buf = io.BytesIO()
     df.write_csv(buf)
     gcs_upload(blob_path, buf.getvalue())
+
+
+def gcs_download(blob_path: str, destination_path: str):
+    bucket = init_client()
+
+    # Lazy import to avoid slow google cloud package load.
+    from google.cloud.storage import Blob
+
+    blob: Blob = bucket.blob(blob_path)
+    blob.download_to_file(destination_path)

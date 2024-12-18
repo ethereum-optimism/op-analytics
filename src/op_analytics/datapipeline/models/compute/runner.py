@@ -156,12 +156,12 @@ def pending_items(
                 continue
 
             # Decide if we need to run this task.
-            # TODO: remove side effects from all_outputs_complete()
-            if not force_complete and task.write_manager.all_outputs_complete():
+            if task.write_manager.all_outputs_complete():
                 if not force_complete:
                     log.info("task", status="already_complete")
                     continue
                 else:
+                    task.write_manager.clear_complete_markers()
                     log.info("forced execution despite complete markers")
 
             # If running locally release duckdb lock before forking.
@@ -175,16 +175,16 @@ def steps(item: WorkItem) -> None:
     """Execute the model computations."""
     with bound_contextvars(**item.context()):
         # Load shared DuckDB UDFs.
-        client = init_client()
-        create_duckdb_macros(client)
+        ctx = init_client()
+        create_duckdb_macros(ctx)
 
         # Set duckdb memory limit. This lets us get an error from duckb instead of
         # OOMing the container.
-        set_memory_limit(client, gb=10)
+        set_memory_limit(ctx.client, gb=10)
 
         task = item.task
 
-        with PythonModelExecutor(task.model, client, task.data_reader) as m:
+        with PythonModelExecutor(task.model, ctx, task.data_reader) as m:
             log.info("running model")
             model_results = m.execute()
 
@@ -202,3 +202,5 @@ def steps(item: WorkItem) -> None:
                         default_partition=task.data_reader.partitions_dict(),
                     ),
                 )
+
+        log.info("task", status="success", exitcode=0)

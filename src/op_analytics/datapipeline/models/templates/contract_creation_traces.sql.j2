@@ -30,8 +30,8 @@ SELECT
   --       DOUBLE instead of INT. We cast this as double so we don't 
   --       have to backfill the results.
   , CAST(HEXSTR_BYTELEN(tr.input) AS DOUBLE) AS code_bytelength
-FROM ingestion_traces_v1 AS tr
-INNER JOIN ingestion_transactions_v1 AS t
+FROM {{ raw_traces }} AS tr
+INNER JOIN {{ raw_transactions }} AS t
   ON
     tr.transaction_hash = t.hash
     AND tr.block_number = t.block_number

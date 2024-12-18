@@ -23,6 +23,10 @@ def construct_data_readers(
     range_spec: str,
     read_from: DataLocation,
 ) -> list[DataReader]:
+    """Construct data readers for a list of models.
+
+    This function is exposed only so it can be used as part of a notebook.
+    """
     model_objs = [PythonModel.get(_) for _ in models]
 
     input_datasets = set()
