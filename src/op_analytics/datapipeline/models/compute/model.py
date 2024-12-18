@@ -98,18 +98,3 @@ class PythonModel:
     @property
     def func(self) -> ModelFunction:
         return self.model_func
-
-    # def rendered_auxiliary_views(self) -> list[AuxiliaryView]:
-    #     if self._rendered_auxiliary_views is None:
-    #         result = []
-    #         for q in self.auxiliary_views or []:
-    #             rendered = q.render()
-    #             result.append(
-    #                 AuxiliaryView(
-    #                     template=q,
-    #                     rendered_query=rendered.query,
-    #                 )
-    #             )
-    #         self._rendered_views = result
-
-    #     return self._rendered_views
