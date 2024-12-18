@@ -1,11 +1,14 @@
 """DuckDB UDFs that are shared across intermediate models."""
 
-from functools import cache
+import threading
+import warnings
 
 import duckdb
 import numba
 from duckdb.functional import PythonUDFType
 from duckdb.typing import BLOB, INTEGER
+
+from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
 
 
 @numba.njit
@@ -17,28 +20,40 @@ def count_zero_bytes(x: bytes) -> int:
     return count
 
 
-@cache
-def create_python_udfs(duckdb_client: duckdb.DuckDBPyConnection):
+_UDF_LOCK = threading.Lock()
+
+
+def create_python_udfs(duckdb_context: DuckDBContext):
     """Decorated with @cache so it only runs once."""
 
-    duckdb_client.create_function(
-        "count_zero_bytes",
-        count_zero_bytes,
-        type=PythonUDFType.NATIVE,
-        parameters=[BLOB],
-        return_type=INTEGER,
-    )
+    with _UDF_LOCK:
+        if duckdb_context.python_udfs_ready:
+            return
+
+        with warnings.catch_warnings():
+            # Suppressing the following warning from duckdb:
+            # DeprecationWarning: numpy.core is deprecated and has been renamed to numpy._core.
+            warnings.simplefilter("ignore", DeprecationWarning)
+
+            duckdb_context.client.create_function(
+                "count_zero_bytes",
+                count_zero_bytes,
+                type=PythonUDFType.NATIVE,
+                parameters=[BLOB],
+                return_type=INTEGER,
+            )
+        duckdb_context.python_udfs_ready = True
 
 
-def create_duckdb_macros(duckdb_client: duckdb.DuckDBPyConnection):
+def create_duckdb_macros(duckdb_context: DuckDBContext):
     """Create general purpose macros on the DuckDB in-memory client.
 
     These macros can be used as part of data model definitions.
     """
 
-    create_python_udfs(duckdb_client)
+    create_python_udfs(duckdb_context)
 
-    duckdb_client.sql("""
+    duckdb_context.client.sql("""
     CREATE OR REPLACE MACRO wei_to_eth(a)
     AS a::DECIMAL(28, 0) * 0.000000000000000001::DECIMAL(19, 19);
 

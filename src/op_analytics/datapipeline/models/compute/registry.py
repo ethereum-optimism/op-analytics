@@ -1,8 +1,8 @@
-from op_analytics.coreutils.logger import structlog, bound_contextvars
+from typing import Any, Callable
 
-from .model import ModelPath
-from .execute import PythonModel
-from .querybuilder import TemplatedSQLQuery
+from op_analytics.coreutils.logger import bound_contextvars, structlog
+
+from .model import ModelFunction, ModelPath, PythonModel
 
 log = structlog.get_logger()
 
@@ -13,8 +13,8 @@ MODULE_PREFIX = "op_analytics.datapipeline.models.code."
 def register_model(
     input_datasets: list[str],
     expected_outputs: list[str],
-    auxiliary_views: list[TemplatedSQLQuery],
-):
+    auxiliary_views: list[str],
+) -> Callable[[ModelFunction], Any]:
     def decorator(func):
         function_name = func.__name__
 

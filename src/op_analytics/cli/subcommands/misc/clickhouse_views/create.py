@@ -36,11 +36,11 @@ def view_parquet_schema(path: str):
     """Utility to print out the schema of a parquet file path.
 
     - Can be a remote path.
-    - This utility is useful to genrate schemas for clickhouse table DDL.
+    - This utility is useful to generate schemas for clickhouse table DDL.
     """
-    duckdb_client = init_duckdb()
-    rel = duckdb_client.read_parquet(path)
-    duckdb_client.register(
+    ctx = init_duckdb()
+    rel = ctx.client.read_parquet(path)
+    ctx.client.register(
         view_name="create_traces",
         python_object=rel,
     )

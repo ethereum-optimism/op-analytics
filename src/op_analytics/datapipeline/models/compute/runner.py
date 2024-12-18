@@ -175,16 +175,16 @@ def steps(item: WorkItem) -> None:
     """Execute the model computations."""
     with bound_contextvars(**item.context()):
         # Load shared DuckDB UDFs.
-        client = init_client()
-        create_duckdb_macros(client)
+        ctx = init_client()
+        create_duckdb_macros(ctx)
 
         # Set duckdb memory limit. This lets us get an error from duckb instead of
         # OOMing the container.
-        set_memory_limit(client, gb=10)
+        set_memory_limit(ctx.client, gb=10)
 
         task = item.task
 
-        with PythonModelExecutor(task.model, client, task.data_reader) as m:
+        with PythonModelExecutor(task.model, ctx, task.data_reader) as m:
             log.info("running model")
             model_results = m.execute()
 

@@ -6,6 +6,7 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
 
 @register_model(
     input_datasets=[
+        "ingestion/blocks_v1",
         "ingestion/traces_v1",
         "ingestion/transactions_v1",
     ],
@@ -13,25 +14,14 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         "create_traces_v1",
     ],
     auxiliary_views=[
-        "contract_creation_traces",
+        "refined_transactions_fees",
+        "refined_traces_fees",
     ],
 )
-def contract_creation(
+def refined_traces(
     ctx: DuckDBContext,
     input_datasets: dict[str, ParquetData],
     auxiliary_views: dict[str, AuxiliaryView],
 ) -> NamedRelations:
-    traces_view = input_datasets["ingestion/traces_v1"].create_view()
-    txs_view = input_datasets["ingestion/transactions_v1"].create_view()
-
-    result = auxiliary_views["contract_creation_traces"].to_relation(
-        ctx,
-        template_parameters={
-            "raw_traces": traces_view,
-            "raw_transactions": txs_view,
-        },
-    )
-
-    return {
-        "create_traces_v1": result,
-    }
+    # Not implemented yet.
+    return {}

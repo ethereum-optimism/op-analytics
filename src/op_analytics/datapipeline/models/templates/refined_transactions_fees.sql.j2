@@ -5,7 +5,7 @@ pb AS (
     number
     , base_fee_per_gas
   FROM
-    ingestion_blocks_v1
+    {{ raw_blocks }}
 )
 
 -- Select the columns that we want from transactions joined to blocks.
@@ -68,7 +68,7 @@ pb AS (
 
     , epoch_to_hour(t.block_timestamp) AS block_hour
 
-  FROM ingestion_transactions_v1 AS t
+  FROM {{ raw_transactions }} AS t
   INNER JOIN pb AS b
     ON t.block_number = b.number
   WHERE 1 = 1

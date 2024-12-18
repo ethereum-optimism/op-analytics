@@ -88,7 +88,7 @@ SELECT
   , wei_to_gwei(safe_div(sum(l1_blob_fee), sum(l1_blob_scaled_size)))
     AS l1_blob_fee_avg_gwei
 FROM
-  refined_transactions_fees
+  {{ refined_transactions_fees }}
 WHERE gas_price > 0
 GROUP BY
   1
