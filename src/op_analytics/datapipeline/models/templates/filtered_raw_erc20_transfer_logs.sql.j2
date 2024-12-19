@@ -1,0 +1,16 @@
+SELECT
+  l.*
+  , t.from_address AS tx_from_address
+  , t.to_address AS tx_to_address
+  , hexstr_method_id(t.input) AS tx_method_id
+
+FROM ingestion_logs_v1 AS l
+INNER JOIN ingestion_transactions_v1 AS t
+  ON
+    l.block_number = t.block_number
+    AND l.chain_id = t.chain_id
+    AND l.transaction_hash = t.hash
+
+WHERE
+  l.topic0 = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+  AND t.receipt_status = 1 -- only successful transactions emit event logs
