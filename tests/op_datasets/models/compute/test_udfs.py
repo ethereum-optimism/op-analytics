@@ -225,8 +225,8 @@ def test_trace_address_helpers():
         actual.append(result)
 
     assert actual == [
-        (0, "root"),
-        (1, "first"),
+        (0, "none"),
+        (1, ""),
         (2, "0"),
         (2, "0"),
         (3, "0,10"),

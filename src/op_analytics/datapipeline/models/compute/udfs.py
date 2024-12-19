@@ -114,14 +114,14 @@ def create_duckdb_macros(duckdb_context: DuckDBContext):
     END;
 
     -- Trace address parent. Examples:
-    --   ""       -> root
-    --   "0"      -> first
-    --   "0,2"    -> 0
-    --   "0,10,0" -> 0,10
+    --   ""       -> "none"
+    --   "0"      -> ""
+    --   "0,2"    -> "0"
+    --   "0,10,0" -> "0,10"
     CREATE OR REPLACE MACRO trace_address_parent(a)
     AS CASE
-      WHEN length(a) = 0 THEN 'root'
-      WHEN length(a) = 1 THEN 'first'
+      WHEN length(a) = 0 THEN 'none'
+      WHEN length(a) = 1 THEN ''
       ELSE a[:-3]
     END;
     """)
