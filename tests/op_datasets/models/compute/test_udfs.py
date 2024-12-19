@@ -179,7 +179,7 @@ def test_hexstr_method_id():
     assert actual == expected
 
 
-def test_py_udf():
+def test_hextr_bytes_py_udf():
     ctx = init_client()
     create_duckdb_macros(ctx)
 
@@ -206,4 +206,30 @@ def test_py_udf():
         (55, 0),
         (2, 0),
         (3, 3),
+    ]
+
+
+def test_trace_address_helpers():
+    ctx = init_client()
+    create_duckdb_macros(ctx)
+
+    test_inputs = ["", "0", "0,0", "0,1", "0,10,0", "0,10,0,0", "0,2"]
+
+    actual = []
+    for test in test_inputs:
+        result = ctx.client.sql(f"""
+            SELECT
+                trace_address_depth('{test}') as depth,
+                trace_address_parent('{test}') as parent,
+            """).fetchall()[0]
+        actual.append(result)
+
+    assert actual == [
+        (0, "root"),
+        (1, "first"),
+        (2, "0"),
+        (2, "0"),
+        (3, "0,10"),
+        (4, "0,10,0"),
+        (2, "0"),
     ]
