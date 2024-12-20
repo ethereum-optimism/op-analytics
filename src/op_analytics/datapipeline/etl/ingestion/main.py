@@ -48,10 +48,13 @@ def ingest(
         task.progress_indicator = f"{i+1}/{len(tasks)}"
         with bound_contextvars(**task.contextvars):
             # Decide if we need to run this task.
-            # TODO: remove side effects from all_outputs_complete()
-            if not force_complete and task.write_manager.all_outputs_complete():
-                log.info("task", status="already_complete")
-                continue
+            if task.write_manager.all_outputs_complete():
+                if not force_complete:
+                    log.info("task", status="already_complete")
+                    continue
+                else:
+                    task.write_manager.clear_complete_markers()
+                    log.info("forced execution despite complete markers")
 
             # Decide if we can run this task.
             if not all_inputs_ready(

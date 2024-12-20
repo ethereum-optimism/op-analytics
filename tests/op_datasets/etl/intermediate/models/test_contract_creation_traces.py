@@ -19,22 +19,26 @@ class TestCreationTraces001(IntermediateModelTestBase):
     _enable_fetching = False
 
     def test_overall_totals(self):
-        assert self._duckdb_client is not None
+        assert self._duckdb_context is not None
 
         num_traces = (
-            self._duckdb_client.sql("SELECT COUNT(*) as num_traces FROM ingestion_traces_v1")
+            self._duckdb_context.client.sql(
+                "SELECT COUNT(*) as num_traces FROM ingestion_traces_v1"
+            )
             .pl()
             .to_dicts()[0]["num_traces"]
         )
 
         num_creation_traces = (
-            self._duckdb_client.sql("SELECT COUNT(*) AS num_creation_traces FROM create_traces_v1")
+            self._duckdb_context.client.sql(
+                "SELECT COUNT(*) AS num_creation_traces FROM create_traces_v1"
+            )
             .pl()
             .to_dicts()[0]["num_creation_traces"]
         )
 
         num_unique_contracts = (
-            self._duckdb_client.sql(
+            self._duckdb_context.client.sql(
                 "SELECT COUNT(DISTINCT contract_address) AS num_unique_contracts FROM create_traces_v1"
             )
             .pl()
@@ -49,10 +53,10 @@ class TestCreationTraces001(IntermediateModelTestBase):
         assert percent == 0.03
 
     def test_model_schema(self):
-        assert self._duckdb_client is not None
+        assert self._duckdb_context is not None
 
         schema = (
-            self._duckdb_client.sql("DESCRIBE create_traces_v1")
+            self._duckdb_context.client.sql("DESCRIBE create_traces_v1")
             .pl()
             .select("column_name", "column_type")
             .to_dicts()
@@ -91,10 +95,10 @@ class TestCreationTraces001(IntermediateModelTestBase):
         }
 
     def test_single_tx(self):
-        assert self._duckdb_client is not None
+        assert self._duckdb_context is not None
 
         output = (
-            self._duckdb_client.sql(f"""
+            self._duckdb_context.client.sql(f"""
         SELECT * FROM create_traces_v1 WHERE contract_address = '{CONTRACT_ADDRESS}'
         """)
             .pl()

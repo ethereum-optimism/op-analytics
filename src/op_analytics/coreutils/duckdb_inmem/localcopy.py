@@ -12,7 +12,8 @@ log = structlog.get_logger()
 
 def dump_local_copy(view_name: str, parquet_fileprefix: str) -> str:
     """Dump a copy of the data to a single local parquet file."""
-    client = init_client()
+    ctx = init_client()
+    client = ctx.client
 
     rel = client.view(view_name)
     parquet_path = local_parquet_path(parquet_fileprefix)
@@ -46,7 +47,8 @@ def load_local_copy(parquet_fileprefix: str, timestamp: str | None = None) -> st
 
 
 def register_local_copy(path: str) -> str:
-    client = init_client()
+    ctx = init_client()
+    client = ctx.client
 
     view_name = os.path.basename(path).removesuffix(".parquet")
     client.register(
