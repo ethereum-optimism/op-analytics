@@ -99,7 +99,32 @@ def create_duckdb_macros(duckdb_context: DuckDBContext):
     --Get the method id for input data. This is the first 4 bytes, or first 10
     -- string characters for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_method_id(x)
-    AS substring(x,1,10)
+    AS substring(x,1,10);
+    
+    -- Trace address depth. Examples:
+    --   ""       -> 0
+    --   "0"      -> 1
+    --   "0,2"    -> 2
+    --   "0,10,0" -> 3
+    CREATE OR REPLACE MACRO trace_address_depth(a)
+    AS CASE
+      WHEN length(a) = 0 THEN 0
+      WHEN length(a) = 1 THEN 1
+      ELSE length(a) - length(replace(a, ',', '')) + 1
+    END;
+
+    -- Trace address parent. Examples:
+    --   ""       -> "none"
+    --   "0"      -> ""
+    --   "0,2"    -> "0"
+    --   "0,10,0" -> "0,10"
+    --   "0,100,0" -> "0,100"
+    CREATE OR REPLACE MACRO trace_address_parent(a)
+    AS CASE
+      WHEN length(a) = 0 THEN 'none'
+      WHEN length(a) = 1 THEN ''
+      ELSE a[:-1 * (1+strpos(reverse(a), ','))]
+    END;
     """)
 
 
