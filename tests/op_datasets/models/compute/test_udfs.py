@@ -213,7 +213,7 @@ def test_trace_address_helpers():
     ctx = init_client()
     create_duckdb_macros(ctx)
 
-    test_inputs = ["", "0", "0,0", "0,1", "0,10,0", "0,10,0,0", "0,2"]
+    test_inputs = ["", "0", "0,0", "0,1", "0,10,0", "0,10,0,0", "0,2", "0,100,0", "0,10,10"]
 
     actual = []
     for test in test_inputs:
@@ -232,4 +232,6 @@ def test_trace_address_helpers():
         (3, "0,10"),
         (4, "0,10,0"),
         (2, "0"),
+        (3, "0,100"),
+        (3, "0,10"),
     ]
