@@ -99,7 +99,7 @@ def create_duckdb_macros(duckdb_context: DuckDBContext):
     --Get the method id for input data. This is the first 4 bytes, or first 10
     -- string characters for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_method_id(x)
-    AS substring(x,1,10)
+    AS substring(x,1,10);
     """)
 
 
