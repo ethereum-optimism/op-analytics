@@ -103,11 +103,13 @@ class RemoteParquetData:
     def read_parquet_string(self) -> str:
         """Return escaped paths as a single string that can be interpolated into SQL"""
 
-        paths_str = "\n".join(f"'{_}'" for _ in self.paths)
+        paths_str = ",\n".join(f"'{_}'" for _ in self.paths)
 
         return f"""
         read_parquet(
-            {paths_str},
+            [
+                {paths_str}
+            ],
             hive_partitioning = true
         );
         """

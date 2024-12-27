@@ -54,11 +54,17 @@ def date_fromstr(val: str) -> date:
     return date.fromisoformat(val)
 
 
-def surrounding_dates(dateval: date) -> list[date]:
-    day_before = dateval - timedelta(days=1)
-    day_after = dateval + timedelta(days=1)
+def surrounding_dates(dateval: date, minus_delta: int = 1, plus_delta: int = 1) -> list[date]:
+    day_before = dateval - timedelta(days=minus_delta)
+    day_after = dateval + timedelta(days=plus_delta)
 
-    return [day_before, dateval, day_after]
+    result = []
+    val = day_before
+    while val <= day_after:
+        result.append(val)
+        val += timedelta(days=1)
+
+    return result
 
 
 def epoch_is_date(epoch: int) -> bool:

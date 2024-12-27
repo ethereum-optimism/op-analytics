@@ -26,9 +26,9 @@ MARKERS_QUERY_SCHEMA = {
     "dt": pl.Date,
     "chain": pl.String,
     "marker_path": pl.String,
-    "num_parts": pl.UInt32,
     "root_path": pl.String,
     "data_path": pl.String,
+    "num_parts": pl.UInt32,
 }
 
 
