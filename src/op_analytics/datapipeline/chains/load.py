@@ -81,7 +81,11 @@ def load_chain_metadata_impl() -> pl.DataFrame:
 
     if path is not None:
         with open(path, "r") as fcsv:
-            raw_df = pl.read_csv(fcsv, schema_overrides=RAW_CHAIN_METADATA_SCHEMA)
+            raw_df = pl.read_csv(
+                fcsv,
+                schema_overrides=RAW_CHAIN_METADATA_SCHEMA,
+                null_values=["na-river"],
+            )
             log.info(f"Loaded OP chains metadata from {path}")
             clean_df = _clean(raw_df)
         try:

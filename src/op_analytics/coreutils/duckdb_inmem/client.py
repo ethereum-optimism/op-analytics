@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from threading import Lock
 
 import duckdb
+from overrides import EnforceOverrides, override
 
 from op_analytics.coreutils.env.vault import env_get
 from op_analytics.coreutils.logger import structlog, human_size
@@ -83,9 +84,114 @@ def sanitized_table_name(dataset_name: str) -> str:
 
 
 @dataclass
-class RemoteParquetData:
+class CreateStatement:
+    """A statement that creates a table or view.
+
+    The name of the created table is available in the `name` attribute. This is so it
+    can be used in SQL queries that refer to the created object.
+    """
+
+    # Name of the TABLE or VIEW that gets created by this statement.
+    name: str
+
+    # CREATE TABLE or CREATE VIEW statement.
+    sql: str
+
+
+class ParquetData(EnforceOverrides):
+    sanitized_name: str
+
+    def duckdb_ctx(self) -> DuckDBContext:
+        raise NotImplementedError()
+
+    def data_subquery(self) -> str:
+        raise NotImplementedError()
+
+    def select_string(
+        self,
+        projections: list[str] | None = None,
+        additional_sql: str | None = None,
+        parenthesis: bool = False,
+    ) -> str:
+        select = f"""
+        SELECT {projections or "*"} FROM {self.data_subquery()}
+        {additional_sql or ""}
+        """
+
+        return f"(\n{select}\n)" if parenthesis else select
+
+    def as_subquery(
+        self,
+        projections: list[str] | None = None,
+        additional_sql: str | None = None,
+    ):
+        return self.select_string(
+            projections=projections, additional_sql=additional_sql, parenthesis=True
+        )
+
+    def create_table_statement(
+        self, projections: list[str] | None = None, additional_sql: str | None = None
+    ) -> CreateStatement:
+        name = f"{self.sanitized_name}_tbl"
+
+        return CreateStatement(
+            name=name,
+            sql=f"""
+            CREATE OR REPLACE TABLE {name} AS
+            {self.select_string(projections, additional_sql)};
+            """,
+        )
+
+    def create_view_statement(
+        self, projections: list[str] | None = None, additional_sql: str | None = None
+    ) -> CreateStatement:
+        name = f"{self.sanitized_name}_view"
+
+        return CreateStatement(
+            name=name,
+            sql=f"""
+            CREATE OR REPLACE VIEW {name} AS
+            {self.select_string(projections, additional_sql)};
+            """,
+        )
+
+    def execute_create(self, statement: CreateStatement) -> str:
+        ctx = self.duckdb_ctx()
+
+        ctx.client.sql(statement.sql)
+        log.info(f"created table {statement.name}")
+        ctx.report_size()
+        return statement.name
+
+    def create_table(
+        self, projections: list[str] | None = None, additional_sql: str | None = None
+    ) -> str:
+        statement = self.create_table_statement(
+            projections=projections, additional_sql=additional_sql
+        )
+        return self.execute_create(statement)
+
+    def create_view(
+        self, projections: list[str] | None = None, additional_sql: str | None = None
+    ) -> str:
+        statement = self.create_view_statement(
+            projections=projections, additional_sql=additional_sql
+        )
+        return self.execute_create(statement)
+
+
+@dataclass
+class RemoteParquetData(ParquetData):
     sanitized_name: str
     paths: list[str]
+
+    @override
+    def duckdb_ctx(self) -> DuckDBContext:
+        return init_client()
+
+    @override
+    def data_subquery(self) -> str:
+        return self.read_parquet_string()
 
     @classmethod
     def for_dataset(cls, dataset: str, parquet_paths: list[str] | str) -> "RemoteParquetData":
@@ -103,42 +209,16 @@ class RemoteParquetData:
     def read_parquet_string(self) -> str:
         """Return escaped paths as a single string that can be interpolated into SQL"""
 
-        paths_str = "\n".join(f"'{_}'" for _ in self.paths)
+        paths_str = ",\n".join(f"'{_}'" for _ in self.paths)
+
+        log.info(f"constructed read_parquet() string with {self.num_paths} paths")
 
         return f"""
         read_parquet(
             {paths_str},
             hive_partitioning = true
-        );
+        )
         """
-
-    def create_table(self) -> str:
-        ctx = init_client()
-
-        name = f"{self.sanitized_name}_tbl"
-
-        ctx.client.sql(f"""
-            CREATE OR REPLACE TABLE {name} AS
-            SELECT * FROM {self.read_parquet_string()};
-            """)
-        log.info(f"created table {name} using {self.num_paths} parquet paths")
-
-        ctx.report_size()
-        return name
-
-    def create_view(self) -> str:
-        ctx = init_client()
-
-        name = f"{self.sanitized_name}_view"
-
-        ctx.client.sql(f"""
-            CREATE OR REPLACE VIEW {name} AS
-            SELECT * FROM {self.read_parquet_string()};
-            """)
-        log.info(f"created view {name} using {self.num_paths} parquet paths")
-
-        ctx.report_size()
-        return name
 
 
 def register_parquet_relation(dataset: str, parquet_paths: list[str] | str) -> str:

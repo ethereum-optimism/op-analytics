@@ -93,8 +93,8 @@ SELECT
   , sum(input_zero_bytes) AS input_zero_bytes_sum
   , sum(if(success, input_zero_bytes, 0)) AS success_input_zero_bytes_sum
 
-  , sum(input_nonzero_bytes) AS input_nonzero_bytes_sum
-  , sum(if(success, input_nonzero_bytes, 0)) AS success_input_nonzero_bytes_sum
+  , sum(input_byte_length - input_zero_bytes) AS input_nonzero_bytes_sum
+  , sum(if(success, input_byte_length - input_zero_bytes, 0)) AS success_input_nonzero_bytes_sum
 
   , sum(input_byte_length) AS input_byte_length_sum
   , sum(if(success, input_byte_length, 0)) AS success_input_byte_length_sum
