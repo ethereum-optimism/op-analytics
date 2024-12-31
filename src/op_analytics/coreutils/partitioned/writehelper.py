@@ -96,7 +96,12 @@ class WriteManager[T: Writeable](EnforceOverrides):
 
         # The default partition value is included in log context to help keep
         # track of which data we are processing.
-        with bound_contextvars(root=output_data.root_path, **(output_data.default_partition or {})):
+        if output_data.default_partitions is None:
+            info = {}
+        else:
+            info = output_data.default_partitions[0]
+
+        with bound_contextvars(root=output_data.root_path, **info):
             if expected_output.marker_path in self.complete_markers:
                 log.warning(f"skipping complete output {expected_output.marker_path}")
                 return WriteResult(status="skipped", written_parts={})

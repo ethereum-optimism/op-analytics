@@ -61,7 +61,7 @@ def test_parquet_writer():
             OutputData(
                 dataframe=df,
                 root_path="intermediate/daily_address_summary/summary_v1",
-                default_partition=None,
+                default_partitions=None,
             )
         )
 

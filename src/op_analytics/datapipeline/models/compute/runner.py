@@ -219,7 +219,7 @@ def steps(item: WorkItem) -> None:
                     output_data=OutputData(
                         dataframe=rel.pl(),
                         root_path=f"{task.output_root_path_prefix}/{task.model.fq_model_path}/{result_name}",
-                        default_partition=task.data_reader.partitions_dict(),
+                        default_partitions=[task.data_reader.partitions_dict()],
                     ),
                 )
 
