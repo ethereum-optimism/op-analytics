@@ -33,7 +33,7 @@ def make_dataframe(path: str):
                 "data_path": pl.String(),
                 "root_path": pl.String(),
             },
-        ).filter(pl.col("dt") == 20058)
+        )
 
 
 def test_construct():
@@ -42,13 +42,15 @@ def test_construct():
             # Mock data for ingestion markers. This is used to create the data readers.
             pl.concat(
                 [
-                    make_dataframe("ingestion_mode_markers.json"),
-                    make_dataframe("ingestion_unichain_sepolia_markers.json"),
+                    make_dataframe("ingestion_mode_markers.json").filter(pl.col("dt") == 20058),
+                    make_dataframe("ingestion_unichain_sepolia_markers.json").filter(
+                        pl.col("dt") == 20058
+                    ),
                 ]
             ),
             # Mock data for blockbach markers. This is used to set complete_markers on
             # the write managers.
-            make_dataframe("blockbatch_mode_markers.json"),
+            make_dataframe("blockbatch_mode_markers.json").filter(pl.col("dt") == 20058),
         ]
 
         tasks = construct_tasks(
@@ -529,27 +531,26 @@ def test_construct():
 
 
 def test_construct_kroma():
-    # with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
-    #     m1.side_effect = [
-    #         # Mock data for ingestion markers. This is used to create the data readers.
-    #         pl.concat(
-    #             [
-    #                 make_dataframe("ingestion_mode_markers.json"),
-    #                 make_dataframe("ingestion_unichain_sepolia_markers.json"),
-    #             ]
-    #         ),
-    #         # Mock data for blockbach markers. This is used to set complete_markers on
-    #         # the write managers.
-    #         make_dataframe("blockbatch_mode_markers.json"),
-    #     ]
+    # Mock data for ingestion markers. This is used to create the data readers.
+    ingestion_markers = make_dataframe("ingestion_kroma_markers.json")
 
-    tasks = construct_tasks(
-        chains=["kroma"],
-        models=["contract_creation"],
-        range_spec="@20241101:+1",
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-    )
+    # Mock data for blockbach markers. This is used to set complete_markers on
+    # the write managers.
+    blockbatch_markers = make_dataframe("blockbatch_kroma_markers.json")
+
+    with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
+        m1.side_effect = [
+            ingestion_markers,
+            blockbatch_markers,
+        ]
+
+        tasks = construct_tasks(
+            chains=["kroma"],
+            models=["contract_creation"],
+            range_spec="@20241101:+1",
+            read_from=DataLocation.GCS,
+            write_to=DataLocation.GCS,
+        )
 
     assert tasks == [
         BlockBatchModelsTask(
@@ -562,8 +563,15 @@ def test_construct_kroma():
                     ]
                 ),
                 read_from=DataLocation.GCS,
-                dataset_paths={},
-                inputs_ready=False,
+                dataset_paths={
+                    "ingestion/traces_v1": [
+                        "gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=kroma/dt=2024-11-01/000018260000.parquet"
+                    ],
+                    "ingestion/transactions_v1": [
+                        "gs://oplabs-tools-data-sink/ingestion/transactions_v1/chain=kroma/dt=2024-11-01/000018260000.parquet"
+                    ],
+                },
+                inputs_ready=True,
                 extra_marker_data={
                     "num_blocks": 20000,
                     "min_block": 18260000,
@@ -595,7 +603,9 @@ def test_construct_kroma():
                         marker_path="blockbatch/contract_creation/create_traces_v1/kroma/2024-11-01/000018260000",
                     )
                 ],
-                complete_markers=[],
+                complete_markers=[
+                    "blockbatch/contract_creation/create_traces_v1/kroma/2024-11-01/000018260000",
+                ],
                 process_name="default",
             ),
             output_duckdb_relations={},
