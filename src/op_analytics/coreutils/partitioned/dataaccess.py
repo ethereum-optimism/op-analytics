@@ -207,12 +207,17 @@ def check_marker(markers_df: pl.DataFrame | None, marker_path: str) -> bool:
     if markers_df is None:
         return False
 
+    # TODO: We should include "updated_at" in the markers query. That way we can look only
+    #       at markers that were written on the last update.
+    max_num_parts = markers_df.filter(pl.col("marker_path") == marker_path)["num_parts"].max()
+
     df = markers_df.sql(f"""
         SELECT
             marker_path, num_parts, count(DISTINCT data_path) as num_paths
         FROM self
         WHERE marker_path = '{marker_path}'
-        GROUP BY marker_path, num_parts
+        AND num_parts = {max_num_parts}
+        GROUP BY marker_path
         """)
 
     if len(df) == 0:
