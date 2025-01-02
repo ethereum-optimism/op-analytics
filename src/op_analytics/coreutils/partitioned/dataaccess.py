@@ -215,7 +215,7 @@ def check_marker(markers_df: pl.DataFrame | None, marker_path: str) -> bool:
     # TODO: We should include "updated_at" in the markers query. That way we can look only
     #       at markers that were written on the last update instead of assumning that the
     #       last update results in greater num_parts.
-    max_num_parts = marker_df["num_parts"].max()
+    max_num_parts: int = marker_df["num_parts"].max()  # type: ignore
 
     df = markers_df.sql(f"""
         SELECT

@@ -26,7 +26,7 @@ class Writeable(Protocol):
     def root_path(self) -> str: ...
 
     @property
-    def default_partition(self) -> dict[str, str] | None: ...
+    def default_partitions(self) -> list[dict[str, str]] | None: ...
 
 
 @dataclass
@@ -96,6 +96,7 @@ class WriteManager[T: Writeable](EnforceOverrides):
 
         # The default partition value is included in log context to help keep
         # track of which data we are processing.
+        info: dict[str, str]
         if output_data.default_partitions is None:
             info = {}
         else:
