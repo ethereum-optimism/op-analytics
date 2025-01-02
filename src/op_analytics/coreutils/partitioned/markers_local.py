@@ -65,4 +65,5 @@ class LocalMarkers:
             """,
         )
 
-        return markers.pl()
+        # Duckdb returns num_parts as int32 when results are empty
+        return markers.pl().with_columns(num_parts=pl.col("num_parts").cast(pl.UInt32))

@@ -40,3 +40,9 @@ def is_chain_active(chain: str, dateval: date) -> bool:
     activation = CHAIN_ACTIVATION_DATES[chain]
 
     return dateval >= activation
+
+
+def is_chain_activation_date(chain: str, dateval: date) -> bool:
+    activation = CHAIN_ACTIVATION_DATES[chain]
+
+    return dateval == activation

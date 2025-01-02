@@ -69,4 +69,6 @@ class ClickHouseMarkers:
         )
 
         # ClickHouse returns the Date type as u16 days from epoch.
-        return markers.with_columns(dt=pl.from_epoch(pl.col("dt"), time_unit="d"))
+        return markers.with_columns(
+            dt=pl.from_epoch(pl.col("dt"), time_unit="d"),
+        )

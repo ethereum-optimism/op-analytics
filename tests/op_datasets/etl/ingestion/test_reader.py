@@ -100,6 +100,7 @@ def test_are_inputs_ready():
 
     input_data = are_inputs_ready(
         markers_df=markers_df,
+        chain="fraxtal",
         dateval=dateval,
         root_paths_to_check={
             "ingestion/traces_v1",
@@ -135,6 +136,7 @@ def test_not_ready_01():
 
     input_data = are_inputs_ready(
         markers_df=markers_df,
+        chain="fraxtal",
         dateval=dateval,
         root_paths_to_check={
             "ingestion/traces_v1",
@@ -164,6 +166,7 @@ def test_not_ready_02():
 
     input_data = are_inputs_ready(
         markers_df=markers_df,
+        chain="fraxtal",
         dateval=dateval,
         root_paths_to_check={
             "ingestion/traces_v1",

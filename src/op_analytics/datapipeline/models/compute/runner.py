@@ -68,7 +68,7 @@ def run_tasks(
         return
 
     if fork_process:
-        executed = run_pool(
+        executed, success, failure = run_pool(
             num_processes=num_processes,
             tasks=tasks,
             force_complete=force_complete,
@@ -80,10 +80,10 @@ def run_tasks(
             steps(item)
             executed += 1
 
-    log.info("done", total=executed, success=executed, fail=0)
+    log.info("done", total=executed, success=success, fail=failure)
 
 
-def worker_function(task_queue):
+def worker_function(task_queue, success_shared_counter, failure_shared_counter):
     while True:
         try:
             # Fetch a task from the queue with timeout to allow clean shutdown
@@ -93,8 +93,13 @@ def worker_function(task_queue):
 
             log.info("worker task start")
             steps(task)
+            with success_shared_counter.get_lock():
+                success_shared_counter.value += 1
             log.info("worker task done")
-        except Exception:
+        except Exception as ex:
+            log.error("failed to execute task", exc_info=ex)
+            with failure_shared_counter.get_lock():
+                failure_shared_counter.value += 1
             continue
 
 
@@ -105,7 +110,19 @@ def run_pool(
 ):
     # Task queue nad worker processes.
     queue: mp.Queue = mp.Queue(maxsize=num_processes)
-    workers = [mp.Process(target=worker_function, args=(queue,)) for _ in range(num_processes)]
+    success_shared_counter = mp.Value("i", 0)
+    failure_shared_counter = mp.Value("i", 0)
+    workers = [
+        mp.Process(
+            target=worker_function,
+            args=(
+                queue,
+                success_shared_counter,
+                failure_shared_counter,
+            ),
+        )
+        for _ in range(num_processes)
+    ]
 
     executed = 0
     try:
@@ -135,7 +152,10 @@ def run_pool(
             w.join()
         sys.exit(1)
 
-    return executed
+    success = success_shared_counter.value
+    failure = failure_shared_counter.value
+
+    return executed, success, failure
 
 
 def pending_items(
