@@ -27,9 +27,6 @@ BQ_DATASET = "uploads_api"
 
 VOLUME_TABLE_LAST_N_DAYS = 30  # upsert only the last X days of volume fetched from the api
 
-# Steps
-# 1. Run SUMMARY_ENDPOINT and get 1) the list of chains, 2) The list of DEXs, 2) the total volume number by day
-
 @dataclass
 class DefillamaDEXs:
     """Metadata and Volumes for all DEXs.
@@ -45,7 +42,7 @@ class DefillamaDEXs:
 
     dex_breakdown_volume: pl.DataFrame
 
-def pull_dex_dataframes() -> list[pl.DataFrame]:
+def pull_dex_dataframes() -> DefillamaDEXs:
     """
     Pull all datapoints from the SUMMARY_ENDPOINT
     1. Chain List - for breakdown pulls
