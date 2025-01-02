@@ -1,5 +1,10 @@
-from datetime import datetime
-from op_analytics.coreutils.time import dt_fromepoch, datetime_fromepoch, parse_isoformat
+from datetime import datetime, date
+from op_analytics.coreutils.time import (
+    dt_fromepoch,
+    datetime_fromepoch,
+    parse_isoformat,
+    surrounding_dates,
+)
 
 
 def test_epoch_dt():
@@ -68,3 +73,18 @@ def test_empty_iso_string():
         pass
     else:
         assert False, "Expected ValueError for empty ISO string"
+
+
+def test_surrounding_dates():
+    actual1 = surrounding_dates(date(2024, 11, 5))
+    assert actual1 == [
+        date(2024, 11, 4),
+        date(2024, 11, 5),
+        date(2024, 11, 6),
+    ]
+
+    actual2 = surrounding_dates(date(2024, 11, 5), minus_delta=0)
+    assert actual2 == [
+        date(2024, 11, 5),
+        date(2024, 11, 6),
+    ]

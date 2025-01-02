@@ -215,7 +215,9 @@ class RemoteParquetData(ParquetData):
 
         return f"""
         read_parquet(
-            {paths_str},
+            [
+                {paths_str}
+            ],
             hive_partitioning = true
         )
         """

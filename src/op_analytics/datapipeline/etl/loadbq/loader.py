@@ -25,7 +25,7 @@ class BQOutputData:
     bq_table_name: str
 
     @property
-    def default_partition(self) -> dict[str, str] | None:
+    def default_partitions(self) -> list[dict[str, str]] | None:
         return None
 
 
