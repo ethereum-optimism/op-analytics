@@ -45,7 +45,7 @@ def write_daily_data(
     parts = breakout_partitions(
         df=dataframe,
         partition_cols=["dt"],
-        default_partition=None,
+        default_partitions=None,
     )
 
     # Ensure write location for tests is LOCAL.
@@ -81,7 +81,7 @@ def write_daily_data(
             output_data=OutputData(
                 dataframe=part.df.with_columns(dt=pl.lit(datestr)),
                 root_path=root_path,
-                default_partition=None,
+                default_partitions=None,
             )
         )
 

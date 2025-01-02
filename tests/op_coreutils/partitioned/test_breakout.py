@@ -109,7 +109,7 @@ def test_breakout_partitions_empty():
     for part in breakout_partitions(
         df.filter(pl.col("dt") == ""),  # Filter out all data to get a default empty parquet file
         partition_cols=["dt", "chain"],
-        default_partition={"chain": "op", "dt": "2023-10-30"},
+        default_partitions=[{"chain": "op", "dt": "2023-10-30"}],
     ):
         outputs.append(part)
         assert part.df.columns == ["c"]
