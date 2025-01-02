@@ -7,6 +7,7 @@ from .l2beat import pull_l2beat
 from .defillama.stablecoins import pull_stablecoins
 from .defillama.historical_chain_tvl import pull_historical_chain_tvl
 from .defillama.protocols import pull_protocol_tvl
+from .defillama.dex_volume import pull_dex_volume
 from .agora.delegates import pull_delegates
 from .agora.delegate_events import (
     fetch_delegate_votes,
@@ -80,3 +81,8 @@ def pull_agora_delegate_data():
     fetch_delegate_delegators(delegates)
 
     fetch_proposals()
+
+@app.command()
+def defillama_dex_volume():
+    """Pull DEX Volumes from Defillama."""
+    pull_dex_volume()

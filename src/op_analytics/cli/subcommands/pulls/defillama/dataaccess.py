@@ -29,6 +29,12 @@ class DefiLlama(str, Enum):
     STABLECOINS_METADATA = "stablecoins_metadata_v1"
     STABLECOINS_BALANCE = "stablecoins_balances_v1"
 
+    # DEX Volumes
+    DEX_METADATA = "defillama_dex_metadata_v1"
+    DEX_TOTAL_VOLUME = "defillama_dex_volume_total_v1"
+    DEX_CHAIN_VOLUME = "defillama_dex_volume_chain_v1"
+    DEX_BREAKDOWN_VOLUME = "defillama_dex_volume_breakdown_v1"
+
     @property
     def root_path(self):
         return f"defillama/{self.value}"

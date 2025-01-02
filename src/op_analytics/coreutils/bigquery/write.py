@@ -232,9 +232,9 @@ def breakout_partitioned_df(df: pl.DataFrame) -> Generator[DatePart, None, None]
         f"Found {len(partitions)} partitions in dataframe [{partitions[0]} ... {partitions[-1]}]"
     )
 
-    if len(partitions) > 10:
+    if len(partitions) > 100:
         raise OPLabsBigQueryError(
-            "Dynamic Partition Overwrite detected more than 10 partitions. Aborting."
+            "Dynamic Partition Overwrite detected more than 100 partitions. Aborting."
         )
 
     for date_partition in partitions:
