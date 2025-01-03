@@ -82,6 +82,10 @@ def sanitized_table_name(dataset_name: str) -> str:
     return dataset_name.replace("/", "_")
 
 
+class EmptyParquetData(Exception):
+    pass
+
+
 @dataclass
 class RemoteParquetData:
     sanitized_name: str
@@ -95,6 +99,10 @@ class RemoteParquetData:
             sanitized_name=sanitized_table_name(dataset),
             paths=parquet_paths if isinstance(parquet_paths, list) else [parquet_paths],
         )
+
+    def __post_init__(self):
+        if len(self.paths) == 0:
+            raise EmptyParquetData()
 
     @property
     def num_paths(self):
@@ -147,6 +155,9 @@ def register_parquet_relation(dataset: str, parquet_paths: list[str] | str) -> s
     """Return a DuckDB relation from a list of parquet files."""
     ctx = init_client()
     client = ctx.client
+
+    if not parquet_paths:
+        raise EmptyParquetData()
 
     rel = client.read_parquet(parquet_paths, hive_partitioning=True)  # type: ignore
 

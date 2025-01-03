@@ -1,6 +1,7 @@
 import typer
 
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dailydata import insert_daily_data_to_clickhouse
 
 from .agora.delegate_events import (
     fetch_delegate_delegatees,
@@ -109,3 +110,7 @@ def defillama_revenue():
 def growthepie_chain_summary():
     """Pull daily chain summary fundamentals from GrowThePie."""
     pull_growthepie_summary()
+
+    from .growthepie.dataaccess import GrowThePie
+
+    insert_daily_data_to_clickhouse(GrowThePie.FUNDAMENTALS_SUMMARY)
