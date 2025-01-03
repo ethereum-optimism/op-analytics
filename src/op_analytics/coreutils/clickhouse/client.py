@@ -21,12 +21,8 @@ _CLIENTS: dict[ClickHouseInstance, clickhouse_connect.driver.client.Client] = {}
 _INIT_LOCK = Lock()
 
 
-def connect(instance: ClickHouseInstance):
-    log.debug(f"connecting to {instance} Clickhouse client...")
-    # Server-generated ids (as opposed to client-generated) are required for running
-    # concurrent queries. See https://clickhouse.com/docs/en/integrations/python#managing-clickhouse-session-ids.
-    clickhouse_connect.common.set_setting("autogenerate_session_id", False)
-    client = clickhouse_connect.get_client(
+def new_client(instance: ClickHouseInstance):
+    return clickhouse_connect.get_client(
         host=env_get(f"CLICKHOUSE_{instance}_HOST"),
         port=int(env_get(f"CLICKHOUSE_{instance}_PORT")),
         username=env_get(f"CLICKHOUSE_{instance}_USER"),
@@ -34,6 +30,14 @@ def connect(instance: ClickHouseInstance):
         connect_timeout=60,
         send_receive_timeout=300,
     )
+
+
+def connect(instance: ClickHouseInstance):
+    log.debug(f"connecting to {instance} Clickhouse client...")
+    # Server-generated ids (as opposed to client-generated) are required for running
+    # concurrent queries. See https://clickhouse.com/docs/en/integrations/python#managing-clickhouse-session-ids.
+    clickhouse_connect.common.set_setting("autogenerate_session_id", False)
+    client = new_client(instance)
     log.debug(f"initialized {instance} Clickhouse client.")
     return client
 
