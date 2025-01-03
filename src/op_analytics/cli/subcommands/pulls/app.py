@@ -14,8 +14,9 @@ from .defillama.protocols import pull_protocol_tvl
 from .defillama.stablecoins import pull_stablecoins
 from .defillama.dex_volume_fees_revenue import pull_dex_volume, pull_fees, pull_revenue
 from .github_analytics import pull_github_analytics
-from .l2beat import pull_l2beat
 from .growthepie.chains_daily_fundamentals import pull_growthepie_summary
+from .l2beat import pull_l2beat
+
 
 log = structlog.get_logger()
 
