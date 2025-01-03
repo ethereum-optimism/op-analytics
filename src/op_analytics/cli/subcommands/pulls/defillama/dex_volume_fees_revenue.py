@@ -10,6 +10,7 @@ from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
     upsert_partitioned_table,
     upsert_unpartitioned_table,
+    overwrite_unpartitioned_table,
 )
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
@@ -33,7 +34,7 @@ REVENUE_CHAIN_ENDPOINT = "https://api.llama.fi/overview/fees/{chain_name}?exclud
 
 BQ_DATASET = "uploads_api"
 
-TABLE_LAST_N_DAYS = 365*10#30  # upsert only the last X days of volume fetched from the api
+TABLE_LAST_N_DAYS = 30  # upsert only the last X days of volume fetched from the api
 
 # High-Level Dataset Pulls
 @dataclass
@@ -274,6 +275,8 @@ def get_chain_dex_level_daily_volumes(dexs_data) -> pl.DataFrame:
 def pull_dex_volume():
     result = pull_dex_dataframes()
 
+    # overwrite_unpartitioned_table(result.metadata_df, BQ_DATASET, f"{DefiLlama.DEX_METADATA}_latest")
+
     # Write metadata.
     DefiLlama.DEX_METADATA.write(
         dataframe=result.metadata_df.with_columns(dt=pl.lit(now_dt())),
@@ -301,6 +304,8 @@ def pull_dex_volume():
 def pull_fees():
     result = pull_fees_dataframes()
 
+    # overwrite_unpartitioned_table(result.metadata_df, BQ_DATASET, f"{DefiLlama.FEES_METADATA}_latest")
+
     # Write metadata.
     DefiLlama.FEES_METADATA.write(
         dataframe=result.metadata_df.with_columns(dt=pl.lit(now_dt())),
@@ -327,6 +332,8 @@ def pull_fees():
 
 def pull_revenue():
     result = pull_revenue_dataframes()
+
+    # upsert_unpartitioned_table(result.metadata_df, BQ_DATASET, f"{DefiLlama.REVENUE_METADATA}_latest")
 
     # Write metadata.
     DefiLlama.REVENUE_METADATA.write(
