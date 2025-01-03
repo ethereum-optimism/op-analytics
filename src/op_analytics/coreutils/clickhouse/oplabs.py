@@ -55,12 +55,7 @@ def insert_oplabs(
 def generate_clickhouse_ddl(relation: duckdb.DuckDBPyRelation, table_name: str) -> str:
     """Generate a Clickhouse CREATE TABLE statement from a DuckDB relation schema.
 
-    Args:
-        relation: DuckDB relation object
-        table_name: Name of the table to create
-
-    Returns:
-        str: CREATE TABLE statement for Clickhouse
+    This function is only used manually to assist in generating schemas for Clickhouse.
     """
     # Get schema from relation
     schema = zip(relation.columns, relation.types)
