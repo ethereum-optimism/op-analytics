@@ -85,28 +85,10 @@ def pull_agora_delegate_data():
 
 
 @app.command()
-def defillama_dexs_fees_revenue():
+def defillama_dexs():
     """Pull DEX Volumes, Fees, and Revenue from Defillama."""
     pull_dex_volume()
     pull_fees()
-    pull_revenue()
-
-
-@app.command()
-def defillama_dexs():
-    """Pull DEX Volumes from Defillama."""
-    pull_dex_volume()
-
-
-@app.command()
-def defillama_fees():
-    """Pull Fees from Defillama."""
-    pull_fees()
-
-
-@app.command()
-def defillama_revenue():
-    """Pull Revenue from Defillama."""
     pull_revenue()
 
 
