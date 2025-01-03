@@ -9,14 +9,9 @@ from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import surrounding_dates
+from op_analytics.datapipeline.chains.activation import is_chain_active, is_chain_activation_date
 
-from .reader_markers import (
-    is_chain_active,
-    IngestionDataSpec,
-    DEFAULT_INGESTION_ROOT_PATHS,
-    IngestionData,
-)
-
+from .markers import IngestionData, IngestionDataSpec
 
 log = structlog.get_logger()
 
@@ -41,9 +36,12 @@ def construct_readers_bydate(
 
     data_spec = IngestionDataSpec(
         chains=chains,
-        root_paths_to_read=root_paths_to_read or DEFAULT_INGESTION_ROOT_PATHS,
+        root_paths_to_read=root_paths_to_read,
     )
 
+    # We use the +/- 1 day padded dates so that we can use the query results to
+    # check if there is data on boths ends. This allows us to confirm that the
+    # data is ready to be processed.
     markers_df = data_spec.query_markers(
         datevals=date_range.padded_dates(),
         read_from=read_from,
@@ -69,13 +67,14 @@ def construct_readers_bydate(
                 # is safe to consume.
                 input_data = are_inputs_ready(
                     markers_df=filtered_df,
+                    chain=chain,
                     dateval=dateval,
-                    root_paths_to_check=data_spec.root_paths_physical,
+                    root_paths_to_check=data_spec.adapter.root_paths_physical(chain),
                     storage_location=read_from,
                 )
 
                 # Update data path mapping so keys are logical paths.
-                dataset_paths = data_spec.data_paths(input_data.data_paths)
+                dataset_paths = data_spec.adapter.data_paths(chain, input_data.data_paths)
 
                 obj = DataReader(
                     partitions=Partition.from_tuples(
@@ -103,6 +102,7 @@ def construct_readers_bydate(
 
 def are_inputs_ready(
     markers_df: pl.DataFrame,
+    chain: str,
     dateval: date,
     root_paths_to_check: Iterable[str],
     storage_location: DataLocation,
@@ -118,6 +118,8 @@ def are_inputs_ready(
     assert dict(markers_df.schema) == {
         "dt": pl.Date,
         "chain": pl.String,
+        "marker_path": pl.String,
+        "num_parts": pl.UInt32,
         "num_blocks": pl.Int32,
         "min_block": pl.Int64,
         "max_block": pl.Int64,
@@ -127,6 +129,9 @@ def are_inputs_ready(
 
     dataset_paths = {}
 
+    # The activation date does not require verifying data on the prior day.
+    is_activation = is_chain_activation_date(chain, dateval)
+
     for root_path in root_paths_to_check:
         dataset_df = markers_df.filter(pl.col("root_path") == root_path)
 
@@ -134,6 +139,7 @@ def are_inputs_ready(
             root_path=root_path,
             dataset_df=dataset_df,
             dateval=dateval,
+            is_activation_date=is_activation,
         )
         if not dataset_ready:
             return IngestionData(
@@ -157,6 +163,7 @@ def is_dataset_ready(
     root_path: str,
     dataset_df: pl.DataFrame,
     dateval: date,
+    is_activation_date: bool,
 ) -> bool:
     with bound_contextvars(dataset=root_path):
         if dataset_df.is_empty():
@@ -185,7 +192,7 @@ def is_dataset_ready(
 
         # Check that there is coverage from the day before the dateval
         # to the day after the dateval.
-        expected = surrounding_dates(dateval)
+        expected = surrounding_dates(dateval, minus_delta=0 if is_activation_date else 1)
         is_ready = sorted(dates_covered) == expected
 
         if not is_ready:

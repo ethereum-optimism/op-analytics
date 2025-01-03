@@ -1,21 +1,37 @@
-import duckdb
-
-from op_analytics.datapipeline.models.compute.querybuilder import TemplatedSQLQuery
+from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
+from op_analytics.datapipeline.models.compute.model import AuxiliaryView, ParquetData
 from op_analytics.datapipeline.models.compute.registry import register_model
 from op_analytics.datapipeline.models.compute.types import NamedRelations
 
 
 @register_model(
-    input_datasets=["ingestion/traces_v1", "ingestion/transactions_v1"],
-    expected_outputs=["create_traces_v1"],
+    input_datasets=[
+        "ingestion/traces_v1",
+        "ingestion/transactions_v1",
+    ],
+    expected_outputs=[
+        "create_traces_v1",
+    ],
     auxiliary_views=[
-        TemplatedSQLQuery(
-            template_name="contract_creation_traces",
-            context={},
-        ),
+        "contract_creation_traces",
     ],
 )
-def contract_creation(duckdb_client: duckdb.DuckDBPyConnection) -> NamedRelations:
+def contract_creation(
+    ctx: DuckDBContext,
+    input_datasets: dict[str, ParquetData],
+    auxiliary_views: dict[str, AuxiliaryView],
+) -> NamedRelations:
+    traces_view = input_datasets["ingestion/traces_v1"].create_view()
+    txs_view = input_datasets["ingestion/transactions_v1"].create_view()
+
+    result = auxiliary_views["contract_creation_traces"].to_relation(
+        ctx,
+        template_parameters={
+            "raw_traces": traces_view,
+            "raw_transactions": txs_view,
+        },
+    )
+
     return {
-        "create_traces_v1": duckdb_client.view("contract_creation_traces"),
+        "create_traces_v1": result,
     }

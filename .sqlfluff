@@ -4,13 +4,22 @@ dialect = duckdb
 sql_file_exts = .sql.j2
 ignore = templating
 runaway_limit = 10
-max_line_length = 120
+max_line_length = 140
+
+# Comma separated list of rules to exclude, or None
+# See https://docs.sqlfluff.com/en/stable/perma/rule_disabling.html
+# AM04 (ambiguous.column_count) and ST06 (structure.column_order) are
+# two of the more controversial rules included to illustrate usage.
+exclude_rules = structure.column_order
 
 [sqlfluff:indentation]
 indented_joins = false
 indented_using_on = true
 template_blocks_indent = false
 tab_space_size = 2
+
+[sqlfluff:layout:type:comma]
+line_position = leading
 
 [sqlfluff:templater]
 unwrap_wrapped_queries = true

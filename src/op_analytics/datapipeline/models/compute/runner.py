@@ -1,5 +1,5 @@
-import concurrent.futures
 import multiprocessing as mp
+import sys
 from dataclasses import dataclass
 from typing import Generator, Protocol, Sequence
 
@@ -15,7 +15,7 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import OutputData
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writehelper import WriteManager
-from op_analytics.datapipeline.models.compute.modelexecute import PythonModel, PythonModelExecutor
+from op_analytics.datapipeline.models.compute.execute import PythonModel, PythonModelExecutor
 from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros, set_memory_limit
 
 log = structlog.get_logger()
@@ -67,36 +67,95 @@ def run_tasks(
         log.info("DRYRUN: No work will be done.")
         return
 
-    executed = 0
-    executed_ok = 0
-
     if fork_process:
-        ctx = mp.get_context("spawn")
-        with concurrent.futures.ProcessPoolExecutor(
-            max_workers=num_processes,
-            mp_context=ctx,
-            max_tasks_per_child=20,
-        ) as executor:
-            futures = {}
-            for item in pending_items(tasks, force_complete=force_complete):
-                future = executor.submit(steps, item)
-                futures[future] = item.progress
-                executed += 1
-
-            for future in concurrent.futures.as_completed(futures):
-                key = futures[future]
-                try:
-                    future.result()
-                    executed_ok += 1
-                except Exception as ex:
-                    log.error(f"Failed to run process for {key}", exc_info=ex)
+        executed, success, failure = run_pool(
+            num_processes=num_processes,
+            tasks=tasks,
+            force_complete=force_complete,
+        )
 
     else:
+        executed = 0
         for item in pending_items(tasks, force_complete=force_complete):
             steps(item)
-            executed_ok += 1
+            executed += 1
 
-    log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
+    log.info("done", total=executed, success=success, fail=failure)
+
+
+def worker_function(task_queue, success_shared_counter, failure_shared_counter):
+    while True:
+        try:
+            # Fetch a task from the queue with timeout to allow clean shutdown
+            task = task_queue.get(timeout=1)
+            if task is None:  # Sentinel to terminate worker
+                break
+
+            log.info("worker task start")
+            steps(task)
+            with success_shared_counter.get_lock():
+                success_shared_counter.value += 1
+            log.info("worker task done")
+        except Exception as ex:
+            log.error("failed to execute task", exc_info=ex)
+            with failure_shared_counter.get_lock():
+                failure_shared_counter.value += 1
+            continue
+
+
+def run_pool(
+    num_processes: int,
+    tasks: Sequence[ModelsTask],
+    force_complete: bool,
+):
+    # Task queue nad worker processes.
+    queue: mp.Queue = mp.Queue(maxsize=num_processes)
+    success_shared_counter = mp.Value("i", 0)
+    failure_shared_counter = mp.Value("i", 0)
+    workers = [
+        mp.Process(
+            target=worker_function,
+            args=(
+                queue,
+                success_shared_counter,
+                failure_shared_counter,
+            ),
+        )
+        for _ in range(num_processes)
+    ]
+
+    executed = 0
+    try:
+        # Start worker processes
+        for w in workers:
+            w.start()
+
+        # Submit work to queue.
+        for work in pending_items(tasks, force_complete=force_complete):
+            queue.put(work)
+            executed += 1
+
+        # Send stop sentinel to workers so they break out.
+        log.info(f"submitted {executed} tasks. Sending stop sentinel to workers.")
+        for _ in workers:
+            queue.put(None)
+
+        # Join worker processes.
+        for w in workers:
+            w.join()
+
+    except KeyboardInterrupt:
+        log.info("Keyboard interrupt received. Terminating workers...")
+        for w in workers:
+            w.terminate()  # Force terminate workers
+        for w in workers:
+            w.join()
+        sys.exit(1)
+
+    success = success_shared_counter.value
+    failure = failure_shared_counter.value
+
+    return executed, success, failure
 
 
 def pending_items(
@@ -111,19 +170,19 @@ def pending_items(
         )
 
         with bound_contextvars(**item.context()):
-            # Decide if we need to run this task.
-            if task.write_manager.is_complete() and not force_complete:
-                log.info("task", status="already_complete")
-                continue
-
             # Decide if we can run this task.
             if not task.data_reader.inputs_ready:
                 log.warning("task", status="input_not_ready")
                 continue
 
-            if force_complete:
-                log.info("forced execution despite complete marker")
-                task.write_manager.force = True
+            # Decide if we need to run this task.
+            if task.write_manager.all_outputs_complete():
+                if not force_complete:
+                    log.info("task", status="already_complete")
+                    continue
+                else:
+                    task.write_manager.clear_complete_markers()
+                    log.info("forced execution despite complete markers")
 
             # If running locally release duckdb lock before forking.
             if task.write_manager.location == DataLocation.LOCAL:
@@ -136,16 +195,16 @@ def steps(item: WorkItem) -> None:
     """Execute the model computations."""
     with bound_contextvars(**item.context()):
         # Load shared DuckDB UDFs.
-        client = init_client()
-        create_duckdb_macros(client)
+        ctx = init_client()
+        create_duckdb_macros(ctx)
 
         # Set duckdb memory limit. This lets us get an error from duckb instead of
         # OOMing the container.
-        set_memory_limit(client, gb=10)
+        set_memory_limit(ctx.client, gb=10)
 
         task = item.task
 
-        with PythonModelExecutor(task.model, client, task.data_reader) as m:
+        with PythonModelExecutor(task.model, ctx, task.data_reader) as m:
             log.info("running model")
             model_results = m.execute()
 
@@ -159,7 +218,9 @@ def steps(item: WorkItem) -> None:
                 task.write_manager.write(
                     output_data=OutputData(
                         dataframe=rel.pl(),
-                        root_path=f"{task.output_root_path_prefix}/{task.model.name}/{result_name}",
-                        default_partition=task.data_reader.partitions_dict(),
+                        root_path=f"{task.output_root_path_prefix}/{task.model.fq_model_path}/{result_name}",
+                        default_partitions=[task.data_reader.partitions_dict()],
                     ),
                 )
+
+        log.info("task", status="success", exitcode=0)

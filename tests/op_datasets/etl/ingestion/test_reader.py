@@ -3,7 +3,7 @@ import datetime
 import polars as pl
 
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.datapipeline.etl.ingestion.reader_bydate import are_inputs_ready
+from op_analytics.datapipeline.etl.ingestion.reader.bydate import are_inputs_ready
 
 MARKER_PATHS_DATA = [
     {
@@ -82,11 +82,25 @@ MARKER_PATHS_DATA = [
 
 
 def test_are_inputs_ready():
-    markers_df = pl.DataFrame(MARKER_PATHS_DATA, schema_overrides={"num_blocks": pl.Int32})
+    markers_df = pl.DataFrame(
+        MARKER_PATHS_DATA,
+        schema={
+            "dt": pl.Date(),
+            "chain": pl.String(),
+            "marker_path": pl.String(),
+            "num_parts": pl.UInt32(),
+            "num_blocks": pl.Int32(),
+            "min_block": pl.Int64(),
+            "max_block": pl.Int64(),
+            "data_path": pl.String(),
+            "root_path": pl.String(),
+        },
+    )
     dateval = datetime.date(2024, 10, 23)
 
     input_data = are_inputs_ready(
         markers_df=markers_df,
+        chain="fraxtal",
         dateval=dateval,
         root_paths_to_check={
             "ingestion/traces_v1",
@@ -104,11 +118,25 @@ def test_are_inputs_ready():
 
 
 def test_not_ready_01():
-    markers_df = pl.DataFrame(MARKER_PATHS_DATA[:-4], schema_overrides={"num_blocks": pl.Int32})
+    markers_df = pl.DataFrame(
+        MARKER_PATHS_DATA[:-4],
+        schema={
+            "dt": pl.Date(),
+            "chain": pl.String(),
+            "marker_path": pl.String(),
+            "num_parts": pl.UInt32(),
+            "num_blocks": pl.Int32(),
+            "min_block": pl.Int64(),
+            "max_block": pl.Int64(),
+            "data_path": pl.String(),
+            "root_path": pl.String(),
+        },
+    )
     dateval = datetime.date(2024, 10, 23)
 
     input_data = are_inputs_ready(
         markers_df=markers_df,
+        chain="fraxtal",
         dateval=dateval,
         root_paths_to_check={
             "ingestion/traces_v1",
@@ -120,11 +148,25 @@ def test_not_ready_01():
 
 
 def test_not_ready_02():
-    markers_df = pl.DataFrame(MARKER_PATHS_DATA, schema_overrides={"num_blocks": pl.Int32})
+    markers_df = pl.DataFrame(
+        MARKER_PATHS_DATA,
+        schema={
+            "dt": pl.Date(),
+            "chain": pl.String(),
+            "marker_path": pl.String(),
+            "num_parts": pl.UInt32(),
+            "num_blocks": pl.Int32(),
+            "min_block": pl.Int64(),
+            "max_block": pl.Int64(),
+            "data_path": pl.String(),
+            "root_path": pl.String(),
+        },
+    )
     dateval = datetime.date(2024, 10, 23)
 
     input_data = are_inputs_ready(
         markers_df=markers_df,
+        chain="fraxtal",
         dateval=dateval,
         root_paths_to_check={
             "ingestion/traces_v1",

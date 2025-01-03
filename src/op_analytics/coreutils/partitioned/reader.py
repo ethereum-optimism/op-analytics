@@ -1,10 +1,8 @@
 from dataclasses import dataclass
 from typing import Any
 
-
-from op_analytics.coreutils.duckdb_inmem import register_parquet_relation
+from op_analytics.coreutils.duckdb_inmem import RemoteParquetData
 from op_analytics.coreutils.logger import structlog
-
 
 from .location import DataLocation
 from .partition import Partition
@@ -42,6 +40,10 @@ class DataReader:
     # The dictionary is column name to column value.
     extra_marker_data: dict[str, Any] | None = None
 
+    def marker_data(self, key: str) -> Any:
+        assert self.extra_marker_data is not None
+        return self.extra_marker_data[key]
+
     def partitions_dict(self):
         return self.partitions.as_dict()
 
@@ -52,11 +54,9 @@ class DataReader:
     def partition_value(self, column_name: str) -> str:
         return self.partitions.column_value(column_name)
 
-    def register_duckdb_relation(
-        self,
-        dataset,
-        first_n_parquet_files: int | None = None,
-    ) -> str:
+    def get_parquet_paths(
+        self, dataset: str, first_n_parquet_files: int | None = None
+    ) -> list[str]:
         paths = sorted(self.dataset_paths[dataset])
         num_paths = len(paths)
 
@@ -66,10 +66,17 @@ class DataReader:
         num_used_paths = len(paths)
 
         log.info(
-            f"duckdb dataset={dataset!r} using {num_used_paths}/{num_paths} parquet paths, first path is {paths[0]}"
+            f"reading dataset={dataset!r} using {num_used_paths}/{num_paths} parquet paths, first path is {paths[0]}"
         )
 
-        return register_parquet_relation(
+        return paths
+
+    def remote_parquet(
+        self,
+        dataset: str,
+        first_n_parquet_files: int | None = None,
+    ) -> RemoteParquetData:
+        return RemoteParquetData.for_dataset(
             dataset=dataset,
-            parquet_paths=paths,
+            parquet_paths=self.get_parquet_paths(dataset, first_n_parquet_files),
         )

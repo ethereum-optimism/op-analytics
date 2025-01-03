@@ -54,13 +54,41 @@ def date_fromstr(val: str) -> date:
     return date.fromisoformat(val)
 
 
-def surrounding_dates(dateval: date) -> list[date]:
-    day_before = dateval - timedelta(days=1)
-    day_after = dateval + timedelta(days=1)
+def surrounding_dates(dateval: date, minus_delta: int = 1, plus_delta: int = 1) -> list[date]:
+    day_before = dateval - timedelta(days=minus_delta)
+    day_after = dateval + timedelta(days=plus_delta)
 
-    return [day_before, dateval, day_after]
+    result = []
+    val = day_before
+    while val <= day_after:
+        result.append(val)
+        val += timedelta(days=1)
+
+    return result
 
 
 def epoch_is_date(epoch: int) -> bool:
     """Return true if seconds since epoch is at exactly midnight."""
     return epoch % 86400 == 0
+
+
+def parse_isoformat(iso_string: str) -> datetime:
+    """
+    Parse an ISO 8601 formatted string into a naive datetime object in UTC.
+    If the string has a timezone, convert it to UTC. If it doesn't, assume it's already UTC.
+
+    Examples:
+        parse_isoformat("2024-12-10T15:30:00Z") -> datetime(2024, 12, 10, 15, 30, 0)
+        parse_isoformat("2024-12-10T15:30:00+02:00") -> datetime(2024, 12, 10, 13, 30, 0)
+        parse_isoformat("2024-12-10T15:30:00") -> datetime(2024, 12, 10, 15, 30, 0)
+    """
+    parsed_datetime = datetime.fromisoformat(iso_string)
+
+    if parsed_datetime.tzinfo is not None:
+        # Convert to UTC and remove timezone
+        parsed_datetime = parsed_datetime.astimezone(timezone.utc).replace(tzinfo=None)
+    else:
+        # Assume naive datetime is already in UTC
+        parsed_datetime = parsed_datetime.replace(tzinfo=None)
+
+    return parsed_datetime

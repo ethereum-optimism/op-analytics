@@ -54,7 +54,6 @@ def test_parquet_writer():
                 marker_path="BLAH",
             )
         ],
-        force=False,
     )
 
     with patch("op_analytics.coreutils.partitioned.dataaccess.local_upload_parquet") as mock:
@@ -62,7 +61,7 @@ def test_parquet_writer():
             OutputData(
                 dataframe=df,
                 root_path="intermediate/daily_address_summary/summary_v1",
-                default_partition=None,
+                default_partitions=None,
             )
         )
 

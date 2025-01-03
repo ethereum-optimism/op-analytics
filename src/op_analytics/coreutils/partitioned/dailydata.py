@@ -2,11 +2,12 @@ import polars as pl
 import pyarrow as pa
 from functools import cache
 
-from op_analytics.coreutils.env.aware import OPLabsEnvironment, current_environment
+from op_analytics.coreutils.env.aware import is_bot
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_fromstr
+
 
 from .breakout import breakout_partitions
 from .dataaccess import DateFilter, MarkerFilter, init_data_access
@@ -21,29 +22,34 @@ MARKERS_TABLE = "daily_data_markers"
 
 
 @cache
-def ensure_local(location: DataLocation):
-    if current_environment() == OPLabsEnvironment.UNITTEST:
-        return DataLocation.LOCAL
-    else:
-        return location
+def determine_location() -> DataLocation:
+    # Only for github actions or k8s we use GCS.
+    if is_bot():
+        return DataLocation.GCS
+
+    # For unittests and local runs we use LOCAL.
+    return DataLocation.LOCAL
 
 
 def write_daily_data(
     root_path: str,
     dataframe: pl.DataFrame,
     sort_by: list[str] | None = None,
-    force_complete: bool = False,
-    location: DataLocation = DataLocation.LOCAL,
 ):
-    """Write date partitioned defillama dataset."""
+    """Write date partitioned defillama dataset.
+
+    NOTE: This method always overwrites data. If we had already pulled in data for
+    a given date a subsequent data pull will always overwrite it.
+    """
+
     parts = breakout_partitions(
         df=dataframe,
         partition_cols=["dt"],
-        default_partition=None,
+        default_partitions=None,
     )
 
     # Ensure write location for tests is LOCAL.
-    location = ensure_local(location)
+    location = determine_location()
 
     for part in parts:
         datestr = part.partition_value("dt")
@@ -64,7 +70,6 @@ def write_daily_data(
                     marker_path=f"{datestr}/{root_path}",
                 )
             ],
-            force=force_complete,
         )
 
         part_df = part.df.with_columns(dt=pl.lit(datestr))
@@ -76,7 +81,7 @@ def write_daily_data(
             output_data=OutputData(
                 dataframe=part.df.with_columns(dt=pl.lit(datestr)),
                 root_path=root_path,
-                default_partition=None,
+                default_partitions=None,
             )
         )
 
@@ -95,7 +100,7 @@ def read_daily_data(
     The name of the registered view is returned.
     """
     partitioned_data_access = init_data_access()
-    duckdb_client = init_client()
+    duckdb_context = init_client()
 
     datefilter = make_date_filter(min_date, max_date, date_range_spec)
 
@@ -106,7 +111,7 @@ def read_daily_data(
     else:
         log.info(f"querying markers for {root_path!r} {datefilter}")
 
-        markers = partitioned_data_access.markers_for_dates(
+        markers = partitioned_data_access.query_markers_with_filters(
             data_location=location,
             markers_table=MARKERS_TABLE,
             datefilter=datefilter,
@@ -127,7 +132,7 @@ def read_daily_data(
         log.info(f"{len(set(paths))} distinct paths")
 
     view_name = register_parquet_relation(dataset=root_path, parquet_paths=paths)
-    print(duckdb_client.sql("SHOW TABLES"))
+    print(duckdb_context.client.sql("SHOW TABLES"))
     return view_name
 
 

@@ -42,12 +42,6 @@ class DefiLlama(str, Enum):
             root_path=self.root_path,
             dataframe=dataframe,
             sort_by=sort_by,
-            # Always overwrite data. If we pull data in early for a given date
-            # a subsequent data pull will overwrite with more complete data.
-            force_complete=True,
-            # Override the location value here. To write to the local file system
-            # use DataLocation.LOCAL
-            location=DataLocation.GCS,
         )
 
     def read(

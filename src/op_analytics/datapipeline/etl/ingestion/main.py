@@ -17,7 +17,6 @@ from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 
 from .audits import REGISTERED_AUDITS
 from .construct import construct_tasks
-from .markers import INGESTION_DATASETS
 from .sources import RawOnchainDataProvider, read_from_source
 from .status import all_inputs_ready
 from .task import IngestionTask
@@ -49,12 +48,13 @@ def ingest(
         task.progress_indicator = f"{i+1}/{len(tasks)}"
         with bound_contextvars(**task.contextvars):
             # Decide if we need to run this task.
-            if task.write_manager.is_complete() and not force_complete:
-                log.info("task", status="already_complete")
-                continue
-
-            if force_complete:
-                task.write_manager.force = True
+            if task.write_manager.all_outputs_complete():
+                if not force_complete:
+                    log.info("task", status="already_complete")
+                    continue
+                else:
+                    task.write_manager.clear_complete_markers()
+                    log.info("forced execution despite complete markers")
 
             # Decide if we can run this task.
             if not all_inputs_ready(
@@ -120,8 +120,8 @@ def reader(task: IngestionTask):
         block_batch=task.block_batch,
     )
 
-    assert set(ONCHAIN_CURRENT_VERSION.keys()) == set(INGESTION_DATASETS)
-    task.add_inputs(ONCHAIN_CURRENT_VERSION, dataframes)
+    for name in ONCHAIN_CURRENT_VERSION.keys():
+        task.input_dataframes[name] = dataframes[name]
 
 
 def auditor(task: IngestionTask):
@@ -169,18 +169,18 @@ def auditor(task: IngestionTask):
     # sometimes see no logs for a range of blocks. We still need to create a
     # marker for these empty dataframes.
     blocks_df = update_chain_name(task=task, df=task.input_dataframes["blocks"])
-    default_partition = blocks_df.sort("number").select("chain", "dt").limit(1).to_dicts()[0]
+    default_partitions = blocks_df.sort("number").select("chain", "dt").unique().to_dicts()
 
     # Set up the output dataframes now that the audits have passed
     # (ingestion process: outputs are the same as inputs)
-    for name, dataset in task.input_datasets.items():
+    for name in task.input_dataframes.keys():
         df = update_chain_name(task=task, df=task.input_dataframes[name])
 
         task.store_output(
             OutputData(
                 dataframe=df,
                 root_path=task.block_batch.dataset_directory(dataset_name=name),
-                default_partition=default_partition,
+                default_partitions=default_partitions,
             )
         )
 

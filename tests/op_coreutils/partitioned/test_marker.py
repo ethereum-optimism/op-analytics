@@ -12,7 +12,7 @@ from op_analytics.coreutils.partitioned.partition import (
     Partition,
     PartitionMetadata,
 )
-from op_analytics.datapipeline.etl.ingestion.reader_markers import markers_for_raw_ingestion
+from op_analytics.datapipeline.etl.ingestion.reader.markers import IngestionDataSpec
 from op_analytics.coreutils.time import now
 
 MARKERS_TABLE = "raw_onchain_ingestion_markers"
@@ -126,13 +126,15 @@ def test_marker():
     )
     assert exists
 
-    markers_df = markers_for_raw_ingestion(
-        data_location=DataLocation.LOCAL,
-        markers_table=MARKERS_TABLE,
-        datevals=[datetime.date(2024, 10, 25)],
+    data_spec = IngestionDataSpec(
         chains=["DUMMYCHAIN"],
-        root_paths=["ingestion/blocks_v1"],
+        root_paths_to_read=["ingestion/blocks_v1"],
     )
+    markers_df = data_spec.query_markers(
+        datevals=[datetime.date(2024, 10, 25)],
+        read_from=DataLocation.LOCAL,
+    )
+
     assert len(markers_df) == 1
 
     assert (
@@ -140,11 +142,12 @@ def test_marker():
         == "ingestion/blocks_v1/chain=DUMMYCHAIN/dt=2024-10-25/000011540000.parquet"
     )
 
-    markers_df = markers_for_raw_ingestion(
-        data_location=DataLocation.LOCAL,
-        markers_table=MARKERS_TABLE,
-        datevals=[datetime.date(2024, 10, 25)],
+    data_spec = IngestionDataSpec(
         chains=["DUMMYCHAIN"],
-        root_paths=["ingestion/transactions_v1"],
+        root_paths_to_read=["ingestion/transactions_v1"],
+    )
+    markers_df = data_spec.query_markers(
+        datevals=[datetime.date(2024, 10, 25)],
+        read_from=DataLocation.LOCAL,
     )
     assert len(markers_df) == 0
