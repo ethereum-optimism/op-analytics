@@ -64,7 +64,7 @@ def pull_growthepie_summary() -> GrowthepieFundamentalSummary:
     )
 
 
-def process_metadata_pull(df) -> list[str]:
+def process_metadata_pull(df) -> list[dict[str, str]]:
     """
     Extracts chain metadata from GrowThePie API response.
     """
