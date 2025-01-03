@@ -7,7 +7,7 @@ from .l2beat import pull_l2beat
 from .defillama.stablecoins import pull_stablecoins
 from .defillama.historical_chain_tvl import pull_historical_chain_tvl
 from .defillama.protocols import pull_protocol_tvl
-from .defillama.dex_volume import pull_dex_volume
+from .defillama.dex_volume_fees_revenue import pull_dex_volume, pull_fees, pull_revenue
 from .agora.delegates import pull_delegates
 from .agora.delegate_events import (
     fetch_delegate_delegatees,
@@ -84,9 +84,26 @@ def pull_agora_delegate_data():
     fetch_proposals()
 
 @app.command()
-def defillama_dex_volume():
+def defillama_dexs_fees_revenue():
+    """Pull DEX Volumes, Fees, and Revenue from Defillama."""
+    pull_dex_volume()
+    pull_fees()
+    pull_revenue()
+
+@app.command()
+def defillama_dexs():
     """Pull DEX Volumes from Defillama."""
     pull_dex_volume()
+
+@app.command()
+def defillama_fees():
+    """Pull Fees from Defillama."""
+    pull_fees()
+
+@app.command()
+def defillama_revenue():
+    """Pull Revenue from Defillama."""
+    pull_revenue()
 
 @app.command()
 def growthepie_chain_summary():
