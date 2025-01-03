@@ -158,6 +158,14 @@ def make_date_filter(
 
 
 class DailyDataset(str, Enum):
+    """Base class for daily datasets.
+
+    The name of the subclass is the name of the dataset and the enum values
+    are names of the tables that are part of the dataset.
+
+    See for example: DefiLlama, GrowThePie
+    """
+
     @property
     def db(self):
         return self.__class__.__name__.lower()
@@ -184,6 +192,13 @@ def insert_daily_data_to_clickhouse(
     min_date: str | None = None,
     max_date: str | None = None,
 ):
+    """Incrementally load daily data from GCS to clickhouse.
+
+    When date ranges are not provided this function queries clickhouse to find the latest loaded
+    date and proceeds from there.
+
+    When a backfill is needed you can provide min_date/max_date accordingly.
+    """
     db = dataset.db
     table = dataset.table
 
