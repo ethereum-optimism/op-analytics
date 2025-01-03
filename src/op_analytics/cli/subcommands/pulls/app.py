@@ -10,11 +10,12 @@ from .defillama.protocols import pull_protocol_tvl
 from .defillama.dex_volume import pull_dex_volume
 from .agora.delegates import pull_delegates
 from .agora.delegate_events import (
-    fetch_delegate_votes,
-    fetch_proposals,
     fetch_delegate_delegatees,
     fetch_delegate_delegators,
+    fetch_delegate_votes,
+    fetch_proposals,
 )
+from .growthepie.chains_daily_fundamentals import pull_growthepie_summary
 
 log = structlog.get_logger()
 
@@ -86,3 +87,8 @@ def pull_agora_delegate_data():
 def defillama_dex_volume():
     """Pull DEX Volumes from Defillama."""
     pull_dex_volume()
+
+@app.command()
+def growthepie_chain_summary():
+    """Pull daily chain summary fundamentals from GrowThePie."""
+    pull_growthepie_summary()

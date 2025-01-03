@@ -9,7 +9,7 @@ from .partition import PartitionData
 def breakout_partitions(
     df: pl.DataFrame,
     partition_cols: list[str],
-    default_partition: dict[str, str] | None = None,
+    default_partitions: list[dict[str, str]] | None = None,
 ) -> Generator[PartitionData, None, None]:
     """Split a dataframe into partitions.
 
@@ -18,11 +18,12 @@ def breakout_partitions(
     parts = df.select(*partition_cols).unique().to_dicts()
 
     if len(df) == 0:
-        assert default_partition is not None
-        yield PartitionData.from_dict(
-            partitions_dict=default_partition,
-            df=df.drop(*partition_cols),
-        )
+        assert default_partitions is not None
+        for default_partition in default_partitions:
+            yield PartitionData.from_dict(
+                partitions_dict=default_partition,
+                df=df.drop(*partition_cols),
+            )
 
     else:
         for part in parts:
