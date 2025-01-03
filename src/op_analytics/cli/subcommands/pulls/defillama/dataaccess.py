@@ -30,22 +30,22 @@ class DefiLlama(str, Enum):
     STABLECOINS_BALANCE = "stablecoins_balances_v1"
 
     # DEX Volumes
-    DEX_METADATA = "defillama_dex_metadata_v1"
-    DEX_TOTAL = "defillama_dex_volume_total_v1"
-    DEX_CHAIN = "defillama_dex_volume_chain_v1"
-    DEX_BREAKDOWN = "defillama_dex_volume_breakdown_v1"
+    DEX_METADATA = "dex_metadata_v1"
+    DEX_TOTAL = "dex_volume_total_v1"
+    DEX_CHAIN = "dex_volume_chain_v1"
+    DEX_BREAKDOWN = "dex_volume_breakdown_v1"
 
     # Fees
-    FEES_METADATA = "defillama_fees_metadata_v1"
-    FEES_TOTAL = "defillama_fees_total_v1"
-    FEES_CHAIN = "defillama_fees_chain_v1"
-    FEES_BREAKDOWN = "defillama_fees_breakdown_v1"
+    FEES_METADATA = "fees_metadata_v1"
+    FEES_TOTAL = "fees_total_v1"
+    FEES_CHAIN = "fees_chain_v1"
+    FEES_BREAKDOWN = "fees_breakdown_v1"
 
     # Revenue
-    REVENUE_METADATA = "defillama_revenue_metadata_v1"
-    REVENUE_TOTAL = "defillama_revenue_total_v1"
-    REVENUE_CHAIN = "defillama_revenue_chain_v1"
-    REVENUE_BREAKDOWN = "defillama_revenue_breakdown_v1"
+    REVENUE_METADATA = "revenue_metadata_v1"
+    REVENUE_TOTAL = "revenue_total_v1"
+    REVENUE_CHAIN = "revenue_chain_v1"
+    REVENUE_BREAKDOWN = "revenue_breakdown_v1"
 
     @property
     def root_path(self):
