@@ -1,0 +1,25 @@
+name: Daily API Uploads
+run-name: ${{ github.event.created_at }}
+on:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  run-defillama-protocols:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+      - name: Set up Python
+        run: uv python install
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: DefiLlama DEX Volume, Fees, Revenue
+        run: uv run opdata pulls defillama_dexs_fees_revenue
+        env:
+          OPLABS_RUNTIME: "gha"
+          OPLABS_ENV: "prod"
+          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
