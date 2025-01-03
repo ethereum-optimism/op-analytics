@@ -1,3 +1,3 @@
 import duckdb
 
-NamedRelations = dict[str, duckdb.DuckDBPyRelation]
+NamedRelations = dict[str, duckdb.DuckDBPyRelation | str]

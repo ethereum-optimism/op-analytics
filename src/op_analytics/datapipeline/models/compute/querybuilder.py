@@ -31,8 +31,8 @@ class TemplatedSQLQuery:
 
     def render(self) -> RenderedSQLQuery:
         # Load templates from the templates folder.
-        tempates_dir = os.path.join(os.path.dirname(__file__), "../templates")
-        env = Environment(loader=FileSystemLoader(tempates_dir))
+        templates_dir = os.path.join(os.path.dirname(__file__), "../templates")
+        env = Environment(loader=FileSystemLoader(templates_dir))
 
         # Load and render the template
         template = env.get_template(self.template_file)
