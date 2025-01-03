@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 import polars as pl
 
+from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.time import now_dt
@@ -40,8 +41,9 @@ def pull_growthepie_summary() -> GrowthepieFundamentalSummary:
     summary_df = summary_df.rename({"date": "dt"})
 
     GrowThePie.FUNDAMENTALS_SUMMARY.write(
-        # dataframe=most_recent_dates(summary_df, n_dates=3, date_column="dt"),
-        dataframe=summary_df,
+        # Use the full dataframe when backfilling:
+        # dataframe=summary_df,
+        dataframe=most_recent_dates(summary_df, n_dates=3, date_column="dt"),
         sort_by=["origin_key"],
     )
 
