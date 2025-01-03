@@ -60,7 +60,7 @@ jobs:
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
 
       # - name: DefiLlama DEX Volume, Fees, Revenue
-      #   run: uv run opdata pulls defillama_dex_fees_revenue
+      #   run: uv run opdata pulls defillama_dexs_fees_revenue
       #   env:
       #     OPLABS_RUNTIME: "gha"
       #     OPLABS_ENV: "prod"
