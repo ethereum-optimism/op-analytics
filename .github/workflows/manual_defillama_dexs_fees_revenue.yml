@@ -1,4 +1,4 @@
-name: Daily API Uploads
+name: Manual Call - DFL DEXs Fees Revenue
 run-name: ${{ github.event.created_at }}
 on:
   workflow_dispatch:
