@@ -90,7 +90,7 @@ def insert(
     """Write arrow table to clickhouse."""
     client = init_client(instance)
 
-    client.insert_arrow(
+    return client.insert_arrow(
         table=table,
         arrow_table=df_arrow,
         database=database,
