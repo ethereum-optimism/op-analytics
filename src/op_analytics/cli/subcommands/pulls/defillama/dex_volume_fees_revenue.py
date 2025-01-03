@@ -33,7 +33,7 @@ REVENUE_CHAIN_ENDPOINT = "https://api.llama.fi/overview/fees/{chain_name}?exclud
 
 BQ_DATASET = "uploads_api"
 
-TABLE_LAST_N_DAYS = 365*10#30  # upsert only the last X days of volume fetched from the api
+TABLE_LAST_N_DAYS = 30  # upsert only the last X days of volume fetched from the api
 
 # High-Level Dataset Pulls
 @dataclass

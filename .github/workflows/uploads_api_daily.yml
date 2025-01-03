@@ -59,6 +59,13 @@ jobs:
           OPLABS_ENV: "prod"
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
 
+      - name: DefiLlama DEX Volume, Fees, Revenue
+        run: uv run opdata pulls defillama_stablecoins
+        env:
+          OPLABS_RUNTIME: "gha"
+          OPLABS_ENV: "prod"
+          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
+
       - name: GitHub Analytics
         run: uv run opdata pulls github_analytics
         env:
