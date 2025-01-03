@@ -40,8 +40,9 @@ def pull_growthepie_summary() -> GrowthepieFundamentalSummary:
     summary_df = summary_df.rename({"date": "dt"})
 
     GrowThePie.FUNDAMENTALS_SUMMARY.write(
+        # dataframe=most_recent_dates(summary_df, n_dates=3, date_column="dt"),
         dataframe=summary_df,
-        sort_by=["origin_key", "dt"],
+        sort_by=["origin_key"],
     )
 
     metadata_raw_data = get_data(session, f"{URL_BASE}{METADATA_ENDPOINT}")

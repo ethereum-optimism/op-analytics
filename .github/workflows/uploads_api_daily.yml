@@ -66,6 +66,13 @@ jobs:
           OPLABS_ENV: "prod"
           OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}
 
+      - name: GrowThePie Chain Summary
+        run: uv run opdata pulls growthepie_chain_summary
+        env:
+          OPLABS_RUNTIME: "gha"
+          OPLABS_ENV: "prod"
+          OP_ANALYTICS_VAULT: ${{ secrets.OP_ANALYTICS_VAULT }}          
+
       - name: DefiLlama Stablecoins
         run: uv run opdata pulls defillama_stablecoins_bq
         env:

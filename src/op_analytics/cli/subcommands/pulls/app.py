@@ -83,7 +83,7 @@ def pull_agora_delegate_data():
     fetch_proposals()
 
 
-@app.command
+@app.command()
 def growthepie_chain_summary():
     """Pull daily chain summary fundamentals from GrowThePie."""
     pull_growthepie_summary()
