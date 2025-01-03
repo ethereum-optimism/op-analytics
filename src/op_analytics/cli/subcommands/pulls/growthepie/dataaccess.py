@@ -2,11 +2,9 @@ import polars as pl
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydata import (
-    read_daily_data,
     write_daily_data,
     DailyDataset,
 )
-from op_analytics.coreutils.partitioned.location import DataLocation
 
 log = structlog.get_logger()
 
@@ -36,19 +34,4 @@ class GrowThePie(DailyDataset):
             root_path=self.root_path,
             dataframe=dataframe,
             sort_by=sort_by,
-        )
-
-    def read(
-        self,
-        min_date: str | None = None,
-        max_date: str | None = None,
-        date_range_spec: str | None = None,
-    ) -> str:
-        """Read growthepie data. Optionally filtered by date."""
-        return read_daily_data(
-            root_path=self.root_path,
-            min_date=min_date,
-            max_date=max_date,
-            date_range_spec=date_range_spec,
-            location=DataLocation.GCS,
         )
