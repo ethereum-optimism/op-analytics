@@ -17,7 +17,6 @@ from .github_analytics import pull_github_analytics
 from .growthepie.chains_daily_fundamentals import pull_growthepie_summary
 from .l2beat import pull_l2beat
 
-
 log = structlog.get_logger()
 
 
