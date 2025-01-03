@@ -1,15 +1,17 @@
-from enum import Enum
-
 import polars as pl
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.dailydata import read_daily_data, write_daily_data
+from op_analytics.coreutils.partitioned.dailydata import (
+    read_daily_data,
+    write_daily_data,
+    DailyDataset,
+)
 from op_analytics.coreutils.partitioned.location import DataLocation
 
 log = structlog.get_logger()
 
 
-class GrowThePie(str, Enum):
+class GrowThePie(DailyDataset):
     """Supported growthepie datasets.
 
     This class includes utilities to read data from each dataset from a notebook
@@ -24,10 +26,6 @@ class GrowThePie(str, Enum):
 
     # Contract labels
     CONTRACT_LABELS = "gtp_contract_labels_v1"
-
-    @property
-    def root_path(self):
-        return f"growthepie/{self.value}"
 
     def write(
         self,
