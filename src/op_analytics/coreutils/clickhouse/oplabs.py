@@ -1,11 +1,9 @@
 import logging
 from typing import Any
 
-import duckdb
 import pyarrow as pa
 import stamina
 
-import duckdb.typing
 
 from op_analytics.coreutils.logger import structlog
 
@@ -50,42 +48,3 @@ def insert_oplabs(
         df_arrow=df_arrow,
         log_level=log_level,
     )
-
-
-def generate_clickhouse_ddl(relation: duckdb.DuckDBPyRelation, table_name: str) -> str:
-    """Generate a Clickhouse CREATE TABLE statement from a DuckDB relation schema.
-
-    This function is only used manually to assist in generating schemas for Clickhouse.
-    """
-    # Get schema from relation
-    schema = zip(relation.columns, relation.types)
-
-    # Map DuckDB types to Clickhouse types
-    type_mapping = {
-        "VARCHAR": "String",
-        "DOUBLE": "Float64",
-        "INTEGER": "Int32",
-        "BIGINT": "Int64",
-        "DATE": "Date",
-        "TIMESTAMP": "DateTime",
-        "BOOLEAN": "UInt8",
-    }
-
-    # Build column definitions
-    columns = []
-    for col_name, col_type in schema:
-        ch_type = type_mapping[str(col_type)]
-        columns.append(f"`{col_name}` {ch_type}")
-
-    # Join columns with commas
-    columns_str = ",\n    ".join(columns)
-
-    # Build full CREATE TABLE statement
-    ddl = f"""CREATE TABLE IF NOT EXISTS {table_name}
-(
-    {columns_str}
-)
-ENGINE = ReplacingMergeTree
-"""
-
-    return ddl
