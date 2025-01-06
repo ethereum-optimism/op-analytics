@@ -12,7 +12,7 @@ from .agora.delegates import pull_delegates
 from .defillama.historical_chain_tvl import pull_historical_chain_tvl
 from .defillama.protocols import pull_protocol_tvl
 from .defillama.stablecoins import pull_stablecoins
-from .defillama.dex_volume_fees_revenue import pull_dex_volume, pull_fees, pull_revenue
+from .defillama.dex_volume_fees_revenue import pull_dex_dataframes
 from .github_analytics import pull_github_analytics
 from .growthepie.chains_daily_fundamentals import pull_growthepie_summary
 from .l2beat import pull_l2beat
@@ -85,11 +85,16 @@ def pull_agora_delegate_data():
 
 
 @app.command()
-def defillama_dexs():
+def defillama_dexs_fees_revenue():
     """Pull DEX Volumes, Fees, and Revenue from Defillama."""
-    pull_dex_volume()
-    pull_fees()
-    pull_revenue()
+    pull_dex_dataframes()
+
+    from .defillama.dataaccess import DefiLlama
+
+    DefiLlama.DEXS_PROTOCOLS_METADATA.insert_to_clickhouse()
+    DefiLlama.DEXS_FEES_TOTAL.insert_to_clickhouse(incremental_overlap=3)
+    DefiLlama.DEXS_FEES_BY_CHAIN.insert_to_clickhouse(incremental_overlap=3)
+    DefiLlama.DEXS_FEES_BY_CHAIN_PROTOCOL.insert_to_clickhouse(incremental_overlap=3)
 
 
 @app.command()
@@ -99,5 +104,5 @@ def growthepie_chain_summary():
 
     from .growthepie.dataaccess import GrowThePie
 
-    GrowThePie.FUNDAMENTALS_SUMMARY.insert_to_clickhouse()
-    GrowThePie.CHAIN_METADATA.insert_to_clickhouse()
+    GrowThePie.FUNDAMENTALS_SUMMARY.insert_to_clickhouse(incremental_overlap=1)
+    GrowThePie.CHAIN_METADATA.insert_to_clickhouse(incremental_overlap=1)
