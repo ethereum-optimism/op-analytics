@@ -193,19 +193,19 @@ def write(
     breakpoint()
 
     # Write Overall DEX Volume.
-    DefiLlama.DEX_TOTAL.write(
+    DefiLlama.DEXS_FEES_TOTAL.write(
         dataframe=most_recent_dates(crypto_df, n_dates=TABLE_LAST_N_DAYS),
         sort_by=["dt"],
     )
 
     # Write By Chain DEX Volume.
-    DefiLlama.DEX_CHAIN.write(
+    DefiLlama.DEXS_FEES_BY_CHAIN.write(
         dataframe=most_recent_dates(chain_df, n_dates=TABLE_LAST_N_DAYS),
         sort_by=["chain"],
     )
 
     # Write Breakdown DEX Volume.
-    DefiLlama.DEX_BREAKDOWN.write(
+    DefiLlama.DEXS_FEES_BY_CHAIN_PROTOCOL.write(
         dataframe=most_recent_dates(chain_protocol_df, n_dates=TABLE_LAST_N_DAYS),
         sort_by=["chain", "protocol"],
     )

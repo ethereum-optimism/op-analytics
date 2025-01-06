@@ -30,9 +30,9 @@ class DefiLlama(DailyDataset):
     STABLECOINS_BALANCE = "stablecoins_balances_v1"
 
     # DEX Volumes, Fees, and Revenue at various levels of granularity
-    DEX_TOTAL = "dexs_fees_crypto_v1"
-    DEX_CHAIN = "dexs_fees_chain_v1"
-    DEX_BREAKDOWN = "dexs_fees_chain_protocol_v1"
+    DEXS_FEES_TOTAL = "dexs_fees_crypto_v1"
+    DEXS_FEES_BY_CHAIN = "dexs_fees_by_chain_v1"
+    DEXS_FEES_BY_CHAIN_PROTOCOL = "dexs_fees_by_chain_protocol_v1"
 
     # Summary for dexs/dailyVolume, fees/dailyFees, and fees/dailyRevenue
     DEXS_VOLUME_SUMMARY = "dexs_volume_summary_v1"
