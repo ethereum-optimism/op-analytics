@@ -62,11 +62,4 @@ def refined_traces(
     return {
         "refined_transactions_fees_v1": refined_txs,
         "refined_traces_fees_v1": traces_txs_join,
-        # Also included in Michael's original implementation.
-        # "aggregated_traces_tr_from_tr_to_hash_v1": duckdb_client.view(
-        #     "aggregated_traces_tr_from_tr_to_hash"
-        # ),
-        # "aggregated_traces_tr_to_hash_v1": duckdb_client.view("aggregated_traces_tr_to_hash"),
-        # "daily_traces_tr_to_tx_to_v1": duckdb_client.view("daily_traces_tr_to_tx_to"),
-        # "daily_traces_tr_to_v1": duckdb_client.view("daily_traces_tr_to"),
     }
