@@ -1,5 +1,4 @@
 import polars as pl
-from typing import Optional
 
 
 def get_protocols_df(summary_response):
@@ -51,7 +50,7 @@ def get_protocols_df(summary_response):
     total_metadata: list[dict] = []
 
     for element in protocols:
-        metadata_row: dict[str, Optional[str]] = {}
+        metadata_row: dict[str, None | str | list[dict[str, str]]] = {}
         for key in MUST_HAVE_FIELDS:
             if key == "methodology":
                 metadata_row[key] = convert_to_list_of_keyval(element[key])

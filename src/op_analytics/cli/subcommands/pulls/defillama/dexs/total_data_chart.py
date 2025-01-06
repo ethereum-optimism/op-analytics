@@ -2,7 +2,7 @@ import polars as pl
 from op_analytics.coreutils.time import dt_fromepoch
 
 
-def get_total_data_chart_df(summary_response) -> pl.DataFrame | None:
+def get_total_data_chart_df(summary_response) -> pl.DataFrame:
     rows = []
     for row in summary_response["totalDataChart"]:
         rows.append(

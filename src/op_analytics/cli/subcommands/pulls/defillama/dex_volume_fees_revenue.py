@@ -61,7 +61,7 @@ class DefillamaDEXData:
     chain_protocol_df: pl.DataFrame
 
 
-def pull_dex_dataframes(current_dt: str | None = None) -> DefillamaDEXData:
+def pull_dex_dataframes(current_dt: str | None = None):
     """DefiLlama DEX data pull.
 
     Pulls DEX Volume, Fees, and Revenue and writes them out to GCS.
