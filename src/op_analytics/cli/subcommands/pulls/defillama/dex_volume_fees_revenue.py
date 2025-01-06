@@ -41,7 +41,7 @@ def chain_endpoint(chain: str, data_type: DEX_ENDPOINT):
     return f"https://api.llama.fi/overview/{endpoint}/{quoted_chain}?excludeTotalDataChart=false&excludeTotalDataChartBreakdown=false&dataType={data_type}"
 
 
-TABLE_LAST_N_DAYS = 4000  # upsert only the last X days of volume fetched from the api
+TABLE_LAST_N_DAYS = 3  # upsert only the last X days of volume fetched from the api
 
 
 @dataclass
