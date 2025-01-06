@@ -2,18 +2,20 @@ import typer
 
 from op_analytics.coreutils.logger import structlog
 
-from .github_analytics import pull_github_analytics
-from .l2beat import pull_l2beat
-from .defillama.stablecoins import pull_stablecoins
-from .defillama.historical_chain_tvl import pull_historical_chain_tvl
-from .defillama.protocols import pull_protocol_tvl
-from .agora.delegates import pull_delegates
 from .agora.delegate_events import (
-    fetch_delegate_votes,
-    fetch_proposals,
     fetch_delegate_delegatees,
     fetch_delegate_delegators,
+    fetch_delegate_votes,
+    fetch_proposals,
 )
+from .agora.delegates import pull_delegates
+from .defillama.historical_chain_tvl import pull_historical_chain_tvl
+from .defillama.protocols import pull_protocol_tvl
+from .defillama.stablecoins import pull_stablecoins
+from .defillama.dex_volume_fees_revenue import pull_dex_volume, pull_fees, pull_revenue
+from .github_analytics import pull_github_analytics
+from .growthepie.chains_daily_fundamentals import pull_growthepie_summary
+from .l2beat import pull_l2beat
 
 log = structlog.get_logger()
 
@@ -80,3 +82,22 @@ def pull_agora_delegate_data():
     fetch_delegate_delegators(delegates)
 
     fetch_proposals()
+
+
+@app.command()
+def defillama_dexs():
+    """Pull DEX Volumes, Fees, and Revenue from Defillama."""
+    pull_dex_volume()
+    pull_fees()
+    pull_revenue()
+
+
+@app.command()
+def growthepie_chain_summary():
+    """Pull daily chain summary fundamentals from GrowThePie."""
+    pull_growthepie_summary()
+
+    from .growthepie.dataaccess import GrowThePie
+
+    GrowThePie.FUNDAMENTALS_SUMMARY.insert_to_clickhouse()
+    GrowThePie.CHAIN_METADATA.insert_to_clickhouse()

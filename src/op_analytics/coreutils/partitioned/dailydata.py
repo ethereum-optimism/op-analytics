@@ -1,13 +1,20 @@
-import polars as pl
-import pyarrow as pa
+from datetime import timedelta
+from enum import Enum
 from functools import cache
 
-from op_analytics.coreutils.env.aware import is_bot
+import clickhouse_connect
+import polars as pl
+import pyarrow as pa
+
+from op_analytics.coreutils.clickhouse.client import new_client
+from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
+from op_analytics.coreutils.duckdb_inmem import EmptyParquetData
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
-from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.env.aware import is_bot
+from op_analytics.coreutils.env.vault import env_get
+from op_analytics.coreutils.logger import human_rows, human_size, structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_fromstr
-
 
 from .breakout import breakout_partitions
 from .dataaccess import DateFilter, MarkerFilter, init_data_access
@@ -86,54 +93,39 @@ def write_daily_data(
         )
 
 
-def read_daily_data(
+def query_parquet_paths(
     root_path: str,
-    min_date: str | None = None,
-    max_date: str | None = None,
-    date_range_spec: str | None = None,
-    location: DataLocation = DataLocation.GCS,
-) -> str:
-    """Load date partitioned defillama dataset from the specified location.
-
-    The loaded data is registered as duckdb view.
-
-    The name of the registered view is returned.
-    """
+    location: DataLocation,
+    datefilter: DateFilter,
+):
     partitioned_data_access = init_data_access()
-    duckdb_context = init_client()
 
-    datefilter = make_date_filter(min_date, max_date, date_range_spec)
+    log.info(f"querying markers for {root_path!r} {datefilter}")
 
-    paths: str | list[str]
-    if datefilter.is_undefined:
-        paths = location.absolute(f"{root_path}/dt=*/out.parquet")
+    markers = partitioned_data_access.query_markers_with_filters(
+        data_location=location,
+        markers_table=MARKERS_TABLE,
+        datefilter=datefilter,
+        projections=["dt", "data_path"],
+        filters={
+            "root_paths": MarkerFilter(
+                column="root_path",
+                values=[root_path],
+            ),
+        },
+    )
+    log.info(
+        f"{len(markers)} markers found",
+        min_dt=str(markers["dt"].min()),
+        max_dt=str(markers["dt"].max()),
+    )
 
-    else:
-        log.info(f"querying markers for {root_path!r} {datefilter}")
-
-        markers = partitioned_data_access.query_markers_with_filters(
-            data_location=location,
-            markers_table=MARKERS_TABLE,
-            datefilter=datefilter,
-            projections=["dt", "data_path"],
-            filters={
-                "root_paths": MarkerFilter(
-                    column="root_path",
-                    values=[root_path],
-                ),
-            },
-        )
-        log.info(f"{len(markers)} markers found")
-
-        # Ensure that the paths we select are distinct paths.
-        # The same path can appear under two different markers if it was
-        # re-written as part of a backfill.
-        paths = sorted(set([location.absolute(path) for path in markers["data_path"].to_list()]))
-        log.info(f"{len(set(paths))} distinct paths")
-
-    view_name = register_parquet_relation(dataset=root_path, parquet_paths=paths)
-    print(duckdb_context.client.sql("SHOW TABLES"))
-    return view_name
+    # Ensure that the paths we select are distinct paths.
+    # The same path can appear under two different markers if it was
+    # re-written as part of a backfill.
+    paths = sorted(set([location.absolute(path) for path in markers["data_path"].to_list()]))
+    log.info(f"{len(set(paths))} distinct paths")
+    return paths
 
 
 def make_date_filter(
@@ -144,3 +136,163 @@ def make_date_filter(
         max_date=None if max_date is None else date_fromstr(max_date),
         datevals=None if date_range_spec is None else DateRange.from_spec(date_range_spec).dates(),
     )
+
+
+class DailyDataset(str, Enum):
+    """Base class for daily datasets.
+
+    The name of the subclass is the name of the dataset and the enum values
+    are names of the tables that are part of the dataset.
+
+    See for example: DefiLlama, GrowThePie
+    """
+
+    @property
+    def db(self):
+        return self.__class__.__name__.lower()
+
+    @property
+    def table(self):
+        return self.value
+
+    @property
+    def root_path(self):
+        return f"{self.db}/{self.table}"
+
+    def read(
+        self,
+        min_date: str | None = None,
+        max_date: str | None = None,
+        date_range_spec: str | None = None,
+    ) -> str:
+        """Load date partitioned defillama dataset from the specified location.
+
+        The loaded data is registered as duckdb view.
+
+        The name of the registered view is returned.
+        """
+        location = DataLocation.GCS
+
+        log.info(
+            f"Reading data from {self.root_path!r} "
+            f"with filters min_date={min_date}, max_date={max_date}, date_range_spec={date_range_spec}"
+        )
+
+        duckdb_context = init_client()
+
+        datefilter = make_date_filter(min_date, max_date, date_range_spec)
+
+        paths: str | list[str]
+        if datefilter.is_undefined:
+            paths = location.absolute(f"{self.root_path}/dt=*/out.parquet")
+
+        else:
+            paths = query_parquet_paths(
+                root_path=self.root_path,
+                location=location,
+                datefilter=datefilter,
+            )
+
+        view_name = register_parquet_relation(dataset=self.root_path, parquet_paths=paths)
+        print(duckdb_context.client.sql("SHOW TABLES"))
+        return view_name
+
+    def clickhouse_schema(self, datestr: str):
+        """Use a single parquet file in GCS to infer the Clickhouse schema for the table."""
+        paths = query_parquet_paths(
+            self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
+        )
+
+        gcs_path = paths[0].replace("gs://", "https://storage.googleapis.com/")
+        log.info(f"using gcs path: {gcs_path}")
+
+        KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
+        SECRET = env_get("GCS_HMAC_SECRET")
+        statement = f"""
+        CREATE TEMPORARY TABLE new_table AS (
+            SELECT *,
+            FROM s3(
+                '{gcs_path}',
+                '{KEY_ID}',
+                '{SECRET}',
+                'parquet'
+            )
+        )
+        """
+
+        clickhouse_connect.common.set_setting("autogenerate_session_id", True)
+        clt = new_client("OPLABS")
+        clickhouse_connect.common.set_setting("autogenerate_session_id", False)
+        clt.command(statement)
+
+        df: pl.DataFrame = pl.from_arrow(clt.query_arrow("DESCRIBE new_table"))  # type: ignore
+        schema = df.select("name", "type").to_dicts()
+
+        # Build column definitions
+        columns = []
+        for col in schema:
+            col_name = col["name"]
+            col_type = col["type"]
+
+            columns.append(f"`{col_name}` {col_type}")
+
+        # Join columns with commas
+        columns_str = ",\n    ".join(columns)
+
+        # Build full CREATE TABLE statement
+        ddl = f"""CREATE TABLE IF NOT EXISTS {self.db}.{self.table}
+    (
+        {columns_str}
+    )
+    ENGINE = ReplacingMergeTree
+    """
+
+        print(ddl)
+
+    def insert_to_clickhouse(
+        self,
+        min_date: str | None = None,
+        max_date: str | None = None,
+    ):
+        """Incrementally load daily data from GCS to clickhouse.
+
+        When date ranges are not provided this function queries clickhouse to find the latest loaded
+        date and proceeds from there.
+
+        When a backfill is needed you can provide min_date/max_date accordingly.
+        """
+        db = self.db
+        table = self.table
+
+        used_clickhouse_watermark = False
+        if min_date is None:
+            clickhouse_watermark = (
+                run_query_oplabs(f"SELECT max(dt) as max_dt FROM {db}.{table}")
+                .with_columns(max_dt=pl.from_epoch(pl.col("max_dt"), time_unit="d"))
+                .item()
+            )
+            min_date = (clickhouse_watermark + timedelta(days=1)).strftime("%Y-%m-%d")
+            used_clickhouse_watermark = True
+
+        log.info(
+            "incremental load to clickhouse",
+            min_date=min_date,
+            max_date=max_date,
+            used_clickhouse_watermark=used_clickhouse_watermark,
+        )
+
+        try:
+            fundamentals = self.read(min_date=min_date, max_date=max_date)
+        except EmptyParquetData:
+            log.info("incremental load: did not find new data")
+            return
+
+        duckdb_ctx = init_client()
+        rel = duckdb_ctx.client.sql(f"SELECT * FROM {fundamentals}")
+        query_summary = insert_oplabs(database=db, table=table, df_arrow=rel.arrow())
+
+        log.info(
+            "insert summary",
+            written_bytes=human_size(query_summary.written_bytes()),
+            written_rows=human_rows(query_summary.written_rows),
+        )
