@@ -4,6 +4,7 @@ from typing import Any
 import pyarrow as pa
 import stamina
 
+
 from op_analytics.coreutils.logger import structlog
 
 from .client import init_client, run_query, insert
