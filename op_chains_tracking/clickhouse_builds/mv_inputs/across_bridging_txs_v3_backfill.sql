@@ -56,7 +56,7 @@ from (
         and l.chain = t.chain
     join across_bridge_metadata as c
         on l.chain = c.chain_name
-        and l.address = c.spokepool_address
+        and l.address = lower(c.spokepool_address)
     where 1=1
         and splitByChar(',', l.topics)[1] = '0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f'
         -- and l.network = 'mainnet'
