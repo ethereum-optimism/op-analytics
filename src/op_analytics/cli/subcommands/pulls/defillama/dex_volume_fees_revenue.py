@@ -215,17 +215,17 @@ def write(
     # on their own separate tables.
     current_dt = current_dt or now_dt()
 
-    DefiLlama.DEX_PROTOCOLS_VOLUME.write(
+    DefiLlama.DEXS_VOLUME_SUMMARY.write(
         dataframe=volume_protocols_df.with_columns(dt=pl.lit(current_dt)),
         sort_by=["defillamaId", "name"],
     )
 
-    DefiLlama.DEX_PROTOCOLS_FEES.write(
+    DefiLlama.FEES_FEES_SUMMARY.write(
         dataframe=fees_protocols_df.with_columns(dt=pl.lit(current_dt)),
         sort_by=["defillamaId", "name"],
     )
 
-    DefiLlama.DEX_PROTOCOLS_REVENUE.write(
+    DefiLlama.FEES_REVENUE_SUMMARY.write(
         dataframe=revenue_protocols_df.with_columns(dt=pl.lit(current_dt)),
         sort_by=["defillamaId", "name"],
     )
