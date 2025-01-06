@@ -29,23 +29,15 @@ class DefiLlama(DailyDataset):
     STABLECOINS_METADATA = "stablecoins_metadata_v1"
     STABLECOINS_BALANCE = "stablecoins_balances_v1"
 
-    # DEX Volumes
-    DEX_METADATA = "dex_metadata_v1"
-    DEX_TOTAL = "dex_volume_total_v1"
-    DEX_CHAIN = "dex_volume_chain_v1"
-    DEX_BREAKDOWN = "dex_volume_breakdown_v1"
+    # DEX Volumes, Fees, and Revenue at various levels of granularity
+    DEX_TOTAL = "dexs_crypto_v1"
+    DEX_CHAIN = "dexs_chain_v1"
+    DEX_BREAKDOWN = "dexs_chain_protocol_v1"
 
-    # Fees
-    FEES_METADATA = "fees_metadata_v1"
-    FEES_TOTAL = "fees_total_v1"
-    FEES_CHAIN = "fees_chain_v1"
-    FEES_BREAKDOWN = "fees_breakdown_v1"
-
-    # Revenue
-    REVENUE_METADATA = "revenue_metadata_v1"
-    REVENUE_TOTAL = "revenue_total_v1"
-    REVENUE_CHAIN = "revenue_chain_v1"
-    REVENUE_BREAKDOWN = "revenue_breakdown_v1"
+    # DEX Protocols Summary for Volume, Fees, and Revenue
+    DEX_PROTOCOLS_VOLUME = "dexs_protocols_volume_v1"
+    DEX_PROTOCOLS_FEES = "dexs_protocols_fees_v1"
+    DEX_PROTOCOLS_REVENUE = "dexs_protocols_revenue_v1"
 
     def write(
         self,
