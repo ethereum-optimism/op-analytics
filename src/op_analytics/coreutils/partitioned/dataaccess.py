@@ -26,9 +26,9 @@ MARKERS_QUERY_SCHEMA = {
     "dt": pl.Date,
     "chain": pl.String,
     "marker_path": pl.String,
-    "num_parts": pl.UInt32,
     "root_path": pl.String,
     "data_path": pl.String,
+    "num_parts": pl.UInt32,
 }
 
 
@@ -126,31 +126,6 @@ class PartitionedDataAccess:
             marker_path=marker_path,
         )
 
-    def all_markers_exist(
-        self,
-        data_location: DataLocation,
-        marker_paths: list[str],
-        markers_table: str,
-    ) -> bool:
-        complete = []
-        incomplete = []
-
-        # TODO: Make a single query for all the markers.
-        for marker_path in marker_paths:
-            if self.marker_exists(data_location, marker_path, markers_table):
-                complete.append(marker_path)
-            else:
-                incomplete.append(marker_path)
-
-        num_complete = len(complete)
-        total = len(incomplete) + len(complete)
-        log.debug(f"{num_complete}/{total} complete")
-
-        if incomplete:
-            return False
-
-        return True
-
     def query_markers_with_filters(
         self,
         data_location: DataLocation,
@@ -232,11 +207,22 @@ def check_marker(markers_df: pl.DataFrame | None, marker_path: str) -> bool:
     if markers_df is None:
         return False
 
+    marker_df = markers_df.filter(pl.col("marker_path") == marker_path)
+
+    if len(marker_df) == 0:
+        return False
+
+    # TODO: We should include "updated_at" in the markers query. That way we can look only
+    #       at markers that were written on the last update instead of assumning that the
+    #       last update results in greater num_parts.
+    max_num_parts: int = marker_df["num_parts"].max()  # type: ignore
+
     df = markers_df.sql(f"""
         SELECT
             marker_path, num_parts, count(DISTINCT data_path) as num_paths
         FROM self
         WHERE marker_path = '{marker_path}'
+        AND num_parts = {max_num_parts}
         GROUP BY marker_path, num_parts
         """)
 

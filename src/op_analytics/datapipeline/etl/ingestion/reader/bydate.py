@@ -9,7 +9,7 @@ from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import surrounding_dates
-from op_analytics.datapipeline.chains.activation import is_chain_active
+from op_analytics.datapipeline.chains.activation import is_chain_active, is_chain_activation_date
 
 from .markers import IngestionData, IngestionDataSpec
 
@@ -67,6 +67,7 @@ def construct_readers_bydate(
                 # is safe to consume.
                 input_data = are_inputs_ready(
                     markers_df=filtered_df,
+                    chain=chain,
                     dateval=dateval,
                     root_paths_to_check=data_spec.adapter.root_paths_physical(chain),
                     storage_location=read_from,
@@ -101,6 +102,7 @@ def construct_readers_bydate(
 
 def are_inputs_ready(
     markers_df: pl.DataFrame,
+    chain: str,
     dateval: date,
     root_paths_to_check: Iterable[str],
     storage_location: DataLocation,
@@ -127,6 +129,9 @@ def are_inputs_ready(
 
     dataset_paths = {}
 
+    # The activation date does not require verifying data on the prior day.
+    is_activation = is_chain_activation_date(chain, dateval)
+
     for root_path in root_paths_to_check:
         dataset_df = markers_df.filter(pl.col("root_path") == root_path)
 
@@ -134,6 +139,7 @@ def are_inputs_ready(
             root_path=root_path,
             dataset_df=dataset_df,
             dateval=dateval,
+            is_activation_date=is_activation,
         )
         if not dataset_ready:
             return IngestionData(
@@ -157,6 +163,7 @@ def is_dataset_ready(
     root_path: str,
     dataset_df: pl.DataFrame,
     dateval: date,
+    is_activation_date: bool,
 ) -> bool:
     with bound_contextvars(dataset=root_path):
         if dataset_df.is_empty():
@@ -185,7 +192,7 @@ def is_dataset_ready(
 
         # Check that there is coverage from the day before the dateval
         # to the day after the dateval.
-        expected = surrounding_dates(dateval)
+        expected = surrounding_dates(dateval, minus_delta=0 if is_activation_date else 1)
         is_ready = sorted(dates_covered) == expected
 
         if not is_ready:

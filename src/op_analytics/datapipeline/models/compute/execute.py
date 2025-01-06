@@ -1,53 +1,47 @@
 from dataclasses import dataclass, field
-from typing import Protocol
 
 import duckdb
 
-from .model import PythonModel
+from op_analytics.coreutils.duckdb_inmem import DuckDBContext
+from op_analytics.coreutils.logger import structlog
+
+from .model import PythonModel, AuxiliaryView, ModelDataReader, ParquetData
 
 
-class ModelInputDataReader(Protocol):
-    def register_duckdb_relation(
-        self,
-        dataset: str,
-        first_n_parquet_files: int | None = None,
-    ) -> str: ...
+log = structlog.get_logger()
 
 
 @dataclass
 class PythonModelExecutor:
     model: PythonModel
-    client: duckdb.DuckDBPyConnection
-    data_reader: ModelInputDataReader
+    duckdb_context: DuckDBContext
+    data_reader: ModelDataReader
     limit_input_parquet_files: int | None = None
 
-    # Keep track of registered views so they can be unregistered
-    # at exit.
+    # Input datasets as remote parquet paths.
+    input_datasets: dict[str, ParquetData] = field(default_factory=dict, init=False)
+
+    # Aux views.
+    auxiliary_views: dict[str, AuxiliaryView] = field(default_factory=dict, init=False)
+
+    # Keep track of registered views so they can be unregistered at exit.
     registered_views: list[str] = field(default_factory=list, init=False)
 
+    @property
+    def client(self) -> duckdb.DuckDBPyConnection:
+        return self.duckdb_context.client
+
     def __enter__(self):
-        # Register input data as views on the duckdb client.
+        # Initialize remote parquet data.
         for dataset in self.model.input_datasets:
-            view_name = self.data_reader.register_duckdb_relation(
+            self.input_datasets[dataset] = self.data_reader.remote_parquet(
                 dataset=dataset,
                 first_n_parquet_files=self.limit_input_parquet_files,
             )
-            self.registered_views.append(view_name)
 
-        # Register the rendered views.
-        for view in self.model.rendered_views():
-            try:
-                obj = self.client.sql(view.query)
-            except Exception as ex:
-                raise Exception(
-                    f"sql error on rendered view: {view.template_name!r}\n{str(ex)} "
-                ) from ex
-
-            self.client.register(
-                view_name=view.template_name,
-                python_object=obj,
-            )
-            self.registered_views.append(view.template_name)
+        # Initialize the auxiliary views:
+        for template_name in self.model.auxiliary_views:
+            self.auxiliary_views[template_name] = AuxiliaryView(template_name=template_name)
 
         return self
 
@@ -65,5 +59,8 @@ class PythonModelExecutor:
         for view in remaining_views:
             self.client.unregister(view_name=view)
 
+    def call_args(self):
+        return (self.duckdb_context, self.input_datasets, self.auxiliary_views)
+
     def execute(self):
-        return self.model.func(self.client)
+        return self.model.func(*self.call_args())

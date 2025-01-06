@@ -8,10 +8,10 @@ from op_analytics.datapipeline.models.compute.udfs import (
 
 
 def test_macros_00():
-    client = init_client()
-    create_duckdb_macros(client)
+    ctx = init_client()
+    create_duckdb_macros(ctx)
 
-    client.sql("""
+    ctx.client.sql("""
     CREATE TABLE test_macros AS
     SELECT
         100::BIGINT AS gas_price,
@@ -21,7 +21,7 @@ def test_macros_00():
     """)
 
     # Use raw sql.
-    result = client.sql("""
+    result = ctx.client.sql("""
     SELECT
         gas_price * receipt_gas_used,
         wei_to_eth(gas_price * receipt_gas_used) AS ans_eth,
@@ -37,10 +37,10 @@ def test_macros_00():
 
 
 def test_gwei_to_eth():
-    client = init_client()
-    create_duckdb_macros(client)
+    ctx = init_client()
+    create_duckdb_macros(ctx)
 
-    actual = client.sql("""
+    actual = ctx.client.sql("""
     SELECT
         gwei_to_eth(1) AS m1,
         gwei_to_eth(10550003221200) as m2,
@@ -58,10 +58,10 @@ def test_gwei_to_eth():
 
 
 def test_epoch_to_hour_and_date():
-    client = init_client()
-    create_duckdb_macros(client)
+    ctx = init_client()
+    create_duckdb_macros(ctx)
 
-    actual = client.sql("""
+    actual = ctx.client.sql("""
     SELECT
         100::BIGINT AS timestamp,
         epoch_to_hour(100::INT) as hour1,
@@ -85,10 +85,10 @@ def test_epoch_to_hour_and_date():
 
 
 def test_micro():
-    client = init_client()
-    create_duckdb_macros(client)
+    ctx = init_client()
+    create_duckdb_macros(ctx)
 
-    actual = client.sql("""
+    actual = ctx.client.sql("""
     SELECT
         micro(100) AS m1,
         micro(1000000) as m2
@@ -102,10 +102,10 @@ def test_micro():
 
 
 def test_div16():
-    client = init_client()
-    create_duckdb_macros(client)
+    ctx = init_client()
+    create_duckdb_macros(ctx)
 
-    actual = client.sql("""
+    actual = ctx.client.sql("""
     SELECT
         div16(128) AS m1,
         div16(1) as m2
@@ -119,10 +119,10 @@ def test_div16():
 
 
 def test_hexstr_bytelen():
-    client = init_client()
-    create_duckdb_macros(client)
+    ctx = init_client()
+    create_duckdb_macros(ctx)
 
-    actual = client.sql("""
+    actual = ctx.client.sql("""
     SELECT
         hexstr_bytelen('0x3d602d80600a3d3981f3363d3d373d3d3d363d739ec1c3dcf667f2035fb4cd2eb42a1566fd54d2b75af43d82803e903d91602b57fd5bf3') AS m1,
         hexstr_bytelen('0x3d60')
@@ -136,8 +136,8 @@ def test_hexstr_bytelen():
 
 
 def test_hexstr_byte_related():
-    client = init_client()
-    create_duckdb_macros(client)
+    ctx = init_client()
+    create_duckdb_macros(ctx)
 
     test_inputs = [
         "0x3006",
@@ -149,32 +149,89 @@ def test_hexstr_byte_related():
 
     actual = []
     for test in test_inputs:
-        result = client.sql("""
+        result = ctx.client.sql(f"""
             SELECT
                 hexstr_bytelen('{test}') as len,
-                hexstr_nonzero_bytes('{test}') as nonzero,
                 hexstr_zero_bytes('{test}') as zero,
                 hexstr_calldata_gas('{test}') as calldata_gas
             """).fetchall()[0]
         actual.append(result)
 
     assert actual == [
-        (2, 2, 0, 32),
-        (2, 2, 0, 32),
-        (2, 2, 0, 32),
-        (2, 2, 0, 32),
-        (2, 2, 0, 32),
+        (2, 0, 32),
+        (2, 1, 20),
+        (55, 0, 880),
+        (2, 0, 32),
+        (3, 3, 12),
     ]
 
 
 def test_hexstr_method_id():
-    client = init_client()
-    create_duckdb_macros(client)
+    ctx = init_client()
+    create_duckdb_macros(ctx)
 
-    actual = client.sql("""
+    actual = ctx.client.sql("""
     SELECT
         hexstr_method_id('0x3d602d80600a3d3981f3363d3d373d3d3d363d739ec1c3dcf667f2035fb4cd2eb42a1566fd54d2b75af43d82803e903d91602b57fd5bf3') AS m1,
      """).fetchall()[0]
 
     expected = ("0x3d602d80",)
     assert actual == expected
+
+
+def test_hextr_bytes_py_udf():
+    ctx = init_client()
+    create_duckdb_macros(ctx)
+
+    test_inputs = [
+        "0x3006",
+        "0x3f00",
+        "0x3d602d80600a3d3981f3363d3d373d3d3d363d739ec1c3dcf667f2035fb4cd2eb42a1566fd54d2b75af43d82803e903d91602b57fd5bf3",
+        "0x3d60",
+        "0x000000",
+    ]
+
+    actual = []
+    for test in test_inputs:
+        result = ctx.client.sql(f"""
+            SELECT
+                hexstr_bytelen('{test}') as len,
+                hexstr_zero_bytes('{test}') as zero,
+            """).fetchall()[0]
+        actual.append(result)
+
+    assert actual == [
+        (2, 0),
+        (2, 1),
+        (55, 0),
+        (2, 0),
+        (3, 3),
+    ]
+
+
+def test_trace_address_helpers():
+    ctx = init_client()
+    create_duckdb_macros(ctx)
+
+    test_inputs = ["", "0", "0,0", "0,1", "0,10,0", "0,10,0,0", "0,2", "0,100,0", "0,10,10"]
+
+    actual = []
+    for test in test_inputs:
+        result = ctx.client.sql(f"""
+            SELECT
+                trace_address_depth('{test}') as depth,
+                trace_address_parent('{test}') as parent,
+            """).fetchall()[0]
+        actual.append(result)
+
+    assert actual == [
+        (0, "none"),
+        (1, ""),
+        (2, "0"),
+        (2, "0"),
+        (3, "0,10"),
+        (4, "0,10,0"),
+        (2, "0"),
+        (3, "0,100"),
+        (3, "0,10"),
+    ]

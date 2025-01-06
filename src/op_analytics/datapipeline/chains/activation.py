@@ -11,6 +11,7 @@ CHAIN_ACTIVATION_DATES = {
     "cyber": date_fromstr("2024-04-18"),
     "fraxtal": date_fromstr("2024-02-01"),
     "ham": date_fromstr("2024-05-24"),
+    "ink": date_fromstr("2024-12-06"),
     "kroma": date_fromstr("2023-09-05"),
     "lisk": date_fromstr("2024-05-03"),
     "lyra": date_fromstr("2023-11-15"),
@@ -29,6 +30,7 @@ CHAIN_ACTIVATION_DATES = {
     "xterio": date_fromstr("2024-05-24"),
     "zora": date_fromstr("2023-06-13"),
     # TESTNETS
+    "ink_sepolia": date_fromstr("2024-10-15"),
     "op_sepolia": date_fromstr("2024-01-01"),
     "unichain_sepolia": date_fromstr("2024-09-19"),
 }
@@ -38,3 +40,9 @@ def is_chain_active(chain: str, dateval: date) -> bool:
     activation = CHAIN_ACTIVATION_DATES[chain]
 
     return dateval >= activation
+
+
+def is_chain_activation_date(chain: str, dateval: date) -> bool:
+    activation = CHAIN_ACTIVATION_DATES[chain]
+
+    return dateval == activation

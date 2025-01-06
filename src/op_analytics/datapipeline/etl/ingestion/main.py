@@ -48,10 +48,13 @@ def ingest(
         task.progress_indicator = f"{i+1}/{len(tasks)}"
         with bound_contextvars(**task.contextvars):
             # Decide if we need to run this task.
-            # TODO: remove side effects from all_outputs_complete()
-            if not force_complete and task.write_manager.all_outputs_complete():
-                log.info("task", status="already_complete")
-                continue
+            if task.write_manager.all_outputs_complete():
+                if not force_complete:
+                    log.info("task", status="already_complete")
+                    continue
+                else:
+                    task.write_manager.clear_complete_markers()
+                    log.info("forced execution despite complete markers")
 
             # Decide if we can run this task.
             if not all_inputs_ready(
@@ -166,7 +169,7 @@ def auditor(task: IngestionTask):
     # sometimes see no logs for a range of blocks. We still need to create a
     # marker for these empty dataframes.
     blocks_df = update_chain_name(task=task, df=task.input_dataframes["blocks"])
-    default_partition = blocks_df.sort("number").select("chain", "dt").limit(1).to_dicts()[0]
+    default_partitions = blocks_df.sort("number").select("chain", "dt").unique().to_dicts()
 
     # Set up the output dataframes now that the audits have passed
     # (ingestion process: outputs are the same as inputs)
@@ -177,7 +180,7 @@ def auditor(task: IngestionTask):
             OutputData(
                 dataframe=df,
                 root_path=task.block_batch.dataset_directory(dataset_name=name),
-                default_partition=default_partition,
+                default_partitions=default_partitions,
             )
         )
 

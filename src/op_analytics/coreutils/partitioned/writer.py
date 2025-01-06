@@ -25,7 +25,7 @@ class PartitionedWriteManager(WriteManager):
         parts = breakout_partitions(
             df=output_data.dataframe,
             partition_cols=self.partition_cols,
-            default_partition=output_data.default_partition,
+            default_partitions=output_data.default_partitions,
         )
 
         written = {}

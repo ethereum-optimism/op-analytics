@@ -5,7 +5,7 @@ pb AS (
     number
     , base_fee_per_gas
   FROM
-    ingestion_blocks_v1
+    {{ raw_blocks }}
 )
 
 -- Select the columns that we want from transactions joined to blocks.
@@ -57,7 +57,6 @@ pb AS (
     , t.receipt_status = 1 AS success
     , hexstr_bytelen(t.input) AS input_byte_length
     , hexstr_zero_bytes(t.input) AS input_zero_bytes
-    , hexstr_nonzero_bytes(t.input) AS input_nonzero_bytes
     , t.transaction_type = 126 OR t.gas_price = 0 AS is_system_transaction
     -- Attributes Deposited Spec:
     -- https://specs.optimism.io/protocol/deposits.html#l1-attributes-deposited-transaction
@@ -69,7 +68,7 @@ pb AS (
 
     , epoch_to_hour(t.block_timestamp) AS block_hour
 
-  FROM ingestion_transactions_v1 AS t
+  FROM {{ raw_transactions }} AS t
   INNER JOIN pb AS b
     ON t.block_number = b.number
   WHERE 1 = 1

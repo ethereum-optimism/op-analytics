@@ -68,7 +68,7 @@ def run_tasks(
         return
 
     if fork_process:
-        executed = run_pool(
+        executed, success, failure = run_pool(
             num_processes=num_processes,
             tasks=tasks,
             force_complete=force_complete,
@@ -80,10 +80,10 @@ def run_tasks(
             steps(item)
             executed += 1
 
-    log.info("done", total=executed, success=executed, fail=0)
+    log.info("done", total=executed, success=success, fail=failure)
 
 
-def worker_function(task_queue):
+def worker_function(task_queue, success_shared_counter, failure_shared_counter):
     while True:
         try:
             # Fetch a task from the queue with timeout to allow clean shutdown
@@ -93,8 +93,13 @@ def worker_function(task_queue):
 
             log.info("worker task start")
             steps(task)
+            with success_shared_counter.get_lock():
+                success_shared_counter.value += 1
             log.info("worker task done")
-        except Exception:
+        except Exception as ex:
+            log.error("failed to execute task", exc_info=ex)
+            with failure_shared_counter.get_lock():
+                failure_shared_counter.value += 1
             continue
 
 
@@ -105,7 +110,19 @@ def run_pool(
 ):
     # Task queue nad worker processes.
     queue: mp.Queue = mp.Queue(maxsize=num_processes)
-    workers = [mp.Process(target=worker_function, args=(queue,)) for _ in range(num_processes)]
+    success_shared_counter = mp.Value("i", 0)
+    failure_shared_counter = mp.Value("i", 0)
+    workers = [
+        mp.Process(
+            target=worker_function,
+            args=(
+                queue,
+                success_shared_counter,
+                failure_shared_counter,
+            ),
+        )
+        for _ in range(num_processes)
+    ]
 
     executed = 0
     try:
@@ -135,7 +152,10 @@ def run_pool(
             w.join()
         sys.exit(1)
 
-    return executed
+    success = success_shared_counter.value
+    failure = failure_shared_counter.value
+
+    return executed, success, failure
 
 
 def pending_items(
@@ -156,12 +176,12 @@ def pending_items(
                 continue
 
             # Decide if we need to run this task.
-            # TODO: remove side effects from all_outputs_complete()
-            if not force_complete and task.write_manager.all_outputs_complete():
+            if task.write_manager.all_outputs_complete():
                 if not force_complete:
                     log.info("task", status="already_complete")
                     continue
                 else:
+                    task.write_manager.clear_complete_markers()
                     log.info("forced execution despite complete markers")
 
             # If running locally release duckdb lock before forking.
@@ -175,16 +195,16 @@ def steps(item: WorkItem) -> None:
     """Execute the model computations."""
     with bound_contextvars(**item.context()):
         # Load shared DuckDB UDFs.
-        client = init_client()
-        create_duckdb_macros(client)
+        ctx = init_client()
+        create_duckdb_macros(ctx)
 
         # Set duckdb memory limit. This lets us get an error from duckb instead of
         # OOMing the container.
-        set_memory_limit(client, gb=10)
+        set_memory_limit(ctx.client, gb=10)
 
-        task = item.task
+        task: ModelsTask = item.task
 
-        with PythonModelExecutor(task.model, client, task.data_reader) as m:
+        with PythonModelExecutor(task.model, ctx, task.data_reader) as m:
             log.info("running model")
             model_results = m.execute()
 
@@ -195,10 +215,17 @@ def steps(item: WorkItem) -> None:
                 )
 
             for result_name, rel in model_results.items():
+                if isinstance(rel, duckdb.DuckDBPyRelation):
+                    df = rel.pl()
+                elif isinstance(rel, str):
+                    df = ctx.client.sql(f"SELECT * FROM {rel}").pl()
+
                 task.write_manager.write(
                     output_data=OutputData(
-                        dataframe=rel.pl(),
+                        dataframe=df,
                         root_path=f"{task.output_root_path_prefix}/{task.model.fq_model_path}/{result_name}",
-                        default_partition=task.data_reader.partitions_dict(),
+                        default_partitions=[task.data_reader.partitions_dict()],
                     ),
                 )
+
+        log.info("task", status="success", exitcode=0)
