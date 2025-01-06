@@ -1,15 +1,15 @@
-from enum import Enum
-
 import polars as pl
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.dailydata import read_daily_data, write_daily_data
-from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.dailydata import (
+    write_daily_data,
+    DailyDataset,
+)
 
 log = structlog.get_logger()
 
 
-class DefiLlama(str, Enum):
+class DefiLlama(DailyDataset):
     """Supported defillama datasets.
 
     This class includes utilities to read data from each dataset from a notebook
@@ -29,9 +29,13 @@ class DefiLlama(str, Enum):
     STABLECOINS_METADATA = "stablecoins_metadata_v1"
     STABLECOINS_BALANCE = "stablecoins_balances_v1"
 
-    @property
-    def root_path(self):
-        return f"defillama/{self.value}"
+    # DEX Volumes, Fees, and Revenue at various levels of granularity
+    DEXS_FEES_TOTAL = "dexs_crypto_v1"
+    DEXS_FEES_BY_CHAIN = "dexs_by_chain_v1"
+    DEXS_FEES_BY_CHAIN_PROTOCOL = "dexs_by_chain_protocol_v1"
+
+    # Summary for dexs/dailyVolume, fees/dailyFees, and fees/dailyRevenue
+    DEXS_PROTOCOLS_METADATA = "dexs_protocols_metadata_v1"
 
     def write(
         self,
@@ -42,19 +46,4 @@ class DefiLlama(str, Enum):
             root_path=self.root_path,
             dataframe=dataframe,
             sort_by=sort_by,
-        )
-
-    def read(
-        self,
-        min_date: str | None = None,
-        max_date: str | None = None,
-        date_range_spec: str | None = None,
-    ) -> str:
-        """Read defillama data. Optionally filtered by date."""
-        return read_daily_data(
-            root_path=self.root_path,
-            min_date=min_date,
-            max_date=max_date,
-            date_range_spec=date_range_spec,
-            location=DataLocation.GCS,
         )

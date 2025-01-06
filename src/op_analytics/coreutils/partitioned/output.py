@@ -25,6 +25,6 @@ class OutputData:
     # Root path
     root_path: str
 
-    # Default partition values for cases when the output datafarame is empty
+    # Default partition values for cases when the output dataframe is empty
     # and therefore has no implicit partition values.
-    default_partition: dict[str, Any] | None = None
+    default_partitions: list[dict[str, Any]] | None = None

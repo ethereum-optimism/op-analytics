@@ -3,15 +3,10 @@ from dataclasses import dataclass
 from typing import ClassVar, Callable, Protocol
 
 
-from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
+from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext, ParquetData
 
 from .auxview import AuxiliaryView
 from .types import NamedRelations
-
-
-class ParquetData(Protocol):
-    def create_table(self) -> str: ...
-    def create_view(self) -> str: ...
 
 
 class ModelDataReader(Protocol):

@@ -17,6 +17,10 @@ class AuxiliaryView:
     def name(self):
         return self.template_name
 
+    @property
+    def sanitized_name(self):
+        return self.template_name.replace("/", "__")
+
     def render(self, context: dict[str, Any]):
         q = TemplatedSQLQuery(
             template_name=self.template_name,
@@ -58,12 +62,22 @@ class AuxiliaryView:
         except Exception as ex:
             raise Exception(f"sql error: {self.name!r}\n{str(ex)}\n\n{statement} ") from ex
 
+    def create_view_statement(self, template_parameters: dict[str, Any]) -> str:
+        return (
+            f"CREATE OR REPLACE VIEW {self.sanitized_name} AS\n{self.render(template_parameters)}"
+        )
+
+    def create_table_statement(self, template_parameters: dict[str, Any]) -> str:
+        return (
+            f"CREATE OR REPLACE TABLE {self.sanitized_name} AS\n{self.render(template_parameters)}"
+        )
+
     def create_view(
         self,
         duckdb_context: DuckDBContext,
         template_parameters: dict[str, Any],
     ) -> str:
-        statement = f"CREATE OR REPLACE VIEW {self.name} AS\n{self.render(template_parameters)}"
+        statement = self.create_view_statement(template_parameters)
         try:
             duckdb_context.client.sql(statement)
         except Exception as ex:
@@ -77,11 +91,11 @@ class AuxiliaryView:
         duckdb_context: DuckDBContext,
         template_parameters: dict[str, Any],
     ) -> str:
-        statement = f"CREATE OR REPLACE TABLE {self.name} AS\n{self.render(template_parameters)}"
+        statement = self.create_table_statement(template_parameters)
         try:
             duckdb_context.client.sql(statement)
         except Exception as ex:
             raise Exception(f"sql error: {self.name!r}\n{str(ex)}\n\n{statement} ") from ex
 
         duckdb_context.report_size()
-        return self.name
+        return self.sanitized_name

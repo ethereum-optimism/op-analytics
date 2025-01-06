@@ -11,7 +11,8 @@ WITH filtered_events AS (
 , block_ranges AS (
 SELECT min(number) AS min_num, max(number) AS max_num
     from @blockchain@_blocks
-    where timestamp >= DATE_TRUNC('day', NOW() - INTERVAL '@trailing_days@ days')
+    where timestamp >= DATE_TRUNC('day', NOW() - INTERVAL '@trailing_days_end@ days')
+        and timestamp < DATE_TRUNC('day', NOW() - INTERVAL '@trailing_days_start@ days')
         and timestamp < toDate(NOW())
 )
 
@@ -23,9 +24,13 @@ DATE_TRUNC('day',block_timestamp) AS dt,
   '@layer@' AS layer,
 COUNT(*) AS num_raw_txs,
 COUNTIf(receipt_status = 1) AS num_success_txs,
-COUNTIf(is_qualified = 1) AS num_qualified_txs
+COUNTIf(is_qualified = 1) AS num_qualified_txs,
+SUM(receipt_gas_used) AS sum_raw_gas_used,
+SUMIf(receipt_gas_used, receipt_status = 1) AS sum_success_gas_used,
+SUMIf(receipt_gas_used, is_qualified = 1) AS sum_qualified_gas_used
+
 FROM (
-  SELECT block_timestamp, chain, chain_id, hash, receipt_status
+  SELECT block_timestamp, chain, chain_id, hash, receipt_status, receipt_gas_used
     , CASE WHEN (l.transaction_hash IS NOT NULL) AND (l.transaction_hash != '') THEN 1 ELSE 0 END AS is_qualified
   FROM @blockchain@_transactions t
   LEFT JOIN (
@@ -46,7 +51,7 @@ FROM (
     AND t.block_number < (SELECT max_num FROM block_ranges)
   AND t.is_deleted = 0 --not deleted
 
-  GROUP BY 1,2,3,4,5,6
+  GROUP BY 1,2,3,4,5,6,7
 )
 GROUP BY 1,2,3,4,5
 

@@ -202,7 +202,7 @@ def steps(item: WorkItem) -> None:
         # OOMing the container.
         set_memory_limit(ctx.client, gb=10)
 
-        task = item.task
+        task: ModelsTask = item.task
 
         with PythonModelExecutor(task.model, ctx, task.data_reader) as m:
             log.info("running model")
@@ -215,11 +215,16 @@ def steps(item: WorkItem) -> None:
                 )
 
             for result_name, rel in model_results.items():
+                if isinstance(rel, duckdb.DuckDBPyRelation):
+                    df = rel.pl()
+                elif isinstance(rel, str):
+                    df = ctx.client.sql(f"SELECT * FROM {rel}").pl()
+
                 task.write_manager.write(
                     output_data=OutputData(
-                        dataframe=rel.pl(),
+                        dataframe=df,
                         root_path=f"{task.output_root_path_prefix}/{task.model.fq_model_path}/{result_name}",
-                        default_partition=task.data_reader.partitions_dict(),
+                        default_partitions=[task.data_reader.partitions_dict()],
                     ),
                 )
 
