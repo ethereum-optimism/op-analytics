@@ -41,7 +41,7 @@ def chain_endpoint(chain: str, data_type: DEX_ENDPOINT):
     return f"https://api.llama.fi/overview/{endpoint}/{quoted_chain}?excludeTotalDataChart=false&excludeTotalDataChartBreakdown=false&dataType={data_type}"
 
 
-TABLE_LAST_N_DAYS = 3  # upsert only the last X days of volume fetched from the api
+TABLE_LAST_N_DAYS = 4000  # upsert only the last X days of volume fetched from the api
 
 
 @dataclass
@@ -72,14 +72,6 @@ def pull_dex_dataframes(current_dt: str | None = None):
     revenue: DefillamaDEXData = pull_dexs("dailyRevenue")
 
     # Join together volume fees and revenue
-    crypto_df = join_all(
-        volume,
-        fees,
-        revenue,
-        attr="crypto_df",
-        join_keys=["dt"],
-    )
-
     chain_df = join_all(
         volume,
         fees,
@@ -96,13 +88,20 @@ def pull_dex_dataframes(current_dt: str | None = None):
         join_keys=["dt", "chain", "protocol"],
     )
 
+    crypto_df = join_all(
+        volume,
+        fees,
+        revenue,
+        attr="crypto_df",
+        join_keys=["dt"],
+    )
+
     write(
         crypto_df=crypto_df,
         chain_df=chain_df,
         chain_protocol_df=chain_protocol_df,
-        volume_protocols_df=volume.protocols_df,
-        fees_protocols_df=fees.protocols_df,
-        revenue_protocols_df=revenue.protocols_df,
+        # Assume the protocols metadata is the same as returned by dexs/ or fees/ endpoints.
+        protocols_metadata_df=volume.protocols_df,
         current_dt=current_dt,
     )
 
@@ -185,13 +184,9 @@ def write(
     crypto_df: pl.DataFrame,
     chain_df: pl.DataFrame,
     chain_protocol_df: pl.DataFrame,
-    volume_protocols_df: pl.DataFrame,
-    fees_protocols_df: pl.DataFrame,
-    revenue_protocols_df: pl.DataFrame,
+    protocols_metadata_df: pl.DataFrame,
     current_dt: str | None = None,
 ):
-    breakpoint()
-
     # Write Overall DEX Volume.
     DefiLlama.DEXS_FEES_TOTAL.write(
         dataframe=most_recent_dates(crypto_df, n_dates=TABLE_LAST_N_DAYS),
@@ -210,22 +205,10 @@ def write(
         sort_by=["chain", "protocol"],
     )
 
-    # The protocols dataframes are somewhat complex (they have many value columns, such
-    # as "total7d", "change_1m", and so on.)  So we won't join them and will store them
-    # on their own separate tables.
+    # Write Protocol Metadata
     current_dt = current_dt or now_dt()
 
-    DefiLlama.DEXS_VOLUME_SUMMARY.write(
-        dataframe=volume_protocols_df.with_columns(dt=pl.lit(current_dt)),
-        sort_by=["defillamaId", "name"],
-    )
-
-    DefiLlama.FEES_FEES_SUMMARY.write(
-        dataframe=fees_protocols_df.with_columns(dt=pl.lit(current_dt)),
-        sort_by=["defillamaId", "name"],
-    )
-
-    DefiLlama.FEES_REVENUE_SUMMARY.write(
-        dataframe=revenue_protocols_df.with_columns(dt=pl.lit(current_dt)),
+    DefiLlama.DEXS_PROTOCOLS_METADATA.write(
+        dataframe=protocols_metadata_df.with_columns(dt=pl.lit(current_dt)),
         sort_by=["defillamaId", "name"],
     )

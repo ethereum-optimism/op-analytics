@@ -24,21 +24,6 @@ EXPECTED_PROTOCOLS_DF_SCHEMA = {
     "slug": pl.String,
     "id": pl.String,
     "parentProtocol": pl.String,
-    "total24h": pl.Int64,
-    "total48hto24h": pl.Int64,
-    "total7d": pl.Int64,
-    "total14dto7d": pl.Int64,
-    "total60dto30d": pl.Int64,
-    "total30d": pl.Int64,
-    "total1y": pl.Int64,
-    "totalAllTime": pl.Float64,
-    "average1y": pl.Float64,
-    "change_1d": pl.Float64,
-    "change_7d": pl.Float64,
-    "change_1m": pl.Float64,
-    "change_7dover7d": pl.Float64,
-    "change_30dover30d": pl.Float64,
-    "breakdown24h": pl.List(pl.Struct({"chain": pl.String, "name": pl.String, "value": pl.Int64})),
 }
 
 
@@ -85,9 +70,7 @@ def test(mock_write):
     crypto_df = mock_write.call_args_list[0].kwargs["crypto_df"]
     chain_df = mock_write.call_args_list[0].kwargs["chain_df"]
     chain_protocol_df = mock_write.call_args_list[0].kwargs["chain_protocol_df"]
-    volume_protocols_df = mock_write.call_args_list[0].kwargs["volume_protocols_df"]
-    fees_protocols_df = mock_write.call_args_list[0].kwargs["fees_protocols_df"]
-    revenue_protocols_df = mock_write.call_args_list[0].kwargs["revenue_protocols_df"]
+    protocols_metadata_df = mock_write.call_args_list[0].kwargs["protocols_metadata_df"]
 
     assert crypto_df.columns == [
         "dt",
@@ -111,6 +94,4 @@ def test(mock_write):
         "total_revenue_usd",
     ]
 
-    assert volume_protocols_df.schema == EXPECTED_PROTOCOLS_DF_SCHEMA
-    assert fees_protocols_df.schema == EXPECTED_PROTOCOLS_DF_SCHEMA
-    assert revenue_protocols_df.schema == EXPECTED_PROTOCOLS_DF_SCHEMA
+    assert protocols_metadata_df.schema == EXPECTED_PROTOCOLS_DF_SCHEMA

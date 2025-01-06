@@ -86,7 +86,7 @@ def write_daily_data(
 
         writer.write(
             output_data=OutputData(
-                dataframe=part.df.with_columns(dt=pl.lit(datestr)),
+                dataframe=part_df,
                 root_path=root_path,
                 default_partitions=None,
             )

@@ -30,21 +30,6 @@ def get_protocols_df(summary_response):
     ]
     OPTIONAL_FIELDS = [
         "parentProtocol",
-        "total24h",
-        "total48hto24h",
-        "total7d",
-        "total14dto7d",
-        "total60dto30d",
-        "total30d",
-        "total1y",
-        "totalAllTime",
-        "average1y",
-        "change_1d",
-        "change_7d",
-        "change_1m",
-        "change_7dover7d",
-        "change_30dover30d",
-        "breakdown24h",
     ]
 
     total_metadata: list[dict] = []
@@ -81,21 +66,6 @@ def get_protocols_df(summary_response):
             "slug": pl.String,
             "id": pl.String,
             "parentProtocol": pl.String,
-            "total24h": pl.Int64,
-            "total48hto24h": pl.Int64,
-            "total7d": pl.Int64,
-            "total14dto7d": pl.Int64,
-            "total60dto30d": pl.Int64,
-            "total30d": pl.Int64,
-            "total1y": pl.Int64,
-            "totalAllTime": pl.Float64,
-            "average1y": pl.Float64,
-            "change_1d": pl.Float64,
-            "change_7d": pl.Float64,
-            "change_1m": pl.Float64,
-            "change_7dover7d": pl.Float64,
-            "change_30dover30d": pl.Float64,
-            "breakdown24h": LIST_OF_CHAIN_VALUES,
         },
     )
 
@@ -107,16 +77,6 @@ LIST_OF_KEYVAL = pl.List(
         [
             pl.Field("key", pl.String),
             pl.Field("value", pl.String),
-        ]
-    )
-)
-
-LIST_OF_CHAIN_VALUES = pl.List(
-    pl.Struct(
-        [
-            pl.Field("chain", pl.String),
-            pl.Field("name", pl.String),
-            pl.Field("value", pl.Int64),
         ]
     )
 )
