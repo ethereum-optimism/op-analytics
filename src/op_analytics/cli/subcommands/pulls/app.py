@@ -89,6 +89,13 @@ def defillama_dexs_fees_revenue():
     """Pull DEX Volumes, Fees, and Revenue from Defillama."""
     pull_dex_dataframes()
 
+    from .defillama.dataaccess import DefiLlama
+
+    DefiLlama.DEXS_PROTOCOLS_METADATA.insert_to_clickhouse()
+    DefiLlama.DEXS_FEES_TOTAL.insert_to_clickhouse(incremental_overlap=3)
+    DefiLlama.DEXS_FEES_BY_CHAIN.insert_to_clickhouse(incremental_overlap=3)
+    DefiLlama.DEXS_FEES_BY_CHAIN_PROTOCOL.insert_to_clickhouse(incremental_overlap=3)
+
 
 @app.command()
 def growthepie_chain_summary():
@@ -97,5 +104,5 @@ def growthepie_chain_summary():
 
     from .growthepie.dataaccess import GrowThePie
 
-    GrowThePie.FUNDAMENTALS_SUMMARY.insert_to_clickhouse()
-    GrowThePie.CHAIN_METADATA.insert_to_clickhouse()
+    GrowThePie.FUNDAMENTALS_SUMMARY.insert_to_clickhouse(incremental_overlap=1)
+    GrowThePie.CHAIN_METADATA.insert_to_clickhouse(incremental_overlap=1)
