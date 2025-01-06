@@ -1,4 +1,4 @@
-name: On-Demand Chain Metadata Updates
+name: On-Demand Chain Metadata Updates Test
 run-name: ${{ github.event.created_at }}
 on:
   schedule:
