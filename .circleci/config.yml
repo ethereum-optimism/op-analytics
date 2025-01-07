@@ -149,4 +149,4 @@ workflows:
   test:
     jobs:
       - deploy-github-pages:
-          context: op-analytics
+          context: circleci-repo-op-analytics
