@@ -17,7 +17,6 @@ commands:
       - run:
           name: Install project dependencies
           command: uv sync --all-extras --dev
-
 jobs:
   deploy-github-pages:
     machine:
