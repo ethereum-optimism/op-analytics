@@ -52,8 +52,14 @@ jobs:
 
             cd docs
             git add .
-            git commit -m "Deploying to ${CIRCLE_BRANCH} from @ ${SOURCE_REPO}@${SOURCE_COMMIT} 🚀"
-            git push "https://x-access-token:${GITHUB_APP_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git" ${CIRCLE_BRANCH}
+
+            # Commit and push if there are changes
+            if ! git diff --quiet; then
+              git commit -m "Deploying to ${CIRCLE_BRANCH} from @ ${SOURCE_REPO}@${SOURCE_COMMIT} 🚀"
+              git push "https://x-access-token:${GITHUB_APP_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git" ${CIRCLE_BRANCH}
+            else
+              echo "No changes to commit"
+            fi
 
   defillama-protocols:
     machine:
