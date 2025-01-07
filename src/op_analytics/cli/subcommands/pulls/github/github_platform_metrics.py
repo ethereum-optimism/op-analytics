@@ -2,8 +2,8 @@ import time
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
-import polars as pl
 import requests
+import polars as pl
 
 from op_analytics.cli.subcommands.pulls.github.dataaccess import GitHubPlatform
 from op_analytics.coreutils.logger import structlog
@@ -19,11 +19,13 @@ from op_analytics.coreutils.time import (
 log = structlog.get_logger()
 
 
+# --- Rate Limit Helpers --- #
+
+
 def get_rate_limit_info(session: requests.Session, token: Optional[str] = None) -> dict:
     """
-    Fetch the current GitHub rate limit info from /rate_limit endpoint.
-    Returns a dict like: { 'limit': ..., 'remaining': ..., 'reset': ... } for the 'core' resource,
-    where 'reset' is an integer epoch.
+    Get the current GitHub rate limit for the 'core' resource.
+    Returns dict with limit, remaining, and reset (epoch) values.
     """
     headers = {"Accept": "application/vnd.github+json"}
     if token:
@@ -32,53 +34,52 @@ def get_rate_limit_info(session: requests.Session, token: Optional[str] = None) 
     resp = session.get("https://api.github.com/rate_limit", headers=headers)
     resp.raise_for_status()
     data = resp.json()
-    core_data = data["resources"]["core"]
-    reset_value = core_data["reset"]
-
+    core = data["resources"]["core"]
     return {
-        "limit": core_data["limit"],
-        "remaining": core_data["remaining"],
-        "reset": reset_value,  # store as integer epoch
+        "limit": core["limit"],
+        "remaining": core["remaining"],
+        "reset": core["reset"],  # integer epoch
     }
 
 
 def wait_for_rate_limit(session: requests.Session, token: Optional[str] = None) -> None:
     """
-    Checks the 'core' REST rate limit. If remaining=0, waits until the reset epoch.
+    If rate limit is exhausted, wait until reset time.
     """
     while True:
-        rate_info = get_rate_limit_info(session, token=token)
-        remaining = rate_info["remaining"]
-        reset_epoch = rate_info["reset"]
-        now_utc = now()
-
+        info = get_rate_limit_info(session, token=token)
+        remaining = info["remaining"]
+        reset_epoch = info["reset"]
         log.info(
             "GitHub Rate Limit",
-            current_utc=str(now_utc),
+            current_utc=str(now()),
             remaining=remaining,
             reset_epoch=reset_epoch,
         )
 
         if remaining == 0:
-            reset_dt = datetime_fromepoch(reset_epoch)
-            wait_seconds = (reset_dt - now_utc).total_seconds()
-            if wait_seconds > 0:
+            wait_until = datetime_fromepoch(reset_epoch)
+            sleep_seconds = (wait_until - now()).total_seconds()
+            if sleep_seconds > 0:
                 log.warning(
-                    "[wait_for_rate_limit] Exhausted. Waiting.",
-                    wait_time_sec=wait_seconds,
-                    reset_time=str(reset_dt),
+                    "Rate limit exhausted, waiting.",
+                    wait_time_sec=sleep_seconds,
+                    reset_time=str(wait_until),
                 )
-                time.sleep(wait_seconds + 2)
+                time.sleep(sleep_seconds + 2)
             else:
-                log.info("[wait_for_rate_limit] Presumably just reset, proceeding.")
+                log.info("Rate limit presumably just reset, proceeding.")
         else:
             break
+
+
+# --- Data Container --- #
 
 
 @dataclass
 class GitHubData:
     """
-    Container for GitHub data frames.
+    Holds the data frames fetched from GitHub.
     """
 
     commits: pl.DataFrame
@@ -88,9 +89,12 @@ class GitHubData:
     pr_comments: pl.DataFrame
 
 
+# --- Main GitHub Fetcher Class --- #
+
+
 class GitHubFetcher:
     """
-    Fetch data from the GitHub API using a single session and concurrency utilities.
+    Fetch various data (commits, issues, etc.) from GitHub, handling pagination and rate limits.
     """
 
     def __init__(self, token: str, owner: str, repos: List[str]):
@@ -102,12 +106,11 @@ class GitHubFetcher:
 
     def _fetch_single_page(self, url: str) -> list | dict:
         """
-        Attempt to fetch a single page, calling wait_for_rate_limit and retrying
-        up to max_attempts times with exponential backoff.
+        Fetch one page with retry and exponential backoff.
         """
         max_attempts = 5
         attempt = 0
-        backoff_seconds = 5
+        backoff = 5
 
         while True:
             attempt += 1
@@ -115,58 +118,51 @@ class GitHubFetcher:
                 wait_for_rate_limit(self.session, token=self.token)
                 return get_data(session=self.session, url=url, retry_attempts=1)
             except Exception as exc:
-                log.warning(
-                    "Error fetching single page",
-                    url=url,
-                    attempt=attempt,
-                    max_attempts=max_attempts,
-                    error=str(exc),
-                )
+                log.warning("Error fetching page", url=url, attempt=attempt, error=str(exc))
                 if attempt >= max_attempts:
-                    log.error("Exceeded max fetch attempts, re-raising exception.", url=url)
+                    log.error("Exceeded max attempts, re-raising.", url=url)
                     raise
-                else:
-                    time.sleep(backoff_seconds)
-                    backoff_seconds *= 2
+                time.sleep(backoff)
+                backoff *= 2
 
-    def _fetch_all_pages(self, initial_url: str) -> List[dict]:
+    def _fetch_all_pages(self, first_url: str) -> List[dict]:
         """
-        Fetch all pages for a given endpoint:
-        1) Fetch the initial page (serially).
-        2) Parse the 'Link' header to determine pagination.
-        3) Fetch subsequent pages in parallel.
+        Fetch all pages for a given endpoint by:
+        1) Fetching the first page.
+        2) Checking 'Link' headers for next/last pages.
+        3) Fetching subsequent pages concurrently.
         """
-        first_page_data = self._fetch_single_page(initial_url)
-        first_page_data = (
-            first_page_data if isinstance(first_page_data, list) else [first_page_data]
-        )
-        all_items = first_page_data.copy()
+        first_data = self._fetch_single_page(first_url)
+        first_data = first_data if isinstance(first_data, list) else [first_data]
+        all_items = first_data.copy()
 
-        head_resp = self.session.head(initial_url)
-        link_header = head_resp.headers.get("Link", None)
+        head_resp = self.session.head(first_url)
+        link_header = head_resp.headers.get("Link")
         if not link_header:
             return all_items
 
+        # Check for 'rel="last"' to find the last page link
         last_link = None
-        for part in link_header.split(","):
-            if 'rel="last"' in part:
-                start = part.find("<") + 1
-                end = part.find(">")
-                last_link = part[start:end]
+        for segment in link_header.split(","):
+            if 'rel="last"' in segment:
+                start = segment.find("<") + 1
+                end = segment.find(">")
+                last_link = segment[start:end]
                 break
 
+        # If no "last" link, just see if there's a "next" link
         if not last_link:
             next_link = None
-            for part in link_header.split(","):
-                if 'rel="next"' in part:
-                    start = part.find("<") + 1
-                    end = part.find(">")
-                    next_link = part[start:end]
+            for segment in link_header.split(","):
+                if 'rel="next"' in segment:
+                    start = segment.find("<") + 1
+                    end = segment.find(">")
+                    next_link = segment[start:end]
                     break
             if next_link:
-                extra_data = self._fetch_single_page(next_link)
-                extra_data = extra_data if isinstance(extra_data, list) else [extra_data]
-                all_items.extend(extra_data)
+                extra = self._fetch_single_page(next_link)
+                extra = extra if isinstance(extra, list) else [extra]
+                all_items.extend(extra)
             return all_items
 
         from urllib.parse import parse_qs, urlparse
@@ -177,30 +173,28 @@ class GitHubFetcher:
         if last_page <= 1:
             return all_items
 
-        parsed_init = urlparse(initial_url)
+        parsed_init = urlparse(first_url)
         qs_init = parse_qs(parsed_init.query)
-        qs_init.pop("page", None)
+        qs_init.pop("page", None)  # remove existing page param
 
         def build_page_url(page_num: int) -> str:
             from urllib.parse import urlencode
 
             new_qs = qs_init.copy()
             new_qs["page"] = str(page_num)
-            query_str = urlencode(new_qs, doseq=True)
-            return f"{parsed_init.scheme}://{parsed_init.netloc}{parsed_init.path}?{query_str}"
+            return f"{parsed_init.scheme}://{parsed_init.netloc}{parsed_init.path}?{urlencode(new_qs, doseq=True)}"
 
-        all_page_urls = [build_page_url(p) for p in range(2, last_page + 1)]
+        page_urls = [build_page_url(p) for p in range(2, last_page + 1)]
 
-        def fetch_func(url: str) -> List[dict]:
-            data = self._fetch_single_page(url)
-            return data if isinstance(data, list) else [data]
+        def fetch_func(u: str) -> List[dict]:
+            result = self._fetch_single_page(u)
+            return result if isinstance(result, list) else [result]
 
-        targets = {f"page_{idx+2}": url for idx, url in enumerate(all_page_urls)}
-        concurrency_results = run_concurrently(fetch_func, targets=targets, max_workers=4)
+        targets = {f"page_{i}": url for i, url in enumerate(page_urls, start=2)}
+        results = run_concurrently(fetch_func, targets=targets, max_workers=4)
 
-        for _, result_list in concurrency_results.items():
-            all_items.extend(result_list)
-
+        for _, data in results.items():
+            all_items.extend(data)
         return all_items
 
     def fetch_commits(self, repo: str, since: Optional[str] = None) -> List[dict]:
@@ -216,14 +210,7 @@ class GitHubFetcher:
         return self._fetch_all_pages(url)
 
     def fetch_pulls(self, repo: str, since: Optional[str] = None) -> List[dict]:
-        """
-        Corrected fetch_pulls method that appends pull request parameters
-        to the proper endpoint.
-        """
-        url = (
-            f"https://api.github.com/repos/{self.owner}/{repo}/pulls"
-            "?state=all&sort=updated&direction=desc"
-        )
+        url = f"https://api.github.com/repos/{self.owner}/{repo}/pulls?state=all&sort=updated&direction=desc"
         if since:
             url += f"&since={since}"
         return self._fetch_all_pages(url)
@@ -241,22 +228,24 @@ class GitHubFetcher:
         return self._fetch_all_pages(url)
 
 
-def _extract_approval_info(reviews: List[dict]) -> Tuple[pl.Datetime, Optional[str]]:
+# --- Pull Request Details Processing --- #
+
+
+def _get_first_approval_info(reviews: List[dict]) -> Tuple[pl.Datetime, Optional[str]]:
     """
     Find the first 'APPROVED' review's time and user.
     Returns (approval_datetime, reviewer_login).
     """
-    approval = next((r for r in reviews if r.get("state", "").upper() == "APPROVED"), None)
-    if approval:
-        submitted_at = parse_isoformat(approval["submitted_at"].replace("Z", "+00:00"))
-        return (submitted_at, approval["user"]["login"] if approval.get("user") else None)
-    # Use epoch=0 to simulate 'datetime.min'
-    return (datetime_fromepoch(0), None)
+    approved = next((r for r in reviews if r.get("state", "").upper() == "APPROVED"), None)
+    if approved:
+        submitted_at = parse_isoformat(approved["submitted_at"].replace("Z", "+00:00"))
+        return submitted_at, approved["user"]["login"] if approved.get("user") else None
+    return datetime_fromepoch(0), None
 
 
-def _comments_to_df(comments: List[dict]) -> pl.DataFrame:
+def _comments_list_to_df(comments: List[dict]) -> pl.DataFrame:
     """
-    Convert a list of comment dicts to a polars DataFrame.
+    Convert comment dicts to a Polars DataFrame.
     """
     if not comments:
         return pl.DataFrame(
@@ -265,48 +254,47 @@ def _comments_to_df(comments: List[dict]) -> pl.DataFrame:
 
     df = pl.DataFrame(
         {
-            "user": [c["user"].get("login", None) if c.get("user") else None for c in comments],
+            "user": [c["user"].get("login") if c.get("user") else None for c in comments],
             "created_at": [c["created_at"] for c in comments],
         }
     ).with_columns(
         pl.col("created_at")
         .str.replace("Z$", "+00:00")
-        .str.strptime(pl.Datetime, format="%Y-%m-%dT%H:%M:%S%z", strict=False),
+        .str.strptime(pl.Datetime, "%Y-%m-%dT%H:%M:%S%z", strict=False),
         pl.col("user").fill_null(""),
     )
-    df = df.with_columns(pl.col("user").str.contains(r"(?i)\[bot\]").alias("is_bot"))
-    return df
+    return df.with_columns(pl.col("user").str.contains(r"(?i)\[bot\]").alias("is_bot"))
 
 
 def _process_pull_details(
-    pulls_df: pl.DataFrame,
-    fetcher: GitHubFetcher,
-    since: Optional[str] = None,
+    pulls_df: pl.DataFrame, fetcher: GitHubFetcher, since: Optional[str] = None
 ) -> Tuple[pl.DataFrame, pl.DataFrame]:
     """
-    Handle pull request details, fetching concurrency results,
-    and computing metrics (time-to-merge, time-to-approval, etc.).
+    Fetch reviews/comments for each PR, then calculate time-to-merge, time-to-approval, etc.
     """
-
     if pulls_df.is_empty():
         return pulls_df, pl.DataFrame()
 
-    for col_name in ["created_at", "merged_at"]:
-        if col_name not in pulls_df.columns:
-            pulls_df = pulls_df.with_columns(pl.lit(None).alias(col_name))
+    # Ensure we have these columns
+    for col in ["created_at", "merged_at"]:
+        if col not in pulls_df.columns:
+            pulls_df = pulls_df.with_columns(pl.lit(None).alias(col))
 
-    pulls_df = pulls_df.with_columns(
-        pl.col("created_at").cast(pl.Utf8).fill_null(""),
-        pl.col("merged_at").cast(pl.Utf8).fill_null(""),
-    ).with_columns(
-        pl.col("created_at")
-        .str.replace("Z$", "+00:00")
-        .str.strptime(pl.Datetime, "%Y-%m-%dT%H:%M:%S%z", strict=False),
-        pl.col("merged_at")
-        .str.replace("Z$", "+00:00")
-        .str.strptime(pl.Datetime, "%Y-%m-%dT%H:%M:%S%z", strict=False),
+    # Convert string times to datetime
+    pulls_df = (
+        pulls_df.with_columns(pl.col("created_at").cast(pl.Utf8).fill_null(""))
+        .with_columns(pl.col("merged_at").cast(pl.Utf8).fill_null(""))
+        .with_columns(
+            pl.col("created_at")
+            .str.replace("Z$", "+00:00")
+            .str.strptime(pl.Datetime, "%Y-%m-%dT%H:%M:%S%z", strict=False),
+            pl.col("merged_at")
+            .str.replace("Z$", "+00:00")
+            .str.strptime(pl.Datetime, "%Y-%m-%dT%H:%M:%S%z", strict=False),
+        )
     )
 
+    # Filter by 'since' if provided
     if since:
         try:
             since_dt = parse_isoformat(since).replace(tzinfo=timezone.utc)
@@ -321,63 +309,55 @@ def _process_pull_details(
     targets = {f"pr_{i}": pr_dict for i, pr_dict in enumerate(pulls_list)}
 
     def fetch_pr_data(pr_info: dict) -> dict:
-        """
-        Fetch reviews & comments for a single PR; compute earliest APPROVED time.
-        """
         repo = pr_info.get("repo")
-        pr_number = pr_info.get("number")
+        number = pr_info.get("number")
         idx = pr_info.get("_idx", -1)
+        if number is None:
+            return {"idx": idx, "approval_time": None, "approver": None, "comments": []}
 
-        if pr_number is None:
-            return {
-                "idx": idx,
-                "approval_time": None,
-                "approver": None,
-                "comments": [],
-            }
-
-        reviews = fetcher.fetch_pr_reviews(repo, pr_number)
-        approval_dt, approver = _extract_approval_info(reviews)
-        raw_comments = fetcher.fetch_pr_comments(repo, pr_number)
+        reviews = fetcher.fetch_pr_reviews(repo, number)
+        approval_dt, approver = _get_first_approval_info(reviews)
+        raw_comments = fetcher.fetch_pr_comments(repo, number)
 
         return {
             "idx": idx,
-            "approval_time": approval_dt if approval_dt != datetime_fromepoch(0) else None,
+            "approval_time": None if approval_dt == datetime_fromepoch(0) else approval_dt,
             "approver": approver,
             "comments": raw_comments,
         }
 
-    concurrency_results = run_concurrently(fetch_pr_data, targets, max_workers=8)
+    results = run_concurrently(fetch_pr_data, targets, max_workers=8)
 
-    comments_accum: list[dict] = []
-    updated_approval_times = [None] * len(targets)
+    # Populate arrays for new columns
+    updated_approvals = [None] * len(targets)
     updated_approvers = [None] * len(targets)
+    comments_accum: List[dict] = []
 
-    for k, fetched_data in concurrency_results.items():
-        i = int(k.replace("pr_", ""))
-        updated_approval_times[i] = fetched_data["approval_time"]
-        updated_approvers[i] = fetched_data["approver"]
+    for key, data in results.items():
+        i = int(key.replace("pr_", ""))
+        updated_approvals[i] = data["approval_time"]
+        updated_approvers[i] = data["approver"]
 
-        orig_pr_info = targets[k]
-        for c in fetched_data["comments"] or []:
-            c["repo"] = orig_pr_info.get("repo")
-            c["pull_number"] = orig_pr_info.get("number")
-        comments_accum.extend(fetched_data["comments"] or [])
+        original = targets[key]
+        for c in data["comments"] or []:
+            c["repo"] = original.get("repo")
+            c["pull_number"] = original.get("number")
+        comments_accum.extend(data["comments"] or [])
 
+    # Merge new columns into the main DF
     pulls_df = pulls_df.with_columns(
-        pl.Series("approval_time", updated_approval_times),
+        pl.Series("approval_time", updated_approvals).cast(pl.Datetime),
         pl.Series("approver", updated_approvers),
-    ).with_columns(
-        pl.col("approval_time").cast(pl.Datetime),
     )
 
+    # Calculate time-to-merge and time-to-approval in days
     pulls_df = pulls_df.with_columns(
         pl.when(pl.col("merged_at").is_not_null())
         .then(
             (
                 (pl.col("merged_at").cast(pl.Int64) - pl.col("created_at").cast(pl.Int64))
-                / 1_000_000_000.0
-                / 86400.0
+                / 1_000_000_000
+                / 86400
             )
         )
         .otherwise(None)
@@ -386,15 +366,16 @@ def _process_pull_details(
         .then(
             (
                 (pl.col("approval_time").cast(pl.Int64) - pl.col("created_at").cast(pl.Int64))
-                / 1_000_000_000.0
-                / 86400.0
+                / 1_000_000_000
+                / 86400
             )
         )
         .otherwise(None)
         .alias("time_to_approval_days"),
     )
 
-    pr_comments_df = _comments_to_df(comments_accum)
+    # Convert comments to DF
+    pr_comments_df = _comments_list_to_df(comments_accum)
     if pr_comments_df.is_empty():
         pulls_df = pulls_df.with_columns(
             pl.lit(None).alias("time_to_first_non_bot_comment_days"),
@@ -403,11 +384,12 @@ def _process_pull_details(
         return pulls_df, pl.DataFrame()
 
     pr_comments_df = pr_comments_df.with_columns(
-        pl.Series(name="repo", values=[c["repo"] for c in comments_accum]),
-        pl.Series(name="pull_number", values=[c["pull_number"] for c in comments_accum]),
+        pl.Series("repo", [c["repo"] for c in comments_accum]),
+        pl.Series("pull_number", [c["pull_number"] for c in comments_accum]),
     )
 
-    non_bot_comments = pr_comments_df.filter(~pl.col("is_bot"))
+    # Grab the earliest non-bot comment per PR
+    non_bot_comments = pr_comments_df.filter(~pl.col("is_bot")).sort("created_at")
     if non_bot_comments.is_empty():
         pulls_df = pulls_df.with_columns(
             pl.lit(None).alias("time_to_first_non_bot_comment_days"),
@@ -415,18 +397,13 @@ def _process_pull_details(
         )
         return pulls_df, pr_comments_df
 
-    non_bot_comments = non_bot_comments.sort("created_at")
-
-    grouped_first_comments = non_bot_comments.group_by(["repo", "pull_number"]).agg(
+    grouped = non_bot_comments.group_by(["repo", "pull_number"]).agg(
         first_non_bot_comment_user=pl.col("user").first(),
         first_non_bot_comment_ts=pl.col("created_at").first(),
     )
 
     pulls_df = pulls_df.join(
-        grouped_first_comments,
-        left_on=["repo", "number"],
-        right_on=["repo", "pull_number"],
-        how="left",
+        grouped, left_on=["repo", "number"], right_on=["repo", "pull_number"], how="left"
     ).with_columns(
         pl.when(pl.col("first_non_bot_comment_ts").is_not_null())
         .then(
@@ -435,8 +412,8 @@ def _process_pull_details(
                     pl.col("first_non_bot_comment_ts").cast(pl.Int64)
                     - pl.col("created_at").cast(pl.Int64)
                 )
-                / 1_000_000_000.0
-                / 86400.0
+                / 1_000_000_000
+                / 86400
             )
         )
         .otherwise(None)
@@ -446,20 +423,18 @@ def _process_pull_details(
     return pulls_df, pr_comments_df
 
 
+# --- Main Entry Points --- #
+
+
 def pull_github_data(
-    token: str,
-    owner: str,
-    repos: List[str],
-    since: Optional[str] = None,
+    token: str, owner: str, repos: List[str], since: Optional[str] = None
 ) -> GitHubData:
     """
-    Main entry point: fetch commits, issues, pulls, and releases for the specified
-    GitHub repos, compute derived metrics for pull requests, and return the data
-    in polars DataFrames.
+    Fetch commits, issues, pulls, and releases, then compute extra pull request metrics.
     """
     fetcher = GitHubFetcher(token, owner, repos)
 
-    def fetch_repo_func(repo_name: str) -> Dict[str, List[dict]]:
+    def fetch_repo_data(repo_name: str) -> Dict[str, List[dict]]:
         return {
             "commits": fetcher.fetch_commits(repo_name, since=since),
             "issues": fetcher.fetch_issues(repo_name, since=since),
@@ -467,35 +442,33 @@ def pull_github_data(
             "releases": fetcher.fetch_releases(repo_name),
         }
 
-    concurrency_targets = {r: r for r in repos}
-    concurrency_results = run_concurrently(
-        fetch_repo_func, targets=concurrency_targets, max_workers=8
-    )
+    targets = {r: r for r in repos}
+    results = run_concurrently(fetch_repo_data, targets=targets, max_workers=8)
 
     commits_df = pl.DataFrame()
     issues_df = pl.DataFrame()
     pulls_df = pl.DataFrame()
     releases_df = pl.DataFrame()
 
-    for repo_name, data_dict in concurrency_results.items():
+    for repo_name, data in results.items():
         ctemp = (
-            pl.DataFrame(data_dict["commits"], infer_schema_length=1000)
-            if data_dict["commits"]
+            pl.DataFrame(data["commits"], infer_schema_length=1000)
+            if data["commits"]
             else pl.DataFrame()
         )
         itemp = (
-            pl.DataFrame(data_dict["issues"], infer_schema_length=1000)
-            if data_dict["issues"]
+            pl.DataFrame(data["issues"], infer_schema_length=1000)
+            if data["issues"]
             else pl.DataFrame()
         )
         ptemp = (
-            pl.DataFrame(data_dict["pulls"], infer_schema_length=1000)
-            if data_dict["pulls"]
+            pl.DataFrame(data["pulls"], infer_schema_length=1000)
+            if data["pulls"]
             else pl.DataFrame()
         )
         rtemp = (
-            pl.DataFrame(data_dict["releases"], infer_schema_length=1000)
-            if data_dict["releases"]
+            pl.DataFrame(data["releases"], infer_schema_length=1000)
+            if data["releases"]
             else pl.DataFrame()
         )
 
@@ -513,56 +486,53 @@ def pull_github_data(
         pulls_df = pl.concat([pulls_df, ptemp], how="vertical")
         releases_df = pl.concat([releases_df, rtemp], how="vertical")
 
-    processed_pulls_df, pr_comments_df = _process_pull_details(pulls_df, fetcher, since=since)
+    processed_pulls, pr_comments = _process_pull_details(pulls_df, fetcher, since=since)
 
     return GitHubData(
         commits=commits_df,
         issues=issues_df,
-        pulls=processed_pulls_df,
+        pulls=processed_pulls,
         releases=releases_df,
-        pr_comments=pr_comments_df,
+        pr_comments=pr_comments,
     )
 
 
 def pull_and_write_platforms_github_metrics(
-    token: str,
-    owner: str,
-    repos: List[str],
-    since: Optional[str] = None,
+    token: str, owner: str, repos: List[str], since: Optional[str] = None
 ):
     """
-    Pull GitHub data for the specified repos
+    Fetch GitHub data, then write to GitHubPlatform.
     """
-    github_data = pull_github_data(token=token, owner=owner, repos=repos, since=since)
+    data = pull_github_data(token, owner, repos, since)
 
-    if not github_data.commits.is_empty():
+    if not data.commits.is_empty():
         GitHubPlatform.COMMITS.write(
-            dataframe=github_data.commits,
+            dataframe=data.commits,
             sort_by=["repo", "commit"],
         )
 
-    if not github_data.issues.is_empty():
+    if not data.issues.is_empty():
         GitHubPlatform.ISSUES.write(
-            dataframe=github_data.issues,
+            dataframe=data.issues,
             sort_by=["repo", "number"],
         )
 
-    if not github_data.pulls.is_empty():
+    if not data.pulls.is_empty():
         GitHubPlatform.PULLS.write(
-            dataframe=github_data.pulls,
+            dataframe=data.pulls,
             sort_by=["repo", "number"],
         )
 
-    if not github_data.releases.is_empty():
+    if not data.releases.is_empty():
         GitHubPlatform.RELEASES.write(
-            dataframe=github_data.releases,
+            dataframe=data.releases,
             sort_by=["repo", "id"],
         )
 
-    if not github_data.pr_comments.is_empty():
+    if not data.pr_comments.is_empty():
         GitHubPlatform.PR_COMMENTS.write(
-            dataframe=github_data.pr_comments,
+            dataframe=data.pr_comments,
             sort_by=["repo", "pull_number"],
         )
 
-    log.info("[pull_and_write_platforms_github_metrics] done", repos=repos, since=since)
+    log.info("Done pulling GitHub metrics", repos=repos, since=since)
