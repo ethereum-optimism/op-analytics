@@ -19,10 +19,7 @@ jobs:
     machine:
       image: ubuntu-2004:current
     steps:
-      - run:
-          name: Clone the repository
-          command: |
-            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+      - checkout
       - setup-python-env
       - run:
           name: DefiLlama Protocol TVL
