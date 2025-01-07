@@ -13,7 +13,7 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
     auxiliary_views=[
         "refined_transactions_fees",
         "refined_traces/traces_projection",
-        "refined_traces/traces_amortized",
+        "refined_traces/traces_with_gas_used",
         "refined_traces/traces_txs_join",
     ],
     expected_outputs=[
