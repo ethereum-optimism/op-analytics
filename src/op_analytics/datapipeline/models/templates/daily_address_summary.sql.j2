@@ -2,6 +2,7 @@ SELECT
   dt
   , chain
   , chain_id
+  , network
   , from_address AS address
   -- Aggregates
 
@@ -43,9 +44,9 @@ SELECT
 
   , sum(if(success, l2_gas_used, 0)) AS success_l2_gas_used_sum
 
-  , sum(l1_gas_used_unified) AS l1_gas_used_sum
+  , sum(l1_gas_used_unified) AS l1_gas_used_unified_sum
 
-  , sum(if(success, l1_gas_used_unified, 0)) AS success_l1_gas_used_sum
+  , sum(if(success, l1_gas_used_unified, 0)) AS success_l1_gas_used_unified_sum
 
   , wei_to_eth(sum(tx_fee)) AS tx_fee_sum_eth
 
@@ -87,11 +88,27 @@ SELECT
 
   , wei_to_gwei(safe_div(sum(l1_blob_fee), sum(l1_blob_scaled_size)))
     AS l1_blob_fee_avg_gwei
+
+  -- Data Processed
+  , sum(input_zero_bytes) AS input_zero_bytes_sum
+  , sum(if(success, input_zero_bytes, 0)) AS success_input_zero_bytes_sum
+
+  , sum(input_byte_length - input_zero_bytes) AS input_nonzero_bytes_sum
+  , sum(if(success, input_byte_length - input_zero_bytes, 0)) AS success_input_nonzero_bytes_sum
+
+  , sum(input_byte_length) AS input_byte_length_sum
+  , sum(if(success, input_byte_length, 0)) AS success_input_byte_length_sum
+
+  , sum(estimated_size) AS estimated_size_sum
+  , sum(if(success, estimated_size, 0)) AS success_estimated_size_sum
+
 FROM
   {{ refined_transactions_fees }}
-WHERE gas_price > 0
+WHERE
+  NOT is_system_transaction
 GROUP BY
   1
   , 2
   , 3
   , 4
+  , 5

@@ -10,7 +10,7 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         "ingestion/transactions_v1",
     ],
     expected_outputs=[
-        "summary_v1",
+        "summary_v2",
     ],
     auxiliary_views=[
         "refined_transactions_fees",
@@ -40,4 +40,4 @@ def daily_address_summary(
         },
     )
 
-    return {"summary_v1": result}
+    return {"summary_v2": result}
