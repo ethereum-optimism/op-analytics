@@ -27,14 +27,13 @@ jobs:
           environment:
             OPLABS_RUNTIME: "gha"
             OPLABS_ENV: "prod"
-            OP_ANALYTICS_VAULT: ${OP_ANALYTICS_VAULT}
+
       - run:
           name: DefiLlama Historical Chain TVL
           command: uv run opdata pulls defillama_historical_chain_tvl
           environment:
             OPLABS_RUNTIME: "gha"
             OPLABS_ENV: "prod"
-            OP_ANALYTICS_VAULT: ${OP_ANALYTICS_VAULT}
 
   daily-uploads-other-tasks:
     machine:
@@ -48,42 +47,41 @@ jobs:
           environment:
             OPLABS_RUNTIME: "gha"
             OPLABS_ENV: "prod"
-            OP_ANALYTICS_VAULT: ${OP_ANALYTICS_VAULT}
+
       - run:
           name: DefiLlama Stablecoins
           command: uv run opdata pulls defillama_stablecoins
           environment:
             OPLABS_RUNTIME: "gha"
             OPLABS_ENV: "prod"
-            OP_ANALYTICS_VAULT: ${OP_ANALYTICS_VAULT}
+
       - run:
           name: DefiLlama DEX Volume, Fees, Revenue
           command: uv run opdata pulls defillama_dexs_fees_revenue
           environment:
             OPLABS_RUNTIME: "gha"
             OPLABS_ENV: "prod"
-            OP_ANALYTICS_VAULT: ${OP_ANALYTICS_VAULT}
+
       - run:
           name: GitHub Analytics
           command: uv run opdata pulls github_analytics
           environment:
             OPLABS_RUNTIME: "gha"
             OPLABS_ENV: "prod"
-            OP_ANALYTICS_VAULT: ${OP_ANALYTICS_VAULT}
+
       - run:
           name: GrowThePie Chain Summary
           command: uv run opdata pulls growthepie_chain_summary
           environment:
             OPLABS_RUNTIME: "gha"
             OPLABS_ENV: "prod"
-            OP_ANALYTICS_VAULT: ${OP_ANALYTICS_VAULT}
+
       - run:
           name: DefiLlama Stablecoins BQ
           command: uv run opdata pulls defillama_stablecoins_bq
           environment:
             OPLABS_RUNTIME: "gha"
             OPLABS_ENV: "prod"
-            OP_ANALYTICS_VAULT: ${OP_ANALYTICS_VAULT}
 
 workflows:
   version: 2
