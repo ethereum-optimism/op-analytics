@@ -37,8 +37,6 @@ jobs:
       #     command: make html-copies
 
       - utils/get-github-access-token:
-          private-key-str: GITHUB_APP_KEY
-          app-id: GITHUB_APP_ID
           repo: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
       - run:
           name: Deploy to GitHub Pages
@@ -149,5 +147,5 @@ workflows:
     jobs:
       - deploy-github-pages:
           context:
-            - circleci-repo-op-analytics
+            - circeci-repo-op-analytics
             - op-analytics
