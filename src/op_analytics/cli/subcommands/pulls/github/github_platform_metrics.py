@@ -197,6 +197,28 @@ class GitHubFetcher:
             all_items.extend(data)
         return all_items
 
+    def fetch_open_pulls(self, repo: str) -> List[dict]:
+        """
+        Fetch all currently open (unmerged) PRs for the repository.
+        """
+        url = f"https://api.github.com/repos/{self.owner}/{repo}/pulls?state=open&sort=updated&direction=desc"
+        return self._fetch_all_pages(url)
+
+    def fetch_recent_merged_pulls(self, repo: str, since: str) -> List[dict]:
+        """
+        Fetch recently updated (closed) PRs. The 'since' parameter is typically
+        set to (now - 3 weeks) so we capture merges or approvals in that window.
+        """
+        url = (
+            f"https://api.github.com/repos/{self.owner}/{repo}/pulls?"
+            f"state=closed&sort=updated&direction=desc&since={since}"
+        )
+        all_closed = self._fetch_all_pages(url)
+        # Filter down to pulls that specifically have a 'merged_at' value
+        # (meaning they were actually merged, not just closed)
+        merged_recently = [pr for pr in all_closed if pr.get("merged_at")]
+        return merged_recently
+
     def fetch_commits(self, repo: str, since: Optional[str] = None) -> List[dict]:
         url = f"https://api.github.com/repos/{self.owner}/{repo}/commits?state=all"
         if since:
@@ -431,14 +453,24 @@ def pull_github_data(
 ) -> GitHubData:
     """
     Fetch commits, issues, pulls, and releases, then compute extra pull request metrics.
+    For Pull Requests:
+      - Open pulls: All unmerged PRs for each repo.
+      - Merged pulls: Any PR merged (or approved) in the last 3 weeks, determined by 'since'.
     """
     fetcher = GitHubFetcher(token, owner, repos)
 
     def fetch_repo_data(repo_name: str) -> Dict[str, List[dict]]:
+        open_prs = fetcher.fetch_open_pulls(repo_name)
+        merged_prs = []
+        if since:
+            merged_prs = fetcher.fetch_recent_merged_pulls(repo_name, since)
+        # Combine open and merged into a single list
+        all_prs = open_prs + merged_prs
+
         return {
             "commits": fetcher.fetch_commits(repo_name, since=since),
             "issues": fetcher.fetch_issues(repo_name, since=since),
-            "pulls": fetcher.fetch_pulls(repo_name, since=since),
+            "pulls": all_prs,
             "releases": fetcher.fetch_releases(repo_name),
         }
 
@@ -451,26 +483,10 @@ def pull_github_data(
     releases_df = pl.DataFrame()
 
     for repo_name, data in results.items():
-        ctemp = (
-            pl.DataFrame(data["commits"], infer_schema_length=1000)
-            if data["commits"]
-            else pl.DataFrame()
-        )
-        itemp = (
-            pl.DataFrame(data["issues"], infer_schema_length=1000)
-            if data["issues"]
-            else pl.DataFrame()
-        )
-        ptemp = (
-            pl.DataFrame(data["pulls"], infer_schema_length=1000)
-            if data["pulls"]
-            else pl.DataFrame()
-        )
-        rtemp = (
-            pl.DataFrame(data["releases"], infer_schema_length=1000)
-            if data["releases"]
-            else pl.DataFrame()
-        )
+        ctemp = pl.DataFrame(data["commits"]) if data["commits"] else pl.DataFrame()
+        itemp = pl.DataFrame(data["issues"]) if data["issues"] else pl.DataFrame()
+        ptemp = pl.DataFrame(data["pulls"]) if data["pulls"] else pl.DataFrame()
+        rtemp = pl.DataFrame(data["releases"]) if data["releases"] else pl.DataFrame()
 
         if not ctemp.is_empty():
             ctemp = ctemp.with_columns(pl.lit(repo_name).alias("repo"))
