@@ -154,6 +154,25 @@ def normalize_chains(chains: str) -> list[str]:
     return list(result - not_included)
 
 
+def normalize_blockbatch_models(models: str) -> list[str]:
+    not_included = set()
+
+    result = set()
+    for model in models.split(","):
+        if model == "MODELS":
+            result.add("contract_creation")
+        elif model.startswith("-"):
+            not_included.add(model.removeprefix("-").strip())
+        else:
+            result.add(model.strip())
+
+    excluded = result.intersection(not_included)
+    for model in excluded:
+        log.warning(f"Excluding model: {model!r}")
+
+    return list(result - not_included)
+
+
 @app.command()
 def ingest_blocks(
     chains: CHAINS_ARG,
@@ -239,7 +258,7 @@ def blockbatch_models(
 ):
     """Compute blockbatch models for a range of dates."""
     chain_list = normalize_chains(chains)
-    model_list = [_.strip() for _ in models.split(",")]
+    model_list = normalize_blockbatch_models(models)
 
     compute_blockbatch(
         chains=chain_list,
@@ -286,9 +305,12 @@ def load_superchain_raw(
     )
 
 
+# Commands without arguments for easier k8s setup
+
+
 @app.command()
-def hourly():
-    """Hourly command that runs on kubernetes to keep systems current."""
+def noargs_ingest():
+    """No-args command to run ingestion."""
 
     ingest(
         chains=normalize_chains("ALL"),
@@ -300,6 +322,25 @@ def hourly():
         fork_process=True,
     )
 
+
+@app.command()
+def noargs_blockbatch():
+    """No-args command to run blockbatch models."""
+    compute_blockbatch(
+        chains=normalize_chains("ALL"),
+        models=normalize_blockbatch_models("ALL"),
+        range_spec="m8hours",
+        read_from=DataLocation.GCS,
+        write_to=DataLocation.GCS,
+        dryrun=False,
+        force_complete=False,
+        fork_process=True,
+    )
+
+
+@app.command()
+def noargs_intermediate():
+    """No-args command to run daily intermediate models."""
     for network in ["MAINNETS", "TESTNETS"]:
         compute_intermediate(
             chains=normalize_chains(network),
@@ -314,6 +355,10 @@ def hourly():
             force_complete=False,
         )
 
+
+@app.command()
+def noargs_public_bq():
+    """No-args command to load public datasets to BQ."""
     load_to_bq(
         stage=PipelineStage.RAW_ONCHAIN,
         location=DataLocation.BIGQUERY,
