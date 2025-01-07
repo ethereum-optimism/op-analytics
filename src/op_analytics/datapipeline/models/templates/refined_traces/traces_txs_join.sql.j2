@@ -48,7 +48,7 @@ SELECT
     AS tx_l2_priority_fee_native_amortized_by_call
 
 
-FROM {{ traces_amortized }} AS r
+FROM {{ traces_with_gas_used }} AS r
 INNER JOIN {{ refined_transactions_fees }} AS t
   ON
     r.block_number = t.block_number

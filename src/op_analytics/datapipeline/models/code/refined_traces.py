@@ -26,6 +26,7 @@ def refined_traces(
     input_datasets: dict[str, ParquetData],
     auxiliary_views: dict[str, AuxiliaryView],
 ) -> NamedRelations:
+    # Start out by adding fees and other useful fields to each transaction.
     refined_txs = auxiliary_views["refined_transactions_fees"].create_table(
         duckdb_context=ctx,
         template_parameters={
@@ -34,6 +35,7 @@ def refined_traces(
         },
     )
 
+    # Project only the necessary fields from raw traces.
     refined_traces_projection = auxiliary_views["refined_traces/traces_projection"].create_table(
         duckdb_context=ctx,
         template_parameters={
@@ -41,23 +43,31 @@ def refined_traces(
         },
     )
 
-    traces_amortized = auxiliary_views["refined_traces/traces_amortized"].create_table(
+    # Add up the gas used by the subtraces on each trace. Also include the
+    # number of traces in the parent transaction, so that the transaction gas
+    # used and fees can be amortized among traces.
+    traces_with_gas_used = auxiliary_views["refined_traces/traces_with_gas_used"].create_table(
         duckdb_context=ctx,
         template_parameters={
             "refined_traces_projection": refined_traces_projection,
         },
     )
 
+    # Joins traces with transactions. Amorizes the transaction gas used and
+    # fees across traces.
     traces_txs_join = auxiliary_views["refined_traces/traces_txs_join"].create_table(
         duckdb_context=ctx,
         template_parameters={
-            "traces_amortized": traces_amortized,
+            "traces_with_gas_used": traces_with_gas_used,
             "refined_transactions_fees": refined_txs,
         },
     )
 
+    # These two tables were materialized in duckdb temporarily (with an ORDER BY)
+    # to improve the performance of the traces <> txs join. We don't need them
+    # anymore as the joined result is also materialized.
     ctx.client.sql(f"DROP TABLE {refined_traces_projection}")
-    ctx.client.sql(f"DROP TABLE {traces_amortized}")
+    ctx.client.sql(f"DROP TABLE {traces_with_gas_used}")
 
     return {
         "refined_transactions_fees_v1": refined_txs,
