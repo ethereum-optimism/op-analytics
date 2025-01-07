@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.0.1
-  utils: ethereum-optimism/circleci-utils@dev:first
+  utils: ethereum-optimism/circleci-utils@0.0.9
 
 commands:
   setup-python-env:
@@ -27,15 +27,14 @@ jobs:
 
           command: |
             git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
-      # - setup-python-env
-      # - run:
-      #     name: Build Static Content
-      #     command: make html
-      # # Copy directories to serve
-      # - run:
-      #     name: Copy Directories To Serve
-      #     command: make html-copies
-
+      - setup-python-env
+      - run:
+          name: Build Static Content
+          command: make html
+      # Copy directories to serve
+      - run:
+          name: Copy Directories To Serve
+          command: make html-copies
       - utils/get-github-access-token:
           repo: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
       - run:
