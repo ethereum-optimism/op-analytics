@@ -85,19 +85,19 @@ jobs:
 
 workflows:
   version: 2
-  # daily-api-uploads:
-  #   triggers:
-  #     - schedule:
-  #         cron: "15 3 * * *"
-  #         filters:
-  #           branches:
-  #             only:
-  #               - main
-  #   jobs:
-  #     - defillama-protocols:
-  #         context: op-analytics
-  #     - daily-uploads-other-tasks:
-  #         context: op-analytics
+  daily-api-uploads:
+    triggers:
+      - schedule:
+          cron: "15 3 * * *"
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - defillama-protocols:
+          context: op-analytics
+      - daily-uploads-other-tasks:
+          context: op-analytics
 
   manual:
     when:
