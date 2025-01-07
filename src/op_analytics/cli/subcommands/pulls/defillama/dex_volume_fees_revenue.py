@@ -1,360 +1,214 @@
+import urllib.parse
 from dataclasses import dataclass
-from typing import Optional
-
-from .dataaccess import DefiLlama
+from typing import Literal
 
 import polars as pl
-import json
 
 from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
-    upsert_partitioned_table,
-    upsert_unpartitioned_table,
-    overwrite_unpartitioned_table,
 )
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
-from op_analytics.coreutils.time import dt_fromepoch, now_dt
+from op_analytics.coreutils.time import now_dt
 
-
+from .dataaccess import DefiLlama
+from .dexs.protocols import get_protocols_df
+from .dexs.total_data_chart import get_total_data_chart_df
+from .dexs.by_chain import get_chain_df, get_chain_breakdown_df
 
 log = structlog.get_logger()
 
-# ENDPOINT_NAMES = ['Volume','Fees'] # If we eventually want to standardize further - since the endpoints follow the same format
 
-DEX_SUMMARY_ENDPOINT = "https://api.llama.fi/overview/dexs?excludeTotalDataChart=false&excludeTotalDataChartBreakdown=true&dataType=dailyVolume"
-DEX_CHAIN_ENDPOINT = "https://api.llama.fi/overview/dexs/{chain_name}?excludeTotalDataChart=false&excludeTotalDataChartBreakdown=false&dataType=dailyVolume"
+DEX_ENDPOINT = Literal["dailyVolume", "dailyFees", "dailyRevenue"]
 
-FEE_SUMMARY_ENDPOINT = "https://api.llama.fi/overview/fees?excludeTotalDataChart=false&excludeTotalDataChartBreakdown=true&dataType=dailyFees"
-FEE_CHAIN_ENDPOINT = "https://api.llama.fi/overview/fees/{chain_name}?excludeTotalDataChart=false&excludeTotalDataChartBreakdown=false&dataType=dailyFees"
+ENDPOINT_MAP = {
+    "dailyVolume": "dexs",
+    "dailyFees": "fees",
+    "dailyRevenue": "fees",
+}
 
-REVENUE_SUMMARY_ENDPOINT = "https://api.llama.fi/overview/fees?excludeTotalDataChart=false&excludeTotalDataChartBreakdown=true&dataType=dailyRevenue"
-REVENUE_CHAIN_ENDPOINT = "https://api.llama.fi/overview/fees/{chain_name}?excludeTotalDataChart=false&excludeTotalDataChartBreakdown=false&dataType=dailyRevenue"
 
-BQ_DATASET = "uploads_api"
+def summary_endpoint(data_type: DEX_ENDPOINT):
+    assert data_type in ("dailyVolume", "dailyFees", "dailyRevenue")
+    endpoint = ENDPOINT_MAP[data_type]
+    return f"https://api.llama.fi/overview/{endpoint}?excludeTotalDataChart=false&excludeTotalDataChartBreakdown=true&dataType={data_type}"
 
-TABLE_LAST_N_DAYS = 30  # upsert only the last X days of volume fetched from the api
 
-# High-Level Dataset Pulls
+def chain_endpoint(chain: str, data_type: DEX_ENDPOINT):
+    quoted_chain = urllib.parse.quote(chain)
+    endpoint = ENDPOINT_MAP[data_type]
+    return f"https://api.llama.fi/overview/{endpoint}/{quoted_chain}?excludeTotalDataChart=false&excludeTotalDataChartBreakdown=false&dataType={data_type}"
+
+
+TABLE_LAST_N_DAYS = 3  # upsert only the last X days of volume fetched from the api
+
+
 @dataclass
-class DefillamaDEXFeesRev:
-    """Metadata and Volumes for all DEXs, and Fees & Revenue.
+class DefillamaDEXData:
+    """DEX dataframes at various levels of granularity."""
 
-    This is the result we obtain after fetching from the API and extracting the data
-    that we need to ingest.
+    # Metadata for each protocol and the daily breakdown of the protocol across all chains.
+    protocols_df: pl.DataFrame
+
+    # Total daily value across all crypto (chains and protocols)
+    crypto_df: pl.DataFrame
+
+    # Total daily value of all protocols for each chain.
+    chain_df: pl.DataFrame
+
+    # Breakdown of daily value by chain and protocol.
+    chain_protocol_df: pl.DataFrame
+
+
+def pull_dex_dataframes(current_dt: str | None = None):
+    """DefiLlama DEX data pull.
+
+    Pulls DEX Volume, Fees, and Revenue and writes them out to GCS.
     """
 
-    metadata_df: pl.DataFrame
+    volume: DefillamaDEXData = pull_dexs("dailyVolume")
+    fees: DefillamaDEXData = pull_dexs("dailyFees")
+    revenue: DefillamaDEXData = pull_dexs("dailyRevenue")
 
-    total_crypto_df: pl.DataFrame
-    total_chain_df: pl.DataFrame
+    # Join together volume fees and revenue
+    chain_df = join_all(
+        volume,
+        fees,
+        revenue,
+        attr="chain_df",
+        join_keys=["dt", "chain"],
+    )
 
-    breakdown_df: pl.DataFrame
+    chain_protocol_df = join_all(
+        volume,
+        fees,
+        revenue,
+        attr="chain_protocol_df",
+        join_keys=["dt", "chain", "protocol"],
+    )
 
-def pull_dataframes(SUMMARY_ENDPOINT, CHAIN_ENDPOINT) -> DefillamaDEXFeesRev:
+    crypto_df = join_all(
+        volume,
+        fees,
+        revenue,
+        attr="crypto_df",
+        join_keys=["dt"],
+    )
+
+    write(
+        crypto_df=crypto_df,
+        chain_df=chain_df,
+        chain_protocol_df=chain_protocol_df,
+        # Assume the protocols metadata is the same as returned by dexs/ or fees/ endpoints.
+        protocols_metadata_df=volume.protocols_df,
+        current_dt=current_dt,
+    )
+
+
+def pull_dexs(data_type: DEX_ENDPOINT) -> DefillamaDEXData:
+    """Pull all DEX dataframes for a given data type.
+
+    The DefiLlama dexs API provides 3 data types:
+    - Volume
+    - Fees
+    - Revenue
+
+    For each data type we collect protocol, all of crypto, by chain, and by chain and protocol.
     """
-    Pull all datapoints from the SUMMARY_ENDPOINT
-    1. Chain List - for breakdown pulls
-    2. Total and Chain-Wide
-    3. Breakdown by Chain and Protocol
-    """
+
     session = new_session()
 
-    metadata_df = get_data(session, SUMMARY_ENDPOINT)
+    summary_response = get_data(session, summary_endpoint(data_type))
 
-    # Get Dataframes
-    protocol_metadata = get_protocol_metadata(metadata_df)
-    total_df = get_total_data_chart(metadata_df)
-    volume_dfs = get_total_chain(session, metadata_df, CHAIN_ENDPOINT)
-    chain_df = volume_dfs[0]
-    breakdown_df = volume_dfs[1]
+    # Summary Data
+    crypto_df = get_total_data_chart_df(summary_response)
+    protocols_df = get_protocols_df(summary_response)
 
-    return DefillamaDEXFeesRev(
-        metadata_df= protocol_metadata,
-        total_crypto_df=total_df,
-        total_chain_df=chain_df,
-        breakdown_df=breakdown_df
+    # Chain and Protocol Level Data
+    chain_responses = get_chain_responses(session, summary_response, data_type)
+    chain_df = get_chain_df(chain_responses)
+    chain_protocol_df = get_chain_breakdown_df(chain_responses)
+
+    return DefillamaDEXData(
+        crypto_df=crypto_df,
+        protocols_df=protocols_df,
+        chain_df=chain_df,
+        chain_protocol_df=chain_protocol_df,
     )
 
-def pull_dex_dataframes() -> DefillamaDEXFeesRev:
-    return pull_dataframes(DEX_SUMMARY_ENDPOINT, DEX_CHAIN_ENDPOINT)
 
-def pull_fees_dataframes() -> DefillamaDEXFeesRev:
-    return pull_dataframes(FEE_SUMMARY_ENDPOINT, FEE_CHAIN_ENDPOINT)
-
-def pull_revenue_dataframes() -> DefillamaDEXFeesRev:
-    return pull_dataframes(REVENUE_SUMMARY_ENDPOINT, REVENUE_CHAIN_ENDPOINT)
-
-# Intermediate Functions
-def get_total_data_chart(metadata_df) -> pl.DataFrame | None:
-    try:
-        total_daily_volumes = metadata_df["totalDataChart"]
-        
-        # Build Dataframe
-        total_daily_volumes_df = pl.DataFrame(total_daily_volumes, schema=["dt", "total_volume_usd"], orient="row")
-        
-        # Format dt column as date
-        total_daily_volumes_df = total_daily_volumes_df.with_columns(
-            pl.col("dt").map_elements(dt_fromepoch, return_dtype=pl.String).alias("dt")
-        )
-        return total_daily_volumes_df
-
-    except KeyError:
-        print("Warning: No totalDataChart found")
-        return None
+def get_chain_responses(session, summary_response, data_type: DEX_ENDPOINT) -> dict[str, dict]:
+    chain_urls = {}
+    for chain in summary_response["allChains"]:
+        chain_urls[chain] = chain_endpoint(chain, data_type)
+    chain_responses = run_concurrently(lambda x: get_data(session, x), chain_urls, max_workers=4)
+    return chain_responses
 
 
-def get_total_data_chart_breakdown_volumes(metadata_df) -> pl.DataFrame | None:
-    try:
-        total_daily_bk_volumes = metadata_df["totalDataChartBreakdown"]
-        
-        # Build Dataframe
+def join_all(
+    volume: DefillamaDEXData,
+    fees: DefillamaDEXData,
+    revenue: DefillamaDEXData,
+    attr: str,
+    join_keys: list[str],
+) -> pl.DataFrame:
+    """Helper function to join volume, fees, and revenue dataframes.
 
-        flattened_data: list[dict[str, any]] = []
-
-        for entry in total_daily_bk_volumes:
-            dt = entry[0]  # The timestamp
-            protocol_data = entry[1]  # The dictionary of protocol volumes
-
-            # Iterate over the protocol data to flatten it
-            for protocol, volume in protocol_data.items():
-                flattened_data.append({
-                    "dt": dt,
-                    "protocol": protocol,
-                    "total_volume_usd": volume
-                })
-
-        # Create DataFrame from the flattened data
-        total_daily_bk_volumes_df = pl.DataFrame(flattened_data, schema=["dt", "protocol","total_volume_usd"], orient="row")
-
-        total_daily_bk_volumes_df = total_daily_bk_volumes_df.with_columns(
-                pl.col("dt").map_elements(dt_fromepoch, return_dtype=pl.String).alias("dt")
-            )
-
-        return total_daily_bk_volumes_df
-
-    except KeyError:
-        print("Warning: No totalDataChart found")
-        return None
-
-def get_protocol_metadata(metadata_df):
-
-    protocols = metadata_df["protocols"]
-
-    MUST_HAVE_FIELDS = [
-        "defillamaId",
-        "name",
-        "displayName",
-        "module",
-        "category",
-        "logo",
-        "chains",
-        "protocolType",
-        "methodologyURL",
-        "methodology",
-        "latestFetchIsOk",
-        "slug",
-        "id",
-    ]
-    OPTIONAL_FIELDS = [
-        "parentProtocol",
-        "total24h",
-        "total48hto24h",
-        "total7d",
-        "total14dto7d",
-        "total60dto30d",
-        "total30d",
-        "total1y",
-        "totalAllTime",
-        "average1y",
-        "change_1d",
-        "change_7d",
-        "change_1m",
-        "change_7dover7d",
-        "change_30dover30d",
-        "breakdown24h"
-    ]
-
-    total_metadata: list[dict] = []
-
-    for element in protocols:
-        metadata_row: dict[str, Optional[str]] = {}
-        for key in MUST_HAVE_FIELDS:
-            if key == "methodology":
-                # Convert the methodology struct to a JSON string
-                metadata_row[key] = json.dumps(element.get(key, {}))
-            else:
-                metadata_row[key] = element[key]
-        for key in OPTIONAL_FIELDS:
-            metadata_row[key] = element.get(key)
-            
-        total_metadata.append(metadata_row)
-    
-    protocols_df = pl.DataFrame(total_metadata, infer_schema_length = len(total_metadata))
-    protocols_df = protocols_df.with_columns(latest_dt=pl.lit(now_dt()))
-
-    return protocols_df
-
-def construct_chain_urls(metadata_df, CHAIN_ENDPOINT) -> dict[str, str]:
-    """Build the collection of urls that we will fetch from DefiLlama.
-
-    Args:
-        symbols: list of symbols to process. Defaults to None (process all).
+    At each level of granularity the join is similar, this helper function takes care of the
+    boilerplate.
     """
-    urls = {}
-    chains_list = metadata_df["allChains"]
-    for chain in chains_list:
-        chain_name_fmt = chain.replace(" ","%20")
-        urls[chain] = CHAIN_ENDPOINT.format(chain_name=chain_name_fmt)
 
-    if not urls:
-        raise ValueError("No valid chains provided.")
-    return urls
+    assert attr in ("crypto_df", "chain_df", "chain_protocol_df")
 
+    volume_df: pl.DataFrame = getattr(volume, attr).rename({"total_usd": "total_volume_usd"})
+    fees_df: pl.DataFrame = getattr(fees, attr).rename({"total_usd": "total_fees_usd"})
+    revenue_df: pl.DataFrame = getattr(revenue, attr).rename({"total_usd": "total_revenue_usd"})
 
-def get_total_chain(session, metadata_df, CHAIN_ENDPOINT) -> list[pl.DataFrame]:
-    dex_chain_urls = construct_chain_urls(metadata_df, CHAIN_ENDPOINT)
-    dexs_data = run_concurrently(lambda x: get_data(session, x), dex_chain_urls, max_workers=4)
-
-    chain_level_df = get_chain_level_daily_volumes(dexs_data)
-    chain_dex_level_df = get_chain_dex_level_daily_volumes(dexs_data)
-
-    return [chain_level_df, chain_dex_level_df]
-
-
-def get_chain_level_daily_volumes(dexs_data) -> pl.DataFrame:
-    chain_volumes = []
-
-    for key, value in dexs_data.items():
-        chain_name = key
-        dex_data = value
-        try:
-            total_chain_volume = get_total_data_chart(dex_data)
-            total_chain_volume = total_chain_volume.with_columns(
-                pl.lit(chain_name).alias("chain")
-            )
-            chain_volumes.append(total_chain_volume)
-        except KeyError:
-            print(f"Error processing {chain_name}. Skipping this chain.")
-            continue  # Skip to the next iteration
-
-    if not chain_volumes:
-        raise ValueError("No valid chain data found")
-
-    total_chain_volumes_df = pl.concat(chain_volumes)
-
-    return total_chain_volumes_df
-
-def get_chain_dex_level_daily_volumes(dexs_data) -> pl.DataFrame:
-    chain_volumes = []
-
-    for key, value in dexs_data.items():
-        chain_name = key
-        dex_data = value
-        try:
-            total_chain_volume = get_total_data_chart_breakdown_volumes(dex_data)
-            total_chain_volume = total_chain_volume.with_columns(
-                pl.lit(chain_name).alias("chain")
-            )
-            chain_volumes.append(total_chain_volume)
-        except KeyError:
-            print(f"Error processing {chain_name}. Skipping this chain.")
-            continue  # Skip to the next iteration
-
-    if not chain_volumes:
-        raise ValueError("No valid chain data found")
-
-    total_chain_volumes_df = pl.concat(chain_volumes)
-
-    return total_chain_volumes_df
-
-
-# Write Functions
-
-def pull_dex_volume():
-    result = pull_dex_dataframes()
-
-    # overwrite_unpartitioned_table(result.metadata_df, BQ_DATASET, f"{DefiLlama.DEX_METADATA}_latest")
-
-    # Write metadata.
-    DefiLlama.DEX_METADATA.write(
-        dataframe=result.metadata_df.with_columns(dt=pl.lit(now_dt())),
-        sort_by=["defillamaId"],
+    return volume_df.join(
+        fees_df,
+        on=join_keys,
+        how="full",
+        coalesce=True,
+        validate="1:1",
+    ).join(
+        revenue_df,
+        on=join_keys,
+        how="full",
+        coalesce=True,
+        validate="1:1",
     )
 
-    # # Write Overall DEX Volume.
-    # DefiLlama.DEX_TOTAL.write(
-    #     dataframe=most_recent_dates(result.total_crypto_df, n_dates=TABLE_LAST_N_DAYS),
-    #     sort_by=["dt"],
-    # )
+
+def write(
+    crypto_df: pl.DataFrame,
+    chain_df: pl.DataFrame,
+    chain_protocol_df: pl.DataFrame,
+    protocols_metadata_df: pl.DataFrame,
+    current_dt: str | None = None,
+):
+    # Write Overall DEX Volume.
+    DefiLlama.DEXS_FEES_TOTAL.write(
+        dataframe=most_recent_dates(crypto_df, n_dates=TABLE_LAST_N_DAYS),
+        sort_by=["dt"],
+    )
 
     # Write By Chain DEX Volume.
-    DefiLlama.DEX_CHAIN.write(
-        dataframe=most_recent_dates(result.total_chain_df, n_dates=TABLE_LAST_N_DAYS),
+    DefiLlama.DEXS_FEES_BY_CHAIN.write(
+        dataframe=most_recent_dates(chain_df, n_dates=TABLE_LAST_N_DAYS),
         sort_by=["chain"],
     )
 
     # Write Breakdown DEX Volume.
-    DefiLlama.DEX_BREAKDOWN.write(
-        dataframe=most_recent_dates(result.breakdown_df, n_dates=TABLE_LAST_N_DAYS),
+    DefiLlama.DEXS_FEES_BY_CHAIN_PROTOCOL.write(
+        dataframe=most_recent_dates(chain_protocol_df, n_dates=TABLE_LAST_N_DAYS),
         sort_by=["chain", "protocol"],
     )
 
-def pull_fees():
-    result = pull_fees_dataframes()
+    # Write Protocol Metadata
+    current_dt = current_dt or now_dt()
 
-    # overwrite_unpartitioned_table(result.metadata_df, BQ_DATASET, f"{DefiLlama.FEES_METADATA}_latest")
-
-    # Write metadata.
-    DefiLlama.FEES_METADATA.write(
-        dataframe=result.metadata_df.with_columns(dt=pl.lit(now_dt())),
-        sort_by=["defillamaId"],
-    )
-
-    # Write Overall Fees.
-    DefiLlama.FEES_TOTAL.write(
-        dataframe=most_recent_dates(result.total_crypto_df, n_dates=TABLE_LAST_N_DAYS),
-        sort_by=["dt"],
-    )
-
-    # Write By Chain Fees.
-    DefiLlama.FEES_CHAIN.write(
-        dataframe=most_recent_dates(result.total_chain_df, n_dates=TABLE_LAST_N_DAYS),
-        sort_by=["chain"],
-    )
-
-    # Write Breakdown Fees.
-    DefiLlama.FEES_BREAKDOWN.write(
-        dataframe=most_recent_dates(result.breakdown_df, n_dates=TABLE_LAST_N_DAYS),
-        sort_by=["chain", "protocol"],
-    )
-
-def pull_revenue():
-    result = pull_revenue_dataframes()
-
-    # upsert_unpartitioned_table(result.metadata_df, BQ_DATASET, f"{DefiLlama.REVENUE_METADATA}_latest")
-
-    # Write metadata.
-    DefiLlama.REVENUE_METADATA.write(
-        dataframe=result.metadata_df.with_columns(dt=pl.lit(now_dt())),
-        sort_by=["defillamaId"],
-    )
-
-    # Write Overall Revenue.
-    DefiLlama.REVENUE_TOTAL.write(
-        dataframe=most_recent_dates(result.total_crypto_df, n_dates=TABLE_LAST_N_DAYS),
-        sort_by=["dt"],
-    )
-
-    # Write By Chain Revenue.
-    DefiLlama.REVENUE_CHAIN.write(
-        dataframe=most_recent_dates(result.total_chain_df, n_dates=TABLE_LAST_N_DAYS),
-        sort_by=["chain"],
-    )
-
-    # Write Breakdown Revenue.
-    DefiLlama.REVENUE_BREAKDOWN.write(
-        dataframe=most_recent_dates(result.breakdown_df, n_dates=TABLE_LAST_N_DAYS),
-        sort_by=["chain", "protocol"],
+    DefiLlama.DEXS_PROTOCOLS_METADATA.write(
+        dataframe=protocols_metadata_df.with_columns(dt=pl.lit(current_dt)),
+        sort_by=["defillamaId", "name"],
     )

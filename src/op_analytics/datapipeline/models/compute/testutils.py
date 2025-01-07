@@ -8,15 +8,17 @@ from textwrap import dedent
 from unittest.mock import patch
 
 import duckdb
+from overrides import override
 
 from op_analytics.coreutils.duckdb_inmem.client import (
     DuckDBContext,
+    ParquetData,
     register_dataset_relation,
     init_client,
 )
-from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.models.compute.execute import (
     ModelDataReader,
@@ -35,17 +37,24 @@ def input_table_name(dataset_name: str) -> str:
 
 
 @dataclass
-class MockRemoteParquetData:
+class MockParquetData(ParquetData):
     context: DuckDBContext
     dataset: str
 
-    def create_table(self) -> str:
+    @property
+    def sanitized_name(self):
+        return input_table_name(self.dataset)
+
+    @override
+    def duckdb_ctx(self) -> DuckDBContext:
+        return self.context
+
+    @override
+    def data_subquery(self) -> str:
         assert self.context is not None
         rel = self.context.client.sql(f"SELECT * FROM {input_table_name(self.dataset)}")
-        return register_dataset_relation(self.context.client, self.dataset, rel)
-
-    def create_view(self) -> str:
-        return self.create_table()
+        registered_name = register_dataset_relation(self.context.client, self.dataset, rel)
+        return registered_name
 
 
 @dataclass
@@ -56,9 +65,9 @@ class DataReaderTestUtil:
         self,
         dataset: str,
         first_n_parquet_files: int | None = None,
-    ) -> MockRemoteParquetData:
-        """Return a remote parquet data object for the given dataset."""
-        return MockRemoteParquetData(context=self.context, dataset=dataset)
+    ) -> MockParquetData:
+        """Return a parquet data object for the given dataset."""
+        return MockParquetData(context=self.context, dataset=dataset)
 
 
 class IntermediateModelTestBase(unittest.TestCase):

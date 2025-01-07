@@ -31,7 +31,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         assert self._duckdb_context is not None
 
         ans = self._duckdb_context.client.sql(f"""
-        SELECT * FROM summary_v1 WHERE address = '{SYSTEM_ADDRESS}'
+        SELECT * FROM summary_v2 WHERE address = '{SYSTEM_ADDRESS}'
         """)
 
         assert len(ans) == 0
@@ -41,11 +41,11 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
 
         unique_count = self._duckdb_context.client.sql("""
         SELECT COUNT(*) FROM (
-            SELECT DISTINCT address, chain_id, dt FROM summary_v1
+            SELECT DISTINCT address, chain_id, dt FROM summary_v2
         )
         """)
         total_count = self._duckdb_context.client.sql("""
-        SELECT COUNT(*) FROM summary_v1
+        SELECT COUNT(*) FROM summary_v2
         """)
 
         unique_count_val = (unique_count.fetchone() or [None])[0]
@@ -58,7 +58,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         assert self._duckdb_context is not None
 
         schema = (
-            self._duckdb_context.client.sql("DESCRIBE summary_v1")
+            self._duckdb_context.client.sql("DESCRIBE summary_v2")
             .pl()
             .select("column_name", "column_type")
             .to_dicts()
@@ -69,6 +69,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
             "dt": "DATE",
             "chain": "VARCHAR",
             "chain_id": "INTEGER",
+            "network": "VARCHAR",
             "address": "VARCHAR",
             "tx_cnt": "BIGINT",
             "success_tx_cnt": "BIGINT",
@@ -89,8 +90,8 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
             "method_id_ucnt": "BIGINT",
             "l2_gas_used_sum": "DECIMAL(38,0)",
             "success_l2_gas_used_sum": "DECIMAL(38,0)",
-            "l1_gas_used_sum": "DECIMAL(38,0)",
-            "success_l1_gas_used_sum": "DECIMAL(38,0)",
+            "l1_gas_used_unified_sum": "DECIMAL(38,0)",
+            "success_l1_gas_used_unified_sum": "DECIMAL(38,0)",
             "tx_fee_sum_eth": "DECIMAL(38,19)",
             "success_tx_fee_sum_eth": "DECIMAL(38,19)",
             "l2_fee_sum_eth": "DECIMAL(38,19)",
@@ -105,6 +106,14 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
             "l2_priority_price_avg_gwei": "DECIMAL(38,10)",
             "l1_base_price_avg_gwei": "DECIMAL(38,10)",
             "l1_blob_fee_avg_gwei": "DECIMAL(38,10)",
+            "input_zero_bytes_sum": "DECIMAL(38,0)",
+            "success_input_zero_bytes_sum": "DECIMAL(38,0)",
+            "input_nonzero_bytes_sum": "DECIMAL(38,0)",
+            "success_input_nonzero_bytes_sum": "DECIMAL(38,0)",
+            "input_byte_length_sum": "DECIMAL(38,0)",
+            "success_input_byte_length_sum": "DECIMAL(38,0)",
+            "estimated_size_sum": "DECIMAL(38,0)",
+            "success_estimated_size_sum": "DECIMAL(38,0)",
         }
 
     def test_single_txs_output(self):
@@ -115,7 +124,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
 
         actual = (
             self._duckdb_context.client.sql(f"""
-        SELECT * FROM summary_v1 WHERE address == '{SINGLE_TX_ADDRESS}'
+        SELECT * FROM summary_v2 WHERE address == '{SINGLE_TX_ADDRESS}'
         """)
             .pl()
             .to_dicts()
@@ -126,6 +135,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
                 "dt": date(2024, 10, 1),
                 "chain": "op",
                 "chain_id": 10,
+                "network": "mainnet",
                 "address": "0xd666115c3d251bece7896297bf446ea908caf035",
                 "tx_cnt": 1,
                 "success_tx_cnt": 1,
@@ -146,8 +156,8 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
                 "method_id_ucnt": 1,
                 "l2_gas_used_sum": Decimal("47038"),
                 "success_l2_gas_used_sum": Decimal("47038"),
-                "l1_gas_used_sum": 1600.0,
-                "success_l1_gas_used_sum": 1600.0,
+                "l1_gas_used_unified_sum": Decimal("1600"),
+                "success_l1_gas_used_unified_sum": Decimal("1600"),
                 "tx_fee_sum_eth": Decimal("2.723088381200E-7"),
                 "success_tx_fee_sum_eth": Decimal("2.723088381200E-7"),
                 "l2_fee_sum_eth": Decimal("2.59593784780E-8"),
@@ -162,6 +172,14 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
                 "l2_priority_price_avg_gwei": Decimal("0.0001000000"),
                 "l1_base_price_avg_gwei": Decimal("29.4563635380"),
                 "l1_blob_fee_avg_gwei": Decimal("1.0E-9"),
+                "input_zero_bytes_sum": Decimal("41"),
+                "success_input_zero_bytes_sum": Decimal("41"),
+                "input_nonzero_bytes_sum": Decimal("27"),
+                "success_input_nonzero_bytes_sum": Decimal("27"),
+                "input_byte_length_sum": Decimal("68"),
+                "success_input_byte_length_sum": Decimal("68"),
+                "estimated_size_sum": Decimal("100"),
+                "success_estimated_size_sum": Decimal("100"),
             }
         ]
 
@@ -205,7 +223,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
 
         actual = (
             self._duckdb_context.client.sql(f"""
-        SELECT * FROM summary_v1 WHERE address == '{MULTI_TXS_ADDRESS}'
+        SELECT * FROM summary_v2 WHERE address == '{MULTI_TXS_ADDRESS}'
         """)
             .pl()
             .to_dicts()
@@ -216,6 +234,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
                 "dt": date(2024, 10, 1),
                 "chain": "op",
                 "chain_id": 10,
+                "network": "mainnet",
                 "address": "0xcef6d40144b0d76617664357a15559ecb145374f",
                 "tx_cnt": 2,
                 "success_tx_cnt": 2,
@@ -236,8 +255,8 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
                 "method_id_ucnt": 1,
                 "l2_gas_used_sum": Decimal("59852"),
                 "success_l2_gas_used_sum": Decimal("59852"),
-                "l1_gas_used_sum": Decimal("3200"),
-                "success_l1_gas_used_sum": Decimal("3200"),
+                "l1_gas_used_unified_sum": Decimal("3200"),
+                "success_l1_gas_used_unified_sum": Decimal("3200"),
                 "tx_fee_sum_eth": Decimal("0.0000037408546364060"),
                 "success_tx_fee_sum_eth": Decimal("0.0000037408546364060"),
                 "l2_fee_sum_eth": Decimal("0.0000035911200000000"),
@@ -252,6 +271,14 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
                 "l2_priority_price_avg_gwei": Decimal("0E-10"),
                 "l1_base_price_avg_gwei": Decimal("8.9519942250"),
                 "l1_blob_fee_avg_gwei": Decimal("1.0E-9"),
+                "input_zero_bytes_sum": Decimal("84"),
+                "success_input_zero_bytes_sum": Decimal("84"),
+                "input_nonzero_bytes_sum": Decimal("52"),
+                "success_input_nonzero_bytes_sum": Decimal("52"),
+                "input_byte_length_sum": Decimal("136"),
+                "success_input_byte_length_sum": Decimal("136"),
+                "estimated_size_sum": Decimal("200"),
+                "success_estimated_size_sum": Decimal("200"),
             }
         ]
 
@@ -276,7 +303,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
         assert self._duckdb_context is not None
 
         actual = (
-            self._duckdb_context.client.sql("SELECT SUM(tx_cnt) FROM summary_v1").pl().to_dicts()
+            self._duckdb_context.client.sql("SELECT SUM(tx_cnt) FROM summary_v2").pl().to_dicts()
         )
         assert actual == [{"sum(tx_cnt)": Decimal("2397")}]
 
@@ -308,7 +335,7 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
                     active_time_range =
                     block_timestamp_max - block_timestamp_min        AS check6
 
-                FROM summary_v1
+                FROM summary_v2
             )
 
             SELECT
