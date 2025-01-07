@@ -147,5 +147,5 @@ workflows:
     jobs:
       - deploy-github-pages:
           context:
-            - circeci-repo-op-analytics
+            - circleci-repo-op-analytics
             - op-analytics
