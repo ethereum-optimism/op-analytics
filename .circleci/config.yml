@@ -106,14 +106,6 @@ workflows:
       equal: [<< pipeline.trigger_source >>, "api"]
     jobs:
       - defillama-protocols:
-          filters:
-            branches:
-              only:
-                - circleci-migration-1
           context: op-analytics
       - daily-uploads-other-tasks:
-          filters:
-            branches:
-              only:
-                - circleci-migration-1
           context: op-analytics
