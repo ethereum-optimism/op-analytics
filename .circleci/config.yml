@@ -1,5 +1,9 @@
 version: 2.1
 
+orbs:
+  gcp-cli: circleci/gcp-cli@3.0.1
+  utils: ethereum-optimism/circleci-utils@dev:first
+
 commands:
   setup-python-env:
     steps:
@@ -15,6 +19,37 @@ commands:
           command: uv sync --all-extras --dev
 
 jobs:
+  deploy-github-pages:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - run:
+          name: Clone the repository
+          command: |
+            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+      - setup-python-env
+      - run:
+          name: Build Static Content
+          command: make html
+          environment:
+            OP_ANALYTICS_VAULT: ${OP_ANALYTICS_VAULT}
+      # Copy directories to serve
+      - run:
+          name: Copy Directories To Serve
+          command: make html-copies
+      - utils/get-github-access-token:
+          private-key-str: GITHUB_APP_KEY
+          app-id: GITHUB_APP_ID
+          repo: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+      - run:
+          name: Deploy to GitHub Pages
+          command: |
+            git diff
+      # - utils/github-pages-deploy:
+      #     pages-branch: gh-pages-tests
+      #     src-pages-dir: /tmp/pages
+      #     clean: false
+
   defillama-protocols:
     machine:
       image: ubuntu-2004:current
@@ -109,4 +144,9 @@ workflows:
       - defillama-protocols:
           context: op-analytics
       - daily-uploads-other-tasks:
+          context: op-analytics
+
+  test:
+    jobs:
+      - deploy-github-pages:
           context: op-analytics
