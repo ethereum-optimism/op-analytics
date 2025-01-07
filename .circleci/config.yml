@@ -102,6 +102,8 @@ workflows:
   #         context: op-analytics
 
   manual:
+    when:
+      equal: [<< pipeline.trigger_source >>, "api"]
     jobs:
       - defillama-protocols:
           filters:
