@@ -31,8 +31,6 @@ jobs:
       - run:
           name: Build Static Content
           command: make html
-          environment:
-            OP_ANALYTICS_VAULT: ${OP_ANALYTICS_VAULT}
       # Copy directories to serve
       - run:
           name: Copy Directories To Serve
@@ -149,4 +147,6 @@ workflows:
   test:
     jobs:
       - deploy-github-pages:
-          context: circleci-repo-op-analytics
+          context:
+            - circleci-repo-op-analytics
+            - op-analytics
