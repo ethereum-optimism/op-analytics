@@ -17,7 +17,9 @@ class TestRefinedTraces001(IntermediateModelTestBase):
 
     _enable_fetching = False
 
-    def test_overall_totals(self):
+    def test_row_counts(self):
+        """Check row counts from each of the traces and txs results."""
+
         assert self._duckdb_context is not None
 
         row_counts = (
@@ -41,6 +43,8 @@ class TestRefinedTraces001(IntermediateModelTestBase):
         ]
 
     def test_refined_txs_schema(self):
+        """Verify the final refined transactions schema."""
+
         assert self._duckdb_context is not None
 
         schema = (
@@ -112,6 +116,8 @@ class TestRefinedTraces001(IntermediateModelTestBase):
         }
 
     def test_refined_traces_schema(self):
+        """Verify the final refined traces schema."""
+
         assert self._duckdb_context is not None
 
         schema = (
@@ -163,6 +169,8 @@ class TestRefinedTraces001(IntermediateModelTestBase):
         }
 
     def test_single_tx(self):
+        """Look at the transformation results for a single transaction."""
+
         assert self._duckdb_context is not None
 
         # ---------------------------
