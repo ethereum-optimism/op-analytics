@@ -15,7 +15,7 @@ class TestRefinedTraces001(IntermediateModelTestBase):
         "{block_number} % 200 <= 1",
     ]
 
-    _enable_fetching = True
+    _enable_fetching = False
 
     def test_overall_totals(self):
         assert self._duckdb_context is not None
