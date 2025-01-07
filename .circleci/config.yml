@@ -26,7 +26,7 @@ jobs:
           name: Clone the repository
           command: |
             git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
-      - setup-python-env
+      # - setup-python-env
       # - run:
       #     name: Build Static Content
       #     command: make html
@@ -34,11 +34,6 @@ jobs:
       # - run:
       #     name: Copy Directories To Serve
       #     command: make html-copies
-      - run:
-          name: Install Python 3.12
-          command: |
-            sudo apt update
-            sudo apt install -y python3.12 python3.12-venv
       - utils/get-github-access-token:
           private-key-str: GITHUB_APP_KEY
           app-id: GITHUB_APP_ID
