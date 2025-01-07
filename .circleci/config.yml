@@ -40,11 +40,20 @@ jobs:
       - run:
           name: Push docs folder to same branch
           command: |
+            USERNAME=${CIRCLE_USERNAME}
+
+            # Extract the email from the user info
+            ID=$(curl https://api.github.com/users/$USERNAME | jq -r '.id')
+            USER_EMAIL="${ID}+${USERNAME}@users.noreply.github.com"
+
+            # Git operations with committer's identity
+            git config --global user.name "${USERNAME}"
+            git config --global user.email "${USER_EMAIL}"
+
             cd docs
-            git diff 
-            # git add .
-            # git commit -m "Deploy to GitHub Pages"
-            # git push origin HEAD:$CIRCLE_BRANCH
+            git add .
+            git commit -m "Deploying to ${CIRCLE_BRANCH} from @ ${SOURCE_REPO}@${SOURCE_COMMIT} 🚀"
+            git push "https://x-access-token:${GITHUB_APP_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git" ${CIRCLE_BRANCH}
 
   defillama-protocols:
     machine:
