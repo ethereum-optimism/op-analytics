@@ -38,13 +38,13 @@ jobs:
       - utils/get-github-access-token:
           repo: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
       - run:
-          name: Deploy to GitHub Pages
+          name: Push docs folder to same branch
           command: |
-            git diff
-      # - utils/github-pages-deploy:
-      #     pages-branch: gh-pages-tests
-      #     src-pages-dir: /tmp/pages
-      #     clean: false
+            cd docs
+            git diff 
+            # git add .
+            # git commit -m "Deploy to GitHub Pages"
+            # git push origin HEAD:$CIRCLE_BRANCH
 
   defillama-protocols:
     machine:
