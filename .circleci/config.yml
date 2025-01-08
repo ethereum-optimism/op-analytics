@@ -35,6 +35,7 @@ jobs:
       - run:
           name: Copy Directories To Serve
           command: make html-copies
+      # Get access token
       - utils/get-github-access-token
       - utils/github-commit-and-push-changes:
           folder: docs
