@@ -150,6 +150,9 @@ workflows:
           context: op-analytics
 
   merge-to-main:
+    when:
+      not:
+        equal: [<< pipeline.trigger_source >>, "api"]
     jobs:
       - deploy-github-pages:
           context:
