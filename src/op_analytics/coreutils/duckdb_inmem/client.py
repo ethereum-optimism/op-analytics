@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from threading import Lock
 
 import duckdb
+import polars as pl
+import pyarrow as pa
 from overrides import EnforceOverrides, override
 
 from op_analytics.coreutils.env.vault import env_get
@@ -40,6 +42,36 @@ class DuckDBContext:
     def make_path(self, file_name: str) -> str:
         return os.path.join(self.dir_name, file_name)
 
+    def connect_to_gcs(self):
+        self.client.sql("INSTALL httpfs")
+        KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
+        SECRET = env_get("GCS_HMAC_SECRET")
+        self.client.sql(f"""
+        CREATE SECRET (
+            TYPE GCS,
+            KEY_ID '{KEY_ID}',
+            SECRET '{SECRET}'
+        );
+        """)
+
+    def relation_to_polars(self, rel: duckdb.DuckDBPyRelation | str) -> pl.DataFrame:
+        if isinstance(rel, duckdb.DuckDBPyRelation):
+            return rel.pl()
+
+        if isinstance(rel, str):
+            return self.client.sql(f"SELECT * FROM {rel}").pl()
+
+        raise NotImplementedError()
+
+    def relation_to_arrow(self, rel: duckdb.DuckDBPyRelation | str) -> pa.Table:
+        if isinstance(rel, duckdb.DuckDBPyRelation):
+            return rel.arrow()
+
+        if isinstance(rel, str):
+            return self.client.sql(f"SELECT * FROM {rel}").arrow()
+
+        raise NotImplementedError()
+
 
 _DUCK_DB: DuckDBContext | None = None
 
@@ -62,16 +94,7 @@ def init_client() -> DuckDBContext:
             log.info(f"initialized duckdb at {_DUCK_DB.db_path}")
 
             # Setup access to GCS
-            _DUCK_DB.client.sql("INSTALL httpfs")
-            KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
-            SECRET = env_get("GCS_HMAC_SECRET")
-            _DUCK_DB.client.sql(f"""
-            CREATE SECRET (
-                TYPE GCS,
-                KEY_ID '{KEY_ID}',
-                SECRET '{SECRET}'
-            );
-            """)
+            _DUCK_DB.connect_to_gcs()
 
     if _DUCK_DB is None:
         raise RuntimeError("DuckDB client was not properly initialized.")
@@ -163,7 +186,7 @@ class ParquetData(EnforceOverrides):
         ctx = self.duckdb_ctx()
 
         ctx.client.sql(statement.sql)
-        log.info(f"created table {statement.name}")
+        log.info(f"created table/view {statement.name}")
         ctx.report_size()
         return statement.name
 

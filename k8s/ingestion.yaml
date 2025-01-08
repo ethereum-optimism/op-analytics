@@ -16,9 +16,9 @@ spec:
           containers:
           - name: python-runner
             imagePullPolicy: IfNotPresent
-            image: ghcr.io/lithium323/op-analytics:v20250101.1
+            image: ghcr.io/lithium323/op-analytics:v20250106.1
             command: ["tini", "-v", "--", "opdata"]
-            args: ["chains", "hourly"]
+            args: ["chains", "noargs_ingest"]
             env:
             - name: OPLABS_ENV
               value: "prod"

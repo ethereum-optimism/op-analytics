@@ -215,10 +215,7 @@ def steps(item: WorkItem) -> None:
                 )
 
             for result_name, rel in model_results.items():
-                if isinstance(rel, duckdb.DuckDBPyRelation):
-                    df = rel.pl()
-                elif isinstance(rel, str):
-                    df = ctx.client.sql(f"SELECT * FROM {rel}").pl()
+                df = ctx.relation_to_polars(rel)
 
                 task.write_manager.write(
                     output_data=OutputData(
