@@ -51,11 +51,18 @@ jobs:
       # Copy directories to serve
       - run:
           name: Copy Directories To Serve
-          command: make html-copies
-      # - utils/get-github-access-token
-      # - utils/github-commit-and-push-changes:
-      #     folder: docs
-      #     skip-ci: true
+          command: |
+            #this copies everything from the build directory to the docs directory
+            make html-copies
+            tmp_dir="/tmp/docs"
+            mkdir -p $tmp_dir
+            cp -r docs/* $tmp_dir
+            touch $tmp_dir/.nojekyll
+      - utils/get-github-access-token
+      - utils/github-pages-deploy:
+          force-push: true
+          src-pages-dir: /tmp/docs
+          pages-branch: gh-pages-test
 
   defillama-protocols:
     machine:
