@@ -9,6 +9,8 @@ PLUS_RE = re.compile(r"^(?P<min>\d+):\+(?P<plus>\d+)$")
 
 @dataclass
 class BlockRange:
+    """A range of blocks."""
+
     min: int  # inclusive
     max: int  # exclusive
 
@@ -28,3 +30,11 @@ class BlockRange:
             return cls(min_val, min_val + plus_val)
 
         raise NotImplementedError()
+
+
+@dataclass
+class ChainMaxBlock:
+    """A single block which is the last block for a chain."""
+
+    ts: int
+    number: int

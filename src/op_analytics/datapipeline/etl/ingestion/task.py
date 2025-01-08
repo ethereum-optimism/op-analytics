@@ -8,6 +8,7 @@ import polars as pl
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.output import OutputData
 from op_analytics.coreutils.partitioned.writehelper import WriteManager
+from op_analytics.coreutils.rangeutils.blockrange import ChainMaxBlock
 
 from .batches import BlockBatch
 from .sources import RawOnchainDataProvider
@@ -21,9 +22,12 @@ class IngestionTask:
 
     This object is mutated during the ingestion process."""
 
+    # Max block for the chain corresponding to this task.
+    chain_max_block: ChainMaxBlock
+
     # If the task was constructed with a DateRange specification we store
     # the max timestamp of the range.
-    max_requested_timestamp: int | None
+    requested_max_timestamp: int | None
 
     # Batch
     block_batch: BlockBatch
