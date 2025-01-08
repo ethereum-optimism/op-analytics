@@ -1,0 +1,29 @@
+SELECT
+  -- Raw Trace fields
+  r.dt
+  , r.chain
+  , r.chain_id
+  , r.network
+  , r.block_number
+  , r.block_timestamp
+  , r.transaction_hash
+  , r.transaction_index
+  , r.from_address AS trace_from_address
+  , r.to_address AS trace_to_address
+  , r.gas AS trace_gas_limit
+  , r.gas_used AS trace_gas_used
+  , r.trace_address
+  , r.trace_type
+  , r.call_type
+  , r.error
+  , hexstr_method_id(r.input) AS trace_method_id
+  , r.status = 1 AS trace_success
+  -- Trace address helpers.
+  , trace_address_depth(r.trace_address) AS trace_depth
+  , trace_address_parent(r.trace_address) AS parent_trace_address
+-- Trace i/o data - comment out for now to save on data space
+-- , r.input
+-- , r.output
+
+FROM {{ raw_traces }} AS r
+ORDER BY r.block_number, r.transaction_hash, trace_depth, parent_trace_address

@@ -44,7 +44,7 @@ def construct_readers_bydate(
     # data is ready to be processed.
     markers_df = data_spec.query_markers(
         datevals=date_range.padded_dates(),
-        read_from=read_from,
+        location=read_from,
     )
 
     num_suspect = 0

@@ -57,11 +57,7 @@ def ingest(
                     log.info("forced execution despite complete markers")
 
             # Decide if we can run this task.
-            if not all_inputs_ready(
-                provider=task.read_from,
-                block_batch=task.block_batch,
-                max_requested_timestamp=task.max_requested_timestamp,
-            ):
+            if not all_inputs_ready(task):
                 log.warning("task", status="input_not_ready")
                 continue
 
