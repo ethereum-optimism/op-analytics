@@ -61,7 +61,7 @@ jobs:
 
       - utils/get-github-access-token
       - utils/github-pages-deploy:
-          force-push: true
+          # force-push: true
           src-pages-dir: /tmp/docs
           pages-branch: gh-pages-test
 
