@@ -58,7 +58,6 @@ jobs:
             mkdir -p $tmp_dir
             cp -r docs/* $tmp_dir
             touch $tmp_dir/.nojekyll
-
       - utils/get-github-access-token
       - utils/github-pages-deploy:
           force-push: true
