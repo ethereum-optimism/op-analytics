@@ -1,14 +1,14 @@
-with x AS (
+WITH x AS (
     SELECT
         l.block_timestamp AS block_timestamp
         ,l.block_number AS block_number
         ,l.chain AS src_chain
         ,l.address AS contract_address
         ,l.transaction_hash AS transaction_hash
-        ,parse_reversed_hex(substring(split_string(l.topics, ',')[3], 3))) AS deposit_id
+        ,parse_reversed_hex(substring(split_string(l.topics, ',')[3], 3)) AS deposit_id
         ,'0x' || substring(substring(l.data, 3), 25, 40) AS input_token_address
         ,'0x' || substring(substring(l.data, 3), 89, 40) AS output_token_address
-        ,cast(parse_reversed_hex(substring(string_split(l.topics, ',')[2], 3) AS String) AS dst_chain_id
+        ,cast(parse_reversed_hex(substring(string_split(l.topics, ',')[2], 3)) AS String) AS dst_chain_id
         ,parse_reversed_hex(substring(substring(l.data, 3), 129, 64)) AS input_amount
         ,parse_reversed_hex(substring(substring(l.data, 3), 193, 64)) AS output_amount
         ,parse_reversed_hex(substring(substring(l.data, 3), 257, 64)) AS quote_timestamp
