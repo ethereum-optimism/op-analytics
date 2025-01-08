@@ -28,16 +28,16 @@ jobs:
           command: |
             git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       - setup-python-env
-      # - run:
-      #     name: Build Static Content.
-      #     command: make html
-      # # Copy directories to serve
-      # - run:
-      #     name: Copy Directories To Serve
-      #     command: make html-copies
+      - run:
+          name: Build Static Content
+          command: make html
+      # Copy directories to serve
+      - run:
+          name: Copy Directories To Serve
+          command: make html-copies
       - utils/get-github-access-token
-      # - utils/github-commit-and-push-changes:
-      #     folder: docs
+      - utils/github-commit-and-push-changes:
+          folder: docs
 
   defillama-protocols:
     machine:
