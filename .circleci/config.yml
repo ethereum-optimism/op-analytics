@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.0.1
-  utils: ethereum-optimism/circleci-utils@0.0.10
+  utils: ethereum-optimism/circleci-utils@dev:first
 
 parameters:
   run_daily_upload:
@@ -57,6 +57,7 @@ jobs:
       - utils/get-github-access-token
       - utils/github-commit-and-push-changes:
           folder: docs
+          skip-ci: true
 
   defillama-protocols:
     machine:
