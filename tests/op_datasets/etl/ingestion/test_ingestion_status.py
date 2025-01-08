@@ -1,6 +1,7 @@
 from datetime import datetime
 from unittest.mock import patch
 
+from op_analytics.coreutils.rangeutils.blockrange import ChainMaxBlock
 from op_analytics.datapipeline.etl.ingestion.batches import BlockBatch
 from op_analytics.datapipeline.etl.ingestion.status import is_safe
 
@@ -12,14 +13,15 @@ from op_analytics.datapipeline.etl.ingestion.status import is_safe
 def test_is_safe():
     batch = BlockBatch(chain="fraxtal", min=11320000, max=11340000)
 
-    chain_max_block = 11493429
-    chain_max_ts = 1729797569
+    chain_max_block = ChainMaxBlock(
+        ts=1729797569,
+        number=11493429,
+    )
 
     ans = is_safe(
-        max_requested_timestamp=None,
-        block_batch=batch,
+        requested_max_timestamp=None,
+        requested_max_block=batch.max,
         chain_max_block=chain_max_block,
-        chain_max_ts=chain_max_ts,
     )
     assert ans
 
@@ -31,14 +33,15 @@ def test_is_safe():
 def test_is_not_safe_for_number():
     batch = BlockBatch(chain="fraxtal", min=0, max=1100)
 
-    chain_max_block = 2000
-    chain_max_ts = 1729797569
+    chain_max_block = ChainMaxBlock(
+        ts=1729797569,
+        number=2000,
+    )
 
     ans = is_safe(
-        max_requested_timestamp=None,
-        block_batch=batch,
+        requested_max_timestamp=None,
+        requested_max_block=batch.max,
         chain_max_block=chain_max_block,
-        chain_max_ts=chain_max_ts,
     )
     assert not ans
 
@@ -50,13 +53,14 @@ def test_is_not_safe_for_number():
 def test_is_not_safe_for_provider():
     batch = BlockBatch(chain="fraxtal", min=11320000, max=11340000)
 
-    chain_max_block = 11493429
-    chain_max_ts = 1729797569
+    chain_max_block = ChainMaxBlock(
+        ts=1729797569,
+        number=11493429,
+    )
 
     ans = is_safe(
-        max_requested_timestamp=None,
-        block_batch=batch,
+        requested_max_timestamp=None,
+        requested_max_block=batch.max,
         chain_max_block=chain_max_block,
-        chain_max_ts=chain_max_ts,
     )
     assert not ans

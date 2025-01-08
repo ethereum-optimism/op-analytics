@@ -7,17 +7,16 @@ from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.datapipeline.chains.activation import is_chain_active
 
 from .markers import IngestionData, IngestionDataSpec
+from .request import BlockBatchRequest
 
 log = structlog.get_logger()
 
 
 def construct_readers_byblock(
-    chains: list[str],
-    range_spec: str,
+    blockbatch_request: BlockBatchRequest,
     read_from: DataLocation,
     root_paths_to_read: list[str],
 ) -> list[DataReader]:
@@ -31,16 +30,15 @@ def construct_readers_byblock(
 
     Readers can be used for processing by block batch.
     """
-    date_range = DateRange.from_spec(range_spec)
 
+    # Query completion markers.
     data_spec = IngestionDataSpec(
-        chains=chains,
+        chains=blockbatch_request.chains,
         root_paths_to_read=root_paths_to_read,
     )
-
     markers_df = data_spec.query_markers(
-        datevals=date_range.dates(),
-        read_from=read_from,
+        datevals=blockbatch_request.datevals,
+        location=read_from,
     )
 
     readers: list[DataReader] = []

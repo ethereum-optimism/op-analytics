@@ -9,7 +9,7 @@ def test_daterange():
     assert dr == DateRange(
         min=datetime.date(2024, 10, 1),
         max=datetime.date(2024, 10, 30),
-        max_requested_timestamp=1730246400,
+        requested_max_timestamp=1730246400,
     )
     assert len(dr) == 29
 
@@ -19,7 +19,7 @@ def test_blockrange_plus():
     assert dr == DateRange(
         min=datetime.date(2024, 10, 1),
         max=datetime.date(2024, 10, 31),
-        max_requested_timestamp=1730332800,
+        requested_max_timestamp=1730332800,
     )
     assert len(dr) == 30
 
@@ -30,7 +30,7 @@ def test_minus_days():
     assert dr == DateRange(
         min=datetime.date(2024, 11, 15),
         max=datetime.date(2024, 11, 18),
-        max_requested_timestamp=None,
+        requested_max_timestamp=None,
     )
     assert dr.dates() == [
         datetime.date(2024, 11, 15),
@@ -45,7 +45,7 @@ def test_epoch():
     assert dr == DateRange(
         min=datetime.date(2024, 10, 1),
         max=datetime.date(2024, 10, 31),
-        max_requested_timestamp=1730332800,
+        requested_max_timestamp=1730332800,
     )
     assert dr.min_ts == 1727740800
     assert dr.max_ts == 1730332800

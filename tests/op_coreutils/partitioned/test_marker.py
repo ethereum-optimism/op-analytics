@@ -132,7 +132,7 @@ def test_marker():
     )
     markers_df = data_spec.query_markers(
         datevals=[datetime.date(2024, 10, 25)],
-        read_from=DataLocation.LOCAL,
+        location=DataLocation.LOCAL,
     )
 
     assert len(markers_df) == 1
@@ -148,6 +148,6 @@ def test_marker():
     )
     markers_df = data_spec.query_markers(
         datevals=[datetime.date(2024, 10, 25)],
-        read_from=DataLocation.LOCAL,
+        location=DataLocation.LOCAL,
     )
     assert len(markers_df) == 0
