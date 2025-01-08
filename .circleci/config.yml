@@ -4,6 +4,14 @@ orbs:
   gcp-cli: circleci/gcp-cli@3.0.1
   utils: ethereum-optimism/circleci-utils@0.0.10
 
+parameters:
+  run_daily_upload:
+    type: boolean
+    default: false
+  run_daily_metadata:
+    type: boolean
+    default: false
+
 commands:
   setup-python-env:
     steps:
@@ -125,8 +133,9 @@ workflows:
   version: 2
   daily-api-uploads:
     when:
-      equal: [run_daily_upload, <<pipeline.schedule.name>>]
-
+      or:
+        - equal: [run_daily_upload, true]
+        - equal: [run_daily_upload, <<pipeline.schedule.name>>]
     jobs:
       - defillama-protocols:
           context: op-analytics
@@ -134,25 +143,19 @@ workflows:
           context: op-analytics
   run-daily-metadata:
     when:
-      equal: [run_daily_metadata, <<pipeline.schedule.name>>]
+      or:
+        - equal: [run_daily_metadata, true]
+        - equal: [run_daily_metadata, <<pipeline.schedule.name>>]
     jobs:
       - chain-metadata:
           context: op-analytics
 
-  manual:
-    when:
-      equal: [<< pipeline.trigger_source >>, "api"]
-    jobs:
-      - defillama-protocols:
-          context: op-analytics
-      - daily-uploads-other-tasks:
-          context: op-analytics
-
-  test:
+  merge-to-main:
     jobs:
       - deploy-github-pages:
           context:
             - circleci-repo-op-analytics
             - op-analytics
-      - chain-metadata:
-          context: op-analytics
+          # filters:
+          #   branches:
+          #     only: main
