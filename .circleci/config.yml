@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.0.1
-  utils: ethereum-optimism/circleci-utils@0.0.9
+  utils: ethereum-optimism/circleci-utils@dev:first
 
 commands:
   setup-python-env:
@@ -36,7 +36,8 @@ jobs:
           name: Copy Directories To Serve
           command: make html-copies
       - utils/get-github-access-token:
-          repo: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+      - utils/github-commit-and-push-changes:
+          folder: docs
       - run:
           name: Push docs folder to same branch
           command: |
