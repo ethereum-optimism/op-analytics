@@ -1,0 +1,44 @@
+WITH
+
+-- Count traces per transaction
+tx_aggregate AS (
+  SELECT
+    block_number
+    , transaction_hash
+    , count(*) AS traces_cnt
+  FROM {{ refined_traces_projection }}
+  GROUP BY 1, 2
+)
+
+-- Count subtraces and sum of gas used at each parent trace.
+, subtrace_aggregate AS (
+  SELECT
+    block_number
+    , transaction_hash
+    , parent_trace_address
+    , trace_depth
+    , sum(trace_gas_used) AS gas_used_sum
+    , count(*) AS cnt
+  FROM {{ refined_traces_projection }}
+  GROUP BY 1, 2, 3, 4
+)
+
+SELECT
+  traces.*
+  , tx_agg.traces_cnt AS num_traces_in_txn
+  , coalesce(subtrace_agg.gas_used_sum, 0) AS sum_subtraces_gas_used
+  , traces.trace_gas_used - coalesce(subtrace_agg.gas_used_sum, 0) AS gas_used_minus_subtraces
+
+FROM {{ refined_traces_projection }} AS traces
+INNER JOIN tx_aggregate AS tx_agg -- join on txn level
+  ON
+    traces.block_number = tx_agg.block_number
+    AND traces.transaction_hash = tx_agg.transaction_hash
+LEFT JOIN subtrace_aggregate AS subtrace_agg -- join on trace level 1 level down
+  ON
+    traces.block_number = subtrace_agg.block_number
+    AND traces.transaction_hash = subtrace_agg.transaction_hash
+    AND traces.trace_depth = (subtrace_agg.trace_depth - 1)
+    AND traces.trace_address = subtrace_agg.parent_trace_address
+
+
