@@ -54,7 +54,7 @@ jobs:
             git add .
 
             # Commit and push if there are changes
-            if ! git diff --quiet; then
+            if git diff --staged --quiet && [ -n "$(git status --porcelain .)" ]; then
               git commit -m "Deploying to ${CIRCLE_BRANCH} from @ ${SOURCE_REPO}@${SOURCE_COMMIT} 🚀"
               git push "https://x-access-token:${GITHUB_APP_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git" ${CIRCLE_BRANCH}
             else
