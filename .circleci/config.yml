@@ -5,12 +5,10 @@ orbs:
   utils: ethereum-optimism/circleci-utils@dev:first
 
 parameters:
-  run_daily_upload:
-    type: boolean
-    default: false
-  run_daily_metadata:
-    type: boolean
-    default: false
+  run_job:
+    type: enum
+    default: "none"
+    enum: ["none", "run_daily_upload", "run_daily_metadata"]
 
 commands:
   setup-python-env:
@@ -135,7 +133,7 @@ workflows:
   daily-api-uploads:
     when:
       or:
-        - equal: [run_daily_upload, true]
+        - equal: [run_job, "run_daily_upload"]
         - equal: [run_daily_upload, <<pipeline.schedule.name>>]
     jobs:
       - defillama-protocols:
@@ -145,7 +143,7 @@ workflows:
   run-daily-metadata:
     when:
       or:
-        - equal: [run_daily_metadata, true]
+        - equal: [run_job, "run_daily_metadata"]
         - equal: [run_daily_metadata, <<pipeline.schedule.name>>]
     jobs:
       - chain-metadata:
