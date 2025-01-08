@@ -18,6 +18,17 @@ commands:
           name: Install project dependencies
           command: uv sync --all-extras --dev
 jobs:
+  chain-metadata:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - checkout
+      - setup-python-env
+      - run:
+          name: Chain Metadata
+          command: uv run opdata chains chain_metadata_updates
+          environment:
+            OPLABS_ENV: prod
   deploy-github-pages:
     machine:
       image: ubuntu-2004:current
@@ -113,17 +124,19 @@ jobs:
 workflows:
   version: 2
   daily-api-uploads:
-    triggers:
-      - schedule:
-          cron: "15 3 * * *"
-          filters:
-            branches:
-              only:
-                - main
+    when:
+      equal: [run_daily_upload, <<pipeline.schedule.name>>]
+
     jobs:
       - defillama-protocols:
           context: op-analytics
       - daily-uploads-other-tasks:
+          context: op-analytics
+  run-daily-metadata:
+    when:
+      equal: [run_daily_metadata, <<pipeline.schedule.name>>]
+    jobs:
+      - chain-metadata:
           context: op-analytics
 
   manual:
@@ -141,3 +154,5 @@ workflows:
           context:
             - circleci-repo-op-analytics
             - op-analytics
+      - chain-metadata:
+          context: op-analytics
