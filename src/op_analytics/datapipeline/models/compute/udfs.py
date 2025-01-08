@@ -6,7 +6,7 @@ import warnings
 import duckdb
 import numba
 from duckdb.functional import PythonUDFType
-from duckdb.typing import BLOB, INTEGER
+from duckdb.typing import BLOB, INTEGER, VARCHAR, BIGINT
 
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
 
@@ -21,6 +21,19 @@ def count_zero_bytes(x: bytes) -> int:
 
 
 _UDF_LOCK = threading.Lock()
+
+
+def parse_reversed_hex(hex_str: str) -> int:
+    """
+    Equivalent to:
+      reinterpretAsUIntX(reverse(unhex(hex_str))) in Clickhouse.
+    i.e. treat 'hex_str' as big-endian hex, reverse its bytes,
+    and parse as an unsigned integer.
+    """
+    if hex_str.startswith("0x"):
+        hex_str = hex_str[2:]
+    reversed_bytes = bytes.fromhex(hex_str)[::-1]
+    return int.from_bytes(reversed_bytes, byteorder="little")
 
 
 def create_python_udfs(duckdb_context: DuckDBContext):
@@ -42,6 +55,15 @@ def create_python_udfs(duckdb_context: DuckDBContext):
                 parameters=[BLOB],
                 return_type=INTEGER,
             )
+
+            duckdb_context.client.create_function(
+                name="parse_reversed_hex",
+                function=parse_reversed_hex,
+                parameters=[VARCHAR],
+                return_type=BIGINT,
+                type=PythonUDFType.NATIVE,
+            )
+
         duckdb_context.python_udfs_ready = True
 
 
@@ -59,7 +81,7 @@ def create_duckdb_macros(duckdb_context: DuckDBContext):
 
     CREATE OR REPLACE MACRO wei_to_gwei(a)
     AS a::DECIMAL(28, 0) * 0.000000001::DECIMAL(10, 10);
-    
+
     CREATE OR REPLACE MACRO gwei_to_eth(a)
     AS a::DECIMAL(28, 10) * 0.000000001::DECIMAL(10, 10);
 
@@ -74,7 +96,7 @@ def create_duckdb_macros(duckdb_context: DuckDBContext):
     -- Truncate a timestamp to hour.
     CREATE OR REPLACE MACRO epoch_to_hour(a) AS
     date_trunc('hour', make_timestamp(a * 1000000::BIGINT));
-    
+
     -- Truncate a timestamp to day.
     CREATE OR REPLACE MACRO epoch_to_day(a) AS
     date_trunc('day', make_timestamp(a * 1000000::BIGINT));
@@ -82,25 +104,25 @@ def create_duckdb_macros(duckdb_context: DuckDBContext):
     -- Division by 16 for DECIMAL types.
     CREATE OR REPLACE MACRO div16(a)
     AS a * 0.0625::DECIMAL(5, 5);
-    
+
     -- Get the length in bytes for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_bytelen(x)
     AS CAST((length(x) - 2) / 2 AS INT);
-    
+
     -- Count zero bytes for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_zero_bytes(a)
     AS count_zero_bytes(unhex(substr(a, 3)));
-    
+
     -- Calculate calldata gas used for binary data that is encoded as a hex
     -- string (can be updated by an EIP).
     CREATE OR REPLACE MACRO hexstr_calldata_gas(x)
     AS 16 * (hexstr_bytelen(x) - hexstr_zero_bytes(x)) + 4 * hexstr_zero_bytes(x);
-    
+
     --Get the method id for input data. This is the first 4 bytes, or first 10
     -- string characters for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_method_id(x)
     AS substring(x,1,10);
-    
+
     -- Trace address depth. Examples:
     --   ""       -> 0
     --   "0"      -> 1
