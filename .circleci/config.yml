@@ -63,7 +63,6 @@ jobs:
       - utils/github-pages-deploy:
           force-push: true
           src-pages-dir: /tmp/docs
-          pages-branch: gh-pages
 
   defillama-protocols:
     machine:
