@@ -11,89 +11,6 @@ parameters:
     enum: ["select_job", "run_daily_upload", "run_daily_metadata"]
 
 commands:
-  push-test:
-    description: >
-      This command will take care to deploy the github pages.
-    parameters:
-      src-pages-dir:
-        type: string
-        description: "path to the folder to deploy"
-      pages-branch:
-        type: string
-        default: "gh-pages"
-        description: "The branch to deploy to"
-      force-push:
-        type: boolean
-        default: false
-        description: "Whether to force push"
-      token-name:
-        type: env_var_name
-        default: GITHUB_APP_TOKEN
-    steps:
-      - run:
-          name: Deploy github pages
-          command: |
-
-            #-----------------
-            #temp section for debugging
-            echo ${GITHUB_APP_TOKEN} > /tmp/gh_token
-            #-----------------
-
-            # set up initial variables
-            pages_branch="<< parameters.pages-branch >>"
-            pages_folder=$(realpath "<< parameters.src-pages-dir >>")
-
-            SOURCE_COMMIT=$(git rev-parse HEAD)
-            SOURCE_REPO="${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
-
-            USERNAME=${CIRCLE_USERNAME}
-
-            # Extract the email from the user info
-            ID=$(curl https://api.github.com/users/$USERNAME | jq -r '.id')
-            USER_EMAIL="${ID}+${USERNAME}@users.noreply.github.com"
-
-            # Git operations with committer's identity
-            git config --global user.name "${USERNAME}"
-            git config --global user.email "${USER_EMAIL}"
-
-
-
-            #set up src directory
-            src_dir=$(mktemp -d)
-            cd $src_dir
-            git init
-            git remote add origin "https://x-access-token:${<< parameters.token-name >>}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git"
-
-
-            if [ "<< parameters.force-push >>" = true ]; then
-              # in case we are force pushing, we want a clean branch that we can push to
-              echo "Creating orphan branch for to always have a clean history for ${pages_branch}"
-              git checkout --orphan "${pages_branch}"
-            else
-              # Check if branch exists on remote
-              if git ls-remote --heads origin "${pages_branch}" | grep -q "${pages_branch}"; then
-                  echo "Branch ${pages_branch} exists on remote, checking out..."
-                  git fetch origin "${pages_branch}"
-                  git checkout -b ${pages_branch} FETCH_HEAD
-              else
-                  echo "Branch ${pages_branch} does not exist, creating..."
-                  git checkout --orphan "${pages_branch}"
-              fi
-            fi
-
-            # Copy new files
-            cp -a ${pages_folder}/. .
-
-            # Commit and push
-            git add .
-            git commit -m "Deploying to ${pages_branch} from @ ${SOURCE_REPO}@${SOURCE_COMMIT} 🚀"
-
-            if [ "<< parameters.force-push >>" = true ]; then
-              git push --set-upstream origin ${pages_branch} --force
-            else
-              git push --set-upstream origin ${pages_branch} 
-            fi
-
   setup-python-env:
     steps:
       - run:
@@ -143,14 +60,10 @@ jobs:
             touch $tmp_dir/.nojekyll
 
       - utils/get-github-access-token
-      # - utils/github-pages-deploy:
-      #     force-push: true
-      #     src-pages-dir: /tmp/docs
-      #     pages-branch: gh-pages-test-2
-      - push-test:
+      - utils/github-pages-deploy:
           force-push: true
           src-pages-dir: /tmp/docs
-          pages-branch: gh-pages-test-3
+          pages-branch: gh-pages-test-2
 
   defillama-protocols:
     machine:
