@@ -29,12 +29,63 @@ commands:
       - run:
           name: Install project dependencies
           command: uv sync --all-extras --dev
+  setup-python-version:
+    parameters:
+      python-version:
+        type: string
+    steps:
+      - run:
+          name: Setup Python and Node.js
+          command: |
+            pyenv install "<< parameters.python-version >>"
+            pyenv global "<< parameters.python-version >>"
+            # Verify Python version
+            python --version
+
+      - run:
+          name: Install dependencies
+          command: |
+            python -m pip install --upgrade pip
+            python -m pip install pipenv
+            pipenv install --dev
+  checkout-dep-1:
+    steps:
+      - run:
+          name: Clone repository and checkout branch with depth 1
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+
 jobs:
+  general-l2:
+    machine:
+      image: ubuntu-2004:current
+    environment:
+      NODE_OPTIONS: --max-old-space-size=4096
+    steps:
+      - checkout-dep-1
+      - setup-python-version:
+          python-version: 3.10.11
+      - run:
+          name: Setup GCP Credentials
+          command: |
+            # Decode credentials directly into environment variable without exposing them
+            echo 'export BQ_APPLICATION_CREDENTIALS="$(echo $BQ_APPLICATION_CREDENTIALS_BASE64 | base64 --decode 2>/dev/null)"' >> $BASH_ENV
+      - run:
+          name: Generate and run Python scripts
+          command: |
+            pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
+            cd op_chains_tracking && pipenv run python dune_opchain_uploads.py
+            cd ../other_chains_tracking && pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
+      - utils/get-github-access-token
+      - utils/github-commit-and-push-changes:
+          commit-message: "GH Action Update - Agg Downloads"
+          skip-ci: true
+          folder: "."
+
   chain-metadata:
     machine:
       image: ubuntu-2004:current
     steps:
-      - checkout
+      - checkout-dep-1
       - setup-python-env
       - run:
           name: Chain Metadata
@@ -45,11 +96,7 @@ jobs:
     machine:
       image: ubuntu-2004:current
     steps:
-      - run:
-          name: Clone the repository
-
-          command: |
-            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+      - checkout-dep-1
       - setup-python-env
       - run:
           name: Build Static Content
@@ -74,10 +121,7 @@ jobs:
     machine:
       image: ubuntu-2004:current
     steps:
-      - run:
-          name: Clone the repository
-          command: |
-            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+      - checkout-dep-1
       - setup-python-env
       - run:
           name: DefiLlama Protocol TVL
@@ -90,10 +134,7 @@ jobs:
     machine:
       image: ubuntu-2004:current
     steps:
-      - run:
-          name: Clone the repository
-          command: |
-            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+      - checkout-dep-1
       - setup-python-env
       - run:
           name: DefiLlama Protocol TVL
@@ -113,7 +154,7 @@ jobs:
     machine:
       image: ubuntu-2004:current
     steps:
-      - checkout
+      - checkout-dep-1
       - setup-python-env
       - run:
           name: L2Beat
