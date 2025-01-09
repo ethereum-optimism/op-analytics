@@ -15,6 +15,7 @@ across_bridge_addresses = load_across_bridge_addresses(chains_df=goldsky_df)
         "ingestion/logs_v1",
         "ingestion/transactions_v1",
         "across_bridge_addresses",
+        "goldsky_df",
     ],
     expected_outputs=[
         "telepotr_bridging_transactions_v1",
