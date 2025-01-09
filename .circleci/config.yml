@@ -44,10 +44,8 @@ commands:
 
 jobs:
   general-l2:
-    machine:
-      image: ubuntu-2004:current
-    environment:
-      NODE_OPTIONS: --max-old-space-size=4096
+    docker:
+      - image: cimg/python:3.12
     steps:
       - checkout-dep-1
       - run:
