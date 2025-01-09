@@ -36,7 +36,7 @@ commands:
         type: string
     steps:
       - run:
-          name: Setup Python and Node.js
+          name: Setup Python
           command: |
             pyenv install "<< parameters.python-version >>"
             pyenv global "<< parameters.python-version >>"
@@ -64,7 +64,7 @@ jobs:
     steps:
       - checkout-dep-1
       - setup-python-version:
-          python-version: 3.10.11
+          python-version: 3.12.0
       - run:
           name: Setup GCP Credentials
           command: |
