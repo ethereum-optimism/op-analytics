@@ -233,7 +233,7 @@ workflows:
       or:
         - equal: [<< pipeline.parameters.run_job >>, "run_general_l2"]
     jobs:
-      - defillama-stablecoins:
+      - general-l2:
           context: op-analytics-legacy
 
   merge-to-main:
