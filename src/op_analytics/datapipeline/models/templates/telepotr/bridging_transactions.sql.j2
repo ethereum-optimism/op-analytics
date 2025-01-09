@@ -1,21 +1,23 @@
 WITH x AS (
   SELECT
-    l.block_timestamp
+    l.dt
+    , l.block_timestamp
     , l.block_number
     , l.chain AS src_chain
+    , l.chain_id AS src_chain_id
     , l.address AS contract_address
     , l.transaction_hash
-    , parse_reversed_hex(substring(string_split(l.topics, ',')[3], 3)) AS deposit_id
-    , '0x' || substring(substring(l.data, 3), 25, 40) AS input_token_address
-    , '0x' || substring(substring(l.data, 3), 89, 40) AS output_token_address
-    , cast(parse_reversed_hex(substring(string_split(l.topics, ',')[2], 3)) AS String) AS dst_chain_id
-    , parse_reversed_hex(substring(substring(l.data, 3), 129, 64)) AS input_amount
-    , parse_reversed_hex(substring(substring(l.data, 3), 193, 64)) AS output_amount
-    , parse_reversed_hex(substring(substring(l.data, 3), 257, 64)) AS quote_timestamp
-    , parse_reversed_hex(substring(substring(l.data, 3), 321, 64)) AS fill_deadline
-    , parse_reversed_hex(substring(substring(l.data, 3), 385, 64)) AS exclusivity_deadline
-    , '0x' || right(substring(substring(l.data, 3), 449, 64), 40) AS recipient_address
-    , '0x' || right(substring(substring(l.data, 3), 513, 64), 40) AS relayer_address
+    , l.topics.string_split(',')[3].substring(3).parse_reversed_hex() AS deposit_id
+    , '0x' || l.data.substring(3).substring(25, 40) AS input_token_address
+    , '0x' || l.data.substring(3).substring(89, 40) AS output_token_address
+    , cast(l.topics.string_split(',')[2].substring(3).parse_reversed_hex() AS String) AS dst_chain_id
+    , l.data.substring(3).substring(129, 64).parse_reversed_hex() AS input_amount
+    , l.data.substring(3).substring(193, 64).parse_reversed_hex() AS output_amount
+    , l.data.substring(3).substring(257, 64).parse_reversed_hex() AS quote_timestamp
+    , l.data.substring(3).substring(321, 64).parse_reversed_hex() AS fill_deadline
+    , l.data.substring(3).substring(385, 64).parse_reversed_hex() AS exclusivity_deadline
+    , '0x' || l.data.substring(3).substring(449, 40) AS recipient_address
+    , '0x' || l.data.substring(3).substring(513, 64).right(40) AS relayer_address
     , t.from_address AS depositor_address
     , CASE
       WHEN substring(t.input, -10) = '1dc0de0001' THEN 'SuperBridge'
