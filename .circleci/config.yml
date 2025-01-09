@@ -14,6 +14,7 @@ parameters:
         "run_daily_api_upload",
         "run_daily_metadata",
         "run_defillama_stablecoins",
+        "run_general_l2",
       ]
 
 commands:
@@ -226,6 +227,14 @@ workflows:
     jobs:
       - defillama-stablecoins:
           context: op-analytics
+
+  run-general-l2:
+    when:
+      or:
+        - equal: [<< pipeline.parameters.run_job >>, "run_general_l2"]
+    jobs:
+      - defillama-stablecoins:
+          context: op-analytics-legacy
 
   merge-to-main:
     when:
