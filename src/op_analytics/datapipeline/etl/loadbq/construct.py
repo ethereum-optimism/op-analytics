@@ -10,6 +10,7 @@ from op_analytics.coreutils.partitioned.paths import get_dt, get_root_path
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.time import date_fromstr
 from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_readers_bydate
+from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 
 from .loader import BQLoader, BQOutputData
 from .task import DateLoadTask
@@ -34,6 +35,12 @@ def construct_date_load_tasks(
         chains=chains,
         range_spec=range_spec,
         read_from=DataLocation.GCS,
+        root_paths_to_read=[
+            RootPath.of("ingestion/blocks_v1"),
+            RootPath.of("ingestion/logs_v1"),
+            RootPath.of("ingestion/traces_v1"),
+            RootPath.of("ingestion/transactions_v1"),
+        ],
     )
 
     # For each date, keep track of datasets and parquet paths.

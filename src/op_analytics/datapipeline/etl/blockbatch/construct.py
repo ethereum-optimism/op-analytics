@@ -9,6 +9,7 @@ from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determine_network
 from op_analytics.datapipeline.etl.ingestion.reader.byblock import construct_readers_byblock
 from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
+from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 from op_analytics.datapipeline.models.compute.model import PythonModel
 
 from .reader.markers import BLOCKBATCH_MARKERS_TABLE, make_data_spec
@@ -29,9 +30,10 @@ def construct_data_readers(
     """
     model_objs = [PythonModel.get(_) for _ in models]
 
-    input_datasets = set()
-    for _ in model_objs:
-        input_datasets.update(_.input_datasets)
+    input_datasets: set[RootPath] = set()
+    for model_obj in model_objs:
+        for input_dataset in model_obj.input_datasets:
+            input_datasets.add(RootPath.of(input_dataset))
 
     return construct_readers_byblock(
         blockbatch_request=blockbatch_request,
@@ -62,7 +64,7 @@ def construct_tasks(
     data_spec = make_data_spec(chains=chains, models=models)
     output_markers_df = data_spec.query_markers(
         datevals=blockbatch_request.datevals,
-        read_from=write_to,
+        location=write_to,
     )
     unique_chains = output_markers_df["chain"].n_unique()
     log.info(f"pre-fetched {len(output_markers_df)} markers for {unique_chains} chains")

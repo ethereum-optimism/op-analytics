@@ -11,6 +11,7 @@ from op_analytics.datapipeline.chains.activation import is_chain_active
 
 from .markers import IngestionData, IngestionDataSpec
 from .request import BlockBatchRequest
+from .rootpaths import RootPath
 
 log = structlog.get_logger()
 
@@ -18,7 +19,7 @@ log = structlog.get_logger()
 def construct_readers_byblock(
     blockbatch_request: BlockBatchRequest,
     read_from: DataLocation,
-    root_paths_to_read: list[str],
+    root_paths_to_read: list[RootPath],
 ) -> list[DataReader]:
     """Construct a list of DataReader for the given parameters.
 
@@ -54,12 +55,15 @@ def construct_readers_byblock(
             # Check if all markers present are ready.
             input_data = is_batch_ready(
                 markers_df=group_df,
-                root_paths_to_check=data_spec.adapter.root_paths_physical(chain),
+                root_paths_to_check=data_spec.physical_root_paths_for_chain(chain),
                 storage_location=read_from,
             )
 
             # Update data path mapping so keys are logical paths.
-            dataset_paths = data_spec.adapter.data_paths(chain, input_data.data_paths)
+            dataset_paths: dict[str, list[str]] = data_spec.data_paths_keyed_by_logical_path(
+                chain,
+                input_data.data_paths,
+            )
 
             extra_columns_df = group_df.select("num_blocks", "min_block", "max_block").unique()
             assert len(extra_columns_df) == 1
