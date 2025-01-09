@@ -6,21 +6,21 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
-from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determine_network
 from op_analytics.datapipeline.etl.ingestion.reader.byblock import construct_readers_byblock
+from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
 from op_analytics.datapipeline.models.compute.model import PythonModel
 
 from .reader.markers import BLOCKBATCH_MARKERS_TABLE, make_data_spec
+
 from .task import BlockBatchModelsTask
 
 log = structlog.get_logger()
 
 
 def construct_data_readers(
-    chains: list[str],
+    blockbatch_request: BlockBatchRequest,
     models: list[str],
-    range_spec: str,
     read_from: DataLocation,
 ) -> list[DataReader]:
     """Construct data readers for a list of models.
@@ -34,8 +34,7 @@ def construct_data_readers(
         input_datasets.update(_.input_datasets)
 
     return construct_readers_byblock(
-        chains=chains,
-        range_spec=range_spec,
+        blockbatch_request=blockbatch_request,
         read_from=read_from,
         root_paths_to_read=sorted(input_datasets),
     )
@@ -49,17 +48,20 @@ def construct_tasks(
     write_to: DataLocation,
 ) -> list[BlockBatchModelsTask]:
     """Construct a collection of tasks to compute intermediate models."""
+    # Prepare the request.
+    blockbatch_request = BlockBatchRequest.build(chains, range_spec)
+
+    # Prepare data readers.
     readers: list[DataReader] = construct_data_readers(
-        chains=chains,
+        blockbatch_request=blockbatch_request,
         models=models,
-        range_spec=range_spec,
         read_from=read_from,
     )
 
     # Pre-fetch completion markers so we can skip completed tasks.
     data_spec = make_data_spec(chains=chains, models=models)
     output_markers_df = data_spec.query_markers(
-        datevals=DateRange.from_spec(range_spec).dates(),
+        datevals=blockbatch_request.datevals,
         read_from=write_to,
     )
     unique_chains = output_markers_df["chain"].n_unique()

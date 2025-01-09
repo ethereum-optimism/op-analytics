@@ -133,6 +133,8 @@ class IntermediateModelTestBase(unittest.TestCase):
             dir_name=os.path.dirname(db_path),
             db_file_name=db_file_name,
         )
+        cls._duckdb_context.connect_to_gcs()
+
         tables_exist = cls._tables_exist(datasets=model.input_datasets)
 
         if not tables_exist:
@@ -155,7 +157,7 @@ class IntermediateModelTestBase(unittest.TestCase):
                 # We patch the markers database to use the real production database.
                 # This allows us to fetch test data straight from production.
                 with patch(
-                    "op_analytics.coreutils.partitioned.dataaccess.etl_monitor_markers_database",
+                    "op_analytics.coreutils.partitioned.markers_clickhouse.etl_monitor_markers_database",
                     lambda: "etl_monitor",
                 ):
                     cls._fetch_test_data(model.input_datasets)
@@ -209,25 +211,23 @@ class IntermediateModelTestBase(unittest.TestCase):
         """Fetch test data from GCS and save it to the local duckdb."""
         datestr = cls.dateval.strftime("%Y%m%d")
 
-        from op_analytics.datapipeline.etl.intermediate.construct import construct_tasks
+        from op_analytics.datapipeline.etl.blockbatch.construct import construct_tasks
 
         tasks = construct_tasks(
             chains=cls.chains,
-            models=[],
+            models=[cls.model],
             range_spec=f"@{datestr}:+1",
             read_from=DataLocation.GCS,
-            write_to=DataLocation.DISABLED,
+            write_to=DataLocation.GCS,
         )
-        assert len(tasks) == 1
+        assert len(tasks) > 0
         task = tasks[0]
 
         relations = {}
         for dataset in datasets:
-            dataset_view = task.data_reader.remote_parquet(dataset).create_view()
-
             assert cls._duckdb_context is not None
-            rel = cls._duckdb_context.client.view(dataset_view)
 
+            # Prepare the WHERE clause to filter blocks.
             if "blocks" in dataset:
                 block_number_col = "number"
             else:
@@ -237,7 +237,14 @@ class IntermediateModelTestBase(unittest.TestCase):
                 _.format(block_number=block_number_col) for _ in cls.block_filters
             )
 
-            arrow_table = rel.filter(block_filter).to_arrow_table()  # noqa: F841
+            # Get SELECT statement for the remote parquet data.
+            select = task.data_reader.remote_parquet(dataset).select_string(
+                additional_sql="WHERE " + block_filter
+            )
+
+            # Execute SELECT and convert to arrow.
+            rel = cls._duckdb_context.client.sql(select)
+            arrow_table = rel.to_arrow_table()  # noqa: F841
             table_name = input_table_name(dataset)
 
             assert cls._duckdb_context is not None
@@ -277,7 +284,7 @@ def execute_model_in_memory(
     for name, relation in model_results.items():
         duckdb_context.client.register(
             view_name=name,
-            python_object=relation.to_arrow_table(),
+            python_object=duckdb_context.relation_to_arrow(relation),
         )
 
     return model_executor

@@ -50,7 +50,7 @@ class IngestionDataSpec:
     def query_markers(
         self,
         datevals: list[date],
-        read_from: DataLocation,
+        location: DataLocation,
     ) -> pl.DataFrame:
         """Query completion markers for a list of dates and chains.
 
@@ -62,7 +62,7 @@ class IngestionDataSpec:
         return client.query_markers_by_root_path(
             chains=self.chains,
             datevals=datevals,
-            data_location=read_from,
+            data_location=location,
             root_paths=self.adapter.root_paths_query_filter(),
             markers_table=INGESTION_MARKERS_TABLE,
             extra_columns=[

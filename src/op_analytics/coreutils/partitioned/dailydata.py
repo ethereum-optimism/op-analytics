@@ -2,16 +2,14 @@ from datetime import timedelta
 from enum import Enum
 from functools import cache
 
-import clickhouse_connect
 import polars as pl
 import pyarrow as pa
 
-from op_analytics.coreutils.clickhouse.client import new_client
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
+from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
 from op_analytics.coreutils.duckdb_inmem import EmptyParquetData
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.env.aware import is_bot
-from op_analytics.coreutils.env.vault import env_get
 from op_analytics.coreutils.logger import human_rows, human_size, structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_fromstr
@@ -203,51 +201,7 @@ class DailyDataset(str, Enum):
             self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
         )
 
-        gcs_path = paths[0].replace("gs://", "https://storage.googleapis.com/")
-        log.info(f"using gcs path: {gcs_path}")
-
-        KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
-        SECRET = env_get("GCS_HMAC_SECRET")
-        statement = f"""
-        CREATE TEMPORARY TABLE new_table AS (
-            SELECT *,
-            FROM s3(
-                '{gcs_path}',
-                '{KEY_ID}',
-                '{SECRET}',
-                'parquet'
-            )
-        )
-        """
-
-        clickhouse_connect.common.set_setting("autogenerate_session_id", True)
-        clt = new_client("OPLABS")
-        clickhouse_connect.common.set_setting("autogenerate_session_id", False)
-        clt.command(statement)
-
-        df: pl.DataFrame = pl.from_arrow(clt.query_arrow("DESCRIBE new_table"))  # type: ignore
-        schema = df.select("name", "type").to_dicts()
-
-        # Build column definitions
-        columns = []
-        for col in schema:
-            col_name = col["name"]
-            col_type = col["type"]
-
-            columns.append(f"`{col_name}` {col_type}")
-
-        # Join columns with commas
-        columns_str = ",\n    ".join(columns)
-
-        # Build full CREATE TABLE statement
-        ddl = f"""CREATE TABLE IF NOT EXISTS {self.db}.{self.table}
-    (
-        {columns_str}
-    )
-    ENGINE = ReplacingMergeTree
-    """
-
-        print(ddl)
+        infer_schema_from_parquet(paths[0], dummy_name=f"{self.db}.{self.table}")
 
     def insert_to_clickhouse(
         self,
