@@ -81,8 +81,6 @@ commands:
               fi
             fi
 
-            # Remove all files from branch to make sure we have a clean folder
-            git rm -rf .
             # Copy new files
             cp -a ${pages_folder}/. .
 
