@@ -8,7 +8,7 @@ parameters:
   run_job:
     type: enum
     default: "select_job"
-    enum: ["select_job", "run_daily_upload", "run_daily_metadata"]
+    enum: ["select_job", "run_daily_api_upload", "run_daily_metadata"]
 
 commands:
   setup-python-env:
@@ -137,11 +137,11 @@ jobs:
 
 workflows:
   version: 2
-  daily-api-uploads:
+  run-daily-api-uploads:
     when:
       or:
-        - equal: [<< pipeline.parameters.run_job >>, "run_daily_upload"]
-        - equal: [run_daily_upload, <<pipeline.schedule.name>>]
+        - equal: [<< pipeline.parameters.run_job >>, "run_daily_api_upload"]
+        - equal: [run_daily_api_upload, <<pipeline.schedule.name>>]
     jobs:
       - defillama-protocols:
           context: op-analytics
