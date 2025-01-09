@@ -84,7 +84,7 @@ class AuxiliaryView:
             raise Exception(f"sql error: {self.name!r}\n{str(ex)}\n\n{statement} ") from ex
 
         duckdb_context.report_size()
-        return self.name
+        return self.sanitized_name
 
     def create_table(
         self,
