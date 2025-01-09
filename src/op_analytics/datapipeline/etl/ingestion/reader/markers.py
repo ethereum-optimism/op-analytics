@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date
 
 import polars as pl
@@ -6,18 +6,12 @@ import polars as pl
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.datapipeline.chains.testnets import TestnetRootPathAdapter
+
+from .rootpaths import RootPath
 
 log = structlog.get_logger()
 
 INGESTION_MARKERS_TABLE = "raw_onchain_ingestion_markers"
-
-DEFAULT_INGESTION_ROOT_PATHS = [
-    "ingestion/blocks_v1",
-    "ingestion/transactions_v1",
-    "ingestion/logs_v1",
-    "ingestion/traces_v1",
-]
 
 
 @dataclass
@@ -36,21 +30,43 @@ class IngestionDataSpec:
 
     # Root paths that will be read. Logical names which may be different
     # than physical names where the data is actualy stored.
-    root_paths_to_read: list[str] | None = None
+    root_paths_to_read: list[RootPath]
 
-    adapter: TestnetRootPathAdapter = field(init=False)
+    def physical_root_paths(self) -> list[str]:
+        physical_root_paths = set()
+        for chain in self.chains:
+            for root_path in self.root_paths_to_read:
+                physical_root_paths.add(root_path.physical_for_chain(chain))
+        return sorted(physical_root_paths)
 
-    def __post_init__(self):
-        self.adapter = TestnetRootPathAdapter(
-            chains=self.chains,
-            root_path_prefix="ingestion",
-            root_paths_to_read=self.root_paths_to_read or DEFAULT_INGESTION_ROOT_PATHS,
-        )
+    def physical_root_paths_for_chain(self, chain: str) -> list[str]:
+        physical_root_paths = set()
+        for root_path in self.root_paths_to_read:
+            physical_root_paths.add(root_path.physical_for_chain(chain))
+        return sorted(physical_root_paths)
+
+    def data_paths_keyed_by_logical_path(
+        self,
+        chain: str,
+        physical_paths: dict[str, list[str]] | None,
+    ):
+        # Root paths in `markers_df`` are all physical. This means that the
+        # `input_data.data_paths`` dictionary will have physical paths as keys.
+        # Here we remap the physical paths to logical paths so that data readers
+        # can continue to operate on logical paths. i.e. given a logical path
+        # key they get back the physical dataset paths where the data is stored.
+        dataset_paths: dict[str, list[str]] = {}
+        if physical_paths is not None:
+            for root_path in self.root_paths_to_read:
+                dataset_paths[root_path.root_path] = physical_paths[
+                    root_path.physical_for_chain(chain)
+                ]
+        return dataset_paths
 
     def query_markers(
         self,
         datevals: list[date],
-        read_from: DataLocation,
+        location: DataLocation,
     ) -> pl.DataFrame:
         """Query completion markers for a list of dates and chains.
 
@@ -62,8 +78,8 @@ class IngestionDataSpec:
         return client.query_markers_by_root_path(
             chains=self.chains,
             datevals=datevals,
-            data_location=read_from,
-            root_paths=self.adapter.root_paths_query_filter(),
+            data_location=location,
+            root_paths=self.physical_root_paths(),
             markers_table=INGESTION_MARKERS_TABLE,
             extra_columns=[
                 "num_blocks",

@@ -1,20 +1,16 @@
 from datetime import timedelta
 
-from op_analytics.coreutils.clickhouse.goldsky import run_query_goldsky
+from op_analytics.coreutils.rangeutils.blockrange import ChainMaxBlock
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import datetime_fromepoch, now_trunc
 
-from .batches import BlockBatch
 from .sources import RawOnchainDataProvider
+from .task import IngestionTask
 
 log = structlog.get_logger()
 
 
-def all_inputs_ready(
-    provider: RawOnchainDataProvider,
-    block_batch: BlockBatch,
-    max_requested_timestamp: int | None,
-) -> bool:
+def all_inputs_ready(task: IngestionTask) -> bool:
     """Very that a block batch is safe to ingest.
 
     We don't want to ingest data that is too close to the tip of the chain
@@ -22,29 +18,13 @@ def all_inputs_ready(
 
     We hard-code a 1hr buffer on the most recently seen block.
     """
-    if provider != RawOnchainDataProvider.GOLDSKY:
-        raise ValueError(f"only goldsky is a suppported provider: {provider}")
-
-    result = run_query_goldsky(
-        query=f"""
-        SELECT
-            max(number) as block_max,
-            max(timestamp) as timestamp_max
-        FROM {block_batch.chain}_blocks
-        """
-    )
-
-    assert len(result) == 1
-    row = result.to_dicts()[0]
-
-    max_ts: int = row["timestamp_max"]
-    max_block: int = row["block_max"]
+    if task.read_from != RawOnchainDataProvider.GOLDSKY:
+        raise ValueError(f"only goldsky is a suppported provider: {task.read_from}")
 
     return is_safe(
-        max_requested_timestamp=max_requested_timestamp,
-        block_batch=block_batch,
-        chain_max_block=max_block,
-        chain_max_ts=max_ts,
+        requested_max_timestamp=task.requested_max_timestamp,
+        requested_max_block=task.block_batch.max,
+        chain_max_block=task.chain_max_block,
     )
 
 
@@ -54,10 +34,9 @@ SAFE_PROVIDER_SLA = timedelta(hours=3)
 
 
 def is_safe(
-    max_requested_timestamp: int | None,
-    block_batch: BlockBatch,
-    chain_max_block: int,
-    chain_max_ts: int,
+    requested_max_timestamp: int | None,
+    requested_max_block: int,
+    chain_max_block: ChainMaxBlock,
 ):
     """Check if the block batch is safe to process.
 
@@ -68,16 +47,17 @@ def is_safe(
 
 
     """
-    diff = chain_max_block - block_batch.max
+
+    diff = chain_max_block.number - requested_max_block
     if diff < SAFE_BLOCK_LAG:
         log.warning(
             f"skipping unsafe batch: too close to max block: chain {chain_max_block} is {diff} ahead"
         )
         return False
 
-    chain_max = datetime_fromepoch(chain_max_ts)
-    if max_requested_timestamp is not None:
-        requested_time = datetime_fromepoch(max_requested_timestamp)
+    chain_max = datetime_fromepoch(chain_max_block.ts)
+    if requested_max_timestamp is not None:
+        requested_time = datetime_fromepoch(requested_max_timestamp)
     else:
         requested_time = now_trunc()
 

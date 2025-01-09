@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 from typing import Any
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from op_analytics.coreutils.logger import structlog
 
 log = structlog.get_logger()
@@ -32,7 +32,7 @@ class TemplatedSQLQuery:
     def render(self) -> RenderedSQLQuery:
         # Load templates from the templates folder.
         templates_dir = os.path.join(os.path.dirname(__file__), "../templates")
-        env = Environment(loader=FileSystemLoader(templates_dir))
+        env = Environment(loader=FileSystemLoader(templates_dir), undefined=StrictUndefined)
 
         # Load and render the template
         template = env.get_template(self.template_file)
