@@ -50,7 +50,6 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - checkout-dep-1
-      - setup-python-version
       - run:
           name: Setup GCP Credentials
           command: |
