@@ -31,18 +31,11 @@ commands:
           name: Install project dependencies
           command: uv sync --all-extras --dev
   setup-python-version:
-    parameters:
-      python-version:
-        type: string
     steps:
       - run:
           name: Setup Python
           command: |
-            pyenv install "<< parameters.python-version >>"
-            pyenv global "<< parameters.python-version >>"
-            # Verify Python version
-            python --version
-
+            pyenv install $(cat .python-version)
       - run:
           name: Install dependencies
           command: |
@@ -63,8 +56,7 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - checkout-dep-1
-      - setup-python-version:
-          python-version: 3.12.0
+      - setup-python-version
       - run:
           name: Setup GCP Credentials
           command: |
