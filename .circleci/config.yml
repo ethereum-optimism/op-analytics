@@ -64,20 +64,25 @@ commands:
             git init
             git remote add origin "https://x-access-token:${<< parameters.token-name >>}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git"
 
-            if git ls-remote --heads origin "${pages_branch}" | grep -q "${pages_branch}"; then
-              echo "Branch ${pages_branch} exists on remote, checking out..."
-              git fetch origin "${pages_branch}"
-              git checkout -b ${pages_branch} FETCH_HEAD
-            else
-              echo "Branch ${pages_branch} does not exist, creating..."
+
+            if [ "<< parameters.force-push >>" = true ]; then
+              # in case we are force pushing, we want a clean branch that we can push to
+              echo "Creating orphan branch for to always have a clean history for ${pages_branch}"
               git checkout --orphan "${pages_branch}"
-              git rm -rf .
-              echo "Initial index.html setup" > index.html
-              git add index.html
-              git commit -m "Initial commit for GitHub Pages"
-              git push origin ${pages_branch} 
+            else
+              # Check if branch exists on remote
+              if git ls-remote --heads origin "${pages_branch}" | grep -q "${pages_branch}"; then
+                  echo "Branch ${pages_branch} exists on remote, checking out..."
+                  git fetch origin "${pages_branch}"
+                  git checkout -b ${pages_branch} FETCH_HEAD
+              else
+                  echo "Branch ${pages_branch} does not exist, creating..."
+                  git checkout --orphan "${pages_branch}"
+              fi
             fi
 
+            # Remove all files from branch to make sure we have a clean folder
+            git rm -rf .
             # Copy new files
             cp -a ${pages_folder}/. .
 
