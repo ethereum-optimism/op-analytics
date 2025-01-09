@@ -165,6 +165,6 @@ workflows:
           context:
             - circleci-repo-op-analytics
             - op-analytics
-          # filters:
-          #   branches:
-          #     only: main
+          filters:
+            branches:
+              only: main
