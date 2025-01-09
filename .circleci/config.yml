@@ -1,5 +1,15 @@
 version: 2.1
 
+orbs:
+  gcp-cli: circleci/gcp-cli@3.0.1
+  utils: ethereum-optimism/circleci-utils@0.0.11
+
+parameters:
+  run_job:
+    type: enum
+    default: "select_job"
+    enum: ["select_job", "run_daily_api_upload", "run_daily_metadata"]
+
 commands:
   setup-python-env:
     steps:
@@ -13,8 +23,47 @@ commands:
       - run:
           name: Install project dependencies
           command: uv sync --all-extras --dev
-
 jobs:
+  chain-metadata:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - checkout
+      - setup-python-env
+      - run:
+          name: Chain Metadata
+          command: uv run opdata chains chain_metadata_updates
+          environment:
+            OPLABS_ENV: prod
+  deploy-github-pages:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - run:
+          name: Clone the repository
+
+          command: |
+            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+      - setup-python-env
+      - run:
+          name: Build Static Content
+          command: make html
+      # Copy directories to serve
+      - run:
+          name: Copy Directories To Serve
+          command: |
+            #this copies everything from the build directory to the docs directory
+            make html-copies
+            tmp_dir="/tmp/docs"
+            mkdir -p $tmp_dir
+            cp -r docs/* $tmp_dir
+            touch $tmp_dir/.nojekyll
+
+      - utils/get-github-access-token
+      - utils/github-pages-deploy:
+          force-push: true
+          src-pages-dir: /tmp/docs
+
   defillama-protocols:
     machine:
       image: ubuntu-2004:current
@@ -88,25 +137,34 @@ jobs:
 
 workflows:
   version: 2
-  daily-api-uploads:
-    triggers:
-      - schedule:
-          cron: "15 3 * * *"
-          filters:
-            branches:
-              only:
-                - main
+  run-daily-api-uploads:
+    when:
+      or:
+        - equal: [<< pipeline.parameters.run_job >>, "run_daily_api_upload"]
+        - equal: [run_daily_api_upload, <<pipeline.schedule.name>>]
     jobs:
       - defillama-protocols:
           context: op-analytics
       - daily-uploads-other-tasks:
+          context: op-analytics
+  run-daily-metadata:
+    when:
+      or:
+        - equal: [<< pipeline.parameters.run_job >>, "run_daily_metadata"]
+        - equal: [run_daily_metadata, <<pipeline.schedule.name>>]
+    jobs:
+      - chain-metadata:
           context: op-analytics
 
-  manual:
+  merge-to-main:
     when:
-      equal: [<< pipeline.trigger_source >>, "api"]
+      not:
+        equal: [<< pipeline.trigger_source >>, "api"]
     jobs:
-      - defillama-protocols:
-          context: op-analytics
-      - daily-uploads-other-tasks:
-          context: op-analytics
+      - deploy-github-pages:
+          context:
+            - circleci-repo-op-analytics
+            - op-analytics
+          filters:
+            branches:
+              only: main
