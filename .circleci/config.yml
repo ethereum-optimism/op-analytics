@@ -8,7 +8,13 @@ parameters:
   run_job:
     type: enum
     default: "select_job"
-    enum: ["select_job", "run_daily_api_upload", "run_daily_metadata"]
+    enum:
+      [
+        "select_job",
+        "run_daily_api_upload",
+        "run_daily_metadata",
+        "run_defillama_stablecoins",
+      ]
 
 commands:
   setup-python-env:
@@ -63,6 +69,22 @@ jobs:
       - utils/github-pages-deploy:
           force-push: true
           src-pages-dir: /tmp/docs
+
+  defillama-stablecoins:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - run:
+          name: Clone the repository
+          command: |
+            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+      - setup-python-env
+      - run:
+          name: DefiLlama Protocol TVL
+          command: uv run opdata pulls defillama_stablecoins
+          environment:
+            OPLABS_RUNTIME: "gha"
+            OPLABS_ENV: "prod"
 
   defillama-protocols:
     machine:
@@ -154,6 +176,14 @@ workflows:
         - equal: [run_daily_metadata, <<pipeline.schedule.name>>]
     jobs:
       - chain-metadata:
+          context: op-analytics
+  run-defillama-stablecoins:
+    when:
+      or:
+        - equal:
+            [<< pipeline.parameters.run_job >>, "run_defillama_stablecoins"]
+    jobs:
+      - defillama-stablecoins:
           context: op-analytics
 
   merge-to-main:
