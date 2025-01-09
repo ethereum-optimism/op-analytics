@@ -148,7 +148,7 @@ jobs:
       #     src-pages-dir: /tmp/docs
       #     pages-branch: gh-pages-test-2
       - push-test:
-          force-push: true
+          force-push: false
           src-pages-dir: /tmp/docs
           pages-branch: gh-pages-test-2
 
