@@ -1,4 +1,5 @@
 from datetime import date
+import datetime
 from decimal import Decimal
 
 from op_analytics.coreutils.testutils.inputdata import InputTestData
@@ -47,9 +48,11 @@ class TestTelepotr001(IntermediateModelTestBase):
         actual_schema = {row["column_name"]: row["column_type"] for row in schema}
 
         assert actual_schema == {
+            "dt": "DATE",
             "block_timestamp": "UINTEGER",
             "block_number": "BIGINT",
             "src_chain": "VARCHAR",
+            "src_chain_id": "INTEGER",
             "contract_address": "VARCHAR",
             "transaction_hash": "VARCHAR",
             "deposit_id": "BIGINT",
@@ -80,9 +83,11 @@ class TestTelepotr001(IntermediateModelTestBase):
         )
         assert actual == [
             {
+                "dt": datetime.date(2024, 12, 8),
                 "block_timestamp": 1733617361,
                 "block_number": 7140861,
                 "src_chain": "worldchain",
+                "src_chain_id": 480,
                 "contract_address": "0x09aea4b2242abc8bb4bb78d537a67a245a7bec64",
                 "transaction_hash": "0x70070de9133ecca01d01d2bb7f36610a52c6f5c7d5832eca398ac87efe2842bd",
                 "deposit_id": 20542,
@@ -94,7 +99,7 @@ class TestTelepotr001(IntermediateModelTestBase):
                 "quote_timestamp": 1733617115,
                 "fill_deadline": 1733631731,
                 "exclusivity_deadline": 1733617361,
-                "recipient_address": "0xf062a5c7f4ecddf87173b157f54e0239ea5a685e",
+                "recipient_address": "0x000000000000000000000000f062a5c7f4ecddf8",
                 "relayer_address": "0x0000000000000000000000000000000000000000",
                 "depositor_address": "0xf062a5c7f4ecddf87173b157f54e0239ea5a685e",
                 "integrator": "SuperBridge",
@@ -105,9 +110,11 @@ class TestTelepotr001(IntermediateModelTestBase):
                 "tx_fee": Decimal("2.764117743910E-7"),
             },
             {
+                "dt": datetime.date(2024, 12, 8),
                 "block_timestamp": 1733616825,
                 "block_number": 7140593,
                 "src_chain": "worldchain",
+                "src_chain_id": 480,
                 "contract_address": "0x09aea4b2242abc8bb4bb78d537a67a245a7bec64",
                 "transaction_hash": "0xe60c4a826951e940767de9d5b25a3327d46e9aac85cecc7a34c9cab462e9a3df",
                 "deposit_id": 20541,
@@ -119,7 +126,7 @@ class TestTelepotr001(IntermediateModelTestBase):
                 "quote_timestamp": 1733616635,
                 "fill_deadline": 1733631193,
                 "exclusivity_deadline": 1733616825,
-                "recipient_address": "0xcaeb5b94c9467c7e6ba31cb6bdb78efeaee9d358",
+                "recipient_address": "0x000000000000000000000000caeb5b94c9467c7e",
                 "relayer_address": "0x0000000000000000000000000000000000000000",
                 "depositor_address": "0xcaeb5b94c9467c7e6ba31cb6bdb78efeaee9d358",
                 "integrator": "SuperBridge",
@@ -130,9 +137,11 @@ class TestTelepotr001(IntermediateModelTestBase):
                 "tx_fee": Decimal("3.370966352240E-7"),
             },
             {
+                "dt": datetime.date(2024, 12, 8),
                 "block_timestamp": 1733619567,
                 "block_number": 7141964,
                 "src_chain": "worldchain",
+                "src_chain_id": 480,
                 "contract_address": "0x09aea4b2242abc8bb4bb78d537a67a245a7bec64",
                 "transaction_hash": "0x77a59bb6824552f40ab2040f44ad474321ee99413ea1ce618dcf3ebfdd2d1462",
                 "deposit_id": 20545,
@@ -144,7 +153,7 @@ class TestTelepotr001(IntermediateModelTestBase):
                 "quote_timestamp": 1733619275,
                 "fill_deadline": 1733633921,
                 "exclusivity_deadline": 1733619567,
-                "recipient_address": "0x7b1be6c8dbef38746db2a9c303e42b3e02597ab4",
+                "recipient_address": "0x0000000000000000000000007b1be6c8dbef3874",
                 "relayer_address": "0x0000000000000000000000000000000000000000",
                 "depositor_address": "0x7b1be6c8dbef38746db2a9c303e42b3e02597ab4",
                 "integrator": "SuperBridge",
@@ -155,9 +164,11 @@ class TestTelepotr001(IntermediateModelTestBase):
                 "tx_fee": Decimal("3.021143598700E-7"),
             },
             {
+                "dt": datetime.date(2024, 12, 8),
                 "block_timestamp": 1733619183,
                 "block_number": 7141772,
                 "src_chain": "worldchain",
+                "src_chain_id": 480,
                 "contract_address": "0x09aea4b2242abc8bb4bb78d537a67a245a7bec64",
                 "transaction_hash": "0x3955c5b3adfc27d88dd4905897c7efe2ed37bb84bca6ceb41130f022f08a7e54",
                 "deposit_id": 20544,
@@ -169,7 +180,7 @@ class TestTelepotr001(IntermediateModelTestBase):
                 "quote_timestamp": 1733619035,
                 "fill_deadline": 1733633535,
                 "exclusivity_deadline": 1733619183,
-                "recipient_address": "0x1080034b7c55bb9dd8677f0315ca2c3cf281d9e8",
+                "recipient_address": "0x0000000000000000000000001080034b7c55bb9d",
                 "relayer_address": "0x0000000000000000000000000000000000000000",
                 "depositor_address": "0x1080034b7c55bb9dd8677f0315ca2c3cf281d9e8",
                 "integrator": "SuperBridge",
