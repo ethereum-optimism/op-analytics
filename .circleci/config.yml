@@ -150,7 +150,7 @@ jobs:
       - push-test:
           force-push: false
           src-pages-dir: /tmp/docs
-          pages-branch: gh-pages-test-2
+          pages-branch: gh-pages-test-3
 
   defillama-protocols:
     machine:
