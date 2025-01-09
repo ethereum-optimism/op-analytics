@@ -35,13 +35,7 @@ commands:
       - run:
           name: Setup Python
           command: |
-            pyenv install $(cat .python-version)
-      - run:
-          name: Install dependencies
-          command: |
-            python -m pip install --upgrade pip
-            python -m pip install pipenv
-            pipenv install --dev
+            pip install pipenv
   checkout-dep-1:
     steps:
       - run:
