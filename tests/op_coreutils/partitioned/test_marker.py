@@ -13,6 +13,7 @@ from op_analytics.coreutils.partitioned.partition import (
     PartitionMetadata,
 )
 from op_analytics.datapipeline.etl.ingestion.reader.markers import IngestionDataSpec
+from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 from op_analytics.coreutils.time import now
 
 MARKERS_TABLE = "raw_onchain_ingestion_markers"
@@ -128,7 +129,7 @@ def test_marker():
 
     data_spec = IngestionDataSpec(
         chains=["DUMMYCHAIN"],
-        root_paths_to_read=["ingestion/blocks_v1"],
+        root_paths_to_read=[RootPath.of("ingestion/blocks_v1")],
     )
     markers_df = data_spec.query_markers(
         datevals=[datetime.date(2024, 10, 25)],
@@ -144,7 +145,7 @@ def test_marker():
 
     data_spec = IngestionDataSpec(
         chains=["DUMMYCHAIN"],
-        root_paths_to_read=["ingestion/transactions_v1"],
+        root_paths_to_read=[RootPath.of("ingestion/transactions_v1")],
     )
     markers_df = data_spec.query_markers(
         datevals=[datetime.date(2024, 10, 25)],

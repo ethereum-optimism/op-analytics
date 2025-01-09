@@ -11,6 +11,7 @@ from op_analytics.coreutils.rangeutils.blockrange import ChainMaxBlock
 from .batches import BlockBatch, split_block_range
 from .reader.markers import INGESTION_MARKERS_TABLE, IngestionDataSpec
 from .reader.request import BlockBatchRequest
+from .reader.rootpaths import RootPath
 from .sources import RawOnchainDataProvider
 from .task import IngestionTask
 
@@ -27,7 +28,15 @@ def construct_tasks(
     blockbatch_request = BlockBatchRequest.build(chains, range_spec)
 
     # Pre-fetch completion markers so we can skip completed tasks.
-    data_spec = IngestionDataSpec(chains=chains)
+    data_spec = IngestionDataSpec(
+        chains=chains,
+        root_paths_to_read=[
+            RootPath.of("ingestion/blocks_v1"),
+            RootPath.of("ingestion/transactions_v1"),
+            RootPath.of("ingestion/logs_v1"),
+            RootPath.of("ingestion/traces_v1"),
+        ],
+    )
     markers_df = data_spec.query_markers(
         datevals=blockbatch_request.datevals,
         location=write_to,
