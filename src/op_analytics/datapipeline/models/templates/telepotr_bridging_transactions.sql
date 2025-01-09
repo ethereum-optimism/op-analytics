@@ -27,23 +27,22 @@ WITH x AS (
         ,wei_to_eth(CASE WHEN t.gas_price = 0 THEN 0 ELSE t.gas_price * t.receipt_gas_used END) AS l2_fee
         ,wei_to_eth(CASE WHEN t.gas_price = 0 THEN 0 ELSE t.receipt_l1_fee END) AS l1_fee
     FROM {{ raw_logs }} AS l
-    join {{ raw_transactions }} AS t
+    JOIN {{ raw_transactions }} AS t
         on l.transaction_hash = t.hash
-        and l.block_timestamp = t.block_timestamp
-        and l.block_number = t.block_number
-        and l.chain = t.chain
-    -- join {{ across_bridge_metadata }} AS c
-    --     on l.chain = c.chain_name
-    --     and l.address = lower(c.spokepool_address)
+        AND l.block_timestamp = t.block_timestamp
+        AND l.block_number = t.block_number
+        AND l.chain = t.chain
+    JOIN {{ across_bridge_metadata }} AS c
+        on l.chain = c.chain_name
+        AND l.address = lower(c.spokepool_address)
     where 1=1
-        and split_string(l.topics, ',')[1] = '0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f'
-        and l.network = 'mainnet'
-        and t.receipt_status = 1
+        AND split_string(l.topics, ',')[1] = '0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f'
+        AND l.network = 'mainnet'
+        AND t.receipt_status = 1
         AND t.is_deleted = 0
         AND l.is_deleted = 0
         AND t.gas_price > 0
         AND l.data IS NOT NULL AND l.data != '' -- info is there
-        AND l.chain IN (SELECT chain_name FROM across_bridge_metadata)
         AND l.block_timestamp > '2024-05-01'
 )
 
@@ -54,6 +53,6 @@ SELECT
         else c.chain_name end as dst_chain
     ,x.l2_fee + x.l1_fee AS tx_fee
 FROM x
-left join {{ op_stack_chain_metadata }} AS c
+LEFT JOIN {{ op_stack_chain_metadata }} AS c
     on x.dst_chain_id = c.mainnet_chain_id
 where x.integrator is not null
