@@ -1,4 +1,5 @@
 import logging
+import os
 import resource
 
 import orjson
@@ -33,18 +34,33 @@ CALLSITE_PARAMETERS = structlog.processors.CallsiteParameterAdder(
 
 def configuration():
     if is_k8s():
+        plain_logs = os.environ.get("PLAIN_LOGS")
+        if plain_logs == "true":
+            renderer = structlog.dev.ConsoleRenderer(
+                exception_formatter=structlog.dev.plain_traceback,
+            )
+            factory = structlog.WriteLoggerFactory()
+        else:
+            renderer = structlog.processors.JSONRenderer(
+                serializer=orjson.dumps,
+            )  # type: ignore
+            factory = structlog.BytesLoggerFactory()  # type: ignore
+
         return dict(
             processors=[
                 # CALLSITE_PARAMETERS,
                 structlog.contextvars.merge_contextvars,
                 structlog.processors.add_log_level,
                 structlog.dev.set_exc_info,
-                structlog.processors.TimeStamper(fmt="iso", utc=True),
-                structlog.processors.JSONRenderer(serializer=orjson.dumps),
+                structlog.processors.TimeStamper(
+                    fmt="iso",
+                    utc=True,
+                ),
+                renderer,
             ],
             wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
             context_class=dict,
-            logger_factory=structlog.BytesLoggerFactory(),
+            logger_factory=factory,
             cache_logger_on_first_use=True,
         )
     else:
@@ -56,8 +72,13 @@ def configuration():
                 structlog.processors.add_log_level,
                 structlog.processors.StackInfoRenderer(),
                 structlog.dev.set_exc_info,
-                structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False),
-                structlog.dev.ConsoleRenderer(),
+                structlog.processors.TimeStamper(
+                    fmt="%Y-%m-%d %H:%M:%S",
+                    utc=False,
+                ),
+                structlog.dev.ConsoleRenderer(
+                    exception_formatter=structlog.dev.plain_traceback,
+                ),
             ],
             wrapper_class=structlog.make_filtering_bound_logger(logging.DEBUG),
             context_class=dict,
