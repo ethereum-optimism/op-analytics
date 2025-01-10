@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "clickhouse-connect>=0.8.1",
+    "dagster>=1.9.7",
     "duckdb>=1.1.1",
     "gcsfs>=2024.9.0.post1",
     "google-cloud-bigquery>=3.26.0",
