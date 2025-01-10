@@ -56,8 +56,7 @@ jobs:
       - run:
           name: Generate and run Python scripts
           command: |
-            docker run --platform linux/amd64 -v $(pwd):/workspace jupyter/nbviewer jupyter nbconvert --to python /workspace/op_chains_tracking/dune_opchain_uploads.ipynb /workspace/other_chains_tracking/get_filtered_deployers.ipynb /workspace/other_chains_tracking/total_chain_data_to_uploads.ipynb
-
+            docker run --platform linux/amd64 -v $(pwd):/workspace --user $(id -u):$(id -g) jupyter/nbviewer jupyter nbconvert --to python /workspace/op_chains_tracking/dune_opchain_uploads.ipynb /workspace/other_chains_tracking/get_filtered_deployers.ipynb /workspace/other_chains_tracking/total_chain_data_to_uploads.ipynb
             # pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
             cd op_chains_tracking && pipenv run python dune_opchain_uploads.py
             cd ../other_chains_tracking && pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
@@ -216,6 +215,7 @@ workflows:
   run-general-l2:
     when:
       or:
+        - true
         - equal: [<< pipeline.parameters.run_job >>, "run_general_l2"]
     jobs:
       - general-l2:
