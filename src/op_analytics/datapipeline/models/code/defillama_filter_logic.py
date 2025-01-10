@@ -36,102 +36,106 @@ class DefiLlamaConfig:
 
 @dataclass
 class DefillamaTVLBreakdown:
-    """
-    Container for processed DeFiLlama TVL breakdown data.
-
-    Attributes:
-        df_tvl_breakdown: DataFrame containing protocol token TVL data
-    """
-
     df_tvl_breakdown: pl.DataFrame
 
+    @classmethod
+    def of_date(cls, datestr: str, config=DefiLlamaConfig):
+        """
+        Main function to process DeFiLlama protocol data.
 
-def process_defillama_data() -> DefillamaTVLBreakdown:
-    """
-    Main function to process DeFiLlama protocol data.
+        Args:
+            config: DefiLlamaConfig object containing filter settings
+            datestr: Date string in YYYY-MM-DD format to process data for
 
-    Returns:
-        Processed and filtered DataFrame
+        Returns:
+            Processed and filtered DataFrame
 
-    Raises:
-        ValueError: If required data is missing or invalid
-    """
-    # Initialize
-    ctx = init_client()
-    client = ctx.client
-    yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-    three_days_ago = (datetime.now() - timedelta(days=3)).strftime("%Y-%m-%d")
-    config = load_config(
-        "/Users/chuck/codebase/op-analytics/src/op_analytics/datapipeline/models/code/defillama_config.yaml"
-    )
+        Raises:
+            ValueError: If required data is missing or invalid
+        """
+        # Initialize
+        ctx = init_client()
+        client = ctx.client
+        date = datetime.strptime(datestr, "%Y-%m-%d")
+        one_day_ago = (date - timedelta(days=1)).strftime("%Y-%m-%d")
+        three_days_ago = (date - timedelta(days=3)).strftime("%Y-%m-%d")
+        config = load_config(
+            "/Users/chuck/codebase/op-analytics/src/op_analytics/datapipeline/models/code/defillama_config.yaml"
+        )
 
-    # Load data
-    view1 = DefiLlama.PROTOCOLS_TOKEN_TVL.read(min_date=three_days_ago)
-    view2 = DefiLlama.PROTOCOLS_METADATA.read(min_date=yesterday)
+        # Load data
+        view1 = DefiLlama.PROTOCOLS_TOKEN_TVL.read(min_date=three_days_ago, max_date=datestr)
+        view2 = DefiLlama.PROTOCOLS_METADATA.read(min_date=one_day_ago)
 
-    # Process protocol TVL
-    df_protocol_tvl = pl.from_pandas(
-        client.sql(f"""
-        SELECT
-            dt,
-            protocol_slug,
-            chain,
-            token,
-            app_token_tvl,
-            app_token_tvl_usd
-        FROM {view1}
-    """).to_df()
-    )
+        # Process protocol TVL
+        df_protocol_tvl = pl.from_pandas(
+            client.sql(f"""
+            SELECT
+                dt,
+                protocol_slug,
+                chain,
+                token,
+                app_token_tvl,
+                app_token_tvl_usd
+            FROM {view1}
+        """).to_df()
+        )
 
-    # Process metadata
-    df_metadata = pl.from_pandas(
-        client.sql(f"""
-        SELECT 
-            protocol_name,
-            protocol_slug,
-            protocol_category,
-            parent_protocol,
-            CASE 
-                WHEN misrepresented_tokens = 'True' THEN 1
-                ELSE 0
-            END AS misrepresented_tokens
-        FROM {view2}
-    """).to_df()
-    )
+        # Process metadata
+        df_metadata = pl.from_pandas(
+            client.sql(f"""
+            SELECT 
+                protocol_name,
+                protocol_slug,
+                protocol_category,
+                parent_protocol,
+                CASE 
+                    WHEN misrepresented_tokens = 'True' THEN 1
+                    ELSE 0
+                END AS misrepresented_tokens
+            FROM {view2}
+        """).to_df()
+        )
 
-    # Merge and process data
-    df_all = df_protocol_tvl.unique().join(df_metadata.unique(), on="protocol_slug", how="left")
+        # Merge and process data
+        df_all = df_protocol_tvl.unique().join(df_metadata.unique(), on="protocol_slug", how="left")
 
-    # Join mappings and process data fields
-    df_all = df_all.join(config.alignment_df, on="chain", how="left")
-    df_all = df_all.join(config.token_categories, on="token", how="left")
-    df_all = process_data_fields(df_all)
+        # Join mappings and process data fields
+        df_all = df_all.join(config.alignment_df, on="chain", how="left")
+        df_all = df_all.join(config.token_categories, on="token", how="left")
+        df_all = process_data_fields(df_all)
 
-    # Process misrepresented tokens
-    df_misrep = process_misrepresented_tokens(df_all)
+        # Process misrepresented tokens
+        df_misrep = process_misrepresented_tokens(df_all)
 
-    df_all = df_all.join(
-        df_misrep.select(["protocol_slug", "chain", "protocol_misrepresented_tokens"]),
-        on=["protocol_slug", "chain"],
-        how="left",
-    )
+        df_all = df_all.join(
+            df_misrep.select(["protocol_slug", "chain", "protocol_misrepresented_tokens"]),
+            on=["protocol_slug", "chain"],
+            how="left",
+        )
 
-    df_all = df_all.with_columns(
-        token_category_misrep=pl.when(pl.col("protocol_misrepresented_tokens") == 1)
-        .then(pl.lit("Misrepresented TVL"))
-        .otherwise(pl.col("token_category"))
-    )
+        df_all = df_all.with_columns(
+            token_category_misrep=pl.when(pl.col("protocol_misrepresented_tokens") == 1)
+            .then(pl.lit("Misrepresented TVL"))
+            .otherwise(pl.col("token_category"))
+        )
 
-    # Apply protocol filters
-    df_chain_protocol = apply_protocol_filters(df_all, config)
+        # Apply protocol filters
+        df_chain_protocol = apply_protocol_filters(df_all, config)
 
-    df_tvl_breakdown = df_all.join(
-        df_chain_protocol.select(["chain", "protocol_slug", "protocol_category"]),
-        on=["chain", "protocol_slug", "protocol_category"],
-        how="inner",
-    )
+        df_tvl_breakdown = df_all.join(
+            df_chain_protocol.select(["chain", "protocol_slug", "protocol_category"]),
+            on=["chain", "protocol_slug", "protocol_category"],
+            how="inner",
+        )
 
-    return DefillamaTVLBreakdown(df_tvl_breakdown=df_tvl_breakdown)
+        # Write to storage
+        DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.write(
+            dataframe=df_tvl_breakdown,
+            sort_by=["chain", "protocol_slug", "token"],
+        )
+
+        return cls(df_tvl_breakdown=df_tvl_breakdown)
 
 
 def load_config(config_path: Path) -> DefiLlamaConfig:
