@@ -31,6 +31,7 @@ defillama_k8s_config = {
         },
         "env": [
             {"name": "OPLABS_RUNTIME", "value": "k8s"},
+            {"name": "PLAIN_LOGS", "value": "true"},
         ],
         "volumeMounts": [{"mountPath": "/var/secrets", "name": "opanalyticsvault"}],
     },

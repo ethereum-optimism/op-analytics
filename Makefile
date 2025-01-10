@@ -78,8 +78,7 @@ sphinx-serve: .makemarkers/sphinx-docs
 # ----------------------------------------------------------------------------#
 
 IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250110.2
-IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250110.001
-IMAGE_TAG_DAGSTER_DEV = ghcr.io/lithium323/op-analytics-dagster-dev:v20250110.001
+IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250110.002
 
 .PHONY: uv-build
 uv-build:
@@ -104,7 +103,3 @@ docker-dagster: uv-build
 	docker build -f ./Dockerfile.dagster --platform linux/amd64 -t ${IMAGE_TAG_DAGSTER} .
 	docker push ${IMAGE_TAG_DAGSTER}
 
-.PHONY: docker-dagster-dev
-docker-dagster-dev: uv-build
-	docker build -f ./Dockerfile.dagster --platform linux/amd64 -t ${IMAGE_TAG_DAGSTER_DEV} .
-	docker push ${IMAGE_TAG_DAGSTER_DEV}
