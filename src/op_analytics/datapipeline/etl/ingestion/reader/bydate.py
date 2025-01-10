@@ -12,6 +12,7 @@ from op_analytics.coreutils.time import surrounding_dates
 from op_analytics.datapipeline.chains.activation import is_chain_active, is_chain_activation_date
 
 from .markers import IngestionData, IngestionDataSpec
+from .rootpaths import RootPath
 
 log = structlog.get_logger()
 
@@ -20,7 +21,7 @@ def construct_readers_bydate(
     chains: list[str],
     range_spec: str,
     read_from: DataLocation,
-    root_paths_to_read: list[str] | None = None,
+    root_paths_to_read: list[RootPath],
 ) -> list[DataReader]:
     """Construct a list of DataReader for the given parameters.
 
@@ -44,7 +45,7 @@ def construct_readers_bydate(
     # data is ready to be processed.
     markers_df = data_spec.query_markers(
         datevals=date_range.padded_dates(),
-        read_from=read_from,
+        location=read_from,
     )
 
     num_suspect = 0
@@ -69,12 +70,15 @@ def construct_readers_bydate(
                     markers_df=filtered_df,
                     chain=chain,
                     dateval=dateval,
-                    root_paths_to_check=data_spec.adapter.root_paths_physical(chain),
+                    root_paths_to_check=data_spec.physical_root_paths_for_chain(chain),
                     storage_location=read_from,
                 )
 
                 # Update data path mapping so keys are logical paths.
-                dataset_paths = data_spec.adapter.data_paths(chain, input_data.data_paths)
+                dataset_paths: dict[str, list[str]] = data_spec.data_paths_keyed_by_logical_path(
+                    chain,
+                    input_data.data_paths,
+                )
 
                 obj = DataReader(
                     partitions=Partition.from_tuples(
