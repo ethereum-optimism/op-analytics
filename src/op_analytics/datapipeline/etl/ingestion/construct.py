@@ -39,7 +39,30 @@ def construct_tasks(
     markers_df = blockbatch_request.query_markers(location=write_to, padded_dates=True)
 
     # Batches to be ingested for each chain.
+    chain_batches: dict[str, list[BlockBatch]] = ranges_to_batches(blockbatch_request)
+
+    # Collect a single list of tasks to perform across all chains.
+    all_tasks: list[IngestionTask] = []
+    for batches in chain_batches.values():
+        for batch in batches:
+            all_tasks.append(
+                new_task(
+                    chain_max_block=blockbatch_request.chain_max_blocks[batch.chain],
+                    requested_max_timestamp=blockbatch_request.time_range.requested_max_timestamp,
+                    block_batch=batch,
+                    read_from=read_from,
+                    write_to=write_to,
+                    output_markers_df=markers_df,
+                )
+            )
+
+    return all_tasks
+
+
+def ranges_to_batches(blockbatch_request: BlockBatchRequest):
+    """For each chain split the block range into block batches to be processed."""
     chain_batches: dict[str, list[BlockBatch]] = {}
+
     for chain, chain_block_range in blockbatch_request.chain_block_ranges.items():
         chain_batches[chain] = split_block_range(chain, chain_block_range)
 
@@ -53,22 +76,7 @@ def construct_tasks(
         else:
             log.info(f"prepared chain={chain!r}: {len(batches)} batch(es)")
 
-    # Collect a single list of tasks to perform across all chains.
-    all_tasks: list[IngestionTask] = []
-    for batches in chain_batches.values():
-        for batch in batches:
-            all_tasks.append(
-                new_task(
-                    chain_max_block=blockbatch_request.chain_max_blocks[chain],
-                    requested_max_timestamp=blockbatch_request.time_range.requested_max_timestamp,
-                    block_batch=batch,
-                    read_from=read_from,
-                    write_to=write_to,
-                    output_markers_df=markers_df,
-                )
-            )
-
-    return all_tasks
+    return chain_batches
 
 
 def new_task(

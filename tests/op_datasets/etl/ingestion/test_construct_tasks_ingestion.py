@@ -40,7 +40,7 @@ def test_construct():
         patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m3,
     ):
         m1.return_value = BlockRange(min=16421809, max=16439980)
-        m2.return_value = ChainMaxBlock(ts=1736362200, number=18097309)
+        m2.return_value = ChainMaxBlock(chain="mode", ts=1736362200, number=18097309)
         m3.return_value = make_dataframe("ingestion_mode_markers_padded_dates.json")
 
         tasks = construct_tasks(
@@ -52,7 +52,7 @@ def test_construct():
 
     assert tasks == [
         IngestionTask(
-            chain_max_block=ChainMaxBlock(ts=1736362200, number=18097309),
+            chain_max_block=ChainMaxBlock(chain="mode", ts=1736362200, number=18097309),
             requested_max_timestamp=1733097600,
             block_batch=BlockBatch(chain="mode", min=16416000, max=16424000),
             read_from=RawOnchainDataProvider.GOLDSKY,
@@ -106,7 +106,7 @@ def test_construct():
             progress_indicator="",
         ),
         IngestionTask(
-            chain_max_block=ChainMaxBlock(ts=1736362200, number=18097309),
+            chain_max_block=ChainMaxBlock(chain="mode", ts=1736362200, number=18097309),
             requested_max_timestamp=1733097600,
             block_batch=BlockBatch(chain="mode", min=16424000, max=16432000),
             read_from=RawOnchainDataProvider.GOLDSKY,
@@ -160,7 +160,7 @@ def test_construct():
             progress_indicator="",
         ),
         IngestionTask(
-            chain_max_block=ChainMaxBlock(ts=1736362200, number=18097309),
+            chain_max_block=ChainMaxBlock(chain="mode", ts=1736362200, number=18097309),
             requested_max_timestamp=1733097600,
             block_batch=BlockBatch(chain="mode", min=16432000, max=16440000),
             read_from=RawOnchainDataProvider.GOLDSKY,

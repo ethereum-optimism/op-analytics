@@ -565,7 +565,7 @@ def mock_block_range(chain: str, min_ts: int, max_ts: int):
 
 def mock_max_block(chain: str):
     if chain == "fraxtal":
-        return ChainMaxBlock(ts=1736476259, number=14832774)
+        return ChainMaxBlock(chain="fraxtal", ts=1736476259, number=14832774)
 
     raise NotADirectoryError()
 
