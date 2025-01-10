@@ -30,6 +30,17 @@ commands:
       - run:
           name: Install project dependencies
           command: uv sync --all-extras --dev
+  setup-python-3-10:
+    steps:
+      - run:
+          name: Setup Python 3.10
+          command: |
+            sudo add-apt-repository ppa:deadsnakes/ppa
+            sudo apt update
+            sudo apt install -y python3.10 python3.10-venv
+
+            pipenv --python /usr/bin/python3.10
+            pipenv install
   checkout-dep-1:
     steps:
       - run:
@@ -47,19 +58,15 @@ jobs:
           command: |
             # Decode credentials directly into environment variable without exposing them
             echo 'export BQ_APPLICATION_CREDENTIALS="$(echo $BQ_APPLICATION_CREDENTIALS_BASE64 | base64 --decode 2>/dev/null)"' >> $BASH_ENV
+      - setup-python-3-10
       - run:
           name: Generate and run Python scripts
           command: |
-            sudo add-apt-repository ppa:deadsnakes/ppa
-            sudo apt update
-            sudo apt install -y python3.10 python3.10-venv
-
-            pipenv --python /usr/bin/python3.10
-            pipenv install
-
             #needed to allow the docker user to modify the file
             chmod o+rw op_chains_tracking/dune_opchain_uploads.py other_chains_tracking/get_filtered_deployers.py other_chains_tracking/total_chain_data_to_uploads.py
             docker run --platform linux/amd64 -v $(pwd):/workspace quay.io/jupyter/base-notebook jupyter nbconvert --to python /workspace/op_chains_tracking/dune_opchain_uploads.ipynb /workspace/other_chains_tracking/get_filtered_deployers.ipynb /workspace/other_chains_tracking/total_chain_data_to_uploads.ipynb
+
+
 
             cd op_chains_tracking 
             pipenv run python dune_opchain_uploads.py
