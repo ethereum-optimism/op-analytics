@@ -4,10 +4,10 @@ from unittest.mock import patch
 
 import polars as pl
 
-from op_analytics.cli.subcommands.pulls.defillama.dex_volume_fees_revenue import pull_dex_dataframes
+from op_analytics.cli.subcommands.pulls.defillama.volume_fees_revenue import pull_dataframes
 
 # Module path to patch data retrieval functions
-MODULE = "op_analytics.cli.subcommands.pulls.defillama.dex_volume_fees_revenue"
+MODULE = "op_analytics.cli.subcommands.pulls.defillama.volume_fees_revenue"
 
 EXPECTED_PROTOCOLS_DF_SCHEMA = {
     "defillamaId": pl.String,
@@ -63,21 +63,15 @@ def test(mock_write):
         patch(f"{MODULE}.get_data", new=mock_get_data),
         patch(f"{MODULE}.get_chain_responses", new=mock_get_chain_responses),
     ):
-        pull_dex_dataframes()
+        pull_dataframes()
 
     assert len(mock_write.call_args_list) == 1
 
-    crypto_df = mock_write.call_args_list[0].kwargs["crypto_df"]
     chain_df = mock_write.call_args_list[0].kwargs["chain_df"]
-    chain_protocol_df = mock_write.call_args_list[0].kwargs["chain_protocol_df"]
-    protocols_metadata_df = mock_write.call_args_list[0].kwargs["protocols_metadata_df"]
+    breakdown_df = mock_write.call_args_list[0].kwargs["breakdown_df"]
+    dexs_protocols_metadata_df = mock_write.call_args_list[0].kwargs["dexs_protocols_metadata_df"]
+    fees_protocols_metadata_df = mock_write.call_args_list[0].kwargs["fees_protocols_metadata_df"]
 
-    assert crypto_df.columns == [
-        "dt",
-        "total_volume_usd",
-        "total_fees_usd",
-        "total_revenue_usd",
-    ]
     assert chain_df.columns == [
         "dt",
         "chain",
@@ -85,13 +79,14 @@ def test(mock_write):
         "total_fees_usd",
         "total_revenue_usd",
     ]
-    assert chain_protocol_df.columns == [
+    assert breakdown_df.columns == [
         "dt",
         "chain",
-        "protocol",
+        "breakdown_name",
         "total_volume_usd",
         "total_fees_usd",
         "total_revenue_usd",
     ]
 
-    assert protocols_metadata_df.schema == EXPECTED_PROTOCOLS_DF_SCHEMA
+    assert dexs_protocols_metadata_df.schema == EXPECTED_PROTOCOLS_DF_SCHEMA
+    assert fees_protocols_metadata_df.schema == EXPECTED_PROTOCOLS_DF_SCHEMA
