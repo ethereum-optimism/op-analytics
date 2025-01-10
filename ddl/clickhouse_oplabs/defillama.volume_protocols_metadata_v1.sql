@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS defillama;
 
-CREATE TABLE IF NOT EXISTS defillama.dexs_protocols_metadata_v1 (
+CREATE TABLE IF NOT EXISTS defillama.volume_protocols_metadata_v1 (
     `dt` Date,
     `name` String,
     `defillamaId` String,

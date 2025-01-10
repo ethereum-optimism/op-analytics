@@ -132,7 +132,6 @@ def test_construct():
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
-                    "model_name": "contract_creation",
                     "num_blocks": 8000,
                     "min_block": 16416000,
                     "max_block": 16424000,
@@ -143,7 +142,6 @@ def test_construct():
                     pa.field("num_blocks", pa.int32()),
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
-                    pa.field("model_name", pa.string()),
                 ],
                 markers_table="blockbatch_markers",
                 expected_outputs=[
@@ -190,7 +188,6 @@ def test_construct():
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
-                    "model_name": "contract_creation",
                     "num_blocks": 8000,
                     "min_block": 16424000,
                     "max_block": 16432000,
@@ -201,7 +198,6 @@ def test_construct():
                     pa.field("num_blocks", pa.int32()),
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
-                    pa.field("model_name", pa.string()),
                 ],
                 markers_table="blockbatch_markers",
                 expected_outputs=[
@@ -248,7 +244,6 @@ def test_construct():
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
-                    "model_name": "contract_creation",
                     "num_blocks": 8000,
                     "min_block": 16432000,
                     "max_block": 16440000,
@@ -259,7 +254,6 @@ def test_construct():
                     pa.field("num_blocks", pa.int32()),
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
-                    pa.field("model_name", pa.string()),
                 ],
                 markers_table="blockbatch_markers",
                 expected_outputs=[
@@ -306,7 +300,6 @@ def test_construct():
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
-                    "model_name": "contract_creation",
                     "num_blocks": 8000,
                     "min_block": 16440000,
                     "max_block": 16448000,
@@ -317,7 +310,6 @@ def test_construct():
                     pa.field("num_blocks", pa.int32()),
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
-                    pa.field("model_name", pa.string()),
                 ],
                 markers_table="blockbatch_markers",
                 expected_outputs=[
@@ -364,7 +356,6 @@ def test_construct():
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
-                    "model_name": "contract_creation",
                     "num_blocks": 8000,
                     "min_block": 16448000,
                     "max_block": 16456000,
@@ -375,7 +366,6 @@ def test_construct():
                     pa.field("num_blocks", pa.int32()),
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
-                    pa.field("model_name", pa.string()),
                 ],
                 markers_table="blockbatch_markers",
                 expected_outputs=[
@@ -422,7 +412,6 @@ def test_construct():
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
-                    "model_name": "contract_creation",
                     "num_blocks": 8000,
                     "min_block": 16456000,
                     "max_block": 16464000,
@@ -433,7 +422,6 @@ def test_construct():
                     pa.field("num_blocks", pa.int32()),
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
-                    pa.field("model_name", pa.string()),
                 ],
                 markers_table="blockbatch_markers",
                 expected_outputs=[
@@ -480,7 +468,6 @@ def test_construct():
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
-                    "model_name": "contract_creation",
                     "num_blocks": 8000,
                     "min_block": 16464000,
                     "max_block": 16472000,
@@ -491,7 +478,6 @@ def test_construct():
                     pa.field("num_blocks", pa.int32()),
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
-                    pa.field("model_name", pa.string()),
                 ],
                 markers_table="blockbatch_markers",
                 expected_outputs=[
@@ -536,7 +522,6 @@ def test_construct():
             location=DataLocation.GCS,
             partition_cols=["chain", "dt"],
             extra_marker_columns={
-                "model_name": "contract_creation",
                 "num_blocks": 5000,
                 "min_block": 6155000,
                 "max_block": 6160000,
@@ -547,7 +532,6 @@ def test_construct():
                 pa.field("num_blocks", pa.int32()),
                 pa.field("min_block", pa.int64()),
                 pa.field("max_block", pa.int64()),
-                pa.field("model_name", pa.string()),
             ],
             markers_table="blockbatch_markers",
             expected_outputs=[
@@ -627,7 +611,6 @@ def test_construct_kroma():
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
-                    "model_name": "contract_creation",
                     "num_blocks": 20000,
                     "min_block": 18260000,
                     "max_block": 18280000,
@@ -638,7 +621,6 @@ def test_construct_kroma():
                     pa.field("num_blocks", pa.int32()),
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
-                    pa.field("model_name", pa.string()),
                 ],
                 markers_table="blockbatch_markers",
                 expected_outputs=[
@@ -685,7 +667,6 @@ def test_construct_kroma():
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
-                    "model_name": "contract_creation",
                     "num_blocks": 20000,
                     "min_block": 18280000,
                     "max_block": 18300000,
@@ -696,7 +677,6 @@ def test_construct_kroma():
                     pa.field("num_blocks", pa.int32()),
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
-                    pa.field("model_name", pa.string()),
                 ],
                 markers_table="blockbatch_markers",
                 expected_outputs=[
@@ -743,7 +723,6 @@ def test_construct_kroma():
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
-                    "model_name": "contract_creation",
                     "num_blocks": 20000,
                     "min_block": 18300000,
                     "max_block": 18320000,
@@ -754,7 +733,6 @@ def test_construct_kroma():
                     pa.field("num_blocks", pa.int32()),
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
-                    pa.field("model_name", pa.string()),
                 ],
                 markers_table="blockbatch_markers",
                 expected_outputs=[
