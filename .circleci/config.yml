@@ -47,7 +47,6 @@ jobs:
           command: |
             # Decode credentials directly into environment variable without exposing them
             echo 'export BQ_APPLICATION_CREDENTIALS="$(echo $BQ_APPLICATION_CREDENTIALS_BASE64 | base64 --decode 2>/dev/null)"' >> $BASH_ENV
-      - setup-python-3-10
       - run:
           name: Generate and run Python scripts
           command: |
