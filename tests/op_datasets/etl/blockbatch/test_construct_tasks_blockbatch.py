@@ -145,7 +145,7 @@ def test_construct():
                     pa.field("max_block", pa.int64()),
                     pa.field("model_name", pa.string()),
                 ],
-                markers_table="blockbatch_model_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="blockbatch/contract_creation/create_traces_v1",
@@ -203,7 +203,7 @@ def test_construct():
                     pa.field("max_block", pa.int64()),
                     pa.field("model_name", pa.string()),
                 ],
-                markers_table="blockbatch_model_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="blockbatch/contract_creation/create_traces_v1",
@@ -261,7 +261,7 @@ def test_construct():
                     pa.field("max_block", pa.int64()),
                     pa.field("model_name", pa.string()),
                 ],
-                markers_table="blockbatch_model_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="blockbatch/contract_creation/create_traces_v1",
@@ -319,7 +319,7 @@ def test_construct():
                     pa.field("max_block", pa.int64()),
                     pa.field("model_name", pa.string()),
                 ],
-                markers_table="blockbatch_model_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="blockbatch/contract_creation/create_traces_v1",
@@ -377,7 +377,7 @@ def test_construct():
                     pa.field("max_block", pa.int64()),
                     pa.field("model_name", pa.string()),
                 ],
-                markers_table="blockbatch_model_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="blockbatch/contract_creation/create_traces_v1",
@@ -435,7 +435,7 @@ def test_construct():
                     pa.field("max_block", pa.int64()),
                     pa.field("model_name", pa.string()),
                 ],
-                markers_table="blockbatch_model_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="blockbatch/contract_creation/create_traces_v1",
@@ -493,7 +493,7 @@ def test_construct():
                     pa.field("max_block", pa.int64()),
                     pa.field("model_name", pa.string()),
                 ],
-                markers_table="blockbatch_model_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="blockbatch/contract_creation/create_traces_v1",
@@ -549,7 +549,7 @@ def test_construct():
                 pa.field("max_block", pa.int64()),
                 pa.field("model_name", pa.string()),
             ],
-            markers_table="blockbatch_model_markers",
+            markers_table="blockbatch_markers",
             expected_outputs=[
                 ExpectedOutput(
                     root_path="blockbatch_testnets/contract_creation/create_traces_v1",
@@ -640,7 +640,7 @@ def test_construct_kroma():
                     pa.field("max_block", pa.int64()),
                     pa.field("model_name", pa.string()),
                 ],
-                markers_table="blockbatch_model_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="blockbatch/contract_creation/create_traces_v1",
@@ -698,7 +698,7 @@ def test_construct_kroma():
                     pa.field("max_block", pa.int64()),
                     pa.field("model_name", pa.string()),
                 ],
-                markers_table="blockbatch_model_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="blockbatch/contract_creation/create_traces_v1",
@@ -756,7 +756,7 @@ def test_construct_kroma():
                     pa.field("max_block", pa.int64()),
                     pa.field("model_name", pa.string()),
                 ],
-                markers_table="blockbatch_model_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="blockbatch/contract_creation/create_traces_v1",

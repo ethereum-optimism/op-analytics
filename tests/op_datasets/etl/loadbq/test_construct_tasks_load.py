@@ -11,6 +11,7 @@ from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.etl.loadbq.construct import construct_date_load_tasks
 from op_analytics.datapipeline.etl.loadbq.loader import BQLoader, BQOutputData
 from op_analytics.datapipeline.etl.loadbq.task import DateLoadTask
+from op_analytics.datapipeline.etl.ingestion.reader.ranges import ChainMaxBlock, BlockRange
 
 
 def make_dataframe(path: str):
@@ -31,8 +32,42 @@ def make_dataframe(path: str):
         )
 
 
+def mock_block_range(chain: str, min_ts: int, max_ts: int):
+    if chain == "mode":
+        return BlockRange(min=16421809, max=16465008)
+
+    if chain == "unichain_sepolia":
+        return BlockRange(min=6158772, max=6245171)
+
+    if chain == "kroma":
+        return BlockRange(min=18269407, max=18312606)
+
+    raise NotImplementedError()
+
+
+def mock_max_block(chain: str):
+    if chain == "mode":
+        return ChainMaxBlock(ts=1736391057, number=18111737)
+
+    if chain == "unichain_sepolia":
+        return ChainMaxBlock(ts=1736391053, number=9538625)
+
+    if chain == "kroma":
+        return ChainMaxBlock(ts=1736391287, number=21255450)
+
+
 def test_construct():
-    with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
+    with (
+        patch(
+            "op_analytics.datapipeline.etl.ingestion.reader.ranges.block_range_for_dates",
+            new=mock_block_range,
+        ),
+        patch(
+            "op_analytics.datapipeline.etl.ingestion.reader.ranges.chain_max_block",
+            new=mock_max_block,
+        ),
+        patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1,
+    ):
         m1.return_value = make_dataframe("mainnet_markers.json")
 
         tasks = construct_date_load_tasks(

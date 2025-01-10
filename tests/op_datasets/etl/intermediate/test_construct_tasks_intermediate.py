@@ -13,6 +13,7 @@ from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.etl.intermediate.construct import construct_tasks
 from op_analytics.datapipeline.etl.intermediate.task import IntermediateModelsTask
 from op_analytics.datapipeline.models.compute.execute import PythonModel
+from op_analytics.datapipeline.etl.ingestion.reader.ranges import ChainMaxBlock, BlockRange
 
 
 SCHEMA = {
@@ -37,8 +38,42 @@ def make_empty_dataframe():
     return pl.DataFrame([], schema=SCHEMA)
 
 
+def mock_block_range(chain: str, min_ts: int, max_ts: int):
+    if chain == "mode":
+        return BlockRange(min=16421809, max=16465008)
+
+    if chain == "unichain_sepolia":
+        return BlockRange(min=6158772, max=6245171)
+
+    if chain == "kroma":
+        return BlockRange(min=18269407, max=18312606)
+
+    raise NotImplementedError()
+
+
+def mock_max_block(chain: str):
+    if chain == "mode":
+        return ChainMaxBlock(ts=1736391057, number=18111737)
+
+    if chain == "unichain_sepolia":
+        return ChainMaxBlock(ts=1736391053, number=9538625)
+
+    if chain == "kroma":
+        return ChainMaxBlock(ts=1736391287, number=21255450)
+
+
 def test_construct_mixed_chains():
-    with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
+    with (
+        patch(
+            "op_analytics.datapipeline.etl.ingestion.reader.ranges.block_range_for_dates",
+            new=mock_block_range,
+        ),
+        patch(
+            "op_analytics.datapipeline.etl.ingestion.reader.ranges.chain_max_block",
+            new=mock_max_block,
+        ),
+        patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1,
+    ):
         m1.side_effect = [
             pl.concat(
                 [
@@ -194,7 +229,17 @@ def test_construct_mixed_chains():
 
 
 def test_construct():
-    with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
+    with (
+        patch(
+            "op_analytics.datapipeline.etl.ingestion.reader.ranges.block_range_for_dates",
+            new=mock_block_range,
+        ),
+        patch(
+            "op_analytics.datapipeline.etl.ingestion.reader.ranges.chain_max_block",
+            new=mock_max_block,
+        ),
+        patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1,
+    ):
         m1.side_effect = [
             make_dataframe("ingestion_mode_markers.json"),
             make_empty_dataframe(),
@@ -267,7 +312,17 @@ def test_construct():
 
 
 def test_construct_testnet():
-    with patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1:
+    with (
+        patch(
+            "op_analytics.datapipeline.etl.ingestion.reader.ranges.block_range_for_dates",
+            new=mock_block_range,
+        ),
+        patch(
+            "op_analytics.datapipeline.etl.ingestion.reader.ranges.chain_max_block",
+            new=mock_max_block,
+        ),
+        patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m1,
+    ):
         m1.side_effect = [
             make_dataframe("ingestion_unichain_sepolia_markers.json"),
             make_empty_dataframe(),

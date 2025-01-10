@@ -73,7 +73,7 @@ def test_construct():
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
                 ],
-                markers_table="raw_onchain_ingestion_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="ingestion/blocks_v1",
@@ -127,7 +127,7 @@ def test_construct():
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
                 ],
-                markers_table="raw_onchain_ingestion_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="ingestion/blocks_v1",
@@ -181,7 +181,7 @@ def test_construct():
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
                 ],
-                markers_table="raw_onchain_ingestion_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="ingestion/blocks_v1",

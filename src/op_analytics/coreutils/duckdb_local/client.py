@@ -54,9 +54,8 @@ def create_local_tables(client, markers_db):
 
     # Create the tables we need.
     for database, table in [
-        ("etl_monitor", "raw_onchain_ingestion_markers"),
+        ("etl_monitor", "blockbatch_markers"),
         ("etl_monitor", "intermediate_model_markers"),
-        ("etl_monitor", "blockbatch_model_markers"),
         ("etl_monitor", "superchain_raw_bigquery_markers"),
         ("etl_monitor", "daily_data_markers"),
     ]:

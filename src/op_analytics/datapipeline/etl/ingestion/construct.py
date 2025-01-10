@@ -9,8 +9,7 @@ from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.rangeutils.blockrange import ChainMaxBlock
 
 from .batches import BlockBatch, split_block_range
-from .reader.markers import INGESTION_MARKERS_TABLE, IngestionDataSpec
-from .reader.request import BlockBatchRequest
+from .reader.request import BlockBatchRequest, BLOCKBATCH_MARKERS_TABLE
 from .reader.rootpaths import RootPath
 from .sources import RawOnchainDataProvider
 from .task import IngestionTask
@@ -25,11 +24,9 @@ def construct_tasks(
     write_to: DataLocation,
 ):
     # Prepare the request
-    blockbatch_request = BlockBatchRequest.build(chains, range_spec)
-
-    # Pre-fetch completion markers so we can skip completed tasks.
-    data_spec = IngestionDataSpec(
+    blockbatch_request = BlockBatchRequest.build(
         chains=chains,
+        range_spec=range_spec,
         root_paths_to_read=[
             RootPath.of("ingestion/blocks_v1"),
             RootPath.of("ingestion/transactions_v1"),
@@ -37,10 +34,9 @@ def construct_tasks(
             RootPath.of("ingestion/traces_v1"),
         ],
     )
-    markers_df = data_spec.query_markers(
-        datevals=blockbatch_request.datevals,
-        location=write_to,
-    )
+
+    # Pre-fetch completion markers so we can skip completed tasks.
+    markers_df = blockbatch_request.query_markers(location=write_to, padded_dates=True)
 
     # Batches to be ingested for each chain.
     chain_batches: dict[str, list[BlockBatch]] = {}
@@ -64,7 +60,7 @@ def construct_tasks(
             all_tasks.append(
                 new_task(
                     chain_max_block=blockbatch_request.chain_max_blocks[chain],
-                    requested_max_timestamp=blockbatch_request.requested_max_timestamp,
+                    requested_max_timestamp=blockbatch_request.time_range.requested_max_timestamp,
                     block_batch=batch,
                     read_from=read_from,
                     write_to=write_to,
@@ -121,7 +117,7 @@ def new_task(
                 pa.field("min_block", pa.int64()),
                 pa.field("max_block", pa.int64()),
             ],
-            markers_table=INGESTION_MARKERS_TABLE,
+            markers_table=BLOCKBATCH_MARKERS_TABLE,
             expected_outputs=expected_outputs,
             complete_markers=complete_markers,
         ),
