@@ -33,12 +33,12 @@ def get_chain_breakdown_df(chain_responses: dict[str, dict]) -> pl.DataFrame:
             dt = dt_fromepoch(row[0])
             assert isinstance(row[1], dict)
 
-            for protocol, total_usd in row[1].items():
+            for breakdown_name, total_usd in row[1].items():
                 rows.append(
                     {
                         "dt": dt,
                         "chain": chain,
-                        "protocol": protocol,
+                        "breakdown_name": breakdown_name,
                         "total_usd": total_usd,
                     }
                 )
@@ -48,7 +48,7 @@ def get_chain_breakdown_df(chain_responses: dict[str, dict]) -> pl.DataFrame:
         schema={
             "dt": pl.String,
             "chain": pl.String,
-            "protocol": pl.String,
+            "breakdown_name": pl.String,
             "total_usd": pl.Int64,
         },
     )
