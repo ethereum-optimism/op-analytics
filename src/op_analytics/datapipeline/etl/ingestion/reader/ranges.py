@@ -108,6 +108,7 @@ def chain_max_block(chain: str) -> ChainMaxBlock:
     assert len(result) == 1
     row = result.to_dicts()[0]
     max_block = ChainMaxBlock(
+        chain=chain,
         ts=row["timestamp_max"],
         number=row["block_max"],
     )

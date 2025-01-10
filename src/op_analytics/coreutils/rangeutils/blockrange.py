@@ -36,5 +36,6 @@ class BlockRange:
 class ChainMaxBlock:
     """A single block which is the last block for a chain."""
 
+    chain: str  # the chain value is included here for debugging purposes
     ts: int
     number: int

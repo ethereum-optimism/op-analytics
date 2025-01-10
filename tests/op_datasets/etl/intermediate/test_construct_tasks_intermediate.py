@@ -53,13 +53,13 @@ def mock_block_range(chain: str, min_ts: int, max_ts: int):
 
 def mock_max_block(chain: str):
     if chain == "mode":
-        return ChainMaxBlock(ts=1736391057, number=18111737)
+        return ChainMaxBlock(chain="mode", ts=1736391057, number=18111737)
 
     if chain == "unichain_sepolia":
-        return ChainMaxBlock(ts=1736391053, number=9538625)
+        return ChainMaxBlock(chain="unichain_sepolia", ts=1736391053, number=9538625)
 
     if chain == "kroma":
-        return ChainMaxBlock(ts=1736391287, number=21255450)
+        return ChainMaxBlock(chain="kroma", ts=1736391287, number=21255450)
 
 
 def test_construct_mixed_chains():
