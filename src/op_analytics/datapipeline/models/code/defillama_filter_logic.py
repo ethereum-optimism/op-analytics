@@ -68,8 +68,7 @@ class DefillamaTVLBreakdown:
         view2 = DefiLlama.PROTOCOLS_METADATA.read(min_date=one_day_ago)
 
         # Process protocol TVL
-        df_protocol_tvl = pl.from_pandas(
-            client.sql(f"""
+        df_protocol_tvl = client.sql(f"""
             SELECT
                 dt,
                 protocol_slug,
@@ -78,12 +77,10 @@ class DefillamaTVLBreakdown:
                 app_token_tvl,
                 app_token_tvl_usd
             FROM {view1}
-        """).to_df()
-        )
+        """).pl()
 
         # Process metadata
-        df_metadata = pl.from_pandas(
-            client.sql(f"""
+        df_metadata = client.sql(f"""
             SELECT 
                 protocol_name,
                 protocol_slug,
@@ -94,8 +91,7 @@ class DefillamaTVLBreakdown:
                     ELSE 0
                 END AS misrepresented_tokens
             FROM {view2}
-        """).to_df()
-        )
+        """).pl()
 
         # Merge and process data
         df_all = df_protocol_tvl.unique().join(df_metadata.unique(), on="protocol_slug", how="left")
