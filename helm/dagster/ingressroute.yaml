@@ -1,0 +1,16 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dagster
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`dagster.primary.data.tools.oplabs.cloud`)
+    services:
+    - name: dagster-dagster-webserver
+      port: 80
+  tls:
+    secretName: dagster-cert-tls

@@ -57,7 +57,7 @@ class DefillamaDEXData:
     breakdown_df: pl.DataFrame
 
 
-def pull_dataframes(current_dt: str | None = None):
+def execute_pull(current_dt: str | None = None):
     """DefiLlama DEX data pull.
 
     Pulls DEX Volume, Fees, and Revenue and writes them out to GCS.
@@ -89,8 +89,75 @@ def pull_dataframes(current_dt: str | None = None):
         breakdown_df=breakdown_df,
         dexs_protocols_metadata_df=volume.protocols_df,
         fees_protocols_metadata_df=fees.protocols_df,
+        revenue_protocols_metadata_df=revenue.protocols_df,
         current_dt=current_dt,
     )
+
+
+def write_to_clickhouse():
+    # Capture summaries and return them to have info in Dagster
+    summaries = [
+        DefiLlama.VOLUME_FEES_REVENUE.insert_to_clickhouse(incremental_overlap=3),
+        DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.insert_to_clickhouse(incremental_overlap=3),
+        DefiLlama.VOLUME_PROTOCOLS_METADATA.insert_to_clickhouse(),
+        DefiLlama.FEES_PROTOCOLS_METADATA.insert_to_clickhouse(),
+        DefiLlama.REVENUE_PROTOCOLS_METADATA.insert_to_clickhouse(),
+    ]
+
+    return summaries
+
+
+def write(
+    chain_df: pl.DataFrame,
+    breakdown_df: pl.DataFrame,
+    dexs_protocols_metadata_df: pl.DataFrame,
+    fees_protocols_metadata_df: pl.DataFrame,
+    revenue_protocols_metadata_df: pl.DataFrame,
+    current_dt: str | None = None,
+):
+    # Write by chain.
+    chain_df_truncated = most_recent_dates(chain_df, n_dates=TABLE_LAST_N_DAYS)
+    breakdown_df_truncated = most_recent_dates(breakdown_df, n_dates=TABLE_LAST_N_DAYS)
+
+    DefiLlama.VOLUME_FEES_REVENUE.write(
+        dataframe=chain_df_truncated,
+        sort_by=["chain"],
+    )
+
+    # Write Breakdown DEX Volume.
+    DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.write(
+        dataframe=breakdown_df_truncated,
+        sort_by=["chain", "breakdown_name"],
+    )
+
+    # Write Protocol Metadata
+    current_dt = current_dt or now_dt()
+
+    DefiLlama.VOLUME_PROTOCOLS_METADATA.write(
+        dataframe=dexs_protocols_metadata_df.with_columns(dt=pl.lit(current_dt)),
+        sort_by=["defillamaId", "name"],
+    )
+
+    DefiLlama.FEES_PROTOCOLS_METADATA.write(
+        dataframe=fees_protocols_metadata_df.with_columns(dt=pl.lit(current_dt)),
+        sort_by=["defillamaId", "name"],
+    )
+
+    DefiLlama.REVENUE_PROTOCOLS_METADATA.write(
+        dataframe=revenue_protocols_metadata_df.with_columns(dt=pl.lit(current_dt)),
+        sort_by=["defillamaId", "name"],
+    )
+
+    # This return value is used to provide more information on dagster runs.
+    return {
+        "chain_df": len(chain_df),
+        "chain_df_truncated": len(chain_df_truncated),
+        "breakdown_df": len(breakdown_df),
+        "breakdown_df_truncated": len(breakdown_df_truncated),
+        "dexs_protocols_metadata_df": len(dexs_protocols_metadata_df),
+        "fees_protocols_metadata_df": len(fees_protocols_metadata_df),
+        "revenue_protocols_metadata_df": len(revenue_protocols_metadata_df),
+    }
 
 
 def pull_dexs(data_type: DEX_ENDPOINT) -> DefillamaDEXData:
@@ -163,49 +230,3 @@ def join_all(
         coalesce=True,
         validate="1:1",
     )
-
-
-def write(
-    chain_df: pl.DataFrame,
-    breakdown_df: pl.DataFrame,
-    dexs_protocols_metadata_df: pl.DataFrame,
-    fees_protocols_metadata_df: pl.DataFrame,
-    current_dt: str | None = None,
-):
-    # Write by chain.
-    chain_df_truncated = most_recent_dates(chain_df, n_dates=TABLE_LAST_N_DAYS)
-    breakdown_df_truncated = most_recent_dates(breakdown_df, n_dates=TABLE_LAST_N_DAYS)
-
-    DefiLlama.VOLUME_FEES_REVENUE.write(
-        dataframe=chain_df_truncated,
-        sort_by=["chain"],
-    )
-
-    # Write Breakdown DEX Volume.
-    DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.write(
-        dataframe=breakdown_df_truncated,
-        sort_by=["chain", "breakdown_name"],
-    )
-
-    # Write Protocol Metadata
-    current_dt = current_dt or now_dt()
-
-    DefiLlama.DEXS_PROTOCOLS_METADATA.write(
-        dataframe=dexs_protocols_metadata_df.with_columns(dt=pl.lit(current_dt)),
-        sort_by=["defillamaId", "name"],
-    )
-
-    DefiLlama.FEES_PROTOCOLS_METADATA.write(
-        dataframe=fees_protocols_metadata_df.with_columns(dt=pl.lit(current_dt)),
-        sort_by=["defillamaId", "name"],
-    )
-
-    # This return value is used to provide more information on dagster runs.
-    return {
-        "chain_df": len(chain_df),
-        "chain_df_truncated": len(chain_df_truncated),
-        "breakdown_df": len(breakdown_df),
-        "breakdown_df_truncated": len(breakdown_df_truncated),
-        "dexs_protocols_metadata_df": len(dexs_protocols_metadata_df),
-        "fees_protocols_metadata_df": len(fees_protocols_metadata_df),
-    }

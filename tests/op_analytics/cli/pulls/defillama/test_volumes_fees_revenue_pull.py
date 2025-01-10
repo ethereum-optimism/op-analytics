@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import polars as pl
 
-from op_analytics.cli.subcommands.pulls.defillama.volume_fees_revenue import pull_dataframes
+from op_analytics.cli.subcommands.pulls.defillama.volume_fees_revenue import execute_pull
 
 # Module path to patch data retrieval functions
 MODULE = "op_analytics.cli.subcommands.pulls.defillama.volume_fees_revenue"
@@ -63,14 +63,16 @@ def test(mock_write):
         patch(f"{MODULE}.get_data", new=mock_get_data),
         patch(f"{MODULE}.get_chain_responses", new=mock_get_chain_responses),
     ):
-        pull_dataframes()
+        execute_pull()
 
     assert len(mock_write.call_args_list) == 1
 
-    chain_df = mock_write.call_args_list[0].kwargs["chain_df"]
-    breakdown_df = mock_write.call_args_list[0].kwargs["breakdown_df"]
-    dexs_protocols_metadata_df = mock_write.call_args_list[0].kwargs["dexs_protocols_metadata_df"]
-    fees_protocols_metadata_df = mock_write.call_args_list[0].kwargs["fees_protocols_metadata_df"]
+    write_kwargs = mock_write.call_args_list[0].kwargs
+    chain_df = write_kwargs["chain_df"]
+    breakdown_df = write_kwargs["breakdown_df"]
+    dexs_protocols_metadata_df = write_kwargs["dexs_protocols_metadata_df"]
+    fees_protocols_metadata_df = write_kwargs["fees_protocols_metadata_df"]
+    revenue_protocols_metadata_df = write_kwargs["revenue_protocols_metadata_df"]
 
     assert chain_df.columns == [
         "dt",
@@ -90,3 +92,4 @@ def test(mock_write):
 
     assert dexs_protocols_metadata_df.schema == EXPECTED_PROTOCOLS_DF_SCHEMA
     assert fees_protocols_metadata_df.schema == EXPECTED_PROTOCOLS_DF_SCHEMA
+    assert revenue_protocols_metadata_df.schema == EXPECTED_PROTOCOLS_DF_SCHEMA

@@ -99,7 +99,6 @@ def construct_tasks(
                         location=write_to,
                         partition_cols=["chain", "dt"],
                         extra_marker_columns=dict(
-                            model_name=model_name,
                             num_blocks=reader.marker_data("num_blocks"),
                             min_block=reader.marker_data("min_block"),
                             max_block=reader.marker_data("max_block"),
@@ -110,7 +109,6 @@ def construct_tasks(
                             pa.field("num_blocks", pa.int32()),
                             pa.field("min_block", pa.int64()),
                             pa.field("max_block", pa.int64()),
-                            pa.field("model_name", pa.string()),
                         ],
                         markers_table=BLOCKBATCH_MARKERS_TABLE,
                         expected_outputs=expected_outputs,
