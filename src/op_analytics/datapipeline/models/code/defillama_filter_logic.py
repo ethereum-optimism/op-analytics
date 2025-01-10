@@ -100,7 +100,7 @@ def process_defillama_data() -> DefillamaTVLBreakdown:
     )
 
     # Merge and process data
-    df_all = df_metadata.unique().join(df_protocol_tvl.unique(), on="protocol_slug", how="left")
+    df_all = df_protocol_tvl.unique().join(df_metadata.unique(), on="protocol_slug", how="left")
 
     # Join mappings and process data fields
     df_all = df_all.join(config.alignment_df, on="chain", how="left")
