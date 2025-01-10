@@ -61,7 +61,9 @@ def process_defillama_data() -> DefillamaTVLBreakdown:
     client = ctx.client
     yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
     three_days_ago = (datetime.now() - timedelta(days=3)).strftime("%Y-%m-%d")
-    config = load_config(Path(__file__).parent / "defillama_config.yaml")
+    config = load_config(
+        "/Users/chuck/codebase/op-analytics/src/op_analytics/datapipeline/models/code/defillama_config.yaml"
+    )
 
     # Load data
     view1 = DefiLlama.PROTOCOLS_TOKEN_TVL.read(min_date=three_days_ago)
@@ -100,24 +102,31 @@ def process_defillama_data() -> DefillamaTVLBreakdown:
     # Merge and process data
     df_all = df_metadata.unique().join(df_protocol_tvl.unique(), on="protocol_slug", how="left")
 
-    # Apply filters and categorization
+    # Join mappings and process data fields
     df_all = df_all.join(config.alignment_df, on="chain", how="left")
     df_all = df_all.join(config.token_categories, on="token", how="left")
     df_all = process_data_fields(df_all)
 
     # Process misrepresented tokens
     df_misrep = process_misrepresented_tokens(df_all)
+
     df_all = df_all.join(
         df_misrep.select(["protocol_slug", "chain", "protocol_misrepresented_tokens"]),
         on=["protocol_slug", "chain"],
         how="left",
     )
 
+    df_all = df_all.with_columns(
+        token_category_misrep=pl.when(pl.col("protocol_misrepresented_tokens") == 1)
+        .then(pl.lit("Misrepresented TVL"))
+        .otherwise(pl.col("token_category"))
+    )
+
     # Apply protocol filters
     df_chain_protocol = apply_protocol_filters(df_all, config)
 
     df_tvl_breakdown = df_all.join(
-        df_chain_protocol.select(["chain", "protocol_slug", "protocol_category", "chains_to_keep"]),
+        df_chain_protocol.select(["chain", "protocol_slug", "protocol_category"]),
         on=["chain", "protocol_slug", "protocol_category"],
         how="inner",
     )
@@ -186,10 +195,6 @@ def process_data_fields(df: pl.DataFrame) -> pl.DataFrame:
             pl.col("parent_protocol").fill_null("").str.replace("parent#", ""),
             pl.col("token").fill_null("").str.to_uppercase(),
         ]
-    ).with_columns(
-        token_category_misrep=pl.when(pl.col("protocol_misrepresented_tokens") == 1)
-        .then("Misrepresented TVL")
-        .otherwise(pl.col("token_category"))
     )
 
 
@@ -283,6 +288,4 @@ def apply_protocol_filters(df: pl.DataFrame, config: DefiLlamaConfig) -> pl.Data
         chain_ending_mask | chain_exact_mask | polygon_bridge_mask | cex_mask | category_mask
     )
 
-    return filtered_df.filter(~all_filters).select(
-        ["chain", "protocol_slug", "protocol_category", "chains_to_keep"]
-    )
+    return filtered_df.filter(~all_filters).select(["chain", "protocol_slug", "protocol_category"])
