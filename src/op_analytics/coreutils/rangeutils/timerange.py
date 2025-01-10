@@ -51,10 +51,18 @@ class TimeRange:
         raise NotImplementedError()
 
     def to_date_range(self) -> "DateRange":
-        max_date = self.max.date() + timedelta(days=1)
+        if datetime_fromdate(self.max.date()) == self.max:
+            max_date = self.max.date()
+        else:
+            max_date = self.max.date() + timedelta(days=1)
+
+        if self.requested_max_timestamp is not None:
+            requested_max = self.requested_max_timestamp
+        else:
+            requested_max = None
 
         return DateRange(
             min=self.min.date(),
             max=max_date,
-            requested_max_timestamp=datetime_toepoch(datetime_fromdate(max_date)),
+            requested_max_timestamp=requested_max,
         )

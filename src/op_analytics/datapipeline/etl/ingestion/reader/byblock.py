@@ -9,9 +9,8 @@ from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.datapipeline.chains.activation import is_chain_active
 
-from .markers import IngestionData, IngestionDataSpec
+from .markers import IngestionData
 from .request import BlockBatchRequest
-from .rootpaths import RootPath
 
 log = structlog.get_logger()
 
@@ -19,7 +18,6 @@ log = structlog.get_logger()
 def construct_readers_byblock(
     blockbatch_request: BlockBatchRequest,
     read_from: DataLocation,
-    root_paths_to_read: list[RootPath],
 ) -> list[DataReader]:
     """Construct a list of DataReader for the given parameters.
 
@@ -32,15 +30,7 @@ def construct_readers_byblock(
     Readers can be used for processing by block batch.
     """
 
-    # Query completion markers.
-    data_spec = IngestionDataSpec(
-        chains=blockbatch_request.chains,
-        root_paths_to_read=root_paths_to_read,
-    )
-    markers_df = data_spec.query_markers(
-        datevals=blockbatch_request.datevals,
-        location=read_from,
-    )
+    markers_df = blockbatch_request.query_markers(location=read_from)
 
     readers: list[DataReader] = []
     for (chain, dateval, min_block), group_df in markers_df.group_by("chain", "dt", "min_block"):
@@ -55,14 +45,16 @@ def construct_readers_byblock(
             # Check if all markers present are ready.
             input_data = is_batch_ready(
                 markers_df=group_df,
-                root_paths_to_check=data_spec.physical_root_paths_for_chain(chain),
+                root_paths_to_check=blockbatch_request.physical_root_paths_for_chain(chain),
                 storage_location=read_from,
             )
 
             # Update data path mapping so keys are logical paths.
-            dataset_paths: dict[str, list[str]] = data_spec.data_paths_keyed_by_logical_path(
-                chain,
-                input_data.data_paths,
+            dataset_paths: dict[str, list[str]] = (
+                blockbatch_request.data_paths_keyed_by_logical_path(
+                    chain,
+                    input_data.data_paths,
+                )
             )
 
             extra_columns_df = group_df.select("num_blocks", "min_block", "max_block").unique()
