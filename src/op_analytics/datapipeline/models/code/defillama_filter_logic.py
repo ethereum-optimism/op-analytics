@@ -1,8 +1,3 @@
-"""
-Module for processing and filtering DeFiLlama protocol data.
-Handles TVL calculations, protocol categorization, and filtering logic.
-"""
-
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -25,13 +20,15 @@ class DefiLlamaConfig:
     Configuration container for DeFiLlama data processing.
 
     Attributes:
-        patterns_to_filter: List of regex patterns for filtering protocols
+        exact_patterns_to_filter: List of exact chain names to filter
+        ending_patterns_to_filter: List of chain name endings to filter
         categories_to_filter: List of protocol categories to exclude
         alignment_df: DataFrame mapping chains to their alignments
         token_categories: DataFrame of token categorization data
     """
 
-    patterns_to_filter: List[str]
+    exact_patterns_to_filter: List[str]
+    ending_patterns_to_filter: List[str]
     categories_to_filter: List[str]
     alignment_df: pl.DataFrame
     token_categories: pl.DataFrame
@@ -150,6 +147,7 @@ def load_config(config_path: Path) -> DefiLlamaConfig:
     except yaml.YAMLError as e:
         raise ValueError(f"Error parsing YAML configuration: {e}")
 
+    # Create alignment DataFrame from the alignment dictionary
     alignment_df = pl.DataFrame(
         [
             {"chain": chain, "alignment": alignment}
@@ -157,11 +155,15 @@ def load_config(config_path: Path) -> DefiLlamaConfig:
         ]
     )
 
+    # Create token categories DataFrame from token data
+    token_categories = pl.DataFrame(config["token_data"])
+
     return DefiLlamaConfig(
-        patterns_to_filter=config["patterns_to_filter"],
+        exact_patterns_to_filter=config["exact_patterns_to_filter"],
+        ending_patterns_to_filter=config["ending_patterns_to_filter"],
         categories_to_filter=config["categories_to_filter"],
         alignment_df=alignment_df,
-        token_categories=pl.DataFrame(config["token_data"]),
+        token_categories=token_categories,
     )
 
 
