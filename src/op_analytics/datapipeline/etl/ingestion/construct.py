@@ -36,7 +36,7 @@ def construct_tasks(
     )
 
     # Pre-fetch completion markers so we can skip completed tasks.
-    markers_df = blockbatch_request.query_markers(location=write_to)
+    markers_df = blockbatch_request.query_markers(location=write_to, padded_dates=True)
 
     # Batches to be ingested for each chain.
     chain_batches: dict[str, list[BlockBatch]] = {}

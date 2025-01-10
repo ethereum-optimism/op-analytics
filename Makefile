@@ -77,7 +77,7 @@ sphinx-serve: .makemarkers/sphinx-docs
 #     DOCKER IMAGE
 # ----------------------------------------------------------------------------#
 
-IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250106.1
+IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250110.1
 
 .PHONY: docker-image
 docker-image:

@@ -9,8 +9,7 @@ from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.datapipeline.chains.activation import is_chain_active
 
-from .markers import IngestionData
-from .request import BlockBatchRequest
+from .request import BlockBatchRequest, BlockBatchRequestData
 
 log = structlog.get_logger()
 
@@ -89,7 +88,7 @@ def is_batch_ready(
     markers_df: pl.DataFrame,
     root_paths_to_check: Iterable[str],
     storage_location: DataLocation,
-) -> IngestionData:
+) -> BlockBatchRequestData:
     """Decide if the input data for a given block batch is complete.
 
     If the input data is complete, returns a map from root_path to list of parquet
@@ -115,7 +114,7 @@ def is_batch_ready(
         dataset_df = markers_df.filter(pl.col("root_path") == root_path)
 
         if dataset_df.is_empty():
-            return IngestionData(
+            return BlockBatchRequestData(
                 is_complete=False,
                 data_paths=None,
             )
@@ -126,7 +125,7 @@ def is_batch_ready(
 
         dataset_paths[root_path] = sorted(set(parquet_paths))
 
-    return IngestionData(
+    return BlockBatchRequestData(
         is_complete=True,
         data_paths=dataset_paths,
     )

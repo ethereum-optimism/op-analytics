@@ -8,10 +8,9 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.time import surrounding_dates
-from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
 from op_analytics.datapipeline.chains.activation import is_chain_active, is_chain_activation_date
 
-from .markers import IngestionData
+from .request import BlockBatchRequest, BlockBatchRequestData
 
 log = structlog.get_logger()
 
@@ -102,7 +101,7 @@ def are_inputs_ready(
     dateval: date,
     root_paths_to_check: Iterable[str],
     storage_location: DataLocation,
-) -> IngestionData:
+) -> BlockBatchRequestData:
     """Decide if the input data for a given date is complete.
 
     If the input data is complete, returns a map from root_path to list of parquet
@@ -138,7 +137,7 @@ def are_inputs_ready(
             is_activation_date=is_activation,
         )
         if not dataset_ready:
-            return IngestionData(
+            return BlockBatchRequestData(
                 is_complete=False,
                 data_paths=None,
             )
@@ -149,7 +148,7 @@ def are_inputs_ready(
 
         dataset_paths[root_path] = sorted(set(parquet_paths))
 
-    return IngestionData(
+    return BlockBatchRequestData(
         is_complete=True,
         data_paths=dataset_paths,
     )
