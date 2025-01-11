@@ -70,23 +70,16 @@ jobs:
       - run:
           name: Generate and run Python scripts
           command: |
-            # #install conda
-            # wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-            # bash Miniconda3-latest-Linux-x86_64.sh -b
-            # ~/miniconda3/bin/conda create -n py310 python=3.10 -y
-            # ~/miniconda3/bin/conda init bash            
-            # source ~/.bashrc
-            # ~/miniconda3/bin/conda activate py310
             conda activate py310
             python3.10 -m pip install pipenv
             python3.10 -m pipenv install
             python3.10 -m pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
 
-            # cd op_chains_tracking
-            # python3.10 -m pipenv run python dune_opchain_uploads.py
+            cd op_chains_tracking
+            python3.10 -m pipenv run python dune_opchain_uploads.py
 
-            # cd ../other_chains_tracking
-            # python3.10 -m pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
+            cd ../other_chains_tracking
+            python3.10 -m pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
       - utils/get-github-access-token
       - utils/github-commit-and-push-changes:
           commit-message: "GH Action Update - Agg Downloads"
@@ -246,7 +239,9 @@ workflows:
         - equal: [<< pipeline.parameters.run_job >>, "run_general_l2"]
     jobs:
       - general-l2:
-          context: op-analytics-legacy
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
 
   merge-to-main:
     when:
