@@ -46,7 +46,9 @@ commands:
           name: Setup Python 3.10
           command: |
             ~/miniconda3/bin/conda create -n py310 python=3.10 -y
-            ~/miniconda3/bin/conda activate py310
+            ~/miniconda3/bin/conda init bash            
+            source ~/.bashrc
+            conda activate py310
 
   checkout-dep-1:
     steps:
