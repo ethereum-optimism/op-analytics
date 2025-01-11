@@ -48,7 +48,6 @@ commands:
             ~/miniconda3/bin/conda create -n py310 python=3.10 -y
             ~/miniconda3/bin/conda init bash            
             source ~/.bashrc
-            conda activate py310
 
   checkout-dep-1:
     steps:
@@ -78,7 +77,7 @@ jobs:
             # ~/miniconda3/bin/conda init bash            
             # source ~/.bashrc
             # ~/miniconda3/bin/conda activate py310
-
+            conda activate py310
             python3.10 -m pip install pipenv
             python3.10 -m pipenv install
             python3.10 -m pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
