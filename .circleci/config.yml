@@ -30,15 +30,24 @@ commands:
       - run:
           name: Install project dependencies
           command: uv sync --all-extras --dev
+
+  setup-conda:
+    steps:
+      - run:
+          name: Setup Conda
+          command: |
+            wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+            bash Miniconda3-latest-Linux-x86_64.sh -b
+
   setup-python-3-10:
     steps:
+      - setup-conda
       - run:
           name: Setup Python 3.10
           command: |
-            sudo apt update
-            sudo apt install -y python3.10 python3.10-venv python3.10-dev python3-pip
-            python3.10 -m pip install pipenv
-            pipenv install --dev
+            ~/miniconda3/bin/conda create -n py310 python=3.10 -y
+            ~/miniconda3/bin/conda activate py310
+
   checkout-dep-1:
     steps:
       - run:
@@ -60,17 +69,23 @@ jobs:
       - run:
           name: Generate and run Python scripts
           command: |
-            #needed to allow the docker user to modify the file
-            chmod o+rw op_chains_tracking/dune_opchain_uploads.py other_chains_tracking/get_filtered_deployers.py other_chains_tracking/total_chain_data_to_uploads.py
-            docker run --platform linux/amd64 -v $(pwd):/workspace quay.io/jupyter/base-notebook jupyter nbconvert --to python /workspace/op_chains_tracking/dune_opchain_uploads.ipynb /workspace/other_chains_tracking/get_filtered_deployers.ipynb /workspace/other_chains_tracking/total_chain_data_to_uploads.ipynb
+            # #install conda
+            # wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+            # bash Miniconda3-latest-Linux-x86_64.sh -b
+            # ~/miniconda3/bin/conda create -n py310 python=3.10 -y
+            # ~/miniconda3/bin/conda init bash            
+            # source ~/.bashrc
+            # ~/miniconda3/bin/conda activate py310
 
+            python3.10 -m pip install pipenv
+            python3.10 -m pipenv install
+            python3.10 -m pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
 
+            # cd op_chains_tracking
+            # python3.10 -m pipenv run python dune_opchain_uploads.py
 
-            cd op_chains_tracking 
-            pipenv run python dune_opchain_uploads.py
-
-            cd ../other_chains_tracking
-            pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
+            # cd ../other_chains_tracking
+            # python3.10 -m pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
       - utils/get-github-access-token
       - utils/github-commit-and-push-changes:
           commit-message: "GH Action Update - Agg Downloads"
