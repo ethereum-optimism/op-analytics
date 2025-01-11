@@ -38,8 +38,8 @@ def test_to_daterange_01():
     dr = tr.to_date_range()
     assert dr == DateRange(
         min=datetime.date(2024, 10, 1),
-        max=datetime.date(2024, 10, 31),
-        requested_max_timestamp=1730332800,
+        max=datetime.date(2024, 10, 30),
+        requested_max_timestamp=1730246400,
     )
 
 
@@ -55,7 +55,7 @@ def test_to_daterange_02():
     assert dr == DateRange(
         min=datetime.date(2024, 10, 1),
         max=datetime.date(2024, 10, 29),
-        requested_max_timestamp=1730160000,
+        requested_max_timestamp=1730159100,
     )
 
     assert dr.dates() == [

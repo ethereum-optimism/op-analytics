@@ -159,7 +159,7 @@ def test_expected_markers():
     batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
 
     task = new_task(
-        chain_max_block=ChainMaxBlock(ts=0, number=0),
+        chain_max_block=ChainMaxBlock(chain="op", ts=0, number=0),
         requested_max_timestamp=None,
         block_batch=batches[0],
         read_from=RawOnchainDataProvider.GOLDSKY,
@@ -215,7 +215,7 @@ def test_expected_markers_testnet():
     )
 
     task = new_task(
-        chain_max_block=ChainMaxBlock(ts=0, number=0),
+        chain_max_block=ChainMaxBlock(chain="op_sepolia", ts=0, number=0),
         requested_max_timestamp=None,
         block_batch=batches[0],
         read_from=RawOnchainDataProvider.GOLDSKY,

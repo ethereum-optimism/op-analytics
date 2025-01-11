@@ -9,8 +9,8 @@ from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.rangeutils.blockrange import ChainMaxBlock
 
 from .batches import BlockBatch, split_block_range
-from .reader.markers import INGESTION_MARKERS_TABLE, IngestionDataSpec
-from .reader.request import BlockBatchRequest
+from .reader.request import BlockBatchRequest, BLOCKBATCH_MARKERS_TABLE
+from .reader.rootpaths import RootPath
 from .sources import RawOnchainDataProvider
 from .task import IngestionTask
 
@@ -24,17 +24,45 @@ def construct_tasks(
     write_to: DataLocation,
 ):
     # Prepare the request
-    blockbatch_request = BlockBatchRequest.build(chains, range_spec)
-
-    # Pre-fetch completion markers so we can skip completed tasks.
-    data_spec = IngestionDataSpec(chains=chains)
-    markers_df = data_spec.query_markers(
-        datevals=blockbatch_request.datevals,
-        location=write_to,
+    blockbatch_request = BlockBatchRequest.build(
+        chains=chains,
+        range_spec=range_spec,
+        root_paths_to_read=[
+            RootPath.of("ingestion/blocks_v1"),
+            RootPath.of("ingestion/transactions_v1"),
+            RootPath.of("ingestion/logs_v1"),
+            RootPath.of("ingestion/traces_v1"),
+        ],
     )
 
+    # Pre-fetch completion markers so we can skip completed tasks.
+    markers_df = blockbatch_request.query_markers(location=write_to, padded_dates=True)
+
     # Batches to be ingested for each chain.
+    chain_batches: dict[str, list[BlockBatch]] = ranges_to_batches(blockbatch_request)
+
+    # Collect a single list of tasks to perform across all chains.
+    all_tasks: list[IngestionTask] = []
+    for batches in chain_batches.values():
+        for batch in batches:
+            all_tasks.append(
+                new_task(
+                    chain_max_block=blockbatch_request.chain_max_blocks[batch.chain],
+                    requested_max_timestamp=blockbatch_request.time_range.requested_max_timestamp,
+                    block_batch=batch,
+                    read_from=read_from,
+                    write_to=write_to,
+                    output_markers_df=markers_df,
+                )
+            )
+
+    return all_tasks
+
+
+def ranges_to_batches(blockbatch_request: BlockBatchRequest):
+    """For each chain split the block range into block batches to be processed."""
     chain_batches: dict[str, list[BlockBatch]] = {}
+
     for chain, chain_block_range in blockbatch_request.chain_block_ranges.items():
         chain_batches[chain] = split_block_range(chain, chain_block_range)
 
@@ -48,22 +76,7 @@ def construct_tasks(
         else:
             log.info(f"prepared chain={chain!r}: {len(batches)} batch(es)")
 
-    # Collect a single list of tasks to perform across all chains.
-    all_tasks: list[IngestionTask] = []
-    for batches in chain_batches.values():
-        for batch in batches:
-            all_tasks.append(
-                new_task(
-                    chain_max_block=blockbatch_request.chain_max_blocks[chain],
-                    requested_max_timestamp=blockbatch_request.requested_max_timestamp,
-                    block_batch=batch,
-                    read_from=read_from,
-                    write_to=write_to,
-                    output_markers_df=markers_df,
-                )
-            )
-
-    return all_tasks
+    return chain_batches
 
 
 def new_task(
@@ -112,7 +125,7 @@ def new_task(
                 pa.field("min_block", pa.int64()),
                 pa.field("max_block", pa.int64()),
             ],
-            markers_table=INGESTION_MARKERS_TABLE,
+            markers_table=BLOCKBATCH_MARKERS_TABLE,
             expected_outputs=expected_outputs,
             complete_markers=complete_markers,
         ),
