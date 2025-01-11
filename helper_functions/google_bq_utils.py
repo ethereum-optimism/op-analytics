@@ -45,7 +45,9 @@ def check_table_exists(client, table_id, dataset_id='api_table_uploads', project
         if 'Not found' in str(e):
             return False
         else:
-            raise e
+            logger.error("An error occurred while checking table existence")
+            raise
+
 def validate_schema(df, schema):
     df_columns = set(df.columns)
     schema_columns = set(field.name for field in schema)
