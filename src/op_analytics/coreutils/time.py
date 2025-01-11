@@ -54,6 +54,10 @@ def date_fromstr(val: str) -> date:
     return date.fromisoformat(val)
 
 
+def date_tostr(val: date) -> str:
+    return val.strftime("%Y-%m-%d")
+
+
 def surrounding_dates(dateval: date, minus_delta: int = 1, plus_delta: int = 1) -> list[date]:
     day_before = dateval - timedelta(days=minus_delta)
     day_after = dateval + timedelta(days=plus_delta)

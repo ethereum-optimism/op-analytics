@@ -328,7 +328,7 @@ def noargs_blockbatch():
     """No-args command to run blockbatch models."""
     compute_blockbatch(
         chains=normalize_chains("ALL"),
-        models=normalize_blockbatch_models("ALL"),
+        models=normalize_blockbatch_models("MODELS"),
         range_spec="m8hours",
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
