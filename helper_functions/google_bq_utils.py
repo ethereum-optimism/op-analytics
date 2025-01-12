@@ -7,7 +7,7 @@ from google.api_core.exceptions import NotFound
 import pandas_utils as pu
 import pandas as pd
 import math
-import GCPLogin
+from google_oidc_utils import GCPLogin
 
 dotenv.load_dotenv()
 
