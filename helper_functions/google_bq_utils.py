@@ -32,7 +32,7 @@ def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
         if gcp_login:
             logging.info("Using OIDC login")
             access_token=gcp_login.get_access_token()
-            creds = credentials.Credentials(access_token)
+            credentials = service_account.Credentials(access_token)
             return bigquery.Client(credentials=credentials, project=project_id)
         # -------------- end OIDC login
 
