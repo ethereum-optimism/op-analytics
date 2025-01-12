@@ -78,8 +78,8 @@ jobs:
             cd op_chains_tracking
             python3.10 -m pipenv run python dune_opchain_uploads.py
 
-            # cd ../other_chains_tracking
-            # python3.10 -m pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
+            cd ../other_chains_tracking
+            python3.10 -m pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
       - utils/get-github-access-token
       - utils/github-commit-and-push-changes:
           commit-message: "GH Action Update - Agg Downloads"

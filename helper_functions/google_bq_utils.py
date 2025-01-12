@@ -7,7 +7,6 @@ from google.api_core.exceptions import NotFound
 import pandas_utils as pu
 import pandas as pd
 import math
-from google_oidc_utils import GCPLogin
 
 dotenv.load_dotenv()
 
@@ -28,7 +27,7 @@ def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
             client=bigquery.Client()
             return client
         except Exception as e:
-            logging.error(f"Exception occurred: {str(e)}")
+            logging.error(f"Exception occurred while trying to use OIDC login")
             pass
         # -------------- end OIDC login
 
@@ -53,7 +52,7 @@ def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
             client = bigquery.Client(credentials=credentials, project=project_id)
             return client
         except Exception as e:
-            logging.critical(f"Exception occurred: {str(e)}")
+            logging.critical(f"Exception occurred while trying to get logging configuration file")
             return None
 
 def check_table_exists(client, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID")):
