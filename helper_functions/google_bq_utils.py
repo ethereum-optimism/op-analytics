@@ -24,6 +24,7 @@ def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
         # In this case the enviroment variables already contain the credentials set up by the GCP login performed
         try:
             logging.info("Using OIDC login")
+            #project_id is taken from the environment variables GOOGLE_CLOUD_PROJECT
             client=bigquery.Client()
             return client
         except Exception as e:
