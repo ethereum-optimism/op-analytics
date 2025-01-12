@@ -60,6 +60,11 @@ jobs:
     machine:
       image: ubuntu-2004:current
     steps:
+      - utils/gcp-oidc-authenticate:
+          project_id: GCP_PROJECT_ID
+          service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
+          workload_identity_pool_id: GCP_WIP_ID
+          workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
       - checkout-dep-1
       - setup-python-3-10
       - run:
@@ -227,16 +232,17 @@ workflows:
       - defillama-stablecoins:
           context: op-analytics
 
-  # run-general-l2:
-  #   when:
-  #     or:
-  #       - true
-  #       - equal: [<< pipeline.parameters.run_job >>, "run_general_l2"]
-  #   jobs:
-  #     - general-l2:
-  #         context:
-  #           - op-analytics-legacy
-  #           - circleci-repo-op-analytics
+  run-general-l2:
+    when:
+      or:
+        - true
+        - equal: [<< pipeline.parameters.run_job >>, "run_general_l2"]
+    jobs:
+      - general-l2:
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
 
   merge-to-main:
     when:

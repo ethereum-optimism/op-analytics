@@ -7,6 +7,7 @@ from google.api_core.exceptions import NotFound
 import pandas_utils as pu
 import pandas as pd
 import math
+import GCPLogin
 
 dotenv.load_dotenv()
 
@@ -15,9 +16,26 @@ import logging
 # Setup logging configuration
 logging.basicConfig(level=logging.ERROR)  # Set logging level to ERROR
 logger = logging.getLogger(__name__)  # Create logger instance for this module
-
+gcp_login = None
 
 def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
+        # Check if running in a GCP environment and will use the default credentials
+        # -------------- start OIDC login
+        # In this case the enviroment variables already contain the credentials set up by the GCP login performed
+        global gcp_login
+        try:
+            if not gcp_login:
+                gcp_login=GCPLogin()
+        except Exception as e:
+            logging.critical(f"Exception occurred: {str(e)}")
+    
+        if gcp_login:
+            logging.info("Using OIDC login")
+            access_token=gcp_login.get_access_token()
+            creds = credentials.Credentials(access_token)
+            return bigquery.Client(credentials=credentials, project=project_id)
+        # -------------- end OIDC login
+
         # Check if running locally
         is_running_local = os.environ.get("IS_RUNNING_LOCAL", "False").lower() == "true"
 
