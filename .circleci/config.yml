@@ -102,10 +102,18 @@ jobs:
               cd $dir
 
               python3.10 -m pipenv run jupyter nbconvert --to python ${nb}.ipynb
-              python3.10 -m pipenv run python ${nb}.py || true
-
+              python3.10 -m pipenv run python ${nb}.py || exit_code=$?
+              if [ $exit_code -ne 0 ]; then
+                echo "Notebook ${nb} failed"
+                failed_notebooks+=("${nb}")
+              fi
+              
               cd ${main_dir}
             done
+            if [ ${#failed_notebooks[@]} -ne 0 ]; then
+                echo "The following notebooks failed: ${failed_notebooks[@]}"
+                exit 1
+            fi
       - utils/get-github-access-token
       - utils/github-commit-and-push-changes:
           commit-message: "GH Action Update - L2 Chain Data"
