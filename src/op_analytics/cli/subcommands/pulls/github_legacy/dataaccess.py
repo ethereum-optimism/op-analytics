@@ -15,6 +15,9 @@ class GitHubPlatform(DailyDataset):
     other third-party datasets (like DefiLlama, etc.).
     """
 
+    TRAFFIC_METRICS = "repo_metrics_v1"
+    REFERRER_METRICS = "repo_referrers_v1"
+
     COMMITS = "github_commits_v1"
     ISSUES = "github_issues_v1"
     PULLS = "github_pulls_v1"

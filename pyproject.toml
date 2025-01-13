@@ -87,5 +87,5 @@ packages = ["src/op_analytics"]
 
 
 [tool.dagster]
-module_name = "op_analytics.dagster"  ## name of project's Python module and where to find the definitions
+module_name = "op_analytics.dagster.defs"  ## name of project's Python module and where to find the definitions
 code_location_name = "dev_code_location"

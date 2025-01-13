@@ -65,7 +65,7 @@ class GithubAnalyticsData:
     # The Github API does not breakdown referals by date. That makes analysis
     # somewhat complicated since one has to manually take care of any reporting
     # overlaps that may exist.
-    referrers_dt_snapshot_df: pl.DataFrame
+    referrers_snapshot_df: pl.DataFrame
 
     @classmethod
     def fetch(cls, current_dt: str | None = None):

@@ -108,13 +108,6 @@ jobs:
             OPLABS_ENV: "prod"
 
       - run:
-          name: GitHub Analytics
-          command: uv run opdata pulls github_analytics
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
-      - run:
           name: GrowThePie Chain Summary
           command: uv run opdata pulls growthepie_chain_summary
           environment:

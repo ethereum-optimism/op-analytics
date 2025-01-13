@@ -318,7 +318,7 @@ dagster-user-deployments:
       # deployment pod.
       dagsterApiGrpcArgs:
         - "--module-name"
-        - "op_analytics.dagster"
+        - "op_analytics.dagster.defs"
       port: 3030
 
       # Whether or not to include configuration specified for this user code deployment in the pods

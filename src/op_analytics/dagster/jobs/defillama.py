@@ -1,34 +1,30 @@
 from dagster import (
     DefaultScheduleStatus,
+    In,
+    Nothing,
+    OpExecutionContext,
     ScheduleDefinition,
     in_process_executor,
     job,
     op,
-    In,
-    Nothing,
-    OpExecutionContext,
 )
 
-from .k8sconfig import new_k8s_config
+from op_analytics.dagster.utils.k8sconfig import new_k8s_config
 
 
 @op
 def volumes_fees_revenue(context: OpExecutionContext):
-    from op_analytics.cli.subcommands.pulls.defillama.volume_fees_revenue import (
-        execute_pull,
-    )
+    from op_analytics.cli.subcommands.pulls.defillama import volume_fees_revenue
 
-    result = execute_pull()
+    result = volume_fees_revenue.execute_pull()
     context.log.info(result)
 
 
 @op(ins={"start": In(Nothing)})
 def volumes_fees_revenue_to_clickhouse(context: OpExecutionContext):
-    from op_analytics.cli.subcommands.pulls.defillama.volume_fees_revenue import (
-        write_to_clickhouse,
-    )
+    from op_analytics.cli.subcommands.pulls.defillama import volume_fees_revenue
 
-    result = write_to_clickhouse()
+    result = volume_fees_revenue.write_to_clickhouse()
     context.log.info(result)
 
 
