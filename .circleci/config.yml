@@ -87,13 +87,13 @@ jobs:
       #     workload_identity_pool_id: GCP_WIP_ID
       #     workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
       - checkout-dep-1
-      # - setup-python-3-10
+      - setup-python-3-10
       - run:
           name: Run Notebooks
           command: |
-            # conda activate py310
-            # python3.10 -m pip install pipenv
-            # python3.10 -m pipenv install
+            conda activate py310
+            python3.10 -m pip install pipenv
+            python3.10 -m pipenv install
             main_dir=$(pwd)
             echo '<< parameters.notebook_info >>' | jq -c '.[]' | while read -r notebook; do
               dir=$(echo $notebook | jq -r '.dir')
@@ -101,8 +101,8 @@ jobs:
               echo "Running notebook $nb in directory $dir"
               cd $dir
               echo "Current directory: $(pwd)"              
-              pipenv run jupyter nbconvert --to python ${{ nb }}.ipynb
-              # pipenv run python ${{ nb }}.py
+              python3.10 -m pipenv run jupyter nbconvert --to python ${{ nb }}.ipynb
+              # python3.10 -m pipenv run python ${{ nb }}.py
 
               cd ${main_dir}
             done
