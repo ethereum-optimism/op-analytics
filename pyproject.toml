@@ -1,11 +1,13 @@
 [project]
 name = "op-analytics"
-version = "20250106.1"
+version = "20250110.3"
 description = "Data analysis tools by OP Labs."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "clickhouse-connect>=0.8.1",
+    "dagster-k8s>=0.25.7",
+    "dagster>=1.9.7",
     "duckdb>=1.1.1",
     "gcsfs>=2024.9.0.post1",
     "google-cloud-bigquery>=3.26.0",
@@ -59,6 +61,7 @@ dev-dependencies = [
     "matplotlib>=3.9.0",
     "plotly>=5.20.1",
     "nbformat>=4.2.0",
+    "dagster-webserver>=1.9.7",
 ]
 
 [tool.ruff]
@@ -81,3 +84,8 @@ only-include = ["src/op_analytics"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/op_analytics"]
+
+
+[tool.dagster]
+module_name = "op_analytics.dagster"  ## name of project's Python module and where to find the definitions
+code_location_name = "dev_code_location"

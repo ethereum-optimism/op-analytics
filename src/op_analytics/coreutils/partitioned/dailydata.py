@@ -252,8 +252,11 @@ class DailyDataset(str, Enum):
         rel = duckdb_ctx.client.sql(f"SELECT * FROM {fundamentals}")
         query_summary = insert_oplabs(database=db, table=table, df_arrow=rel.arrow())
 
-        log.info(
-            "insert summary",
+        summary_dict = dict(
             written_bytes=human_size(query_summary.written_bytes()),
             written_rows=human_rows(query_summary.written_rows),
         )
+
+        log.info("insert summary", **summary_dict)
+
+        return {self.root_path: summary_dict}
