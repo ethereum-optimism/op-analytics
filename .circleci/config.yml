@@ -94,7 +94,7 @@ jobs:
             # conda activate py310
             # python3.10 -m pip install pipenv
             # python3.10 -m pipenv install
-
+            pwd
             echo '<< parameters.notebook_info >>' | jq -c '.[]' | while read -r notebook; do
               dir=$(echo $notebook | jq -r '.dir')
               nb=$(echo $notebook | jq -r '.notebook')
