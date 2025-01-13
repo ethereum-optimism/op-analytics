@@ -16,6 +16,10 @@ from .defillama.volume_fees_revenue import execute_pull, write_to_clickhouse
 from .github_analytics import pull_github_analytics
 from .growthepie.chains_daily_fundamentals import pull_growthepie_summary
 from .l2beat import pull_l2beat
+from .manual_mappings.gsheets_to_bigquery import (
+    upload_token_categories,
+    upload_token_source_protocols,
+)
 
 log = structlog.get_logger()
 
@@ -100,3 +104,15 @@ def growthepie_chain_summary():
 
     GrowThePie.FUNDAMENTALS_SUMMARY.insert_to_clickhouse(incremental_overlap=1)
     GrowThePie.CHAIN_METADATA.insert_to_clickhouse(incremental_overlap=1)
+
+
+@app.command()
+def token_categories():
+    """Upload token categories from Google Sheets to BigQuery."""
+    upload_token_categories()
+
+
+@app.command()
+def token_source_protocols():
+    """Upload token source protocols from Google Sheets to BigQuery."""
+    upload_token_source_protocols()
