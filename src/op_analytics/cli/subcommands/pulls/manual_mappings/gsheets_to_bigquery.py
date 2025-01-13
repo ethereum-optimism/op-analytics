@@ -48,11 +48,7 @@ def load_data_from_gsheet(gsheet_name: str, expected_schema: dict) -> pl.DataFra
 
 
 def upload_dataframe(df: pl.DataFrame, table_name: str):
-    """Upload token categories from Google Sheets to BigQuery.
-
-    - Load the data from the gsheet source of truth
-    - Upload to BigQuery as an unpartitioned table
-    """
+    """Upload overwite a dataframe to BigQuery as an unpartitioned table."""
     overwrite_unpartitioned_table(
         df=df,
         dataset=BQ_DATASET,
