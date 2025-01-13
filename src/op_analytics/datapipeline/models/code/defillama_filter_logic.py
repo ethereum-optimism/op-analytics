@@ -23,15 +23,11 @@ class DefiLlamaConfig:
         exact_patterns_to_filter: List of exact chain names to filter
         ending_patterns_to_filter: List of chain name endings to filter
         categories_to_filter: List of protocol categories to exclude
-        alignment_df: DataFrame mapping chains to their alignments
-        token_categories: DataFrame of token categorization data
     """
 
     exact_patterns_to_filter: List[str]
     ending_patterns_to_filter: List[str]
     categories_to_filter: List[str]
-    alignment_df: pl.DataFrame
-    token_categories: pl.DataFrame
 
 
 @dataclass
@@ -64,8 +60,8 @@ class DefillamaTVLBreakdown:
         )
 
         # Load data
-        view1 = DefiLlama.PROTOCOLS_TOKEN_TVL.read(min_date=three_days_ago, max_date=datestr)
-        view2 = DefiLlama.PROTOCOLS_METADATA.read(min_date=one_day_ago)
+        tvl_view = DefiLlama.PROTOCOLS_TOKEN_TVL.read(min_date=three_days_ago, max_date=datestr)
+        metadata_view = DefiLlama.PROTOCOLS_METADATA.read(min_date=one_day_ago)
 
         # Process protocol TVL
         df_protocol_tvl = client.sql(f"""
@@ -76,7 +72,7 @@ class DefillamaTVLBreakdown:
                 token,
                 app_token_tvl,
                 app_token_tvl_usd
-            FROM {view1}
+            FROM {tvl_view}
         """).pl()
 
         # Process metadata
@@ -90,37 +86,37 @@ class DefillamaTVLBreakdown:
                     WHEN misrepresented_tokens = 'True' THEN 1
                     ELSE 0
                 END AS misrepresented_tokens
-            FROM {view2}
+            FROM {metadata_view}
         """).pl()
 
         # Merge and process data
         df_all = df_protocol_tvl.unique().join(df_metadata.unique(), on="protocol_slug", how="left")
 
-        # Join mappings and process data fields
-        df_all = df_all.join(config.alignment_df, on="chain", how="left")
-        df_all = df_all.join(config.token_categories, on="token", how="left")
+        # Process data fields
         df_all = process_data_fields(df_all)
 
         # Process misrepresented tokens
         df_misrep = process_misrepresented_tokens(df_all)
 
         df_all = df_all.join(
-            df_misrep.select(["protocol_slug", "chain", "protocol_misrepresented_tokens"]),
+            df_misrep.select(["protocol_slug", "chain", "is_protocol_misrepresented"]),
             on=["protocol_slug", "chain"],
             how="left",
         )
 
         df_all = df_all.with_columns(
-            token_category_misrep=pl.when(pl.col("protocol_misrepresented_tokens") == 1)
+            token_category_misrep=pl.when(pl.col("is_protocol_misrepresented") == 1)
             .then(pl.lit("Misrepresented TVL"))
             .otherwise(pl.col("token_category"))
         )
 
         # Apply protocol filters
-        df_chain_protocol = apply_protocol_filters(df_all, config)
+        df_chain_protocol = create_filter_column(df_all, config)
 
         df_tvl_breakdown = df_all.join(
-            df_chain_protocol.select(["chain", "protocol_slug", "protocol_category"]),
+            df_chain_protocol.select(
+                ["chain", "protocol_slug", "protocol_category", "to_filter_out"]
+            ),
             on=["chain", "protocol_slug", "protocol_category"],
             how="inner",
         )
@@ -156,23 +152,10 @@ def load_config(config_path: Path) -> DefiLlamaConfig:
     except yaml.YAMLError as e:
         raise ValueError(f"Error parsing YAML configuration: {e}")
 
-    # Create alignment DataFrame from the alignment dictionary
-    alignment_df = pl.DataFrame(
-        [
-            {"chain": chain, "alignment": alignment}
-            for chain, alignment in config["alignment_dict"].items()
-        ]
-    )
-
-    # Create token categories DataFrame from token data
-    token_categories = pl.DataFrame(config["token_data"])
-
     return DefiLlamaConfig(
         exact_patterns_to_filter=config["exact_patterns_to_filter"],
         ending_patterns_to_filter=config["ending_patterns_to_filter"],
         categories_to_filter=config["categories_to_filter"],
-        alignment_df=alignment_df,
-        token_categories=token_categories,
     )
 
 
@@ -188,8 +171,6 @@ def process_data_fields(df: pl.DataFrame) -> pl.DataFrame:
     """
     return df.with_columns(
         [
-            pl.col("alignment").fill_null("Other"),
-            pl.col("token_category").fill_null("Other"),
             pl.col("chain").cast(pl.Utf8),
             pl.col("dt").cast(pl.Datetime),
             pl.col("parent_protocol").fill_null("").str.replace("parent#", ""),
@@ -237,7 +218,7 @@ def process_misrepresented_tokens(df: pl.DataFrame) -> pl.DataFrame:
                 AND MAX(is_usdt) = 1
                 THEN 1 
                 ELSE 0 
-            END as protocol_misrepresented_tokens
+            END as is_protocol_misrepresented
         FROM latest_data
         GROUP BY protocol_slug, chain, misrepresented_tokens
     """).to_df()
@@ -249,7 +230,7 @@ def process_misrepresented_tokens(df: pl.DataFrame) -> pl.DataFrame:
     return result
 
 
-def apply_protocol_filters(df: pl.DataFrame, config: DefiLlamaConfig) -> pl.DataFrame:
+def create_filter_column(df: pl.DataFrame, config: DefiLlamaConfig) -> pl.DataFrame:
     """
     Adds filtering flags to protocols using Polars expressions.
 
@@ -283,11 +264,12 @@ def apply_protocol_filters(df: pl.DataFrame, config: DefiLlamaConfig) -> pl.Data
     # Check if protocol category is in the list of categories to filter
     category_mask = pl.col("protocol_category").is_in(config.categories_to_filter)
 
+    # Combine all masks
+    all_masks = (
+        chain_ending_mask | chain_exact_mask | polygon_bridge_mask | cex_mask | category_mask
+    )
+
     # Combine all masks into a to_filter column
-    return filtered_df.with_columns(
-        to_filter=chain_ending_mask
-        | chain_exact_mask
-        | polygon_bridge_mask
-        | cex_mask
-        | category_mask
-    ).select(["chain", "protocol_slug", "protocol_category", "to_filter"])
+    return filtered_df.with_columns(to_filter_out=all_masks).select(
+        ["chain", "protocol_slug", "protocol_category", "to_filter_out"]
+    )
