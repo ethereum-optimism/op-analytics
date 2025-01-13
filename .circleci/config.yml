@@ -14,7 +14,8 @@ parameters:
         "run_daily_api_upload",
         "run_daily_metadata",
         "run_defillama_stablecoins",
-        "run_general_l2",
+        "daily_l2_aggregate_later_loads",
+        "deploy_github_pages",
       ]
 
 commands:
@@ -209,7 +210,7 @@ workflows:
     when:
       or:
         - equal: [<< pipeline.parameters.run_job >>, "run_daily_api_upload"]
-        - equal: [run_daily_api_upload, <<pipeline.schedule.name>>]
+        - equal: [<< pipeline.schedule.name >>, "run_daily_api_upload"]
     jobs:
       - defillama-protocols:
           context: op-analytics
@@ -219,7 +220,7 @@ workflows:
     when:
       or:
         - equal: [<< pipeline.parameters.run_job >>, "run_daily_metadata"]
-        - equal: [run_daily_metadata, <<pipeline.schedule.name>>]
+        - equal: [<< pipeline.schedule.name >>, "run_daily_metadata"]
     jobs:
       - chain-metadata:
           context: op-analytics
@@ -235,8 +236,13 @@ workflows:
   run-general-l2:
     when:
       or:
-        - true
-        - equal: [<< pipeline.parameters.run_job >>, "run_general_l2"]
+        - equal:
+            [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
+        - equal:
+            [
+              << pipeline.parameters.run_job >>,
+              "daily_l2_aggregate_later_loads",
+            ]
     jobs:
       - general-l2:
           context:
@@ -244,10 +250,11 @@ workflows:
             - circleci-repo-op-analytics
             - op-analytics-gcp
 
-  merge-to-main:
+  github-pages:
     when:
-      not:
-        equal: [<< pipeline.trigger_source >>, "api"]
+      or:
+        - equal: [<< pipeline.parameters.run_job >>, "deploy_github_pages"]
+        - equal: [<< pipeline.git.branch >>, "main"]
     jobs:
       - deploy-github-pages:
           context:
