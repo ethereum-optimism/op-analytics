@@ -101,8 +101,8 @@ jobs:
               echo "Running notebook $nb in directory $dir"
               cd $dir
               echo "Current directory: $(pwd)"              
-              python3.10 -m pipenv run jupyter nbconvert --to python ${{ nb }}.ipynb
-              # python3.10 -m pipenv run python ${{ nb }}.py
+              python3.10 -m pipenv run jupyter nbconvert --to python ${nb}.ipynb
+              # python3.10 -m pipenv run python ${nb}.py
 
               cd ${main_dir}
             done
