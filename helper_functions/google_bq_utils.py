@@ -17,19 +17,41 @@ logging.basicConfig(level=logging.ERROR)  # Set logging level to ERROR
 logger = logging.getLogger(__name__)  # Create logger instance for this module
 gcp_login = None
 
-def connect_bq_client(project_id = None):
+def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
         # Check if running in a GCP environment and will use the default credentials
         # -------------- start OIDC login
         # In this case the enviroment variables already contain the credentials set up by the GCP login performed
         try:
             logging.info("Using OIDC login")
             #project_id is taken from the environment variables GOOGLE_CLOUD_PROJECT
-            if project_id :
-                return bigquery.Client(project=project_id)
-            else:
-                return bigquery.Client()
+            client=bigquery.Client()
+            return client
         except Exception as e:
             logging.error(f"Exception occurred while trying to use OIDC login")
+        # -------------- end OIDC login
+
+        # Check if running locally
+        is_running_local = os.environ.get("IS_RUNNING_LOCAL", "False").lower() == "true"
+
+        try:
+            # Using try-except block to catch any exceptions that may occur and suppress the error message
+
+            # Set the environment variable to the path of your service account key file
+            if is_running_local: #GH Action was weird with this, so forcing the datatype here
+                    # print("Running locally")
+                    # Path to your local service account key file
+                    service_account_key_path = os.getenv("BQ_APPLICATION_CREDENTIALS")
+                    credentials = service_account.Credentials.from_service_account_file(service_account_key_path)
+            else: #Can't get the Github Action version to work
+                    # print('not running local')
+                    # Set the Google Cloud service account key from GitHub secret
+                    service_account_key = json.loads( os.getenv("BQ_APPLICATION_CREDENTIALS") )
+                    credentials = service_account.Credentials.from_service_account_info(service_account_key)
+
+            client = bigquery.Client(credentials=credentials, project=project_id)
+            return client
+        except Exception as e:
+            logging.critical(f"Exception occurred while trying to get logging configuration file")
             return None
 
 def check_table_exists(client, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID")):
