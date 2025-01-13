@@ -86,7 +86,7 @@ jobs:
       #     service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
       #     workload_identity_pool_id: GCP_WIP_ID
       #     workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
-      # - checkout-dep-1
+      - checkout-dep-1
       # - setup-python-3-10
       - run:
           name: Run Notebooks
