@@ -8,7 +8,15 @@ parameters:
   run_job:
     type: enum
     default: "select_job"
-    enum: ["select_job", "run_daily_api_upload", "run_daily_metadata"]
+    enum:
+      [
+        "select_job",
+        "run_daily_api_upload",
+        "run_daily_metadata",
+        "run_defillama_stablecoins",
+        "daily_l2_aggregate_later_loads",
+        "deploy_github_pages",
+      ]
 
 commands:
   setup-python-env:
@@ -23,12 +31,67 @@ commands:
       - run:
           name: Install project dependencies
           command: uv sync --all-extras --dev
+
+  setup-conda:
+    steps:
+      - run:
+          name: Setup Conda
+          command: |
+            wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+            bash Miniconda3-latest-Linux-x86_64.sh -b
+
+  setup-python-3-10:
+    steps:
+      - setup-conda
+      - run:
+          name: Setup Python 3.10
+          command: |
+            ~/miniconda3/bin/conda create -n py310 python=3.10 -y
+            ~/miniconda3/bin/conda init bash            
+            source ~/.bashrc
+
+  checkout-dep-1:
+    steps:
+      - run:
+          name: Clone repository and checkout branch with depth 1
+          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+
 jobs:
+  general-l2:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - utils/gcp-oidc-authenticate:
+          project_id: GCP_PROJECT_ID
+          service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
+          workload_identity_pool_id: GCP_WIP_ID
+          workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
+      - checkout-dep-1
+      - setup-python-3-10
+      - run:
+          name: Generate and run Python scripts
+          command: |
+            conda activate py310
+            python3.10 -m pip install pipenv
+            python3.10 -m pipenv install
+            python3.10 -m pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
+
+            cd op_chains_tracking
+            python3.10 -m pipenv run python dune_opchain_uploads.py
+
+            cd ../other_chains_tracking
+            python3.10 -m pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
+      - utils/get-github-access-token
+      - utils/github-commit-and-push-changes:
+          commit-message: "GH Action Update - Agg Downloads"
+          skip-ci: true
+          folder: "."
+
   chain-metadata:
     machine:
       image: ubuntu-2004:current
     steps:
-      - checkout
+      - checkout-dep-1
       - setup-python-env
       - run:
           name: Chain Metadata
@@ -39,11 +102,7 @@ jobs:
     machine:
       image: ubuntu-2004:current
     steps:
-      - run:
-          name: Clone the repository
-
-          command: |
-            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+      - checkout-dep-1
       - setup-python-env
       - run:
           name: Build Static Content
@@ -64,14 +123,24 @@ jobs:
           force-push: true
           src-pages-dir: /tmp/docs
 
+  defillama-stablecoins:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - checkout-dep-1
+      - setup-python-env
+      - run:
+          name: DefiLlama Protocol TVL
+          command: uv run opdata pulls defillama_stablecoins
+          environment:
+            OPLABS_RUNTIME: "gha"
+            OPLABS_ENV: "prod"
+
   defillama-protocols:
     machine:
       image: ubuntu-2004:current
     steps:
-      - run:
-          name: Clone the repository
-          command: |
-            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+      - checkout-dep-1
       - setup-python-env
       - run:
           name: DefiLlama Protocol TVL
@@ -91,7 +160,7 @@ jobs:
     machine:
       image: ubuntu-2004:current
     steps:
-      - checkout
+      - checkout-dep-1
       - setup-python-env
       - run:
           name: L2Beat
@@ -134,7 +203,7 @@ workflows:
     when:
       or:
         - equal: [<< pipeline.parameters.run_job >>, "run_daily_api_upload"]
-        - equal: [run_daily_api_upload, <<pipeline.schedule.name>>]
+        - equal: [<< pipeline.schedule.name >>, "run_daily_api_upload"]
     jobs:
       - defillama-protocols:
           context: op-analytics
@@ -144,15 +213,41 @@ workflows:
     when:
       or:
         - equal: [<< pipeline.parameters.run_job >>, "run_daily_metadata"]
-        - equal: [run_daily_metadata, <<pipeline.schedule.name>>]
+        - equal: [<< pipeline.schedule.name >>, "run_daily_metadata"]
     jobs:
       - chain-metadata:
           context: op-analytics
-
-  merge-to-main:
+  run-defillama-stablecoins:
     when:
-      not:
-        equal: [<< pipeline.trigger_source >>, "api"]
+      or:
+        - equal:
+            [<< pipeline.parameters.run_job >>, "run_defillama_stablecoins"]
+    jobs:
+      - defillama-stablecoins:
+          context: op-analytics
+
+  run-general-l2:
+    when:
+      or:
+        - equal:
+            [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
+        - equal:
+            [
+              << pipeline.parameters.run_job >>,
+              "daily_l2_aggregate_later_loads",
+            ]
+    jobs:
+      - general-l2:
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  github-pages:
+    when:
+      or:
+        - equal: [<< pipeline.parameters.run_job >>, "deploy_github_pages"]
+        - equal: [<< pipeline.git.branch >>, "main"]
     jobs:
       - deploy-github-pages:
           context:
