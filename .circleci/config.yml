@@ -79,6 +79,7 @@ jobs:
             {"dir": "op_chains_tracking", "notebook": "dune_op_stack_chains_l1_data"},
             {"dir": "op_collective_economics/opcollective_feesplit", "notebook": "op_collective_revenue"},
             {"dir": "op_collective_economics", "notebook": "get_op_collective_net_revenue_balances"}
+          ]
     steps:
       # - utils/gcp-oidc-authenticate:
       #     project_id: GCP_PROJECT_ID
