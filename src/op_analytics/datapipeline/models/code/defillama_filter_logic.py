@@ -251,14 +251,14 @@ def process_misrepresented_tokens(df: pl.DataFrame) -> pl.DataFrame:
 
 def apply_protocol_filters(df: pl.DataFrame, config: DefiLlamaConfig) -> pl.DataFrame:
     """
-    Applies filtering logic to protocols using Polars expressions.
+    Adds filtering flags to protocols using Polars expressions.
 
     Args:
         df: Polars DataFrame containing protocol data
         config: Configuration object containing filter patterns and categories
 
     Returns:
-        DataFrame with protocol filter flags
+        DataFrame with to_filter column indicating which protocols should be filtered
     """
     # Create unique protocol entries
     filtered_df = df.unique(subset=["chain", "protocol_slug", "protocol_category"])
@@ -283,9 +283,11 @@ def apply_protocol_filters(df: pl.DataFrame, config: DefiLlamaConfig) -> pl.Data
     # Check if protocol category is in the list of categories to filter
     category_mask = pl.col("protocol_category").is_in(config.categories_to_filter)
 
-    # Combine all masks
-    all_filters = (
-        chain_ending_mask | chain_exact_mask | polygon_bridge_mask | cex_mask | category_mask
-    )
-
-    return filtered_df.filter(~all_filters).select(["chain", "protocol_slug", "protocol_category"])
+    # Combine all masks into a to_filter column
+    return filtered_df.with_columns(
+        to_filter=chain_ending_mask
+        | chain_exact_mask
+        | polygon_bridge_mask
+        | cex_mask
+        | category_mask
+    ).select(["chain", "protocol_slug", "protocol_category", "to_filter"])
