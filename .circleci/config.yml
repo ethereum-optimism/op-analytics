@@ -104,7 +104,7 @@ jobs:
               # pipenv run jupyter nbconvert --to python ${{ nb }}.ipynb
               # pipenv run python ${{ nb }}.py
 
-              cd $CIRCLE_WORKING_DIRECTORY
+              cd ..
             done
 
   daily-l2-aggregate-later-loads:
