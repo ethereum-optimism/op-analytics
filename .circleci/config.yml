@@ -81,11 +81,11 @@ jobs:
             {"dir": "op_collective_economics", "notebook": "get_op_collective_net_revenue_balances"}
           ]
     steps:
-      # - utils/gcp-oidc-authenticate:
-      #     project_id: GCP_PROJECT_ID
-      #     service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
-      #     workload_identity_pool_id: GCP_WIP_ID
-      #     workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
+      - utils/gcp-oidc-authenticate:
+          project_id: GCP_PROJECT_ID
+          service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
+          workload_identity_pool_id: GCP_WIP_ID
+          workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
       - checkout-dep-1
       - setup-python-3-10
       - run:
@@ -100,9 +100,9 @@ jobs:
               nb=$(echo $notebook | jq -r '.notebook')
               echo "Running notebook $nb in directory $dir"
               cd $dir
-              echo "Current directory: $(pwd)"              
+
               python3.10 -m pipenv run jupyter nbconvert --to python ${nb}.ipynb
-              # python3.10 -m pipenv run python ${nb}.py
+              python3.10 -m pipenv run python ${nb}.py
 
               cd ${main_dir}
             done
