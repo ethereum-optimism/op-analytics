@@ -102,10 +102,15 @@ jobs:
               cd $dir
 
               python3.10 -m pipenv run jupyter nbconvert --to python ${nb}.ipynb
-              python3.10 -m pipenv run python ${nb}.py
+              python3.10 -m pipenv run python ${nb}.py || true
 
               cd ${main_dir}
             done
+      - utils/get-github-access-token
+      - utils/github-commit-and-push-changes:
+          commit-message: "GH Action Update - L2 Chain Data"
+          skip-ci: true
+          folder: "."
 
   daily-l2-aggregate-later-loads:
     description: "Daily L2 Chain Aggregate Later Loads"
