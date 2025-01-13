@@ -15,7 +15,6 @@ import logging
 # Setup logging configuration
 logging.basicConfig(level=logging.ERROR)  # Set logging level to ERROR
 logger = logging.getLogger(__name__)  # Create logger instance for this module
-gcp_login = None
 
 def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
         # Check if running in a GCP environment and will use the default credentials
