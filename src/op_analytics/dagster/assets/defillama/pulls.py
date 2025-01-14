@@ -9,7 +9,7 @@ def volumes_fees_revenue(context: OpExecutionContext):
     context.log.info(result)
 
 
-@asset(deps=["volumes_fees_revenue"])
+@asset(deps=[volumes_fees_revenue])
 def volumes_fees_revenue_to_clickhouse(context: OpExecutionContext):
     from op_analytics.cli.subcommands.pulls.defillama import volume_fees_revenue
 
