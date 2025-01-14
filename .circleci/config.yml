@@ -58,14 +58,17 @@ commands:
           command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
 
 jobs:
+  setup-python-3-10:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - setup-python-3-10
   daily-l2-chain-data-uploads:
     description: "Daily L2 Chain Data Uploads"
     machine:
       image: ubuntu-2004:current
     parameters:
-      working-directory:
-        type: string
-      notebook:
+      notebook_paths:
         type: string
     steps:
       # - utils/gcp-oidc-authenticate:
@@ -81,7 +84,12 @@ jobs:
             # conda activate py310
             # python3.10 -m pip install pipenv
             # python3.10 -m pipenv install
+            notebook_path="<< parameters.notebook_paths >>.ipynb"
+            py_script_path="<< parameters.notebook_paths >>.py"
+            directory=$(dirname "$notebook_path")
+            cd $directory
             pwd
+            echo "Converting $notebook_path to $py_script_path"
 
   daily-l2-aggregate-later-loads:
     description: "Daily L2 Chain Aggregate Later Loads"
@@ -292,44 +300,29 @@ workflows:
         - equal:
             [<< pipeline.parameters.run_job >>, "daily_l2_chain_data_uploads"]
     jobs:
+      - setup-python-3-10
       - daily-l2-chain-data-uploads:
+          requires:
+            - setup-python-3-10
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics
             - op-analytics-gcp
           matrix:
             parameters:
-              working-directory:
-                [
-                  "other_chains_tracking",
-                  "other_chains_tracking",
-                  "other_chains_tracking",
-                  "other_chains_tracking",
-                  "other_chains_tracking",
-                  "other_chains_tracking",
-                  "other_chains_tracking",
-                  "op_chains_tracking",
-                  "op_chains_tracking",
-                  "op_chains_tracking",
-                  "op_collective_economics/opcollective_feesplit",
-                  "op_collective_economics",
-                ]
-              notebook:
-                [
-                  "chain_tvl_trends",
-                  "pull_l2_activity",
-                  "get_ethereum_chain_list",
-                  "get_dune_evms_info",
-                  "get_qualified_txs",
-                  "get_all_txs",
-                  "get_contract_labels",
-                  "get_superchain_token_list",
-                  "ch_gs_uploads",
-                  "dune_op_stack_chains_l1_data",
-                  "op_collective_revenue",
-                  "get_op_collective_net_revenue_balances",
-                ]
-          # filters:
+              notebook_paths:
+                - other_chains_tracking/chain_tvl_trends
+                - other_chains_tracking/pull_l2_activity
+                - other_chains_tracking/get_ethereum_chain_list
+                - other_chains_tracking/get_dune_evms_info
+                - other_chains_tracking/get_qualified_txs
+                - other_chains_tracking/get_all_txs
+                - other_chains_tracking/get_contract_labels
+                - op_chains_tracking/get_superchain_token_list
+                - op_chains_tracking/ch_gs_uploads
+                - op_chains_tracking/dune_op_stack_chains_l1_data
+                - op_collective_economics/opcollective_feesplit/op_collective_revenue
+                - op_collective_economics/get_op_collective_net_revenue_balances # filters:
           #   branches:
           #     only: main
 
