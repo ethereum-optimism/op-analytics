@@ -100,8 +100,9 @@ jobs:
             export PATH=~/miniconda3/bin:$PATH
             source ~/miniconda3/bin/activate py310
             python --version
-            # python3.10 -m pip install pipenv
-            # python3.10 -m pipenv install
+            python -m pip install pipenv
+            python -m pipenv install
+
             notebook_path="<< parameters.notebook_paths >>.ipynb"
             py_script_path="<< parameters.notebook_paths >>.py"
             directory=$(dirname "$notebook_path")
