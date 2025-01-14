@@ -103,9 +103,13 @@ jobs:
           service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
           workload_identity_pool_id: GCP_WIP_ID
           workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
-      - checkout-dep-1
+      - run:
+          name: checkout-dep-1
+          command: |
+            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH"
       - run:
           name: Generate and run Python scripts
+          working_directory: op-analytics
           command: |
             export PATH=~/miniconda3/bin:$PATH
             source ~/miniconda3/bin/activate py310
