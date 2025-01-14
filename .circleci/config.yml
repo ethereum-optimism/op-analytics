@@ -151,22 +151,18 @@ jobs:
             source ~/miniconda3/bin/activate py310
 
             cd "op-analytics"
-            notebook_paths="<<parameters.notebook-paths>>"
 
-            IFS=',' read -r -a notebook_array <<< "$notebook_paths"
+            echo '<< parameters.notebook-paths >>' | jq -c '.[]' | while read -r notebook; do
+              dir=$(echo $notebook | jq -r '.dir')
+              notebook=$(echo $notebook | jq -r '.notebook')
 
-            for notebook_path in "${notebook_paths[@]}"
-            do
-              directory=$(dirname "$notebook_path")
-              cd "$directory"
+              cd "$dir"
 
-              py_script_path="${notebook_path}.py"
-
-              echo "Converting $notebook_path to $py_script_path"
-              python -m pipenv run jupyter nbconvert --to python "$(basename ${notebook_path}).ipynb"
+              echo "Converting ${notebook}.ipynb to ${notebook}.py"
+              python -m pipenv run jupyter nbconvert --to python ${notebook}.ipynb
 
               # echo "Run $py_script_path"
-              # python -m pipenv run python $(basename ${notebook_path}).py
+              # python -m pipenv run python ${notebook}.py
             done
 
             # python -m pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
@@ -340,7 +336,12 @@ workflows:
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
           commit-message: "GH Action Update - Agg Downloads"
-          notebook-paths: "op_chains_tracking/dune_opchain_uploads,other_chains_tracking/get_filtered_deployers,other_chains_tracking/total_chain_data_to_uploads"
+          notebook-paths: >-
+            [
+              {"dir": "op_chains_tracking", "notebook": "dune_opchain_uploads"},
+              {"dir": "other_chains_tracking", "notebook": "get_filtered_deployers"},
+              {"dir": "other_chains_tracking", "notebook": "total_chain_data_to_uploads"}
+            ]
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics
