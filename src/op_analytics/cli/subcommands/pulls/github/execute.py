@@ -1,6 +1,6 @@
 from op_analytics.coreutils.logger import structlog
 
-from .actvity.allrepos import GithubActivityData
+from .activity.allrepos import GithubActivityData
 from .dataaccess import GithubDataset
 from .traffic.allrepos import GithubTrafficData
 from .traffic.bigquery import write_traffic_to_bq
