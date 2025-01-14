@@ -81,3 +81,13 @@ class GithubActivityData:
             pr_comments=pl.concat([_.pr_comments for _ in repo_dfs.values()]),
             pr_reviews=pl.concat([_.pr_reviews for _ in repo_dfs.values()]),
         )
+
+    def counts(self) -> pl.DataFrame:
+        return pl.concat(
+            [
+                self.issues.group_by("dt").len().with_columns(table=pl.lit("issues")),
+                self.prs.group_by("dt").len().with_columns(table=pl.lit("prs")),
+                self.pr_reviews.group_by("dt").len().with_columns(table=pl.lit("pr_reviews")),
+                self.pr_comments.group_by("dt").len().with_columns(table=pl.lit("pr_comments")),
+            ]
+        ).select("table", "dt", "len")

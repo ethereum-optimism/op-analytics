@@ -3,7 +3,7 @@ import polars as pl
 from op_analytics.coreutils.gsheets import read_gsheet
 from op_analytics.coreutils.bigquery.write import overwrite_unpartitioned_table
 
-BQ_DATASET = "uploads_api"
+BQ_DATASET = "defillama"
 
 TOKEN_MAPPINGS_GSHEET_NAME = "token_mappings"
 TOKEN_MAPPINGS_TABLE = "token_mappings"
@@ -15,9 +15,11 @@ TOKEN_MAPPINGS_SCHEMA = {
 }
 
 
-def upload_token_mappings():
+def execute():
     df = load_data_from_gsheet(TOKEN_MAPPINGS_GSHEET_NAME, TOKEN_MAPPINGS_SCHEMA)
     upload_dataframe(df, TOKEN_MAPPINGS_TABLE)
+
+    return {TOKEN_MAPPINGS_GSHEET_NAME: len(df)}
 
 
 def load_data_from_gsheet(gsheet_name: str, expected_schema: dict) -> pl.DataFrame:

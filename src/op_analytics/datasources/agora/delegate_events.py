@@ -1,14 +1,15 @@
 from dataclasses import dataclass
 from typing import Any, List
-import requests
-import polars as pl
 
-from op_analytics.cli.subcommands.pulls.agora.dataaccess import Agora
+import polars as pl
+import requests
+
+from op_analytics.coreutils.env.vault import env_get
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data
 from op_analytics.coreutils.threads import run_concurrently_store_failures
-from op_analytics.cli.subcommands.pulls.agora.delegates import AgoraDelegates
-from op_analytics.coreutils.env.vault import env_get
+from op_analytics.datasources.agora.dataaccess import Agora
+from op_analytics.datasources.agora.delegates import AgoraDelegates
 
 log = structlog.get_logger()
 

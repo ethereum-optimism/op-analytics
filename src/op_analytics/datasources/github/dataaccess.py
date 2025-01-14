@@ -9,7 +9,7 @@ from op_analytics.coreutils.partitioned.dailydata import (
 log = structlog.get_logger()
 
 
-class GithubDataset(DailyDataset):
+class Github(DailyDataset):
     """
     Supported GitHub datasets, paralleling the structure used by
     other third-party datasets (like DefiLlama, etc.).

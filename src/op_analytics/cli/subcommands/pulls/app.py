@@ -1,23 +1,19 @@
 import typer
 
 from op_analytics.coreutils.logger import structlog
-
-from .agora.delegate_events import (
+from op_analytics.datasources.agora.delegate_events import (
     fetch_delegate_delegatees,
     fetch_delegate_delegators,
     fetch_delegate_votes,
     fetch_proposals,
 )
-from .agora.delegates import pull_delegates
-from .defillama.historical_chain_tvl import pull_historical_chain_tvl
-from .defillama.protocols import pull_protocol_tvl
-from .defillama.stablecoins import pull_stablecoins
-from .defillama.volume_fees_revenue import execute_pull, write_to_clickhouse
-from .github import execute as github_execute
-from .growthepie.chains_daily_fundamentals import pull_growthepie_summary
-from .l2beat import pull_l2beat
-from .manual_mappings.gsheets_to_bigquery import upload_token_mappings
-
+from op_analytics.datasources.agora.delegates import pull_delegates
+from op_analytics.datasources.defillama.historical_chain_tvl import pull_historical_chain_tvl
+from op_analytics.datasources.defillama.protocols import pull_protocol_tvl
+from op_analytics.datasources.defillama.stablecoins import pull_stablecoins
+from op_analytics.datasources.github import execute as github_execute
+from op_analytics.datasources.growthepie.chains_daily_fundamentals import pull_growthepie_summary
+from op_analytics.datasources.l2beat import pull_l2beat
 
 log = structlog.get_logger()
 
@@ -88,24 +84,11 @@ def pull_agora_delegate_data():
 
 
 @app.command()
-def defillama_volume_fees_revenue():
-    """Pull DEX Volumes, Fees, and Revenue from Defillama."""
-    execute_pull()
-    write_to_clickhouse()
-
-
-@app.command()
 def growthepie_chain_summary():
     """Pull daily chain summary fundamentals from GrowThePie."""
     pull_growthepie_summary()
 
-    from .growthepie.dataaccess import GrowThePie
+    from op_analytics.datasources.growthepie.dataaccess import GrowThePie
 
     GrowThePie.FUNDAMENTALS_SUMMARY.insert_to_clickhouse(incremental_overlap=1)
     GrowThePie.CHAIN_METADATA.insert_to_clickhouse(incremental_overlap=1)
-
-
-@app.command()
-def token_mappings():
-    """Upload token mappings from Google Sheets to BigQuery."""
-    upload_token_mappings()
