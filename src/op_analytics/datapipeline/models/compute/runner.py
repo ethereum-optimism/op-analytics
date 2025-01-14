@@ -16,7 +16,7 @@ from op_analytics.coreutils.partitioned.output import OutputData
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writehelper import WriteManager
 from op_analytics.datapipeline.models.compute.execute import PythonModel, PythonModelExecutor
-from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros, set_memory_limit
+from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros
 
 log = structlog.get_logger()
 
@@ -200,7 +200,7 @@ def steps(item: WorkItem) -> None:
 
         # Set duckdb memory limit. This lets us get an error from duckb instead of
         # OOMing the container.
-        set_memory_limit(ctx.client, gb=10)
+        # set_memory_limit(ctx.client, gb=10)
 
         task: ModelsTask = item.task
 

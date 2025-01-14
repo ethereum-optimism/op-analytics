@@ -29,13 +29,15 @@ class DefiLlama(DailyDataset):
     STABLECOINS_METADATA = "stablecoins_metadata_v1"
     STABLECOINS_BALANCE = "stablecoins_balances_v1"
 
-    # DEX Volumes, Fees, and Revenue at various levels of granularity
-    DEXS_FEES_TOTAL = "dexs_crypto_v1"
-    DEXS_FEES_BY_CHAIN = "dexs_by_chain_v1"
-    DEXS_FEES_BY_CHAIN_PROTOCOL = "dexs_by_chain_protocol_v1"
+    # DEX Volumes, Fees, and Revenue at chain and chain/name levels of granularity
+    VOLUME_FEES_REVENUE = "volume_fees_revenue_v1"
+    VOLUME_FEES_REVENUE_BREAKDOWN = "volume_fees_revenue_breakdown_v1"
 
-    # Summary for dexs/dailyVolume, fees/dailyFees, and fees/dailyRevenue
-    DEXS_PROTOCOLS_METADATA = "dexs_protocols_metadata_v1"
+    # Protocols metadata obtained from "dexs/dailyVolume", and "fees/dailyFees"
+    # and "fees/dailyRevenue" endpoints.
+    VOLUME_PROTOCOLS_METADATA = "volume_protocols_metadata_v1"
+    FEES_PROTOCOLS_METADATA = "fees_protocols_metadata_v1"
+    REVENUE_PROTOCOLS_METADATA = "revenue_protocols_metadata_v1"
 
     # TVL breakdown
     PROTOCOL_TOKEN_TVL_BREAKDOWN = "protocol_token_tvl_breakdown_v1"

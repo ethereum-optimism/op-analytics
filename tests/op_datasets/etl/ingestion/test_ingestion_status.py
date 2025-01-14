@@ -14,6 +14,7 @@ def test_is_safe():
     batch = BlockBatch(chain="fraxtal", min=11320000, max=11340000)
 
     chain_max_block = ChainMaxBlock(
+        chain="fraxtal",
         ts=1729797569,
         number=11493429,
     )
@@ -34,6 +35,7 @@ def test_is_not_safe_for_number():
     batch = BlockBatch(chain="fraxtal", min=0, max=1100)
 
     chain_max_block = ChainMaxBlock(
+        chain="fraxtal",
         ts=1729797569,
         number=2000,
     )
@@ -54,6 +56,7 @@ def test_is_not_safe_for_provider():
     batch = BlockBatch(chain="fraxtal", min=11320000, max=11340000)
 
     chain_max_block = ChainMaxBlock(
+        chain="fraxtal",
         ts=1729797569,
         number=11493429,
     )

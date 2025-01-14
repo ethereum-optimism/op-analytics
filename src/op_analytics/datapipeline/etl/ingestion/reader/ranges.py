@@ -60,7 +60,8 @@ def block_range_for_dates(chain: str, min_ts: int, max_ts: int) -> BlockRange:
 
     assert len(result) == 1
     row = result.to_dicts()[0]
-    return BlockRange(row["block_min"], row["block_max"])
+    block_range = BlockRange(row["block_min"], row["block_max"])
+    return block_range
 
 
 def time_range_for_blocks(chain: str, min_block: int, max_block: int) -> TimeRange:
@@ -88,7 +89,7 @@ def time_range_for_blocks(chain: str, min_block: int, max_block: int) -> TimeRan
     return TimeRange(
         min=datetime_fromepoch(row["time_min"]),
         max=datetime_fromepoch(row["time_max"]),
-        requested_max_timestamp=row["time_max"],
+        requested_max_timestamp=None,
     )
 
 
@@ -106,8 +107,9 @@ def chain_max_block(chain: str) -> ChainMaxBlock:
 
     assert len(result) == 1
     row = result.to_dicts()[0]
-
-    return ChainMaxBlock(
+    max_block = ChainMaxBlock(
+        chain=chain,
         ts=row["timestamp_max"],
         number=row["block_max"],
     )
+    return max_block

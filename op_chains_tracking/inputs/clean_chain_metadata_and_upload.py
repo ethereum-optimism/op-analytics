@@ -18,7 +18,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[2]:
+# In[9]:
 
 
 # Read the CSV file
@@ -27,7 +27,7 @@ df = pd.read_csv('chain_metadata_raw.csv')
 table_name = 'op_stack_chain_metadata'
 
 
-# In[3]:
+# In[10]:
 
 
 import math
@@ -73,7 +73,7 @@ df[object_columns] = df[object_columns].fillna('')
 df.to_csv('../outputs/chain_metadata.csv', index=False)
 
 
-# In[5]:
+# In[12]:
 
 
 # df.dtypes
