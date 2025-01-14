@@ -161,25 +161,17 @@ jobs:
               echo "Converting ${notebook}.ipynb to ${notebook}.py"
               python -m pipenv run jupyter nbconvert --to python ${notebook}.ipynb
 
-              echo "Run $py_script_path"
+              echo "Run ${notebook}.py"
               python -m pipenv run python ${notebook}.py
-              
+
               cd - >/dev/null
             done
 
-            # python -m pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
-
-            # cd op_chains_tracking
-            # python -m pipenv run python dune_opchain_uploads.py
-
-            # cd ../other_chains_tracking
-            # python -m pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
-
-      # - utils/get-github-access-token
-      # - utils/github-commit-and-push-changes:
-      #     commit-message: "<< parameters.commit_message >>"
-      #     skip-ci: true
-      #     folder: "op-analytics"
+      - utils/get-github-access-token
+      - utils/github-commit-and-push-changes:
+          commit-message: "<< parameters.commit_message >>"
+          skip-ci: true
+          folder: "op-analytics"
 
   chain-metadata:
     machine:
@@ -325,7 +317,7 @@ workflows:
             branches:
               only: main
 
-  run-daily-l2-aggregate-later-loads:
+  daily-l2-aggregate-later-loads:
     # when:
     #   or:
     #     - equal:
