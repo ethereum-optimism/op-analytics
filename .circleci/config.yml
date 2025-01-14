@@ -313,24 +313,21 @@ workflows:
               only: main
 
   run-daily-l2-aggregate-later-loads:
-    # when:
-    #   or:
-    #     - equal:
-    #         [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
-    #     - equal:
-    #         [
-    #           << pipeline.parameters.run_job >>,
-    #           "daily_l2_aggregate_later_loads",
-    #         ]
+    when:
+      or:
+        - equal:
+            [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
+        - equal:
+            [
+              << pipeline.parameters.run_job >>,
+              "daily_l2_aggregate_later_loads",
+            ]
     jobs:
       - daily-l2-aggregate-later-loads:
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics
             - op-analytics-gcp
-          # filters:
-          #   branches:
-          #     only: main
 
   daily_l2_chain_data_uploads:
     when:
@@ -362,9 +359,6 @@ workflows:
                 - op_chains_tracking/dune_op_stack_chains_l1_data
                 - op_collective_economics/opcollective_feesplit/op_collective_revenue
                 - op_collective_economics/get_op_collective_net_revenue_balances
-          # filters:
-          #   branches:
-          #     only: main
 
   github-pages:
     when:
