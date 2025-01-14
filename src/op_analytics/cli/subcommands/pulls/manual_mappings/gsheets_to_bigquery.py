@@ -3,32 +3,21 @@ import polars as pl
 from op_analytics.coreutils.gsheets import read_gsheet
 from op_analytics.coreutils.bigquery.write import overwrite_unpartitioned_table
 
-BQ_DATASET = "uploads_api"
+BQ_DATASET = "temp"
 
-TOKEN_CATEGORIES_GSHEET_NAME = "token_categories"
-TOKEN_CATEGORIES_TABLE = "token_categories"
-TOKEN_CATEGORIES_SCHEMA = {
+TOKEN_MAPPINGS_GSHEET_NAME = "token_mappings"
+TOKEN_MAPPINGS_TABLE = "token_mappings"
+TOKEN_MAPPINGS_SCHEMA = {
     "token": pl.String,
     "token_category": pl.String,
-}
-
-TOKEN_SOURCE_PROTOCOLS_GSHEET_NAME = "token_source_protocols"
-TOKEN_SOURCE_PROTOCOLS_TABLE = "token_source_protocols"
-TOKEN_SOURCE_PROTOCOLS_SCHEMA = {
-    "token": pl.String,
     "project": pl.String,
     "source_protocol": pl.String,
 }
 
 
-def upload_token_categories():
-    df = load_data_from_gsheet(TOKEN_CATEGORIES_GSHEET_NAME, TOKEN_CATEGORIES_SCHEMA)
-    upload_dataframe(df, TOKEN_CATEGORIES_TABLE)
-
-
-def upload_token_source_protocols():
-    df = load_data_from_gsheet(TOKEN_SOURCE_PROTOCOLS_GSHEET_NAME, TOKEN_SOURCE_PROTOCOLS_SCHEMA)
-    upload_dataframe(df, TOKEN_SOURCE_PROTOCOLS_TABLE)
+def upload_token_mappings():
+    df = load_data_from_gsheet(TOKEN_MAPPINGS_GSHEET_NAME, TOKEN_MAPPINGS_SCHEMA)
+    upload_dataframe(df, TOKEN_MAPPINGS_TABLE)
 
 
 def load_data_from_gsheet(gsheet_name: str, expected_schema: dict) -> pl.DataFrame:
