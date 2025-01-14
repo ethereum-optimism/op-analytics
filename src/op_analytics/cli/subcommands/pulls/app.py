@@ -1,5 +1,5 @@
 import typer
-
+from datetime import datetime
 from op_analytics.coreutils.logger import structlog
 
 from .agora.delegate_events import (
@@ -17,7 +17,9 @@ from .github import execute as github_execute
 from .growthepie.chains_daily_fundamentals import pull_growthepie_summary
 from .l2beat import pull_l2beat
 from .manual_mappings.gsheets_to_bigquery import upload_token_mappings
-
+from op_analytics.datapipeline.models.code.defillama_tvl_breakdown_enrichment import (
+    DefillamaTVLBreakdown,
+)
 
 log = structlog.get_logger()
 
@@ -109,3 +111,10 @@ def growthepie_chain_summary():
 def token_mappings():
     """Upload token mappings from Google Sheets to BigQuery."""
     upload_token_mappings()
+
+
+@app.command()
+def defillama_tvl_breakdown_enrichment():
+    """Enrich defillama tvl breakdown data."""
+    datestr = datetime.now().strftime("%Y-%m-%d")
+    DefillamaTVLBreakdown.of_date(datestr)
