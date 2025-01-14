@@ -62,10 +62,16 @@ jobs:
     machine:
       image: ubuntu-2004:current
     steps:
-      - setup-python-3-10
       - run:
-          name: Save Environment to Workspace
+          name: Setup setup-python-3-10 and Save Environment to Workspace
           command: |
+            if [ ! -d "~/miniconda3" ]; then
+                wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+                bash Miniconda3-latest-Linux-x86_64.sh -b
+            fi
+            export PATH=$HOME/miniconda3/bin:$PATH
+            ~/miniconda3/bin/conda create -n py310 python=3.10 -y
+            echo "Python 3.10 environment setup complete"
             mkdir -p ~/workspace
             cp -R ~/miniconda3 ~/workspace/miniconda3
       - persist_to_workspace:
