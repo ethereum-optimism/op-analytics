@@ -3,7 +3,7 @@ import polars as pl
 from op_analytics.coreutils.gsheets import read_gsheet
 from op_analytics.coreutils.bigquery.write import overwrite_unpartitioned_table
 
-BQ_DATASET = "temp"
+BQ_DATASET = "uploads_api"
 
 TOKEN_MAPPINGS_GSHEET_NAME = "token_mappings"
 TOKEN_MAPPINGS_TABLE = "token_mappings"
