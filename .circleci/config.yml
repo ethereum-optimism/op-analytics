@@ -313,31 +313,31 @@ workflows:
               only: main
 
   run-daily-l2-aggregate-later-loads:
-    when:
-      or:
-        - equal:
-            [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
-        - equal:
-            [
-              << pipeline.parameters.run_job >>,
-              "daily_l2_aggregate_later_loads",
-            ]
+    # when:
+    #   or:
+    #     - equal:
+    #         [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
+    #     - equal:
+    #         [
+    #           << pipeline.parameters.run_job >>,
+    #           "daily_l2_aggregate_later_loads",
+    #         ]
     jobs:
       - daily-l2-aggregate-later-loads:
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics
             - op-analytics-gcp
-          filters:
-            branches:
-              only: main
+          # filters:
+          #   branches:
+          #     only: main
 
   daily_l2_chain_data_uploads:
-    # when:
-    #   or:
-    #     - equal: [<< pipeline.schedule.name >>, "daily_l2_chain_data_uploads"]
-    #     - equal:
-    #         [<< pipeline.parameters.run_job >>, "daily_l2_chain_data_uploads"]
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "daily_l2_chain_data_uploads"]
+        - equal:
+            [<< pipeline.parameters.run_job >>, "daily_l2_chain_data_uploads"]
     jobs:
       - setup-python-3-10-job
       - convert-and-run-notebooks-to-py:
