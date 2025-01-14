@@ -86,6 +86,7 @@ jobs:
           root: ~/
           paths:
             - miniconda3
+            - .local
 
   daily-l2-chain-data-uploads:
     description: "Daily L2 Chain Data Uploads"
