@@ -87,6 +87,8 @@ jobs:
     parameters:
       notebook_paths:
         type: string
+      commit-message:
+        type: string
     steps:
       - attach_workspace:
           at: ~/
@@ -115,39 +117,9 @@ jobs:
 
             echo "Run $py_script_path"
             python -m pipenv run python $(basename ${py_script_path})
-
-  daily-l2-aggregate-later-loads:
-    description: "Daily L2 Chain Aggregate Later Loads"
-    machine:
-      image: ubuntu-2004:current
-    steps:
-      - utils/gcp-oidc-authenticate:
-          project_id: GCP_PROJECT_ID
-          service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
-          workload_identity_pool_id: GCP_WIP_ID
-          workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
-      - checkout-dep-1
-      - setup-python-3-10
-      - setup-python-3-10-project-dependencies
-      - run:
-          name: Generate and run Python scripts
-          command: |
-            export PATH=~/miniconda3/bin:$PATH
-            source ~/miniconda3/bin/activate py310
-
-            base_git_project=$(basename "$CIRCLE_REPOSITORY_URL" .git)
-            cd $base_git_project
-
-            python -m pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
-
-            cd op_chains_tracking
-            python -m pipenv run python dune_opchain_uploads.py
-
-            cd ../other_chains_tracking
-            python -m pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
       - utils/get-github-access-token
       - utils/github-commit-and-push-changes:
-          commit-message: "GH Action Update - Agg Downloads"
+          commit-message: "<< parameters.commit-message >>"
           skip-ci: true
           folder: "."
 
@@ -303,24 +275,35 @@ workflows:
               only: main
 
   run-daily-l2-aggregate-later-loads:
-    when:
-      or:
-        - equal:
-            [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
-        - equal:
-            [
-              << pipeline.parameters.run_job >>,
-              "daily_l2_aggregate_later_loads",
-            ]
+    # when:
+    #   or:
+    #     - equal:
+    #         [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
+    #     - equal:
+    #         [
+    #           << pipeline.parameters.run_job >>,
+    #           "daily_l2_aggregate_later_loads",
+    #         ]
     jobs:
-      - daily-l2-aggregate-later-loads:
+      - setup-python-3-10
+      - convert-and-run-notebooks-to-py:
+          requires:
+            - setup-python-3-10
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics
             - op-analytics-gcp
-          filters:
-            branches:
-              only: main
+          matrix:
+            parameters:
+              notebook_paths:
+                - op_chains_tracking/dune_opchain_uploads
+                - other_chains_tracking/get_filtered_deployers
+                - other_chains_tracking/total_chain_data_to_uploads
+              commit-message:
+                - "GH Action Update - Agg Downloads"
+          # filters:
+          #   branches:
+          #     only: main
 
   daily_l2_chain_data_uploads:
     # when:
@@ -352,6 +335,8 @@ workflows:
                 - op_chains_tracking/dune_op_stack_chains_l1_data
                 - op_collective_economics/opcollective_feesplit/op_collective_revenue
                 - op_collective_economics/get_op_collective_net_revenue_balances
+              commit-message:
+                - "GH Action Update - L2 Chain Data"
           # filters:
           #   branches:
           #     only: main
