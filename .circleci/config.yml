@@ -323,10 +323,7 @@ workflows:
               "daily_l2_aggregate_later_loads",
             ]
     jobs:
-      - setup-python-3-10
       - daily-l2-aggregate-later-loads:
-          requires:
-            - setup-python-3-10
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics
