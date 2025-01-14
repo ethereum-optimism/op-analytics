@@ -106,13 +106,17 @@ jobs:
       - run:
           name: checkout-dep-1
           command: |
-            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH"
+            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" 
+            base_git_project=$(basename "$CIRCLE_REPOSITORY_URL" .git)
+            echo "export base_git_project='$base_git_project'" >> $BASH_ENV
+            echo "Cloned repository folder name: $folder_name"
       - run:
           name: Generate and run Python scripts
-          working_directory: op-analytics
           command: |
             export PATH=~/miniconda3/bin:$PATH
             source ~/miniconda3/bin/activate py310
+
+            cd $base_git_project
 
             notebook_path="<< parameters.notebook_paths >>.ipynb"
             py_script_path="<< parameters.notebook_paths >>.py"
@@ -356,7 +360,8 @@ workflows:
                 - op_chains_tracking/ch_gs_uploads
                 - op_chains_tracking/dune_op_stack_chains_l1_data
                 - op_collective_economics/opcollective_feesplit/op_collective_revenue
-                - op_collective_economics/get_op_collective_net_revenue_balances # filters:
+                - op_collective_economics/get_op_collective_net_revenue_balances
+          # filters:
           #   branches:
           #     only: main
 
