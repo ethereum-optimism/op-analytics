@@ -121,7 +121,7 @@ jobs:
       - utils/github-commit-and-push-changes:
           commit-message: "<< parameters.commit-message >>"
           skip-ci: true
-          folder: "."
+          folder: "op-analytics"
 
   chain-metadata:
     machine:
@@ -305,41 +305,41 @@ workflows:
           #   branches:
           #     only: main
 
-  daily_l2_chain_data_uploads:
-    # when:
-    #   or:
-    #     - equal: [<< pipeline.schedule.name >>, "daily_l2_chain_data_uploads"]
-    #     - equal:
-    #         [<< pipeline.parameters.run_job >>, "daily_l2_chain_data_uploads"]
-    jobs:
-      - setup-python-3-10
-      - convert-and-run-notebooks-to-py:
-          requires:
-            - setup-python-3-10
-          context:
-            - op-analytics-legacy
-            - circleci-repo-op-analytics
-            - op-analytics-gcp
-          matrix:
-            parameters:
-              notebook_paths:
-                - other_chains_tracking/chain_tvl_trends
-                - other_chains_tracking/pull_l2_activity
-                - other_chains_tracking/get_ethereum_chain_list
-                - other_chains_tracking/get_dune_evms_info
-                - other_chains_tracking/get_qualified_txs
-                - other_chains_tracking/get_all_txs
-                - other_chains_tracking/get_contract_labels
-                - op_chains_tracking/get_superchain_token_list
-                - op_chains_tracking/ch_gs_uploads
-                - op_chains_tracking/dune_op_stack_chains_l1_data
-                - op_collective_economics/opcollective_feesplit/op_collective_revenue
-                - op_collective_economics/get_op_collective_net_revenue_balances
-              commit-message:
-                - "GH Action Update - L2 Chain Data"
-          # filters:
-          #   branches:
-          #     only: main
+  # daily_l2_chain_data_uploads:
+  #   # when:
+  #   #   or:
+  #   #     - equal: [<< pipeline.schedule.name >>, "daily_l2_chain_data_uploads"]
+  #   #     - equal:
+  #   #         [<< pipeline.parameters.run_job >>, "daily_l2_chain_data_uploads"]
+  #   jobs:
+  #     - setup-python-3-10
+  #     - convert-and-run-notebooks-to-py:
+  #         requires:
+  #           - setup-python-3-10
+  #         context:
+  #           - op-analytics-legacy
+  #           - circleci-repo-op-analytics
+  #           - op-analytics-gcp
+  #         matrix:
+  #           parameters:
+  #             notebook_paths:
+  #               - other_chains_tracking/chain_tvl_trends
+  #               - other_chains_tracking/pull_l2_activity
+  #               - other_chains_tracking/get_ethereum_chain_list
+  #               - other_chains_tracking/get_dune_evms_info
+  #               - other_chains_tracking/get_qualified_txs
+  #               - other_chains_tracking/get_all_txs
+  #               - other_chains_tracking/get_contract_labels
+  #               - op_chains_tracking/get_superchain_token_list
+  #               - op_chains_tracking/ch_gs_uploads
+  #               - op_chains_tracking/dune_op_stack_chains_l1_data
+  #               - op_collective_economics/opcollective_feesplit/op_collective_revenue
+  #               - op_collective_economics/get_op_collective_net_revenue_balances
+  #             commit-message:
+  #               - "GH Action Update - L2 Chain Data"
+  #         # filters:
+  #         #   branches:
+  #         #     only: main
 
   github-pages:
     when:
