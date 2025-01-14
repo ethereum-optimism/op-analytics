@@ -169,7 +169,7 @@ jobs:
 
       - utils/get-github-access-token
       - utils/github-commit-and-push-changes:
-          commit-message: "<< parameters.commit_message >>"
+          commit-message: "<< parameters.commit-message >>"
           skip-ci: true
           folder: "op-analytics"
 
