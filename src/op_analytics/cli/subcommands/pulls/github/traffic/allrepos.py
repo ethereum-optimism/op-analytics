@@ -35,36 +35,46 @@ FORKS_TRUNCATE_LAST_N_DAYS = 3
 
 @dataclass
 class GithubTrafficData:
-    # Metrics for all repositories. Concatenated in long form. Metrics inluded:
-    #
-    #  - views_total
-    #  - views_unique
-    #  - clones_total
-    #  - clones_unique
-    #  - forks_total
-    #
-    # For views and clones the Github APIs report the last 14 days (there are
-    # 15 distinct dates in the result). To avoid issues with overwriting data
-    # we only keep the last 2 days of fully reported data.
-    #
-    # If we fetch on day N, we only keep dates N-1 and N-2. We discard day N
-    # as it is possibly incomplete. The rest of the window is discarded because
-    # we don't what to overwrite it unnecessarily and also day N-14 is also
-    # possibly incomplete.
-    #
-    # On the forks endpoint github reports all historicals so we don't have
-    # a similar windowing problem at day N-14. Howeve datta at day N still may
-    # be incomplete, so we discard it.
+    """Traffic data for a single repo.
+
+    Metrics
+    =======
+
+    We include the following metrics
+
+     - views_total
+     - views_unique
+     - clones_total
+     - clones_unique
+     - forks_total
+
+    For views and clones the Github APIs report the last 14 days (there are 15
+    distinct dates in the result). To avoid issues with overwriting data we
+    only keep the last 2 days of fully reported data.
+
+    If we fetch on day N, we only keep dates N-1 and N-2. Days N and N-14 will be
+    incomplete, so we discard them. The rest of the window is also discarded
+    because we don't what to overwrite it unnecessarily.
+
+    On the forks endpoint github reports all historicals so we don't have a
+    similar windowing problem at day N-14. However data at day N still may be
+    incomplete, so we discard it.
+
+    Referrers
+    =========
+
+    The Github API does not breakdown referals by date. That makes analysis
+    somewhat complicated since one has to manually take care of any reporting
+    overlaps that may exist.
+
+    The referrers df is a snapshot of the value reported by Github at fetch
+    time. The "dt" column is the fetch date.
+    """
+
+    # Metrics for all repositories. Concatenated in long form.
     all_metrics_df_truncated: pl.DataFrame
 
     # Referrers data for all repositories. Concatenated in long form.
-    # This is a snapshot of the value reported by Github at the time of
-    # fetching. The "dt" value correponds to the date when the data was fetched
-    # from the API.
-    #
-    # The Github API does not breakdown referals by date. That makes analysis
-    # somewhat complicated since one has to manually take care of any reporting
-    # overlaps that may exist.
     referrers_snapshot_df: pl.DataFrame
 
     @classmethod
