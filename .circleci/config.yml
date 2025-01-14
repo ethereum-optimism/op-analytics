@@ -73,7 +73,6 @@ jobs:
             export PATH=$HOME/miniconda3/bin:$PATH
             ~/miniconda3/bin/conda create -n py310 python=3.10 -y
             echo "Python 3.10 environment setup complete"
-      - checkout-dep-1
       - run:
           name: Install Project dependency
           command: |
