@@ -161,8 +161,10 @@ jobs:
               echo "Converting ${notebook}.ipynb to ${notebook}.py"
               python -m pipenv run jupyter nbconvert --to python ${notebook}.ipynb
 
-              # echo "Run $py_script_path"
-              # python -m pipenv run python ${notebook}.py
+              echo "Run $py_script_path"
+              python -m pipenv run python ${notebook}.py
+              
+              cd - >/dev/null
             done
 
             # python -m pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
