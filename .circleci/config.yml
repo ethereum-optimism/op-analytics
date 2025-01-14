@@ -72,10 +72,8 @@ jobs:
             export PATH=$HOME/miniconda3/bin:$PATH
             ~/miniconda3/bin/conda create -n py310 python=3.10 -y
             echo "Python 3.10 environment setup complete"
-            mkdir -p ~/workspace
-            cp -R ~/miniconda3 ~/workspace/miniconda3
       - persist_to_workspace:
-          root: ~/workspace
+          root: ~/
           paths:
             - miniconda3
 
@@ -88,7 +86,7 @@ jobs:
         type: string
     steps:
       - attach_workspace:
-          at: ~/workspace
+          at: ~/
       # - utils/gcp-oidc-authenticate:
       #     project_id: GCP_PROJECT_ID
       #     service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
@@ -99,8 +97,8 @@ jobs:
       - run:
           name: Generate and run Python scripts
           command: |
-            export PATH=~/workspace/miniconda3/bin:$PATH
-            source ~/workspace/miniconda3/bin/activate py310
+            export PATH=~/miniconda3/bin:$PATH
+            source ~/miniconda3/bin/activate py310
             python --version
             # python3.10 -m pip install pipenv
             # python3.10 -m pipenv install
