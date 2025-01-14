@@ -98,29 +98,28 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      # - utils/gcp-oidc-authenticate:
-      #     project_id: GCP_PROJECT_ID
-      #     service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
-      #     workload_identity_pool_id: GCP_WIP_ID
-      #     workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
+      - utils/gcp-oidc-authenticate:
+          project_id: GCP_PROJECT_ID
+          service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
+          workload_identity_pool_id: GCP_WIP_ID
+          workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
       - checkout-dep-1
-      # - setup-python-3-10
       - run:
           name: Generate and run Python scripts
           command: |
             export PATH=~/miniconda3/bin:$PATH
             source ~/miniconda3/bin/activate py310
-            # python --version
-            # python -m pip install pipenv
-            # python -m pipenv install
 
             notebook_path="<< parameters.notebook_paths >>.ipynb"
             py_script_path="<< parameters.notebook_paths >>.py"
             directory=$(dirname "$notebook_path")
             cd $directory
-            python -m pipenv run jupyter nbconvert --to python $(basename ${notebook_path})
 
             echo "Converting $notebook_path to $py_script_path"
+            python -m pipenv run jupyter nbconvert --to python $(basename ${notebook_path})
+
+            echo "Run $py_script_path"
+            python -m pipenv run python $(basename ${py_script_path})
 
   daily-l2-aggregate-later-loads:
     description: "Daily L2 Chain Aggregate Later Loads"
