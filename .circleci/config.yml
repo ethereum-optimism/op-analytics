@@ -33,44 +33,10 @@ commands:
           name: Install project dependencies
           command: uv sync --all-extras --dev
 
-  setup-conda:
-    steps:
-      - run:
-          name: Setup Conda
-          command: |
-            wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-            bash Miniconda3-latest-Linux-x86_64.sh -b
-
   setup-python-3-10:
     steps:
-      - setup-conda
       - run:
           name: Setup Python 3.10
-          command: |
-            ~/miniconda3/bin/conda create -n py310 python=3.10 -y
-            ~/miniconda3/bin/conda init bash            
-            source ~/.bashrc
-
-  checkout-dep-1:
-    steps:
-      - run:
-          name: Clone repository and checkout branch with depth 1
-          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
-
-jobs:
-  setup-python-3-10:
-    machine:
-      image: ubuntu-2004:current
-    steps:
-      - run:
-          name: Checkout Project
-          command: |
-            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" 
-            base_git_project=$(basename "$CIRCLE_REPOSITORY_URL" .git)
-            echo "export base_git_project='$base_git_project'" >> $BASH_ENV
-            echo "Cloned repository folder name: $base_git_project"
-      - run:
-          name: Setup setup-python-3-10 and Save Environment to Workspace
           command: |
             if [ ! -d "~/miniconda3" ]; then
                 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -79,16 +45,35 @@ jobs:
             export PATH=$HOME/miniconda3/bin:$PATH
             ~/miniconda3/bin/conda create -n py310 python=3.10 -y
             echo "Python 3.10 environment setup complete"
-      - run:
-          name: Install Project dependency
-          command: |
-            cd $base_git_project
 
+  checkout-dep-1:
+    steps:
+      - run:
+          name: Clone repository and checkout branch with depth 1
+          command: |
+            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH"
+            base_git_project=$(basename "$CIRCLE_REPOSITORY_URL" .git)
+            echo "Cloned repository folder name: $base_git_project"
+  setup-python-3-10-project-dependencies:
+    steps:
+      - run:
+          name: Install Python 3.10 dependencies
+          command: |
+            base_git_project=$(basename "$CIRCLE_REPOSITORY_URL" .git)
+            cd $base_git_project
             source ~/miniconda3/bin/activate py310
             python --version
             python -m pip install pipenv
             python -m pipenv install
 
+jobs:
+  setup-python-3-10:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - checkout-dep-1
+      - setup-python-3-10
+      - setup-python-3-10-project-dependencies
       - persist_to_workspace:
           root: ~/
           paths:
@@ -110,19 +95,14 @@ jobs:
           service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
           workload_identity_pool_id: GCP_WIP_ID
           workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
-      - run:
-          name: Checkout Project
-          command: |
-            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" 
-            base_git_project=$(basename "$CIRCLE_REPOSITORY_URL" .git)
-            echo "export base_git_project='$base_git_project'" >> $BASH_ENV
-            echo "Cloned repository folder name: $base_git_project"
+      - checkout-dep-1
       - run:
           name: Generate and run Python scripts
           command: |
             export PATH=~/miniconda3/bin:$PATH
             source ~/miniconda3/bin/activate py310
 
+            base_git_project=$(basename "$CIRCLE_REPOSITORY_URL" .git)
             cd $base_git_project
 
             notebook_path="<< parameters.notebook_paths >>.ipynb"
