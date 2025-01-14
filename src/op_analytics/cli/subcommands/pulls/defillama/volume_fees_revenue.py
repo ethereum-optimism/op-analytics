@@ -4,17 +4,15 @@ from typing import Literal
 
 import polars as pl
 
-from op_analytics.coreutils.bigquery.write import (
-    most_recent_dates,
-)
+from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import now_dt
 
 from .dataaccess import DefiLlama
+from .dexs.by_chain import get_chain_breakdown_df, get_chain_df
 from .dexs.protocols import get_protocols_df
-from .dexs.by_chain import get_chain_df, get_chain_breakdown_df
 
 log = structlog.get_logger()
 

@@ -22,6 +22,7 @@ dependencies = [
     "py-markdown-table>=1.1.0",
     "pyarrow>=17.0.0",
     "pydantic>=2.9.2",
+    "pygithub>=2.5.0",
     "pyyaml>=6.0.2",
     "stamina>=24.3.0",
     "structlog>=24.4.0",
@@ -85,7 +86,6 @@ only-include = ["src/op_analytics"]
 [tool.hatch.build.targets.wheel]
 packages = ["src/op_analytics"]
 
-
 [tool.dagster]
-module_name = "op_analytics.dagster"  ## name of project's Python module and where to find the definitions
+module_name = "op_analytics.dagster.defs"  ## name of project's Python module and where to find the definitions
 code_location_name = "dev_code_location"
