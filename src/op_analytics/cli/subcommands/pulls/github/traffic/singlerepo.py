@@ -1,14 +1,13 @@
-import requests
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-
 import polars as pl
-from op_analytics.coreutils.logger import structlog, bound_contextvars
-from op_analytics.coreutils.request import get_data
-from op_analytics.coreutils.partitioned.dailydata import last_n_days
-from op_analytics.coreutils.time import date_fromstr, date_tostr
+import requests
 
+from op_analytics.coreutils.logger import bound_contextvars, structlog
+from op_analytics.coreutils.partitioned.dailydata import last_n_days
+from op_analytics.coreutils.request import get_data
+from op_analytics.coreutils.time import date_fromstr, date_tostr
 
 log = structlog.get_logger()
 
@@ -24,9 +23,15 @@ METRIC_SCHEMA = {
     "value": pl.Int32(),
 }
 
+REFERRERS_SCHEMA = {
+    "referrer": pl.String(),
+    "views": pl.Int32(),
+    "unique_visitors": pl.Int32(),
+}
+
 
 @dataclass
-class GithubRepoData:
+class GithubRepoTrafficData:
     """Dataframes for a single repository"""
 
     # Metrics for all repositories. Concatenated in long form.
@@ -44,7 +49,7 @@ class GithubRepoData:
         current_dt: str,
         views_and_clones_truncate: int,
         forks_truncate: int,
-    ) -> "GithubRepoData":
+    ) -> "GithubRepoTrafficData":
         with bound_contextvars(repo=repo):
             views = get_data(
                 session=session,
@@ -197,9 +202,5 @@ def process_referrers(referrers):
 
     return pl.DataFrame(
         referrers_data,
-        schema={
-            "referrer": pl.String(),
-            "views": pl.Int32(),
-            "unique_visitors": pl.Int32(),
-        },
+        schema=REFERRERS_SCHEMA,
     )

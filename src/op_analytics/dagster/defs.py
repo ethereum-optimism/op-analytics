@@ -5,23 +5,29 @@ from dagster import (
     load_assets_from_package_name,
 )
 
-import op_analytics.dagster.jobs as jobs
-
 from .utils.k8sconfig import op_analytics_asset_job
 
 defs = Definitions(
     assets=load_assets_from_package_name("op_analytics.dagster.jobs"),
-    jobs=[
-        jobs.defillama.defillama_job,
-    ],
     schedules=[
-        jobs.defillama.defillama_schedule,
+        #
+        # DefiLlama
+        ScheduleDefinition(
+            name="defillama",
+            job=op_analytics_asset_job(
+                name="defillama_job",
+                selection="volumes_fees_revenue_to_clickhouse",
+            ),
+            cron_schedule="0 3 * * *",  # Runs at 3 AM daily
+            execution_timezone="UTC",
+            default_status=DefaultScheduleStatus.RUNNING,
+        ),
         #
         # Github Analytics
         ScheduleDefinition(
-            name="github_analytics",
+            name="github_data",
             job=op_analytics_asset_job(
-                name="github_analytics_job",
+                name="github_data",
                 selection="github_data_to_clickhouse",
             ),
             cron_schedule="0 2 * * *",  # Runs at 2 AM daily

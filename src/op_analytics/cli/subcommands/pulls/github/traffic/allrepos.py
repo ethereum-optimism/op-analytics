@@ -9,7 +9,7 @@ from op_analytics.coreutils.time import now_dt
 from op_analytics.coreutils.env.vault import env_get
 
 
-from .singlerepo import GithubRepoData
+from .singlerepo import GithubRepoTrafficData
 
 log = structlog.get_logger()
 
@@ -34,7 +34,7 @@ FORKS_TRUNCATE_LAST_N_DAYS = 3
 
 
 @dataclass
-class GithubAnalyticsData:
+class GithubTrafficData:
     # Metrics for all repositories. Concatenated in long form. Metrics inluded:
     #
     #  - views_total
@@ -68,9 +68,17 @@ class GithubAnalyticsData:
     referrers_snapshot_df: pl.DataFrame
 
     @classmethod
-    def fetch(cls, current_dt: str | None = None):
+    def fetch(
+        cls,
+        current_dt: str | None = None,
+        views_and_clones_truncate: int | None = None,
+        forks_truncate: int | None = None,
+    ):
         current_dt = current_dt or now_dt()
-        session = new_session()
+        views_and_clones_truncate = (
+            views_and_clones_truncate or VIEWS_AND_CLONES_TRUNCATE_LAST_N_DAYS
+        )
+        forks_truncate = forks_truncate or FORKS_TRUNCATE_LAST_N_DAYS
 
         token = env_get("GITHUB_API_TOKEN")
         headers = {
@@ -78,15 +86,17 @@ class GithubAnalyticsData:
             "Authorization": f"token {token}",
         }
 
+        session = new_session()
+
         # Fetch analytics for all repos.
         repo_dfs = run_concurrently(
-            lambda repo: GithubRepoData.fetch(
+            lambda repo: GithubRepoTrafficData.fetch(
                 session,
                 headers,
                 repo=repo,
                 current_dt=current_dt,
-                views_and_clones_truncate=VIEWS_AND_CLONES_TRUNCATE_LAST_N_DAYS,
-                forks_truncate=FORKS_TRUNCATE_LAST_N_DAYS,
+                views_and_clones_truncate=views_and_clones_truncate,
+                forks_truncate=forks_truncate,
             ),
             targets=REPOS,
             max_workers=3,

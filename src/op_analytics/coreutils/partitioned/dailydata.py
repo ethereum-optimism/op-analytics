@@ -1,12 +1,12 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from enum import Enum
 from functools import cache
 
 import polars as pl
 import pyarrow as pa
 
-from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
 from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
+from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
 from op_analytics.coreutils.duckdb_inmem import EmptyParquetData
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.env.aware import is_bot
@@ -262,7 +262,7 @@ class DailyDataset(str, Enum):
         return {self.root_path: summary_dict}
 
 
-def last_n_dts(n_dates: int, reference_dt: str) -> list[str]:
+def last_n_dts(n_dates: int, reference_dt: str) -> list[date]:
     """Produce a list of N dates starting from reference_dt.
 
     The reference_dt will be included in the list results.

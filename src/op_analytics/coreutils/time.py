@@ -54,6 +54,10 @@ def date_fromstr(val: str) -> date:
     return date.fromisoformat(val)
 
 
+def datetime_fromdt(dtval: str) -> datetime:
+    return datetime_fromdate(date_fromstr(dtval))
+
+
 def date_tostr(val: date) -> str:
     return val.strftime("%Y-%m-%d")
 

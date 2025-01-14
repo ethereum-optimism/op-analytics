@@ -13,7 +13,7 @@ from .defillama.historical_chain_tvl import pull_historical_chain_tvl
 from .defillama.protocols import pull_protocol_tvl
 from .defillama.stablecoins import pull_stablecoins
 from .defillama.volume_fees_revenue import execute_pull, write_to_clickhouse
-from .github_legacy import github_analytics
+from .github import execute as github_execute
 from .growthepie.chains_daily_fundamentals import pull_growthepie_summary
 from .l2beat import pull_l2beat
 
@@ -67,7 +67,8 @@ def defillama_protocol_tvl():
 @app.command()
 def github():
     """Pull repo analytics data from GitHub."""
-    github_analytics.execute_pull()
+    github_execute.execute_pull_traffic()
+    github_execute.execute_pull_activity()
 
 
 @app.command()

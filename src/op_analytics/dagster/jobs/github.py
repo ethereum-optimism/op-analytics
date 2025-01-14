@@ -5,16 +5,24 @@ from dagster import (
 
 
 @asset
-def github_data(context: OpExecutionContext) -> None:
-    from op_analytics.cli.subcommands.pulls.github_legacy import github_analytics
+def github_traffic(context: OpExecutionContext) -> None:
+    from op_analytics.cli.subcommands.pulls.github import execute
 
-    result = github_analytics.execute_pull()
+    result = execute.execute_pull_traffic()
     context.log.info(result)
 
 
-@asset(deps=["github_data"])
-def github_data_to_clickhouse(context: OpExecutionContext) -> None:
-    from op_analytics.cli.subcommands.pulls.github_legacy import github_analytics
+@asset
+def github_activity(context: OpExecutionContext) -> None:
+    from op_analytics.cli.subcommands.pulls.github import execute
 
-    result = github_analytics.execute_pull()
+    result = execute.execute_pull_activity()
+    context.log.info(result)
+
+
+@asset(deps=["github_traffic", "github_activity"])
+def github_data_to_clickhouse(context: OpExecutionContext) -> None:
+    from op_analytics.cli.subcommands.pulls.github import execute
+
+    result = execute.insert_to_clickhouse()
     context.log.info(result)

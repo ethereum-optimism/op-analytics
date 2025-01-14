@@ -8,7 +8,7 @@ from op_analytics.coreutils.bigquery.write import (
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import now_date
 
-from .allrepos import GithubAnalyticsData
+from .allrepos import GithubTrafficData
 
 log = structlog.get_logger()
 
@@ -19,7 +19,7 @@ ANALYTICS_TABLE = "github_daily_analytics"
 REFERRERS_TABLE = "github_daily_referrers_snapshot"
 
 
-def write_to_bq(data: GithubAnalyticsData):
+def write_traffic_to_bq(data: GithubTrafficData):
     """Write to BigQuery.
 
     This operation will be retired soon. Data will move to GCS + Clickhouse.
