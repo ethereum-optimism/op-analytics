@@ -1,6 +1,5 @@
 import time
 from dataclasses import dataclass
-from datetime import timedelta
 from threading import Lock
 
 import polars as pl
@@ -9,7 +8,7 @@ from github.Repository import Repository
 
 from op_analytics.coreutils.env.vault import env_get
 from op_analytics.coreutils.logger import bound_contextvars, structlog
-from op_analytics.coreutils.time import datetime_fromdt, parse_isoformat
+from op_analytics.coreutils.time import parse_isoformat, datetime_fromdt
 
 from .comments import COMMENTS_SCHEMA, comment_to_row
 from .issues import ISSUES_SCHEMA, issue_to_row
@@ -48,8 +47,9 @@ class OptimismRepo:
 
 def fetch_prs(
     repo: OptimismRepo,
-    current_dt: str,
-    last_n_days: int,
+    include_open: bool,
+    closed_min_dt: str,
+    closed_max_dt: str,
 ) -> pl.DataFrame:
     """Fetch the current state of pull requests."""
     g = init_client()
@@ -59,16 +59,18 @@ def fetch_prs(
         rows = fetch_prs_or_issues(
             paginator=repo_obj.get_pulls,
             to_row_func=pr_to_row,
-            current_dt=current_dt,
-            last_n_days=last_n_days,
+            include_open=include_open,
+            closed_min_dt=closed_min_dt,
+            closed_max_dt=closed_max_dt,
         )
         return pl.DataFrame(rows, schema=PRS_SCHEMA)
 
 
 def fetch_issues(
     repo: OptimismRepo,
-    current_dt: str,
-    last_n_days: int,
+    include_open: bool,
+    closed_min_dt: str,
+    closed_max_dt: str,
 ) -> pl.DataFrame:
     """Fetch the current state of issues."""
     g = init_client()
@@ -78,8 +80,9 @@ def fetch_issues(
         rows = fetch_prs_or_issues(
             paginator=repo_obj.get_issues,
             to_row_func=issue_to_row,
-            current_dt=current_dt,
-            last_n_days=last_n_days,
+            include_open=include_open,
+            closed_min_dt=closed_min_dt,
+            closed_max_dt=closed_max_dt,
         )
         return pl.DataFrame(rows, schema=ISSUES_SCHEMA)
 
@@ -147,8 +150,9 @@ def fetch_reviews(repo_obj: Repository, pr_number: int) -> list[dict]:
 def fetch_prs_or_issues(
     paginator,
     to_row_func,
-    current_dt: str,
-    last_n_days: int,
+    include_open: bool,
+    closed_min_dt: str,
+    closed_max_dt: str,
 ) -> list[dict]:
     """Helper function to fetch pull requests or issues.
 
@@ -170,28 +174,28 @@ def fetch_prs_or_issues(
     If we want to backfill data we can set the threshold time way back and that way we will
     paginate through all of the closed items.
     """
-
-    threshold = datetime_fromdt(current_dt) - timedelta(days=last_n_days)
-    assert threshold.tzinfo is None
+    min_dt = datetime_fromdt(closed_min_dt)
+    max_dt = datetime_fromdt(closed_max_dt)
 
     start_time = time.time()
     open_prs_response = list(paginator(state="open", sort="created", direction="desc"))
     log.info(f"fetched {len(open_prs_response)} open in {time.time() - start_time:.2f}s")
 
     open_prs = []
-    for open_pr in open_prs_response:
-        open_prs.append(to_row_func(open_pr))
+    if include_open:
+        for open_pr in open_prs_response:
+            open_prs.append(to_row_func(open_pr))
 
     closed_prs = []
     start_time = time.time()
     for closed_pr in paginator(state="closed", sort="updated", direction="desc"):
         closed_at = parse_isoformat(closed_pr._rawData["closed_at"])
-        if closed_at > threshold:
+        if closed_at >= min_dt and closed_at < max_dt:
             closed_prs.append(to_row_func(closed_pr))
         else:
             break
     log.info(
-        f"found {len(closed_prs)} closed after {threshold.date()} in {time.time() - start_time:.2f}s"
+        f"found {len(closed_prs)} closed between {min_dt.strftime("%Y-%m-%d")} and {max_dt.strftime("%Y-%m-%d")} in {time.time() - start_time:.2f}s"
     )
 
     return open_prs + closed_prs
