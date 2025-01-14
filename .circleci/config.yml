@@ -151,8 +151,9 @@ jobs:
             source ~/miniconda3/bin/activate py310
 
             cd "op-analytics"
+            notebook_paths="<<parameters.notebook-paths>>"
 
-            IFS=',' read -r -a notebook_paths <<< "<<parameters.notebook-paths>>"
+            IFS=',' read -r -a notebook_array <<< "$notebook_paths"
 
             for notebook_path in "${notebook_paths[@]}"
             do
