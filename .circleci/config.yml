@@ -118,7 +118,7 @@ jobs:
             py_script_path="<< parameters.notebook_paths >>.py"
             directory=$(dirname "$notebook_path")
             cd $directory
-            python -m pipenv run jupyter nbconvert --to python ${notebook_path}
+            python -m pipenv run jupyter nbconvert --to python $(basename ${notebook_path})
 
             echo "Converting $notebook_path to $py_script_path"
 
