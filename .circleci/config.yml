@@ -63,6 +63,16 @@ jobs:
       image: ubuntu-2004:current
     steps:
       - setup-python-3-10
+      - run:
+          name: Save Environment to Workspace
+          command: |
+            mkdir -p ~/workspace
+            cp -R ~/miniconda3 ~/workspace/miniconda3
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - miniconda3
+
   daily-l2-chain-data-uploads:
     description: "Daily L2 Chain Data Uploads"
     machine:
@@ -294,11 +304,11 @@ workflows:
               only: main
 
   run-daily-l2-chain-data-uploads:
-    when:
-      or:
-        - equal: [<< pipeline.schedule.name >>, "daily_l2_chain_data_uploads"]
-        - equal:
-            [<< pipeline.parameters.run_job >>, "daily_l2_chain_data_uploads"]
+    # when:
+    #   or:
+    #     - equal: [<< pipeline.schedule.name >>, "daily_l2_chain_data_uploads"]
+    #     - equal:
+    #         [<< pipeline.parameters.run_job >>, "daily_l2_chain_data_uploads"]
     jobs:
       - setup-python-3-10
       - daily-l2-chain-data-uploads:
