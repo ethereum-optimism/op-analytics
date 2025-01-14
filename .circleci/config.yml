@@ -62,7 +62,13 @@ jobs:
     machine:
       image: ubuntu-2004:current
     steps:
-      - checkout-dep-1
+      - run:
+          name: Checkout Project
+          command: |
+            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" 
+            base_git_project=$(basename "$CIRCLE_REPOSITORY_URL" .git)
+            echo "export base_git_project='$base_git_project'" >> $BASH_ENV
+            echo "Cloned repository folder name: $base_git_project"
       - run:
           name: Setup setup-python-3-10 and Save Environment to Workspace
           command: |
@@ -76,6 +82,7 @@ jobs:
       - run:
           name: Install Project dependency
           command: |
+            cd $base_git_project
 
             source ~/miniconda3/bin/activate py310
             python --version
