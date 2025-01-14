@@ -115,11 +115,6 @@ jobs:
 
             echo "Run $py_script_path"
             python -m pipenv run python $(basename ${py_script_path})
-      - utils/get-github-access-token
-      - utils/github-commit-and-push-changes:
-          commit-message: "GH Action Update - Agg Downloads"
-          skip-ci: true
-          folder: "."
 
   daily-l2-aggregate-later-loads:
     description: "Daily L2 Chain Aggregate Later Loads"
@@ -155,7 +150,7 @@ jobs:
       - utils/github-commit-and-push-changes:
           commit-message: "GH Action Update - Agg Downloads"
           skip-ci: true
-          folder: "."
+          folder: "op-analytics"
 
   chain-metadata:
     machine:
@@ -344,7 +339,6 @@ workflows:
             - setup-python-3-10
           context:
             - op-analytics-legacy
-            - circleci-repo-op-analytics
             - op-analytics-gcp
           matrix:
             parameters:
