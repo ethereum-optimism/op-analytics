@@ -4,10 +4,10 @@ from unittest.mock import patch
 
 import polars as pl
 
-from op_analytics.cli.subcommands.pulls.defillama.volume_fees_revenue import execute_pull
+from op_analytics.datasources.defillama.volume_fees_revenue.execute import execute_pull
 
 # Module path to patch data retrieval functions
-MODULE = "op_analytics.cli.subcommands.pulls.defillama.volume_fees_revenue"
+MODULE = "op_analytics.datasources.defillama.volume_fees_revenue"
 
 EXPECTED_PROTOCOLS_DF_SCHEMA = {
     "defillamaId": pl.String,

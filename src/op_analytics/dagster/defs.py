@@ -2,25 +2,20 @@ from dagster import (
     DefaultScheduleStatus,
     Definitions,
     ScheduleDefinition,
-    load_assets_from_package_name,
+    load_assets_from_modules,
 )
 
+from .assets import defillama, github
 from .utils.k8sconfig import op_analytics_asset_job
-
-ASSET_MODULES = [
-    "defillama",
-    "github",
-]
 
 
 ASSETS = [
     asset
-    for name in ASSET_MODULES
-    for asset in load_assets_from_package_name(
-        f"op_analytics.dagster.assets.{name}",
-        group_name=name,
-        key_prefix=name,
-    )
+    for group in [
+        load_assets_from_modules([defillama], group_name="defillama", key_prefix="defillama"),
+        load_assets_from_modules([github], group_name="github", key_prefix="github"),
+    ]
+    for asset in group
 ]
 
 defs = Definitions(

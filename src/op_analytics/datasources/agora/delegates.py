@@ -10,7 +10,8 @@ import requests.exceptions
 import itertools
 import time
 import polars as pl
-from op_analytics.cli.subcommands.pulls.agora.dataaccess import Agora
+
+from .dataaccess import Agora
 
 log = structlog.get_logger()
 

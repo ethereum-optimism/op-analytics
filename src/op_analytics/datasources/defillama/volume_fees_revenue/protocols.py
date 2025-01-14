@@ -42,10 +42,7 @@ def get_protocols_df(summary_response):
             else:
                 metadata_row[key] = element[key]
         for key in OPTIONAL_FIELDS:
-            if key == "breakdown24h":
-                metadata_row[key] = convert_to_chain_breakdown(element.get(key))
-            else:
-                metadata_row[key] = element.get(key)
+            metadata_row[key] = element.get(key)
 
         total_metadata.append(metadata_row)
 
@@ -94,22 +91,3 @@ def convert_to_list_of_keyval(data) -> list[dict[str, str]]:
 
     else:
         raise ValueError(f"invalid methodology: {data!r}")
-
-
-def convert_to_chain_breakdown(data) -> list[dict[str, str]] | None:
-    if data is None:
-        return None
-
-    result = []
-    if isinstance(data, dict):
-        for chain, volumes in data.items():
-            assert isinstance(volumes, dict)
-            for name, value in volumes.items():
-                result.append(
-                    {
-                        "chain": chain,
-                        "name": name,
-                        "value": value,
-                    }
-                )
-    return result
