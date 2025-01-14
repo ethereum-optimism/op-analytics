@@ -81,6 +81,8 @@ jobs:
       notebook_paths:
         type: string
     steps:
+      - attach_workspace:
+          at: ~/workspace
       # - utils/gcp-oidc-authenticate:
       #     project_id: GCP_PROJECT_ID
       #     service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
@@ -91,7 +93,9 @@ jobs:
       - run:
           name: Generate and run Python scripts
           command: |
-            # conda activate py310
+            export PATH=~/workspace/miniconda3/bin:$PATH
+            source ~/workspace/miniconda3/bin/activate py310
+            python --version
             # python3.10 -m pip install pipenv
             # python3.10 -m pipenv install
             notebook_path="<< parameters.notebook_paths >>.ipynb"
