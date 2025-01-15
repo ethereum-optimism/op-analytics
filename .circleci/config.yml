@@ -21,6 +21,8 @@ parameters:
         "run_op_stack_metadata_upload",
         "run-python-installation-and-dependency-check",
         "run_value_locked_flows_update",
+        "run_weekly_l2_chain_data_uploads_1_4",
+        "run_weekly_l2_chain_data_uploads_monday",
       ]
 
 commands:
@@ -400,6 +402,36 @@ workflows:
           notebook-paths: >-
             [
               {"dir": "value_locked_flows", "notebook": "total_app_net_flows_async"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  run_weekly_l2_chain_data_uploads:
+    # when:
+    #   or:
+    #     - equal:
+    #         [
+    #           << pipeline.schedule.name >>,
+    #           "run_weekly_l2_chain_data_uploads_1_4",
+    #         ]
+    #     - equal:
+    #         [
+    #           << pipeline.schedule.name >>,
+    #           "run_weekly_l2_chain_data_uploads_monday",
+    #         ]
+    #     - equal:
+    #         [
+    #           << pipeline.parameters.run_job >>,
+    #           "run_weekly_l2_chain_data_uploads",
+    #         ]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Weekly"
+          notebook-paths: >-
+            [
+              {"dir": "other_chains_tracking", "notebook": "get_desybil_wallets"}
             ]
           context:
             - op-analytics-legacy
