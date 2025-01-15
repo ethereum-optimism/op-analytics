@@ -4,10 +4,10 @@ from unittest.mock import patch
 
 import polars as pl
 
-from op_analytics.cli.subcommands.pulls.defillama.volume_fees_revenue import execute_pull
+from op_analytics.datasources.defillama.volume_fees_revenue.execute import execute_pull
 
 # Module path to patch data retrieval functions
-MODULE = "op_analytics.cli.subcommands.pulls.defillama.volume_fees_revenue"
+MODULE = "op_analytics.datasources.defillama.volume_fees_revenue"
 
 EXPECTED_PROTOCOLS_DF_SCHEMA = {
     "defillamaId": pl.String,
@@ -57,11 +57,11 @@ def mock_get_chain_responses(session, summary_response, data_type):
     raise NotImplementedError(f"Mock data not implemented for {data_type}")
 
 
-@patch(f"{MODULE}.write")
+@patch(f"{MODULE}.execute.write")
 def test(mock_write):
     with (
-        patch(f"{MODULE}.get_data", new=mock_get_data),
-        patch(f"{MODULE}.get_chain_responses", new=mock_get_chain_responses),
+        patch(f"{MODULE}.helpers.get_data", new=mock_get_data),
+        patch(f"{MODULE}.helpers.get_chain_responses", new=mock_get_chain_responses),
     ):
         execute_pull()
 

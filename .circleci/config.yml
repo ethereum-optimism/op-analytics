@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.0.1
-  utils: ethereum-optimism/circleci-utils@0.0.11
+  utils: ethereum-optimism/circleci-utils@0.0.12
 
 parameters:
   run_job:
@@ -12,10 +12,12 @@ parameters:
       [
         "select_job",
         "run_daily_api_upload",
-        "run_daily_metadata",
-        "run_defillama_stablecoins",
         "daily_l2_aggregate_later_loads",
+        "daily_l2_chain_data_uploads",
         "deploy_github_pages",
+        "run_market_data",
+        "run_op_governance_uploads",
+        "run_op_stack_chain_revenue",
       ]
 
 commands:
@@ -32,32 +34,107 @@ commands:
           name: Install project dependencies
           command: uv sync --all-extras --dev
 
-  setup-conda:
-    steps:
-      - run:
-          name: Setup Conda
-          command: |
-            wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-            bash Miniconda3-latest-Linux-x86_64.sh -b
-
   setup-python-3-10:
     steps:
-      - setup-conda
       - run:
           name: Setup Python 3.10
           command: |
+            if [ ! -d "~/miniconda3" ]; then
+                wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+                bash Miniconda3-latest-Linux-x86_64.sh -b
+            fi
+            export PATH=$HOME/miniconda3/bin:$PATH
             ~/miniconda3/bin/conda create -n py310 python=3.10 -y
-            ~/miniconda3/bin/conda init bash            
-            source ~/.bashrc
+            echo "Python 3.10 environment setup complete"
 
   checkout-dep-1:
+    parameters:
+      base_git_project:
+        type: string
+        default: "."
     steps:
       - run:
           name: Clone repository and checkout branch with depth 1
-          command: git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+          command: |
+            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" << parameters.base_git_project >>
+            echo "Cloned repository folder name: << parameters.base_git_project >>"
+  setup-python-3-10-project-dependencies:
+    parameters:
+      base_git_project:
+        type: string
+        default: "."
+    steps:
+      - run:
+          name: Install Python 3.10 dependencies
+          command: |
+            cd "<< parameters.base_git_project >>"
+            source ~/miniconda3/bin/activate py310
+            python --version
+            python -m pip install pipenv
+            python -m pipenv install
 
 jobs:
-  general-l2:
+  setup-python-3-10-job:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - checkout-dep-1:
+          base_git_project: "op-analytics"
+      - setup-python-3-10
+      - setup-python-3-10-project-dependencies:
+          base_git_project: "op-analytics"
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - miniconda3
+            - .local
+
+  convert-and-run-notebooks-to-py:
+    description: "Convert and run notebooks to Python scripts"
+    machine:
+      image: ubuntu-2004:current
+    parameters:
+      notebook_paths:
+        type: string
+    steps:
+      - attach_workspace:
+          at: ~/
+      - utils/gcp-oidc-authenticate:
+          project_id: GCP_PROJECT_ID
+          service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
+          workload_identity_pool_id: GCP_WIP_ID
+          workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
+      - checkout-dep-1:
+          base_git_project: "op-analytics"
+      - run:
+          name: Generate and run Python scripts
+          command: |
+            export PATH=~/miniconda3/bin:$PATH
+            source ~/miniconda3/bin/activate py310
+
+            cd "op-analytics"
+
+            notebook_path="<< parameters.notebook_paths >>.ipynb"
+            py_script_path="<< parameters.notebook_paths >>.py"
+            directory=$(dirname "$notebook_path")
+            cd $directory
+
+            echo "Converting $notebook_path to $py_script_path"
+            python -m pipenv run jupyter nbconvert --to python $(basename ${notebook_path})
+
+            echo "Run $py_script_path"
+            python -m pipenv run python $(basename ${py_script_path})
+
+  convert-and-run-notebooks-to-py-and-push:
+    description: "Convert and run notebooks to Python scripts and push changes to GitHub"
+    parameters:
+      notebook-paths:
+        type: string
+      commit-message:
+        type: string
+      push:
+        type: string
+        default: always
     machine:
       image: ubuntu-2004:current
     steps:
@@ -66,38 +143,42 @@ jobs:
           service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
           workload_identity_pool_id: GCP_WIP_ID
           workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
-      - checkout-dep-1
+      - checkout-dep-1:
+          base_git_project: "op-analytics"
       - setup-python-3-10
+      - setup-python-3-10-project-dependencies:
+          base_git_project: "op-analytics"
       - run:
           name: Generate and run Python scripts
           command: |
-            conda activate py310
-            python3.10 -m pip install pipenv
-            python3.10 -m pipenv install
-            python3.10 -m pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
+            export PATH=~/miniconda3/bin:$PATH
+            source ~/miniconda3/bin/activate py310
 
-            cd op_chains_tracking
-            python3.10 -m pipenv run python dune_opchain_uploads.py
+            cd "op-analytics"
 
-            cd ../other_chains_tracking
-            python3.10 -m pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
-      - utils/get-github-access-token
+            echo '<< parameters.notebook-paths >>' | jq -c '.[]' | while read -r notebook; do
+              dir=$(echo $notebook | jq -r '.dir')
+              notebook=$(echo $notebook | jq -r '.notebook')
+
+              cd "$dir"
+
+              echo "Converting ${notebook}.ipynb to ${notebook}.py"
+              python -m pipenv run jupyter nbconvert --to python ${notebook}.ipynb
+
+              echo "Run ${notebook}.py"
+              python -m pipenv run python ${notebook}.py
+
+              cd - >/dev/null
+            done
+
+      - utils/get-github-access-token:
+          condition: << parameters.push >>
       - utils/github-commit-and-push-changes:
-          commit-message: "GH Action Update - Agg Downloads"
+          condition: << parameters.push >>
+          commit-message: "<< parameters.commit-message >>"
           skip-ci: true
-          folder: "."
+          folder: "op-analytics"
 
-  chain-metadata:
-    machine:
-      image: ubuntu-2004:current
-    steps:
-      - checkout-dep-1
-      - setup-python-env
-      - run:
-          name: Chain Metadata
-          command: uv run opdata chains chain_metadata_updates
-          environment:
-            OPLABS_ENV: prod
   deploy-github-pages:
     machine:
       image: ubuntu-2004:current
@@ -123,39 +204,6 @@ jobs:
           force-push: true
           src-pages-dir: /tmp/docs
 
-  defillama-stablecoins:
-    machine:
-      image: ubuntu-2004:current
-    steps:
-      - checkout-dep-1
-      - setup-python-env
-      - run:
-          name: DefiLlama Protocol TVL
-          command: uv run opdata pulls defillama_stablecoins
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
-  defillama-protocols:
-    machine:
-      image: ubuntu-2004:current
-    steps:
-      - checkout-dep-1
-      - setup-python-env
-      - run:
-          name: DefiLlama Protocol TVL
-          command: uv run opdata pulls defillama_protocol_tvl
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
-      - run:
-          name: DefiLlama Historical Chain TVL
-          command: uv run opdata pulls defillama_historical_chain_tvl
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
   daily-uploads-other-tasks:
     machine:
       image: ubuntu-2004:current
@@ -169,27 +217,6 @@ jobs:
             OPLABS_RUNTIME: "gha"
             OPLABS_ENV: "prod"
 
-      - run:
-          name: DefiLlama Stablecoins
-          command: uv run opdata pulls defillama_stablecoins
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
-      - run:
-          name: GrowThePie Chain Summary
-          command: uv run opdata pulls growthepie_chain_summary
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
-      - run:
-          name: DefiLlama Stablecoins BQ
-          command: uv run opdata pulls defillama_stablecoins_bq
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
 workflows:
   version: 2
   run-daily-api-uploads:
@@ -198,28 +225,13 @@ workflows:
         - equal: [<< pipeline.parameters.run_job >>, "run_daily_api_upload"]
         - equal: [<< pipeline.schedule.name >>, "run_daily_api_upload"]
     jobs:
-      - defillama-protocols:
-          context: op-analytics
       - daily-uploads-other-tasks:
           context: op-analytics
-  run-daily-metadata:
-    when:
-      or:
-        - equal: [<< pipeline.parameters.run_job >>, "run_daily_metadata"]
-        - equal: [<< pipeline.schedule.name >>, "run_daily_metadata"]
-    jobs:
-      - chain-metadata:
-          context: op-analytics
-  run-defillama-stablecoins:
-    when:
-      or:
-        - equal:
-            [<< pipeline.parameters.run_job >>, "run_defillama_stablecoins"]
-    jobs:
-      - defillama-stablecoins:
-          context: op-analytics
+          filters:
+            branches:
+              only: main
 
-  run-general-l2:
+  daily-l2-aggregate-later-loads:
     when:
       or:
         - equal:
@@ -230,11 +242,104 @@ workflows:
               "daily_l2_aggregate_later_loads",
             ]
     jobs:
-      - general-l2:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Agg Downloads"
+          notebook-paths: >-
+            [
+              {"dir": "op_chains_tracking", "notebook": "dune_opchain_uploads"},
+              {"dir": "other_chains_tracking", "notebook": "get_filtered_deployers"},
+              {"dir": "other_chains_tracking", "notebook": "total_chain_data_to_uploads"}
+            ]
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics
             - op-analytics-gcp
+
+  run_market_data:
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "run_market_data"]
+        - equal: [<< pipeline.parameters.run_job >>, "run_market_data"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Update Market Data"
+          notebook-paths: >-
+            [
+              {"dir": "reference_data/market_data", "notebook": "get_market_data"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  run_op_governance_uploads:
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "run_op_governance_uploads"]
+        - equal:
+            [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Gov Uploads"
+          notebook-paths: >-
+            [
+              {"dir": "op_governance_data", "notebook": "op_circulating_supply"},
+              {"dir": "op_governance_data", "notebook": "op_votable_supply"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  run_op_stack_chain_revenue:
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "run_op_stack_chain_revenue"]
+        - equal:
+            [<< pipeline.parameters.run_job >>, "run_op_stack_chain_revenue"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          push: never
+          commit-message: ""
+          notebook-paths: >-
+            [
+              {"dir": "op_chains_tracking", "notebook": "l2_revenue_tracking"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  daily_l2_chain_data_uploads:
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "daily_l2_chain_data_uploads"]
+        - equal:
+            [<< pipeline.parameters.run_job >>, "daily_l2_chain_data_uploads"]
+    jobs:
+      - setup-python-3-10-job
+      - convert-and-run-notebooks-to-py:
+          requires:
+            - setup-python-3-10-job
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+          matrix:
+            parameters:
+              notebook_paths:
+                - other_chains_tracking/chain_tvl_trends
+                - other_chains_tracking/pull_l2_activity
+                - other_chains_tracking/get_ethereum_chain_list
+                - other_chains_tracking/get_dune_evms_info
+                - other_chains_tracking/get_qualified_txs
+                - other_chains_tracking/get_all_txs
+                - other_chains_tracking/get_contract_labels
+                - op_chains_tracking/get_superchain_token_list
+                - op_chains_tracking/ch_gs_uploads
+                - op_chains_tracking/dune_op_stack_chains_l1_data
+                - op_collective_economics/opcollective_feesplit/op_collective_revenue
+                - op_collective_economics/get_op_collective_net_revenue_balances
 
   github-pages:
     when:

@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from op_analytics.cli.subcommands.pulls.agora import delegates, delegate_events
+from op_analytics.datasources.agora import delegates, delegate_events
 import polars as pl
 
 sample_delegates_data = [
@@ -117,9 +117,7 @@ def test_pull_delegates():
 
 
 def test_fetch_delegate_votes():
-    with patch(
-        "op_analytics.cli.subcommands.pulls.agora.delegate_events.fetch_event_data"
-    ) as mock_fetch:
+    with patch("op_analytics.datasources.agora.delegate_events.fetch_event_data") as mock_fetch:
         mock_fetch.return_value = sample_votes_data
 
         delegates_df = pl.DataFrame(
@@ -142,7 +140,7 @@ def test_fetch_delegate_votes():
 
 def test_fetch_proposals():
     with patch(
-        "op_analytics.cli.subcommands.pulls.agora.delegate_events.SimplePaginator.fetch_all"
+        "op_analytics.datasources.agora.delegate_events.SimplePaginator.fetch_all"
     ) as mock_fetch_all:
         mock_fetch_all.return_value = sample_proposals_data
 
@@ -161,7 +159,7 @@ def test_fetch_proposals():
 
 def test_fetch_delegate_delegators():
     with patch(
-        "op_analytics.cli.subcommands.pulls.agora.delegate_events.fetch_delegate_data"
+        "op_analytics.datasources.agora.delegate_events.fetch_delegate_data"
     ) as mock_fetch_data:
         sample_delegators = pl.DataFrame(
             {
@@ -195,7 +193,7 @@ def test_fetch_delegate_delegators():
 
 def test_fetch_delegate_delegatees():
     with patch(
-        "op_analytics.cli.subcommands.pulls.agora.delegate_events.fetch_delegate_data"
+        "op_analytics.datasources.agora.delegate_events.fetch_delegate_data"
     ) as mock_fetch_data:
         sample_delegatees = pl.DataFrame(
             {
