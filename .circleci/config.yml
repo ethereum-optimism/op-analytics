@@ -318,15 +318,15 @@ workflows:
               only: main
 
   daily-l2-aggregate-later-loads:
-    # when:
-    #   or:
-    #     - equal:
-    #         [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
-    #     - equal:
-    #         [
-    #           << pipeline.parameters.run_job >>,
-    #           "daily_l2_aggregate_later_loads",
-    #         ]
+    when:
+      or:
+        - equal:
+            [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
+        - equal:
+            [
+              << pipeline.parameters.run_job >>,
+              "daily_l2_aggregate_later_loads",
+            ]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
           commit-message: "GH Action Update - Agg Downloads"
