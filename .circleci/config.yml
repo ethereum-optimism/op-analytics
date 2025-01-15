@@ -84,33 +84,33 @@ jobs:
           base_git_project: "op-analytics"
       - setup-python-3-10
       - run:
-          working_directory: "op-analytics"
           name: Install dependencies
           command: |
+            cd "op-analytics"
             source ~/miniconda3/bin/activate py310
             pipenv install --dev --skip-lock
       - run:
-          working_directory: "op-analytics"
           name: Show dependency graph
           command: |
+            cd "op-analytics"
             source ~/miniconda3/bin/activate py310
             pipenv graph
       - run:
-          working_directory: "op-analytics"
           name: Check for security vulnerabilities
           command: |
+            cd "op-analytics"
             source ~/miniconda3/bin/activate py310
             pipenv check || echo "Pipenv check failed, but continuing workflow"
       - run:
-          working_directory: "op-analytics"
           name: Show installed packages
           command: |
+            cd "op-analytics"
             source ~/miniconda3/bin/activate py310
             pipenv run pip list
       - run:
-          working_directory: "op-analytics"
           name: Check for dependency conflicts
           command: |
+            cd "op-analytics"
             source ~/miniconda3/bin/activate py310
             echo "Checking for potential conflicts..."
             pipenv graph | grep -E '\w+==.+\s+\w+==.+' || echo "No obvious conflicts found in dependency graph"
@@ -118,17 +118,17 @@ jobs:
             echo "Packages with multiple versions:"
             pipenv graph | awk -F'==' '{print $1}' | sort | uniq -c | sort -nr | awk '$1 > 1 {print $0}'
       - run:
-          working_directory: "op-analytics"
           name: Show environment information
           command: |
+            cd "op-analytics"
             source ~/miniconda3/bin/activate py310
             pipenv --venv
             pipenv --where
             pipenv --py
       - run:
-          working_directory: "op-analytics"
           name: List all installed packages with versions
           command: |
+            cd "op-analytics"
             source ~/miniconda3/bin/activate py310
             pipenv run pip freeze
 
