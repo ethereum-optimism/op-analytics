@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.0.1
-  utils: ethereum-optimism/circleci-utils@dev:first
+  utils: ethereum-optimism/circleci-utils@0.0.12
 
 parameters:
   run_job:
@@ -352,10 +352,10 @@ workflows:
             - op-analytics-gcp
 
   rum_marked_data:
-    # when:
-    #   or:
-    #     - equal: [<< pipeline.schedule.name >>, "rum_marked_data"]
-    #     - equal: [<< pipeline.parameters.run_job >>, "rum_marked_data"]
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "rum_marked_data"]
+        - equal: [<< pipeline.parameters.run_job >>, "rum_marked_data"]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
           commit-message: "GH Action Update - Update Market Data"
