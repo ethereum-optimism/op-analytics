@@ -135,6 +135,9 @@ jobs:
       push:
         type: string
         default: always
+      skip-ci:
+        type: boolean
+        default: false
     machine:
       image: ubuntu-2004:current
     steps:
@@ -176,7 +179,7 @@ jobs:
       - utils/github-commit-and-push-changes:
           condition: << parameters.push >>
           commit-message: "<< parameters.commit-message >>"
-          skip-ci: true
+          skip-ci: << parameters.skip-ci >>
           folder: "op-analytics"
 
   deploy-github-pages:
@@ -345,7 +348,11 @@ workflows:
     when:
       or:
         - equal: [<< pipeline.parameters.run_job >>, "deploy_github_pages"]
-        - equal: [<< pipeline.git.branch >>, "main"]
+        - equal: [<< pipeline.schedule.name >>, "deploy_github_pages"]
+        - and:
+            - equal: [<< pipeline.git.branch >>, "main"]
+            - not:
+                equal: [<< pipeline.trigger_source >>, "api"]
     jobs:
       - deploy-github-pages:
           context:
