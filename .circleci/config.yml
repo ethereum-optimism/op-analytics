@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.0.1
-  utils: ethereum-optimism/circleci-utils@0.0.11
+  utils: ethereum-optimism/circleci-utils@0.0.12
 
 parameters:
   run_job:
@@ -15,6 +15,9 @@ parameters:
         "daily_l2_aggregate_later_loads",
         "daily_l2_chain_data_uploads",
         "deploy_github_pages",
+        "run_market_data",
+        "run_op_governance_uploads",
+        "run_op_stack_chain_revenue",
       ]
 
 commands:
@@ -129,6 +132,9 @@ jobs:
         type: string
       commit-message:
         type: string
+      push:
+        type: string
+        default: always
     machine:
       image: ubuntu-2004:current
     steps:
@@ -165,8 +171,10 @@ jobs:
               cd - >/dev/null
             done
 
-      - utils/get-github-access-token
+      - utils/get-github-access-token:
+          condition: << parameters.push >>
       - utils/github-commit-and-push-changes:
+          condition: << parameters.push >>
           commit-message: "<< parameters.commit-message >>"
           skip-ci: true
           folder: "op-analytics"
@@ -223,17 +231,16 @@ workflows:
             branches:
               only: main
 
-
   daily-l2-aggregate-later-loads:
-    # when:
-    #   or:
-    #     - equal:
-    #         [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
-    #     - equal:
-    #         [
-    #           << pipeline.parameters.run_job >>,
-    #           "daily_l2_aggregate_later_loads",
-    #         ]
+    when:
+      or:
+        - equal:
+            [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
+        - equal:
+            [
+              << pipeline.parameters.run_job >>,
+              "daily_l2_aggregate_later_loads",
+            ]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
           commit-message: "GH Action Update - Agg Downloads"
@@ -242,6 +249,61 @@ workflows:
               {"dir": "op_chains_tracking", "notebook": "dune_opchain_uploads"},
               {"dir": "other_chains_tracking", "notebook": "get_filtered_deployers"},
               {"dir": "other_chains_tracking", "notebook": "total_chain_data_to_uploads"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  run_market_data:
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "run_market_data"]
+        - equal: [<< pipeline.parameters.run_job >>, "run_market_data"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Update Market Data"
+          notebook-paths: >-
+            [
+              {"dir": "reference_data/market_data", "notebook": "get_market_data"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  run_op_governance_uploads:
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "run_op_governance_uploads"]
+        - equal:
+            [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Gov Uploads"
+          notebook-paths: >-
+            [
+              {"dir": "op_governance_data", "notebook": "op_circulating_supply"},
+              {"dir": "op_governance_data", "notebook": "op_votable_supply"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  run_op_stack_chain_revenue:
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "run_op_stack_chain_revenue"]
+        - equal:
+            [<< pipeline.parameters.run_job >>, "run_op_stack_chain_revenue"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          push: never
+          commit-message: ""
+          notebook-paths: >-
+            [
+              {"dir": "op_chains_tracking", "notebook": "l2_revenue_tracking"}
             ]
           context:
             - op-analytics-legacy
