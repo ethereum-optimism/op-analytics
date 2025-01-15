@@ -394,6 +394,7 @@ workflows:
     #         [<< pipeline.parameters.run_job >>, "run_op_stack_chain_revenue"]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
+          push: never
           commit-message: ""
           notebook-paths: >-
             [
