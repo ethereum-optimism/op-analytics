@@ -83,12 +83,8 @@ jobs:
       - checkout-dep-1:
           base_git_project: "op-analytics"
       - setup-python-3-10
-      - run:
-          name: Install dependencies
-          command: |
-            cd "op-analytics"
-            source ~/miniconda3/bin/activate py310
-            pipenv install --dev --skip-lock
+      - setup-python-3-10-project-dependencies:
+          base_git_project: "op-analytics"
       - run:
           name: Show dependency graph
           command: |
