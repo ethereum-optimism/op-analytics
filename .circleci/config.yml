@@ -348,6 +348,7 @@ workflows:
     when:
       or:
         - equal: [<< pipeline.parameters.run_job >>, "deploy_github_pages"]
+        - equal: [<< pipeline.schedule.name >>, "deploy_github_pages"]
         - and:
             - equal: [<< pipeline.git.branch >>, "main"]
             - not:
