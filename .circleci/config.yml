@@ -445,7 +445,7 @@ workflows:
       or:
         - equal:
             [
-              << pipeline.schedule.name >>,
+              << pipeline.parameters.run_job >>,
               "run-python-installation-and-dependency-check",
             ]
         - and:
