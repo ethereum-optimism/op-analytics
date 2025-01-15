@@ -19,6 +19,7 @@ parameters:
         "run_op_governance_uploads",
         "run_op_stack_chain_revenue",
         "run_op_stack_metadata_upload",
+        "run-python-installation-and-dependency-check",
       ]
 
 commands:
@@ -75,6 +76,62 @@ commands:
             python -m pipenv install
 
 jobs:
+  python-installation-and-dependency-check:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - checkout-dep-1:
+          base_git_project: "op-analytics"
+      - setup-python-3-10
+      - run:
+          working_directory: "op-analytics"
+          name: Install dependencies
+          command: |
+            source ~/miniconda3/bin/activate py310
+            pipenv install --dev --skip-lock
+      - run:
+          working_directory: "op-analytics"
+          name: Show dependency graph
+          command: |
+            source ~/miniconda3/bin/activate py310
+            pipenv graph
+      - run:
+          working_directory: "op-analytics"
+          name: Check for security vulnerabilities
+          command: |
+            source ~/miniconda3/bin/activate py310
+            pipenv check || echo "Pipenv check failed, but continuing workflow"
+      - run:
+          working_directory: "op-analytics"
+          name: Show installed packages
+          command: |
+            source ~/miniconda3/bin/activate py310
+            pipenv run pip list
+      - run:
+          working_directory: "op-analytics"
+          name: Check for dependency conflicts
+          command: |
+            source ~/miniconda3/bin/activate py310
+            echo "Checking for potential conflicts..."
+            pipenv graph | grep -E '\w+==.+\s+\w+==.+' || echo "No obvious conflicts found in dependency graph"
+
+            echo "Packages with multiple versions:"
+            pipenv graph | awk -F'==' '{print $1}' | sort | uniq -c | sort -nr | awk '$1 > 1 {print $0}'
+      - run:
+          working_directory: "op-analytics"
+          name: Show environment information
+          command: |
+            source ~/miniconda3/bin/activate py310
+            pipenv --venv
+            pipenv --where
+            pipenv --py
+      - run:
+          working_directory: "op-analytics"
+          name: List all installed packages with versions
+          command: |
+            source ~/miniconda3/bin/activate py310
+            pipenv run pip freeze
+
   setup-python-3-10-job:
     machine:
       image: ubuntu-2004:current
@@ -315,11 +372,11 @@ workflows:
             - op-analytics-gcp
 
   run_op_stack_metadata_upload:
-    # when:
-    #   or:
-    #     - equal: [<< pipeline.schedule.name >>, "run_op_stack_metadata_upload"]
-    #     - equal:
-    #         [<< pipeline.parameters.run_job >>, "run_op_stack_metadata_upload"]
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "run_op_stack_metadata_upload"]
+        - equal:
+            [<< pipeline.parameters.run_job >>, "run_op_stack_metadata_upload"]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
           commit-message: "GH Action Update - Generate Chain Metadata, Matviews and Views"
@@ -382,3 +439,18 @@ workflows:
           filters:
             branches:
               only: main
+
+  run-python-installation-and-dependency-check:
+    when:
+      or:
+        - equal:
+            [
+              << pipeline.schedule.name >>,
+              "run-python-installation-and-dependency-check",
+            ]
+        - and:
+            - equal: [<< pipeline.git.branch >>, "main"]
+            - not:
+                equal: [<< pipeline.trigger_source >>, "api"]
+    jobs:
+      - python-installation-and-dependency-check
