@@ -18,6 +18,7 @@ parameters:
         "daily_l2_chain_data_uploads",
         "deploy_github_pages",
         "rum_marked_data",
+        "run_op_governance_uploads",
       ]
 
 commands:
@@ -185,6 +186,7 @@ jobs:
           command: uv run opdata chains chain_metadata_updates
           environment:
             OPLABS_ENV: prod
+
   deploy-github-pages:
     machine:
       image: ubuntu-2004:current
@@ -343,16 +345,35 @@ workflows:
             - op-analytics-gcp
 
   rum_marked_data:
-    # when:
-    #   or:
-    #     - equal: [<< pipeline.schedule.name >>, "rum_marked_data"]
-    #     - equal: [<< pipeline.parameters.run_job >>, "rum_marked_data"]
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "rum_marked_data"]
+        - equal: [<< pipeline.parameters.run_job >>, "rum_marked_data"]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
           commit-message: "GH Action Update - Update Market Data"
           notebook-paths: >-
             [
               {"dir": "reference_data/market_data", "notebook": "get_market_data"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  run_op_governance_uploads:
+    # when:
+    #   or:
+    #     - equal: [<< pipeline.schedule.name >>, "run_op_governance_uploads"]
+    #     - equal:
+    #         [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Gov Uploads"
+          notebook-paths: >-
+            [
+              {"dir": "op_governance_data", "notebook": "op_circulating_supply"},
+              {"dir": "op_governance_data", "notebook": "op_votable_supply"}
             ]
           context:
             - op-analytics-legacy
