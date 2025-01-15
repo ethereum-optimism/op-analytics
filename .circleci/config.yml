@@ -18,7 +18,6 @@ parameters:
         "rum_marked_data",
         "run_op_governance_uploads",
         "run_op_stack_chain_revenue",
-        "run_op_stack_metadata_upload",
       ]
 
 commands:
