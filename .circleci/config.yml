@@ -19,6 +19,7 @@ parameters:
         "deploy_github_pages",
         "rum_marked_data",
         "run_op_governance_uploads",
+        "run_op_stack_chain_revenue",
       ]
 
 commands:
@@ -133,6 +134,9 @@ jobs:
         type: string
       commit-message:
         type: string
+      push:
+        type: string
+        default: always
     machine:
       image: ubuntu-2004:current
     steps:
@@ -169,8 +173,10 @@ jobs:
               cd - >/dev/null
             done
 
-      - utils/get-github-access-token
+      - utils/get-github-access-token:
+          condition: << parameters.push >>
       - utils/github-commit-and-push-changes:
+          condition: << parameters.push >>
           commit-message: "<< parameters.commit-message >>"
           skip-ci: true
           folder: "op-analytics"
@@ -362,11 +368,11 @@ workflows:
             - op-analytics-gcp
 
   run_op_governance_uploads:
-    # when:
-    #   or:
-    #     - equal: [<< pipeline.schedule.name >>, "run_op_governance_uploads"]
-    #     - equal:
-    #         [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "run_op_governance_uploads"]
+        - equal:
+            [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
           commit-message: "GH Action Update - Gov Uploads"
@@ -374,6 +380,24 @@ workflows:
             [
               {"dir": "op_governance_data", "notebook": "op_circulating_supply"},
               {"dir": "op_governance_data", "notebook": "op_votable_supply"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  run_op_stack_chain_revenue:
+    # when:
+    #   or:
+    #     - equal: [<< pipeline.schedule.name >>, "run_op_stack_chain_revenue"]
+    #     - equal:
+    #         [<< pipeline.parameters.run_job >>, "run_op_stack_chain_revenue"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: ""
+          notebook-paths: >-
+            [
+              {"dir": "op_chains_tracking", "notebook": "l2_revenue_tracking"}
             ]
           context:
             - op-analytics-legacy
