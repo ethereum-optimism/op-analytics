@@ -75,6 +75,14 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
     )
 
 
+def execute_pull():
+    result = pull_historical_chain_tvl()
+    return {
+        "metadata_df": len(result.metadata_df),
+        "tvl_df": len(result.tvl_df),
+    }
+
+
 def extract_category_data(row: dict, category_type: str) -> int:
     """Checks to see if chain metadata contains an EVM category"""
     return 1 if "categories" in row and category_type in row["categories"] else 0

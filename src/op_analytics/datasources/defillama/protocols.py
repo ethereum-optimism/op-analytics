@@ -106,6 +106,15 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     )
 
 
+def execute_pull():
+    result = pull_protocol_tvl()
+    return {
+        "metadata_df": len(result.metadata_df),
+        "app_tvl_df": len(result.app_tvl_df),
+        "app_token_tvl_df": len(result.app_token_tvl_df),
+    }
+
+
 def table_cutoff_date() -> date:
     return now_date() - timedelta(TVL_TABLE_LAST_N_DAYS)
 

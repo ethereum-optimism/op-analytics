@@ -159,7 +159,7 @@ def fetch_prs_or_issues(
     We fetch the following data:
 
     - All open.
-    - Recently closed up until last N days with respect to current dt.
+    - Closed and Recently updated up until last N days with respect to current dt.
 
     The idea is that every time we fetch data we store all currently open items and get updates
     for ones that were recently closed.
@@ -177,25 +177,29 @@ def fetch_prs_or_issues(
     min_dt = datetime_fromdt(closed_min_dt)
     max_dt = datetime_fromdt(closed_max_dt)
 
-    start_time = time.time()
-    open_prs_response = list(paginator(state="open", sort="created", direction="desc"))
-    log.info(f"fetched {len(open_prs_response)} open in {time.time() - start_time:.2f}s")
-
     open_prs = []
     if include_open:
+        start_time = time.time()
+        open_prs_response = list(paginator(state="open", sort="created", direction="desc"))
+        log.info(f"fetched {len(open_prs_response)} open in {time.time() - start_time:.2f}s")
         for open_pr in open_prs_response:
             open_prs.append(to_row_func(open_pr))
 
     closed_prs = []
     start_time = time.time()
     for closed_pr in paginator(state="closed", sort="updated", direction="desc"):
-        closed_at = parse_isoformat(closed_pr._rawData["closed_at"])
-        if closed_at >= min_dt and closed_at < max_dt:
+        # The results are sorted backwards by "updated_at".
+        updated_at = parse_isoformat(closed_pr._rawData["updated_at"])
+
+        # We only include results that are within our closed items search window.
+        if updated_at >= min_dt and updated_at < max_dt:
             closed_prs.append(to_row_func(closed_pr))
-        else:
+
+        # If we go past the end of the window we can stop looking.
+        if updated_at < min_dt:
             break
     log.info(
-        f"found {len(closed_prs)} closed between {min_dt.strftime("%Y-%m-%d")} and {max_dt.strftime("%Y-%m-%d")} in {time.time() - start_time:.2f}s"
+        f"found {len(closed_prs)} closed items updated between {min_dt.strftime("%Y-%m-%d")} and {max_dt.strftime("%Y-%m-%d")} in {time.time() - start_time:.2f}s"
     )
 
     return open_prs + closed_prs
