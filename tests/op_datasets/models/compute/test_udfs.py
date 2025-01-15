@@ -235,3 +235,50 @@ def test_trace_address_helpers():
         (3, "0,100"),
         (3, "0,10"),
     ]
+
+
+def test_conversion_from_hex_to_number():
+    ctx = init_client()
+    create_duckdb_macros(ctx)
+
+    test_inputs = [
+        #  The comment line below is to help count non-zero characters:
+        #                                  21098765432109876543210987654321
+        "0x000000000000000000000000000000000000000000000000ffffffffffffffff",
+        "0x000000000000000000000000000000000000000000000000bdb713e036980000",
+        "0x00000000000000000000000000000000000000000002e64dbdb713e036980000",
+        "0x0000000000000000000000000000000000000000fff2e64dbdb713e036980000",
+    ]
+
+    actual = []
+    for test in test_inputs:
+        result = ctx.client.sql(f"""
+            SELECT
+                hex_to_lossy('{test}') as m1,
+                hex_to_lossless('{test}') as m2,
+            """).fetchall()[0]
+        actual.append(result)
+
+    assert actual == [
+        (18446744073709551615, "18446744073709551615"),
+        (13670417047615963136, "13670417047615963136"),
+        (None, "3505430000000000000000000"),
+        (None, "79212325131150503526748651520"),
+    ]
+
+    for lossy, lossless in actual:
+        if lossy is not None:
+            assert lossy == int(lossless)
+
+
+def test_indexed_event_arg_to_address():
+    ctx = init_client()
+    create_duckdb_macros(ctx)
+
+    actual = ctx.client.sql("""
+    SELECT
+        indexed_event_arg_to_address('0x0000000000000000000000000b940efc27f8da57c8dbd6ff6540b6ef9a1af76a') as m1,
+    """).fetchall()[0]
+
+    expected = ("0x0b940efc27f8da57c8dbd6ff6540b6ef9a1af76a",)
+    assert actual == expected

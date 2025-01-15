@@ -1,4 +1,4 @@
-from op_analytics.cli.subcommands.pulls.growthepie.dataaccess import GrowThePie
+from op_analytics.datasources.growthepie.dataaccess import GrowThePie
 
 
 def test_properties():

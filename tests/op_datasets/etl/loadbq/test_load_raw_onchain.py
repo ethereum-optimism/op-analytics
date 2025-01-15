@@ -9,6 +9,7 @@ from op_analytics.coreutils.partitioned.dataaccess import (
     init_data_access,
 )
 from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.datapipeline.etl.ingestion.reader.ranges import BlockRange, ChainMaxBlock
 from op_analytics.datapipeline.etl.loadbq.superchain_raw import load_superchain_raw_to_bq
 
 MOCK_MARKERS = [
@@ -555,6 +556,20 @@ MOCK_MARKERS = [
 ]
 
 
+def mock_block_range(chain: str, min_ts: int, max_ts: int):
+    if chain == "fraxtal":
+        return BlockRange(min=10465045, max=10594644)
+
+    raise NotImplementedError()
+
+
+def mock_max_block(chain: str):
+    if chain == "fraxtal":
+        return ChainMaxBlock(chain="fraxtal", ts=1736476259, number=14832774)
+
+    raise NotADirectoryError()
+
+
 def test_load_tasks():
     client = init_data_access()
 
@@ -562,6 +577,14 @@ def test_load_tasks():
     duckdb_client.sql("TRUNCATE TABLE etl_monitor_dev.superchain_raw_bigquery_markers")
 
     with (
+        patch(
+            "op_analytics.datapipeline.etl.ingestion.reader.ranges.block_range_for_dates",
+            new=mock_block_range,
+        ),
+        patch(
+            "op_analytics.datapipeline.etl.ingestion.reader.ranges.chain_max_block",
+            new=mock_max_block,
+        ),
         patch("op_analytics.datapipeline.etl.loadbq.superchain_raw.goldsky_mainnet_chains") as m1,
         patch.object(client, "query_markers_with_filters") as m2,
         patch("op_analytics.datapipeline.etl.loadbq.loader.load_from_parquet_uris") as m3,

@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from op_analytics.cli.subcommands.pulls.defillama import historical_chain_tvl
+from op_analytics.datasources.defillama import historical_chain_tvl
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 
 TESTDATA = InputTestData.at(__file__)
@@ -159,7 +159,7 @@ def test_extract_chain_tvl_to_dataframe():
     assert extracted_df.to_dicts() == expected_dict
 
 
-@patch("op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.get_data")
+@patch("op_analytics.datasources.defillama.historical_chain_tvl.get_data")
 @patch("op_analytics.coreutils.partitioned.dailydata.PartitionedWriteManager.write")
 def test_pull_historical_single_chain_tvl(
     mock_write,
@@ -223,7 +223,7 @@ def test_pull_historical_single_chain_tvl(
     ]
 
 
-@patch("op_analytics.cli.subcommands.pulls.defillama.historical_chain_tvl.get_data")
+@patch("op_analytics.datasources.defillama.historical_chain_tvl.get_data")
 @patch("op_analytics.coreutils.partitioned.dailydata.PartitionedWriteManager.write")
 def test_pull_historical_all_chain_tvl(
     mock_write,

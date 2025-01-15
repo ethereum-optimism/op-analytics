@@ -5,8 +5,8 @@ import warnings
 
 import duckdb
 import numba
-from duckdb.functional import PythonUDFType
-from duckdb.typing import BLOB, INTEGER
+from duckdb.functional import PythonUDFType, FunctionNullHandling
+from duckdb.typing import BLOB, INTEGER, VARCHAR, UBIGINT
 
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
 
@@ -18,6 +18,32 @@ def count_zero_bytes(x: bytes) -> int:
         if ch == 0:
             count += 1
     return count
+
+
+def hex_to_lossy(x: str | None) -> int | None:
+    """Assumes that "x" is a hex string with the leading "0x" prefix."""
+    if x is None:
+        return None
+
+    assert len(x) == 66
+
+    # If the string beyond the 16 right-most bytes is zeros then the conversion
+    # to BIGINT will be valid.
+    #
+    # NOTE (pedrod): I also attempted to use the HUGEINT return type but it resulted
+    # in an incorrect conversion from the python type to the duckdb type.
+    if x[:-16] == "0x000000000000000000000000000000000000000000000000":
+        return int("0x" + x[-16:], 0)
+
+    # There are non-zero bytes beyond the right-most 32 bytes.
+    # This means this number cannot be represented as a hugeint.
+    return None
+
+
+def hex_to_lossless(x: str) -> str:
+    """Assumes that "x" is a hex string with the leading "0x" prefix."""
+
+    return str(int(x, 0))
 
 
 _UDF_LOCK = threading.Lock()
@@ -42,6 +68,24 @@ def create_python_udfs(duckdb_context: DuckDBContext):
                 parameters=[BLOB],
                 return_type=INTEGER,
             )
+
+            duckdb_context.client.create_function(
+                "hex_to_lossy",
+                hex_to_lossy,
+                type=PythonUDFType.NATIVE,
+                null_handling=FunctionNullHandling.SPECIAL,
+                parameters=[VARCHAR],
+                return_type=UBIGINT,
+            )
+
+            duckdb_context.client.create_function(
+                "hex_to_lossless",
+                hex_to_lossless,
+                type=PythonUDFType.NATIVE,
+                parameters=[VARCHAR],
+                return_type=VARCHAR,
+            )
+
         duckdb_context.python_udfs_ready = True
 
 
@@ -59,7 +103,7 @@ def create_duckdb_macros(duckdb_context: DuckDBContext):
 
     CREATE OR REPLACE MACRO wei_to_gwei(a)
     AS a::DECIMAL(28, 0) * 0.000000001::DECIMAL(10, 10);
-    
+
     CREATE OR REPLACE MACRO gwei_to_eth(a)
     AS a::DECIMAL(28, 10) * 0.000000001::DECIMAL(10, 10);
 
@@ -74,7 +118,7 @@ def create_duckdb_macros(duckdb_context: DuckDBContext):
     -- Truncate a timestamp to hour.
     CREATE OR REPLACE MACRO epoch_to_hour(a) AS
     date_trunc('hour', make_timestamp(a * 1000000::BIGINT));
-    
+
     -- Truncate a timestamp to day.
     CREATE OR REPLACE MACRO epoch_to_day(a) AS
     date_trunc('day', make_timestamp(a * 1000000::BIGINT));
@@ -82,25 +126,25 @@ def create_duckdb_macros(duckdb_context: DuckDBContext):
     -- Division by 16 for DECIMAL types.
     CREATE OR REPLACE MACRO div16(a)
     AS a * 0.0625::DECIMAL(5, 5);
-    
+
     -- Get the length in bytes for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_bytelen(x)
     AS CAST((length(x) - 2) / 2 AS INT);
-    
+
     -- Count zero bytes for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_zero_bytes(a)
     AS count_zero_bytes(unhex(substr(a, 3)));
-    
+
     -- Calculate calldata gas used for binary data that is encoded as a hex
     -- string (can be updated by an EIP).
     CREATE OR REPLACE MACRO hexstr_calldata_gas(x)
     AS 16 * (hexstr_bytelen(x) - hexstr_zero_bytes(x)) + 4 * hexstr_zero_bytes(x);
-    
+
     --Get the method id for input data. This is the first 4 bytes, or first 10
     -- string characters for binary data that is encoded as a hex string.
     CREATE OR REPLACE MACRO hexstr_method_id(x)
     AS substring(x,1,10);
-    
+
     -- Trace address depth. Examples:
     --   ""       -> 0
     --   "0"      -> 1
@@ -125,6 +169,11 @@ def create_duckdb_macros(duckdb_context: DuckDBContext):
       WHEN length(a) = 1 THEN ''
       ELSE a[:-1 * (1+strpos(reverse(a), ','))]
     END;
+
+
+    -- Convert indexed event arg to address.
+    CREATE OR REPLACE MACRO indexed_event_arg_to_address(a)
+    AS concat('0x', right(a, 40));
     """)
 
 

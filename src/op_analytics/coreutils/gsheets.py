@@ -14,8 +14,6 @@ log = structlog.get_logger()
 _GSHEETS_CLIENT: gspread.client.Client | None = None
 _GSHEETS_LOCATIONS: dict | None = None
 
-_GSHEETS_JSON_FILE = ".gsheets.json"
-
 
 def init_client():
     """Init client and load the Google Sheets locations map.
