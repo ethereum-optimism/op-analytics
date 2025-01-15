@@ -327,7 +327,7 @@ workflows:
             [
               {"dir": "op_chains_tracking/inputs", "notebook": "clean_chain_metadata_and_upload"},
               {"dir": "op_chains_tracking/clickhouse_builds", "notebook": "create_matviews"},
-              {"dir": "op_chains_tracking/clickhouse_builds", "notebook": "create_superchain_data_view"},
+              {"dir": "op_chains_tracking/clickhouse_builds", "notebook": "create_superchain_data_view"}
             ]
           context:
             - op-analytics-legacy
