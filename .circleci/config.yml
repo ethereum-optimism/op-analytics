@@ -343,10 +343,10 @@ workflows:
             - op-analytics-gcp
 
   rum_marked_data:
-    when:
-      or:
-        - equal: [<< pipeline.schedule.name >>, "rum_marked_data"]
-        - equal: [<< pipeline.parameters.run_job >>, "rum_marked_data"]
+    # when:
+    #   or:
+    #     - equal: [<< pipeline.schedule.name >>, "rum_marked_data"]
+    #     - equal: [<< pipeline.parameters.run_job >>, "rum_marked_data"]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
           commit-message: "GH Action Update - Update Market Data"
