@@ -17,7 +17,7 @@ def stablecoins(context: OpExecutionContext):
     """Pull stablecoin data from Defillama."""
     from op_analytics.datasources.defillama import stablecoins
 
-    result = stablecoins.execute_pull(symbols=None)
+    result = stablecoins.execute_pull()
     context.log.info(result)
 
 
@@ -27,7 +27,7 @@ def protocol_tvl(context: OpExecutionContext):
 
     from op_analytics.datasources.defillama import protocols
 
-    result = protocols.execute_pull(pull_protocols=None)
+    result = protocols.execute_pull()
     context.log.info(result)
 
 
@@ -100,7 +100,7 @@ def volumes_fees_revenue_views():
     DefiLlama.REVENUE_PROTOCOLS_METADATA.create_clickhouse_view()
 
 
-# TODO: Consider not doing this anymore now that we have views over S3 data.
+# TODO: Consider not doing this anymore now that we have views over GCS data.
 @asset(deps=[volumes_fees_revenue])
 def volumes_fees_revenue_to_clickhouse(context: OpExecutionContext):
     from op_analytics.datasources.defillama.volume_fees_revenue import execute

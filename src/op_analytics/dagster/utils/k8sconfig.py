@@ -6,6 +6,7 @@ from dagster import (
     in_process_executor,
     define_asset_job,
 )
+from dagster._core.definitions.asset_selection import CoercibleToAssetSelection
 
 
 @dataclass
@@ -30,7 +31,11 @@ def new_k8s_config(custom_config: OPK8sConfig):
     }
 
 
-def op_analytics_asset_job(name: str, selection: str, custom_config: OPK8sConfig):
+def op_analytics_asset_job(
+    name: str,
+    selection: CoercibleToAssetSelection,
+    custom_config: OPK8sConfig,
+):
     config = new_k8s_config(custom_config)
 
     try:

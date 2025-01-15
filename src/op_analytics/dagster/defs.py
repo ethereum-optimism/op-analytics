@@ -14,6 +14,7 @@ MODULE_NAMES = [
     "chains",
     "defillama",
     "github",
+    "other",
 ]
 
 
@@ -27,42 +28,54 @@ ASSETS = [
     )
 ]
 
+
+def create_schedule_for_group(
+    group: str,
+    cron_schedule: str,
+    default_status: DefaultScheduleStatus,
+):
+    return ScheduleDefinition(
+        name=group,
+        job=op_analytics_asset_job(
+            name=f"{group}_job",
+            selection=AssetSelection.groups(group),
+            custom_config=OPK8sConfig(
+                labels={
+                    "op-analytics-dagster-group": group,
+                }
+            ),
+        ),
+        cron_schedule=cron_schedule,
+        execution_timezone="UTC",
+        default_status=default_status,
+    )
+
+
 defs = Definitions(
     assets=ASSETS,
     schedules=[
-        #
-        # DefiLlama
-        ScheduleDefinition(
-            name="defillama",
-            job=op_analytics_asset_job(
-                name="defillama_job",
-                selection=AssetSelection.groups("defillama"),
-                custom_config=OPK8sConfig(
-                    labels={
-                        "op-analytics-dagster-group": "defillama",
-                    }
-                ),
-            ),
+        create_schedule_for_group(
+            group="chains",
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
-            execution_timezone="UTC",
             default_status=DefaultScheduleStatus.RUNNING,
         ),
         #
-        # Github Analytics
-        ScheduleDefinition(
-            name="github_data",
-            job=op_analytics_asset_job(
-                name="github_data",
-                selection=AssetSelection.groups("github"),
-                custom_config=OPK8sConfig(
-                    labels={
-                        "op-analytics-dagster-group": "github",
-                    }
-                ),
-            ),
+        create_schedule_for_group(
+            group="defillama",
+            cron_schedule="0 3 * * *",  # Runs at 3 AM daily
+            default_status=DefaultScheduleStatus.RUNNING,
+        ),
+        #
+        create_schedule_for_group(
+            group="github",
             cron_schedule="0 2 * * *",  # Runs at 2 AM daily
-            execution_timezone="UTC",
-            default_status=DefaultScheduleStatus.STOPPED,
+            default_status=DefaultScheduleStatus.RUNNING,
+        ),
+        #
+        create_schedule_for_group(
+            group="other",
+            cron_schedule="0 2 * * *",  # Runs at 2 AM daily
+            default_status=DefaultScheduleStatus.RUNNING,
         ),
     ],
 )

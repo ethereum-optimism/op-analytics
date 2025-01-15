@@ -197,13 +197,6 @@ jobs:
             OPLABS_RUNTIME: "gha"
             OPLABS_ENV: "prod"
 
-      - run:
-          name: GrowThePie Chain Summary
-          command: uv run opdata pulls growthepie_chain_summary
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
 workflows:
   version: 2
   run-daily-api-uploads:

@@ -28,6 +28,14 @@ class GrowthepieFundamentalSummary:
     summary_df: pl.DataFrame
 
 
+def execute_pull():
+    result = pull_growthepie_summary()
+    return {
+        "metadata_df": len(result.metadata_df),
+        "summary_df": len(result.summary_df),
+    }
+
+
 def pull_growthepie_summary() -> GrowthepieFundamentalSummary:
     """Pull data from GrowThePie.
 
