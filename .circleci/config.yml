@@ -17,6 +17,7 @@ parameters:
         "daily_l2_aggregate_later_loads",
         "daily_l2_chain_data_uploads",
         "deploy_github_pages",
+        "rum_marked_data",
       ]
 
 commands:
@@ -335,6 +336,23 @@ workflows:
               {"dir": "op_chains_tracking", "notebook": "dune_opchain_uploads"},
               {"dir": "other_chains_tracking", "notebook": "get_filtered_deployers"},
               {"dir": "other_chains_tracking", "notebook": "total_chain_data_to_uploads"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  rum_marked_data:
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "rum_marked_data"]
+        - equal: [<< pipeline.parameters.run_job >>, "rum_marked_data"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Update Market Data"
+          notebook-paths: >-
+            [
+              {"dir": "reference_data/market_data", "notebook": "get_market_data"}
             ]
           context:
             - op-analytics-legacy
