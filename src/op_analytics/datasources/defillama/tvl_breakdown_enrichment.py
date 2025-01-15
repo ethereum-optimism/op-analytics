@@ -1,12 +1,14 @@
-from dataclasses import dataclass
-from datetime import datetime, timedelta
 import re
+from dataclasses import dataclass
+from datetime import timedelta
 
 import polars as pl
 
 from op_analytics.coreutils.duckdb_inmem.client import init_client
-from op_analytics.datasources.defillama.dataaccess import DefiLlama
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.rangeutils.daterange import DateRange
+from op_analytics.coreutils.time import date_fromstr, date_tostr, now_dt
+from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
 log = structlog.get_logger()
 
@@ -21,29 +23,29 @@ class DefillamaTVLBreakdown:
     df_tvl_breakdown: pl.DataFrame
 
     @classmethod
-    def of_date(cls, datestr: str):
-        """
-        Main function to process DeFiLlama protocol data.
-
-        Args:
-            datestr: Date string in YYYY-MM-DD format to process data for
-
-        Returns:
-            Processed and filtered DataFrame
-
-        Raises:
-            ValueError: If required data is missing or invalid
-        """
-        # Initialize
+    def of_date(cls, current_dt: str | None = None, lookback_days: int = 7):
+        """Process DeFiLlama protocol data."""
         ctx = init_client()
         client = ctx.client
-        date = datetime.strptime(datestr, "%Y-%m-%d")
-        one_day_ago = (date - timedelta(days=1)).strftime("%Y-%m-%d")
-        three_days_ago = (date - timedelta(days=3)).strftime("%Y-%m-%d")
 
-        # Load data
-        tvl_view = DefiLlama.PROTOCOLS_TOKEN_TVL.read(min_date=three_days_ago, max_date=datestr)
-        metadata_view = DefiLlama.PROTOCOLS_METADATA.read(min_date=one_day_ago)
+        current_dt = current_dt or now_dt()
+        current_date = date_fromstr(current_dt)
+
+        # We fetch the protocols metadata for "current_dt" - 1 day.
+        # This ensures that the protocols metadata we use will be for a completed date.
+        metadata_view = DefiLlama.PROTOCOLS_METADATA.read(
+            min_date=current_date - timedelta(days=1),  # inclusive
+            max_date=current_dt,  # exclusive
+        )
+
+        # We will transform the last "lookback_days" of data. We exclude "current_dt"
+        # as that partition will be an incomplete data fetch from DefiLlama.
+        min_date = current_date - timedelta(days=lookback_days)
+        max_date = current_date
+        tvl_view = DefiLlama.PROTOCOLS_TOKEN_TVL.read(
+            min_date=min_date,  # inclusive
+            max_date=max_date,  # exclusive
+        )
 
         # Process protocol TVL
         df_protocol_tvl = client.sql(f"""
@@ -97,33 +99,52 @@ class DefillamaTVLBreakdown:
             how="inner",
         )
 
-        # Write to storage
-        DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.write(
-            dataframe=df_tvl_breakdown,
-            sort_by=["chain", "protocol_slug", "token"],
+        data_quality_check(
+            df_tvl_breakdown=df_tvl_breakdown,
+            min_date=min_date,
+            max_date=max_date,
         )
 
         return cls(df_tvl_breakdown=df_tvl_breakdown)
 
 
+def data_quality_check(df_tvl_breakdown: pl.DataFrame, min_date: str, max_date: str):
+    """Check that all expected "dt" partitions are present in the output data."""
+
+    assert "dt" in df_tvl_breakdown.columns
+    observed_dts = [date_tostr(_) for _ in sorted(df_tvl_breakdown["dt"].unique().to_list())]
+    expected_dts = [date_tostr(_) for _ in DateRange(min=min_date, max=max_date).dates()]
+    if observed_dts != expected_dts:
+        missing_dts = sorted(set(expected_dts) - set(observed_dts))
+        extra_dts = sorted(set(observed_dts) - set(expected_dts))
+
+        summary = f"""
+        MISSING dts:
+        {'\n'.join(missing_dts)}
+        
+        EXTRA dts:
+        {'\n'.join(extra_dts)}
+        """
+        raise Exception(f"possibly missing data after transformation: {summary}")
+
+
 def execute_pull():
-    datestr = datetime.now().strftime("%Y-%m-%d")
-    result = DefillamaTVLBreakdown.of_date(datestr)
+    result = DefillamaTVLBreakdown.of_date()
+
+    # Write to storage
+    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.write(
+        dataframe=result.df_tvl_breakdown,
+        sort_by=["chain", "protocol_slug", "token"],
+    )
+
     return {
         "df_tvl_breakdown": len(result.df_tvl_breakdown),
     }
 
 
 def process_data_fields(df: pl.DataFrame) -> pl.DataFrame:
-    """
-    Processes and standardizes DataFrame fields.
+    """Process and standardize DataFrame fields."""
 
-    Args:
-        df: Input DataFrame
-
-    Returns:
-        Processed DataFrame with standardized fields
-    """
     return df.with_columns(
         [
             pl.col("chain").cast(pl.Utf8),
@@ -135,8 +156,7 @@ def process_data_fields(df: pl.DataFrame) -> pl.DataFrame:
 
 
 def process_misrepresented_tokens(df: pl.DataFrame) -> pl.DataFrame:
-    """
-    Identifies and processes misrepresented tokens using DuckDB.
+    """Identify and process misrepresented tokens using DuckDB.
 
     Args:
         df: Polars DataFrame containing protocol and token data
@@ -149,10 +169,9 @@ def process_misrepresented_tokens(df: pl.DataFrame) -> pl.DataFrame:
     client = ctx.client
 
     # Register the Polars DataFrame as a temporary view
-    client.register("temp_df", df.to_pandas())
+    client.register("temp_df", df)
 
-    result = pl.from_pandas(
-        client.sql("""
+    result = client.sql("""
         WITH latest_data AS (
             SELECT
                 protocol_slug,
@@ -176,8 +195,7 @@ def process_misrepresented_tokens(df: pl.DataFrame) -> pl.DataFrame:
             END as is_protocol_misrepresented
         FROM latest_data
         GROUP BY protocol_slug, chain, misrepresented_tokens
-    """).to_df()
-    )
+    """).pl()
 
     # Clean up the temporary view
     client.execute("DROP VIEW IF EXISTS temp_df")
@@ -186,15 +204,14 @@ def process_misrepresented_tokens(df: pl.DataFrame) -> pl.DataFrame:
 
 
 def create_filter_column(df: pl.DataFrame) -> pl.DataFrame:
-    """
-    Adds filtering flags to protocols using Polars expressions.
+    """Add filtering flags to protocols using Polars expressions.
 
     Args:
         df: Polars DataFrame containing protocol data
         config: Configuration object containing filter patterns and categories
 
     Returns:
-        DataFrame with to_filter column indicating which protocols should be filtered
+        DataFrame with "to_filter" column indicating which protocols should be filtered
     """
     # Create unique protocol entries
     filtered_df = df.unique(subset=["chain", "protocol_slug", "protocol_category"])

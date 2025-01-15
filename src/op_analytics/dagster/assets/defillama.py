@@ -31,7 +31,7 @@ def protocol_tvl(context: OpExecutionContext):
     context.log.info(result)
 
 
-@asset
+@asset(deps=[protocol_tvl])
 def tvl_breakdown_enrichment(context: OpExecutionContext):
     """Enrich defillama tvl breakdown data."""
 
@@ -108,6 +108,29 @@ def volumes_fees_revenue_views():
     DefiLlama.VOLUME_PROTOCOLS_METADATA.create_clickhouse_view()
     DefiLlama.FEES_PROTOCOLS_METADATA.create_clickhouse_view()
     DefiLlama.REVENUE_PROTOCOLS_METADATA.create_clickhouse_view()
+
+
+@asset(deps=[tvl_breakdown_enrichment])
+def tvl_breakdown_views():
+    """Clickhouse external tables over GCS data:
+
+    - defillama_gcs.protocol_token_tvl_breakdown_v1
+    """
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama
+
+    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_clickhouse_view()
+
+    # NEXT STEPS. BigQuery view over the results in GCS
+    # DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_external_table()
+
+    # NEXT STEPS.
+    # Suppose we want to create a BigQuery view that joins a bunch of tables.
+    # from op_analytics.coreutils.bigquery.write import init_client
+    # bq_client = init_client()
+    # bq_client.sql("""
+    # CREATE VIEW IF NOT EXISTS my_view AS
+    # SELECT * FROM JOIN EVERYTHING ELSE
+    # """)
 
 
 # TODO: Consider not doing this anymore now that we have views over GCS data.
