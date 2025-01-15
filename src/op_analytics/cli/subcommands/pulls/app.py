@@ -1,4 +1,5 @@
 import typer
+
 from op_analytics.coreutils.logger import structlog
 from op_analytics.datasources.agora.delegate_events import (
     fetch_delegate_delegatees,
