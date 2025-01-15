@@ -12,8 +12,6 @@ parameters:
       [
         "select_job",
         "run_daily_api_upload",
-        "run_daily_metadata",
-        "run_defillama_stablecoins",
         "daily_l2_aggregate_later_loads",
         "daily_l2_chain_data_uploads",
         "deploy_github_pages",
@@ -124,8 +122,13 @@ jobs:
             echo "Run $py_script_path"
             python -m pipenv run python $(basename ${py_script_path})
 
-  daily-l2-aggregate-later-loads:
-    description: "Daily L2 Chain Aggregate Later Loads"
+  convert-and-run-notebooks-to-py-and-push:
+    description: "Convert and run notebooks to Python scripts and push changes to GitHub"
+    parameters:
+      notebook-paths:
+        type: string
+      commit-message:
+        type: string
     machine:
       image: ubuntu-2004:current
     steps:
@@ -147,31 +150,27 @@ jobs:
 
             cd "op-analytics"
 
-            python -m pipenv run jupyter nbconvert --to python op_chains_tracking/dune_opchain_uploads.ipynb other_chains_tracking/get_filtered_deployers.ipynb other_chains_tracking/total_chain_data_to_uploads.ipynb
+            echo '<< parameters.notebook-paths >>' | jq -c '.[]' | while read -r notebook; do
+              dir=$(echo $notebook | jq -r '.dir')
+              notebook=$(echo $notebook | jq -r '.notebook')
 
-            cd op_chains_tracking
-            python -m pipenv run python dune_opchain_uploads.py
+              cd "$dir"
 
-            cd ../other_chains_tracking
-            python -m pipenv run python get_filtered_deployers.py total_chain_data_to_uploads.py
+              echo "Converting ${notebook}.ipynb to ${notebook}.py"
+              python -m pipenv run jupyter nbconvert --to python ${notebook}.ipynb
+
+              echo "Run ${notebook}.py"
+              python -m pipenv run python ${notebook}.py
+
+              cd - >/dev/null
+            done
 
       - utils/get-github-access-token
       - utils/github-commit-and-push-changes:
-          commit-message: "GH Action Update - Agg Downloads"
+          commit-message: "<< parameters.commit-message >>"
           skip-ci: true
           folder: "op-analytics"
 
-  chain-metadata:
-    machine:
-      image: ubuntu-2004:current
-    steps:
-      - checkout-dep-1
-      - setup-python-env
-      - run:
-          name: Chain Metadata
-          command: uv run opdata chains chain_metadata_updates
-          environment:
-            OPLABS_ENV: prod
   deploy-github-pages:
     machine:
       image: ubuntu-2004:current
@@ -197,39 +196,6 @@ jobs:
           force-push: true
           src-pages-dir: /tmp/docs
 
-  defillama-stablecoins:
-    machine:
-      image: ubuntu-2004:current
-    steps:
-      - checkout-dep-1
-      - setup-python-env
-      - run:
-          name: DefiLlama Protocol TVL
-          command: uv run opdata pulls defillama_stablecoins
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
-  defillama-protocols:
-    machine:
-      image: ubuntu-2004:current
-    steps:
-      - checkout-dep-1
-      - setup-python-env
-      - run:
-          name: DefiLlama Protocol TVL
-          command: uv run opdata pulls defillama_protocol_tvl
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
-      - run:
-          name: DefiLlama Historical Chain TVL
-          command: uv run opdata pulls defillama_historical_chain_tvl
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
   daily-uploads-other-tasks:
     machine:
       image: ubuntu-2004:current
@@ -243,27 +209,6 @@ jobs:
             OPLABS_RUNTIME: "gha"
             OPLABS_ENV: "prod"
 
-      - run:
-          name: DefiLlama Stablecoins
-          command: uv run opdata pulls defillama_stablecoins
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
-      - run:
-          name: GrowThePie Chain Summary
-          command: uv run opdata pulls growthepie_chain_summary
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
-      - run:
-          name: DefiLlama Stablecoins BQ
-          command: uv run opdata pulls defillama_stablecoins_bq
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
-
 workflows:
   version: 2
   run-daily-api-uploads:
@@ -272,51 +217,32 @@ workflows:
         - equal: [<< pipeline.parameters.run_job >>, "run_daily_api_upload"]
         - equal: [<< pipeline.schedule.name >>, "run_daily_api_upload"]
     jobs:
-      - defillama-protocols:
-          context: op-analytics
-          filters:
-            branches:
-              only: main
       - daily-uploads-other-tasks:
           context: op-analytics
           filters:
             branches:
               only: main
-  run-daily-metadata:
-    when:
-      or:
-        - equal: [<< pipeline.parameters.run_job >>, "run_daily_metadata"]
-        - equal: [<< pipeline.schedule.name >>, "run_daily_metadata"]
-    jobs:
-      - chain-metadata:
-          context: op-analytics
-          filters:
-            branches:
-              only: main
-  run-defillama-stablecoins:
-    when:
-      or:
-        - equal:
-            [<< pipeline.parameters.run_job >>, "run_defillama_stablecoins"]
-    jobs:
-      - defillama-stablecoins:
-          context: op-analytics
-          filters:
-            branches:
-              only: main
 
-  run-daily-l2-aggregate-later-loads:
-    when:
-      or:
-        - equal:
-            [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
-        - equal:
-            [
-              << pipeline.parameters.run_job >>,
-              "daily_l2_aggregate_later_loads",
-            ]
+
+  daily-l2-aggregate-later-loads:
+    # when:
+    #   or:
+    #     - equal:
+    #         [<< pipeline.schedule.name >>, "daily_l2_aggregate_later_loads"]
+    #     - equal:
+    #         [
+    #           << pipeline.parameters.run_job >>,
+    #           "daily_l2_aggregate_later_loads",
+    #         ]
     jobs:
-      - daily-l2-aggregate-later-loads:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Agg Downloads"
+          notebook-paths: >-
+            [
+              {"dir": "op_chains_tracking", "notebook": "dune_opchain_uploads"},
+              {"dir": "other_chains_tracking", "notebook": "get_filtered_deployers"},
+              {"dir": "other_chains_tracking", "notebook": "total_chain_data_to_uploads"}
+            ]
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics

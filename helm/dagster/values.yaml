@@ -592,7 +592,35 @@ runLauncher:
       #   jobMetadata: # raw config for the kubernetes job's metadata
       #     annotations:
       #       mykey: myvalue
-      runK8sConfig: {}
+      runK8sConfig:
+        containerConfig:
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 720Mi  
+          env:
+          - name: OPLABS_ENV
+            value: "prod"
+          - name: OPLABS_RUNTIME
+            value: "k8s"
+          - name: PLAIN_LOGS
+            value: "true"
+          volumeMounts:
+          - mountPath: "/var/secrets"
+            name: opanalyticsvault
+        podSpecConfig:
+          serviceAccountName: op-analytics-service-account
+          volumes:
+          - name: opanalyticsvault
+            csi:
+              driver: secrets-store-gke.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: op-analytics-secret-provider-class
+
 
     # This configuration will only be used if the CeleryK8sRunLauncher is selected
     celeryK8sRunLauncher:
