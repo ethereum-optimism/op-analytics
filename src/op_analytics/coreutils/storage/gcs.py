@@ -1,22 +1,13 @@
-import io
-import os
 import warnings
 
-import polars as pl
 
 from op_analytics.coreutils.logger import human_size, structlog
 
 log = structlog.get_logger()
 warnings.filterwarnings("ignore", message="Polars found a filename")
 
-PROJECT_NAME = "oplabs-tools-data"
-BUCKET_NAME = "oplabs-tools-data-sink"
-
 
 _CLIENT = None
-_BUCKET = None
-
-_PATH_PREFIX = "op_analytics"
 
 
 def init_client():
@@ -25,45 +16,38 @@ def init_client():
     This function guarantess only one global instance of the storage.Client() exists.
     """
     global _CLIENT
-    global _BUCKET
 
     if _CLIENT is None:
         from google.cloud import storage
 
         _CLIENT = storage.Client()
-        _BUCKET = _CLIENT.bucket(BUCKET_NAME)
-        log.info(f"Initialized GCS client for bucket=gs://{BUCKET_NAME}")
+        log.info(
+            "Initialized GCS client without op_analytics credentials. Can be used to access public buckets."
+        )
 
-    if _BUCKET is None:
-        raise RuntimeError("GCS was not properly initialized.")
-
-    return _BUCKET
+    return _CLIENT
 
 
-def gcs_upload(blob_path: str, content: bytes | str, prefix=None):
+def gcs_upload(bucket_name: str, blob_name: str, content: bytes | str):
     """Uploads content to GCS."""
-    bucket = init_client()
+    client = init_client()
 
     # Lazy import to avoid slow google cloud package load.
     from google.cloud.storage import Blob
 
-    key = os.path.join(prefix or _PATH_PREFIX, blob_path)
-    blob: Blob = bucket.blob(key)
+    bucket = client.bucket(bucket_name=bucket_name)
+    blob: Blob = bucket.blob(blob_name=blob_name)
     blob.upload_from_string(content)
-    log.info(f"Wrote {human_size(len(content))} to gs://{bucket.name}/{key}")
+    log.info(f"Wrote {human_size(len(content))} to gs://{bucket_name}/{blob_name}")
 
 
-def gcs_upload_csv(blob_path: str, df: pl.DataFrame):
-    buf = io.BytesIO()
-    df.write_csv(buf)
-    gcs_upload(blob_path, buf.getvalue())
-
-
-def gcs_download(blob_path: str, destination_path: str):
-    bucket = init_client()
+def gcs_download_bytes(bucket_name: str, blob_name: str) -> bytes:
+    """Downloads content from GCS."""
+    client = init_client()
 
     # Lazy import to avoid slow google cloud package load.
     from google.cloud.storage import Blob
 
-    blob: Blob = bucket.blob(blob_path)
-    blob.download_to_file(destination_path)
+    bucket = client.bucket(bucket_name=bucket_name)
+    blob: Blob = bucket.blob(blob_name=blob_name)
+    return blob.download_as_bytes()
