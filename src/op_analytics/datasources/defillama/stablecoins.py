@@ -139,6 +139,14 @@ def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
     return result
 
 
+def execute_pull():
+    result = pull_stablecoins()
+    return {
+        "metadata_df": len(result.metadata_df),
+        "balances_df": len(result.balances_df),
+    }
+
+
 def extract(stablecoins_data) -> DefillamaStablecoins:
     """Extract metadata and balances for all stablecoins."""
     metadata: list[dict] = []
