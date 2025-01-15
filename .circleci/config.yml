@@ -20,6 +20,7 @@ parameters:
         "run_op_stack_chain_revenue",
         "run_op_stack_metadata_upload",
         "run-python-installation-and-dependency-check",
+        "value_locked_flows_update",
       ]
 
 commands:
@@ -437,16 +438,16 @@ workflows:
               only: main
 
   run-python-installation-and-dependency-check:
-    when:
-      or:
-        - equal:
-            [
-              << pipeline.parameters.run_job >>,
-              "run-python-installation-and-dependency-check",
-            ]
-        - and:
-            - equal: [<< pipeline.git.branch >>, "main"]
-            - not:
-                equal: [<< pipeline.trigger_source >>, "api"]
+    # when:
+    #   or:
+    #     - equal:
+    #         [
+    #           << pipeline.parameters.run_job >>,
+    #           "run-python-installation-and-dependency-check",
+    #         ]
+    #     - and:
+    #         - equal: [<< pipeline.git.branch >>, "main"]
+    #         - not:
+    #             equal: [<< pipeline.trigger_source >>, "api"]
     jobs:
       - python-installation-and-dependency-check
