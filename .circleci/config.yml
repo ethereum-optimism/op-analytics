@@ -18,6 +18,7 @@ parameters:
         "run_market_data",
         "run_op_governance_uploads",
         "run_op_stack_chain_revenue",
+        "run_op_stack_metadata_upload",
       ]
 
 commands:
@@ -307,6 +308,26 @@ workflows:
           notebook-paths: >-
             [
               {"dir": "op_chains_tracking", "notebook": "l2_revenue_tracking"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  run_op_stack_metadata_upload:
+    # when:
+    #   or:
+    #     - equal: [<< pipeline.schedule.name >>, "run_op_stack_metadata_upload"]
+    #     - equal:
+    #         [<< pipeline.parameters.run_job >>, "run_op_stack_metadata_upload"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Generate Chain Metadata, Matviews and Views"
+          notebook-paths: >-
+            [
+              {"dir": "op_chains_tracking/inputs", "notebook": "clean_chain_metadata_and_upload"},
+              {"dir": "op_chains_tracking/clickhouse_builds", "notebook": "create_matviews"},
+              {"dir": "op_chains_tracking/clickhouse_builds", "notebook": "create_superchain_data_view"},
             ]
           context:
             - op-analytics-legacy
