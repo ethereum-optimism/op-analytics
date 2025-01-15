@@ -15,7 +15,7 @@ parameters:
         "daily_l2_aggregate_later_loads",
         "daily_l2_chain_data_uploads",
         "deploy_github_pages",
-        "rum_marked_data",
+        "run_market_data",
         "run_op_governance_uploads",
         "run_op_stack_chain_revenue",
       ]
@@ -255,11 +255,11 @@ workflows:
             - circleci-repo-op-analytics
             - op-analytics-gcp
 
-  rum_marked_data:
+  run_market_data:
     when:
       or:
-        - equal: [<< pipeline.schedule.name >>, "rum_marked_data"]
-        - equal: [<< pipeline.parameters.run_job >>, "rum_marked_data"]
+        - equal: [<< pipeline.schedule.name >>, "run_market_data"]
+        - equal: [<< pipeline.parameters.run_job >>, "run_market_data"]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
           commit-message: "GH Action Update - Update Market Data"
