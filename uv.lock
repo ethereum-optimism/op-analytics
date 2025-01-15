@@ -2099,7 +2099,7 @@ wheels = [
 
 [[package]]
 name = "op-analytics"
-version = "20250114.1"
+version = "20250115.1"
 source = { editable = "." }
 dependencies = [
     { name = "clickhouse-connect" },
