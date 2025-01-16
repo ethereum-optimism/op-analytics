@@ -1,3 +1,4 @@
+import datetime
 from datetime import date
 
 from op_analytics.coreutils.testutils.inputdata import InputTestData
@@ -92,3 +93,62 @@ class TestTokenTransfers001(IntermediateModelTestBase):
             "to_address": "VARCHAR",
             "token_id": "VARCHAR",
         }
+
+    def test_single_tx_erc20(self):
+        assert self._duckdb_context is not None
+
+        output = (
+            self._duckdb_context.client.sql(f"""
+        SELECT * FROM erc20_transfers_v1 LIMIT 1
+        """)
+            .pl()
+            .to_dicts()
+        )
+
+        assert output == [
+            {
+                "chain_id": 10,
+                "chain": "op",
+                "dt": datetime.date(2024, 11, 18),
+                "block_timestamp": 1731890755,
+                "block_number": 128145989,
+                "block_hash": "0x98f6d6cfb9de5b5ccf9c3d9849bc04ab9a2c4725b6572d5ead0f35787ad4de82",
+                "transaction_hash": "0x6ba43fabde9f03dded7c56677751114907201a9e44628b7a64b02d118df25aba",
+                "transaction_index": 1,
+                "log_index": 0,
+                "contract_address": "0xdc6ff44d5d932cbd77b52e5612ba0529dc6226f1",
+                "amount": 800000000000000000,
+                "amount_lossless": "800000000000000000",
+                "from_address": "0xf89d7b9c864f589bbf53a82105107622b35eaa40",
+                "to_address": "0x73981e74c1b3d94cbe97e2cd03691dd2e7c533fa",
+            }
+        ]
+
+    def test_single_tx_erc721(self):
+        assert self._duckdb_context is not None
+
+        output = (
+            self._duckdb_context.client.sql(f"""
+        SELECT * FROM erc721_transfers_v1 LIMIT 1
+        """)
+            .pl()
+            .to_dicts()
+        )
+
+        assert output == [
+            {
+                "chain_id": 10,
+                "chain": "op",
+                "dt": datetime.date(2024, 11, 18),
+                "block_timestamp": 1731890757,
+                "block_number": 128145990,
+                "block_hash": "0x1dbc3f2bc6e28592c242c2da70c30d75cda987cee20f7203e5d99f9d91a9a1d9",
+                "transaction_hash": "0x8c8097be6a11606a35153d59a846dd0563f461c67a2ab59c5211e00540a4a865",
+                "transaction_index": 8,
+                "log_index": 38,
+                "contract_address": "0x416b433906b1b72fa758e166e239c43d68dc6f29",
+                "from_address": "0x04f0d809f769772138736a1c79daf6b0a7692bb6",
+                "to_address": "0xca573537505cce0d03963002e870d74d2cfe8cff",
+                "token_id": "554014",
+            }
+        ]
