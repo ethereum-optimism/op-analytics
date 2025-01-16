@@ -13,8 +13,7 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         "erc721_transfers_v1",
     ],
     auxiliary_views=[
-        "erc20_transfers",
-        "erc721_transfers",
+        "token_transfers",
     ],
 )
 def token_transfers(
@@ -24,7 +23,7 @@ def token_transfers(
 ) -> NamedRelations:
     logs_view = input_datasets["ingestion/logs_v1"].create_view()
 
-    all_transfers = auxiliary_views["erc20_transfers"].to_relation(
+    all_transfers = auxiliary_views["token_transfers"].to_relation(
         duckdb_context=ctx,
         template_parameters={
             "raw_logs": logs_view,
