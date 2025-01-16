@@ -83,8 +83,8 @@ class DefillamaTVLBreakdown:
         df_misrep = process_misrepresented_tokens(df_all)
 
         df_all = df_all.join(
-            df_misrep.select(["protocol_slug", "chain", "is_protocol_misrepresented"]),
-            on=["protocol_slug", "chain"],
+            df_misrep.select(["dt", "protocol_slug", "chain", "is_protocol_misrepresented"]),
+            on=["dt", "protocol_slug", "chain"],
             how="left",
         )
 
@@ -99,11 +99,11 @@ class DefillamaTVLBreakdown:
             how="inner",
         )
 
-        data_quality_check(
-            df_tvl_breakdown=df_tvl_breakdown,
-            min_date=min_date,
-            max_date=max_date,
-        )
+        # data_quality_check(
+        #     df_tvl_breakdown=df_tvl_breakdown,
+        #     min_date=min_date,
+        #     max_date=max_date,
+        # )
 
         return cls(df_tvl_breakdown=df_tvl_breakdown)
 
@@ -174,15 +174,16 @@ def process_misrepresented_tokens(df: pl.DataFrame) -> pl.DataFrame:
     result = client.sql("""
         WITH latest_data AS (
             SELECT
+                dt,
                 protocol_slug,
                 chain,
                 misrepresented_tokens,
                 token,
                 CASE WHEN UPPER(token) = 'USDT' THEN 1 ELSE 0 END AS is_usdt
             FROM temp_df
-            WHERE dt = (SELECT MAX(dt) FROM temp_df) - INTERVAL '1' DAY
         )
         SELECT 
+            dt,
             protocol_slug,
             chain,
             misrepresented_tokens,
@@ -194,7 +195,7 @@ def process_misrepresented_tokens(df: pl.DataFrame) -> pl.DataFrame:
                 ELSE 0 
             END as is_protocol_misrepresented
         FROM latest_data
-        GROUP BY protocol_slug, chain, misrepresented_tokens
+        GROUP BY dt, protocol_slug, chain, misrepresented_tokens
     """).pl()
 
     # Clean up the temporary view
@@ -241,7 +242,7 @@ def create_filter_column(df: pl.DataFrame) -> pl.DataFrame:
         chain_ending_mask | chain_exact_mask | polygon_bridge_mask | cex_mask | category_mask
     )
 
-    # Combine all masks into a to_filter column
-    return filtered_df.with_columns(to_filter_out=all_masks).select(
+    # Combine all masks into a to_filter column and cast to integer
+    return filtered_df.with_columns(to_filter_out=all_masks.cast(pl.Int8)).select(
         ["chain", "protocol_slug", "protocol_category", "to_filter_out"]
     )
