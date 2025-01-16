@@ -46,3 +46,50 @@ def create_gcs_view(
     clt.command(view_statement)
 
     log.info(f"created clickhouse view: {db_name}.{table_name}")
+
+
+def create_blockbatch_models_gcs_view():
+    """Create a parameterized view for blockbatch models.
+
+    The parameterized view requires the user to specify the model and the
+    chain and dt partitions that will be queried.
+    """
+
+    db_name = "blockbatch_gcs"
+
+    KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
+    SECRET = env_get("GCS_HMAC_SECRET")
+
+    db_statement = f"CREATE DATABASE IF NOT EXISTS {db_name}"
+
+    view_name = f"{db_name}.models"
+    view_statement = f"""
+    CREATE VIEW IF NOT EXISTS {view_name} AS 
+    SELECT
+        chain, CAST(dt as Date) AS dt,  *
+    FROM s3(
+            concat(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/blockbatch/',
+                {{model:String}},
+                '/',
+                {{output:String}},
+                '/chain=', 
+                {{chain:String}}, 
+                '/dt=', 
+                {{dt:String}}, 
+                '/*.parquet'
+            ),
+            '{KEY_ID}',
+            '{SECRET}',
+            'parquet'
+        )
+    SETTINGS use_hive_partitioning = 1
+    """
+
+    clickhouse_connect.common.set_setting("autogenerate_session_id", True)
+    clt = init_client("OPLABS")
+    clickhouse_connect.common.set_setting("autogenerate_session_id", False)
+    clt.command(db_statement)
+    clt.command(view_statement)
+
+    log.info(f"created clickhouse parameterized view: {db_name}.{view_name}")
