@@ -98,12 +98,3 @@ def volumes_fees_revenue_views():
     DefiLlama.VOLUME_PROTOCOLS_METADATA.create_clickhouse_view()
     DefiLlama.FEES_PROTOCOLS_METADATA.create_clickhouse_view()
     DefiLlama.REVENUE_PROTOCOLS_METADATA.create_clickhouse_view()
-
-
-# TODO: Consider not doing this anymore now that we have views over GCS data.
-@asset(deps=[volumes_fees_revenue])
-def volumes_fees_revenue_to_clickhouse(context: OpExecutionContext):
-    from op_analytics.datasources.defillama.volume_fees_revenue import execute
-
-    result = execute.write_to_clickhouse()
-    context.log.info(result)

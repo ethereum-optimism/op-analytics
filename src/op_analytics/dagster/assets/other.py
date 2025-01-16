@@ -28,13 +28,13 @@ def growthepie_views():
     GrowThePie.CHAIN_METADATA.create_clickhouse_view()
 
 
-# TODO: Consider not doing this anymore now that we have views over GCS data.
-@asset(deps=[growthepie])
-def growthepie_to_clickhouse(context: OpExecutionContext):
-    from op_analytics.datasources.growthepie.dataaccess import GrowThePie
+@asset
+def l2beat(context: OpExecutionContext):
+    """Pull data from L2 beat.
 
-    summaries = [
-        GrowThePie.FUNDAMENTALS_SUMMARY.insert_to_clickhouse(incremental_overlap=1),
-        GrowThePie.CHAIN_METADATA.insert_to_clickhouse(incremental_overlap=1),
-    ]
-    context.log.info(summaries)
+    Writes to BQ. Need to update the logic to write to Clickhouse.
+    """
+    from op_analytics.datasources import l2beat
+
+    result = l2beat.pull_l2beat()
+    context.log.info(result)
