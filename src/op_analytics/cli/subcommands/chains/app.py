@@ -147,6 +147,7 @@ def normalize_blockbatch_models(models: str) -> list[str]:
     for model in models.split(","):
         if model == "MODELS":
             result.add("contract_creation")
+            result.add("refined_traces")
         elif model.startswith("-"):
             not_included.add(model.removeprefix("-").strip())
         else:
