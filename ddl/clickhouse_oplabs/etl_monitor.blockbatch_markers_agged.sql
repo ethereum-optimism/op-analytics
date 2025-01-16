@@ -3,9 +3,9 @@ SELECT
   root_path
   , chain
   , dt
-  , SUM(row_count) AS total_rows
-  , SUM(max_block - min_block) AS covered_blocks
-  , GROUPUNIQARRAY(min_block) AS min_blocks
+  , sum(row_count) AS total_rows
+  , sum(max_block - min_block) AS covered_blocks
+  , groupUniqArray(min_block) AS min_blocks
 FROM (
   SELECT
     root_path
@@ -22,11 +22,11 @@ FROM (
       , min_block
       , max_block
       , row_count
-      , ROW_NUMBER() OVER (PARTITION BY root_path, chain, dt ORDER BY updated_at DESC) AS rownum
+      , row_number() OVER (PARTITION BY root_path, chain, dt, min_block ORDER BY updated_at DESC) AS rownum
     FROM etl_monitor.blockbatch_markers
     WHERE
-      dt >= { dtmin: date } AND dt <= { dtmax: date }
-      AND root_path LIKE { prefix: string }
+      dt >= { dtmin: Date } AND dt <= { dtmax: Date }
+      AND root_path LIKE { prefix: String }
   )
   WHERE rownum = 1
 )
