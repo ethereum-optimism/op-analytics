@@ -7,20 +7,17 @@ from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import surrounding_dates
 from op_analytics.datapipeline.chains.activation import is_chain_active, is_chain_activation_date
 
-from .markers import IngestionData, IngestionDataSpec
+from .request import BlockBatchRequest, BlockBatchRequestData
 
 log = structlog.get_logger()
 
 
 def construct_readers_bydate(
-    chains: list[str],
-    range_spec: str,
+    blockbatch_request: BlockBatchRequest,
     read_from: DataLocation,
-    root_paths_to_read: list[str] | None = None,
 ) -> list[DataReader]:
     """Construct a list of DataReader for the given parameters.
 
@@ -32,25 +29,18 @@ def construct_readers_bydate(
 
     Readers can be used for daily data processing.
     """
-    date_range = DateRange.from_spec(range_spec)
 
-    data_spec = IngestionDataSpec(
-        chains=chains,
-        root_paths_to_read=root_paths_to_read,
-    )
-
-    # We use the +/- 1 day padded dates so that we can use the query results to
+    # We request 1-day padded dates so that we can use the query results to
     # check if there is data on boths ends. This allows us to confirm that the
     # data is ready to be processed.
-    markers_df = data_spec.query_markers(
-        datevals=date_range.padded_dates(),
-        read_from=read_from,
-    )
+    markers_df = blockbatch_request.query_markers(location=read_from, padded_dates=True)
 
+    datevals = blockbatch_request.time_range.to_date_range().dates()
     num_suspect = 0
     readers = []
-    for dateval in date_range.dates():
-        for chain in chains:
+
+    for dateval in datevals:
+        for chain in blockbatch_request.chains:
             if not is_chain_active(chain, dateval):
                 log.info(f"skipping inactive chain: {str(dateval)} {chain} ")
                 continue
@@ -69,12 +59,17 @@ def construct_readers_bydate(
                     markers_df=filtered_df,
                     chain=chain,
                     dateval=dateval,
-                    root_paths_to_check=data_spec.adapter.root_paths_physical(chain),
+                    root_paths_to_check=blockbatch_request.physical_root_paths_for_chain(chain),
                     storage_location=read_from,
                 )
 
                 # Update data path mapping so keys are logical paths.
-                dataset_paths = data_spec.adapter.data_paths(chain, input_data.data_paths)
+                dataset_paths: dict[str, list[str]] = (
+                    blockbatch_request.data_paths_keyed_by_logical_path(
+                        chain,
+                        input_data.data_paths,
+                    )
+                )
 
                 obj = DataReader(
                     partitions=Partition.from_tuples(
@@ -106,7 +101,7 @@ def are_inputs_ready(
     dateval: date,
     root_paths_to_check: Iterable[str],
     storage_location: DataLocation,
-) -> IngestionData:
+) -> BlockBatchRequestData:
     """Decide if the input data for a given date is complete.
 
     If the input data is complete, returns a map from root_path to list of parquet
@@ -142,7 +137,7 @@ def are_inputs_ready(
             is_activation_date=is_activation,
         )
         if not dataset_ready:
-            return IngestionData(
+            return BlockBatchRequestData(
                 is_complete=False,
                 data_paths=None,
             )
@@ -153,7 +148,7 @@ def are_inputs_ready(
 
         dataset_paths[root_path] = sorted(set(parquet_paths))
 
-    return IngestionData(
+    return BlockBatchRequestData(
         is_complete=True,
         data_paths=dataset_paths,
     )

@@ -12,10 +12,12 @@ from op_analytics.coreutils.partitioned.partition import (
     Partition,
     PartitionMetadata,
 )
-from op_analytics.datapipeline.etl.ingestion.reader.markers import IngestionDataSpec
+from op_analytics.coreutils.rangeutils.timerange import TimeRange
+from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
+from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 from op_analytics.coreutils.time import now
 
-MARKERS_TABLE = "raw_onchain_ingestion_markers"
+MARKERS_TABLE = "blockbatch_markers"
 
 
 def test_marker():
@@ -74,7 +76,7 @@ def test_marker():
 
     result = (
         run_query_duckdb_local(
-            "SELECT * FROM etl_monitor_dev.raw_onchain_ingestion_markers WHERE chain = 'DUMMYCHAIN'"
+            "SELECT * FROM etl_monitor_dev.blockbatch_markers WHERE chain = 'DUMMYCHAIN'"
         )
         .pl()
         .to_dicts()
@@ -126,13 +128,20 @@ def test_marker():
     )
     assert exists
 
-    data_spec = IngestionDataSpec(
+    data_spec = BlockBatchRequest(
         chains=["DUMMYCHAIN"],
-        root_paths_to_read=["ingestion/blocks_v1"],
+        root_paths_to_read=[RootPath.of("ingestion/blocks_v1")],
+        time_range=TimeRange(
+            min=datetime.datetime(2024, 10, 25),
+            max=datetime.datetime(2024, 10, 26),
+            requested_max_timestamp=None,
+        ),
+        # The following arguments are not relevant for this test.
+        chain_block_ranges={},
+        chain_max_blocks={},
     )
     markers_df = data_spec.query_markers(
-        datevals=[datetime.date(2024, 10, 25)],
-        read_from=DataLocation.LOCAL,
+        location=DataLocation.LOCAL,
     )
 
     assert len(markers_df) == 1
@@ -142,12 +151,19 @@ def test_marker():
         == "ingestion/blocks_v1/chain=DUMMYCHAIN/dt=2024-10-25/000011540000.parquet"
     )
 
-    data_spec = IngestionDataSpec(
+    data_spec = BlockBatchRequest(
         chains=["DUMMYCHAIN"],
-        root_paths_to_read=["ingestion/transactions_v1"],
+        root_paths_to_read=[RootPath.of("ingestion/transactions_v1")],
+        time_range=TimeRange(
+            min=datetime.datetime(2000, 1, 1),
+            max=datetime.datetime(2000, 1, 2),
+            requested_max_timestamp=None,
+        ),
+        # The following arguments are not relevant for this test.
+        chain_block_ranges={},
+        chain_max_blocks={},
     )
     markers_df = data_spec.query_markers(
-        datevals=[datetime.date(2024, 10, 25)],
-        read_from=DataLocation.LOCAL,
+        location=DataLocation.LOCAL,
     )
     assert len(markers_df) == 0

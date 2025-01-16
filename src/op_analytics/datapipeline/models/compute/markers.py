@@ -1,54 +1,28 @@
-from dataclasses import dataclass
-from datetime import date
+from dataclasses import dataclass, field
 
-import polars as pl
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.dataaccess import init_data_access
-from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.datapipeline.chains.testnets import TestnetRootPathAdapter
 from op_analytics.datapipeline.models.compute.model import PythonModel
+from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 
 log = structlog.get_logger()
 
 
 @dataclass
 class ModelsDataSpec:
-    chains: list[str]
     models: list[str]
-    markers_table: str
-    root_path_prefix: str
+
+    input_root_paths: list[RootPath] = field(init=False, default_factory=list)
+    output_root_paths: list[RootPath] = field(init=False, default_factory=list)
 
     def __post_init__(self):
-        root_paths_to_read = []
         for _ in self.models:
             model: PythonModel = PythonModel.get(_)
+
             for output_dataset in model.expected_output_datasets:
-                root_paths_to_read.append(f"{self.root_path_prefix}/{model.name}/{output_dataset}")
+                self.output_root_paths.append(
+                    RootPath.of(root_path=f"blockbatch/{model.name}/{output_dataset}")
+                )
 
-        self.adapter = TestnetRootPathAdapter(
-            chains=self.chains,
-            root_path_prefix=self.root_path_prefix,
-            root_paths_to_read=root_paths_to_read,
-        )
-
-    def query_markers(
-        self,
-        datevals: list[date],
-        read_from: DataLocation,
-    ) -> pl.DataFrame:
-        """Query completion markers for a list of dates and chains.
-
-        Returns a dataframe with the markers and all of the parquet output paths
-        associated with them.
-        """
-        client = init_data_access()
-
-        return client.query_markers_by_root_path(
-            chains=self.chains,
-            datevals=datevals,
-            data_location=read_from,
-            root_paths=self.adapter.root_paths_query_filter(),
-            markers_table=self.markers_table,
-            extra_columns=[],
-        )
+            for input_dataset in model.input_datasets:
+                self.input_root_paths.append(RootPath.of(input_dataset))

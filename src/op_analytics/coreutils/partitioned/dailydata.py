@@ -1,20 +1,22 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from enum import Enum
 from functools import cache
 
-import clickhouse_connect
 import polars as pl
 import pyarrow as pa
 
-from op_analytics.coreutils.clickhouse.client import new_client
-from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
+from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
+from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
+from op_analytics.coreutils.clickhouse.oplabs import (
+    insert_oplabs,
+    run_query_oplabs,
+)
 from op_analytics.coreutils.duckdb_inmem import EmptyParquetData
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.env.aware import is_bot
-from op_analytics.coreutils.env.vault import env_get
 from op_analytics.coreutils.logger import human_rows, human_size, structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
-from op_analytics.coreutils.time import date_fromstr
+from op_analytics.coreutils.time import date_fromstr, date_tostr
 
 from .breakout import breakout_partitions
 from .dataaccess import DateFilter, MarkerFilter, init_data_access
@@ -147,6 +149,10 @@ class DailyDataset(str, Enum):
     See for example: DefiLlama, GrowThePie
     """
 
+    @classmethod
+    def all_tables(cls) -> list["DailyDataset"]:
+        return list(cls.__members__.values())
+
     @property
     def db(self):
         return self.__class__.__name__.lower()
@@ -161,8 +167,8 @@ class DailyDataset(str, Enum):
 
     def read(
         self,
-        min_date: str | None = None,
-        max_date: str | None = None,
+        min_date: str | date | None = None,
+        max_date: str | date | None = None,
         date_range_spec: str | None = None,
     ) -> str:
         """Load date partitioned defillama dataset from the specified location.
@@ -171,6 +177,12 @@ class DailyDataset(str, Enum):
 
         The name of the registered view is returned.
         """
+        if isinstance(min_date, date):
+            min_date = date_tostr(min_date)
+
+        if isinstance(max_date, date):
+            max_date = date_tostr(max_date)
+
         location = DataLocation.GCS
 
         log.info(
@@ -203,51 +215,7 @@ class DailyDataset(str, Enum):
             self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
         )
 
-        gcs_path = paths[0].replace("gs://", "https://storage.googleapis.com/")
-        log.info(f"using gcs path: {gcs_path}")
-
-        KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
-        SECRET = env_get("GCS_HMAC_SECRET")
-        statement = f"""
-        CREATE TEMPORARY TABLE new_table AS (
-            SELECT *,
-            FROM s3(
-                '{gcs_path}',
-                '{KEY_ID}',
-                '{SECRET}',
-                'parquet'
-            )
-        )
-        """
-
-        clickhouse_connect.common.set_setting("autogenerate_session_id", True)
-        clt = new_client("OPLABS")
-        clickhouse_connect.common.set_setting("autogenerate_session_id", False)
-        clt.command(statement)
-
-        df: pl.DataFrame = pl.from_arrow(clt.query_arrow("DESCRIBE new_table"))  # type: ignore
-        schema = df.select("name", "type").to_dicts()
-
-        # Build column definitions
-        columns = []
-        for col in schema:
-            col_name = col["name"]
-            col_type = col["type"]
-
-            columns.append(f"`{col_name}` {col_type}")
-
-        # Join columns with commas
-        columns_str = ",\n    ".join(columns)
-
-        # Build full CREATE TABLE statement
-        ddl = f"""CREATE TABLE IF NOT EXISTS {self.db}.{self.table}
-    (
-        {columns_str}
-    )
-    ENGINE = ReplacingMergeTree
-    """
-
-        print(ddl)
+        infer_schema_from_parquet(paths[0], dummy_name=f"{self.db}.{self.table}")
 
     def insert_to_clickhouse(
         self,
@@ -298,8 +266,51 @@ class DailyDataset(str, Enum):
         rel = duckdb_ctx.client.sql(f"SELECT * FROM {fundamentals}")
         query_summary = insert_oplabs(database=db, table=table, df_arrow=rel.arrow())
 
-        log.info(
-            "insert summary",
+        summary_dict = dict(
             written_bytes=human_size(query_summary.written_bytes()),
             written_rows=human_rows(query_summary.written_rows),
         )
+
+        log.info("insert summary", **summary_dict)
+
+        return {self.root_path: summary_dict}
+
+    @property
+    def clickhouse_external_db_name(self):
+        return f"{self.db}_gcs"
+
+    def create_clickhouse_view(self) -> None:
+        return create_gcs_view(
+            db_name=self.clickhouse_external_db_name,
+            table_name=self.table,
+            partition_selection="CAST(dt as Date) AS dt, ",
+            gcs_glob_path=f"{self.root_path}/dt=*/out.parquet",
+        )
+
+
+def last_n_dts(n_dates: int, reference_dt: str) -> list[date]:
+    """Produce a list of N dates starting from reference_dt.
+
+    The reference_dt will be included in the list results.
+    """
+    max_date = date_fromstr(reference_dt) + timedelta(days=1)
+    return DateRange(
+        min=max_date - timedelta(days=n_dates),
+        max=max_date,
+        requested_max_timestamp=None,
+    ).dates()
+
+
+def last_n_days(
+    df: pl.DataFrame, n_dates: int, reference_dt: str, date_column: str = "dt"
+) -> pl.DataFrame:
+    """Limit dataframe to the last N dates present in the data.
+
+    This function is helpful when doing a dynamic partition overwrite. It allows us
+    to select only recent partitions to update.
+
+    Usually operates on partitioned datasets so the default date_column is "dt". If
+    needed for other purposes callers can specify a different date_column name.
+    """
+    dts = last_n_dts(n_dates=n_dates, reference_dt=reference_dt)
+    return df.filter(pl.col(date_column).is_in(dts))

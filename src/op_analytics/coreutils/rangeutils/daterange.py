@@ -17,7 +17,7 @@ class DateRange:
     min: date  # inclusive
     max: date  # exclusive
 
-    max_requested_timestamp: int | None
+    requested_max_timestamp: int | None = None
 
     def __len__(self):
         diff = self.max - self.min
@@ -54,7 +54,7 @@ class DateRange:
             return cls(
                 min=date.fromisoformat(min_str),
                 max=max_date,
-                max_requested_timestamp=date_toepoch(max_date),
+                requested_max_timestamp=date_toepoch(max_date),
             )
 
         if plusstr := PLUS_RE.fullmatch(date_range_spec):
@@ -65,7 +65,7 @@ class DateRange:
             return cls(
                 min=min_val,
                 max=max_date,
-                max_requested_timestamp=date_toepoch(max_date),
+                requested_max_timestamp=date_toepoch(max_date),
             )
 
         if mdaysstr := MDAYS_RE.fullmatch(date_range_spec):
@@ -77,7 +77,7 @@ class DateRange:
             return cls(
                 min=max_val - timedelta(days=num_days),
                 max=max_val,
-                max_requested_timestamp=None,  # the max was not explicitly requested
+                requested_max_timestamp=None,  # the max was not explicitly requested
             )
 
         raise NotImplementedError()

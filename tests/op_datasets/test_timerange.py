@@ -10,7 +10,7 @@ def test_daterange_01():
     assert dr == TimeRange(
         min=datetime.datetime(2024, 10, 1),
         max=datetime.datetime(2024, 10, 30),
-        max_requested_timestamp=1730246400,
+        requested_max_timestamp=1730246400,
     )
 
 
@@ -23,7 +23,7 @@ def test_daterange_02():
     assert dr == TimeRange(
         min=datetime.datetime(2024, 11, 16, 17, 30),
         max=datetime.datetime(2024, 11, 17, 5, 30),
-        max_requested_timestamp=None,
+        requested_max_timestamp=None,
     )
 
 
@@ -32,14 +32,14 @@ def test_to_daterange_01():
     assert tr == TimeRange(
         min=datetime.datetime(2024, 10, 1),
         max=datetime.datetime(2024, 10, 30),
-        max_requested_timestamp=1730246400,
+        requested_max_timestamp=1730246400,
     )
 
     dr = tr.to_date_range()
     assert dr == DateRange(
         min=datetime.date(2024, 10, 1),
-        max=datetime.date(2024, 10, 31),
-        max_requested_timestamp=1730332800,
+        max=datetime.date(2024, 10, 30),
+        requested_max_timestamp=1730246400,
     )
 
 
@@ -48,14 +48,14 @@ def test_to_daterange_02():
     tr = TimeRange(
         min=datetime.datetime(2024, 10, 1, 12, 50),
         max=datetime.datetime(2024, 10, 28, 23, 45),
-        max_requested_timestamp=int(max_dt.timestamp()),
+        requested_max_timestamp=int(max_dt.timestamp()),
     )
 
     dr = tr.to_date_range()
     assert dr == DateRange(
         min=datetime.date(2024, 10, 1),
         max=datetime.date(2024, 10, 29),
-        max_requested_timestamp=1730160000,
+        requested_max_timestamp=1730159100,
     )
 
     assert dr.dates() == [

@@ -15,7 +15,7 @@ def breakout_partitions(
 
     The data in each partition will be written to storage as a separate parquet file.
     """
-    parts = df.select(*partition_cols).unique().to_dicts()
+    parts = df.select(*partition_cols).unique().sort(*partition_cols).to_dicts()
 
     if len(df) == 0:
         assert default_partitions is not None

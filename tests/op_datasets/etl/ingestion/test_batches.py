@@ -1,7 +1,7 @@
 import pytest
 
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.rangeutils.blockrange import BlockRange
+from op_analytics.coreutils.rangeutils.blockrange import BlockRange, ChainMaxBlock
 from op_analytics.datapipeline.etl.ingestion.batches import (
     BlockBatch,
     Delimiter,
@@ -159,7 +159,8 @@ def test_expected_markers():
     batches = split_block_range_from_boundaries(chain="op", boundaries=boundaries, block_range=br)
 
     task = new_task(
-        max_requested_timestamp=None,
+        chain_max_block=ChainMaxBlock(chain="op", ts=0, number=0),
+        requested_max_timestamp=None,
         block_batch=batches[0],
         read_from=RawOnchainDataProvider.GOLDSKY,
         write_to=DataLocation.DISABLED,
@@ -214,7 +215,8 @@ def test_expected_markers_testnet():
     )
 
     task = new_task(
-        max_requested_timestamp=None,
+        chain_max_block=ChainMaxBlock(chain="op_sepolia", ts=0, number=0),
+        requested_max_timestamp=None,
         block_batch=batches[0],
         read_from=RawOnchainDataProvider.GOLDSKY,
         write_to=DataLocation.DISABLED,

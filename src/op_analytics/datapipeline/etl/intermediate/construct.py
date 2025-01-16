@@ -6,39 +6,18 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
-from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determine_network
 from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_readers_bydate
+from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
 from op_analytics.datapipeline.models.compute.execute import PythonModel
+from op_analytics.datapipeline.models.compute.markers import ModelsDataSpec
 
-from .reader.markers import INTERMEDIATE_MARKERS_TABLE, make_data_spec
 from .task import IntermediateModelsTask
 
 log = structlog.get_logger()
 
 
-def construct_data_readers(
-    chains: list[str],
-    models: list[str],
-    range_spec: str,
-    read_from: DataLocation,
-) -> list[DataReader]:
-    """Construct data readers for a list of models.
-
-    This function is exposed only so it can be used as part of a notebook.
-    """
-    model_objs = [PythonModel.get(_) for _ in models]
-
-    input_datasets = set()
-    for _ in model_objs:
-        input_datasets.update(_.input_datasets)
-
-    return construct_readers_bydate(
-        chains=chains,
-        range_spec=range_spec,
-        read_from=read_from,
-        root_paths_to_read=sorted(input_datasets),
-    )
+INTERMEDIATE_MARKERS_TABLE = "intermediate_model_markers"
 
 
 def construct_tasks(
@@ -53,24 +32,36 @@ def construct_tasks(
     While constructing tasks we also go ahead and load the model definitions and create the
     shared duckdb macros that are used across models.
     """
-    model_objs = [PythonModel.get(_) for _ in models]
+    data_spec = ModelsDataSpec(models=models)
 
-    readers: list[DataReader] = construct_data_readers(
+    # Prepare the request for input data.
+    blockbatch_request = BlockBatchRequest.build(
         chains=chains,
-        models=models,
         range_spec=range_spec,
+        root_paths_to_read=data_spec.input_root_paths,
+    )
+
+    readers: list[DataReader] = construct_readers_bydate(
+        blockbatch_request=blockbatch_request,
         read_from=read_from,
     )
 
-    # Pre-fetch completion markers so we can skip completed tasks.
-    data_spec = make_data_spec(chains=chains, models=models)
-    output_markers_df = data_spec.query_markers(
-        datevals=DateRange.from_spec(range_spec).dates(),
-        read_from=write_to,
+    # Prepare a request for output data to pre-fetch completion markers.
+    # Markers are used to skip already completed tasks.
+    output_blockbatch_request = BlockBatchRequest.build(
+        chains=chains,
+        range_spec=range_spec,
+        root_paths_to_read=data_spec.output_root_paths,
     )
+    output_markers_df = output_blockbatch_request.query_markers(
+        location=write_to,
+        markers_table=INTERMEDIATE_MARKERS_TABLE,
+    )
+
     unique_chains = output_markers_df["chain"].n_unique()
     log.info(f"pre-fetched {len(output_markers_df)} markers for {unique_chains} chains")
 
+    model_objs = [PythonModel.get(_) for _ in models]
     tasks = []
     for reader in readers:
         for model_obj in model_objs:

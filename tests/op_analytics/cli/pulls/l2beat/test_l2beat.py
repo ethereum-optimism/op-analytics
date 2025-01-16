@@ -4,7 +4,7 @@ from unittest.mock import patch
 import polars as pl
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 
-from op_analytics.cli.subcommands.pulls import l2beat
+from op_analytics.datasources import l2beat
 
 TESTDATA = InputTestData.at(__file__)
 
@@ -37,7 +37,7 @@ def mock_get_data(session, url):
     raise NotImplementedError({url})
 
 
-@patch("op_analytics.cli.subcommands.pulls.l2beat.get_data", mock_get_data)
+@patch("op_analytics.datasources.l2beat.get_data", mock_get_data)
 def test_extract():
     actual = l2beat.pull_l2beat()
     summary_df = actual["summary"]

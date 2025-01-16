@@ -10,6 +10,8 @@ from op_analytics.coreutils.partitioned.paths import get_dt, get_root_path
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.time import date_fromstr
 from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_readers_bydate
+from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
+from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
 
 from .loader import BQLoader, BQOutputData
 from .task import DateLoadTask
@@ -30,9 +32,20 @@ def construct_date_load_tasks(
     Readers are built for each chain/date pair. We go over them collecting all the data that
     needs to be loaded from all chains for each date.
     """
-    readers: list[DataReader] = construct_readers_bydate(
+    # Prepare the request for input data.
+    blockbatch_request = BlockBatchRequest.build(
         chains=chains,
         range_spec=range_spec,
+        root_paths_to_read=[
+            RootPath.of("ingestion/blocks_v1"),
+            RootPath.of("ingestion/logs_v1"),
+            RootPath.of("ingestion/traces_v1"),
+            RootPath.of("ingestion/transactions_v1"),
+        ],
+    )
+
+    readers: list[DataReader] = construct_readers_bydate(
+        blockbatch_request=blockbatch_request,
         read_from=DataLocation.GCS,
     )
 

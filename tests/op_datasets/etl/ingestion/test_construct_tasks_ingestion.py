@@ -7,7 +7,7 @@ import pyarrow as pa
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
-from op_analytics.coreutils.rangeutils.blockrange import BlockRange
+from op_analytics.coreutils.rangeutils.blockrange import BlockRange, ChainMaxBlock
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.etl.ingestion.construct import construct_tasks
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
@@ -35,11 +35,13 @@ def make_dataframe(path: str):
 
 def test_construct():
     with (
-        patch("op_analytics.datapipeline.etl.ingestion.construct.block_range_for_dates") as m1,
-        patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m2,
+        patch("op_analytics.datapipeline.etl.ingestion.reader.ranges.block_range_for_dates") as m1,
+        patch("op_analytics.datapipeline.etl.ingestion.reader.ranges.chain_max_block") as m2,
+        patch("op_analytics.coreutils.partitioned.markers_clickhouse.run_query_oplabs") as m3,
     ):
         m1.return_value = BlockRange(min=16421809, max=16439980)
-        m2.return_value = make_dataframe("ingestion_mode_markers_padded_dates.json")
+        m2.return_value = ChainMaxBlock(chain="mode", ts=1736362200, number=18097309)
+        m3.return_value = make_dataframe("ingestion_mode_markers_padded_dates.json")
 
         tasks = construct_tasks(
             chains=["mode"],
@@ -50,7 +52,8 @@ def test_construct():
 
     assert tasks == [
         IngestionTask(
-            max_requested_timestamp=1733097600,
+            chain_max_block=ChainMaxBlock(chain="mode", ts=1736362200, number=18097309),
+            requested_max_timestamp=1733097600,
             block_batch=BlockBatch(chain="mode", min=16416000, max=16424000),
             read_from=RawOnchainDataProvider.GOLDSKY,
             input_dataframes={},
@@ -70,7 +73,7 @@ def test_construct():
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
                 ],
-                markers_table="raw_onchain_ingestion_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="ingestion/blocks_v1",
@@ -103,7 +106,8 @@ def test_construct():
             progress_indicator="",
         ),
         IngestionTask(
-            max_requested_timestamp=1733097600,
+            chain_max_block=ChainMaxBlock(chain="mode", ts=1736362200, number=18097309),
+            requested_max_timestamp=1733097600,
             block_batch=BlockBatch(chain="mode", min=16424000, max=16432000),
             read_from=RawOnchainDataProvider.GOLDSKY,
             input_dataframes={},
@@ -123,7 +127,7 @@ def test_construct():
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
                 ],
-                markers_table="raw_onchain_ingestion_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="ingestion/blocks_v1",
@@ -156,7 +160,8 @@ def test_construct():
             progress_indicator="",
         ),
         IngestionTask(
-            max_requested_timestamp=1733097600,
+            chain_max_block=ChainMaxBlock(chain="mode", ts=1736362200, number=18097309),
+            requested_max_timestamp=1733097600,
             block_batch=BlockBatch(chain="mode", min=16432000, max=16440000),
             read_from=RawOnchainDataProvider.GOLDSKY,
             input_dataframes={},
@@ -176,7 +181,7 @@ def test_construct():
                     pa.field("min_block", pa.int64()),
                     pa.field("max_block", pa.int64()),
                 ],
-                markers_table="raw_onchain_ingestion_markers",
+                markers_table="blockbatch_markers",
                 expected_outputs=[
                     ExpectedOutput(
                         root_path="ingestion/blocks_v1",

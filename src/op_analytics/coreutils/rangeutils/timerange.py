@@ -16,7 +16,7 @@ class TimeRange:
     min: datetime  # inclusive
     max: datetime  # exclusive
 
-    max_requested_timestamp: int | None
+    requested_max_timestamp: int | None
 
     @property
     def min_ts(self) -> int:
@@ -33,7 +33,7 @@ class TimeRange:
             return cls(
                 min=datetime_fromdate(date_range.min),
                 max=datetime_fromdate(date_range.max),
-                max_requested_timestamp=date_range.max_requested_timestamp,
+                requested_max_timestamp=date_range.requested_max_timestamp,
             )
 
         except NotImplementedError:
@@ -45,16 +45,24 @@ class TimeRange:
                 return cls(
                     min=max_val - timedelta(hours=num_hours),
                     max=max_val,
-                    max_requested_timestamp=None,  # the max was not explicitly requested
+                    requested_max_timestamp=None,  # the max was not explicitly requested
                 )
 
         raise NotImplementedError()
 
     def to_date_range(self) -> "DateRange":
-        max_date = self.max.date() + timedelta(days=1)
+        if datetime_fromdate(self.max.date()) == self.max:
+            max_date = self.max.date()
+        else:
+            max_date = self.max.date() + timedelta(days=1)
+
+        if self.requested_max_timestamp is not None:
+            requested_max = self.requested_max_timestamp
+        else:
+            requested_max = None
 
         return DateRange(
             min=self.min.date(),
             max=max_date,
-            max_requested_timestamp=datetime_toepoch(datetime_fromdate(max_date)),
+            requested_max_timestamp=requested_max,
         )

@@ -7,19 +7,16 @@ from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.partition import Partition
 from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.datapipeline.chains.activation import is_chain_active
 
-from .markers import IngestionData, IngestionDataSpec
+from .request import BlockBatchRequest, BlockBatchRequestData
 
 log = structlog.get_logger()
 
 
 def construct_readers_byblock(
-    chains: list[str],
-    range_spec: str,
+    blockbatch_request: BlockBatchRequest,
     read_from: DataLocation,
-    root_paths_to_read: list[str],
 ) -> list[DataReader]:
     """Construct a list of DataReader for the given parameters.
 
@@ -31,17 +28,8 @@ def construct_readers_byblock(
 
     Readers can be used for processing by block batch.
     """
-    date_range = DateRange.from_spec(range_spec)
 
-    data_spec = IngestionDataSpec(
-        chains=chains,
-        root_paths_to_read=root_paths_to_read,
-    )
-
-    markers_df = data_spec.query_markers(
-        datevals=date_range.dates(),
-        read_from=read_from,
-    )
+    markers_df = blockbatch_request.query_markers(location=read_from)
 
     readers: list[DataReader] = []
     for (chain, dateval, min_block), group_df in markers_df.group_by("chain", "dt", "min_block"):
@@ -56,12 +44,17 @@ def construct_readers_byblock(
             # Check if all markers present are ready.
             input_data = is_batch_ready(
                 markers_df=group_df,
-                root_paths_to_check=data_spec.adapter.root_paths_physical(chain),
+                root_paths_to_check=blockbatch_request.physical_root_paths_for_chain(chain),
                 storage_location=read_from,
             )
 
             # Update data path mapping so keys are logical paths.
-            dataset_paths = data_spec.adapter.data_paths(chain, input_data.data_paths)
+            dataset_paths: dict[str, list[str]] = (
+                blockbatch_request.data_paths_keyed_by_logical_path(
+                    chain,
+                    input_data.data_paths,
+                )
+            )
 
             extra_columns_df = group_df.select("num_blocks", "min_block", "max_block").unique()
             assert len(extra_columns_df) == 1
@@ -95,7 +88,7 @@ def is_batch_ready(
     markers_df: pl.DataFrame,
     root_paths_to_check: Iterable[str],
     storage_location: DataLocation,
-) -> IngestionData:
+) -> BlockBatchRequestData:
     """Decide if the input data for a given block batch is complete.
 
     If the input data is complete, returns a map from root_path to list of parquet
@@ -121,7 +114,7 @@ def is_batch_ready(
         dataset_df = markers_df.filter(pl.col("root_path") == root_path)
 
         if dataset_df.is_empty():
-            return IngestionData(
+            return BlockBatchRequestData(
                 is_complete=False,
                 data_paths=None,
             )
@@ -132,7 +125,7 @@ def is_batch_ready(
 
         dataset_paths[root_path] = sorted(set(parquet_paths))
 
-    return IngestionData(
+    return BlockBatchRequestData(
         is_complete=True,
         data_paths=dataset_paths,
     )

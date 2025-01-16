@@ -1,0 +1,43 @@
+# syntax=docker/dockerfile:1.9
+FROM python:3.12-slim-bookworm
+
+
+# Install tiny (add more system packages here if needed)
+RUN <<EOT
+apt-get update -qy
+apt-get install -qyy \
+    -o APT::Install-Recommends=false \
+    -o APT::Install-Suggests=false \
+    tini
+
+apt-get clean
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+EOT
+
+
+# Install dependencies
+COPY dummydeps/pyproject.toml /_dummydeps/pyproject.toml
+RUN --mount=type=cache,target=/root/.cache <<EOT
+cd /_dummydeps
+pip install .
+EOT
+
+
+# Install dagster
+RUN pip install \
+    dagster==1.9.6 \
+    dagster-postgres \
+    dagster-aws \
+    dagster-k8s \
+    dagster-celery[flower,redis,kubernetes] \
+    dagster-celery-k8s
+
+
+# Install the package
+COPY dist/ /_dist/
+RUN --mount=type=cache,target=/root/.cache <<EOT
+cd /_dist
+pip install *.whl
+EOT
+
+
