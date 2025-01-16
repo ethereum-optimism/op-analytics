@@ -30,7 +30,7 @@ def token_transfers(
         },
     )
 
-    erc20_transfers = all_transfers.filter("token_id IS NULL")
+    erc20_transfers = all_transfers.filter("token_id IS NULL").project("* EXCLUDE token_id")
 
     erc721_transfers = all_transfers.filter("token_id IS NOT NULL")
 
