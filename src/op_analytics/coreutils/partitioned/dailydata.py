@@ -16,7 +16,7 @@ from op_analytics.coreutils.duckdb_inmem.client import init_client, register_par
 from op_analytics.coreutils.env.aware import is_bot
 from op_analytics.coreutils.logger import human_rows, human_size, structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
-from op_analytics.coreutils.time import date_fromstr
+from op_analytics.coreutils.time import date_fromstr, date_tostr
 
 from .breakout import breakout_partitions
 from .dataaccess import DateFilter, MarkerFilter, init_data_access
@@ -167,8 +167,8 @@ class DailyDataset(str, Enum):
 
     def read(
         self,
-        min_date: str | None = None,
-        max_date: str | None = None,
+        min_date: str | date | None = None,
+        max_date: str | date | None = None,
         date_range_spec: str | None = None,
     ) -> str:
         """Load date partitioned defillama dataset from the specified location.
@@ -177,6 +177,12 @@ class DailyDataset(str, Enum):
 
         The name of the registered view is returned.
         """
+        if isinstance(min_date, date):
+            min_date = date_tostr(min_date)
+
+        if isinstance(max_date, date):
+            max_date = date_tostr(max_date)
+
         location = DataLocation.GCS
 
         log.info(
