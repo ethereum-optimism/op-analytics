@@ -8,6 +8,7 @@ metadata:
     component: models-blockbatch
 spec:
   schedule: "32 * * * *"  # Runs every hour at minute 32
+  concurrencyPolicy: Forbid 
   jobTemplate:
     spec:
       template:
@@ -16,7 +17,7 @@ spec:
           containers:
           - name: python-runner
             imagePullPolicy: IfNotPresent
-            image: ghcr.io/lithium323/op-analytics:v20250114.1
+            image: ghcr.io/lithium323/op-analytics:v20250115.2
             command: ["tini", "-v", "--", "opdata"]
             args: ["chains", "noargs_blockbatch"]
             env:

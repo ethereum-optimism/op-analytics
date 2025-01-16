@@ -19,15 +19,19 @@ $ kubectl create secret tls dagster-cert-tls --cert=cert.crt --key=cert.key -n d
 $ kubectl apply -f helm/dagster/ingressroute.yaml -n dagster
 ```
 
-To provide access to secrets from job kubernetes pods we created a service account 
-and secret provider.
+To provide access to secrets from job kubernetes pods we created a secret provider.
 ```
 $ kubectl apply -f helm/dagster/secret-provider.yaml
-$ kubectl apply -f helm/dagster/service-account.yaml
 ```
 
-Refer to the Google Cloud documentation for more information on how to grant secrets access to
-a kubernetes service account.
+Dagster pods run under the "dagster-dagster-user-deployments-user-deployments", so we
+went ahead and granted secrets access to that service account:
+
+Refer to the [Google Cloud documentation](https://cloud.google.com/secret-manager/docs/secret-manager-managed-csi-component#identify-secrets) 
+for more information on how to grant secrets access to a kubernetes service account.
+
+The command used is `gcloud secrets add-iam-policy-binding`.
+
 
 # Updating the dagster helm chart
 

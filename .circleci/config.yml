@@ -11,7 +11,6 @@ parameters:
     enum:
       [
         "select_job",
-        "run_daily_api_upload",
         "daily_l2_aggregate_later_loads",
         "daily_l2_chain_data_uploads",
         "deploy_github_pages",
@@ -207,32 +206,10 @@ jobs:
           force-push: true
           src-pages-dir: /tmp/docs
 
-  daily-uploads-other-tasks:
-    machine:
-      image: ubuntu-2004:current
-    steps:
-      - checkout-dep-1
-      - setup-python-env
-      - run:
-          name: L2Beat
-          command: uv run opdata pulls l2beat
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
 
 workflows:
   version: 2
-  run-daily-api-uploads:
-    when:
-      or:
-        - equal: [<< pipeline.parameters.run_job >>, "run_daily_api_upload"]
-        - equal: [<< pipeline.schedule.name >>, "run_daily_api_upload"]
-    jobs:
-      - daily-uploads-other-tasks:
-          context: op-analytics
-          filters:
-            branches:
-              only: main
+
 
   daily-l2-aggregate-later-loads:
     when:

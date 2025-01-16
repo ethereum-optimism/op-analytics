@@ -61,6 +61,7 @@ def run_tasks(
     dryrun: bool,
     force_complete: bool = False,
     fork_process: bool = True,
+    use_pool: bool = False,
     num_processes: int = 1,
 ):
     if dryrun:
@@ -68,14 +69,41 @@ def run_tasks(
         return
 
     if fork_process:
-        executed, success, failure = run_pool(
-            num_processes=num_processes,
-            tasks=tasks,
-            force_complete=force_complete,
-        )
+        if use_pool:
+            executed, success, failure = run_pool(
+                num_processes=num_processes,
+                tasks=tasks,
+                force_complete=force_complete,
+            )
+        else:
+            executed = 0
+            success = 0
+            failure = 0
+            for item in pending_items(tasks, force_complete=force_complete):
+                ctx = mp.get_context("spawn")
+                p = ctx.Process(target=steps, args=(item,))
+                p.start()
+                try:
+                    p.join()
+                except KeyboardInterrupt:
+                    log.info("Keyboard interrupt received. Terminating spawned process")
+                    p.terminate()
+                    p.join()
+                    raise
+
+                if p.exitcode != 0:
+                    log.error("task", status="fail", exitcode=p.exitcode)
+                    failure += 1
+                else:
+                    log.info("task", status="success", exitcode=0)
+                    success += 1
+
+                executed += 1
 
     else:
         executed = 0
+        success = 0
+        failure = 0
         for item in pending_items(tasks, force_complete=force_complete):
             steps(item)
             executed += 1
