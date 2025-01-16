@@ -21,12 +21,38 @@ def chain_metadata(context: OpExecutionContext):
 
 @asset
 def blockbatch_views():
-    """Clickhouse external tables over GCS data:
+    """Clickhouse parameterized views over GCS data.
 
+    Example usage:
+
+    ```
+    SELECT * FROM blockbatch_gcs.models(
+        model='refined_traces',
+        output='refined_traces_fees_v1',
+        chain='op',
+        dt='2025-01-14'
+    )
+    LIMIT 10
+    SETTINGS use_hive_partitioning = 1
+    ```
+
+    NOTE: The "use_hive_partitioning = 1" is required or else the dt and chain columns
+    will not be availble in the result.
+    """
+    from op_analytics.coreutils.clickhouse.gcsview import create_blockbatch_models_gcs_view
+
+    create_blockbatch_models_gcs_view()
+
+
+@asset
+def blockbatch_views_bq():
+    """BigQuery external tables over GCS data:
+
+    - blockbatch_gcs.create_traces_v1
     - blockbatch_gcs.refined_transactions_fees_v1
     - blockbatch_gcs.refined_traces_fees_v1
     """
-    from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
+    from op_analytics.coreutils.bigquery.gcsview import create_gcs_view
 
     MODEL_OUTPUTS = [
         ("contract_creation", "create_traces_v1"),
@@ -36,8 +62,8 @@ def blockbatch_views():
 
     for model, output in MODEL_OUTPUTS:
         create_gcs_view(
-            db_name="blockbatch_gcs",
+            db_name="gcs_blockbatch",
             table_name=f"{model}__{output}",
-            partition_selection="chain, CAST(dt as Date) AS dt, ",
-            gcs_glob_path=f"blockbatch/{model}/{output}/chain=*/dt=*/*.parquet",
+            partition_columns="chain STRING, dt DATE",
+            partition_prefix=f"blockbatch/{model}/{output}",
         )

@@ -40,9 +40,11 @@ def create_schedule_for_group(
             name=f"{group}_job",
             selection=AssetSelection.groups(group),
             custom_config=OPK8sConfig(
+                mem_request="2Gi",
+                mem_limit="4Gi",
                 labels={
                     "op-analytics-dagster-group": group,
-                }
+                },
             ),
         ),
         cron_schedule=cron_schedule,
