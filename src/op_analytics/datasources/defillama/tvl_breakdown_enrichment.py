@@ -99,11 +99,11 @@ class DefillamaTVLBreakdown:
             how="inner",
         )
 
-        # data_quality_check(
-        #     df_tvl_breakdown=df_tvl_breakdown,
-        #     min_date=min_date,
-        #     max_date=max_date,
-        # )
+        data_quality_check(
+            df_tvl_breakdown=df_tvl_breakdown,
+            min_date=min_date,
+            max_date=max_date,
+        )
 
         return cls(df_tvl_breakdown=df_tvl_breakdown)
 
