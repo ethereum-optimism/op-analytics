@@ -9,8 +9,8 @@ SELECT
     ,l.transaction_index
     ,l.log_index
     ,l.address AS contract_address
-    ,l.data.hex_to_lossy() AS amount
-    ,l.data.hex_to_lossless() AS amount_lossless
+    ,case when array_length(indexed_args) = 2 then l.data.hex_to_lossy() else null end AS amount
+    ,case when array_length(indexed_args) = 2 then l.data.hex_to_lossless() else null end AS amount_lossless
     ,indexed_event_arg_to_address(indexed_args[1]) AS from_address
     ,indexed_event_arg_to_address(indexed_args[2]) AS to_address
     ,hex_to_lossless(indexed_args[3]) AS token_id
