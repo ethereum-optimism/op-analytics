@@ -22,13 +22,13 @@ sys.path.pop()
 import time
 
 
-# In[ ]:
+# In[2]:
 
 
 table_name = 'superchain_tokenlist'
 
 
-# In[ ]:
+# In[3]:
 
 
 url_content = [
@@ -38,7 +38,7 @@ url_content = [
 ]
 
 
-# In[ ]:
+# In[4]:
 
 
 df_list = []
@@ -63,6 +63,8 @@ df = pd.concat(df_list, ignore_index=True)
 # In[ ]:
 
 
+df['og_address'] = df['address']
+df['address'] = df['address'].str.lower()
 df.sample(5)
 
 
