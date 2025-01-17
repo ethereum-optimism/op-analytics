@@ -59,29 +59,40 @@ def group_small_values(df: pd.DataFrame, col: str, threshold_val: float) -> pd.D
 
 
 def build_sankey_df(
-    df: pd.DataFrame, columns_order: list[str], threshold_val: float = 0.03
+    df: pd.DataFrame, columns_order: list[str], threshold_val: float
 ) -> pd.DataFrame:
     """
     Summarize TVL for a 3-level Sankey chart based on columns in columns_order.
     """
     left_col, mid_col, right_col = columns_order
 
+    # First, aggregate the data
     df_sankey = df.groupby([left_col, mid_col, right_col], as_index=False).agg(
         {"app_token_tvl_usd": "sum"}
     )
 
-    total_val = df_sankey["app_token_tvl_usd"].sum()
-    cutoff = threshold_val * total_val
+    # Calculate the total TVL before any grouping
+    total_tvl = df_sankey["app_token_tvl_usd"].sum()
 
-    # Consolidate small entries
-    df_sankey = group_small_values(df_sankey, left_col, cutoff)
-    df_sankey = group_small_values(df_sankey, mid_col, cutoff)
-    df_sankey = group_small_values(df_sankey, right_col, cutoff)
+    # Calculate the cutoff value based on the total TVL
+    cutoff = total_tvl * threshold_val
 
-    # Re-aggregate after grouping to merge the newly labeled 'Others'
+    # Group small values for each column separately
+    for col in [left_col, mid_col, right_col]:
+        # Calculate sum for each unique value in the column
+        value_sums = df_sankey.groupby(col)["app_token_tvl_usd"].sum()
+
+        # Identify values below threshold
+        small_values = value_sums[value_sums < cutoff].index
+
+        # Replace small values with 'Others'
+        df_sankey[col] = df_sankey[col].apply(lambda x: "Others" if x in small_values else x)
+
+    # Final aggregation after grouping
     df_sankey = df_sankey.groupby([left_col, mid_col, right_col], as_index=False).agg(
         {"app_token_tvl_usd": "sum"}
     )
+
     return df_sankey
 
 
@@ -280,6 +291,8 @@ def render_filter_menu(df_date: pd.DataFrame):
     """
 
     # Initialize session_state defaults if missing
+    if "selected_tokens" not in st.session_state:
+        st.session_state["selected_tokens"] = []
     if "selected_chains" not in st.session_state:
         st.session_state["selected_chains"] = []
     if "selected_protocol_categories" not in st.session_state:
@@ -293,10 +306,18 @@ def render_filter_menu(df_date: pd.DataFrame):
     proto_cat_options = get_unique_sorted(df_date, "protocol_category")
     token_cat_options = get_unique_sorted(df_date, "token_category")
     protocol_slug_options = get_unique_sorted(df_date, "protocol_slug")
+    token_options = get_unique_sorted(df_date, "token")
 
     with st.form("filters_form"):
         filter_tabs = st.tabs(
-            ["Chains", "Protocol Categories", "Token Categories", "Protocol Slugs", "Threshold"]
+            [
+                "Chains",
+                "Protocol Categories",
+                "Token Categories",
+                "Protocol Slugs",
+                "Tokens",
+                "Threshold",
+            ]
         )
 
         # --------------- TAB 1: CHAINS ---------------
@@ -464,18 +485,61 @@ def render_filter_menu(df_date: pd.DataFrame):
         # Only update session state if the selection changes
         if set(selected_protocols) != set(st.session_state["selected_protocols"]):
             st.session_state["selected_protocols"] = selected_protocols
+    with filter_tabs[4]:
+        st.markdown("### Tokens")
 
-        # --------------- TAB 5: THRESHOLD ---------------
-        with filter_tabs[4]:
-            st.markdown("### Threshold Settings")
-            threshold_slider = st.slider(
+        # Add custom CSS to limit the height of the dropdown
+        st.markdown(
+            """
+            <style>
+            div[data-baseweb="select"] {
+                max-height: 200px;
+                overflow: auto;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Toggling "Select All / Deselect All" button
+        toggle_all_tokens_btn = st.form_submit_button("Toggle All Tokens")
+        if toggle_all_tokens_btn:
+            if len(st.session_state["selected_tokens"]) == len(token_options):
+                st.session_state["selected_tokens"] = []
+            else:
+                st.session_state["selected_tokens"] = token_options
+
+        # Multi-select dropdown
+        selected_tokens = st.multiselect(
+            "Select Tokens",
+            options=token_options,
+            default=st.session_state["selected_tokens"],
+        )
+
+        # Only update session state if the selection changes
+        if set(selected_tokens) != set(st.session_state["selected_tokens"]):
+            st.session_state["selected_tokens"] = selected_tokens
+
+    # --------------- TAB 5: THRESHOLD ---------------
+    with filter_tabs[5]:
+        st.markdown("### Threshold Settings")
+
+        # Initialize threshold in session state if not present
+        if "threshold_val" not in st.session_state:
+            st.session_state["threshold_val"] = 0.03
+
+        # Create slider and store value directly in session state
+        st.session_state["threshold_val"] = (
+            st.slider(
                 "Grouping Threshold (%) of total TVL",
                 min_value=0.0,
                 max_value=10.0,
-                value=3.0,
+                value=float(st.session_state["threshold_val"] * 100),  # Convert to percentage
                 step=0.5,
+                key="threshold_slider",
             )
-            threshold_val = threshold_slider / 100.0
+            / 100.0
+        )  # Convert back to decimal
 
     apply_filters = st.button("Apply Filters", type="primary")
 
@@ -484,7 +548,8 @@ def render_filter_menu(df_date: pd.DataFrame):
         st.session_state["selected_protocol_categories"],
         st.session_state["selected_token_categories"],
         st.session_state["selected_protocols"],
-        threshold_val,
+        st.session_state["selected_tokens"],
+        st.session_state["threshold_val"],
         apply_filters,
     )
 
@@ -543,6 +608,7 @@ def main():
         selected_protocol_categories,
         selected_token_categories,
         selected_protocols,
+        selected_tokens,  # New
         threshold_val,
         apply_filters,
     ) = render_filter_menu(df_date)
@@ -554,17 +620,20 @@ def main():
             "selected_protocol_categories": selected_protocol_categories,
             "selected_token_categories": selected_token_categories,
             "selected_protocols": selected_protocols,
+            "selected_tokens": selected_tokens,  # New
             "threshold_val": threshold_val,
         }
-
+        print(st.session_state["cached_filters"]["threshold_val"])
         df_focus = df_date[
             df_date["chain"].isin(selected_chains)
             & df_date["protocol_category"].isin(selected_protocol_categories)
             & df_date["token_category"].isin(selected_token_categories)
             & df_date["protocol_slug"].isin(selected_protocols)
+            & df_date["token"].isin(selected_tokens)
         ].copy()
         st.session_state["df_focus"] = df_focus
-
+        print()
+    print(f"Apply Filters: {apply_filters}")
     # 5) If we have a subset and filters, build Sankey
     if "df_focus" in st.session_state and "cached_filters" in st.session_state:
         df_focus = st.session_state["df_focus"]
@@ -584,7 +653,8 @@ def main():
             f"• <b>Chains:</b> {truncate_list(used_filters['selected_chains'])}<br>"
             f"• <b>Protocol Categories:</b> {truncate_list(used_filters['selected_protocol_categories'])}<br>"
             f"• <b>Token Categories:</b> {truncate_list(used_filters['selected_token_categories'])}<br>"
-            f"• <b>Protocols:</b> {truncate_list(used_filters['selected_protocols'])}<br><br>"
+            f"• <b>Protocols:</b> {truncate_list(used_filters['selected_protocols'])}<br>"
+            f"• <b>Tokens:</b> {truncate_list(used_filters['selected_tokens'])}<br><br>"  # New
             f"Note: Smaller protocols than {used_filters['threshold_val']*100:.1f}% of total TVL "
             f"are grouped under 'Others'."
         )
@@ -595,13 +665,14 @@ def main():
             "parent_protocol": "Protocol Destination",
         }
 
+        print(f"Threshold: {st.session_state['cached_filters']['threshold_val']}")
         try:
             fig = plot_sankey(
                 df_sankey=df_sankey,
                 column_labels_map=column_labels_map,
                 columns_order=columns_order,
                 snapshot_date=str(st.session_state["cached_date"]),
-                threshold_val=used_filters["threshold_val"],
+                threshold_val=st.session_state["cached_filters"]["threshold_val"],
                 note=note,
             )
 
