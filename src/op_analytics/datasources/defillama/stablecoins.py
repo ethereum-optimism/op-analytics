@@ -5,10 +5,9 @@ from typing import Optional
 
 import polars as pl
 
-from op_analytics.coreutils.bigquery.write import (
-    most_recent_dates,
-)
+from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import dt_fromepoch, now_dt
@@ -144,8 +143,8 @@ def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
 def execute_pull():
     result = pull_stablecoins()
     return {
-        "metadata_df": len(result.metadata_df),
-        "balances_df": len(result.balances_df),
+        "metadata_df": dt_summary(result.metadata_df),
+        "balances_df": dt_summary(result.balances_df),
     }
 
 
