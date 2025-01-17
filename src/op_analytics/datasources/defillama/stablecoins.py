@@ -1,8 +1,10 @@
+import json
 from dataclasses import dataclass
 from decimal import Decimal
 from typing import Optional
 
 import polars as pl
+
 from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
 )
@@ -65,10 +67,10 @@ BALANCES_DF_SCHEMA = {
     "id": pl.String(),
     "chain": pl.String(),
     "dt": pl.String(),
-    "circulating": pl.Decimal(scale=18),
-    "bridged_to": pl.Decimal(scale=18),
-    "minted": pl.Decimal(scale=18),
-    "unreleased": pl.Decimal(scale=18),
+    "circulating": pl.Decimal(precision=38, scale=18),
+    "bridged_to": pl.Decimal(precision=38, scale=18),
+    "minted": pl.Decimal(precision=38, scale=18),
+    "unreleased": pl.Decimal(precision=38, scale=18),
     "name": pl.String(),
     "symbol": pl.String(),
 }
@@ -169,6 +171,18 @@ def extract(stablecoins_data) -> DefillamaStablecoins:
 
     # Schema assertions to help our future selves reading this code.
     assert metadata_df.schema == METADATA_DF_SCHEMA
+    if balances_df.schema != BALANCES_DF_SCHEMA:
+        actual = json.dumps([f"{_}  {str(__)}" for _, __ in balances_df.schema.items()])
+        expected = json.dumps([f"{_}  {str(__)}" for _, __ in BALANCES_DF_SCHEMA.items()])
+
+        raise Exception(f"""
+        Mismatching schema:
+        
+        {actual}
+        
+        {expected}
+        """)
+
     assert balances_df.schema == BALANCES_DF_SCHEMA
 
     return DefillamaStablecoins(metadata_df=metadata_df, balances_df=balances_df)
