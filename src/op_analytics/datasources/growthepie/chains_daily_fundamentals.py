@@ -4,6 +4,7 @@ import polars as pl
 
 from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.time import now_dt
 
@@ -31,8 +32,8 @@ class GrowthepieFundamentalSummary:
 def execute_pull():
     result = pull_growthepie_summary()
     return {
-        "metadata_df": len(result.metadata_df),
-        "summary_df": len(result.summary_df),
+        "metadata_df": dt_summary(result.metadata_df),
+        "summary_df": dt_summary(result.summary_df),
     }
 
 
