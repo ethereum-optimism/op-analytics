@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
 import polars as pl
+import re
 
-from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.time import now_dt
@@ -48,6 +48,16 @@ def pull_superchain_token_list() -> SuperchainTokenList:
     )
 
 
+def camel_to_snake(s: str) -> str:
+    """
+    Convert a camelCase or PascalCase string into snake_case.
+    Example: "someColumnName" -> "some_column_name"
+    """
+    # Insert an underscore before each capital letter (that isn’t at the start)
+    # and convert everything to lowercase.
+    return re.sub(r"(?<!^)(?=[A-Z])", "_", s).lower()
+
+
 def process_metadata_pull(df) -> pl.DataFrame:
     """
     Unnest and cleanup metadata from Superchain token list.
@@ -58,16 +68,6 @@ def process_metadata_pull(df) -> pl.DataFrame:
         pl.col(
             ["address", "optimismBridgeAddress", "baseBridgeAddress", "modeBridgeAddress"]
         ).str.to_lowercase()
-    ).rename(
-        {
-            "chainId": "chain_id",
-            "logoURI": "logo_uri",
-            "optimismBridgeAddress": "optimism_bridge_address",
-            "baseBridgeAddress": "base_bridge_address",
-            "modeBridgeAddress": "mode_bridge_address",
-            "opListId": "op_list_id",
-            "opTokenId": "op_token_id",
-        }
-    )
+    ).rename(lambda col_name: camel_to_snake(col_name))
 
     return df
