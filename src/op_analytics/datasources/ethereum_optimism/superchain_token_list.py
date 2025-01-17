@@ -50,11 +50,17 @@ def pull_superchain_token_list() -> SuperchainTokenList:
 
 def camel_to_snake(s: str) -> str:
     """
-    Convert a camelCase or PascalCase string into snake_case.
-    Example: "someColumnName" -> "some_column_name"
+    Convert a camelCase or PascalCase string into snake_case,
+    while handling certain acronyms as single blocks.
+
+    Example:
+      "someColumnName" -> "some_column_name"
+      "logoURI"        -> "logo_uri"
     """
-    # Insert an underscore before each capital letter (that isn’t at the start)
-    # and convert everything to lowercase.
+
+    for acronym in ["URI", "URL", "ID"]:
+        s = s.replace(acronym, acronym.capitalize())
+
     return re.sub(r"(?<!^)(?=[A-Z])", "_", s).lower()
 
 
@@ -62,12 +68,10 @@ def process_metadata_pull(df) -> pl.DataFrame:
     """
     Unnest and cleanup metadata from Superchain token list.
     """
-    df = df.unnest("extensions")
-
-    df = df.with_columns(
-        pl.col(
-            ["address", "optimismBridgeAddress", "baseBridgeAddress", "modeBridgeAddress"]
-        ).str.to_lowercase()
-    ).rename(lambda col_name: camel_to_snake(col_name))
+    df = (
+        df.unnest("extensions")
+        .rename(lambda c: camel_to_snake(c))
+        .with_columns(pl.col("^.*address.*$").str.to_lowercase())
+    )
 
     return df
