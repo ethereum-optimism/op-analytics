@@ -90,6 +90,15 @@ def pull_l2beat():
     }
 
 
+def execute_pull():
+    result = pull_l2beat()
+    return {
+        "summary": len(result["summary"]),
+        "tvl": len(result["tvl"]),
+        "activity": len(result["activity"]),
+    }
+
+
 def _process_tvl(session, projects: list[L2BeatProject]):
     """Pull TVL and write to BQ."""
 

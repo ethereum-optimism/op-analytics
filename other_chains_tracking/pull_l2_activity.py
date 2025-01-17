@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 print("start l2 activity")
@@ -21,18 +21,47 @@ sys.path.pop()
 import numpy as np
 import pandas as pd
 import time
+from datetime import datetime, timezone
 
 
-# In[ ]:
+# In[2]:
+
+
+# L2B Meta
+l2b_summary = ltwo.get_l2beat_chain_summary()
+l2b_summary['dt'] = pd.to_datetime(datetime.now(timezone.utc).date())
+
+
+# In[3]:
+
+
+# display(l2b_summary.head(5))
+# print(l2b_summary.dtypes)
+
+# bqu.append_and_upsert_df_to_bq_table(
+#     l2b_summary,
+#     "daily_l2beat_chain_summary",
+#     unique_keys=["dt", "id","slug"],
+# )
+
+
+# In[4]:
 
 
 # # # Usage
-gtp_api = gtp.get_growthepie_api_data()
-gtp_meta_api = gtp.get_growthepie_api_meta()
-gtp_api = gtp_api.rename(columns={"date": "dt"})
+try:
+    gtp_api = gtp.get_growthepie_api_data()
+    gtp_meta_api = gtp.get_growthepie_api_meta()
+    gtp_api = gtp_api.rename(columns={"date": "dt"})
+except Exception as e:
+    print(f"An error occurred: {e}")
+    print(f"Exception type: {type(e).__name__}")
+    import traceback
+    print("Traceback:")
+    print(traceback.format_exc())
 
 
-# In[ ]:
+# In[5]:
 
 
 # update datatype for bq uploads
@@ -43,30 +72,23 @@ if "colors" in gtp_meta_api:
     gtp_meta_api["colors"] = gtp_meta_api["colors"].astype(str)
 
 
-# In[ ]:
-
-
-# gtp_meta_api.sample(10)
-# gtp_meta_api.dtypes
-
-
-# In[ ]:
+# In[6]:
 
 
 print("getting assets onchain - l2beat")
-l2beat_aoc = ltwo.get_daily_aoc_by_token()
-l2beat_aoc = l2beat_aoc.rename(columns={"project": "chain", "date": "dt"})
+# l2beat_aoc = ltwo.get_daily_aoc_by_token()
+# l2beat_aoc = l2beat_aoc.rename(columns={"project": "chain", "date": "dt"})
 time.sleep(3)  # rate limits
 
 
-# In[ ]:
+# In[7]:
 
 
 print("getting data - l2beat")
-l2beat_df = ltwo.get_all_l2beat_data()
+# l2beat_df = ltwo.get_all_l2beat_data()
 
 
-# In[ ]:
+# In[8]:
 
 
 print("getting metadata - l2beat")
@@ -75,101 +97,115 @@ l2beat_meta["chain"] = l2beat_meta["slug"]
 l2beat_meta["is_upcoming"] = l2beat_meta["is_upcoming"].fillna(False)
 
 
-# In[ ]:
+# In[9]:
 
 
-# l2beat_meta[l2beat_meta['chainId'] == '388']
-# # l2beat_meta
+# l2beat_meta[l2beat_meta['chainId'] == '324']
+# l2beat_meta
 
 
-# In[ ]:
+# In[10]:
 
 
-combined_l2b_df = l2beat_df.merge(
-    l2beat_meta[
-        [
-            "chain",
-            "name",
-            "layer",
-            "chainId",
-            "provider",
-            "provider_entity",
-            "category",
-            "is_upcoming",
-            "is_archived",
-            "is_current_chain",
-        ]
-    ],
-    on="chain",
-    how="outer",
-)
+# combined_l2b_df = l2beat_df.merge(
+#     l2beat_meta[
+#         [
+#             "chain",
+#             "name",
+#             "layer",
+#             "chainId",
+#             "provider",
+#             "provider_entity",
+#             "category",
+#             "is_upcoming",
+#             "is_archived",
+#             "is_current_chain",
+#         ]
+#     ],
+#     on="chain",
+#     how="outer",
+# )
 
-combined_l2b_df["chainId"] = combined_l2b_df["chainId"].astype("Int64")
+# combined_l2b_df["chainId"] = combined_l2b_df["chainId"].astype("Int64")
 
 
 # In[ ]:
 
 
 print("getting data - growthepie")
-combined_gtp_df = gtp_api.merge(
-    gtp_meta_api[["origin_key", "chain_name", "evm_chain_id"]],
-    on="origin_key",
-    how="left",
-)
-combined_gtp_df["dt"] = pd.to_datetime(combined_gtp_df["dt"], errors="coerce")
+try:
+    combined_gtp_df = gtp_api.merge(
+        gtp_meta_api[["origin_key", "chain_name", "evm_chain_id"]],
+        on="origin_key",
+        how="left",
+    )
+    combined_gtp_df["dt"] = pd.to_datetime(combined_gtp_df["dt"], errors="coerce")
 
-combined_gtp_df = combined_gtp_df.drop(columns=("index"))
-# combined_gtp_df.sample(5)
+    combined_gtp_df = combined_gtp_df.drop(columns=("index"))
+    # combined_gtp_df.sample(5)
+except Exception as e:
+    print(f"An error occurred: {e}")
+    print(f"Exception type: {type(e).__name__}")
+    import traceback
+    print("Traceback:")
+    print(traceback.format_exc())
 
 
-# In[ ]:
+# In[12]:
 
 
 # Check Columns
 # Assuming combined_gtp_df is your DataFrame
-column_names = combined_gtp_df.columns
+try:
+    column_names = combined_gtp_df.columns
 
-for col in column_names:
-    if col.endswith("_usd"):
-        # Construct the new column name by replacing '_usd' with '_eth'
-        new_col_name = col.replace("_usd", "_eth")
+    for col in column_names:
+        if col.endswith("_usd"):
+            # Construct the new column name by replacing '_usd' with '_eth'
+            new_col_name = col.replace("_usd", "_eth")
 
-        # Check if the new column name exists in the DataFrame
-        if new_col_name not in combined_gtp_df.columns:
-            # If it doesn't exist, create the column and fill it with nan values
-            combined_gtp_df[new_col_name] = np.nan
+            # Check if the new column name exists in the DataFrame
+            if new_col_name not in combined_gtp_df.columns:
+                # If it doesn't exist, create the column and fill it with nan values
+                combined_gtp_df[new_col_name] = np.nan
+except Exception as e:
+    print(f"An error occurred: {e}")
+    print(f"Exception type: {type(e).__name__}")
+    import traceback
+    print("Traceback:")
+    print(traceback.format_exc())
 
 
-# In[ ]:
+# In[13]:
 
 
 # Add Metadata
 opstack_metadata = opstack_metadata = pd.read_csv(
     "../op_chains_tracking/outputs/chain_metadata.csv"
 )
-combined_l2b_df["l2beat_slug"] = combined_l2b_df["chain"]
-meta_cols = [
-    "l2beat_slug",
-    "is_op_chain",
-    "mainnet_chain_id",
-    "op_based_version",
-    "alignment",
-    "chain_name",
-    "display_name",
-]
+# combined_l2b_df["l2beat_slug"] = combined_l2b_df["chain"]
+# meta_cols = [
+#     "l2beat_slug",
+#     "is_op_chain",
+#     "mainnet_chain_id",
+#     "op_based_version",
+#     "alignment",
+#     "chain_name",
+#     "display_name",
+# ]
 
-l2b_enriched_df = combined_l2b_df.merge(
-    opstack_metadata[meta_cols], on="l2beat_slug", how="left"
-)
+# l2b_enriched_df = combined_l2b_df.merge(
+#     opstack_metadata[meta_cols], on="l2beat_slug", how="left"
+# )
 
-l2b_enriched_df["alignment"] = l2b_enriched_df["alignment"].fillna("Other EVMs")
+# l2b_enriched_df["alignment"] = l2b_enriched_df["alignment"].fillna("Other EVMs")
 
 
 # In[ ]:
 
 
 boolean_columns = ["is_op_chain", "is_upcoming", "is_archived", "is_current_chain"]
-dfs = [l2b_enriched_df, l2beat_meta]
+dfs = [l2beat_meta]#[l2b_enriched_df, l2beat_meta]
 
 for df in dfs:
     for column in boolean_columns:
@@ -177,7 +213,7 @@ for df in dfs:
             df[column] = df[column].fillna(False)
 
 
-# In[ ]:
+# In[15]:
 
 
 #  Define aggregation functions for each column
@@ -233,27 +269,50 @@ def aggregate_data(df, freq, date_col="timestamp", groupby_cols=None, aggs=None)
     return df_agg
 
 
-# Perform monthly aggregation
-l2b_monthly_df = aggregate_data(l2b_enriched_df, freq="MS")
-# Perform weekly aggregation
-l2b_weekly_df = aggregate_data(l2b_enriched_df, freq="W-MON")
+# # Perform monthly aggregation
+# l2b_monthly_df = aggregate_data(l2b_enriched_df, freq="MS")
+# # Perform weekly aggregation
+# l2b_weekly_df = aggregate_data(l2b_enriched_df, freq="W-MON")
 
 # Sample output
 # l2b_weekly_df.sample(5)
 
 
-# In[ ]:
+# In[16]:
 
 
 # export
 folder = "outputs/"
-combined_gtp_df.to_csv(folder + "growthepie_l2_activity.csv", index=False)
-gtp_meta_api.to_csv(folder + "growthepie_l2_metadata.csv", index=False)
-l2b_enriched_df.to_csv(folder + "l2beat_l2_activity.csv", index=False)
-l2beat_meta.to_csv(folder + "l2beat_l2_metadata.csv", index=False)
-l2b_monthly_df.to_csv(folder + "l2beat_l2_activity_monthly.csv", index=False)
-l2b_weekly_df.to_csv(folder + "l2beat_l2_activity_weekly.csv", index=False)
-l2beat_aoc.to_csv(folder + "l2beat_aoc_by_token.csv", index=False)
+# combined_gtp_df.to_csv(folder + "growthepie_l2_activity.csv", index=False)
+# gtp_meta_api.to_csv(folder + "growthepie_l2_metadata.csv", index=False)
+# l2b_enriched_df.to_csv(folder + "l2beat_l2_activity.csv", index=False)
+# l2beat_meta.to_csv(folder + "l2beat_l2_metadata.csv", index=False)
+# l2b_monthly_df.to_csv(folder + "l2beat_l2_activity_monthly.csv", index=False)
+# l2b_weekly_df.to_csv(folder + "l2beat_l2_activity_weekly.csv", index=False)
+# l2beat_aoc.to_csv(folder + "l2beat_aoc_by_token.csv", index=False)
+
+
+# In[17]:
+
+
+# # gtp_meta_api.dtypes
+# gtp_meta_api['logo'] = gtp_meta_api['logo'].astype(str)
+# gtp_meta_api['l2beat_stage'] = gtp_meta_api['l2beat_stage'].astype(str)
+# # gtp_meta_api['stack'] = gtp_meta_api['stack'].astype(str)
+# gtp_meta_api['block_explorers'] = gtp_meta_api['block_explorers'].astype(str)
+
+
+# In[18]:
+
+
+# gtp_meta_api
+
+
+# In[19]:
+
+
+# combined_gtp_df['evm_chain_id'] = combined_gtp_df['evm_chain_id'].astype(str).replace('.0','').fillna('-')
+# gtp_meta_api['evm_chain_id'] = gtp_meta_api['evm_chain_id'].astype(str).replace('.0','').fillna('-')
 
 
 # In[ ]:
@@ -261,52 +320,77 @@ l2beat_aoc.to_csv(folder + "l2beat_aoc_by_token.csv", index=False)
 
 # BQ Upload
 bqu.write_df_to_bq_table(l2beat_meta, "l2beat_l2_metadata")
-time.sleep(1)
-bqu.write_df_to_bq_table(combined_gtp_df, "daily_growthepie_l2_activity")
-time.sleep(1)
-bqu.write_df_to_bq_table(gtp_meta_api, "growthepie_l2_metadata")
-time.sleep(1)
-bqu.write_df_to_bq_table(l2b_enriched_df, "daily_l2beat_l2_activity")
-time.sleep(1)
-bqu.write_df_to_bq_table(l2b_monthly_df, "monthly_l2beat_l2_activity")
-time.sleep(1)
-bqu.write_df_to_bq_table(l2b_weekly_df, "weekly_l2beat_l2_activity")
-time.sleep(1)
-bqu.append_and_upsert_df_to_bq_table(
-    l2beat_aoc,
-    "daily_l2beat_aoc_by_token",
-    unique_keys=["dt", "chain", "token_type", "asset_id", "chain", "address"],
-)
-
-
-# In[ ]:
-
-
-# l2beat_meta
+# time.sleep(1)
+try:
+    bqu.write_df_to_bq_table(combined_gtp_df, "daily_growthepie_l2_activity")
+    time.sleep(1)
+    bqu.write_df_to_bq_table(gtp_meta_api, "growthepie_l2_metadata")
+    time.sleep(1)
+# bqu.write_df_to_bq_table(l2b_enriched_df, "daily_l2beat_l2_activity")
+# time.sleep(1)
+# bqu.write_df_to_bq_table(l2b_monthly_df, "monthly_l2beat_l2_activity")
+# time.sleep(1)
+# bqu.write_df_to_bq_table(l2b_weekly_df, "weekly_l2beat_l2_activity")
+# time.sleep(1)
+# bqu.append_and_upsert_df_to_bq_table(
+#     l2beat_aoc,
+#     "daily_l2beat_aoc_by_token",
+#     unique_keys=["dt", "chain", "token_type", "asset_id", "chain", "address"],
+except Exception as e:
+    print(f"An error occurred: {e}")
+    print(f"Exception type: {type(e).__name__}")
+    import traceback
+    print("Traceback:")
+    print(traceback.format_exc())
+# )
 
 
 # In[ ]:
 
 
 # Post to Dune API
-d.write_dune_api_from_pandas(
-    combined_gtp_df, "growthepie_l2_activity", "L2 Usage Activity from GrowThePie"
-)
-d.write_dune_api_from_pandas(
-    gtp_meta_api, "growthepie_l2_metadata", "L2 Metadata from GrowThePie"
-)
-d.write_dune_api_from_pandas(
-    l2b_enriched_df, "l2beat_l2_activity", "L2 Usage Activity from L2Beat"
-)
-d.write_dune_api_from_pandas(
-    l2b_monthly_df,
-    "l2beat_l2_activity_monthly",
-    "Monthly L2 Usage Activity from L2Beat",
-)
-d.write_dune_api_from_pandas(
-    l2b_weekly_df, "l2beat_l2_activity_weekly", "Weekly L2 Usage Activity from L2Beat"
-)
-d.write_dune_api_from_pandas(
-    l2beat_meta, "l2beat_l2_metadata", "L2 Metadata from L2Beat"
-)
+try:
+    d.write_dune_api_from_pandas(
+        combined_gtp_df, "growthepie_l2_activity", "L2 Usage Activity from GrowThePie"
+    )
+    d.write_dune_api_from_pandas(
+        gtp_meta_api, "growthepie_l2_metadata", "L2 Metadata from GrowThePie"
+    )
+except Exception as e:
+    print(f"An error occurred: {e}")
+    print(f"Exception type: {type(e).__name__}")
+    import traceback
+    print("Traceback:")
+    print(traceback.format_exc())
+# d.write_dune_api_from_pandas(
+#     l2b_enriched_df, "l2beat_l2_activity", "L2 Usage Activity from L2Beat"
+# )
+# d.write_dune_api_from_pandas(
+#     l2b_monthly_df,
+#     "l2beat_l2_activity_monthly",
+#     "Monthly L2 Usage Activity from L2Beat",
+# )
+# d.write_dune_api_from_pandas(
+#     l2b_weekly_df, "l2beat_l2_activity_weekly", "Weekly L2 Usage Activity from L2Beat"
+# )
+# d.write_dune_api_from_pandas(
+#     l2beat_meta, "l2beat_l2_metadata", "L2 Metadata from L2Beat"
+# )
+
+
+# In[ ]:
+
+
+# Copy to Dune
+print('upload bq to dune')
+sql = '''
+SELECT *
+FROM `views.daily_l2beat_breakdown`
+WHERE onchain_value_usd > 0
+AND dt_day >= DATE_SUB(CURRENT_DATE(), INTERVAL 365 DAY)
+'''
+bq_df = bqu.run_query_to_df(sql)
+
+dune_table_name = 'daily_l2beat_breakdown'
+d.write_dune_api_from_pandas(bq_df, dune_table_name,table_description = dune_table_name)
 

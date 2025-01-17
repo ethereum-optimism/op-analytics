@@ -5,7 +5,7 @@ from google.cloud import bigquery
 
 from op_analytics.coreutils.logger import structlog
 
-from .write import init_client
+from .client import init_client
 
 log = structlog.get_logger()
 

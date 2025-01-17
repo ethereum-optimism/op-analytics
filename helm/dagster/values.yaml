@@ -296,7 +296,7 @@ dagster-user-deployments:
       image:
         # When a tag is not supplied, it will default as the Helm chart version.
         repository: "ghcr.io/lithium323/op-analytics-dagster"
-        tag: "v20250114.003"
+        tag: "v20250115.001"
 
         # Change with caution! If you're using a fixed tag for pipeline run images, changing the
         # image pull policy to anything other than "Always" will use a cached/stale image, which is
@@ -592,7 +592,34 @@ runLauncher:
       #   jobMetadata: # raw config for the kubernetes job's metadata
       #     annotations:
       #       mykey: myvalue
-      runK8sConfig: {}
+      runK8sConfig:
+        containerConfig:
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 720Mi  
+          env:
+          - name: OPLABS_ENV
+            value: "prod"
+          - name: OPLABS_RUNTIME
+            value: "k8s"
+          - name: PLAIN_LOGS
+            value: "true"
+          volumeMounts:
+          - mountPath: "/var/secrets"
+            name: opanalyticsvault
+        podSpecConfig:
+          volumes:
+          - name: opanalyticsvault
+            csi:
+              driver: secrets-store-gke.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: dagster-secret-provider-class
+
 
     # This configuration will only be used if the CeleryK8sRunLauncher is selected
     celeryK8sRunLauncher:
@@ -1107,7 +1134,7 @@ dagsterDaemon:
   runMonitoring:
     enabled: true
     # Timeout for runs to start (avoids runs hanging in STARTING)
-    startTimeoutSeconds: 300
+    startTimeoutSeconds: 180
     # Timeout for runs to cancel (avoids runs hanging in CANCELING)
     # cancelTimeoutSeconds: 300
     # How often to check on in progress runs

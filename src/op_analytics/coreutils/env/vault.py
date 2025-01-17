@@ -36,6 +36,9 @@ def load_vault_env_var() -> str | None:
         log.info("loaded vault from environment")
         vault_env_var = os.environ[VAULT_ENV_VAR]
 
+    if vault_env_var is None:
+        log.info("could not load vault env var")
+
     return vault_env_var
 
 

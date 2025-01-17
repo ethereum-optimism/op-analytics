@@ -39,6 +39,9 @@ class DefiLlama(DailyDataset):
     FEES_PROTOCOLS_METADATA = "fees_protocols_metadata_v1"
     REVENUE_PROTOCOLS_METADATA = "revenue_protocols_metadata_v1"
 
+    # TVL breakdown
+    PROTOCOL_TOKEN_TVL_BREAKDOWN = "protocol_token_tvl_breakdown_v1"
+
     def write(
         self,
         dataframe: pl.DataFrame,

@@ -6,13 +6,17 @@ import polars as pl
 import pyarrow as pa
 
 from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
-from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
+from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
+from op_analytics.coreutils.clickhouse.oplabs import (
+    insert_oplabs,
+    run_query_oplabs,
+)
 from op_analytics.coreutils.duckdb_inmem import EmptyParquetData
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.env.aware import is_bot
 from op_analytics.coreutils.logger import human_rows, human_size, structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
-from op_analytics.coreutils.time import date_fromstr
+from op_analytics.coreutils.time import date_fromstr, date_tostr
 
 from .breakout import breakout_partitions
 from .dataaccess import DateFilter, MarkerFilter, init_data_access
@@ -145,6 +149,10 @@ class DailyDataset(str, Enum):
     See for example: DefiLlama, GrowThePie
     """
 
+    @classmethod
+    def all_tables(cls) -> list["DailyDataset"]:
+        return list(cls.__members__.values())
+
     @property
     def db(self):
         return self.__class__.__name__.lower()
@@ -159,8 +167,8 @@ class DailyDataset(str, Enum):
 
     def read(
         self,
-        min_date: str | None = None,
-        max_date: str | None = None,
+        min_date: str | date | None = None,
+        max_date: str | date | None = None,
         date_range_spec: str | None = None,
     ) -> str:
         """Load date partitioned defillama dataset from the specified location.
@@ -169,6 +177,12 @@ class DailyDataset(str, Enum):
 
         The name of the registered view is returned.
         """
+        if isinstance(min_date, date):
+            min_date = date_tostr(min_date)
+
+        if isinstance(max_date, date):
+            max_date = date_tostr(max_date)
+
         location = DataLocation.GCS
 
         log.info(
@@ -260,6 +274,18 @@ class DailyDataset(str, Enum):
         log.info("insert summary", **summary_dict)
 
         return {self.root_path: summary_dict}
+
+    @property
+    def clickhouse_external_db_name(self):
+        return f"{self.db}_gcs"
+
+    def create_clickhouse_view(self) -> None:
+        return create_gcs_view(
+            db_name=self.clickhouse_external_db_name,
+            table_name=self.table,
+            partition_selection="CAST(dt as Date) AS dt, ",
+            gcs_glob_path=f"{self.root_path}/dt=*/out.parquet",
+        )
 
 
 def last_n_dts(n_dates: int, reference_dt: str) -> list[date]:

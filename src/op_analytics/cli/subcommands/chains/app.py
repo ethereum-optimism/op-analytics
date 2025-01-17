@@ -9,7 +9,6 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.datapipeline.chains import goldsky_chains
-from op_analytics.datapipeline.chains.upload import upload_all
 from op_analytics.datapipeline.etl.blockbatch.main import compute_blockbatch
 from op_analytics.datapipeline.etl.ingestion import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
@@ -74,19 +73,6 @@ def goldsky_sql(
     )
 
     print(sql)
-
-
-@app.command()
-def chain_metadata_updates():
-    """Run various chain metadata related updates.
-
-    - Upload chain_metadata_raw.csv to Google Sheets.
-    - Update the OP Analytics Chain Metadata [ADMIN MANAGED] google sheet.
-    - Update the Across Superchain Bridge Addresses [ADMIN MANAGED] google sheet.
-
-    TODO: Decide if we want to upload to Dune, Clickhouse, BigQuery. or op-analytics-static repo.
-    """
-    upload_all()
 
 
 @app.command()
@@ -161,6 +147,7 @@ def normalize_blockbatch_models(models: str) -> list[str]:
     for model in models.split(","):
         if model == "MODELS":
             result.add("contract_creation")
+            result.add("refined_traces")
         elif model.startswith("-"):
             not_included.add(model.removeprefix("-").strip())
         else:

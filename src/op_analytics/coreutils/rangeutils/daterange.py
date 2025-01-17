@@ -17,7 +17,7 @@ class DateRange:
     min: date  # inclusive
     max: date  # exclusive
 
-    requested_max_timestamp: int | None
+    requested_max_timestamp: int | None = None
 
     def __len__(self):
         diff = self.max - self.min

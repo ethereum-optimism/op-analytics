@@ -17,7 +17,7 @@ CHAINS_ENDPOINT = "https://api.llama.fi/v2/chains"
 CHAINS_TVL_ENDPOINT = "https://api.llama.fi/v2/historicalChainTvl/{slug}"
 
 
-TVL_TABLE_LAST_N_DAYS = 3
+TVL_TABLE_LAST_N_DAYS = 7
 
 
 @dataclass
@@ -73,6 +73,14 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
         metadata_df=metadata_df,
         tvl_df=tvl_df,
     )
+
+
+def execute_pull():
+    result = pull_historical_chain_tvl()
+    return {
+        "metadata_df": len(result.metadata_df),
+        "tvl_df": len(result.tvl_df),
+    }
 
 
 def extract_category_data(row: dict, category_type: str) -> int:

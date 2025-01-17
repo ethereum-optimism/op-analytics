@@ -93,6 +93,13 @@ class PartitionData:
     def from_dict(cls, partitions_dict: dict[str, str], df: pl.DataFrame) -> "PartitionData":
         cols = []
         for col, val in partitions_dict.items():
+            # NOTE: Here we validate the type of the "dt" column.
+            if col == "dt" and not isinstance(val, (date, str)):
+                raise ValueError(
+                    f"dt partition in dataframe is invalid: must be date or str: {val}"
+                )
+
+            # NOTE: The call to PartitionColumn validates the "dt" value.
             if col == "dt" and isinstance(val, date):
                 cols.append(PartitionColumn(name=col, value=val.strftime("%Y-%m-%d")))
             else:
