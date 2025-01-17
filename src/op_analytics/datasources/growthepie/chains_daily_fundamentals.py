@@ -2,9 +2,8 @@ from dataclasses import dataclass
 
 import polars as pl
 
-from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary, last_n_days
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.time import now_dt
 
@@ -43,16 +42,18 @@ def pull_growthepie_summary() -> GrowthepieFundamentalSummary:
     - Fetch GrowThePie daily chain fundamentals summary.
     """
     session = new_session()
+    current_dt: str = now_dt()
 
     summary_raw_data = get_data(session, f"{URL_BASE}{FUNDAMENTALS_ENDPOINT}")
     summary_df = pl.DataFrame(summary_raw_data)
+    summary_df_truncated = last_n_days(summary_df, n_dates=7, reference_dt=current_dt)
 
     summary_df = summary_df.rename({"date": "dt"})
 
     GrowThePie.FUNDAMENTALS_SUMMARY.write(
         # Use the full dataframe when backfilling:
         # dataframe=summary_df,
-        dataframe=most_recent_dates(summary_df, n_dates=3, date_column="dt"),
+        dataframe=summary_df_truncated,
         sort_by=["origin_key"],
     )
 
@@ -69,7 +70,7 @@ def pull_growthepie_summary() -> GrowthepieFundamentalSummary:
 
     return GrowthepieFundamentalSummary(
         metadata_df=metadata_df,
-        summary_df=summary_df,
+        summary_df=summary_df_truncated,
     )
 
 
