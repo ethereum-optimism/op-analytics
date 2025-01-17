@@ -16,6 +16,24 @@ log = structlog.get_logger()
 ENDING_PATTERNS_TO_FILTER = ["-borrowed", "-vesting", "-staking", "-pool2", "-treasury", "-cex"]
 EXACT_PATTERNS_TO_FILTER = ["treasury", "borrowed", "staking", "pool2", "polygon-bridge-&-staking"]
 CATEGORIES_TO_FILTER = ["CEX", "Chain"]
+EXCLUDE_CATEGORIES = [
+    "RWA",
+    "Basis Trading",
+    "CeDeFi",
+    "Chain",
+    "CEX",
+    "Infrastructure",
+    "Staking Pool",
+    "Bridge",
+    "Yield Aggregator",
+    "Yield",
+    "Liquidity manager",
+    "Managed Token Pools",
+    "Treasury Manager",
+    "Anchor BTC",
+    "Liquid Staking",
+    "Liquid Restaking",
+]
 
 
 @dataclass
@@ -87,6 +105,9 @@ class DefillamaTVLBreakdown:
             on=["dt", "protocol_slug", "chain"],
             how="left",
         )
+
+        # Calculate double-counted TVL
+        df_all = calculate_double_counted_tvl(df_all)
 
         # Apply protocol filters
         df_chain_protocol = create_filter_column(df_all)
@@ -202,6 +223,12 @@ def process_misrepresented_tokens(df: pl.DataFrame) -> pl.DataFrame:
     client.execute("DROP VIEW IF EXISTS temp_df")
 
     return result
+
+
+def calculate_double_counted_tvl(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        is_double_counted=pl.col("protocol_category").is_in(EXCLUDE_CATEGORIES).cast(pl.Int8)
+    )
 
 
 def create_filter_column(df: pl.DataFrame) -> pl.DataFrame:
