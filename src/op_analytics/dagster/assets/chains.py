@@ -20,6 +20,15 @@ def chain_metadata(context: OpExecutionContext):
 
 
 @asset
+def superchain_token_list(context: OpExecutionContext):
+    """Pull superchain token list from ethereum optimism."""
+    from op_analytics.datasources.ethereum_optimism import superchain_token_list
+
+    result = superchain_token_list.execute_pull()
+    context.log.info(result)
+
+
+@asset
 def blockbatch_views():
     """Clickhouse parameterized views over GCS data.
 
