@@ -1,4 +1,3 @@
-import json
 from dataclasses import dataclass
 from decimal import Decimal
 from typing import Optional
@@ -7,10 +6,12 @@ import polars as pl
 
 from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.misc import raise_for_schema_mismatch
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import dt_fromepoch, now_dt
+
 
 from .dataaccess import DefiLlama
 
@@ -170,19 +171,11 @@ def extract(stablecoins_data) -> DefillamaStablecoins:
 
     # Schema assertions to help our future selves reading this code.
     assert metadata_df.schema == METADATA_DF_SCHEMA
-    if balances_df.schema != BALANCES_DF_SCHEMA:
-        actual = json.dumps([f"{_}  {str(__)}" for _, __ in balances_df.schema.items()])
-        expected = json.dumps([f"{_}  {str(__)}" for _, __ in BALANCES_DF_SCHEMA.items()])
 
-        raise Exception(f"""
-        Mismatching schema:
-        
-        {actual}
-        
-        {expected}
-        """)
-
-    assert balances_df.schema == BALANCES_DF_SCHEMA
+    raise_for_schema_mismatch(
+        actual_schema=balances_df.schema,
+        expected_schema=pl.Schema(BALANCES_DF_SCHEMA),
+    )
 
     return DefillamaStablecoins(metadata_df=metadata_df, balances_df=balances_df)
 
