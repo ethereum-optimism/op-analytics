@@ -1,11 +1,12 @@
 import re
 from dataclasses import dataclass
-from datetime import timedelta
+from datetime import date, timedelta
 
 import polars as pl
 
 from op_analytics.coreutils.duckdb_inmem.client import init_client
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_fromstr, date_tostr, now_dt
 from op_analytics.datasources.defillama.dataaccess import DefiLlama
@@ -16,6 +17,24 @@ log = structlog.get_logger()
 ENDING_PATTERNS_TO_FILTER = ["-borrowed", "-vesting", "-staking", "-pool2", "-treasury", "-cex"]
 EXACT_PATTERNS_TO_FILTER = ["treasury", "borrowed", "staking", "pool2", "polygon-bridge-&-staking"]
 CATEGORIES_TO_FILTER = ["CEX", "Chain"]
+EXCLUDE_CATEGORIES = [
+    "RWA",
+    "Basis Trading",
+    "CeDeFi",
+    "Chain",
+    "CEX",
+    "Infrastructure",
+    "Staking Pool",
+    "Bridge",
+    "Yield Aggregator",
+    "Yield",
+    "Liquidity manager",
+    "Managed Token Pools",
+    "Treasury Manager",
+    "Anchor BTC",
+    "Liquid Staking",
+    "Liquid Restaking",
+]
 
 
 @dataclass
@@ -88,6 +107,9 @@ class DefillamaTVLBreakdown:
             how="left",
         )
 
+        # Calculate double-counted TVL
+        df_all = calculate_double_counted_tvl(df_all)
+
         # Apply protocol filters
         df_chain_protocol = create_filter_column(df_all)
 
@@ -108,7 +130,7 @@ class DefillamaTVLBreakdown:
         return cls(df_tvl_breakdown=df_tvl_breakdown)
 
 
-def data_quality_check(df_tvl_breakdown: pl.DataFrame, min_date: str, max_date: str):
+def data_quality_check(df_tvl_breakdown: pl.DataFrame, min_date: date, max_date: date):
     """Check that all expected "dt" partitions are present in the output data."""
 
     assert "dt" in df_tvl_breakdown.columns
@@ -138,7 +160,7 @@ def execute_pull():
     )
 
     return {
-        "df_tvl_breakdown": len(result.df_tvl_breakdown),
+        "df_tvl_breakdown": dt_summary(result.df_tvl_breakdown),
     }
 
 
@@ -202,6 +224,12 @@ def process_misrepresented_tokens(df: pl.DataFrame) -> pl.DataFrame:
     client.execute("DROP VIEW IF EXISTS temp_df")
 
     return result
+
+
+def calculate_double_counted_tvl(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        is_double_counted=pl.col("protocol_category").is_in(EXCLUDE_CATEGORIES).cast(pl.Int8)
+    )
 
 
 def create_filter_column(df: pl.DataFrame) -> pl.DataFrame:

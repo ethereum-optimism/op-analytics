@@ -5,8 +5,8 @@ from functools import cache
 import polars as pl
 import pyarrow as pa
 
-from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
 from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
+from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
 from op_analytics.coreutils.clickhouse.oplabs import (
     insert_oplabs,
     run_query_oplabs,
@@ -286,31 +286,3 @@ class DailyDataset(str, Enum):
             partition_selection="CAST(dt as Date) AS dt, ",
             gcs_glob_path=f"{self.root_path}/dt=*/out.parquet",
         )
-
-
-def last_n_dts(n_dates: int, reference_dt: str) -> list[date]:
-    """Produce a list of N dates starting from reference_dt.
-
-    The reference_dt will be included in the list results.
-    """
-    max_date = date_fromstr(reference_dt) + timedelta(days=1)
-    return DateRange(
-        min=max_date - timedelta(days=n_dates),
-        max=max_date,
-        requested_max_timestamp=None,
-    ).dates()
-
-
-def last_n_days(
-    df: pl.DataFrame, n_dates: int, reference_dt: str, date_column: str = "dt"
-) -> pl.DataFrame:
-    """Limit dataframe to the last N dates present in the data.
-
-    This function is helpful when doing a dynamic partition overwrite. It allows us
-    to select only recent partitions to update.
-
-    Usually operates on partitioned datasets so the default date_column is "dt". If
-    needed for other purposes callers can specify a different date_column name.
-    """
-    dts = last_n_dts(n_dates=n_dates, reference_dt=reference_dt)
-    return df.filter(pl.col(date_column).is_in(dts))
