@@ -11,7 +11,6 @@ class TestCreationTraces001(IntermediateModelTestBase):
     inputdata = InputTestData.at(__file__)
     chains = ["op"]
     dateval = date(2024, 11, 18)
-    datasets = ["traces", "transactions"]
     block_filters = [
         "{block_number} % 10000 <= 2",
     ]

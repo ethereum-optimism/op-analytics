@@ -6,7 +6,7 @@ import warnings
 import duckdb
 import numba
 from duckdb.functional import PythonUDFType, FunctionNullHandling
-from duckdb.typing import BLOB, INTEGER, VARCHAR, UBIGINT
+from duckdb.typing import BLOB, INTEGER, VARCHAR, UBIGINT, VARCHAR, BIGINT
 
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
 
@@ -49,6 +49,19 @@ def hex_to_lossless(x: str) -> str:
 _UDF_LOCK = threading.Lock()
 
 
+def parse_reversed_hex(hex_str: str) -> int:
+    """
+    Equivalent to:
+      reinterpretAsUIntX(reverse(unhex(hex_str))) in Clickhouse.
+    i.e. treat 'hex_str' as big-endian hex, reverse its bytes,
+    and parse as an unsigned integer.
+    """
+    if hex_str.startswith("0x"):
+        hex_str = hex_str[2:]
+    reversed_bytes = bytes.fromhex(hex_str)[::-1]
+    return int.from_bytes(reversed_bytes, byteorder="little")
+
+
 def create_python_udfs(duckdb_context: DuckDBContext):
     """Decorated with @cache so it only runs once."""
 
@@ -84,6 +97,14 @@ def create_python_udfs(duckdb_context: DuckDBContext):
                 type=PythonUDFType.NATIVE,
                 parameters=[VARCHAR],
                 return_type=VARCHAR,
+            )
+
+            duckdb_context.client.create_function(
+                name="parse_reversed_hex",
+                function=parse_reversed_hex,
+                parameters=[VARCHAR],
+                return_type=BIGINT,
+                type=PythonUDFType.NATIVE,
             )
 
         duckdb_context.python_udfs_ready = True

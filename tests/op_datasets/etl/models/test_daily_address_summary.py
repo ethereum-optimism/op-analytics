@@ -17,7 +17,6 @@ class TestDailyAddressSummary001(IntermediateModelTestBase):
     inputdata = InputTestData.at(__file__)
     chains = ["op"]
     dateval = date(2024, 10, 1)
-    datasets = ["blocks", "transactions"]
     block_filters = [
         "{block_number} = 126078000",
         "{block_number} = 126073799",
