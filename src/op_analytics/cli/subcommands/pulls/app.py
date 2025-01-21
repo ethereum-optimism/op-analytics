@@ -9,18 +9,11 @@ from op_analytics.datasources.agora.delegate_events import (
 )
 from op_analytics.datasources.agora.delegates import pull_delegates
 
-from op_analytics.datasources.l2beat import pull_l2beat
 
 log = structlog.get_logger()
 
 
 app = typer.Typer(help="Pull data from 3rd party sources.", add_completion=False)
-
-
-@app.command()
-def l2beat():
-    """Pull data from L2 beat."""
-    pull_l2beat()
 
 
 @app.command()

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Any, Callable
 
 import polars as pl
+
 from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
     overwrite_partition_static,
@@ -10,7 +11,8 @@ from op_analytics.coreutils.bigquery.write import (
     overwrite_unpartitioned_table,
 )
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.request import new_session, get_data
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
+from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import now_date
 
@@ -87,6 +89,15 @@ def pull_l2beat():
         "summary": summary_df,
         "tvl": tvl_df,
         "activity": activity_df,
+    }
+
+
+def execute_pull():
+    result = pull_l2beat()
+    return {
+        "summary": dt_summary(result["summary"]),
+        "tvl": dt_summary(result["tvl"]),
+        "activity": dt_summary(result["activity"]),
     }
 
 

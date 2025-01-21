@@ -4,6 +4,7 @@ import polars as pl
 
 from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import dt_fromepoch, now_dt
@@ -17,7 +18,7 @@ CHAINS_ENDPOINT = "https://api.llama.fi/v2/chains"
 CHAINS_TVL_ENDPOINT = "https://api.llama.fi/v2/historicalChainTvl/{slug}"
 
 
-TVL_TABLE_LAST_N_DAYS = 3
+TVL_TABLE_LAST_N_DAYS = 7
 
 
 @dataclass
@@ -78,8 +79,8 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
 def execute_pull():
     result = pull_historical_chain_tvl()
     return {
-        "metadata_df": len(result.metadata_df),
-        "tvl_df": len(result.tvl_df),
+        "metadata_df": dt_summary(result.metadata_df),
+        "tvl_df": dt_summary(result.tvl_df),
     }
 
 

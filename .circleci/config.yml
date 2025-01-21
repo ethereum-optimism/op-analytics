@@ -11,13 +11,16 @@ parameters:
     enum:
       [
         "select_job",
-        "run_daily_api_upload",
         "daily_l2_aggregate_later_loads",
         "daily_l2_chain_data_uploads",
         "deploy_github_pages",
         "run_market_data",
         "run_op_governance_uploads",
         "run_op_stack_chain_revenue",
+        "run_op_stack_metadata_upload",
+        "run-python-installation-and-dependency-check",
+        "run_value_locked_flows_update",
+        "run_weekly_l2_chain_data_uploads",
       ]
 
 commands:
@@ -74,6 +77,58 @@ commands:
             python -m pipenv install
 
 jobs:
+  python-installation-and-dependency-check:
+    machine:
+      image: ubuntu-2004:current
+    steps:
+      - checkout-dep-1:
+          base_git_project: "op-analytics"
+      - setup-python-3-10
+      - setup-python-3-10-project-dependencies:
+          base_git_project: "op-analytics"
+      - run:
+          name: Show dependency graph
+          command: |
+            cd "op-analytics"
+            source ~/miniconda3/bin/activate py310
+            pipenv graph
+      - run:
+          name: Check for security vulnerabilities
+          command: |
+            cd "op-analytics"
+            source ~/miniconda3/bin/activate py310
+            pipenv check || echo "Pipenv check failed, but continuing workflow"
+      - run:
+          name: Show installed packages
+          command: |
+            cd "op-analytics"
+            source ~/miniconda3/bin/activate py310
+            pipenv run pip list
+      - run:
+          name: Check for dependency conflicts
+          command: |
+            cd "op-analytics"
+            source ~/miniconda3/bin/activate py310
+            echo "Checking for potential conflicts..."
+            pipenv graph | grep -E '\w+==.+\s+\w+==.+' || echo "No obvious conflicts found in dependency graph"
+
+            echo "Packages with multiple versions:"
+            pipenv graph | awk -F'==' '{print $1}' | sort | uniq -c | sort -nr | awk '$1 > 1 {print $0}'
+      - run:
+          name: Show environment information
+          command: |
+            cd "op-analytics"
+            source ~/miniconda3/bin/activate py310
+            pipenv --venv
+            pipenv --where
+            pipenv --py
+      - run:
+          name: List all installed packages with versions
+          command: |
+            cd "op-analytics"
+            source ~/miniconda3/bin/activate py310
+            pipenv run pip freeze
+
   setup-python-3-10-job:
     machine:
       image: ubuntu-2004:current
@@ -135,6 +190,9 @@ jobs:
       push:
         type: string
         default: always
+      skip-ci:
+        type: boolean
+        default: false
     machine:
       image: ubuntu-2004:current
     steps:
@@ -176,7 +234,7 @@ jobs:
       - utils/github-commit-and-push-changes:
           condition: << parameters.push >>
           commit-message: "<< parameters.commit-message >>"
-          skip-ci: true
+          skip-ci: << parameters.skip-ci >>
           folder: "op-analytics"
 
   deploy-github-pages:
@@ -204,32 +262,10 @@ jobs:
           force-push: true
           src-pages-dir: /tmp/docs
 
-  daily-uploads-other-tasks:
-    machine:
-      image: ubuntu-2004:current
-    steps:
-      - checkout-dep-1
-      - setup-python-env
-      - run:
-          name: L2Beat
-          command: uv run opdata pulls l2beat
-          environment:
-            OPLABS_RUNTIME: "gha"
-            OPLABS_ENV: "prod"
 
 workflows:
   version: 2
-  run-daily-api-uploads:
-    when:
-      or:
-        - equal: [<< pipeline.parameters.run_job >>, "run_daily_api_upload"]
-        - equal: [<< pipeline.schedule.name >>, "run_daily_api_upload"]
-    jobs:
-      - daily-uploads-other-tasks:
-          context: op-analytics
-          filters:
-            branches:
-              only: main
+
 
   daily-l2-aggregate-later-loads:
     when:
@@ -310,6 +346,74 @@ workflows:
             - circleci-repo-op-analytics
             - op-analytics-gcp
 
+  run_op_stack_metadata_upload:
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "run_op_stack_metadata_upload"]
+        - equal:
+            [<< pipeline.parameters.run_job >>, "run_op_stack_metadata_upload"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Generate Chain Metadata, Matviews and Views"
+          notebook-paths: >-
+            [
+              {"dir": "op_chains_tracking/inputs", "notebook": "clean_chain_metadata_and_upload"},
+              {"dir": "op_chains_tracking/clickhouse_builds", "notebook": "create_matviews"},
+              {"dir": "op_chains_tracking/clickhouse_builds", "notebook": "create_superchain_data_view"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  run_value_locked_flows_update:
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "run_value_locked_flows_update"]
+        - equal:
+            [<< pipeline.parameters.run_job >>, "run_value_locked_flows_update"]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Value Flows"
+          notebook-paths: >-
+            [
+              {"dir": "value_locked_flows", "notebook": "total_app_net_flows_async"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
+  run_weekly_l2_chain_data_uploads:
+    when:
+      or:
+        - equal:
+            [
+              << pipeline.schedule.name >>,
+              "run_weekly_l2_chain_data_uploads_1_4",
+            ]
+        - equal:
+            [
+              << pipeline.schedule.name >>,
+              "run_weekly_l2_chain_data_uploads_monday",
+            ]
+        - equal:
+            [
+              << pipeline.parameters.run_job >>,
+              "run_weekly_l2_chain_data_uploads",
+            ]
+    jobs:
+      - convert-and-run-notebooks-to-py-and-push:
+          commit-message: "GH Action Update - Weekly"
+          notebook-paths: >-
+            [
+              {"dir": "other_chains_tracking", "notebook": "get_desybil_wallets"}
+            ]
+          context:
+            - op-analytics-legacy
+            - circleci-repo-op-analytics
+            - op-analytics-gcp
+
   daily_l2_chain_data_uploads:
     when:
       or:
@@ -345,7 +449,11 @@ workflows:
     when:
       or:
         - equal: [<< pipeline.parameters.run_job >>, "deploy_github_pages"]
-        - equal: [<< pipeline.git.branch >>, "main"]
+        - equal: [<< pipeline.schedule.name >>, "deploy_github_pages"]
+        - and:
+            - equal: [<< pipeline.git.branch >>, "main"]
+            - not:
+                equal: [<< pipeline.trigger_source >>, "api"]
     jobs:
       - deploy-github-pages:
           context:
@@ -354,3 +462,18 @@ workflows:
           filters:
             branches:
               only: main
+
+  run-python-installation-and-dependency-check:
+    when:
+      or:
+        - equal:
+            [
+              << pipeline.parameters.run_job >>,
+              "run-python-installation-and-dependency-check",
+            ]
+        - and:
+            - equal: [<< pipeline.git.branch >>, "main"]
+            - not:
+                equal: [<< pipeline.trigger_source >>, "api"]
+    jobs:
+      - python-installation-and-dependency-check

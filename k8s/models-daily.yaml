@@ -8,6 +8,7 @@ metadata:
     component: models-daily
 spec:
   schedule: "50 * * * *"  # Runs every hour at minute 50
+  concurrencyPolicy: Forbid 
   jobTemplate:
     spec:
       template:
@@ -16,7 +17,7 @@ spec:
           containers:
           - name: python-runner
             imagePullPolicy: IfNotPresent
-            image: ghcr.io/lithium323/op-analytics:v20250114.1
+            image: ghcr.io/lithium323/op-analytics:v20250121.1
             command: ["tini", "-v", "--", "opdata"]
             args: ["chains", "noargs_intermediate"]
             env:
