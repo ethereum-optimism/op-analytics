@@ -21,12 +21,10 @@ def token_transfers(
     input_datasets: dict[str, ParquetData],
     auxiliary_views: dict[str, AuxiliaryView],
 ) -> NamedRelations:
-    logs_view = input_datasets["ingestion/logs_v1"].create_view()
-
     all_transfers = auxiliary_views["token_transfers"].to_relation(
         duckdb_context=ctx,
         template_parameters={
-            "raw_logs": logs_view,
+            "raw_logs": input_datasets["ingestion/logs_v1"].as_subquery(),
         },
     )
 
