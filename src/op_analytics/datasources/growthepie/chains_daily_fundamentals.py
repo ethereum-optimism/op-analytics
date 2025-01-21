@@ -131,16 +131,7 @@ class GrowthepieFundamentalSummary:
 
 
 def execute_pull():
-    result = pull_growthepie_summary()
-    return {
-        "metadata_df": dt_summary(result.metadata_df),
-        "summary_df": dt_summary(result.summary_df),
-    }
-
-
-def pull_growthepie_summary() -> GrowthepieFundamentalSummary:
     """Fetch and write to GCS."""
-
     data = GrowthepieFundamentalSummary.fetch()
 
     GrowThePie.CHAIN_METADATA.write(
@@ -152,6 +143,11 @@ def pull_growthepie_summary() -> GrowthepieFundamentalSummary:
         dataframe=data.summary_df,
         sort_by=["origin_key"],
     )
+
+    return {
+        "metadata_df": dt_summary(data.metadata_df),
+        "summary_df": dt_summary(data.summary_df),
+    }
 
 
 def process_metadata_pull(response_data) -> list[dict[str, str]]:
