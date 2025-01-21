@@ -22,7 +22,7 @@ def create_gcs_view(
     # Construct the SQL DDL statement
     table_id = f"{db_name}.{table_name}"
     ddl_statement = f"""
-    CREATE EXTERNAL TABLE `oplabs-tools-data.{table_id}`
+    CREATE EXTERNAL TABLE IF NOT EXISTS `oplabs-tools-data.{table_id}`
     WITH PARTITION COLUMNS ({partition_columns}) 
     OPTIONS (
         format = 'PARQUET',

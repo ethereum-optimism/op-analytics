@@ -4,7 +4,7 @@ import polars as pl
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
-from op_analytics.coreutils.time import date_fromstr
+from op_analytics.coreutils.time import date_fromstr, date_tostr
 
 
 log = structlog.get_logger()
@@ -24,7 +24,11 @@ def last_n_dts(n_dates: int, reference_dt: str) -> list[date]:
 
 
 def last_n_days(
-    df: pl.DataFrame, n_dates: int, reference_dt: str, date_column: str = "dt"
+    df: pl.DataFrame,
+    n_dates: int,
+    reference_dt: str,
+    date_column: str = "dt",
+    date_column_type_is_str: bool = False,
 ) -> pl.DataFrame:
     """Limit dataframe to the last N dates present in the data.
 
@@ -34,7 +38,12 @@ def last_n_days(
     Usually operates on partitioned datasets so the default date_column is "dt". If
     needed for other purposes callers can specify a different date_column name.
     """
-    dts = last_n_dts(n_dates=n_dates, reference_dt=reference_dt)
+    dts: list[date] = last_n_dts(n_dates=n_dates, reference_dt=reference_dt)
+
+    if date_column_type_is_str:
+        dts_str = [date_tostr(_) for _ in dts]
+        return df.filter(pl.col(date_column).is_in(dts_str))
+
     return df.filter(pl.col(date_column).is_in(dts))
 
 

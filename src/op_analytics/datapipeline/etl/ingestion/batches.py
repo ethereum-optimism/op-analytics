@@ -84,8 +84,10 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "lyra": [
         Delimiter(0, 20000),
         Delimiter(block_number=16000000, batch_size=8000),
-        # Decreased on 2025/01/10
+        # Decreased on 2025/01/10.
         Delimiter(block_number=18232000, batch_size=4000),
+        # Decreased on 2025/01/21.
+        Delimiter(block_number=18720000, batch_size=3000),
     ],
     "metal": [
         Delimiter(0, 20000),
@@ -105,6 +107,8 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=0, batch_size=10000),
         Delimiter(block_number=62000000, batch_size=5000),
         Delimiter(block_number=94000000, batch_size=2000),
+        # Decreased on 2025/01/21.
+        Delimiter(block_number=130928000, batch_size=1000),
     ],
     "orderly": [
         # At various times during 2024 orderly had a sustained peak
