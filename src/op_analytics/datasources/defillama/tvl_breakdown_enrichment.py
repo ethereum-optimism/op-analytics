@@ -1,11 +1,12 @@
 import re
 from dataclasses import dataclass
-from datetime import timedelta
+from datetime import date, timedelta
 
 import polars as pl
 
 from op_analytics.coreutils.duckdb_inmem.client import init_client
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_fromstr, date_tostr, now_dt
 from op_analytics.datasources.defillama.dataaccess import DefiLlama
@@ -129,7 +130,7 @@ class DefillamaTVLBreakdown:
         return cls(df_tvl_breakdown=df_tvl_breakdown)
 
 
-def data_quality_check(df_tvl_breakdown: pl.DataFrame, min_date: str, max_date: str):
+def data_quality_check(df_tvl_breakdown: pl.DataFrame, min_date: date, max_date: date):
     """Check that all expected "dt" partitions are present in the output data."""
 
     assert "dt" in df_tvl_breakdown.columns
@@ -159,7 +160,7 @@ def execute_pull():
     )
 
     return {
-        "df_tvl_breakdown": len(result.df_tvl_breakdown),
+        "df_tvl_breakdown": dt_summary(result.df_tvl_breakdown),
     }
 
 

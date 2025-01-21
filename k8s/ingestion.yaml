@@ -17,7 +17,7 @@ spec:
           containers:
           - name: python-runner
             imagePullPolicy: IfNotPresent
-            image: ghcr.io/lithium323/op-analytics:v20250116.1
+            image: ghcr.io/lithium323/op-analytics:v20250121.1
             command: ["tini", "-v", "--", "opdata"]
             args: ["chains", "noargs_ingest"]
             env:
@@ -31,11 +31,11 @@ spec:
               limits:
                 cpu: 1
                 ephemeral-storage: 10Gi
-                memory: 6Gi
+                memory: 8Gi
               requests:
                 cpu: 1
                 ephemeral-storage: 10Gi
-                memory: 4Gi
+                memory: 6Gi
             volumeMounts:
             - mountPath: "/var/secrets"
               name: opanalyticsvault

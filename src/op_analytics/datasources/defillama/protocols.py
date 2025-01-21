@@ -1,17 +1,17 @@
-from dataclasses import dataclass, asdict
-from datetime import timedelta, date
 from collections import defaultdict
+from dataclasses import asdict, dataclass
+from datetime import date, timedelta
 from typing import Any
 
 import polars as pl
 
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently_store_failures
 from op_analytics.coreutils.time import date_fromstr, dt_fromepoch, epoch_is_date, now_date, now_dt
 
 from .dataaccess import DefiLlama
-
 
 log = structlog.get_logger()
 
@@ -109,9 +109,9 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
 def execute_pull():
     result = pull_protocol_tvl()
     return {
-        "metadata_df": len(result.metadata_df),
-        "app_tvl_df": len(result.app_tvl_df),
-        "app_token_tvl_df": len(result.app_token_tvl_df),
+        "metadata_df": dt_summary(result.metadata_df),
+        "app_tvl_df": dt_summary(result.app_tvl_df),
+        "app_token_tvl_df": dt_summary(result.app_token_tvl_df),
     }
 
 
