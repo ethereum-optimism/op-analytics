@@ -968,6 +968,15 @@ wheels = [
 ]
 
 [[package]]
+name = "eth-abi-lite"
+version = "3.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/aa/50/cc55803212241bb4768c15b08547632c43d1afcb82ce2daa7b0eed3fefc4/eth_abi_lite-3.2.0.tar.gz", hash = "sha256:53e8b4028d671f2aa217ecee85865bb3960b7d54d199eff53f1daeba71dfef5f", size = 56690 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5a/b2/ecbcab5a769671448bf813690eac2c21f1fad6f41b2d5713f0b4cbd13f47/eth_abi_lite-3.2.0-py3-none-any.whl", hash = "sha256:2ace29952e7682598446c996e956536847d7951edc3532f41c5c0f3b89784e7e", size = 65394 },
+]
+
+[[package]]
 name = "eth-hash"
 version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2106,6 +2115,7 @@ dependencies = [
     { name = "dagster" },
     { name = "dagster-k8s" },
     { name = "duckdb" },
+    { name = "eth-abi-lite" },
     { name = "gcsfs" },
     { name = "google-cloud-bigquery" },
     { name = "google-cloud-storage" },
@@ -2159,6 +2169,7 @@ requires-dist = [
     { name = "dagster", specifier = ">=1.9.7" },
     { name = "dagster-k8s", specifier = ">=0.25.7" },
     { name = "duckdb", specifier = ">=1.1.1" },
+    { name = "eth-abi-lite", specifier = ">=3.2.0" },
     { name = "gcsfs", specifier = ">=2024.9.0.post1" },
     { name = "google-cloud-bigquery", specifier = ">=3.26.0" },
     { name = "google-cloud-storage", specifier = ">=2.18.2" },

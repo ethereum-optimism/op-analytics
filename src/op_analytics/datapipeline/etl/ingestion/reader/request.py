@@ -35,6 +35,9 @@ class BlockBatchRequest:
     # than physical names where the data is actualy stored.
     root_paths_to_read: list[RootPath]
 
+    # If the request is for a specific range of blocks.
+    block_range: BlockRange | None = None
+
     @classmethod
     def build(
         cls,
@@ -42,6 +45,7 @@ class BlockBatchRequest:
         range_spec: str,
         root_paths_to_read: list[RootPath],
     ) -> "BlockBatchRequest":
+        block_range: BlockRange | None
         try:
             block_range = BlockRange.from_spec(range_spec)
 
@@ -72,6 +76,7 @@ class BlockBatchRequest:
             chain_max_blocks=get_chain_max_blocks(chains),
             time_range=time_range,
             root_paths_to_read=root_paths_to_read,
+            block_range=block_range,
         )
 
     def physical_root_paths(self) -> list[str]:
