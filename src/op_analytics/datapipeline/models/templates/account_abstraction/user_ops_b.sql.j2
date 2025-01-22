@@ -1,0 +1,21 @@
+SELECT
+  l.chain_id
+  , l.chain
+  , l.dt
+  , l.block_timestamp
+  , l.block_number
+  , l.block_hash
+  , l.transaction_hash
+  , l.transaction_index
+  , l.log_index
+  , l.address AS contract_address
+  , l.indexed_args[1] AS user_op_hash
+  , l.indexed_args[2] AS sender
+  , l.indexed_args[3] AS paymaster
+  , l.data
+  , decode_user_ops(l.data) AS decoded_user_ops
+FROM {{ raw_logs }} AS l
+WHERE
+  true
+  AND l.topic0 = '0x49628fd1471006c1482da88028e9ce4dbb080b815c9b0344d39e5a8e6ec1419f' -- UserOperationEvent
+  AND array_length(l.indexed_args) = 3
