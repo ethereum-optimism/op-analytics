@@ -7,7 +7,7 @@ from .model import ModelFunction, ModelPath, PythonModel
 log = structlog.get_logger()
 
 # All model functions should be defined in modules under this prefix:
-MODULE_PREFIX = "op_analytics.datapipeline.models.code."
+PACKAGE_PREFIX = "op_analytics.datapipeline.models.code."
 
 
 def register_model(
@@ -19,13 +19,14 @@ def register_model(
         function_name = func.__name__
 
         with bound_contextvars(model=function_name):
+            # Ensure all models are defined under the "code" package.
+            assert str(func.__module__).startswith(PACKAGE_PREFIX)
+
             # Instantiating the model registers it on the PythonModel
             # instance registry.
-            assert str(func.__module__).startswith(MODULE_PREFIX)
-
             PythonModel(
                 path=ModelPath(
-                    module=str(func.__module__).removeprefix(MODULE_PREFIX),
+                    module=str(func.__module__).removeprefix(PACKAGE_PREFIX),
                     function_name=function_name,
                 ),
                 input_datasets=input_datasets,

@@ -30,6 +30,7 @@ def daily_address_summary(
         template_parameters={
             "raw_blocks": blocks_view,
             "raw_transactions": txs_view,
+            "extra_cols": [],
         },
     )
 

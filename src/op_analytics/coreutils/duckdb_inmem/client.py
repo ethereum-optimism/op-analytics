@@ -136,12 +136,22 @@ class ParquetData(EnforceOverrides):
 
     def select_string(
         self,
-        projections: list[str] | None = None,
+        projections: list[str] | str | None = None,
         additional_sql: str | None = None,
         parenthesis: bool = False,
     ) -> str:
+        projstr: str
+        if projections is None:
+            projstr = "*"
+        elif isinstance(projections, list):
+            projstr = "\n, ".join(projections)
+        elif isinstance(projections, str):
+            projstr = projections
+        else:
+            raise ValueError(f"invalid projections: {projections}")
+
         select = f"""
-        SELECT {projections or "*"} FROM {self.data_subquery()}
+        SELECT {projstr} FROM {self.data_subquery()}
         {additional_sql or ""}
         """
 
