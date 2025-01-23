@@ -64,6 +64,12 @@ def run_tasks(
     use_pool: bool = False,
     num_processes: int = 1,
 ):
+    """Run tasks.
+
+    The use_pool=True option should only be used when running locally to speed up backfills.
+    In kubernetes we have had some issues taking advantage of the process pool. So we do fork
+    but we spawn an entirely new process for each task.
+    """
     if dryrun:
         log.info("DRYRUN: No work will be done.")
         return
