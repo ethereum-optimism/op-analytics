@@ -12,10 +12,10 @@ class TestTokenTransfers001(IntermediateModelTestBase):
     dateval = date(2024, 11, 18)
     datasets = ["logs"]
     block_filters = [
-        "{block_number} > 0",
+        "{block_number} IN (128145990, 128145989) OR block_number % 100 < 2",
     ]
 
-    _enable_fetching = True
+    _enable_fetching = False
 
     def test_overall_totals(self):
         assert self._duckdb_context is not None
@@ -36,8 +36,8 @@ class TestTokenTransfers001(IntermediateModelTestBase):
             .to_dicts()[0]["num_erc721_transfers"]
         )
 
-        assert num_erc20_transfers == 60981
-        assert num_erc721_transfers == 1998
+        assert num_erc20_transfers == 1105
+        assert num_erc721_transfers == 35
 
     def test_model_schema_erc20(self):
         assert self._duckdb_context is not None
@@ -101,7 +101,8 @@ class TestTokenTransfers001(IntermediateModelTestBase):
 
         output = (
             self._duckdb_context.client.sql("""
-        SELECT * FROM erc20_transfers_v1 LIMIT 1
+        SELECT * FROM erc20_transfers_v1
+        WHERE transaction_hash = '0x6ba43fabde9f03dded7c56677751114907201a9e44628b7a64b02d118df25aba'
         """)
             .pl()
             .to_dicts()
@@ -132,7 +133,8 @@ class TestTokenTransfers001(IntermediateModelTestBase):
 
         output = (
             self._duckdb_context.client.sql("""
-        SELECT * FROM erc721_transfers_v1 LIMIT 1
+        SELECT * FROM erc721_transfers_v1
+        WHERE transaction_hash = '0x8c8097be6a11606a35153d59a846dd0563f461c67a2ab59c5211e00540a4a865'
         """)
             .pl()
             .to_dicts()
