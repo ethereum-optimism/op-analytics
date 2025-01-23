@@ -51,9 +51,10 @@ class TestTokenTransfers001(IntermediateModelTestBase):
         actual_schema = {row["column_name"]: row["column_type"] for row in schema}
 
         assert actual_schema == {
-            "chain_id": "INTEGER",
-            "chain": "VARCHAR",
             "dt": "DATE",
+            "chain": "VARCHAR",
+            "chain_id": "INTEGER",
+            "network": "VARCHAR",
             "block_timestamp": "UINTEGER",
             "block_number": "BIGINT",
             "block_hash": "VARCHAR",
@@ -79,9 +80,10 @@ class TestTokenTransfers001(IntermediateModelTestBase):
         actual_schema = {row["column_name"]: row["column_type"] for row in schema}
 
         assert actual_schema == {
-            "chain_id": "INTEGER",
-            "chain": "VARCHAR",
             "dt": "DATE",
+            "chain": "VARCHAR",
+            "chain_id": "INTEGER",
+            "network": "VARCHAR",
             "block_timestamp": "UINTEGER",
             "block_number": "BIGINT",
             "block_hash": "VARCHAR",
@@ -98,7 +100,7 @@ class TestTokenTransfers001(IntermediateModelTestBase):
         assert self._duckdb_context is not None
 
         output = (
-            self._duckdb_context.client.sql(f"""
+            self._duckdb_context.client.sql("""
         SELECT * FROM erc20_transfers_v1 LIMIT 1
         """)
             .pl()
@@ -107,9 +109,10 @@ class TestTokenTransfers001(IntermediateModelTestBase):
 
         assert output == [
             {
-                "chain_id": 10,
-                "chain": "op",
                 "dt": datetime.date(2024, 11, 18),
+                "chain": "op",
+                "chain_id": 10,
+                "network": "mainnet",
                 "block_timestamp": 1731890755,
                 "block_number": 128145989,
                 "block_hash": "0x98f6d6cfb9de5b5ccf9c3d9849bc04ab9a2c4725b6572d5ead0f35787ad4de82",
@@ -128,7 +131,7 @@ class TestTokenTransfers001(IntermediateModelTestBase):
         assert self._duckdb_context is not None
 
         output = (
-            self._duckdb_context.client.sql(f"""
+            self._duckdb_context.client.sql("""
         SELECT * FROM erc721_transfers_v1 LIMIT 1
         """)
             .pl()
@@ -137,9 +140,10 @@ class TestTokenTransfers001(IntermediateModelTestBase):
 
         assert output == [
             {
-                "chain_id": 10,
-                "chain": "op",
                 "dt": datetime.date(2024, 11, 18),
+                "chain": "op",
+                "chain_id": 10,
+                "network": "mainnet",
                 "block_timestamp": 1731890757,
                 "block_number": 128145990,
                 "block_hash": "0x1dbc3f2bc6e28592c242c2da70c30d75cda987cee20f7203e5d99f9d91a9a1d9",

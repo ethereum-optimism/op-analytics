@@ -1,20 +1,21 @@
 SELECT
-    l.chain_id
-    ,l.chain
-    ,l.dt
-    ,l.block_timestamp
-    ,l.block_number
-    ,l.block_hash
-    ,l.transaction_hash
-    ,l.transaction_index
-    ,l.log_index
-    ,l.address AS contract_address
-    ,case when array_length(indexed_args) = 2 then l.data.hex_to_lossy() else null end AS amount
-    ,case when array_length(indexed_args) = 2 then l.data.hex_to_lossless() else null end AS amount_lossless
-    ,indexed_event_arg_to_address(indexed_args[1]) AS from_address
-    ,indexed_event_arg_to_address(indexed_args[2]) AS to_address
-    ,hex_to_lossless(indexed_args[3]) AS token_id
+  l.dt
+  , l.chain
+  , l.chain_id
+  , l.network
+  , l.block_timestamp
+  , l.block_number
+  , l.block_hash
+  , l.transaction_hash
+  , l.transaction_index
+  , l.log_index
+  , l.address AS contract_address
+  , CASE WHEN array_length(l.indexed_args) = 2 THEN l.data.hex_to_lossy() END AS amount
+  , CASE WHEN array_length(l.indexed_args) = 2 THEN l.data.hex_to_lossless() END AS amount_lossless
+  , indexed_event_arg_to_address(l.indexed_args[1]) AS from_address
+  , indexed_event_arg_to_address(l.indexed_args[2]) AS to_address
+  , hex_to_lossless(l.indexed_args[3]) AS token_id
 FROM {{ raw_logs }} AS l
 WHERE
-    true
-    AND l.topic0 = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' -- transfers
+  true
+  AND l.topic0 = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' -- transfers
