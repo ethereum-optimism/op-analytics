@@ -307,11 +307,11 @@ workflows:
             - op-analytics-gcp
 
   run_op_governance_uploads:
-    when:
-      or:
-        - equal: [<< pipeline.schedule.name >>, "run_op_governance_uploads"]
-        - equal:
-            [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
+    # when:
+    #   or:
+    #     - equal: [<< pipeline.schedule.name >>, "run_op_governance_uploads"]
+    #     - equal:
+    #         [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
           commit-message: "GH Action Update - Gov Uploads"
