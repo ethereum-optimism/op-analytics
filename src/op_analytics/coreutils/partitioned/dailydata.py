@@ -170,6 +170,7 @@ class DailyDataset(str, Enum):
         min_date: str | date | None = None,
         max_date: str | date | None = None,
         date_range_spec: str | None = None,
+        location: DataLocation = DataLocation.GCS,
     ) -> str:
         """Load date partitioned defillama dataset from the specified location.
 
@@ -182,8 +183,6 @@ class DailyDataset(str, Enum):
 
         if isinstance(max_date, date):
             max_date = date_tostr(max_date)
-
-        location = DataLocation.GCS
 
         log.info(
             f"Reading data from {self.root_path!r} "

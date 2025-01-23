@@ -1,4 +1,5 @@
 from dagster import OpExecutionContext, asset
+from op_analytics.datasources.github.dataaccess import Github
 
 
 @asset
@@ -32,8 +33,6 @@ def traffic_views():
     - github_gcs.repo_metrics_v1
     - github_gcs.repo_referrers_v1
     """
-    from op_analytics.datasources.github.dataaccess import Github
-
     Github.TRAFFIC_METRICS.create_clickhouse_view()
     Github.REFERRER_METRICS.create_clickhouse_view()
 
@@ -46,11 +45,64 @@ def activity_views():
     - github_gcs.github_prs_v1
     - github_gcs.github_pr_comments_v1
     - github_gcs.github_pr_reviews_v1
-
     """
-    from op_analytics.datasources.github.dataaccess import Github
-
     Github.ISSUES.create_clickhouse_view()
     Github.PRS.create_clickhouse_view()
     Github.PR_COMMENTS.create_clickhouse_view()
     Github.PR_REVIEWS.create_clickhouse_view()
+
+
+@asset(deps=[activity], group_name="github", name="pr_metrics")
+def pr_metrics(context: OpExecutionContext) -> None:
+    """
+    Dagster asset to compute and write GitHub PR metrics data.
+
+    This asset depends on the activity asset which pulls raw PR data.
+    It computes daily metrics about PR activity and performance across repos.
+
+    The metrics are computed for a 30-day window ending at the current date
+    to ensure recent PR activity and updates are captured.
+    """
+    from op_analytics.coreutils.time import now_date, date_tostr, datestr_subtract
+    from op_analytics.datasources.github.metrics.execute import execute_pull_pr_metrics
+
+    # Compute date range
+    end_date = date_tostr(now_date())  # Current date in YYYY-MM-DD format
+    start_date = datestr_subtract(end_date, 30)  # 30 days before end_date
+
+    context.log.info(
+        "computing PR metrics",
+        start_date=start_date,
+        end_date=end_date,
+    )
+
+    summary = execute_pull_pr_metrics(
+        min_date=start_date,
+        max_date=end_date,
+    )
+
+    context.log.info(
+        "pr_metrics_asset completed",
+        summary=summary,
+        start_date=start_date,
+        end_date=end_date,
+    )
+
+
+@asset(deps=[pr_metrics])
+def pr_metrics_views():
+    """Clickhouse external table over GCS data:
+
+    - github_gcs.pr_metrics_v1
+
+    Contains daily metrics about PR activity and performance per repository:
+    - number_of_prs
+    - avg_time_to_approval_days
+    - avg_time_to_first_non_bot_comment_days
+    - avg_time_to_merge_days
+    - approval_ratio
+    - avg_comments_per_pr
+    - merged_ratio
+    - active_contributors
+    """
+    Github.PR_METRICS.create_clickhouse_view()
