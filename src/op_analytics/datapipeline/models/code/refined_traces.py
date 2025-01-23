@@ -32,6 +32,7 @@ def refined_traces(
         template_parameters={
             "raw_blocks": input_datasets["ingestion/blocks_v1"].as_subquery(),
             "raw_transactions": input_datasets["ingestion/transactions_v1"].as_subquery(),
+            "extra_cols": [],
         },
     )
 
