@@ -1,14 +1,19 @@
-from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext, ParquetData
-from op_analytics.datapipeline.models.compute.model import AuxiliaryView
-from op_analytics.datapipeline.models.compute.registry import register_model
-from op_analytics.datapipeline.models.compute.types import NamedRelations
+from textwrap import dedent
 
+from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext, ParquetData
+from op_analytics.datapipeline.models.code.account_abstraction.abis import (
+    INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0,
+    INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0,
+)
 from op_analytics.datapipeline.models.code.account_abstraction.event_user_op import (
     register_decode_user_ops,
 )
 from op_analytics.datapipeline.models.code.account_abstraction.function_decoders import (
     register_4337_decoders,
 )
+from op_analytics.datapipeline.models.compute.model import AuxiliaryView
+from op_analytics.datapipeline.models.compute.registry import register_model
+from op_analytics.datapipeline.models.compute.types import NamedRelations
 
 
 @register_model(
@@ -40,114 +45,89 @@ def account_abstraction(
     register_decode_user_ops(ctx)
     register_4337_decoders(ctx)
 
-    # UserOperationEvent
-    user_ops_events = auxiliary_views["account_abstraction/user_ops"].create_table(
-        duckdb_context=ctx,
-        template_parameters={
-            "raw_logs": input_datasets["ingestion/logs_v1"].as_subquery(),
-        },
-    )
-    print(user_ops_events)
-
-    # Filter raw transactions to the ones having UserOperationEvent logs.
-    # This is a lazy operation. Returns the raw SQL string.
-    filtered_transactions = input_datasets["ingestion/transactions_v1"].select_string(
-        projections="read_parquet.*",
-        parenthesis=True,
-        additional_sql=f"""
-        INNER JOIN (SELECT DISTINCT block_number, transaction_hash FROM {user_ops_events}) ops
-        ON read_parquet.block_number = ops.block_number
-        AND read_parquet.hash = ops.transaction_hash
-        """,
-    )
-
-    # Create a table where the filtered transactions are enhanced with the refined
-    # transactions fees transformation.
-    refined_txs = auxiliary_views["refined_transactions_fees"].create_table(
-        duckdb_context=ctx,
-        template_parameters={
-            "raw_blocks": input_datasets["ingestion/blocks_v1"].as_subquery(),
-            "raw_transactions": filtered_transactions,
-            "extra_cols": ["decode_handle_ops_input(t.input) AS decoded_input"],
-        },
-    )
-
-    # UserOperationEvent
-    user_ops_events = auxiliary_views["account_abstraction/user_ops"].create_table(
+    # Decoded UserOperationEvent logs.
+    user_ops_events = auxiliary_views["account_abstraction/user_op_events"].create_table(
         duckdb_context=ctx,
         template_parameters={
             "raw_logs": input_datasets["ingestion/logs_v1"].as_subquery(),
         },
     )
 
-    # Filter raw transactions to the ones having UserOperationEvent logs.
-    # This is a lazy operation. Returns the raw SQL string.
-    filtered_transactions = input_datasets["ingestion/transactions_v1"].select_string(
-        projections="read_parquet.*",
-        parenthesis=True,
-        additional_sql=f"""
-        INNER JOIN (SELECT DISTINCT block_number, transaction_hash FROM {user_ops_events}) ops
-        ON read_parquet.block_number = ops.block_number
-        AND read_parquet.hash = ops.transaction_hash
-        """,
-    )
+    # Table with UserOp transaction hashes. Used to filter the raw traces.
+    ctx.client.sql(f"""
+    CREATE OR REPLACE TABLE user_op_txhash_senders AS
+    SELECT DISTINCT txhash_sender FROM {user_ops_events}
+    ORDER BY transaction_hash
+    """)
 
-    # Create a table where the filtered transactions are enhanced with the refined
-    # transactions fees transformation.
-    refined_txs = auxiliary_views["refined_transactions_fees"].create_table(
-        duckdb_context=ctx,
-        template_parameters={
-            "raw_blocks": input_datasets["ingestion/blocks_v1"].as_subquery(),
-            # "raw_transactions": input_datasets["ingestion/transactions_v1"].as_subquery(),
-            "raw_transactions": filtered_transactions,
-            "extra_cols": ["t.input"],
-        },
-    )
-    print(refined_txs)
-
-    # --------------
-
-    # Start out by adding fees and other useful fields to each transaction.
-    refined_txs = auxiliary_views["refined_transactions_fees"].create_table(
-        duckdb_context=ctx,
-        template_parameters={
-            "raw_blocks": input_datasets["ingestion/blocks_v1"].as_subquery(),
-            "raw_transactions": input_datasets["ingestion/transactions_v1"].as_subquery(),
-        },
-    )
-
-    # Project only the necessary fields from raw traces.
-    refined_traces_projection = auxiliary_views["refined_traces/traces_projection"].create_table(
+    # Prefiltered traces.
+    user_op_prefiltered_traces = auxiliary_views[
+        "account_abstraction/user_op_prefiltered_traces"
+    ].create_table(
         duckdb_context=ctx,
         template_parameters={
             "raw_traces": input_datasets["ingestion/traces_v1"].as_subquery(),
+            "user_op_txhash_senders": "user_op_txhash_senders",
+            "inner_handle_op_method_ids": ", ".join(
+                [
+                    f"'{INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0}'",
+                    f"'{INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0}'",
+                ]
+            ),
         },
     )
 
-    # Add up the gas used by the subtraces on each trace. Also include the
-    # number of traces in the parent transaction, so that the transaction gas
-    # used and fees can be amortized among traces.
-    traces_with_gas_used = auxiliary_views["refined_traces/traces_with_gas_used"].create_table(
+    # Traces initiated on behalf of the UserOperationEvent sender
+    user_op_traces = auxiliary_views["account_abstraction/user_op_sender_subtraces"].create_table(
         duckdb_context=ctx,
         template_parameters={
-            "refined_traces_projection": refined_traces_projection,
+            "prefiltered_traces": user_op_prefiltered_traces,
+            "inner_handle_op_method_ids": ", ".join(
+                [
+                    f"'{INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0}'",
+                    f"'{INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0}'",
+                ]
+            ),
         },
     )
 
-    # Joins traces with transactions. Amorizes the transaction gas used and
-    # fees across traces.
-    traces_txs_join = auxiliary_views["refined_traces/traces_txs_join"].create_table(
-        duckdb_context=ctx,
-        template_parameters={
-            "traces_with_gas_used": traces_with_gas_used,
-            "refined_transactions_fees": refined_txs,
-        },
-    )
-
-    # These two tables were materialized in duckdb temporarily (with an ORDER BY)
-    # to improve the performance of the traces <> txs join. We don't need them
-    # anymore as the joined result is also materialized.
-    ctx.client.sql(f"DROP TABLE {refined_traces_projection}")
-    ctx.client.sql(f"DROP TABLE {traces_with_gas_used}")
+    # Run data quality checks()
+    data_quality_checks()
 
     return {}
+
+
+def data_quality_checks(ctx, auxiliary_views):
+    # Data Quality Validation.
+
+    check1_msg = dedent("""\
+        The total # of UserOperationEvent logs in a transaction must be <= the number 
+        of sender subtraces found in the transaction.""")
+
+    check2_msg = dedent("""\
+        We should have exactly the same UserOperationEvent logs as we do first sender
+        subtrace calls.""")
+
+    check1 = (
+        auxiliary_views["account_abstraction/data_quality_check_01"]
+        .to_relation(duckdb_context=ctx, template_parameters={})
+        .pl()
+    )
+
+    check2 = (
+        auxiliary_views["account_abstraction/data_quality_check_02"]
+        .to_relation(duckdb_context=ctx, template_parameters={})
+        .pl()
+    )
+
+    errors = []
+    if len(check1) > 0:
+        errors.append(check1_msg)
+
+    if len(check2) > 0:
+        errors.append(check2_msg)
+
+    if errors:
+        raise Exception("\n\n".join(errors))
+    else:
+        print("DQ OK")
