@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.0.1
-  utils: ethereum-optimism/circleci-utils@dev:first
+  utils: ethereum-optimism/circleci-utils@0.0.14
 
 parameters:
   run_job:
@@ -307,11 +307,11 @@ workflows:
             - op-analytics-gcp
 
   run_op_governance_uploads:
-    # when:
-    #   or:
-    #     - equal: [<< pipeline.schedule.name >>, "run_op_governance_uploads"]
-    #     - equal:
-    #         [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
+    when:
+      or:
+        - equal: [<< pipeline.schedule.name >>, "run_op_governance_uploads"]
+        - equal:
+            [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
           commit-message: "GH Action Update - Gov Uploads"
