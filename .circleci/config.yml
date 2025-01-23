@@ -309,6 +309,7 @@ workflows:
   run_op_governance_uploads:
     # when:
     #   or:
+    #
     #     - equal: [<< pipeline.schedule.name >>, "run_op_governance_uploads"]
     #     - equal:
     #         [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
