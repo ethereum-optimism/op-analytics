@@ -7,6 +7,7 @@ from google.api_core.exceptions import NotFound
 import pandas_utils as pu
 import pandas as pd
 import math
+import subprocess
 
 dotenv.load_dotenv()
 
@@ -15,6 +16,54 @@ import logging
 # Setup logging configuration
 logging.basicConfig(level=logging.ERROR)  # Set logging level to ERROR
 logger = logging.getLogger(__name__)  # Create logger instance for this module
+
+def setup_google_cloud_env():
+    """
+    Set up Google Cloud environment variables if not already set.
+    Returns (success, error_message) tuple
+    """
+    # Default paths
+    default_creds_path = os.path.expanduser("~/.config/gcloud/application_default_credentials.json")
+    
+    # Check if credentials are already set
+    if not os.getenv('GOOGLE_APPLICATION_CREDENTIALS'):
+        if os.path.exists(default_creds_path):
+            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = default_creds_path
+        else:
+            return False, f"No credentials found at {default_creds_path}"
+    
+    # Check if project is already set
+    if not os.getenv('GOOGLE_CLOUD_PROJECT'):
+        try:
+            # First try to get project from credentials file
+            with open(os.environ['GOOGLE_APPLICATION_CREDENTIALS']) as f:
+                creds_data = json.load(f)
+                if 'quota_project_id' in creds_data:
+                    os.environ['GOOGLE_CLOUD_PROJECT'] = creds_data['quota_project_id']
+                elif 'project_id' in creds_data:
+                    os.environ['GOOGLE_CLOUD_PROJECT'] = creds_data['project_id']
+                else:
+                    # If not in credentials, try getting from gcloud config
+                    try:
+                        result = subprocess.run(
+                            ['gcloud', 'config', 'get-value', 'project'],
+                            capture_output=True,
+                            text=True,
+                            check=True
+                        )
+                        project = result.stdout.strip()
+                        if project:
+                            os.environ['GOOGLE_CLOUD_PROJECT'] = project
+                        else:
+                            return False, "No project found in gcloud config"
+                    except subprocess.CalledProcessError as e:
+                        return False, f"Error getting project from gcloud: {str(e)}"
+                    except FileNotFoundError:
+                        return False, "gcloud command not found"
+        except (json.JSONDecodeError, FileNotFoundError) as e:
+            return False, f"Error reading credentials file: {str(e)}"
+    
+    return True, None
 
 def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
         # Check if running in a GCP environment and will use the default credentials
@@ -27,6 +76,15 @@ def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
             return client
         except Exception as e:
             logging.error(f"Exception occurred while trying to use OIDC login")
+
+        try: 
+            logging.info("Using local machine credentials")
+            setup_google_cloud_env()
+            client = bigquery.Client(project=project_id)
+            return client
+        except Exception as e:
+            logging.error(f"Exception occurred while trying to get logging configuration file")
+            return None
         # -------------- end OIDC login
 
         # Check if running locally
