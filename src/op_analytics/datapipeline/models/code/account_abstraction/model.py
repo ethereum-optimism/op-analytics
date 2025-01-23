@@ -3,6 +3,13 @@ from op_analytics.datapipeline.models.compute.model import AuxiliaryView
 from op_analytics.datapipeline.models.compute.registry import register_model
 from op_analytics.datapipeline.models.compute.types import NamedRelations
 
+from op_analytics.datapipeline.models.code.account_abstraction.event_user_op import (
+    register_decode_user_ops,
+)
+from op_analytics.datapipeline.models.code.account_abstraction.function_decoders import (
+    register_4337_decoders,
+)
+
 
 @register_model(
     input_datasets=[
@@ -13,9 +20,11 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
     ],
     auxiliary_views=[
         "refined_transactions_fees",
-        "account_abstraction/user_ops",
-        "account_abstraction/user_ops_b",
-        "account_abstraction/handle_ops",
+        "account_abstraction/user_op_events",
+        "account_abstraction/user_op_prefiltered_traces",
+        "account_abstraction/user_op_sender_subtraces",
+        "account_abstraction/data_quality_check_01",
+        "account_abstraction/data_quality_check_02",
     ],
     expected_outputs=[
         "user_ops_v1",
@@ -28,11 +37,40 @@ def account_abstraction(
     input_datasets: dict[str, ParquetData],
     auxiliary_views: dict[str, AuxiliaryView],
 ) -> NamedRelations:
-    from op_analytics.datapipeline.models.code.account_abstraction.event_user_op import (
-        register_decode_user_ops,
+    register_decode_user_ops(ctx)
+    register_4337_decoders(ctx)
+
+    # UserOperationEvent
+    user_ops_events = auxiliary_views["account_abstraction/user_ops"].create_table(
+        duckdb_context=ctx,
+        template_parameters={
+            "raw_logs": input_datasets["ingestion/logs_v1"].as_subquery(),
+        },
+    )
+    print(user_ops_events)
+
+    # Filter raw transactions to the ones having UserOperationEvent logs.
+    # This is a lazy operation. Returns the raw SQL string.
+    filtered_transactions = input_datasets["ingestion/transactions_v1"].select_string(
+        projections="read_parquet.*",
+        parenthesis=True,
+        additional_sql=f"""
+        INNER JOIN (SELECT DISTINCT block_number, transaction_hash FROM {user_ops_events}) ops
+        ON read_parquet.block_number = ops.block_number
+        AND read_parquet.hash = ops.transaction_hash
+        """,
     )
 
-    register_decode_user_ops(ctx)
+    # Create a table where the filtered transactions are enhanced with the refined
+    # transactions fees transformation.
+    refined_txs = auxiliary_views["refined_transactions_fees"].create_table(
+        duckdb_context=ctx,
+        template_parameters={
+            "raw_blocks": input_datasets["ingestion/blocks_v1"].as_subquery(),
+            "raw_transactions": filtered_transactions,
+            "extra_cols": ["decode_handle_ops_input(t.input) AS decoded_input"],
+        },
+    )
 
     # UserOperationEvent
     user_ops_events = auxiliary_views["account_abstraction/user_ops"].create_table(

@@ -75,11 +75,13 @@ def decode_user_ops(data: str) -> dict:
     return ans
 
 
-def unregister_decode_user_ops(ctx: DuckDBContext):
-    ctx.client.remove_function("decode_user_ops")
-
-
 def register_decode_user_ops(ctx: DuckDBContext):
+    try:
+        ctx.client.remove_function("decode_user_ops")
+    except Exception as ex:
+        print(ex)
+        pass
+
     # NOTE: DuckDB does not support converting from python to UHUGEINT
     # https://github.com/duckdb/duckdb/blob/8e68a3e34aa526a342ae91e1b14b764bb3075a12/tools/pythonpkg/src/native/python_conversion.cpp#L325
     ctx.client.create_function(
