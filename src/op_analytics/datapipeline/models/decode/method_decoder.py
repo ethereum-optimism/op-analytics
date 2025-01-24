@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Callable, NewType
+from typing import Callable, NewType
 
 from duckdb.typing import DuckDBPyType
 from duckdb.functional import PythonUDFType
@@ -18,15 +18,15 @@ MethodId = NewType("MethodId", str)
 class SingleMethodDecoder:
     """Decode data for a single method."""
 
-    # Method ID associated with this decoder:
-    method_id: int
+    # Method ID associated with this decoder (hex sring).
+    method_id: str
 
     # Decoder instance. Converts bytestream to python objects.
     decoder: TupleDecoder
 
     # Result converter. Extracts specific fields from the result
     # produced by the decoder.
-    to_dict: Callable[[str, Any], dict]
+    to_dict: Callable[[str], dict]
 
     def decode(self, stream: ContextFramesBytesIO):
         result = self.decoder.decode(stream)
