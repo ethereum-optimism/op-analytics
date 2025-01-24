@@ -6,7 +6,7 @@ from typing import ClassVar, Callable, Protocol
 
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext, ParquetData
 
-from .auxview import AuxiliaryTemplate
+from .auxtemplate import AuxiliaryTemplate
 from .types import NamedRelations
 
 
