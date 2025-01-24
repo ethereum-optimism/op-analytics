@@ -8,12 +8,12 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
     input_datasets=[
         "ingestion/logs_v1",
     ],
+    auxiliary_templates=[
+        "token_transfers",
+    ],
     expected_outputs=[
         "erc20_transfers_v1",
         "erc721_transfers_v1",
-    ],
-    auxiliary_templates=[
-        "token_transfers",
     ],
 )
 def token_transfers(
