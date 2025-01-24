@@ -58,7 +58,7 @@ class LocalMarkers:
 
         cols = ",\n".join(projections)
 
-        markers = run_query_duckdb_local(
+        markers: duckdb.DuckDBPyRelation = run_query_duckdb_local(
             query=f"""
             SELECT
                 {cols}
@@ -66,8 +66,6 @@ class LocalMarkers:
             WHERE {where}
             """,
         )
-
-        markers: duckdb.DuckDBPyRelation = run_query_duckdb_local(query=query)
 
         # Duckdb returns num_parts as int32 when results are empty
         if "num_parts" in markers.columns:

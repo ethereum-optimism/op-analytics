@@ -10,7 +10,7 @@ from .querybuilder import TemplatedSQLQuery
 
 
 @dataclass
-class AuxiliaryView:
+class AuxiliaryTemplate:
     template_name: str
 
     @property

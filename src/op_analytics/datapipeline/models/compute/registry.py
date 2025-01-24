@@ -13,7 +13,7 @@ PACKAGE_PREFIX = "op_analytics.datapipeline.models.code."
 def register_model(
     input_datasets: list[str],
     expected_outputs: list[str],
-    auxiliary_views: list[str],
+    auxiliary_templates: list[str],
 ) -> Callable[[ModelFunction], Any]:
     def decorator(func):
         function_name = func.__name__
@@ -31,7 +31,7 @@ def register_model(
                 ),
                 input_datasets=input_datasets,
                 expected_output_datasets=expected_outputs,
-                auxiliary_views=auxiliary_views,
+                auxiliary_templates=auxiliary_templates,
                 model_func=func,
             )
         return func
