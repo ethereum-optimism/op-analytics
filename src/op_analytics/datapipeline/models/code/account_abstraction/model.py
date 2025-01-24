@@ -5,11 +5,12 @@ from op_analytics.datapipeline.models.code.account_abstraction.abis import (
     INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0,
     INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0,
 )
-from op_analytics.datapipeline.models.code.account_abstraction.event_user_op import (
-    register_decode_user_ops,
+from op_analytics.datapipeline.models.code.account_abstraction.event_decoders import (
+    register_4337_event_decoders,
 )
+
 from op_analytics.datapipeline.models.code.account_abstraction.function_decoders import (
-    register_4337_decoders,
+    register_4337_function_decoders,
 )
 from op_analytics.datapipeline.models.compute.model import AuxiliaryView
 from op_analytics.datapipeline.models.compute.registry import register_model
@@ -42,8 +43,8 @@ def account_abstraction(
     input_datasets: dict[str, ParquetData],
     auxiliary_views: dict[str, AuxiliaryView],
 ) -> NamedRelations:
-    register_decode_user_ops(ctx)
-    register_4337_decoders(ctx)
+    register_4337_event_decoders(ctx)
+    register_4337_function_decoders(ctx)
 
     # Decoded UserOperationEvent logs.
     user_ops_events = auxiliary_views["account_abstraction/user_op_events"].create_table(
@@ -92,7 +93,7 @@ def account_abstraction(
     )
 
     # Run data quality checks()
-    data_quality_checks()
+    data_quality_checks(ctx, auxiliary_views)
 
     return {}
 

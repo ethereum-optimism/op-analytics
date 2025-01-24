@@ -3,10 +3,10 @@ from eth_utils_lite.hexadecimal import encode_hex
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
 from op_analytics.datapipeline.models.decode.abi_to_decoder import abi_inputs_to_decoder
 from op_analytics.datapipeline.models.decode.conversion import safe_uint256
+from op_analytics.datapipeline.models.decode.register import register_decoder
 from op_analytics.datapipeline.models.decode.method_decoder import (
     MultiMethodDecoder,
     SingleMethodDecoder,
-    register_multi_method_decoder,
 )
 
 from .abis import (
@@ -21,14 +21,14 @@ from .abis import (
 )
 
 
-def register_4337_decoders(ctx: DuckDBContext):
+def register_4337_function_decoders(ctx: DuckDBContext):
     """Register decode functions in DuckDB.
 
 
     Supports "innerHandleOp" and "handleOps" methods in Entrypoint v0_6_0 and v0_7_0.
     """
     # innerHandleOp
-    register_multi_method_decoder(
+    register_decoder(
         ctx=ctx,
         duckdb_function_name="decode_inner_handle_op",
         decoder=inner_handle_op_decoder(),
@@ -48,7 +48,7 @@ def register_4337_decoders(ctx: DuckDBContext):
     )
 
     # handleOps
-    register_multi_method_decoder(
+    register_decoder(
         ctx=ctx,
         duckdb_function_name="decode_handle_ops",
         decoder=handle_ops_decoder(),
