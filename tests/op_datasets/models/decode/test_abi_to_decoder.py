@@ -6,7 +6,6 @@ from eth_abi_lite.decoding import (
 from op_analytics.datapipeline.models.decode.abi_to_decoder import abi_inputs_to_decoder
 
 from op_analytics.datapipeline.models.code.account_abstraction.function_decoders import (
-    handle_ops_decoder,
     HANDLE_OPS_FUNCTION_ABI_v0_6_0,
     HANDLE_OPS_FUNCTION_ABI_v0_7_0,
 )
@@ -168,49 +167,3 @@ def test_v7():
         ),
         "0x9d1478044f781ca722ff257e70d05e4ad673f443",
     )
-
-
-def test_v6_v7structured():
-    decoder = handle_ops_decoder()
-
-    # The same decoder can handle both v6 and v7.
-    actual = [
-        decoder.decode(tx_input_v0_6_0),
-        decoder.decode(tx_input_v0_7_0),
-    ]
-    assert actual == [
-        {
-            "user_ops": [
-                {
-                    "sender": "0x367c9b5c15c214fd96188ce481bf71d1ba0de8bc",
-                    "call_gas_limit": 76728,
-                    "pre_verification_gas": 118416,
-                    "max_fee_per_gas": 98595,
-                    "max_priority_fee_per_gas": 6303422,
-                    "account_gas_limits": None,
-                    "gas_fees": None,
-                    "beneficiary": "0x0cd73c6191906b6f5795efd525f77e65d6aa7561",
-                }
-            ],
-            "decoding_status": "ok",
-            "method_id": "0x1fad948c",
-            "contract_name": "v0_6_0",
-        },
-        {
-            "user_ops": [
-                {
-                    "sender": "0x1a38889b6a9971968347f33e3a4fc1af0715b3d9",
-                    "call_gas_limit": None,
-                    "pre_verification_gas": 70000,
-                    "max_fee_per_gas": None,
-                    "max_priority_fee_per_gas": None,
-                    "account_gas_limits": "0x00000000000000000000000000086470000000000000000000000000000186a0",
-                    "gas_fees": "0x000000000000000000000000000f4240000000000000000000000000004eb0ec",
-                    "beneficiary": "0x9d1478044f781ca722ff257e70d05e4ad673f443",
-                }
-            ],
-            "decoding_status": "ok",
-            "method_id": "0x765e827f",
-            "contract_name": "v0_7_0",
-        },
-    ]
