@@ -1,0 +1,14 @@
+SELECT
+  ct.*
+  , 'erc20' AS token_standard
+  , sc.token_type
+FROM {{ contract_creation_traces }} AS ct
+LEFT JOIN {{ superchainerc20 }} AS sc
+  ON
+    ct.chain_id = sc.chain_id
+    AND ct.contract_address = sc.contract_address
+    AND ct.network = sc.network
+WHERE
+  -- transfer(address,uint256): 0xa9059cbb
+  -- totalSupply(): 18160ddd
+  (ct.output LIKE '%a9059cbb%' AND ct.output LIKE '%18160ddd%')

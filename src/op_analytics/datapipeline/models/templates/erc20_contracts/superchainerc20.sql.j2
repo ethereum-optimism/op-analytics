@@ -1,0 +1,36 @@
+WITH create2 AS (
+  SELECT
+    *
+    , 'SuperchainERC20' AS token_type
+  FROM {{ contract_creation_traces }}
+  WHERE
+    -- crosschainBurn(address,uint256): 0x2b8c49e3
+    -- crosschainMint(address,uint256): 0x18bf5077
+    (output LIKE '%2b8c49e3%' AND output LIKE '%18bf5077%')
+)
+
+, create3 AS (
+  SELECT
+    c2.*
+    , 'SuperchainERC20' AS token_type
+  FROM {{ contract_creation_traces }} AS c2
+  INNER JOIN {{ contract_creation_traces }} AS c0
+    ON
+      c2.dt = c0.dt
+      AND c2.chain_id = c0.chain_id
+      AND c2.block_number = c0.block_number
+      AND c2.transaction_hash = c0.transaction_hash
+      AND c2.contract_address = c0.tr_from_address
+      AND c0.trace_type LIKE 'create%'
+  WHERE
+    c2.trace_type = 'create2'
+    AND (c0.output LIKE '%2b8c49e3%' AND c0.output LIKE '%18bf5077%')
+    -- create3: https://gist.github.com/Aboudjem/3ae8cc89ebff8c086e9b9111b1d06e6d#file-create3-sol-L25
+    AND (c2.output LIKE '%0x363d3d37363d34f0%')
+)
+
+SELECT * FROM create2
+
+UNION
+
+SELECT * FROM create3
