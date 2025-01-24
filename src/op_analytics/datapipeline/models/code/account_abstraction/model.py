@@ -12,7 +12,7 @@ from op_analytics.datapipeline.models.code.account_abstraction.event_decoders im
 from op_analytics.datapipeline.models.code.account_abstraction.function_decoders import (
     register_4337_function_decoders,
 )
-from op_analytics.datapipeline.models.compute.model import AuxiliaryView
+from op_analytics.datapipeline.models.compute.model import AuxiliaryTemplate
 from op_analytics.datapipeline.models.compute.registry import register_model
 from op_analytics.datapipeline.models.compute.types import NamedRelations
 
@@ -24,7 +24,7 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         "ingestion/traces_v1",
         "ingestion/transactions_v1",
     ],
-    auxiliary_views=[
+    auxiliary_templates=[
         "refined_transactions_fees",
         "account_abstraction/user_op_events",
         "account_abstraction/user_op_prefiltered_traces",
@@ -41,13 +41,13 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
 def account_abstraction(
     ctx: DuckDBContext,
     input_datasets: dict[str, ParquetData],
-    auxiliary_views: dict[str, AuxiliaryView],
+    auxiliary_templates: dict[str, AuxiliaryTemplate],
 ) -> NamedRelations:
     register_4337_event_decoders(ctx)
     register_4337_function_decoders(ctx)
 
     # Decoded UserOperationEvent logs.
-    user_ops_events = auxiliary_views["account_abstraction/user_op_events"].create_table(
+    user_ops_events = auxiliary_templates["account_abstraction/user_op_events"].create_table(
         duckdb_context=ctx,
         template_parameters={
             "raw_logs": input_datasets["ingestion/logs_v1"].as_subquery(),
@@ -62,7 +62,7 @@ def account_abstraction(
     """)
 
     # Prefiltered traces.
-    user_op_prefiltered_traces = auxiliary_views[
+    user_op_prefiltered_traces = auxiliary_templates[
         "account_abstraction/user_op_prefiltered_traces"
     ].create_table(
         duckdb_context=ctx,
@@ -79,7 +79,9 @@ def account_abstraction(
     )
 
     # Traces initiated on behalf of the UserOperationEvent sender
-    user_op_traces = auxiliary_views["account_abstraction/user_op_sender_subtraces"].create_table(
+    user_op_traces = auxiliary_templates[
+        "account_abstraction/user_op_sender_subtraces"
+    ].create_table(
         duckdb_context=ctx,
         template_parameters={
             "prefiltered_traces": user_op_prefiltered_traces,
@@ -93,12 +95,12 @@ def account_abstraction(
     )
 
     # Run data quality checks()
-    data_quality_checks(ctx, auxiliary_views)
+    data_quality_checks(ctx, auxiliary_templates)
 
     return {}
 
 
-def data_quality_checks(ctx, auxiliary_views):
+def data_quality_checks(ctx, auxiliary_templates):
     # Data Quality Validation.
 
     check1_msg = dedent("""\
@@ -110,13 +112,13 @@ def data_quality_checks(ctx, auxiliary_views):
         subtrace calls.""")
 
     check1 = (
-        auxiliary_views["account_abstraction/data_quality_check_01"]
+        auxiliary_templates["account_abstraction/data_quality_check_01"]
         .to_relation(duckdb_context=ctx, template_parameters={})
         .pl()
     )
 
     check2 = (
-        auxiliary_views["account_abstraction/data_quality_check_02"]
+        auxiliary_templates["account_abstraction/data_quality_check_02"]
         .to_relation(duckdb_context=ctx, template_parameters={})
         .pl()
     )
