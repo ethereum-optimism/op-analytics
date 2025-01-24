@@ -22,6 +22,11 @@ from .abis import (
 
 
 def register_4337_decoders(ctx: DuckDBContext):
+    """Register decode functions in DuckDB.
+
+
+    Supports "innerHandleOp" and "handleOps" methods in Entrypoint v0_6_0 and v0_7_0.
+    """
     # innerHandleOp
     register_multi_method_decoder(
         ctx=ctx,
@@ -73,11 +78,13 @@ def register_4337_decoders(ctx: DuckDBContext):
 
 
 def inner_handle_op_decoder():
+    """Decoder for the innerHandleOp method."""
+
     v0_6_0 = SingleMethodDecoder(
         method_id=INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0,
         decoder=abi_inputs_to_decoder(INNER_HANDLE_OP_FUNCTION_ABI_v0_6_0),
         to_dict=lambda result: {
-            # 1 0 0 -> opInfo.mUserOp.sender
+            # [1][0][0] -> opInfo.mUserOp.sender
             "sender": result[1][0][0],
             "contract_name": "v0_6_0",
         },
@@ -87,7 +94,7 @@ def inner_handle_op_decoder():
         method_id=INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0,
         decoder=abi_inputs_to_decoder(INNER_HANDLE_OP_FUNCTION_ABI_v0_7_0),
         to_dict=lambda result: {
-            # 1 0 0 -> opInfo.mUserOp.sender
+            # [1][0][0] -> opInfo.mUserOp.sender
             "sender": result[1][0][0],
             "contract_name": "v0_7_0",
         },
@@ -100,6 +107,8 @@ def inner_handle_op_decoder():
 
 
 def handle_ops_decoder():
+    """Decoder for the handleOps method."""
+
     v0_6_0 = SingleMethodDecoder(
         method_id=HANDLE_OPS_FUNCTION_METHOD_ID_v0_6_0,
         decoder=abi_inputs_to_decoder(HANDLE_OPS_FUNCTION_ABI_v0_6_0),
