@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Any
 
 import duckdb
-
+import polars as pl
 
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
 
@@ -61,6 +61,13 @@ class AuxiliaryView:
             return duckdb_context.client.sql(statement)
         except Exception as ex:
             raise Exception(f"sql error: {self.name!r}\n{str(ex)}\n\n{statement} ") from ex
+
+    def to_polars(
+        self,
+        duckdb_context: DuckDBContext,
+        template_parameters: dict[str, Any],
+    ) -> pl.DataFrame:
+        return self.to_relation(duckdb_context, template_parameters).pl()
 
     def create_view_statement(self, template_parameters: dict[str, Any]) -> str:
         return (

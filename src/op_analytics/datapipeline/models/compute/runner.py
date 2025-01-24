@@ -212,7 +212,11 @@ def pending_items(
             # Decide if we need to run this task.
             if task.write_manager.all_outputs_complete():
                 if not force_complete:
-                    log.info("task", status="already_complete")
+                    log.info(
+                        "task",
+                        status="already_complete",
+                        min_block=task.data_reader.marker_data("min_block"),
+                    )
                     continue
                 else:
                     task.write_manager.clear_complete_markers()

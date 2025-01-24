@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from op_analytics.coreutils.time import datetime_toepoch, now, datetime_fromdate
 
@@ -66,3 +66,7 @@ class TimeRange:
             max=max_date,
             requested_max_timestamp=requested_max,
         )
+
+    def contains_date(self, dt: date):
+        dt_datetime = datetime_fromdate(dt)
+        return self.min <= dt_datetime and self.max > dt_datetime
