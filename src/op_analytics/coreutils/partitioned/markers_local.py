@@ -1,6 +1,8 @@
 import polars as pl
 import pyarrow as pa
 
+import duckdb
+
 from op_analytics.coreutils.duckdb_local.client import insert_duckdb_local, run_query_duckdb_local
 from op_analytics.coreutils.env.aware import etl_monitor_markers_database
 from op_analytics.coreutils.logger import structlog
@@ -65,5 +67,10 @@ class LocalMarkers:
             """,
         )
 
+        markers: duckdb.DuckDBPyRelation = run_query_duckdb_local(query=query)
+
         # Duckdb returns num_parts as int32 when results are empty
-        return markers.pl().with_columns(num_parts=pl.col("num_parts").cast(pl.UInt32))
+        if "num_parts" in markers.columns:
+            return markers.pl().with_columns(num_parts=pl.col("num_parts").cast(pl.UInt32))
+        else:
+            return markers.pl()

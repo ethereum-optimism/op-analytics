@@ -170,6 +170,7 @@ class DailyDataset(str, Enum):
         min_date: str | date | None = None,
         max_date: str | date | None = None,
         date_range_spec: str | None = None,
+        location: DataLocation = DataLocation.GCS,
     ) -> str:
         """Load date partitioned defillama dataset from the specified location.
 
@@ -182,8 +183,6 @@ class DailyDataset(str, Enum):
 
         if isinstance(max_date, date):
             max_date = date_tostr(max_date)
-
-        location = DataLocation.GCS
 
         log.info(
             f"Reading data from {self.root_path!r} "
@@ -204,6 +203,9 @@ class DailyDataset(str, Enum):
                 location=location,
                 datefilter=datefilter,
             )
+
+        if not paths:
+            raise Exception(f"Did not find parquet paths for date filter: {datefilter}")
 
         view_name = register_parquet_relation(dataset=self.root_path, parquet_paths=paths)
         print(duckdb_context.client.sql("SHOW TABLES"))
