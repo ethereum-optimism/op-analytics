@@ -76,7 +76,9 @@ defs = Definitions(
         #
         create_schedule_for_group(
             group="other",
-            cron_schedule="0 2 * * *",  # Runs at 2 AM daily
+            # Runs at 10 AM daily.
+            # GrowThePie is generally a little delayed in providing data for the previous day.
+            cron_schedule="0 10 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
         ),
     ],

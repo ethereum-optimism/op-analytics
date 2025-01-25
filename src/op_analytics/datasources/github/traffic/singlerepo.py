@@ -1,13 +1,13 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import polars as pl
 import requests
 
 from op_analytics.coreutils.logger import bound_contextvars, structlog
-from op_analytics.coreutils.partitioned.dailydata import last_n_days
+from op_analytics.coreutils.partitioned.dailydatautils import last_n_days
 from op_analytics.coreutils.request import get_data
-from op_analytics.coreutils.time import date_fromstr, date_tostr
+from op_analytics.coreutils.time import datestr_subtract
 
 log = structlog.get_logger()
 
@@ -77,7 +77,7 @@ class GithubRepoTrafficData:
             forks_df = process_forks(forks)
 
             # We use date N-1 as the reference dt for valid data.
-            reference_dt = date_tostr(date_fromstr(current_dt) - timedelta(days=1))
+            reference_dt = datestr_subtract(current_dt, delta_days=1)
 
             views_df_truncated = last_n_days(
                 views_df,

@@ -4,6 +4,7 @@ from op_analytics.coreutils.time import (
     datetime_fromepoch,
     parse_isoformat,
     surrounding_dates,
+    datestr_subtract,
 )
 
 
@@ -88,3 +89,10 @@ def test_surrounding_dates():
         date(2024, 11, 5),
         date(2024, 11, 6),
     ]
+
+
+def test_datestr_subtract_01():
+    assert datestr_subtract("2025-01-10", 0) == "2025-01-10"
+    assert datestr_subtract("2025-01-10", 3) == "2025-01-07"
+    assert datestr_subtract("2025-01-10", 12) == "2024-12-29"
+    assert datestr_subtract("2025-01-10", -4) == "2025-01-14"

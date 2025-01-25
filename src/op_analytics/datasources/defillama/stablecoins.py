@@ -3,13 +3,15 @@ from decimal import Decimal
 from typing import Optional
 
 import polars as pl
-from op_analytics.coreutils.bigquery.write import (
-    most_recent_dates,
-)
+
+from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.misc import raise_for_schema_mismatch
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import dt_fromepoch, now_dt
+
 
 from .dataaccess import DefiLlama
 
@@ -65,10 +67,10 @@ BALANCES_DF_SCHEMA = {
     "id": pl.String(),
     "chain": pl.String(),
     "dt": pl.String(),
-    "circulating": pl.Decimal(scale=18),
-    "bridged_to": pl.Decimal(scale=18),
-    "minted": pl.Decimal(scale=18),
-    "unreleased": pl.Decimal(scale=18),
+    "circulating": pl.Decimal(precision=38, scale=18),
+    "bridged_to": pl.Decimal(precision=38, scale=18),
+    "minted": pl.Decimal(precision=38, scale=18),
+    "unreleased": pl.Decimal(precision=38, scale=18),
     "name": pl.String(),
     "symbol": pl.String(),
 }
@@ -123,7 +125,10 @@ def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
 
     # Extract all the balances (includes metadata).
     result = extract(stablecoins_data)
+    return result
 
+
+def write(result: DefillamaStablecoins):
     # Write metadata.
     DefiLlama.STABLECOINS_METADATA.write(
         dataframe=result.metadata_df.with_columns(dt=pl.lit(now_dt())),
@@ -136,14 +141,13 @@ def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
         sort_by=["symbol", "chain"],
     )
 
-    return result
-
 
 def execute_pull():
     result = pull_stablecoins()
+    write(result)
     return {
-        "metadata_df": len(result.metadata_df),
-        "balances_df": len(result.balances_df),
+        "metadata_df": dt_summary(result.metadata_df),
+        "balances_df": dt_summary(result.balances_df),
     }
 
 
@@ -164,12 +168,19 @@ def extract(stablecoins_data) -> DefillamaStablecoins:
         metadata.append(metadata_row)
         balances.extend(balance_rows)
 
-    metadata_df = pl.DataFrame(metadata, infer_schema_length=len(metadata))
+    metadata_df = pl.DataFrame(metadata, schema=METADATA_DF_SCHEMA)
     balances_df = pl.DataFrame(balances, schema=BALANCES_DF_SCHEMA)
 
     # Schema assertions to help our future selves reading this code.
-    assert metadata_df.schema == METADATA_DF_SCHEMA
-    assert balances_df.schema == BALANCES_DF_SCHEMA
+    raise_for_schema_mismatch(
+        actual_schema=metadata_df.schema,
+        expected_schema=pl.Schema(METADATA_DF_SCHEMA),
+    )
+
+    raise_for_schema_mismatch(
+        actual_schema=balances_df.schema,
+        expected_schema=pl.Schema(BALANCES_DF_SCHEMA),
+    )
 
     return DefillamaStablecoins(metadata_df=metadata_df, balances_df=balances_df)
 
@@ -195,6 +206,15 @@ def single_stablecoin_metadata(data: dict) -> dict:
     # Collect additional optional metadata fields
     for key in OPTIONAL_METADATA_FIELDS:
         metadata[key] = data.get(key)
+
+    # pedrod - 2025/01/24.
+    # The API seems to have a problem where price is sometimes of type string.
+    # For example (id='226', name='Frankencoin', price='1.1017182')
+    if "price" in metadata and isinstance(metadata["price"], str):
+        try:
+            metadata["price"] = float(metadata["price"])  # type: ignore
+        except ValueError:
+            metadata["price"] = None
 
     return metadata
 

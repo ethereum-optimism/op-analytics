@@ -216,3 +216,64 @@ def test_breakout_partitions_date_value_invalid():
         )
 
     assert ex.value.args == ("partition value must be a date pattern: '180000-01-03'",)
+
+
+def test_breakout_partitions_partially_missing_default_partitions():
+    df = pl.DataFrame(
+        {
+            "dt": [
+                "2024-01-01",
+                "2024-01-01",
+                "2024-01-01",
+                "2024-01-01",
+            ],
+            "chain": ["op", "op", "op", "op"],
+            "c": ["some", "words", "here", "and"],
+        }
+    )
+
+    outputs: list[PartitionData] = []
+    for part in breakout_partitions(
+        df,
+        partition_cols=["dt", "chain"],
+        default_partitions=[
+            {"chain": "op", "dt": "2024-01-01"},
+            {"chain": "op", "dt": "2024-01-02"},
+        ],
+    ):
+        outputs.append(part)
+        assert part.df.columns == ["c"]
+
+    actual = []
+    for _ in outputs:
+        actual.append(
+            dict(
+                partitions=_.partition,
+                full_path=_.partition.path,
+                nu_rows=len(_.df),
+            )
+        )
+
+    actual.sort(key=lambda x: x["full_path"])
+    assert actual == [
+        {
+            "partitions": Partition(
+                cols=[
+                    PartitionColumn(name="chain", value="op"),
+                    PartitionColumn(name="dt", value="2024-01-02"),
+                ]
+            ),
+            "full_path": "chain=op/dt=2024-01-02",
+            "nu_rows": 0,
+        },
+        {
+            "partitions": Partition(
+                cols=[
+                    PartitionColumn(name="dt", value="2024-01-01"),
+                    PartitionColumn(name="chain", value="op"),
+                ]
+            ),
+            "full_path": "dt=2024-01-01/chain=op",
+            "nu_rows": 4,
+        },
+    ]

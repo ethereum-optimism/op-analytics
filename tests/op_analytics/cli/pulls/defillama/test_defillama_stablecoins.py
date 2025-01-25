@@ -123,6 +123,7 @@ def test_pull_stables_single_stablecoin(
 
     # Call the function under test
     result = stablecoins.pull_stablecoins(symbols=["SSC"])
+    stablecoins.write(result)
 
     # Assertions
     assert len(result.metadata_df) == 1  # Only 'sample-stablecoin'
@@ -211,6 +212,7 @@ def test_pull_stables_multiple_stablecoins(
 
     # Call the function under test without specifying stablecoin_ids (process all)
     result = stablecoins.pull_stablecoins()
+    stablecoins.write(result)
 
     # Assertions
     assert len(result.metadata_df) == 2  # Both stablecoins

@@ -62,6 +62,11 @@ def date_tostr(val: date) -> str:
     return val.strftime("%Y-%m-%d")
 
 
+def datestr_subtract(datestr: str, delta_days: int) -> str:
+    """Return the datestr value with delta_days subtracted from it"""
+    return date_tostr(date_fromstr(datestr) - timedelta(days=delta_days))
+
+
 def surrounding_dates(dateval: date, minus_delta: int = 1, plus_delta: int = 1) -> list[date]:
     day_before = dateval - timedelta(days=minus_delta)
     day_after = dateval + timedelta(days=plus_delta)

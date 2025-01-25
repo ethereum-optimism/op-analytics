@@ -32,7 +32,12 @@ def construct_readers_byblock(
     markers_df = blockbatch_request.query_markers(location=read_from)
 
     readers: list[DataReader] = []
-    for (chain, dateval, min_block), group_df in markers_df.group_by("chain", "dt", "min_block"):
+    for (chain, dateval, min_block, max_block), group_df in markers_df.group_by(
+        "chain",
+        "dt",
+        "min_block",
+        "max_block",
+    ):
         assert isinstance(dateval, date)
         assert isinstance(chain, str)
 
@@ -40,6 +45,11 @@ def construct_readers_byblock(
             if not is_chain_active(chain, dateval):
                 log.info(f"skipping inactive chain: {str(dateval)} {chain} ")
                 continue
+
+            if blockbatch_request.block_range is not None:
+                if not blockbatch_request.block_range.overlaps(min_block, max_block):
+                    # log.debug(f"skipping non-overlapping block range: {min_block}-{max_block} ")
+                    continue
 
             # Check if all markers present are ready.
             input_data = is_batch_ready(

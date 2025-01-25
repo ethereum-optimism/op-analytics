@@ -31,6 +31,9 @@ class BlockRange:
 
         raise NotImplementedError()
 
+    def overlaps(self, other_min, other_max):
+        return self.max > other_min and self.min <= other_max
+
 
 @dataclass
 class ChainMaxBlock:

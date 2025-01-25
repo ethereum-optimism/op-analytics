@@ -39,9 +39,7 @@ def create_gcs_view(
     SETTINGS use_hive_partitioning = 1
     """
 
-    clickhouse_connect.common.set_setting("autogenerate_session_id", True)
     clt = init_client("OPLABS")
-    clickhouse_connect.common.set_setting("autogenerate_session_id", False)
     clt.command(db_statement)
     clt.command(view_statement)
 

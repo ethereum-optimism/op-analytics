@@ -31,6 +31,9 @@ pb AS (
     , t.receipt_l1_gas_used
 
     -- EXCLUDED
+    {% for col in extra_cols %}
+    , {{ col }}
+    {% endfor %}
     -- t.input, --comment out for now to save on data space
     -- t.blob_versioned_hashes -- bring in if/when we apply this to L1, or see L2 blobs
 

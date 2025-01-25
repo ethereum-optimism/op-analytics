@@ -1,13 +1,14 @@
-import polars as pl
-import pyarrow as pa
 import datetime
 from unittest.mock import patch
 
+import polars as pl
+import pyarrow as pa
 
 from op_analytics.coreutils.duckdb_local.client import run_query_duckdb_local
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
+from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
+from op_analytics.coreutils.path import repo_path
 
 
 def test_parquet_writer():
@@ -78,19 +79,27 @@ def test_parquet_writer():
 
     assert calls == [
         {
-            "path": "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYBASE/dt=2024-01-01/out.parquet",
+            "path": repo_path(
+                "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYBASE/dt=2024-01-01/out.parquet"
+            ),
             "num_rows": 2,
         },
         {
-            "path": "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYBASE/dt=2024-01-02/out.parquet",
+            "path": repo_path(
+                "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYBASE/dt=2024-01-02/out.parquet"
+            ),
             "num_rows": 2,
         },
         {
-            "path": "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYOP/dt=2024-01-01/out.parquet",
+            "path": repo_path(
+                "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYOP/dt=2024-01-01/out.parquet"
+            ),
             "num_rows": 2,
         },
         {
-            "path": "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYOP/dt=2024-01-03/out.parquet",
+            "path": repo_path(
+                "ozone/warehouse/intermediate/daily_address_summary/summary_v1/chain=DUMMYOP/dt=2024-01-03/out.parquet"
+            ),
             "num_rows": 1,
         },
     ]

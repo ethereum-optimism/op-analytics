@@ -4,11 +4,11 @@ import polars as pl
 
 from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.time import now_dt
 
 from ..dataaccess import DefiLlama
 from .helpers import DefillamaVFRData, join_all
-
 
 log = structlog.get_logger()
 
@@ -112,11 +112,11 @@ def write(
 
     # This return value is used to provide more information on dagster runs.
     return {
-        "chain_df": len(chain_df),
-        "chain_df_truncated": len(chain_df_truncated),
-        "breakdown_df": len(breakdown_df),
-        "breakdown_df_truncated": len(breakdown_df_truncated),
-        "dexs_protocols_metadata_df": len(dexs_protocols_metadata_df),
-        "fees_protocols_metadata_df": len(fees_protocols_metadata_df),
-        "revenue_protocols_metadata_df": len(revenue_protocols_metadata_df),
+        "chain_df": dt_summary(chain_df),
+        "chain_df_truncated": dt_summary(chain_df_truncated),
+        "breakdown_df": dt_summary(breakdown_df),
+        "breakdown_df_truncated": dt_summary(breakdown_df_truncated),
+        "dexs_protocols_metadata_df": dt_summary(dexs_protocols_metadata_df),
+        "fees_protocols_metadata_df": dt_summary(fees_protocols_metadata_df),
+        "revenue_protocols_metadata_df": dt_summary(revenue_protocols_metadata_df),
     }

@@ -1,4 +1,5 @@
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 
 from .activity.allrepos import GithubActivityData
 from .dataaccess import Github
@@ -25,8 +26,8 @@ def execute_pull_traffic():
     )
 
     summary["gcs"] = {
-        "metrics_df": len(data.all_metrics_df_truncated),
-        "referrers_df": len(data.referrers_snapshot_df),
+        "metrics_df": dt_summary(data.all_metrics_df_truncated),
+        "referrers_df": dt_summary(data.referrers_snapshot_df),
     }
 
     return summary
@@ -56,10 +57,10 @@ def execute_pull_activity():
     )
 
     return {
-        "prs": len(data.prs),
-        "issues": len(data.issues),
-        "pr_comments": len(data.pr_comments),
-        "pr_reviews": len(data.pr_reviews),
+        "prs": dt_summary(data.prs),
+        "issues": dt_summary(data.issues),
+        "pr_comments": dt_summary(data.pr_comments),
+        "pr_reviews": dt_summary(data.pr_reviews),
     }
 
 

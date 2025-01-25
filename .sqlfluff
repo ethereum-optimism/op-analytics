@@ -10,7 +10,7 @@ max_line_length = 140
 # See https://docs.sqlfluff.com/en/stable/perma/rule_disabling.html
 # AM04 (ambiguous.column_count) and ST06 (structure.column_order) are
 # two of the more controversial rules included to illustrate usage.
-exclude_rules = structure.column_order
+exclude_rules = structure.column_order, structure.using
 
 [sqlfluff:indentation]
 indented_joins = false

@@ -88,3 +88,16 @@ def test_to_daterange_02():
         datetime.date(2024, 10, 27),
         datetime.date(2024, 10, 28),
     ]
+
+
+def test_contains_date():
+    tr = TimeRange(
+        min=datetime.datetime(2025, 1, 22, 0, 0),
+        max=datetime.datetime(2025, 1, 24, 0, 0),
+        requested_max_timestamp=1737676800,
+    )
+
+    assert not tr.contains_date(datetime.date(2025, 1, 21))
+    assert tr.contains_date(datetime.date(2025, 1, 22))
+    assert tr.contains_date(datetime.date(2025, 1, 23))
+    assert not tr.contains_date(datetime.date(2025, 1, 24))
