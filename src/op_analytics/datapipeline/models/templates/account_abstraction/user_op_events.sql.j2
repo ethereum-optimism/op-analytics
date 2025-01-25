@@ -58,11 +58,34 @@ WITH decoded AS (
 )
 
 
-SELECT -- noqa: AM04
-  * EXCLUDE decoded_user_ops -- noqa: RF03
-  , decoded_user_ops.*  -- noqa: RF01,RF03
+SELECT
+  dt
+  , chain
+  , network
+  --
+  , block_timestamp
+  , block_number
+  , block_hash
+  , transaction_hash
+  , transaction_index
+  , log_index
+  , contract_address
 
-  -- The combination of tx hash + sender is used to filter
+  -- Indexed Args
+  , user_op_hash
+  , sender
+  , paymaster
+
+  -- Decoded Args
+  , decoded_user_ops['nonce'] AS nonce
+  , decoded_user_ops['nonce_lossless'] AS nonce_lossless
+  , decoded_user_ops['success'] AS success
+  , decoded_user_ops['actual_gas_cost'] AS actual_gas_cost
+  , decoded_user_ops['actual_gas_cost_lossless'] AS actual_gas_cost_lossless
+  , decoded_user_ops['actual_gas_used'] AS actual_gas_used
+  , decoded_user_ops['actual_gas_used_lossless'] AS actual_gas_used_lossless
+
+  -- The combination of tx hash + sender is used to pre-filter
   -- traces associated with the user operation.
-  , concat_ws('::', transaction_hash, sender) AS txhash_sender -- noqa: RF03
+  , concat_ws('::', transaction_hash, sender) AS txhash_sender
 FROM decoded

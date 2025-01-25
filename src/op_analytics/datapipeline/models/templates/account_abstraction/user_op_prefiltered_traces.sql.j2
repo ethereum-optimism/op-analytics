@@ -23,7 +23,10 @@ SELECT
   , t.trace_address
   , trace_address_root(t.trace_address) AS trace_root
   , hexstr_method_id(t.input) AS method_id
-  , decode_inner_handle_op(t.input) AS inner_handle_op
+  , CASE
+    WHEN hexstr_method_id(t.input) IN ({{ inner_handle_op_method_ids }}) THEN decode_inner_handle_op(t.input)
+    ELSE NULL
+  END AS inner_handle_op
 FROM {{ raw_traces }} AS t
 WHERE
   t.call_type != 'delegatecall'

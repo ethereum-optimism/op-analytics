@@ -1,21 +1,32 @@
 WITH
 
-inner_handle_op_traces AS (
+-- Traces that are innerHandleOp calls.
+inner1 AS (
   SELECT
     p.transaction_hash
     , p.trace_address
     , p.trace_root
-    , p.inner_handle_op['sender'] AS sender
+    , p.inner_handle_op
     , p.from_address AS entrypoint_contract_address
-    , p.inner_handle_op['contract_name'] AS entrypoint_contract_version
   FROM account_abstraction__user_op_prefiltered_traces AS p
   WHERE
-    -- innerHandleOp traces.
     p.method_id IN ({{ inner_handle_op_method_ids }})
+)
 
+-- Extract the sender from the innerHandleOp traces as a top-level column.
+, inner2 AS (
+  SELECT
+    *
+    , COALESCE(
+      inner_handle_op['v0_6_0']['op_info']['m_user_op']['sender']
+      , inner_handle_op['v0_7_0']['op_info']['m_user_op']['sender']
+    ) AS sender
+  FROM inner1
+  WHERE sender IS NOT NULL
 )
 
 
+-- Traces that are parents of the innerHandleOp traces.
 SELECT
   p.dt
   , p.chain
@@ -31,20 +42,21 @@ SELECT
   , p.trace_address
   , p.trace_root
   --
-  , row_number() OVER (PARTITION BY p.transaction_hash, i.trace_address ORDER BY p.trace_address) AS trace_row_number
+  , ROW_NUMBER() OVER (PARTITION BY p.transaction_hash, i.trace_address ORDER BY p.trace_address) AS trace_row_number
   , i.trace_address AS inner_handle_op_trace_address
   , i.sender AS inner_handle_op_sender
-  , i.entrypoint_contract_address
-  , i.entrypoint_contract_version
+  , i.inner_handle_op
 
 FROM (
-  -- Traces that are not innerHandleOp calls.
+  -- This subquery contains all traces that are not innerHandleOp calls.
   SELECT * -- noqa: RF02
   FROM {{ prefiltered_traces }}
   WHERE method_id NOT IN ({{ inner_handle_op_method_ids }}) -- noqa: RF02
 ) AS p
 
-LEFT JOIN inner_handle_op_traces AS i ON p.transaction_hash = i.transaction_hash
+-- Join with the innerHandleOp traces and keep only traces that are parents
+-- of an innerHandleOp trace.
+LEFT JOIN inner2 AS i ON p.transaction_hash = i.transaction_hash
 
 WHERE
   -- Keep only traces where the from address is the same as the UserOperationEvent sender.

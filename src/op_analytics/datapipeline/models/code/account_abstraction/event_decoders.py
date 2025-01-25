@@ -12,7 +12,7 @@ from .abis import (
 
 def register_4337_event_decoders(ctx: DuckDBContext):
     """Register decoders in DuckDB."""
-    # innerHandleOp
+    # UserOperationEvent
     register_decoder(
         ctx=ctx,
         duckdb_function_name="decode_user_ops",
@@ -25,8 +25,8 @@ def register_4337_event_decoders(ctx: DuckDBContext):
                 success BOOL, 
                 actual_gas_cost BIGINT, 
                 actual_gas_cost_lossless VARCHAR, 
-                actual_gas_used BIGINT
-                actual_gas_used_lossless VARCHAR,
+                actual_gas_used BIGINT,
+                actual_gas_used_lossless VARCHAR
             )
             """,
     )

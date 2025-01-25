@@ -1,7 +1,7 @@
 from eth_typing_lite import TypeStr
 
 
-def abi_inputs_to_typestr(abi_entry: dict) -> list[TypeStr]:
+def abi_inputs_to_typestr(abi_entry: dict, include_indexed: bool = False) -> list[TypeStr]:
     """Create TypeStr for each of of the input parameters in an Ethereum ABI entry.
 
     Args:
@@ -16,7 +16,7 @@ def abi_inputs_to_typestr(abi_entry: dict) -> list[TypeStr]:
 
     result = []
     for param in abi_entry["inputs"]:
-        if is_log and param["indexed"]:
+        if is_log and param["indexed"] and not include_indexed:
             continue
         result.append(process_type(param))
     return result
