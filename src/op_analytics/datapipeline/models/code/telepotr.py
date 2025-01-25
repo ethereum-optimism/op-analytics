@@ -1,5 +1,5 @@
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext, ParquetData
-from op_analytics.datapipeline.models.compute.model import AuxiliaryView
+from op_analytics.datapipeline.models.compute.model import AuxiliaryTemplate
 from op_analytics.datapipeline.models.compute.registry import register_model
 from op_analytics.datapipeline.models.compute.types import NamedRelations
 
@@ -12,17 +12,17 @@ from op_analytics.datapipeline.chains.across_bridge import load_across_bridge_ad
         "ingestion/logs_v1",
         "ingestion/transactions_v1",
     ],
+    auxiliary_templates=[
+        "telepotr/bridging_transactions",
+    ],
     expected_outputs=[
         "bridging_transactions_v1",
-    ],
-    auxiliary_views=[
-        "telepotr/bridging_transactions",
     ],
 )
 def telepotr(
     ctx: DuckDBContext,
     input_datasets: dict[str, ParquetData],
-    auxiliary_views: dict[str, AuxiliaryView],
+    auxiliary_templates: dict[str, AuxiliaryTemplate],
 ) -> NamedRelations:
     # TODO: Replace explicit SideInput data with something that can be passed in automatically
     #       via "input_datasets".
@@ -40,7 +40,7 @@ def telepotr(
         SELECT * FROM goldsky_df
     """)
 
-    bridging_txs = auxiliary_views["telepotr/bridging_transactions"].create_view(
+    bridging_txs = auxiliary_templates["telepotr/bridging_transactions"].create_view(
         duckdb_context=ctx,
         template_parameters={
             "raw_logs": input_datasets["ingestion/logs_v1"].as_subquery(),

@@ -76,6 +76,8 @@ class TestTelepotr001(IntermediateModelTestBase):
         }
 
     def test_results(self):
+        assert self._duckdb_context is not None
+
         actual = (
             self._duckdb_context.client.sql("SELECT * FROM bridging_transactions_v1")
             .pl()
