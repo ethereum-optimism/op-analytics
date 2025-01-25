@@ -12,7 +12,7 @@ WITH create2 AS (
 , create3 AS (
   SELECT
     c2.*
-    , 'erc780' AS token_type
+    , 'erc7802' AS token_type
   FROM {{ contract_creation_traces }} AS c2
   INNER JOIN {{ contract_creation_traces }} AS c0
     ON
