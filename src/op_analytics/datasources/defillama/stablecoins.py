@@ -212,7 +212,7 @@ def single_stablecoin_metadata(data: dict) -> dict:
     # For example (id='226', name='Frankencoin', price='1.1017182')
     if "price" in metadata and isinstance(metadata["price"], str):
         try:
-            metadata["price"] = float(metadata["price"])
+            metadata["price"] = float(metadata["price"])  # type: ignore
         except ValueError:
             metadata["price"] = None
 
