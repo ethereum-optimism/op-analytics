@@ -9,7 +9,7 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         "blockbatch/contract_creation/create_traces_v1",
     ],
     auxiliary_templates=[
-        "erc20_contracts/superchainerc20",
+        "erc20_contracts/erc7802",
         "erc20_contracts/erc20_contract_creation",
     ],
     expected_outputs=[
@@ -21,7 +21,7 @@ def erc20_contracts(
     input_datasets: dict[str, ParquetData],
     auxiliary_templates: dict[str, AuxiliaryTemplate],
 ) -> NamedRelations:
-    superchainerc20 = auxiliary_templates["erc20_contracts/superchainerc20"].create_table(
+    erc7802 = auxiliary_templates["erc20_contracts/erc7802"].create_table(
         duckdb_context=ctx,
         template_parameters={
             "contract_creation_traces": input_datasets[
@@ -38,11 +38,11 @@ def erc20_contracts(
             "contract_creation_traces": input_datasets[
                 "blockbatch/contract_creation/create_traces_v1"
             ].as_subquery(),
-            "superchainerc20": superchainerc20,
+            "erc7802": erc7802,
         },
     )
 
-    ctx.client.sql(f"DROP TABLE {superchainerc20}")
+    ctx.client.sql(f"DROP TABLE {erc7802}")
 
     return {
         "erc20_contract_creation_v1": erc20_contract_creation,

@@ -3,7 +3,7 @@ SELECT
   , 'erc20' AS token_standard
   , sc.token_type
 FROM {{ contract_creation_traces }} AS ct
-LEFT JOIN {{ superchainerc20 }} AS sc
+LEFT JOIN {{ erc7802 }} AS sc
   ON
     ct.chain_id = sc.chain_id
     AND ct.contract_address = sc.contract_address
