@@ -16,10 +16,10 @@ from op_analytics.datapipeline.chains.across_bridge import load_across_bridge_ad
         "bridging_transactions_v1",
     ],
     auxiliary_views=[
-        "telepotr/bridging_transactions",
+        "teleportr/bridging_transactions",
     ],
 )
-def telepotr(
+def teleportr(
     ctx: DuckDBContext,
     input_datasets: dict[str, ParquetData],
     auxiliary_views: dict[str, AuxiliaryView],
@@ -32,7 +32,7 @@ def telepotr(
     across_bridge_addresses_df = load_across_bridge_addresses(chains_df=goldsky_df)  # noqa
 
     ctx.client.sql("""
-        CREATE TABLE IF NOT EXISTS across_bridge_metadata AS 
+        CREATE TABLE IF NOT EXISTS across_bridge_metadata AS
         SELECT * FROM across_bridge_addresses_df
     """)
     ctx.client.sql("""
@@ -40,7 +40,7 @@ def telepotr(
         SELECT * FROM goldsky_df
     """)
 
-    bridging_txs = auxiliary_views["telepotr/bridging_transactions"].create_view(
+    bridging_txs = auxiliary_views["teleportr/bridging_transactions"].create_view(
         duckdb_context=ctx,
         template_parameters={
             "raw_logs": input_datasets["ingestion/logs_v1"].as_subquery(),

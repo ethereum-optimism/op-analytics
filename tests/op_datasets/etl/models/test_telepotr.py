@@ -6,8 +6,8 @@ from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.models.compute.testutils import IntermediateModelTestBase
 
 
-class TestTelepotr001(IntermediateModelTestBase):
-    model = "telepotr"
+class TestTeleportr001(IntermediateModelTestBase):
+    model = "teleportr"
     inputdata = InputTestData.at(__file__)
     chains = ["worldchain"]
     dateval = date(2024, 12, 8)
