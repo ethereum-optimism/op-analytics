@@ -80,3 +80,32 @@ def test_handle_ops_abi():
         "(address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[]",
         "address",
     ]
+
+
+def test_user_operation_event_abi():
+    abi = {
+        "anonymous": False,
+        "inputs": [
+            {"indexed": True, "internalType": "bytes32", "name": "userOpHash", "type": "bytes32"},
+            {"indexed": True, "internalType": "address", "name": "sender", "type": "address"},
+            {"indexed": True, "internalType": "address", "name": "paymaster", "type": "address"},
+            {"indexed": False, "internalType": "uint256", "name": "nonce", "type": "uint256"},
+            {"indexed": False, "internalType": "bool", "name": "success", "type": "bool"},
+            {
+                "indexed": False,
+                "internalType": "uint256",
+                "name": "actualGasCost",
+                "type": "uint256",
+            },
+            {
+                "indexed": False,
+                "internalType": "uint256",
+                "name": "actualGasUsed",
+                "type": "uint256",
+            },
+        ],
+        "name": "UserOperationEvent",
+        "type": "event",
+    }
+
+    assert abi_inputs_to_typestr(abi) == ["uint256", "bool", "uint256", "uint256"]

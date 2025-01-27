@@ -1,14 +1,7 @@
 from dataclasses import dataclass
 from typing import Callable, NewType
 
-from duckdb.typing import DuckDBPyType
-from duckdb.functional import PythonUDFType
 from eth_abi_lite.decoding import ContextFramesBytesIO, TupleDecoder
-
-from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
-
-
-DUCKDB_FUNCTION_NAME = "decode_inner_handle_op"
 
 
 MethodId = NewType("MethodId", str)
@@ -82,26 +75,3 @@ class MultiMethodDecoder:
                 decoding_status="unsupported",
                 method_id=method_id,
             )
-
-
-def register_multi_method_decoder(
-    ctx: DuckDBContext,
-    duckdb_function_name: str,
-    decoder: MultiMethodDecoder,
-    parameters: list[str],
-    return_type: str,
-):
-    """Register a DuckDB function to decode data from multiple method_ids"""
-
-    def _decode(data: str):
-        return decoder.decode(data)
-
-    # NOTE: DuckDB does not support converting from python to UHUGEINT
-    # https://github.com/duckdb/duckdb/blob/8e68a3e34aa526a342ae91e1b14b764bb3075a12/tools/pythonpkg/src/native/python_conversion.cpp#L325
-    ctx.client.create_function(
-        duckdb_function_name,
-        _decode,
-        type=PythonUDFType.NATIVE,
-        parameters=[DuckDBPyType(_) for _ in parameters],
-        return_type=DuckDBPyType(return_type),
-    )

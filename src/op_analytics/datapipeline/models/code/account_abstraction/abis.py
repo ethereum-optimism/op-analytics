@@ -22,6 +22,10 @@ INNER_HANDLE_OP_FUNCTION_ABI_v0_6_0 = [_ for _ in ABI_V0_6_0 if _.get("name") ==
 INNER_HANDLE_OP_FUNCTION_ABI_v0_7_0 = [_ for _ in ABI_V0_7_0 if _.get("name") == "innerHandleOp"][0]
 
 
+USER_OP_EVENT_ABI_v0_6_0 = [_ for _ in ABI_V0_6_0 if _.get("name") == "UserOperationEvent"][0]
+USER_OP_EVENT_ABI_v0_7_0 = [_ for _ in ABI_V0_7_0 if _.get("name") == "UserOperationEvent"][0]
+
+
 # Method ids obtained from:
 # https://basescan.org/methodidconverter
 HANDLE_OPS_FUNCTION_METHOD_ID_v0_6_0 = "0x1fad948c"
