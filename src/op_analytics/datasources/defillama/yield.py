@@ -7,15 +7,16 @@ from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import now_dt, datetime_fromdt
+from op_analytics.coreutils.env.vault import env_get
 
 from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
 log = structlog.get_logger()
 
-YIELD_POOLS_ENDPOINT = (
-    "https://pro-api.llama.fi/slPjmq113xSROlwRStlysKOhP0coMlgQkcPd0lgLMV3sL316g8l8CQ/yields/pools"
-)
-YIELD_POOL_CHART_ENDPOINT = "https://pro-api.llama.fi/slPjmq113xSROlwRStlysKOhP0coMlgQkcPd0lgLMV3sL316g8l8CQ/yields/chart/{pool}"
+API_KEY = env_get("DEFILLAMA_API_KEY")
+
+YIELD_POOLS_ENDPOINT = "https://pro-api.llama.fi/{api_key}/yields/pools"
+YIELD_POOL_CHART_ENDPOINT = "https://pro-api.llama.fi/{api_key}/yields/chart/{pool}"
 
 YIELD_TABLE_LAST_N_DAYS = 7
 
@@ -44,7 +45,7 @@ def pull_yield_data(pull_pools: list[str] | None = None) -> pl.DataFrame:
     session = new_session()
 
     # Get all pools data
-    pools_data = get_data(session, YIELD_POOLS_ENDPOINT)
+    pools_data = get_data(session, YIELD_POOLS_ENDPOINT.format(api_key=API_KEY))
     pools_df = extract_pools_data(pools_data["data"])
 
     # Write pools metadata
@@ -57,7 +58,7 @@ def pull_yield_data(pull_pools: list[str] | None = None) -> pl.DataFrame:
     pool_ids = pools_df["pool"].to_list() if pull_pools is None else pull_pools
 
     # Call the API endpoint for each pool in parallel
-    urls = {pool: YIELD_POOL_CHART_ENDPOINT.format(pool=pool) for pool in pool_ids}
+    urls = {pool: YIELD_POOL_CHART_ENDPOINT.format(api_key=API_KEY, pool=pool) for pool in pool_ids}
     historical_yield_data = run_concurrently(lambda x: get_data(session, x), urls, max_workers=4)
 
     # Extract historical yield data
