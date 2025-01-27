@@ -4,10 +4,10 @@ from eth_abi_lite.decoding import (
 )
 
 from op_analytics.datapipeline.models.decode.abi_to_decoder import abi_inputs_to_decoder
-from op_analytics.datapipeline.models.code.account_abstraction.function_handle_ops import (
+
+from op_analytics.datapipeline.models.code.account_abstraction.function_decoders import (
     HANDLE_OPS_FUNCTION_ABI_v0_6_0,
     HANDLE_OPS_FUNCTION_ABI_v0_7_0,
-    structure_v0_7_0,
 )
 
 from op_analytics.datapipeline.models.decode.conversion import safe_uint256
@@ -167,20 +167,3 @@ def test_v7():
         ),
         "0x9d1478044f781ca722ff257e70d05e4ad673f443",
     )
-
-    user_ops_result = []
-    for user_op in result[0]:
-        user_ops_result.append(structure_v0_7_0(user_op, result[1]))
-
-    assert user_ops_result == [
-        {
-            "sender": "0x1a38889b6a9971968347f33e3a4fc1af0715b3d9",
-            "call_gas_limit": None,
-            "pre_verification_gas": 70000,
-            "max_fee_per_gas": None,
-            "max_priority_fee_per_gas": None,
-            "account_gas_limits": "0x00000000000000000000000000086470000000000000000000000000000186a0",
-            "gas_fees": "0x000000000000000000000000000f4240000000000000000000000000004eb0ec",
-            "beneficiary": "0x9d1478044f781ca722ff257e70d05e4ad673f443",
-        }
-    ]

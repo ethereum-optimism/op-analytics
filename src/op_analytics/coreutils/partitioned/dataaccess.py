@@ -80,7 +80,7 @@ class PartitionedDataAccess:
 
         elif location == DataLocation.LOCAL:
             local_upload_parquet(
-                path=location.with_prefix(full_path),
+                path=location.absolute(full_path),
                 df=dataframe,
             )
 

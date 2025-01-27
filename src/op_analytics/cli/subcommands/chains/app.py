@@ -114,6 +114,11 @@ FORK_PROCESS_OPTION = Annotated[
     bool, typer.Option(help="If true, execute task in a forked subprocess.")
 ]
 
+USE_POOL_OPTION = Annotated[
+    bool,
+    typer.Option(help="If true, uses a process pool instead of spawning a new process per task."),
+]
+
 
 def normalize_chains(chains: str) -> list[str]:
     # If for some reason we need to force exclude a chain, add it here.
@@ -148,6 +153,7 @@ def normalize_blockbatch_models(models: str) -> list[str]:
         if model == "MODELS":
             result.add("contract_creation")
             result.add("refined_traces")
+            result.add("token_transfers")
         elif model.startswith("-"):
             not_included.add(model.removeprefix("-").strip())
         else:
@@ -242,6 +248,7 @@ def blockbatch_models(
     dryrun: DRYRUN_OPTION = False,
     force_complete: FORCE_COMPLETE_OPTION = False,
     fork_process: FORK_PROCESS_OPTION = True,
+    use_pool: USE_POOL_OPTION = False,
 ):
     """Compute blockbatch models for a range of dates."""
     chain_list = normalize_chains(chains)
@@ -256,6 +263,7 @@ def blockbatch_models(
         dryrun=dryrun,
         force_complete=force_complete,
         fork_process=fork_process,
+        use_pool=use_pool,
     )
 
 

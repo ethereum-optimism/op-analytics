@@ -204,6 +204,9 @@ class DailyDataset(str, Enum):
                 datefilter=datefilter,
             )
 
+        if not paths:
+            raise Exception(f"Did not find parquet paths for date filter: {datefilter}")
+
         view_name = register_parquet_relation(dataset=self.root_path, parquet_paths=paths)
         print(duckdb_context.client.sql("SHOW TABLES"))
         return view_name

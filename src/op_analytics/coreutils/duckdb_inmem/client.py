@@ -167,9 +167,12 @@ class ParquetData(EnforceOverrides):
         )
 
     def create_table_statement(
-        self, projections: list[str] | None = None, additional_sql: str | None = None
+        self,
+        projections: list[str] | None = None,
+        additional_sql: str | None = None,
+        name_suffix: str = "",
     ) -> CreateStatement:
-        name = f"{self.sanitized_name}_tbl"
+        name = f"{self.sanitized_name}_tbl" + name_suffix
 
         return CreateStatement(
             name=name,
@@ -201,10 +204,15 @@ class ParquetData(EnforceOverrides):
         return statement.name
 
     def create_table(
-        self, projections: list[str] | None = None, additional_sql: str | None = None
+        self,
+        projections: list[str] | None = None,
+        additional_sql: str | None = None,
+        name_suffix: str = "",
     ) -> str:
         statement = self.create_table_statement(
-            projections=projections, additional_sql=additional_sql
+            projections=projections,
+            additional_sql=additional_sql,
+            name_suffix=name_suffix,
         )
         return self.execute_create(statement)
 

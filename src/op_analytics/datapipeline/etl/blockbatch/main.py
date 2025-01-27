@@ -17,6 +17,7 @@ def compute_blockbatch(
     dryrun: bool,
     force_complete: bool = False,
     fork_process: bool = True,
+    use_pool: bool = False,
 ):
     tasks = construct_tasks(chains, models, range_spec, read_from, write_to)
     run_tasks(
@@ -25,4 +26,5 @@ def compute_blockbatch(
         force_complete=force_complete,
         fork_process=fork_process,
         num_processes=4,
+        use_pool=use_pool,
     )
