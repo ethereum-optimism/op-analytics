@@ -28,15 +28,15 @@ def compute_pr_metrics(
                 "html_url", "number", "created_at", "merged_at", "approved_at",
                 "user", "repo", "dt", ...
             ]
-            * "created_at", "merged_at", and (optionally) "approved_at"
-              might be ISO-format strings, e.g. "2024-05-01T12:34:56Z"
-            * "dt" is a Polars Date for daily grouping.
 
         comments_df (pl.DataFrame): Polars DataFrame of PR comments, with columns:
             [
                 "pr_number", "created_at", "user", "repo", "dt", ...
             ]
-            * "created_at" might be an ISO-format string, e.g. "2024-05-01T12:34:56Z"
+        reviews_df (pl.DataFrame): Polars DataFrame of PR reviews, with columns:
+            [
+                "pr_number", "created_at", "user", "repo", "dt", ...
+            ]
 
     Returns:
         pl.DataFrame with columns:
