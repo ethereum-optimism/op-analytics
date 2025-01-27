@@ -111,7 +111,3 @@ def extract_historical_yield_data(data: dict) -> pl.DataFrame:
     ]
 
     return pl.DataFrame(records)
-
-
-if __name__ == "__main__":
-    pull_yield_data()
