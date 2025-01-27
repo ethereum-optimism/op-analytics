@@ -33,6 +33,10 @@ class DefiLlama(DailyDataset):
     VOLUME_FEES_REVENUE = "volume_fees_revenue_v1"
     VOLUME_FEES_REVENUE_BREAKDOWN = "volume_fees_revenue_breakdown_v1"
 
+    # Yield
+    YIELD_POOLS_METADATA = "yield_pools_metadata_v1"
+    YIELD_POOLS_HISTORICAL = "yield_pools_historical_v1"
+
     # Protocols metadata obtained from "dexs/dailyVolume", and "fees/dailyFees"
     # and "fees/dailyRevenue" endpoints.
     VOLUME_PROTOCOLS_METADATA = "volume_protocols_metadata_v1"

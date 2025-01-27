@@ -2,19 +2,20 @@ from dataclasses import dataclass
 
 import polars as pl
 
-from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
-from op_analytics.coreutils.time import now_dt, dt_fromepoch
+from op_analytics.coreutils.time import now_dt, datetime_fromdt
 
-from .dataaccess import DefiLlama
+from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
 log = structlog.get_logger()
 
-YIELD_POOLS_ENDPOINT = "https://yields.llama.fi/pools"
-YIELD_POOL_CHART_ENDPOINT = "https://yields.llama.fi/chart/{pool}"
+YIELD_POOLS_ENDPOINT = (
+    "https://pro-api.llama.fi/slPjmq113xSROlwRStlysKOhP0coMlgQkcPd0lgLMV3sL316g8l8CQ/yields/pools"
+)
+YIELD_POOL_CHART_ENDPOINT = "https://pro-api.llama.fi/slPjmq113xSROlwRStlysKOhP0coMlgQkcPd0lgLMV3sL316g8l8CQ/yields/chart/{pool}"
 
 YIELD_TABLE_LAST_N_DAYS = 7
 
@@ -66,10 +67,8 @@ def pull_yield_data(pull_pools: list[str] | None = None) -> pl.DataFrame:
     pool_yield_df = historical_yield_df.join(pools_df, on="pool", how="left")
 
     # Write yield data
-    DefiLlama.HISTORICAL_YIELD.write(
-        dataframe=most_recent_dates(
-            pool_yield_df, n_dates=YIELD_TABLE_LAST_N_DAYS, date_column="dt"
-        ),
+    DefiLlama.YIELD_POOLS_HISTORICAL.write(
+        dataframe=pool_yield_df,
         sort_by=["dt", "chain", "protocol_slug", "pool"],
     )
 
@@ -102,7 +101,7 @@ def extract_historical_yield_data(data: dict) -> pl.DataFrame:
     records = [
         {
             "pool": pool_id,
-            "dt": dt_fromepoch(entry["timestamp"]),
+            "dt": datetime_fromdt(entry["timestamp"]),
             "tvl": entry.get("tvl", 0.0),
             "apy": entry.get("apy", 0.0),
         }
@@ -111,3 +110,7 @@ def extract_historical_yield_data(data: dict) -> pl.DataFrame:
     ]
 
     return pl.DataFrame(records)
+
+
+if __name__ == "__main__":
+    pull_yield_data()
