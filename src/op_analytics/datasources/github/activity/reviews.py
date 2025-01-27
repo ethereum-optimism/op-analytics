@@ -9,8 +9,8 @@ REVIEWS_SCHEMA = pl.Schema(
         ("id", pl.Int64),
         ("body", pl.String),
         ("author_association", pl.String),
-        ("created_at", pl.String),
-        ("updated_at", pl.String),
+        ("state", pl.String),
+        ("submitted_at", pl.String),
         ("user", pl.Struct({"login": pl.String, "id": pl.Int64})),
     ]
 )
