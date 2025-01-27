@@ -306,7 +306,7 @@ def setup_execution_context(model_name: str, data_reader: DataReader):
 
     # Enter the context and grab the handles we need to manipulate data.
     model_executor.__enter__()
-    ctx, input_datasets, auxiliary_templates = model_executor.call_args()
+    ctx, input_datasets, auxiliary_templates, side_inputs = model_executor.call_args()
 
     # Show the names of input datasets and views that are used by the model.
     print()
@@ -315,6 +315,10 @@ def setup_execution_context(model_name: str, data_reader: DataReader):
 
     print()
     for _ in auxiliary_templates:
-        print(f"AUX VIEW: {_}")
+        print(f"AUX TEMPLATE: {_}")
 
-    return ctx, input_datasets, auxiliary_templates
+    print()
+    for _ in side_inputs:
+        print(f"SIDE INPUT: {_}")
+
+    return ctx, input_datasets, auxiliary_templates, side_inputs

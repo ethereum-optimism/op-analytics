@@ -1,7 +1,7 @@
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
 from op_analytics.datapipeline.models.compute.model import AuxiliaryTemplate, ParquetData
 from op_analytics.datapipeline.models.compute.registry import register_model
-from op_analytics.datapipeline.models.compute.types import NamedRelations
+from op_analytics.datapipeline.models.compute.types import ModelOutputDatasets
 
 
 @register_model(
@@ -21,7 +21,7 @@ def daily_address_summary(
     ctx: DuckDBContext,
     input_datasets: dict[str, ParquetData],
     auxiliary_templates: dict[str, AuxiliaryTemplate],
-) -> NamedRelations:
+) -> ModelOutputDatasets:
     blocks_view = input_datasets["ingestion/blocks_v1"].create_view()
     txs_view = input_datasets["ingestion/transactions_v1"].create_view()
 

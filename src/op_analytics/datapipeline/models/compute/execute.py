@@ -5,8 +5,7 @@ import duckdb
 from op_analytics.coreutils.duckdb_inmem import DuckDBContext
 from op_analytics.coreutils.logger import structlog
 
-from .model import PythonModel, AuxiliaryTemplate, ModelDataReader, ParquetData
-
+from .model import AuxiliaryTemplate, ModelDataReader, ParquetData, PythonModel, SideInput
 
 log = structlog.get_logger()
 
@@ -21,8 +20,11 @@ class PythonModelExecutor:
     # Input datasets as remote parquet paths.
     input_datasets: dict[str, ParquetData] = field(default_factory=dict, init=False)
 
-    # Aux views.
+    # Aux templates.
     auxiliary_templates: dict[str, AuxiliaryTemplate] = field(default_factory=dict, init=False)
+
+    # Side inputs
+    side_inputs: dict[str, SideInput] = field(default_factory=dict, init=False)
 
     # Keep track of registered views so they can be unregistered at exit.
     registered_views: list[str] = field(default_factory=list, init=False)
@@ -43,6 +45,10 @@ class PythonModelExecutor:
         for template_name in self.model.auxiliary_templates:
             self.auxiliary_templates[template_name] = AuxiliaryTemplate(template_name=template_name)
 
+        # Initialize the side inputs
+        for side_input_name in self.model.side_inputs:
+            self.side_inputs[side_input_name] = SideInput(side_input_name=side_input_name)
+
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -60,7 +66,12 @@ class PythonModelExecutor:
             self.client.unregister(view_name=view)
 
     def call_args(self):
-        return (self.duckdb_context, self.input_datasets, self.auxiliary_templates)
+        return (
+            self.duckdb_context,
+            self.input_datasets,
+            self.auxiliary_templates,
+            self.side_inputs,
+        )
 
     def execute(self):
         return self.model.func(*self.call_args())

@@ -1,7 +1,7 @@
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext, ParquetData
 from op_analytics.datapipeline.models.compute.model import AuxiliaryTemplate
 from op_analytics.datapipeline.models.compute.registry import register_model
-from op_analytics.datapipeline.models.compute.types import NamedRelations
+from op_analytics.datapipeline.models.compute.types import ModelOutputDatasets
 
 from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chains_df
 from op_analytics.datapipeline.chains.across_bridge import load_across_bridge_addresses
@@ -12,18 +12,21 @@ from op_analytics.datapipeline.chains.across_bridge import load_across_bridge_ad
         "ingestion/logs_v1",
         "ingestion/transactions_v1",
     ],
+    expected_outputs=[
+        "bridging_transactions_v1",
+    ],
     auxiliary_templates=[
         "telepotr/bridging_transactions",
     ],
-    expected_outputs=[
-        "bridging_transactions_v1",
+    side_inputs=[
+        "telepotr/across_bridge_addresses",
     ],
 )
 def telepotr(
     ctx: DuckDBContext,
     input_datasets: dict[str, ParquetData],
     auxiliary_templates: dict[str, AuxiliaryTemplate],
-) -> NamedRelations:
+) -> ModelOutputDatasets:
     # TODO: Replace explicit SideInput data with something that can be passed in automatically
     #       via "input_datasets".
 

@@ -1,7 +1,7 @@
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext, ParquetData
 from op_analytics.datapipeline.models.compute.model import AuxiliaryTemplate
 from op_analytics.datapipeline.models.compute.registry import register_model
-from op_analytics.datapipeline.models.compute.types import NamedRelations
+from op_analytics.datapipeline.models.compute.types import ModelOutputDatasets
 
 
 @register_model(
@@ -25,7 +25,7 @@ def refined_traces(
     ctx: DuckDBContext,
     input_datasets: dict[str, ParquetData],
     auxiliary_templates: dict[str, AuxiliaryTemplate],
-) -> NamedRelations:
+) -> ModelOutputDatasets:
     # Start out by adding fees and other useful fields to each transaction.
     refined_txs = auxiliary_templates["refined_transactions_fees"].create_table(
         duckdb_context=ctx,

@@ -7,7 +7,8 @@ from typing import ClassVar, Callable, Protocol
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext, ParquetData
 
 from .auxtemplate import AuxiliaryTemplate
-from .types import NamedRelations
+from .sideinput import SideInput
+from .types import ModelOutputDatasets
 
 
 class ModelDataReader(Protocol):
@@ -21,7 +22,13 @@ class ModelDataReader(Protocol):
 
 
 type ModelFunction = Callable[
-    [DuckDBContext, dict[str, ParquetData], dict[str, AuxiliaryTemplate]], NamedRelations
+    [
+        DuckDBContext,
+        dict[str, ParquetData],
+        dict[str, AuxiliaryTemplate],
+        dict[str, SideInput],
+    ],
+    ModelOutputDatasets,
 ]
 
 
@@ -61,6 +68,7 @@ class PythonModel:
     input_datasets: list[str]
     expected_output_datasets: list[str]
     auxiliary_templates: list[str]
+    side_inputs: list[str]
     model_func: ModelFunction
 
     def __post_init__(self):
