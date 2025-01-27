@@ -6,7 +6,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
-from op_analytics.coreutils.time import now_dt, datetime_fromdt
+from op_analytics.coreutils.time import now_dt, dt_fromisostr
 from op_analytics.coreutils.env.vault import env_get
 
 from op_analytics.datasources.defillama.dataaccess import DefiLlama
@@ -102,7 +102,7 @@ def extract_historical_yield_data(data: dict) -> pl.DataFrame:
     records = [
         {
             "pool": pool_id,
-            "dt": datetime_fromdt(entry["timestamp"]),
+            "dt": dt_fromisostr(entry["timestamp"]),
             "tvl": entry.get("tvl", 0.0),
             "apy": entry.get("apy", 0.0),
         }
