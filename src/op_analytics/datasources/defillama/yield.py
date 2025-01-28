@@ -10,6 +10,7 @@ from op_analytics.coreutils.time import now_dt, dt_fromisostr
 from op_analytics.coreutils.env.vault import env_get
 
 from op_analytics.datasources.defillama.dataaccess import DefiLlama
+from op_analytics.coreutils.partitioned.dailydatautils import most_recent_dates
 
 log = structlog.get_logger()
 
@@ -18,7 +19,7 @@ API_KEY = env_get("DEFILLAMA_API_KEY")
 YIELD_POOLS_ENDPOINT = "https://pro-api.llama.fi/{api_key}/yields/pools"
 YIELD_POOL_CHART_ENDPOINT = "https://pro-api.llama.fi/{api_key}/yields/chart/{pool}"
 
-YIELD_TABLE_LAST_N_DAYS = 7
+YIELD_TABLE_LAST_N_DAYS = 120
 
 
 @dataclass
@@ -69,7 +70,9 @@ def pull_yield_data(pull_pools: list[str] | None = None) -> pl.DataFrame:
 
     # Write yield data
     DefiLlama.YIELD_POOLS_HISTORICAL.write(
-        dataframe=pool_yield_df,
+        dataframe=most_recent_dates(
+            pool_yield_df, n_dates=YIELD_TABLE_LAST_N_DAYS, date_column="dt"
+        ),
         sort_by=["dt", "chain", "protocol_slug", "pool"],
     )
 
@@ -90,6 +93,11 @@ def extract_pools_data(pools_data: list) -> pl.DataFrame:
             "chain": pool["chain"],
             "symbol": pool["symbol"],
             "underlying_tokens": pool.get("underlyingTokens", []),
+            "reward_tokens": pool.get("rewardTokens", []),
+            "il_risk": pool["ilRisk"],
+            "is_stablecoin": pool["stablecoin"],
+            "exposure": pool["exposure"],
+            # "tvl_usd": pool["tvlUsd"], # TODO: Add this back in if we use TVL filtering
         }
         for pool in pools_data
     ]
@@ -103,8 +111,10 @@ def extract_historical_yield_data(data: dict) -> pl.DataFrame:
         {
             "pool": pool_id,
             "dt": dt_fromisostr(entry["timestamp"]),
-            "tvl": entry.get("tvl", 0.0),
-            "apy": entry.get("apy", 0.0),
+            "tvl_usd": float(entry.get("tvl", 0.0)),
+            "apy": float(entry.get("apy", 0.0)),
+            "apy_base": float(entry.get("apyBase") or 0.0),
+            "apy_reward": float(entry.get("apyReward") or 0.0),
         }
         for pool_id, pool_data in data.items()
         for entry in pool_data["data"]
