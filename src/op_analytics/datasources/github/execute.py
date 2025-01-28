@@ -53,7 +53,7 @@ def execute_pull_activity():
 
     Github.PR_REVIEWS.write(
         dataframe=data.pr_reviews,
-        sort_by=["repo", "pr_number", "updated_at"],
+        sort_by=["repo", "pr_number", "submitted_at"],
     )
 
     return {
