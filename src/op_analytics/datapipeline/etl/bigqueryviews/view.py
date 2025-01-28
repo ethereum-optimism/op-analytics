@@ -1,4 +1,5 @@
 import os
+from typing import Literal
 
 from op_analytics.coreutils.bigquery.write import init_client
 from op_analytics.coreutils.logger import structlog
@@ -18,15 +19,28 @@ def load_select(db_name: str, view_name: str):
         return f.read()
 
 
-def create_view(db_name: str, view_name: str):
+def create_view(
+    db_name: str,
+    view_name: str,
+    disposition: Literal["replace"] | Literal["if_not_exists"] = "if_not_exists",
+):
     """Create a BigQuery VIEW."""
 
     client = init_client()
 
     # Execute the DDL statement
     select = load_select(db_name, view_name)
+
+    approach: str
+    if disposition == "if_not_exists":
+        approach = "VIEW IF NOT EXISTS"
+    elif disposition == "replace":
+        approach = "OR REPLACE VIEW"
+    else:
+        raise NotImplementedError(f"invalid disposition: {disposition}")
+
     ddl_statement = f"""
-    CREATE VIEW IF NOT EXISTS `oplabs-tools-data.{db_name}.{view_name}` AS 
+    CREATE {approach} `oplabs-tools-data.{db_name}.{view_name}` AS 
     {select}
     """
 

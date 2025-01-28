@@ -98,4 +98,5 @@ def defillama_views():
     create_view(
         db_name="dailydata_defillama",
         view_name="defillama_tvl_breakdown_filtered",
+        disposition="replace",
     )
