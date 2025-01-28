@@ -18,7 +18,7 @@ CHAINS_ENDPOINT = "https://api.llama.fi/v2/chains"
 CHAINS_TVL_ENDPOINT = "https://api.llama.fi/v2/historicalChainTvl/{slug}"
 
 
-TVL_TABLE_LAST_N_DAYS = 7
+TVL_TABLE_LAST_N_DAYS = 120
 
 
 @dataclass

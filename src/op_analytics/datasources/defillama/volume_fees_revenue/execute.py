@@ -16,7 +16,7 @@ log = structlog.get_logger()
 DEX_ENDPOINT = Literal["dailyVolume", "dailyFees", "dailyRevenue"]
 
 
-TABLE_LAST_N_DAYS = 3  # upsert only the last X days of volume fetched from the api
+TABLE_LAST_N_DAYS = 120  # upsert only the last X days of volume fetched from the api
 
 
 def execute_pull(current_dt: str | None = None):

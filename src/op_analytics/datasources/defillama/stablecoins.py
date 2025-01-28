@@ -21,7 +21,7 @@ SUMMARY_ENDPOINT = "https://stablecoins.llama.fi/stablecoins?includePrices=true"
 BREAKDOWN_ENDPOINT = "https://stablecoins.llama.fi/stablecoin/{id}"
 
 
-BALANCES_TABLE_LAST_N_DAYS = 7  # upsert only the last 7 days of balances fetched from the api
+BALANCES_TABLE_LAST_N_DAYS = 120  # write only recent dates
 
 
 MUST_HAVE_METADATA_FIELDS = [
