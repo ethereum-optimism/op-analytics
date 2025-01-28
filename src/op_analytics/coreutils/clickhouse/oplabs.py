@@ -7,7 +7,7 @@ import stamina
 
 from op_analytics.coreutils.logger import structlog
 
-from .client import init_client, run_query, insert
+from .client import init_client, run_query, insert, run_statement
 
 log = structlog.get_logger()
 
@@ -31,6 +31,13 @@ def run_query_oplabs(
         parameters=parameters,
         settings=settings,
     )
+
+
+def run_statememt_oplabs(
+    statement: str,
+    settings: dict[str, Any] | None = None,
+) -> dict[str, str]:
+    return run_statement(instance="OPLABS", statement=statement, settings=settings)
 
 
 @stamina.retry(on=reconnecting_retry, attempts=3)
