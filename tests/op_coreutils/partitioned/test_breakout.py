@@ -133,12 +133,12 @@ def test_breakout_partitions_empty():
         assert actual == [
             {
                 "partitions": Partition(
-                    [
-                        PartitionColumn(name="chain", value="op"),
+                    cols=[
                         PartitionColumn(name="dt", value="2023-10-30"),
+                        PartitionColumn(name="chain", value="op"),
                     ]
                 ),
-                "full_path": "chain=op/dt=2023-10-30",
+                "full_path": "dt=2023-10-30/chain=op",
                 "nu_rows": 0,
             }
         ]
