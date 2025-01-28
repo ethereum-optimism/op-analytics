@@ -44,6 +44,9 @@ class DataReader:
         assert self.extra_marker_data is not None
         return self.extra_marker_data[key]
 
+    def get_marker_data(self, key: str) -> Any:
+        return (self.extra_marker_data or {}).get(key)
+
     def partitions_dict(self):
         return self.partitions.as_dict()
 

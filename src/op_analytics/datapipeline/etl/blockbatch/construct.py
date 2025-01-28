@@ -28,7 +28,7 @@ def construct_tasks(
     write_to: DataLocation,
 ) -> list[BlockBatchModelsTask]:
     """Construct a collection of tasks to compute intermediate models."""
-    data_spec = ModelsDataSpec(models=models)
+    data_spec = ModelsDataSpec(root_path_prefix="blockbatch", models=models)
 
     # Prepare the request for input data.
     blockbatch_request = BlockBatchRequest.build(

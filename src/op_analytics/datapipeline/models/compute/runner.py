@@ -215,7 +215,7 @@ def pending_items(
                     log.info(
                         "task",
                         status="already_complete",
-                        min_block=task.data_reader.marker_data("min_block"),
+                        min_block=task.data_reader.get_marker_data("min_block"),
                     )
                     continue
                 else:
