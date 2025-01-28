@@ -58,59 +58,15 @@ def volumes_fees_revenue(context: OpExecutionContext):
     context.log.info(result)
 
 
-@asset(deps=[stablecoins])
-def stablecoins_views():
-    """Clickhouse external tables over GCS data:
-
-    - defillama_gcs.stablecoins_metadata_v1
-    - defillama_gcs.stablecoins_balances_v1
-    """
-    from op_analytics.datasources.defillama.dataaccess import DefiLlama
-
-    DefiLlama.STABLECOINS_METADATA.create_clickhouse_view()
-    DefiLlama.STABLECOINS_BALANCE.create_clickhouse_view()
-
-
-@asset(deps=[protocol_tvl, historical_chain_tvl])
-def tvl_views():
-    """Clickhouse external tables over GCS data:
-
-    - defillama_gcs.chains_metadata_v1
-    - defillama_gcs.historical_chain_tvl_v1
-    - defillama_gcs.protocols_metadata_v1
-    - defillama_gcs.protocols_tvl_v1
-    - defillama_gcs.protocols_token_tvl_v1
-    """
-    from op_analytics.datasources.defillama.dataaccess import DefiLlama
-
-    DefiLlama.CHAINS_METADATA.create_clickhouse_view()
-    DefiLlama.HISTORICAL_CHAIN_TVL.create_clickhouse_view()
-
-    DefiLlama.PROTOCOLS_METADATA.create_clickhouse_view()
-    DefiLlama.PROTOCOLS_TVL.create_clickhouse_view()
-    DefiLlama.PROTOCOLS_TOKEN_TVL.create_clickhouse_view()
-
-
-@asset(deps=[volumes_fees_revenue])
-def volumes_fees_revenue_views():
-    """Clickhouse external tables over GCS data:
-
-    - defillama_gcs.volume_fees_revenue_v1
-    - defillama_gcs.volume_fees_revenue_breakdown_v1
-    - defillama_gcs.volume_protocols_metadata_v1
-    - defillama_gcs.fees_protocols_metadata_v1
-    - defillama_gcs.revenue_protocols_metadata_v1
-    """
-    from op_analytics.datasources.defillama.dataaccess import DefiLlama
-
-    DefiLlama.VOLUME_FEES_REVENUE.create_clickhouse_view()
-    DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.create_clickhouse_view()
-    DefiLlama.VOLUME_PROTOCOLS_METADATA.create_clickhouse_view()
-    DefiLlama.FEES_PROTOCOLS_METADATA.create_clickhouse_view()
-    DefiLlama.REVENUE_PROTOCOLS_METADATA.create_clickhouse_view()
-
-
-@asset(deps=[tvl_breakdown_enrichment])
+@asset(
+    deps=[
+        stablecoins,
+        protocol_tvl,
+        tvl_breakdown_enrichment,
+        historical_chain_tvl,
+        volumes_fees_revenue,
+    ]
+)
 def defillama_views():
     """Bigquery external tables and views.
 
