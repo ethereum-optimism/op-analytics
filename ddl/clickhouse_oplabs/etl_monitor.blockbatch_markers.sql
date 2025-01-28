@@ -2,9 +2,7 @@ CREATE DATABASE IF NOT EXISTS etl_monitor;
 
 
 -- A table to store completion markers for parquet data in GCS.
--- A completion marker indicates that 1 or more parquet files
--- corresponding to a single unit of processing were successfully
--- written out to GCS.
+-- 1 row per parquet file
 CREATE TABLE IF NOT EXISTS etl_monitor.blockbatch_markers
 (
     updated_at DateTime DEFAULT now(),
