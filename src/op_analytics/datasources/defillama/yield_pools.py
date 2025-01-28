@@ -52,7 +52,7 @@ def pull_yield_pools_data(pull_pools: list[str] | None = None) -> pl.DataFrame:
 
     # Get all pools data
     pools_data = get_data(session, YIELD_POOLS_ENDPOINT.format(api_key=API_KEY))
-    pools_df = extract_pools_data(pools_data["data"])
+    pools_df = extract_pools_metadata(pools_data["data"])
 
     # Write pools metadata
     DefiLlama.YIELD_POOLS_METADATA.write(
@@ -84,7 +84,7 @@ def pull_yield_pools_data(pull_pools: list[str] | None = None) -> pl.DataFrame:
     return DefillamaYieldPools(yield_pools_df=yield_pools_df)
 
 
-def extract_pools_data(pools_data: list) -> pl.DataFrame:
+def extract_pools_metadata(pools_data: list) -> pl.DataFrame:
     """Extract pools data and transform into dataframe"""
     records = [
         {
