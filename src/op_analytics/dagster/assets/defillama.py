@@ -58,6 +58,14 @@ def volumes_fees_revenue(context: OpExecutionContext):
     context.log.info(result)
 
 
+@asset
+def yield_data(context: OpExecutionContext):
+    from op_analytics.datasources.defillama import yield_pools
+
+    result = yield_pools.execute_pull()
+    context.log.info(result)
+
+
 @asset(deps=[stablecoins])
 def stablecoins_views():
     """Clickhouse external tables over GCS data:
@@ -122,6 +130,16 @@ def tvl_breakdown_views():
 
     # NEXT STEPS. BigQuery view over the results in GCS
     # DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_external_table()
+
+    # CREATE OR REPLACE EXTERNAL TABLE `oplabs-tools-data.temp.defillama_tvl_breakdown_enriched`
+    # WITH PARTITION COLUMNS (
+    # dt DATE
+    # )
+    # OPTIONS (
+    # format = 'PARQUET',
+    # uris = ['gs://oplabs-tools-data-sink/defillama/protocol_token_tvl_breakdown_v1/dt=*'],
+    # hive_partition_uri_prefix = 'gs://oplabs-tools-data-sink/defillama/protocol_token_tvl_breakdown_v1/'
+    # )
 
     # NEXT STEPS.
     # Suppose we want to create a BigQuery view that joins a bunch of tables.
