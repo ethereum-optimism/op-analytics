@@ -19,7 +19,7 @@ class Github(DailyDataset):
     ISSUES = "github_issues_v1"
     PRS = "github_prs_v1"
     PR_COMMENTS = "github_pr_comments_v1"
-    PR_REVIEWS = "github_pr_reviews_v1"
+    PR_REVIEWS = "github_pr_reviews_v2"
 
     # Github metrics
     TRAFFIC_METRICS = "repo_metrics_v1"
