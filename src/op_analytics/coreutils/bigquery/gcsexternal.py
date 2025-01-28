@@ -5,7 +5,7 @@ from .write import init_client
 log = structlog.get_logger()
 
 
-def create_gcs_view(
+def create_gcs_external_table(
     db_name: str,
     table_name: str,
     partition_columns: str,

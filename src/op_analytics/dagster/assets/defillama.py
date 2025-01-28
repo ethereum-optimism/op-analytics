@@ -76,22 +76,22 @@ def defillama_views():
     """
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
-    DefiLlama.CHAINS_METADATA.create_bigquery_view()
-    DefiLlama.HISTORICAL_CHAIN_TVL.create_bigquery_view()
+    DefiLlama.CHAINS_METADATA.create_bigquery_external_table()
+    DefiLlama.HISTORICAL_CHAIN_TVL.create_bigquery_external_table()
 
-    DefiLlama.PROTOCOLS_METADATA.create_bigquery_view()
-    DefiLlama.PROTOCOLS_TVL.create_bigquery_view()
-    DefiLlama.PROTOCOLS_TOKEN_TVL.create_bigquery_view()
-    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_view()
+    DefiLlama.PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.PROTOCOLS_TVL.create_bigquery_external_table()
+    DefiLlama.PROTOCOLS_TOKEN_TVL.create_bigquery_external_table()
+    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_external_table()
 
-    DefiLlama.STABLECOINS_METADATA.create_bigquery_view()
-    DefiLlama.STABLECOINS_BALANCE.create_bigquery_view()
+    DefiLlama.STABLECOINS_METADATA.create_bigquery_external_table()
+    DefiLlama.STABLECOINS_BALANCE.create_bigquery_external_table()
 
-    DefiLlama.VOLUME_FEES_REVENUE.create_bigquery_view()
-    DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.create_bigquery_view()
-    DefiLlama.VOLUME_PROTOCOLS_METADATA.create_bigquery_view()
-    DefiLlama.FEES_PROTOCOLS_METADATA.create_bigquery_view()
-    DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_view()
+    DefiLlama.VOLUME_FEES_REVENUE.create_bigquery_external_table()
+    DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.create_bigquery_external_table()
+    DefiLlama.VOLUME_PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.FEES_PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_external_table()
 
     from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
 

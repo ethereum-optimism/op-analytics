@@ -5,7 +5,7 @@ from functools import cache
 import polars as pl
 import pyarrow as pa
 
-from op_analytics.coreutils.bigquery.gcsview import create_gcs_view as create_bq_gcs_view
+from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
 from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
 from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
 from op_analytics.coreutils.clickhouse.oplabs import (
@@ -290,8 +290,8 @@ class DailyDataset(str, Enum):
             gcs_glob_path=f"{self.root_path}/dt=*/out.parquet",
         )
 
-    def create_bigquery_view(self) -> None:
-        create_bq_gcs_view(
+    def create_bigquery_external_table(self) -> None:
+        create_gcs_external_table(
             db_name="dailydata_defillama",
             table_name=self.table,
             partition_columns="dt DATE",
