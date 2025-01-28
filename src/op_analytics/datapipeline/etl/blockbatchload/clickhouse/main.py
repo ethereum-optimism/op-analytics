@@ -1,6 +1,6 @@
 from datetime import date
 
-from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.logger import structlog, bound_contextvars
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_tostr
 
@@ -55,8 +55,10 @@ def load_to_clickhouse(range_spec: str | None = None):
     log.info(f"Prepared {len(tasks)} insert tasks.")
 
     summary = []
-    for task in tasks:
-        result = task.execute()
+    num_tasks = len(tasks)
+    for ii, task in enumerate(tasks):
+        with bound_contextvars(task=f"{ii+1}/{num_tasks}"):
+            result = task.execute()
 
         summary.append(
             dict(
