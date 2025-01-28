@@ -56,19 +56,6 @@ def execute_pull(current_dt: str | None = None):
     )
 
 
-def write_to_clickhouse():
-    # Capture summaries and return them to have info in Dagster
-    summaries = [
-        DefiLlama.VOLUME_FEES_REVENUE.insert_to_clickhouse(incremental_overlap=3),
-        DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.insert_to_clickhouse(incremental_overlap=3),
-        DefiLlama.VOLUME_PROTOCOLS_METADATA.insert_to_clickhouse(),
-        DefiLlama.FEES_PROTOCOLS_METADATA.insert_to_clickhouse(),
-        DefiLlama.REVENUE_PROTOCOLS_METADATA.insert_to_clickhouse(),
-    ]
-
-    return summaries
-
-
 def write(
     chain_df: pl.DataFrame,
     breakdown_df: pl.DataFrame,

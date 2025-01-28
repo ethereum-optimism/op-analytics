@@ -36,5 +36,4 @@ def create_gcs_view(
     # Execute the DDL statement
     query_job = client.query(ddl_statement)
     query_job.result()  # Wait for the job to complete
-
-    log.info(f"created bigquery view: {table_id}")
+    log.info(f"created bigquery external table: {table_id}")

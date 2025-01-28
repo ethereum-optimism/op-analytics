@@ -111,32 +111,35 @@ def volumes_fees_revenue_views():
 
 
 @asset(deps=[tvl_breakdown_enrichment])
-def tvl_breakdown_views():
-    """Clickhouse external tables over GCS data:
+def defillama_views():
+    """Bigquery external tables and views.
 
-    - defillama_gcs.protocol_token_tvl_breakdown_v1
+    External tables for each of the datasets we ingest to GCS.
+
+    Views to simplify queries.
     """
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
-    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_clickhouse_view()
+    DefiLlama.CHAINS_METADATA.create_bigquery_view()
+    DefiLlama.HISTORICAL_CHAIN_TVL.create_bigquery_view()
 
-    # NEXT STEPS. BigQuery view over the results in GCS
-    # DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_external_table()
+    DefiLlama.PROTOCOLS_METADATA.create_bigquery_view()
+    DefiLlama.PROTOCOLS_TVL.create_bigquery_view()
+    DefiLlama.PROTOCOLS_TOKEN_TVL.create_bigquery_view()
+    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_view()
 
-    # NEXT STEPS.
-    # Suppose we want to create a BigQuery view that joins a bunch of tables.
-    # from op_analytics.coreutils.bigquery.write import init_client
-    # bq_client = init_client()
-    # bq_client.sql("""
-    # CREATE VIEW IF NOT EXISTS my_view AS
-    # SELECT * FROM JOIN EVERYTHING ELSE
-    # """)
+    DefiLlama.STABLECOINS_METADATA.create_bigquery_view()
+    DefiLlama.STABLECOINS_BALANCE.create_bigquery_view()
 
+    DefiLlama.VOLUME_FEES_REVENUE.create_bigquery_view()
+    DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.create_bigquery_view()
+    DefiLlama.VOLUME_PROTOCOLS_METADATA.create_bigquery_view()
+    DefiLlama.FEES_PROTOCOLS_METADATA.create_bigquery_view()
+    DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_view()
 
-# TODO: Consider not doing this anymore now that we have views over GCS data.
-@asset(deps=[volumes_fees_revenue])
-def volumes_fees_revenue_to_clickhouse(context: OpExecutionContext):
-    from op_analytics.datasources.defillama.volume_fees_revenue import execute
+    from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
 
-    result = execute.write_to_clickhouse()
-    context.log.info(result)
+    create_view(
+        db_name="dailydata_defillama",
+        view_name="defillama_tvl_breakdown_filtered",
+    )
