@@ -32,6 +32,10 @@ def dt_fromepoch(epoch: int) -> str:
     return datetime_fromepoch(epoch).strftime("%Y-%m-%d")
 
 
+def dt_fromisostr(timestamp: str) -> str:
+    return datetime.fromisoformat(timestamp).strftime("%Y-%m-%d")
+
+
 def datetime_fromepoch(epoch: int) -> datetime:
     return datetime.fromtimestamp(epoch, tz=timezone.utc).replace(tzinfo=None)
 
