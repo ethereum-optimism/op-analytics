@@ -25,8 +25,9 @@ def compute_pr_metrics(
     prs_df: pl.DataFrame,
     comments_df: pl.DataFrame,
     reviews_df: pl.DataFrame,
+    process_dt: str,
 ) -> pl.DataFrame:
-    """Compute daily GitHub PR metrics using three dataframes.
+    """Compute GitHub PR metrics for a specific date.
 
     Uses the following input tables:
     - PRs (Github.PRS)
@@ -51,8 +52,7 @@ def compute_pr_metrics(
     Returns:
         pl.DataFrame: Daily metrics aggregated by repo and date
     """
-
-    # 1. Convert PR 'created_at' & 'merged_at' to polars.Datetime
+    # Convert timestamps to datetime
     prs_df = prs_df.with_columns(
         [
             pl.col("created_at")
@@ -64,7 +64,6 @@ def compute_pr_metrics(
         ]
     )
 
-    # 2. Convert comment 'created_at' to polars.Datetime
     comments_df = comments_df.with_columns(
         [
             pl.col("created_at")
@@ -73,7 +72,6 @@ def compute_pr_metrics(
         ]
     )
 
-    # 3. Convert review 'submitted_at' to polars.Datetime
     reviews_df = reviews_df.with_columns(
         [
             pl.col("submitted_at")
@@ -153,7 +151,7 @@ def compute_pr_metrics(
 
     # 8. Aggregate daily metrics at (repo, dt)
     daily_metrics = (
-        enriched_prs.group_by(["repo", "dt"])
+        enriched_prs.group_by("repo")
         .agg(
             [
                 pl.count().alias("number_of_prs"),
@@ -168,7 +166,8 @@ def compute_pr_metrics(
                 pl.col("user").struct.field("login").n_unique().alias("active_contributors"),
             ]
         )
-        .sort(["repo", "dt"])
+        .sort("repo")
+        .with_columns(dt=pl.lit(process_dt))
     )
 
     # Validate schema before returning
