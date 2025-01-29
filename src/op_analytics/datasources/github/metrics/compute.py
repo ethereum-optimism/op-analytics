@@ -79,8 +79,8 @@ def compute_pr_metrics(
         ]
     )
 
-    # 4. Compute earliest approval from reviews (where state = "APPROVED")
-    #    For each (repo, pr_number): earliest "submitted_at" => "approved_at"
+    # Compute earliest approval from reviews (where state = "APPROVED")
+    # For each (repo, pr_number): earliest "submitted_at" => "approved_at"
     approved_reviews = reviews_df.filter(pl.col("state").str.to_uppercase() == "APPROVED")
     earliest_approval = approved_reviews.group_by(["repo", "pr_number"]).agg(
         pl.col("submitted_at").min().alias("approved_at")
@@ -93,8 +93,8 @@ def compute_pr_metrics(
         how="left",
     )
 
-    # 5. Compute earliest non-bot comment
-    #    Filter out comments whose user.login ends with [bot]
+    # Compute earliest non-bot comment
+    # Filter out comments whose user.login ends with [bot]
     non_bot_comments = comments_df.filter(
         pl.col("user").struct.field("login").str.contains(r"(?i)\[bot\]$").not_()
     )
@@ -110,10 +110,10 @@ def compute_pr_metrics(
         how="left",
     )
 
-    # 6. Compute intervals from PR creation date
-    #    - time_to_approval_days  = (approved_at - created_at).days
-    #    - time_to_first_non_bot_comment_days
-    #    - time_to_merge_days
+    # Compute intervals from PR creation date
+    # - time_to_approval_days  = (approved_at - created_at).days
+    # - time_to_first_non_bot_comment_days
+    # - time_to_merge_days
     enriched_prs = enriched_prs.with_columns(
         [
             ((pl.col("approved_at") - pl.col("created_at")).dt.total_days()).alias(
@@ -136,8 +136,8 @@ def compute_pr_metrics(
         ]
     )
 
-    # 7. Count comments per PR
-    #    For each (repo, pr_number) => total # of comments
+    # Count comments per PR
+    # For each (repo, pr_number) => total # of comments
     comment_counts = comments_df.group_by(["repo", "pr_number"]).agg(
         pl.count().alias("comment_count")
     )
@@ -148,7 +148,7 @@ def compute_pr_metrics(
         how="left",
     ).with_columns(pl.col("comment_count").fill_null(0))
 
-    # 8. Aggregate daily metrics at (repo, dt)
+    # Aggregate daily metrics at (repo, dt)
     daily_metrics = (
         enriched_prs.group_by("repo")
         .agg(
