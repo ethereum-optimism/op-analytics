@@ -25,3 +25,20 @@ def get_log_selector(abi_json, event_name):
             return "0x" + keccak(text=event_signature).hex()
 
     raise ValueError(f"Event {event_name} not found in ABI")
+
+
+def get_all_log_selectors(abi_json):
+    from eth_utils_lite import keccak
+
+    selectors = {}
+    for item in abi_json:
+        if item["type"] == "event":
+            event_name = item["name"]
+            event_params = ",".join(abi_inputs_to_typestr(item, include_indexed=True))
+            event_signature = f"{event_name}({event_params})"
+            selectors[event_name] = "0x" + keccak(text=event_signature).hex()
+
+    if not selectors:
+        return Exception("no selectors found in ABI")
+
+    return selectors
