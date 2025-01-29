@@ -2,8 +2,23 @@ import polars as pl
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import parse_isoformat
+from op_analytics.coreutils.misc import raise_for_schema_mismatch
 
 log = structlog.get_logger()
+
+# Define expected schema as a constant
+EXPECTED_DAILY_METRICS_SCHEMA = {
+    "repo": pl.Utf8,
+    "dt": pl.Date,
+    "number_of_prs": pl.Int64,
+    "avg_time_to_approval_days": pl.Float64,
+    "avg_time_to_first_non_bot_comment_days": pl.Float64,
+    "avg_time_to_merge_days": pl.Float64,
+    "approval_ratio": pl.Float64,
+    "avg_comments_per_pr": pl.Float64,
+    "merged_ratio": pl.Float64,
+    "active_contributors": pl.Int64,
+}
 
 
 def compute_pr_metrics(
@@ -154,6 +169,12 @@ def compute_pr_metrics(
             ]
         )
         .sort(["repo", "dt"])
+    )
+
+    # Validate schema before returning
+    raise_for_schema_mismatch(
+        actual_schema=daily_metrics.schema,
+        expected_schema=EXPECTED_DAILY_METRICS_SCHEMA,
     )
 
     return daily_metrics
