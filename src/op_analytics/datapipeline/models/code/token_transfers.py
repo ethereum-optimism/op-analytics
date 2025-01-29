@@ -32,6 +32,7 @@ def token_transfers(
     erc721_transfers = all_transfers.filter("token_id IS NOT NULL").project(
         "* EXCLUDE (amount, amount_lossless)"
     )
+
     return {
         "erc20_transfers_v1": erc20_transfers,
         "erc721_transfers_v1": erc721_transfers,

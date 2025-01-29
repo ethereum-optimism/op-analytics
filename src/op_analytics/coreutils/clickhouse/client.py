@@ -6,6 +6,7 @@ import clickhouse_connect
 import clickhouse_connect.driver.client
 import polars as pl
 import pyarrow as pa
+from clickhouse_connect.driver.summary import QuerySummary
 
 from op_analytics.coreutils.env import env_get
 from op_analytics.coreutils.logger import structlog
@@ -77,11 +78,16 @@ def run_query(
     return pl.from_arrow(arrow_result)
 
 
-def run_statement(instance: ClickHouseInstance, statement: str):
+def run_statement(
+    instance: ClickHouseInstance,
+    statement: str,
+    settings: dict[str, Any] | None = None,
+) -> dict[str, str]:
     """A statement does not return results."""
     client = init_client(instance)
 
-    client.query(statement)
+    result: QuerySummary = client.command(statement, settings=settings)
+    return result.summary
 
 
 def insert(

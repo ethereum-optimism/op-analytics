@@ -16,7 +16,7 @@ log = structlog.get_logger()
 DEX_ENDPOINT = Literal["dailyVolume", "dailyFees", "dailyRevenue"]
 
 
-TABLE_LAST_N_DAYS = 3  # upsert only the last X days of volume fetched from the api
+TABLE_LAST_N_DAYS = 120  # upsert only the last X days of volume fetched from the api
 
 
 def execute_pull(current_dt: str | None = None):
@@ -54,19 +54,6 @@ def execute_pull(current_dt: str | None = None):
         revenue_protocols_metadata_df=revenue.protocols_df,
         current_dt=current_dt,
     )
-
-
-def write_to_clickhouse():
-    # Capture summaries and return them to have info in Dagster
-    summaries = [
-        DefiLlama.VOLUME_FEES_REVENUE.insert_to_clickhouse(incremental_overlap=3),
-        DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.insert_to_clickhouse(incremental_overlap=3),
-        DefiLlama.VOLUME_PROTOCOLS_METADATA.insert_to_clickhouse(),
-        DefiLlama.FEES_PROTOCOLS_METADATA.insert_to_clickhouse(),
-        DefiLlama.REVENUE_PROTOCOLS_METADATA.insert_to_clickhouse(),
-    ]
-
-    return summaries
 
 
 def write(

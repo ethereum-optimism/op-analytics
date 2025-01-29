@@ -81,6 +81,7 @@ def construct_readers_bydate(
                     read_from=read_from,
                     dataset_paths=dataset_paths,
                     inputs_ready=input_data.is_complete,
+                    extra_marker_data={},  # No extra marker data on a bydate reader.
                 )
 
                 readers.append(obj)
