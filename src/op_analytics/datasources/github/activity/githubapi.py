@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from threading import Lock
 
 import polars as pl
-from github import Auth, Github
+from github import Auth, Github, UnknownObjectException
 from github.Repository import Repository
 
 from op_analytics.coreutils.env.vault import env_get
@@ -139,7 +139,14 @@ def fetch_comments(repo_obj: Repository, pr_number: int) -> list[dict]:
 def fetch_reviews(repo_obj: Repository, pr_number: int) -> list[dict]:
     """Fetch all comments for a single pull request."""
 
-    pull = repo_obj.get_pull(number=pr_number)
+    comments = []
+    try:
+        pull = repo_obj.get_pull(number=pr_number)
+    except UnknownObjectException:
+        # It is possible that PRs get deleted after the fact and so we can get back a 404.
+        log.warning("pull request no longer exists", repo=repo_obj.name, pr_number=pr_number)
+        return comments
+
     comments = []
     for comment in pull.get_reviews():
         comments.append(review_to_row(pr_number, comment))
