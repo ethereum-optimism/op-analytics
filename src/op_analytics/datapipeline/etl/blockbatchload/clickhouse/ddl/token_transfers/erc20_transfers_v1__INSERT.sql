@@ -17,3 +17,4 @@ SELECT
 FROM (
     {subquery}
 )
+WHERE amount_lossless is not NULL
