@@ -10,7 +10,6 @@ class TestTokenTransfers001(IntermediateModelTestBase):
     inputdata = InputTestData.at(__file__)
     chains = ["op"]
     dateval = date(2024, 11, 18)
-    datasets = ["logs"]
     block_filters = [
         "{block_number} IN (128145990, 128145989) OR block_number % 100 < 2",
     ]
