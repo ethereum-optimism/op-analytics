@@ -22,6 +22,7 @@ dependencies = [
     "polars>=1.13.1",
     "py-markdown-table>=1.1.0",
     "pyarrow>=17.0.0",
+    "pycryptodome>=3.21.0",
     "pydantic>=2.9.2",
     "pygithub>=2.5.0",
     "pyyaml>=6.0.2",
