@@ -5,6 +5,7 @@ from functools import cache
 import polars as pl
 import pyarrow as pa
 
+from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
 from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
 from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
 from op_analytics.coreutils.clickhouse.oplabs import (
@@ -315,3 +316,12 @@ class DailyDataset(str, Enum):
         )
         duckdb_ctx = init_client()
         return duckdb_ctx.client.sql(f"SELECT * FROM {view_name}").pl()
+
+    def create_bigquery_external_table(self) -> None:
+        create_gcs_external_table(
+            db_name="dailydata_defillama",
+            table_name=self.table,
+            partition_columns="dt DATE",
+            partition_prefix=self.root_path,
+        )
+

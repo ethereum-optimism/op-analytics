@@ -148,6 +148,18 @@ expected_single_protocol_app_tvl_dicts = [
     {
         "protocol_slug": "protocol_one",
         "chain": "ChainAlpha",
+        "dt": "2024-11-14",
+        "total_app_tvl": 12345.67,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-14",
+        "total_app_tvl": 34567.89,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
         "dt": "2024-11-15",
         "total_app_tvl": 23456.78,
     },
@@ -160,6 +172,38 @@ expected_single_protocol_app_tvl_dicts = [
 ]
 
 expected_single_protocol_app_token_tvl_dicts = [
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
+        "dt": "2024-11-14",
+        "token": "TokenA",
+        "app_token_tvl": 1.1,
+        "app_token_tvl_usd": 5555.55,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
+        "dt": "2024-11-14",
+        "token": "TokenB",
+        "app_token_tvl": 2.2,
+        "app_token_tvl_usd": 6666.66,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-14",
+        "token": "TokenC",
+        "app_token_tvl": 1.2,
+        "app_token_tvl_usd": 1234.56,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-14",
+        "token": "TokenD",
+        "app_token_tvl": 3.4,
+        "app_token_tvl_usd": 2345.67,
+    },
     {
         "protocol_slug": "protocol_one",
         "chain": "ChainAlpha",
@@ -198,6 +242,24 @@ expected_all_protocol_app_tvl_dicts = [
     {
         "protocol_slug": "protocol_one",
         "chain": "ChainAlpha",
+        "dt": "2024-11-14",
+        "total_app_tvl": 12345.67,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-14",
+        "total_app_tvl": 34567.89,
+    },
+    {
+        "protocol_slug": "protocol_two",
+        "chain": "ChainGamma",
+        "dt": "2024-11-14",
+        "total_app_tvl": 56789.01,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
         "dt": "2024-11-15",
         "total_app_tvl": 23456.78,
     },
@@ -216,6 +278,54 @@ expected_all_protocol_app_tvl_dicts = [
 ]
 
 expected_all_protocol_app_token_tvl_dicts = [
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
+        "dt": "2024-11-14",
+        "token": "TokenA",
+        "app_token_tvl": 1.1,
+        "app_token_tvl_usd": 5555.55,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainAlpha",
+        "dt": "2024-11-14",
+        "token": "TokenB",
+        "app_token_tvl": 2.2,
+        "app_token_tvl_usd": 6666.66,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-14",
+        "token": "TokenC",
+        "app_token_tvl": 1.2,
+        "app_token_tvl_usd": 1234.56,
+    },
+    {
+        "protocol_slug": "protocol_one",
+        "chain": "ChainBeta",
+        "dt": "2024-11-14",
+        "token": "TokenD",
+        "app_token_tvl": 3.4,
+        "app_token_tvl_usd": 2345.67,
+    },
+    {
+        "protocol_slug": "protocol_two",
+        "chain": "ChainGamma",
+        "dt": "2024-11-14",
+        "token": "TokenX",
+        "app_token_tvl": 9.9,
+        "app_token_tvl_usd": 11111.11,
+    },
+    {
+        "protocol_slug": "protocol_two",
+        "chain": "ChainGamma",
+        "dt": "2024-11-14",
+        "token": "TokenY",
+        "app_token_tvl": 8.8,
+        "app_token_tvl_usd": 22222.22,
+    },
     {
         "protocol_slug": "protocol_one",
         "chain": "ChainAlpha",
@@ -364,6 +474,23 @@ def test_pull_single_protocol_tvl(
             "num_rows": 2,
         },
         {
+            "dataset_name": "defillama/protocols_tvl_v1",
+            "df_columns": ["protocol_slug", "chain", "total_app_tvl", "dt"],
+            "num_rows": 2,
+        },
+        {
+            "dataset_name": "defillama/protocols_token_tvl_v1",
+            "df_columns": [
+                "protocol_slug",
+                "chain",
+                "token",
+                "app_token_tvl",
+                "app_token_tvl_usd",
+                "dt",
+            ],
+            "num_rows": 4,
+        },
+        {
             "dataset_name": "defillama/protocols_token_tvl_v1",
             "df_columns": [
                 "protocol_slug",
@@ -439,6 +566,23 @@ def test_pull_all_protocol_tvl(
             "dataset_name": "defillama/protocols_tvl_v1",
             "df_columns": ["protocol_slug", "chain", "total_app_tvl", "dt"],
             "num_rows": 3,
+        },
+        {
+            "dataset_name": "defillama/protocols_tvl_v1",
+            "df_columns": ["protocol_slug", "chain", "total_app_tvl", "dt"],
+            "num_rows": 3,
+        },
+        {
+            "dataset_name": "defillama/protocols_token_tvl_v1",
+            "df_columns": [
+                "protocol_slug",
+                "chain",
+                "token",
+                "app_token_tvl",
+                "app_token_tvl_usd",
+                "dt",
+            ],
+            "num_rows": 6,
         },
         {
             "dataset_name": "defillama/protocols_token_tvl_v1",
