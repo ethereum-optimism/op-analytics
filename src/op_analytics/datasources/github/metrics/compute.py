@@ -11,93 +11,30 @@ def compute_pr_metrics(
     comments_df: pl.DataFrame,
     reviews_df: pl.DataFrame,
 ) -> pl.DataFrame:
-    """
-    Compute daily GitHub PR metrics using three dataframes (PRs, Comments, Reviews).
+    """Compute daily GitHub PR metrics using three dataframes.
 
-    1) PRs (prs_df)
-       Schema({
-           "html_url": pl.Utf8,
-           "number": pl.Int64,
-           "state": pl.Utf8,
-           "labels": pl.List(
-               pl.Struct({
-                   "id": pl.Int64,
-                   "name": pl.Utf8,
-                   "description": pl.Utf8
-               })
-           ),
-           "draft": pl.Boolean,
-           "created_at": pl.Utf8,
-           "updated_at": pl.Utf8,
-           "closed_at": pl.Utf8,
-           "merged_at": pl.Utf8,
-           "author_association": pl.Utf8,
-           "user": pl.Struct({"login": pl.Utf8, "id": pl.Int64}),
-           "title": pl.Utf8,
-           "body": pl.Utf8,
-           "base": pl.Struct({"label": pl.Utf8, "ref": pl.Utf8}),
-           "head": pl.Struct({"label": pl.Utf8, "ref": pl.Utf8}),
-           "assignee": pl.Struct({"login": pl.Utf8, "id": pl.Int64}),
-           "assignees": pl.List(pl.Struct({"login": pl.Utf8, "id": pl.Int64})),
-           "requested_reviewers": pl.List(pl.Struct({"login": pl.Utf8, "id": pl.Int64})),
-           "requested_teams": pl.List(
-               pl.Struct({
-                   "id": pl.Int64,
-                   "name": pl.Utf8,
-                   "parent": pl.Struct({"id": pl.Int64, "name": pl.Utf8})
-               })
-           ),
-           "repo": pl.Utf8,
-           "dt": pl.Date
-       })
+    Uses the following input tables:
+    - PRs (Github.PRS)
+    - Comments (Github.PR_COMMENTS)
+    - Reviews (Github.PR_REVIEWS)
 
-    2) Comments (comments_df)
-       Schema({
-           "pr_number": pl.Int64,
-           "id": pl.Int64,
-           "body": pl.Utf8,
-           "author_association": pl.Utf8,
-           "created_at": pl.Utf8,
-           "updated_at": pl.Utf8,
-           "user": pl.Struct({"login": pl.Utf8, "id": pl.Int64}),
-           "repo": pl.Utf8,
-           "dt": pl.Date
-       })
+    Computes daily PR metrics for each (repo, dt) partition:
+    - number_of_prs
+    - avg_time_to_approval_days
+    - avg_time_to_first_non_bot_comment_days
+    - avg_time_to_merge_days
+    - approval_ratio       (# PRs with an approval vs total)
+    - avg_comments_per_pr
+    - merged_ratio        (# PRs merged vs total)
+    - active_contributors (unique logins who opened PRs on that date)
 
-    3) Reviews (reviews_df)
-       Schema({
-           "pr_number": pl.Int64,
-           "id": pl.Int64,
-           "body": pl.Utf8,
-           "author_association": pl.Utf8,
-           "state": pl.Utf8,           # e.g. "APPROVED", "COMMENTED", "CHANGES_REQUESTED"
-           "submitted_at": pl.Utf8,    # Time the review was submitted
-           "user": pl.Struct({"login": pl.Utf8, "id": pl.Int64}),
-           "repo": pl.Utf8,
-           "dt": pl.Date
-       })
+    Args:
+        prs_df: DataFrame containing PR data from Github.PRS
+        comments_df: DataFrame containing PR comments from Github.PR_COMMENTS
+        reviews_df: DataFrame containing PR reviews from Github.PR_REVIEWS
 
-    The goal is to compute daily PR metrics for each (repo, dt) partition:
-    ----------------------------------------------------------------------
-      - number_of_prs
-      - avg_time_to_approval_days
-      - avg_time_to_first_non_bot_comment_days
-      - avg_time_to_merge_days
-      - approval_ratio       (# PRs with an approval vs total)
-      - avg_comments_per_pr
-      - merged_ratio         (# PRs merged vs total)
-      - active_contributors  (unique logins who opened PRs on that date)
-
-    Steps:
-    ------
-    1) Convert relevant PR datetime columns to Polars Datetime (created_at, merged_at).
-    2) Convert comment created_at.
-    3) Convert review submitted_at.
-    4) Compute earliest approval for each PR from reviews.
-    5) Compute earliest non-bot comment for each PR from comments.
-    6) Compute intervals from PR creation (time_to_approval_days, time_to_first_non_bot_comment_days, time_to_merge_days).
-    7) Count comments per PR.
-    8) Aggregate daily metrics at (repo, dt).
+    Returns:
+        pl.DataFrame: Daily metrics aggregated by repo and date
     """
 
     # 1. Convert PR 'created_at' & 'merged_at' to polars.Datetime
