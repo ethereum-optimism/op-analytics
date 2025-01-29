@@ -11,7 +11,7 @@ from .table import BlockBatchTable
 log = structlog.get_logger()
 
 
-def load_to_clickhouse(range_spec: str | None = None):
+def load_to_clickhouse(range_spec: str | None = None, max_tasks: int | None = None):
     """Load blockbatch datasets to Clickhouse for the given date range."""
 
     # Default to operating over the last 3 days.
@@ -70,5 +70,8 @@ def load_to_clickhouse(range_spec: str | None = None):
                 written_rows=result.written_rows,
             )
         )
+
+        if max_tasks is not None and ii + 1 >= max_tasks:
+            break
 
     return summary
