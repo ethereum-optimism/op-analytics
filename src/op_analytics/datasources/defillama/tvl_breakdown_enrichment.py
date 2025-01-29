@@ -36,13 +36,15 @@ EXCLUDE_CATEGORIES = [
     "Liquid Restaking",
 ]
 
+DEFAULT_LOOKBACK_DAYS = 120
+
 
 @dataclass
 class DefillamaTVLBreakdown:
     df_tvl_breakdown: pl.DataFrame
 
     @classmethod
-    def of_date(cls, current_dt: str | None = None, lookback_days: int = 7):
+    def of_date(cls, current_dt: str | None = None, lookback_days: int = DEFAULT_LOOKBACK_DAYS):
         """Process DeFiLlama protocol data."""
         ctx = init_client()
         client = ctx.client

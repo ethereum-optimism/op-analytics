@@ -90,9 +90,15 @@ class PartitionData:
         return self.partition.column_value(partition_name)
 
     @classmethod
-    def from_dict(cls, partitions_dict: dict[str, str], df: pl.DataFrame) -> "PartitionData":
+    def from_dict(
+        cls,
+        partition_cols: list[str],
+        partitions_dict: dict[str, str],
+        df: pl.DataFrame,
+    ) -> "PartitionData":
         cols = []
-        for col, val in partitions_dict.items():
+        for col in partition_cols:
+            val = partitions_dict[col]
             # NOTE: Here we validate the type of the "dt" column.
             if col == "dt" and not isinstance(val, (date, str)):
                 raise ValueError(

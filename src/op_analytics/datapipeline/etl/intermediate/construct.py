@@ -32,7 +32,7 @@ def construct_tasks(
     While constructing tasks we also go ahead and load the model definitions and create the
     shared duckdb macros that are used across models.
     """
-    data_spec = ModelsDataSpec(models=models)
+    data_spec = ModelsDataSpec(root_path_prefix="intermediate", models=models)
 
     # Prepare the request for input data.
     blockbatch_request = BlockBatchRequest.build(
@@ -56,6 +56,7 @@ def construct_tasks(
     output_markers_df = output_blockbatch_request.query_markers(
         location=write_to,
         markers_table=INTERMEDIATE_MARKERS_TABLE,
+        extra_columns=[],
     )
 
     unique_chains = output_markers_df["chain"].n_unique()

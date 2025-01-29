@@ -19,33 +19,42 @@ def breakout_partitions(
 
     # Keep track of yielded partitions.
     # This is so we can guarantee full coverage of default_partitions list.
-    yielded_parts = []
+    yielded_partitions = []
 
     if len(df) == 0:
         assert default_partitions is not None
         for default_partition in default_partitions:
-            yielded_parts.append(default_partition)
-
-            yield PartitionData.from_dict(
+            partition_data = PartitionData.from_dict(
+                partition_cols=partition_cols,
                 partitions_dict=default_partition,
                 df=df.drop(*partition_cols),
             )
 
+            yielded_partitions.append(partition_data.partition.path)
+            yield partition_data
+
     else:
         for part in parts:
             part_df = df.filter(pl.all_horizontal(pl.col(col) == val for col, val in part.items()))
-            yielded_parts.append(part)
 
-            yield PartitionData.from_dict(
+            partition_data = PartitionData.from_dict(
+                partition_cols=partition_cols,
                 partitions_dict=part,
                 df=part_df.drop(*partition_cols),
             )
 
+            yielded_partitions.append(partition_data.partition.path)
+            yield partition_data
+
     # The default partitions that are not observed on the actual data still need to
     # be yielded so that markers for them can be written out.
+
     for default_partition in default_partitions or []:
-        if default_partition not in yielded_parts:
-            yield PartitionData.from_dict(
-                partitions_dict=default_partition,
-                df=df.filter(False).drop(*partition_cols),
-            )
+        default_partition_data = PartitionData.from_dict(
+            partition_cols=partition_cols,
+            partitions_dict=default_partition,
+            df=df.filter(False).drop(*partition_cols),
+        )
+
+        if default_partition_data.partition.path not in yielded_partitions:
+            yield default_partition_data

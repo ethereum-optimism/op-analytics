@@ -115,6 +115,7 @@ class BlockBatchRequest:
         location: DataLocation,
         markers_table: str | None = None,
         padded_dates: bool = False,
+        extra_columns: list[str] | None = None,
     ) -> pl.DataFrame:
         """Query completion markers for a list of dates and chains.
 
@@ -123,7 +124,17 @@ class BlockBatchRequest:
         """
         client = init_data_access()
 
+        # Default values are for the blockbatch markers table.
         markers_table = markers_table or BLOCKBATCH_MARKERS_TABLE
+        extra_columns = (
+            extra_columns
+            if extra_columns is not None
+            else [
+                "num_blocks",
+                "min_block",
+                "max_block",
+            ]
+        )
 
         if not padded_dates:
             datevals = self.time_range.to_date_range().dates()
@@ -136,12 +147,8 @@ class BlockBatchRequest:
             datevals=datevals,
             data_location=location,
             root_paths=self.physical_root_paths(),
-            markers_table=BLOCKBATCH_MARKERS_TABLE,
-            extra_columns=[
-                "num_blocks",
-                "min_block",
-                "max_block",
-            ],
+            markers_table=markers_table,
+            extra_columns=extra_columns,
         )
 
 
