@@ -47,3 +47,24 @@ def execute_pull_pr_metrics(min_date: str, max_date: str):
         "reviews_processed": len(reviews_df),
         "metrics_computed": len(metrics_df),
     }
+
+
+def execute_compute_pr_metrics() -> dict:
+    """Compute PR metrics for the last 30 days.
+
+    Computes daily metrics about PR activity and performance across repos
+
+    Returns:
+        dict: Summary of processed items including counts of PRs, comments,
+        reviews and metrics computed.
+    """
+    from op_analytics.coreutils.time import now_date, date_tostr, datestr_subtract
+
+    # Compute date range
+    end_date = date_tostr(now_date())
+    start_date = datestr_subtract(end_date, 30)
+
+    return execute_pull_pr_metrics(
+        min_date=start_date,
+        max_date=end_date,
+    )

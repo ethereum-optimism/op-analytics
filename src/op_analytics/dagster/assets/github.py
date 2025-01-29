@@ -54,39 +54,15 @@ def activity_views():
 
 @asset(deps=[activity], group_name="github", name="pr_metrics")
 def pr_metrics(context: OpExecutionContext) -> None:
-    """
-    Dagster asset to compute and write GitHub PR metrics data.
+    """Dagster asset to compute and write GitHub PR metrics data.
 
     This asset depends on the activity asset which pulls raw PR data.
-    It computes daily metrics about PR activity and performance across repos.
-
-    The metrics are computed for a 30-day window ending at the current date
-    to ensure recent PR activity and updates are captured.
+    Computes and writes daily metrics about PR activity and performance across repos.
     """
-    from op_analytics.coreutils.time import now_date, date_tostr, datestr_subtract
-    from op_analytics.datasources.github.metrics.execute import execute_pull_pr_metrics
+    from op_analytics.datasources.github.metrics.execute import execute_compute_pr_metrics
 
-    # Compute date range
-    end_date = date_tostr(now_date())  # Current date in YYYY-MM-DD format
-    start_date = datestr_subtract(end_date, 30)  # 30 days before end_date
-
-    context.log.info(
-        "computing PR metrics",
-        start_date=start_date,
-        end_date=end_date,
-    )
-
-    summary = execute_pull_pr_metrics(
-        min_date=start_date,
-        max_date=end_date,
-    )
-
-    context.log.info(
-        "pr_metrics_asset completed",
-        summary=summary,
-        start_date=start_date,
-        end_date=end_date,
-    )
+    result = execute_compute_pr_metrics()
+    context.log.info("pr_metrics_asset completed", summary=result)
 
 
 @asset(deps=[pr_metrics])
