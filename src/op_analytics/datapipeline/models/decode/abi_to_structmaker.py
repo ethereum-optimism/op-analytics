@@ -1,9 +1,11 @@
+from typing import Any
+
 from op_analytics.coreutils.misc import camel_to_snake
 
 from .conversion import safe_uint256
 
 
-def make_struct(abi_entry: dict | str, decoded_result: tuple) -> dict:
+def make_struct(abi_entry: dict, decoded_result: Any) -> Any:
     if abi_entry["type"].endswith("[]"):
         return [
             make_struct(
@@ -43,7 +45,7 @@ def make_struct(abi_entry: dict | str, decoded_result: tuple) -> dict:
         }
 
     if abi_entry["type"].startswith("bytes"):
-        return "0x" + decoded_result.hex()
+        return "0x" + decoded_result.hex()  # type: ignore
 
     return decoded_result
 
