@@ -59,9 +59,9 @@ def pr_metrics(context: OpExecutionContext) -> None:
     This asset depends on the activity asset which pulls raw PR data.
     Computes and writes daily metrics about PR activity and performance across repos.
     """
-    from op_analytics.datasources.github.metrics.execute import execute_compute_pr_metrics
+    from op_analytics.datasources.github.metrics.execute import execute_pull_pr_metrics
 
-    result = execute_compute_pr_metrics()
+    result = execute_pull_pr_metrics()
     context.log.info("pr_metrics_asset completed", summary=result)
 
 

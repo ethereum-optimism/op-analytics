@@ -25,9 +25,8 @@ def compute_pr_metrics(
     prs_df: pl.DataFrame,
     comments_df: pl.DataFrame,
     reviews_df: pl.DataFrame,
-    process_dt: str,
 ) -> pl.DataFrame:
-    """Compute GitHub PR metrics for a specific date.
+    """Compute GitHub PR metrics
 
     Uses the following input tables:
     - PRs (Github.PRS)
@@ -167,7 +166,6 @@ def compute_pr_metrics(
             ]
         )
         .sort("repo")
-        .with_columns(dt=pl.lit(process_dt))
     )
 
     # Validate schema before returning

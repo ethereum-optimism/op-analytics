@@ -1,6 +1,8 @@
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.time import now_date, date_tostr
 from op_analytics.datasources.github.dataaccess import Github
 from op_analytics.datasources.github.metrics.compute import compute_pr_metrics
+import polars as pl
 
 log = structlog.get_logger()
 
@@ -19,45 +21,29 @@ def execute_pull_pr_metrics(min_date: str, max_date: str):
 
     log.info(
         "loaded raw data from GCS",
+        min_date=min_date,
+        max_date=max_date,
         prs_count=len(prs_df),
         comments_count=len(comments_df),
         reviews_count=len(reviews_df),
     )
 
-    # 2. Compute metrics using the compute module
     metrics_df = compute_pr_metrics(
         prs_df=prs_df,
         comments_df=comments_df,
         reviews_df=reviews_df,
     )
+    process_dt = date_tostr(now_date())
 
-    # 3. Write computed metrics to GCS
-    Github.PR_METRICS.write(dataframe=metrics_df, sort_by=["dt", "repo"])
+    Github.PR_METRICS.write(
+        dataframe=metrics_df.with_columns(dt=pl.lit(process_dt)),
+        sort_by=["repo"],
+    )
 
     return {
+        "process_dt": process_dt,
         "prs_processed": len(prs_df),
         "comments_processed": len(comments_df),
         "reviews_processed": len(reviews_df),
         "metrics_computed": len(metrics_df),
     }
-
-
-def execute_compute_pr_metrics() -> dict:
-    """Compute PR metrics for the last 30 days.
-
-    Computes daily metrics about PR activity and performance across repos
-
-    Returns:
-        dict: Summary of processed items including counts of PRs, comments,
-        reviews and metrics computed.
-    """
-    from op_analytics.coreutils.time import now_date, date_tostr, datestr_subtract
-
-    # Compute date range
-    end_date = date_tostr(now_date())
-    start_date = datestr_subtract(end_date, 30)
-
-    return execute_pull_pr_metrics(
-        min_date=start_date,
-        max_date=end_date,
-    )
