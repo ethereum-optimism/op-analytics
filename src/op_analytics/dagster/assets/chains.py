@@ -61,7 +61,7 @@ def blockbatch_views_bq():
     - blockbatch_gcs.refined_transactions_fees_v1
     - blockbatch_gcs.refined_traces_fees_v1
     """
-    from op_analytics.coreutils.bigquery.gcsview import create_gcs_view
+    from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
 
     MODEL_OUTPUTS = [
         ("contract_creation", "create_traces_v1"),
@@ -72,7 +72,7 @@ def blockbatch_views_bq():
     ]
 
     for model, output in MODEL_OUTPUTS:
-        create_gcs_view(
+        create_gcs_external_table(
             db_name="gcs_blockbatch",
             table_name=f"{model}__{output}",
             partition_columns="chain STRING, dt DATE",
