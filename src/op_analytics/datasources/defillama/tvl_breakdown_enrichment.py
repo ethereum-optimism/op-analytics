@@ -36,7 +36,7 @@ EXCLUDE_CATEGORIES = [
     "Liquid Restaking",
 ]
 
-DEFAULT_LOOKBACK_DAYS = 120
+DEFAULT_LOOKBACK_DAYS = 90
 
 
 @dataclass
