@@ -14,10 +14,9 @@ from clickhouse_connect.driver.exceptions import DatabaseError
 
 from .config import FILTER_ALLOWED_ROOT_PATHS
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
+from .table import BlockBatchTable
 
 log = structlog.get_logger()
-
-DIRECTORY = os.path.dirname(__file__)
 
 
 @dataclass
@@ -60,6 +59,7 @@ class InsertResult:
 @dataclass
 class InsertTask:
     root_path: str
+    table_name: str
     chain: str
     dt: date
     min_block: int
@@ -72,10 +72,6 @@ class InsertTask:
             dt=date_tostr(self.dt),
             data_path=self.data_path,
         )
-
-    @property
-    def table_name(self):
-        return self.root_path.removeprefix("blockbatch/").replace("/", "__")
 
     def subquery(self):
         return parquet_to_subquery(
@@ -90,17 +86,8 @@ class InsertTask:
             return insert_result
 
     def write(self) -> InsertResult:
-        ddl_path = os.path.join(
-            DIRECTORY, f"ddl/{self.root_path.removeprefix("blockbatch/")}__INSERT.sql"
-        )
-
-        if not os.path.exists(ddl_path):
-            raise Exception(f"DDL file not found: {ddl_path}")
-
-        with open(ddl_path, "r") as f:
-            ddl = f.read()
-
-        # If needed for debugging we can log out the DDL
+        ddl = BlockBatchTable(self.root_path).read_insert_ddl()
+        # If needed for debugging we can log out the DDL template
         # log.info(ddl)
 
         # BE CAREFUL! with_subquery may contain HMAC access info.
