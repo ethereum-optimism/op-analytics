@@ -4,7 +4,7 @@ Update the dim_first_transfers_v1 with erc20 transfers from a given date.
 
 */
 
-INSERT INTO transforms.dim_first_transfers_v1
+INSERT INTO transforms.dim_first_erc20_transfers_v1
 
 WITH
 

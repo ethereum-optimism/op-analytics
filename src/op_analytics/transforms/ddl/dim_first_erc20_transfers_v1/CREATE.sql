@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS transforms.dim_first_transfers_v1
+CREATE TABLE IF NOT EXISTS transforms.dim_first_erc20_transfers_v1
 (
     `chain` String,
     `contract_address` FixedString(66),
