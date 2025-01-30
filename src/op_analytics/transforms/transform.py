@@ -37,6 +37,8 @@ class TransformTask:
             return results
 
     def run_ddls(self) -> dict[str, dict[str, str]]:
+        """Find the sequence of DDLs for this task and run them."""
+
         ddls: list[ClickHouseDDL] = read_ddls(
             directory=DIRECTORY,
             globstr=f"ddl/{self.table_name}/*UPDATE*.sql",
@@ -66,6 +68,8 @@ class TransformTask:
         return results
 
     def write_marker(self, results: dict):
+        """Write completion markers for the task."""
+
         marker_df = pl.DataFrame(
             [
                 dict(

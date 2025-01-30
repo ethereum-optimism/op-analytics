@@ -18,10 +18,8 @@ def execute_dt_transforms(
     overwrite: bool = False,
     max_tasks: int | None = None,
 ):
-    """Execute a transformation in the Clickhouse data warehouse.
+    """Execute "dt" transformations in the Clickhouse data warehouse."""
 
-    Writes results to "table_name".
-    """
     # Default to operating over the last 3 days.
     date_range = DateRange.from_spec(range_spec or "m3days")
 

@@ -14,6 +14,13 @@ DIRECTORY = os.path.dirname(__file__)
 
 @dataclass
 class ClickHouseTable:
+    """Convenience class to help with table creation in ClickHouse.
+
+    The CREATE TABLE ddl should be defined in teh provided directory and path.
+
+    This class provides methods to create the table when it doesn't exist yet.
+    """
+
     ddl_directory: str
     ddl_path: str
     table_db: str
@@ -79,11 +86,17 @@ def read_ddl(directory: str, path: str):
 
 @dataclass
 class ClickHouseDDL:
+    """Conveninece class to hold a ddl while remembering where it came from."""
+
     relative_path: str
     statement: str
 
 
-def read_ddls(directory: str, globstr: str):
+def read_ddls(directory: str, globstr: str) -> list[ClickHouseDDL]:
+    """Read all the ddls in the specified directory and glob.
+
+    This is used to load a family of DDLs that need to be executed in sequence.
+    """
     fullglobstr = os.path.join(directory, globstr)
 
     glob_results = glob.glob(fullglobstr)
