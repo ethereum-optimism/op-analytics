@@ -5,3 +5,9 @@ LOADABLE_ROOT_PATHS = [
     "blockbatch/token_transfers/erc20_transfers_v1",
     "blockbatch/token_transfers/erc721_transfers_v1",
 ]
+
+
+# Root paths for which we allow filtering as part of loading.
+FILTER_ALLOWED_ROOT_PATHS = [
+    "blockbatch/token_transfers/erc20_transfers_v1",
+]

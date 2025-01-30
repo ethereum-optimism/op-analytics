@@ -139,7 +139,7 @@ def fetch_comments(repo_obj: Repository, pr_number: int) -> list[dict]:
 def fetch_reviews(repo_obj: Repository, pr_number: int) -> list[dict]:
     """Fetch all comments for a single pull request."""
 
-    comments = []
+    comments: list[dict] = []
     try:
         pull = repo_obj.get_pull(number=pr_number)
     except UnknownObjectException:

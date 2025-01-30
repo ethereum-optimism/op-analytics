@@ -10,6 +10,9 @@ from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statemem
 from op_analytics.coreutils.logger import structlog, bound_contextvars
 from op_analytics.coreutils.time import date_tostr
 
+from clickhouse_connect.driver.exceptions import DatabaseError
+
+from .config import FILTER_ALLOWED_ROOT_PATHS
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
 
 log = structlog.get_logger()
@@ -104,17 +107,31 @@ class InsertTask:
         # Do not print or log it when debugging.
         with_subquery = ddl.format(subquery=self.subquery())
 
-        result = run_statememt_oplabs(
-            statement=with_subquery,
-            settings={"use_hive_partitioning": 1},
-        )
+        try:
+            result = run_statememt_oplabs(
+                statement=with_subquery,
+                settings={"use_hive_partitioning": 1},
+            )
+        except DatabaseError as ex:
+            log.error("database error", exc_info=ex)
+            raise
+
         insert_result = InsertResult.from_raw(result)
         log.info("insert results", **insert_result.to_dict())
 
-        if insert_result.read_rows != insert_result.written_rows:
-            raise Exception(
-                "loading into clickhouse should result in the same number of rows as in GCS."
-            )
+        if insert_result.written_rows > insert_result.read_rows:
+            raise Exception("loading into clickhouse should not result in more rows")
+
+        if insert_result.written_rows < insert_result.read_rows:
+            if self.root_path in FILTER_ALLOWED_ROOT_PATHS:
+                num_filtered = insert_result.read_rows - insert_result.written_rows
+                log.warning(
+                    f"{num_filtered} rows were filtered out",
+                    written_rows=insert_result.written_rows,
+                    read_rows=insert_result.read_rows,
+                )
+            else:
+                raise Exception("loading into clickhouse should not result in fewer rows")
 
         return insert_result
 

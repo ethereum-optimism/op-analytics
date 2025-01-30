@@ -1,5 +1,6 @@
 import json
 import re
+from functools import cache
 
 import polars as pl
 
@@ -25,6 +26,7 @@ CAMEL_CASE_STARTS = re.compile(
 )
 
 
+@cache
 def camel_to_snake(s: str) -> str:
     """
     Convert a camelCase or PascalCase string into snake_case,
