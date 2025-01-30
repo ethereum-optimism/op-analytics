@@ -193,6 +193,8 @@ class TestAccountAbstractionPrefilter0001(IntermediateModelTestBase):
         ]
 
     def test_log_counts(self):
+        assert self._duckdb_context is not None
+
         output = (
             self._duckdb_context.client.sql("""
         SELECT transaction_hash, count(*) as num_logs FROM entrypoint_logs_v1
