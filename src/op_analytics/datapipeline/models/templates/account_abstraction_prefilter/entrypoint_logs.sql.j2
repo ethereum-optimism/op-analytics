@@ -21,9 +21,7 @@ SELECT
   , l.data
 FROM {{ raw_logs }} AS l
 WHERE
-  true
-
-  AND l.topic0 IN (
+  l.topic0 IN (
     -- AccountDeployed
     '0xd51a9c61267aa6196961883ecf5ff2da6619c37dac0fa92122513fb32c032d2d'
 
