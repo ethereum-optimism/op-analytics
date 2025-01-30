@@ -11,6 +11,8 @@ from .utils.k8sconfig import op_analytics_asset_job, OPK8sConfig
 import importlib
 
 MODULE_NAMES = [
+    "blockbatch",
+    "transform",
     "chains",
     "defillama",
     "github",
@@ -59,6 +61,18 @@ defs = Definitions(
         create_schedule_for_group(
             group="chains",
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
+            default_status=DefaultScheduleStatus.RUNNING,
+        ),
+        #
+        create_schedule_for_group(
+            group="blockbatch",
+            cron_schedule="38 * * * *",  # Run every hour
+            default_status=DefaultScheduleStatus.RUNNING,
+        ),
+        #
+        create_schedule_for_group(
+            group="transform",
+            cron_schedule="17 */6 * * *",  # Run every 6 hours
             default_status=DefaultScheduleStatus.RUNNING,
         ),
         #
