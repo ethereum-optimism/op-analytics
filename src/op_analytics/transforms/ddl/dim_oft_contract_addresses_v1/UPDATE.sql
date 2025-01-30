@@ -1,6 +1,6 @@
 /**
 
-Daily count of OFTSent Logs per address.
+Distinct contract addresses associated with OFTSent() events
 
 */
 
