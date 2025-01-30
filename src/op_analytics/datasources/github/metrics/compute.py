@@ -9,15 +9,14 @@ log = structlog.get_logger()
 # Define expected schema as a constant
 EXPECTED_DAILY_METRICS_SCHEMA = {
     "repo": pl.Utf8,
-    "dt": pl.Date,
-    "number_of_prs": pl.Int64,
+    "number_of_prs": pl.UInt32,
     "avg_time_to_approval_days": pl.Float64,
     "avg_time_to_first_non_bot_comment_days": pl.Float64,
     "avg_time_to_merge_days": pl.Float64,
     "approval_ratio": pl.Float64,
     "avg_comments_per_pr": pl.Float64,
     "merged_ratio": pl.Float64,
-    "active_contributors": pl.Int64,
+    "active_contributors": pl.UInt32,
 }
 
 
