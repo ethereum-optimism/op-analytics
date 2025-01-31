@@ -1,6 +1,6 @@
 CREATE OR REPLACE VIEW etl_dashboard.blockbatch_markers_missing AS
 
-WITH -- Pick the most recently written ingestion marker.
+WITH
 ingestion_markers AS (
   SELECT
     root_path
@@ -9,7 +9,6 @@ ingestion_markers AS (
     , min_block
     , max_block
     , row_count
-    , rownum
   FROM
     etl_monitor.blockbatch_markers_deduped(
       dtmin = { dtmin: date }
@@ -40,7 +39,6 @@ ingestion_markers AS (
   CROSS JOIN blockbatch_root_paths AS b
 )
 
--- Observed markers
 , observed_markers AS (
   SELECT
     root_path
@@ -50,13 +48,14 @@ ingestion_markers AS (
     , max_block
     , row_count
   FROM
-    etl_monitor.blockbatch_markers_deduped(
+    etl_dashboard.blockbatch_markers_deduped(
       dtmin = { dtmin: date }
       , dtmax = { dtmax: date }
       , prefix = 'blockbatch/%'
     )
 )
 
+-- Find expected markers that are not on the observed markers table.
 SELECT
   e.root_path
   , e.chain
