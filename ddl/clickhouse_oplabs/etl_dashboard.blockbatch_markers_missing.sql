@@ -1,0 +1,70 @@
+CREATE OR REPLACE VIEW etl_dashboard.blockbatch_markers_missing AS
+
+WITH -- Pick the most recently written ingestion marker.
+ingestion_markers AS (
+  SELECT
+    root_path
+    , chain
+    , dt
+    , min_block
+    , max_block
+    , row_count
+    , rownum
+  FROM
+    etl_monitor.blockbatch_markers_deduped(
+      dtmin = { dtmin: date }
+      , dtmax = { dtmax: date }
+      , prefix = 'ingestion/blocks_v1%'
+    )
+)
+
+, blockbatch_root_paths AS (
+  SELECT DISTINCT root_path
+  FROM
+    etl_monitor.blockbatch_markers
+  WHERE
+    root_path LIKE 'blockbatch/%'
+)
+
+-- Build the expectation by cross joining with the expected models
+, expected_markers AS (
+  SELECT
+    i.chain
+    , i.dt
+    , i.min_block
+    , i.max_block
+    , i.row_count
+    , b.root_path AS root_path -- noqa: AL09
+  FROM
+    ingestion_markers AS i
+  CROSS JOIN blockbatch_root_paths AS b
+)
+
+-- Observed markers
+, observed_markers AS (
+  SELECT
+    root_path
+    , chain
+    , dt
+    , min_block
+    , max_block
+    , row_count
+  FROM
+    etl_monitor.blockbatch_markers_deduped(
+      dtmin = { dtmin: date }
+      , dtmax = { dtmax: date }
+      , prefix = 'blockbatch/%'
+    )
+)
+
+SELECT
+  e.root_path
+  , e.chain
+  , e.dt
+  , e.min_block
+  , e.max_block
+  , e.row_count AS ingestion_row_count
+  , o.row_count AS observed_row_count
+FROM
+  expected_markers AS e
+LEFT ANTI JOIN observed_markers AS o USING (root_path, chain, dt, min_block, max_block)

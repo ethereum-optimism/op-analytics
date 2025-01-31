@@ -1,4 +1,6 @@
-CREATE OR REPLACE VIEW etl_monitor.blockbatch_markers_deduped AS
+CREATE DATABASE IF NOT EXISTS etl_dashboard;
+
+CREATE OR REPLACE VIEW etl_dashboard.blockbatch_markers_deduped AS
 SELECT
   root_path
   , chain
@@ -21,3 +23,4 @@ FROM (
     dt >= { dtmin: Date } AND dt <= { dtmax: Date }
     AND root_path LIKE { prefix: String }
 )
+WHERE rownum = 1
