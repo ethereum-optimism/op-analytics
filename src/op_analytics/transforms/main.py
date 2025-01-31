@@ -14,11 +14,14 @@ log = structlog.get_logger()
 
 
 def execute_dt_transforms(
+    transforms: list[str] | None = None,
     range_spec: str | None = None,
     overwrite: bool = False,
     max_tasks: int | None = None,
 ):
     """Execute "dt" transformations in the Clickhouse data warehouse."""
+
+    transforms = transforms or EXECUTABLE_TRANSFORMS
 
     # Default to operating over the last 3 days.
     date_range = DateRange.from_spec(range_spec or "m3days")
@@ -27,14 +30,14 @@ def execute_dt_transforms(
     candidate_markers_df = pl.DataFrame(
         [
             {"dt": dt, "transform": transform}
-            for transform in EXECUTABLE_TRANSFORMS
+            for transform in transforms
             for dt in date_range.dates()
         ]
     )
 
     # Get existing markers.
     existing_markers_df = existing_markers(
-        transforms=EXECUTABLE_TRANSFORMS,
+        transforms=transforms,
         date_range=date_range,
     )
 
