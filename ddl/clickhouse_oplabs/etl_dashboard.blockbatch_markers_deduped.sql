@@ -17,7 +17,7 @@ FROM (
     , row_number() OVER (PARTITION BY root_path, chain, dt, min_block ORDER BY updated_at DESC) AS rownum
   FROM etl_monitor.blockbatch_markers
   WHERE
-    dt >= { dtmin: date } AND dt <= { dtmax: date }
-    AND root_path LIKE { prefix: string }
+    dt >= { dtmin: Date } AND dt <= { dtmax: Date } -- noqa: CP02
+    AND root_path LIKE { prefix: String } -- noqa: CP02
 )
 WHERE rownum = 1

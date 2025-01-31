@@ -10,9 +10,9 @@ ingestion_markers AS (
     , max_block
     , row_count
   FROM
-    etl_monitor.blockbatch_markers_deduped(
-      dtmin = { dtmin: date }
-      , dtmax = { dtmax: date }
+    etl_dashboard.blockbatch_markers_deduped(
+      dtmin = { dtmin: Date } -- noqa: CP02
+      , dtmax = { dtmax: Date } -- noqa: CP02
       , prefix = 'ingestion/blocks_v1%'
     )
 )
@@ -49,8 +49,8 @@ ingestion_markers AS (
     , row_count
   FROM
     etl_dashboard.blockbatch_markers_deduped(
-      dtmin = { dtmin: date }
-      , dtmax = { dtmax: date }
+      dtmin = { dtmin: Date } -- noqa: CP02
+      , dtmax = { dtmax: Date } -- noqa: CP02
       , prefix = 'blockbatch/%'
     )
 )
