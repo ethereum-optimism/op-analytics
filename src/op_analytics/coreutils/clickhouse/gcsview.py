@@ -80,6 +80,9 @@ def create_blockbatch_gcs_view():
     SETTINGS use_hive_partitioning = 1
     """
 
+    print(view_statement)
+    return
+
     clt = init_client("OPLABS")
     clt.command(db_statement)
     clt.command(view_statement)
