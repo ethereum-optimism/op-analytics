@@ -1,9 +1,8 @@
 import re
 
-import clickhouse_connect
 import polars as pl
 
-from op_analytics.coreutils.clickhouse.client import new_client
+from op_analytics.coreutils.clickhouse.client import new_stateful_client
 from op_analytics.coreutils.env.vault import env_get
 from op_analytics.coreutils.logger import structlog
 
@@ -34,6 +33,8 @@ def infer_schema_from_parquet(gcs_parquet_path: str, dummy_name: str):
 
     The value of "dummy_name" is used for the table name in the generated ddl.
     """
+    # Clickhouse client
+    clt = new_stateful_client("OPLABS")
 
     log.info(f"using gcs path: {gcs_parquet_path}")
 
@@ -42,10 +43,6 @@ def infer_schema_from_parquet(gcs_parquet_path: str, dummy_name: str):
         {parquet_to_subquery(gcs_parquet_path)}
     )
     """
-
-    clickhouse_connect.common.set_setting("autogenerate_session_id", True)
-    clt = new_client("OPLABS")
-    clickhouse_connect.common.set_setting("autogenerate_session_id", False)
     clt.command(statement)
 
     df: pl.DataFrame = pl.from_arrow(clt.query_arrow("DESCRIBE new_table"))  # type: ignore

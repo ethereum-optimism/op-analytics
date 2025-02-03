@@ -23,4 +23,7 @@
     },
     "sqlfluff.format.arguments": ["--FIX-EVEN-UNPARSABLE"],
     "sqlfluff.executablePath": ".venv/bin/sqlfluff",
+    "sqlfluff.excludeRules": [
+        "CP03"
+    ],
 }

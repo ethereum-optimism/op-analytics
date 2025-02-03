@@ -1,144 +1,23 @@
-from datetime import date, timedelta
+from datetime import date
 from enum import Enum
-from functools import cache
 
 import polars as pl
-import pyarrow as pa
 
 from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
 from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
 from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
-from op_analytics.coreutils.clickhouse.oplabs import (
-    insert_oplabs,
-    run_query_oplabs,
-)
 from op_analytics.coreutils.duckdb_inmem import EmptyParquetData
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
-from op_analytics.coreutils.env.aware import is_bot
-from op_analytics.coreutils.logger import human_rows, human_size, structlog
-from op_analytics.coreutils.rangeutils.daterange import DateRange
-from op_analytics.coreutils.time import date_fromstr, date_tostr
+from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.time import date_tostr
 
-from .breakout import breakout_partitions
-from .dataaccess import DateFilter, MarkerFilter, init_data_access
+from .dailydataread import make_date_filter, query_parquet_paths
+from .dailydataloadch import load_to_clickhouse
+from .dailydatawrite import write_daily_data
+from .dataaccess import DateFilter
 from .location import DataLocation
-from .output import ExpectedOutput, OutputData
-from .writer import PartitionedWriteManager
 
 log = structlog.get_logger()
-
-
-MARKERS_TABLE = "daily_data_markers"
-
-
-@cache
-def determine_location() -> DataLocation:
-    # Only for github actions or k8s we use GCS.
-    if is_bot():
-        return DataLocation.GCS
-
-    # For unittests and local runs we use LOCAL.
-    return DataLocation.LOCAL
-
-
-def write_daily_data(
-    root_path: str,
-    dataframe: pl.DataFrame,
-    sort_by: list[str] | None = None,
-):
-    """Write date partitioned defillama dataset.
-
-    NOTE: This method always overwrites data. If we had already pulled in data for
-    a given date a subsequent data pull will always overwrite it.
-    """
-
-    parts = breakout_partitions(
-        df=dataframe,
-        partition_cols=["dt"],
-        default_partitions=None,
-    )
-
-    # Ensure write location for tests is LOCAL.
-    location = determine_location()
-
-    for part in parts:
-        datestr = part.partition_value("dt")
-
-        writer = PartitionedWriteManager(
-            process_name="default",
-            location=location,
-            partition_cols=["dt"],
-            extra_marker_columns=dict(),
-            extra_marker_columns_schema=[
-                pa.field("dt", pa.date32()),
-            ],
-            markers_table=MARKERS_TABLE,
-            expected_outputs=[
-                ExpectedOutput(
-                    root_path=root_path,
-                    file_name="out.parquet",
-                    marker_path=f"{datestr}/{root_path}",
-                )
-            ],
-        )
-
-        part_df = part.df.with_columns(dt=pl.lit(datestr))
-
-        if sort_by is not None:
-            part_df = part_df.sort(*sort_by)
-
-        writer.write(
-            output_data=OutputData(
-                dataframe=part_df,
-                root_path=root_path,
-                default_partitions=None,
-            )
-        )
-
-
-def query_parquet_paths(
-    root_path: str,
-    location: DataLocation,
-    datefilter: DateFilter,
-):
-    partitioned_data_access = init_data_access()
-
-    log.info(f"querying markers for {root_path!r} {datefilter}")
-
-    markers = partitioned_data_access.query_markers_with_filters(
-        data_location=location,
-        markers_table=MARKERS_TABLE,
-        datefilter=datefilter,
-        projections=["dt", "data_path"],
-        filters={
-            "root_paths": MarkerFilter(
-                column="root_path",
-                values=[root_path],
-            ),
-        },
-    )
-    log.info(
-        f"{len(markers)} markers found",
-        min_dt=str(markers["dt"].min()),
-        max_dt=str(markers["dt"].max()),
-    )
-
-    # Ensure that the paths we select are distinct paths.
-    # The same path can appear under two different markers if it was
-    # re-written as part of a backfill.
-    paths = sorted(set([location.absolute(path) for path in markers["data_path"].to_list()]))
-    log.info(f"{len(set(paths))} distinct paths")
-    return paths
-
-
-def make_date_filter(
-    min_date: str | None = None, max_date: str | None = None, date_range_spec: str | None = None
-) -> DateFilter:
-    return DateFilter(
-        min_date=None if min_date is None else date_fromstr(min_date),
-        max_date=None if max_date is None else date_fromstr(max_date),
-        datevals=None if date_range_spec is None else DateRange.from_spec(date_range_spec).dates(),
-    )
 
 
 class DailyDataset(str, Enum):
@@ -165,6 +44,17 @@ class DailyDataset(str, Enum):
     @property
     def root_path(self):
         return f"{self.db}/{self.table}"
+
+    def write(
+        self,
+        dataframe: pl.DataFrame,
+        sort_by: list[str] | None = None,
+    ):
+        return write_daily_data(
+            root_path=self.root_path,
+            dataframe=dataframe,
+            sort_by=sort_by,
+        )
 
     def read(
         self,
@@ -212,7 +102,25 @@ class DailyDataset(str, Enum):
         print(duckdb_context.client.sql("SHOW TABLES"))
         return view_name
 
-    def clickhouse_schema(self, datestr: str):
+    def read_polars(
+        self,
+        min_date: str | date | None = None,
+        max_date: str | date | None = None,
+        date_range_spec: str | None = None,
+        location: DataLocation = DataLocation.GCS,
+    ) -> pl.DataFrame:
+        duckdb_context = init_client()
+
+        relation_name = self.read(
+            min_date=min_date,
+            max_date=max_date,
+            date_range_spec=date_range_spec,
+            location=location,
+        )
+        rel = duckdb_context.client.sql(f"SELECT * FROM {relation_name}")
+        return rel.pl()
+
+    def infer_clickhouse_schema(self, datestr: str):
         """Use a single parquet file in GCS to infer the Clickhouse schema for the table."""
         paths = query_parquet_paths(
             self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
@@ -220,71 +128,35 @@ class DailyDataset(str, Enum):
 
         infer_schema_from_parquet(paths[0], dummy_name=f"{self.db}.{self.table}")
 
-    def insert_to_clickhouse(
+    def load_gcs_to_ch(
         self,
         min_date: str | None = None,
         max_date: str | None = None,
         incremental_overlap: int = 0,
     ):
-        """Incrementally load daily data from GCS to clickhouse.
-
-        When date ranges are not provided this function queries clickhouse to find the latest loaded
-        date and proceeds from there.
-
-        When a backfill is needed you can provide min_date/max_date accordingly.
-
-        When incremental_overlap is provided, the function will reload "dt" values that already exist
-        in clickhouse. This is useful when the data for recent dates is still changing at the source.
-        It allows us to reload with the latest most valid version.
-        """
-        db = self.db
-        table = self.table
-
-        used_clickhouse_watermark = False
-        if min_date is None:
-            clickhouse_watermark = (
-                run_query_oplabs(f"SELECT max(dt) as max_dt FROM {db}.{table}")
-                .with_columns(max_dt=pl.from_epoch(pl.col("max_dt"), time_unit="d"))
-                .item()
-            )
-            min_date = (
-                clickhouse_watermark + timedelta(days=1) - timedelta(days=incremental_overlap)
-            ).strftime("%Y-%m-%d")
-            used_clickhouse_watermark = True
-
-        log.info(
-            "incremental load to clickhouse",
-            min_date=min_date,
-            max_date=max_date,
-            used_clickhouse_watermark=used_clickhouse_watermark,
-        )
-
+        """Load dailydata from GCS to clickhouse."""
         try:
-            fundamentals = self.read(min_date=min_date, max_date=max_date)
+            df = self.read_polars(min_date=min_date, max_date=max_date)
         except EmptyParquetData:
             log.info("incremental load: did not find new data")
             return
 
-        duckdb_ctx = init_client()
-        rel = duckdb_ctx.client.sql(f"SELECT * FROM {fundamentals}")
-        query_summary = insert_oplabs(database=db, table=table, df_arrow=rel.arrow())
-
-        summary_dict = dict(
-            written_bytes=human_size(query_summary.written_bytes()),
-            written_rows=human_rows(query_summary.written_rows),
+        summary = load_to_clickhouse(
+            db=self.db,
+            table=self.table,
+            dataframe=df,
+            min_date=min_date,
+            max_date=max_date,
+            incremental_overlap=incremental_overlap,
         )
-
-        log.info("insert summary", **summary_dict)
-
-        return {self.root_path: summary_dict}
-
-    @property
-    def clickhouse_external_db_name(self):
-        return f"{self.db}_gcs"
+        return {self.root_path: summary}
 
     def create_clickhouse_view(self) -> None:
+        # Database used in ClickHouse to store views that point to GCS data.
+        external_db_name = f"dailydata_{self.db}"
+
         return create_gcs_view(
-            db_name=self.clickhouse_external_db_name,
+            db_name=external_db_name,
             table_name=self.table,
             partition_selection="CAST(dt as Date) AS dt, ",
             gcs_glob_path=f"{self.root_path}/dt=*/out.parquet",
@@ -318,8 +190,11 @@ class DailyDataset(str, Enum):
         return duckdb_ctx.client.sql(f"SELECT * FROM {view_name}").pl()
 
     def create_bigquery_external_table(self) -> None:
+        # Database used in BigQuery to store external tables that point to GCS data.
+        external_db_name = f"dailydata_{self.db}"
+
         create_gcs_external_table(
-            db_name="dailydata_defillama",
+            db_name=external_db_name,
             table_name=self.table,
             partition_columns="dt DATE",
             partition_prefix=self.root_path,

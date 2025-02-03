@@ -1,10 +1,5 @@
-import polars as pl
-
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.dailydata import (
-    write_daily_data,
-    DailyDataset,
-)
+from op_analytics.coreutils.partitioned.dailydata import DailyDataset
 
 log = structlog.get_logger()
 
