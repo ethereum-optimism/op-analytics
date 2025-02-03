@@ -1,26 +1,33 @@
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import now_date, date_tostr
 from op_analytics.datasources.github.dataaccess import Github
-from op_analytics.datasources.github.metrics.compute import compute_pr_metrics
+from op_analytics.datasources.github.metrics.compute import compute_all_metrics
 import polars as pl
 
 log = structlog.get_logger()
 
 
-def execute_pull_pr_metrics(min_date: str, max_date: str):
+def execute_pull_repo_metrics(min_date: str, max_date: str):
     """
-    Execute PR metrics computation pipeline:
-    1. Load raw data from GCS
-    2. Compute metrics
-    3. Write metrics back to GCS
+    Execute the PR metrics computation pipeline:
+      1. Load raw data from GCS.
+      2. Compute rolling/detailed metrics.
+      3. Write the computed metrics to the REPO_METRICS dataset.
+
+    Args:
+        min_date: Start date for data processing (ISO format)
+        max_date: End date for data processing (ISO format)
+
+    Returns:
+        dict: Summary of processing results.
     """
-    # 1. Load raw data directly as Polars DataFrames
+    # 1. Load raw data from GitHub sources.
     prs_df = Github.PRS.read_polars(min_date=min_date, max_date=max_date)
     comments_df = Github.PR_COMMENTS.read_polars(min_date=min_date, max_date=max_date)
     reviews_df = Github.PR_REVIEWS.read_polars(min_date=min_date, max_date=max_date)
 
     log.info(
-        "loaded raw data from GCS",
+        "Loaded raw GitHub data",
         min_date=min_date,
         max_date=max_date,
         prs_count=len(prs_df),
@@ -28,16 +35,24 @@ def execute_pull_pr_metrics(min_date: str, max_date: str):
         reviews_count=len(reviews_df),
     )
 
-    metrics_df = compute_pr_metrics(
+    process_dt = date_tostr(now_date())
+
+    # 2. Compute rolling repository metrics.
+    metrics_df = compute_all_metrics(
         prs_df=prs_df,
         comments_df=comments_df,
         reviews_df=reviews_df,
     )
-    process_dt = date_tostr(now_date())
 
-    Github.PR_METRICS.write(
+    # 3. Write the computed metrics to the REPO_METRICS dataset.
+    Github.REPO_METRICS.write(
         dataframe=metrics_df.with_columns(dt=pl.lit(process_dt)),
-        sort_by=["repo"],
+        sort_by=["repo", "period_start"],
+    )
+
+    log.info(
+        "Completed PR metrics computation and storage",
+        metrics_computed=len(metrics_df),
     )
 
     return {

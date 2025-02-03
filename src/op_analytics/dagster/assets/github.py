@@ -52,24 +52,24 @@ def activity_views():
     Github.PR_REVIEWS.create_clickhouse_view()
 
 
-@asset(deps=[activity], group_name="github", name="pr_metrics")
-def pr_metrics(context: OpExecutionContext) -> None:
+@asset(deps=[activity], group_name="github", name="repo_metrics")
+def repo_metrics(context: OpExecutionContext) -> None:
     """Dagster asset to compute and write GitHub PR metrics data.
 
     This asset depends on the activity asset which pulls raw PR data.
     Computes and writes daily metrics about PR activity and performance across repos.
     """
-    from op_analytics.datasources.github.metrics.execute import execute_pull_pr_metrics
+    from op_analytics.datasources.github.metrics.execute import execute_pull_repo_metrics
 
-    result = execute_pull_pr_metrics()
-    context.log.info("pr_metrics_asset completed", summary=result)
+    result = execute_pull_repo_metrics()
+    context.log.info("repo_metrics_asset completed", summary=result)
 
 
-@asset(deps=[pr_metrics])
-def pr_metrics_views():
+@asset(deps=[repo_metrics])
+def repo_metrics_view():
     """Clickhouse external table over GCS data:
 
-    - github_gcs.pr_metrics_v1
+    - github_gcs.repo_metrics_v1
 
     Contains daily metrics about PR activity and performance per repository:
     - number_of_prs
@@ -81,4 +81,4 @@ def pr_metrics_views():
     - merged_ratio
     - active_contributors
     """
-    Github.PR_METRICS.create_clickhouse_view()
+    Github.REPO_METRICS.create_clickhouse_view()
