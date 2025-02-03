@@ -8,14 +8,14 @@ def test_read_ddls():
     assert isinstance(transforms_dir, str)
 
     # Read all SQL files in the ddl directory
-    ddls = read_ddls(transforms_dir, "ddl/dim_first_erc20_transfers_v1/*UPDATE*.sql")
+    ddls = read_ddls(transforms_dir, "interop/update/*ntt*")
 
     # Verify we got some DDL files back
     assert len(ddls) == 2
 
     # Verify each DDL is a non-empty string
-    paths = [_.relative_path for _ in ddls]
+    paths = [_.basename for _ in ddls]
     assert paths == [
-        "dim_first_erc20_transfers_v1/UPDATE_01.sql",
-        "dim_first_erc20_transfers_v1/UPDATE_02.sql",
+        "03_fact_ntt_delivery_events_v1.sql",
+        "05_dim_ntt_contract_address_v1.sql",
     ]

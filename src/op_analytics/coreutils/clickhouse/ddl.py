@@ -37,10 +37,7 @@ class ClickHouseTable:
                 self.raise_not_exists(data_path=data_path)
 
     def create(self):
-        ddl = read_ddl(
-            directory=self.ddl_directory,
-            path=self.ddl_path,
-        )
+        ddl = read_ddl(os.path.join(self.ddl_directory, self.ddl_path))
         run_statememt_oplabs(statement=ddl)
         return True
 
@@ -72,15 +69,13 @@ class ClickHouseTable:
         raise Exception("\n".join(msg))
 
 
-def read_ddl(directory: str, path: str):
+def read_ddl(path: str):
     """Read a .sql DDL file from disk."""
 
-    ddl_path = os.path.join(directory, f"ddl/{path}")
+    if not os.path.exists(path):
+        raise Exception(f"DDL file not found: {path}")
 
-    if not os.path.exists(ddl_path):
-        raise Exception(f"DDL file not found: {ddl_path}")
-
-    with open(ddl_path, "r") as f:
+    with open(path, "r") as f:
         return f.read()
 
 
@@ -88,7 +83,7 @@ def read_ddl(directory: str, path: str):
 class ClickHouseDDL:
     """Conveninece class to hold a ddl while remembering where it came from."""
 
-    relative_path: str
+    basename: str
     statement: str
 
 
@@ -103,14 +98,11 @@ def read_ddls(directory: str, globstr: str) -> list[ClickHouseDDL]:
 
     ddls: list[ClickHouseDDL] = []
     for path in glob_results:
-        # Remove the directory from the path. And keep only after the "ddl/" directory.
-        relative_path = path.split(directory)[-1].removeprefix("/ddl/")
-
         ddls.append(
             ClickHouseDDL(
-                relative_path=relative_path,
-                statement=read_ddl(directory=directory, path=relative_path),
+                basename=os.path.basename(path),
+                statement=read_ddl(path),
             )
         )
 
-    return sorted(ddls, key=lambda x: x.relative_path)
+    return sorted(ddls, key=lambda x: x.basename)

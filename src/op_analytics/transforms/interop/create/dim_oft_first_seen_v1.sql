@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS transforms.dim_first_oft_sent_events_v1
+CREATE TABLE IF NOT EXISTS _placeholder_
 (
     `chain` String,
     `chain_id` Int32,

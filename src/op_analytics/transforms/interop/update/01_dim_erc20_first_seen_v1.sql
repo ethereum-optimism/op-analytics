@@ -4,7 +4,7 @@ Update with erc20 transfers from a given date.
 
 */
 
-INSERT INTO transforms_{db}.{table}
+INSERT INTO _placeholder_
 
 SELECT
   chain

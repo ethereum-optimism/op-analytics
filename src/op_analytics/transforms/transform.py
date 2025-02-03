@@ -6,25 +6,25 @@ from datetime import date
 
 import polars as pl
 
-from clickhouse_connect.driver.summary import QuerySummary
-from op_analytics.coreutils.clickhouse.client import new_stateful_client
-from op_analytics.coreutils.clickhouse.ddl import read_ddls, ClickHouseDDL
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs
 from op_analytics.coreutils.logger import structlog, bound_contextvars
 from op_analytics.coreutils.time import date_tostr
 
-from clickhouse_connect.driver.exceptions import DatabaseError
 
-from .config import DIRECTORY
+from .create import create_tables
 from .markers import TRANSFORM_MARKERS_TABLE
+from .update import run_updates, UpdateResult
 
 log = structlog.get_logger()
 
 
 @dataclass
 class TransformTask:
-    table_name: str
+    group_name: str
     dt: date
+
+    skip_create: bool
+    start_at_index: int
 
     @property
     def context(self):
@@ -32,48 +32,25 @@ class TransformTask:
 
     def execute(self):
         with bound_contextvars(**self.context):
-            results = self.run_ddls()
-            self.write_marker(results)
+            if not self.skip_create:
+                self.create_tables()
+            results = self.run_updates()
+            result_dicts = [_.to_dict() for _ in results]
+            self.write_marker(result_dicts)
             return results
 
-    def run_ddls(self) -> dict[str, dict[str, str]]:
-        """Find the sequence of DDLs for this task and run them."""
+    def create_tables(self):
+        create_tables(self.group_name)
 
-        ddls: list[ClickHouseDDL] = read_ddls(
-            directory=DIRECTORY,
-            globstr=f"ddl/{self.table_name}/*UPDATE*.sql",
-        )
+    def run_updates(self) -> list[UpdateResult]:
+        return run_updates(self.group_name, dt=self.dt, start_at_index=self.start_at_index)
 
-        client = new_stateful_client("OPLABS")
-        results = {}
-        for ddl in ddls:
-            log.info(f"running ddl {ddl.relative_path}")
-
-            try:
-                result: QuerySummary = client.command(
-                    cmd=ddl.statement, parameters={"dtparam": self.dt}
-                )
-            except DatabaseError as ex:
-                log.error("database error", exc_info=ex)
-                raise
-
-            assert isinstance(result.summary, dict)
-            log.info(f"{ddl.relative_path} -> {result.written_rows} written rows", **result.summary)
-
-            if result.written_rows == 0:
-                raise Exception("possible data quality issue 0 rows were written!")
-
-            results[ddl.relative_path] = result.summary
-
-        return results
-
-    def write_marker(self, results: dict):
+    def write_marker(self, results: list[dict]):
         """Write completion markers for the task."""
-
         marker_df = pl.DataFrame(
             [
                 dict(
-                    transform=self.table_name,
+                    transform=self.group_name,
                     dt=self.dt,
                     metadata=json.dumps(results),
                     process_name=os.environ.get("PROCESS", "default"),

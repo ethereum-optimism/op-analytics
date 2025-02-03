@@ -1,24 +1,32 @@
 /**
 
-Distinct contract addresses associated with OFTSent() events
+Logs from Layerzero OFTSent events
 
 */
+INSERT INTO _placeholder_
 
-INSERT INTO transforms.dim_oft_contract_addresses_v1
-
-SELECT DISTINCT
-  chain
+SELECT
+  accurateCast(dt, 'Date') AS dt
+  , chain
   , chain_id
+  , network
+  , accurateCast(block_timestamp, 'DateTime') AS block_timestamp
+  , accurateCast(block_number, 'UInt64') AS block_number
+  , transaction_hash
+  , accurateCast(transaction_index, 'UInt64') AS transaction_index
+  , accurateCast(log_index, 'UInt64') AS log_index
   , address AS contract_address
+  , topic0
+  , 'OFTSent' AS event_name
 
 FROM
   blockbatch_gcs.read_date(
     rootpath = 'ingestion/logs_v1'
     , chain = '*'
-    , dt = {dtparam:Date} -- noqa: LT01,CP02
+    , dt = { dtparam: Date }
   )
-WHERE
 
+WHERE
   -- OFT Docs:
   -- https://docs.layerzero.network/v2/home/token-standards/oft-standard
   -- 
@@ -34,6 +42,3 @@ WHERE
   --    uint256 amountReceivedLD
   -- )
   topic0 = '0x85496b760a4b7f8d66384b9df21b381f5d1b1e79f229a47aaf4c232edc2fe59a'
-
-
-SETTINGS use_hive_partitioning = 1 -- noqa: 
