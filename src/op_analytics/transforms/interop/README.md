@@ -12,34 +12,48 @@ Methodology
 
 We consider 3 token types:
 
-- SuperchainERC20
+- ERC7802
 - NTT 
 - OFT
 
 ### Token Contract Addresses
 
-For each of these we first focus on transfers. We look at logs to find when the token is
-transferred/sent/deliverd and to find the contract address executing the transfer.
+We filter raw logs to find when the token is transferred/sent/delivered and to find the contract
+address executing the action. The filtered logs are stored on the `fact_` tables for each event
+type. We consider the following token types:
 
-Using the historical events (fact tables) we maintain a first seen dimension table. This table
-contains the contract address for each token and the first time a related event was emitted for it.
+Note that ERC20 transfers events are already available on the 
+`blockbatch.token_transfers__erc20_transfers_v1` table so we reuse that instead of maintaing a
+corresponding `transforms_interop` fact table.
+
+For each of the event types tracked we maintain a dimension table to keep track of the first
+time an event was observed for each token contract.
+
+| Token Type  | Event      | Fact Table                                         | First Seen Table                           |
+| ----------- | ---------- | -------------------------------------------------- | ------------------------------------------ |
+| ERC20       | Transfer   | blockbatch.token_transfers__erc20_transfers_v1     | transforms_interop.dim_erc20_first_seen_v1 |
+| NTT         | Delivery   | transforms_interop.fact_ntt_delivery_events_v1     | transforms_interop.dim_ntt_first_seen_v1   |
+| OFT         | OFTSent    | transforms_interop.fact_oft_sent_events_v1         | transforms_interop.dim_oft_first_seen_v1   |
+
+The dimension tables help us categorize the token contracts.
 
 The purpose of each dimension table is to hold a list of contract addresses that we are sure
 belong to each of the three different token types.
 
 ### Contract Creation Traces
 
-We use traces to find out when a token contract was created. 
+For NTT and OFT we inner join all create traces with the token type first seen table to find the
+creation trace for each token contract.
 
-For NTT and OFT we inner join with the token contract address dimension table to keep only the
-create traces for those token contracts.
+For ERC-7802 the analysis is more nuanced. ERC-7802 transfers are regular ERC-20 `Transfer` events. 
+So we start by filtering create traces to identify contracts that have the `croschainBurn` and 
+`croschainMint` methods and then join the crosschain-enabled traces with the 
+`dim_erc20_first_seen_v1` dimension table to narrow down to contracts that are also transferrable
+tokens.
 
-For SuperchainERC20 contracts it is more nuanced. The only events we have are transfer events, which
-are the same as for regular ERC-20 tokens. So we use the contract bytecode to identify create
-traces for contracts that have the `croschainBurn` and `croschainMint` methods. Then we join
-with the erc20 token addresses dimension table to further verify that these are ERC-20 contracts.
-The combination of being ERC-20 transferable and having the crosschain methods is what identifies
-a SuperchainERC20 token.
+The SuperchainERC20 token type is a subset of ERC-7802 where permissiosn to `crosschainBurn` and
+`crosschainMint` are given to a specific bridge address. We are still investigating how to identify
+these.
 
 
 Time Window

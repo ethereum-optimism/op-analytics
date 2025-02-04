@@ -15,7 +15,7 @@ log = structlog.get_logger()
 def execute_dt_transforms(
     group_name: str,
     range_spec: str | None = None,
-    start_at_index: int = 0,
+    update_only: list[str] | None = None,
     skip_create: bool = True,
     raise_if_empty: bool = True,
     force_complete: bool = False,
@@ -52,7 +52,7 @@ def execute_dt_transforms(
             group_name=row["transform"],
             dt=row["dt"],
             skip_create=skip_create,
-            start_at_index=start_at_index,
+            update_only=update_only,
             raise_if_empty=raise_if_empty,
         )
         tasks.append(transform_task)

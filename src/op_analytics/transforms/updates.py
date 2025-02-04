@@ -1,6 +1,6 @@
 import os
 from dataclasses import dataclass
-from typing import Literal
+from enum import Enum
 
 from op_analytics.coreutils.clickhouse.ddl import read_ddls, ClickHouseDDL
 from op_analytics.coreutils.logger import structlog
@@ -10,12 +10,22 @@ log = structlog.get_logger()
 DIRECTORY = os.path.dirname(__file__)
 
 
+class StepType(str, Enum):
+    DIM = "dim"
+    FACT = "fact"
+    EXPORT = "export"
+
+
 @dataclass
 class Step:
-    group_name: str
     index: int
+    db: str
     table_name: str
     ddl: ClickHouseDDL
+    step_type: StepType
+
+    def __post_init__(self):
+        assert self.db.startswith("transforms_")
 
     @property
     def name(self):
@@ -30,16 +40,31 @@ class Step:
         """
         return self.ddl.statement.replace(
             "_placeholder_",
-            f"transforms_{self.group_name}.{self.table_name}",
+            f"{self.db}.{self.table_name}",
         )
 
+    @property
+    def select_statement(self):
+        """Extract the SELECT portion of the SQL statement.
 
-def read_steps(
-    group_name: str,
-    step_name: Literal["update"] | Literal["export"],
-) -> list[Step]:
+        This is used for exports where we need just the SELECT query without
+        the INSERT INTO portion.
+        """
+        lines = self.sql_statement.split("\n")
+
+        # Find first line starting with INSERT INTO
+        for i, line in enumerate(lines):
+            if line.strip().startswith("INSERT INTO"):
+                # Return all lines after this one, joined back together
+                return "\n".join(lines[i + 1 :]).strip()
+
+        # Raise if no INSERT INTO found
+        raise Exception("could not parse SELECT statement")
+
+
+def read_steps(group_name: str) -> list[Step]:
     ddls: list[ClickHouseDDL] = read_ddls(
-        directory=os.path.join(DIRECTORY, group_name, step_name),
+        directory=os.path.join(DIRECTORY, group_name, "update"),
         globstr="*.sql",
     )
 
@@ -52,10 +77,11 @@ def read_steps(
         table_name = update_basename.removesuffix(".sql").removeprefix(index_str + "_")
         results.append(
             Step(
-                group_name=group_name,
                 index=index_int,
+                db=f"transforms_{group_name}",
                 table_name=table_name,
                 ddl=ddl,
+                step_type=StepType(table_name.split("_")[0]),
             )
         )
 

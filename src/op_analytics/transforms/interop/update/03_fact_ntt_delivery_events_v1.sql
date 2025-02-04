@@ -2,6 +2,8 @@
 
 Logs from Wormhole Native Token Transfer (NTT) transactions.
 
+https://wormhole.com/docs/learn/messaging/native-token-transfers/overview/
+
 */
 INSERT INTO _placeholder_
 
