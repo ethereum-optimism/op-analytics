@@ -162,33 +162,6 @@ class DailyDataset(str, Enum):
             gcs_glob_path=f"{self.root_path}/dt=*/out.parquet",
         )
 
-    def read_polars(
-        self,
-        min_date: str | date | None = None,
-        max_date: str | date | None = None,
-        date_range_spec: str | None = None,
-        location: DataLocation = DataLocation.GCS,
-    ) -> pl.DataFrame:
-        """Read data directly into a Polars DataFrame.
-
-        This is a convenience wrapper around read() that converts the DuckDB view
-        directly to a Polars DataFrame.
-
-        Args:
-            min_date: Optional start date filter
-            max_date: Optional end date filter
-            date_range_spec: Optional date range specification
-            location: Data location (GCS or LOCAL)
-
-        Returns:
-            pl.DataFrame: The loaded data as a Polars DataFrame
-        """
-        view_name = self.read(
-            min_date=min_date, max_date=max_date, date_range_spec=date_range_spec, location=location
-        )
-        duckdb_ctx = init_client()
-        return duckdb_ctx.client.sql(f"SELECT * FROM {view_name}").pl()
-
     def create_bigquery_external_table(self) -> None:
         # Database used in BigQuery to store external tables that point to GCS data.
         external_db_name = f"dailydata_{self.db}"
@@ -199,4 +172,3 @@ class DailyDataset(str, Enum):
             partition_columns="dt DATE",
             partition_prefix=self.root_path,
         )
-
