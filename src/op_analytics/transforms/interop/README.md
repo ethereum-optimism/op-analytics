@@ -60,3 +60,13 @@ that rescanning the entire window from 2024/10/01 takes ~ 30s to run.
 If rescanning the entire window were more intensive we could consider capping the time between
 contract creation and first transfer to e.g. 7 days. Luckily we don't have to do that for the time
 being, doing so would make life more complicated.
+
+
+Export
+------
+
+A single table including the contract creation traces for the identified token contracts of all
+three different types is exported.
+
+The exported table covers the full time range from 2024/10/01 up until the date on which the export
+is executed.
