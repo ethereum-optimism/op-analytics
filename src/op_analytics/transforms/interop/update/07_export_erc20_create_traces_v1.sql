@@ -46,26 +46,23 @@ SELECT
   , contract_address
   , trace_address
   , trace_type
-  , gas
-  , gas_used
+  , toString(gas) AS gas
+  , toString(gas_used) AS gas_used
 
-  -- ERC-7802 methods:
-  -- crosschainBurn(address,uint256): 0x2b8c49e3
-  -- crosschainMint(address,uint256): 0x18bf5077
-  , (position(output, '2b8c49e3') AND position(output, '18bf5077')) > 0 AS is_erc7802
+  -- True if the contract has the crosschainBurn/crosschainMint methods. 
+  -- Computed as part of the fact_erc20_create_traces_v1 table.
+  , is_erc7802
 
-  , (chain_id, contract_address) IN (erc20_tokens) AS has_erc20
+  -- Associated with observed ERC-20 Transfers.
+  , (chain_id, contract_address) IN (erc20_tokens) AS has_transfers
 
   -- Associated with observed OFT transactions.
-  , (chain_id, contract_address) IN (oft_tokens) AS has_oft
+  , (chain_id, contract_address) IN (oft_tokens) AS has_oft_events
 
   -- Associated with observed NTT transactions.
-  , (chain_id, contract_address) IN (ntt_tokens) AS has_ntt
+  , (chain_id, contract_address) IN (ntt_tokens) AS has_ntt_events
 
 FROM
-  blockbatch.contract_creation__create_traces_v1
+  transforms_interop.fact_erc20_create_traces_v1
 WHERE
   dt >= '2024-10-01'
-
-  -- Contract bytecode has the ERC-20 Transfer hash.
-  AND position(output, 'ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef')

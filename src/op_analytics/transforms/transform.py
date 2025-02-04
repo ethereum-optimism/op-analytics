@@ -81,7 +81,7 @@ class TransformTask:
                         client=client,
                         db=step.db,
                         table=step.table_name,
-                        select_statement=step.select_statement,
+                        select_statement=f"SELECT * FROM {step.db}.{step.table_name}",
                     )
 
         return results

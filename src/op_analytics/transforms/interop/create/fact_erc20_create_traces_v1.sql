@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `trace_type` String,
     `gas` UInt128,
     `gas_used` UInt128,
+    `is_erc7802` Bool,
     INDEX dt_idx chain TYPE minmax GRANULARITY 1,
     INDEX chain_idx chain TYPE minmax GRANULARITY 1,
 )

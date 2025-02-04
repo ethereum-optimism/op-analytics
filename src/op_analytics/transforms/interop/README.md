@@ -18,42 +18,43 @@ We consider 3 token types:
 
 ### Token Contract Addresses
 
-We filter raw logs to find when the token is transferred/sent/delivered and to find the contract
-address executing the action. The filtered logs are stored on the `fact_` tables for each event
-type. We consider the following token types:
+If a contract emits both an ERC-20 `Transfer` event and a protocol's interop event in the same
+transaction we consider it an interop-enabled token. 
 
-Note that ERC20 transfers events are already available on the 
-`blockbatch.token_transfers__erc20_transfers_v1` table so we reuse that instead of maintaing a
-corresponding `transforms_interop` fact table.
+At the moment we are tracking the [NTT](https://wormhole.com/docs/learn/messaging/native-token-transfers/overview/)
+and [OFT](https://docs.layerzero.network/v2/home/token-standards/oft-standard) interop protocols. 
 
-For each of the event types tracked we maintain a dimension table to keep track of the first
-time an event was observed for each token contract.
+
+We first store raw NTT (`Delivery`) and OFT (`OFTSent`) logs on dedicated `fact_` tables. We then
+find ERC-20 transfers where these interop events also show up in the transaction. A `dim_` table
+helps us track distinct addresses of interop-enabled tokens and the first time they were seen:
 
 | Token Type  | Event      | Fact Table                                         | First Seen Table                           |
 | ----------- | ---------- | -------------------------------------------------- | ------------------------------------------ |
-| ERC20       | Transfer   | blockbatch.token_transfers__erc20_transfers_v1     | transforms_interop.dim_erc20_first_seen_v1 |
-| NTT         | Delivery   | transforms_interop.fact_ntt_delivery_events_v1     | transforms_interop.dim_ntt_first_seen_v1   |
-| OFT         | OFTSent    | transforms_interop.fact_oft_sent_events_v1         | transforms_interop.dim_oft_first_seen_v1   |
+| NTT         | Delivery   | transforms_interop.fact_ntt_delivery_events_v1     | transforms_interop.dim_erc20_with_ntt_first_seen_v1   |
+| OFT         | OFTSent    | transforms_interop.fact_oft_sent_events_v1         | transforms_interop.dim_erc20_with_oft_first_seen_v1   |
 
-The dimension tables help us categorize the token contracts.
-
-The purpose of each dimension table is to hold a list of contract addresses that we are sure
-belong to each of the three different token types.
 
 ### Contract Creation Traces
 
-For NTT and OFT we inner join all create traces with the token type first seen table to find the
-creation trace for each token contract.
+We consider the set of contract creation traces that create ERC-20 Tokens. For each ERC-20
+token we add the following boolean flags.
 
-For ERC-7802 the analysis is more nuanced. ERC-7802 transfers are regular ERC-20 `Transfer` events. 
-So we start by filtering create traces to identify contracts that have the `croschainBurn` and 
-`croschainMint` methods and then join the crosschain-enabled traces with the 
-`dim_erc20_first_seen_v1` dimension table to narrow down to contracts that are also transferrable
-tokens.
+| Flag        | Description |
+| ------------| ----------- |
+| is_erc7802  | Does this contract have the `croschainBurn` and `croschainMint` methods? |
+| has_erc20   | Have we seen this contract emit an ERC-20 `Transfer` event? |
+| has_oft     | Have we seen this contract emit an OFT `OFTSent` event? |
+| has_ntt     | Have we seen this contract emit an NTT `Delivery` event? |
 
-The SuperchainERC20 token type is a subset of ERC-7802 where permissiosn to `crosschainBurn` and
-`crosschainMint` are given to a specific bridge address. We are still investigating how to identify
-these.
+
+To efficiently compute these boolean flags we rely on the dimension tables described on the
+previous section.
+
+Note that the SuperchainERC20 token type is a subset of ERC-7802 where permissions to 
+`crosschainBurn` and `crosschainMint` are given to a specific bridge address. We are still 
+investigating how to identify these. For now all we know is that SuperchainERC20 will be a
+subset of `is_erc7802`.
 
 
 Time Window
@@ -65,8 +66,8 @@ With the dimension tables ready we go ahead and scan the contract creation trace
 time range.
 
 The strict approach defined above requires that we reprocess the entire range of creation traces
-on each day, since every day we get new transfers data that may affect our knowledge about a
-contract creation trace from way in the past.
+on each day, since every day we get new transfers that may affect the boolean flags for a contract
+creation trace from way in the past.
 
 Since the creation trace data is in Clickhouse and the dimension tables are fairly small we find
 that rescanning the entire window from 2024/10/01 takes ~ 30s to run. 
@@ -79,8 +80,8 @@ being, doing so would make life more complicated.
 Export
 ------
 
-A single table including the contract creation traces for the identified token contracts of all
-three different types is exported.
+A single table with the ERC-20 contract creation traces and the boolean flags is exported to
+GCS and BigQuery to power our interop dashboards and metrics.
 
 The exported table covers the full time range from 2024/10/01 up until the date on which the export
 is executed.
