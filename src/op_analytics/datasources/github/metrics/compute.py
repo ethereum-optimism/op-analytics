@@ -39,22 +39,10 @@ METRICS_SCHEMA = {
 }
 
 
-def prepare_dataframes(
-    prs_df: pl.DataFrame,
-    comments_df: pl.DataFrame,
-    reviews_df: pl.DataFrame,
-) -> tuple[pl.DataFrame, pl.DataFrame, pl.DataFrame]:
-    """Prepare dataframes by converting timestamps and computing derived fields"""
-
-    # Rename number to pr_number if present
+def prepare_prs(prs_df: pl.DataFrame) -> pl.DataFrame:
+    # Rename columns, deduplicate, and convert timestamps
     prs_df = prs_df.rename({"number": "pr_number"})
-
-    # Deduplicate dataframes
     prs_df = deduplicate_prs(prs_df)
-    comments_df = deduplicate_comments(comments_df)
-    reviews_df = deduplicate_reviews(reviews_df)
-
-    # Convert timestamps to datetime
     prs_df = prs_df.with_columns(
         [
             pl.col("created_at")
@@ -71,58 +59,69 @@ def prepare_dataframes(
             .alias("updated_at"),
         ]
     )
-
-    comments_df = comments_df.with_columns(
-        pl.col("created_at")
-        .map_elements(parse_isoformat, return_dtype=pl.Datetime("us"))
-        .alias("created_at")
-    )
-
-    reviews_df = reviews_df.with_columns(
-        pl.col("submitted_at")
-        .map_elements(parse_isoformat, return_dtype=pl.Datetime("us"))
-        .alias("submitted_at")
-    )
-
-    # Get earliest approval per PR
-    approved_reviews = reviews_df.filter(pl.col("state").str.to_uppercase() == "APPROVED")
-    earliest_approval = approved_reviews.group_by(["repo", "pr_number"]).agg(
-        pl.col("submitted_at").min().alias("approved_at")
-    )
-
-    # Get earliest non-bot comment per PR
-    non_bot_comments = comments_df.filter(
-        pl.col("user").struct.field("login").str.contains(r"(?i)\[bot\]$").not_()
-    )
-    earliest_non_bot_comment = non_bot_comments.group_by(["repo", "pr_number"]).agg(
-        pl.col("created_at").min().alias("earliest_non_bot_comment_at")
-    )
-
-    # Mark PRs as stale if closed/merged after 7 days
+    # Additional PR-specific transformations (e.g., marking stale PRs, counting requested reviewers)
     prs_df = prs_df.with_columns(
         (
             (pl.col("closed_at").is_not_null() | pl.col("merged_at").is_not_null())
             & ((pl.col("updated_at") - pl.col("created_at")).dt.total_days() > 7)
         ).alias("is_stale")
     )
-
-    # Count requested reviewers
     prs_df = prs_df.with_columns(
         pl.col("requested_reviewers").list.len().fill_null(0).alias("requested_reviewers_count")
     )
+    return prs_df
 
-    # Join approvals and non-bot comments
-    prs_df = prs_df.join(
-        earliest_approval,
-        on=["repo", "pr_number"],
-        how="left",
-    ).join(
-        earliest_non_bot_comment,
-        on=["repo", "pr_number"],
-        how="left",
+
+def prepare_comments(comments_df: pl.DataFrame) -> pl.DataFrame:
+    # Deduplicate and convert timestamps
+    comments_df = deduplicate_comments(comments_df)
+    comments_df = comments_df.with_columns(
+        pl.col("created_at")
+        .map_elements(parse_isoformat, return_dtype=pl.Datetime("us"))
+        .alias("created_at")
+    )
+    return comments_df
+
+
+def prepare_reviews(reviews_df: pl.DataFrame) -> pl.DataFrame:
+    # Deduplicate and convert timestamps
+    reviews_df = deduplicate_reviews(reviews_df)
+    reviews_df = reviews_df.with_columns(
+        pl.col("submitted_at")
+        .map_elements(parse_isoformat, return_dtype=pl.Datetime("us"))
+        .alias("submitted_at")
+    )
+    return reviews_df
+
+
+def compute_earliest_approval(reviews_df: pl.DataFrame) -> pl.DataFrame:
+    """Return earliest approval timestamp per PR."""
+    approved_reviews = reviews_df.filter(pl.col("state").str.to_uppercase() == "APPROVED")
+    return approved_reviews.group_by(["repo", "pr_number"]).agg(
+        pl.col("submitted_at").min().alias("approved_at")
     )
 
-    return prs_df, comments_df, reviews_df
+
+def compute_earliest_non_bot_comment(comments_df: pl.DataFrame) -> pl.DataFrame:
+    """Return earliest non-bot comment timestamp per PR."""
+    non_bot_comments = comments_df.filter(
+        pl.col("user").struct.field("login").str.contains(r"(?i)\[bot\]$").not_()
+    )
+    return non_bot_comments.group_by(["repo", "pr_number"]).agg(
+        pl.col("created_at").min().alias("earliest_non_bot_comment_at")
+    )
+
+
+def add_derived_fields_to_prs(
+    prs_df: pl.DataFrame, comments_df: pl.DataFrame, reviews_df: pl.DataFrame
+) -> pl.DataFrame:
+    """Join derived fields to the PR dataframe."""
+    earliest_approval = compute_earliest_approval(reviews_df)
+    earliest_non_bot_comment = compute_earliest_non_bot_comment(comments_df)
+
+    prs_df = prs_df.join(earliest_approval, on=["repo", "pr_number"], how="left")
+    prs_df = prs_df.join(earliest_non_bot_comment, on=["repo", "pr_number"], how="left")
+    return prs_df
 
 
 def _compute_rolling_for_interval(
@@ -370,9 +369,13 @@ def compute_all_metrics(
     reviews_df: pl.DataFrame,
 ) -> pl.DataFrame:
     """Compute metrics for multiple rolling window sizes and combine results"""
-
-    prs_df, comments_df, reviews_df = prepare_dataframes(prs_df, comments_df, reviews_df)
-
+    # Preprocess dataframes
+    prs_df = prepare_prs(prs_df)
+    comments_df = prepare_comments(comments_df)
+    reviews_df = prepare_reviews(reviews_df)
+    # Add derived fields to PRs
+    prs_df = add_derived_fields_to_prs(prs_df, comments_df, reviews_df)
+    # Compute metrics for each interval
     intervals = {
         "week": 7,
         "month": 30,
