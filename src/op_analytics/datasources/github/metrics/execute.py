@@ -7,27 +7,22 @@ import polars as pl
 log = structlog.get_logger()
 
 
-def execute_pull_repo_metrics(min_date: str, max_date: str):
+def execute_pull_repo_metrics():
     """
     Execute the PR metrics computation pipeline:
       1. Load raw data from GCS.
       2. Compute rolling/detailed metrics.
       3. Write the computed metrics to the REPO_METRICS dataset.
 
-    - The min_date/max_date parameters specify the range of raw GitHub data to load.
-    - The process_dt is always set to the current date, so the computed metrics are stamped with the current processing date.
-
     Returns:
         dict: Summary of processing results.
     """
-    prs_df = Github.PRS.read_polars(min_date=min_date, max_date=max_date)
-    comments_df = Github.PR_COMMENTS.read_polars(min_date=min_date, max_date=max_date)
-    reviews_df = Github.PR_REVIEWS.read_polars(min_date=min_date, max_date=max_date)
+    prs_df = Github.PRS.read_polars()
+    comments_df = Github.PR_COMMENTS.read_polars()
+    reviews_df = Github.PR_REVIEWS.read_polars()
 
     log.info(
         "Loaded raw GitHub data",
-        min_date=min_date,
-        max_date=max_date,
         prs_count=len(prs_df),
         comments_count=len(comments_df),
         reviews_count=len(reviews_df),

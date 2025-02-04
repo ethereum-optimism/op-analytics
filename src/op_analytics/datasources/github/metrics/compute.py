@@ -442,5 +442,7 @@ def compute_all_metrics(
     )
 
     final = final.select(METRICS_SCHEMA.keys())
-    raise_for_schema_mismatch(final.schema, METRICS_SCHEMA)
+
+    expected_schema = pl.Schema(METRICS_SCHEMA)
+    raise_for_schema_mismatch(final.schema, expected_schema)
     return final
