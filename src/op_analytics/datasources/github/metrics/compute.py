@@ -27,6 +27,15 @@ METRICS_SCHEMA = {
     "stale_prs": pl.UInt32,
     "review_requested_prs": pl.UInt32,
     "period_type": pl.Utf8,
+    "approval_ratio": pl.Float64,
+    "merge_ratio": pl.Float64,
+    "closed_ratio": pl.Float64,
+    "comment_intensity": pl.Float64,
+    "review_intensity": pl.Float64,
+    "stale_ratio": pl.Float64,
+    "active_ratio": pl.Float64,
+    "response_time_ratio": pl.Float64,
+    "contributor_engagement": pl.Float64,
 }
 
 
@@ -36,6 +45,14 @@ def prepare_dataframes(
     reviews_df: pl.DataFrame,
 ) -> tuple[pl.DataFrame, pl.DataFrame, pl.DataFrame]:
     """Prepare dataframes by converting timestamps and computing derived fields"""
+
+    # Rename number to pr_number if present
+    prs_df = prs_df.rename({"number": "pr_number"})
+
+    # Deduplicate dataframes
+    prs_df = deduplicate_prs(prs_df)
+    comments_df = deduplicate_comments(comments_df)
+    reviews_df = deduplicate_reviews(reviews_df)
 
     # Convert timestamps to datetime
     prs_df = prs_df.with_columns(
@@ -96,12 +113,12 @@ def prepare_dataframes(
 
     # Join approvals and non-bot comments
     prs_df = prs_df.join(
-        earliest_approval.rename({"pr_number": "number"}),
-        on=["repo", "number"],
+        earliest_approval,
+        on=["repo", "pr_number"],
         how="left",
     ).join(
-        earliest_non_bot_comment.rename({"pr_number": "number"}),
-        on=["repo", "number"],
+        earliest_non_bot_comment,
+        on=["repo", "pr_number"],
         how="left",
     )
 
@@ -140,7 +157,7 @@ def _compute_rolling_for_interval(
         )
         .agg(
             [
-                pl.col("number").n_unique().alias("new_prs"),
+                pl.col("pr_number").n_unique().alias("new_prs"),
                 ((pl.col("approved_at") - pl.col("created_at")).dt.total_hours())
                 .median()
                 .alias("median_time_to_first_review_hours"),
@@ -177,7 +194,7 @@ def _compute_rolling_for_interval(
         )
         .agg(
             [
-                pl.col("number").n_unique().alias("merged_prs"),
+                pl.col("pr_number").n_unique().alias("merged_prs"),
             ]
         )
         .rename({"_lower_boundary": "period_start", "_upper_boundary": "period_end"})
@@ -197,8 +214,8 @@ def _compute_rolling_for_interval(
         )
         .agg(
             [
-                pl.col("number").n_unique().alias("closed_prs"),
-                pl.col("number")
+                pl.col("pr_number").n_unique().alias("closed_prs"),
+                pl.col("pr_number")
                 .filter(pl.col("merged_at").is_null())
                 .n_unique()
                 .alias("rejected_prs"),
@@ -219,7 +236,7 @@ def _compute_rolling_for_interval(
             by="repo",
             include_boundaries=True,
         )
-        .agg(pl.col("number").n_unique().alias("active_prs"))
+        .agg(pl.col("pr_number").n_unique().alias("active_prs"))
         .rename({"_lower_boundary": "period_start", "_upper_boundary": "period_end"})
     )
 
@@ -235,7 +252,7 @@ def _compute_rolling_for_interval(
             by="repo",
             include_boundaries=True,
         )
-        .agg(pl.col("number").n_unique().alias("approved_prs"))
+        .agg(pl.col("pr_number").n_unique().alias("approved_prs"))
         .rename({"_lower_boundary": "period_start", "_upper_boundary": "period_end"})
     )
 
@@ -305,6 +322,48 @@ def _compute_rolling_for_interval(
     return final
 
 
+def deduplicate_prs(prs_df: pl.DataFrame) -> pl.DataFrame:
+    """
+    Deduplicate PR data if the same PR is fetched multiple times.
+    Keep the row with the latest updated_at timestamp.
+
+    Assumes columns: ["repo", "pr_number", "updated_at", ...]
+    """
+    if "updated_at" not in prs_df.columns:
+        return prs_df
+    # Sort by (repo, pr_number, updated_at) ascending, then keep last of each group
+    sorted_df = prs_df.sort(["repo", "pr_number", "updated_at"])
+    return sorted_df.unique(subset=["repo", "pr_number"], keep="last")
+
+
+def deduplicate_comments(comments_df: pl.DataFrame) -> pl.DataFrame:
+    """
+    Deduplicate comment data if the same comment is fetched multiple times.
+    Keep the row with the latest updated_at.
+
+    Assumes columns: ["repo", "pr_number", "id", "updated_at", ...]
+    """
+    if "updated_at" not in comments_df.columns:
+        return comments_df
+    # Sort then keep last
+    sorted_df = comments_df.sort(["repo", "pr_number", "id", "updated_at"])
+    return sorted_df.unique(subset=["repo", "pr_number", "id"], keep="last")
+
+
+def deduplicate_reviews(reviews_df: pl.DataFrame) -> pl.DataFrame:
+    """
+    Deduplicate review data if the same review is fetched multiple times.
+    Keep the row with the latest submitted_at.
+
+    Assumes columns: ["repo", "pr_number", "id", "submitted_at", ...]
+    """
+    if "submitted_at" not in reviews_df.columns:
+        return reviews_df
+    # Sort then keep last
+    sorted_df = reviews_df.sort(["repo", "pr_number", "id", "submitted_at"])
+    return sorted_df.unique(subset=["repo", "pr_number", "id"], keep="last")
+
+
 def compute_all_metrics(
     prs_df: pl.DataFrame,
     comments_df: pl.DataFrame,
@@ -335,30 +394,50 @@ def compute_all_metrics(
 
     final = pl.concat(frames, how="vertical")
 
-    final = final.select(
+    final = final.with_columns(
         [
-            "repo",
-            "period_start",
-            "period_end",
-            "new_prs",
-            "merged_prs",
-            "closed_prs",
-            "active_prs",
-            "median_time_to_first_review_hours",
-            "median_time_to_first_non_bot_comment_hours",
-            "median_time_to_merge_hours",
-            "total_comments",
-            "total_reviews",
-            "unique_commenters",
-            "unique_reviewers",
-            "unique_contributors",
-            "approved_prs",
-            "rejected_prs",
-            "stale_prs",
-            "review_requested_prs",
-            "period_type",
+            pl.when(pl.col("new_prs") > 0)
+            .then(pl.col("approved_prs") / pl.col("new_prs"))
+            .otherwise(0)
+            .alias("approval_ratio"),
+            pl.when(pl.col("new_prs") > 0)
+            .then(pl.col("merged_prs") / pl.col("new_prs"))
+            .otherwise(0)
+            .alias("merge_ratio"),
+            pl.when(pl.col("new_prs") > 0)
+            .then(pl.col("closed_prs") / pl.col("new_prs"))
+            .otherwise(0)
+            .alias("closed_ratio"),
+            pl.when(pl.col("new_prs") > 0)
+            .then(pl.col("total_comments") / pl.col("new_prs"))
+            .otherwise(0)
+            .alias("comment_intensity"),
+            pl.when(pl.col("new_prs") > 0)
+            .then(pl.col("total_reviews") / pl.col("new_prs"))
+            .otherwise(0)
+            .alias("review_intensity"),
+            pl.when(pl.col("new_prs") > 0)
+            .then(pl.col("stale_prs") / pl.col("new_prs"))
+            .otherwise(0)
+            .alias("stale_ratio"),
+            pl.when(pl.col("new_prs") > 0)
+            .then(pl.col("active_prs") / pl.col("new_prs"))
+            .otherwise(0)
+            .alias("active_ratio"),
+            pl.when(pl.col("median_time_to_merge_hours") > 0)
+            .then(
+                pl.col("median_time_to_first_non_bot_comment_hours")
+                / pl.col("median_time_to_merge_hours")
+            )
+            .otherwise(0)
+            .alias("response_time_ratio"),
+            pl.when(pl.col("new_prs") > 0)
+            .then(pl.col("unique_contributors") / pl.col("new_prs"))
+            .otherwise(0)
+            .alias("contributor_engagement"),
         ]
     )
 
+    final = final.select(METRICS_SCHEMA.keys())
     raise_for_schema_mismatch(final.schema, METRICS_SCHEMA)
     return final
