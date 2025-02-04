@@ -31,7 +31,7 @@ def export_to_bigquery(client: Client, db: str, table: str, select_statement):
     """
     result = client.command(statement)
 
-    if result.written_rows == 0:
+    if result.written_rows == 0:  # type: ignore
         raise Exception("empty result on export to bigquery")
 
     # Create a lod job to write data to BQ.
