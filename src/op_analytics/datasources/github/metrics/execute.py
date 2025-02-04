@@ -1,5 +1,5 @@
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.time import now_date, date_tostr
+from op_analytics.coreutils.time import now_dt
 from op_analytics.datasources.github.dataaccess import Github
 from op_analytics.datasources.github.metrics.compute import compute_all_metrics
 import polars as pl
@@ -14,14 +14,12 @@ def execute_pull_repo_metrics(min_date: str, max_date: str):
       2. Compute rolling/detailed metrics.
       3. Write the computed metrics to the REPO_METRICS dataset.
 
-    Args:
-        min_date: Start date for data processing (ISO format)
-        max_date: End date for data processing (ISO format)
+    - The min_date/max_date parameters specify the range of raw GitHub data to load.
+    - The process_dt is always set to the current date, so the computed metrics are stamped with the current processing date.
 
     Returns:
         dict: Summary of processing results.
     """
-    # 1. Load raw data from GitHub sources.
     prs_df = Github.PRS.read_polars(min_date=min_date, max_date=max_date)
     comments_df = Github.PR_COMMENTS.read_polars(min_date=min_date, max_date=max_date)
     reviews_df = Github.PR_REVIEWS.read_polars(min_date=min_date, max_date=max_date)
@@ -35,16 +33,14 @@ def execute_pull_repo_metrics(min_date: str, max_date: str):
         reviews_count=len(reviews_df),
     )
 
-    process_dt = date_tostr(now_date())
+    process_dt = now_dt()
 
-    # 2. Compute rolling repository metrics.
     metrics_df = compute_all_metrics(
         prs_df=prs_df,
         comments_df=comments_df,
         reviews_df=reviews_df,
     )
 
-    # 3. Write the computed metrics to the REPO_METRICS dataset.
     Github.REPO_METRICS.write(
         dataframe=metrics_df.with_columns(dt=pl.lit(process_dt)),
         sort_by=["repo", "period_start"],
