@@ -24,7 +24,7 @@ import pandas as pd
 import os
 
 
-# In[ ]:
+# In[2]:
 
 
 trailing_days = 180 #Assume we always catch chains within 6 months (adjust as needed)
@@ -58,7 +58,7 @@ dune_df = pd.concat(non_empty_dfs) if non_empty_dfs else pd.DataFrame()
 dune_df['source'] = 'dune'
 
 
-# In[ ]:
+# In[4]:
 
 
 dune_df['dt'] = pd.to_datetime(dune_df['dt']).dt.tz_localize(None)
@@ -71,7 +71,7 @@ dune_df['num_l1_txs_combined'] = dune_df['num_l1_txs_combined'].fillna(0).astype
 dune_df['num_l1_txs_inbox'] = dune_df['num_l1_txs_inbox'].fillna(0).astype(int)
 
 
-# In[ ]:
+# In[5]:
 
 
 # Fill NULL values in unique key columns
