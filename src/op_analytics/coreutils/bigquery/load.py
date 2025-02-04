@@ -61,3 +61,35 @@ def load_from_parquet_uris(
 
     operation_prefix = "DRYRUN " if isinstance(client, MagicMock) else ""
     log.info(f"{operation_prefix}{job_config.write_disposition} to BQ {destination}")
+
+
+def load_unpartitioned_single_uri(
+    source_uri: str,
+    dataset: str,
+    table: str,
+    clustering_fields: list[str] | None,
+):
+    """Execute a load job to load parquet uris into BigQuery.
+
+    All of the provided URIs must belong to the same "dt" partition.
+    """
+    client = init_client()
+
+    destination = f"{dataset}.{table}"
+
+    job_config = bigquery.LoadJobConfig(
+        source_format=bigquery.SourceFormat.PARQUET,
+        create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        clustering_fields=clustering_fields,
+    )
+
+    job = client.load_table_from_uri(
+        source_uris=[source_uri],
+        destination=destination,
+        job_config=job_config,
+    )
+    job.result()
+
+    operation_prefix = "DRYRUN " if isinstance(client, MagicMock) else ""
+    log.info(f"{operation_prefix}{job_config.write_disposition} to BQ {destination}")

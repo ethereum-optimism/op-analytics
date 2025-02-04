@@ -10,11 +10,13 @@ from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statemem
 from op_analytics.coreutils.logger import structlog, bound_contextvars
 from op_analytics.coreutils.time import date_tostr
 
+from clickhouse_connect.driver.exceptions import DatabaseError
+
+from .config import FILTER_ALLOWED_ROOT_PATHS
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
+from .table import BlockBatchTable
 
 log = structlog.get_logger()
-
-DIRECTORY = os.path.dirname(__file__)
 
 
 @dataclass
@@ -57,6 +59,7 @@ class InsertResult:
 @dataclass
 class InsertTask:
     root_path: str
+    table_name: str
     chain: str
     dt: date
     min_block: int
@@ -69,10 +72,6 @@ class InsertTask:
             dt=date_tostr(self.dt),
             data_path=self.data_path,
         )
-
-    @property
-    def table_name(self):
-        return self.root_path.removeprefix("blockbatch/").replace("/", "__")
 
     def subquery(self):
         return parquet_to_subquery(
@@ -87,34 +86,39 @@ class InsertTask:
             return insert_result
 
     def write(self) -> InsertResult:
-        ddl_path = os.path.join(
-            DIRECTORY, f"ddl/{self.root_path.removeprefix("blockbatch/")}__INSERT.sql"
-        )
-
-        if not os.path.exists(ddl_path):
-            raise Exception(f"DDL file not found: {ddl_path}")
-
-        with open(ddl_path, "r") as f:
-            ddl = f.read()
-
-        # If needed for debugging we can log out the DDL
+        ddl = BlockBatchTable(self.root_path).read_insert_ddl()
+        # If needed for debugging we can log out the DDL template
         # log.info(ddl)
 
         # BE CAREFUL! with_subquery may contain HMAC access info.
         # Do not print or log it when debugging.
         with_subquery = ddl.format(subquery=self.subquery())
 
-        result = run_statememt_oplabs(
-            statement=with_subquery,
-            settings={"use_hive_partitioning": 1},
-        )
+        try:
+            result = run_statememt_oplabs(
+                statement=with_subquery,
+                settings={"use_hive_partitioning": 1},
+            )
+        except DatabaseError as ex:
+            log.error("database error", exc_info=ex)
+            raise
+
         insert_result = InsertResult.from_raw(result)
         log.info("insert results", **insert_result.to_dict())
 
-        if insert_result.read_rows != insert_result.written_rows:
-            raise Exception(
-                "loading into clickhouse should result in the same number of rows as in GCS."
-            )
+        if insert_result.written_rows > insert_result.read_rows:
+            raise Exception("loading into clickhouse should not result in more rows")
+
+        if insert_result.written_rows < insert_result.read_rows:
+            if self.root_path in FILTER_ALLOWED_ROOT_PATHS:
+                num_filtered = insert_result.read_rows - insert_result.written_rows
+                log.warning(
+                    f"{num_filtered} rows were filtered out",
+                    written_rows=insert_result.written_rows,
+                    read_rows=insert_result.read_rows,
+                )
+            else:
+                raise Exception("loading into clickhouse should not result in fewer rows")
 
         return insert_result
 
