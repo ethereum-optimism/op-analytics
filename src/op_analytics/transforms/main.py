@@ -17,6 +17,7 @@ def execute_dt_transforms(
     range_spec: str | None = None,
     start_at_index: int = 0,
     skip_create: bool = True,
+    raise_if_empty: bool = True,
     force_complete: bool = False,
     max_tasks: int | None = None,
 ):
@@ -52,6 +53,7 @@ def execute_dt_transforms(
             dt=row["dt"],
             skip_create=skip_create,
             start_at_index=start_at_index,
+            raise_if_empty=raise_if_empty,
         )
         tasks.append(transform_task)
     log.info(f"Prepared {len(tasks)} transform tasks.")
@@ -61,7 +63,7 @@ def execute_dt_transforms(
     num_tasks = len(tasks)
     for ii, task in enumerate(tasks):
         with bound_contextvars(task=f"{ii+1}/{num_tasks}"):
-            result = task.execute(start_at_index=start_at_index)
+            result = task.execute()
 
         summary[date_tostr(task.dt)] = result
 

@@ -20,7 +20,12 @@ class UpdateResult:
         return asdict(self)
 
 
-def run_updates(group_name: str, dt: date, start_at_index: int) -> list[UpdateResult]:
+def run_updates(
+    group_name: str,
+    dt: date,
+    start_at_index: int,
+    raise_if_empty: bool,
+) -> list[UpdateResult]:
     """Find the sequence of DDLs for this task and run them."""
 
     client = new_stateful_client("OPLABS")
@@ -47,7 +52,7 @@ def run_updates(group_name: str, dt: date, start_at_index: int) -> list[UpdateRe
             assert isinstance(result.summary, dict)
             log.info(f"{step.name} -> {result.written_rows} written rows", **result.summary)
 
-            if result.written_rows == 0:
+            if result.written_rows == 0 and raise_if_empty:
                 raise Exception("possible data quality issue 0 rows were written!")
 
             results.append(

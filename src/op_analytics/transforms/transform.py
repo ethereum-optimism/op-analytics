@@ -25,6 +25,7 @@ class TransformTask:
 
     skip_create: bool
     start_at_index: int
+    raise_if_empty: bool
 
     @property
     def context(self):
@@ -43,7 +44,12 @@ class TransformTask:
         create_tables(self.group_name)
 
     def run_updates(self) -> list[UpdateResult]:
-        return run_updates(self.group_name, dt=self.dt, start_at_index=self.start_at_index)
+        return run_updates(
+            self.group_name,
+            dt=self.dt,
+            start_at_index=self.start_at_index,
+            raise_if_empty=self.raise_if_empty,
+        )
 
     def write_marker(self, results: list[dict]):
         """Write completion markers for the task."""

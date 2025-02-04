@@ -1,6 +1,6 @@
 /**
 
-Contract create traces that
+Contract creation traces for contracts that implement crosschainBurn/crosschainMint.
 
 */
 INSERT INTO _placeholder_
@@ -12,13 +12,12 @@ WITH create_traces AS (
     , chain
     , chain_id
     , network
-    , 'SuperchainERC20' AS token_type
     , block_timestamp
     , block_number
     , transaction_hash
     , transaction_index
-    , tr_from_address AS tr_from_address
-    , tx_from_address AS tx_from_address
+    , tr_from_address
+    , tx_from_address
     , contract_address
     , trace_address
     , trace_type
@@ -35,13 +34,13 @@ WITH create_traces AS (
   WHERE
     dt = { dtparam: Date }
     AND (
-    -- crosschainBurn(address,uint256): 0x2b8c49e3
-    -- crosschainMint(address,uint256): 0x18bf5077
-    has_crosschain_methods
+      -- crosschainBurn(address,uint256): 0x2b8c49e3
+      -- crosschainMint(address,uint256): 0x18bf5077
+      has_crosschain_methods
 
-    -- Traces from contract creation proxies
-    -- https://gist.github.com/Aboudjem/3ae8cc89ebff8c086e9b9111b1d06e6d#file-create3-sol-L25
-    OR is_from_proxy
+      -- Traces from contract creation proxies
+      -- https://gist.github.com/Aboudjem/3ae8cc89ebff8c086e9b9111b1d06e6d#file-create3-sol-L25
+      OR is_from_proxy
     )
 )
 
@@ -50,7 +49,7 @@ WITH create_traces AS (
   SELECT c0.*
   FROM create_traces AS c0
   WHERE
-    has_crosschain_methods
+    c0.has_crosschain_methods
     AND c0.trace_type = 'create2'
 )
 
@@ -81,16 +80,44 @@ WITH create_traces AS (
 )
 
 SELECT
-  'create0/3' AS deployment_type
-  , c3.*
-FROM create3 AS c3
+  dt
+  , chain
+  , chain_id
+  , network
+  , block_timestamp
+  , block_number
+  , transaction_hash
+  , transaction_index
+  , tr_from_address
+  , tx_from_address
+  , 'create0/3' AS deployment_type
+  , contract_address
+  , trace_address
+  , trace_type
+  , gas
+  , gas_used
+FROM create3
 
 UNION ALL
 
 SELECT
-  'create2' AS deployment_type
-  , c2.*
-FROM create2 AS c2
+  dt
+  , chain
+  , chain_id
+  , network
+  , block_timestamp
+  , block_number
+  , transaction_hash
+  , transaction_index
+  , tr_from_address
+  , tx_from_address
+  , 'create2' AS deployment_type
+  , contract_address
+  , trace_address
+  , trace_type
+  , gas
+  , gas_used
+FROM create2
 
 
 SETTINGS use_hive_partitioning = 1

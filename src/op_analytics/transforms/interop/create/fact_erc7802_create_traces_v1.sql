@@ -10,12 +10,12 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `transaction_index` Int64,
     `tr_from_address` FixedString(42),
     `tx_from_address` FixedString(42),
+    `deployment_type` String,
     `contract_address` FixedString(42),
     `trace_address` String,
     `trace_type` String,
     `gas` UInt128,
     `gas_used` UInt128,
-    `output` String,
     INDEX dt_idx chain TYPE minmax GRANULARITY 1,
     INDEX chain_idx chain TYPE minmax GRANULARITY 1,
 )
