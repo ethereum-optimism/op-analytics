@@ -1,7 +1,11 @@
 interop
 =======
 
-**Objective**: Find how many tokens of different bridgeable types are created each day. 
+Objective
+---------
+
+Find how many tokens of different bridgeable types are created each day. 
+
 
 Methodology
 -----------
