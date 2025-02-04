@@ -2,6 +2,15 @@ import polars as pl
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.misc import raise_for_schema_mismatch
 from op_analytics.coreutils.time import parse_isoformat, now
+from op_analytics.datasources.github.metrics import (
+    cohort,
+    prmerge,
+    prclose,
+    prupdate,
+    prapproval,
+    prcomment,
+    prreview,
+)
 
 log = structlog.get_logger()
 
@@ -133,167 +142,24 @@ def _compute_rolling_for_interval(
 ) -> pl.DataFrame:
     """Compute metrics for a rolling window of given size"""
 
-    # Filter bots and sort data
+    # Filter out bot comments and sort data
     comments_df = comments_df.filter(
         pl.col("user").struct.field("login").str.contains(r"(?i)\[bot\]$").not_()
     )
-
     prs_df = prs_df.sort("created_at")
     comments_df = comments_df.sort("created_at")
     reviews_df = reviews_df.sort("submitted_at")
 
     period_str = f"{period_days}d"
 
-    # Aggregate metrics based on PR creation date
-    cohort_agg = (
-        prs_df.group_by_dynamic(
-            index_column="created_at",
-            every="1d",
-            period=period_str,
-            closed="left",
-            by="repo",
-            include_boundaries=True,
-        )
-        .agg(
-            [
-                pl.col("pr_number").n_unique().alias("new_prs"),
-                ((pl.col("approved_at") - pl.col("created_at")).dt.total_hours())
-                .median()
-                .alias("median_time_to_first_review_hours"),
-                ((pl.col("earliest_non_bot_comment_at") - pl.col("created_at")).dt.total_hours())
-                .median()
-                .alias("median_time_to_first_non_bot_comment_hours"),
-                ((pl.col("merged_at") - pl.col("created_at")).dt.total_hours())
-                .median()
-                .alias("median_time_to_merge_hours"),
-                pl.col("user").struct.field("login").n_unique().alias("unique_contributors"),
-                pl.col("is_stale").sum().alias("stale_prs"),
-                pl.when(pl.col("requested_reviewers_count") > 0)
-                .then(pl.lit(1))
-                .otherwise(pl.lit(0))
-                .sum()
-                .cast(pl.UInt32)
-                .alias("review_requested_prs"),
-            ]
-        )
-        .rename({"_lower_boundary": "period_start", "_upper_boundary": "period_end"})
-    )
-
-    # Aggregate metrics based on merge date
-    merge_agg = (
-        prs_df.filter(pl.col("merged_at").is_not_null())
-        .sort("merged_at")
-        .group_by_dynamic(
-            index_column="merged_at",
-            every="1d",
-            period=period_str,
-            closed="left",
-            by="repo",
-            include_boundaries=True,
-        )
-        .agg(
-            [
-                pl.col("pr_number").n_unique().alias("merged_prs"),
-            ]
-        )
-        .rename({"_lower_boundary": "period_start", "_upper_boundary": "period_end"})
-    )
-
-    # Aggregate metrics based on close date
-    close_agg = (
-        prs_df.filter(pl.col("closed_at").is_not_null())
-        .sort("closed_at")
-        .group_by_dynamic(
-            index_column="closed_at",
-            every="1d",
-            period=period_str,
-            closed="left",
-            by="repo",
-            include_boundaries=True,
-        )
-        .agg(
-            [
-                pl.col("pr_number").n_unique().alias("closed_prs"),
-                pl.col("pr_number")
-                .filter(pl.col("merged_at").is_null())
-                .n_unique()
-                .alias("rejected_prs"),
-            ]
-        )
-        .rename({"_lower_boundary": "period_start", "_upper_boundary": "period_end"})
-    )
-
-    # Aggregate metrics based on update date
-    update_agg = (
-        prs_df.filter(pl.col("updated_at").is_not_null())
-        .sort("updated_at")
-        .group_by_dynamic(
-            index_column="updated_at",
-            every="1d",
-            period=period_str,
-            closed="left",
-            by="repo",
-            include_boundaries=True,
-        )
-        .agg(pl.col("pr_number").n_unique().alias("active_prs"))
-        .rename({"_lower_boundary": "period_start", "_upper_boundary": "period_end"})
-    )
-
-    # Aggregate metrics based on approval date
-    approve_agg = (
-        prs_df.filter(pl.col("approved_at").is_not_null())
-        .sort("approved_at")
-        .group_by_dynamic(
-            index_column="approved_at",
-            every="1d",
-            period=period_str,
-            closed="left",
-            by="repo",
-            include_boundaries=True,
-        )
-        .agg(pl.col("pr_number").n_unique().alias("approved_prs"))
-        .rename({"_lower_boundary": "period_start", "_upper_boundary": "period_end"})
-    )
-
-    # Aggregate comment metrics
-    comment_agg = (
-        comments_df.sort("created_at")
-        .group_by_dynamic(
-            index_column="created_at",
-            every="1d",
-            period=period_str,
-            closed="left",
-            by="repo",
-            include_boundaries=True,
-        )
-        .agg(
-            [
-                pl.count().alias("total_comments"),
-                pl.col("user").struct.field("login").n_unique().alias("unique_commenters"),
-            ]
-        )
-        .rename({"_lower_boundary": "period_start", "_upper_boundary": "period_end"})
-    )
-
-    # Aggregate review metrics
-    review_agg = (
-        reviews_df.sort("submitted_at")
-        .group_by_dynamic(
-            index_column="submitted_at",
-            every="1d",
-            period=period_str,
-            closed="left",
-            by="repo",
-            include_boundaries=True,
-        )
-        .agg(
-            [
-                pl.count().alias("total_reviews"),
-                pl.col("user").struct.field("login").n_unique().alias("unique_reviewers"),
-            ]
-        )
-        .rename({"_lower_boundary": "period_start", "_upper_boundary": "period_end"})
-    )
+    # Compute each metric group using the new modular functions
+    cohort_agg = cohort.compute_cohort_metrics(prs_df, period_str)
+    merge_agg = prmerge.compute_prmerge_metrics(prs_df, period_str)
+    close_agg = prclose.compute_prclose_metrics(prs_df, period_str)
+    update_agg = prupdate.compute_prupdate_metrics(prs_df, period_str)
+    approve_agg = prapproval.compute_prapproval_metrics(prs_df, period_str)
+    comment_agg = prcomment.compute_prcomment_metrics(comments_df, period_str)
+    review_agg = prreview.compute_prreview_metrics(reviews_df, period_str)
 
     # Join all aggregations
     dfs_to_join = [
@@ -304,7 +170,6 @@ def _compute_rolling_for_interval(
         comment_agg,
         review_agg,
     ]
-
     merged = cohort_agg
     for df_ in dfs_to_join:
         merged = merged.join(
