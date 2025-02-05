@@ -27,6 +27,5 @@ class BlockBatchTable:
     def read_insert_ddl(self):
         ddl_path = self.root_path.removeprefix("blockbatch/")
         return read_ddl(
-            directory=DIRECTORY,
-            path=f"{ddl_path}__INSERT.sql",
+            path=os.path.join(DIRECTORY, f"ddl/{ddl_path}__INSERT.sql"),
         )
