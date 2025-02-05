@@ -69,7 +69,11 @@ def pull_l2beat():
     projects_summary = list(summary["data"]["projects"].values())
 
     # Parse the summary and store as a dataframe.
-    summary_df = pl.DataFrame(projects_summary)
+    # (pedrod - 2025/01/31) L2Beat updated their naming from TVL to TVS.
+    # Here we adapat the incoming data to match our existing schema.
+    # This is a temporary patch while we work on migrating L2Beat to the
+    # DailyData pattern.
+    summary_df = pl.DataFrame(projects_summary).rename({"tvs": "tvl"})
 
     # Write summary to BQ.
     dt = now_date()
