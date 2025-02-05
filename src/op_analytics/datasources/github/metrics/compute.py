@@ -19,7 +19,6 @@ from op_analytics.datasources.github.metrics import (
 
 log = structlog.get_logger()
 
-# Schema for rolling window metrics
 METRICS_SCHEMA = {
     "repo": pl.Utf8,
     "period_start": pl.Datetime("us"),
