@@ -15,7 +15,7 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         "account_abstraction_prefilter/entrypoint_prefiltered_traces",
     ],
     expected_outputs=[
-        "entrypoint_events_v1",
+        "entrypoint_logs_v1",
         "entrypoint_traces_v1",
     ],
 )
