@@ -5,10 +5,10 @@ ERC-20 Transfer transactions that also emit an NTT Delivery event.
 
 IMPORTANT: this approach looks for transactions where the same transaction has
 an ERC-20 Transfer followed by an NTT Delivery event. It assumes that contracts that
-emit Transfer events prior to a delivery event in a transaciton are NTT-enabled
+emit Transfer events prior to a Delivery event in a transaciton are NTT-enabled
 token contracts.
 
-Transactions may be simple, with just one Transfer + Deliver, for example:
+Transactions may be simple, with just one Transfer + Delivery, for example:
 
 https://basescan.org/tx/0x3717e2df7d7f070254d5f477a94012f8d17417a2ff6e0f0df7daa767d851808c#eventlog
 https://basescan.org/tx/0x39f958600df4faff77320801daea1c9757209f93e653b545d3598596077ad1b8#eventlog
