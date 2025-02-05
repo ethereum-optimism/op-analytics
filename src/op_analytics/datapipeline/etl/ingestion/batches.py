@@ -80,6 +80,8 @@ MICROBATCH_SIZE_CONFIGURATION = {
     "lisk": [
         Delimiter(0, 20000),
         Delimiter(block_number=8640000, batch_size=8000),
+        # Decreased on 2025/02/04
+        Delimiter(block_number=12032000, batch_size=4000),
     ],
     "lyra": [
         Delimiter(0, 20000),

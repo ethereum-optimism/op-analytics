@@ -1,12 +1,8 @@
 /***
-  Prefilered traces:
+  Prefilered traces.
 
-    - Traces that match one of the innerHandleOp method_ids.
-    - Traces that match tx_hash and sender as seen in UserOperationEvent logs.
-
-  The data here needs to be further processed to determine which is the first method call
-  performed by a sender in an innerHandleOp subtrace.
-   */
+  Traces that match tx_hash as seen in EntryPoint logs.
+*/
 
 SELECT
   t.dt

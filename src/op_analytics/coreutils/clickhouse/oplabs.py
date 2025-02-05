@@ -35,9 +35,15 @@ def run_query_oplabs(
 
 def run_statememt_oplabs(
     statement: str,
+    parameters: dict[str, Any] | None = None,
     settings: dict[str, Any] | None = None,
 ) -> dict[str, str]:
-    return run_statement(instance="OPLABS", statement=statement, settings=settings)
+    return run_statement(
+        instance="OPLABS",
+        statement=statement,
+        parameters=parameters,
+        settings=settings,
+    )
 
 
 @stamina.retry(on=reconnecting_retry, attempts=3)

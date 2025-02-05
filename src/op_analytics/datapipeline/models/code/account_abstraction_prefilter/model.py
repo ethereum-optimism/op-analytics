@@ -9,14 +9,13 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
     input_datasets=[
         "ingestion/logs_v1",
         "ingestion/traces_v1",
-        # "blockbatch/refined_traces/refined_transactions_fees_v1",
     ],
     auxiliary_templates=[
         "account_abstraction_prefilter/entrypoint_logs",
         "account_abstraction_prefilter/entrypoint_prefiltered_traces",
     ],
     expected_outputs=[
-        "entrypoint_events_v1",
+        "entrypoint_logs_v1",
         "entrypoint_traces_v1",
     ],
 )
@@ -53,4 +52,7 @@ def account_abstraction_prefilter(
         },
     )
 
-    return {"entrypoint_logs_v1": entrypoint_logs, "entrypoint_traces_v1": entrypoint_traces}
+    return {
+        "entrypoint_logs_v1": entrypoint_logs,
+        "entrypoint_traces_v1": entrypoint_traces,
+    }

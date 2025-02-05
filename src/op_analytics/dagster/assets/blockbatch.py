@@ -6,7 +6,8 @@ from dagster import (
 
 @asset
 def blockbatch_load(context: OpExecutionContext):
-    """Load blockbatch datasets to Clickhouse."""
+    """Load selected blockbatch datasets to Clickhouse."""
     from op_analytics.datapipeline.etl.blockbatchload.clickhouse.main import load_to_clickhouse
 
-    load_to_clickhouse()
+    result = load_to_clickhouse()
+    context.log.info(result)
