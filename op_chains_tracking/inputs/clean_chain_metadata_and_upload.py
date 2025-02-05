@@ -4,6 +4,12 @@
 # In[ ]:
 
 
+# ! pipenv run jupyter nbconvert --to python clean_chain_metadata_and_upload.ipynb
+
+
+# In[ ]:
+
+
 import pandas as pd
 import sys
 sys.path.append("../../helper_functions")
@@ -18,7 +24,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[9]:
+# In[2]:
 
 
 # Read the CSV file
@@ -27,7 +33,7 @@ df = pd.read_csv('chain_metadata_raw.csv')
 table_name = 'op_stack_chain_metadata'
 
 
-# In[10]:
+# In[3]:
 
 
 import math
@@ -73,7 +79,7 @@ df[object_columns] = df[object_columns].fillna('')
 df.to_csv('../outputs/chain_metadata.csv', index=False)
 
 
-# In[12]:
+# In[5]:
 
 
 # df.dtypes
