@@ -1,6 +1,6 @@
 /**
 
-ERC-20 contract creation traces.
+ERC-20 contract creation traces broken down by the type of contract created.
 
 */
 INSERT INTO _placeholder_
@@ -11,7 +11,7 @@ erc20_tokens AS (
   SELECT
     chain_id
     , contract_address
-  FROM transforms_interop.dim_erc20_first_seen_v1
+  FROM transforms_interop.dim_erc20_first_seen_v1 FINAL
 )
 
 -- OFT Token Contracts
@@ -19,7 +19,7 @@ erc20_tokens AS (
   SELECT
     chain_id
     , contract_address
-  FROM transforms_interop.dim_oft_first_seen_v1
+  FROM transforms_interop.dim_erc20_oft_first_seen_v1 FINAL
 )
 
 -- NTT Token Contracts
@@ -27,7 +27,7 @@ erc20_tokens AS (
   SELECT
     chain_id
     , contract_address
-  FROM transforms_interop.dim_ntt_first_seen_v1
+  FROM transforms_interop.dim_erc20_ntt_first_seen_v1 FINAL
 )
 
 -- All create traces associated with ERC-20 Transfer events.
@@ -63,6 +63,6 @@ SELECT
   , (chain_id, contract_address) IN (ntt_tokens) AS has_ntt_events
 
 FROM
-  transforms_interop.fact_erc20_create_traces_v1
+  transforms_interop.fact_erc20_create_traces_v1 FINAL
 WHERE
   dt >= '2024-10-01'
