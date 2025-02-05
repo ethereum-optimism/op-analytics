@@ -8,23 +8,14 @@ def compute_cohort_metrics(prs_df: pl.DataFrame, period_str: str) -> pl.DataFram
     """
     Compute cohort metrics based on PR creation date.
     """
-    # 1. Extract "requested_reviewers" as a list of Python objects.
-    if "requested_reviewers" not in prs_df.columns:
-        raise ValueError("'requested_reviewers' column is missing from the PRs DataFrame.")
-
-    reviewers_col = prs_df["requested_reviewers"].to_list()  # list of objects
-
-    # 2. Convert each item to the integer length of the list, or zero if not a list.
+    # Pure python implementation of the requested_reviewers_count column.
+    reviewers_col = prs_df["requested_reviewers"].to_list()
     counts = [len(item) if isinstance(item, list) else 0 for item in reviewers_col]
-
-    # 3. Insert that result into a new column "requested_reviewers_count".
-    #    If the column already exists for some reason, we can overwrite it or drop first.
     if "requested_reviewers_count" in prs_df.columns:
         prs_df = prs_df.drop("requested_reviewers_count")
 
     prs_df = prs_df.with_columns(pl.Series(name="requested_reviewers_count", values=counts))
 
-    # 4. Perform the group_by_dynamic to compute aggregated metrics.
     df = (
         prs_df.group_by_dynamic(
             index_column="created_at",

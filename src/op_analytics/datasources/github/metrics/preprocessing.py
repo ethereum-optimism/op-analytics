@@ -3,7 +3,6 @@ from op_analytics.coreutils.time import parse_isoformat
 
 
 def prepare_prs(prs_df: pl.DataFrame) -> pl.DataFrame:
-    """ """
     prs_df = prs_df.rename({"number": "pr_number"})
     prs_df = deduplicate_prs(prs_df)
     prs_df = prs_df.with_columns(
