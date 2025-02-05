@@ -3,9 +3,7 @@ from op_analytics.coreutils.time import parse_isoformat
 
 
 def prepare_prs(prs_df: pl.DataFrame) -> pl.DataFrame:
-    """
-    Rename columns, deduplicate, and convert timestamps for PRs.
-    """
+    """ """
     prs_df = prs_df.rename({"number": "pr_number"})
     prs_df = deduplicate_prs(prs_df)
     prs_df = prs_df.with_columns(
@@ -24,7 +22,6 @@ def prepare_prs(prs_df: pl.DataFrame) -> pl.DataFrame:
             .alias("updated_at"),
         ]
     )
-    # Additional transformation logic here
     return prs_df
 
 
@@ -54,7 +51,6 @@ def prepare_reviews(reviews_df: pl.DataFrame) -> pl.DataFrame:
     return reviews_df
 
 
-# Include your deduplication functions too if they are not used elsewhere.
 def deduplicate_prs(prs_df: pl.DataFrame) -> pl.DataFrame:
     if "updated_at" not in prs_df.columns:
         return prs_df

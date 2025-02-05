@@ -1,7 +1,12 @@
 import polars as pl
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.misc import raise_for_schema_mismatch
-from op_analytics.coreutils.time import parse_isoformat, now
+from op_analytics.coreutils.time import now
+from op_analytics.datasources.github.metrics.preprocessing import (
+    prepare_prs,
+    prepare_comments,
+    prepare_reviews,
+)
 from op_analytics.datasources.github.metrics import (
     cohort,
     prmerge,
@@ -33,7 +38,6 @@ METRICS_SCHEMA = {
     "unique_contributors": pl.UInt32,
     "approved_prs": pl.UInt32,
     "rejected_prs": pl.UInt32,
-    "stale_prs": pl.UInt32,
     "review_requested_prs": pl.UInt32,
     "period_type": pl.Utf8,
     "approval_ratio": pl.Float64,
@@ -41,66 +45,10 @@ METRICS_SCHEMA = {
     "closed_ratio": pl.Float64,
     "comment_intensity": pl.Float64,
     "review_intensity": pl.Float64,
-    "stale_ratio": pl.Float64,
     "active_ratio": pl.Float64,
     "response_time_ratio": pl.Float64,
     "contributor_engagement": pl.Float64,
 }
-
-
-def prepare_prs(prs_df: pl.DataFrame) -> pl.DataFrame:
-    # Rename columns, deduplicate, and convert timestamps
-    prs_df = prs_df.rename({"number": "pr_number"})
-    prs_df = deduplicate_prs(prs_df)
-    prs_df = prs_df.with_columns(
-        [
-            pl.col("created_at")
-            .map_elements(parse_isoformat, return_dtype=pl.Datetime("us"))
-            .alias("created_at"),
-            pl.col("merged_at")
-            .map_elements(parse_isoformat, return_dtype=pl.Datetime("us"))
-            .alias("merged_at"),
-            pl.col("closed_at")
-            .map_elements(parse_isoformat, return_dtype=pl.Datetime("us"))
-            .alias("closed_at"),
-            pl.col("updated_at")
-            .map_elements(parse_isoformat, return_dtype=pl.Datetime("us"))
-            .alias("updated_at"),
-        ]
-    )
-    # Additional PR-specific transformations (e.g., marking stale PRs, counting requested reviewers)
-    prs_df = prs_df.with_columns(
-        (
-            (pl.col("closed_at").is_not_null() | pl.col("merged_at").is_not_null())
-            & ((pl.col("updated_at") - pl.col("created_at")).dt.total_days() > 7)
-        ).alias("is_stale")
-    )
-    prs_df = prs_df.with_columns(
-        pl.col("requested_reviewers").list.len().fill_null(0).alias("requested_reviewers_count")
-    )
-    return prs_df
-
-
-def prepare_comments(comments_df: pl.DataFrame) -> pl.DataFrame:
-    # Deduplicate and convert timestamps
-    comments_df = deduplicate_comments(comments_df)
-    comments_df = comments_df.with_columns(
-        pl.col("created_at")
-        .map_elements(parse_isoformat, return_dtype=pl.Datetime("us"))
-        .alias("created_at")
-    )
-    return comments_df
-
-
-def prepare_reviews(reviews_df: pl.DataFrame) -> pl.DataFrame:
-    # Deduplicate and convert timestamps
-    reviews_df = deduplicate_reviews(reviews_df)
-    reviews_df = reviews_df.with_columns(
-        pl.col("submitted_at")
-        .map_elements(parse_isoformat, return_dtype=pl.Datetime("us"))
-        .alias("submitted_at")
-    )
-    return reviews_df
 
 
 def compute_earliest_approval(reviews_df: pl.DataFrame) -> pl.DataFrame:
@@ -186,48 +134,6 @@ def _compute_rolling_for_interval(
     return final
 
 
-def deduplicate_prs(prs_df: pl.DataFrame) -> pl.DataFrame:
-    """
-    Deduplicate PR data if the same PR is fetched multiple times.
-    Keep the row with the latest updated_at timestamp.
-
-    Assumes columns: ["repo", "pr_number", "updated_at", ...]
-    """
-    if "updated_at" not in prs_df.columns:
-        return prs_df
-    # Sort by (repo, pr_number, updated_at) ascending, then keep last of each group
-    sorted_df = prs_df.sort(["repo", "pr_number", "updated_at"])
-    return sorted_df.unique(subset=["repo", "pr_number"], keep="last")
-
-
-def deduplicate_comments(comments_df: pl.DataFrame) -> pl.DataFrame:
-    """
-    Deduplicate comment data if the same comment is fetched multiple times.
-    Keep the row with the latest updated_at.
-
-    Assumes columns: ["repo", "pr_number", "id", "updated_at", ...]
-    """
-    if "updated_at" not in comments_df.columns:
-        return comments_df
-    # Sort then keep last
-    sorted_df = comments_df.sort(["repo", "pr_number", "id", "updated_at"])
-    return sorted_df.unique(subset=["repo", "pr_number", "id"], keep="last")
-
-
-def deduplicate_reviews(reviews_df: pl.DataFrame) -> pl.DataFrame:
-    """
-    Deduplicate review data if the same review is fetched multiple times.
-    Keep the row with the latest submitted_at.
-
-    Assumes columns: ["repo", "pr_number", "id", "submitted_at", ...]
-    """
-    if "submitted_at" not in reviews_df.columns:
-        return reviews_df
-    # Sort then keep last
-    sorted_df = reviews_df.sort(["repo", "pr_number", "id", "submitted_at"])
-    return sorted_df.unique(subset=["repo", "pr_number", "id"], keep="last")
-
-
 def compute_all_metrics(
     prs_df: pl.DataFrame,
     comments_df: pl.DataFrame,
@@ -284,10 +190,6 @@ def compute_all_metrics(
             .then(pl.col("total_reviews") / pl.col("new_prs"))
             .otherwise(0)
             .alias("review_intensity"),
-            pl.when(pl.col("new_prs") > 0)
-            .then(pl.col("stale_prs") / pl.col("new_prs"))
-            .otherwise(0)
-            .alias("stale_ratio"),
             pl.when(pl.col("new_prs") > 0)
             .then(pl.col("active_prs") / pl.col("new_prs"))
             .otherwise(0)
