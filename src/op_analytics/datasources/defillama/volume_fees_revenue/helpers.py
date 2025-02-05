@@ -35,12 +35,9 @@ def chain_endpoint(chain: str, data_type: ENDPOINT_TYPES):
     return f"https://api.llama.fi/overview/{endpoint}/{quoted_chain}?excludeTotalDataChart=false&excludeTotalDataChartBreakdown=false&dataType={data_type}"
 
 
-TABLE_LAST_N_DAYS = 3  # upsert only the last X days of volume fetched from the api
-
-
 @dataclass
 class DefillamaVFRData:
-    """VFR = Volume, fees, revenu.
+    """VFR = Volume, fees, revenue.
 
     Includes the "protocols" metadata dataframe and chain + protocol breakdowns.
 

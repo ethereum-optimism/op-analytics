@@ -18,4 +18,19 @@ SELECT
 FROM {{ raw_logs }} AS l
 WHERE
   true
-  AND l.topic0 = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' -- transfers
+
+  -- Transfer(address,address,uint256)
+  -- This topic0 matches the above signature regardless of whether the event parameters
+  -- are indexed or not.
+  AND l.topic0 = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+
+  -- Standard token transfers are expected to have at least 2 indexed parameters
+  -- ERC20  :  Transfer (index_topic_1 address from, index_topic_2 address to, uint256 value)
+  -- ERC721 :  Transfer (index_topic_1 address from, index_topic_2 address to, uint256 tokenId)
+  --
+  -- Here we  apply an additional filter to only get fully indexed Transfer events:
+  AND array_length(l.indexed_args) >= 2
+
+  -- NOTE:
+  -- if we wanted to include non-indexed Transfer events we could appy only the topic0 filter
+  -- but then we would need ot keep the "data" field and decode it accordingly.

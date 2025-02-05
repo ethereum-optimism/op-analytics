@@ -36,13 +36,18 @@ EXCLUDE_CATEGORIES = [
     "Liquid Restaking",
 ]
 
+# Using 30 days due to memory constraints.
+# Backfilling the enrichment job for > 30 days requires a manual backfill where we can control
+# curent_dt and lookback_days to split the full backfill range into a few jobs.
+DEFAULT_LOOKBACK_DAYS = 30
+
 
 @dataclass
 class DefillamaTVLBreakdown:
     df_tvl_breakdown: pl.DataFrame
 
     @classmethod
-    def of_date(cls, current_dt: str | None = None, lookback_days: int = 7):
+    def of_date(cls, current_dt: str | None = None, lookback_days: int = DEFAULT_LOOKBACK_DAYS):
         """Process DeFiLlama protocol data."""
         ctx = init_client()
         client = ctx.client

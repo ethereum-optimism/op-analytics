@@ -1,4 +1,5 @@
 import multiprocessing as mp
+import os
 import sys
 from dataclasses import dataclass
 from typing import Generator, Protocol, Sequence
@@ -16,7 +17,7 @@ from op_analytics.coreutils.partitioned.output import OutputData
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.partitioned.writehelper import WriteManager
 from op_analytics.datapipeline.models.compute.execute import PythonModel, PythonModelExecutor
-from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros
+from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros, set_memory_limit
 
 log = structlog.get_logger()
 
@@ -215,7 +216,7 @@ def pending_items(
                     log.info(
                         "task",
                         status="already_complete",
-                        min_block=task.data_reader.marker_data("min_block"),
+                        min_block=task.data_reader.get_marker_data("min_block"),
                     )
                     continue
                 else:
@@ -238,7 +239,8 @@ def steps(item: WorkItem) -> None:
 
         # Set duckdb memory limit. This lets us get an error from duckb instead of
         # OOMing the container.
-        # set_memory_limit(ctx.client, gb=10)
+        if (limit := os.environ.get("DUCKDB_MEMORY_LIMIT")) is not None:
+            set_memory_limit(ctx.client, gb=int(limit))
 
         task: ModelsTask = item.task
 

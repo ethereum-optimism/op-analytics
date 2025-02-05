@@ -188,11 +188,11 @@ def test_duckdb_types():
     duckdb_type_v6 = make_duckdb_type(HANDLE_OPS_FUNCTION_ABI_v0_6_0)
     assert (
         duckdb_type_v6
-        == "struct(ops struct(sender VARCHAR, nonce STRUCT(value BIGINT, lossless VARCHAR), init_code VARCHAR, call_data VARCHAR, call_gas_limit STRUCT(value BIGINT, lossless VARCHAR), verification_gas_limit STRUCT(value BIGINT, lossless VARCHAR), pre_verification_gas STRUCT(value BIGINT, lossless VARCHAR), max_fee_per_gas STRUCT(value BIGINT, lossless VARCHAR), max_priority_fee_per_gas STRUCT(value BIGINT, lossless VARCHAR), paymaster_and_data VARCHAR, signature VARCHAR)[], beneficiary VARCHAR)"
+        == "STRUCT(ops STRUCT(sender VARCHAR, nonce STRUCT(value BIGINT, lossless VARCHAR), init_code VARCHAR, call_data VARCHAR, call_gas_limit STRUCT(value BIGINT, lossless VARCHAR), verification_gas_limit STRUCT(value BIGINT, lossless VARCHAR), pre_verification_gas STRUCT(value BIGINT, lossless VARCHAR), max_fee_per_gas STRUCT(value BIGINT, lossless VARCHAR), max_priority_fee_per_gas STRUCT(value BIGINT, lossless VARCHAR), paymaster_and_data VARCHAR, signature VARCHAR)[], beneficiary VARCHAR)"
     )
 
     duckdb_type_v7 = make_duckdb_type(HANDLE_OPS_FUNCTION_ABI_v0_7_0)
     assert (
         duckdb_type_v7
-        == "struct(ops struct(sender VARCHAR, nonce STRUCT(value BIGINT, lossless VARCHAR), init_code VARCHAR, call_data VARCHAR, account_gas_limits VARCHAR, pre_verification_gas STRUCT(value BIGINT, lossless VARCHAR), gas_fees VARCHAR, paymaster_and_data VARCHAR, signature VARCHAR)[], beneficiary VARCHAR)"
+        == "STRUCT(ops STRUCT(sender VARCHAR, nonce STRUCT(value BIGINT, lossless VARCHAR), init_code VARCHAR, call_data VARCHAR, account_gas_limits VARCHAR, pre_verification_gas STRUCT(value BIGINT, lossless VARCHAR), gas_fees VARCHAR, paymaster_and_data VARCHAR, signature VARCHAR)[], beneficiary VARCHAR)"
     )

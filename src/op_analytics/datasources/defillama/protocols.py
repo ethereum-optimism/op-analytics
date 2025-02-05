@@ -19,7 +19,7 @@ PROTOCOLS_ENDPOINT = "https://api.llama.fi/protocols"
 PROTOCOL_DETAILS_ENDPOINT = "https://api.llama.fi/protocol/{slug}"
 
 
-TVL_TABLE_LAST_N_DAYS = 7
+TVL_TABLE_LAST_N_DAYS = 90
 
 
 @dataclass

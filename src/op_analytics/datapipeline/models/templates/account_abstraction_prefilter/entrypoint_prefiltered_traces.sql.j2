@@ -1,0 +1,29 @@
+/***
+  Prefilered traces.
+
+  Traces that match tx_hash as seen in EntryPoint logs.
+*/
+
+SELECT
+  t.dt
+  , t.chain
+  , t.chain_id
+  , t.network
+  --
+  , t.block_timestamp
+  , t.block_number
+  , t.transaction_hash
+  , t.from_address
+  , t.to_address
+  , t.call_type
+  , t.trace_address
+  , trace_address_root(t.trace_address) AS trace_root
+  , hexstr_method_id(t.input) AS method_id
+  , t.input
+FROM {{ raw_traces }} AS t
+WHERE
+  t.call_type != 'delegatecall'
+  AND (
+    -- Filter to traces associated with EntryPoint contract logs.
+    t.transaction_hash IN (SELECT h.transaction_hash FROM {{ entrypoint_txhashes }} AS h)
+  )

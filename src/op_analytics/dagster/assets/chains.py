@@ -35,9 +35,8 @@ def blockbatch_views():
     Example usage:
 
     ```
-    SELECT * FROM blockbatch_gcs.models(
-        model='refined_traces',
-        output='refined_traces_fees_v1',
+    SELECT * FROM blockbatch_gcs.read_date(
+        rootpath='blockbatch/refined_traces/refined_traces_fees_v1',
         chain='op',
         dt='2025-01-14'
     )
@@ -48,9 +47,9 @@ def blockbatch_views():
     NOTE: The "use_hive_partitioning = 1" is required or else the dt and chain columns
     will not be availble in the result.
     """
-    from op_analytics.coreutils.clickhouse.gcsview import create_blockbatch_models_gcs_view
+    from op_analytics.coreutils.clickhouse.gcsview import create_blockbatch_gcs_view
 
-    create_blockbatch_models_gcs_view()
+    create_blockbatch_gcs_view()
 
 
 @asset
@@ -61,7 +60,7 @@ def blockbatch_views_bq():
     - blockbatch_gcs.refined_transactions_fees_v1
     - blockbatch_gcs.refined_traces_fees_v1
     """
-    from op_analytics.coreutils.bigquery.gcsview import create_gcs_view
+    from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
 
     MODEL_OUTPUTS = [
         ("contract_creation", "create_traces_v1"),
@@ -72,7 +71,7 @@ def blockbatch_views_bq():
     ]
 
     for model, output in MODEL_OUTPUTS:
-        create_gcs_view(
+        create_gcs_external_table(
             db_name="gcs_blockbatch",
             table_name=f"{model}__{output}",
             partition_columns="chain STRING, dt DATE",

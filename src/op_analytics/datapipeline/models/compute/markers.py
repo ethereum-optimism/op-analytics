@@ -11,6 +11,7 @@ log = structlog.get_logger()
 @dataclass
 class ModelsDataSpec:
     models: list[str]
+    root_path_prefix: str
 
     input_root_paths: list[RootPath] = field(init=False, default_factory=list)
     output_root_paths: list[RootPath] = field(init=False, default_factory=list)
@@ -21,7 +22,7 @@ class ModelsDataSpec:
 
             for output_dataset in model.expected_output_datasets:
                 self.output_root_paths.append(
-                    RootPath.of(root_path=f"blockbatch/{model.name}/{output_dataset}")
+                    RootPath.of(root_path=f"{self.root_path_prefix}/{model.name}/{output_dataset}")
                 )
 
             for input_dataset in model.input_datasets:
