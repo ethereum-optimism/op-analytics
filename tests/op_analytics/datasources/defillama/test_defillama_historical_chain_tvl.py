@@ -160,7 +160,7 @@ def test_extract_chain_tvl_to_dataframe():
 
 
 @patch("op_analytics.datasources.defillama.historical_chain_tvl.get_data")
-@patch("op_analytics.coreutils.partitioned.dailydata.PartitionedWriteManager.write")
+@patch("op_analytics.coreutils.partitioned.dailydatawrite.PartitionedWriteManager.write")
 def test_pull_historical_single_chain_tvl(
     mock_write,
     mock_get_data,
@@ -224,7 +224,7 @@ def test_pull_historical_single_chain_tvl(
 
 
 @patch("op_analytics.datasources.defillama.historical_chain_tvl.get_data")
-@patch("op_analytics.coreutils.partitioned.dailydata.PartitionedWriteManager.write")
+@patch("op_analytics.coreutils.partitioned.dailydatawrite.PartitionedWriteManager.write")
 def test_pull_historical_all_chain_tvl(
     mock_write,
     mock_get_data,

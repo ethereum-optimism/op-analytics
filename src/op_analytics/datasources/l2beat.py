@@ -69,7 +69,11 @@ def pull_l2beat():
     projects_summary = list(summary["data"]["projects"].values())
 
     # Parse the summary and store as a dataframe.
-    summary_df = pl.DataFrame(projects_summary)
+    # (pedrod - 2025/01/31) L2Beat updated their naming from TVL to TVS.
+    # Here we adapat the incoming data to match our existing schema.
+    # This is a temporary patch while we work on migrating L2Beat to the
+    # DailyData pattern.
+    summary_df = pl.DataFrame(projects_summary).rename({"tvs": "tvl"})
 
     # Write summary to BQ.
     dt = now_date()
@@ -105,7 +109,7 @@ def _process_tvl(session, projects: list[L2BeatProject]):
     """Pull TVL and write to BQ."""
 
     def fetch_tvl(p: L2BeatProject):
-        url = f"https://l2beat.com/api/scaling/tvl/{p.slug}?range={TVL_QUERY_RANGE}"
+        url = f"https://l2beat.com/api/scaling/tvs/{p.slug}?range={TVL_QUERY_RANGE}"
         return get_data(session, url)
 
     tvl_df = _pull_project_data(
