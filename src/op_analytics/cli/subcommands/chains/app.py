@@ -362,3 +362,21 @@ def noargs_public_bq():
         force_complete=False,
         force_not_ready=False,
     )
+
+
+# Backfills
+
+
+@app.command()
+def aa_backfill_01():
+    """Backfill account abstraction prefilter."""
+    compute_blockbatch(
+        chains=normalize_chains("ALL"),
+        models=normalize_blockbatch_models("account_abstraction_prefilter"),
+        range_spec="@20250131:20250205",
+        read_from=DataLocation.GCS,
+        write_to=DataLocation.GCS,
+        dryrun=False,
+        force_complete=False,
+        fork_process=True,
+    )
