@@ -110,7 +110,7 @@ def test_process_breakdown_stables():
 
 
 @patch("op_analytics.datasources.defillama.stablecoins.get_data")
-@patch("op_analytics.coreutils.partitioned.dailydata.PartitionedWriteManager.write")
+@patch("op_analytics.coreutils.partitioned.dailydatawrite.PartitionedWriteManager.write")
 def test_pull_stables_single_stablecoin(
     mock_write,
     mock_get_data,
@@ -198,7 +198,7 @@ def test_pull_stables_single_stablecoin(
 
 
 @patch("op_analytics.datasources.defillama.stablecoins.get_data")
-@patch("op_analytics.coreutils.partitioned.dailydata.PartitionedWriteManager.write")
+@patch("op_analytics.coreutils.partitioned.dailydatawrite.PartitionedWriteManager.write")
 def test_pull_stables_multiple_stablecoins(
     mock_write,
     mock_get_data,

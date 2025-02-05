@@ -21,7 +21,7 @@ SUMMARY_ENDPOINT = "https://stablecoins.llama.fi/stablecoins?includePrices=true"
 BREAKDOWN_ENDPOINT = "https://stablecoins.llama.fi/stablecoin/{id}"
 
 
-BALANCES_TABLE_LAST_N_DAYS = 120  # write only recent dates
+BALANCES_TABLE_LAST_N_DAYS = 90  # write only recent dates
 
 
 MUST_HAVE_METADATA_FIELDS = [

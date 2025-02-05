@@ -4,23 +4,23 @@ from unittest.mock import patch
 import polars as pl
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 
-from op_analytics.datasources import l2beat
+from op_analytics.datasources import l2beat_legacy
 
 TESTDATA = InputTestData.at(__file__)
 
 
 def mock_get_data(session, url):
-    if url == l2beat.SUMMARY_ENDPOINT:
+    if url == l2beat_legacy.SUMMARY_ENDPOINT:
         with open(TESTDATA.path("mockdata/l2beat_scaling_summary.json")) as fobj:
             return json.load(fobj)
 
     # Mock data for base TVL
-    if url.startswith("https://l2beat.com/api/scaling/tvl/base"):
+    if url.startswith("https://l2beat.com/api/scaling/tvs/base"):
         with open(TESTDATA.path("mockdata/l2beat_tvl_base.json")) as fobj:
             return json.load(fobj)
 
     # Use the taiko data for all other TVLs so we don't have to have as many mocks.
-    if url.startswith("https://l2beat.com/api/scaling/tvl/"):
+    if url.startswith("https://l2beat.com/api/scaling/tvs/"):
         with open(TESTDATA.path("mockdata/l2beat_tvl_taiko.json")) as fobj:
             return json.load(fobj)
 
@@ -37,9 +37,9 @@ def mock_get_data(session, url):
     raise NotImplementedError({url})
 
 
-@patch("op_analytics.datasources.l2beat.get_data", mock_get_data)
+@patch("op_analytics.datasources.l2beat_legacy.get_data", mock_get_data)
 def test_extract():
-    actual = l2beat.pull_l2beat()
+    actual = l2beat_legacy.pull_l2beat()
     summary_df = actual["summary"]
     assert len(summary_df) == 105
 
