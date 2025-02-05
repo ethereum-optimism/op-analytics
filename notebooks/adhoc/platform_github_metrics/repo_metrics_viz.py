@@ -67,6 +67,95 @@ def plot_repo_metric_over_time(
     return fig
 
 
+def plot_multi_repo_metric_over_time(
+    df: pl.DataFrame, repos: list, period_type: str, metric: str, x_axis: str, chart_type: str
+):
+    """
+    Plot a single metric over time for multiple repositories.
+    :param repos: list of selected repos
+    :param period_type: selected rolling window (e.g. '7d' or '30d'), if applicable
+    :param metric: numeric metric to plot
+    :param x_axis: 'period_end' or 'period_start'
+    :param chart_type: "Line", "Stacked Area", or "Side-by-Side Bar"
+    """
+    # Filter by the selected repos (skip if empty or "all" in the list).
+    # We'll treat "all" as meaning "include everything."
+    if "all" not in [r.lower() for r in repos]:
+        df = df.filter(pl.col("repo").is_in(repos))
+
+    # Filter by period_type if needed (depends on your data).
+    if period_type and period_type.lower() != "all":
+        df = df.filter(pl.col("period_type") == period_type)
+
+    # Sort and select relevant columns.
+    df_pd = df.sort([x_axis, "repo"]).select(["repo", x_axis, metric, "period_type"]).to_pandas()
+
+    # Build the figure.
+    title = f"{metric.capitalize().replace('_',' ')} - Multi-Repo Comparison"
+
+    if chart_type == "Line":
+        fig = px.line(
+            df_pd,
+            x=x_axis,
+            y=metric,
+            color="repo",
+            title=title,
+            markers=True,
+        )
+    elif chart_type == "Stacked Area":
+        fig = px.area(
+            df_pd,
+            x=x_axis,
+            y=metric,
+            color="repo",
+            title=title,
+        )
+    else:  # Side-by-Side Bar
+        fig = px.bar(
+            df_pd,
+            x=x_axis,
+            y=metric,
+            color="repo",
+            barmode="group",
+            title=title,
+        )
+
+    fig.update_layout(xaxis_title=x_axis, yaxis_title=metric, legend_title="Repository")
+    return fig
+
+
+def plot_scatter_two_metrics(
+    df: pl.DataFrame, repos: list, period_type: str, metric_x: str, metric_y: str
+):
+    """
+    Plot a scatter chart for two selected metrics, possibly filtered by repos and period_type.
+    :param repos: list of selected repos
+    :param period_type: rolling window filter
+    :param metric_x: x-axis metric
+    :param metric_y: y-axis metric
+    """
+    if "all" not in [r.lower() for r in repos]:
+        df = df.filter(pl.col("repo").is_in(repos))
+
+    if period_type and period_type.lower() != "all":
+        df = df.filter(pl.col("period_type") == period_type)
+
+    df_pd = df.select(["repo", metric_x, metric_y, "period_type"]).to_pandas()
+
+    title = f"Scatter: {metric_x.capitalize().replace('_',' ')} vs. {metric_y.capitalize().replace('_',' ')}"
+
+    fig = px.scatter(
+        df_pd,
+        x=metric_x,
+        y=metric_y,
+        color="repo",
+        title=title,
+        hover_data=["repo", "period_type"],
+    )
+    fig.update_layout(xaxis_title=metric_x, yaxis_title=metric_y, legend_title="Repository")
+    return fig
+
+
 def main():
     st.title("GitHub Metrics Explorer")
 
@@ -86,17 +175,18 @@ def main():
     # Determine which column to use for the x-axis.
     x_axis = "period_end" if "period_end" in df.columns else "period_start"
 
-    # Sidebar: Filters.
+    # Prepare for filters in the sidebar.
     st.sidebar.header("Filters")
 
-    # Repository selector: include an "all" option.
-    repo_options = sorted(df["repo"].unique().to_list())
-    repo_options.insert(0, "all")
+    # Repository selector: We allow multiple repos AND an "all" option.
+    unique_repos = sorted(df["repo"].unique().to_list())
+    if "all" not in [r.lower() for r in unique_repos]:
+        unique_repos.insert(0, "all")
     selected_repo = st.sidebar.selectbox(
-        "Select Repository", repo_options, index=len(repo_options) - 1
+        "Select Repository for Single-Metric Plot", unique_repos, index=len(unique_repos) - 1
     )
 
-    # Metric selector: we exclude non-metric columns.
+    # Identify numeric columns (metrics).
     exclude_cols = {"repo", "period_start", "period_end", "period_type"}
     numeric_types = {
         pl.Int8,
@@ -118,22 +208,92 @@ def main():
         st.error("No numeric metric columns found in the data.")
         st.stop()
 
+    # Single-metric selection for the single-metric time-series section.
     selected_metric = st.sidebar.selectbox(
-        "Select Metric", metric_options, index=len(metric_options) - 1
+        "Select Metric for Single-Metric Plot", metric_options, index=len(metric_options) - 1
     )
 
-    # Display the metric description in the sidebar.
+    # Display the metric description in the sidebar for single metric.
     st.sidebar.subheader("Metric Description")
     metric_description = METRIC_DESCRIPTIONS.get(selected_metric, "No description available.")
     st.sidebar.write(metric_description)
 
-    # Option to show markers on the chart.
+    # Option to show markers on the single-metric chart.
     markers = st.sidebar.checkbox("Show Markers", value=False)
 
-    # Plot the time series chart.
+    # === Single Metric Over Time ===
     st.header("Single Metric over Time")
-    fig = plot_repo_metric_over_time(df, selected_repo, selected_metric, x_axis, markers)
-    st.plotly_chart(fig, use_container_width=True)
+    fig_single = plot_repo_metric_over_time(df, selected_repo, selected_metric, x_axis, markers)
+    st.plotly_chart(fig_single, use_container_width=True)
+
+    # === Multiple Repositories Over Time ===
+    st.header("Multiple Repositories Over Time")
+    st.write("Compare a single metric across multiple repositories in a chosen rolling window.")
+
+    # Multi-select repos
+    multi_repo_selection = st.multiselect(
+        "Select Repositories (or 'all')", unique_repos, default=["all"]
+    )
+
+    # Select rolling window (period_type) if you have multiple
+    # If you only have one type in your data, you can skip or hide it.
+    period_types_available = sorted(df["period_type"].unique().to_list())
+    if "all" not in [pt.lower() for pt in period_types_available]:
+        period_types_available.insert(0, "all")
+    selected_period_type = st.selectbox(
+        "Select Rolling Window (Period Type)", period_types_available
+    )
+
+    # Metric to plot
+    selected_metric_multi = st.selectbox("Select Metric for Multi-Repo Plot", metric_options)
+
+    # Chart type selection
+    chart_type_options = ["Line", "Stacked Area", "Side-by-Side Bar"]
+    selected_chart_type = st.radio("Select Chart Type", chart_type_options, index=0)
+
+    # Button to generate the multi-repo chart
+    if st.button("Generate Multi-Repo Chart"):
+        fig_multi = plot_multi_repo_metric_over_time(
+            df,
+            repos=multi_repo_selection,
+            period_type=selected_period_type,
+            metric=selected_metric_multi,
+            x_axis=x_axis,
+            chart_type=selected_chart_type,
+        )
+        st.plotly_chart(fig_multi, use_container_width=True)
+
+    # === Scatter Plot of Two Metrics ===
+    st.header("Scatter Plot of Two Metrics")
+    st.write(
+        "Plot any two metrics to see how they correlate across repositories in a selected window."
+    )
+
+    # Multi-select repos for scatter
+    scatter_repos = st.multiselect(
+        "Select Repositories for Scatter (or 'all')", unique_repos, default=["all"]
+    )
+
+    # Period type for scatter
+    selected_period_type_scatter = st.selectbox(
+        "Select Rolling Window (Period Type) for Scatter", period_types_available
+    )
+
+    # Select two metrics for scatter
+    metric_x = st.selectbox("Select X-axis Metric", metric_options, index=0)
+    metric_y = st.selectbox(
+        "Select Y-axis Metric", metric_options, index=1 if len(metric_options) > 1 else 0
+    )
+
+    # Button to generate scatter
+    if st.button("Generate Scatter"):
+        if metric_x == metric_y:
+            st.warning("Please select two different metrics for a meaningful scatter plot.")
+        else:
+            fig_scatter = plot_scatter_two_metrics(
+                df, scatter_repos, selected_period_type_scatter, metric_x, metric_y
+            )
+            st.plotly_chart(fig_scatter, use_container_width=True)
 
 
 if __name__ == "__main__":
