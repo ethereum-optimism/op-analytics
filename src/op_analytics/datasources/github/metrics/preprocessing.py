@@ -62,7 +62,9 @@ def prepare_prs(
         [
             (
                 pl.col("requested_reviewers")
-                .map_elements(lambda x: len(x) if isinstance(x, list) else 0)
+                .map_elements(
+                    lambda x: len(x) if isinstance(x, list) else 0, return_dtype=pl.UInt32
+                )
                 .alias("requested_reviewers_count")
             ),
         ]
