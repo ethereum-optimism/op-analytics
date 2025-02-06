@@ -1,10 +1,38 @@
 import polars as pl
 from op_analytics.coreutils.time import parse_isoformat
+from op_analytics.coreutils.logger import structlog
+
+log = structlog.get_logger()
 
 
-def prepare_prs(prs_df: pl.DataFrame) -> pl.DataFrame:
+def compute_earliest_approval(reviews_df: pl.DataFrame) -> pl.DataFrame:
+    """Return earliest approval timestamp per PR."""
+    approved_reviews = reviews_df.filter(pl.col("state").str.to_uppercase() == "APPROVED")
+    return approved_reviews.group_by(["repo", "pr_number"]).agg(
+        pl.col("submitted_at").min().alias("approved_at")
+    )
+
+
+def compute_earliest_non_bot_comment(comments_df: pl.DataFrame) -> pl.DataFrame:
+    """Return earliest non-bot comment timestamp per PR."""
+    non_bot_comments = comments_df.filter(
+        pl.col("user").struct.field("login").str.contains(r"(?i)\[bot\]$").not_()
+    )
+    return non_bot_comments.group_by(["repo", "pr_number"]).agg(
+        pl.col("created_at").min().alias("earliest_non_bot_comment_at")
+    )
+
+
+def prepare_prs(
+    prs_df: pl.DataFrame, comments_df: pl.DataFrame, reviews_df: pl.DataFrame
+) -> pl.DataFrame:
+    """
+    Prepare PR dataframe by adding derived features and cleaning data.
+    """
     prs_df = prs_df.rename({"number": "pr_number"})
     prs_df = deduplicate_prs(prs_df)
+
+    # Convert timestamps
     prs_df = prs_df.with_columns(
         [
             pl.col("created_at")
@@ -21,6 +49,48 @@ def prepare_prs(prs_df: pl.DataFrame) -> pl.DataFrame:
             .alias("updated_at"),
         ]
     )
+
+    # Add derived fields from comments and reviews
+    earliest_approval = compute_earliest_approval(reviews_df)
+    earliest_non_bot_comment = compute_earliest_non_bot_comment(comments_df)
+
+    prs_df = prs_df.join(earliest_approval, on=["repo", "pr_number"], how="left")
+    prs_df = prs_df.join(earliest_non_bot_comment, on=["repo", "pr_number"], how="left")
+
+    # Add reviewer features first
+    prs_df = prs_df.with_columns(
+        [
+            (
+                pl.col("requested_reviewers")
+                .map_elements(lambda x: len(x) if isinstance(x, list) else 0)
+                .alias("requested_reviewers_count")
+            ),
+        ]
+    )
+
+    # Then add derived features that depend on reviewer features
+    prs_df = prs_df.with_columns(
+        [
+            (pl.col("requested_reviewers_count") > 0).alias("has_requested_reviewers"),
+            # Time-based features
+            (
+                (pl.col("approved_at") - pl.col("created_at"))
+                .dt.total_hours()
+                .alias("time_to_first_review_hours")
+            ),
+            (
+                (pl.col("earliest_non_bot_comment_at") - pl.col("created_at"))
+                .dt.total_hours()
+                .alias("time_to_first_non_bot_comment_hours")
+            ),
+            (
+                (pl.col("merged_at") - pl.col("created_at"))
+                .dt.total_hours()
+                .alias("time_to_merge_hours")
+            ),
+        ]
+    )
+
     return prs_df
 
 

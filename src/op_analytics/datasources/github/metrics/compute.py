@@ -132,19 +132,9 @@ def compute_all_metrics(
 ) -> pl.DataFrame:
     """Compute metrics for multiple rolling window sizes and combine results"""
     # Preprocess dataframes
-    prs_df = prepare_prs(prs_df)
     comments_df = prepare_comments(comments_df)
     reviews_df = prepare_reviews(reviews_df)
-    # Add derived fields to PRs
-    prs_df = add_derived_fields_to_prs(prs_df, comments_df, reviews_df)
-    # Compute metrics for each interval
-    intervals = {
-        "week": 7,
-        "month": 30,
-        "3months": 90,
-        "6months": 180,
-        "year": 365,
-    }
+    prs_df = prepare_prs(prs_df, comments_df, reviews_df)
 
     # Filter out bot comments and sort data
     comments_df = comments_df.filter(
@@ -153,6 +143,15 @@ def compute_all_metrics(
     prs_df = prs_df.sort("created_at")
     comments_df = comments_df.sort("created_at")
     reviews_df = reviews_df.sort("submitted_at")
+
+    # Define intervals for rolling windows
+    intervals = {
+        "week": 7,
+        "month": 30,
+        "3months": 90,
+        "6months": 180,
+        "year": 365,
+    }
 
     frames = []
     for label, days in intervals.items():
