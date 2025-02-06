@@ -2,7 +2,12 @@ version: 2.1
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.0.1
-  utils: ethereum-optimism/circleci-utils@0.0.15
+  utils: ethereum-optimism/circleci-utils@1.0.2
+
+executors:
+  default:
+    machine:
+      image: ubuntu-2204:2024.08.1
 
 parameters:
   run_job:
@@ -78,8 +83,7 @@ commands:
 
 jobs:
   python-installation-and-dependency-check:
-    machine:
-      image: ubuntu-2004:current
+    executor: default
     steps:
       - checkout-dep-1:
           base_git_project: "op-analytics"
@@ -130,8 +134,7 @@ jobs:
             pipenv run pip freeze
 
   setup-python-3-10-job:
-    machine:
-      image: ubuntu-2004:current
+    executor: default
     steps:
       - checkout-dep-1:
           base_git_project: "op-analytics"
@@ -146,8 +149,7 @@ jobs:
 
   convert-and-run-notebooks-to-py:
     description: "Convert and run notebooks to Python scripts"
-    machine:
-      image: ubuntu-2004:current
+    executor: default
     parameters:
       notebook_paths:
         type: string
@@ -193,8 +195,7 @@ jobs:
       skip-ci:
         type: boolean
         default: false
-    machine:
-      image: ubuntu-2004:current
+    executor: default
     steps:
       - utils/gcp-oidc-authenticate:
           project_id: GCP_PROJECT_ID
@@ -229,17 +230,14 @@ jobs:
               cd - >/dev/null
             done
 
-      - utils/get-github-access-token:
-          condition: << parameters.push >>
       - utils/github-commit-and-push-changes:
           condition: << parameters.push >>
           commit-message: "<< parameters.commit-message >>"
           skip-ci: << parameters.skip-ci >>
-          folder: "op-analytics"
+          path: "op-analytics"
 
   deploy-github-pages:
-    machine:
-      image: ubuntu-2004:current
+    executor: default
     steps:
       - checkout-dep-1
       - setup-python-env
@@ -257,7 +255,6 @@ jobs:
             cp -r docs/* $tmp_dir
             touch $tmp_dir/.nojekyll
 
-      - utils/get-github-access-token
       - utils/github-pages-deploy:
           force-push: true
           src-pages-dir: /tmp/docs
