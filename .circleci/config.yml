@@ -415,7 +415,6 @@ workflows:
         - equal: [<< pipeline.schedule.name >>, "daily_l2_chain_data_uploads"]
         - equal:
             [<< pipeline.parameters.run_job >>, "daily_l2_chain_data_uploads"]
-        - True
     jobs:
       - setup-python-3-10-job
       - convert-and-run-notebooks-to-py:
