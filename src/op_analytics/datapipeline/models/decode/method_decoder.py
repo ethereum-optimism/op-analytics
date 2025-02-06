@@ -1,10 +1,16 @@
 from dataclasses import dataclass
-from typing import Callable, NewType
+from typing import NewType, TypedDict
 
-from eth_abi_lite.decoding import ContextFramesBytesIO, TupleDecoder
+from .abi_to_dictdecoder import DictionaryDecoder
 
 
 MethodId = NewType("MethodId", str)
+
+
+class DecodingResult(TypedDict):
+    method_id: str
+    decoded_json: str
+    error: str
 
 
 @dataclass
@@ -14,16 +20,11 @@ class SingleMethodDecoder:
     # Method ID associated with this decoder (hex sring).
     method_id: str
 
-    # Decoder instance. Converts bytestream to python objects.
-    decoder: TupleDecoder
+    # Decoder instance. Converts bytestream to python ditionary.
+    decoder: DictionaryDecoder
 
-    # Result converter. Extracts specific fields from the result
-    # produced by the decoder.
-    to_dict: Callable[[str], dict]
-
-    def decode(self, stream: ContextFramesBytesIO):
-        result = self.decoder.decode(stream)
-        return self.to_dict(result)
+    def decode_as_json(self, hexstr: str):
+        return self.decoder.decode_function_as_json(hexstr)
 
 
 @dataclass
@@ -32,46 +33,36 @@ class MultiMethodDecoder:
 
     decoders: dict[MethodId, SingleMethodDecoder]
 
-    default_result: dict
-
     @classmethod
-    def of(cls, decoders: list[SingleMethodDecoder], default_result: dict):
+    def of(cls, decoders: list[SingleMethodDecoder]):
         """Instantiate using a list of decoders.
 
         The list is converted to a mapping by method_id.
         """
         return cls(
             decoders={_.method_id: _ for _ in decoders},
-            default_result=default_result,
         )
 
-    def error(self, ex: Exception, data: str):
-        return dict(
-            self.default_result,
-            decoding_status=str(ex) + "\n" + data,
-            method_id=None,
-        )
-
-    def decode(self, data: str):
+    def decode(self, data: str) -> DecodingResult:
         try:
             method_id = MethodId(data[:10])
         except Exception as ex:
-            return self.error(ex, data)
-
-        # skip 2 for "0x"
-        # skip 8 for method id
-        stream = ContextFramesBytesIO(bytearray.fromhex(data[10:]))
+            return dict(
+                method_id=None,
+                decoded_json=None,
+                error=str(ex) + "\n" + data,
+            )
 
         if method_id in self.decoders:
             return dict(
-                decoding_status="ok",
                 method_id=method_id,
-                **self.decoders[method_id].decode(stream),
+                decoded_json=self.decoders[method_id].decode_as_json(data),
+                error=None,
             )
 
         else:
             return dict(
-                self.default_result,
-                decoding_status="unsupported",
                 method_id=method_id,
+                decoded_json=None,
+                error=None,
             )

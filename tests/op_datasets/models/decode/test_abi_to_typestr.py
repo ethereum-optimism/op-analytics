@@ -10,23 +10,55 @@ def test_empty_abi():
 
 
 def test_simple_types():
-    abi = {"inputs": [{"type": "uint256"}, {"type": "address"}, {"type": "bool"}]}
+    abi = {
+        "inputs": [
+            {"type": "uint256", "name": "a"},
+            {"type": "address", "name": "b"},
+            {"type": "bool", "name": "c"},
+        ]
+    }
     assert abi_inputs_to_typestr(abi) == ["uint256", "address", "bool"]
 
 
 def test_array_types():
-    abi = {"inputs": [{"type": "uint256[]"}, {"type": "address[]"}, {"type": "bool[]"}]}
+    abi = {
+        "inputs": [
+            {"type": "uint256[]", "name": "a"},
+            {"type": "address[]", "name": "b"},
+            {"type": "bool[]", "name": "c"},
+        ]
+    }
     assert abi_inputs_to_typestr(abi) == ["uint256[]", "address[]", "bool[]"]
 
 
 def test_struct_type():
-    abi = {"inputs": [{"type": "tuple", "components": [{"type": "uint256"}, {"type": "address"}]}]}
+    abi = {
+        "inputs": [
+            {
+                "type": "tuple",
+                "components": [
+                    {"type": "uint256", "name": "b"},
+                    {"type": "address", "name": "c"},
+                ],
+                "name": "a",
+            },
+        ]
+    }
     assert abi_inputs_to_typestr(abi) == ["(uint256,address)"]
 
 
 def test_array_of_structs():
     abi = {
-        "inputs": [{"type": "tuple[]", "components": [{"type": "uint256"}, {"type": "address"}]}]
+        "inputs": [
+            {
+                "type": "tuple[]",
+                "components": [
+                    {"type": "uint256", "name": "b"},
+                    {"type": "address", "name": "c"},
+                ],
+                "name": "a",
+            },
+        ]
     }
     assert abi_inputs_to_typestr(abi) == ["(uint256,address)[]"]
 
@@ -34,13 +66,21 @@ def test_array_of_structs():
 def test_complex_nested():
     abi = {
         "inputs": [
-            {"type": "uint256"},
+            {"type": "uint256", "name": "a"},
             {
                 "type": "tuple",
                 "components": [
-                    {"type": "address"},
-                    {"type": "tuple[]", "components": [{"type": "bool"}, {"type": "uint256"}]},
+                    {"type": "address", "name": "c"},
+                    {
+                        "type": "tuple[]",
+                        "components": [
+                            {"type": "bool", "name": "e"},
+                            {"type": "uint256", "name": "f"},
+                        ],
+                        "name": "d",
+                    },
                 ],
+                "name": "b",
             },
         ]
     }

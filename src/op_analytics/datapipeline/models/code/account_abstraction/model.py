@@ -5,13 +5,10 @@ from op_analytics.datapipeline.models.code.account_abstraction.abis import (
     INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0,
     INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0,
 )
-from op_analytics.datapipeline.models.code.account_abstraction.event_decoders import (
-    register_4337_event_decoders,
+from op_analytics.datapipeline.models.code.account_abstraction.decoders import (
+    register_4337_decoders,
 )
 
-from op_analytics.datapipeline.models.code.account_abstraction.function_decoders import (
-    register_4337_function_decoders,
-)
 from op_analytics.datapipeline.models.compute.model import AuxiliaryTemplate
 from op_analytics.datapipeline.models.compute.registry import register_model
 from op_analytics.datapipeline.models.compute.types import NamedRelations
@@ -19,15 +16,13 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
 
 @register_model(
     input_datasets=[
-        "ingestion/blocks_v1",
-        "ingestion/logs_v1",
-        "ingestion/traces_v1",
-        "ingestion/transactions_v1",
+        "blockbatch/account_abstraction_prefilter/entrypoint_logs_v1",
+        "blockbatch/account_abstraction_prefilter/entrypoint_traces_v1",
     ],
     auxiliary_templates=[
         "refined_transactions_fees",
-        "account_abstraction/user_op_events",
-        "account_abstraction/user_op_prefiltered_traces",
+        "account_abstraction/UserOperationEvent",
+        "account_abstraction/innerHandleOp",
         "account_abstraction/user_op_sender_subtraces",
         "account_abstraction/data_quality_check_01",
         "account_abstraction/data_quality_check_02",
@@ -43,8 +38,7 @@ def account_abstraction(
     input_datasets: dict[str, ParquetData],
     auxiliary_templates: dict[str, AuxiliaryTemplate],
 ) -> NamedRelations:
-    register_4337_event_decoders(ctx)
-    register_4337_function_decoders(ctx)
+    register_4337_decoders(ctx)
 
     # Decoded UserOperationEvent logs.
     user_ops_events = auxiliary_templates["account_abstraction/user_op_events"].create_table(

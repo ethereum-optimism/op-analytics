@@ -1,0 +1,16 @@
+WITH
+
+-- Traces that are innerHandleOp calls.
+inner1 AS (
+  SELECT
+    p.transaction_hash
+    , p.trace_address
+    , p.trace_root
+    , p.from_address AS entrypoint_contract_address
+    , decode_inner_handle_op(p.input) AS inner_handle_op
+  FROM {{ prefiltered_traces }} AS p
+  WHERE
+    p.method_id IN ({{ inner_handle_op_method_ids }})
+)
+
+SELECT * FROM inner1

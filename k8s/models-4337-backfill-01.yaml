@@ -8,13 +8,8 @@ metadata:
     component: models-backfill
 
 spec:
-  backoffLimit: 0
-  podFailurePolicy:
-    rules:
-      - action: Ignore  # Keeps failed pods
-        onExitCodes:
-          operator: In
-          values: [1]
+  ttlSecondsAfterFinished: null
+  backoffLimit: 4
   template:
     spec:
       serviceAccountName: op-analytics-service-account
