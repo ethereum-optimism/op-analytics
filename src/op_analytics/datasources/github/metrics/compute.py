@@ -89,14 +89,6 @@ def _compute_rolling_for_interval(
 ) -> pl.DataFrame:
     """Compute metrics for a rolling window of given size"""
 
-    # Filter out bot comments and sort data
-    comments_df = comments_df.filter(
-        pl.col("user").struct.field("login").str.contains(r"(?i)\[bot\]$").not_()
-    )
-    prs_df = prs_df.sort("created_at")
-    comments_df = comments_df.sort("created_at")
-    reviews_df = reviews_df.sort("submitted_at")
-
     period_str = f"{period_days}d"
 
     # Compute each metric group using the new modular functions
@@ -153,6 +145,14 @@ def compute_all_metrics(
         "6months": 180,
         "year": 365,
     }
+
+    # Filter out bot comments and sort data
+    comments_df = comments_df.filter(
+        pl.col("user").struct.field("login").str.contains(r"(?i)\[bot\]$").not_()
+    )
+    prs_df = prs_df.sort("created_at")
+    comments_df = comments_df.sort("created_at")
+    reviews_df = reviews_df.sort("submitted_at")
 
     frames = []
     for label, days in intervals.items():
