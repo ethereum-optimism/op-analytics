@@ -120,7 +120,7 @@ def table_cutoff_date() -> date:
 
 
 def extract_parent(protocol: dict[str, Any]) -> str | None:
-    if parent_protcol := protocol.get("parentProtocol"):
+    if parent_protocol := protocol.get("parentProtocol"):
         assert isinstance(parent_protcol, str)
         return parent_protcol.replace("parent#", "")
     else:
