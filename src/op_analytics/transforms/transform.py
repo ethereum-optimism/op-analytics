@@ -77,11 +77,15 @@ class TransformTask:
                 )
 
                 if step.step_type == StepType.EXPORT:
+                    # Optimize the table before exporting.
+                    log.info("optimizing export table")
+                    client.command(f"OPTIMIZE TABLE {step.db}.{step.table_name} FINAL CLEANUP")
+
                     export_to_bigquery(
                         client=client,
                         db=step.db,
                         table=step.table_name,
-                        select_statement=f"SELECT * FROM {step.db}.{step.table_name}",
+                        select_statement=f"SELECT * FROM {step.db}.{step.table_name} FINAL",
                     )
 
         return results

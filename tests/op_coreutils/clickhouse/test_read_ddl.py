@@ -16,6 +16,6 @@ def test_read_ddls():
     # Verify each DDL is a non-empty string
     paths = [_.basename for _ in ddls]
     assert paths == [
-        "03_fact_ntt_delivery_events_v1.sql",
-        "05_dim_ntt_contract_address_v1.sql",
+        "03_fact_erc20_ntt_transfers_v1.sql",
+        "04_dim_erc20_ntt_first_seen_v1.sql",
     ]
