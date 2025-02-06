@@ -14,6 +14,8 @@ def execute_pull_repo_metrics():
       2. Compute rolling/detailed metrics.
       3. Write the computed metrics to the REPO_METRICS dataset.
 
+    We read all of the historical data and recompute metrics from scratch. Results are saved under a "dt"
+    partition that indicates the processing date but is not related to the data.
     Returns:
         dict: Summary of processing results.
     """
