@@ -67,7 +67,7 @@ def plot_correlation_heatmap(corr_matrix: pd.DataFrame, title: str = "Correlatio
 
 
 def main():
-    st.title("Blockchain Metrics Correlation Explorer")
+    st.title("Metrics Correlation Explorer")
 
     # 1. Sidebar for CSV Upload
     st.sidebar.header("Data Upload")
