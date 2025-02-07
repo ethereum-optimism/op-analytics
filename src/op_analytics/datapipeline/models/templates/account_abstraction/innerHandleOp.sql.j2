@@ -3,14 +3,20 @@ WITH
 -- Traces that are innerHandleOp calls.
 inner1 AS (
   SELECT
-    p.transaction_hash
-    , p.trace_address
-    , p.trace_root
-    , p.from_address AS entrypoint_contract_address
-    , decode_inner_handle_op(p.input) AS inner_handle_op
+    * EXCLUDE (input)
+    , decode_inner_handle_op(p.input) AS decoded
   FROM {{ prefiltered_traces }} AS p
-  WHERE
-    p.method_id IN ({{ inner_handle_op_method_ids }})
+  -- WHERE
+  --   p.method_id IN ({{ inner_handle_op_method_ids }})
 )
 
-SELECT * FROM inner1
+SELECT
+  * EXCLUDE (decoded)
+  , i1.decoded['decode_error'] AS decode_error
+  , i1.decoded['op_info_sender'] AS op_info_sender
+  , i1.decoded['op_info_paymaster'] AS op_info_paymaster
+  , i1.decoded['op_info_user_op_hash'] AS op_info_user_op_hash
+  , i1.decoded['op_info'] AS op_info
+  , i1.decoded['context'] AS context
+  , i1.decoded['call_data'] AS call_data
+FROM inner1 AS i1

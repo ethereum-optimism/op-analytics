@@ -1,3 +1,17 @@
+WITH
+
+-- Traces that are innerHandleOp calls.
+inner1 AS (
+  SELECT
+    p.transaction_hash
+    , p.trace_address
+    , p.trace_root
+    , p.from_address AS entrypoint_contract_address
+    , decode_inner_handle_op(p.input) AS inner_handle_op
+  FROM {{ prefiltered_traces }} AS p
+  WHERE
+    p.method_id IN ({{ inner_handle_op_method_ids }})
+)
 
 -- Extract the sender from the innerHandleOp traces as a top-level column.
 , inner2 AS (
@@ -46,7 +60,7 @@ LEFT JOIN inner2 AS i ON p.transaction_hash = i.transaction_hash
 
 WHERE
   -- Keep only traces where the from address is the same as the UserOperation sender.
-  -- NOTE: This is also part of prefiltering where we use the sender as provided by the log
+  -- NOTE: This is also part of prefiltering where we use the sender as provided by the log      <!!!!! This is not longer true 
   --       Including it here also for clarity.
   p.from_address = i.sender
 

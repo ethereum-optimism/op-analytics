@@ -32,7 +32,7 @@ class DictionaryDecoder:
         stream = ContextFramesBytesIO(bytearray.fromhex(hexstr[10:]))
         return self.decode(stream)
 
-    def decode_function_as_json(self, hexstr: str) -> bytes:
+    def decode_function_as_json(self, hexstr: str) -> str:
         return orjson.dumps(self.decode_function(hexstr)).decode()
 
     def decode(self, stream):
