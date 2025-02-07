@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `gas_used` UInt128,
     `value` UInt256,
     `code` String,
-    `output` String,
     `call_type` String,
     `reward_type` String,
     `subtraces` Int64,

@@ -31,7 +31,6 @@ SELECT
   , gas_used
   , value
   , code
-  , output
   , call_type
   , reward_type
   , subtraces
@@ -48,5 +47,5 @@ FROM
 WHERE
   dt = { dtparam: Date }
 
-  -- Contract bytecode has the ERC-20 Transfer events.
+  -- Contract address has emitted ERC-20 Transfer events.
   AND (chain_id, contract_address) IN (erc20_tokens)
