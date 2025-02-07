@@ -4,6 +4,11 @@ from duckdb.typing import DuckDBPyType
 from duckdb.functional import PythonUDFType
 
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
+from op_analytics.coreutils.logger import structlog
+
+log = structlog.get_logger()
+
+REGISTERED_FUNCTIONS = []
 
 
 def register_decoder(
@@ -14,6 +19,10 @@ def register_decoder(
     return_type: str,
 ):
     """Register a DuckDB function to decode data."""
+
+    if duckdb_function_name in REGISTERED_FUNCTIONS:
+        log.warning(f"duckdb function is already registered: {duckdb_function_name}")
+        return
 
     def _decode(data: str):
         return decoder.decode(data)
@@ -27,3 +36,5 @@ def register_decoder(
         parameters=[DuckDBPyType(_) for _ in parameters],
         return_type=DuckDBPyType(return_type),
     )
+
+    REGISTERED_FUNCTIONS.append(duckdb_function_name)
