@@ -13,7 +13,7 @@ def compute_prmerge_metrics(prs_df: pl.DataFrame, period_str: str) -> pl.DataFra
             every="1d",
             period=period_str,
             closed="left",
-            by="repo",
+            by="repo",  # type: ignore
             include_boundaries=True,
         )
         .agg([pl.col("pr_number").n_unique().alias("merged_prs")])

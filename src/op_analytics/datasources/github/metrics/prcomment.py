@@ -12,7 +12,7 @@ def compute_prcomment_metrics(comments_df: pl.DataFrame, period_str: str) -> pl.
             every="1d",
             period=period_str,
             closed="left",
-            by="repo",
+            by="repo",  # type: ignore
             include_boundaries=True,
         )
         .agg(

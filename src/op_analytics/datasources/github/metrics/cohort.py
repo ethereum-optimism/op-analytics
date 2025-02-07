@@ -14,7 +14,7 @@ def compute_cohort_metrics(prs_df: pl.DataFrame, period_str: str) -> pl.DataFram
             every="1d",
             period=period_str,
             closed="left",
-            by="repo",
+            by="repo",  # type: ignore
             include_boundaries=True,
         )
         .agg(
