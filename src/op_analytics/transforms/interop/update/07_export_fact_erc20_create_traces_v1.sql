@@ -39,17 +39,28 @@ SELECT
   , network
   , block_timestamp
   , block_number
+  , block_hash
   , transaction_hash
   , transaction_index
   , tr_from_address
   , tx_from_address
   , contract_address
+  , tx_to_address
+  , value
+  , code
+  , ouput
   , trace_address
   , trace_type
+  , call_type
+  , reward_type
   , toString(gas) AS gas
   , toString(gas_used) AS gas_used
-
-  -- True if the contract has the crosschainBurn/crosschainMint methods. 
+  , subtraces
+  , error
+  , status
+  , tx_method_id
+  , code_bytelength
+  -- True if the contract has the crosschainBurn/crosschainMint methods.
   -- Computed as part of the fact_erc20_create_traces_v1 table.
   , is_erc7802
 
