@@ -46,15 +46,15 @@ SELECT
   , tx_from_address
   , contract_address
   , tx_to_address
+  , trace_address
+  , trace_type
+  , toString(gas) AS gas
+  , toString(gas_used) AS gas_used
   , value
   , code
   , ouput
-  , trace_address
-  , trace_type
   , call_type
   , reward_type
-  , toString(gas) AS gas
-  , toString(gas_used) AS gas_used
   , subtraces
   , error
   , status
