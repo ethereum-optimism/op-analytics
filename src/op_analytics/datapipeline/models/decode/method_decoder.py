@@ -14,7 +14,7 @@ class SingleMethodDecoder:
     # Method ID associated with this decoder (hex sring).
     method_id: str
 
-    # Decoder instance. Converts bytestream to python ditionary.
+    # Decoder instance. Converts bytestream to python dict.
     decoder: DictionaryDecoder
 
     def decode(self, hexstr: str, as_json: bool):

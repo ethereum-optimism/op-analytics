@@ -25,7 +25,6 @@ def test_inner_handle_op():
 
     assert actual == [
         {
-            "method_id": "0x1d732756",
             "decode_error": None,
             "op_info_sender": "0xda02730a01bfa6bef7ab08ee6cf2df924dc22c4c",
             "op_info_paymaster": "0x000000f6faeda8f7bfa1a8589b4b6e2d71c37592",
@@ -47,7 +46,6 @@ def test_inner_handle_op():
             "context": "0x000000000000000000000000275fa99450bd44b2a69d1d9d002a253bac66c787000000000000000000000000000000000000000000000000000000000060ad31000000000000000000000000000000000000000000000000000000000010c8e0",
         },
         {
-            "method_id": "0x0042dc53",
             "decode_error": None,
             "op_info_sender": "0x1a38889b6a9971968347f33e3a4fc1af0715b3d9",
             "op_info_paymaster": "0x592e1224d203be4214b15e205f6081fbbacfcd2d",

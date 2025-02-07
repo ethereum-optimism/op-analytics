@@ -47,7 +47,6 @@ def register_4337_decoders(ctx: DuckDBContext):
         # unnecessarily.
         return_type="""
             STRUCT(
-                method_id VARCHAR,
                 decode_error VARCHAR,
                 op_info_sender VARCHAR,
                 op_info_paymaster VARCHAR,
@@ -76,7 +75,6 @@ def inner_handle_op_decoder():
 
         if decoded is None:
             return dict(
-                method_id=x["method_id"],
                 decode_error=x["decode_error"],
                 op_info_sender=None,
                 op_info_paymaster=None,
@@ -87,7 +85,6 @@ def inner_handle_op_decoder():
             )
         else:
             return dict(
-                method_id=x["method_id"],
                 decode_error=x["decode_error"],
                 op_info_sender=decoded["opInfo"]["mUserOp"].pop("sender"),
                 op_info_paymaster=decoded["opInfo"]["mUserOp"].pop("paymaster"),

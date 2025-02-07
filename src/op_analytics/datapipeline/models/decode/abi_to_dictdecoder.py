@@ -135,18 +135,6 @@ def abi_param_to_decoder(param: dict, path: list[str] | None = None) -> NamedDec
         return make_named(get_decoder(param["type"]))
 
 
-CUSTOM_REGISTRY = None
-
-
-def get_decoder(typestr):
-    global CUSTOM_REGISTRY
-
-    if CUSTOM_REGISTRY is None:
-        CUSTOM_REGISTRY = custom_registry()
-
-    return CUSTOM_REGISTRY.get_decoder(typestr)
-
-
 def custom_registry():
     """Custom decoder classes.
 
@@ -250,3 +238,16 @@ def custom_registry():
     )
 
     return registry
+
+
+CUSTOM_REGISTRY = None
+
+
+def get_decoder(typestr):
+    """Get a decoder using our custom registry singleton."""
+    global CUSTOM_REGISTRY
+
+    if CUSTOM_REGISTRY is None:
+        CUSTOM_REGISTRY = custom_registry()
+
+    return CUSTOM_REGISTRY.get_decoder(typestr)
