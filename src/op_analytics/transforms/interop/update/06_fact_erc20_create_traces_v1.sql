@@ -5,6 +5,12 @@ Contract creation traces for contracts that implement crosschainBurn/crosschainM
 */
 INSERT INTO _placeholder_
 
+WITH erc20_tokens AS (
+  SELECT
+    chain_id
+    , contract_address
+  FROM transforms_interop.dim_erc20_first_seen_v1 FINAL
+)
 
 SELECT
   dt
@@ -42,6 +48,5 @@ FROM
 WHERE
   dt = { dtparam: Date }
 
-  -- Contract bytecode has the ERC-20 Transfer and Approval events.
-  AND position(output, 'ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef')
-  AND position(output, '8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925')
+  -- Contract bytecode has the ERC-20 Transfer events.
+  AND (chain_id, contract_address) IN (erc20_tokens)

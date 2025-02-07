@@ -7,15 +7,8 @@ INSERT INTO _placeholder_
 
 WITH
 
-erc20_tokens AS (
-  SELECT
-    chain_id
-    , contract_address
-  FROM transforms_interop.dim_erc20_first_seen_v1 FINAL
-)
-
 -- OFT Token Contracts
-, oft_tokens AS (
+ oft_tokens AS (
   SELECT
     chain_id
     , contract_address
@@ -51,7 +44,6 @@ SELECT
   , toString(gas_used) AS gas_used
   , value
   , code
-  , output
   , call_type
   , reward_type
   , subtraces
@@ -62,9 +54,6 @@ SELECT
   -- True if the contract has the crosschainBurn/crosschainMint methods.
   -- Computed as part of the fact_erc20_create_traces_v1 table.
   , is_erc7802
-
-  -- Associated with observed ERC-20 Transfers.
-  , (chain_id, contract_address) IN (erc20_tokens) AS has_transfers
 
   -- Associated with observed OFT transactions.
   , (chain_id, contract_address) IN (oft_tokens) AS has_oft_events
