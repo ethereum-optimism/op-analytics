@@ -25,7 +25,7 @@ SELECT
   , gas_used
   , value
   , code
-  , ouput
+  , output
   , call_type
   , reward_type
   , subtraces

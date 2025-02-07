@@ -39,7 +39,6 @@ SELECT
   , network
   , block_timestamp
   , block_number
-  , block_hash
   , transaction_hash
   , transaction_index
   , tr_from_address
@@ -52,7 +51,7 @@ SELECT
   , toString(gas_used) AS gas_used
   , value
   , code
-  , ouput
+  , output
   , call_type
   , reward_type
   , subtraces
