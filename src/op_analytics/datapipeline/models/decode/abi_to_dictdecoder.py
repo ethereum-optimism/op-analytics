@@ -56,13 +56,17 @@ class DictionaryDecoder:
 
 @dataclass
 class NamedDecoder:
-    """Wraps a decoder keeping track of the associated field name."""
+    """Wraps a decoder for a data field keeping track of the field name and path."""
 
-    # The path is not used at the moment, but could be useful if we
-    # wanted to flatten out nested structs on a decoded output.
+    # This is the full path to the field from the top of the struct. For example:
+    # ["opInfo", "userOp", "sender"].  We are not using it at the moment but could
+    # be helpful if we wanted to automate flattening of nested structs.
     field_path: list[str]
 
+    # This is the field name. For exmaple: "sender"
     field_name: str | None
+
+    # This is the decoder for the field type.
     decoder: BaseDecoder
 
     def decode(self, stream: ContextFramesBytesIO) -> Any:
