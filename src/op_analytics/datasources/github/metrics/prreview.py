@@ -12,7 +12,7 @@ def compute_prreview_metrics(reviews_df: pl.DataFrame, period_str: str) -> pl.Da
             every="1d",
             period=period_str,
             closed="left",
-            by="repo",
+            by="repo",  # type: ignore
             include_boundaries=True,
         )
         .agg(
