@@ -56,7 +56,7 @@ class DictionaryDecoder:
 
 @dataclass
 class NamedDecoder:
-    """Wraps a decoder for a data field keeping track of the field name and path."""
+    """Wraps a field decoder keeping track of the field name and field path."""
 
     # This is the full path to the field from the top of the struct. For example:
     # ["opInfo", "userOp", "sender"].  We are not using it at the moment but could
@@ -94,9 +94,7 @@ class NamedDecoder:
         raise NotImplementedError("NamedDecoder must be instantiated directly")
 
 
-def abi_param_to_decoder(param: dict, path: list[str] | None = None):
-    """Convert a single parameter definition to its canonical type string representation."""
-
+def abi_param_to_decoder(param: dict, path: list[str] | None = None) -> NamedDecoder:
     path = path or []
     new_path = path + [param["name"]]
 
@@ -137,16 +135,23 @@ def abi_param_to_decoder(param: dict, path: list[str] | None = None):
         return make_named(get_decoder(param["type"]))
 
 
+CUSTOM_REGISTRY = None
+
+
 def get_decoder(typestr):
-    registry = custom_registry()
-    return registry.get_decoder(typestr)
+    global CUSTOM_REGISTRY
+
+    if CUSTOM_REGISTRY is None:
+        CUSTOM_REGISTRY = custom_registry()
+
+    return CUSTOM_REGISTRY.get_decoder(typestr)
 
 
 def custom_registry():
-    """Custom decode classes.
+    """Custom decoder classes.
 
-    These classes convert interger and bytes values to strings to ensure the
-    resulting types are lossless and supported on any database (BigQuery/DuckDB).
+    We convert integer and bytes values to strings to maintain precision using data types
+    compatible with databases like BigQuery/DuckDB where support beyond INT64 is limited.
     """
     from eth_abi_lite import encoding, decoding
     from eth_abi_lite.registry import ABIRegistry, BaseEquals, has_arrlist, is_base_tuple

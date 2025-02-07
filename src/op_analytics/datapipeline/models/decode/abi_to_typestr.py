@@ -1,24 +1,8 @@
-from dataclasses import dataclass
-
 from eth_typing_lite import TypeStr
 
 
-@dataclass
-class NamedParam:
-    name: str
-    typestr: TypeStr
-
-
-def abi_inputs_to_params(abi_entry: dict, include_indexed: bool = False) -> list[NamedParam]:
-    """Create TypeStr for each of of the input parameters in an Ethereum ABI entry.
-
-    Args:
-        abi_entry (dict): A dictionary containing the ABI specification for a function,
-                         including input parameter types.
-
-    Returns:
-        A list of TypeStr strings. One for each input parameter.
-    """
+def abi_entry_to_typestr(abi_entry: dict, include_indexed: bool = False) -> list[TypeStr]:
+    """Convert each parameter value in the ABI entry to its typestr and return as a list."""
 
     is_log = abi_entry.get("type") == "event"
 
@@ -26,27 +10,12 @@ def abi_inputs_to_params(abi_entry: dict, include_indexed: bool = False) -> list
     for param in abi_entry["inputs"]:
         if is_log and param["indexed"] and not include_indexed:
             continue
-        result.append(
-            NamedParam(
-                name=param["name"],
-                typestr=process_type(param),
-            )
-        )
+        result.append(process_type(param))
     return result
 
 
-def abi_inputs_to_typestr(abi_entry: dict, include_indexed: bool = False) -> list[TypeStr]:
-    return [
-        _.typestr
-        for _ in abi_inputs_to_params(
-            abi_entry=abi_entry,
-            include_indexed=include_indexed,
-        )
-    ]
-
-
 def process_type(param: dict):
-    """Convert a single parameter definition to its canonical type string representation."""
+    """Convert a single parameter to its typestr representation."""
 
     # Handle structs (tuples in ABI)
     if param["type"] == "tuple":

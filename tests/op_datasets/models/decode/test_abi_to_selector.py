@@ -1,7 +1,6 @@
 from op_analytics.datapipeline.models.decode.abi_to_selector import (
     get_all_log_selectors,
-    get_function_selector,
-    get_log_selector,
+    FunctionSignature,
     EventSignature,
 )
 
@@ -9,18 +8,23 @@ from op_analytics.datapipeline.models.code.account_abstraction.abis import ABI_V
 
 
 def test_abi_to_selector():
-    assert get_function_selector(ABI_V0_6_0, "handleOps") == "0x1fad948c"
+    actual = FunctionSignature.from_abi(ABI_V0_6_0, "handleOps")
+    assert actual == FunctionSignature(
+        signature="handleOps((address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[],address)",
+        keccak_hash="0x1fad948cea09adccde021a7cb89aaf7abccdb69714d0c1712f1d17ed8b00d73e",
+        method_id="0x1fad948c",
+    )
 
 
 def test_abi_to_log_selector():
-    assert get_log_selector(ABI_V0_6_0, "UserOperationEvent") == EventSignature(
+    assert EventSignature.from_abi(ABI_V0_6_0, "UserOperationEvent") == EventSignature(
         signature="UserOperationEvent(bytes32,address,address,uint256,bool,uint256,uint256)",
         keccak_hash="0x49628fd1471006c1482da88028e9ce4dbb080b815c9b0344d39e5a8e6ec1419f",
     )
 
 
 def test_event_signature():
-    actual = EventSignature.from_abi(
+    actual = EventSignature.from_event_abi(
         {
             "anonymous": False,
             "inputs": [
