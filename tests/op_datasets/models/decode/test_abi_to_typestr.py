@@ -1,12 +1,12 @@
 import pytest
 
-from op_analytics.datapipeline.models.decode.abi_to_typestr import abi_inputs_to_typestr
+from op_analytics.datapipeline.models.decode.abi_to_typestr import abi_entry_to_typestr
 
 
 def test_empty_abi():
     abi: dict = {}
     with pytest.raises(KeyError):
-        abi_inputs_to_typestr(abi)
+        abi_entry_to_typestr(abi)
 
 
 def test_simple_types():
@@ -17,7 +17,7 @@ def test_simple_types():
             {"type": "bool", "name": "c"},
         ]
     }
-    assert abi_inputs_to_typestr(abi) == ["uint256", "address", "bool"]
+    assert abi_entry_to_typestr(abi) == ["uint256", "address", "bool"]
 
 
 def test_array_types():
@@ -28,7 +28,7 @@ def test_array_types():
             {"type": "bool[]", "name": "c"},
         ]
     }
-    assert abi_inputs_to_typestr(abi) == ["uint256[]", "address[]", "bool[]"]
+    assert abi_entry_to_typestr(abi) == ["uint256[]", "address[]", "bool[]"]
 
 
 def test_struct_type():
@@ -44,7 +44,7 @@ def test_struct_type():
             },
         ]
     }
-    assert abi_inputs_to_typestr(abi) == ["(uint256,address)"]
+    assert abi_entry_to_typestr(abi) == ["(uint256,address)"]
 
 
 def test_array_of_structs():
@@ -60,7 +60,7 @@ def test_array_of_structs():
             },
         ]
     }
-    assert abi_inputs_to_typestr(abi) == ["(uint256,address)[]"]
+    assert abi_entry_to_typestr(abi) == ["(uint256,address)[]"]
 
 
 def test_complex_nested():
@@ -84,7 +84,7 @@ def test_complex_nested():
             },
         ]
     }
-    assert abi_inputs_to_typestr(abi) == ["uint256", "(address,(bool,uint256)[])"]
+    assert abi_entry_to_typestr(abi) == ["uint256", "(address,(bool,uint256)[])"]
 
 
 def test_handle_ops_abi():
@@ -116,7 +116,7 @@ def test_handle_ops_abi():
         "type": "function",
     }
 
-    assert abi_inputs_to_typestr(abi) == [
+    assert abi_entry_to_typestr(abi) == [
         "(address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[]",
         "address",
     ]
@@ -148,4 +148,4 @@ def test_user_operation_event_abi():
         "type": "event",
     }
 
-    assert abi_inputs_to_typestr(abi) == ["uint256", "bool", "uint256", "uint256"]
+    assert abi_entry_to_typestr(abi) == ["uint256", "bool", "uint256", "uint256"]

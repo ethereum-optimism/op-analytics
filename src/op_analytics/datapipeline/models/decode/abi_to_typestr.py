@@ -3,22 +3,8 @@ from dataclasses import dataclass
 from eth_typing_lite import TypeStr
 
 
-@dataclass
-class NamedParam:
-    name: str
-    typestr: TypeStr
-
-
-def abi_inputs_to_params(abi_entry: dict, include_indexed: bool = False) -> list[NamedParam]:
-    """Create TypeStr for each of of the input parameters in an Ethereum ABI entry.
-
-    Args:
-        abi_entry (dict): A dictionary containing the ABI specification for a function,
-                         including input parameter types.
-
-    Returns:
-        A list of TypeStr strings. One for each input parameter.
-    """
+def abi_entry_to_typestr(abi_entry: dict, include_indexed: bool = False) -> list[TypeStr]:
+    """Convert each parameter value in the ABI entry to its typestr and return as a list."""
 
     is_log = abi_entry.get("type") == "event"
 
@@ -46,7 +32,7 @@ def abi_inputs_to_typestr(abi_entry: dict, include_indexed: bool = False) -> lis
 
 
 def process_type(param: dict):
-    """Convert a single parameter definition to its canonical type string representation."""
+    """Convert a single parameter to its typestr representation."""
 
     # Handle structs (tuples in ABI)
     if param["type"] == "tuple":

@@ -11,4 +11,8 @@ class LogDecoder:
     decoder: DictionaryDecoder
 
     def decode(self, data: str):
+        # NOTE:
+        # For logs We only support "as_json". If more flexibility is needed we
+        # can make "as_json" a parameter and have an optional "adapter" callable
+        # to manipulate the result, as we do in method_decoder.py.
         return self.decoder.decode_event_as_json(data)

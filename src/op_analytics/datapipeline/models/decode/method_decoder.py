@@ -20,7 +20,7 @@ class SingleMethodDecoder:
     # Method ID associated with this decoder (hex sring).
     method_id: str
 
-    # Decoder instance. Converts bytestream to python ditionary.
+    # Decoder instance. Converts bytestream to python dict.
     decoder: DictionaryDecoder
 
     def decode(self, hexstr: str, as_json: bool):
@@ -29,25 +29,31 @@ class SingleMethodDecoder:
         return self.decoder.decode_function(hexstr)
 
 
+class MultiMethodDecoderResult(TypedDict):
+    """Fields produced when decoding a trace input with the MultiMethodDecoder."""
+
+    method_id: str | None
+    decoded: dict | None
+    decode_error: str | None
+
+
 @dataclass
 class MultiMethodDecoder:
     """Dispatch to a SingleMethodDecoder based on method_id."""
 
     decoders: dict[MethodId, SingleMethodDecoder]
     as_json: bool
-    adapter: Callable[[DecodingResult], Any] | None
+    adapter: Callable[[MultiMethodDecoderResult], Any] | None
 
     @classmethod
     def of(
         cls,
         decoders: list[SingleMethodDecoder],
         as_json: bool,
-        adapter: Callable[[DecodingResult], Any] | None = None,
+        adapter: Callable[[MultiMethodDecoderResult], Any] | None = None,
     ):
-        """Instantiate using a list of decoders.
-
-        The list is converted to a mapping by method_id.
-        """
+        # The list of decoders is converted to a mapping by method_id so
+        # we can lookup which decoder is needed for a given trace.
         return cls(
             decoders={_.method_id: _ for _ in decoders},
             as_json=as_json,
@@ -60,7 +66,7 @@ class MultiMethodDecoder:
             return result
         return self.adapter(result)
 
-    def _decode(self, data: str) -> DecodingResult:
+    def _decode(self, data: str) -> MultiMethodDecoderResult:
         try:
             method_id = MethodId(data[:10])
         except Exception as ex:
