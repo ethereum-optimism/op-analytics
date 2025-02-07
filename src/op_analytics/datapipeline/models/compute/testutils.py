@@ -315,6 +315,6 @@ def setup_execution_context(model_name: str, data_reader: DataReader):
 
     print()
     for _ in auxiliary_templates:
-        print(f"AUX VIEW: {_}")
+        print(f"AUX TEMPLATE: {_}")
 
     return ctx, input_datasets, auxiliary_templates
