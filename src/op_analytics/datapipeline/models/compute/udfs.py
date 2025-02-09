@@ -157,7 +157,6 @@ UDFS = [
     """CREATE OR REPLACE MACRO trace_address_depth(a)
     AS CASE
       WHEN length(a) = 0 THEN 0
-      WHEN length(a) = 1 THEN 1
       ELSE length(a) - length(replace(a, ',', '')) + 1
     END;
     """,
@@ -171,8 +170,7 @@ UDFS = [
     """CREATE OR REPLACE MACRO trace_address_parent(a)
     AS CASE
       WHEN length(a) = 0 THEN 'none'
-      WHEN length(a) = 1 THEN ''
-      ELSE a[:-1 * (1+strpos(reverse(a), ','))]
+      ELSE substring(a, 1, length(a) - 1 - length(split_part(a, ',', -1)))
     END;
     """,
     #
@@ -185,7 +183,7 @@ UDFS = [
     """CREATE OR REPLACE MACRO trace_address_root(a)
     AS CASE
       WHEN length(a) = 0 THEN 'none'
-      ELSE a[1]
+      ELSE split_part(a, ',', 1)
     END;
     """,
     #

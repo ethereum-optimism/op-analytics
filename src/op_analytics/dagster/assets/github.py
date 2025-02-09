@@ -62,7 +62,7 @@ def repo_metrics(context: OpExecutionContext) -> None:
     from op_analytics.datasources.github.metrics.execute import execute_pull_repo_metrics
 
     result = execute_pull_repo_metrics()
-    context.log.info("repo_metrics_asset completed", **result)
+    context.log.info(result)
 
 
 @asset(deps=[repo_metrics])
