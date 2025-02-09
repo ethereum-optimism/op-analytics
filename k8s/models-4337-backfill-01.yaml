@@ -8,20 +8,15 @@ metadata:
     component: models-backfill
 
 spec:
-  backoffLimit: 0
-  podFailurePolicy:
-    rules:
-      - action: Ignore  # Keeps failed pods
-        onExitCodes:
-          operator: In
-          values: [1]
+  ttlSecondsAfterFinished: null
+  backoffLimit: 4
   template:
     spec:
       serviceAccountName: op-analytics-service-account
       containers:
       - name: python-runner
         imagePullPolicy: Always
-        image: ghcr.io/lithium323/op-analytics:v20250207.1
+        image: ghcr.io/lithium323/op-analytics:v20250208.1
         command: ["tini", "-v", "--", "opdata"]
         args: ["chains", "aa_backfill_01"]
         env:

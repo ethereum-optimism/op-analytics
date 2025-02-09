@@ -7,6 +7,12 @@ from .abi_to_dictdecoder import DictionaryDecoder
 MethodId = NewType("MethodId", str)
 
 
+class DecodingResult(TypedDict):
+    method_id: str | None
+    decoded: dict | None
+    decode_error: str | None
+
+
 @dataclass
 class SingleMethodDecoder:
     """Decode data for a single method."""
