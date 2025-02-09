@@ -47,12 +47,12 @@ def register_4337_decoders(ctx: DuckDBContext):
         # unnecessarily.
         return_type="""
             STRUCT(
-                decode_error VARCHAR,
-                op_info_sender VARCHAR,
-                op_info_paymaster VARCHAR,
-                op_info_user_op_hash VARCHAR,
-                op_info VARCHAR,
-                call_data VARCHAR,
+                decodeerror VARCHAR,
+                opinfo_sender VARCHAR,
+                opinfo_paymaster VARCHAR,
+                opinfo_userophash VARCHAR,
+                opinfo VARCHAR,
+                calldata VARCHAR,
                 context VARCHAR
             )
             """,
@@ -76,21 +76,21 @@ def inner_handle_op_decoder():
         if decoded is None:
             return dict(
                 decode_error=x["decode_error"],
-                op_info_sender=None,
-                op_info_paymaster=None,
-                op_info_user_op_hash=None,
-                op_info=None,
-                call_data=None,
+                opinfo_sender=None,
+                opinfo_paymaster=None,
+                opinfo_userophash=None,
+                opinfo=None,
+                calldata=None,
                 context=None,
             )
         else:
             return dict(
                 decode_error=x["decode_error"],
-                op_info_sender=decoded["opInfo"]["mUserOp"].pop("sender"),
-                op_info_paymaster=decoded["opInfo"]["mUserOp"].pop("paymaster"),
-                op_info_user_op_hash=decoded["opInfo"].pop("userOpHash"),
-                op_info=json.dumps(decoded["opInfo"]),
-                call_data=decoded["callData"],
+                opinfo_sender=decoded["opInfo"]["mUserOp"].pop("sender"),
+                opinfo_paymaster=decoded["opInfo"]["mUserOp"].pop("paymaster"),
+                opinfo_userophash=decoded["opInfo"].pop("userOpHash"),
+                opinfo=json.dumps(decoded["opInfo"]),
+                calldata=decoded["callData"],
                 context=decoded["context"],
             )
 

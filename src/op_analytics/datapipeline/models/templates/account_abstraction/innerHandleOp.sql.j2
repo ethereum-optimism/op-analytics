@@ -1,22 +1,126 @@
 WITH
 
 -- Traces that are innerHandleOp calls.
-inner1 AS (
+decoded_traces AS (
   SELECT
-    * EXCLUDE (input)
-    , decode_inner_handle_op(p.input) AS decoded
-  FROM {{ prefiltered_traces }} AS p
+    t.dt
+    , t.chain
+    , t.chain_id
+    , t.network
+    --
+    , t.block_timestamp
+    , t.block_number
+    , t.block_hash
+    , t.transaction_hash
+    , t.transaction_index
+    , t.from_address
+    , t.to_address
+    , t.value_lossless
+    , t.input
+    , t.output
+    , t.trace_type
+    , t.call_type
+    , t.reward_type
+    , t.gas
+    , t.gas_used
+    , t.subtraces
+    , t.trace_address
+    , t.error
+    , t.status
+    , t.trace_root
+    , TRY_CAST(t.trace_root AS INT) AS trace_rootnum
+    , hexstr_method_id(t.input) AS method_id
+    , decode_inner_handle_op(t.input) AS decoded
+  FROM {{ prefiltered_traces }} AS t
   -- WHERE
   --   p.method_id IN ({{ inner_handle_op_method_ids }})
 )
 
+, decoded_traces_exploded AS (
+  SELECT
+    t.dt
+    , t.chain
+    , t.chain_id
+    , t.network
+    --
+    , t.block_timestamp
+    , t.block_number
+    , t.block_hash
+    , t.transaction_hash
+    , t.transaction_index
+    , t.from_address
+    , t.to_address
+    , t.value_lossless
+    , t.input
+    , t.output
+    , t.trace_type
+    , t.call_type
+    , t.reward_type
+    , t.gas
+    , t.gas_used
+    , t.subtraces
+    , t.trace_address
+    , t.error
+    , t.status
+    , t.trace_root
+    , t.trace_rootnum
+    , t.method_id
+    -- Decoded innerHandleOp
+    , t.decoded['decodeerror'] AS innerhandleop_decodeerror
+    , t.decoded['opinfo_sender'] AS innerhandleop_opinfo_sender
+    , t.decoded['opinfo_paymaster'] AS innerhandleop_opinfo_paymaster
+    , t.decoded['opinfo_userophash'] AS innerhandleop_opinfo_userophash
+    , t.decoded['opinfo'] AS innerhandleop_opinfo
+    , t.decoded['context'] AS innerhandleop_context
+    , t.decoded['calldata'] AS innerhandleop_calldata
+  FROM decoded_traces AS t
+)
+
 SELECT
-  * EXCLUDE (decoded)
-  , i1.decoded['decode_error'] AS decode_error
-  , i1.decoded['op_info_sender'] AS op_info_sender
-  , i1.decoded['op_info_paymaster'] AS op_info_paymaster
-  , i1.decoded['op_info_user_op_hash'] AS op_info_user_op_hash
-  , i1.decoded['op_info'] AS op_info
-  , i1.decoded['context'] AS context
-  , i1.decoded['call_data'] AS call_data
-FROM inner1 AS i1
+  t.dt
+  , t.chain
+  , t.chain_id
+  , t.network
+  --
+  , t.block_timestamp
+  , t.block_number
+  , t.block_hash
+  , t.transaction_hash
+  , t.transaction_index
+  , t.from_address
+  , t.to_address
+  , t.value_lossless
+  , t.input
+  , t.output
+  , t.trace_type
+  , t.call_type
+  , t.reward_type
+  , t.gas
+  , t.gas_used
+  , t.subtraces
+  , t.trace_address
+  , t.error
+  , t.status
+  , t.trace_root
+  , t.method_id
+  -- Add the sender from the parent innerHandleOp
+  , t.innerhandleop_decodeerror
+  -- Decoded innerHandleOp
+  , t.innerhandleop_opinfo_sender
+  , t.innerhandleop_opinfo_paymaster
+  , t.innerhandleop_opinfo_userophash
+  , t.innerhandleop_opinfo
+  , t.innerhandleop_context
+  , t.innerhandleop_calldata
+  , last_value(IF(t.innerhandleop_opinfo_sender IS NULL, NULL, t.trace_address) IGNORE NULLS) OVER shared_root AS userop_trace_address
+  , last_value(t.innerhandleop_opinfo_sender IGNORE NULLS) OVER shared_root AS userop_sender
+  , last_value(t.innerhandleop_opinfo_sender IGNORE NULLS) OVER shared_root = t.from_address AS is_from_userop_sender
+
+FROM decoded_traces_exploded AS t
+WINDOW
+  shared_root AS (
+    PARTITION BY t.transaction_hash
+    ORDER BY t.trace_rootnum
+    RANGE BETWEEN UNBOUNDED PRECEDING AND 0 FOLLOWING
+  )
+

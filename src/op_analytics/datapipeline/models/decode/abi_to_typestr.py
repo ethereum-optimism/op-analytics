@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 from eth_typing_lite import TypeStr
 
 
@@ -12,23 +10,8 @@ def abi_entry_to_typestr(abi_entry: dict, include_indexed: bool = False) -> list
     for param in abi_entry["inputs"]:
         if is_log and param["indexed"] and not include_indexed:
             continue
-        result.append(
-            NamedParam(
-                name=param["name"],
-                typestr=process_type(param),
-            )
-        )
+        result.append(process_type(param))
     return result
-
-
-def abi_inputs_to_typestr(abi_entry: dict, include_indexed: bool = False) -> list[TypeStr]:
-    return [
-        _.typestr
-        for _ in abi_inputs_to_params(
-            abi_entry=abi_entry,
-            include_indexed=include_indexed,
-        )
-    ]
 
 
 def process_type(param: dict):
