@@ -111,7 +111,7 @@ def extract_historical_yield_data(data: dict) -> pl.DataFrame:
         {
             "pool": pool_id,
             "dt": dt_fromisostr(entry["timestamp"]),
-            "tvl_usd": float(entry.get("tvl", 0.0)),
+            "tvl_usd": float(entry.get("tvlUsd", 0.0)),
             "apy": float(entry.get("apy", 0.0)),
             "apy_base": float(entry.get("apyBase") or 0.0),
             "apy_reward": float(entry.get("apyReward") or 0.0),
