@@ -211,27 +211,43 @@ def test_trace_address_helpers():
     ctx = init_client()
     create_duckdb_macros(ctx)
 
-    test_inputs = ["", "0", "0,0", "0,1", "0,10,0", "0,10,0,0", "0,2", "0,100,0", "0,10,10"]
+    test_inputs = [
+        "",
+        "0",
+        "0,0",
+        "0,1",
+        "0,10,0",
+        "0,10,0,0",
+        "0,2",
+        "0,100,0",
+        "0,10,10",
+        "10,0,0",
+        "100",
+    ]
 
     actual = []
     for test in test_inputs:
         result = ctx.client.sql(f"""
             SELECT
+                '{test}' AS address,
                 trace_address_depth('{test}') as depth,
                 trace_address_parent('{test}') as parent,
+                trace_address_root('{test}') as root,
             """).fetchall()[0]
         actual.append(result)
 
     assert actual == [
-        (0, "none"),
-        (1, ""),
-        (2, "0"),
-        (2, "0"),
-        (3, "0,10"),
-        (4, "0,10,0"),
-        (2, "0"),
-        (3, "0,100"),
-        (3, "0,10"),
+        ("", 0, "none", "none"),
+        ("0", 1, "", "0"),
+        ("0,0", 2, "0", "0"),
+        ("0,1", 2, "0", "0"),
+        ("0,10,0", 3, "0,10", "0"),
+        ("0,10,0,0", 4, "0,10,0", "0"),
+        ("0,2", 2, "0", "0"),
+        ("0,100,0", 3, "0,100", "0"),
+        ("0,10,10", 3, "0,10", "0"),
+        ("10,0,0", 3, "10,0", "10"),
+        ("100", 1, "", "100"),
     ]
 
 

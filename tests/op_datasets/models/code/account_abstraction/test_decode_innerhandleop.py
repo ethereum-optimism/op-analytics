@@ -21,7 +21,7 @@ def test_inner_handle_op():
     ]
 
     for val in actual:
-        val["op_info"] = json.loads(val["op_info"])
+        val["opinfo"] = json.loads(val["opinfo"])
 
     assert actual == [
         {
@@ -47,10 +47,10 @@ def test_inner_handle_op():
         },
         {
             "decode_error": None,
-            "op_info_sender": "0x1a38889b6a9971968347f33e3a4fc1af0715b3d9",
-            "op_info_paymaster": "0x592e1224d203be4214b15e205f6081fbbacfcd2d",
-            "op_info_user_op_hash": "0xd749754ba43604d048d33a4bb3f0dc47207cf101af5e1c3b9200722a87319503",
-            "op_info": {
+            "opinfo_sender": "0x1a38889b6a9971968347f33e3a4fc1af0715b3d9",
+            "opinfo_paymaster": "0x592e1224d203be4214b15e205f6081fbbacfcd2d",
+            "opinfo_userophash": "0xd749754ba43604d048d33a4bb3f0dc47207cf101af5e1c3b9200722a87319503",
+            "opinfo": {
                 "mUserOp": {
                     "nonce": "8",
                     "verificationGasLimit": "550000",
