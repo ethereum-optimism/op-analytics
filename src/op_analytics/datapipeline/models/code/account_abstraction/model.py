@@ -21,7 +21,7 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
     ],
     auxiliary_templates=[
         "refined_transactions_fees",
-        "account_abstraction/UserOperationEvent",
+        "account_abstraction/UserOperation",
         "account_abstraction/innerHandleOp",
         "account_abstraction/user_op_sender_subtraces",
         "account_abstraction/data_quality_check_01",

@@ -99,7 +99,7 @@ class TestAccountAbstractionPrefilter0001(IntermediateModelTestBase):
             "trace_address": "VARCHAR",
             "error": "VARCHAR",
             "status": "BIGINT",
-            "trace_root": "VARCHAR",
+            "trace_root": "INTEGER",
             "method_id": "VARCHAR",
         }
 
@@ -209,7 +209,7 @@ class TestAccountAbstractionPrefilter0001(IntermediateModelTestBase):
                 "trace_address": "0,0,0",
                 "error": "",
                 "status": 1,
-                "trace_root": "0",
+                "trace_root": 0,
                 "method_id": "0x993caaba",
             }
         ]

@@ -30,10 +30,8 @@ decoded_traces AS (
     , t.trace_root
     , TRY_CAST(t.trace_root AS INT) AS trace_rootnum
     , hexstr_method_id(t.input) AS method_id
-    , decode_inner_handle_op(t.input) AS decoded
+    , IF(hexstr_method_id(t.input) IN ({{ innerhandleop_method_ids }}), decode_innerhandleop(t.input), NULL) AS decoded
   FROM {{ prefiltered_traces }} AS t
-  -- WHERE
-  --   p.method_id IN ({{ inner_handle_op_method_ids }})
 )
 
 , decoded_traces_exploded AS (
@@ -102,6 +100,7 @@ SELECT
   , t.error
   , t.status
   , t.trace_root
+  , t.trace_rootnum
   , t.method_id
   -- Add the sender from the parent innerHandleOp
   , t.innerhandleop_decodeerror
@@ -123,4 +122,3 @@ WINDOW
     ORDER BY t.trace_rootnum
     RANGE BETWEEN UNBOUNDED PRECEDING AND 0 FOLLOWING
   )
-
