@@ -66,95 +66,45 @@ def yield_data(context: OpExecutionContext):
     context.log.info(result)
 
 
-@asset(deps=[stablecoins])
-def stablecoins_views():
-    """Clickhouse external tables over GCS data:
+@asset(
+    deps=[
+        stablecoins,
+        protocol_tvl,
+        tvl_breakdown_enrichment,
+        historical_chain_tvl,
+        volumes_fees_revenue,
+    ]
+)
+def defillama_views():
+    """Bigquery external tables and views.
 
-    - defillama_gcs.stablecoins_metadata_v1
-    - defillama_gcs.stablecoins_balances_v1
+    External tables for each of the datasets we ingest to GCS.
+
+    Views to simplify queries.
     """
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
-    DefiLlama.STABLECOINS_METADATA.create_clickhouse_view()
-    DefiLlama.STABLECOINS_BALANCE.create_clickhouse_view()
+    DefiLlama.CHAINS_METADATA.create_bigquery_external_table()
+    DefiLlama.HISTORICAL_CHAIN_TVL.create_bigquery_external_table()
 
+    DefiLlama.PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.PROTOCOLS_TVL.create_bigquery_external_table()
+    DefiLlama.PROTOCOLS_TOKEN_TVL.create_bigquery_external_table()
+    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_external_table()
 
-@asset(deps=[protocol_tvl, historical_chain_tvl])
-def tvl_views():
-    """Clickhouse external tables over GCS data:
+    DefiLlama.STABLECOINS_METADATA.create_bigquery_external_table()
+    DefiLlama.STABLECOINS_BALANCE.create_bigquery_external_table()
 
-    - defillama_gcs.chains_metadata_v1
-    - defillama_gcs.historical_chain_tvl_v1
-    - defillama_gcs.protocols_metadata_v1
-    - defillama_gcs.protocols_tvl_v1
-    - defillama_gcs.protocols_token_tvl_v1
-    """
-    from op_analytics.datasources.defillama.dataaccess import DefiLlama
+    DefiLlama.VOLUME_FEES_REVENUE.create_bigquery_external_table()
+    DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.create_bigquery_external_table()
+    DefiLlama.VOLUME_PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.FEES_PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_external_table()
 
-    DefiLlama.CHAINS_METADATA.create_clickhouse_view()
-    DefiLlama.HISTORICAL_CHAIN_TVL.create_clickhouse_view()
+    from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
 
-    DefiLlama.PROTOCOLS_METADATA.create_clickhouse_view()
-    DefiLlama.PROTOCOLS_TVL.create_clickhouse_view()
-    DefiLlama.PROTOCOLS_TOKEN_TVL.create_clickhouse_view()
-
-
-@asset(deps=[volumes_fees_revenue])
-def volumes_fees_revenue_views():
-    """Clickhouse external tables over GCS data:
-
-    - defillama_gcs.volume_fees_revenue_v1
-    - defillama_gcs.volume_fees_revenue_breakdown_v1
-    - defillama_gcs.volume_protocols_metadata_v1
-    - defillama_gcs.fees_protocols_metadata_v1
-    - defillama_gcs.revenue_protocols_metadata_v1
-    """
-    from op_analytics.datasources.defillama.dataaccess import DefiLlama
-
-    DefiLlama.VOLUME_FEES_REVENUE.create_clickhouse_view()
-    DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.create_clickhouse_view()
-    DefiLlama.VOLUME_PROTOCOLS_METADATA.create_clickhouse_view()
-    DefiLlama.FEES_PROTOCOLS_METADATA.create_clickhouse_view()
-    DefiLlama.REVENUE_PROTOCOLS_METADATA.create_clickhouse_view()
-
-
-@asset(deps=[tvl_breakdown_enrichment])
-def tvl_breakdown_views():
-    """Clickhouse external tables over GCS data:
-
-    - defillama_gcs.protocol_token_tvl_breakdown_v1
-    """
-    from op_analytics.datasources.defillama.dataaccess import DefiLlama
-
-    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_clickhouse_view()
-
-    # NEXT STEPS. BigQuery view over the results in GCS
-    # DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_external_table()
-
-    # CREATE OR REPLACE EXTERNAL TABLE `oplabs-tools-data.temp.defillama_tvl_breakdown_enriched`
-    # WITH PARTITION COLUMNS (
-    # dt DATE
-    # )
-    # OPTIONS (
-    # format = 'PARQUET',
-    # uris = ['gs://oplabs-tools-data-sink/defillama/protocol_token_tvl_breakdown_v1/dt=*'],
-    # hive_partition_uri_prefix = 'gs://oplabs-tools-data-sink/defillama/protocol_token_tvl_breakdown_v1/'
-    # )
-
-    # NEXT STEPS.
-    # Suppose we want to create a BigQuery view that joins a bunch of tables.
-    # from op_analytics.coreutils.bigquery.write import init_client
-    # bq_client = init_client()
-    # bq_client.sql("""
-    # CREATE VIEW IF NOT EXISTS my_view AS
-    # SELECT * FROM JOIN EVERYTHING ELSE
-    # """)
-
-
-# TODO: Consider not doing this anymore now that we have views over GCS data.
-@asset(deps=[volumes_fees_revenue])
-def volumes_fees_revenue_to_clickhouse(context: OpExecutionContext):
-    from op_analytics.datasources.defillama.volume_fees_revenue import execute
-
-    result = execute.write_to_clickhouse()
-    context.log.info(result)
+    create_view(
+        db_name="dailydata_defillama",
+        view_name="defillama_tvl_breakdown_filtered",
+        disposition="replace",
+    )

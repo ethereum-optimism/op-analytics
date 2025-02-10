@@ -41,8 +41,21 @@ class DataReader:
     extra_marker_data: dict[str, Any] | None = None
 
     def marker_data(self, key: str) -> Any:
+        """Get marker data for a key.
+
+        Fails if no marker data or key not present.
+        Use when the data is strictly required.
+        """
         assert self.extra_marker_data is not None
         return self.extra_marker_data[key]
+
+    def get_marker_data(self, key: str) -> Any:
+        """Get marker data for a key.
+
+        Does not fail if no marker data or key not present.
+        Use for logging.
+        """
+        return (self.extra_marker_data or {}).get(key)
 
     def partitions_dict(self):
         return self.partitions.as_dict()

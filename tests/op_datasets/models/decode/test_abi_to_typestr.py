@@ -1,50 +1,90 @@
 import pytest
 
-from op_analytics.datapipeline.models.decode.abi_to_typestr import abi_inputs_to_typestr
+from op_analytics.datapipeline.models.decode.abi_to_typestr import abi_entry_to_typestr
 
 
 def test_empty_abi():
     abi: dict = {}
     with pytest.raises(KeyError):
-        abi_inputs_to_typestr(abi)
+        abi_entry_to_typestr(abi)
 
 
 def test_simple_types():
-    abi = {"inputs": [{"type": "uint256"}, {"type": "address"}, {"type": "bool"}]}
-    assert abi_inputs_to_typestr(abi) == ["uint256", "address", "bool"]
+    abi = {
+        "inputs": [
+            {"type": "uint256", "name": "a"},
+            {"type": "address", "name": "b"},
+            {"type": "bool", "name": "c"},
+        ]
+    }
+    assert abi_entry_to_typestr(abi) == ["uint256", "address", "bool"]
 
 
 def test_array_types():
-    abi = {"inputs": [{"type": "uint256[]"}, {"type": "address[]"}, {"type": "bool[]"}]}
-    assert abi_inputs_to_typestr(abi) == ["uint256[]", "address[]", "bool[]"]
+    abi = {
+        "inputs": [
+            {"type": "uint256[]", "name": "a"},
+            {"type": "address[]", "name": "b"},
+            {"type": "bool[]", "name": "c"},
+        ]
+    }
+    assert abi_entry_to_typestr(abi) == ["uint256[]", "address[]", "bool[]"]
 
 
 def test_struct_type():
-    abi = {"inputs": [{"type": "tuple", "components": [{"type": "uint256"}, {"type": "address"}]}]}
-    assert abi_inputs_to_typestr(abi) == ["(uint256,address)"]
+    abi = {
+        "inputs": [
+            {
+                "type": "tuple",
+                "components": [
+                    {"type": "uint256", "name": "b"},
+                    {"type": "address", "name": "c"},
+                ],
+                "name": "a",
+            },
+        ]
+    }
+    assert abi_entry_to_typestr(abi) == ["(uint256,address)"]
 
 
 def test_array_of_structs():
     abi = {
-        "inputs": [{"type": "tuple[]", "components": [{"type": "uint256"}, {"type": "address"}]}]
+        "inputs": [
+            {
+                "type": "tuple[]",
+                "components": [
+                    {"type": "uint256", "name": "b"},
+                    {"type": "address", "name": "c"},
+                ],
+                "name": "a",
+            },
+        ]
     }
-    assert abi_inputs_to_typestr(abi) == ["(uint256,address)[]"]
+    assert abi_entry_to_typestr(abi) == ["(uint256,address)[]"]
 
 
 def test_complex_nested():
     abi = {
         "inputs": [
-            {"type": "uint256"},
+            {"type": "uint256", "name": "a"},
             {
                 "type": "tuple",
                 "components": [
-                    {"type": "address"},
-                    {"type": "tuple[]", "components": [{"type": "bool"}, {"type": "uint256"}]},
+                    {"type": "address", "name": "c"},
+                    {
+                        "type": "tuple[]",
+                        "components": [
+                            {"type": "bool", "name": "e"},
+                            {"type": "uint256", "name": "f"},
+                        ],
+                        "name": "d",
+                    },
                 ],
+                "name": "b",
             },
         ]
     }
-    assert abi_inputs_to_typestr(abi) == ["uint256", "(address,(bool,uint256)[])"]
+    assert abi_entry_to_typestr(abi) == ["uint256", "(address,(bool,uint256)[])"]
 
 
 def test_handle_ops_abi():
@@ -76,7 +116,36 @@ def test_handle_ops_abi():
         "type": "function",
     }
 
-    assert abi_inputs_to_typestr(abi) == [
+    assert abi_entry_to_typestr(abi) == [
         "(address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,bytes,bytes)[]",
         "address",
     ]
+
+
+def test_user_operation_event_abi():
+    abi = {
+        "anonymous": False,
+        "inputs": [
+            {"indexed": True, "internalType": "bytes32", "name": "userOpHash", "type": "bytes32"},
+            {"indexed": True, "internalType": "address", "name": "sender", "type": "address"},
+            {"indexed": True, "internalType": "address", "name": "paymaster", "type": "address"},
+            {"indexed": False, "internalType": "uint256", "name": "nonce", "type": "uint256"},
+            {"indexed": False, "internalType": "bool", "name": "success", "type": "bool"},
+            {
+                "indexed": False,
+                "internalType": "uint256",
+                "name": "actualGasCost",
+                "type": "uint256",
+            },
+            {
+                "indexed": False,
+                "internalType": "uint256",
+                "name": "actualGasUsed",
+                "type": "uint256",
+            },
+        ],
+        "name": "UserOperationEvent",
+        "type": "event",
+    }
+
+    assert abi_entry_to_typestr(abi) == ["uint256", "bool", "uint256", "uint256"]

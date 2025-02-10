@@ -3,15 +3,13 @@ from eth_abi_lite.decoding import (
     TupleDecoder,
 )
 
-from op_analytics.datapipeline.models.decode.abi_to_decoder import abi_inputs_to_decoder
-
-from op_analytics.datapipeline.models.code.account_abstraction.function_decoders import (
+from op_analytics.datapipeline.models.code.account_abstraction.abis import (
     HANDLE_OPS_FUNCTION_ABI_v0_6_0,
     HANDLE_OPS_FUNCTION_ABI_v0_7_0,
 )
-
+from op_analytics.datapipeline.models.decode.abi_to_decoder import abi_inputs_to_decoder
+from op_analytics.datapipeline.models.decode.abi_to_structmaker import make_duckdb_type, make_struct
 from op_analytics.datapipeline.models.decode.conversion import safe_uint256
-
 
 # Input taken from this transaction:
 # https://basescan.org/tx/0xa6afb687ed95e708b6086b8fd864cd56bd46746c9850e943a035c4863f88fbed
@@ -46,7 +44,7 @@ tx_input_v0_6_0 = (
 
 
 # Input taken from this transaction:
-# https://basescan.org/tx/0x6e7b82e957641c9178e0aa7d84d9ca170898d984928e271c714b2758ae57e461
+# https://basescan.org/tx/0x7567abffc05821a221c1c48e9a70b1dc6d807aa64f70baa41a4024464ece3864
 tx_input_v0_7_0 = (
     "0x765e827f"
     "00000000000000000000000000000000000000000000000000000000000000400000000000000000000000009d1478044f781ca722ff257e70d05e4ad673f443"
@@ -166,4 +164,35 @@ def test_v7():
             ),
         ),
         "0x9d1478044f781ca722ff257e70d05e4ad673f443",
+    )
+
+    assert make_struct(HANDLE_OPS_FUNCTION_ABI_v0_7_0, result) == {
+        "ops": [
+            {
+                "sender": "0x1a38889b6a9971968347f33e3a4fc1af0715b3d9",
+                "nonce": {"value": 8, "lossless": "8"},
+                "init_code": "0x",
+                "call_data": "0x34fcd5be0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000003f14920c99beb920afa163031c4e47a3e03b3e4a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044a9059cbb000000000000000000000000c800f68e363f14986a6ad0ce40dd5324097a219c00000000000000000000000000000000000000000000000000000000000003e800000000000000000000000000000000000000000000000000000000",
+                "account_gas_limits": "0x00000000000000000000000000086470000000000000000000000000000186a0",
+                "pre_verification_gas": {"value": 70000, "lossless": "70000"},
+                "gas_fees": "0x000000000000000000000000000f4240000000000000000000000000004eb0ec",
+                "paymaster_and_data": "0x592e1224d203be4214b15e205f6081fbbacfcd2d000000000000000000000000000249f0000000000000000000000000000186a0",
+                "signature": "0x01000066ea02ab00000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000170000000000000000000000000000000000000000000000000000000000000001862293c102ba596bcbed6c1cb292f319bad633e3f98913ab450702901f2a301b31abfd32f48bc63951633e56bb6533e48d8fef2116ae65306560836942c96f24000000000000000000000000000000000000000000000000000000000000002524cc9f9995c0d360cc08f23cfca3d1c8020687f1047d78064a0783ad6ea3f0221d0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000767b2274797065223a22776562617574686e2e676574222c226368616c6c656e6765223a22415141415a756f437139644a6455756b4e675451534e4d36533750773345636766504542723134634f354941636971484d5a5544222c226f726967696e223a2268747470733a2f2f73656e642e617070227d00000000000000000000",
+            }
+        ],
+        "beneficiary": "0x9d1478044f781ca722ff257e70d05e4ad673f443",
+    }
+
+
+def test_duckdb_types():
+    duckdb_type_v6 = make_duckdb_type(HANDLE_OPS_FUNCTION_ABI_v0_6_0)
+    assert (
+        duckdb_type_v6
+        == "STRUCT(ops STRUCT(sender VARCHAR, nonce STRUCT(value BIGINT, lossless VARCHAR), init_code VARCHAR, call_data VARCHAR, call_gas_limit STRUCT(value BIGINT, lossless VARCHAR), verification_gas_limit STRUCT(value BIGINT, lossless VARCHAR), pre_verification_gas STRUCT(value BIGINT, lossless VARCHAR), max_fee_per_gas STRUCT(value BIGINT, lossless VARCHAR), max_priority_fee_per_gas STRUCT(value BIGINT, lossless VARCHAR), paymaster_and_data VARCHAR, signature VARCHAR)[], beneficiary VARCHAR)"
+    )
+
+    duckdb_type_v7 = make_duckdb_type(HANDLE_OPS_FUNCTION_ABI_v0_7_0)
+    assert (
+        duckdb_type_v7
+        == "STRUCT(ops STRUCT(sender VARCHAR, nonce STRUCT(value BIGINT, lossless VARCHAR), init_code VARCHAR, call_data VARCHAR, account_gas_limits VARCHAR, pre_verification_gas STRUCT(value BIGINT, lossless VARCHAR), gas_fees VARCHAR, paymaster_and_data VARCHAR, signature VARCHAR)[], beneficiary VARCHAR)"
     )

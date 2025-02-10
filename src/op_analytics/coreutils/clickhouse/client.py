@@ -6,6 +6,7 @@ import clickhouse_connect
 import clickhouse_connect.driver.client
 import polars as pl
 import pyarrow as pa
+from clickhouse_connect.driver.summary import QuerySummary
 
 from op_analytics.coreutils.env import env_get
 from op_analytics.coreutils.logger import structlog
@@ -30,6 +31,25 @@ def new_client(instance: ClickHouseInstance):
         connect_timeout=60,
         send_receive_timeout=300,
     )
+
+
+def new_stateful_client(instance: ClickHouseInstance):
+    """Create clickkhouse stateful client.
+
+    A steteful client generates a session id so that the server can keep
+    track of operations that belong to this session.
+
+    This allows us to create temporary tables during a session and read
+    them back.
+
+    Any temporary tables created get deleted when the session ends.
+    """
+    clickhouse_connect.common.set_setting("autogenerate_session_id", True)
+    stateful_client = new_client(instance)
+
+    # Restore the default settting which does not autogenerate session ids.
+    clickhouse_connect.common.set_setting("autogenerate_session_id", False)
+    return stateful_client
 
 
 def connect(instance: ClickHouseInstance):
@@ -77,11 +97,20 @@ def run_query(
     return pl.from_arrow(arrow_result)
 
 
-def run_statement(instance: ClickHouseInstance, statement: str):
-    """A statement does not return results."""
+def run_statement(
+    instance: ClickHouseInstance,
+    statement: str,
+    parameters: dict[str, Any] | None = None,
+    settings: dict[str, Any] | None = None,
+) -> dict[str, str]:
     client = init_client(instance)
 
-    client.query(statement)
+    result: QuerySummary = client.command(
+        statement,
+        parameters=parameters,
+        settings=settings,
+    )
+    return result.summary
 
 
 def insert(

@@ -21,7 +21,7 @@ SUMMARY_ENDPOINT = "https://stablecoins.llama.fi/stablecoins?includePrices=true"
 BREAKDOWN_ENDPOINT = "https://stablecoins.llama.fi/stablecoin/{id}"
 
 
-BALANCES_TABLE_LAST_N_DAYS = 7  # upsert only the last 7 days of balances fetched from the api
+BALANCES_TABLE_LAST_N_DAYS = 90  # write only recent dates
 
 
 MUST_HAVE_METADATA_FIELDS = [
@@ -125,7 +125,10 @@ def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
 
     # Extract all the balances (includes metadata).
     result = extract(stablecoins_data)
+    return result
 
+
+def write(result: DefillamaStablecoins):
     # Write metadata.
     DefiLlama.STABLECOINS_METADATA.write(
         dataframe=result.metadata_df.with_columns(dt=pl.lit(now_dt())),
@@ -138,11 +141,10 @@ def pull_stablecoins(symbols: list[str] | None = None) -> DefillamaStablecoins:
         sort_by=["symbol", "chain"],
     )
 
-    return result
-
 
 def execute_pull():
     result = pull_stablecoins()
+    write(result)
     return {
         "metadata_df": dt_summary(result.metadata_df),
         "balances_df": dt_summary(result.balances_df),
@@ -166,11 +168,14 @@ def extract(stablecoins_data) -> DefillamaStablecoins:
         metadata.append(metadata_row)
         balances.extend(balance_rows)
 
-    metadata_df = pl.DataFrame(metadata, infer_schema_length=len(metadata))
+    metadata_df = pl.DataFrame(metadata, schema=METADATA_DF_SCHEMA)
     balances_df = pl.DataFrame(balances, schema=BALANCES_DF_SCHEMA)
 
     # Schema assertions to help our future selves reading this code.
-    assert metadata_df.schema == METADATA_DF_SCHEMA
+    raise_for_schema_mismatch(
+        actual_schema=metadata_df.schema,
+        expected_schema=pl.Schema(METADATA_DF_SCHEMA),
+    )
 
     raise_for_schema_mismatch(
         actual_schema=balances_df.schema,
@@ -201,6 +206,15 @@ def single_stablecoin_metadata(data: dict) -> dict:
     # Collect additional optional metadata fields
     for key in OPTIONAL_METADATA_FIELDS:
         metadata[key] = data.get(key)
+
+    # pedrod - 2025/01/24.
+    # The API seems to have a problem where price is sometimes of type string.
+    # For example (id='226', name='Frankencoin', price='1.1017182')
+    if "price" in metadata and isinstance(metadata["price"], str):
+        try:
+            metadata["price"] = float(metadata["price"])  # type: ignore
+        except ValueError:
+            metadata["price"] = None
 
     return metadata
 

@@ -1,6 +1,6 @@
 [project]
 name = "op-analytics"
-version = "20250121.1"
+version = "20250205.2"
 description = "Data analysis tools by OP Labs."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -19,9 +19,10 @@ dependencies = [
     "orjson>=3.10.11",
     "overrides>=7.7.0",
     "pandas>=2.2.3",
-    "polars>=1.13.1",
+    "polars>=1.21.0",
     "py-markdown-table>=1.1.0",
     "pyarrow>=17.0.0",
+    "pycryptodome>=3.21.0",
     "pydantic>=2.9.2",
     "pygithub>=2.5.0",
     "pyyaml>=6.0.2",

@@ -1,10 +1,5 @@
-import polars as pl
-
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.dailydata import (
-    write_daily_data,
-    DailyDataset,
-)
+from op_analytics.coreutils.partitioned.dailydata import DailyDataset
 
 log = structlog.get_logger()
 
@@ -24,14 +19,3 @@ class GrowThePie(DailyDataset):
 
     # Contract labels
     CONTRACT_LABELS = "gtp_contract_labels_v1"
-
-    def write(
-        self,
-        dataframe: pl.DataFrame,
-        sort_by: list[str] | None = None,
-    ):
-        return write_daily_data(
-            root_path=self.root_path,
-            dataframe=dataframe,
-            sort_by=sort_by,
-        )
