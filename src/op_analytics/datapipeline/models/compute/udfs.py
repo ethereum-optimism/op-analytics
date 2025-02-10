@@ -182,8 +182,8 @@ UDFS = [
     #  "0,100,0" -> "0"
     """CREATE OR REPLACE MACRO trace_address_root(a)
     AS CASE
-      WHEN length(a) = 0 THEN 'none'
-      ELSE split_part(a, ',', 1)
+      WHEN length(a) = 0 THEN -1
+      ELSE CAST(split_part(a, ',', 1) AS INTEGER)
     END;
     """,
     #
