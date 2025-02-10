@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.0.1
-  utils: ethereum-optimism/circleci-utils@1.0.2
+  utils: ethereum-optimism/circleci-utils@1.0.5
 
 executors:
   default:
@@ -234,7 +234,7 @@ jobs:
           condition: << parameters.push >>
           commit-message: "<< parameters.commit-message >>"
           skip-ci: << parameters.skip-ci >>
-          path: "op-analytics"
+          folder: "op-analytics"
 
   deploy-github-pages:
     executor: default
