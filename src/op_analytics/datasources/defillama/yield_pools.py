@@ -10,7 +10,6 @@ from op_analytics.coreutils.time import now_dt, dt_fromisostr
 from op_analytics.coreutils.env.vault import env_get
 
 from op_analytics.datasources.defillama.dataaccess import DefiLlama
-from op_analytics.coreutils.partitioned.dailydatautils import most_recent_dates
 
 log = structlog.get_logger()
 
@@ -74,12 +73,12 @@ def pull_yield_pools_data(pull_pools: list[str] | None = None) -> pl.DataFrame:
     yield_pools_df = historical_yield_df.join(pools_df, on="pool", how="left")
 
     # Write yield data
-    DefiLlama.YIELD_POOLS_HISTORICAL.write(
-        dataframe=most_recent_dates(
-            yield_pools_df, n_dates=YIELD_TABLE_LAST_N_DAYS, date_column="dt"
-        ),
-        sort_by=["dt", "chain", "protocol_slug", "pool"],
-    )
+    # DefiLlama.YIELD_POOLS_HISTORICAL.write(
+    #     dataframe=most_recent_dates(
+    #         yield_pools_df, n_dates=YIELD_TABLE_LAST_N_DAYS, date_column="dt"
+    #     ),
+    #     sort_by=["dt", "chain", "protocol_slug", "pool"],
+    # )
 
     return DefillamaYieldPools(yield_pools_df=yield_pools_df)
 
