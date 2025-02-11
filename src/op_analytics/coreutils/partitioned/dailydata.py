@@ -4,15 +4,12 @@ from enum import Enum
 import polars as pl
 
 from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
-from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
 from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
-from op_analytics.coreutils.duckdb_inmem import EmptyParquetData
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
 
 from .dailydataread import make_date_filter, query_parquet_paths
-from .dailydataloadch import load_to_clickhouse
 from .dailydatawrite import write_daily_data
 from .dataaccess import DateFilter
 from .location import DataLocation
@@ -127,40 +124,6 @@ class DailyDataset(str, Enum):
         )
 
         infer_schema_from_parquet(paths[0], dummy_name=f"{self.db}.{self.table}")
-
-    def load_gcs_to_ch(
-        self,
-        min_date: str | None = None,
-        max_date: str | None = None,
-        incremental_overlap: int = 0,
-    ):
-        """Load dailydata from GCS to clickhouse."""
-        try:
-            df = self.read_polars(min_date=min_date, max_date=max_date)
-        except EmptyParquetData:
-            log.info("incremental load: did not find new data")
-            return
-
-        summary = load_to_clickhouse(
-            db=self.db,
-            table=self.table,
-            dataframe=df,
-            min_date=min_date,
-            max_date=max_date,
-            incremental_overlap=incremental_overlap,
-        )
-        return {self.root_path: summary}
-
-    def create_clickhouse_view(self) -> None:
-        # Database used in ClickHouse to store views that point to GCS data.
-        external_db_name = f"dailydata_{self.db}"
-
-        return create_gcs_view(
-            db_name=external_db_name,
-            table_name=self.table,
-            partition_selection="CAST(dt as Date) AS dt, ",
-            gcs_glob_path=f"{self.root_path}/dt=*/out.parquet",
-        )
 
     def create_bigquery_external_table(self) -> None:
         # Database used in BigQuery to store external tables that point to GCS data.

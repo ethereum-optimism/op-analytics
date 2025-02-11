@@ -85,3 +85,44 @@ def create_blockbatch_gcs_view():
     clt.command(view_statement)
 
     log.info(f"created clickhouse parameterized view: {db_name}.{view_name}")
+
+
+def create_dailydata_gcs_view():
+    """Create a parameterized view for dailydata 3rd party sources.
+
+    The parameterized view requires the user to specify the datasource and the
+    dt partitions that will be queried.
+    """
+
+    db_name = "dailydata_gcs"
+
+    KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
+    SECRET = env_get("GCS_HMAC_SECRET")
+
+    db_statement = f"CREATE DATABASE IF NOT EXISTS {db_name}"
+
+    view_name = f"{db_name}.read_date"
+    view_statement = f"""
+    CREATE OR REPLACE VIEW {view_name} AS 
+    SELECT
+        CAST(dt as Date) AS dt,  *
+    FROM s3(
+            concat(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/',
+                {{rootpath:String}},
+                '/dt=', 
+                {{dt:String}}, 
+                '/*.parquet'
+            ),
+            '{KEY_ID}',
+            '{SECRET}',
+            'parquet'
+        )
+    SETTINGS use_hive_partitioning = 1
+    """
+
+    clt = init_client("OPLABS")
+    clt.command(db_statement)
+    clt.command(view_statement)
+
+    log.info(f"created clickhouse parameterized view: {db_name}.{view_name}")

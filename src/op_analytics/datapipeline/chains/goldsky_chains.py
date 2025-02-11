@@ -19,6 +19,17 @@ def goldsky_mainnet_chains_df() -> pl.DataFrame:
 
     return (
         df.filter(pl.col("oplabs_db_schema").is_not_null())
+        # (pedro - 2025/02/11) Exclude chains temporarily. Need to set up
+        # batch configuration and get back to this soon.
+        .filter(
+            ~pl.col("oplabs_db_schema").is_in(
+                [
+                    "ethernity",
+                    "superseet",
+                    "snaxchain",
+                ]
+            )
+        )
         .select(
             "chain_name",
             "display_name",
