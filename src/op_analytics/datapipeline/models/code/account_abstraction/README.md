@@ -3,7 +3,7 @@
 
 ## Overview
 
-The pipleine is split into two steps (1) pre-filtering, (2) decoding + enrichment. 
+The pipeline is split into two steps (1) pre-filtering, (2) decoding + enrichment. 
 
 Pre-filtering involves filtering raw logs to find events emitted by the AA EntryPoint contract.
 From the filtered logs we get a set of AA transactions. We keep traces for those transactions 
@@ -81,7 +81,7 @@ This table includes all the pre-filtered traces from EntryPoint event emitting t
 The table is enriched by decoding the `innerHandleOp` traces to obtain the `sender` for each UserOp
 and then joining this back to all `innerHandleOp` subtraces. 
 
-For each subtrace of an `innerHandleOp` trace we incude the following enriched columns:
+For each subtrace of an `innerHandleOp` trace we include the following enriched columns:
 
 * `matched_userop_trace_address`. The trace address of the parent `innerHandleOp` trace.
 * `matched_userop_sender`.  The `sender` value that was obtained by decoding the parent `innerHandleOp` trace.
