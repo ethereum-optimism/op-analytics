@@ -1,23 +1,33 @@
 WITH
 
-uops AS (
+traces AS (
   SELECT
-    'user_ops' AS table_name
-    , count(*) AS num_logs
-  FROM account_abstraction__user_op_events
+    block_number
+    , transaction_hash
+    , innerhandleop_opinfo_sender
+    , matched_userop_sender
+    , matched_userop_trace_address
+    , is_from_matched_userop_sender
+    , from_address
+    , trace_address
+  FROM account_abstraction__enriched_entrypoint_traces
+  WHERE innerhandleop_opinfo_sender IS NOT NULL
 )
 
-, traces AS (
-  SELECT
-    'user_ops' AS table_name
-    , count(*) AS num_sender_subtraces
-  FROM account_abstraction__user_op_sender_subtraces
-  WHERE trace_row_number = 1
-)
 
+-- Checks that when we flag something as "is_from_matched_userop_sender" the
+-- "matched_userop_sender" and "from_address" must match, and also the trace
+-- address should be a subtrace of the "matched_userop_trace_address".
 SELECT
-  table_name
-  , uops.num_logs
-  , traces.num_sender_subtraces
-FROM uops INNER JOIN traces USING (table_name)
-WHERE uops.num_logs != traces.num_sender_subtraces
+  'Unexpedted result on matched userop' AS error
+  , t.block_number
+  , t.transaction_hash
+  , t.matched_userop_sender
+  , t.from_address
+FROM traces AS t
+WHERE
+  t.is_from_matched_userop_sender
+  AND (
+    t.matched_userop_sender != t.from_address
+    OR NOT starts_with(t.trace_address, t.matched_userop_trace_address)
+  )

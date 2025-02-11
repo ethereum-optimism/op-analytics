@@ -4,29 +4,37 @@ uops AS (
   SELECT
     block_number
     , transaction_hash
-    , count(*) AS num_logs
-  FROM account_abstraction__user_op_events
-  GROUP BY 1, 2
+    , log_index
+    , sender
+  FROM account_abstraction__useroperationevent_logs
 )
 
 , traces AS (
   SELECT
     block_number
     , transaction_hash
-    , count(*) AS num_sender_subtraces
-  FROM account_abstraction__user_op_sender_subtraces
-  GROUP BY 1, 2
+    , innerhandleop_opinfo_sender
+    , matched_userop_sender
+    , is_from_matched_userop_sender
+    , from_address
+  FROM account_abstraction__enriched_entrypoint_traces
+  WHERE innerhandleop_opinfo_sender IS NOT NULL
 )
 
+-- Checks that we see the same UserOps on the events and the traces.
 SELECT
-  block_number
-  , transaction_hash
-  , uops.num_logs
-  , traces.num_sender_subtraces
-FROM uops FULL OUTER JOIN traces
-  USING (block_number, transaction_hash)
+  'Unsatisfied JOIN for UserOperationEvent <> EntryPoint traces' AS error
+  , u.block_number
+  , u.transaction_hash
+  , u.log_index
+  , u.sender
+  , t.innerhandleop_opinfo_sender
+FROM uops AS u
+FULL OUTER JOIN traces AS t
+  ON
+    u.block_number = t.block_number
+    AND u.transaction_hash = t.transaction_hash
+    AND u.sender = t.innerhandleop_opinfo_sender
 WHERE
-  -- Any of this being true means we have a problem.
-  uops.num_logs > traces.num_sender_subtraces
-  OR uops.num_logs IS NULL
-  OR traces.num_sender_subtraces IS NULL
+  u.sender IS NULL
+  OR t.innerhandleop_opinfo_sender IS NULL

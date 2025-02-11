@@ -371,9 +371,11 @@ def noargs_public_bq():
 def aa_backfill_01():
     """Backfill account abstraction prefilter."""
     compute_blockbatch(
-        chains=normalize_chains("ALL"),
+        # chains=normalize_chains("ALL"),
+        chains=["base"],
         models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        range_spec="@20250131:20250202",
+        # range_spec="@20250131:20250202",
+        range_spec="@20240917:+1",
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,

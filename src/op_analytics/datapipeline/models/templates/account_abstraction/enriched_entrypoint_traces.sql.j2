@@ -28,12 +28,12 @@ decoded_traces AS (
     , t.error
     , t.status
     , t.trace_root
-    , TRY_CAST(t.trace_root AS INT) AS trace_rootnum
     , hexstr_method_id(t.input) AS method_id
     , IF(hexstr_method_id(t.input) IN ({{ innerhandleop_method_ids }}), decode_innerhandleop(t.input), NULL) AS decoded
   FROM {{ prefiltered_traces }} AS t
 )
 
+-- Destructure the decoded result into our custom column names.
 , decoded_traces_exploded AS (
   SELECT
     t.dt
@@ -61,9 +61,9 @@ decoded_traces AS (
     , t.error
     , t.status
     , t.trace_root
-    , t.trace_rootnum
     , t.method_id
     -- Decoded innerHandleOp
+    , IF(t.decoded['opinfo_sender'] IS NULL, NULL, t.trace_address) AS innerhandleop_trace_address
     , t.decoded['decodeerror'] AS innerhandleop_decodeerror
     , t.decoded['opinfo_sender'] AS innerhandleop_opinfo_sender
     , t.decoded['opinfo_paymaster'] AS innerhandleop_opinfo_paymaster
@@ -74,6 +74,19 @@ decoded_traces AS (
   FROM decoded_traces AS t
 )
 
+
+, innerhandleop AS (
+  SELECT
+    t.block_number
+    , t.transaction_hash
+    , t.innerhandleop_opinfo_sender
+    , t.trace_address AS innerhandleop_trace_address
+  FROM decoded_traces_exploded AS t
+  WHERE t.innerhandleop_opinfo_sender IS NOT NULL
+)
+
+-- Use window functions to enrich traces by matching them with the UserOp sender
+-- address obtained from decoding innerHandleOp.
 SELECT
   t.dt
   , t.chain
@@ -100,7 +113,6 @@ SELECT
   , t.error
   , t.status
   , t.trace_root
-  , t.trace_rootnum
   , t.method_id
   -- Add the sender from the parent innerHandleOp
   , t.innerhandleop_decodeerror
@@ -111,14 +123,19 @@ SELECT
   , t.innerhandleop_opinfo
   , t.innerhandleop_context
   , t.innerhandleop_calldata
-  , last_value(IF(t.innerhandleop_opinfo_sender IS NULL, NULL, t.trace_address) IGNORE NULLS) OVER shared_root AS userop_trace_address
-  , last_value(t.innerhandleop_opinfo_sender IGNORE NULLS) OVER shared_root AS userop_sender
-  , last_value(t.innerhandleop_opinfo_sender IGNORE NULLS) OVER shared_root = t.from_address AS is_from_userop_sender
+
+  -- Values picked up from the self join.
+  , i.innerhandleop_trace_address AS matched_userop_trace_address
+  , i.innerhandleop_opinfo_sender AS matched_userop_sender
+
+  -- Convenience BOOL value that consumers of this data can use to
+  -- filter traces where the UserOp sender is the from_address.
+  , i.innerhandleop_opinfo_sender = t.from_address AS is_from_matched_userop_sender
+
 
 FROM decoded_traces_exploded AS t
-WINDOW
-  shared_root AS (
-    PARTITION BY t.transaction_hash
-    ORDER BY t.trace_rootnum
-    RANGE BETWEEN UNBOUNDED PRECEDING AND 0 FOLLOWING
-  )
+LEFT JOIN innerhandleop AS i ON
+  t.block_number = i.block_number
+  AND t.transaction_hash = i.transaction_hash
+  -- Subtraces of the innerHandleOp function call
+  AND starts_with(t.trace_address, i.innerhandleop_trace_address)

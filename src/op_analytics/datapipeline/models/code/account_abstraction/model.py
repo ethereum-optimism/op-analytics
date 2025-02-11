@@ -1,5 +1,3 @@
-from textwrap import dedent
-
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext, ParquetData
 from op_analytics.datapipeline.models.code.account_abstraction.abis import (
     INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0,
@@ -20,17 +18,14 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         "blockbatch/account_abstraction_prefilter/entrypoint_traces_v1",
     ],
     auxiliary_templates=[
-        "refined_transactions_fees",
-        "account_abstraction/UserOperation",
-        "account_abstraction/innerHandleOp",
-        "account_abstraction/user_op_sender_subtraces",
+        "account_abstraction/useroperationevent_logs",
+        "account_abstraction/enriched_entrypoint_traces",
         "account_abstraction/data_quality_check_01",
         "account_abstraction/data_quality_check_02",
     ],
     expected_outputs=[
-        "user_ops_v1",
-        "handle_ops_v1",
-        "user_txs_v1",
+        "useroperationevent_logs_v1",
+        "enriched_entrypoint_traces_v1",
     ],
 )
 def account_abstraction(
@@ -41,45 +36,23 @@ def account_abstraction(
     register_4337_decoders(ctx)
 
     # Decoded UserOperationEvent logs.
-    user_ops_events = auxiliary_templates["account_abstraction/user_op_events"].create_table(
+    user_ops = auxiliary_templates["account_abstraction/UserOperationEvent"].create_table(
         duckdb_context=ctx,
         template_parameters={
-            "raw_logs": input_datasets["ingestion/logs_v1"].as_subquery(),
-        },
-    )
-
-    # Table with UserOp transaction hashes. Used to filter the raw traces.
-    ctx.client.sql(f"""
-    CREATE OR REPLACE TABLE user_op_txhash_senders AS
-    SELECT DISTINCT txhash_sender FROM {user_ops_events}
-    ORDER BY transaction_hash
-    """)
-
-    # Prefiltered traces.
-    user_op_prefiltered_traces = auxiliary_templates[
-        "account_abstraction/user_op_prefiltered_traces"
-    ].create_table(
-        duckdb_context=ctx,
-        template_parameters={
-            "raw_traces": input_datasets["ingestion/traces_v1"].as_subquery(),
-            "user_op_txhash_senders": "user_op_txhash_senders",
-            "inner_handle_op_method_ids": ", ".join(
-                [
-                    f"'{INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0}'",
-                    f"'{INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0}'",
-                ]
-            ),
+            "raw_logs": input_datasets[
+                "blockbatch/account_abstraction_prefilter/entrypoint_logs_v1"
+            ].as_subquery(),
         },
     )
 
     # Traces initiated on behalf of the UserOperationEvent sender
-    user_op_traces = auxiliary_templates[
-        "account_abstraction/user_op_sender_subtraces"
-    ].create_table(
+    entrypoint_traces = auxiliary_templates["account_abstraction/innerHandleOp"].create_table(
         duckdb_context=ctx,
         template_parameters={
-            "prefiltered_traces": user_op_prefiltered_traces,
-            "inner_handle_op_method_ids": ", ".join(
+            "prefiltered_traces": input_datasets[
+                "blockbatch/account_abstraction_prefilter/entrypoint_traces_v1"
+            ].as_subquery(),
+            "innerhandleop_method_ids": ", ".join(
                 [
                     f"'{INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0}'",
                     f"'{INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0}'",
@@ -88,43 +61,17 @@ def account_abstraction(
         },
     )
 
-    # Run data quality checks()
-    data_quality_checks(ctx, auxiliary_templates)
-
-    return {}
-
-
-def data_quality_checks(ctx, auxiliary_templates):
-    # Data Quality Validation.
-
-    check1_msg = dedent("""\
-        The total # of UserOperationEvent logs in a transaction must be <= the number 
-        of sender subtraces found in the transaction.""")
-
-    check2_msg = dedent("""\
-        We should have exactly the same UserOperationEvent logs as we do first sender
-        subtrace calls.""")
-
-    check1 = (
-        auxiliary_templates["account_abstraction/data_quality_check_01"]
-        .to_relation(duckdb_context=ctx, template_parameters={})
-        .pl()
-    )
-
-    check2 = (
-        auxiliary_templates["account_abstraction/data_quality_check_02"]
-        .to_relation(duckdb_context=ctx, template_parameters={})
-        .pl()
-    )
-
+    # Data Quality Checks
     errors = []
-    if len(check1) > 0:
-        errors.append(check1_msg)
-
-    if len(check2) > 0:
-        errors.append(check2_msg)
-
+    for name, val in auxiliary_templates.items():
+        if "data_quality_check" in name:
+            errors.extend(val.run_as_data_quality_check())
     if errors:
         raise Exception("\n\n".join(errors))
     else:
-        print("DQ OK")
+        print("Data Quality OK")
+
+    return {
+        "useroperationevent_logs_v1": user_ops,
+        "enriched_entrypoint_traces_v1": entrypoint_traces,
+    }

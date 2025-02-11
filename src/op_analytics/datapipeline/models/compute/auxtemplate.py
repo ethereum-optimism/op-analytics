@@ -106,3 +106,19 @@ class AuxiliaryTemplate:
 
         duckdb_context.report_size()
         return self.sanitized_name
+
+    def run_as_data_quality_check(self, ctx):
+        errors = []
+        result = self.to_relation(duckdb_context=ctx, template_parameters={}).pl()
+
+        assert result.columns[0] == "error"
+
+        # Collect the first 10 errors.
+        if len(result) > 0:
+            errors.append(result.head(10))
+
+        # If there are more than 10 errors leave a message indicating trncation.
+        if len(result) > 10:
+            errors.append({"error": f"truncated list of {len(result)} errors"})
+
+        return errors
