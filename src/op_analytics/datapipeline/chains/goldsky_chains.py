@@ -23,9 +23,11 @@ def goldsky_mainnet_chains_df() -> pl.DataFrame:
         # batch configuration and get back to this soon.
         .filter(
             ~pl.col("oplabs_db_schema").is_in(
-                "ethernity",
-                "superseet",
-                "snaxchain",
+                [
+                    "ethernity",
+                    "superseet",
+                    "snaxchain",
+                ]
             )
         )
         .select(
