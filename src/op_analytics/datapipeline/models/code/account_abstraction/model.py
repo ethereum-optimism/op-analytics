@@ -36,7 +36,7 @@ def account_abstraction(
     register_4337_decoders(ctx)
 
     # Decoded UserOperationEvent logs.
-    user_ops = auxiliary_templates["account_abstraction/UserOperationEvent"].create_table(
+    user_ops = auxiliary_templates["account_abstraction/useroperationevent_logs"].create_table(
         duckdb_context=ctx,
         template_parameters={
             "raw_logs": input_datasets[
@@ -46,7 +46,9 @@ def account_abstraction(
     )
 
     # Traces initiated on behalf of the UserOperationEvent sender
-    entrypoint_traces = auxiliary_templates["account_abstraction/innerHandleOp"].create_table(
+    entrypoint_traces = auxiliary_templates[
+        "account_abstraction/enriched_entrypoint_traces"
+    ].create_table(
         duckdb_context=ctx,
         template_parameters={
             "prefiltered_traces": input_datasets[
@@ -65,7 +67,7 @@ def account_abstraction(
     errors = []
     for name, val in auxiliary_templates.items():
         if "data_quality_check" in name:
-            errors.extend(val.run_as_data_quality_check())
+            errors.extend(val.run_as_data_quality_check(duckdb_context=ctx))
     if errors:
         raise Exception("\n\n".join(errors))
     else:
