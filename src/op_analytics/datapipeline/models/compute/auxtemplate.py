@@ -107,15 +107,21 @@ class AuxiliaryTemplate:
         duckdb_context.report_size()
         return self.sanitized_name
 
-    def run_as_data_quality_check(self, ctx):
+    def run_as_data_quality_check(self, duckdb_context: DuckDBContext) -> list[dict[str, Any]]:
+        """Run the template as a data quality check query.
+
+        A data quality check query produces rows that are considered errors.
+
+        The check passes if the query results are empty.
+        """
         errors = []
-        result = self.to_relation(duckdb_context=ctx, template_parameters={}).pl()
+        result = self.to_relation(duckdb_context=duckdb_context, template_parameters={}).pl()
 
         assert result.columns[0] == "error"
 
         # Collect the first 10 errors.
         if len(result) > 0:
-            errors.append(result.head(10))
+            errors.extend(result.head(10).to_dicts())
 
         # If there are more than 10 errors leave a message indicating trncation.
         if len(result) > 10:

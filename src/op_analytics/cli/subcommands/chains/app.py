@@ -374,8 +374,52 @@ def aa_backfill_01():
         # chains=normalize_chains("ALL"),
         chains=["base"],
         models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        # range_spec="@20250131:20250202",
-        range_spec="@20240917:+1",
+        range_spec="@20241224:20250101",
+        read_from=DataLocation.GCS,
+        write_to=DataLocation.GCS,
+        dryrun=False,
+        force_complete=False,
+        fork_process=True,
+    )
+
+
+@app.command()
+def aa_backfill_02():
+    """Backfill account abstraction prefilter."""
+    compute_blockbatch(
+        chains=normalize_chains("ALL"),
+        models=normalize_blockbatch_models("account_abstraction_prefilter"),
+        range_spec="@20250112:20250124",
+        read_from=DataLocation.GCS,
+        write_to=DataLocation.GCS,
+        dryrun=False,
+        force_complete=False,
+        fork_process=True,
+    )
+
+
+@app.command()
+def aa_backfill_03():
+    """Backfill account abstraction prefilter."""
+    compute_blockbatch(
+        chains=normalize_chains("ALL"),
+        models=normalize_blockbatch_models("account_abstraction_prefilter"),
+        range_spec="@20250124:20250203",
+        read_from=DataLocation.GCS,
+        write_to=DataLocation.GCS,
+        dryrun=False,
+        force_complete=False,
+        fork_process=True,
+    )
+
+
+@app.command()
+def aa_backfill_04():
+    """Backfill account abstraction prefilter."""
+    compute_blockbatch(
+        chains=normalize_chains("ALL"),
+        models=normalize_blockbatch_models("account_abstraction_prefilter"),
+        range_spec="@20250203:20250211",
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,

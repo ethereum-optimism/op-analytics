@@ -11,6 +11,7 @@ spec:
   concurrencyPolicy: Forbid 
   jobTemplate:
     spec:
+      backoffLimit: 0
       template:
         spec:
           serviceAccountName: op-analytics-service-account
@@ -39,7 +40,7 @@ spec:
             volumeMounts:
             - mountPath: "/var/secrets"
               name: opanalyticsvault
-          restartPolicy: OnFailure 
+          restartPolicy: Never 
           volumes:
           - name: opanalyticsvault
             csi:
