@@ -20,7 +20,7 @@ tables.
 
 ### `useroperationevent_logs` Table
 
-Refer to [`UserOperationEvent.sql.j2`](../../templates/account_abstraction/UserOperationEvent.sql.j2). 
+Refer to [`useroperationevent_logs.sql.j2`](../../templates/account_abstraction/useroperationevent_logs.sql.j2). 
 
 This table is created by reading the pre-filtered EntryPoint logs, filtering to only 
 `UserOperationEvent` logs and then decoding the event parameters.
@@ -74,7 +74,7 @@ The following columns are obtained from decoding:
 
 ### `enriched_entrypoint_traces` Table 
 
-Refer to ['enriched_entrypoint_traces.sql.j2`](../../templates/account_abstraction/enriched_entrypoint_traces.sql.j2)
+Refer to [`enriched_entrypoint_traces.sql.j2`](../../templates/account_abstraction/enriched_entrypoint_traces.sql.j2)
 
 This table includes all the pre-filtered traces from EntryPoint event emitting transactions. 
 
