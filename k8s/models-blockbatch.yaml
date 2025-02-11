@@ -12,12 +12,6 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: 0
-      podFailurePolicy:
-        rules:
-          - action: Ignore  # Keeps failed pods
-            onExitCodes:
-              operator: In
-              values: [1]
       template:
         spec:
           serviceAccountName: op-analytics-service-account
@@ -62,5 +56,5 @@ spec:
           - name: duckdbdata
             emptyDir:
               sizeLimit: 100Gi
-  successfulJobsHistoryLimit: 2  # Retains the last 3 successful jobs
-  failedJobsHistoryLimit: 2      # Retains the last failed job
+  successfulJobsHistoryLimit: 3  # Retains the last N successful jobs
+  failedJobsHistoryLimit: 3      # Retains the last N failed jobs
