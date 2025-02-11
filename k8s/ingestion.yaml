@@ -48,5 +48,5 @@ spec:
               readOnly: true
               volumeAttributes:
                 secretProviderClass: op-analytics-secret-provider-class
-  successfulJobsHistoryLimit: 3  # Retains the last 3 successful jobs
-  failedJobsHistoryLimit: 1      # Retains the last failed job
+  successfulJobsHistoryLimit: 3  # Retains successful jobs
+  failedJobsHistoryLimit: 3      # Retains failed jobs
