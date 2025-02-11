@@ -59,7 +59,7 @@ def volumes_fees_revenue(context: OpExecutionContext):
 
 
 @asset
-def yield_data(context: OpExecutionContext):
+def yield_pools_data(context: OpExecutionContext):
     from op_analytics.datasources.defillama import yield_pools
 
     result = yield_pools.execute_pull()
@@ -73,6 +73,7 @@ def yield_data(context: OpExecutionContext):
         tvl_breakdown_enrichment,
         historical_chain_tvl,
         volumes_fees_revenue,
+        yield_pools_data,
     ]
 )
 def defillama_views():
@@ -100,6 +101,8 @@ def defillama_views():
     DefiLlama.VOLUME_PROTOCOLS_METADATA.create_bigquery_external_table()
     DefiLlama.FEES_PROTOCOLS_METADATA.create_bigquery_external_table()
     DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_external_table()
+
+    DefiLlama.YIELD_POOLS_HISTORICAL.create_bigquery_external_table()
 
     from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
 
