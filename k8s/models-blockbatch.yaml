@@ -56,5 +56,5 @@ spec:
           - name: duckdbdata
             emptyDir:
               sizeLimit: 100Gi
-  successfulJobsHistoryLimit: 2  # Retains the last 2 successful jobs
-  failedJobsHistoryLimit: 2      # Retains the last 2 failed jobs
+  successfulJobsHistoryLimit: 3  # Retains the last N successful jobs
+  failedJobsHistoryLimit: 3      # Retains the last N failed jobs

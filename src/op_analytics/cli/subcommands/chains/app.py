@@ -374,7 +374,7 @@ def aa_backfill_01():
         # chains=normalize_chains("ALL"),
         chains=["base"],
         models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        range_spec="@20250101:20250112",
+        range_spec="@20241224:20250101",
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,
