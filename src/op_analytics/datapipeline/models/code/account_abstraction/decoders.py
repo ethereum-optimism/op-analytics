@@ -27,7 +27,7 @@ def register_4337_decoders(ctx: DuckDBContext):
     # UserOperationEvent
     register_decoder(
         ctx=ctx,
-        duckdb_function_name="decode_useroperation",
+        duckdb_function_name="decode_useroperationevent",
         decoder=user_op_event_decoder(),
         parameters=["VARCHAR"],
         return_type="VARCHAR",

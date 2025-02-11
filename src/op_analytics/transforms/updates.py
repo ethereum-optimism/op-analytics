@@ -37,7 +37,19 @@ class Step:
 
         This ensures the naming convention for the group db is used and is better
         than manually checking that DDL file names agree with table names.
+
+        If there is no explicit INSERT INTO line in the file we add it.
         """
+        # If no INSERT INTO line exists, add it at the start
+        if "INSERT INTO" not in self.ddl.statement:
+            return f"""
+            INSERT INTO {self.db}.{self.table_name}
+            
+            {self.ddl.statement}
+            """
+
+        # Replace the _placeholder_ with the file name, which is the
+        # name of the table that we are updating.
         return self.ddl.statement.replace(
             "_placeholder_",
             f"{self.db}.{self.table_name}",
