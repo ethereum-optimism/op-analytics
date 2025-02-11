@@ -15,10 +15,10 @@ def interop_transforms(context: AssetExecutionContext):
 
 
 @asset
-def transfer_transforms(context: AssetExecutionContext):
-    """Run transfer dataset transformations."""
+def erc20_transfers_transforms(context: AssetExecutionContext):
+    """Run erc20 transfers dataset transformations."""
 
     from op_analytics.transforms.main import execute_dt_transforms
 
-    result = execute_dt_transforms(group_name="transfer", force_complete=True)
+    result = execute_dt_transforms(group_name="erc20_transfers", force_complete=True)
     context.log.info(result)
