@@ -103,14 +103,14 @@ class DailyDataset(str, Enum):
         return view_name
 
     @classmethod
-    def get_all_datasets(cls) -> dict:
+    def get_all_datasets(cls) -> dict[str, str]:
         """Get all class attributes and their values as a dictionary.
 
         Returns:
-            dict: Dictionary containing all class attributes and their values
+            dict[str, str]: Dictionary mapping dataset names to their values, excluding internal attributes
         """
         return {
-            name: value
+            name: value.split(".")[-1]
             for name, value in vars(cls).items()
             if not name.startswith("_") and isinstance(value, str)
         }
