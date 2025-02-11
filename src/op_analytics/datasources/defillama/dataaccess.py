@@ -32,9 +32,9 @@ class DefiLlama(DailyDataset):
     YIELD_POOLS_METADATA = "yield_pools_metadata_v1"
     YIELD_POOLS_HISTORICAL = "yield_pools_historical_v1"
 
-    # Borrow
-    BORROW_POOLS_METADATA = "borrow_pools_metadata_v1"
-    BORROW_POOLS_HISTORICAL = "borrow_pools_historical_v1"
+    # Lend/Borrow
+    LEND_BORROW_POOLS_METADATA = "lend_borrow_pools_metadata_v1"
+    LEND_BORROW_POOLS_HISTORICAL = "lend_borrow_pools_historical_v1"
 
     # Protocols metadata obtained from "dexs/dailyVolume", and "fees/dailyFees"
     # and "fees/dailyRevenue" endpoints.

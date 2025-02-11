@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 
 import polars as pl
-
+import numpy as np
 
 from op_analytics.datasources.defillama.dataaccess import DefiLlama
-
 
 from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
@@ -18,37 +17,38 @@ log = structlog.get_logger()
 
 API_KEY = env_get("DEFILLAMA_API_KEY")
 
-BORROW_POOLS_ENDPOINT = "https://pro-api.llama.fi/{api_key}/yields/poolsBorrow"
-BORROW_POOL_CHART_ENDPOINT = "https://pro-api.llama.fi/{api_key}/yields/chartLendBorrow/{pool}"
+LEND_BORROW_POOLS_ENDPOINT = "https://pro-api.llama.fi/{api_key}/yields/poolsBorrow"
+LEND_BORROW_POOL_CHART_ENDPOINT = "https://pro-api.llama.fi/{api_key}/yields/chartLendBorrow/{pool}"
 
-BORROW_TABLE_LAST_N_DAYS = 120
+LEND_BORROW_TABLE_LAST_N_DAYS = 100_000
 
 
 @dataclass
-class DefillamaBorrowPools:
+class DefillamaLendBorrowPools:
     """Metadata and yield data for all pools.
 
     This is the result we obtain after fetching from the API and extracting the data
     that we need to ingest.
     """
 
-    borrow_pools_df: pl.DataFrame
+    lend_borrow_pools_df: pl.DataFrame
 
 
-def pull_borrow_pools_data(pull_pools: list[str] | None = None) -> pl.DataFrame:
+def pull_lend_borrow_pools_data(pull_pools: list[str] | None = None) -> pl.DataFrame:
     """
-    Pulls and processes borrow pool data from DeFiLlama.
+    Pulls and processes lend/borrow pool data from DeFiLlama.
 
     Args:
         pull_pools: list of pool IDs to process. Defaults to None (process all).
 
     Returns:
-        A polars DataFrame containing joined pool and historical borrow data.
+        A polars DataFrame containing joined pool and historical lend/borrow data.
     """
     session = new_session()
 
     # Get all pools data
-    pools_data = get_data(session, BORROW_POOLS_ENDPOINT.format(api_key=API_KEY))
+    pools_data = get_data(session, LEND_BORROW_POOLS_ENDPOINT.format(api_key=API_KEY))
+
     pools_df = extract_pools_metadata(pools_data["data"])
 
     # Write pools metadata
@@ -62,30 +62,34 @@ def pull_borrow_pools_data(pull_pools: list[str] | None = None) -> pl.DataFrame:
 
     # Call the API endpoint for each pool in parallel
     urls = {
-        pool: BORROW_POOL_CHART_ENDPOINT.format(api_key=API_KEY, pool=pool) for pool in pool_ids
+        pool: LEND_BORROW_POOL_CHART_ENDPOINT.format(api_key=API_KEY, pool=pool)
+        for pool in pool_ids
+        for pool in pool_ids
     }
-    historical_borrow_data = run_concurrently(lambda x: get_data(session, x), urls, max_workers=4)
+    historical_lend_borrow_data = run_concurrently(
+        lambda x: get_data(session, x), urls, max_workers=4
+    )
 
-    # Extract historical borrow data
-    historical_borrow_df = extract_historical_borrow_data(historical_borrow_data)
+    # Extract historical lend/borrow data
+    historical_lend_borrow_df = extract_historical_lend_borrow_data(historical_lend_borrow_data)
 
     # Merge historical data with pool metadata
-    borrow_pools_df = historical_borrow_df.join(pools_df, on="pool", how="left")
+    lend_borrow_pools_df = historical_lend_borrow_df.join(pools_df, on="pool", how="left")
 
-    # Write borrow data
-    DefiLlama.BORROW_POOLS_HISTORICAL.write(
+    # Write lend/borrow data
+    DefiLlama.LEND_BORROW_POOLS_HISTORICAL.write(
         dataframe=most_recent_dates(
-            borrow_pools_df, n_dates=BORROW_TABLE_LAST_N_DAYS, date_column="dt"
+            lend_borrow_pools_df, n_dates=LEND_BORROW_TABLE_LAST_N_DAYS, date_column="dt"
         ),
         sort_by=["dt", "chain", "protocol_slug", "pool"],
     )
 
-    return DefillamaBorrowPools(borrow_pools_df=borrow_pools_df)
+    return DefillamaLendBorrowPools(lend_borrow_pools_df=lend_borrow_pools_df)
 
 
 def execute_pull():
-    result = pull_borrow_pools_data()
-    return {"borrow_pools_df": dt_summary(result.borrow_pools_df)}
+    result = pull_lend_borrow_pools_data()
+    return {"lend_borrow_pools_df": dt_summary(result.lend_borrow_pools_df)}
 
 
 def extract_pools_metadata(pools_data: list) -> pl.DataFrame:
@@ -112,8 +116,8 @@ def extract_pools_metadata(pools_data: list) -> pl.DataFrame:
     return pl.DataFrame(records)
 
 
-def extract_historical_borrow_data(data: dict) -> pl.DataFrame:
-    """Extract historical borrow data and transform into dataframe"""
+def extract_historical_lend_borrow_data(data: dict) -> pl.DataFrame:
+    """Extract historical lend/borrow data and transform into dataframe"""
     records = [
         {
             "pool": pool_id,
