@@ -28,14 +28,12 @@ def parquet_to_subquery(gcs_parquet_path: str, virtual_columns: str = "") -> str
     """
 
 
-def infer_schema_from_parquet(gcs_parquet_path: str, dummy_name: str):
-    """Use a single parquet path to generate a Clickhouse CREATE TABLE dsl statement.
+def get_schema_from_parquet(gcs_parquet_path: str) -> list[dict]:
+    """Query Clickhouse to get schema information from a parquet file.
 
-    The value of "dummy_name" is used for the table name in the generated ddl.
+    Creates a temporary table from the parquet file and returns its schema.
     """
-    # Clickhouse client
     clt = new_stateful_client("OPLABS")
-
     log.info(f"using gcs path: {gcs_parquet_path}")
 
     statement = f"""
@@ -46,26 +44,33 @@ def infer_schema_from_parquet(gcs_parquet_path: str, dummy_name: str):
     clt.command(statement)
 
     df: pl.DataFrame = pl.from_arrow(clt.query_arrow("DESCRIBE new_table"))  # type: ignore
-    schema = df.select("name", "type").to_dicts()
+    return df.select("name", "type").to_dicts()
+
+
+def generate_create_table_ddl(gcs_parquet_path: str, table_name: str) -> str:
+    """Generate a Clickhouse CREATE TABLE statement from a parquet file.
+
+    Gets schema info from parquet file and generates the DDL statement.
+    """
+    schema = get_schema_from_parquet(gcs_parquet_path)
 
     # Build column definitions
     columns = []
     for col in schema:
         col_name = col["name"]
         col_type = remove_nullable(col["type"])
-
         columns.append(f"`{col_name}` {col_type}")
 
     # Join columns with commas
     columns_str = ",\n    ".join(columns)
 
     # Build full CREATE TABLE statement
-    ddl = f"""CREATE TABLE IF NOT EXISTS {dummy_name}
-(
-    {columns_str}
-)
-ENGINE = ReplacingMergeTree
-"""
+    ddl = f"""CREATE TABLE IF NOT EXISTS {table_name}
+        (
+            {columns_str}
+        )
+        ENGINE = ReplacingMergeTree
+    """
 
     print(ddl)
     return ddl

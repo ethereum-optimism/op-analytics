@@ -5,7 +5,7 @@ import polars as pl
 
 from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
 from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
-from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
+from op_analytics.coreutils.clickhouse.inferschema import get_schema_from_parquet
 from op_analytics.coreutils.duckdb_inmem import EmptyParquetData
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
@@ -103,19 +103,6 @@ class DailyDataset(str, Enum):
         return view_name
 
     @classmethod
-    def get_all_datasets(cls) -> dict[str, str]:
-        """Get all class attributes and their values as a dictionary.
-
-        Returns:
-            dict[str, str]: Dictionary mapping dataset names to their values, excluding internal attributes
-        """
-        return {
-            name: value.split(".")[-1]
-            for name, value in vars(cls).items()
-            if not name.startswith("_") and isinstance(value, str)
-        }
-
-    @classmethod
     def infer_all_schemas(cls, datestr: str) -> dict[str, dict]:
         """Infer Clickhouse schemas for all datasets and return with metadata.
 
@@ -123,21 +110,25 @@ class DailyDataset(str, Enum):
             datestr: Date string to use for schema inference
 
         Returns:
-            tuple: Tuple containing:
-                - datasets: Mapping of class attribute names to values
-                - schemas: Mapping of dataset names to their inferred schemas
+            dict[str, dict]: Mapping of dataset names to their inferred schemas
         """
         schemas = {}
-        for dataset in cls.all_tables():
-            log.info(f"Inferring schema for {dataset}")
+        for table in cls.all_tables():
+            name = table.name
+            value = table.value.split(".")[-1]
+
+            log.info(f"Inferring schema for {name}")
             try:
-                schema = dataset.infer_clickhouse_schema(datestr)
-                schemas[dataset.value] = schema
+                schema = table.infer_clickhouse_schema(datestr)
+                schemas[value] = schema
             except IndexError:
-                log.warning(f"No data found for {dataset} on {datestr}, skipping schema inference")
+                log.warning(f"No data found for {name} on {datestr}, skipping schema inference")
+                continue
+            except Exception as e:
+                log.error(f"Error inferring schema for {name}", error=str(e))
                 continue
 
-        return cls.get_all_datasets(), schemas
+        return schemas
 
     def read_polars(
         self,
@@ -157,13 +148,13 @@ class DailyDataset(str, Enum):
         rel = duckdb_context.client.sql(f"SELECT * FROM {relation_name}")
         return rel.pl()
 
-    def infer_clickhouse_schema(self, datestr: str):
+    def infer_clickhouse_schema(self, datestr: str) -> list[dict]:
         """Use a single parquet file in GCS to infer the Clickhouse schema for the table."""
         paths = query_parquet_paths(
             self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
         )
 
-        infer_schema_from_parquet(paths[0], dummy_name=f"{self.db}.{self.table}")
+        return get_schema_from_parquet(paths[0])
 
     def load_gcs_to_ch(
         self,
