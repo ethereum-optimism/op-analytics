@@ -5,6 +5,7 @@ import polars as pl
 from op_analytics.coreutils.logger import structlog, bound_contextvars
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_tostr
+from op_analytics.coreutils.clickhouse.client import new_stateful_client
 
 from .markers import MARKER_COLUMNS, existing_markers
 from .transform import TransformTask
@@ -57,6 +58,10 @@ def execute_dt_transforms(
         )
         tasks.append(transform_task)
     log.info(f"Prepared {len(tasks)} transform tasks.")
+
+    # Create database for this group if it does not exist yet.
+    client = new_stateful_client("OPLABS")
+    client.command(f"CREATE DATABASE IF NOT EXISTS transforms_{group_name}")
 
     # Execute transforms.
     summary = {}
