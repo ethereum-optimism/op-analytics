@@ -102,6 +102,43 @@ class DailyDataset(str, Enum):
         print(duckdb_context.client.sql("SHOW TABLES"))
         return view_name
 
+    @classmethod
+    def get_all_datasets(cls) -> dict:
+        """Get all class attributes and their values as a dictionary.
+
+        Returns:
+            dict: Dictionary containing all class attributes and their values
+        """
+        return {
+            name: value
+            for name, value in vars(cls).items()
+            if not name.startswith("_") and isinstance(value, str)
+        }
+
+    @classmethod
+    def infer_all_schemas(cls, datestr: str) -> dict[str, dict]:
+        """Infer Clickhouse schemas for all datasets and return with metadata.
+
+        Args:
+            datestr: Date string to use for schema inference
+
+        Returns:
+            tuple: Tuple containing:
+                - datasets: Mapping of class attribute names to values
+                - schemas: Mapping of dataset names to their inferred schemas
+        """
+        schemas = {}
+        for dataset in cls.all_tables():
+            log.info(f"Inferring schema for {dataset}")
+            try:
+                schema = dataset.infer_clickhouse_schema(datestr)
+                schemas[dataset.value] = schema
+            except IndexError:
+                log.warning(f"No data found for {dataset} on {datestr}, skipping schema inference")
+                continue
+
+        return cls.get_all_datasets(), schemas
+
     def read_polars(
         self,
         min_date: str | date | None = None,
