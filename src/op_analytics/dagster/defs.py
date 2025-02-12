@@ -1,5 +1,4 @@
 from dagster import (
-    AssetSelection,
     DefaultScheduleStatus,
     Definitions,
     ScheduleDefinition,
@@ -35,19 +34,15 @@ def create_schedule_for_group(
     group: str,
     cron_schedule: str,
     default_status: DefaultScheduleStatus,
+    custom_k8s_config: OPK8sConfig | None = None,
+    k8s_pod_per_step: bool = False,
 ):
     return ScheduleDefinition(
         name=group,
         job=op_analytics_asset_job(
-            name=f"{group}_job",
-            selection=AssetSelection.groups(group),
-            custom_config=OPK8sConfig(
-                mem_request="3Gi",
-                mem_limit="6Gi",
-                labels={
-                    "op-analytics-dagster-group": group,
-                },
-            ),
+            group=group,
+            custom_k8s_config=custom_k8s_config,
+            k8s_pod_per_step=k8s_pod_per_step,
         ),
         cron_schedule=cron_schedule,
         execution_timezone="UTC",
@@ -80,6 +75,7 @@ defs = Definitions(
             group="defillama",
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
             default_status=DefaultScheduleStatus.RUNNING,
+            k8s_pod_per_step=True,
         ),
         #
         create_schedule_for_group(
