@@ -5,7 +5,7 @@ log = structlog.get_logger()
 
 
 class EthereumOptimism(DailyDataset):
-    """Read data from ethereum_optimism github repo."""
+    """Read data from ethereum-optimism github repo."""
 
     # Superchain Token List
     SUPERCHAIN_TOKEN_LIST = "superchain_token_list_v1"

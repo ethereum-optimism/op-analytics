@@ -27,6 +27,7 @@ SUPERCHAIN_TOKEN_LIST_SCHEMA = pl.Schema(
         "optimism_bridge_address": pl.String,
         "mode_bridge_address": pl.String,
         "base_bridge_address": pl.String,
+        "unichain_bridge_address": pl.String,  # added on 2025/02/11
         "op_list_id": pl.String,
         "op_token_id": pl.String,
         "dt": pl.String,

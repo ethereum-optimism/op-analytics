@@ -1,12 +1,12 @@
 import pandas as pd
 import polars as pl
 
-from op_analytics.coreutils.gsheets import update_gsheet, record_changes
+from op_analytics.coreutils.gsheets import record_changes, update_gsheet
+from op_analytics.coreutils.time import now_dt
 
 from .across_bridge import upload_across_bridge_addresses
 from .goldsky_chains import goldsky_mainnet_chains_df
 from .load import load_chain_metadata
-
 
 GSHEET_NAME = "chain_metadata"
 
@@ -15,6 +15,8 @@ WORKSHEET_GOLDSKY_CHAINS = "Goldsky Chains"
 
 
 def upload_all():
+    work_done = []
+
     # Save the clean df to Google Sheets
     clean_df = load_chain_metadata()
     update_gsheet(
@@ -22,22 +24,26 @@ def upload_all():
         worksheet_name=WORKSHEET_METADATA,
         dataframe=to_pandas(clean_df),
     )
+    work_done.append("Updated worksheeet: {WORKSHEET_METADATA}")
 
     goldsky_df = goldsky_mainnet_chains_df()
+
     # Save goldsky chains.
     update_gsheet(
         location_name=GSHEET_NAME,
         worksheet_name=WORKSHEET_GOLDSKY_CHAINS,
         dataframe=to_pandas(goldsky_df),
     )
+    work_done.append("Updated worksheeet: {WORKSHEET_GOLDSKY_CHAINS}")
+
+    # Upload clean_df to GCS.
+    from op_analytics.datasources.chainsmeta.dataaccess import ChainsMeta
+
+    ChainsMeta.RAW_GSHEET.write(clean_df.with_columns(dt=pl.lit(now_dt())))
+    work_done.append(f"Uploaded to GCS: {ChainsMeta.RAW_GSHEET.table}")
 
     # Save a record of what was done.
-    record_changes(
-        GSHEET_NAME,
-        messages=[
-            f"Updated worksheeet: {_}" for _ in [WORKSHEET_METADATA, WORKSHEET_GOLDSKY_CHAINS]
-        ],
-    )
+    record_changes(GSHEET_NAME, messages=work_done)
 
     # Upload the across bridge addresses.
     # Makes sure they are consistent with Chain Metadata.
