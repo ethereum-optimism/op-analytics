@@ -25,7 +25,7 @@ def goldsky_mainnet_chains_df() -> pl.DataFrame:
             ~pl.col("oplabs_db_schema").is_in(
                 [
                     "ethernity",
-                    "superseet",
+                    "superseed",
                     "snaxchain",
                 ]
             )
