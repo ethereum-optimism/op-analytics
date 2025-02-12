@@ -121,7 +121,7 @@ class DailyDataset(str, Enum):
 
             log.info(f"Inferring schema for {name}")
             try:
-                schema = table.infer_clickhouse_schema(datestr)
+                schema = table.get_clickhouse_schema(datestr)
                 schemas[value] = schema
             except IndexError:
                 log.warning(f"No data found for {name} on {datestr}, skipping schema inference")
@@ -147,13 +147,31 @@ class DailyDataset(str, Enum):
         rel = duckdb_context.client.sql(f"SELECT * FROM {relation_name}")
         return rel.pl()
 
-    def infer_clickhouse_schema(self, datestr: str) -> list[dict]:
-        """Use a single parquet file in GCS to infer the Clickhouse schema for the table."""
+    def get_clickhouse_schema(self, datestr: str) -> list[dict]:
+        """Return the equivalent ClickHouse schema inferred from a sample parquet file."""
         paths = query_parquet_paths(
             self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
         )
-
+        if not paths:
+            raise Exception(f"No parquet file found for date {datestr}")
         return get_schema_from_parquet(paths[0])
+
+    def suggest_clickhouse_ddl(self, datestr: str) -> str:
+        """Print a suggested CREATE TABLE ddl statement based on the inferred schema."""
+        schema = self.get_clickhouse_schema(datestr)
+        columns = []
+        # Assuming each column in the schema dict has keys 'name' and 'type'
+        for col in schema:
+            col_name = col.get("name", "unknown_column")
+            col_type = col.get("type", "String")
+            columns.append(f"    {col_name} {col_type}")
+        ddl = (
+            f"CREATE TABLE {self.table} (\n"
+            + ",\n".join(columns)
+            + "\n) ENGINE = MergeTree()\nORDER BY tuple();"
+        )
+        print(ddl)
+        return ddl
 
     def load_gcs_to_ch(
         self,
