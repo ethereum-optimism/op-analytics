@@ -39,7 +39,9 @@ def execute_pull():
             log.info("reading csv")
             df = pl.read_csv(full_path, schema=schema, n_threads=1, low_memory=True)
 
-            # Store in GCS
+            # Every time we pull data we are fetching the complete dataset. So
+            # we store it under a fixed date partition in GCS. This way we only
+            # ever keep the latest copy that was fetched.
             dataaccess.write(dataframe=df.with_columns(dt=pl.lit("2000-01-01")))
             log.info(f"wrote {len(df)} to {dataaccess.value}")
 
