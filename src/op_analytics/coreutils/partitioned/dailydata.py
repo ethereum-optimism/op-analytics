@@ -105,6 +105,8 @@ class DailyDataset(str, Enum):
     @classmethod
     def infer_all_schemas(cls, datestr: str) -> dict[str, dict]:
         """Infer Clickhouse schemas for all datasets and return with metadata.
+        This function can be used for ad-hoc analytics & schema inference,
+        user facing data discoverability tools and data validation and testing.
 
         Args:
             datestr: Date string to use for schema inference
@@ -123,9 +125,6 @@ class DailyDataset(str, Enum):
                 schemas[value] = schema
             except IndexError:
                 log.warning(f"No data found for {name} on {datestr}, skipping schema inference")
-                continue
-            except Exception as e:
-                log.error(f"Error inferring schema for {name}", error=str(e))
                 continue
 
         return schemas
