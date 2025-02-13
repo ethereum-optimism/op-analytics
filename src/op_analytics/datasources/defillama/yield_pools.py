@@ -38,7 +38,7 @@ def execute_pull():
     return {"yield_pools_df": dt_summary(result.yield_pools_df)}
 
 
-def pull_yield_pools_data(pull_pools: list[str] | None = None) -> pl.DataFrame:
+def pull_yield_pools_data(pull_pools: list[str] | None = None) -> DefillamaYieldPools:
     """
     Pulls and processes yield pool data from DeFiLlama.
 

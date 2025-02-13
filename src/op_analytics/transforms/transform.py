@@ -30,6 +30,10 @@ class UpdateResult:
         return asdict(self)
 
 
+class NoWrittenRows(Exception):
+    pass
+
+
 @dataclass
 class TransformTask:
     group_name: str
@@ -52,7 +56,7 @@ class TransformTask:
             results = self.run_updates(client)
             result_dicts = [_.to_dict() for _ in results]
             self.write_marker(result_dicts)
-            return results
+            return result_dicts
 
     def create_tables(self):
         create_tables(self.group_name)
@@ -77,10 +81,6 @@ class TransformTask:
                 )
 
                 if step.step_type == StepType.EXPORT:
-                    # Optimize the table before exporting.
-                    log.info("optimizing export table")
-                    client.command(f"OPTIMIZE TABLE {step.db}.{step.table_name} FINAL CLEANUP")
-
                     export_to_bigquery(
                         client=client,
                         db=step.db,
@@ -108,7 +108,9 @@ class TransformTask:
 
         if step.step_type == StepType.EXPORT or self.raise_if_empty:
             if result.written_rows == 0:
-                raise Exception("possible data quality issue 0 rows were written!")
+                msg = "possible data quality issue 0 rows were written!"
+                log.error(msg)
+                raise NoWrittenRows(f"{msg} context={self.context}")
 
         return result
 

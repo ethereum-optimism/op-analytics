@@ -42,9 +42,14 @@ def get_op_stack_metadata_df():
 def find_root_dir():
     current_dir = os.path.abspath(os.getcwd())
     while True:
+        if os.path.basename(current_dir) == 'op-analytics':  # Check if we are already in op-analytics
+            return current_dir
         if os.path.exists(os.path.join(current_dir, 'op-analytics')):
+            print(current_dir)
+            print('adding op-analytics')
             return os.path.join(current_dir, 'op-analytics')
         parent_dir = os.path.dirname(current_dir)
+
         if parent_dir == current_dir:  # We've reached the root of the file system
             raise FileNotFoundError("Could not find 'op-analytics' directory")
         current_dir = parent_dir

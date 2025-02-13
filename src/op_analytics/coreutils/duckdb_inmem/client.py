@@ -35,11 +35,13 @@ class DuckDBContext:
         size = os.path.getsize(self.db_path)
         log.info(f"duck db size: {human_size(size)}")
 
-    def close(self):
+    def close(self, remove_db_path: bool = True):
         self.client.close()
-        # shutil.rmtree(self.dir_name)
+        if remove_db_path:
+            log.info(f"removing temporary path: {self.db_path}")
+            os.remove(self.db_path)
 
-    def make_path(self, file_name: str) -> str:
+    def get_tmpdir_path(self, file_name: str) -> str:
         return os.path.join(self.dir_name, file_name)
 
     def connect_to_gcs(self):

@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from functools import cache
 
 import polars as pl
@@ -25,6 +26,32 @@ def determine_location() -> DataLocation:
 
     # For unittests and local runs we use LOCAL.
     return DataLocation.LOCAL
+
+
+@contextmanager
+def write_to_prod():
+    """Context manager to write data to production from your laptop.
+
+    USE CAREFULLY.
+
+    Example usage:
+
+    >>> with write_to_prod():
+    >>>    execute_pull()
+    """
+    import os
+    from unittest.mock import patch
+
+    def mock_location():
+        return DataLocation.GCS
+
+    os.environ["ALLOW_WRITE"] = "true"
+
+    with patch(
+        "op_analytics.coreutils.partitioned.dailydatawrite.determine_location",
+        mock_location,
+    ):
+        yield
 
 
 def write_daily_data(

@@ -4,11 +4,11 @@ import polars as pl
 
 from op_analytics.coreutils.logger import structlog, bound_contextvars
 from op_analytics.coreutils.rangeutils.daterange import DateRange
-from op_analytics.coreutils.time import date_tostr
+from op_analytics.coreutils.time import date_tostr, now_date
 from op_analytics.coreutils.clickhouse.client import new_stateful_client
 
 from .markers import MARKER_COLUMNS, existing_markers
-from .transform import TransformTask
+from .transform import TransformTask, NoWrittenRows
 
 log = structlog.get_logger()
 
@@ -68,10 +68,25 @@ def execute_dt_transforms(
     num_tasks = len(tasks)
     for ii, task in enumerate(tasks):
         with bound_contextvars(task=f"{ii+1}/{num_tasks}"):
-            result = task.execute()
+            try:
+                result = task.execute()
+            except NoWrittenRows:
+                if task.dt == now_date():
+                    # It is possible that NoWrittenRows is encountered when we are running
+                    # close to real time. In that case don't error out the run, log a warning
+                    # and exit gracefully.
+                    msg = (
+                        "no written rows detected on the current date. will stop further processing"
+                    )
+                    log.warning(msg)
+                    summary[date_tostr(task.dt)] = dict(error=msg)
+                    break
+                else:
+                    raise
 
-        summary[date_tostr(task.dt)] = result
+            else:
+                summary[date_tostr(task.dt)] = result
 
-        if max_tasks is not None and ii + 1 >= max_tasks:
-            break
+            if max_tasks is not None and ii + 1 >= max_tasks:
+                break
     return summary
