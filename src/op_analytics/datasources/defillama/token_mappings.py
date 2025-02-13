@@ -3,7 +3,9 @@ import polars as pl
 from op_analytics.coreutils.gsheets import read_gsheet
 from op_analytics.coreutils.bigquery.write import overwrite_unpartitioned_table
 
-BQ_DATASET = "defillama"
+from .dataaccess import DefiLlama
+
+BQ_DATASET = "dailydata_defillama"
 
 TOKEN_MAPPINGS_GSHEET_NAME = "token_mappings"
 TOKEN_MAPPINGS_TABLE = "token_mappings"
@@ -17,7 +19,9 @@ TOKEN_MAPPINGS_SCHEMA = {
 
 def execute():
     df = load_data_from_gsheet(TOKEN_MAPPINGS_GSHEET_NAME, TOKEN_MAPPINGS_SCHEMA)
-    upload_dataframe(df, TOKEN_MAPPINGS_TABLE)
+
+    DefiLlama.TOKEN_MAPPINGS.write_bq_direct(df)
+    # upload_dataframe(df, TOKEN_MAPPINGS_TABLE)
 
     return {TOKEN_MAPPINGS_GSHEET_NAME: len(df)}
 

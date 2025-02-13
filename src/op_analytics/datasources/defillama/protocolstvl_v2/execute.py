@@ -53,7 +53,6 @@ def execute_pull():
         max_dt=process_dt,
         sort_by=["protocol_slug", "chain"],
     )
-
     DefiLlama.PROTOCOLS_TOKEN_TVL.write_gcs_from_clickhouse_buffer(
         process_dt=process_dt,
         min_dt=process_dt - timedelta(days=TVL_TABLE_LAST_N_DAYS),
