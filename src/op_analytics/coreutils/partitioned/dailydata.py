@@ -5,6 +5,7 @@ import polars as pl
 
 from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
 from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
+from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
@@ -135,3 +136,11 @@ class DailyDataset(str, Enum):
             partition_columns="dt DATE",
             partition_prefix=self.root_path,
         )
+
+    def write_to_clickhouse_buffer(self, df: pl.DataFrame) -> None:
+        result = insert_oplabs(
+            database="datapullbuffer",
+            table=f"{self.db}_{self.table}",
+            df_arrow=df.to_arrow(),
+        )
+        log.info(f"inserted {result}")
