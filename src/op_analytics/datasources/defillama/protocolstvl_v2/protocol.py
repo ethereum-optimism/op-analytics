@@ -1,13 +1,10 @@
 from dataclasses import dataclass
-from datetime import date
 
 import polars as pl
 
 from op_analytics.coreutils.request import get_data
-from op_analytics.coreutils.time import dt_fromepoch, epoch_is_date, now_date
+from op_analytics.coreutils.time import dt_fromepoch, epoch_is_date
 from op_analytics.coreutils.misc import raise_for_schema_mismatch
-
-from ..dataaccess import DefiLlama
 
 
 PROTOCOL_DETAILS_ENDPOINT = "https://api.llama.fi/protocol/{slug}"
@@ -37,18 +34,8 @@ class ProtocolTVL:
     tvl_df: pl.DataFrame | None
     token_tvl_df: pl.DataFrame | None
 
-    def write(self, process_dt: date | None):
-        process_dt = process_dt or now_date()
-
-        DefiLlama.PROTOCOLS_TVL.write_to_clickhouse_buffer(
-            self.tvl_df.with_columns(process_dt=pl.lit(process_dt))
-        )
-        DefiLlama.PROTOCOLS_TOKEN_TVL.write_to_clickhouse_buffer(
-            self.token_tvl_df.with_columns(process_dt=pl.lit(process_dt))
-        )
-
     @classmethod
-    def fetch(cls, session, slug: str):
+    def fetch(cls, session, slug: str) -> "ProtocolTVL":
         # Fetch data
         url = PROTOCOL_DETAILS_ENDPOINT.format(slug=slug)
         data = get_data(session, url, retry_attempts=5)

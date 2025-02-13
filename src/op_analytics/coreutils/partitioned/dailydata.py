@@ -5,7 +5,7 @@ import polars as pl
 
 from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
 from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
-from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs
+from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
@@ -138,9 +138,57 @@ class DailyDataset(str, Enum):
         )
 
     def write_to_clickhouse_buffer(self, df: pl.DataFrame) -> None:
+        db = "datapullbuffer"
+        table = f"{self.db}_{self.table}"
         result = insert_oplabs(
-            database="datapullbuffer",
-            table=f"{self.db}_{self.table}",
+            database=db,
+            table=table,
             df_arrow=df.to_arrow(),
         )
-        log.info(f"inserted {result}")
+        log.info(f"inserted {result.written_rows} rows to {db}.{table}")
+
+    def query_clickhouse_buffer_key(self, key_column: str, process_dt: date):
+        return set(
+            run_query_oplabs(
+                query=f"""
+            SELECT DISTINCT {key_column}
+            FROM datapullbuffer.{self.db}_{self.table} FINAL
+            WHERE process_dt = {{param1:Date}}
+            """,
+                parameters={"param1": process_dt},
+            )[key_column].to_list()
+        )
+
+    def query_clickhouse_buffer(
+        self,
+        process_dt: date,
+        min_dt: date,
+        max_dt: date,
+    ):
+        return run_query_oplabs(
+            query=f"""
+            SELECT * EXCEPT(process_dt)
+            FROM datapullbuffer.{self.db}_{self.table} FINAL
+            WHERE process_dt = {{param1:Date}}
+            AND dt >= {{param2:Date}} 
+            AND dt <= {{param3:Date}}
+            """,
+            parameters={
+                "param1": process_dt,
+                "param2": min_dt,
+                "param3": max_dt,
+            },
+        )
+
+    def write_gcs_from_clickhouse_buffer(
+        self,
+        process_dt: date,
+        min_dt: date,
+        max_dt: date,
+        sort_by: list[str] | None = None,
+    ):
+        # ClickHouse returns the Date type as u16 days from epoch.
+        df = self.query_clickhouse_buffer(process_dt, min_dt, max_dt).with_columns(
+            dt=pl.from_epoch(pl.col("dt"), time_unit="d")
+        )
+        self.write(dataframe=df, sort_by=sort_by)
