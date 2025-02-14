@@ -1,3 +1,4 @@
+import os
 from datetime import date
 
 import polars as pl
@@ -13,6 +14,9 @@ from .transform import TransformTask, NoWrittenRows
 log = structlog.get_logger()
 
 
+DIRECTORY = os.path.dirname(__file__)
+
+
 def execute_dt_transforms(
     group_name: str,
     range_spec: str | None = None,
@@ -23,6 +27,10 @@ def execute_dt_transforms(
     max_tasks: int | None = None,
 ):
     """Execute "dt" transformations from a specified "group_name" directory."""
+
+    group_dir = os.path.join(DIRECTORY, group_name)
+    if not os.path.isdir(group_dir):
+        raise Exception(f"group={group_name} is not valid: directory does not exist: {group_dir}")
 
     # Default to operating over the last 3 days.
     date_range = DateRange.from_spec(range_spec or "m2days")
