@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS onchain.dim_erc20_token_metadata_v1
 (
     `chain` String,
     `chain_id` Int32,
-    `contract_address` FixedString(66),
+    `contract_address` FixedString(42),
     -- 
     -- Metadata
     `decimals` Int32,
