@@ -64,11 +64,18 @@ class ChainTokens:
                 data = []
 
                 for token in batch:
-                    row = token.call_rpc(
+                    token_metadata = token.call_rpc(
                         session=session,
                         rpc_endpoint=self.rpc_endpoint,
-                        speed_bump=0.35,  # avoid hitting the RPC rate limit
-                    ).to_dict()
+                        speed_bump=0.5,  # avoid hitting the RPC rate limit
+                    )
+
+                    if token_metadata is None:
+                        # an error was encountered
+                        log.warning(f"error encountered for: {token}")
+                        continue
+
+                    row = token_metadata.to_dict()
                     row["process_dt"] = process_dt
                     data.append([row[_] for _ in COLUMNS])
 

@@ -1,9 +1,10 @@
 import time
 from dataclasses import asdict, dataclass
-from typing import Any
+from typing import Any, Optional
 
 import requests
 import stamina
+from requests.exceptions import JSONDecodeError
 
 from op_analytics.coreutils.logger import structlog
 
@@ -77,16 +78,23 @@ class Token:
 
         return batch
 
-    @stamina.retry(on=RateLimit, attempts=3, wait_initial=3)
+    @stamina.retry(on=RateLimit, attempts=3, wait_initial=4)
     def call_rpc(
         self,
         session: requests.Session,
         rpc_endpoint: str,
         speed_bump: float,
-    ) -> "TokenMetadata":
+    ) -> Optional["TokenMetadata"]:
         start = time.perf_counter()
         response = session.post(rpc_endpoint, json=self.rpc_batch())
-        result = TokenMetadata.of(token=self, response=response.json())
+
+        try:
+            response_data = response.json()
+        except JSONDecodeError:
+            log.error(f"invalid json: {response.content.decode()}")
+            raise
+
+        result = TokenMetadata.of(token=self, response=response_data)
 
         ellapsed = time.perf_counter() - start
         if ellapsed < speed_bump:
@@ -115,18 +123,21 @@ class TokenMetadata:
         return asdict(self)
 
     @classmethod
-    def of(cls, token: Token, response: list[dict]):
+    def of(cls, token: Token, response: list[dict]) -> Optional["TokenMetadata"]:
         data: dict[str, Any] = {}
         for item in response:
             if "error" in item:
                 code = item["error"].get("code")
-                if code == -32016:
-                    raise RateLimit(f"JSON-RPC error: {item}")
+                if code == -32016:  # rate limit
+                    raise RateLimit(f"JSON-RPC error: {item} [{token}]")
 
-                raise Exception(f"JSON-RPC error: {item}")
+                if code == -32000:  # "execution reverted"
+                    return None
+
+                raise Exception(f"JSON-RPC error: {item} [{token}]")
 
             if "result" not in item:
-                raise Exception(f"JSON-RPC missing result: {item}")
+                raise Exception(f"JSON-RPC missing result: {item} [{token}]")
 
             if item["id"] == BLOCK_REQUEST_ID:
                 data["block_number"] = int(item["result"]["number"], 16)

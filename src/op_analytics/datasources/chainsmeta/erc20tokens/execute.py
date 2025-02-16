@@ -20,9 +20,12 @@ def execute_pull(process_dt: date | None = None):
     chains: list[ChainTokens] = find_tokens(process_dt=process_dt)
     targets: dict[str, ChainTokens] = {_.chain: _ for _ in chains}
 
+    def _fetch(x: ChainTokens):
+        return x.fetch(process_dt=process_dt)
+
     # Run each chain on a separate thread.
     results = run_concurrently(
-        function=lambda x: x.fetch(process_dt=process_dt),
+        function=_fetch,
         targets=targets,
         max_workers=16,
     )

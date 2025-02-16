@@ -1,5 +1,8 @@
 -- The fact table stores the token metadata at most one per day. 
 -- The "process_dt" value in the ORDER BY key.
+--
+-- This table is used as a trigger for the dim table materialized
+-- view.
 
 CREATE TABLE IF NOT EXISTS chainsmeta.fact_erc20_token_metadata_v1
 (
