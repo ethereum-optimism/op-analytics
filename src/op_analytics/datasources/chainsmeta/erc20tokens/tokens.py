@@ -39,6 +39,12 @@ class RateLimit(Exception):
     pass
 
 
+class TokenMetadataError(Exception):
+    """Raised when we fail to parse the RPC response."""
+
+    pass
+
+
 @dataclass(frozen=True)
 class Token:
     chain: str
@@ -132,6 +138,7 @@ class TokenMetadata:
                     raise RateLimit(f"JSON-RPC error: {item} [{token}]")
 
                 if code == -32000:  # "execution reverted"
+                    log.warning(f"rpc returned -32000 'execution reverted' {token}")
                     return None
 
                 raise Exception(f"JSON-RPC error: {item} [{token}]")
@@ -149,21 +156,30 @@ class TokenMetadata:
             else:
                 raise Exception("invalid item id: " + item["id"])
 
-        return cls(
-            chain=token.chain,
-            chain_id=token.chain_id,
-            contract_address=token.contract_address,
-            block_number=data["block_number"],
-            block_timestamp=data["block_timestamp"],
-            decimals=decode("uint8", data["decimals"]),
-            symbol=decode_string(data["symbol"]),
-            name=decode_string(data["name"]),
-            total_supply=decode("uint256", data["totalSupply"]),
-        )
+        try:
+            return cls(
+                chain=token.chain,
+                chain_id=token.chain_id,
+                contract_address=token.contract_address,
+                block_number=data["block_number"],
+                block_timestamp=data["block_timestamp"],
+                decimals=decode("uint8", data["decimals"]),
+                symbol=decode_string(data["symbol"]),
+                name=decode_string(data["name"]),
+                total_supply=decode("uint256", data["totalSupply"]),
+            )
+        except Exception as ex:
+            raise TokenMetadataError(dict(data=data, token=token)) from ex
 
 
 def decode_string(hexstr: str):
-    return decode("(string)", hexstr)[0]
+    # Some tokens have invalid utf-8 on their symbol or name.
+    # We decode as bytes and then handle replacing invalid characters.
+    asbytes = decode("(bytes)", hexstr)[0]
+
+    # From: https://docs.python.org/3/library/codecs.html#error-handlers
+    # On decoding, use � (U+FFFD, the official REPLACEMENT CHARACTER).
+    return asbytes.decode("utf-8", errors="replace")
 
 
 def decode(typestr: str, hexstr: str):
