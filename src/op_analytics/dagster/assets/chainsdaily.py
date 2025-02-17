@@ -22,9 +22,18 @@ def chain_metadata(context: OpExecutionContext):
 @asset
 def superchain_token_list(context: OpExecutionContext):
     """Pull superchain token list from ethereum optimism."""
-    from op_analytics.datasources.ethereum_optimism import superchain_token_list
+    from op_analytics.datasources.chainsmeta.superchain import tokenlist
 
-    result = superchain_token_list.execute_pull()
+    result = tokenlist.execute_pull()
+    context.log.info(result)
+
+
+@asset
+def erc20tokens(context: OpExecutionContext):
+    """Pull metadata for ERC-20 tokens."""
+    from op_analytics.datasources.chainsmeta.erc20tokens import execute
+
+    result = execute.execute_pull()
     context.log.info(result)
 
 

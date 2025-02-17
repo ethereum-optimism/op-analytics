@@ -30,4 +30,11 @@ def execute_pull(process_dt: date | None = None):
         max_workers=16,
     )
 
+    # TODO:
+    # Here we can copy over from the clickhouse dimension table to GCS.
+    # As we migrate out of BigQuery it maybe useful to have a copy of the token
+    # metdata that we can read from BigQuery.
+    # ChainsMeta.ERC20_TOKEN_METADATA.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
+
+    # This will be a dictionary from chain to total rows inserted.
     return results

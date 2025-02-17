@@ -9,9 +9,10 @@ from dagster_k8s import k8s_job_executor
 @dataclass
 class OPK8sConfig:
     cpu_request: str = "500m"
-    mem_request: str = "720Mi"
     cpu_limit: str = "1000m"
-    mem_limit: str = "2Gi"
+
+    mem_request: str = "2Gi"
+    mem_limit: str = "4Gi"
 
     labels: dict[str, str] = field(default_factory=dict)
 
@@ -19,14 +20,8 @@ class OPK8sConfig:
         return new_k8s_config(self)
 
 
-DEFAULT_K8S_CONFIG = OPK8sConfig(
-    mem_request="3Gi",
-    mem_limit="6Gi",
-)
-
-
 def new_k8s_config(custom_config: OPK8sConfig | None):
-    k8s_config = custom_config or DEFAULT_K8S_CONFIG
+    k8s_config = custom_config or OPK8sConfig()
 
     config = {
         "container_config": {
