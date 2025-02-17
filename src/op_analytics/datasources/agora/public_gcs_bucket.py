@@ -1,5 +1,6 @@
 import polars as pl
 
+from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT
 from op_analytics.coreutils.logger import structlog, bound_contextvars
 
 from .dataaccess import Agora
@@ -42,7 +43,7 @@ def execute_pull():
             # Every time we pull data we are fetching the complete dataset. So
             # we store it under a fixed date partition in GCS. This way we only
             # ever keep the latest copy that was fetched.
-            dataaccess.write(dataframe=df.with_columns(dt=pl.lit("2000-01-01")))
+            dataaccess.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
             log.info(f"wrote {len(df)} to {dataaccess.value}")
 
             # Track in results.

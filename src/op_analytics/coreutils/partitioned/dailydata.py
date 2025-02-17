@@ -17,6 +17,11 @@ from .location import DataLocation
 log = structlog.get_logger()
 
 
+# We use the default "dt" value for cases when we run an ingestion process daily
+# but only care about storing the most recently pulled data.
+DEFAULT_DT = "2000-01-01"
+
+
 class DailyDataset(str, Enum):
     """Base class for daily datasets.
 

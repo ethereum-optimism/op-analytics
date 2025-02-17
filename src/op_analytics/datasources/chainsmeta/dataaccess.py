@@ -13,3 +13,6 @@ class ChainsMeta(DailyDataset):
     # A dimension table storing metadata for ERC-20 tokens.
     # The metadata is fetched using RPC calls.
     ERC20_TOKEN_METADATA = "erc20_token_metadata_v1"
+
+    # A dimension table that pulls the token list from the ethereum-optimism repo.
+    SUPERCHAIN_TOKEN_LIST = "superchain_token_list_v1"
