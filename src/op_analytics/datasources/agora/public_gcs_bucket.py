@@ -32,7 +32,7 @@ TABLES = {
 def execute_pull():
     result = {}
 
-    for path, (dataaccess, schema) in TABLES.items():
+    for path, (table, schema) in TABLES.items():
         full_path = f"{PREFIX}/{path}"
 
         with bound_contextvars(gcs_path=full_path):
@@ -43,8 +43,8 @@ def execute_pull():
             # Every time we pull data we are fetching the complete dataset. So
             # we store it under a fixed date partition in GCS. This way we only
             # ever keep the latest copy that was fetched.
-            dataaccess.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
-            log.info(f"wrote {len(df)} to {dataaccess.value}")
+            table.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
+            log.info(f"wrote {len(df)} to {table.value}")
 
             # Track in results.
             result[path] = len(df)
