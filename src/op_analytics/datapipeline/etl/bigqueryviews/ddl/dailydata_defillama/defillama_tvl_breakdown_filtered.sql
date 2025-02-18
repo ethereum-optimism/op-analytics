@@ -16,7 +16,7 @@ SELECT
   , tvl.app_token_tvl_usd
 
 FROM `oplabs-tools-data.dailydata_defillama.protocol_token_tvl_breakdown_v1` tvl 
-LEFT JOIN `oplabs-tools-data.dailydata_defillama.token_mappings` tm 
+LEFT JOIN `oplabs-tools-data.dailydata_defillama.dim_token_mappings_v1` tm 
   ON tvl.token = tm.token
 
 -- NOTE: Chain metadata is something we would like to modify to another source
