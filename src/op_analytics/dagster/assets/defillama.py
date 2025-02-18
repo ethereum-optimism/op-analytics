@@ -42,6 +42,14 @@ def tvl_breakdown_enrichment(context: AssetExecutionContext):
     result = tvl_breakdown_enrichment.execute_pull()
     context.log.info(result)
 
+    from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
+
+    create_view(
+        db_name="dailydata_defillama",
+        view_name="defillama_tvl_breakdown_filtered",
+        disposition="replace",
+    )
+
 
 @asset
 def historical_chain_tvl(context: AssetExecutionContext):
@@ -104,10 +112,4 @@ def defillama_views():
 
     DefiLlama.YIELD_POOLS_HISTORICAL.create_bigquery_external_table()
 
-    from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
-
-    create_view(
-        db_name="dailydata_defillama",
-        view_name="defillama_tvl_breakdown_filtered",
-        disposition="replace",
-    )
+    DefiLlama.TOKEN_MAPPINGS.create_bigquery_external_table()
