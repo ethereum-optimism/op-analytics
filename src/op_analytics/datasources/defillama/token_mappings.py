@@ -1,12 +1,14 @@
 import polars as pl
 
 from op_analytics.coreutils.gsheets import read_gsheet
-from op_analytics.coreutils.bigquery.write import overwrite_unpartitioned_table
+from op_analytics.coreutils.misc import raise_for_schema_mismatch
+from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT
 
-BQ_DATASET = "defillama"
+from .dataaccess import DefiLlama
+
 
 TOKEN_MAPPINGS_GSHEET_NAME = "token_mappings"
-TOKEN_MAPPINGS_TABLE = "token_mappings"
+
 TOKEN_MAPPINGS_SCHEMA = {
     "token": pl.String,
     "token_category": pl.String,
@@ -17,7 +19,9 @@ TOKEN_MAPPINGS_SCHEMA = {
 
 def execute():
     df = load_data_from_gsheet(TOKEN_MAPPINGS_GSHEET_NAME, TOKEN_MAPPINGS_SCHEMA)
-    upload_dataframe(df, TOKEN_MAPPINGS_TABLE)
+
+    # Overwrite at default dt
+    DefiLlama.TOKEN_MAPPINGS.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
 
     return {TOKEN_MAPPINGS_GSHEET_NAME: len(df)}
 
@@ -31,17 +35,9 @@ def load_data_from_gsheet(gsheet_name: str, expected_schema: dict) -> pl.DataFra
     raw_df = pl.DataFrame(raw_records, infer_schema_length=len(raw_records))
 
     # Validate schema
-    assert (
-        raw_df.schema == expected_schema
-    ), f"Schema mismatch. Expected {expected_schema}, got {raw_df.schema}"
+    raise_for_schema_mismatch(
+        actual_schema=raw_df.schema,
+        expected_schema=pl.Schema(expected_schema),
+    )
 
     return raw_df
-
-
-def upload_dataframe(df: pl.DataFrame, table_name: str):
-    """Upload overwite a dataframe to BigQuery as an unpartitioned table."""
-    overwrite_unpartitioned_table(
-        df=df,
-        dataset=BQ_DATASET,
-        table_name=table_name,
-    )
