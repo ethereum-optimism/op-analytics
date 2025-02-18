@@ -37,7 +37,7 @@ def load_data_from_gsheet(gsheet_name: str, expected_schema: dict) -> pl.DataFra
     # Validate schema
     raise_for_schema_mismatch(
         actual_schema=raw_df.schema,
-        expected_schema=expected_schema,
+        expected_schema=pl.Schema(expected_schema),
     )
 
     return raw_df
