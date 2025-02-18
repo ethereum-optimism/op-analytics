@@ -88,6 +88,10 @@ defs = Definitions(
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
             default_status=DefaultScheduleStatus.RUNNING,
             k8s_pod_per_step=True,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="4Gi",
+                mem_limit="6Gi",
+            ),
         ),
         #
         create_schedule_for_group(
