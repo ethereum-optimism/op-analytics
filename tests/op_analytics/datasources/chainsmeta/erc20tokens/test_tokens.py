@@ -90,5 +90,5 @@ def test_invalid_strings():
         },
     }
 
-    actual = decode_string(example["data"]["name"])
+    actual = decode_string(example["data"]["name"])  # type: ignore
     assert actual == "\x13Pi2����:�1�(��6!1�*"
