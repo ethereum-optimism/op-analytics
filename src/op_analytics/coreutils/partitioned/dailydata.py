@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import date
 from enum import Enum
 
@@ -10,7 +11,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
 
 from .dailydataread import make_date_filter, query_parquet_paths
-from .dailydatawrite import write_daily_data
+from .dailydatawrite import write_daily_data, PARQUET_FILENAME
 from .dataaccess import DateFilter
 from .location import DataLocation
 
@@ -20,6 +21,12 @@ log = structlog.get_logger()
 # We use the default "dt" value for cases when we run an ingestion process daily
 # but only care about storing the most recently pulled data.
 DEFAULT_DT = "2000-01-01"
+
+
+@dataclass
+class TablePath:
+    db: str
+    table: str
 
 
 class DailyDataset(str, Enum):
@@ -88,7 +95,7 @@ class DailyDataset(str, Enum):
 
         paths: str | list[str]
         if datefilter.is_undefined:
-            paths = location.absolute(f"{self.root_path}/dt=*/out.parquet")
+            paths = location.absolute(f"{self.root_path}/dt=*/{PARQUET_FILENAME}")
 
         else:
             paths = query_parquet_paths(
@@ -140,3 +147,20 @@ class DailyDataset(str, Enum):
             partition_columns="dt DATE",
             partition_prefix=self.root_path,
         )
+
+    def clickhouse_buffer_table(self) -> TablePath:
+        """Return db and name for the buffer table in ClickHouse.
+
+        We use buffer tables in ClickHouse as a way of doing "streaming inserts",
+        where we insert data row by row or in smaller chunks as a way to save
+        progress on data pulls that ingest data from many small invididual request.
+
+        The primary use case is DefiLLama, where we have to fetch many individual
+        endpoints (each protocol or each stablecoin).
+
+        We standardize the location of buffer tables. However we don't standardize
+        the DDL used to create buffer tables as schemas can be depend on the use case.
+
+        Users are responsible for manually creating the buffer tables on ClickHouse.
+        """
+        return TablePath(db="datapullbuffer", table=f"{self.db}_{self.table}")
