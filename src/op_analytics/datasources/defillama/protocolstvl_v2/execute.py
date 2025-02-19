@@ -1,7 +1,6 @@
 import itertools
 from datetime import date
 
-
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import new_session
 from op_analytics.coreutils.threads import run_concurrently
@@ -9,7 +8,7 @@ from op_analytics.coreutils.time import now_date
 
 from ..dataaccess import DefiLlama
 from .metadata import ProtocolMetadata
-from .utils import get_buffered_slugs, fetch_and_write_slugs, copy_to_gcs
+from .utils import copy_to_gcs, fetch_and_write_slugs, get_buffered_slugs
 
 log = structlog.get_logger()
 

@@ -27,7 +27,7 @@ def stablecoins(context: AssetExecutionContext):
 def protocol_tvl(context: AssetExecutionContext):
     """Pull historical chain tvl data from Defillama."""
 
-    from op_analytics.datasources.defillama.protocolstvl import execute
+    from op_analytics.datasources.defillama.protocolstvl_v2 import execute
 
     result = execute.execute_pull()
     context.log.info(result)
