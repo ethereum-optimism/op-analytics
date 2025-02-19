@@ -169,12 +169,12 @@ class FromClickHouseWriter:
         # Concatenate all marker dataframes
         return pl.from_arrow(pa.concat_tables(marker_dfs))
 
-    def write_markers(self, marker_df):
+    def write_markers(self, marker_df: pl.DataFrame):
         """Insert the markers to ClickHouse."""
 
         client = init_data_access()
         client.write_marker(
-            marker_df=marker_df,
+            marker_df=marker_df.to_arrow(),
             data_location=DataLocation.GCS,
             markers_table=MARKERS_TABLE,
         )
