@@ -5,7 +5,6 @@ import polars as pl
 
 from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
 from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
-from op_analytics.coreutils.clickhouse.inferschema import get_schema_from_parquet
 from op_analytics.coreutils.duckdb_inmem import EmptyParquetData
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
@@ -103,8 +102,9 @@ class DailyDataset(str, Enum):
         return view_name
 
     @classmethod
-    def infer_all_schemas(cls, datestr: str) -> dict[str, dict]:
-        """Infer Clickhouse schemas for all datasets and return with metadata.
+    def infer_all_schemas(cls, datestr: str):
+        """Infer parquet schemas for all datasets and return with metadata.
+
         This function can be used for ad-hoc analytics & schema inference,
         user facing data discoverability tools and data validation and testing.
 
@@ -112,19 +112,18 @@ class DailyDataset(str, Enum):
             datestr: Date string to use for schema inference
 
         Returns:
-            dict[str, dict]: Mapping of dataset names to their inferred schemas
+            dict[DailyDataset, dict]: Mapping of dataset enum members to their inferred schemas
         """
         schemas = {}
         for table in cls.all_tables():
-            name = table.name
-            value = table.value.split(".")[-1]
-
-            log.info(f"Inferring schema for {name}")
+            log.info(f"Inferring schema for {table.name}")
             try:
                 schema = table.get_clickhouse_schema(datestr)
-                schemas[value] = schema
+                schemas[table] = schema
             except IndexError:
-                log.warning(f"No data found for {name} on {datestr}, skipping schema inference")
+                log.warning(
+                    f"No data found for {table.name} on {datestr}, skipping schema inference"
+                )
                 continue
 
         return schemas
@@ -148,13 +147,18 @@ class DailyDataset(str, Enum):
         return rel.pl()
 
     def get_clickhouse_schema(self, datestr: str) -> list[dict]:
-        """Return the equivalent ClickHouse schema inferred from a sample parquet file."""
+        """Return the parquet schema inferred from a sample parquet file."""
         paths = query_parquet_paths(
             self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
         )
         if not paths:
             raise Exception(f"No parquet file found for date {datestr}")
-        return get_schema_from_parquet(paths[0])
+        lazy_df = pl.scan_parquet(paths[0])
+        schema = [
+            {"name": col, "type": str(dtype).upper()}
+            for col, dtype in lazy_df.collect_schema().items()
+        ]
+        return schema
 
     def suggest_clickhouse_ddl(self, datestr: str) -> str:
         """Print a suggested CREATE TABLE ddl statement based on the inferred schema."""
