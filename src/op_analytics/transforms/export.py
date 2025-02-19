@@ -15,9 +15,9 @@ def export_to_bigquery(client: Client, db: str, table: str, select_statement):
     # Write to GCS.
     gcs_path = f"oplabs-tools-data-sink/clickhouse-exports/{db}/{table}.parquet"
     result = write_to_gcs(
-        client=client,
         gcs_path=gcs_path,
         select=select_statement,
+        client=client,
     )
 
     # Create a lod job to write data to BQ.
