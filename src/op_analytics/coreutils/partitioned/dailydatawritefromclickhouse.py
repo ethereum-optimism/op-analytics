@@ -7,6 +7,7 @@ import pyarrow as pa
 from op_analytics.coreutils.clickhouse.gcswrite import write_to_gcs
 from op_analytics.coreutils.clickhouse.oplabs import run_query_oplabs
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.dailydata import TablePath
 from op_analytics.coreutils.partitioned.marker import Marker
 from op_analytics.coreutils.partitioned.partition import (
     Partition,
@@ -31,8 +32,14 @@ log = structlog.get_logger()
 
 @dataclass
 class WriteSummary:
+    """Summary for what was written to the root_path."""
+
     root_path: str
+
+    # Total number of rows written across all "dt"s.
     written_rows: int
+
+    # Number of "dt"s written.
     written_dts: int
 
     def to_dict(self):
@@ -41,6 +48,8 @@ class WriteSummary:
 
 @dataclass
 class SinglePartitionSummary:
+    """Summary for what was written to a single "dt" partition."""
+
     gcs_path: str
     written_rows: int
 
@@ -70,11 +79,13 @@ class FromClickHouseWriter:
     order_by: str
 
     @property
-    def buffer_table(self):
+    def buffer_table(self) -> TablePath:
+        """Path to the ClickHouse table that holds the buffered data."""
+
         return self.dailydata_table.clickhouse_buffer_table()
 
     def write(self) -> WriteSummary:
-        """Execute the write process and writer markers to go along."""
+        """Write out the data and markers."""
 
         # Find out what will be written.
         markers_df = self.get_markers_df()
@@ -107,7 +118,7 @@ class FromClickHouseWriter:
         )
 
     def from_filtered(self):
-        """SQL statment to select data from clickhouse."""
+        """SQL to select and filter data from ClickHouse."""
 
         return f"""
             FROM {self.buffer_table.db}.{self.buffer_table.table} FINAL
@@ -117,7 +128,7 @@ class FromClickHouseWriter:
             """
 
     def dt_counts(self):
-        """SQL statment to count number of rows by dt."""
+        """SQL to count number of rows by dt."""
 
         return f"""
             SELECT toString(dt) AS dt, count(*) as row_count
@@ -125,10 +136,15 @@ class FromClickHouseWriter:
             GROUP BY 1 ORDER BY 1
             """
 
-    def get_dt_counts(self):
+    def get_dt_counts(self) -> list[dict]:
         return run_query_oplabs(query=self.dt_counts()).sort("dt").to_dicts()
 
     def get_markers_df(self):
+        """Generate the markers dataframe.
+
+        We write one merker for each "dt" partition in the data.
+        """
+
         marker_dfs = []
         for dt_info in self.get_dt_counts():
             datestr = dt_info["dt"]
@@ -151,11 +167,11 @@ class FromClickHouseWriter:
             marker_dfs.append(marker_df)
 
         # Concatenate all marker dataframes
-        combined_marker_df = pa.concat_tables(marker_dfs)
-
-        return pl.from_arrow(combined_marker_df)
+        return pl.from_arrow(pa.concat_tables(marker_dfs))
 
     def write_markers(self, marker_df):
+        """Insert the markers to ClickHouse."""
+
         client = init_data_access()
         client.write_marker(
             marker_df=marker_df,
@@ -164,6 +180,8 @@ class FromClickHouseWriter:
         )
 
     def write_single_dt(self, dt: str) -> SinglePartitionSummary:
+        """Write data for the given "dt" to GCS."""
+
         select = f"""
             SELECT * EXCEPT(dt, process_dt)
             {self.from_filtered()}
