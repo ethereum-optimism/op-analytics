@@ -67,7 +67,7 @@ class ChainTokens:
                     token_metadata = token.call_rpc(
                         session=session,
                         rpc_endpoint=self.rpc_endpoint,
-                        speed_bump=0.5,  # avoid hitting the RPC rate limit
+                        speed_bump=0.6,  # avoid hitting the RPC rate limit
                     )
 
                     if token_metadata is None:
