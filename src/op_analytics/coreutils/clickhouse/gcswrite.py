@@ -44,6 +44,8 @@ def write_to_gcs_partitions(
 ):
     """Write a query to GCS partitioned by the provided partition columns.
 
+    THIS FUNCTIONS IS EXPERIMENTAL. HAS NOT BEEN USED IN PRODUCTION YET.
+
     IMPORTANT: The parquet files written to GCS will have an additional "_partpath" column
     containing the full path of the partitions in GCS, e.g. "/chain=op/dt=2025-02-16".
 

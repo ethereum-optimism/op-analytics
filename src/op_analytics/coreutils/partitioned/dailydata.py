@@ -149,7 +149,7 @@ class DailyDataset(str, Enum):
         )
 
     def clickhouse_buffer_table(self) -> TablePath:
-        """ "Return db and name for the buffer table in ClickHouse.
+        """Return db and name for the buffer table in ClickHouse.
 
         We use buffer tables in ClickHouse as a way of doing "streaming inserts",
         where we insert data row by row or in smaller chunks as a way to save

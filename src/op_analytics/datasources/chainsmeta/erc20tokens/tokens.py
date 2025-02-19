@@ -84,7 +84,7 @@ class Token:
 
         return batch
 
-    @stamina.retry(on=RateLimit, attempts=3, wait_initial=4)
+    @stamina.retry(on=RateLimit, attempts=3, wait_initial=5)
     def call_rpc(
         self,
         session: requests.Session,

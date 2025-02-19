@@ -11,4 +11,14 @@ class Agora(DailyDataset):
     Possibly more to come later on.
     """
 
+    # Delegation events
     DELEGATE_CHANGED_EVENTS = "delegate_changed_events_v1"
+
+    # Delegates
+    DELEGATES = "delegates_v1"
+
+    # Proposals
+    PROPOSALS = "proposals_v1"
+
+    # Vote events
+    VOTES = "votes_v1"
