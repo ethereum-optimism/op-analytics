@@ -10,5 +10,5 @@ CREATE TABLE datapullbuffer.defillama_protocols_token_tvl_v1
 )
 ENGINE = ReplacingMergeTree
 PARTITION BY process_dt
-ORDER BY (process_dt, dt, protocol_slug, chain)
+ORDER BY (process_dt, dt, protocol_slug, chain, token)
 TTL process_dt + INTERVAL 1 WEEK DELETE;

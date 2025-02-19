@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import date
 from enum import Enum
 
@@ -5,13 +6,12 @@ import polars as pl
 
 from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
 from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
-from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
 
 from .dailydataread import make_date_filter, query_parquet_paths
-from .dailydatawrite import write_daily_data
+from .dailydatawrite import write_daily_data, PARQUET_FILENAME
 from .dataaccess import DateFilter
 from .location import DataLocation
 
@@ -21,6 +21,12 @@ log = structlog.get_logger()
 # We use the default "dt" value for cases when we run an ingestion process daily
 # but only care about storing the most recently pulled data.
 DEFAULT_DT = "2000-01-01"
+
+
+@dataclass
+class TablePath:
+    db: str
+    table: str
 
 
 class DailyDataset(str, Enum):
@@ -89,7 +95,7 @@ class DailyDataset(str, Enum):
 
         paths: str | list[str]
         if datefilter.is_undefined:
-            paths = location.absolute(f"{self.root_path}/dt=*/out.parquet")
+            paths = location.absolute(f"{self.root_path}/dt=*/{PARQUET_FILENAME}")
 
         else:
             paths = query_parquet_paths(
@@ -142,58 +148,19 @@ class DailyDataset(str, Enum):
             partition_prefix=self.root_path,
         )
 
-    def write_to_clickhouse_buffer(self, df: pl.DataFrame) -> None:
-        db = "datapullbuffer"
-        table = f"{self.db}_{self.table}"
-        result = insert_oplabs(
-            database=db,
-            table=table,
-            df_arrow=df.to_arrow(),
-        )
-        log.info(f"inserted {result.written_rows} rows to {db}.{table}")
+    def clickhouse_buffer_table(self) -> TablePath:
+        """ "Return db and name for the buffer table in ClickHouse.
 
-    def query_clickhouse_buffer_key(self, key_column: str, process_dt: date):
-        return set(
-            run_query_oplabs(
-                query=f"""
-            SELECT DISTINCT {key_column}
-            FROM datapullbuffer.{self.db}_{self.table} FINAL
-            WHERE process_dt = {{param1:Date}}
-            """,
-                parameters={"param1": process_dt},
-            )[key_column].to_list()
-        )
+        We use buffer tables in ClickHouse as a way of doing "streaming inserts",
+        where we insert data row by row or in smaller chunks as a way to save
+        progress on data pulls that ingest data from many small invididual request.
 
-    def query_clickhouse_buffer(
-        self,
-        process_dt: date,
-        min_dt: date,
-        max_dt: date,
-    ):
-        return run_query_oplabs(
-            query=f"""
-            SELECT * EXCEPT(process_dt)
-            FROM datapullbuffer.{self.db}_{self.table} FINAL
-            WHERE process_dt = {{param1:Date}}
-            AND dt >= {{param2:Date}} 
-            AND dt <= {{param3:Date}}
-            """,
-            parameters={
-                "param1": process_dt,
-                "param2": min_dt,
-                "param3": max_dt,
-            },
-        )
+        The primary use case is DefiLLama, where we have to fetch many individual
+        endpoints (each protocol or each stablecoin).
 
-    def write_gcs_from_clickhouse_buffer(
-        self,
-        process_dt: date,
-        min_dt: date,
-        max_dt: date,
-        sort_by: list[str] | None = None,
-    ):
-        # ClickHouse returns the Date type as u16 days from epoch.
-        df = self.query_clickhouse_buffer(process_dt, min_dt, max_dt).with_columns(
-            dt=pl.from_epoch(pl.col("dt"), time_unit="d")
-        )
-        self.write(dataframe=df, sort_by=sort_by)
+        We standardize the location of buffer tables. However we don't standardize
+        the DDL used to create buffer tables as schemas can be depend on the use case.
+
+        Users are responsible for manually creating the buffer tables on ClickHouse.
+        """
+        return TablePath(db="datapullbuffer", table=f"{self.db}_{self.table}")

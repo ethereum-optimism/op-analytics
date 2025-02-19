@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 from functools import cache
+from typing import Any
 
 import polars as pl
 import pyarrow as pa
@@ -16,6 +17,14 @@ log = structlog.get_logger()
 
 
 MARKERS_TABLE = "daily_data_markers"
+
+EXTRA_MARKER_COLUMNS: dict[str, Any] = dict()
+
+EXTRA_MARKER_COLUMNS_SCHEMA = [
+    pa.field("dt", pa.date32()),
+]
+
+PARQUET_FILENAME = "out.parquet"
 
 
 @cache
@@ -54,6 +63,15 @@ def write_to_prod():
         yield
 
 
+def expected_output_of(root_path: str, datestr: str) -> ExpectedOutput:
+    """An ExpectedOutput object for the combination of root_path and date."""
+    return ExpectedOutput(
+        root_path=root_path,
+        file_name=PARQUET_FILENAME,
+        marker_path=f"{datestr}/{root_path}",
+    )
+
+
 def write_daily_data(
     root_path: str,
     dataframe: pl.DataFrame,
@@ -81,18 +99,10 @@ def write_daily_data(
             process_name="default",
             location=location,
             partition_cols=["dt"],
-            extra_marker_columns=dict(),
-            extra_marker_columns_schema=[
-                pa.field("dt", pa.date32()),
-            ],
+            extra_marker_columns=EXTRA_MARKER_COLUMNS,
+            extra_marker_columns_schema=EXTRA_MARKER_COLUMNS_SCHEMA,
             markers_table=MARKERS_TABLE,
-            expected_outputs=[
-                ExpectedOutput(
-                    root_path=root_path,
-                    file_name="out.parquet",
-                    marker_path=f"{datestr}/{root_path}",
-                )
-            ],
+            expected_outputs=[expected_output_of(root_path=root_path, datestr=datestr)],
         )
 
         part_df = part.df.with_columns(dt=pl.lit(datestr))

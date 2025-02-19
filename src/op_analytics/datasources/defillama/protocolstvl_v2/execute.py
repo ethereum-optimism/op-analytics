@@ -1,27 +1,25 @@
 import itertools
-from datetime import date, timedelta
-
-import polars as pl
+from datetime import date
 
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import new_session
-from op_analytics.coreutils.time import now_date
 from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.time import now_date
 
 from ..dataaccess import DefiLlama
-from .protocol import ProtocolTVL
 from .metadata import ProtocolMetadata
+from .utils import get_buffered_slugs, fetch_and_write_slugs, copy_to_gcs
 
 log = structlog.get_logger()
 
 
-TVL_TABLE_LAST_N_DAYS = 3
+TVL_TABLE_LAST_N_DAYS = 360
 
 
-def execute_pull():
+def execute_pull(process_dt: date | None = None):
     session = new_session()
-    process_dt = now_date()
+    process_dt = process_dt or now_date()
 
     # Fetch the list of protocols and their metadata
     metadata = ProtocolMetadata.fetch(session, process_dt)
@@ -40,57 +38,11 @@ def execute_pull():
     # Fetch data and write to buffer for pending slugs.
     log.info(f"fetching and buffering data for {len(pending_slugs)}/{len(slugs)} pending slugs")
     run_concurrently(
-        function=lambda x: process_batch(session, process_dt, x),
-        targets=list(itertools.batched(pending_slugs, n=50)),
-        max_workers=5,
+        function=lambda x: fetch_and_write_slugs(session, process_dt, x),
+        targets=list(itertools.batched(pending_slugs, n=60)),
+        max_workers=8,
     )
     log.info("done fetching and buffering data")
 
-    # Write data for the last N dates to GCS.
-    DefiLlama.PROTOCOLS_TVL.write_gcs_from_clickhouse_buffer(
-        process_dt=process_dt,
-        min_dt=process_dt - timedelta(days=TVL_TABLE_LAST_N_DAYS),
-        max_dt=process_dt,
-        sort_by=["protocol_slug", "chain"],
-    )
-    DefiLlama.PROTOCOLS_TOKEN_TVL.write_gcs_from_clickhouse_buffer(
-        process_dt=process_dt,
-        min_dt=process_dt - timedelta(days=TVL_TABLE_LAST_N_DAYS),
-        max_dt=process_dt,
-        sort_by=["protocol_slug", "chain", "token"],
-    )
-
-
-def process_batch(session, process_dt, batch: list[str]):
-    """Process a batch of slugs.
-
-    Fetch data for all slugs in the batch and write to the ingestion buffer in ClickHouse."""
-    protocols: list[ProtocolTVL] = []
-    for slug in batch:
-        protocols.append(ProtocolTVL.fetch(session, slug))
-
-    tvl_df = pl.concat(_.tvl_df for _ in protocols)
-    token_tvl_df = pl.concat(_.token_tvl_df for _ in protocols)
-
-    DefiLlama.PROTOCOLS_TVL.write_to_clickhouse_buffer(
-        tvl_df.with_columns(process_dt=pl.lit(process_dt))
-    )
-    DefiLlama.PROTOCOLS_TOKEN_TVL.write_to_clickhouse_buffer(
-        token_tvl_df.with_columns(process_dt=pl.lit(process_dt))
-    )
-
-
-def get_buffered_slugs(process_dt: date):
-    """Slugs that have been processed before.
-
-    Find which slugs have already been written to the ingestion buffer in ClickHouse."""
-    slugs1: set[str] = DefiLlama.PROTOCOLS_TVL.query_clickhouse_buffer_key(
-        key_column="protocol_slug",
-        process_dt=process_dt,
-    )
-
-    slugs2: set[str] = DefiLlama.PROTOCOLS_TOKEN_TVL.query_clickhouse_buffer_key(
-        key_column="protocol_slug",
-        process_dt=process_dt,
-    )
-    return slugs1.intersection(slugs2)
+    # Copy data from buffer to GCS.
+    copy_to_gcs(process_dt=process_dt, last_n_days=TVL_TABLE_LAST_N_DAYS)
