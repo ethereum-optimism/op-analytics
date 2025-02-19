@@ -10,12 +10,12 @@ from .utils.k8sconfig import op_analytics_asset_job, OPK8sConfig
 import importlib
 
 MODULE_NAMES = [
-    "blockbatch",
-    "transform",
-    "chains",
+    "chainsdaily",
+    "chainshourly",
     "defillama",
     "github",
     "other",
+    "transform",
 ]
 
 
@@ -54,21 +54,33 @@ defs = Definitions(
     assets=ASSETS,
     schedules=[
         create_schedule_for_group(
-            group="chains",
+            group="chainsdaily",
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
             default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="720Mi",
+                mem_limit="2Gi",
+            ),
         ),
         #
         create_schedule_for_group(
-            group="blockbatch",
+            group="chainshourly",
             cron_schedule="38 * * * *",  # Run every hour
             default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="720Mi",
+                mem_limit="2Gi",
+            ),
         ),
         #
         create_schedule_for_group(
             group="transform",
             cron_schedule="17 */6 * * *",  # Run every 6 hours
             default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="720Mi",
+                mem_limit="2Gi",
+            ),
         ),
         #
         create_schedule_for_group(
@@ -76,6 +88,10 @@ defs = Definitions(
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
             default_status=DefaultScheduleStatus.RUNNING,
             k8s_pod_per_step=True,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="4Gi",
+                mem_limit="6Gi",
+            ),
         ),
         #
         create_schedule_for_group(

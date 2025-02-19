@@ -39,8 +39,8 @@ def upload_all():
     # Upload clean_df to GCS.
     from op_analytics.datasources.chainsmeta.dataaccess import ChainsMeta
 
-    ChainsMeta.RAW_GSHEET.write(clean_df.with_columns(dt=pl.lit(now_dt())))
-    work_done.append(f"Uploaded to GCS: {ChainsMeta.RAW_GSHEET.table}")
+    ChainsMeta.CHAIN_METADATA_GSHEET.write(clean_df.with_columns(dt=pl.lit(now_dt())))
+    work_done.append(f"Uploaded to GCS: {ChainsMeta.CHAIN_METADATA_GSHEET.table}")
 
     # Save a record of what was done.
     record_changes(GSHEET_NAME, messages=work_done)
