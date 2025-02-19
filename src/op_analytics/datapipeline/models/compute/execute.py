@@ -59,6 +59,9 @@ class PythonModelExecutor:
         for view in remaining_views:
             self.client.unregister(view_name=view)
 
+        # Close the context to premanently delete duckdb storage from disk.
+        self.duckdb_context.close(remove_db_path=True)
+
     def call_args(self):
         return (self.duckdb_context, self.input_datasets, self.auxiliary_templates)
 

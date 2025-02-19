@@ -4,11 +4,12 @@ import polars as pl
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.misc import camel_to_snake, raise_for_schema_mismatch
+from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
-from op_analytics.coreutils.time import now_dt
 
-from .dataaccess import EthereumOptimism
+
+from ..dataaccess import ChainsMeta
 
 log = structlog.get_logger()
 
@@ -27,6 +28,7 @@ SUPERCHAIN_TOKEN_LIST_SCHEMA = pl.Schema(
         "optimism_bridge_address": pl.String,
         "mode_bridge_address": pl.String,
         "base_bridge_address": pl.String,
+        "unichain_bridge_address": pl.String,  # added on 2025/02/11
         "op_list_id": pl.String,
         "op_token_id": pl.String,
         "dt": pl.String,
@@ -51,7 +53,6 @@ def execute_pull():
 def pull_superchain_token_list() -> SuperchainTokenList:
     """Pull data from ethereum-optimism github repo."""
     session = new_session()
-    current_dt: str = now_dt()
 
     token_list_raw_data = get_data(session, f"{URL_BASE}{SUPERCHAIN_TOKEN_LIST}")
 
@@ -59,7 +60,7 @@ def pull_superchain_token_list() -> SuperchainTokenList:
     token_list_raw_df = pl.DataFrame(token_list_raw_data["tokens"])
 
     # Flatten the schema and convert to snake case.
-    token_list_df = process_metadata_pull(token_list_raw_df).with_columns(dt=pl.lit(current_dt))
+    token_list_df = process_metadata_pull(token_list_raw_df).with_columns(dt=pl.lit(DEFAULT_DT))
 
     # Check the final schema is as expected. If something changes upstream the
     # exception will warn us.
@@ -68,7 +69,7 @@ def pull_superchain_token_list() -> SuperchainTokenList:
         expected_schema=SUPERCHAIN_TOKEN_LIST_SCHEMA,
     )
 
-    EthereumOptimism.SUPERCHAIN_TOKEN_LIST.write(
+    ChainsMeta.SUPERCHAIN_TOKEN_LIST.write(
         dataframe=token_list_df,
         sort_by=["address"],
     )

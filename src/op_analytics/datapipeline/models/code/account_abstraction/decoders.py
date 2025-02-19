@@ -27,7 +27,7 @@ def register_4337_decoders(ctx: DuckDBContext):
     # UserOperationEvent
     register_decoder(
         ctx=ctx,
-        duckdb_function_name="decode_user_op",
+        duckdb_function_name="decode_useroperationevent",
         decoder=user_op_event_decoder(),
         parameters=["VARCHAR"],
         return_type="VARCHAR",
@@ -36,7 +36,7 @@ def register_4337_decoders(ctx: DuckDBContext):
     # innerHandleOp
     register_decoder(
         ctx=ctx,
-        duckdb_function_name="decode_inner_handle_op",
+        duckdb_function_name="decode_innerhandleop",
         decoder=inner_handle_op_decoder(),
         parameters=["VARCHAR"],
         # TODO:

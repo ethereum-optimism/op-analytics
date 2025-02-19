@@ -11,7 +11,7 @@ from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently_store_failures
 from op_analytics.coreutils.time import date_fromstr, dt_fromepoch, epoch_is_date, now_date, now_dt
 
-from .dataaccess import DefiLlama
+from ..dataaccess import DefiLlama
 
 log = structlog.get_logger()
 
@@ -20,6 +20,15 @@ PROTOCOL_DETAILS_ENDPOINT = "https://api.llama.fi/protocol/{slug}"
 
 
 TVL_TABLE_LAST_N_DAYS = 90
+
+
+def execute_pull():
+    result = pull_protocol_tvl()
+    return {
+        "metadata_df": dt_summary(result.metadata_df),
+        "app_tvl_df": dt_summary(result.app_tvl_df),
+        "app_token_tvl_df": dt_summary(result.app_token_tvl_df),
+    }
 
 
 @dataclass
@@ -39,7 +48,7 @@ class SingleProtocolDFs:
     token_tvl_df: pl.DataFrame | None
 
 
-def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProtocols:
+def pull_protocol_tvl() -> DefillamaProtocols:
     """
     Pulls and processes protocol data from DeFiLlama.
 
@@ -59,7 +68,7 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     )
 
     # Create list of slugs to fetch protocol-specific data
-    slugs = construct_slugs(metadata_df, pull_protocols)
+    slugs = metadata_df.get_column("protocol_slug").to_list()
 
     # Fetch and extract protocol details in parallel.
     # The single protocol extraction filters data to only the dates of
@@ -106,15 +115,6 @@ def pull_protocol_tvl(pull_protocols: list[str] | None = None) -> DefillamaProto
     )
 
 
-def execute_pull():
-    result = pull_protocol_tvl()
-    return {
-        "metadata_df": dt_summary(result.metadata_df),
-        "app_tvl_df": dt_summary(result.app_tvl_df),
-        "app_token_tvl_df": dt_summary(result.app_token_tvl_df),
-    }
-
-
 def table_cutoff_date() -> date:
     return now_date() - timedelta(TVL_TABLE_LAST_N_DAYS)
 
@@ -149,23 +149,6 @@ def extract_protocol_metadata(protocols: list[dict[str, Any]]) -> pl.DataFrame:
         if protocol.get("category")
     ]
     return pl.DataFrame(metadata_records)
-
-
-def construct_slugs(metadata_df: pl.DataFrame, pull_protocols: list[str] | None) -> list[str]:
-    """Build the collection of slugs for fetching protocol details.
-
-    Args:
-        metadata_df: DataFrame containing protocol metadata.
-        pull_protocols: List of protocol slugs to process. Defaults to None (process all).
-    """
-    if pull_protocols is None:
-        return metadata_df.get_column("protocol_slug").to_list()
-    else:
-        return [
-            slug
-            for slug in metadata_df.get_column("protocol_slug").to_list()
-            if slug in pull_protocols
-        ]
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,22 +1,31 @@
+from dataclasses import dataclass
 from datetime import date
 from enum import Enum
 
 import polars as pl
 
 from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
-from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
-from op_analytics.coreutils.duckdb_inmem import EmptyParquetData
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
 
 from .dailydataread import make_date_filter, query_parquet_paths
-from .dailydataloadch import load_to_clickhouse
-from .dailydatawrite import write_daily_data
+from .dailydatawrite import write_daily_data, PARQUET_FILENAME
 from .dataaccess import DateFilter
 from .location import DataLocation
 
 log = structlog.get_logger()
+
+
+# We use the default "dt" value for cases when we run an ingestion process daily
+# but only care about storing the most recently pulled data.
+DEFAULT_DT = "2000-01-01"
+
+
+@dataclass
+class TablePath:
+    db: str
+    table: str
 
 
 class DailyDataset(str, Enum):
@@ -85,7 +94,7 @@ class DailyDataset(str, Enum):
 
         paths: str | list[str]
         if datefilter.is_undefined:
-            paths = location.absolute(f"{self.root_path}/dt=*/out.parquet")
+            paths = location.absolute(f"{self.root_path}/dt=*/{PARQUET_FILENAME}")
 
         else:
             paths = query_parquet_paths(
@@ -151,31 +160,8 @@ class DailyDataset(str, Enum):
         paths = query_parquet_paths(
             self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
         )
-        if not paths:
-            raise Exception(f"No parquet file found for date {datestr}")
-        lazy_df = pl.scan_parquet(paths[0])
-        schema = [
-            {"name": col, "type": str(dtype).upper()}
-            for col, dtype in lazy_df.collect_schema().items()
-        ]
-        return schema
 
-    def suggest_clickhouse_ddl(self, datestr: str) -> str:
-        """Print a suggested CREATE TABLE ddl statement based on the inferred schema."""
-        schema = self.get_clickhouse_schema(datestr)
-        columns = []
-        # Assuming each column in the schema dict has keys 'name' and 'type'
-        for col in schema:
-            col_name = col.get("name", "unknown_column")
-            col_type = col.get("type", "String")
-            columns.append(f"    {col_name} {col_type}")
-        ddl = (
-            f"CREATE TABLE {self.table} (\n"
-            + ",\n".join(columns)
-            + "\n) ENGINE = MergeTree()\nORDER BY tuple();"
-        )
-        print(ddl)
-        return ddl
+        infer_schema_from_parquet(paths[0], dummy_name=f"{self.db}.{self.table}")
 
     def load_gcs_to_ch(
         self,
@@ -221,3 +207,20 @@ class DailyDataset(str, Enum):
             partition_columns="dt DATE",
             partition_prefix=self.root_path,
         )
+
+    def clickhouse_buffer_table(self) -> TablePath:
+        """Return db and name for the buffer table in ClickHouse.
+
+        We use buffer tables in ClickHouse as a way of doing "streaming inserts",
+        where we insert data row by row or in smaller chunks as a way to save
+        progress on data pulls that ingest data from many small invididual request.
+
+        The primary use case is DefiLLama, where we have to fetch many individual
+        endpoints (each protocol or each stablecoin).
+
+        We standardize the location of buffer tables. However we don't standardize
+        the DDL used to create buffer tables as schemas can be depend on the use case.
+
+        Users are responsible for manually creating the buffer tables on ClickHouse.
+        """
+        return TablePath(db="datapullbuffer", table=f"{self.db}_{self.table}")

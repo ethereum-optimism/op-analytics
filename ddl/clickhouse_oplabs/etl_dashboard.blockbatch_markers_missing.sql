@@ -9,6 +9,7 @@ ingestion_markers AS (
     , min_block
     , max_block
     , row_count
+    , updated_at
   FROM
     etl_dashboard.blockbatch_markers_deduped(
       dtmin = { dtmin: Date } -- noqa: CP02
@@ -33,6 +34,7 @@ ingestion_markers AS (
     , i.min_block
     , i.max_block
     , i.row_count
+    , i.updated_at
     , b.root_path AS root_path -- noqa: AL09
   FROM
     ingestion_markers AS i
@@ -47,6 +49,7 @@ ingestion_markers AS (
     , min_block
     , max_block
     , row_count
+    , updated_at
   FROM
     etl_dashboard.blockbatch_markers_deduped(
       dtmin = { dtmin: Date } -- noqa: CP02
@@ -62,6 +65,7 @@ SELECT
   , e.dt
   , e.min_block
   , e.max_block
+  , e.updated_at AS ingested_at
   , e.row_count AS ingestion_row_count
   , o.row_count AS observed_row_count
 FROM
