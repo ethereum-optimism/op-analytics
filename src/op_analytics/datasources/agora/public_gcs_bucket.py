@@ -80,7 +80,7 @@ VOTES_SCHEMA = pl.Schema(
 )
 
 
-TABLES = {
+AGORA_PUBLIC_BUCKET_DATA = {
     "delegate_changed_events": (Agora.DELEGATE_CHANGED_EVENTS, DELEGATE_CHANGED_EVENTS_SCHEMA),
     "delegates": (Agora.DELEGATES, DELEGATES_SCHEMA),
     "proposals_v2": (Agora.PROPOSALS, PROPOSALS_SCHEMA),
@@ -91,7 +91,7 @@ TABLES = {
 def execute_pull():
     result = {}
 
-    for path, (dataaccess, schema) in TABLES.items():
+    for path, (dataaccess, schema) in AGORA_PUBLIC_BUCKET_DATA.items():
         full_path = f"{PREFIX}/{path}"
 
         with bound_contextvars(gcs_path=full_path):
