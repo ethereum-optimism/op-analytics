@@ -2,7 +2,6 @@ import re
 
 import polars as pl
 
-from op_analytics.coreutils.clickhouse.client import new_stateful_client
 from op_analytics.coreutils.env.vault import env_get
 from op_analytics.coreutils.logger import structlog
 
@@ -29,22 +28,12 @@ def parquet_to_subquery(gcs_parquet_path: str, virtual_columns: str = "") -> str
 
 
 def get_schema_from_parquet(gcs_parquet_path: str) -> list[dict]:
-    """Query Clickhouse to get schema information from a parquet file.
-
-    Creates a temporary table from the parquet file and returns its schema.
-    """
-    clt = new_stateful_client("OPLABS")
-    log.info(f"using gcs path: {gcs_parquet_path}")
-
-    statement = f"""
-    CREATE TEMPORARY TABLE new_table AS (
-        {parquet_to_subquery(gcs_parquet_path)}
-    )
-    """
-    clt.command(statement)
-
-    df: pl.DataFrame = pl.from_arrow(clt.query_arrow("DESCRIBE new_table"))  # type: ignore
-    return df.select("name", "type").to_dicts()
+    """Get schema information directly from a parquet file using polars."""
+    lazy_df = pl.scan_parquet(gcs_parquet_path)
+    schema = [
+        {"name": col, "type": str(dtype).upper()} for col, dtype in lazy_df.collect_schema().items()
+    ]
+    return schema
 
 
 def generate_create_table_ddl(gcs_parquet_path: str, table_name: str) -> str:

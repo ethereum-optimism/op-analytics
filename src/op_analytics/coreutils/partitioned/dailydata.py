@@ -8,6 +8,7 @@ from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_tabl
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
+from op_analytics.coreutils.clickhouse.inferschema import get_schema_from_parquet
 
 from .dailydataread import make_date_filter, query_parquet_paths
 from .dailydatawrite import write_daily_data, PARQUET_FILENAME
@@ -130,12 +131,7 @@ class DailyDataset(str, Enum):
                 paths = query_parquet_paths(
                     table.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
                 )
-                lazy_df = pl.scan_parquet(paths[0])
-                schema = [
-                    {"name": col, "type": str(dtype).upper()}
-                    for col, dtype in lazy_df.collect_schema().items()
-                ]
-                schemas[table] = schema
+                schemas[table] = get_schema_from_parquet(paths[0])
             except IndexError:
                 log.warning(
                     f"No data found for {table.name} on {datestr}, skipping schema inference"
