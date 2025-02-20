@@ -10,7 +10,7 @@ class ChainsMeta(DailyDataset):
     # Chain metadata google sheet.
     CHAIN_METADATA_GSHEET = "raw_gsheet_v1"
 
-    # Across bridge metadat google sheet.
+    # Across bridge addresses google sheet.
     ACROSS_BRIDGE_GSHEET = "raw_accross_bridge_gsheet_v1"
 
     # A dimension table storing metadata for ERC-20 tokens.
