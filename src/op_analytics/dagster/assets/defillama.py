@@ -27,7 +27,7 @@ def stablecoins(context: AssetExecutionContext):
 def protocol_tvl(context: AssetExecutionContext):
     """Pull historical chain tvl data from Defillama."""
 
-    from op_analytics.datasources.defillama.protocolstvl_v2 import execute
+    from op_analytics.datasources.defillama.protocolstvl import execute
 
     result = execute.execute_pull()
     context.log.info(result)
@@ -77,9 +77,9 @@ def volumes_fees_revenue(context: AssetExecutionContext):
     }
 )
 def yield_pools_data(context: AssetExecutionContext):
-    from op_analytics.datasources.defillama import yield_pools
+    from op_analytics.datasources.defillama.yieldpools import execute
 
-    result = yield_pools.execute_pull()
+    result = execute.execute_pull()
     context.log.info(result)
 
 
