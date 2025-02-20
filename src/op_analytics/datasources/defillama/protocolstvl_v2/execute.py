@@ -18,6 +18,8 @@ TVL_TABLE_LAST_N_DAYS = 360
 
 
 def execute_pull(process_dt: date | None = None):
+    """Daily pull protocol TVL data from DefiLlama."""
+
     session = new_session()
     process_dt = process_dt or now_date()
 
@@ -32,13 +34,13 @@ def execute_pull(process_dt: date | None = None):
     slugs = metadata.slugs()
 
     # Fetch from API And write to buffer.
-    pull_to_buffer(session, slugs, process_dt)
+    write_to_buffer(session, slugs, process_dt)
 
     # Copy data from buffer to GCS.
-    copy_to_gcs(process_dt=process_dt, last_n_days=TVL_TABLE_LAST_N_DAYS)
+    return copy_to_gcs(process_dt=process_dt, last_n_days=TVL_TABLE_LAST_N_DAYS)
 
 
-def pull_to_buffer(session, slugs: list[str], process_dt: date):
+def write_to_buffer(session, slugs: list[str], process_dt: date):
     """Pull data from DefiLlama and write to the ClickHouse buffer.
 
     This part was split up as a a separate function just so it is easy to add retries
