@@ -1,8 +1,6 @@
 import itertools
-from dataclasses import dataclass
 from datetime import date
 
-import polars as pl
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import new_session
@@ -21,27 +19,8 @@ log = structlog.get_logger()
 YIELD_TABLE_LAST_N_DAYS = 360
 
 
-@dataclass
-class DefillamaYieldPools:
-    """Metadata and yield data for all pools.
-
-    This is the result we obtain after fetching from the API and extracting the data
-    that we need to ingest.
-    """
-
-    yield_pools_df: pl.DataFrame
-
-
 def execute_pull(process_dt: date | None = None):
-    """
-    Pulls and processes yield pool data from DeFiLlama.
-
-    Args:
-        pull_pools: list of pool IDs to process. Defaults to None (process all).
-
-    Returns:
-        A polars DataFrame containing joined pool and historical yield data.
-    """
+    """Daily pull yield pool data from DefiLlama."""
 
     session = new_session()
     process_dt = process_dt or now_date()
@@ -81,15 +60,15 @@ def write_to_buffer(
     to this part of the process only if we need to later on.
     """
 
-    # Find out which slugs are still pending.
-    buffered_pools = get_buffered(process_dt=process_dt)
-    pending_pools = list(set(pools) - set(buffered_pools))
+    # Find out which ids are still pending.
+    buffered_ids = get_buffered(process_dt=process_dt)
+    pending_ids = list(set(pools) - set(buffered_ids))
 
     # Ucomment to limit the number of pools we fetch from. Useful for debugging.
     # pending_pools = pending_pools[:10]
 
     # Fetch data and write to buffer for pending yield pools.
-    log.info(f"fetching and buffering data for {len(pending_pools)}/{len(pools)} pending pools")
+    log.info(f"fetching and buffering data for {len(pending_ids)}/{len(pools)} pending pools")
     run_concurrently(
         function=lambda x: fetch_and_write(
             session=session,
@@ -97,7 +76,7 @@ def write_to_buffer(
             batch=x,
             metadata=metadata,
         ),
-        targets=list(itertools.batched(pending_pools, n=20)),
+        targets=list(itertools.batched(pending_ids, n=20)),
         max_workers=8,
     )
     log.info("done fetching and buffering data")

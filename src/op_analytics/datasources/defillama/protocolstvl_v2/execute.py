@@ -18,6 +18,8 @@ TVL_TABLE_LAST_N_DAYS = 360
 
 
 def execute_pull(process_dt: date | None = None):
+    """Daily pull protocol TVL data from DefiLlama."""
+
     session = new_session()
     process_dt = process_dt or now_date()
 
