@@ -2,6 +2,7 @@ import re
 
 import polars as pl
 
+from op_analytics.coreutils.clickhouse.client import new_stateful_client
 from op_analytics.coreutils.env.vault import env_get
 from op_analytics.coreutils.logger import structlog
 
@@ -27,27 +28,32 @@ def parquet_to_subquery(gcs_parquet_path: str, virtual_columns: str = "") -> str
     """
 
 
-def get_schema_from_parquet(gcs_parquet_path: str) -> list[dict]:
-    """Get schema information directly from a parquet file using polars."""
-    lazy_df = pl.scan_parquet(gcs_parquet_path)
-    schema = [
-        {"name": col, "type": str(dtype).upper()} for col, dtype in lazy_df.collect_schema().items()
-    ]
-    return schema
+def generate_create_table_ddl(gcs_parquet_path: str, table_name: str):
+    """Use a single parquet path to generate a Clickhouse CREATE TABLE dsl statement.
 
-
-def generate_create_table_ddl(gcs_parquet_path: str, table_name: str) -> str:
-    """Generate a Clickhouse CREATE TABLE statement from a parquet file.
-
-    Gets schema info from parquet file and generates the DDL statement.
+    The value of "dummy_name" is used for the table name in the generated ddl.
     """
-    schema = get_schema_from_parquet(gcs_parquet_path)
+    # Clickhouse client
+    clt = new_stateful_client("OPLABS")
+
+    log.info(f"using gcs path: {gcs_parquet_path}")
+
+    statement = f"""
+    CREATE TEMPORARY TABLE new_table AS (
+        {parquet_to_subquery(gcs_parquet_path)}
+    )
+    """
+    clt.command(statement)
+
+    df: pl.DataFrame = pl.from_arrow(clt.query_arrow("DESCRIBE new_table"))  # type: ignore
+    schema = df.select("name", "type").to_dicts()
 
     # Build column definitions
     columns = []
     for col in schema:
         col_name = col["name"]
         col_type = remove_nullable(col["type"])
+
         columns.append(f"`{col_name}` {col_type}")
 
     # Join columns with commas
@@ -55,11 +61,11 @@ def generate_create_table_ddl(gcs_parquet_path: str, table_name: str) -> str:
 
     # Build full CREATE TABLE statement
     ddl = f"""CREATE TABLE IF NOT EXISTS {table_name}
-        (
-            {columns_str}
-        )
-        ENGINE = ReplacingMergeTree
-    """
+(
+    {columns_str}
+)
+ENGINE = ReplacingMergeTree
+"""
 
     print(ddl)
     return ddl
