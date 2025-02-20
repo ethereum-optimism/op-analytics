@@ -1,3 +1,5 @@
+INSERT INTO _placeholder_
+
 WITH across_bridge_metadata AS (
     SELECT *
     FROM dailydata_gcs.read_default(
@@ -10,6 +12,30 @@ WITH across_bridge_metadata AS (
   FROM dailydata_gcs.read_default(
     rootpath = 'chainsmeta/raw_gsheet_v1'
   )
+  WHERE mainnet_chain_id is not null
+  SETTINGS use_hive_partitioning = 1
+)
+, raw_logs AS (
+  SELECT *
+  FROM blockbatch_gcs.read_date(
+    rootpath = 'ingestion/logs_v1'
+    , chain = '*'
+    , dt = { dtparam: Date }
+  )
+  WHERE true
+  AND topic0 in ('0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f', '0x32ed1a409ef04c7b0227189c3a103dc5ac10e775a15b785dcc510201f7c25ad3')
+  AND data is not null
+  AND data != ''
+  AND length(indexed_args) >= 3
+)
+, raw_transactions AS (
+  SELECT *
+  FROM blockbatch_gcs.read_date(
+    rootpath = 'ingestion/transactions_v1'
+    , chain = '*'
+    , dt = { dtparam: Date }
+  )
+  WHERE gas_price > 0
   SETTINGS use_hive_partitioning = 1
 )
 , raw_events AS (
@@ -21,10 +47,10 @@ WITH across_bridge_metadata AS (
     , l.chain_id AS src_chain_id
     , l.address AS contract_address
     , l.transaction_hash AS transaction_hash
-    , reinterpretAsUInt64(reverse(unhex(substring(splitByChar(',', l.topics)[3], 3)))) AS deposit_id
+    , reinterpretAsUInt64(reverse(unhex(substring(indexed_args[2], 3)))) AS deposit_id
     , '0x' || substring(substring(l.data, 3), 25, 40) AS input_token_address
     , '0x' || substring(substring(l.data, 3), 89, 40) AS output_token_address
-    , cast(reinterpretAsUInt64(reverse(unhex(substring(splitByChar(',', l.topics)[2], 3)))) AS String) AS dst_chain_id
+    , reinterpretAsUInt64(reverse(unhex(substring(indexed_args[1], 3)))) AS dst_chain_id
     , reinterpretAsUInt256(reverse(unhex(substring(substring(l.data, 3), 129, 64)))) AS input_amount
     , reinterpretAsUInt256(reverse(unhex(substring(substring(l.data, 3), 193, 64)))) AS output_amount
     , reinterpretAsUInt256(reverse(unhex(substring(substring(l.data, 3), 257, 64)))) AS quote_timestamp
@@ -39,21 +65,11 @@ WITH across_bridge_metadata AS (
       ELSE null
     END AS integrator
     , l.log_index AS log_index
-    , (t.gas_price * t.gas_used) / 1e18 AS l2_fee_eth
+    , (t.gas_price * t.receipt_gas_used) / 1e18 AS l2_fee_eth
     , (t.receipt_l1_fee) / 1e18 AS l1_fee_eth
-    , (t.gas_price * t.gas_used) / 1e18 + (t.receipt_l1_fee) / 1e18 AS total_fee_eth
-  FROM
-    blockbatch_gcs.read_date(
-      rootpath = 'ingestion/logs_v1'
-      , chain = '*'
-      , dt = { dtparam: Date }
-    ) AS l
-  JOIN
-    blockbatch_gcs.read_date(
-      rootpath = 'ingestion/transactions_v1'
-      , chain = '*'
-      , dt = { dtparam: Date }
-    ) AS t
+    , (t.gas_price * t.receipt_gas_used) / 1e18 + (t.receipt_l1_fee) / 1e18 AS total_fee_eth
+  FROM raw_logs AS l
+  JOIN raw_transactions AS t
     ON
       l.transaction_hash = t.hash
       AND l.block_number = t.block_number
@@ -63,11 +79,6 @@ WITH across_bridge_metadata AS (
     ON
       l.chain = c.chain_name
       AND l.address = c.spokepool_address
-  WHERE
-    true
-    AND splitByChar(',', l.topics)[1] = '0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f'
-    AND t.gas_price > 0
-    AND l.data IS NOT null AND l.data != '' -- info is there
 -- AND l.block_timestamp > '2024-05-01'
 )
 
@@ -108,13 +119,13 @@ SELECT
 FROM raw_events AS x
 LEFT JOIN
   chain_metadata AS c
-  ON x.dst_chain_id = c.chain_id
+  ON cast(x.dst_chain_id as String) = cast(c.mainnet_chain_id as String)
 LEFT JOIN chainsmeta.dim_erc20_token_metadata_v1 AS mi
   ON
     x.input_token_address = mi.contract_address
-    AND x.src_chain_id = mi.chain_id
+    AND cast(x.src_chain_id as String) = cast(mi.chain_id as String)
 LEFT JOIN chainsmeta.dim_erc20_token_metadata_v1 AS mo
   ON
     x.output_token_address = mo.contract_address
-    AND x.dst_chain_id = mo.chain_id
-WHERE integrator IS NOT null
+    AND cast(x.dst_chain_id as String) = cast(mo.chain_id as String)
+WHERE integrator is not null
