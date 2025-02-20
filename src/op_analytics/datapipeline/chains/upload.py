@@ -2,9 +2,9 @@ import pandas as pd
 import polars as pl
 
 from op_analytics.coreutils.gsheets import record_changes, update_gsheet
-from op_analytics.coreutils.time import now_dt
+from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT
 
-from .across_bridge import upload_across_bridge_addresses
+from .across_bridge import load_across_bridge_addresses, upload_across_bridge_addresses
 from .goldsky_chains import goldsky_mainnet_chains_df
 from .load import load_chain_metadata
 
@@ -39,15 +39,22 @@ def upload_all():
     # Upload clean_df to GCS.
     from op_analytics.datasources.chainsmeta.dataaccess import ChainsMeta
 
-    ChainsMeta.CHAIN_METADATA_GSHEET.write(clean_df.with_columns(dt=pl.lit(now_dt())))
+    ChainsMeta.CHAIN_METADATA_GSHEET.write(clean_df.with_columns(dt=pl.lit(DEFAULT_DT)))
     work_done.append(f"Uploaded to GCS: {ChainsMeta.CHAIN_METADATA_GSHEET.table}")
 
     # Save a record of what was done.
     record_changes(GSHEET_NAME, messages=work_done)
 
+    # Load across_bridge
+    # (verifies that the chain names are consistent with the Chain Metadata source of truth).
+    across_bridge_df = load_across_bridge_addresses(chains_df=goldsky_df)
+
     # Upload the across bridge addresses.
     # Makes sure they are consistent with Chain Metadata.
-    upload_across_bridge_addresses(chains_df=goldsky_df)
+    upload_across_bridge_addresses(across_bridge_df=across_bridge_df)
+
+    # Store across_bridge_df as DailyData on GCS.
+    ChainsMeta.ACROSS_BRIDGE_GSHEET.write(across_bridge_df.with_columns(dt=pl.lit(DEFAULT_DT)))
 
 
 def to_pandas(clean_df: pl.DataFrame) -> pd.DataFrame:
