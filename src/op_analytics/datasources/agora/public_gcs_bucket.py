@@ -35,9 +35,10 @@ DELEGATES_SCHEMA = pl.Schema(
     ]
 )
 
+
 PROPOSALS_SCHEMA = pl.Schema(
     [
-        ("proposal_id", pl.Float64),
+        ("proposal_id", pl.String),
         ("contract", pl.String),
         ("proposer", pl.String),
         ("description", pl.String),
@@ -57,13 +58,14 @@ PROPOSALS_SCHEMA = pl.Schema(
         ("cancelled_transaction_hash", pl.String),
         ("queued_transaction_hash", pl.String),
         ("executed_transaction_hash", pl.String),
+        ("proposal_type_id", pl.Int64),
     ]
 )
 
 VOTES_SCHEMA = pl.Schema(
     [
         ("transaction_hash", pl.String),
-        ("proposal_id", pl.Float64),
+        ("proposal_id", pl.String),
         ("voter", pl.String),
         ("support", pl.Int64),
         ("weight", pl.Float64),
@@ -97,7 +99,16 @@ def execute_pull():
         with bound_contextvars(gcs_path=full_path):
             # Pull.
             log.info("reading csv")
-            df = pl.read_csv(full_path, schema=schema, n_threads=1, low_memory=True)
+
+            try:
+                df = pl.read_csv(full_path, schema=schema, n_threads=1, low_memory=True)
+            except pl.exceptions.ComputeError as ex:
+                # An error here is most likely due to changes in the Agora CSV schema that do
+                # not match our expected schema. We re-raise the exception adding information
+                # about the schema currently in GCS to help us debug.
+
+                gcs_schema = schema = pl.scan_csv(full_path).head().collect_schema()
+                raise Exception(f"actual_schema = {gcs_schema}") from ex
 
             # Every time we pull data we are fetching the complete dataset. So
             # we store it under a fixed date partition in GCS. This way we only
