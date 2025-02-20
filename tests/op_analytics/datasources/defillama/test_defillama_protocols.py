@@ -2,9 +2,8 @@ from datetime import date
 from typing import Any
 from unittest.mock import patch
 
-import polars as pl
 
-from op_analytics.datasources.defillama import protocols
+from op_analytics.datasources.defillama.protocolstvl import execute as protocols
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 
 TESTDATA = InputTestData.at(__file__)
@@ -400,113 +399,8 @@ def test_extract_protocol_metadata():
     assert metadata_df.to_dicts() == expected_dicts
 
 
-def test_construct_urls():
-    metadata_df = pl.DataFrame(
-        [
-            {"protocol_slug": "protocol_one"},
-            {"protocol_slug": "protocol_two"},
-        ]
-    )
-    slugs = protocols.construct_slugs(metadata_df, None)
-    expected_slugs = ["protocol_one", "protocol_two"]
-    assert slugs == expected_slugs
-
-
-@patch("op_analytics.datasources.defillama.protocols.get_data")
-@patch("op_analytics.datasources.defillama.protocols.now_date")
-@patch("op_analytics.coreutils.partitioned.dailydatawrite.PartitionedWriteManager.write")
-def test_pull_single_protocol_tvl(
-    mock_write,
-    mock_now_date,
-    mock_get_data,
-):
-    mock_now_date.return_value = date(2024, 11, 22)
-
-    # Mock get_data to return sample summary and breakdown data
-    mock_get_data.side_effect = [
-        sample_protocols,  # metadata
-        sample_protocol_data.get("protocol_one"),  # protocol tvl
-    ]
-
-    # Call the function under test
-    result = protocols.pull_protocol_tvl(pull_protocols=["protocol_one"])
-
-    # Assertions
-    assert result.metadata_df.to_dicts() == expected_metadata_dicts
-    assert (
-        result.app_tvl_df.sort("dt", "protocol_slug", "chain").to_dicts()
-        == expected_single_protocol_app_tvl_dicts
-    )
-    assert (
-        result.app_token_tvl_df.sort("dt", "protocol_slug", "chain", "token").to_dicts()
-        == expected_single_protocol_app_token_tvl_dicts
-    )
-
-    # Verify that get_data was called twice (summary, metadata, and tvl)
-    assert mock_get_data.call_count == 2
-
-    # Check that writer functions were called with correct parameters
-    write_calls = [
-        dict(
-            dataset_name=_.kwargs["output_data"].root_path,
-            df_columns=_.kwargs["output_data"].dataframe.columns,
-            num_rows=len(_.kwargs["output_data"].dataframe),
-        )
-        for _ in mock_write.call_args_list
-    ]
-    assert write_calls == [
-        {
-            "dataset_name": "defillama/protocols_metadata_v1",
-            "df_columns": [
-                "protocol_name",
-                "protocol_slug",
-                "protocol_category",
-                "parent_protocol",
-                "wrong_liquidity",
-                "misrepresented_tokens",
-                "dt",
-            ],
-            "num_rows": 2,
-        },
-        {
-            "dataset_name": "defillama/protocols_tvl_v1",
-            "df_columns": ["protocol_slug", "chain", "total_app_tvl", "dt"],
-            "num_rows": 2,
-        },
-        {
-            "dataset_name": "defillama/protocols_tvl_v1",
-            "df_columns": ["protocol_slug", "chain", "total_app_tvl", "dt"],
-            "num_rows": 2,
-        },
-        {
-            "dataset_name": "defillama/protocols_token_tvl_v1",
-            "df_columns": [
-                "protocol_slug",
-                "chain",
-                "token",
-                "app_token_tvl",
-                "app_token_tvl_usd",
-                "dt",
-            ],
-            "num_rows": 4,
-        },
-        {
-            "dataset_name": "defillama/protocols_token_tvl_v1",
-            "df_columns": [
-                "protocol_slug",
-                "chain",
-                "token",
-                "app_token_tvl",
-                "app_token_tvl_usd",
-                "dt",
-            ],
-            "num_rows": 4,
-        },
-    ]
-
-
-@patch("op_analytics.datasources.defillama.protocols.get_data")
-@patch("op_analytics.datasources.defillama.protocols.now_date")
+@patch("op_analytics.datasources.defillama.protocolstvl.execute.get_data")
+@patch("op_analytics.datasources.defillama.protocolstvl.execute.now_date")
 @patch("op_analytics.coreutils.partitioned.dailydatawrite.PartitionedWriteManager.write")
 def test_pull_all_protocol_tvl(
     mock_write,

@@ -3,13 +3,13 @@ from eth_abi_lite.decoding import (
     TupleDecoder,
 )
 
-from op_analytics.datapipeline.models.code.account_abstraction.function_decoders import (
+from op_analytics.datapipeline.models.code.account_abstraction.abis import (
     HANDLE_OPS_FUNCTION_ABI_v0_6_0,
     HANDLE_OPS_FUNCTION_ABI_v0_7_0,
 )
 from op_analytics.datapipeline.models.decode.abi_to_decoder import abi_inputs_to_decoder
+from op_analytics.datapipeline.models.decode.abi_to_structmaker import make_duckdb_type, make_struct
 from op_analytics.datapipeline.models.decode.conversion import safe_uint256
-from op_analytics.datapipeline.models.decode.abi_to_structmaker import make_struct, make_duckdb_type
 
 # Input taken from this transaction:
 # https://basescan.org/tx/0xa6afb687ed95e708b6086b8fd864cd56bd46746c9850e943a035c4863f88fbed

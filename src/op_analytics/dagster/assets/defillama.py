@@ -1,11 +1,13 @@
 from dagster import (
-    OpExecutionContext,
+    AssetExecutionContext,
     asset,
 )
 
+from op_analytics.dagster.utils.k8sconfig import OPK8sConfig
+
 
 @asset
-def token_mappings_to_bq(context: OpExecutionContext):
+def token_mappings_to_bq(context: AssetExecutionContext):
     from op_analytics.datasources.defillama import token_mappings
 
     result = token_mappings.execute()
@@ -13,7 +15,7 @@ def token_mappings_to_bq(context: OpExecutionContext):
 
 
 @asset
-def stablecoins(context: OpExecutionContext):
+def stablecoins(context: AssetExecutionContext):
     """Pull stablecoin data from Defillama."""
     from op_analytics.datasources.defillama import stablecoins
 
@@ -22,17 +24,17 @@ def stablecoins(context: OpExecutionContext):
 
 
 @asset
-def protocol_tvl(context: OpExecutionContext):
+def protocol_tvl(context: AssetExecutionContext):
     """Pull historical chain tvl data from Defillama."""
 
-    from op_analytics.datasources.defillama import protocols
+    from op_analytics.datasources.defillama.protocolstvl_v2 import execute
 
-    result = protocols.execute_pull()
+    result = execute.execute_pull()
     context.log.info(result)
 
 
 @asset(deps=[protocol_tvl])
-def tvl_breakdown_enrichment(context: OpExecutionContext):
+def tvl_breakdown_enrichment(context: AssetExecutionContext):
     """Enrich defillama tvl breakdown data."""
 
     from op_analytics.datasources.defillama import tvl_breakdown_enrichment
@@ -40,9 +42,17 @@ def tvl_breakdown_enrichment(context: OpExecutionContext):
     result = tvl_breakdown_enrichment.execute_pull()
     context.log.info(result)
 
+    from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
+
+    create_view(
+        db_name="dailydata_defillama",
+        view_name="defillama_tvl_breakdown_filtered",
+        disposition="replace",
+    )
+
 
 @asset
-def historical_chain_tvl(context: OpExecutionContext):
+def historical_chain_tvl(context: AssetExecutionContext):
     """Pull historical chain tvl data from Defillama."""
     from op_analytics.datasources.defillama import historical_chain_tvl
 
@@ -51,7 +61,7 @@ def historical_chain_tvl(context: OpExecutionContext):
 
 
 @asset
-def volumes_fees_revenue(context: OpExecutionContext):
+def volumes_fees_revenue(context: AssetExecutionContext):
     from op_analytics.datasources.defillama.volume_fees_revenue import execute
 
     result = execute.execute_pull()
@@ -59,14 +69,21 @@ def volumes_fees_revenue(context: OpExecutionContext):
 
 
 @asset(
-    deps=[
-        stablecoins,
-        protocol_tvl,
-        tvl_breakdown_enrichment,
-        historical_chain_tvl,
-        volumes_fees_revenue,
-    ]
+    op_tags={
+        "dagster-k8s/config": OPK8sConfig(
+            mem_request="4Gi",
+            mem_limit="8Gi",
+        ).construct()
+    }
 )
+def yield_pools_data(context: AssetExecutionContext):
+    from op_analytics.datasources.defillama import yield_pools
+
+    result = yield_pools.execute_pull()
+    context.log.info(result)
+
+
+@asset
 def defillama_views():
     """Bigquery external tables and views.
 
@@ -93,10 +110,6 @@ def defillama_views():
     DefiLlama.FEES_PROTOCOLS_METADATA.create_bigquery_external_table()
     DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_external_table()
 
-    from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
+    DefiLlama.YIELD_POOLS_HISTORICAL.create_bigquery_external_table()
 
-    create_view(
-        db_name="dailydata_defillama",
-        view_name="defillama_tvl_breakdown_filtered",
-        disposition="replace",
-    )
+    DefiLlama.TOKEN_MAPPINGS.create_bigquery_external_table()

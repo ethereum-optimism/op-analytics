@@ -9,22 +9,19 @@ metadata:
 spec:
   schedule: "32 * * * *"  # Runs every hour at minute 32
   concurrencyPolicy: Forbid 
+  successfulJobsHistoryLimit: 3  # Retains the last N successful jobs
+  failedJobsHistoryLimit: 3      # Retains the last N failed jobs  
   jobTemplate:
     spec:
       backoffLimit: 0
-      podFailurePolicy:
-        rules:
-          - action: Ignore  # Keeps failed pods
-            onExitCodes:
-              operator: In
-              values: [1]
       template:
         spec:
+          restartPolicy: Never 
           serviceAccountName: op-analytics-service-account
           containers:
           - name: python-runner
             imagePullPolicy: IfNotPresent
-            image: ghcr.io/lithium323/op-analytics:v20250205.2
+            image: ghcr.io/lithium323/op-analytics:v20250211.3
             command: ["tini", "-v", "--", "opdata"]
             args: ["chains", "noargs_blockbatch"]
             env:
@@ -50,7 +47,6 @@ spec:
               name: opanalyticsvault
             - mountPath: "/duckdbdata"
               name: duckdbdata
-          restartPolicy: Never 
           volumes:
           - name: opanalyticsvault
             csi:
@@ -62,5 +58,3 @@ spec:
           - name: duckdbdata
             emptyDir:
               sizeLimit: 100Gi
-  successfulJobsHistoryLimit: 2  # Retains the last 3 successful jobs
-  failedJobsHistoryLimit: 2      # Retains the last failed job

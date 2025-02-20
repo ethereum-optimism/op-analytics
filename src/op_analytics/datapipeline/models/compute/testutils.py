@@ -165,7 +165,7 @@ class IntermediateModelTestBase(unittest.TestCase):
         else:
             log.info(f"Using local test data from: {db_path}")
 
-        cls._duckdb_context.close()
+        cls._duckdb_context.close(remove_db_path=False)
 
         # Make a copy of the duck.db file, to prevent changing the input test data.
         cls._tempdir = tempfile.TemporaryDirectory()
@@ -190,7 +190,7 @@ class IntermediateModelTestBase(unittest.TestCase):
         cls._model_executor.__exit__(None, None, None)
 
         assert cls._duckdb_context is not None
-        cls._duckdb_context.close()
+        cls._duckdb_context.close(remove_db_path=False)
 
     @classmethod
     def _tables_exist(cls, datasets: list[str]) -> bool:
@@ -315,6 +315,6 @@ def setup_execution_context(model_name: str, data_reader: DataReader):
 
     print()
     for _ in auxiliary_templates:
-        print(f"AUX VIEW: {_}")
+        print(f"AUX TEMPLATE: {_}")
 
     return ctx, input_datasets, auxiliary_templates
