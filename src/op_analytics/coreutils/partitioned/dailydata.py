@@ -127,7 +127,14 @@ class DailyDataset(str, Enum):
         for table in cls.all_tables():
             log.info(f"Inferring schema for {table.name}")
             try:
-                schema = table.get_parquet_schema(datestr)
+                paths = query_parquet_paths(
+                    table.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
+                )
+                lazy_df = pl.scan_parquet(paths[0])
+                schema = [
+                    {"name": col, "type": str(dtype).upper()}
+                    for col, dtype in lazy_df.collect_schema().items()
+                ]
                 schemas[table] = schema
             except IndexError:
                 log.warning(
@@ -154,48 +161,6 @@ class DailyDataset(str, Enum):
         )
         rel = duckdb_context.client.sql(f"SELECT * FROM {relation_name}")
         return rel.pl()
-
-    def get_clickhouse_schema(self, datestr: str) -> list[dict]:
-        """Return the parquet schema inferred from a sample parquet file."""
-        paths = query_parquet_paths(
-            self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
-        )
-
-        infer_schema_from_parquet(paths[0], dummy_name=f"{self.db}.{self.table}")
-
-    def load_gcs_to_ch(
-        self,
-        min_date: str | None = None,
-        max_date: str | None = None,
-        incremental_overlap: int = 0,
-    ):
-        """Load dailydata from GCS to clickhouse."""
-        try:
-            df = self.read_polars(min_date=min_date, max_date=max_date)
-        except EmptyParquetData:
-            log.info("incremental load: did not find new data")
-            return
-
-        summary = load_to_clickhouse(
-            db=self.db,
-            table=self.table,
-            dataframe=df,
-            min_date=min_date,
-            max_date=max_date,
-            incremental_overlap=incremental_overlap,
-        )
-        return {self.root_path: summary}
-
-    def create_clickhouse_view(self) -> None:
-        # Database used in ClickHouse to store views that point to GCS data.
-        external_db_name = f"dailydata_{self.db}"
-
-        return create_gcs_view(
-            db_name=external_db_name,
-            table_name=self.table,
-            partition_selection="CAST(dt as Date) AS dt, ",
-            gcs_glob_path=f"{self.root_path}/dt=*/out.parquet",
-        )
 
     def create_bigquery_external_table(self) -> None:
         # Database used in BigQuery to store external tables that point to GCS data.
