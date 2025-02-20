@@ -57,7 +57,7 @@ class ClickHouseTable:
         if data_path is not None:
             proposed_ddl = generate_create_table_ddl(
                 gcs_parquet_path="gs://oplabs-tools-data-sink/" + data_path,
-                dummy_name=self.table_name,
+                table_name=self.table_name,
             )
             ddl_msg = f"Proposed DDL (adjust as needed):\n{proposed_ddl}"
 
