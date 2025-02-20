@@ -37,8 +37,9 @@ def fetch_and_write(session, process_dt, batch: list[str], metadata: YieldPoolsM
     pools: list[YieldPool] = []
     for pool in batch:
         pools.append(YieldPool.fetch(session, pool, pools_metadata=metadata))
+    log.info(f"fetched data for a batch of {len(batch)} yield pools")
 
-    pools_df = pl.concat(_.df for _ in pools)
+    pools_df = pl.concat(_.df for _ in pools).with_columns(process_dt=pl.lit(process_dt))
     buffer_table = DefiLlama.YIELD_POOLS_HISTORICAL.clickhouse_buffer_table()
 
     result = insert_oplabs(

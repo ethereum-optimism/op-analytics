@@ -44,7 +44,12 @@ class YieldPool:
 
         api_key = env_get("DEFILLAMA_API_KEY")
         url = YIELD_POOL_CHART_ENDPOINT.format(api_key=api_key, pool=pool_id)
-        response = get_data(session, url)
+        response = get_data(
+            session,
+            url,
+            retry_attempts=3,
+            emit_log=False,  # dont emit logs because the key is in the URL.
+        )
 
         records = []
         metadata = pools_metadata.get_single_pool_metadata(pool_id)

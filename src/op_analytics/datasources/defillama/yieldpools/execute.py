@@ -13,12 +13,12 @@ from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
 
 from .metadata import YieldPoolsMetadata
-from .utils import get_buffered, fetch_and_write
+from .utils import get_buffered, fetch_and_write, copy_to_gcs
 
 log = structlog.get_logger()
 
 
-YIELD_TABLE_LAST_N_DAYS = 120
+YIELD_TABLE_LAST_N_DAYS = 360
 
 
 @dataclass
@@ -65,7 +65,8 @@ def execute_pull(process_dt: date | None = None):
     )
 
     # Copy data from buffer to GCS.
-    # return copy_to_gcs(process_dt=process_dt, last_n_days=TVL_TABLE_LAST_N_DAYS)
+    return
+    return copy_to_gcs(process_dt=process_dt, last_n_days=YIELD_TABLE_LAST_N_DAYS)
 
 
 def write_to_buffer(
@@ -83,6 +84,9 @@ def write_to_buffer(
     # Find out which slugs are still pending.
     buffered_pools = get_buffered(process_dt=process_dt)
     pending_pools = list(set(pools) - set(buffered_pools))
+
+    # Ucomment to limit the number of pools we fetch from. Useful for debugging.
+    # pending_pools = pending_pools[:10]
 
     # Fetch data and write to buffer for pending yield pools.
     log.info(f"fetching and buffering data for {len(pending_pools)}/{len(pools)} pending pools")

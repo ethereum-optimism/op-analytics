@@ -30,7 +30,11 @@ class YieldPoolsMetadata:
     @classmethod
     def fetch(cls, session, process_dt: date) -> "YieldPoolsMetadata":
         api_key = env_get("DEFILLAMA_API_KEY")
-        response = get_data(session, YIELD_POOLS_ENDPOINT.format(api_key=api_key))
+        response = get_data(
+            session,
+            YIELD_POOLS_ENDPOINT.format(api_key=api_key),
+            emit_log=False,  # dont emit logs because the key is in the URL.
+        )
         log.info("fetched yield pools metadata from defillama")
 
         records = []
