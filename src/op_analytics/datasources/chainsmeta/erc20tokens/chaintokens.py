@@ -38,6 +38,14 @@ COLUMN_TYPE_NAMES = [
 ]
 
 
+# Chain-dependent delay between RPC requests
+SPEED_BUMP = {
+    "op": 1.0,
+}
+
+DEFAULT_SPEED_BUMP = 0.4
+
+
 @dataclass
 class ChainTokens:
     """A batch of RPC requests for a single blockchain."""
@@ -67,7 +75,9 @@ class ChainTokens:
                     token_metadata = token.call_rpc(
                         session=session,
                         rpc_endpoint=self.rpc_endpoint,
-                        speed_bump=0.6,  # avoid hitting the RPC rate limit
+                        speed_bump=SPEED_BUMP.get(
+                            token.chain, DEFAULT_SPEED_BUMP
+                        ),  # avoid hitting the RPC rate limit
                     )
 
                     if token_metadata is None:
