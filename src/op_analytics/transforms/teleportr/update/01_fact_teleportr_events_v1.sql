@@ -21,17 +21,17 @@ WITH across_bridge_metadata AS (
     , l.chain_id AS src_chain_id
     , l.address AS contract_address
     , l.transaction_hash AS transaction_hash
-    , REINTERPRETASUINT64(REVERSE(UNHEX(SUBSTRING(SPLITBYCHAR(',', l.topics)[3], 3)))) AS deposit_id
-    , '0x' || SUBSTRING(SUBSTRING(l.data, 3), 25, 40) AS input_token_address
-    , '0x' || SUBSTRING(SUBSTRING(l.data, 3), 89, 40) AS output_token_address
-    , CAST(REINTERPRETASUINT64(REVERSE(UNHEX(SUBSTRING(SPLITBYCHAR(',', l.topics)[2], 3)))) AS String) AS dst_chain_id
-    , REINTERPRETASUINT256(REVERSE(UNHEX(SUBSTRING(SUBSTRING(l.data, 3), 129, 64)))) AS input_amount
-    , REINTERPRETASUINT256(REVERSE(UNHEX(SUBSTRING(SUBSTRING(l.data, 3), 193, 64)))) AS output_amount
-    , REINTERPRETASUINT256(REVERSE(UNHEX(SUBSTRING(SUBSTRING(l.data, 3), 257, 64)))) AS quote_timestamp
-    , REINTERPRETASUINT256(REVERSE(UNHEX(SUBSTRING(SUBSTRING(l.data, 3), 321, 64)))) AS fill_deadline
-    , REINTERPRETASUINT256(REVERSE(UNHEX(SUBSTRING(SUBSTRING(l.data, 3), 385, 64)))) AS exclusivity_deadline
-    , '0x' || RIGHT(SUBSTRING(SUBSTRING(l.data, 3), 449, 64), 40) AS recipient_address
-    , '0x' || RIGHT(SUBSTRING(SUBSTRING(l.data, 3), 513, 64), 40) AS relayer_address
+    , reinterpretAsUInt64(reverse(unhex(substring(splitByChar(',', l.topics)[3], 3)))) AS deposit_id
+    , '0x' || substring(substring(l.data, 3), 25, 40) AS input_token_address
+    , '0x' || substring(substring(l.data, 3), 89, 40) AS output_token_address
+    , cast(reinterpretAsUInt64(reverse(unhex(substring(splitByChar(',', l.topics)[2], 3)))) AS String) AS dst_chain_id
+    , reinterpretAsUInt256(reverse(unhex(substring(substring(l.data, 3), 129, 64)))) AS input_amount
+    , reinterpretAsUInt256(reverse(unhex(substring(substring(l.data, 3), 193, 64)))) AS output_amount
+    , reinterpretAsUInt256(reverse(unhex(substring(substring(l.data, 3), 257, 64)))) AS quote_timestamp
+    , reinterpretAsUInt256(reverse(unhex(substring(substring(l.data, 3), 321, 64)))) AS fill_deadline
+    , reinterpretAsUInt256(reverse(unhex(substring(substring(l.data, 3), 385, 64)))) AS exclusivity_deadline
+    , '0x' || right(substring(substring(l.data, 3), 449, 64), 40) AS recipient_address
+    , '0x' || right(substring(substring(l.data, 3), 513, 64), 40) AS relayer_address
     , t.from_address AS depositor_address
     , CASE
       WHEN SUBSTRING(t.input, -10) = '1dc0de0001' THEN 'SuperBridge'
@@ -65,7 +65,7 @@ WITH across_bridge_metadata AS (
       AND l.address = c.spokepool_address
   WHERE
     true
-    AND SPLITBYCHAR(',', l.topics)[1] = '0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f'
+    AND splitByChar(',', l.topics)[1] = '0xa123dc29aebf7d0c3322c8eeb5b999e859f39937950ed31056532713d0de396f'
     AND t.gas_price > 0
     AND l.data IS NOT null AND l.data != '' -- info is there
 -- AND l.block_timestamp > '2024-05-01'
@@ -89,11 +89,11 @@ SELECT
   , x.input_token_address
   , mi.symbol AS input_token_symbol
   , x.input_amount AS input_amount_raw
-  , x.input_amount / 10 ^ mi.decimals AS input_amount
+  , x.input_amount /  exp10(mi.decimals) AS input_amount
   , x.output_token_address
   , mo.symbol AS output_token_symbol
   , x.output_amount AS output_amount_raw
-  , x.output_amount / 10 ^ mo.decimals AS output_amount
+  , x.output_amount /  exp10(mo.decimals) AS output_amount
   , x.quote_timestamp
   , x.fill_deadline
   , x.exclusivity_deadline

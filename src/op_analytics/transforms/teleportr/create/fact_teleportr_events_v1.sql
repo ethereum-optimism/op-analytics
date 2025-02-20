@@ -35,4 +35,4 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     INDEX deposit_id_idx deposit_id TYPE minmax GRANULARITY 1
 )
 ENGINE = ReplacingMergeTree()
-ORDER BY (chain_id, dt, deposit_id, transaction_hash)
+ORDER BY (src_chain_id, dst_chain_id, dt, deposit_id, transaction_hash)
