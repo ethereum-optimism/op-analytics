@@ -1,6 +1,21 @@
-WITH raw_events AS (
+WITH across_bridge_metadata AS (
+    SELECT *
+    FROM dailydata_gcs.read_default(
+      rootpath = 'chainsmeta/raw_accross_bridge_gsheet_v1'
+    )
+  SETTINGS use_hive_partitioning = 1
+)
+, chain_metadata AS (
+  SELECT *
+  FROM dailydata_gcs.read_default(
+    rootpath = 'chainsmeta/raw_gsheet_v1'
+  )
+  SETTINGS use_hive_partitioning = 1
+)
+, raw_events AS (
   SELECT
     l.block_timestamp AS block_timestamp
+    , l.dt AS dt
     , l.block_number AS block_number
     , l.chain AS src_chain
     , l.chain_id AS src_chain_id
@@ -44,9 +59,7 @@ WITH raw_events AS (
       AND l.block_number = t.block_number
       AND l.chain = t.chain
   JOIN
-    dailydata_gcs.read_default(
-      rootpath = 'chainsmeta/raw_accross_bridge_gsheet_v1'
-    ) AS c
+    across_bridge_metadata AS c
     ON
       l.chain = c.chain_name
       AND l.address = c.spokepool_address
@@ -58,8 +71,10 @@ WITH raw_events AS (
 -- AND l.block_timestamp > '2024-05-01'
 )
 
+
 SELECT
   x.block_timestamp
+  , x.dt
   , x.block_number
   , x.src_chain
   , x.src_chain_id
@@ -92,9 +107,7 @@ SELECT
   , x.log_index
 FROM raw_events AS x
 LEFT JOIN
-  dailydata_gcs.read_default(
-    rootpath = 'chainsmeta/raw_accross_bridge_gsheet_v1'
-  ) AS c
+  chain_metadata AS c
   ON x.dst_chain_id = c.chain_id
 LEFT JOIN chainsmeta.dim_erc20_token_metadata_v1 AS mi
   ON
