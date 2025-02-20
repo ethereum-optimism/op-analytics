@@ -51,9 +51,17 @@ class YieldPool:
             emit_log=False,  # dont emit logs because the key is in the URL.
         )
 
+        return cls.of(
+            data=response["data"],
+            pool_id=pool_id,
+            pools_metadata=pools_metadata,
+        )
+
+    @classmethod
+    def of(cls, data, pool_id: str, pools_metadata: YieldPoolsMetadata) -> "YieldPool":
         records = []
         metadata = pools_metadata.get_single_pool_metadata(pool_id)
-        for entry in response["data"]:
+        for entry in data:
             key = {
                 "dt": dt_fromisostr(entry["timestamp"]),
                 "pool": pool_id,

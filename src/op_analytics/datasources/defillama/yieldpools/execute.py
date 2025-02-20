@@ -44,7 +44,6 @@ def execute_pull(process_dt: date | None = None):
     )
 
     # Copy data from buffer to GCS.
-    return
     return copy_to_gcs(process_dt=process_dt, last_n_days=YIELD_TABLE_LAST_N_DAYS)
 
 

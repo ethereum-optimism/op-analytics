@@ -55,8 +55,6 @@ def copy_to_gcs(process_dt: date, last_n_days: int):
 
     min_dt = process_dt - timedelta(days=last_n_days)
 
-    results = []
-
     writer1 = FromClickHouseWriter(
         dailydata_table=DefiLlama.YIELD_POOLS_HISTORICAL,
         process_dt=process_dt,
@@ -64,6 +62,4 @@ def copy_to_gcs(process_dt: date, last_n_days: int):
         max_dt=process_dt,
         order_by="pool, protocol_slug, chain",
     )
-    results.append(writer1.write().to_dict())
-
-    return results
+    return writer1.write().to_dict()

@@ -30,6 +30,7 @@ class YieldPoolsMetadata:
     @classmethod
     def fetch(cls, session, process_dt: date) -> "YieldPoolsMetadata":
         api_key = env_get("DEFILLAMA_API_KEY")
+
         response = get_data(
             session,
             YIELD_POOLS_ENDPOINT.format(api_key=api_key),
@@ -37,10 +38,14 @@ class YieldPoolsMetadata:
         )
         log.info("fetched yield pools metadata from defillama")
 
+        return cls.of(data=response["data"], process_dt=process_dt)
+
+    @classmethod
+    def of(cls, data: list[dict], process_dt: date) -> "YieldPoolsMetadata":
         records = []
         indexed = {}
 
-        for pool in response["data"]:
+        for pool in data:
             pool_id = pool["pool"]
 
             row = {
