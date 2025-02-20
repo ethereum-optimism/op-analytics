@@ -127,7 +127,7 @@ class DailyDataset(str, Enum):
         for table in cls.all_tables():
             log.info(f"Inferring schema for {table.name}")
             try:
-                schema = table.get_clickhouse_schema(datestr)
+                schema = table.get_parquet_schema(datestr)
                 schemas[table] = schema
             except IndexError:
                 log.warning(
