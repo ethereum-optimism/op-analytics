@@ -9,7 +9,7 @@ from op_analytics.coreutils.time import now_date
 
 from ..dataaccess import DefiLlama
 from .metadata import ProtocolMetadata
-from .utils import copy_to_gcs, fetch_and_write_slugs, get_buffered_slugs
+from .utils import copy_to_gcs, fetch_and_write, get_buffered
 
 log = structlog.get_logger()
 
@@ -48,14 +48,14 @@ def write_to_buffer(session, slugs: list[str], process_dt: date):
     """
 
     # Find out which slugs are still pending.
-    buffered_slugs = get_buffered_slugs(process_dt=process_dt)
-    pending_slugs = list(set(slugs) - set(buffered_slugs))
+    buffered_ids = get_buffered(process_dt=process_dt)
+    pending_ids = list(set(slugs) - set(buffered_ids))
 
     # Fetch data and write to buffer for pending slugs.
-    log.info(f"fetching and buffering data for {len(pending_slugs)}/{len(slugs)} pending slugs")
+    log.info(f"fetching and buffering data for {len(pending_ids)}/{len(slugs)} pending slugs")
     run_concurrently(
-        function=lambda x: fetch_and_write_slugs(session, process_dt, x),
-        targets=list(itertools.batched(pending_slugs, n=20)),
+        function=lambda x: fetch_and_write(session, process_dt, x),
+        targets=list(itertools.batched(pending_ids, n=20)),
         max_workers=8,
     )
     log.info("done fetching and buffering data")

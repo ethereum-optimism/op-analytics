@@ -1,4 +1,4 @@
-from op_analytics.datasources.defillama.protocolstvl_v2.protocol import ProtocolTVL
+from op_analytics.datasources.defillama.protocolstvl.protocol import ProtocolTVL
 
 
 PEPPERCOIN_RESPONSE = {
