@@ -89,7 +89,7 @@ defs = Definitions(
             default_status=DefaultScheduleStatus.RUNNING,
             k8s_pod_per_step=True,
             custom_k8s_config=OPK8sConfig(
-                mem_request="4Gi",
+                mem_request="3Gi",
                 mem_limit="6Gi",
             ),
         ),

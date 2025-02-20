@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 import polars as pl
 
@@ -31,15 +32,18 @@ TOKEN_TVL_SCHEMA = {
 class ProtocolTVL:
     """Records obtained for a single protocol."""
 
-    tvl_df: pl.DataFrame | None
-    token_tvl_df: pl.DataFrame | None
+    tvl_df: pl.DataFrame
+    token_tvl_df: pl.DataFrame
 
     @classmethod
     def fetch(cls, session, slug: str) -> "ProtocolTVL":
         # Fetch data
         url = PROTOCOL_DETAILS_ENDPOINT.format(slug=slug)
         data = get_data(session, url, retry_attempts=5)
+        return cls.of(slug=slug, data=data)
 
+    @classmethod
+    def of(cls, slug: str, data: dict[str, Any]) -> "ProtocolTVL":
         # Each app entry can have tvl data in multiple chains. Loop through each chain
         chain_tvls = data.get("chainTvls", {})
 

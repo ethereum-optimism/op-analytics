@@ -14,7 +14,7 @@ from .protocol import ProtocolTVL
 log = structlog.get_logger()
 
 
-def get_buffered_slugs(process_dt: date):
+def get_buffered(process_dt: date):
     """Slugs that have been processed before.
 
     Find which slugs have already been written to the ingestion buffer in ClickHouse."""
@@ -30,7 +30,7 @@ def get_buffered_slugs(process_dt: date):
     return slugs1.intersection(slugs2)
 
 
-def fetch_and_write_slugs(session, process_dt, batch: list[str]):
+def fetch_and_write(session, process_dt, batch: list[str]):
     """Fetch data and write to the ingestion buffer in ClickHouse."""
 
     protocols: list[ProtocolTVL] = []
