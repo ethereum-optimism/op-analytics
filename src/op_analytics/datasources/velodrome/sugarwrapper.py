@@ -40,8 +40,6 @@ class VelodromePools:
     missing_pools: list[MissingTokenInfo]
 
     def show(self):
-        """Print a summary."""
-
         tokens_str = "\n".join(str(_) for _ in self.tokens[:5])
         prices_str = "\n".join(str(_) for _ in self.prices[:5])
         pools_str = "\n".join(str(_) for _ in self.pools[:5])
