@@ -10,7 +10,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
 
 from .dailydataread import make_date_filter, query_parquet_paths
-from .dailydatawrite import write_daily_data, PARQUET_FILENAME
+from .dailydatawrite import PARQUET_FILENAME, write_daily_data
 from .dataaccess import DateFilter
 from .location import DataLocation
 
