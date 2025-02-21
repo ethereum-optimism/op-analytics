@@ -37,24 +37,20 @@ class VelodromePools:
     tokens: list[Token]
     prices: list[Price]
     pools: list[LiquidityPool]
-    missing_pools: list[MissingTokenInfo]
 
     def show(self):
         tokens_str = "\n".join(str(_) for _ in self.tokens[:5])
         prices_str = "\n".join(str(_) for _ in self.prices[:5])
         pools_str = "\n".join(str(_) for _ in self.pools[:5])
-        missing_str = "\n".join(str(_) for _ in self.missing_pools[:5])
 
         summary = "\n".join(
             [
-                "--- TOKENS ---",
+                f"--- TOKENS ({len(self.tokens)}) ---",
                 tokens_str,
-                "\n--- PRICES --- ",
+                f"\n--- PRICES ({len(self.prices)})--- ",
                 prices_str,
-                "\n--- POOLS --- ",
+                f"\n--- POOLS({len(self.pools)}) --- ",
                 pools_str,
-                "\n--- MISSING TOKEN INFO --- ",
-                missing_str,
             ]
         )
         print(summary)
@@ -80,7 +76,7 @@ async def _sugar_pools(chain: str, sugar_chain: Chain) -> VelodromePools:
     Use the fetch_pools sync wrapper instead.
     """
 
-    tokens = await sugar_chain.get_all_tokens()
+    tokens = await sugar_chain.get_all_tokens(listed_only=False)
     log.info(f"chain={chain} fetched {len(tokens)} tokens")
 
     # (pedrod - 2025/02/21) This was copied over from the sugar SDK.
@@ -137,10 +133,12 @@ async def _sugar_pools(chain: str, sugar_chain: Chain) -> VelodromePools:
         else:
             lps.append(lp)
 
+    if len(missing) > 0:
+        raise Exception(f"possible error, token info not found for pools {missing}")
+
     # Pack all the responses into a VelodromePools object.
     return VelodromePools(
         tokens=tokens,
         prices=prices,
         pools=lps,
-        missing_pools=missing,
     )
