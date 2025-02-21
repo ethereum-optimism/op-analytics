@@ -22,3 +22,13 @@ def erc20transfers(context: AssetExecutionContext):
 
     result = execute_dt_transforms(group_name="erc20transfers", force_complete=True)
     context.log.info(result)
+
+
+@asset
+def teleportr(context: AssetExecutionContext):
+    """Run teleportr events transformations."""
+
+    from op_analytics.transforms.main import execute_dt_transforms
+
+    result = execute_dt_transforms(group_name="teleportr", force_complete=True)
+    context.log.info(result)
