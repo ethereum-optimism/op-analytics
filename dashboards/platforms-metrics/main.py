@@ -11,7 +11,7 @@ import numpy as np
 # Constants
 DATE_COLUMN_START = "period_start"
 DATE_COLUMN_END = "period_end"
-DATA_PATH = Path(__file__).parent / "test_data/github_pr_metrics.csv"
+DATA_PATH = Path(__file__).parent / "data/github_pr_metrics.csv"
 LOAD_CSV = False
 # Dictionary to map raw column names to friendlier labels
 FRIENDLY_LABELS = {
@@ -211,7 +211,7 @@ def plot_scatter_two_metrics(
 
     x_label = FRIENDLY_LABELS.get(metric_x, metric_x)
     y_label = FRIENDLY_LABELS.get(metric_y, metric_y)
-    title = f"Scatter: {x_label} vs. {y_label}"
+    title = f"{x_label} vs. {y_label}"
 
     # Decide how to color
     color_col = None
@@ -690,7 +690,7 @@ def main() -> None:
     # --- Tab 3: Dynamic Analysis
     with tab3:
         with st.container():
-            st.subheader("Scatter Plot: Compare Any Two Metrics")
+            st.subheader("Compare Any Two Metrics")
             st.markdown(
                 "Select one or multiple repositories, pick two numeric metrics, and optionally add a regression line. "
                 "The scatter plot will use the lookback window selected in the sidebar."
@@ -698,7 +698,9 @@ def main() -> None:
 
             multi_repos = list(data["repo"].unique())
             multi_repos.insert(0, "all")
-            selected_repos = st.multiselect("Select Repositories", multi_repos, default=["all"])
+            selected_repos = st.multiselect(
+                "Select Repositories", multi_repos, default=["optimism"]
+            )
             metric_x = st.selectbox("Select X-axis Metric", numeric_cols, index=0)
             metric_y = st.selectbox(
                 "Select Y-axis Metric", numeric_cols, index=min(1, len(numeric_cols) - 1)
