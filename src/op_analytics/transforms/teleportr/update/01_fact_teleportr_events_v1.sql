@@ -99,7 +99,7 @@ WITH across_bridge_metadata AS (
     across_bridge_metadata AS c
     ON
       l.chain = c.chain_name
-      AND l.address = c.spokepool_address
+      AND l.address = lower(c.spokepool_address)
 -- AND l.block_timestamp > '2024-05-01'
 )
 
