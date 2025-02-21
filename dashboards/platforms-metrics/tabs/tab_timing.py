@@ -34,7 +34,6 @@ def render_tab2(filtered_data, numeric_cols, latest_data, previous_data):
             delta_val = current_val - prev_val
             label = FRIENDLY_LABELS.get(colname, colname)
             col_slot.metric(label, f"{current_val:.2f}", f"{delta_val:.2f} vs. prev")
-
         st.write("---")
         st.subheader("'Time-to-X' Metrics Over Time")
         with st.expander("Metric legend"):
@@ -42,10 +41,11 @@ def render_tab2(filtered_data, numeric_cols, latest_data, previous_data):
                 "- **Median Time to Merge (hrs):** How long it typically takes (median) from PR creation to merge.\n"
                 "- **Median Time to First Non-Bot Comment (hrs):** How quickly humans start discussing the PR.\n"
                 "- **Median Time to First Review (hrs):** Time from PR creation until first review.\n"
-                "- **Approval Ratio:** Percentage of PRs that were approved."
             )
+
+        time_only_metrics = [m for m in time_metrics_filtered if m != "approval_ratio"]
         timing_chart_df = (
-            filtered_data[[DATE_COLUMN_END] + time_metrics_filtered]
+            filtered_data[[DATE_COLUMN_END] + time_only_metrics]
             .groupby(DATE_COLUMN_END, as_index=False)
             .mean()
             .fillna(0)
@@ -54,10 +54,30 @@ def render_tab2(filtered_data, numeric_cols, latest_data, previous_data):
             plot_line_chart(
                 df=timing_chart_df,
                 x_col=DATE_COLUMN_END,
-                y_cols=time_metrics_filtered,
-                title="Timing Metrics Over Time (Median Time to Merge, Median Time to First Non-Bot Comment, Median Time to First Review, Approval Ratio)",
+                y_cols=time_only_metrics,
+                title="Timing Metrics Over Time (Median Time to Merge, Median Time to First Non-Bot Comment, Median Time to First Review)",
                 markers=False,
                 ylabel="Time (hrs)",
+            )
+
+        st.write("---")
+        st.subheader("Approval Ratio Over Time")
+        with st.expander("Metric legend"):
+            st.markdown("- **Approval Ratio:** Percentage of PRs that were approved.\n")
+        approval_df = (
+            filtered_data[[DATE_COLUMN_END, "approval_ratio"]]
+            .groupby(DATE_COLUMN_END, as_index=False)
+            .mean()
+            .fillna(0)
+        )
+        if not approval_df.empty:
+            plot_line_chart(
+                df=approval_df,
+                x_col=DATE_COLUMN_END,
+                y_cols=["approval_ratio"],
+                title="Approval Ratio Over Time",
+                markers=False,
+                ylabel="Ratio",
             )
 
         st.subheader("Distribution of Timing Metrics (Log Scale)")
