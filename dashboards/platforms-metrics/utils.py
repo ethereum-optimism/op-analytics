@@ -11,7 +11,7 @@ import numpy as np
 # Constants
 DATE_COLUMN_START = "period_start"
 DATE_COLUMN_END = "period_end"
-DATA_PATH = Path(__file__).parent / "test_data/github_pr_metrics.csv"
+DATA_PATH = Path(__file__).parent / "data/github_pr_metrics.csv"
 LOAD_CSV = False
 
 # Mapping for friendlier labels
@@ -82,7 +82,7 @@ def load_github_pr_data() -> pd.DataFrame:
         )
         df = client.query_df(queries.github_pr_metrics)
         df.drop(columns=["dt"], inplace=True)
-        df.to_csv(Path(__file__).parent / "data/github_pr_metrics_v1.csv", index=False)
+        # df.to_csv(Path(__file__).parent / "data/github_pr_metrics_v1.csv", index=False) # Debug
     df[DATE_COLUMN_START] = pd.to_datetime(df[DATE_COLUMN_START])
     df[DATE_COLUMN_END] = pd.to_datetime(df[DATE_COLUMN_END])
     df["period_type"] = df["period_type"].map(lambda x: PERIOD_TYPE_MAP[x])
