@@ -128,6 +128,8 @@ def construct_marker(
     row_count: int,
     process_name: str,
 ) -> pa.Table:
+    """Build a pyarrow table with a marker for a single "dt" partition on "root_path."""
+
     partition = Partition([PartitionColumn(name="dt", value=datestr)])
     partition_meta = PartitionMetadata(row_count=row_count)
 
@@ -147,6 +149,8 @@ def construct_marker(
 
 
 def write_markers(markers_arrow: pa.Table):
+    """Write markers to the markers database."""
+
     client = init_data_access()
     client.write_marker(
         marker_df=markers_arrow,
