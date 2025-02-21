@@ -113,3 +113,4 @@ def defillama_views():
     DefiLlama.YIELD_POOLS_HISTORICAL.create_bigquery_external_table()
 
     DefiLlama.TOKEN_MAPPINGS.create_bigquery_external_table()
+    DefiLlama.NET_TVL_FLOWS.create_bigquery_external_table()
