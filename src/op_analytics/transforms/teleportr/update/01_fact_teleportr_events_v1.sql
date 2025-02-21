@@ -5,7 +5,6 @@ WITH across_bridge_metadata AS (
     FROM dailydata_gcs.read_default(
       rootpath = 'chainsmeta/raw_accross_bridge_gsheet_v1'
     )
-  SETTINGS use_hive_partitioning = 1
 )
 , chain_metadata AS (
   SELECT *
@@ -13,10 +12,19 @@ WITH across_bridge_metadata AS (
     rootpath = 'chainsmeta/raw_gsheet_v1'
   )
   WHERE mainnet_chain_id is not null
-  SETTINGS use_hive_partitioning = 1
 )
 , raw_logs AS (
-  SELECT *
+  SELECT
+    block_timestamp
+    ,dt
+    ,block_number
+    ,chain
+    ,chain_id
+    ,address
+    ,transaction_hash
+    ,indexed_args
+    ,data
+    ,log_index
   FROM blockbatch_gcs.read_date(
     rootpath = 'ingestion/logs_v1'
     , chain = '*'
@@ -29,14 +37,27 @@ WITH across_bridge_metadata AS (
   AND length(indexed_args) >= 3
 )
 , raw_transactions AS (
-  SELECT *
+  SELECT
+    hash
+    ,block_number
+    ,chain
+    ,chain_id
+    ,from_address
+    ,to_address
+    ,gas_price
+    ,receipt_gas_used
+    ,receipt_l1_fee
+    ,input
+    ,SUBSTRING(input, -10) AS integrator_identifier
   FROM blockbatch_gcs.read_date(
     rootpath = 'ingestion/transactions_v1'
     , chain = '*'
     , dt = { dtparam: Date }
   )
-  WHERE gas_price > 0
-  SETTINGS use_hive_partitioning = 1
+  WHERE
+    gas_price > 0
+    AND (SUBSTRING(input, -10) = '1dc0de0001'
+      OR SUBSTRING(input, -10) = '1dc0de0002')
 )
 , raw_events AS (
   SELECT
@@ -60,8 +81,8 @@ WITH across_bridge_metadata AS (
     , '0x' || right(substring(substring(l.data, 3), 513, 64), 40) AS relayer_address
     , t.from_address AS depositor_address
     , CASE
-      WHEN SUBSTRING(t.input, -10) = '1dc0de0001' THEN 'SuperBridge'
-      WHEN SUBSTRING(t.input, -10) = '1dc0de0002' THEN 'Brid.gg'
+      WHEN t.integrator_identifier = '1dc0de0001' THEN 'SuperBridge'
+      WHEN t.integrator_identifier = '1dc0de0002' THEN 'Brid.gg'
       ELSE null
     END AS integrator
     , l.log_index AS log_index
@@ -128,4 +149,4 @@ LEFT JOIN chainsmeta.dim_erc20_token_metadata_v1 AS mo
   ON
     x.output_token_address = mo.contract_address
     AND cast(x.dst_chain_id as String) = cast(mo.chain_id as String)
-WHERE integrator is not null
+SETTINGS use_hive_partitioning = 1
