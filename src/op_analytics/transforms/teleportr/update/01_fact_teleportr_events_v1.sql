@@ -99,7 +99,7 @@ WITH across_bridge_metadata AS (
     across_bridge_metadata AS c
     ON
       l.chain = c.chain_name
-      AND l.address = c.spokepool_address
+      AND l.address = lower(c.spokepool_address)
 -- AND l.block_timestamp > '2024-05-01'
 )
 
@@ -121,11 +121,17 @@ SELECT
   , x.input_token_address
   , mi.symbol AS input_token_symbol
   , x.input_amount AS input_amount_raw
-  , x.input_amount /  exp10(mi.decimals) AS input_amount
+  , x.input_amount / exp10(mi.decimals) AS input_amount
   , x.output_token_address
-  , mo.symbol AS output_token_symbol
+  , case
+      when (x.output_token_address = '0x0000000000000000000000000000000000000000' or mo.chain_id is null or x.dst_chain_id = 1) then mi.symbol
+      else mo.symbol
+    end as output_token_symbol
   , x.output_amount AS output_amount_raw
-  , x.output_amount /  exp10(mo.decimals) AS output_amount
+  , case
+      when (x.output_token_address = '0x0000000000000000000000000000000000000000' or mo.chain_id is null or x.dst_chain_id = 1) then x.output_amount / exp10(mi.decimals)
+      else coalesce(x.output_amount / exp10(mo.decimals), x.output_amount / exp10(mi.decimals))
+    end as output_amount
   , x.quote_timestamp
   , x.fill_deadline
   , x.exclusivity_deadline
