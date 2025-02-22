@@ -22,7 +22,7 @@ def upload_across_bridge_addresses(across_bridge_df: pl.DataFrame):
         pl.col("chain_name"),
         pl.col("display_name"),
         pl.col("mainnet_chain_id").cast(pl.String),
-        pl.col("spokepool_address").str.lower(),
+        pl.col("spokepool_address").str.to_lowercase(),
     )
 
     # Truncate is necessary so we avoid duplicates when inserting values.
