@@ -9,22 +9,20 @@ TABLE = "across_bridge_metadata"
 GSHEET_NAME = "across_bridge"
 
 
-def upload_across_bridge_addresses(chains_df: pl.DataFrame):
+def upload_across_bridge_addresses(across_bridge_df: pl.DataFrame):
     """Upload across bridge metadata to ClickHouse.
 
     - Load the data from the gsheet source of truth.
     - Verify it is consitent with Chain Metadata.
     - Upload to ClickHouse.
     """
-    # Load and verify that the data is consistent with our Chain Metadata source of truth.
-    df = load_across_bridge_addresses(chains_df)
 
     # In ClickHouse we store the mainnet_chain_id as a string.
-    clickhouse_df = df.select(
+    clickhouse_df = across_bridge_df.select(
         pl.col("chain_name"),
         pl.col("display_name"),
         pl.col("mainnet_chain_id").cast(pl.String),
-        pl.col("spokepool_address"),
+        pl.col("spokepool_address").str.to_lowercase(),
     )
 
     # Truncate is necessary so we avoid duplicates when inserting values.

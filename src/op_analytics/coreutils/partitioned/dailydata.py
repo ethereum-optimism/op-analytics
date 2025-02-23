@@ -5,13 +5,12 @@ from enum import Enum
 import polars as pl
 
 from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
-from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
 
 from .dailydataread import make_date_filter, query_parquet_paths
-from .dailydatawrite import write_daily_data, PARQUET_FILENAME
+from .dailydatawrite import PARQUET_FILENAME, write_daily_data
 from .dataaccess import DateFilter
 from .location import DataLocation
 
@@ -111,6 +110,46 @@ class DailyDataset(str, Enum):
         print(duckdb_context.client.sql("SHOW TABLES"))
         return view_name
 
+    @classmethod
+    def infer_all_schemas(cls, datestr: str):
+        """Infer parquet schemas for all datasets and return with metadata.
+
+        This function can be used for ad-hoc analytics & schema inference,
+        user facing data discoverability tools and data validation and testing.
+
+        Args:
+            datestr: Date string to use for schema inference
+
+        Returns:
+            dict[DailyDataset, dict]: Mapping of dataset enum members to their inferred schemas
+        """
+        schemas = {}
+        for table in cls.all_tables():
+            log.info(f"Inferring schema for {table.name}")
+            try:
+                # Find paths for this root path.
+                paths = query_parquet_paths(
+                    table.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
+                )
+
+                # Read the first path using polars to get the schema.
+                sample_parquet_path = paths[0]
+                schema = [
+                    {"name": col, "type": str(dtype).upper()}
+                    for col, dtype in pl.scan_parquet(sample_parquet_path).collect_schema().items()
+                ]
+
+                # Map the table to it's schema.
+                schemas[table] = schema
+
+            except IndexError:
+                log.warning(
+                    f"No data found for {table.name} on {datestr}, skipping schema inference"
+                )
+                continue
+
+        return schemas
+
     def read_polars(
         self,
         min_date: str | date | None = None,
@@ -128,14 +167,6 @@ class DailyDataset(str, Enum):
         )
         rel = duckdb_context.client.sql(f"SELECT * FROM {relation_name}")
         return rel.pl()
-
-    def infer_clickhouse_schema(self, datestr: str):
-        """Use a single parquet file in GCS to infer the Clickhouse schema for the table."""
-        paths = query_parquet_paths(
-            self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
-        )
-
-        infer_schema_from_parquet(paths[0], dummy_name=f"{self.db}.{self.table}")
 
     def create_bigquery_external_table(self) -> None:
         # Database used in BigQuery to store external tables that point to GCS data.

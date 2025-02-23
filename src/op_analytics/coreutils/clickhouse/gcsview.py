@@ -22,17 +22,17 @@ def create_blockbatch_gcs_view():
 
     view_name = f"{db_name}.read_date"
     view_statement = f"""
-    CREATE VIEW IF NOT EXISTS {view_name} AS 
+    CREATE VIEW IF NOT EXISTS {view_name} AS
     SELECT
         chain, CAST(dt as Date) AS dt,  *
     FROM s3(
             concat(
                 'https://storage.googleapis.com/oplabs-tools-data-sink/',
                 {{rootpath:String}},
-                '/chain=', 
-                {{chain:String}}, 
-                '/dt=', 
-                {{dt:String}}, 
+                '/chain=',
+                {{chain:String}},
+                '/dt=',
+                {{dt:String}},
                 '/*.parquet'
             ),
             '{KEY_ID}',
@@ -76,15 +76,15 @@ def create_dailydata_gcs_view():
 
     # READ_DATE: view to read from any "dt" pattern.
     clt.command(f"""
-    CREATE VIEW IF NOT EXISTS {db_name}.read_date AS 
+    CREATE VIEW IF NOT EXISTS {db_name}.read_date AS
     SELECT
         CAST(dt as Date) AS dt,  *
     FROM s3(
             concat(
                 'https://storage.googleapis.com/oplabs-tools-data-sink/',
                 {{rootpath:String}},
-                '/dt=', 
-                {{dt:String}}, 
+                '/dt=',
+                {{dt:String}},
                 '/*.parquet'
             ),
             '{KEY_ID}',
@@ -99,7 +99,7 @@ def create_dailydata_gcs_view():
         "'{' || now()::Date::String || ',' || date_sub(DAY, 1, now())::Date::String || '}'"
     )
     clt.command(f"""
-    CREATE VIEW IF NOT EXISTS {db_name}.read_latest AS 
+    CREATE VIEW IF NOT EXISTS {db_name}.read_latest AS
     WITH latest AS (
         SELECT * FROM
         {db_name}.read_date(
@@ -107,10 +107,22 @@ def create_dailydata_gcs_view():
             dt = {last_two_days}
         )
     )
-    
+
     SELECT *
     FROM latest WHERE dt IN (SELECT max(dt) FROM latest)
     SETTINGS use_hive_partitioning = 1
+    """)
+
+    log.info(f"created clickhouse parameterized view in db={db_name}")
+
+    # READ_DEFAULT: view to read the default dt=2000-01-01 in clickhouse
+    clt.command(f"""
+    CREATE VIEW IF NOT EXISTS {db_name}.read_default AS
+    SELECT * FROM
+    {db_name}.read_date(
+        rootpath = {{rootpath:String}},
+        dt = '2000-01-01'
+    )
     """)
 
     log.info(f"created clickhouse parameterized view in db={db_name}")
