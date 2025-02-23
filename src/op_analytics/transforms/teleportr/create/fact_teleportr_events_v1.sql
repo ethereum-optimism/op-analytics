@@ -36,4 +36,3 @@ CREATE TABLE IF NOT EXISTS _placeholder_
 )
 ENGINE = ReplacingMergeTree()
 ORDER BY (src_chain_id, dst_chain_id, dt, deposit_id, transaction_hash)
-SETTINGS join_use_nulls = 1

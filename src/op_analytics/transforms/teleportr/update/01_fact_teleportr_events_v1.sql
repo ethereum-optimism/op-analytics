@@ -155,4 +155,4 @@ LEFT JOIN chainsmeta.dim_erc20_token_metadata_v1 AS mo
   ON
     x.output_token_address = mo.contract_address
     AND cast(x.dst_chain_id as String) = cast(mo.chain_id as String)
-SETTINGS use_hive_partitioning = 1
+SETTINGS join_use_nulls = 1, use_hive_partitioning = 1
