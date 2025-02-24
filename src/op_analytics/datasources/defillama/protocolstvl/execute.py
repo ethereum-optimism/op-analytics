@@ -56,6 +56,6 @@ def write_to_buffer(session, slugs: list[str], process_dt: date):
     run_concurrently(
         function=lambda x: fetch_and_write(session, process_dt, x),
         targets=list(itertools.batched(pending_ids, n=20)),
-        max_workers=8,
+        max_workers=4,
     )
     log.info("done fetching and buffering data")
