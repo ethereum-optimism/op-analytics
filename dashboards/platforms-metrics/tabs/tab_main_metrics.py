@@ -4,6 +4,7 @@ from utils import (
     FRIENDLY_LABELS,
     plot_line_chart,
     plot_line_dual_axis,
+    LOWER_IS_BETTER_METRICS,
 )
 
 
@@ -40,7 +41,15 @@ def render_tab1(
                 curr_val = latest_data[colname].sum()
                 prev_val = previous_data[colname].sum()
                 delta_val = curr_val - prev_val
-                col_slot.metric(label, int(curr_val), f"{delta_val:.0f} vs. prev")
+
+                delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
+
+                col_slot.metric(
+                    label,
+                    f"{int(curr_val)}",
+                    f"{delta_val:.0f} vs. prev",
+                    delta_color=delta_color_type,
+                )
 
         st.write("")
         c_spots_ratio = st.columns(len(ratio_cols))
@@ -50,7 +59,15 @@ def render_tab1(
                 curr_val = latest_data[colname].mean()
                 prev_val = previous_data[colname].mean()
                 delta_val = curr_val - prev_val
-                col_slot.metric(label, f"{curr_val:.2f}", f"{delta_val:.2f} vs. prev")
+
+                delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
+
+                col_slot.metric(
+                    label,
+                    f"{curr_val:.2f}",
+                    f"{delta_val:.2f} vs. prev",
+                    delta_color=delta_color_type,
+                )
 
         st.markdown("---")
         st.subheader("Status Metrics Over Time")
@@ -126,7 +143,15 @@ def render_tab1(
                 curr_val = latest_data[colname].sum()
                 prev_val = previous_data[colname].sum()
                 delta_val = curr_val - prev_val
-                col_slot.metric(label, int(curr_val), f"{delta_val:.0f} vs. prev")
+
+                delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
+
+                col_slot.metric(
+                    label,
+                    f"{int(curr_val)}",
+                    f"{delta_val:.0f} vs. prev",
+                    delta_color=delta_color_type,
+                )
 
         ratio_spots = st.columns(len(ratio_eng_cols))
         for colname, col_slot in zip(ratio_eng_cols, ratio_spots):
@@ -135,7 +160,15 @@ def render_tab1(
                 curr_val = latest_data[colname].mean()
                 prev_val = previous_data[colname].mean()
                 delta_val = curr_val - prev_val
-                col_slot.metric(label, f"{curr_val:.2f}", f"{delta_val:.2f} vs. prev")
+
+                delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
+
+                col_slot.metric(
+                    label,
+                    f"{curr_val:.2f}",
+                    f"{delta_val:.2f} vs. prev",
+                    delta_color=delta_color_type,
+                )
 
         st.write("---")
         eng_df = (
@@ -186,8 +219,16 @@ def render_tab1(
                 curr_val = latest_data[colname].sum()
                 prev_val = previous_data[colname].sum()
                 delta_val = curr_val - prev_val
+
+                delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
+
                 label = FRIENDLY_LABELS.get(colname, colname)
-                col_slot.metric(label, int(curr_val), f"{delta_val:.0f} vs. prev")
+                col_slot.metric(
+                    label,
+                    int(curr_val),
+                    f"{delta_val:.0f} vs. prev",
+                    delta_color=delta_color_type,
+                )
 
             cr_df = (
                 filtered_data[[DATE_COLUMN_END] + valid_cr_cols]
@@ -217,8 +258,16 @@ def render_tab1(
                 curr_val = latest_data[colname].mean()
                 prev_val = previous_data[colname].mean()
                 delta_val = curr_val - prev_val
+
+                delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
+
                 label = FRIENDLY_LABELS.get(colname, colname)
-                col_slot.metric(label, f"{curr_val:.2f}", f"{delta_val:.2f} vs. prev")
+                col_slot.metric(
+                    label,
+                    f"{curr_val:.2f}",
+                    f"{delta_val:.2f} vs. prev",
+                    delta_color=delta_color_type,
+                )
 
             int_df = (
                 filtered_data[[DATE_COLUMN_END] + valid_intensity_cols]

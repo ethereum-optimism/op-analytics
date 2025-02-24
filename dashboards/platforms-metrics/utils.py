@@ -54,6 +54,13 @@ PERIOD_TYPE_MAP = {
     "rolling_year": "year",
 }
 
+LOWER_IS_BETTER_METRICS = {
+    "median_time_to_merge_hours",
+    "median_time_to_first_non_bot_comment_hours",
+    "median_time_to_first_review_hours",
+    "response_time_ratio",
+}
+
 
 def get_prev_date_offset(latest_date: pd.Timestamp, window_label: str) -> pd.Timestamp:
     """

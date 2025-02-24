@@ -4,6 +4,7 @@ from utils import (
     FRIENDLY_LABELS,
     plot_line_chart,
     plot_box_plot,
+    LOWER_IS_BETTER_METRICS,
 )
 
 
@@ -33,7 +34,15 @@ def render_tab2(filtered_data, numeric_cols, latest_data, previous_data):
             prev_val = previous_data[colname].mean()
             delta_val = current_val - prev_val
             label = FRIENDLY_LABELS.get(colname, colname)
-            col_slot.metric(label, f"{current_val:.2f}", f"{delta_val:.2f} vs. prev")
+
+            delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
+
+            col_slot.metric(
+                label,
+                f"{current_val:.2f}",
+                f"{delta_val:.2f} vs. prev",
+                delta_color=delta_color_type,
+            )
         st.write("---")
         st.subheader("'Time-to-X' Metrics Over Time")
         with st.expander("Metric legend"):
