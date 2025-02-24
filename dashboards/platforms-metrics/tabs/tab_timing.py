@@ -89,6 +89,30 @@ def render_tab2(filtered_data, numeric_cols, latest_data, previous_data):
                 ylabel="Ratio",
             )
 
+        st.write("---")
+        st.subheader("Unique Reviewers Over Time")
+        with st.expander("Metric legend"):
+            st.markdown(
+                "- **Unique Reviewers:** Number of unique reviewers engaged on PRs over time.\n"
+            )
+
+        if "unique_reviewers" in numeric_cols:
+            unique_reviewers_df = (
+                filtered_data[[DATE_COLUMN_END, "unique_reviewers"]]
+                .groupby(DATE_COLUMN_END, as_index=False)
+                .sum()  # Or mean(), depending on how you want to aggregate
+                .fillna(0)
+            )
+            if not unique_reviewers_df.empty:
+                plot_line_chart(
+                    df=unique_reviewers_df,
+                    x_col=DATE_COLUMN_END,
+                    y_cols=["unique_reviewers"],
+                    title="Unique Reviewers Over Time",
+                    markers=False,
+                    ylabel="Count",
+                )
+
         st.subheader("Distribution of Timing Metrics (Log Scale)")
         box_df = filtered_data[time_metrics_filtered].dropna()
         if not box_df.empty:
