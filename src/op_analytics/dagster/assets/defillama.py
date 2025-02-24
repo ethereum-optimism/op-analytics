@@ -84,6 +84,24 @@ def yield_pools_data(context: AssetExecutionContext):
 
 
 @asset
+def lend_borrow_pools_data(context: OpExecutionContext):
+    from op_analytics.datasources.defillama import lend_borrow_pools
+
+    result = lend_borrow_pools.execute_pull()
+    context.log.info(result)
+
+
+@asset(
+    deps=[
+        stablecoins,
+        protocol_tvl,
+        tvl_breakdown_enrichment,
+        historical_chain_tvl,
+        volumes_fees_revenue,
+        yield_pools_data,
+        lend_borrow_pools_data,
+    ]
+)
 def defillama_views():
     """Bigquery external tables and views.
 
@@ -111,5 +129,6 @@ def defillama_views():
     DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_external_table()
 
     DefiLlama.YIELD_POOLS_HISTORICAL.create_bigquery_external_table()
+    DefiLlama.LEND_BORROW_POOLS_HISTORICAL.create_bigquery_external_table()
 
     DefiLlama.TOKEN_MAPPINGS.create_bigquery_external_table()
