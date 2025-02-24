@@ -42,6 +42,21 @@ EXCLUDE_CATEGORIES = [
 DEFAULT_LOOKBACK_DAYS = 30
 
 
+def execute_pull():
+    # Produce the result.
+    result = DefillamaTVLBreakdown.of_date()
+
+    # Write to storage.
+    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.write(
+        dataframe=result.df_tvl_breakdown,
+        sort_by=["chain", "protocol_slug", "token"],
+    )
+
+    return {
+        "df_tvl_breakdown": dt_summary(result.df_tvl_breakdown),
+    }
+
+
 @dataclass
 class DefillamaTVLBreakdown:
     df_tvl_breakdown: pl.DataFrame
@@ -153,20 +168,6 @@ def data_quality_check(df_tvl_breakdown: pl.DataFrame, min_date: date, max_date:
         {'\n'.join(extra_dts)}
         """
         raise Exception(f"possibly missing data after transformation: {summary}")
-
-
-def execute_pull():
-    result = DefillamaTVLBreakdown.of_date()
-
-    # Write to storage
-    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.write(
-        dataframe=result.df_tvl_breakdown,
-        sort_by=["chain", "protocol_slug", "token"],
-    )
-
-    return {
-        "df_tvl_breakdown": dt_summary(result.df_tvl_breakdown),
-    }
 
 
 def process_data_fields(df: pl.DataFrame) -> pl.DataFrame:

@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `chain_id` Int32,
     `dt` Date,
     `network` String,
-    `contract_address` FixedString(66),
+    `contract_address` FixedString(42),
     `num_transfers` UInt64,
     `num_transactions` UInt64,
     `num_blocks` UInt64,

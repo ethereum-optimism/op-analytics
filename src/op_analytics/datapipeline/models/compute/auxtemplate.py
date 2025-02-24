@@ -35,7 +35,7 @@ class AuxiliaryTemplate:
         template_parameters: dict[str, Any],
         partitions: list[str],
     ):
-        parquet_path = duckdb_context.make_path(self.name + ".parquet")
+        parquet_path = duckdb_context.get_tmpdir_path(self.name + ".parquet")
         partition_str = ", ".join(partitions)
 
         statement = f"""

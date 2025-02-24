@@ -1,23 +1,31 @@
+from dataclasses import dataclass
 from datetime import date
 from enum import Enum
 
 import polars as pl
 
 from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
-from op_analytics.coreutils.clickhouse.gcsview import create_gcs_view
-from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
-from op_analytics.coreutils.duckdb_inmem import EmptyParquetData
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
 
 from .dailydataread import make_date_filter, query_parquet_paths
-from .dailydataloadch import load_to_clickhouse
-from .dailydatawrite import write_daily_data
+from .dailydatawrite import PARQUET_FILENAME, write_daily_data
 from .dataaccess import DateFilter
 from .location import DataLocation
 
 log = structlog.get_logger()
+
+
+# We use the default "dt" value for cases when we run an ingestion process daily
+# but only care about storing the most recently pulled data.
+DEFAULT_DT = "2000-01-01"
+
+
+@dataclass
+class TablePath:
+    db: str
+    table: str
 
 
 class DailyDataset(str, Enum):
@@ -86,7 +94,7 @@ class DailyDataset(str, Enum):
 
         paths: str | list[str]
         if datefilter.is_undefined:
-            paths = location.absolute(f"{self.root_path}/dt=*/out.parquet")
+            paths = location.absolute(f"{self.root_path}/dt=*/{PARQUET_FILENAME}")
 
         else:
             paths = query_parquet_paths(
@@ -101,6 +109,46 @@ class DailyDataset(str, Enum):
         view_name = register_parquet_relation(dataset=self.root_path, parquet_paths=paths)
         print(duckdb_context.client.sql("SHOW TABLES"))
         return view_name
+
+    @classmethod
+    def infer_all_schemas(cls, datestr: str):
+        """Infer parquet schemas for all datasets and return with metadata.
+
+        This function can be used for ad-hoc analytics & schema inference,
+        user facing data discoverability tools and data validation and testing.
+
+        Args:
+            datestr: Date string to use for schema inference
+
+        Returns:
+            dict[DailyDataset, dict]: Mapping of dataset enum members to their inferred schemas
+        """
+        schemas = {}
+        for table in cls.all_tables():
+            log.info(f"Inferring schema for {table.name}")
+            try:
+                # Find paths for this root path.
+                paths = query_parquet_paths(
+                    table.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
+                )
+
+                # Read the first path using polars to get the schema.
+                sample_parquet_path = paths[0]
+                schema = [
+                    {"name": col, "type": str(dtype).upper()}
+                    for col, dtype in pl.scan_parquet(sample_parquet_path).collect_schema().items()
+                ]
+
+                # Map the table to it's schema.
+                schemas[table] = schema
+
+            except IndexError:
+                log.warning(
+                    f"No data found for {table.name} on {datestr}, skipping schema inference"
+                )
+                continue
+
+        return schemas
 
     def read_polars(
         self,
@@ -120,48 +168,6 @@ class DailyDataset(str, Enum):
         rel = duckdb_context.client.sql(f"SELECT * FROM {relation_name}")
         return rel.pl()
 
-    def infer_clickhouse_schema(self, datestr: str):
-        """Use a single parquet file in GCS to infer the Clickhouse schema for the table."""
-        paths = query_parquet_paths(
-            self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
-        )
-
-        infer_schema_from_parquet(paths[0], dummy_name=f"{self.db}.{self.table}")
-
-    def load_gcs_to_ch(
-        self,
-        min_date: str | None = None,
-        max_date: str | None = None,
-        incremental_overlap: int = 0,
-    ):
-        """Load dailydata from GCS to clickhouse."""
-        try:
-            df = self.read_polars(min_date=min_date, max_date=max_date)
-        except EmptyParquetData:
-            log.info("incremental load: did not find new data")
-            return
-
-        summary = load_to_clickhouse(
-            db=self.db,
-            table=self.table,
-            dataframe=df,
-            min_date=min_date,
-            max_date=max_date,
-            incremental_overlap=incremental_overlap,
-        )
-        return {self.root_path: summary}
-
-    def create_clickhouse_view(self) -> None:
-        # Database used in ClickHouse to store views that point to GCS data.
-        external_db_name = f"dailydata_{self.db}"
-
-        return create_gcs_view(
-            db_name=external_db_name,
-            table_name=self.table,
-            partition_selection="CAST(dt as Date) AS dt, ",
-            gcs_glob_path=f"{self.root_path}/dt=*/out.parquet",
-        )
-
     def create_bigquery_external_table(self) -> None:
         # Database used in BigQuery to store external tables that point to GCS data.
         external_db_name = f"dailydata_{self.db}"
@@ -172,3 +178,20 @@ class DailyDataset(str, Enum):
             partition_columns="dt DATE",
             partition_prefix=self.root_path,
         )
+
+    def clickhouse_buffer_table(self) -> TablePath:
+        """Return db and name for the buffer table in ClickHouse.
+
+        We use buffer tables in ClickHouse as a way of doing "streaming inserts",
+        where we insert data row by row or in smaller chunks as a way to save
+        progress on data pulls that ingest data from many small invididual request.
+
+        The primary use case is DefiLLama, where we have to fetch many individual
+        endpoints (each protocol or each stablecoin).
+
+        We standardize the location of buffer tables. However we don't standardize
+        the DDL used to create buffer tables as schemas can be depend on the use case.
+
+        Users are responsible for manually creating the buffer tables on ClickHouse.
+        """
+        return TablePath(db="datapullbuffer", table=f"{self.db}_{self.table}")

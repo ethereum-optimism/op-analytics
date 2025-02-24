@@ -44,3 +44,6 @@ class DefiLlama(DailyDataset):
 
     # TVL breakdown
     PROTOCOL_TOKEN_TVL_BREAKDOWN = "protocol_token_tvl_breakdown_v1"
+
+    # Token Mappings
+    TOKEN_MAPPINGS = "dim_token_mappings_v1"

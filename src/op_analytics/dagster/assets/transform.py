@@ -5,7 +5,7 @@ from dagster import (
 
 
 @asset
-def transforms_interop(context: AssetExecutionContext):
+def interop(context: AssetExecutionContext):
     """Run interop dataset transformations."""
 
     from op_analytics.transforms.main import execute_dt_transforms
@@ -15,10 +15,20 @@ def transforms_interop(context: AssetExecutionContext):
 
 
 @asset
-def transforms_erc20transforms(context: AssetExecutionContext):
+def erc20transfers(context: AssetExecutionContext):
     """Run erc20 transfers dataset transformations."""
 
     from op_analytics.transforms.main import execute_dt_transforms
 
-    result = execute_dt_transforms(group_name="erc20_transfers", force_complete=True)
+    result = execute_dt_transforms(group_name="erc20transfers", force_complete=True)
+    context.log.info(result)
+
+
+@asset
+def teleportr(context: AssetExecutionContext):
+    """Run teleportr events transformations."""
+
+    from op_analytics.transforms.main import execute_dt_transforms
+
+    result = execute_dt_transforms(group_name="teleportr", force_complete=True)
     context.log.info(result)
