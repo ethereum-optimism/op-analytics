@@ -9,7 +9,7 @@ from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import dt_fromepoch, now_dt
 
-from .dataaccess import DefiLlama
+from ..dataaccess import DefiLlama
 
 log = structlog.get_logger()
 
@@ -21,25 +21,7 @@ CHAINS_TVL_ENDPOINT = "https://api.llama.fi/v2/historicalChainTvl/{slug}"
 TVL_TABLE_LAST_N_DAYS = 90
 
 
-@dataclass
-class DefillamaChains:
-    """Metadata and tvl for all chains.
-
-    This is the result we obtain after fetching from the API and extracting the data
-    that we need to ingest.
-    """
-
-    metadata_df: pl.DataFrame
-    tvl_df: pl.DataFrame
-
-
-def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> DefillamaChains:
-    """
-    Pulls and processes historical chain TVL data from DeFiLlama.
-
-    Args:
-        pull_chains: list of chain names (slugs) to process. Defaults to None (process all).
-    """
+def execute_pull():
     session = new_session()
 
     # Call the chains endpoint to find the list of chains tracked by DefiLLama.
@@ -56,7 +38,7 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
     )
 
     # Call the API endpoint for each stablecoin in parallel.
-    urls = construct_urls(dfl_chains_list, pull_chains, CHAINS_TVL_ENDPOINT)
+    urls = construct_urls(dfl_chains_list, CHAINS_TVL_ENDPOINT)
     historical_chain_tvl_data = run_concurrently(
         lambda x: get_data(session, x), urls, max_workers=4
     )
@@ -70,18 +52,26 @@ def pull_historical_chain_tvl(pull_chains: list[str] | None = None) -> Defillama
         sort_by=["chain_name"],
     )
 
-    return DefillamaChains(
+    result = DefillamaChains(
         metadata_df=metadata_df,
         tvl_df=tvl_df,
     )
-
-
-def execute_pull():
-    result = pull_historical_chain_tvl()
     return {
         "metadata_df": dt_summary(result.metadata_df),
         "tvl_df": dt_summary(result.tvl_df),
     }
+
+
+@dataclass
+class DefillamaChains:
+    """Metadata and tvl for all chains.
+
+    This is the result we obtain after fetching from the API and extracting the data
+    that we need to ingest.
+    """
+
+    metadata_df: pl.DataFrame
+    tvl_df: pl.DataFrame
 
 
 def extract_category_data(row: dict, category_type: str) -> int:
@@ -152,21 +142,10 @@ def get_dfl_chains(summary) -> list[str]:
     return [chain.get("name") for chain in summary]
 
 
-def construct_urls(
-    chain_list: list[str], pull_chains: list[str] | None, endpoint: str
-) -> dict[str, str]:
-    """Build the collection of urls that we will fetch from DefiLlama.
+def construct_urls(chain_list: list[str], endpoint: str) -> dict[str, str]:
+    """Build the collection of urls that we will fetch from DefiLlama."""
 
-    Args:
-        pull_chains: list of chains to process. Defaults to None (process all).
-        endpoint: the API end point needed to pull historical chain TVL
-    """
-
-    if pull_chains is None:
-        slugs = chain_list
-    else:
-        slugs = [chain for chain in chain_list if chain in pull_chains]
-
+    slugs = chain_list
     urls = {slug: endpoint.format(slug=slug) for slug in slugs}
 
     if not urls:
