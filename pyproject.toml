@@ -1,6 +1,6 @@
 [project]
 name = "op-analytics"
-version = "20250211.3"
+version = "20250222.1"
 description = "Data analysis tools by OP Labs."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -28,6 +28,7 @@ dependencies = [
     "pyyaml>=6.0.2",
     "stamina>=24.3.0",
     "structlog>=24.4.0",
+    "sugar",
     "typer>=0.12.5",
     "urllib3>=2.2.3",
 ]
@@ -66,6 +67,9 @@ dev-dependencies = [
     "nbformat>=4.2.0",
     "dagster-webserver>=1.9.7",
 ]
+
+[tool.uv.sources]
+sugar = { git = "https://github.com/velodrome-finance/sugar-sdk" }
 
 [tool.ruff]
 # Allow lines to be as long as 100.

@@ -1,7 +1,11 @@
+import duckdb
 import polars as pl
 
-from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT
+from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT, PARQUET_FILENAME
 from op_analytics.coreutils.logger import structlog, bound_contextvars
+from op_analytics.coreutils.duckdb_inmem.client import init_client
+from op_analytics.coreutils.partitioned.dailydatawrite import construct_marker, write_markers
+
 
 from .dataaccess import Agora
 
@@ -27,10 +31,10 @@ DELEGATE_CHANGED_EVENTS_SCHEMA = pl.Schema(
 DELEGATES_SCHEMA = pl.Schema(
     [
         ("delegate", pl.String),
-        ("num_of_delegators", pl.Float64),
-        ("direct_vp", pl.Float64),
-        ("advanced_vp", pl.Float64),
-        ("voting_power", pl.Float64),
+        ("num_of_delegators", pl.Int64),
+        ("direct_vp", pl.String),
+        ("advanced_vp", pl.String),
+        ("voting_power", pl.String),
         ("contract", pl.String),
     ]
 )
@@ -46,9 +50,9 @@ PROPOSALS_SCHEMA = pl.Schema(
         ("created_block", pl.Int64),
         ("start_block", pl.Int64),
         ("end_block", pl.Int64),
-        ("queued_block", pl.Float64),
-        ("cancelled_block", pl.Float64),
-        ("executed_block", pl.Float64),
+        ("queued_block", pl.Int64),
+        ("cancelled_block", pl.Int64),
+        ("executed_block", pl.Int64),
         ("proposal_data", pl.String),
         ("proposal_data_raw", pl.String),
         ("proposal_type", pl.String),
@@ -68,7 +72,7 @@ VOTES_SCHEMA = pl.Schema(
         ("proposal_id", pl.String),
         ("voter", pl.String),
         ("support", pl.Int64),
-        ("weight", pl.Float64),
+        ("weight", pl.String),
         ("reason", pl.String),
         ("block_number", pl.Int64),
         ("params", pl.String),
@@ -91,8 +95,9 @@ AGORA_PUBLIC_BUCKET_DATA = {
 
 
 def execute_pull():
-    result = {}
+    ctx = init_client()
 
+    result = {}
     for path, (table, schema) in AGORA_PUBLIC_BUCKET_DATA.items():
         full_path = f"{PREFIX}/{path}"
 
@@ -100,23 +105,52 @@ def execute_pull():
             # Pull.
             log.info("reading csv")
 
+            # Every time we pull data we are fetching the complete dataset. So
+            # we store it under a fixed date partition in GCS. This way we only
+            # ever keep the latest copy that was fetched.
+            output_path = (
+                f"gs://oplabs-tools-data-sink/{table.root_path}/dt={DEFAULT_DT}/{PARQUET_FILENAME}"
+            )
+
             try:
-                df = pl.read_csv(full_path, schema=schema, n_threads=1, low_memory=True)
-            except pl.exceptions.ComputeError as ex:
+                # Use duckdb to stream-write the CSV over to a parquet file in GCS.
+                ctx.client.read_csv(
+                    full_path,
+                    columns=duckdb_schema(schema),
+                ).write_parquet(output_path)
+            except duckdb.InvalidInputException as ex:
                 # An error here is most likely due to changes in the Agora CSV schema that do
                 # not match our expected schema. We re-raise the exception adding information
                 # about the schema currently in GCS to help us debug.
 
-                gcs_schema = schema = pl.scan_csv(full_path).head().collect_schema()
-                raise Exception(f"actual_schema = {gcs_schema}") from ex
+                rel = ctx.client.read_csv(full_path).limit(100)
+                detected_schema = dict(zip(rel.columns, rel.dtypes))
 
-            # Every time we pull data we are fetching the complete dataset. So
-            # we store it under a fixed date partition in GCS. This way we only
-            # ever keep the latest copy that was fetched.
-            table.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
-            log.info(f"wrote {len(df)} to {table.value}")
+                raise Exception(f"{detected_schema=}") from ex
 
-            # Track in results.
-            result[path] = len(df)
+            # Read back the data to verify row count and write the marker.
+            row_count = len(ctx.client.read_parquet(output_path))
+            log.info(f"verified parquet data in GCS with {row_count} rows")
+            marker = construct_marker(
+                root_path=table.root_path,
+                datestr=DEFAULT_DT,
+                row_count=row_count,
+                process_name="from_duckdb",
+            )
+            write_markers(markers_arrow=marker)
 
     return result
+
+
+def duckdb_type(val):
+    if val == pl.String:
+        return "VARCHAR"
+
+    if val == pl.Int64:
+        return "INT64"
+
+    raise NotImplementedError()
+
+
+def duckdb_schema(polars_schema: pl.Schema) -> dict[str, str]:
+    return {name: duckdb_type(val) for name, val in polars_schema.items()}

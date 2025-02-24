@@ -76,6 +76,6 @@ def write_to_buffer(
             metadata=metadata,
         ),
         targets=list(itertools.batched(pending_ids, n=20)),
-        max_workers=8,
+        max_workers=4,
     )
     log.info("done fetching and buffering data")
