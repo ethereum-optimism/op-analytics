@@ -80,9 +80,9 @@ def yield_pools(context: AssetExecutionContext):
 @asset
 def lend_borrow_pools(context: AssetExecutionContext):
     """Pull lend borrow pools data."""
-    from op_analytics.datasources.defillama import lend_borrow_pools
+    from op_analytics.datasources.defillama.lendborrowpools import execute
 
-    result = lend_borrow_pools.execute_pull()
+    result = execute.execute_pull()
     context.log.info(result)
 
 

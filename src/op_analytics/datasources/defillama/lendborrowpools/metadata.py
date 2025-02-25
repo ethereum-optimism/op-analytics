@@ -45,8 +45,6 @@ class LendBorrowPoolsMetadata:
         )
         log.info("fetched yield pools metadata from defillama")
 
-        breakpoint()
-
         return cls.of(data=response["data"], process_dt=process_dt)
 
     @classmethod
