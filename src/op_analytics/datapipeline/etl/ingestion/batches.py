@@ -138,6 +138,8 @@ MICROBATCH_SIZE_CONFIGURATION = {
     ],
     "soneium": [
         Delimiter(0, 8000),
+        # Decreased on 2025/02/22
+        Delimiter(block_number=3584000, batch_size=4000),
     ],
     "swan": [
         Delimiter(block_number=0, batch_size=20000),
@@ -150,6 +152,8 @@ MICROBATCH_SIZE_CONFIGURATION = {
     ],
     "unichain": [
         Delimiter(0, 8000),
+        # Decreased on 2025/02/22
+        Delimiter(block_number=13440000, batch_size=4000),
     ],
     "worldchain": [
         Delimiter(block_number=0, batch_size=20000),

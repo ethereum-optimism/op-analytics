@@ -138,6 +138,7 @@ def execute_pull():
                 process_name="from_duckdb",
             )
             write_markers(markers_arrow=marker)
+            result[table.table] = row_count
 
     return result
 

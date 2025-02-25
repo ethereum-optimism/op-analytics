@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from op_analytics.datasources.defillama.stablecoins import safe_decimal
+from op_analytics.datasources.defillama.stablecoins.stablecoin import safe_decimal
 
 
 def test():

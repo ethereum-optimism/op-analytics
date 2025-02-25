@@ -99,7 +99,7 @@ WITH across_bridge_metadata AS (
     across_bridge_metadata AS c
     ON
       l.chain = c.chain_name
-      AND l.address = c.spokepool_address
+      AND l.address = lower(c.spokepool_address)
 -- AND l.block_timestamp > '2024-05-01'
 )
 
@@ -121,11 +121,17 @@ SELECT
   , x.input_token_address
   , mi.symbol AS input_token_symbol
   , x.input_amount AS input_amount_raw
-  , x.input_amount /  exp10(mi.decimals) AS input_amount
+  , x.input_amount / exp10(mi.decimals) AS input_amount
   , x.output_token_address
-  , mo.symbol AS output_token_symbol
+  , case
+      when (x.output_token_address = '0x0000000000000000000000000000000000000000' or mo.chain_id is null or x.dst_chain_id = 1) then mi.symbol
+      else mo.symbol
+    end as output_token_symbol
   , x.output_amount AS output_amount_raw
-  , x.output_amount /  exp10(mo.decimals) AS output_amount
+  , case
+      when (x.output_token_address = '0x0000000000000000000000000000000000000000' or mo.chain_id is null or x.dst_chain_id = 1) then x.output_amount / exp10(mi.decimals)
+      else coalesce(x.output_amount / exp10(mo.decimals), x.output_amount / exp10(mi.decimals))
+    end as output_amount
   , x.quote_timestamp
   , x.fill_deadline
   , x.exclusivity_deadline
@@ -149,4 +155,4 @@ LEFT JOIN chainsmeta.dim_erc20_token_metadata_v1 AS mo
   ON
     x.output_token_address = mo.contract_address
     AND cast(x.dst_chain_id as String) = cast(mo.chain_id as String)
-SETTINGS use_hive_partitioning = 1
+SETTINGS join_use_nulls = 1, use_hive_partitioning = 1
