@@ -1,7 +1,6 @@
 import itertools
 from datetime import date
 
-from op_analytics.coreutils.env.vault import env_get
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import new_session
 from op_analytics.coreutils.threads import run_concurrently
@@ -12,8 +11,6 @@ from .metadata import LendBorrowPoolsMetadata
 from .utils import copy_to_gcs, fetch_and_write, get_buffered
 
 log = structlog.get_logger()
-
-API_KEY = env_get("DEFILLAMA_API_KEY")
 
 
 LEND_BORROW_POOL_CHART_ENDPOINT = "https://pro-api.llama.fi/{api_key}/yields/chartLendBorrow/{pool}"
