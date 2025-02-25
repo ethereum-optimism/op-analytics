@@ -43,14 +43,6 @@ def protocol_tvl_enrichment(context: AssetExecutionContext):
 
     from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
 
-    """Get Latest Token Mappings"""
-    create_view(
-        db_name="dailydata_defillama",
-        view_name="defillama_latest_token_mappings",
-        disposition="replace",
-    )
-    
-    """Generate TVL Breakdown"""
     create_view(
         db_name="dailydata_defillama",
         view_name="defillama_tvl_breakdown_filtered",
