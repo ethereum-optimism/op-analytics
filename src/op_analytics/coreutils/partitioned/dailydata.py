@@ -4,12 +4,15 @@ from enum import Enum
 
 import polars as pl
 
-from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
+from op_analytics.coreutils.bigquery.gcsexternal import (
+    create_gcs_external_table,
+    create_gcs_external_table_unpartitioned,
+)
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
 
-from .dailydataread import make_date_filter, query_parquet_paths
+from .dailydataread import make_date_filter, query_parquet_paths, latest_dt
 from .dailydatawrite import PARQUET_FILENAME, write_daily_data
 from .dataaccess import DateFilter
 from .location import DataLocation
@@ -169,6 +172,10 @@ class DailyDataset(str, Enum):
         return rel.pl()
 
     def create_bigquery_external_table(self) -> None:
+        """Create a partitioned BQ external table.
+
+        Can be used to read data across partitoins.
+        """
         # Database used in BigQuery to store external tables that point to GCS data.
         external_db_name = f"dailydata_{self.db}"
 
@@ -178,6 +185,37 @@ class DailyDataset(str, Enum):
             partition_columns="dt DATE",
             partition_prefix=self.root_path,
         )
+
+    def create_bigquery_external_table_at_dt(self, dt: str, suffix: str) -> None:
+        """Create an unpartitioned BQ external table.
+
+        Can only rad data at the single "dt" partitione specified.
+        """
+        # Database used in BigQuery to store external tables that point to GCS data.
+        external_db_name = f"dailydata_{self.db}"
+
+        create_gcs_external_table_unpartitioned(
+            db_name=external_db_name,
+            table_name=f"{self.table}_{suffix}",
+            path=f"{self.root_path}/dt={dt}/{PARQUET_FILENAME}",
+        )
+
+    def create_bigquery_external_table_at_default_dt(self) -> None:
+        """Create an upartitioned BQ exteral table at the default partiton.
+
+        Useful for tables that always write data to the default partition and do not
+        use different "dt" values.
+        """
+        self.create_bigquery_external_table_at_dt(dt=DEFAULT_DT, suffix="default")
+
+    def create_bigquery_external_table_at_latest_dt(self) -> None:
+        """Create an upartitioned BQ exteral table at the latest dt partiton.
+
+        Useful for tables where it is useful to keep exactly which data was fetched at
+        a given "dt" but only need the latest "dt" when reading out data.
+        """
+        latest = latest_dt(self.root_path, location=DataLocation.GCS)
+        self.create_bigquery_external_table_at_dt(dt=latest, suffix="latest")
 
     def clickhouse_buffer_table(self) -> TablePath:
         """Return db and name for the buffer table in ClickHouse.
