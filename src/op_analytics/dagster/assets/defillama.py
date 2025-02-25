@@ -107,23 +107,35 @@ def defillama_views():
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
     DefiLlama.CHAINS_METADATA.create_bigquery_external_table()
+    DefiLlama.CHAINS_METADATA.create_bigquery_external_table_at_latest_dt()
+
     DefiLlama.HISTORICAL_CHAIN_TVL.create_bigquery_external_table()
 
     DefiLlama.PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.PROTOCOLS_METADATA.create_bigquery_external_table_at_latest_dt()
+
     DefiLlama.PROTOCOLS_TVL.create_bigquery_external_table()
     DefiLlama.PROTOCOLS_TOKEN_TVL.create_bigquery_external_table()
     DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_external_table()
 
     DefiLlama.STABLECOINS_METADATA.create_bigquery_external_table()
+    DefiLlama.STABLECOINS_METADATA.create_bigquery_external_table_at_latest_dt()
+
     DefiLlama.STABLECOINS_BALANCE.create_bigquery_external_table()
 
     DefiLlama.VOLUME_FEES_REVENUE.create_bigquery_external_table()
     DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.create_bigquery_external_table()
+
     DefiLlama.VOLUME_PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.VOLUME_PROTOCOLS_METADATA.create_bigquery_external_table_at_latest_dt()
+
     DefiLlama.FEES_PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.FEES_PROTOCOLS_METADATA.create_bigquery_external_table_at_latest_dt()
+
     DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_external_table_at_latest_dt()
 
     DefiLlama.YIELD_POOLS_HISTORICAL.create_bigquery_external_table()
     DefiLlama.LEND_BORROW_POOLS_HISTORICAL.create_bigquery_external_table()
 
-    DefiLlama.TOKEN_MAPPINGS.create_bigquery_external_table()
+    DefiLlama.TOKEN_MAPPINGS.create_bigquery_external_table_at_default_dt()
