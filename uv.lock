@@ -3636,7 +3636,7 @@ wheels = [
 [[package]]
 name = "sugar"
 version = "0.0.1"
-source = { git = "https://github.com/velodrome-finance/sugar-sdk#bde68da8877817c5839fbbeb7b17cc7ac994d8f7" }
+source = { git = "https://github.com/velodrome-finance/sugar-sdk#e08152ed9a1e4a4b0f5ee4a90104aa64b2fd61eb" }
 dependencies = [
     { name = "fastcore" },
     { name = "python-dotenv" },
@@ -4046,7 +4046,7 @@ dependencies = [
     { name = "hexbytes" },
     { name = "pydantic" },
     { name = "pyunormalize" },
-    { name = "pywin32", marker = "platform_system == 'Windows'" },
+    { name = "pywin32", marker = "sys_platform == 'win32'" },
     { name = "requests" },
     { name = "types-requests" },
     { name = "typing-extensions" },

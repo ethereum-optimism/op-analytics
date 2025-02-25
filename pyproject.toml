@@ -28,9 +28,9 @@ dependencies = [
     "pyyaml>=6.0.2",
     "stamina>=24.3.0",
     "structlog>=24.4.0",
-    "sugar",
     "typer>=0.12.5",
     "urllib3>=2.2.3",
+    "sugar",
 ]
 
 

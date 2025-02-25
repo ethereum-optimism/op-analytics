@@ -8,6 +8,7 @@ apt-get update -qy
 apt-get install -qyy \
     -o APT::Install-Recommends=false \
     -o APT::Install-Suggests=false \
+    git \
     tini
 
 apt-get clean
@@ -31,6 +32,10 @@ RUN pip install \
     dagster-k8s \
     dagster-celery[flower,redis,kubernetes] \
     dagster-celery-k8s
+
+
+# Install the velodrome sugar-sdk
+RUN pip install git+https://github.com/velodrome-finance/sugar-sdk
 
 
 # Install the package
