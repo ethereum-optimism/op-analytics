@@ -53,9 +53,9 @@ def protocol_tvl_enrichment(context: AssetExecutionContext):
 @asset
 def stablecoins(context: AssetExecutionContext):
     """Pull stablecoin data."""
-    from op_analytics.datasources.defillama import stablecoins
+    from op_analytics.datasources.defillama.stablecoins import execute
 
-    result = stablecoins.execute_pull()
+    result = execute.execute_pull()
     context.log.info(result)
 
 

@@ -8,6 +8,7 @@ apt-get update -qy
 apt-get install -qyy \
     -o APT::Install-Recommends=false \
     -o APT::Install-Suggests=false \
+    git \
     tini
 
 apt-get clean
@@ -21,6 +22,10 @@ RUN --mount=type=cache,target=/root/.cache <<EOT
 cd /_dummydeps
 pip install .
 EOT
+
+
+# Install the velodrome sugar-sdk
+RUN pip install git+https://github.com/velodrome-finance/sugar-sdk
 
 
 # Install the package
