@@ -1,13 +1,14 @@
 from dataclasses import dataclass
-from datetime import timedelta
+from datetime import date, timedelta
 
 import polars as pl
 
 from op_analytics.coreutils.duckdb_inmem.client import init_client
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
-from op_analytics.coreutils.time import date_fromstr, now_dt
-from op_analytics.datasources.defillama.dataaccess import DefiLlama
+from op_analytics.coreutils.time import now_date
+
+from .dataaccess import DefiLlama
 
 log = structlog.get_logger()
 
@@ -15,12 +16,13 @@ FLOW_DAYS = [1, 7, 14, 28, 60, 90, 365]
 FLOW_TABLE_LAST_N_DAYS = 90
 
 
-def execute_pull():
-    # Produce the result
-    result = DefiLlamaNetFlows.of_date()
+def execute_pull(process_date: date | None = None):
+    process_date = process_date or now_date()
+
+    result = DefiLlamaNetFlows.of_date(process_date)
 
     # Write to storage
-    DefiLlama.PROTOCOL_TOKEN_NET_FLOWS.write(
+    DefiLlama.PROTOCOL_TOKEN_NET_TVL_FLOWS.write(
         dataframe=result.df_net_flows,
         sort_by=["dt", "chain", "protocol_slug", "token"],
     )
@@ -35,42 +37,48 @@ class DefiLlamaNetFlows:
     df_net_flows: pl.DataFrame
 
     @classmethod
-    def of_date(cls, current_dt: str | None = None):
+    def of_date(cls, process_date: date | None = None):
         """Process DeFiLlama TVL data to calculate net flows."""
-        ctx = init_client()
-        client = ctx.client
-
-        current_dt = current_dt or now_dt()
-        current_date = date_fromstr(current_dt)
-
-        # Calculate min_date to ensure we have enough historical data for flow calculations
-        max_flow_days = max(FLOW_DAYS)
-        min_date = current_date - timedelta(days=max_flow_days + FLOW_TABLE_LAST_N_DAYS + 1)
-        max_date = current_date - timedelta(days=1)  # Exclude current day as it's incomplete
-
-        tvl_view = DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.read(
-            min_date=min_date,
-            max_date=max_date,
-        )
-
-        # Get base TVL data
-        df_tvl = client.sql(
-            f"""
-            SELECT
-                dt,
-                chain,
-                protocol_slug,
-                token,
-                COALESCE(app_token_tvl, 0) as app_token_tvl,
-                COALESCE(app_token_tvl_usd, 0) as app_token_tvl_usd
-            FROM {tvl_view}
-            """
-        ).pl()
+        process_date = process_date or now_date()
 
         # Calculate net flows for each flow day period
+        df_tvl = read_data(process_date)
         df_flows = calculate_net_flows(df_tvl, FLOW_DAYS)
-
         return cls(df_net_flows=df_flows)
+
+
+def read_data(process_date: date):
+    """Reads TVL data.
+
+    The date range is determined by looking at the larger FLOW_DAYS period that will
+    be computed.
+    """
+    ctx = init_client()
+    client = ctx.client
+
+    # Calculate min_date to ensure we have enough historical data for flow calculations
+    max_flow_days = max(FLOW_DAYS)
+    min_date = process_date - timedelta(days=max_flow_days + FLOW_TABLE_LAST_N_DAYS + 1)
+    max_date = process_date - timedelta(days=1)  # Exclude current day as it's incomplete
+
+    tvl_view = DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.read(
+        min_date=min_date,
+        max_date=max_date,
+    )
+
+    # Get base TVL data
+    return client.sql(
+        f"""
+        SELECT
+            dt,
+            chain,
+            protocol_slug,
+            token,
+            COALESCE(app_token_tvl, 0) as app_token_tvl,
+            COALESCE(app_token_tvl_usd, 0) as app_token_tvl_usd
+        FROM {tvl_view}
+        """
+    ).pl()
 
 
 def calculate_net_flows(df: pl.DataFrame, flow_days: list) -> pl.DataFrame:

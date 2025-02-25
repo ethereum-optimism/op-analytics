@@ -49,4 +49,4 @@ class DefiLlama(DailyDataset):
     TOKEN_MAPPINGS = "dim_token_mappings_v1"
 
     # Net TVL Flows
-    NET_TVL_FLOWS = "net_tvl_flows_v1"
+    PROTOCOL_TOKEN_NET_TVL_FLOWS = "net_tvl_flows_v1"
