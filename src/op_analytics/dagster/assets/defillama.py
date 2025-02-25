@@ -140,4 +140,4 @@ def defillama_views():
 
     DefiLlama.TOKEN_MAPPINGS.create_bigquery_external_table_at_default_dt()
 
-    DefiLlama.NET_TVL_FLOWS.create_bigquery_external_table()
+    DefiLlama.PROTOCOL_TOKEN_NET_TVL_FLOWS.create_bigquery_external_table()
