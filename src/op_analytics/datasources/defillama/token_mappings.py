@@ -20,6 +20,12 @@ TOKEN_MAPPINGS_SCHEMA = {
 def execute():
     df = load_data_from_gsheet(TOKEN_MAPPINGS_GSHEET_NAME, TOKEN_MAPPINGS_SCHEMA)
 
+    # Deduplicate
+    dupes = df.group_by("token").len().filter(pl.col("len") > 1)
+    if len(dupes) > 0:
+        print(dupes)
+        raise Exception("There are duplicates in the token mappings Google Sheet!")
+
     # Overwrite at default dt
     DefiLlama.TOKEN_MAPPINGS.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
 
