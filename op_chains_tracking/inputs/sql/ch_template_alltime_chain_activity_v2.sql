@@ -9,7 +9,7 @@ SELECT min(number) AS min_num, max(number) AS max_num
  , unique_transactions AS (
     -- deal with clickhouse dupe issues
                 SELECT
-                t.hash, t.block_number, t.network, t.chain, t.chain_id
+                t.hash, t.block_number, t.network, t.chain, '@chain_id@' AS chain_id
                     , argMax(b.timestamp, b.insert_time) AS block_timestamp
                     , argMax(b.base_fee_per_gas, b.insert_time) AS base_fee_per_gas
                     , argMax(t.gas_price, t.insert_time) AS gas_price
@@ -61,7 +61,7 @@ SELECT *
 FROM (
     SELECT
         DATE_TRUNC('day', toDateTime(t.block_timestamp)) AS dt,
-        chain, network, chain_id, cast(@block_time_sec@ as Float64) AS block_time_sec,
+        chain, network, '@chain_id@' AS chain_id, cast(@block_time_sec@ as Float64) AS block_time_sec,
 
         COUNT(*) AS num_raw_txs,
         COUNT(DISTINCT t.block_number) AS num_blocks,

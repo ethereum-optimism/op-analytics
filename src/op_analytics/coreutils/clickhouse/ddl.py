@@ -2,7 +2,7 @@ import glob
 import os
 from dataclasses import dataclass
 
-from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
+from op_analytics.coreutils.clickhouse.inferschema import generate_create_table_ddl
 from op_analytics.coreutils.clickhouse.oplabs import run_query_oplabs, run_statememt_oplabs
 from op_analytics.coreutils.logger import structlog
 
@@ -55,9 +55,9 @@ class ClickHouseTable:
         # data_path to help us infer the schema if the table does not exist yet. This gives us a
         # head start on writing the CREATE statement for the table.
         if data_path is not None:
-            proposed_ddl = infer_schema_from_parquet(
+            proposed_ddl = generate_create_table_ddl(
                 gcs_parquet_path="gs://oplabs-tools-data-sink/" + data_path,
-                dummy_name=self.table_name,
+                table_name=self.table_name,
             )
             ddl_msg = f"Proposed DDL (adjust as needed):\n{proposed_ddl}"
 

@@ -12,15 +12,15 @@ def mock_location():
 os.environ["ALLOW_WRITE"] = "true"
 
 
-def backfill_yield_pools():
+def backfill_lend_borrow_pools():
     with patch.object(dailydatawrite, "determine_location", mock_location):
         # NOTE: Before running these the LAST_N_DAYS values were manually modified.
 
         # Protocols (modified to 120 days)
-        from op_analytics.datasources.defillama import yield_pools
+        from op_analytics.datasources.defillama import lend_borrow_pools
 
-        result = yield_pools.execute_pull()
+        result = lend_borrow_pools.execute_pull()
 
 
 if __name__ == "__main__":
-    backfill_yield_pools()
+    backfill_lend_borrow_pools()
