@@ -169,7 +169,7 @@ def test_calculate_net_flow():
 def test_calculate_net_flow_no_lookback():
     """In this test the flow is calculated at 22d, for which we do not have data.
 
-    We expect teh tvl_22d and flow_22d values to be NULL."""
+    We expect the tvl_22d and flow_22d values to be NULL."""
     computedate_df = mock_data(
         [
             {
@@ -202,7 +202,7 @@ def test_calculate_net_flow_no_lookback():
 
 
 def test_calculate_net_flow_null_tvl():
-    """In this case both tvl and tvl_use are NULL.
+    """In this case both tvl and tvl_usd are NULL.
 
     We expect the flow result to be NULL also.
     """
