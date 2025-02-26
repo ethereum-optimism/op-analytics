@@ -68,7 +68,7 @@ def protocol_tvl_enrichment(context: AssetExecutionContext):
 
 
 @asset(deps=[protocol_tvl_enrichment])
-def net_tvl_flows(context: AssetExecutionContext):
+def protocol_tvl_flows_filtered(context: AssetExecutionContext):
     """Pull lend borrow pools data."""
     from op_analytics.datasources.defillama.protocolstvlenrich import execute
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
