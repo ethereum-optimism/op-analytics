@@ -1,6 +1,7 @@
 import datetime
 import os
 
+import numpy as np
 import polars as pl
 
 from op_analytics.datasources.defillama.protocolstvlenrich.calculate import calculate_net_flows
@@ -229,7 +230,7 @@ def test_calculate_net_flow_null_tvl():
     ]
 
 
-def test_calculate_net_flow_na_conversion():
+def test_calculate_net_flow_zero_tvl():
     computedate_df = mock_data(
         [
             {
@@ -271,5 +272,50 @@ def test_calculate_net_flow_na_conversion():
             #
             "app_token_tvl_7d": 2e-05,
             "net_token_flow_7d": 0.44066,
+        }
+    ]
+
+
+def test_calculate_net_flow_zero_tvl_and_tvl_usd():
+    computedate_df = mock_data(
+        [
+            {
+                "dt": "2025-02-23",
+                "chain": "Base",
+                "protocol_slug": "charm-finance-v2",
+                "token": "AXLWBTC",
+                "app_token_tvl": 0,
+                "app_token_tvl_usd": 0,
+            }
+        ]
+    )
+    lookback_df = pl.DataFrame(
+        [
+            {
+                "dt": "2025-02-16",
+                "lookback": 7,
+                "chain": "Base",
+                "protocol_slug": "charm-finance-v2",
+                "token": "AXLWBTC",
+                "app_token_tvl": 0,
+            },
+        ]
+    )
+
+    ans = calculate_net_flows(computedate_df, lookback_df, [7]).to_dicts()
+
+    assert np.isnan(ans[0].pop("usd_conversion_rate"))
+    assert ans == [
+        {
+            "dt": datetime.date(2025, 2, 23),
+            "chain": "Base",
+            "protocol_slug": "charm-finance-v2",
+            "token": "AXLWBTC",
+            #
+            "app_token_tvl": 0.0,
+            "app_token_tvl_usd": 0.0,
+            #
+            "app_token_tvl_7d": 0.0,
+            "net_token_flow_7d": 0.0,
         }
     ]
