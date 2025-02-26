@@ -1,22 +1,96 @@
 import datetime
-import json
 import os
 
 import polars as pl
 
-from op_analytics.datasources.defillama.net_tvl_flows.calculate import calculate_net_flows
+from op_analytics.datasources.defillama.protocolstvlenrich.calculate import calculate_net_flows
 
 DIRECTORY = os.path.dirname(__file__)
 
 
-def test_calculate_net_flow():
-    with open(os.path.join(DIRECTORY, "aave-v3-CBBTC-computedate.json")) as fobj:
-        computedate_df = pl.DataFrame(json.load(fobj)).with_columns(
-            dt=pl.col("dt").str.to_date(format="%Y-%m-%d")
-        )
+def mock_data(data):
+    return pl.DataFrame(
+        data,
+        schema={
+            "dt": pl.String,
+            "chain": pl.String,
+            "protocol_slug": pl.String,
+            "token": pl.String,
+            "app_token_tvl": pl.Float64,
+            "app_token_tvl_usd": pl.Float64,
+        },
+    ).with_columns(dt=pl.col("dt").str.to_date(format="%Y-%m-%d"))
 
-    with open(os.path.join(DIRECTORY, "aave-v3-CBBTC-lookback.json")) as fobj:
-        lookback_df = pl.DataFrame(json.load(fobj))
+
+def mock_lookback_data():
+    return pl.DataFrame(
+        [
+            {
+                "dt": "2024-11-23",
+                "lookback": 90,
+                "chain": "Base",
+                "protocol_slug": "aave-v3",
+                "token": "CBBTC",
+                "app_token_tvl": 518.30507,
+            },
+            {
+                "dt": "2024-12-23",
+                "lookback": 60,
+                "chain": "Base",
+                "protocol_slug": "aave-v3",
+                "token": "CBBTC",
+                "app_token_tvl": 828.61877,
+            },
+            {
+                "dt": "2025-01-24",
+                "lookback": 28,
+                "chain": "Base",
+                "protocol_slug": "aave-v3",
+                "token": "CBBTC",
+                "app_token_tvl": 1164.26412,
+            },
+            {
+                "dt": "2025-02-07",
+                "lookback": 14,
+                "chain": "Base",
+                "protocol_slug": "aave-v3",
+                "token": "CBBTC",
+                "app_token_tvl": 1338.28103,
+            },
+            {
+                "dt": "2025-02-04",
+                "lookback": 7,
+                "chain": "Base",
+                "protocol_slug": "aave-v3",
+                "token": "CBBTC",
+                "app_token_tvl": 1301.51879,
+            },
+            {
+                "dt": "2025-02-20",
+                "lookback": 1,
+                "chain": "Base",
+                "protocol_slug": "aave-v3",
+                "token": "CBBTC",
+                "app_token_tvl": 1464.44488,
+            },
+        ]
+    )
+
+
+def test_calculate_net_flow():
+    computedate_df = mock_data(
+        [
+            {
+                "dt": "2025-02-21",
+                "chain": "Base",
+                "protocol_slug": "aave-v3",
+                "token": "CBBTC",
+                "app_token_tvl": 1460.6662,
+                "app_token_tvl_usd": 143836182.37188,
+            }
+        ]
+    )
+    lookback_df = mock_lookback_data()
 
     first = computedate_df.to_dicts()[0]
     m01day = lookback_df.filter(pl.col("lookback") == 1).to_dicts()[0]
@@ -30,12 +104,12 @@ def test_calculate_net_flow():
         "token": "CBBTC",
         "app_token_tvl": 1460.6662,
         "app_token_tvl_usd": 143836182.37188,
-        "usd_conversion_rate": 98472.99976673658,
     }
 
     previous = [m01day, m14day, m60day]
     assert previous == [
         {
+            "dt": "2025-02-20",
             "lookback": 1,
             "chain": "Base",
             "protocol_slug": "aave-v3",
@@ -43,6 +117,7 @@ def test_calculate_net_flow():
             "app_token_tvl": 1464.44488,
         },
         {
+            "dt": "2025-02-07",
             "lookback": 14,
             "chain": "Base",
             "protocol_slug": "aave-v3",
@@ -50,6 +125,7 @@ def test_calculate_net_flow():
             "app_token_tvl": 1338.28103,
         },
         {
+            "dt": "2024-12-23",
             "lookback": 60,
             "chain": "Base",
             "protocol_slug": "aave-v3",
@@ -84,3 +160,98 @@ def test_calculate_net_flow():
 
     net_flow_60day = first["app_token_tvl_usd"] - (m60day["app_token_tvl"] * conversion_rate)
     assert ans_first["net_token_flow_60d"] == net_flow_60day
+
+
+def test_calculate_net_flow_no_lookback():
+    computedate_df = mock_data(
+        [
+            {
+                "dt": "2025-02-21",
+                "chain": "Base",
+                "protocol_slug": "aave-v3",
+                "token": "CBBTC",
+                "app_token_tvl": 1460.6662,
+                "app_token_tvl_usd": 143836182.37188,
+            }
+        ]
+    )
+    lookback_df = mock_lookback_data()
+
+    ans = calculate_net_flows(computedate_df, lookback_df, [22]).to_dicts()
+
+    assert ans == [
+        {
+            "dt": datetime.date(2025, 2, 21),
+            "chain": "Base",
+            "protocol_slug": "aave-v3",
+            "token": "CBBTC",
+            "app_token_tvl": 1460.6662,
+            "app_token_tvl_usd": 143836182.37188,
+            "usd_conversion_rate": 98472.99976673658,
+            "net_token_flow_22d": None,
+        }
+    ]
+
+
+def test_calculate_net_flow_null_tvl():
+    computedate_df = mock_data(
+        [
+            {
+                "dt": "2025-02-21",
+                "chain": "Base",
+                "protocol_slug": "aave-v3",
+                "token": "CBBTC",
+                "app_token_tvl": None,
+                "app_token_tvl_usd": None,
+            }
+        ]
+    )
+    lookback_df = mock_lookback_data()
+
+    ans = calculate_net_flows(computedate_df, lookback_df, [14]).to_dicts()
+
+    assert ans == [
+        {
+            "dt": datetime.date(2025, 2, 21),
+            "chain": "Base",
+            "protocol_slug": "aave-v3",
+            "token": "CBBTC",
+            "app_token_tvl": None,
+            "app_token_tvl_usd": None,
+            "usd_conversion_rate": None,
+            "net_token_flow_14d": None,
+        }
+    ]
+
+
+def test_calculate_net_flow_na_conversion():
+    computedate_df = mock_data(
+        [
+            {
+                "dt": "2025-02-21",
+                "chain": "Base",
+                "protocol_slug": "aave-v3",
+                "token": "CBBTC",
+                # This values will result in an 'inf' conversion rate,
+                # which we fill with 0.
+                "app_token_tvl": 0,
+                "app_token_tvl_usd": 10,
+            }
+        ]
+    )
+    lookback_df = mock_lookback_data()
+
+    ans = calculate_net_flows(computedate_df, lookback_df, [14]).to_dicts()
+
+    assert ans == [
+        {
+            "dt": datetime.date(2025, 2, 21),
+            "chain": "Base",
+            "protocol_slug": "aave-v3",
+            "token": "CBBTC",
+            "app_token_tvl": 0.0,
+            "app_token_tvl_usd": 10.0,
+            "usd_conversion_rate": 0.0,
+            "net_token_flow_14d": 10.0,
+        }
+    ]

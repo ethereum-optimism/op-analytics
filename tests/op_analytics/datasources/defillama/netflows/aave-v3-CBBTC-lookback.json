@@ -1,5 +1,6 @@
 [
   {
+    "dt": "2024-11-23",
     "lookback": 90,
     "chain": "Base",
     "protocol_slug": "aave-v3",
@@ -7,6 +8,7 @@
     "app_token_tvl": 518.30507
   },
   {
+    "dt": "2024-12-23",
     "lookback": 60,
     "chain": "Base",
     "protocol_slug": "aave-v3",
@@ -14,6 +16,7 @@
     "app_token_tvl": 828.61877
   },
   {
+    "dt": "2025-01-24",
     "lookback": 28,
     "chain": "Base",
     "protocol_slug": "aave-v3",
@@ -21,6 +24,7 @@
     "app_token_tvl": 1164.26412
   },
   {
+    "dt": "2025-02-07",
     "lookback": 14,
     "chain": "Base",
     "protocol_slug": "aave-v3",
@@ -28,6 +32,7 @@
     "app_token_tvl": 1338.28103
   },
   {
+    "dt": "2025-02-04",
     "lookback": 7,
     "chain": "Base",
     "protocol_slug": "aave-v3",
@@ -35,6 +40,7 @@
     "app_token_tvl": 1301.51879
   },
   {
+    "dt": "2025-02-20",
     "lookback": 1,
     "chain": "Base",
     "protocol_slug": "aave-v3",
