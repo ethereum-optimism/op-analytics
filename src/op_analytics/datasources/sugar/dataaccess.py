@@ -1,7 +1,7 @@
 from op_analytics.coreutils.partitioned.dailydata import DailyDataset
 
 
-class SugarDataAccess(DailyDataset):
-    TOKENS = "sugar_tokens_v1"
-    POOLS = "sugar_liquidity_pools_v1"
-    PRICES = "sugar_prices_v1"
+class Sugar(DailyDataset):
+    TOKENS = "tokens_v1"
+    POOLS = "liquidity_pools_v1"
+    PRICES = "prices_v1"
