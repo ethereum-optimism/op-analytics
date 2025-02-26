@@ -143,8 +143,11 @@ def test_calculate_net_flow():
         "protocol_slug": "aave-v3",
         "token": "CBBTC",
         "app_token_tvl": 1460.6662,
-        "usd_conversion_rate": 98472.99976673658,
         "app_token_tvl_usd": 143836182.37188,
+        "usd_conversion_rate": 98472.99976673658,
+        "app_token_tvl_1d": 1464.44488,
+        "app_token_tvl_14d": 1338.28103,
+        "app_token_tvl_60d": 828.61877,
         "net_token_flow_1d": -372097.9547585845,
         "net_token_flow_14d": 12051634.816861987,
         "net_token_flow_60d": 62239606.42695643,
@@ -188,6 +191,7 @@ def test_calculate_net_flow_no_lookback():
             "app_token_tvl": 1460.6662,
             "app_token_tvl_usd": 143836182.37188,
             "usd_conversion_rate": 98472.99976673658,
+            "app_token_tvl_22d": None,
             "net_token_flow_22d": None,
         }
     ]
@@ -219,6 +223,7 @@ def test_calculate_net_flow_null_tvl():
             "app_token_tvl": None,
             "app_token_tvl_usd": None,
             "usd_conversion_rate": None,
+            "app_token_tvl_14d": 1338.28103,
             "net_token_flow_14d": None,
         }
     ]
@@ -228,30 +233,43 @@ def test_calculate_net_flow_na_conversion():
     computedate_df = mock_data(
         [
             {
-                "dt": "2025-02-21",
+                "dt": "2025-02-23",
                 "chain": "Base",
-                "protocol_slug": "aave-v3",
-                "token": "CBBTC",
-                # This values will result in an 'inf' conversion rate,
-                # which we fill with 0.
+                "protocol_slug": "charm-finance-v2",
+                "token": "AXLWBTC",
+                # This values will result in an 'inf' USD conversion rate.
                 "app_token_tvl": 0,
-                "app_token_tvl_usd": 10,
+                "app_token_tvl_usd": 0.44066,
             }
         ]
     )
-    lookback_df = mock_lookback_data()
+    lookback_df = pl.DataFrame(
+        [
+            {
+                "dt": "2025-02-16",
+                "lookback": 7,
+                "chain": "Base",
+                "protocol_slug": "charm-finance-v2",
+                "token": "AXLWBTC",
+                "app_token_tvl": 2e-05,
+            },
+        ]
+    )
 
-    ans = calculate_net_flows(computedate_df, lookback_df, [14]).to_dicts()
+    ans = calculate_net_flows(computedate_df, lookback_df, [7]).to_dicts()
 
     assert ans == [
         {
-            "dt": datetime.date(2025, 2, 21),
+            "dt": datetime.date(2025, 2, 23),
             "chain": "Base",
-            "protocol_slug": "aave-v3",
-            "token": "CBBTC",
+            "protocol_slug": "charm-finance-v2",
+            "token": "AXLWBTC",
+            #
             "app_token_tvl": 0.0,
-            "app_token_tvl_usd": 10.0,
+            "app_token_tvl_usd": 0.44066,
             "usd_conversion_rate": 0.0,
-            "net_token_flow_14d": 10.0,
+            #
+            "app_token_tvl_7d": 2e-05,
+            "net_token_flow_7d": 0.44066,
         }
     ]

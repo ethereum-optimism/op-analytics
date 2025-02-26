@@ -70,13 +70,13 @@ def protocol_tvl_enrichment(context: AssetExecutionContext):
 @asset(deps=[protocol_tvl_enrichment])
 def net_tvl_flows(context: AssetExecutionContext):
     """Pull lend borrow pools data."""
-    from op_analytics.datasources.defillama.net_tvl_flows import execute
+    from op_analytics.datasources.defillama.protocolstvlenrich import execute
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
     result = execute.execute_pull()
     context.log.info(result)
 
-    DefiLlama.PROTOCOL_TOKEN_NET_TVL_FLOWS.create_bigquery_external_table()
+    DefiLlama.PROTOCOL_TVL_FLOWS_FILTERED.create_bigquery_external_table()
 
 
 @asset

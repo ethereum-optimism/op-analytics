@@ -12,7 +12,7 @@ from op_analytics.coreutils.duckdb_inmem.client import init_client, register_par
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
 
-from .dailydataread import make_date_filter, query_parquet_paths, latest_dt
+from .dailydataread import make_date_filter, query_parquet_paths, latest_dt, query_written_markers
 from .dailydatawrite import PARQUET_FILENAME, write_daily_data
 from .dataaccess import DateFilter
 from .location import DataLocation
@@ -138,6 +138,14 @@ class DailyDataset(str, Enum):
         view_name = register_parquet_relation(dataset=view_name, parquet_paths=paths)
         print(duckdb_context.client.sql("SHOW TABLES"))
         return view_name
+
+    def written_markers_datevals(self, datevals: list[date]) -> pl.DataFrame:
+        """Find markers for the provided davevals."""
+
+        return query_written_markers(
+            root_path=self.root_path,
+            datefilter=DateFilter.from_dates(datevals),
+        )
 
     @classmethod
     def infer_all_schemas(cls, datestr: str):
