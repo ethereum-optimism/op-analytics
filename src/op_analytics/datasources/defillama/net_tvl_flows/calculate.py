@@ -66,6 +66,6 @@ def calculate_net_flows(
         # Computing adds the net flow column.
         added_columns.append(net_flow_col)
         assert result.columns == TVL_COLUMNS + added_columns
-        log.info(f"computed net flow for lookback={d} days")
 
+    log.info(f"computed net flow for lookback={flow_days} days")
     return result

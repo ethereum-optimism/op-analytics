@@ -31,6 +31,12 @@ class TablePath:
     table: str
 
 
+class ParquetPathNotFound(Exception):
+    """This exception is raised when attempting to read data that does not exist."""
+
+    pass
+
+
 class DailyDataset(str, Enum):
     """Base class for daily datasets.
 
@@ -127,7 +133,7 @@ class DailyDataset(str, Enum):
             )
 
         if not paths:
-            raise Exception(f"Did not find parquet paths for date filter: {datefilter}")
+            raise ParquetPathNotFound(f"Did not find parquet paths for date filter: {datefilter}")
 
         view_name = register_parquet_relation(dataset=view_name, parquet_paths=paths)
         print(duckdb_context.client.sql("SHOW TABLES"))

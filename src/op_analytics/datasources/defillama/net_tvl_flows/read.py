@@ -1,6 +1,5 @@
 from datetime import date, timedelta
 
-
 from op_analytics.coreutils.duckdb_inmem.client import init_client
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
@@ -49,7 +48,8 @@ def read_lookback_data(compute_date: date, flow_days: list[int]):
     for looback in flow_days:
         datevals.append(compute_date - timedelta(days=looback))
 
-    log.info(f"reading token tvl data for {datevals=}")
+    dtvals = [date_tostr(_) for _ in datevals]
+    log.info(f"reading token tvl data for {dtvals=}")
     lookback = DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.read_datevals(
         datevals=datevals,
         view_name="lookback",
