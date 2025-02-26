@@ -1,5 +1,4 @@
 from dagster import (
-    AssetSelection,
     DefaultScheduleStatus,
     Definitions,
     ScheduleDefinition,
@@ -11,12 +10,12 @@ from .utils.k8sconfig import op_analytics_asset_job, OPK8sConfig
 import importlib
 
 MODULE_NAMES = [
-    "blockbatch",
-    "transform",
-    "chains",
+    "chainsdaily",
+    "chainshourly",
     "defillama",
     "github",
     "other",
+    "transform",
 ]
 
 
@@ -35,19 +34,15 @@ def create_schedule_for_group(
     group: str,
     cron_schedule: str,
     default_status: DefaultScheduleStatus,
+    custom_k8s_config: OPK8sConfig | None = None,
+    k8s_pod_per_step: bool = False,
 ):
     return ScheduleDefinition(
         name=group,
         job=op_analytics_asset_job(
-            name=f"{group}_job",
-            selection=AssetSelection.groups(group),
-            custom_config=OPK8sConfig(
-                mem_request="3Gi",
-                mem_limit="6Gi",
-                labels={
-                    "op-analytics-dagster-group": group,
-                },
-            ),
+            group=group,
+            custom_k8s_config=custom_k8s_config,
+            k8s_pod_per_step=k8s_pod_per_step,
         ),
         cron_schedule=cron_schedule,
         execution_timezone="UTC",
@@ -59,27 +54,44 @@ defs = Definitions(
     assets=ASSETS,
     schedules=[
         create_schedule_for_group(
-            group="chains",
+            group="chainsdaily",
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
             default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="720Mi",
+                mem_limit="2Gi",
+            ),
         ),
         #
         create_schedule_for_group(
-            group="blockbatch",
+            group="chainshourly",
             cron_schedule="38 * * * *",  # Run every hour
             default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="720Mi",
+                mem_limit="2Gi",
+            ),
         ),
         #
         create_schedule_for_group(
             group="transform",
             cron_schedule="17 */6 * * *",  # Run every 6 hours
             default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="720Mi",
+                mem_limit="2Gi",
+            ),
         ),
         #
         create_schedule_for_group(
             group="defillama",
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
             default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="3Gi",
+                mem_limit="6Gi",
+            ),
+            k8s_pod_per_step=False,
         ),
         #
         create_schedule_for_group(

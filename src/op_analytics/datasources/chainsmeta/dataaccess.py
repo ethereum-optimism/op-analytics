@@ -5,6 +5,17 @@ log = structlog.get_logger()
 
 
 class ChainsMeta(DailyDataset):
-    """Chain metadata related tables."""
+    """Metadata about onchain things."""
 
-    RAW_GSHEET = "raw_gsheet_v1"
+    # Chain metadata google sheet.
+    CHAIN_METADATA_GSHEET = "raw_gsheet_v1"
+
+    # Across bridge addresses google sheet.
+    ACROSS_BRIDGE_GSHEET = "raw_accross_bridge_gsheet_v1"
+
+    # A dimension table storing metadata for ERC-20 tokens.
+    # The metadata is fetched using RPC calls.
+    ERC20_TOKEN_METADATA = "erc20_token_metadata_v1"
+
+    # A dimension table that pulls the token list from the ethereum-optimism repo.
+    SUPERCHAIN_TOKEN_LIST = "superchain_token_list_v1"

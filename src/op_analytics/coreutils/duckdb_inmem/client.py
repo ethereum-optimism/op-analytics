@@ -35,6 +35,16 @@ class DuckDBContext:
         size = os.path.getsize(self.db_path)
         log.info(f"duck db size: {human_size(size)}")
 
+    def unregister_views(self):
+        # Ensure there are no user views remaining.
+        remaining_views = (
+            self.client.sql("SELECT view_name FROM duckdb_views() WHERE NOT internal")
+            .pl()["view_name"]
+            .to_list()
+        )
+        for view in remaining_views:
+            self.client.unregister(view_name=view)
+
     def close(self, remove_db_path: bool = True):
         self.client.close()
         if remove_db_path:

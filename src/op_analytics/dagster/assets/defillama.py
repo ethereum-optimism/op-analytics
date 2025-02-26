@@ -1,113 +1,139 @@
 from dagster import (
-    OpExecutionContext,
+    AssetExecutionContext,
     asset,
 )
 
 
 @asset
-def token_mappings_to_bq(context: OpExecutionContext):
+def token_mappings_to_bq(context: AssetExecutionContext):
+    """Copy token mappings from Google Sheet to BigQuery."""
     from op_analytics.datasources.defillama import token_mappings
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
     result = token_mappings.execute()
     context.log.info(result)
 
-
-@asset
-def stablecoins(context: OpExecutionContext):
-    """Pull stablecoin data from Defillama."""
-    from op_analytics.datasources.defillama import stablecoins
-
-    result = stablecoins.execute_pull()
-    context.log.info(result)
+    DefiLlama.TOKEN_MAPPINGS.create_bigquery_external_table_at_default_dt()
 
 
 @asset
-def protocol_tvl(context: OpExecutionContext):
-    """Pull historical chain tvl data from Defillama."""
-
-    from op_analytics.datasources.defillama import protocols
-
-    result = protocols.execute_pull()
-    context.log.info(result)
-
-
-@asset(deps=[protocol_tvl])
-def tvl_breakdown_enrichment(context: OpExecutionContext):
-    """Enrich defillama tvl breakdown data."""
-
-    from op_analytics.datasources.defillama import tvl_breakdown_enrichment
-
-    result = tvl_breakdown_enrichment.execute_pull()
-    context.log.info(result)
-
-
-@asset
-def historical_chain_tvl(context: OpExecutionContext):
-    """Pull historical chain tvl data from Defillama."""
-    from op_analytics.datasources.defillama import historical_chain_tvl
-
-    result = historical_chain_tvl.execute_pull()
-    context.log.info(result)
-
-
-@asset
-def volumes_fees_revenue(context: OpExecutionContext):
-    from op_analytics.datasources.defillama.volume_fees_revenue import execute
+def chain_tvl(context: AssetExecutionContext):
+    """Pull historical chain tvl data."""
+    from op_analytics.datasources.defillama.chaintvl import execute
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
     result = execute.execute_pull()
     context.log.info(result)
 
-
-@asset
-def yield_pools_data(context: OpExecutionContext):
-    from op_analytics.datasources.defillama import yield_pools
-
-    result = yield_pools.execute_pull()
-    context.log.info(result)
-
-
-@asset(
-    deps=[
-        stablecoins,
-        protocol_tvl,
-        tvl_breakdown_enrichment,
-        historical_chain_tvl,
-        volumes_fees_revenue,
-        yield_pools_data,
-    ]
-)
-def defillama_views():
-    """Bigquery external tables and views.
-
-    External tables for each of the datasets we ingest to GCS.
-
-    Views to simplify queries.
-    """
-    from op_analytics.datasources.defillama.dataaccess import DefiLlama
-
     DefiLlama.CHAINS_METADATA.create_bigquery_external_table()
+    DefiLlama.CHAINS_METADATA.create_bigquery_external_table_at_latest_dt()
     DefiLlama.HISTORICAL_CHAIN_TVL.create_bigquery_external_table()
 
+
+@asset
+def protocol_tvl(context: AssetExecutionContext):
+    """Pull historical protocol tvl data."""
+
+    from op_analytics.datasources.defillama.protocolstvl import execute
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama
+
+    result = execute.execute_pull()
+    context.log.info(result)
+
     DefiLlama.PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.PROTOCOLS_METADATA.create_bigquery_external_table_at_latest_dt()
+
     DefiLlama.PROTOCOLS_TVL.create_bigquery_external_table()
     DefiLlama.PROTOCOLS_TOKEN_TVL.create_bigquery_external_table()
-    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_external_table()
 
-    DefiLlama.STABLECOINS_METADATA.create_bigquery_external_table()
-    DefiLlama.STABLECOINS_BALANCE.create_bigquery_external_table()
 
-    DefiLlama.VOLUME_FEES_REVENUE.create_bigquery_external_table()
-    DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.create_bigquery_external_table()
-    DefiLlama.VOLUME_PROTOCOLS_METADATA.create_bigquery_external_table()
-    DefiLlama.FEES_PROTOCOLS_METADATA.create_bigquery_external_table()
-    DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_external_table()
+@asset(deps=[protocol_tvl, token_mappings_to_bq])
+def protocol_tvl_enrichment(context: AssetExecutionContext):
+    """Enrich protocol tvl data."""
 
-    DefiLlama.YIELD_POOLS_HISTORICAL.create_bigquery_external_table()
-
+    from op_analytics.datasources.defillama import tvl_breakdown_enrichment
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama
     from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
+
+    result = tvl_breakdown_enrichment.execute_pull()
+    context.log.info(result)
+
+    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_external_table()
 
     create_view(
         db_name="dailydata_defillama",
         view_name="defillama_tvl_breakdown_filtered",
         disposition="replace",
     )
+
+
+@asset(deps=[protocol_tvl_enrichment])
+def protocol_tvl_flows_filtered(context: AssetExecutionContext):
+    """Pull lend borrow pools data."""
+    from op_analytics.datasources.defillama.protocolstvlenrich import execute
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama
+
+    result = execute.execute_pull()
+    context.log.info(result)
+
+    DefiLlama.PROTOCOL_TVL_FLOWS_FILTERED.create_bigquery_external_table()
+
+
+@asset
+def stablecoins(context: AssetExecutionContext):
+    """Pull stablecoin data."""
+    from op_analytics.datasources.defillama.stablecoins import execute
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama
+
+    result = execute.execute_pull()
+    context.log.info(result)
+
+    DefiLlama.STABLECOINS_METADATA.create_bigquery_external_table()
+    DefiLlama.STABLECOINS_METADATA.create_bigquery_external_table_at_latest_dt()
+    DefiLlama.STABLECOINS_BALANCE.create_bigquery_external_table()
+
+
+@asset
+def volumes_fees_revenue(context: AssetExecutionContext):
+    """Pull DEX data."""
+    from op_analytics.datasources.defillama.volumefeesrevenue import execute
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama
+
+    result = execute.execute_pull()
+    context.log.info(result)
+
+    DefiLlama.VOLUME_FEES_REVENUE.create_bigquery_external_table()
+    DefiLlama.VOLUME_FEES_REVENUE_BREAKDOWN.create_bigquery_external_table()
+
+    DefiLlama.VOLUME_PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.VOLUME_PROTOCOLS_METADATA.create_bigquery_external_table_at_latest_dt()
+
+    DefiLlama.FEES_PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.FEES_PROTOCOLS_METADATA.create_bigquery_external_table_at_latest_dt()
+
+    DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_external_table()
+    DefiLlama.REVENUE_PROTOCOLS_METADATA.create_bigquery_external_table_at_latest_dt()
+
+
+@asset
+def yield_pools(context: AssetExecutionContext):
+    """Pull yield pools data."""
+    from op_analytics.datasources.defillama.yieldpools import execute
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama
+
+    result = execute.execute_pull()
+    context.log.info(result)
+
+    DefiLlama.YIELD_POOLS_HISTORICAL.create_bigquery_external_table()
+
+
+@asset
+def lend_borrow_pools(context: AssetExecutionContext):
+    """Pull lend borrow pools data."""
+    from op_analytics.datasources.defillama.lendborrowpools import execute
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama
+
+    result = execute.execute_pull()
+    context.log.info(result)
+
+    DefiLlama.LEND_BORROW_POOLS_HISTORICAL.create_bigquery_external_table()

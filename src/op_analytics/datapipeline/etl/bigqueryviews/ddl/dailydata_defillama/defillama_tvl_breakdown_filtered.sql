@@ -16,7 +16,7 @@ SELECT
   , tvl.app_token_tvl_usd
 
 FROM `oplabs-tools-data.dailydata_defillama.protocol_token_tvl_breakdown_v1` tvl 
-LEFT JOIN `oplabs-tools-data.defillama.token_mappings` tm 
+LEFT JOIN `oplabs-tools-data.dailydata_defillama.latest_dim_token_mappings_v1` tm 
   ON tvl.token = tm.token
 
 -- NOTE: Chain metadata is something we would like to modify to another source
@@ -25,3 +25,4 @@ LEFT JOIN `oplabs-tools-data.api_table_uploads.op_stack_chain_metadata` md
   ON tvl.chain = md.display_name
 
 WHERE tvl.to_filter_out = 0
+AND tvl.dt >= '2018-01-01'
