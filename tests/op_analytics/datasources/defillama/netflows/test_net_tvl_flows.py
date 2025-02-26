@@ -167,6 +167,9 @@ def test_calculate_net_flow():
 
 
 def test_calculate_net_flow_no_lookback():
+    """In this test the flow is calculated at 22d, for which we do not have data.
+
+    We expect teh tvl_22d and flow_22d values to be NULL."""
     computedate_df = mock_data(
         [
             {
@@ -199,6 +202,10 @@ def test_calculate_net_flow_no_lookback():
 
 
 def test_calculate_net_flow_null_tvl():
+    """In this case both tvl and tvl_use are NULL.
+
+    We expect the flow result to be NULL also.
+    """
     computedate_df = mock_data(
         [
             {
@@ -231,6 +238,11 @@ def test_calculate_net_flow_null_tvl():
 
 
 def test_calculate_net_flow_zero_tvl():
+    """In this test the conversion_rate is 'inf' because tvl_usd is non-zero.
+
+    We coerce the converstion rate from 'inf' to 0. Which results in a flow
+    value equal to the current tvl_usd."""
+
     computedate_df = mock_data(
         [
             {
@@ -258,7 +270,6 @@ def test_calculate_net_flow_zero_tvl():
     )
 
     ans = calculate_net_flows(computedate_df, lookback_df, [7]).to_dicts()
-
     assert ans == [
         {
             "dt": datetime.date(2025, 2, 23),
@@ -277,6 +288,11 @@ def test_calculate_net_flow_zero_tvl():
 
 
 def test_calculate_net_flow_zero_tvl_and_tvl_usd():
+    """In this test the conversion_rate comes up as NaN because tvl and tvl_usde are both zero.
+
+    We expect the net flow to be assigned as zero.
+    """
+
     computedate_df = mock_data(
         [
             {
@@ -303,7 +319,6 @@ def test_calculate_net_flow_zero_tvl_and_tvl_usd():
     )
 
     ans = calculate_net_flows(computedate_df, lookback_df, [7]).to_dicts()
-
     assert np.isnan(ans[0].pop("usd_conversion_rate"))
     assert ans == [
         {

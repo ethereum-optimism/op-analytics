@@ -94,22 +94,4 @@ def calculate_net_flows(
 
     # Reorder the columns so that there is a group of TVL looback columns
     # and then a group of net flow columns.
-    ans = result.select(TVL_COLUMNS + added_tvl_columns + added_flow_columns)
-
-    # what = ans.filter(
-    #     (pl.col("chain") == "Base")
-    #     & (pl.col("token").is_in(["BASEAI", "CBETH", "COMP", "RETH"]))
-    #     & (pl.col("protocol_slug").is_in(["9mm-v3", "a51-finance-v3", "aerodrome-slipstream"]))
-    # ).select(
-    #     "token",
-    #     "app_token_tvl",
-    #     "app_token_tvl_usd",
-    #     "app_token_tvl_1d",
-    #     "net_token_flow_1d",
-    #     "app_token_tvl_7d",
-    #     "net_token_flow_7d",
-    # )
-
-    # breakpoint()
-
-    return ans
+    return result.select(TVL_COLUMNS + added_tvl_columns + added_flow_columns)
