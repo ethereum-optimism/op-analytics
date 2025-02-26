@@ -1,67 +1,57 @@
-"""
-Sugar data ingestion pipeline.
-
-This module pulls Sugar protocol data from all chains and writes the tokens, pools,
-and prices to partitioned datasets in ClickHouse or GCS (depending on the configuration).
-"""
-
+from sugar.chains import BaseChain, OPChain
 import polars as pl
-from typing import Dict, Any, List
-
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
-from op_analytics.datasources.sugar.dataaccess import SugarDataAccess
-from op_analytics.datasources.sugar.chain_list import chain_list
-from op_analytics.datasources.sugar.chains.chains import fetch_chain_data
+from op_analytics.dagster.assets.sugar import Sugar
+from op_analytics.datasources.sugar.tokens import fetch_tokens_for_chain
+from op_analytics.datasources.sugar.pools import fetch_pools_for_chain
+from op_analytics.datasources.sugar.prices import fetch_prices_for_chain
 
 log = structlog.get_logger()
 
+CHAIN_LIST = [OPChain, BaseChain]
 
-async def _collect_data() -> Dict[str, List[Dict[str, Any]]]:
+
+def _collect_data() -> dict[str, list[pl.DataFrame]]:
     """
-    Collects tokens, pools, and prices data from each configured chain (OPChain, BaseChain).
-    Returns:
-        Dictionary containing three lists, keyed by "tokens", "pools", and "prices".
+    Collects tokens, pools, and prices data from each chain in CHAIN_LIST,
+    by leveraging sugarwrapper.py calls indirectly via sugar.tokens, sugar.pools, sugar.prices.
+    Returns lists of DataFrames for each data type.
     """
     all_data = {"tokens": [], "pools": [], "prices": []}
 
-    for chain_cls in chain_list:
-        tokens, pools, prices = await fetch_chain_data(chain_cls)
-        all_data["tokens"].extend(tokens)
-        all_data["pools"].extend(pools)
-        all_data["prices"].extend(prices)
+    for chain_cls in CHAIN_LIST:
+        chain_name = chain_cls.__name__
+        log.info(f"Fetching Sugar data for chain={chain_name}")
+
+        chain_tokens_df = fetch_tokens_for_chain(chain_cls)
+        chain_pools_df = fetch_pools_for_chain(chain_cls)
+        chain_prices_df = fetch_prices_for_chain(chain_cls)
+
+        all_data["tokens"].append(chain_tokens_df)
+        all_data["pools"].append(chain_pools_df)
+        all_data["prices"].append(chain_prices_df)
 
     return all_data
 
 
-def _write_data(
-    data: List[Dict[str, Any]],
-    dataset: SugarDataAccess,
-    data_type: str,
-) -> Dict[str, Any]:
+def execute_pull() -> dict[str, dict]:
     """
-    Writes data to the dataset and returns a summary for logging.
+    Main Sugar ingestion entrypoint. Fetches tokens, pools, and prices
+    for each chain in CHAIN_LIST, then writes them to the Sugar dataset.
+    Returns a summary of counts for logging.
     """
-    df = pl.DataFrame(data)
-    dataset.write(df)
+    collected = _collect_data()
+    summary = {}
 
-    summary = {f"{data_type}_df": dt_summary(df)}
-    log.info(f"Sugar {data_type} ingestion completed", summary=summary)
-    return summary
+    Sugar.write_dataset(collected["tokens"], Sugar.TOKENS)
+    summary["tokens_df"] = dt_summary(collected["tokens"])
 
+    Sugar.write_dataset(collected["pools"], Sugar.POOLS)
+    summary["pools_df"] = dt_summary(collected["pools"])
 
-async def execute_pull() -> Dict[str, Any]:
-    """
-    Main Sugar ingestion entrypoint.
-    Fetches the data from all chains, writes to configured datasets,
-    and returns a summary dictionary.
-    """
-    all_data = await _collect_data()
-
-    summary: Dict[str, Any] = {}
-    summary.update(_write_data(all_data["tokens"], SugarDataAccess.TOKENS, "tokens"))
-    summary.update(_write_data(all_data["pools"], SugarDataAccess.POOLS, "pools"))
-    summary.update(_write_data(all_data["prices"], SugarDataAccess.PRICES, "prices"))
+    Sugar.write_dataset(collected["prices"], Sugar.PRICES)
+    summary["prices_df"] = dt_summary(collected["prices"])
 
     log.info("Sugar ingestion completed", summary=summary)
     return summary

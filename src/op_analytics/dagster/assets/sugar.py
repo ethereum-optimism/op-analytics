@@ -1,17 +1,19 @@
-from dagster import (
-    OpExecutionContext,
-    asset,
-)
+from op_analytics.coreutils.partitioned.dailydata import DailyDataset
 
 
-@asset(group_name="sugar")
-def sugar_daily(context: OpExecutionContext) -> None:
-    """Pull daily Sugar protocol data.
-
-    Fetches and processes daily Sugar protocol metrics and stores them in our data warehouse.
-    The data includes key protocol metrics like TVL, volume, and other relevant statistics.
+class Sugar(DailyDataset):
     """
-    from op_analytics.datasources.sugar import execute
+    The Sugar dataset tracks tokens, pools, and prices from the Velodrome sugar-sdk.
+    See also:
+    - https://github.com/velodrome-finance/sugar
+    - https://github.com/velodrome-finance/sugar-sdk
 
-    result = execute.execute_pull()
-    context.log.info("Sugar daily pull completed", result=result)
+    Tables:
+      - tokens_v1
+      - pools_v1
+      - prices_v1
+    """
+
+    TOKENS = "tokens_v1"
+    POOLS = "pools_v1"
+    PRICES = "prices_v1"
