@@ -1,7 +1,7 @@
 from op_analytics.coreutils.partitioned.dailydata import DailyDataset
 
 
-class Sugar(DailyDataset):
+class Velodrome(DailyDataset):
     """
     The Sugar dataset tracks tokens, pools, and prices from the Velodrome sugar-sdk.
     See also:

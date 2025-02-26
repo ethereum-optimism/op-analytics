@@ -2,11 +2,10 @@ import polars as pl
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
-from op_analytics.dagster.assets.sugar import Sugar
-from op_analytics.datasources.sugar.chain_list import SUGAR_CHAINS
-from op_analytics.datasources.sugar.pools import fetch_pools_for_chain
-from op_analytics.datasources.sugar.prices import fetch_prices_for_chain
-from op_analytics.datasources.sugar.tokens import fetch_tokens_for_chain
+from op_analytics.datasources.velodrome.chain_list import SUGAR_CHAINS
+from op_analytics.datasources.velodrome.pools import fetch_pools_for_chain
+from op_analytics.datasources.velodrome.prices import fetch_prices_for_chain
+from op_analytics.datasources.velodrome.tokens import fetch_tokens_for_chain
 
 log = structlog.get_logger()
 

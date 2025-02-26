@@ -9,7 +9,7 @@ from sugar.helpers import normalize_address
 
 from op_analytics.coreutils.coroutines import run_coroutine
 from op_analytics.coreutils.logger import structlog
-from op_analytics.datasources.sugar.chain_list import SUGAR_CHAINS
+from op_analytics.datasources.velodrome.chain_list import SUGAR_CHAINS
 
 log = structlog.get_logger()
 
