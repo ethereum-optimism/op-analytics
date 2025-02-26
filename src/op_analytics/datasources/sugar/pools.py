@@ -2,7 +2,8 @@ from op_analytics.coreutils.logger import structlog
 import polars as pl
 from sugar.pool import LiquidityPool
 
-from op_analytics.datasources.velodrome.sugarwrapper import fetch_pools, chain_cls_to_str
+from op_analytics.datasources.velodrome.sugarwrapper import fetch_pools
+from op_analytics.datasources.sugar.chain_list import chain_cls_to_str
 
 log = structlog.get_logger()
 

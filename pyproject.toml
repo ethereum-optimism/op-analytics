@@ -69,7 +69,7 @@ dev-dependencies = [
 ]
 
 [tool.uv.sources]
-sugar = { git = "https://github.com/velodrome-finance/sugar-sdk" }
+sugar = { git = "https://github.com/velodrome-finance/sugar-sdk", branch = "main" }
 
 [tool.ruff]
 # Allow lines to be as long as 100.

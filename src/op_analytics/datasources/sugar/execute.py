@@ -1,30 +1,27 @@
 import polars as pl
 
-from sugar.chains import AsyncBaseChain, AsyncOPChain
-
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.dagster.assets.sugar import Sugar
+from op_analytics.datasources.sugar.chain_list import SUGAR_CHAINS
 from op_analytics.datasources.sugar.pools import fetch_pools_for_chain
 from op_analytics.datasources.sugar.prices import fetch_prices_for_chain
 from op_analytics.datasources.sugar.tokens import fetch_tokens_for_chain
 
 log = structlog.get_logger()
 
-CHAIN_LIST = [AsyncBaseChain, AsyncOPChain]
-
 
 def _collect_data() -> dict[str, list[pl.DataFrame]]:
     """
-    Gather tokens, pools, and prices DataFrames from each chain in CHAIN_LIST.
+    Gather tokens, pools, and prices DataFrames for each chain in SUGAR_CHAINS.
     Returns a dict mapping "tokens", "pools", and "prices" to lists of DataFrames.
     """
     all_data = {"tokens": [], "pools": [], "prices": []}
 
-    for chain_cls in CHAIN_LIST:
-        chain_name = chain_cls.__name__
+    for chain_name, chain_instance in SUGAR_CHAINS.items():
         log.info("Fetching Sugar data", chain=chain_name)
 
+        chain_cls = type(chain_instance)
         chain_tokens_df = fetch_tokens_for_chain(chain_cls)
         chain_pools_df = fetch_pools_for_chain(chain_cls)
         chain_prices_df = fetch_prices_for_chain(chain_cls)
