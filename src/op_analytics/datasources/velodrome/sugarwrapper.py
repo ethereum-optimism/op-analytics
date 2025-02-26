@@ -1,7 +1,7 @@
 import itertools
 from dataclasses import dataclass
 
-from sugar.chains import BaseChain, OPChain, Chain
+from sugar.chains import Chain
 from sugar.price import Price
 from sugar.token import Token
 from sugar.pool import LiquidityPool
@@ -9,30 +9,9 @@ from sugar.helpers import normalize_address
 
 from op_analytics.coreutils.coroutines import run_coroutine
 from op_analytics.coreutils.logger import structlog
-
+from op_analytics.datasources.sugar.chain_list import SUGAR_CHAINS
 
 log = structlog.get_logger()
-
-
-def chain_cls_to_str(chain_cls: type) -> str:
-    """
-    Convert a chain class like OPChain → 'op' or BaseChain → 'base'.
-    Extend this if you support more chains in future.
-    """
-    name = chain_cls.__name__.lower()
-    if "opchain" in name:
-        return "op"
-    elif "basechain" in name:
-        return "base"
-    # Fallback or raise an error for unhandled cases
-    raise ValueError(f"Unrecognized chain class: {chain_cls.__name__}")
-
-
-# Map our chain names to the sugar sdk Chain class.
-SUGAR_CHAINS = {
-    "op": OPChain(),
-    "base": BaseChain(),
-}
 
 
 @dataclass(frozen=True)
@@ -134,7 +113,7 @@ async def _sugar_pools(chain: str, sugar_chain: Chain) -> VelodromePools:
     lps = []
     missing = []
     for pool in pools:
-        lp = LiquidityPool.from_tuple(pool, tokens_index)
+        lp = LiquidityPool.from_tuple(pool, tokens_index, prices)
 
         if lp is None:
             missing.append(
