@@ -1,0 +1,11 @@
+[
+  {
+    "dt": "2025-02-21",
+    "chain": "Base",
+    "protocol_slug": "aave-v3",
+    "token": "CBBTC",
+    "app_token_tvl": 1460.6662,
+    "app_token_tvl_usd": 143836182.37188,
+    "usd_conversion_rate": 98472.99976673658
+  }
+]

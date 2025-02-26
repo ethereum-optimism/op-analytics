@@ -73,12 +73,11 @@ class DailyDataset(str, Enum):
         max_date: str | date | None = None,
         date_range_spec: str | None = None,
         location: DataLocation = DataLocation.GCS,
+        view_name: str | None = None,
     ) -> str:
-        """Load date partitioned defillama dataset from the specified location.
+        """Load date partitioned defillama dataset.
 
-        The loaded data is registered as duckdb view.
-
-        The name of the registered view is returned.
+        "view_name" can be provided to manually set the name of the resulting duckdb view.
         """
         if isinstance(min_date, date):
             min_date = date_tostr(min_date)
@@ -91,9 +90,30 @@ class DailyDataset(str, Enum):
             f"with filters min_date={min_date}, max_date={max_date}, date_range_spec={date_range_spec}"
         )
 
-        duckdb_context = init_client()
+        return self.read_date_filtered(
+            datefilter=make_date_filter(min_date, max_date, date_range_spec),
+            location=location,
+            view_name=view_name or self.root_path,
+        )
 
-        datefilter = make_date_filter(min_date, max_date, date_range_spec)
+    def read_datevals(
+        self,
+        datevals: list[date],
+        location: DataLocation = DataLocation.GCS,
+        view_name: str | None = None,
+    ):
+        """Load date partitioned defillama dataset using specfic date values.
+
+        "view_name" can be provided to manually set the name of the resulting duckdb view.
+        """
+        return self.read_date_filtered(
+            datefilter=DateFilter.from_dates(datevals),
+            location=location,
+            view_name=view_name or self.root_path,
+        )
+
+    def read_date_filtered(self, datefilter: DateFilter, location: DataLocation, view_name: str):
+        duckdb_context = init_client()
 
         paths: str | list[str]
         if datefilter.is_undefined:
@@ -109,7 +129,7 @@ class DailyDataset(str, Enum):
         if not paths:
             raise Exception(f"Did not find parquet paths for date filter: {datefilter}")
 
-        view_name = register_parquet_relation(dataset=self.root_path, parquet_paths=paths)
+        view_name = register_parquet_relation(dataset=view_name, parquet_paths=paths)
         print(duckdb_context.client.sql("SHOW TABLES"))
         return view_name
 
