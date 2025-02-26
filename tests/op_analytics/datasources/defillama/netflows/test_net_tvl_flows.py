@@ -240,7 +240,7 @@ def test_calculate_net_flow_null_tvl():
 def test_calculate_net_flow_zero_tvl():
     """In this test the conversion_rate is 'inf' because tvl_usd is non-zero.
 
-    We coerce the converstion rate from 'inf' to 0. Which results in a flow
+    We coerce the conversion rate from 'inf' to 0. Which results in a flow
     value equal to the current tvl_usd."""
 
     computedate_df = mock_data(
