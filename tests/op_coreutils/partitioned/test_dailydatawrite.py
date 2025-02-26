@@ -15,7 +15,7 @@ def test_construct_marker():
             row_count=10,
             process_name="example",
         )
-        actual = pl.from_arrow(marker).to_dicts()
+        actual = pl.from_arrow(marker).to_dicts()  # type: ignore
         assert actual == [
             {
                 "updated_at": datetime.datetime(2025, 2, 21, 5, 25),

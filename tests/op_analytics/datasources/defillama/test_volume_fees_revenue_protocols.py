@@ -3,7 +3,7 @@ import os
 
 import polars as pl
 
-from op_analytics.datasources.defillama.volume_fees_revenue.protocols import get_protocols_df
+from op_analytics.datasources.defillama.volumefeesrevenue.protocols import get_protocols_df
 
 
 def test_protocols_df_full_response():
