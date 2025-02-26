@@ -1,4 +1,3 @@
-from sugar.chains import BaseChain, OPChain
+from sugar.chains import AsyncBaseChain, AsyncOPChain
 
-# So far, sugar-sdk only supports BaseChain and OPChain
-chain_list = [BaseChain, OPChain]
+chain_list = [AsyncBaseChain, AsyncOPChain]
