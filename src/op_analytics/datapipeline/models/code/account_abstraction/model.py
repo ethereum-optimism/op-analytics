@@ -54,12 +54,9 @@ def account_abstraction(
             "prefiltered_traces": input_datasets[
                 "blockbatch/account_abstraction_prefilter/entrypoint_traces_v1"
             ].as_subquery(),
-            "innerhandleop_method_ids": ", ".join(
-                [
-                    f"'{INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0}'",
-                    f"'{INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0}'",
-                ]
-            ),
+            "uops": user_ops,
+            "method_id_v6": INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0,
+            "method_id_v7": INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0,
         },
     )
 

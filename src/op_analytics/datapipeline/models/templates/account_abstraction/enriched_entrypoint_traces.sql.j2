@@ -30,7 +30,7 @@ decoded_traces AS (
     , t.trace_root
     , hexstr_method_id(t.input) AS method_id
     , IF(
-      hexstr_method_id(t.input) IN ({{ innerhandleop_method_ids }})
+      hexstr_method_id(t.input) IN ('{{ method_id_v6 }}', '{{ method_id_v7 }}')
       , decode_innerhandleop(t.input)
       , NULL
     ) AS decoded
@@ -84,6 +84,7 @@ decoded_traces AS (
 )
 
 
+-- InnerHandleOp traces joined to the corresponding UserOperationEvent
 , innerhandleops AS (
   SELECT
     t.block_number
@@ -95,15 +96,33 @@ decoded_traces AS (
     , t.innerhandleop_decodeerror
     , t.innerhandleop_opinfo
     , t.innerhandleop_context
-
     , t.trace_address AS innerhandleop_trace_address
+    , u.nonce AS useropevent_nonce
+    , u.success AS useropevent_success
+    , u.actualGasCost AS useropevent_actualgascost
+    , u.actualGasUsed AS useropevent_actualgasused
+    , CASE
+      WHEN t.method_id = '{{ method_id_v6 }}' THEN 'v6'
+      WHEN t.method_id = '{{ method_id_v7 }}' THEN 'v7'
+      ELSE NULL
+    END AS entrypoint_contract_version
+
   FROM decoded_traces_exploded AS t
+  LEFT JOIN {{ uops }} AS u
+    ON
+      t.block_number = u.block_number
+      AND t.transaction_hash = u.transaction_hash
+      AND t.userop_sender = u.sender
+      AND t.userop_paymaster = u.paymaster
+      AND t.userop_hash = u.userophash
+
   WHERE t.userop_sender IS NOT NULL
 )
 
--- Enrich traces by matching them with the decoded innerHandleOp trace.
--- This is a self join. 
-SELECT
+-- Enrich traces by matching them with:
+--  * The decoded innerHandleOp trace (self-join) 
+--  * The decoded UserOperationEvent (join with logs)
+SELECT -- noqa: ST06
   t.dt
   , t.chain
   , t.chain_id
@@ -134,6 +153,9 @@ SELECT
   -- Flag the innerHandleOp traces.
   , t.userop_sender IS NOT NULL AS is_innerhandleop
 
+  -- Flag traces that are subtraces of the innerhandleop (this is the same as the join condition)
+  , i.innerhandleop_trace_address IS NOT NULL AND starts_with(t.trace_address, i.innerhandleop_trace_address) AS is_innerhandleop_subtrace
+
   -- Flag traces that are from the userop sender.
   , t.from_address = i.userop_sender AS is_from_sender
 
@@ -151,11 +173,19 @@ SELECT
 
   -- Values picked from the self join.
   , i.innerhandleop_trace_address
+  , i.entrypoint_contract_version
 
+  -- Values picked from the UserOperationEvent logs
+  , i.useropevent_nonce
+  , i.useropevent_success
+  , i.useropevent_actualgascost
+  , i.useropevent_actualgasused
 
 FROM decoded_traces_exploded AS t
-LEFT JOIN innerhandleops AS i ON
-  t.block_number = i.block_number
-  AND t.transaction_hash = i.transaction_hash
-  -- Subtraces of the innerHandleOp function call.
-  AND starts_with(t.trace_address, i.innerhandleop_trace_address)
+
+LEFT JOIN innerhandleops AS i
+  ON
+    t.block_number = i.block_number
+    AND t.transaction_hash = i.transaction_hash
+    -- Subtraces of the innerHandleOp function call.
+    AND starts_with(t.trace_address, i.innerhandleop_trace_address)
