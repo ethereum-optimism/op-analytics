@@ -1,13 +1,16 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: op-analytics-4337-backfill-03
+  name: op-analytics-4337-backfill
   namespace: op-analytics
   labels:
     app: op-analytics
     component: models-backfill
 
 spec:
+  completions: 3         # Number of indexes to process
+  parallelism: 3          # How many pods can run in parallel
+  completionMode: Indexed # This makes it an indexed job
   ttlSecondsAfterFinished: null
   backoffLimit: 4
   template:
@@ -16,9 +19,9 @@ spec:
       containers:
       - name: python-runner
         imagePullPolicy: Always
-        image: ghcr.io/lithium323/op-analytics:v20250222.1
+        image: ghcr.io/lithium323/op-analytics:v20250227.3
         command: ["tini", "-v", "--", "opdata"]
-        args: ["chains", "aa_backfill_03"]
+        args: ["chains", "aa_backfill"]
         env:
         - name: PLAIN_LOGS
           value: "true"
