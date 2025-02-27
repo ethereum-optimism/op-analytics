@@ -28,7 +28,7 @@ SELECT
   , indexed_event_arg_to_address(l.indexed_args[3]) AS paymaster
 
   -- Decoded non-indexed args for the UserOperationEvent (nonce, success, actualGaCost, actualGasUsed)
-  , decode_useroperationevent(l.data) AS decoded_json
+  , UNNEST(decode_useroperationevent(l.data))
 
 
 FROM {{ raw_logs }} AS l

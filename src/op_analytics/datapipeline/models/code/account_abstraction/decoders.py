@@ -30,7 +30,14 @@ def register_4337_decoders(ctx: DuckDBContext):
         duckdb_function_name="decode_useroperationevent",
         decoder=user_op_event_decoder(),
         parameters=["VARCHAR"],
-        return_type="VARCHAR",
+        return_type="""
+            STRUCT(
+                nonce VARCHAR,
+                success BOOLEAN,
+                actualGasCost VARCHAR,
+                actualGasUsed VARCHAR
+            )
+            """,
     )
 
     # innerHandleOp
@@ -64,7 +71,10 @@ def user_op_event_decoder():
 
     # The ABI is the same for both versions of the Entrypoint contract.
     assert USER_OP_EVENT_ABI_v0_6_0 == USER_OP_EVENT_ABI_v0_7_0
-    return LogDecoder(decoder=DictionaryDecoder.of(USER_OP_EVENT_ABI_v0_6_0))
+    return LogDecoder(
+        decoder=DictionaryDecoder.of(USER_OP_EVENT_ABI_v0_6_0),
+        as_json=False,
+    )
 
 
 def inner_handle_op_decoder():

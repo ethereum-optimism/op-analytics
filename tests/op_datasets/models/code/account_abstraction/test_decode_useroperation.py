@@ -11,6 +11,7 @@ log_data_02 = "0x000000000000000000000000000000000000000000000000000000000000003
 
 def test_inner_handle_op():
     decoder = user_op_event_decoder()
+    decoder.as_json = True
 
     # The same decoder can handle both v6 and v7.
     actual = [
@@ -19,6 +20,31 @@ def test_inner_handle_op():
     ]
 
     actual = [json.loads(_) for _ in actual]
+
+    assert actual == [
+        {
+            "nonce": "60",
+            "success": True,
+            "actualGasCost": "1545560021301",
+            "actualGasUsed": "337209",
+        },
+        {
+            "nonce": "60",
+            "success": True,
+            "actualGasCost": "1545560021301",
+            "actualGasUsed": "108555083659983933209597798445644913612440610624038028786991485007418559374649",
+        },
+    ]
+
+
+def test_inner_handle_op_as_dict():
+    decoder = user_op_event_decoder()
+
+    # The same decoder can handle both v6 and v7.
+    actual = [
+        decoder.decode(log_data_01),
+        decoder.decode(log_data_02),
+    ]
 
     assert actual == [
         {

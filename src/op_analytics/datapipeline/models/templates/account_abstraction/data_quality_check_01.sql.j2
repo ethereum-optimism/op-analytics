@@ -13,12 +13,11 @@ uops AS (
   SELECT
     block_number
     , transaction_hash
-    , innerhandleop_opinfo_sender
-    , matched_userop_sender
-    , is_from_matched_userop_sender
+    , userop_sender
     , from_address
+    , is_from_sender
   FROM account_abstraction__enriched_entrypoint_traces
-  WHERE innerhandleop_opinfo_sender IS NOT NULL
+  WHERE is_innerhandleop
 )
 
 -- Checks that we see the same UserOps on the events and the traces.
@@ -28,13 +27,13 @@ SELECT
   , u.transaction_hash
   , u.log_index
   , u.sender
-  , t.innerhandleop_opinfo_sender
+  , t.userop_sender
 FROM uops AS u
 FULL OUTER JOIN traces AS t
   ON
     u.block_number = t.block_number
     AND u.transaction_hash = t.transaction_hash
-    AND u.sender = t.innerhandleop_opinfo_sender
+    AND u.sender = t.userop_sender
 WHERE
   u.sender IS NULL
-  OR t.innerhandleop_opinfo_sender IS NULL
+  OR t.userop_sender IS NULL
