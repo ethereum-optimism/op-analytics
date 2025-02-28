@@ -12,7 +12,7 @@ spec:
   parallelism: 14          # How many pods can run in parallel
   completionMode: Indexed # This makes it an indexed job
   ttlSecondsAfterFinished: null
-  backoffLimit: 0
+  backoffLimit: 3
   template:
     metadata:
       annotations:
@@ -35,16 +35,16 @@ spec:
         - name: DUCKDB_DATADIR
           value: "/duckdbdata"
         - name: DUCKDB_MEMORY_LIMIT
-          value: "3"
+          value: "6"
         resources:
           limits:
             cpu: 1
             ephemeral-storage: 10Gi
-            memory: 3Gi
+            memory: 6Gi
           requests:
             cpu: 1
             ephemeral-storage: 10Gi
-            memory: 2Gi
+            memory: 4Gi
         volumeMounts:
         - mountPath: "/var/secrets"
           name: opanalyticsvault
@@ -58,7 +58,6 @@ spec:
           readOnly: true
           volumeAttributes:
             secretProviderClass: op-analytics-secret-provider-class
-
       - name: duckdbdata
         emptyDir:
           sizeLimit: 100Gi
