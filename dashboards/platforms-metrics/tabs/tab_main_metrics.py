@@ -56,8 +56,8 @@ def render_tab1(
         for colname, col_slot in zip(ratio_cols, c_spots_ratio):
             if colname in numeric_cols:
                 label = FRIENDLY_LABELS.get(colname, colname)
-                curr_val = latest_data[colname].mean()
-                prev_val = previous_data[colname].mean()
+                curr_val = float(latest_data[colname].mean())
+                prev_val = float(previous_data[colname].mean())
                 delta_val = curr_val - prev_val
 
                 delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
@@ -140,8 +140,8 @@ def render_tab1(
         for colname, col_slot in zip(eng_cols, eng_spots):
             if colname in numeric_cols:
                 label = FRIENDLY_LABELS.get(colname, colname)
-                curr_val = latest_data[colname].sum()
-                prev_val = previous_data[colname].sum()
+                curr_val = float(latest_data[colname].sum())
+                prev_val = float(previous_data[colname].sum())
                 delta_val = curr_val - prev_val
 
                 delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
@@ -157,8 +157,8 @@ def render_tab1(
         for colname, col_slot in zip(ratio_eng_cols, ratio_spots):
             if colname in numeric_cols:
                 label = FRIENDLY_LABELS.get(colname, colname)
-                curr_val = latest_data[colname].mean()
-                prev_val = previous_data[colname].mean()
+                curr_val = float(latest_data[colname].mean())
+                prev_val = float(previous_data[colname].mean())
                 delta_val = curr_val - prev_val
 
                 delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
@@ -216,8 +216,8 @@ def render_tab1(
         if valid_cr_cols:
             cr_slots = st.columns(len(valid_cr_cols))
             for colname, col_slot in zip(valid_cr_cols, cr_slots):
-                curr_val = latest_data[colname].sum()
-                prev_val = previous_data[colname].sum()
+                curr_val = float(latest_data[colname].sum())
+                prev_val = float(previous_data[colname].sum())
                 delta_val = curr_val - prev_val
 
                 delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
@@ -255,8 +255,8 @@ def render_tab1(
         if valid_intensity_cols:
             col_slots_int = st.columns(len(valid_intensity_cols))
             for colname, col_slot in zip(valid_intensity_cols, col_slots_int):
-                curr_val = latest_data[colname].mean()
-                prev_val = previous_data[colname].mean()
+                curr_val = float(latest_data[colname].mean())
+                prev_val = float(previous_data[colname].mean())
                 delta_val = curr_val - prev_val
 
                 delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
