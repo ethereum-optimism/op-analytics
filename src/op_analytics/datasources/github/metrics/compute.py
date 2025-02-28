@@ -115,6 +115,7 @@ def _compute_rolling_for_interval(
             df_,
             how="outer",
             on=["repo", "period_start", "period_end"],
+            coalesce=True,
         )
 
     merged = merged.with_columns(pl.lit(f"rolling_{period_label}").alias("period_type"))
