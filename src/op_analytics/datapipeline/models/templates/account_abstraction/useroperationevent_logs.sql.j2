@@ -1,0 +1,37 @@
+/***
+  See the contract code for definition of the UserOperationEvent struct:
+  https://vscode.blockscan.com/8453/0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789
+    */
+
+
+SELECT
+  l.dt
+  , l.chain
+  , l.chain_id
+  , l.network
+  --
+  , l.block_timestamp
+  , l.block_number
+  , l.block_hash
+  , l.transaction_hash
+  , l.transaction_index
+  , l.log_index
+  , l.contract_address
+
+  -- Hash over the content of the userOp (except the signature), the entrypoint and the chainid.
+  , l.indexed_args[1] AS userophash
+
+  -- The sender account for this user operation.
+  , indexed_event_arg_to_address(l.indexed_args[2]) AS sender
+
+  -- Obtained as: paymaster = address(bytes20(paymasterAndData[: 20]));
+  , indexed_event_arg_to_address(l.indexed_args[3]) AS paymaster
+
+  -- Decoded non-indexed args for the UserOperationEvent (nonce, success, actualGaCost, actualGasUsed)
+  , UNNEST(decode_useroperationevent(l.data))
+
+
+FROM {{ raw_logs }} AS l
+WHERE
+  l.topic0 = '0x49628fd1471006c1482da88028e9ce4dbb080b815c9b0344d39e5a8e6ec1419f' -- UserOperationEvent
+  AND array_length(l.indexed_args) = 3

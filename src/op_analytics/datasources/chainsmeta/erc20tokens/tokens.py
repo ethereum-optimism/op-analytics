@@ -7,6 +7,9 @@ import stamina
 from requests.exceptions import JSONDecodeError
 
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.request import new_session
+
+from .endpoints import get_rpc_for_chain
 
 log = structlog.get_logger()
 
@@ -41,6 +44,12 @@ class RateLimit(Exception):
 
 class TokenMetadataError(Exception):
     """Raised when we fail to parse the RPC response."""
+
+    pass
+
+
+class TokenResponseError(Exception):
+    """Raised when the RPC response is invalid json."""
 
     pass
 
@@ -84,21 +93,23 @@ class Token:
 
         return batch
 
-    @stamina.retry(on=RateLimit, attempts=3, wait_initial=5)
+    @stamina.retry(on=RateLimit, attempts=3, wait_initial=10)
     def call_rpc(
         self,
-        session: requests.Session,
-        rpc_endpoint: str,
-        speed_bump: float,
+        rpc_endpoint: str | None = None,
+        session: requests.Session | None = None,
+        speed_bump: float = 0.05,
     ) -> Optional["TokenMetadata"]:
+        session = session or new_session()
+        rpc_endpoint = rpc_endpoint or get_rpc_for_chain(chain_id=self.chain_id)
+
         start = time.perf_counter()
         response = session.post(rpc_endpoint, json=self.rpc_batch())
 
         try:
             response_data = response.json()
-        except JSONDecodeError:
-            log.error(f"invalid json: {response.content.decode()}")
-            raise
+        except JSONDecodeError as ex:
+            raise TokenResponseError(dict(token=self)) from ex
 
         result = TokenMetadata.of(token=self, response=response_data)
 

@@ -7,25 +7,10 @@ import pyarrow as pa
 from op_analytics.coreutils.clickhouse.gcswrite import write_to_gcs
 from op_analytics.coreutils.clickhouse.oplabs import run_query_oplabs
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.dailydata import TablePath
-from op_analytics.coreutils.partitioned.marker import Marker
-from op_analytics.coreutils.partitioned.partition import (
-    Partition,
-    PartitionColumn,
-    PartitionMetadata,
-)
 from op_analytics.coreutils.time import date_tostr
 
-from .dailydata import DailyDataset
-from .dailydatawrite import (
-    EXTRA_MARKER_COLUMNS,
-    EXTRA_MARKER_COLUMNS_SCHEMA,
-    MARKERS_TABLE,
-    PARQUET_FILENAME,
-    expected_output_of,
-)
-from .dataaccess import init_data_access
-from .location import DataLocation
+from .dailydata import DailyDataset, TablePath
+from .dailydatawrite import PARQUET_FILENAME, construct_marker, write_markers
 
 log = structlog.get_logger()
 
@@ -109,7 +94,7 @@ class FromClickHouseWriter:
         log.info(f"wrote {total_rows} total rows to gcs at {self.dailydata_table.table}")
 
         # Write out the markers.
-        self.write_markers(markers_df)
+        write_markers(markers_arrow=markers_df.to_arrow())
 
         return WriteSummary(
             root_path=self.dailydata_table.root_path,
@@ -147,37 +132,17 @@ class FromClickHouseWriter:
 
         marker_dfs = []
         for dt_info in self.get_dt_counts():
-            datestr = dt_info["dt"]
-            partition = Partition([PartitionColumn(name="dt", value=datestr)])
-            partition_meta = PartitionMetadata(row_count=dt_info["row_count"])
-
-            marker = Marker(
-                expected_output=expected_output_of(
-                    root_path=self.dailydata_table.root_path,
-                    datestr=datestr,
-                ),
-                written_parts={partition: partition_meta},
-            )
-
-            marker_df = marker.to_pyarrow_table(
+            marker_df = construct_marker(
+                root_path=self.dailydata_table.root_path,
+                datestr=dt_info["dt"],
+                row_count=dt_info["row_count"],
                 process_name="from_clickhouse",
-                extra_marker_columns=EXTRA_MARKER_COLUMNS,
-                extra_marker_columns_schema=EXTRA_MARKER_COLUMNS_SCHEMA,
             )
+
             marker_dfs.append(marker_df)
 
         # Concatenate all marker dataframes
         return pl.from_arrow(pa.concat_tables(marker_dfs))
-
-    def write_markers(self, marker_df: pl.DataFrame):
-        """Insert the markers to ClickHouse."""
-
-        client = init_data_access()
-        client.write_marker(
-            marker_df=marker_df.to_arrow(),
-            data_location=DataLocation.GCS,
-            markers_table=MARKERS_TABLE,
-        )
 
     def write_single_dt(self, dt: str) -> SinglePartitionSummary:
         """Write data for the given "dt" to GCS."""

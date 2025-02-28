@@ -4,14 +4,16 @@ from enum import Enum
 
 import polars as pl
 
-from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
-from op_analytics.coreutils.clickhouse.inferschema import infer_schema_from_parquet
+from op_analytics.coreutils.bigquery.gcsexternal import (
+    create_gcs_external_table,
+    create_gcs_external_table_unpartitioned,
+)
 from op_analytics.coreutils.duckdb_inmem.client import init_client, register_parquet_relation
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import date_tostr
 
-from .dailydataread import make_date_filter, query_parquet_paths
-from .dailydatawrite import write_daily_data, PARQUET_FILENAME
+from .dailydataread import make_date_filter, query_parquet_paths, latest_dt, query_written_markers
+from .dailydatawrite import PARQUET_FILENAME, write_daily_data
 from .dataaccess import DateFilter
 from .location import DataLocation
 
@@ -27,6 +29,12 @@ DEFAULT_DT = "2000-01-01"
 class TablePath:
     db: str
     table: str
+
+
+class ParquetPathNotFound(Exception):
+    """This exception is raised when attempting to read data that does not exist."""
+
+    pass
 
 
 class DailyDataset(str, Enum):
@@ -71,12 +79,11 @@ class DailyDataset(str, Enum):
         max_date: str | date | None = None,
         date_range_spec: str | None = None,
         location: DataLocation = DataLocation.GCS,
+        view_name: str | None = None,
     ) -> str:
-        """Load date partitioned defillama dataset from the specified location.
+        """Load date partitioned defillama dataset.
 
-        The loaded data is registered as duckdb view.
-
-        The name of the registered view is returned.
+        "view_name" can be provided to manually set the name of the resulting duckdb view.
         """
         if isinstance(min_date, date):
             min_date = date_tostr(min_date)
@@ -89,9 +96,30 @@ class DailyDataset(str, Enum):
             f"with filters min_date={min_date}, max_date={max_date}, date_range_spec={date_range_spec}"
         )
 
-        duckdb_context = init_client()
+        return self.read_date_filtered(
+            datefilter=make_date_filter(min_date, max_date, date_range_spec),
+            location=location,
+            view_name=view_name or self.root_path,
+        )
 
-        datefilter = make_date_filter(min_date, max_date, date_range_spec)
+    def read_datevals(
+        self,
+        datevals: list[date],
+        location: DataLocation = DataLocation.GCS,
+        view_name: str | None = None,
+    ):
+        """Load date partitioned defillama dataset using specfic date values.
+
+        "view_name" can be provided to manually set the name of the resulting duckdb view.
+        """
+        return self.read_date_filtered(
+            datefilter=DateFilter.from_dates(datevals),
+            location=location,
+            view_name=view_name or self.root_path,
+        )
+
+    def read_date_filtered(self, datefilter: DateFilter, location: DataLocation, view_name: str):
+        duckdb_context = init_client()
 
         paths: str | list[str]
         if datefilter.is_undefined:
@@ -105,11 +133,59 @@ class DailyDataset(str, Enum):
             )
 
         if not paths:
-            raise Exception(f"Did not find parquet paths for date filter: {datefilter}")
+            raise ParquetPathNotFound(f"Did not find parquet paths for date filter: {datefilter}")
 
-        view_name = register_parquet_relation(dataset=self.root_path, parquet_paths=paths)
+        view_name = register_parquet_relation(dataset=view_name, parquet_paths=paths)
         print(duckdb_context.client.sql("SHOW TABLES"))
         return view_name
+
+    def written_markers_datevals(self, datevals: list[date]) -> pl.DataFrame:
+        """Find markers for the provided davevals."""
+
+        return query_written_markers(
+            root_path=self.root_path,
+            datefilter=DateFilter.from_dates(datevals),
+        )
+
+    @classmethod
+    def infer_all_schemas(cls, datestr: str):
+        """Infer parquet schemas for all datasets and return with metadata.
+
+        This function can be used for ad-hoc analytics & schema inference,
+        user facing data discoverability tools and data validation and testing.
+
+        Args:
+            datestr: Date string to use for schema inference
+
+        Returns:
+            dict[DailyDataset, dict]: Mapping of dataset enum members to their inferred schemas
+        """
+        schemas = {}
+        for table in cls.all_tables():
+            log.info(f"Inferring schema for {table.name}")
+            try:
+                # Find paths for this root path.
+                paths = query_parquet_paths(
+                    table.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
+                )
+
+                # Read the first path using polars to get the schema.
+                sample_parquet_path = paths[0]
+                schema = [
+                    {"name": col, "type": str(dtype).upper()}
+                    for col, dtype in pl.scan_parquet(sample_parquet_path).collect_schema().items()
+                ]
+
+                # Map the table to it's schema.
+                schemas[table] = schema
+
+            except IndexError:
+                log.warning(
+                    f"No data found for {table.name} on {datestr}, skipping schema inference"
+                )
+                continue
+
+        return schemas
 
     def read_polars(
         self,
@@ -129,15 +205,11 @@ class DailyDataset(str, Enum):
         rel = duckdb_context.client.sql(f"SELECT * FROM {relation_name}")
         return rel.pl()
 
-    def infer_clickhouse_schema(self, datestr: str):
-        """Use a single parquet file in GCS to infer the Clickhouse schema for the table."""
-        paths = query_parquet_paths(
-            self.root_path, DataLocation.GCS, DateFilter.from_dts([datestr])
-        )
-
-        infer_schema_from_parquet(paths[0], dummy_name=f"{self.db}.{self.table}")
-
     def create_bigquery_external_table(self) -> None:
+        """Create a partitioned BQ external table.
+
+        Can be used to read data across partitoins.
+        """
         # Database used in BigQuery to store external tables that point to GCS data.
         external_db_name = f"dailydata_{self.db}"
 
@@ -147,6 +219,37 @@ class DailyDataset(str, Enum):
             partition_columns="dt DATE",
             partition_prefix=self.root_path,
         )
+
+    def create_bigquery_external_table_at_dt(self, dt: str, suffix: str) -> None:
+        """Create an unpartitioned BQ external table.
+
+        Can only rad data at the single "dt" partitione specified.
+        """
+        # Database used in BigQuery to store external tables that point to GCS data.
+        external_db_name = f"dailydata_{self.db}"
+
+        create_gcs_external_table_unpartitioned(
+            db_name=external_db_name,
+            table_name=f"{self.table}_{suffix}",
+            path=f"{self.root_path}/dt={dt}/{PARQUET_FILENAME}",
+        )
+
+    def create_bigquery_external_table_at_default_dt(self) -> None:
+        """Create an upartitioned BQ exteral table at the default partiton.
+
+        Useful for tables that always write data to the default partition and do not
+        use different "dt" values.
+        """
+        self.create_bigquery_external_table_at_dt(dt=DEFAULT_DT, suffix="default")
+
+    def create_bigquery_external_table_at_latest_dt(self) -> None:
+        """Create an upartitioned BQ exteral table at the latest dt partiton.
+
+        Useful for tables where it is useful to keep exactly which data was fetched at
+        a given "dt" but only need the latest "dt" when reading out data.
+        """
+        latest = latest_dt(self.root_path, location=DataLocation.GCS)
+        self.create_bigquery_external_table_at_dt(dt=latest, suffix="latest")
 
     def clickhouse_buffer_table(self) -> TablePath:
         """Return db and name for the buffer table in ClickHouse.

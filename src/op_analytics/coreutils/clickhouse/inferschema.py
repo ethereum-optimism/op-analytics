@@ -28,7 +28,7 @@ def parquet_to_subquery(gcs_parquet_path: str, virtual_columns: str = "") -> str
     """
 
 
-def infer_schema_from_parquet(gcs_parquet_path: str, dummy_name: str):
+def generate_create_table_ddl(gcs_parquet_path: str, table_name: str):
     """Use a single parquet path to generate a Clickhouse CREATE TABLE dsl statement.
 
     The value of "dummy_name" is used for the table name in the generated ddl.
@@ -60,7 +60,7 @@ def infer_schema_from_parquet(gcs_parquet_path: str, dummy_name: str):
     columns_str = ",\n    ".join(columns)
 
     # Build full CREATE TABLE statement
-    ddl = f"""CREATE TABLE IF NOT EXISTS {dummy_name}
+    ddl = f"""CREATE TABLE IF NOT EXISTS {table_name}
 (
     {columns_str}
 )

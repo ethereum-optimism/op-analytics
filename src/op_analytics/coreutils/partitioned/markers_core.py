@@ -29,10 +29,14 @@ class DateFilter:
 
     @classmethod
     def from_dts(cls, datestrs: list[str]):
+        return cls.from_dates([date_fromstr(_) for _ in datestrs])
+
+    @classmethod
+    def from_dates(cls, dates: list[date]):
         return DateFilter(
             min_date=None,
             max_date=None,
-            datevals=[date_fromstr(_) for _ in datestrs],
+            datevals=dates,
         )
 
     @property

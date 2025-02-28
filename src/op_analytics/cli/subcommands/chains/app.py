@@ -1,4 +1,6 @@
 import json
+import os
+from datetime import datetime, timedelta
 
 import typer
 from rich import print
@@ -154,6 +156,8 @@ def normalize_blockbatch_models(models: str) -> list[str]:
             result.add("contract_creation")
             result.add("refined_traces")
             result.add("token_transfers")
+            result.add("account_abstraction_prefilter")
+            result.add("account_abstraction")
         elif model.startswith("-"):
             not_included.add(model.removeprefix("-").strip())
         else:
@@ -368,13 +372,36 @@ def noargs_public_bq():
 
 
 @app.command()
-def aa_backfill_01():
+def aa_backfill_pt2():
     """Backfill account abstraction prefilter."""
+    # Kubernetes job index.
+    index = int(os.environ["JOB_COMPLETION_INDEX"])
+
+    # Define start and end dates for the backfill.
+    start_date = datetime.strptime("20241224", "%Y%m%d")
+    end_date = datetime.strptime("20250227", "%Y%m%d")
+
+    # Generate date ranges with 5-day intervals
+    date_ranges = []
+    current_date = start_date
+    while current_date < end_date:
+        next_date = min(current_date + timedelta(days=5), end_date)
+        date_ranges.append((current_date.strftime("%Y%m%d"), next_date.strftime("%Y%m%d")))
+        current_date = next_date
+
+    if index < len(date_ranges):
+        d0, d1 = date_ranges[index]
+        range_spec = f"@{d0}:{d1}"
+    else:
+        log.info(f"Index {index} out of range. Only {len(date_ranges)} date ranges defined.")
+        return
+
+    # Need to run prefilter first so that markers are created. Without markers then no tasks
+    # will be prepared for the second model.
     compute_blockbatch(
-        # chains=normalize_chains("ALL"),
-        chains=["base"],
-        models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        range_spec="@20250101:20250112",
+        chains=normalize_chains("ALL"),
+        models=["account_abstraction_prefilter"],
+        range_spec=range_spec,
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,
@@ -382,44 +409,10 @@ def aa_backfill_01():
         fork_process=True,
     )
 
-
-@app.command()
-def aa_backfill_02():
-    """Backfill account abstraction prefilter."""
     compute_blockbatch(
         chains=normalize_chains("ALL"),
-        models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        range_spec="@20250112:20250124",
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
-
-
-@app.command()
-def aa_backfill_03():
-    """Backfill account abstraction prefilter."""
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        range_spec="@20250124:20250203",
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
-
-
-@app.command()
-def aa_backfill_04():
-    """Backfill account abstraction prefilter."""
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        range_spec="@20250203:20250211",
+        models=["account_abstraction"],
+        range_spec=range_spec,
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,

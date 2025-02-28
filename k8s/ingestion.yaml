@@ -7,21 +7,25 @@ metadata:
     app: op-analytics
     component: ingestion
 spec:
-  schedule: "8 * * * *"  # Runs every hour at minute 8
+  schedule: "8,38 * * * *"  # Runs every 30 mins
   concurrencyPolicy: Forbid 
   successfulJobsHistoryLimit: 3  # Retains successful jobs
   failedJobsHistoryLimit: 3      # Retains failed jobs  
   jobTemplate:
     spec:
       backoffLimit: 0
+      ttlSecondsAfterFinished: null  # Prevents automatic cleanup
       template:
+        metadata:
+          annotations:
+            "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"      
         spec:
           restartPolicy: Never 
           serviceAccountName: op-analytics-service-account
           containers:
-          - name: python-runner
+          - name: python-runner-ingestion
             imagePullPolicy: IfNotPresent
-            image: ghcr.io/lithium323/op-analytics:v20250211.3
+            image: ghcr.io/lithium323/op-analytics:v20250227.4
             command: ["tini", "-v", "--", "opdata"]
             args: ["chains", "noargs_ingest"]
             env:

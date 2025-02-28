@@ -87,11 +87,11 @@ defs = Definitions(
             group="defillama",
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
             default_status=DefaultScheduleStatus.RUNNING,
-            k8s_pod_per_step=True,
             custom_k8s_config=OPK8sConfig(
-                mem_request="4Gi",
+                mem_request="3Gi",
                 mem_limit="6Gi",
             ),
+            k8s_pod_per_step=False,
         ),
         #
         create_schedule_for_group(
