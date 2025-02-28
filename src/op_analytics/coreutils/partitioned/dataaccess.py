@@ -12,6 +12,7 @@ from datetime import date
 
 import polars as pl
 
+from op_analytics.coreutils.env.aware import current_environment, OPLabsEnvironment
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.storage.gcs_parquet import gcs_upload_parquet, local_upload_parquet
 
@@ -46,7 +47,11 @@ def marker_store(data_location: DataLocation) -> MarkerStore:
         return ClickHouseMarkers.get_instance()
 
     if data_location == DataLocation.BIGQUERY:
-        return ClickHouseMarkers.get_instance()
+        current_env = current_environment()
+        if current_env == OPLabsEnvironment.UNITTEST:
+            return LocalMarkers.get_instance()
+        else:
+            return ClickHouseMarkers.get_instance()
 
     if data_location == DataLocation.LOCAL:
         return LocalMarkers.get_instance()

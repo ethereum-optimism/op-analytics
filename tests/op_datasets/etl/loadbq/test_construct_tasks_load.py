@@ -80,7 +80,8 @@ def test_construct():
                 RootPath.of("ingestion/traces_v1"),
                 RootPath.of("ingestion/transactions_v1"),
             ],
-            write_to=DataLocation.GCS,
+            write_to=DataLocation.BIGQUERY,
+            markers_table="superchain_raw_bigquery_markers",
             bq_dataset_name="dummy_dataset",
         )
 
@@ -90,7 +91,7 @@ def test_construct():
             chains_ready={"mode"},
             chains_not_ready=set(),
             write_manager=BQLoader(
-                location=DataLocation.GCS,
+                location=DataLocation.BIGQUERY,
                 partition_cols=["dt"],
                 extra_marker_columns={},
                 extra_marker_columns_schema=[
