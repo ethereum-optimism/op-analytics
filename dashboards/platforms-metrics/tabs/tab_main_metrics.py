@@ -38,8 +38,8 @@ def render_tab1(
         for colname, col_slot in zip(status_cols, col_spots):
             if colname in numeric_cols:
                 label = FRIENDLY_LABELS.get(colname, colname)
-                curr_val = latest_data[colname].sum()
-                prev_val = previous_data[colname].sum()
+                curr_val = float(latest_data[colname].sum())
+                prev_val = float(previous_data[colname].sum())
                 delta_val = curr_val - prev_val
 
                 delta_color_type = "inverse" if colname in LOWER_IS_BETTER_METRICS else "normal"
