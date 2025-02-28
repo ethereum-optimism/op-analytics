@@ -12,6 +12,7 @@ from op_analytics.datapipeline.etl.loadbq.construct import construct_date_load_t
 from op_analytics.datapipeline.etl.loadbq.loader import BQLoader, BQOutputData
 from op_analytics.datapipeline.etl.loadbq.task import DateLoadTask
 from op_analytics.datapipeline.etl.ingestion.reader.ranges import ChainMaxBlock, BlockRange
+from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 
 
 def make_dataframe(path: str):
@@ -73,6 +74,12 @@ def test_construct():
         tasks = construct_date_load_tasks(
             chains=["mode"],
             range_spec="@20241201:+1",
+            root_paths_to_read=[
+                RootPath.of("ingestion/blocks_v1"),
+                RootPath.of("ingestion/logs_v1"),
+                RootPath.of("ingestion/traces_v1"),
+                RootPath.of("ingestion/transactions_v1"),
+            ],
             write_to=DataLocation.GCS,
             bq_dataset_name="dummy_dataset",
         )
