@@ -372,32 +372,6 @@ def noargs_public_bq():
 
 
 @app.command()
-def aa_backfill():
-    """Backfill account abstraction prefilter."""
-    index = int(os.environ["JOB_COMPLETION_INDEX"])
-
-    if index == 0:
-        range_spec = "@20250211:20250217"
-    elif index == 1:
-        range_spec = "@20250217:20250222"
-    elif index == 2:
-        range_spec = "@20250222:20250227"
-    else:
-        raise NotImplementedError()
-
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        range_spec=range_spec,
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
-
-
-@app.command()
 def aa_backfill_pt2():
     """Backfill account abstraction prefilter."""
     # Kubernetes job index.
@@ -416,15 +390,28 @@ def aa_backfill_pt2():
         current_date = next_date
 
     if index < len(date_ranges):
-        start_date, end_date = date_ranges[index]
-        range_spec = f"@{start_date}:{end_date}"
+        d0, d1 = date_ranges[index]
+        range_spec = f"@{d0}:{d1}"
     else:
         log.info(f"Index {index} out of range. Only {len(date_ranges)} date ranges defined.")
         return
 
+    # Need to run prefilter first so that markers are created. Without markers then no tasks
+    # will be prepared for the second model.
     compute_blockbatch(
         chains=normalize_chains("ALL"),
-        models=normalize_blockbatch_models("account_abstraction"),
+        models=["account_abstraction_prefilter"],
+        range_spec=range_spec,
+        read_from=DataLocation.GCS,
+        write_to=DataLocation.GCS,
+        dryrun=False,
+        force_complete=False,
+        fork_process=True,
+    )
+
+    compute_blockbatch(
+        chains=normalize_chains("ALL"),
+        models=["account_abstraction"],
         range_spec=range_spec,
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
