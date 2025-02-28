@@ -3,20 +3,18 @@ from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_fromstr, datestr_subtract, now_dt
 
 from .dataaccess import DateFilter, MarkerFilter, init_data_access
-from .dailydatawrite import MARKERS_TABLE
+from .dailydatawrite import MARKERS_TABLE, determine_location
 from .location import DataLocation
 
 log = structlog.get_logger()
 
 
-def query_parquet_paths(
+def query_markers(
     root_path: str,
     location: DataLocation,
     datefilter: DateFilter,
 ):
     partitioned_data_access = init_data_access()
-
-    log.info(f"querying markers for {root_path!r} {datefilter}")
 
     markers = partitioned_data_access.query_markers_with_filters(
         data_location=location,
@@ -34,6 +32,30 @@ def query_parquet_paths(
         f"{len(markers)} markers found",
         min_dt=str(markers["dt"].min()),
         max_dt=str(markers["dt"].max()),
+    )
+
+    return markers
+
+
+def query_written_markers(root_path: str, datefilter: DateFilter):
+    return query_markers(
+        root_path=root_path,
+        location=determine_location(),
+        datefilter=datefilter,
+    )
+
+
+def query_parquet_paths(
+    root_path: str,
+    location: DataLocation,
+    datefilter: DateFilter,
+):
+    log.info(f"querying markers for {root_path!r} {datefilter}")
+
+    markers = query_markers(
+        root_path=root_path,
+        location=location,
+        datefilter=datefilter,
     )
 
     # Ensure that the paths we select are distinct paths.

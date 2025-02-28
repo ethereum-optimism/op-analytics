@@ -85,12 +85,26 @@ VOTES_SCHEMA = pl.Schema(
     ]
 )
 
+VOTING_POWER_SNAPS_SCHEMA = pl.Schema(
+    [
+        ("id", pl.String),
+        ("delegate", pl.String),
+        ("balance", pl.String),
+        ("block_number", pl.Int64),
+        ("ordinal", pl.Int64),
+        ("transaction_index", pl.Int64),
+        ("log_index", pl.Int64),
+        ("contract", pl.String),
+    ]
+)
+
 
 AGORA_PUBLIC_BUCKET_DATA = {
     "delegate_changed_events": (Agora.DELEGATE_CHANGED_EVENTS, DELEGATE_CHANGED_EVENTS_SCHEMA),
     "delegates": (Agora.DELEGATES, DELEGATES_SCHEMA),
     "proposals_v2": (Agora.PROPOSALS, PROPOSALS_SCHEMA),
     "votes": (Agora.VOTES, VOTES_SCHEMA),
+    "voting_power_snaps": (Agora.VOTING_POWER_SNAPS, VOTING_POWER_SNAPS_SCHEMA),
 }
 
 

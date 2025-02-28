@@ -27,6 +27,8 @@ class DuckDBContext:
     # Flag that keeps track of python udf registration.
     python_udfs_ready: bool = False
 
+    is_closed: bool = False
+
     @property
     def db_path(self):
         return os.path.join(self.dir_name, self.db_file_name)
@@ -35,8 +37,19 @@ class DuckDBContext:
         size = os.path.getsize(self.db_path)
         log.info(f"duck db size: {human_size(size)}")
 
+    def unregister_views(self):
+        # Ensure there are no user views remaining.
+        remaining_views = (
+            self.client.sql("SELECT view_name FROM duckdb_views() WHERE NOT internal")
+            .pl()["view_name"]
+            .to_list()
+        )
+        for view in remaining_views:
+            self.client.unregister(view_name=view)
+
     def close(self, remove_db_path: bool = True):
         self.client.close()
+        self.is_closed = True
         if remove_db_path:
             log.info(f"removing temporary path: {self.db_path}")
             os.remove(self.db_path)
@@ -84,7 +97,10 @@ def init_client() -> DuckDBContext:
     global _DUCK_DB
 
     with _INIT_LOCK:
-        if _DUCK_DB is None:
+        no_client = _DUCK_DB is None
+        closed_client = (_DUCK_DB is not None) and _DUCK_DB.is_closed
+
+        if no_client or closed_client:
             dirname = tempfile.mkdtemp(dir=os.environ.get("DUCKDB_DATADIR"), prefix="")
             filename = "op-analytics.duck.db"
             _DUCK_DB = DuckDBContext(
