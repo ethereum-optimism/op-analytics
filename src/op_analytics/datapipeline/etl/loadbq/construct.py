@@ -5,8 +5,6 @@ import pyarrow as pa
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.output import ExpectedOutput
-from op_analytics.coreutils.partitioned.paths import get_dt, get_root_path
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.time import date_fromstr
 from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_readers_bydate
@@ -26,6 +24,7 @@ def construct_date_load_tasks(
     write_to: DataLocation,
     markers_table: str,
     bq_dataset_name: str,
+    table_name_map: dict[str, str],
 ) -> list[DateLoadTask]:
     """Consolidate chain/date combinations into one task per date.
 
@@ -78,38 +77,15 @@ def construct_date_load_tasks(
         outputs = []
         expected_outputs = []
         for root_path, parquet_paths in dataset_paths.items():
-            # Get the common root path for all the source parquet paths.
-            source_uris_root_path = get_root_path(parquet_paths)
-            assert source_uris_root_path.endswith(root_path + "/")
-
-            # Get the common date partition for all the source parquet paths
-            # and make sure it agrees with the task.
-            dateval_from_paths = get_dt(parquet_paths)
-            assert dateval == dateval_from_paths
-
-            # Compute the BQ table name from the root path. For example:
-            # root_path = "ingestion/traces_v1"  --> traces
-            bq_table_name = root_path.split("/")[-1].split("_")[0]
-
-            bq_root_path = f"{bq_dataset_name}/{bq_table_name}"
-            expected_outputs.append(
-                ExpectedOutput(
-                    root_path=bq_root_path,
-                    file_name="",  # Not meaningful for BQ Load
-                    marker_path=f"{bq_dataset_name}/{bq_table_name}/{dateval.strftime("%Y-%m-%d")}",
-                )
+            bq_out = BQOutputData.construct(
+                root_path=root_path,
+                parquet_paths=parquet_paths,
+                target_dateval=dateval,
+                target_bq_dataset_name=bq_dataset_name,
+                table_name_map=table_name_map,
             )
-
-            outputs.append(
-                BQOutputData(
-                    root_path=bq_root_path,
-                    source_uris=parquet_paths,
-                    source_uris_root_path=source_uris_root_path,
-                    dateval=dateval,
-                    bq_dataset_name=bq_dataset_name,
-                    bq_table_name=bq_table_name,
-                )
-            )
+            expected_outputs.append(bq_out.expected_output)
+            outputs.append(bq_out)
 
         result.append(
             DateLoadTask(

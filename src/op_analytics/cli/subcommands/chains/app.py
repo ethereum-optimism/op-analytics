@@ -16,7 +16,10 @@ from op_analytics.datapipeline.etl.ingestion import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
 from op_analytics.datapipeline.etl.intermediate.main import compute_intermediate
-from op_analytics.datapipeline.etl.loadbq.main import load_superchain_raw_to_bq
+from op_analytics.datapipeline.etl.loadbq.main import (
+    load_superchain_raw_to_bq,
+    load_superchain_4337_to_bq,
+)
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 
 log = structlog.get_logger()
@@ -280,6 +283,22 @@ def load_superchain_raw(
 ):
     """Load superchain_raw tables to BigQuery."""
     load_superchain_raw_to_bq(
+        range_spec=range_spec,
+        dryrun=dryrun,
+        force_complete=force_complete,
+        force_not_ready=force_not_ready,
+    )
+
+
+@app.command()
+def load_superchain_4337(
+    range_spec: DATES_ARG,
+    dryrun: DRYRUN_OPTION = False,
+    force_complete: FORCE_COMPLETE_OPTION = False,
+    force_not_ready: FORCE_NOT_READY_OPTION = False,
+):
+    """Load superchain_raw tables to BigQuery."""
+    load_superchain_4337_to_bq(
         range_spec=range_spec,
         dryrun=dryrun,
         force_complete=force_complete,
