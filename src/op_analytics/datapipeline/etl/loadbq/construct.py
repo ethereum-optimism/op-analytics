@@ -18,14 +18,13 @@ from .task import DateLoadTask
 
 log = structlog.get_logger()
 
-MARKERS_TABLE = "superchain_raw_bigquery_markers"
-
 
 def construct_date_load_tasks(
     chains: list[str],
     range_spec: str,
     root_paths_to_read: list[RootPath],
     write_to: DataLocation,
+    markers_table: str,
     bq_dataset_name: str,
 ) -> list[DateLoadTask]:
     """Consolidate chain/date combinations into one task per date.
@@ -124,7 +123,7 @@ def construct_date_load_tasks(
                     extra_marker_columns_schema=[
                         pa.field("dt", pa.date32()),
                     ],
-                    markers_table=MARKERS_TABLE,
+                    markers_table=markers_table,
                     expected_outputs=expected_outputs,
                 ),
                 outputs=outputs,
