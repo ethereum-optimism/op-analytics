@@ -13,19 +13,14 @@ log = structlog.get_logger()
 
 
 def load_blockbatch_to_bq(
-    location: DataLocation,
     range_spec: str,
     root_paths_to_read: list[RootPath],
     bq_dataset_name: str,
+    markers_table: str,
     dryrun: bool,
     force_complete: bool,
     force_not_ready: bool,
 ):
-    # IMPORTANT: When loading to BigQuery we always load all the chains at once.
-    # We do this because loading implies truncating any existing data in the date
-    # partition.
-    location.ensure_biguqery()
-
     chains = goldsky_mainnet_chains()
 
     if dryrun:
@@ -36,7 +31,8 @@ def load_blockbatch_to_bq(
         chains=chains,
         range_spec=range_spec,
         root_paths_to_read=root_paths_to_read,
-        write_to=location,
+        write_to=DataLocation.BIGQUERY,
+        markers_table=markers_table,
         bq_dataset_name=bq_dataset_name,
     )
 

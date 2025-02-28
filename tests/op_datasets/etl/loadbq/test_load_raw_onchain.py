@@ -606,7 +606,6 @@ def test_load_tasks():
         )
 
         load_superchain_raw_to_bq(
-            location=DataLocation.BIGQUERY_LOCAL_MARKERS,
             range_spec="@20241001:+3",
             dryrun=False,
             force_complete=True,

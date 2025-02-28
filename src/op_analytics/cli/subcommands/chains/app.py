@@ -16,7 +16,7 @@ from op_analytics.datapipeline.etl.ingestion import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
 from op_analytics.datapipeline.etl.intermediate.main import compute_intermediate
-from op_analytics.datapipeline.etl.loadbq import PipelineStage, load_to_bq
+from op_analytics.datapipeline.etl.loadbq.main import load_superchain_raw_to_bq
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 
 log = structlog.get_logger()
@@ -277,26 +277,9 @@ def load_superchain_raw(
     dryrun: DRYRUN_OPTION = False,
     force_complete: FORCE_COMPLETE_OPTION = False,
     force_not_ready: FORCE_NOT_READY_OPTION = False,
-    write_to: Annotated[
-        DataLocation,
-        typer.Option(
-            help="Where data will be written to.",
-            case_sensitive=False,
-        ),
-    ] = DataLocation.BIGQUERY,
-    data: Annotated[
-        PipelineStage,
-        typer.Option(
-            help="Data that will be uploaded to BQ.",
-            case_sensitive=False,
-        ),
-    ] = PipelineStage.RAW_ONCHAIN,
 ):
     """Load superchain_raw tables to BigQuery."""
-
-    load_to_bq(
-        stage=data,
-        location=write_to,
+    load_superchain_raw_to_bq(
         range_spec=range_spec,
         dryrun=dryrun,
         force_complete=force_complete,
@@ -358,10 +341,8 @@ def noargs_intermediate():
 @app.command()
 def noargs_public_bq():
     """No-args command to load public datasets to BQ."""
-    load_to_bq(
-        stage=PipelineStage.RAW_ONCHAIN,
-        location=DataLocation.BIGQUERY,
-        range_spec="m3days",
+    load_superchain_raw_to_bq(
+        range_spec="m6days",
         dryrun=False,
         force_complete=False,
         force_not_ready=False,

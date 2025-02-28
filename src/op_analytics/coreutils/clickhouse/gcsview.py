@@ -116,6 +116,11 @@ def create_dailydata_gcs_view():
     SETTINGS use_hive_partitioning = 1
     """)
 
+    clt.command("""
+    CREATE FUNCTION IF NOT EXISTS latest_dt AS 
+    x -> (SELECT max(dt) FROM etl_monitor.daily_data_markers WHERE (root_path = x) LIMIT 1)
+    """)
+
     log.info(f"created clickhouse parameterized view in db={db_name}")
 
     # READ_DEFAULT: view to read the default dt=2000-01-01 in clickhouse
