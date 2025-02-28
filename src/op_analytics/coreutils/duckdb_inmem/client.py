@@ -1,6 +1,6 @@
 import os
 import tempfile
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from threading import Lock
 
 import duckdb
@@ -28,6 +28,8 @@ class DuckDBContext:
     python_udfs_ready: bool = False
 
     is_closed: bool = False
+
+    registered_functions: list[str] = field(default_factory=list)
 
     @property
     def db_path(self):
