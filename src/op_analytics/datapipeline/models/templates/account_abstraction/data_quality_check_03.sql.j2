@@ -4,7 +4,8 @@
 -- This is something that should be true based on the design of the EntryPoint contract.
 -- So it is not checking our SQL logic but the integrity of the incoming data.
 SELECT
-  transaction_hash
+  'Inconsistent UserOperationEvent success and innerHandleOp status' AS error
+  , transaction_hash
   , trace_root
   , trace_address
   , innerhandleop_trace_address

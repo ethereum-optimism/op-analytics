@@ -190,6 +190,33 @@ def logs_count(dataframes: dict[str, pl.DataFrame]):
     return check
 
 
+@register
+def traces_count(dataframes: dict[str, pl.DataFrame]):
+    """The number of traces should be at least equal to the number of transactions."""
+
+    traces_count = dataframes["traces"].group_by("block_number").len("num_traces")
+    tx_count = dataframes["transactions"].group_by("block_number").len("num_txs")
+
+    joined = traces_count.join(
+        tx_count, left_on="block_number", right_on="block_number", how="full", validate="1:1"
+    )
+
+    no_traces = pl.col("num_traces").is_null()
+    missing_traces = pl.col("num_txs") > pl.col("num_traces")
+
+    failure_condition = no_traces | missing_traces
+    check = joined.select(
+        pl.lit("block has missing traces").alias("audit_name"),
+        failure_condition.sum().alias("failure_count"),
+    )
+
+    if len(joined.filter(failure_condition)) > 0:
+        # print to debug failures
+        print(joined.filter(failure_condition))
+
+    return check
+
+
 def dataset_valid_logs():
     # TODO: Write an audit to make sure that the length of the logs data string is always a
     # multiple of 32: (length(data)-2) % 32 == 0

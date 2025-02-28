@@ -3,9 +3,11 @@ from datetime import date
 
 import pyarrow as pa
 
+from op_analytics.coreutils.partitioned.dataaccess import init_data_access
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.reader import DataReader
+from op_analytics.coreutils.partitioned.markers_core import DateFilter, MarkerFilter
 from op_analytics.coreutils.time import date_fromstr
 from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_readers_bydate
 from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
@@ -43,6 +45,26 @@ def construct_date_load_tasks(
         read_from=DataLocation.GCS,
     )
 
+    # Prepare a request for output data to pre-fetch completion markers.
+    # Markers are used to skip already completed tasks.
+    output_root_paths = []
+    for rp in root_paths_to_read:
+        output_root_paths.append(
+            BQOutputData.get_bq_root_path(
+                root_path=rp.root_path,
+                table_name_map=table_name_map,
+                target_bq_dataset_name=bq_dataset_name,
+            )
+        )
+
+    output_markers_df = query_output_markers(
+        location=write_to,
+        markers_table=markers_table,
+        datevals=blockbatch_request.time_range.to_date_range().dates(),
+        root_paths=output_root_paths,
+    )
+    log.info(f"pre-fetched {len(output_markers_df)} markers")
+
     # For each date, keep track of datasets and parquet paths.
     date_paths: dict[date, dict[str, list]] = defaultdict(lambda: defaultdict(list))
 
@@ -76,6 +98,7 @@ def construct_date_load_tasks(
         #
         outputs = []
         expected_outputs = []
+        complete_markers = []
         for root_path, parquet_paths in dataset_paths.items():
             bq_out = BQOutputData.construct(
                 root_path=root_path,
@@ -86,6 +109,12 @@ def construct_date_load_tasks(
             )
             expected_outputs.append(bq_out.expected_output)
             outputs.append(bq_out)
+
+            is_complete = (
+                bq_out.expected_output.marker_path in output_markers_df["marker_path"].to_list()
+            )
+            if is_complete:
+                complete_markers.append(bq_out.expected_output.marker_path)
 
         result.append(
             DateLoadTask(
@@ -101,6 +130,7 @@ def construct_date_load_tasks(
                     ],
                     markers_table=markers_table,
                     expected_outputs=expected_outputs,
+                    complete_markers=complete_markers,
                 ),
                 outputs=outputs,
             )
@@ -108,3 +138,34 @@ def construct_date_load_tasks(
 
     log.info(f"Consolidated to {len(result)} dateval tasks.")
     return result
+
+
+def query_output_markers(
+    location: DataLocation,
+    markers_table: str,
+    datevals: list[date],
+    root_paths: list[str],
+):
+    """Query Clickhouse to find out which output markers have been written already."""
+    client = init_data_access()
+
+    return client.query_markers_with_filters(
+        data_location=location,
+        markers_table=markers_table,
+        datefilter=DateFilter(
+            min_date=None,
+            max_date=None,
+            datevals=datevals,
+        ),
+        projections=[
+            "dt",
+            "marker_path",
+            "root_path",
+        ],
+        filters={
+            "root_paths": MarkerFilter(
+                column="root_path",
+                values=root_paths,
+            ),
+        },
+    )
