@@ -16,6 +16,7 @@ def load_blockbatch_to_bq(
     range_spec: str,
     root_paths_to_read: list[RootPath],
     bq_dataset_name: str,
+    table_name_map: dict[str, str],
     markers_table: str,
     dryrun: bool,
     force_complete: bool,
@@ -34,6 +35,7 @@ def load_blockbatch_to_bq(
         write_to=DataLocation.BIGQUERY,
         markers_table=markers_table,
         bq_dataset_name=bq_dataset_name,
+        table_name_map=table_name_map,
     )
 
     success = 0
