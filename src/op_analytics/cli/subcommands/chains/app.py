@@ -160,7 +160,6 @@ def normalize_blockbatch_models(models: str) -> list[str]:
             result.add("refined_traces")
             result.add("token_transfers")
             result.add("account_abstraction_prefilter")
-            result.add("account_abstraction")
         elif model.startswith("-"):
             not_included.add(model.removeprefix("-").strip())
         else:
@@ -330,7 +329,7 @@ def noargs_blockbatch():
     compute_blockbatch(
         chains=normalize_chains("ALL"),
         models=normalize_blockbatch_models("MODELS"),
-        range_spec="m8hours",
+        range_spec="m12hours",
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,
