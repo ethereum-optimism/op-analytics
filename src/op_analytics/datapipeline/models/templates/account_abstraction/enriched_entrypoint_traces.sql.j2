@@ -1,7 +1,8 @@
 WITH
 
--- Traces that are innerHandleOp calls.
-decoded_traces AS (
+-- All traces in transactions that emit Entrypoint Contract logs. 
+-- (See prefiltering logic.)
+all_prefiltered_traces AS (
   SELECT
     t.dt
     , t.chain
@@ -80,7 +81,7 @@ decoded_traces AS (
     , t.decoded['opinfo'] AS innerhandleop_opinfo
     , t.decoded['context'] AS innerhandleop_context
 
-  FROM decoded_traces AS t
+  FROM all_prefiltered_traces AS t
 )
 
 
