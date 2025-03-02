@@ -17,7 +17,7 @@ traces AS (
 -- Checks that when we flag something as "is_from_sender" the trace
 -- address should be a subtrace of the "innerhandleop_trace_address".
 SELECT
-  'Unexpedted result on matched userop' AS error
+  'Unexpected result on is_from_sender' AS error
   , t.block_number
   , t.transaction_hash
   , t.userop_sender
