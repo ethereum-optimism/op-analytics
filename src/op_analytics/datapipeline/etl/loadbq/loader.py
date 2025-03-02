@@ -36,6 +36,28 @@ class BQOutputData:
     def default_partitions(self) -> list[dict[str, str]] | None:
         return None
 
+    @staticmethod
+    def get_bq_table_name(root_path: str, table_name_map: dict[str, str]) -> str:
+        # Obtain the BQ table name from the root path. For example:
+        # root_path = "ingestion/traces_v1"  --> traces_v1.
+        bq_table_name = root_path.split("/")[-1]
+
+        # The table_name_map overrides the default BQ table name.
+        if bq_table_name in table_name_map:
+            bq_table_name = table_name_map[bq_table_name]
+
+        return bq_table_name
+
+    @classmethod
+    def get_bq_root_path(
+        cls,
+        root_path: str,
+        table_name_map: dict[str, str],
+        target_bq_dataset_name: str,
+    ) -> str:
+        bq_table_name = cls.get_bq_table_name(root_path=root_path, table_name_map=table_name_map)
+        return f"{target_bq_dataset_name}/{bq_table_name}"
+
     @classmethod
     def construct(
         cls,
@@ -54,15 +76,16 @@ class BQOutputData:
         dateval_from_paths = get_dt(parquet_paths)
         assert target_dateval == dateval_from_paths
 
-        # Obtain the BQ table name from the root path. For example:
-        # root_path = "ingestion/traces_v1"  --> traces_v1.
-        bq_table_name = root_path.split("/")[-1]
+        bq_table_name = cls.get_bq_table_name(
+            root_path=root_path,
+            table_name_map=table_name_map,
+        )
 
-        # The table_name_map overrides the default BQ table name.
-        if bq_table_name in table_name_map:
-            bq_table_name = table_name_map[bq_table_name]
-
-        bq_root_path = f"{target_bq_dataset_name}/{bq_table_name}"
+        bq_root_path = cls.get_bq_root_path(
+            root_path=root_path,
+            table_name_map=table_name_map,
+            target_bq_dataset_name=target_bq_dataset_name,
+        )
 
         return cls(
             root_path=bq_root_path,
