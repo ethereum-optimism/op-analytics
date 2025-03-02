@@ -137,9 +137,14 @@ def auditor(task: IngestionTask):
     # Iterate over all the registered audits.
     # Raises an exception if an audit is failing.
     passing_audits = 0
+    skipped_audits = 0
     for name, audit in REGISTERED_AUDITS.items():
         # Execute the audit!
-        result: pl.DataFrame = audit(task.input_dataframes)
+        result: pl.DataFrame | None = audit(task.chain, task.input_dataframes)
+
+        if result is None:
+            skipped_audits += 1
+            continue
 
         if not result.collect_schema().get("audit_name") == pl.String:
             raise Exception("Audit result DataFrame is missing column: audit_name[String]")
@@ -158,7 +163,7 @@ def auditor(task: IngestionTask):
             else:
                 passing_audits += 1
 
-    log.info(f"audit {passing_audits} checks OK")
+    log.info(f"audits: {skipped_audits} skipped, {passing_audits} OK")
 
     # Default values for "chain" and "dt" to be used in cases where one of the
     # other datsets is empty.  On chains with very low throughput (e.g. race) we
