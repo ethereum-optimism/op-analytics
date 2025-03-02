@@ -21,8 +21,15 @@ def load_blockbatch_to_bq(
     dryrun: bool,
     force_complete: bool,
     force_not_ready: bool,
+    excluded_chains: list[str] | None = None,
 ):
-    chains = goldsky_mainnet_chains()
+    all_chains = goldsky_mainnet_chains()
+
+    chains = []
+    excluded_chains = excluded_chains or []
+    for chain in all_chains:
+        if chain not in excluded_chains:
+            chains.append(chain)
 
     if dryrun:
         log.info("DRYRUN: No work will be done.")
