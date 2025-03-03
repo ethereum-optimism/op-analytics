@@ -36,7 +36,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
         )
 
         assert num_logs == 38
-        assert num_traces == 520
+        assert num_traces == 319
 
     def test_model_schema_logs(self):
         assert self._duckdb_context is not None
@@ -112,7 +112,6 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
             "entrypoint_contract_address": "VARCHAR",
             "entrypoint_contract_version": "VARCHAR",
             "is_innerhandleop": "BOOLEAN",
-            "is_innerhandleop_subtrace": "BOOLEAN",
             "is_from_sender": "BOOLEAN",
             "userop_sender": "VARCHAR",
             "userop_paymaster": "VARCHAR",
@@ -126,6 +125,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
             "useropevent_success": "BOOLEAN",
             "useropevent_actualgascost": "VARCHAR",
             "useropevent_actualgasused": "VARCHAR",
+            "userop_idx": "BIGINT",
         }
 
     def test_single_log(self):
@@ -207,7 +207,6 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
                 "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": True,
-                "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
                 "userop_sender": "0x118bd3dc35b5ff4d5a20b8f48b1824f471ebc563",
                 "userop_paymaster": "0x0000000000000000000000000000000000000000",
@@ -222,6 +221,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_success": True,
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
+                "userop_idx": None,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -253,7 +253,6 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
                 "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
-                "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
                 "userop_sender": "0x118bd3dc35b5ff4d5a20b8f48b1824f471ebc563",
                 "userop_paymaster": "0x0000000000000000000000000000000000000000",
@@ -268,6 +267,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_success": True,
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
+                "userop_idx": None,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -299,7 +299,6 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
                 "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
-                "is_innerhandleop_subtrace": True,
                 "is_from_sender": True,
                 "userop_sender": "0x118bd3dc35b5ff4d5a20b8f48b1824f471ebc563",
                 "userop_paymaster": "0x0000000000000000000000000000000000000000",
@@ -314,6 +313,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_success": True,
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
+                "userop_idx": 1,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -345,7 +345,6 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
                 "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
-                "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
                 "userop_sender": "0x118bd3dc35b5ff4d5a20b8f48b1824f471ebc563",
                 "userop_paymaster": "0x0000000000000000000000000000000000000000",
@@ -360,6 +359,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_success": True,
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
+                "userop_idx": None,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -391,7 +391,6 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
                 "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
-                "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
                 "userop_sender": "0x118bd3dc35b5ff4d5a20b8f48b1824f471ebc563",
                 "userop_paymaster": "0x0000000000000000000000000000000000000000",
@@ -406,6 +405,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_success": True,
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
+                "userop_idx": None,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -437,7 +437,6 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
                 "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
-                "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
                 "userop_sender": "0x118bd3dc35b5ff4d5a20b8f48b1824f471ebc563",
                 "userop_paymaster": "0x0000000000000000000000000000000000000000",
@@ -452,6 +451,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_success": True,
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
+                "userop_idx": None,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -483,7 +483,6 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
                 "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
-                "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
                 "userop_sender": "0x118bd3dc35b5ff4d5a20b8f48b1824f471ebc563",
                 "userop_paymaster": "0x0000000000000000000000000000000000000000",
@@ -498,6 +497,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_success": True,
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
+                "userop_idx": None,
             },
         ]
 
@@ -513,54 +513,10 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
             .to_dicts()
         )
 
-        assert output == [
-            {
-                "dt": datetime.date(2024, 9, 17),
-                "chain": "base",
-                "chain_id": 8453,
-                "network": "mainnet",
-                "block_timestamp": 1726531547,
-                "block_number": 19871100,
-                "block_hash": "0x2070ae0725b59739488aaa77096d55c616d366ec8c021700a189f6cd14e4162b",
-                "transaction_hash": "0xeb8aed49895870a10eaee7fc6b38d00e6081816e1c7309fd6829f9299a386b58",
-                "transaction_index": 40,
-                "from_address": "0x118bd3dc35b5ff4d5a20b8f48b1824f471ebc563",
-                "to_address": "0x0000000000000000000000000000000000000001",
-                "value": "0",
-                "input": "0x993caabad1df1a65f945f093ff92472016acdb9868cc75a9f24d3b98791fb877000000000000000000000000000000000000000000000000000000000000001ca634c62a702e7b96eb7d32633588f629d4ec97495110521b8a0d9d74fc38a6864434f0bfe9ea547d5f8253f4e35580275d4b065b350a2f134c90de835e35bab0",
-                "output": "0x000000000000000000000000d61fc44452aa68e61f45dcc895a4079ad6f3e9aa",
-                "trace_type": "call",
-                "call_type": "staticcall",
-                "reward_type": "",
-                "gas": 36257,
-                "gas_used": 3000,
-                "subtraces": 0,
-                "trace_address": "0,0,0",
-                "error": "",
-                "status": 1,
-                "trace_root": 0,
-                "method_id": "0x993caaba",
-                "tx_from_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
-                "bundler_address": None,
-                "entrypoint_contract_address": None,
-                "entrypoint_contract_version": None,
-                "is_innerhandleop": False,
-                "is_innerhandleop_subtrace": False,
-                "is_from_sender": None,
-                "userop_sender": None,
-                "userop_paymaster": None,
-                "userop_hash": None,
-                "userop_calldata": None,
-                "innerhandleop_decodeerror": None,
-                "innerhandleop_opinfo": None,
-                "innerhandleop_context": None,
-                "innerhandleop_trace_address": None,
-                "useropevent_nonce": None,
-                "useropevent_success": None,
-                "useropevent_actualgascost": None,
-                "useropevent_actualgasused": None,
-            }
-        ]
+        # (pedro - 2025/03/03) We switched from a LEFT join to an INNER join.
+        # There is little value on keeping the outer traces in the transaaction.
+        # userOps only exist inside innderHandleOp calls.
+        assert output == []
 
     def test_log_counts(self):
         assert self._duckdb_context is not None

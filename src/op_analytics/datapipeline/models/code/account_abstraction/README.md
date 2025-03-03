@@ -3,16 +3,16 @@
 
 ## Overview
 
-The pipeline is split into two steps (1) pre-filtering, (2) decoding + enrichment. 
+The pipeline is split into two steps (1) pre-filtering, (2) decoding + enrichment.
 
 Pre-filtering searches raw logs to find events emitted by the AA EntryPoint contract. As a filter
-condition we use the set of topic0 hashs on all indexed EntryPoint v0_6_0 and v0_7_0 events. 
+condition we use the set of topic0 hashs on all indexed EntryPoint v0_6_0 and v0_7_0 events.
 
-The filtered logs give us the set of AA transactions. We keep traces for those transactions 
+The filtered logs give us the set of AA transactions. We keep traces for those transactions
 (excluding delegatecall traces).
 
-In part 2 the pre-filtered logs and traces are decoded and further enriched to produce the fina
-output tables. 
+In part 2 the pre-filtered logs and traces are decoded and further enriched to produce the final
+output tables.
 
 ## Output Table Schemas
 
@@ -41,7 +41,7 @@ output tables.
 | actualGasUsed     | VARCHAR     |  Decoded from log data
 
 
-### `enriched_entrypoint_traces` Table 
+### `enriched_entrypoint_traces` Table
 
 
 | Column Name                 | Column Type | Description
@@ -72,9 +72,11 @@ output tables.
 | trace_root                  | INTEGER     |
 | method_id                   | VARCHAR     |
 | tx_from_address             | VARCHAR     |  Usually this is the blundler contract address.
-| entrypoint_contract_address | VARCHAR     |  
+| bundler_address             | VARCHAR     |  Address that calls the handleOp method on the EntryPoint.
+| entrypoint_contract_address | VARCHAR     |
+| entrypoint_contract_version | VARCHAR     |  Decoded from innerHandleOp.
+| innerhandleop_trace_address | VARCHAR     |  Trace address of the innerHandleOp call.
 | is_innerhandleop            | BOOLEAN     |  Convenience boolean flag.
-| is_innerhandleop_subtrace   | BOOLEAN     |  Convenience boolean flag.
 | is_from_sender              | BOOLEAN     |  Convenience boolean flag.
 | userop_sender               | VARCHAR     |  Decoded from innerHandleOp.  Used to join back to the UserOperationEvent log.
 | userop_paymaster            | VARCHAR     |  Decoded from innerHandleOp.  Used to join back to the UserOperationEvent log.
@@ -83,21 +85,20 @@ output tables.
 | innerhandleop_decodeerror   | VARCHAR     |  Decoded from innerHandleOp.
 | innerhandleop_opinfo        | VARCHAR     |  Decoded from innerHandleOp.
 | innerhandleop_context       | VARCHAR     |  Decoded from innerHandleOp.
-| innerhandleop_trace_address | VARCHAR     |  Decoded from innerHandleOp.
-| entrypoint_contract_version | VARCHAR     |  Decoded from innerHandleOp.
 | useropevent_nonce           | VARCHAR     |  Joined from useroperationevent_logs.
 | useropevent_success         | BOOLEAN     |  Joined from useroperationevent_logs.
 | useropevent_actualgascost   | VARCHAR     |  Joined from useroperationevent_logs.
 | useropevent_actualgasused   | VARCHAR     |  Joined from useroperationevent_logs.
+| userop_idx                  | BIGINT      |  The row_number() of traces where from_address = sender ordered by trace_addres. This is equal to 1 for the userOp call.
 
 
 ## Output Table Descriptions
 
 ### `useroperationevent_logs` Table
 
-Refer to [`useroperationevent_logs.sql.j2`](../../templates/account_abstraction/useroperationevent_logs.sql.j2). 
+Refer to [`useroperationevent_logs.sql.j2`](../../templates/account_abstraction/useroperationevent_logs.sql.j2).
 
-This table is created by reading the pre-filtered EntryPoint logs, filtering to only 
+This table is created by reading the pre-filtered EntryPoint logs, filtering to only
 `UserOperationEvent` logs and then decoding the event parameters.
 
 The following columns are obtained from decoding:
@@ -133,78 +134,21 @@ The following columns are obtained from decoding:
 ```
 
 
-### `enriched_entrypoint_traces` Table 
+### `enriched_entrypoint_traces` Table
 
 Refer to [`enriched_entrypoint_traces.sql.j2`](../../templates/account_abstraction/enriched_entrypoint_traces.sql.j2)
 
 The `innerHandleOp` traces are decoded and joined to the `useroperationevent_logs` table. This result
 is then self-joined back to the entrypoint contract traces which result in enrichment of all traces
 with the corresponding fields from the `innerHandleOp` and the emitted `UserOperationEvent`.
-The self join applies only to traces that are subtraces of the `innerHandleOp`. 
+The self join applies only to traces that are subtraces of the `innerHandleOp`.
 
-We have two types of rows in this table, those that are subtraces of an `innerHandleOp` and those
-that are not. Below we include examples.
-
-
-### Sample row where `is_innerhandleop_subtrace = False`
-
-Note how all of the enrichment fields are null.
-
-```python
-{
-    "dt": datetime.date(2024, 9, 17),
-    "chain": "base",
-    "chain_id": 8453,
-    "network": "mainnet",
-    "block_timestamp": 1726531547,
-    "block_number": 19871100,
-    "block_hash": "0x2070ae0725b59739488aaa77096d55c616d366ec8c021700a189f6cd14e4162b",
-    "transaction_hash": "0xeb8aed49895870a10eaee7fc6b38d00e6081816e1c7309fd6829f9299a386b58",
-    "transaction_index": 40,
-    "from_address": "0x118bd3dc35b5ff4d5a20b8f48b1824f471ebc563",
-    "to_address": "0x0000000000000000000000000000000000000001",
-    "value": "0",
-    "input": "0x993caabad1df1a65f945f093ff92472016acdb9868cc75a9f24d3b98791fb877000000000000000000000000000000000000000000000000000000000000001ca634c62a702e7b96eb7d32633588f629d4ec97495110521b8a0d9d74fc38a6864434f0bfe9ea547d5f8253f4e35580275d4b065b350a2f134c90de835e35bab0",
-    "output": "0x000000000000000000000000d61fc44452aa68e61f45dcc895a4079ad6f3e9aa",
-    "trace_type": "call",
-    "call_type": "staticcall",
-    "reward_type": "",
-    "gas": 36257,
-    "gas_used": 3000,
-    "subtraces": 0,
-    "trace_address": "0,0,0",
-    "error": "",
-    "status": 1,
-    "trace_root": 0,
-    "method_id": "0x993caaba",
-    "tx_from_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
-    "bundler_address": None,
-    "entrypoint_contract_address": None,
-    "entrypoint_contract_version": None,
-    "is_innerhandleop": False,
-    "is_innerhandleop_subtrace": False,
-    "is_from_sender": None,
-    "userop_sender": None,
-    "userop_paymaster": None,
-    "userop_hash": None,
-    "userop_calldata": None,
-    "innerhandleop_decodeerror": None,
-    "innerhandleop_opinfo": None,
-    "innerhandleop_context": None,
-    "innerhandleop_trace_address": None,
-    "useropevent_nonce": None,
-    "useropevent_success": None,
-    "useropevent_actualgascost": None,
-    "useropevent_actualgasused": None,
-}
-```
+Only traces that are subtraces of an `innerHandleOp` are kept in the table. Below we show an example.
 
 
-### Sample rows where `is_innerhandleop_subtrace = True`
+### Sample row
 
-In the example below all the enrichment fields are present. 
-
-This example also has the `is_from_sender = true` boolean flag, which means that the trace 
+This example also has the `is_from_sender = true` boolean flag, which means that the trace
 `from_address` matches the UserOp `sender` address.
 
 
@@ -266,7 +210,7 @@ This example also has the `is_from_sender = true` boolean flag, which means that
 Usually the `innerHandleOp` trace is a level 1 trace (no commas on the `trace_address`). In the
 following example we have a bundle with 5`innerHandleOp` traces (`6` to `10`).
 
-Notice that `tx_from_address == bundler_address`. 
+Notice that `tx_from_address == bundler_address`.
 
 ```
 ┌────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────┬────────────────────────────────────────────┬────────────┬───────────────┬─────────────────────────────┬────────────────┬──────────────────┬───────────────────────────┬─────────────────────┬────────┬─────────┬────────────────────────────────────────────┬────────────────────────────────────────────┬────────────────────────────────────────────┐
@@ -308,12 +252,12 @@ Notice that `tx_from_address == bundler_address`.
 └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-We have also observed cases ([see basescan](https://basescan.org/tx/0x6e7b82e957641c9178e0aa7d84d9ca170898d984928e271c714b2758ae57e461)) 
+We have also observed cases ([see basescan](https://basescan.org/tx/0x6e7b82e957641c9178e0aa7d84d9ca170898d984928e271c714b2758ae57e461))
 where the EntryPoint contract is called from another transaction.
 This results in `innerHandleOp` trace addresses that are further nested. In the following example
 we see a bundle with one `innerHandleOp` at trace address `0,0,1`.
 
-Notice that `tx_from_address != bundler_address`. 
+Notice that `tx_from_address != bundler_address`.
 ```
 ┌────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────┬────────────────────────────────────────────┬────────────┬───────────────┬─────────────────────────────┬────────────────┬──────────────────┬───────────────────────────┬─────────────────────┬────────┬─────────┬────────────────────────────────────────────┬────────────────────────────────────────────┬────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                          transaction_hash                          │              tx_from_address               │              bundler_address               │ trace_root │ trace_address │ innerhandleop_trace_address │ is_from_sender │ is_innerhandleop │ is_innerhandleop_subtrace │ useropevent_success │ status │  error  │               userop_sender                │                from_address                │                 to_address                 │                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   input                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    │
@@ -338,7 +282,7 @@ Notice that `tx_from_address != bundler_address`.
 ###  Successful userOp with failed user traces
 
 This is an example that I don't understand very well, but I see a userOp that has two sender
-traces. The first one (`3,0,0,0`) is reverted and the second one (`3,0,0,1`) succeds. 
+traces. The first one (`3,0,0,0`) is reverted and the second one (`3,0,0,1`) succeds.
 
 ```
 ┌────────────────────────────────────────────────────────────────────┬────────────┬───────────────┬─────────────────────────────┬────────────────┬──────────────────┬───────────────────────────┬─────────────────────┬────────┬────────────────────┬────────────────────────────────────────────┬────────────────────────────────────────────┬────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
