@@ -7,7 +7,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary, last_n_days
 from op_analytics.coreutils.time import now_dt
 
-from .dataaccess import Dune
+from ..dataaccess import Dune
 
 log = structlog.get_logger()
 
@@ -24,8 +24,18 @@ class DuneDexTradesSummary:
     def fetch(cls):
         """Fetch Dune dex trades summary."""
         # perform new query execution and get results
+        current_dt: str = now_dt()
+
         df = spice.query(DEX_TRADES_QUERY_ID, refresh=True)
-        return DuneDexTradesSummary(summary_df=df)
+        summary_df = pl.DataFrame(df).rename({"block_date": "dt"})
+
+        summary_df_truncated = last_n_days(
+            summary_df,
+            n_dates=7,
+            reference_dt=current_dt,
+            date_column_type_is_str=True,
+        )
+        return DuneDexTradesSummary(summary_df=summary_df_truncated)
 
 
 def execute_pull():
