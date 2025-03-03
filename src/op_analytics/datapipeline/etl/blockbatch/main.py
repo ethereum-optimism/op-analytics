@@ -7,7 +7,6 @@ from .construct import construct_tasks
 log = structlog.get_logger()
 
 
-@bound_contextvars(pipeline_step="blockbatch")
 def compute_blockbatch(
     chains: list[str],
     models: list[str],
@@ -19,12 +18,13 @@ def compute_blockbatch(
     fork_process: bool = True,
     use_pool: bool = False,
 ):
-    tasks = construct_tasks(chains, models, range_spec, read_from, write_to)
-    run_tasks(
-        tasks=tasks,
-        dryrun=dryrun,
-        force_complete=force_complete,
-        fork_process=fork_process,
-        num_processes=4,
-        use_pool=use_pool,
-    )
+    for ii, tasks in enumerate(construct_tasks(chains, models, range_spec, read_from, write_to)):
+        with bound_contextvars(pipeline_step="blockbatch", graph_depth=ii):
+            run_tasks(
+                tasks=tasks,
+                dryrun=dryrun,
+                force_complete=force_complete,
+                fork_process=fork_process,
+                num_processes=4,
+                use_pool=use_pool,
+            )

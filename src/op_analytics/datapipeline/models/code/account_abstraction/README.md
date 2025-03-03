@@ -43,9 +43,8 @@ output tables.
 
 ### `enriched_entrypoint_traces` Table 
 
-
 | Column Name                 | Column Type | Description
-|-----------------------------|-------------|
+|-----------------------------|-------------|--
 | dt                          | DATE        |
 | chain                       | VARCHAR     |
 | chain_id                    | INTEGER     |
@@ -87,6 +86,7 @@ output tables.
 | useropevent_success         | BOOLEAN     |  Joined from useroperationevent_logs.
 | useropevent_actualgascost   | VARCHAR     |  Joined from useroperationevent_logs.
 | useropevent_actualgasused   | VARCHAR     |  Joined from useroperationevent_logs.
+```
 
 ## Output Table Descriptions
 
