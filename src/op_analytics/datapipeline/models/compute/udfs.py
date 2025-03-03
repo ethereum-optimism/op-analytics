@@ -175,11 +175,11 @@ UDFS = [
     """,
     #
     # Trace address root. Examples:
-    #  ""       -> "none"
-    #  "0"      -> "0"
-    #  "0,2"    -> "0"
-    #  "0,10,0" -> "0"
-    #  "0,100,0" -> "0"
+    #  ""       -> -1
+    #  "0"      -> 0
+    #  "0,2"    -> 0
+    #  "0,10,0" -> 0
+    #  "0,100,0" -> 0
     """CREATE OR REPLACE MACRO trace_address_root(a)
     AS CASE
       WHEN length(a) = 0 THEN -1
