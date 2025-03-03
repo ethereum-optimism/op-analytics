@@ -7,16 +7,18 @@ from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT
 from .dataaccess import DefiLlama
 
 
-TOKEN_MAPPINGS_GSHEET_NAME = "defillama_category_mapping"
+PROTOCOL_CATEGORY_MAPPINGS_GSHEET_NAME = "protocol_category_mapping"
 
-TOKEN_MAPPINGS_SCHEMA = {
+PROTOCOL_CATEGORY_MAPPINGS_SCHEMA = {
     "protocol_category": pl.String,
     "aggregated_category": pl.String,
 }
 
 
 def execute():
-    df = load_data_from_gsheet(TOKEN_MAPPINGS_GSHEET_NAME, TOKEN_MAPPINGS_SCHEMA)
+    df = load_data_from_gsheet(
+        PROTOCOL_CATEGORY_MAPPINGS_GSHEET_NAME, PROTOCOL_CATEGORY_MAPPINGS_SCHEMA
+    )
 
     # Deduplicate
     dupes = df.group_by("token").len().filter(pl.col("len") > 1)
@@ -27,7 +29,7 @@ def execute():
     # Overwrite at default dt
     DefiLlama.TOKEN_MAPPINGS.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
 
-    return {TOKEN_MAPPINGS_GSHEET_NAME: len(df)}
+    return {PROTOCOL_CATEGORY_MAPPINGS_GSHEET_NAME: len(df)}
 
 
 def load_data_from_gsheet(gsheet_name: str, expected_schema: dict) -> pl.DataFrame:
