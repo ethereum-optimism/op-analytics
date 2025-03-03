@@ -18,15 +18,19 @@ def construct_readers_byblock(
     blockbatch_request: BlockBatchRequest,
     read_from: DataLocation,
 ) -> list[DataReader]:
-    """Construct a list of DataReader for the given parameters.
+    """Construct a list of DataReader for the given BlockBatchRequest.
 
-    The parameters specify a set of chains, dates, and datasets that we are
+    The request specifies a set of chains, dates, and datasets that we are
     interested in processing.
 
     Each DataReader will be able to access the parquet data paths for the requested
-    datasets (root_paths) on a single block batch.
+    root paths on a single block batch.
 
     Readers can be used for processing by block batch.
+
+    The markers dataframe is optional. Passing it in can be helpful if we want to
+    make a single markes query that we then reuse to construct different kinds o
+    readers (e.g. readers for different models).
     """
 
     markers_df = blockbatch_request.query_markers(location=read_from)

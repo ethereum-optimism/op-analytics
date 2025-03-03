@@ -10,7 +10,7 @@ from op_analytics.datapipeline.chains.goldsky_chains import ChainNetwork, determ
 from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_readers_bydate
 from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
 from op_analytics.datapipeline.models.compute.execute import PythonModel
-from op_analytics.datapipeline.models.compute.markers import ModelsDataSpec
+from op_analytics.datapipeline.models.compute.modelspec import ModelsDataSpec
 
 from .task import IntermediateModelsTask
 
