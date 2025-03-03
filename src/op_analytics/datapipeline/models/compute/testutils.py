@@ -213,13 +213,15 @@ class IntermediateModelTestBase(unittest.TestCase):
 
         from op_analytics.datapipeline.etl.blockbatch.construct import construct_tasks
 
-        tasks = construct_tasks(
+        tasks = []
+        for task_group in construct_tasks(
             chains=cls.chains,
             models=[cls.model],
             range_spec=f"@{datestr}:+1",
             read_from=DataLocation.GCS,
             write_to=DataLocation.GCS,
-        )
+        ):
+            tasks.extend(task_group)
         assert len(tasks) > 0
         task = tasks[0]
 
