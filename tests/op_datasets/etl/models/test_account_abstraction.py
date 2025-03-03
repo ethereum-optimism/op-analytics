@@ -21,7 +21,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
 
         num_logs = (
             self._duckdb_context.client.sql(
-                "SELECT COUNT(*) as num_logs FROM useroperationevent_logs_v1"
+                "SELECT COUNT(*) as num_logs FROM useroperationevent_logs_v2"
             )
             .pl()
             .to_dicts()[0]["num_logs"]
@@ -29,7 +29,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
 
         num_traces = (
             self._duckdb_context.client.sql(
-                "SELECT COUNT(*) as num_traces FROM enriched_entrypoint_traces_v1"
+                "SELECT COUNT(*) as num_traces FROM enriched_entrypoint_traces_v2"
             )
             .pl()
             .to_dicts()[0]["num_traces"]
@@ -42,7 +42,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
         assert self._duckdb_context is not None
 
         schema = (
-            self._duckdb_context.client.sql("DESCRIBE useroperationevent_logs_v1")
+            self._duckdb_context.client.sql("DESCRIBE useroperationevent_logs_v2")
             .pl()
             .select("column_name", "column_type")
             .to_dicts()
@@ -74,7 +74,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
         assert self._duckdb_context is not None
 
         schema = (
-            self._duckdb_context.client.sql("DESCRIBE enriched_entrypoint_traces_v1")
+            self._duckdb_context.client.sql("DESCRIBE enriched_entrypoint_traces_v2")
             .pl()
             .select("column_name", "column_type")
             .to_dicts()
@@ -107,6 +107,10 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
             "status": "BIGINT",
             "trace_root": "INTEGER",
             "method_id": "VARCHAR",
+            "tx_from_address": "VARCHAR",
+            "bundler_address": "VARCHAR",
+            "entrypoint_contract_address": "VARCHAR",
+            "entrypoint_contract_version": "VARCHAR",
             "is_innerhandleop": "BOOLEAN",
             "is_innerhandleop_subtrace": "BOOLEAN",
             "is_from_sender": "BOOLEAN",
@@ -118,7 +122,6 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
             "innerhandleop_opinfo": "VARCHAR",
             "innerhandleop_context": "VARCHAR",
             "innerhandleop_trace_address": "VARCHAR",
-            "entrypoint_contract_version": "VARCHAR",
             "useropevent_nonce": "VARCHAR",
             "useropevent_success": "BOOLEAN",
             "useropevent_actualgascost": "VARCHAR",
@@ -130,7 +133,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
 
         output = (
             self._duckdb_context.client.sql("""
-        SELECT * FROM useroperationevent_logs_v1
+        SELECT * FROM useroperationevent_logs_v2
         WHERE transaction_hash = '0xeb8aed49895870a10eaee7fc6b38d00e6081816e1c7309fd6829f9299a386b58'
         """)
             .pl()
@@ -165,7 +168,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
 
         output = (
             self._duckdb_context.client.sql("""
-        SELECT * FROM enriched_entrypoint_traces_v1 WHERE transaction_hash = '0xeb8aed49895870a10eaee7fc6b38d00e6081816e1c7309fd6829f9299a386b58'
+        SELECT * FROM enriched_entrypoint_traces_v2 WHERE transaction_hash = '0xeb8aed49895870a10eaee7fc6b38d00e6081816e1c7309fd6829f9299a386b58'
         AND trace_address LIKE '1%'
         ORDER BY trace_address
         """)
@@ -200,6 +203,9 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "status": 1,
                 "trace_root": 1,
                 "method_id": "0x1d732756",
+                "tx_from_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": True,
                 "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
@@ -243,6 +249,9 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "status": 1,
                 "trace_root": 1,
                 "method_id": "0xb61d27f6",
+                "tx_from_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
                 "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
@@ -286,6 +295,9 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "status": 1,
                 "trace_root": 1,
                 "method_id": "0x29c911c9",
+                "tx_from_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
                 "is_innerhandleop_subtrace": True,
                 "is_from_sender": True,
@@ -329,6 +341,9 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "status": 1,
                 "trace_root": 1,
                 "method_id": "0x6352211e",
+                "tx_from_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
                 "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
@@ -372,6 +387,9 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "status": 1,
                 "trace_root": 1,
                 "method_id": "0x311f9469",
+                "tx_from_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
                 "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
@@ -415,6 +433,9 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "status": 1,
                 "trace_root": 1,
                 "method_id": "0x42842e0e",
+                "tx_from_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
                 "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
@@ -458,6 +479,9 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "status": 1,
                 "trace_root": 1,
                 "method_id": "0x150b7a02",
+                "tx_from_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "bundler_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "entrypoint_contract_address": "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789",
                 "is_innerhandleop": False,
                 "is_innerhandleop_subtrace": True,
                 "is_from_sender": False,
@@ -482,7 +506,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
 
         output = (
             self._duckdb_context.client.sql("""
-        SELECT * FROM enriched_entrypoint_traces_v1 WHERE transaction_hash = '0xeb8aed49895870a10eaee7fc6b38d00e6081816e1c7309fd6829f9299a386b58'
+        SELECT * FROM enriched_entrypoint_traces_v2 WHERE transaction_hash = '0xeb8aed49895870a10eaee7fc6b38d00e6081816e1c7309fd6829f9299a386b58'
         AND trace_address = '0,0,0'
         """)
             .pl()
@@ -516,6 +540,10 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "status": 1,
                 "trace_root": 0,
                 "method_id": "0x993caaba",
+                "tx_from_address": "0xc4a4e8ae10b82a954519ca2ecc9efc8f77819e86",
+                "bundler_address": None,
+                "entrypoint_contract_address": None,
+                "entrypoint_contract_version": None,
                 "is_innerhandleop": False,
                 "is_innerhandleop_subtrace": False,
                 "is_from_sender": None,
@@ -527,7 +555,6 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "innerhandleop_opinfo": None,
                 "innerhandleop_context": None,
                 "innerhandleop_trace_address": None,
-                "entrypoint_contract_version": None,
                 "useropevent_nonce": None,
                 "useropevent_success": None,
                 "useropevent_actualgascost": None,
@@ -540,7 +567,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
 
         output = (
             self._duckdb_context.client.sql("""
-        SELECT transaction_hash, count(*) as num_logs FROM useroperationevent_logs_v1
+        SELECT transaction_hash, count(*) as num_logs FROM useroperationevent_logs_v2
         GROUP BY 1
         ORDER BY 1
         LIMIT 10
