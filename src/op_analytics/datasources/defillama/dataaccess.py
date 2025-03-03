@@ -19,6 +19,8 @@ class DefiLlama(DailyDataset):
     PROTOCOLS_METADATA = "protocols_metadata_v1"
     PROTOCOLS_TVL = "protocols_tvl_v1"
     PROTOCOLS_TOKEN_TVL = "protocols_token_tvl_v1"
+    # Enrichment:
+    PROTOCOL_TVL_FLOWS_FILTERED = "tvl_flows_breakdown_filtered_v1"
 
     # Stablecoins TVL
     STABLECOINS_METADATA = "stablecoins_metadata_v1"
@@ -47,3 +49,6 @@ class DefiLlama(DailyDataset):
 
     # Token Mappings
     TOKEN_MAPPINGS = "dim_token_mappings_v1"
+
+    # Net TVL Flows
+    PROTOCOL_TOKEN_NET_TVL_FLOWS = "net_tvl_flows_v1"

@@ -19,6 +19,10 @@ class TimeRange:
     requested_max_timestamp: int | None
 
     @property
+    def logstr(self):
+        return f"min: {self.min.strftime('%Y-%m-%d %H:%M:%S')}, max: {self.max.strftime('%Y-%m-%d %H:%M:%S')}"
+
+    @property
     def min_ts(self) -> int:
         return datetime_toepoch(self.min)
 

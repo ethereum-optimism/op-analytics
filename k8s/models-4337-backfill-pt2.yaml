@@ -1,24 +1,30 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: op-analytics-4337-backfill-03
+  name: op-analytics-4337-backfill-pt2
   namespace: op-analytics
   labels:
     app: op-analytics
     component: models-backfill
 
 spec:
+  completions: 14         # Number of indexes to process
+  parallelism: 14          # How many pods can run in parallel
+  completionMode: Indexed # This makes it an indexed job
   ttlSecondsAfterFinished: null
-  backoffLimit: 4
+  backoffLimit: 3
   template:
+    metadata:
+      annotations:
+        "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
     spec:
       serviceAccountName: op-analytics-service-account
       containers:
-      - name: python-runner
+      - name: python-runner-4337-backfill-pt2
         imagePullPolicy: Always
-        image: ghcr.io/lithium323/op-analytics:v20250222.1
+        image: ghcr.io/lithium323/op-analytics:v20250227.4
         command: ["tini", "-v", "--", "opdata"]
-        args: ["chains", "aa_backfill_03"]
+        args: ["chains", "aa_backfill_pt2"]
         env:
         - name: PLAIN_LOGS
           value: "true"
@@ -52,7 +58,6 @@ spec:
           readOnly: true
           volumeAttributes:
             secretProviderClass: op-analytics-secret-provider-class
-
       - name: duckdbdata
         emptyDir:
           sizeLimit: 100Gi

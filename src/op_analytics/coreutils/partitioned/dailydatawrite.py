@@ -1,5 +1,4 @@
 from contextlib import contextmanager
-from functools import cache
 from typing import Any
 
 import polars as pl
@@ -30,7 +29,6 @@ EXTRA_MARKER_COLUMNS_SCHEMA = [
 PARQUET_FILENAME = "out.parquet"
 
 
-@cache
 def determine_location() -> DataLocation:
     # Only for github actions or k8s we use GCS.
     if is_bot():
@@ -54,14 +52,14 @@ def write_to_prod():
     import os
     from unittest.mock import patch
 
-    def mock_location():
-        return DataLocation.GCS
+    def mock_is_bot():
+        return True
 
     os.environ["ALLOW_WRITE"] = "true"
 
     with patch(
-        "op_analytics.coreutils.partitioned.dailydatawrite.determine_location",
-        mock_location,
+        "op_analytics.coreutils.partitioned.dailydatawrite.is_bot",
+        mock_is_bot,
     ):
         yield
 

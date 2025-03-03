@@ -4,6 +4,7 @@ from op_analytics.coreutils.logger import (
 )
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chains
+from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 
 from .construct import construct_date_load_tasks
 from .task import DateLoadTask
@@ -11,13 +12,11 @@ from .task import DateLoadTask
 log = structlog.get_logger()
 
 
-BQ_PUBLIC_DATASET = "superchain_raw"
-
-
-@bound_contextvars(pipeline_step="load_superchain_raw_to_bq")
-def load_superchain_raw_to_bq(
+def load_blockbatch_to_bq(
     location: DataLocation,
     range_spec: str,
+    root_paths_to_read: list[RootPath],
+    bq_dataset_name: str,
     dryrun: bool,
     force_complete: bool,
     force_not_ready: bool,
@@ -36,8 +35,9 @@ def load_superchain_raw_to_bq(
     date_tasks: list[DateLoadTask] = construct_date_load_tasks(
         chains=chains,
         range_spec=range_spec,
+        root_paths_to_read=root_paths_to_read,
         write_to=location,
-        bq_dataset_name=BQ_PUBLIC_DATASET,
+        bq_dataset_name=bq_dataset_name,
     )
 
     success = 0

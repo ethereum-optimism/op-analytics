@@ -10,8 +10,8 @@ from op_analytics.coreutils.partitioned.paths import get_dt, get_root_path
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.time import date_fromstr
 from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_readers_bydate
-from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
+from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 
 from .loader import BQLoader, BQOutputData
 from .task import DateLoadTask
@@ -24,6 +24,7 @@ MARKERS_TABLE = "superchain_raw_bigquery_markers"
 def construct_date_load_tasks(
     chains: list[str],
     range_spec: str,
+    root_paths_to_read: list[RootPath],
     write_to: DataLocation,
     bq_dataset_name: str,
 ) -> list[DateLoadTask]:
@@ -36,12 +37,7 @@ def construct_date_load_tasks(
     blockbatch_request = BlockBatchRequest.build(
         chains=chains,
         range_spec=range_spec,
-        root_paths_to_read=[
-            RootPath.of("ingestion/blocks_v1"),
-            RootPath.of("ingestion/logs_v1"),
-            RootPath.of("ingestion/traces_v1"),
-            RootPath.of("ingestion/transactions_v1"),
-        ],
+        root_paths_to_read=root_paths_to_read,
     )
 
     readers: list[DataReader] = construct_readers_bydate(

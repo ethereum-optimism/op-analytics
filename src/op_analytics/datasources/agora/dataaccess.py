@@ -22,3 +22,6 @@ class Agora(DailyDataset):
 
     # Vote events
     VOTES = "votes_v1"
+
+    # Voting power snapshots
+    VOTING_POWER_SNAPS = "voting_power_snaps_v1"

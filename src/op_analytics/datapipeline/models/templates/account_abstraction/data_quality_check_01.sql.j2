@@ -1,0 +1,39 @@
+WITH
+
+uops AS (
+  SELECT
+    block_number
+    , transaction_hash
+    , log_index
+    , sender
+  FROM account_abstraction__useroperationevent_logs
+)
+
+, traces AS (
+  SELECT
+    block_number
+    , transaction_hash
+    , userop_sender
+    , from_address
+    , is_from_sender
+  FROM account_abstraction__enriched_entrypoint_traces
+  WHERE is_innerhandleop
+)
+
+-- Checks that we see the same UserOps on the events and the traces.
+SELECT
+  'Unsatisfied JOIN for UserOperationEvent <> EntryPoint traces' AS error
+  , u.block_number
+  , u.transaction_hash
+  , u.log_index
+  , u.sender
+  , t.userop_sender
+FROM uops AS u
+FULL OUTER JOIN traces AS t
+  ON
+    u.block_number = t.block_number
+    AND u.transaction_hash = t.transaction_hash
+    AND u.sender = t.userop_sender
+WHERE
+  u.sender IS NULL
+  OR t.userop_sender IS NULL

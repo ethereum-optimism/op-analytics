@@ -51,13 +51,7 @@ class PythonModelExecutor:
             self.client.unregister(view_name=view)
 
         # Ensure there are no user views remaining.
-        remaining_views = (
-            self.client.sql("SELECT view_name FROM duckdb_views() WHERE NOT internal")
-            .pl()["view_name"]
-            .to_list()
-        )
-        for view in remaining_views:
-            self.client.unregister(view_name=view)
+        self.duckdb_context.unregister_views()
 
         # Close the context to premanently delete duckdb storage from disk.
         self.duckdb_context.close(remove_db_path=True)
