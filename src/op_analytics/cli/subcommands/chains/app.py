@@ -160,6 +160,7 @@ def normalize_blockbatch_models(models: str) -> list[str]:
             result.add("refined_traces")
             result.add("token_transfers")
             result.add("account_abstraction_prefilter")
+            result.add("account_abstraction")
         elif model.startswith("-"):
             not_included.add(model.removeprefix("-").strip())
         else:
@@ -372,49 +373,35 @@ def noargs_public_bq():
 
 @app.command()
 def aa_backfill_pt2():
-    """Backfill account abstraction prefilter."""
+    """Backfill account abstraction."""
     # Kubernetes job index.
     index = int(os.environ["JOB_COMPLETION_INDEX"])
 
+    # Num job indexes (the paralellism specified on k8s)
+    num_indexes = 28
+
     # Define start and end dates for the backfill.
     start_date = datetime.strptime("20241224", "%Y%m%d")
-    end_date = datetime.strptime("20250227", "%Y%m%d")
+    end_date = datetime.strptime("20250304", "%Y%m%d")
 
-    # Generate date ranges with 5-day intervals
+    # Generate date ranges with 3-day intervals
     date_ranges = []
     current_date = start_date
     while current_date < end_date:
-        next_date = min(current_date + timedelta(days=5), end_date)
+        next_date = min(current_date + timedelta(days=2), end_date)
         date_ranges.append((current_date.strftime("%Y%m%d"), next_date.strftime("%Y%m%d")))
         current_date = next_date
 
-    if index < len(date_ranges):
-        d0, d1 = date_ranges[index]
+    for ii, (d0, d1) in enumerate(date_ranges):
         range_spec = f"@{d0}:{d1}"
-    else:
-        log.info(f"Index {index} out of range. Only {len(date_ranges)} date ranges defined.")
-        return
-
-    # Need to run prefilter first so that markers are created. Without markers then no tasks
-    # will be prepared for the second model.
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=["account_abstraction_prefilter"],
-        range_spec=range_spec,
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
-
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=["account_abstraction"],
-        range_spec=range_spec,
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
+        if ii % num_indexes == index:
+            compute_blockbatch(
+                chains=normalize_chains("ALL,-kroma,-unichain_sepolia"),
+                models=["account_abstraction_prefilter", "account_abstraction"],
+                range_spec=range_spec,
+                read_from=DataLocation.GCS,
+                write_to=DataLocation.GCS,
+                dryrun=False,
+                force_complete=False,
+                fork_process=False,
+            )

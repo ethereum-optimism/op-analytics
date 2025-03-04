@@ -8,8 +8,8 @@ metadata:
     component: models-backfill
 
 spec:
-  completions: 14         # Number of indexes to process
-  parallelism: 14          # How many pods can run in parallel
+  completions: 28         # Number of indexes to process
+  parallelism: 28          # How many pods can run in parallel
   completionMode: Indexed # This makes it an indexed job
   ttlSecondsAfterFinished: null
   backoffLimit: 3
@@ -22,7 +22,7 @@ spec:
       containers:
       - name: python-runner-4337-backfill-pt2
         imagePullPolicy: Always
-        image: ghcr.io/lithium323/op-analytics:v20250302.1
+        image: ghcr.io/lithium323/op-analytics:v20250304.3
         command: ["tini", "-v", "--", "opdata"]
         args: ["chains", "aa_backfill_pt2"]
         env:

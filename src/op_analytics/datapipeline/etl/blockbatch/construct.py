@@ -77,7 +77,7 @@ def construct_tasks(
         unique_chains = output_markers_df["chain"].n_unique()
         log.info(f"pre-fetched {len(output_markers_df)} markers for {unique_chains} chains")
 
-        model_objs = [PythonModel.get(_) for _ in models]
+        model_objs = [PythonModel.get(_) for _ in execution_pass_models]
         tasks = []
         for reader in readers:
             for model_obj in model_objs:
