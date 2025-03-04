@@ -1,6 +1,8 @@
 from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext, ParquetData
 from op_analytics.coreutils.logger import structlog
 from op_analytics.datapipeline.models.code.account_abstraction.abis import (
+    HANDLE_OPS_FUNCTION_METHOD_ID_v0_6_0,
+    HANDLE_OPS_FUNCTION_METHOD_ID_v0_7_0,
     INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0,
     INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0,
 )
@@ -26,8 +28,8 @@ log = structlog.get_logger()
         "account_abstraction/data_quality_check_02",
     ],
     expected_outputs=[
-        "useroperationevent_logs_v1",
-        "enriched_entrypoint_traces_v1",
+        "useroperationevent_logs_v2",
+        "enriched_entrypoint_traces_v2",
     ],
 )
 def account_abstraction(
@@ -47,18 +49,25 @@ def account_abstraction(
         },
     )
 
+    # Persist the prefiltered traces for performance gains.
+    prefiltered_traces = input_datasets[
+        "blockbatch/account_abstraction_prefilter/entrypoint_traces_v1"
+    ].create_table(
+        additional_sql="ORDER BY block_number, transaction_hash",
+    )
+
     # Traces initiated on behalf of the UserOperationEvent sender
     entrypoint_traces = auxiliary_templates[
         "account_abstraction/enriched_entrypoint_traces"
     ].create_table(
         duckdb_context=ctx,
         template_parameters={
-            "prefiltered_traces": input_datasets[
-                "blockbatch/account_abstraction_prefilter/entrypoint_traces_v1"
-            ].as_subquery(),
+            "prefiltered_traces": prefiltered_traces,
             "uops": user_ops,
             "method_id_v6": INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_6_0,
             "method_id_v7": INNER_HANDLE_OP_FUNCTION_METHOD_ID_v0_7_0,
+            "handle_ops_v6": HANDLE_OPS_FUNCTION_METHOD_ID_v0_6_0,
+            "handle_ops_v7": HANDLE_OPS_FUNCTION_METHOD_ID_v0_7_0,
         },
     )
 
@@ -73,6 +82,6 @@ def account_abstraction(
         log.info("Data Quality OK")
 
     return {
-        "useroperationevent_logs_v1": user_ops,
-        "enriched_entrypoint_traces_v1": entrypoint_traces,
+        "useroperationevent_logs_v2": user_ops,
+        "enriched_entrypoint_traces_v2": entrypoint_traces,
     }

@@ -15,7 +15,7 @@ VALID_HASH = r"^0x[\da-f]{64}$"
 
 
 @register
-def valid_hashes(dataframes: dict[str, pl.DataFrame]):
+def valid_hashes(chain: str, dataframes: dict[str, pl.DataFrame]):
     # 1. Check that all hashes are valid.
     block_hashes = dataframes["blocks"].select(
         pl.lit("all block hashes must be valid").alias("audit_name"),
@@ -30,7 +30,7 @@ def valid_hashes(dataframes: dict[str, pl.DataFrame]):
 
 
 @register
-def datasets_join_to_blocks(dataframes: dict[str, pl.DataFrame]):
+def datasets_join_to_blocks(chain: str, dataframes: dict[str, pl.DataFrame]):
     blocks = dataframes["blocks"].select("number")
 
     # Check that other datasets can join back to a block by block number.
@@ -58,7 +58,7 @@ def datasets_join_to_blocks(dataframes: dict[str, pl.DataFrame]):
 
 
 @register
-def monotonically_increasing(dataframes: dict[str, pl.DataFrame]):
+def monotonically_increasing(chain: str, dataframes: dict[str, pl.DataFrame]):
     diffs = (
         dataframes["blocks"]
         .sort("number")
@@ -93,7 +93,7 @@ def monotonically_increasing(dataframes: dict[str, pl.DataFrame]):
 
 
 @register
-def distinct_block_numbers(dataframes: dict[str, pl.DataFrame]):
+def distinct_block_numbers(chain: str, dataframes: dict[str, pl.DataFrame]):
     ctx = pl.SQLContext(frames=dataframes)
     result = ctx.execute(
         """
@@ -108,7 +108,7 @@ def distinct_block_numbers(dataframes: dict[str, pl.DataFrame]):
 
 
 @register
-def dataset_consistent_block_timestamps(dataframes: dict[str, pl.DataFrame]):
+def dataset_consistent_block_timestamps(chain: str, dataframes: dict[str, pl.DataFrame]):
     """Make sure the block_timestamp is correct in the non-block datasets."""
 
     blocks_df = dataframes["blocks"].select("number", "timestamp", "dt")
@@ -143,7 +143,7 @@ def dataset_consistent_block_timestamps(dataframes: dict[str, pl.DataFrame]):
 
 
 @register
-def transaction_count(dataframes: dict[str, pl.DataFrame]):
+def transaction_count(chain: str, dataframes: dict[str, pl.DataFrame]):
     """Block transaction count should agree with number of transaction records."""
     blocks_df = dataframes["blocks"].select("number", "transaction_count")
     transactions_df = dataframes["transactions"].select("block_number")
@@ -168,7 +168,7 @@ def transaction_count(dataframes: dict[str, pl.DataFrame]):
 
 
 @register
-def logs_count(dataframes: dict[str, pl.DataFrame]):
+def logs_count(chain: str, dataframes: dict[str, pl.DataFrame]):
     """Block log max_index should agree with number of log records."""
     logs_df = dataframes["logs"].select("block_number", "log_index")
 
@@ -186,6 +186,38 @@ def logs_count(dataframes: dict[str, pl.DataFrame]):
         # print to debug failures
         print(agged.filter(failure_condition))
         print(agged.filter(failure_condition)["block_number"].unique().to_list())
+
+    return check
+
+
+@register
+def traces_count(chain: str, dataframes: dict[str, pl.DataFrame]):
+    """The number of traces should be at least equal to the number of transactions."""
+
+    # (pedro - 2025/03/02) We currently don't have traces for Kroma. But we are letting
+    # it go through ingestion anyways.
+    if chain == "kroma":
+        return None
+
+    traces_count = dataframes["traces"].group_by("block_number").len("num_traces")
+    tx_count = dataframes["transactions"].group_by("block_number").len("num_txs")
+
+    joined = traces_count.join(
+        tx_count, left_on="block_number", right_on="block_number", how="full", validate="1:1"
+    )
+
+    no_traces = pl.col("num_traces").is_null()
+    missing_traces = pl.col("num_txs") > pl.col("num_traces")
+
+    failure_condition = no_traces | missing_traces
+    check = joined.select(
+        pl.lit("block has missing traces").alias("audit_name"),
+        failure_condition.sum().alias("failure_count"),
+    )
+
+    if len(joined.filter(failure_condition)) > 0:
+        # print to debug failures
+        print(joined.filter(failure_condition))
 
     return check
 

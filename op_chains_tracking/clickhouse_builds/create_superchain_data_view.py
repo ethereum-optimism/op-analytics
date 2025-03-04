@@ -102,7 +102,7 @@ mv_dataset_types = [
                 #  'erc20_transfers_mv','native_eth_transfers_mv',
                 #  ,'transactions_unique'
                 #  'daily_aggregate_transactions_to_mv',
-                 'across_bridging_txs_v3',
+                #  'across_bridging_txs_v3',
                  'event_emitting_transactions_l2s',
                 #  'weekly_retention_rate_temp',
                  'event_emitting_transactions_l2s_nofilter'

@@ -8,11 +8,11 @@ import pyarrow as pa
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.testutils.inputdata import InputTestData
+from op_analytics.datapipeline.etl.ingestion.reader.ranges import BlockRange, ChainMaxBlock
+from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 from op_analytics.datapipeline.etl.loadbq.construct import construct_date_load_tasks
 from op_analytics.datapipeline.etl.loadbq.loader import BQLoader, BQOutputData
 from op_analytics.datapipeline.etl.loadbq.task import DateLoadTask
-from op_analytics.datapipeline.etl.ingestion.reader.ranges import ChainMaxBlock, BlockRange
-from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 
 
 def make_dataframe(path: str):
@@ -80,8 +80,15 @@ def test_construct():
                 RootPath.of("ingestion/traces_v1"),
                 RootPath.of("ingestion/transactions_v1"),
             ],
-            write_to=DataLocation.GCS,
+            write_to=DataLocation.BIGQUERY,
+            markers_table="superchain_raw_bigquery_markers",
             bq_dataset_name="dummy_dataset",
+            table_name_map={
+                "blocks_v1": "blocks",
+                "logs_v1": "logs",
+                "traces_v1": "traces",
+                "transactions_v1": "transactions",
+            },
         )
 
     assert tasks == [
@@ -90,7 +97,7 @@ def test_construct():
             chains_ready={"mode"},
             chains_not_ready=set(),
             write_manager=BQLoader(
-                location=DataLocation.GCS,
+                location=DataLocation.BIGQUERY,
                 partition_cols=["dt"],
                 extra_marker_columns={},
                 extra_marker_columns_schema=[
@@ -137,6 +144,11 @@ def test_construct():
                     dateval=datetime.date(2024, 12, 1),
                     bq_dataset_name="dummy_dataset",
                     bq_table_name="blocks",
+                    expected_output=ExpectedOutput(
+                        root_path="dummy_dataset/blocks",
+                        file_name="",
+                        marker_path="dummy_dataset/blocks/2024-12-01",
+                    ),
                 ),
                 BQOutputData(
                     root_path="dummy_dataset/logs",
@@ -153,6 +165,11 @@ def test_construct():
                     dateval=datetime.date(2024, 12, 1),
                     bq_dataset_name="dummy_dataset",
                     bq_table_name="logs",
+                    expected_output=ExpectedOutput(
+                        root_path="dummy_dataset/logs",
+                        file_name="",
+                        marker_path="dummy_dataset/logs/2024-12-01",
+                    ),
                 ),
                 BQOutputData(
                     root_path="dummy_dataset/traces",
@@ -169,6 +186,11 @@ def test_construct():
                     dateval=datetime.date(2024, 12, 1),
                     bq_dataset_name="dummy_dataset",
                     bq_table_name="traces",
+                    expected_output=ExpectedOutput(
+                        root_path="dummy_dataset/traces",
+                        file_name="",
+                        marker_path="dummy_dataset/traces/2024-12-01",
+                    ),
                 ),
                 BQOutputData(
                     root_path="dummy_dataset/transactions",
@@ -185,7 +207,48 @@ def test_construct():
                     dateval=datetime.date(2024, 12, 1),
                     bq_dataset_name="dummy_dataset",
                     bq_table_name="transactions",
+                    expected_output=ExpectedOutput(
+                        root_path="dummy_dataset/transactions",
+                        file_name="",
+                        marker_path="dummy_dataset/transactions/2024-12-01",
+                    ),
                 ),
             ],
         )
     ]
+
+
+def test_construct_4337():
+    actual = BQOutputData.construct(
+        root_path="blockbatch/account_abstraction/enriched_entrypoint_traces_v1",
+        parquet_paths=[
+            "gs://oplabs-tools-data-sink/blockbatch/account_abstraction/enriched_entrypoint_traces_v1/chain=automata/dt=2025-01-13/000007768000.parquet",
+            "gs://oplabs-tools-data-sink/blockbatch/account_abstraction/enriched_entrypoint_traces_v1/chain=automata/dt=2025-01-13/000007776000.parquet",
+            "gs://oplabs-tools-data-sink/blockbatch/account_abstraction/enriched_entrypoint_traces_v1/chain=automata/dt=2025-01-13/000007784000.parquet",
+            "gs://oplabs-tools-data-sink/blockbatch/account_abstraction/enriched_entrypoint_traces_v1/chain=automata/dt=2025-01-13/000007792000.parquet",
+            "gs://oplabs-tools-data-sink/blockbatch/account_abstraction/enriched_entrypoint_traces_v1/chain=automata/dt=2025-01-13/000007800000.parquet",
+        ],
+        target_dateval=datetime.date(2025, 1, 13),
+        target_bq_dataset_name="superchain_4337",
+        table_name_map={},
+    )
+
+    assert actual == BQOutputData(
+        root_path="superchain_4337/enriched_entrypoint_traces_v1",
+        source_uris=[
+            "gs://oplabs-tools-data-sink/blockbatch/account_abstraction/enriched_entrypoint_traces_v1/chain=automata/dt=2025-01-13/000007768000.parquet",
+            "gs://oplabs-tools-data-sink/blockbatch/account_abstraction/enriched_entrypoint_traces_v1/chain=automata/dt=2025-01-13/000007776000.parquet",
+            "gs://oplabs-tools-data-sink/blockbatch/account_abstraction/enriched_entrypoint_traces_v1/chain=automata/dt=2025-01-13/000007784000.parquet",
+            "gs://oplabs-tools-data-sink/blockbatch/account_abstraction/enriched_entrypoint_traces_v1/chain=automata/dt=2025-01-13/000007792000.parquet",
+            "gs://oplabs-tools-data-sink/blockbatch/account_abstraction/enriched_entrypoint_traces_v1/chain=automata/dt=2025-01-13/000007800000.parquet",
+        ],
+        source_uris_root_path="gs://oplabs-tools-data-sink/blockbatch/account_abstraction/enriched_entrypoint_traces_v1/",
+        dateval=datetime.date(2025, 1, 13),
+        bq_dataset_name="superchain_4337",
+        bq_table_name="enriched_entrypoint_traces_v1",
+        expected_output=ExpectedOutput(
+            root_path="superchain_4337/enriched_entrypoint_traces_v1",
+            file_name="",
+            marker_path="superchain_4337/enriched_entrypoint_traces_v1/2025-01-13",
+        ),
+    )

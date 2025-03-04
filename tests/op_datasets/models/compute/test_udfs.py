@@ -296,3 +296,30 @@ def test_indexed_event_arg_to_address():
 
     expected = ("0x0b940efc27f8da57c8dbd6ff6540b6ef9a1af76a",)
     assert actual == expected
+
+
+def test_decimal_to_float_scale_18():
+    ctx = init_client()
+    create_duckdb_macros(ctx)
+
+    test_inputs = [
+        "54",
+        "54000000000000000000",  # 18 zeroes
+        "5400000000000000",  # 14 zeroes
+        "0",
+    ]
+
+    actual = []
+    for test in test_inputs:
+        result = ctx.client.sql(f"""
+            SELECT
+                decimal_to_float_scale_18('{test}') as m1,
+            """).fetchall()[0]
+        actual.append(result)
+
+    assert actual == [
+        (5.4e-17,),
+        (54.0,),
+        (0.0054,),
+        (0.0,),
+    ]

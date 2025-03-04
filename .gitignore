@@ -64,3 +64,6 @@ parquet/
 dist/
 dummydeps/
 temp_clickhouse_address_upload.ipynb
+
+# Streamlit
+.streamlit/secrets.toml
