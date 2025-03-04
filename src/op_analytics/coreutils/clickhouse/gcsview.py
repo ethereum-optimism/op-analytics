@@ -95,22 +95,30 @@ def create_dailydata_gcs_view():
     """)
 
     # READ_LATEST: view to read only the most recent "dt".
-    last_two_days = (
-        "'{' || now()::Date::String || ',' || date_sub(DAY, 1, now())::Date::String || '}'"
-    )
     clt.command(f"""
     CREATE VIEW IF NOT EXISTS {db_name}.read_latest AS
     WITH latest AS (
         SELECT * FROM
         {db_name}.read_date(
             rootpath = {{rootpath:String}},
-            dt = {last_two_days}
+            dt = '*'
         )
+    ),
+    
+    maxdt AS (
+        SELECT max(dt)
+        FROM etl_monitor.daily_data_markers
+        WHERE root_path = {{rootpath:String}}
     )
 
     SELECT *
-    FROM latest WHERE dt IN (SELECT max(dt) FROM latest)
+    FROM latest WHERE dt IN (maxdt)
     SETTINGS use_hive_partitioning = 1
+    """)
+
+    clt.command("""
+    CREATE FUNCTION IF NOT EXISTS latest_dt AS 
+    x -> (SELECT max(dt) FROM etl_monitor.daily_data_markers WHERE (root_path = x) LIMIT 1)
     """)
 
     log.info(f"created clickhouse parameterized view in db={db_name}")

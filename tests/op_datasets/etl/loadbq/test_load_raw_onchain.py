@@ -10,7 +10,7 @@ from op_analytics.coreutils.partitioned.dataaccess import (
 )
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.etl.ingestion.reader.ranges import BlockRange, ChainMaxBlock
-from op_analytics.datapipeline.etl.loadbq.superchain_raw import load_superchain_raw_to_bq
+from op_analytics.datapipeline.etl.loadbq.main import load_superchain_raw_to_bq
 
 MOCK_MARKERS = [
     {
@@ -585,7 +585,7 @@ def test_load_tasks():
             "op_analytics.datapipeline.etl.ingestion.reader.ranges.chain_max_block",
             new=mock_max_block,
         ),
-        patch("op_analytics.datapipeline.etl.loadbq.superchain_raw.goldsky_mainnet_chains") as m1,
+        patch("op_analytics.datapipeline.etl.loadbq.load.goldsky_mainnet_chains") as m1,
         patch.object(client, "query_markers_with_filters") as m2,
         patch("op_analytics.datapipeline.etl.loadbq.loader.load_from_parquet_uris") as m3,
     ):
@@ -606,7 +606,6 @@ def test_load_tasks():
         )
 
         load_superchain_raw_to_bq(
-            location=DataLocation.BIGQUERY_LOCAL_MARKERS,
             range_spec="@20241001:+3",
             dryrun=False,
             force_complete=True,

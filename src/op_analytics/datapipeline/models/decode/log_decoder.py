@@ -10,9 +10,11 @@ class LogDecoder:
     # Decoder instance. Converts bytestream to python objects.
     decoder: DictionaryDecoder
 
-    def decode(self, data: str):
-        # NOTE:
-        # For logs We only support "as_json". If more flexibility is needed we
-        # can make "as_json" a parameter and have an optional "adapter" callable
-        # to manipulate the result, as we do in method_decoder.py.
-        return self.decoder.decode_event_as_json(data)
+    # Whether to decode as json string or python dict.
+    as_json: bool
+
+    def decode(self, hexstr: str):
+        if self.as_json:
+            return self.decoder.decode_event_as_json(hexstr)
+
+        return self.decoder.decode_event(hexstr)

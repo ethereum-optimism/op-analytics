@@ -1,0 +1,25 @@
+-- Checks that if UserOperationEvent has success=True then the innerHandleOp trace must
+-- also have status = 1 (successful). 
+-- 
+-- This is something that should be true based on the design of the EntryPoint contract.
+-- So it is not checking our SQL logic but the integrity of the incoming data.
+SELECT
+  'Inconsistent UserOperationEvent success and innerHandleOp status' AS error
+  , transaction_hash
+  , trace_root
+  , trace_address
+  , innerhandleop_trace_address
+  , is_from_sender
+  , is_innerhandleop
+  , is_innerhandleop_subtrace
+  , userop_sender
+  , useropevent_success
+  , status
+  , error
+  , from_address
+  , to_address
+FROM account_abstraction__enriched_entrypoint_traces
+WHERE
+  is_innerhandleop
+  AND useropevent_success
+  AND status = 0

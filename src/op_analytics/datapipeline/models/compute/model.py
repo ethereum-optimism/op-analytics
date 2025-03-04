@@ -97,9 +97,6 @@ class PythonModel:
             load_path = f"op_analytics.datapipeline.models.code.{function_name}"
             importlib.import_module(load_path)
 
-            if load_path.endswith("code.account_abstraction"):
-                breakpoint()
-
             loaded_models = set(cls._registry.keys())
 
             num_loaded = len(loaded_models) - len(current_models)

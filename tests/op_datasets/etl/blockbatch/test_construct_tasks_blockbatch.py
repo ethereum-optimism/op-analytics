@@ -6,7 +6,7 @@ import pyarrow as pa
 
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.testutils.inputdata import InputTestData
-from op_analytics.datapipeline.etl.blockbatch.construct import construct_tasks
+from op_analytics.datapipeline.etl.blockbatch.construct import construct_tasks, ROOT_PATH_PREFIX
 from op_analytics.datapipeline.etl.blockbatch.task import BlockBatchModelsTask
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
@@ -14,6 +14,7 @@ from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
 from op_analytics.coreutils.partitioned.partition import Partition, PartitionColumn
 from op_analytics.datapipeline.models.compute.execute import PythonModel
 from op_analytics.datapipeline.etl.ingestion.reader.ranges import ChainMaxBlock, BlockRange
+from op_analytics.datapipeline.models.compute.modelspec import ModelsDataSpec
 
 
 def make_dataframe(path: str):
@@ -88,13 +89,19 @@ def test_construct():
             make_dataframe("blockbatch_mode_markers.json").filter(pl.col("dt") == 20058),
         ]
 
-        tasks = construct_tasks(
-            chains=["mode", "unichain_sepolia"],
-            models=["contract_creation"],
-            range_spec="@20241201:+1",
-            read_from=DataLocation.GCS,
-            write_to=DataLocation.GCS,
+        passes = list(
+            construct_tasks(
+                chains=["mode", "unichain_sepolia"],
+                models=["contract_creation"],
+                range_spec="@20241201:+1",
+                read_from=DataLocation.GCS,
+                write_to=DataLocation.GCS,
+            )
         )
+
+    tasks = []
+    for pass_tasks in passes:
+        tasks.extend(pass_tasks)
 
     mainnet_tasks = [_ for _ in tasks if _.output_root_path_prefix == "blockbatch"]
     testnet_tasks = [_ for _ in tasks if _.output_root_path_prefix == "blockbatch_testnets"]
@@ -573,13 +580,19 @@ def test_construct_kroma():
             blockbatch_markers,
         ]
 
-        tasks = construct_tasks(
-            chains=["kroma"],
-            models=["contract_creation"],
-            range_spec="@20241101:+1",
-            read_from=DataLocation.GCS,
-            write_to=DataLocation.GCS,
+        passes = list(
+            construct_tasks(
+                chains=["kroma"],
+                models=["contract_creation"],
+                range_spec="@20241101:+1",
+                read_from=DataLocation.GCS,
+                write_to=DataLocation.GCS,
+            )
         )
+
+    tasks = []
+    for pass_tasks in passes:
+        tasks.extend(pass_tasks)
 
     assert tasks == [
         BlockBatchModelsTask(
@@ -750,4 +763,24 @@ def test_construct_kroma():
             output_duckdb_relations={},
             output_root_path_prefix="blockbatch",
         ),
+    ]
+
+
+def test_construct_multiple_models():
+    """Test task construction dependent models.
+
+    The second model depends on the first one.
+    """
+
+    all_models_data_spec = ModelsDataSpec(
+        root_path_prefix=ROOT_PATH_PREFIX,
+        models=["account_abstraction_prefilter", "account_abstraction"],
+    )
+
+    # Two passes are required because "account_abstraction" depends
+    # on "account_abstraction_prefilter".
+    passes = list(all_models_data_spec.execution_passes())
+    assert passes == [
+        ["account_abstraction_prefilter"],
+        ["account_abstraction"],
     ]

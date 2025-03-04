@@ -1,0 +1,27 @@
+WITH
+
+traces AS (
+  SELECT
+    block_number
+    , transaction_hash
+    , userop_sender
+    , innerhandleop_trace_address
+    , from_address
+    , trace_address
+    , is_from_sender
+  FROM account_abstraction__enriched_entrypoint_traces
+  WHERE is_from_sender
+)
+
+
+-- Checks that when we flag something as "is_from_sender" the trace
+-- address should be a subtrace of the "innerhandleop_trace_address".
+SELECT
+  'Unexpected result on is_from_sender' AS error
+  , t.block_number
+  , t.transaction_hash
+  , t.userop_sender
+  , t.from_address
+FROM traces AS t
+WHERE
+  NOT starts_with(t.trace_address, t.innerhandleop_trace_address)
