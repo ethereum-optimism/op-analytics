@@ -264,6 +264,7 @@ all_prefiltered_traces AS (
 SELECT
   t.*
   , nu.userop_idx
+  , decimal_to_float_scale_18(t.useropevent_actualgascost) AS useropevent_actualgascost_eth
 FROM enriched_traces AS t
 LEFT JOIN numbered_userops AS nu
   ON

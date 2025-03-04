@@ -126,6 +126,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
             "useropevent_actualgascost": "VARCHAR",
             "useropevent_actualgasused": "VARCHAR",
             "userop_idx": "BIGINT",
+            "useropevent_actualgascost_eth": "DOUBLE",
         }
 
     def test_single_log(self):
@@ -222,6 +223,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
                 "userop_idx": None,
+                "useropevent_actualgascost_eth": 1.192842115198e-06,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -268,6 +270,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
                 "userop_idx": None,
+                "useropevent_actualgascost_eth": 1.192842115198e-06,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -314,6 +317,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
                 "userop_idx": 1,
+                "useropevent_actualgascost_eth": 1.192842115198e-06,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -360,6 +364,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
                 "userop_idx": None,
+                "useropevent_actualgascost_eth": 1.192842115198e-06,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -406,6 +411,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
                 "userop_idx": None,
+                "useropevent_actualgascost_eth": 1.192842115198e-06,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -452,6 +458,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
                 "userop_idx": None,
+                "useropevent_actualgascost_eth": 1.192842115198e-06,
             },
             {
                 "dt": datetime.date(2024, 9, 17),
@@ -498,6 +505,7 @@ class TestAccountAbstraction0001(IntermediateModelTestBase):
                 "useropevent_actualgascost": "1192842115198",
                 "useropevent_actualgasused": "225523",
                 "userop_idx": None,
+                "useropevent_actualgascost_eth": 1.192842115198e-06,
             },
         ]
 
