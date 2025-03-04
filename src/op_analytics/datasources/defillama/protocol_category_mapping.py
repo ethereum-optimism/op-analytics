@@ -7,8 +7,8 @@ from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT
 from .dataaccess import DefiLlama
 
 
-PROTOCOL_CATEGORY_MAPPINGS_GSHEET_NAME = "protocol_category_mapping"
-
+DATA_MAPPINGS_GSHEET_NAME = "data_mappings"
+PROTOCOL_CATEGORY_MAPPINGS_WORKSHEET_NAME = "[Category Mappings -ADMIN MANAGED]"
 PROTOCOL_CATEGORY_MAPPINGS_SCHEMA = {
     "protocol_category": pl.String,
     "aggregated_category": pl.String,
@@ -17,7 +17,9 @@ PROTOCOL_CATEGORY_MAPPINGS_SCHEMA = {
 
 def execute():
     df = load_data_from_gsheet(
-        PROTOCOL_CATEGORY_MAPPINGS_GSHEET_NAME, PROTOCOL_CATEGORY_MAPPINGS_SCHEMA
+        DATA_MAPPINGS_GSHEET_NAME,
+        PROTOCOL_CATEGORY_MAPPINGS_WORKSHEET_NAME,
+        PROTOCOL_CATEGORY_MAPPINGS_SCHEMA,
     )
 
     # Deduplicate
@@ -29,14 +31,16 @@ def execute():
     # Overwrite at default dt
     DefiLlama.TOKEN_MAPPINGS.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
 
-    return {PROTOCOL_CATEGORY_MAPPINGS_GSHEET_NAME: len(df)}
+    return {PROTOCOL_CATEGORY_MAPPINGS_WORKSHEET_NAME: len(df)}
 
 
-def load_data_from_gsheet(gsheet_name: str, expected_schema: dict) -> pl.DataFrame:
+def load_data_from_gsheet(
+    gsheet_name: str, worksheet_name: str, expected_schema: dict
+) -> pl.DataFrame:
     # Read from Google Sheets Input
     raw_records = read_gsheet(
         location_name=gsheet_name,
-        worksheet_name="[INPUT -ADMIN MANAGED]",
+        worksheet_name=worksheet_name,
     )
     raw_df = pl.DataFrame(raw_records, infer_schema_length=len(raw_records))
 

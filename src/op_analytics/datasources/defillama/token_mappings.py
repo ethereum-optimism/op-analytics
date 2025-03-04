@@ -7,7 +7,8 @@ from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT
 from .dataaccess import DefiLlama
 
 
-TOKEN_MAPPINGS_GSHEET_NAME = "token_mappings"
+DATA_MAPPINGS_GSHEET_NAME = "data_mappings"
+TOKEN_MAPPINGS_WORKSHEET_NAME = "[Token Mappings -ADMIN MANAGED]"
 
 TOKEN_MAPPINGS_SCHEMA = {
     "token": pl.String,
@@ -18,7 +19,9 @@ TOKEN_MAPPINGS_SCHEMA = {
 
 
 def execute():
-    df = load_data_from_gsheet(TOKEN_MAPPINGS_GSHEET_NAME, TOKEN_MAPPINGS_SCHEMA)
+    df = load_data_from_gsheet(
+        DATA_MAPPINGS_GSHEET_NAME, TOKEN_MAPPINGS_WORKSHEET_NAME, TOKEN_MAPPINGS_SCHEMA
+    )
 
     # Deduplicate
     dupes = df.group_by("token").len().filter(pl.col("len") > 1)
@@ -29,14 +32,16 @@ def execute():
     # Overwrite at default dt
     DefiLlama.TOKEN_MAPPINGS.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
 
-    return {TOKEN_MAPPINGS_GSHEET_NAME: len(df)}
+    return {TOKEN_MAPPINGS_WORKSHEET_NAME: len(df)}
 
 
-def load_data_from_gsheet(gsheet_name: str, expected_schema: dict) -> pl.DataFrame:
+def load_data_from_gsheet(
+    gsheet_name: str, worksheet_name: str, expected_schema: dict
+) -> pl.DataFrame:
     # Read from Google Sheets Input
     raw_records = read_gsheet(
         location_name=gsheet_name,
-        worksheet_name="[INPUT -ADMIN MANAGED]",
+        worksheet_name=worksheet_name,
     )
     raw_df = pl.DataFrame(raw_records, infer_schema_length=len(raw_records))
 
