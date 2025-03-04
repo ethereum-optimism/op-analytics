@@ -6,16 +6,13 @@
 
 import pandas as pd
 import sys
-
 sys.path.append("../../helper_functions")
 import clickhouse_utils as ch
 import opstack_metadata_utils as ops
-
 sys.path.pop()
 
 import dotenv
 import os
-
 dotenv.load_dotenv()
 
 
@@ -23,7 +20,7 @@ dotenv.load_dotenv()
 
 
 # Get Chain List
-chain_configs = ops.get_superchain_metadata_by_data_source("oplabs")  # OPLabs db
+chain_configs = ops.get_superchain_metadata_by_data_source('oplabs') # OPLabs db
 # Should store this and add a check to see if the list changed before executing
 # so that we're not rebuilding the view on every metadata update
 
@@ -39,22 +36,21 @@ chain_configs = ops.get_superchain_metadata_by_data_source("oplabs")  # OPLabs d
 
 # Function to create ClickHouse view
 def get_chain_names_from_df(df):
-    return df["blockchain"].dropna().unique().tolist()
-
+    return df['blockchain'].dropna().unique().tolist()
 
 # Function to create ClickHouse view
-def create_clickhouse_view(view_slug, dataset_type, chain_names, client=None):
+def create_clickhouse_view(view_slug, dataset_type, chain_names, client = None):
     if client is None:
         client = ch.connect_to_clickhouse_db()
 
     query = f"CREATE OR REPLACE VIEW {view_slug}_{dataset_type} AS\n"
     union_queries = []
-
+    
     for chain in chain_names:
         table_name = f"{chain}_{dataset_type}"
-        if dataset_type == "transactions":
+        if dataset_type == 'transactions':
             sql_query = f"""
-                                SELECT
+                                SELECT 
                                 id, hash, nonce, block_hash, block_number, transaction_index, from_address, to_address
                                 , value, gas, gas_price, input, max_fee_per_gas, max_priority_fee_per_gas, transaction_type
                                 , block_timestamp, receipt_cumulative_gas_used, receipt_gas_used, receipt_contract_address
@@ -64,29 +60,29 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client=None):
                                 FROM {table_name} final
 
                                 """
-        elif dataset_type == "blocks":
+        elif dataset_type == 'blocks':
             sql_query = f"""
                         SELECT id, number, hash, parent_hash, nonce, sha3_uncles, logs_bloom, transactions_root, state_root
                         , receipts_root, miner, cast(difficulty as Float64) AS difficulty, cast(total_difficulty as Float64) AS total_difficulty, size, extra_data, gas_limit, gas_used, timestamp
                         , transaction_count, base_fee_per_gas, withdrawals_root, chain, network, chain_id, insert_time
                         FROM {table_name} final
                         """
-        else:
+        else: 
             sql_query = f"""
-                                SELECT
+                                SELECT 
                                 *
                                 FROM {table_name} final
                                 """
-
+        
         # finalize query
         union_queries.append(sql_query)
-
+    
     query += " UNION ALL\n".join(union_queries)
 
     # print(query)
 
     # print(query)
-
+    
     client.command(query)
 
     print(f"View '{view_slug}_{dataset_type}' created successfully.")
@@ -95,36 +91,34 @@ def create_clickhouse_view(view_slug, dataset_type, chain_names, client=None):
 # In[5]:
 
 
-view_slug = "superchain"
+view_slug = 'superchain'
 native_dataset_types = [
-    # native
-    "transactions",
-    "traces",
-    "blocks",
-    "logs",
+                # native
+                'transactions', 'traces', 'blocks', 'logs',
 ]
 
 mv_dataset_types = [
-    # mvs
-    #  'erc20_transfers_mv','native_eth_transfers_mv',
-    #  ,'transactions_unique'
-    #  'daily_aggregate_transactions_to_mv',
-    #  'across_bridging_txs_v3',
-    "event_emitting_transactions_l2s",
-    #  'weekly_retention_rate_temp',
-    "event_emitting_transactions_l2s_nofilter",
-]
+                # mvs
+                #  'erc20_transfers_mv','native_eth_transfers_mv',
+                #  ,'transactions_unique'
+                #  'daily_aggregate_transactions_to_mv',
+                #  'across_bridging_txs_v3',
+                 'event_emitting_transactions_l2s',
+                #  'weekly_retention_rate_temp',
+                 'event_emitting_transactions_l2s_nofilter'
+                 ]
 
 dataset_types = native_dataset_types + mv_dataset_types
 print(dataset_types)
 chain_names = get_chain_names_from_df(chain_configs)
 print(chain_names)
 for dataset_type in dataset_types:
-    is_deleted_line = True
-    try:
-        if dataset_type in mv_dataset_types:
-            is_deleted_line = False
-        create_clickhouse_view(view_slug, dataset_type, chain_names)
-    except Exception as e:
-        print(f"Can not create view for {dataset_type}")
-        print(f"Error: {str(e)}")
+        is_deleted_line = True
+        try:
+                if dataset_type in mv_dataset_types:
+                        is_deleted_line = False
+                create_clickhouse_view(view_slug, dataset_type, chain_names)
+        except Exception as e:
+                print(f'Can not create view for {dataset_type}')
+                print(f'Error: {str(e)}')
+
