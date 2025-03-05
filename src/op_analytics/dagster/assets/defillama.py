@@ -5,10 +5,15 @@ from dagster import (
 
 
 @asset
-def token_mappings_to_bq(context: AssetExecutionContext):
-    """Copy token mappings from Google Sheet to BigQuery."""
-    from op_analytics.datasources.defillama import token_mappings
+def mappings_to_bq(context: AssetExecutionContext):
+    """Copy data mappings from Google Sheet to BigQuery."""
+    from op_analytics.datasources.defillama.mappings import protocol_category_mapping
+    from op_analytics.datasources.defillama.mappings import token_mappings
+
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
+
+    result = protocol_category_mapping.execute()
+    context.log.info(result)
 
     result = token_mappings.execute()
     context.log.info(result)
@@ -48,7 +53,7 @@ def protocol_tvl(context: AssetExecutionContext):
     DefiLlama.PROTOCOLS_TOKEN_TVL.create_bigquery_external_table()
 
 
-@asset(deps=[protocol_tvl, token_mappings_to_bq])
+@asset(deps=[protocol_tvl, mappings_to_bq])
 def protocol_tvl_enrichment(context: AssetExecutionContext):
     """Enrich protocol tvl data."""
 
