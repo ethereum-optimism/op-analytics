@@ -1,4 +1,6 @@
 import json
+import os
+from datetime import datetime, timedelta
 
 import typer
 from rich import print
@@ -14,7 +16,10 @@ from op_analytics.datapipeline.etl.ingestion import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
 from op_analytics.datapipeline.etl.intermediate.main import compute_intermediate
-from op_analytics.datapipeline.etl.loadbq import PipelineStage, load_to_bq
+from op_analytics.datapipeline.etl.loadbq.main import (
+    load_superchain_raw_to_bq,
+    load_superchain_4337_to_bq,
+)
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 
 log = structlog.get_logger()
@@ -154,6 +159,8 @@ def normalize_blockbatch_models(models: str) -> list[str]:
             result.add("contract_creation")
             result.add("refined_traces")
             result.add("token_transfers")
+            result.add("account_abstraction_prefilter")
+            result.add("account_abstraction")
         elif model.startswith("-"):
             not_included.add(model.removeprefix("-").strip())
         else:
@@ -273,26 +280,25 @@ def load_superchain_raw(
     dryrun: DRYRUN_OPTION = False,
     force_complete: FORCE_COMPLETE_OPTION = False,
     force_not_ready: FORCE_NOT_READY_OPTION = False,
-    write_to: Annotated[
-        DataLocation,
-        typer.Option(
-            help="Where data will be written to.",
-            case_sensitive=False,
-        ),
-    ] = DataLocation.BIGQUERY,
-    data: Annotated[
-        PipelineStage,
-        typer.Option(
-            help="Data that will be uploaded to BQ.",
-            case_sensitive=False,
-        ),
-    ] = PipelineStage.RAW_ONCHAIN,
 ):
     """Load superchain_raw tables to BigQuery."""
+    load_superchain_raw_to_bq(
+        range_spec=range_spec,
+        dryrun=dryrun,
+        force_complete=force_complete,
+        force_not_ready=force_not_ready,
+    )
 
-    load_to_bq(
-        stage=data,
-        location=write_to,
+
+@app.command()
+def load_superchain_4337(
+    range_spec: DATES_ARG,
+    dryrun: DRYRUN_OPTION = False,
+    force_complete: FORCE_COMPLETE_OPTION = False,
+    force_not_ready: FORCE_NOT_READY_OPTION = False,
+):
+    """Load superchain_raw tables to BigQuery."""
+    load_superchain_4337_to_bq(
         range_spec=range_spec,
         dryrun=dryrun,
         force_complete=force_complete,
@@ -324,7 +330,7 @@ def noargs_blockbatch():
     compute_blockbatch(
         chains=normalize_chains("ALL"),
         models=normalize_blockbatch_models("MODELS"),
-        range_spec="m8hours",
+        range_spec="m12hours",
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,
@@ -354,10 +360,8 @@ def noargs_intermediate():
 @app.command()
 def noargs_public_bq():
     """No-args command to load public datasets to BQ."""
-    load_to_bq(
-        stage=PipelineStage.RAW_ONCHAIN,
-        location=DataLocation.BIGQUERY,
-        range_spec="m3days",
+    load_superchain_raw_to_bq(
+        range_spec="m6days",
         dryrun=False,
         force_complete=False,
         force_not_ready=False,
@@ -368,61 +372,36 @@ def noargs_public_bq():
 
 
 @app.command()
-def aa_backfill_01():
-    """Backfill account abstraction prefilter."""
-    compute_blockbatch(
-        # chains=normalize_chains("ALL"),
-        chains=["base"],
-        models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        range_spec="@20250101:20250112",
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
+def aa_backfill_pt2():
+    """Backfill account abstraction."""
+    # Kubernetes job index.
+    index = int(os.environ["JOB_COMPLETION_INDEX"])
 
+    # Num job indexes (the paralellism specified on k8s)
+    num_indexes = 28
 
-@app.command()
-def aa_backfill_02():
-    """Backfill account abstraction prefilter."""
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        range_spec="@20250112:20250124",
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
+    # Define start and end dates for the backfill.
+    start_date = datetime.strptime("20241224", "%Y%m%d")
+    end_date = datetime.strptime("20250304", "%Y%m%d")
 
+    # Generate date ranges with 3-day intervals
+    date_ranges = []
+    current_date = start_date
+    while current_date < end_date:
+        next_date = min(current_date + timedelta(days=2), end_date)
+        date_ranges.append((current_date.strftime("%Y%m%d"), next_date.strftime("%Y%m%d")))
+        current_date = next_date
 
-@app.command()
-def aa_backfill_03():
-    """Backfill account abstraction prefilter."""
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        range_spec="@20250124:20250203",
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
-
-
-@app.command()
-def aa_backfill_04():
-    """Backfill account abstraction prefilter."""
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=normalize_blockbatch_models("account_abstraction_prefilter"),
-        range_spec="@20250203:20250211",
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
+    for ii, (d0, d1) in enumerate(date_ranges):
+        range_spec = f"@{d0}:{d1}"
+        if ii % num_indexes == index:
+            compute_blockbatch(
+                chains=normalize_chains("ALL,-kroma,-unichain_sepolia"),
+                models=["account_abstraction_prefilter", "account_abstraction"],
+                range_spec=range_spec,
+                read_from=DataLocation.GCS,
+                write_to=DataLocation.GCS,
+                dryrun=False,
+                force_complete=False,
+                fork_process=False,
+            )

@@ -14,8 +14,22 @@ SELECT
   , tm.source_protocol AS token_source_protocol
   , tvl.app_token_tvl
   , tvl.app_token_tvl_usd
+  -- Include all other columns in the tvl table.
+  , tvl.* EXCEPT (
+    dt
+    , chain
+    , protocol_category
+    , parent_protocol
+    , protocol_name
+    , protocol_slug
+    , is_double_counted
+    , is_protocol_misrepresented
+    , token
+    , app_token_tvl
+    , app_token_tvl_usd
+  )
 
-FROM `oplabs-tools-data.dailydata_defillama.protocol_token_tvl_breakdown_v1` tvl 
+FROM `oplabs-tools-data.dailydata_defillama.tvl_flows_breakdown_filtered_v1` tvl 
 LEFT JOIN `oplabs-tools-data.dailydata_defillama.latest_dim_token_mappings_v1` tm 
   ON tvl.token = tm.token
 

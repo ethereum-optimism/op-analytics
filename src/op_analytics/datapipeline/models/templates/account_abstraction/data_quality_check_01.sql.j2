@@ -26,8 +26,8 @@ SELECT
   , u.block_number
   , u.transaction_hash
   , u.log_index
-  , u.sender
-  , t.userop_sender
+  , u.sender AS sender_logs
+  , t.userop_sender AS sender_innerhandleop
 FROM uops AS u
 FULL OUTER JOIN traces AS t
   ON

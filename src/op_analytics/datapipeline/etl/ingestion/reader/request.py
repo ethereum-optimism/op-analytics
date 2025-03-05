@@ -142,11 +142,13 @@ class BlockBatchRequest:
         else:
             datevals = self.time_range.to_date_range().padded_dates()
 
+        root_paths = self.physical_root_paths()
+        log.info(f"querying markers at time range {self.time_range.logstr} {root_paths=}")
         return client.query_markers_by_root_path(
             chains=self.chains,
             datevals=datevals,
             data_location=location,
-            root_paths=self.physical_root_paths(),
+            root_paths=root_paths,
             markers_table=markers_table,
             extra_columns=extra_columns,
         )

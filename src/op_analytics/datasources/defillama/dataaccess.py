@@ -44,11 +44,6 @@ class DefiLlama(DailyDataset):
     FEES_PROTOCOLS_METADATA = "fees_protocols_metadata_v1"
     REVENUE_PROTOCOLS_METADATA = "revenue_protocols_metadata_v1"
 
-    # TVL breakdown
-    PROTOCOL_TOKEN_TVL_BREAKDOWN = "protocol_token_tvl_breakdown_v1"
-
     # Token Mappings
     TOKEN_MAPPINGS = "dim_token_mappings_v1"
-
-    # Net TVL Flows
-    PROTOCOL_TOKEN_NET_TVL_FLOWS = "net_tvl_flows_v1"
+    PROTOCOL_CATEGORY_MAPPINGS = "dim_protocol_category_mappings_v1"

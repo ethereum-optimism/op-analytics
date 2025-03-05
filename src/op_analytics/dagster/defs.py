@@ -85,7 +85,7 @@ defs = Definitions(
         #
         create_schedule_for_group(
             group="defillama",
-            cron_schedule="0 3 * * *",  # Runs at 3 AM daily
+            cron_schedule="0 14 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
                 mem_request="3Gi",

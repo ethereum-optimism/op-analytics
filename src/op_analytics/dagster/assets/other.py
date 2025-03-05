@@ -19,9 +19,9 @@ def l2beat(context: OpExecutionContext):
 
     Writes to BQ. Need to update the logic to write to Clickhouse.
     """
-    from op_analytics.datasources import l2beat_legacy
+    from op_analytics.datasources.l2beat import execute
 
-    result = l2beat_legacy.pull_l2beat()
+    result = execute.execute_pull()
     context.log.info(result)
 
 

@@ -43,18 +43,55 @@ def goldsky_mainnet_chains_df() -> pl.DataFrame:
 @cache
 def goldsky_mainnet_chains() -> list[str]:
     """List of mainnet chains ingested from Goldsky."""
-    return sorted(goldsky_mainnet_chains_df()["oplabs_db_schema"].to_list())
+    # (pedrod - 2025/03/04) Ran into gsheets rate limiting issues when backfilling
+    # with many pods in parallel. So opted to hard-code the list.
+    # return sorted(goldsky_mainnet_chains_df()["oplabs_db_schema"].to_list())
+    return [
+        "automata",
+        "base",
+        "bob",
+        "cyber",
+        "fraxtal",
+        "ham",
+        "ink",
+        "kroma",
+        "lisk",
+        "lyra",
+        "metal",
+        "mint",
+        "mode",
+        "op",
+        "orderly",
+        "polynomial",
+        "race",
+        "redstone",
+        "shape",
+        "soneium",
+        "swan",
+        "swell",
+        "unichain",
+        "worldchain",
+        "xterio",
+        "zora",
+    ]
 
 
 @cache
 def goldsky_testnet_chains() -> list[str]:
     """List of testnet chains ingested from Goldsky."""
-    df = load_chain_metadata()
-    return sorted(
-        df.filter(pl.col("oplabs_testnet_db_schema").is_not_null())[
-            "oplabs_testnet_db_schema"
-        ].to_list()
-    )
+    # (pedrod - 2025/03/04) Ran into gsheets rate limiting issues when backfilling
+    # with many pods in parallel. So opted to hard-code the list.
+    # df = load_chain_metadata()
+    # return sorted(
+    #     df.filter(pl.col("oplabs_testnet_db_schema").is_not_null())[
+    #         "oplabs_testnet_db_schema"
+    #     ].to_list()
+    # )
+    return [
+        "ink_sepolia",
+        "op_sepolia",
+        "unichain_sepolia",
+    ]
 
 
 class ChainNetwork(Enum):

@@ -5,15 +5,21 @@ from dagster import (
 
 
 @asset
-def token_mappings_to_bq(context: AssetExecutionContext):
-    """Copy token mappings from Google Sheet to BigQuery."""
-    from op_analytics.datasources.defillama import token_mappings
+def mappings_to_bq(context: AssetExecutionContext):
+    """Copy data mappings from Google Sheet to BigQuery."""
+    from op_analytics.datasources.defillama.mappings import protocol_category_mapping
+    from op_analytics.datasources.defillama.mappings import token_mappings
+
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
+
+    result = protocol_category_mapping.execute()
+    context.log.info(result)
 
     result = token_mappings.execute()
     context.log.info(result)
 
     DefiLlama.TOKEN_MAPPINGS.create_bigquery_external_table_at_default_dt()
+    DefiLlama.PROTOCOL_CATEGORY_MAPPINGS.create_bigquery_external_table_at_default_dt()
 
 
 @asset
@@ -47,36 +53,23 @@ def protocol_tvl(context: AssetExecutionContext):
     DefiLlama.PROTOCOLS_TOKEN_TVL.create_bigquery_external_table()
 
 
-@asset(deps=[protocol_tvl, token_mappings_to_bq])
-def protocol_tvl_enrichment(context: AssetExecutionContext):
-    """Enrich protocol tvl data."""
-
-    from op_analytics.datasources.defillama import tvl_breakdown_enrichment
+@asset(deps=[protocol_tvl, mappings_to_bq])
+def protocol_tvl_flows_filtered(context: AssetExecutionContext):
+    """Pull lend borrow pools data."""
+    from op_analytics.datasources.defillama.protocolstvlenrich import execute
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
     from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
 
-    result = tvl_breakdown_enrichment.execute_pull()
+    result = execute.execute_pull()
     context.log.info(result)
 
-    DefiLlama.PROTOCOL_TOKEN_TVL_BREAKDOWN.create_bigquery_external_table()
+    DefiLlama.PROTOCOL_TVL_FLOWS_FILTERED.create_bigquery_external_table()
 
     create_view(
         db_name="dailydata_defillama",
         view_name="defillama_tvl_breakdown_filtered",
         disposition="replace",
     )
-
-
-@asset(deps=[protocol_tvl_enrichment])
-def protocol_tvl_flows_filtered(context: AssetExecutionContext):
-    """Pull lend borrow pools data."""
-    from op_analytics.datasources.defillama.protocolstvlenrich import execute
-    from op_analytics.datasources.defillama.dataaccess import DefiLlama
-
-    result = execute.execute_pull()
-    context.log.info(result)
-
-    DefiLlama.PROTOCOL_TVL_FLOWS_FILTERED.create_bigquery_external_table()
 
 
 @asset
