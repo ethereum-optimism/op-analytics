@@ -39,8 +39,8 @@ def load_superchain_4337_to_bq(
     return load_blockbatch_to_bq(
         range_spec=range_spec,
         root_paths_to_read=[
-            RootPath.of("blockbatch/account_abstraction/enriched_entrypoint_traces_v1"),
-            RootPath.of("blockbatch/account_abstraction/useroperationevent_logs_v1"),
+            RootPath.of("blockbatch/account_abstraction/enriched_entrypoint_traces_v2"),
+            RootPath.of("blockbatch/account_abstraction/useroperationevent_logs_v2"),
         ],
         bq_dataset_name="superchain_4337",
         table_name_map={},
