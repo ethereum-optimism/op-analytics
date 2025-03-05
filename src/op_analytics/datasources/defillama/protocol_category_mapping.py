@@ -8,19 +8,18 @@ from .dataaccess import DefiLlama
 
 
 DATA_MAPPINGS_GSHEET_NAME = "data_mappings"
-TOKEN_MAPPINGS_WORKSHEET_NAME = "[Token Mappings -ADMIN MANAGED]"
-
-TOKEN_MAPPINGS_SCHEMA = {
-    "token": pl.String,
-    "token_category": pl.String,
-    "project": pl.String,
-    "source_protocol": pl.String,
+PROTOCOL_CATEGORY_MAPPINGS_WORKSHEET_NAME = "[Category Mappings -ADMIN MANAGED]"
+PROTOCOL_CATEGORY_MAPPINGS_SCHEMA = {
+    "protocol_category": pl.String,
+    "aggregated_category": pl.String,
 }
 
 
 def execute():
     df = load_data_from_gsheet(
-        DATA_MAPPINGS_GSHEET_NAME, TOKEN_MAPPINGS_WORKSHEET_NAME, TOKEN_MAPPINGS_SCHEMA
+        DATA_MAPPINGS_GSHEET_NAME,
+        PROTOCOL_CATEGORY_MAPPINGS_WORKSHEET_NAME,
+        PROTOCOL_CATEGORY_MAPPINGS_SCHEMA,
     )
 
     # Deduplicate
@@ -32,7 +31,7 @@ def execute():
     # Overwrite at default dt
     DefiLlama.TOKEN_MAPPINGS.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
 
-    return {TOKEN_MAPPINGS_WORKSHEET_NAME: len(df)}
+    return {PROTOCOL_CATEGORY_MAPPINGS_WORKSHEET_NAME: len(df)}
 
 
 def load_data_from_gsheet(

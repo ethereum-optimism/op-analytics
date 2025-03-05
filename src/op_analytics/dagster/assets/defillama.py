@@ -14,6 +14,7 @@ def token_mappings_to_bq(context: AssetExecutionContext):
     context.log.info(result)
 
     DefiLlama.TOKEN_MAPPINGS.create_bigquery_external_table_at_default_dt()
+    DefiLlama.PROTOCOL_CATEGORY_MAPPINGS.create_bigquery_external_table_at_default_dt()
 
 
 @asset
