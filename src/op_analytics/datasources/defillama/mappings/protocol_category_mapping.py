@@ -28,6 +28,6 @@ def execute():
         raise Exception("There are duplicates in the token mappings Google Sheet!")
 
     # Overwrite at default dt
-    DefiLlama.TOKEN_MAPPINGS.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
+    DefiLlama.PROTOCOL_CATEGORY_MAPPINGS.write(dataframe=df.with_columns(dt=pl.lit(DEFAULT_DT)))
 
     return {PROTOCOL_CATEGORY_MAPPINGS_WORKSHEET_NAME: len(df)}
