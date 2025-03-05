@@ -22,7 +22,7 @@ def execute():
     )
 
     # Deduplicate
-    dupes = df.group_by("token").len().filter(pl.col("len") > 1)
+    dupes = df.group_by("protocol_category").len().filter(pl.col("len") > 1)
     if len(dupes) > 0:
         print(dupes)
         raise Exception("There are duplicates in the token mappings Google Sheet!")
