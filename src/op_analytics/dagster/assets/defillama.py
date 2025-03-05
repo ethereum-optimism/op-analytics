@@ -38,7 +38,7 @@ def chain_tvl(context: AssetExecutionContext):
 
 @asset
 def protocol_tvl(context: AssetExecutionContext):
-    """Pull historical protocol tvl data."""
+    """Pull protocol tvl data."""
 
     from op_analytics.datasources.defillama.protocolstvl import execute
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
@@ -55,7 +55,7 @@ def protocol_tvl(context: AssetExecutionContext):
 
 @asset(deps=[protocol_tvl, mappings_to_bq])
 def protocol_tvl_flows_filtered(context: AssetExecutionContext):
-    """Pull lend borrow pools data."""
+    """Enrich protocol tvl data."""
     from op_analytics.datasources.defillama.protocolstvlenrich import execute
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
     from op_analytics.datapipeline.etl.bigqueryviews.view import create_view
