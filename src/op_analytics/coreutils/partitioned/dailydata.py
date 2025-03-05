@@ -234,13 +234,13 @@ class DailyDataset(str, Enum):
             path=f"{self.root_path}/dt={dt}/{PARQUET_FILENAME}",
         )
 
-    def create_bigquery_external_table_at_default_dt(self) -> None:
+    def create_bigquery_external_table_at_default_dt(self, suffix: str = "default") -> None:
         """Create an upartitioned BQ exteral table at the default partiton.
 
         Useful for tables that always write data to the default partition and do not
         use different "dt" values.
         """
-        self.create_bigquery_external_table_at_dt(dt=DEFAULT_DT, suffix="default")
+        self.create_bigquery_external_table_at_dt(dt=DEFAULT_DT, suffix=suffix)
 
     def create_bigquery_external_table_at_latest_dt(self) -> None:
         """Create an upartitioned BQ exteral table at the latest dt partiton.
