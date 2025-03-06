@@ -315,7 +315,7 @@ def noargs_ingest():
 
     ingest(
         chains=normalize_chains("ALL"),
-        range_spec="m8hours",
+        range_spec="m16hours",
         read_from=RawOnchainDataProvider.GOLDSKY,
         write_to=DataLocation.GCS,
         dryrun=False,
@@ -330,7 +330,7 @@ def noargs_blockbatch():
     compute_blockbatch(
         chains=normalize_chains("ALL"),
         models=normalize_blockbatch_models("MODELS"),
-        range_spec="m12hours",
+        range_spec="m16hours",
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,
@@ -410,5 +410,5 @@ def aa_backfill_pt2():
                 write_to=DataLocation.GCS,
                 dryrun=False,
                 force_complete=False,
-                fork_process=False,
+                fork_process=True,
             )
