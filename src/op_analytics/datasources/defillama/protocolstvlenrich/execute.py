@@ -7,7 +7,7 @@ from op_analytics.coreutils.duckdb_inmem.client import init_client
 from op_analytics.coreutils.logger import memory_usage, structlog, bound_contextvars
 from op_analytics.coreutils.partitioned.dailydata import ParquetPathNotFound
 from op_analytics.coreutils.rangeutils.daterange import DateRange
-from op_analytics.coreutils.time import date_tostr, latest_complete_date
+from op_analytics.coreutils.time import date_tostr, now_date
 from op_analytics.coreutils.misc import raise_for_schema_mismatch
 
 from ..dataaccess import DefiLlama
@@ -28,7 +28,7 @@ FLOW_DAYS = [1, 7, 14, 28, 60, 90, 365]
 
 def execute_pull(range_spec: str | None = None, force_complete: bool = True):
     if range_spec is None:
-        process_date = latest_complete_date()
+        process_date = now_date()
         dates = [process_date - timedelta(days=_) for _ in range(FLOW_TABLE_LAST_N_DAYS)]
 
     else:
@@ -40,7 +40,7 @@ def execute_pull(range_spec: str | None = None, force_complete: bool = True):
     complete_dates = set(markers["dt"].to_list())
 
     # Get metadata using  a recent date.
-    metadata_df = read_metadata(latest_complete_date())
+    metadata_df = read_metadata(now_date() - timedelta(days=1))
 
     # Iterate over the dates to compute
     written_rows = {}
@@ -79,7 +79,7 @@ def execute_pull(range_spec: str | None = None, force_complete: bool = True):
 
 
 def run(metadata_df: pl.DataFrame, compute_date: date | None = None):
-    compute_date = compute_date or latest_complete_date()
+    compute_date = compute_date or now_date()
     log.info(f"computing net flows at {compute_date=}")
 
     # Read data.

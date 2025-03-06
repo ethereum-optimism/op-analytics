@@ -83,7 +83,7 @@ def read_lookback_data(compute_date: date, flow_days: list[int]):
         f"""
         SELECT
             dt,
-            DATE '{date_tostr(compute_date)}' - dt AS lookback,
+            DATE '{date_tostr(compute_date)}' - dt - 1 AS lookback,
             chain,
             protocol_slug,
             token,
