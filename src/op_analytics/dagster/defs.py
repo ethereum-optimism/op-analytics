@@ -13,6 +13,7 @@ MODULE_NAMES = [
     "chainsdaily",
     "chainshourly",
     "defillama",
+    "dune",
     "github",
     "other",
     "transform",
@@ -97,6 +98,13 @@ defs = Definitions(
         create_schedule_for_group(
             group="github",
             cron_schedule="0 2 * * *",  # Runs at 2 AM daily
+            default_status=DefaultScheduleStatus.RUNNING,
+        ),
+        #
+        create_schedule_for_group(
+            group="dune",
+            # Runs at 8 AM daily.
+            cron_schedule="0 8 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
         ),
         #
