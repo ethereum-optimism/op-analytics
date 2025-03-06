@@ -68,7 +68,8 @@ def read_lookback_data(compute_date: date, flow_days: list[int]):
 
     datevals = []
     for looback in flow_days:
-        datevals.append(compute_date - timedelta(days=looback))
+        # NOTE: A lookback of 7d means we look at today - 6d.
+        datevals.append(compute_date - timedelta(days=looback - 1))
 
     dtvals = [date_tostr(_) for _ in datevals]
     log.info(f"reading token tvl data for {dtvals=}")
