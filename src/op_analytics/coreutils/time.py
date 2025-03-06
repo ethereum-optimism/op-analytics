@@ -109,3 +109,8 @@ def parse_isoformat(iso_string: str) -> datetime:
         parsed_datetime = parsed_datetime.replace(tzinfo=None)
 
     return parsed_datetime
+
+
+def latest_complete_date() -> date:
+    """Returns the date of the latest complete day (yesterday)."""
+    return now_date() - timedelta(days=1)

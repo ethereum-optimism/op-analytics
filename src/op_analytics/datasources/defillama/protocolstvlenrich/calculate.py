@@ -25,9 +25,7 @@ def calculate_net_flows(
     lookback_df: pl.DataFrame,
     flow_days: list,
 ) -> pl.DataFrame:
-    """Add net_token_flow_Xd columns for every X in the flow_days list.
-    The column names will show X days (e.g., '7d' for 7-day flows) but calculations
-    use X-1 days (e.g., 6 days of difference for 7-day flows).
+    """Add net_token_flow_Xd colums for every X in the flow_days list.
 
     The data for the current date is in "df" and "lookback_df" is expected to have data
     for each of the lookback days in flow_days.
@@ -51,8 +49,7 @@ def calculate_net_flows(
 
     # Loop over each of the flow days and add the net_flow column for that lookback.
     for d in flow_days:
-        # Use d-1 for filtering the lookback data
-        filtered = lookback_df.filter(pl.col("lookback") == (d - 1))
+        filtered = lookback_df.filter(pl.col("lookback") == d)
 
         try:
             right = filtered.drop("dt", "lookback")
