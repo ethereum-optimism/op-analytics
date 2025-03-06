@@ -367,6 +367,13 @@ def noargs_public_bq():
         force_not_ready=False,
     )
 
+    load_superchain_4337_to_bq(
+        range_spec="m6days",
+        dryrun=False,
+        force_complete=False,
+        force_not_ready=False,
+    )
+
 
 # Backfills
 
@@ -378,11 +385,11 @@ def aa_backfill_pt2():
     index = int(os.environ["JOB_COMPLETION_INDEX"])
 
     # Num job indexes (the paralellism specified on k8s)
-    num_indexes = 28
+    num_indexes = 12
 
     # Define start and end dates for the backfill.
-    start_date = datetime.strptime("20241224", "%Y%m%d")
-    end_date = datetime.strptime("20250304", "%Y%m%d")
+    start_date = datetime.strptime("20240101", "%Y%m%d")
+    end_date = datetime.strptime("20241225", "%Y%m%d")
 
     # Generate date ranges with 3-day intervals
     date_ranges = []
@@ -392,7 +399,7 @@ def aa_backfill_pt2():
         date_ranges.append((current_date.strftime("%Y%m%d"), next_date.strftime("%Y%m%d")))
         current_date = next_date
 
-    for ii, (d0, d1) in enumerate(date_ranges):
+    for ii, (d0, d1) in enumerate(reversed(date_ranges)):
         range_spec = f"@{d0}:{d1}"
         if ii % num_indexes == index:
             compute_blockbatch(

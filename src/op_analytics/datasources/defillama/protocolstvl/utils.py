@@ -1,15 +1,15 @@
+from dataclasses import dataclass
 from datetime import date, timedelta
 
 import polars as pl
 
-from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_query_oplabs
-from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.clickhouse.oplabs import run_query_oplabs
+from op_analytics.coreutils.logger import memory_usage, structlog
 from op_analytics.coreutils.partitioned.dailydata import TablePath
 from op_analytics.coreutils.partitioned.dailydatawritefromclickhouse import FromClickHouseWriter
-
+from op_analytics.coreutils.request import new_session
 
 from ..dataaccess import DefiLlama
-from .protocol import ProtocolTVL
 
 log = structlog.get_logger()
 
@@ -30,25 +30,48 @@ def get_buffered(process_dt: date):
     return slugs1.intersection(slugs2)
 
 
-def fetch_and_write(session, process_dt, batch: list[str]):
-    """Fetch data and write to the ingestion buffer in ClickHouse."""
+@dataclass
+class Batch:
+    process_dt: date
+    slugs: list[str]
 
-    protocols: list[ProtocolTVL] = []
-    for slug in batch:
-        protocols.append(ProtocolTVL.fetch(session, slug))
 
-    tvl_df = pl.concat(_.tvl_df for _ in protocols)
-    token_tvl_df = pl.concat(_.token_tvl_df for _ in protocols)
+def fetch_and_write(batch: Batch):
+    """Fetch data and write to the ingestion buffer in ClickHouse.
 
-    _write_buffer(
-        table=DefiLlama.PROTOCOLS_TVL.clickhouse_buffer_table(),
-        df=tvl_df.with_columns(process_dt=pl.lit(process_dt)),
+    This function needs to be pickleable so it can run in a subprocess.
+    """
+    from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs
+    from op_analytics.coreutils.threads import run_concurrently
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama as DFL
+    from op_analytics.datasources.defillama.protocolstvl.protocol import ProtocolTVL
+
+    session = new_session()
+    result: dict[str, ProtocolTVL] = run_concurrently(
+        function=lambda x: ProtocolTVL.fetch(session, slug=x),
+        targets=batch.slugs,
+        max_workers=8,
     )
+    protocols = list(result.values())
 
-    _write_buffer(
-        table=DefiLlama.PROTOCOLS_TOKEN_TVL.clickhouse_buffer_table(),
-        df=token_tvl_df.with_columns(process_dt=pl.lit(process_dt)),
-    )
+    def _write_buffer(table: TablePath, df: pl.DataFrame) -> None:
+        result = insert_oplabs(
+            database=table.db,
+            table=table.table,
+            df_arrow=df.to_arrow(),
+        )
+        log.info(
+            f"inserted {result.written_rows} rows to {table.db}.{table.table}",
+            max_rss=memory_usage(),
+        )
+
+    dtcol = pl.lit(batch.process_dt)
+
+    tvl_df = pl.concat(_.tvl_df for _ in protocols).with_columns(process_dt=dtcol)
+    _write_buffer(table=DFL.PROTOCOLS_TVL.clickhouse_buffer_table(), df=tvl_df)
+
+    token_tvl_df = pl.concat(_.token_tvl_df for _ in protocols).with_columns(process_dt=dtcol)
+    _write_buffer(table=DFL.PROTOCOLS_TOKEN_TVL.clickhouse_buffer_table(), df=token_tvl_df)
 
 
 def copy_to_gcs(process_dt: date, last_n_days: int):
@@ -92,12 +115,3 @@ def _query_slugs(table: TablePath, process_dt: date):
             parameters={"param1": process_dt},
         )["protocol_slug"].to_list()
     )
-
-
-def _write_buffer(table: TablePath, df: pl.DataFrame) -> None:
-    result = insert_oplabs(
-        database=table.db,
-        table=table.table,
-        df_arrow=df.to_arrow(),
-    )
-    log.info(f"inserted {result.written_rows} rows to {table.db}.{table.table}")
