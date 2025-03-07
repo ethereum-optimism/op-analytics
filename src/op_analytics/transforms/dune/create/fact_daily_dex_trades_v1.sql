@@ -1,0 +1,35 @@
+CREATE TABLE IF NOT EXISTS _placeholder_
+(
+    `chain_id` Int64,
+    `chain` String,
+    `project` String,
+    `version` String,
+    `token_pair_address_id` String,
+    `token_bought_address` String,
+    `token_sold_address` String,
+    `token_bought_symbol` String,
+    `token_sold_symbol` String,
+    `token_pair` String,
+    `sum_token_bought_amount` Float64,
+    `sum_token_bought_amount_raw` String,
+    `avg_swap_token_bought_amount` Float64,
+    `avg_swap_token_bought_amount_raw` Float64,
+    `med_swap_sum_token_bought_amount` Float64,
+    `med_swap_token_bought_amount_raw` Float64,
+    `sum_token_sold_amount` Float64,
+    `sum_token_sold_amount_raw` String,
+    `avg_swap_token_sold_amount` Float64,
+    `avg_swap_token_sold_amount_raw` Float64,
+    `med_swap_token_sold_amount` Float64,
+    `med_swap_token_sold_amount_raw` Float64,
+    `sum_amount_usd` Float64,
+    `avg_swap_amount_usd` Float64,
+    `med_swap_amount_usd` Float64,
+    `count_swaps` Int64,
+    `count_transactions` Int64,
+    `dt` Date,
+    INDEX chain_id_idx chain_id TYPE minmax GRANULARITY 1,
+    INDEX dt_idx dt TYPE minmax GRANULARITY 1
+)
+ENGINE = ReplacingMergeTree()
+ORDER BY (chain_id, chain, project, version, token_pair_address_id, dt)
