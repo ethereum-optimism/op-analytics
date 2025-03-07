@@ -1,12 +1,11 @@
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date
 
 import polars as pl
 
 from op_analytics.coreutils.clickhouse.oplabs import run_query_oplabs
 from op_analytics.coreutils.logger import memory_usage, structlog
 from op_analytics.coreutils.partitioned.dailydata import TablePath
-from op_analytics.coreutils.partitioned.dailydatawritefromclickhouse import FromClickHouseWriter
 from op_analytics.coreutils.request import new_session
 
 from ..dataaccess import DefiLlama
@@ -48,11 +47,15 @@ def fetch_and_write(batch: Batch):
 
     session = new_session()
     result: dict[str, ProtocolTVL] = run_concurrently(
-        function=lambda x: ProtocolTVL.fetch(session, slug=x),
+        function=lambda x: ProtocolTVL.fetch(slug=x, session=session),
         targets=batch.slugs,
         max_workers=8,
     )
     protocols = list(result.values())
+
+    dtcol = pl.lit(batch.process_dt)
+    tvl_df = pl.concat(_.tvl_df for _ in protocols).with_columns(process_dt=dtcol)
+    token_tvl_df = pl.concat(_.token_tvl_df for _ in protocols).with_columns(process_dt=dtcol)
 
     def _write_buffer(table: TablePath, df: pl.DataFrame) -> None:
         result = insert_oplabs(
@@ -65,41 +68,8 @@ def fetch_and_write(batch: Batch):
             max_rss=memory_usage(),
         )
 
-    dtcol = pl.lit(batch.process_dt)
-
-    tvl_df = pl.concat(_.tvl_df for _ in protocols).with_columns(process_dt=dtcol)
     _write_buffer(table=DFL.PROTOCOLS_TVL.clickhouse_buffer_table(), df=tvl_df)
-
-    token_tvl_df = pl.concat(_.token_tvl_df for _ in protocols).with_columns(process_dt=dtcol)
     _write_buffer(table=DFL.PROTOCOLS_TOKEN_TVL.clickhouse_buffer_table(), df=token_tvl_df)
-
-
-def copy_to_gcs(process_dt: date, last_n_days: int):
-    """Write data for the last N dates to GCS."""
-
-    min_dt = process_dt - timedelta(days=last_n_days)
-
-    results = []
-
-    writer1 = FromClickHouseWriter(
-        dailydata_table=DefiLlama.PROTOCOLS_TVL,
-        process_dt=process_dt,
-        min_dt=min_dt,
-        max_dt=process_dt,
-        order_by="protocol_slug, chain",
-    )
-    results.append(writer1.write().to_dict())
-
-    writer2 = FromClickHouseWriter(
-        dailydata_table=DefiLlama.PROTOCOLS_TOKEN_TVL,
-        process_dt=process_dt,
-        min_dt=min_dt,
-        max_dt=process_dt,
-        order_by="protocol_slug, chain, token",
-    )
-    results.append(writer2.write().to_dict())
-
-    return results
 
 
 def _query_slugs(table: TablePath, process_dt: date):

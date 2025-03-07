@@ -2,8 +2,9 @@ from dataclasses import dataclass
 from typing import Any
 
 import polars as pl
+import requests
 
-from op_analytics.coreutils.request import get_data
+from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.time import dt_fromepoch, epoch_is_date
 from op_analytics.coreutils.misc import raise_for_schema_mismatch
 
@@ -36,8 +37,9 @@ class ProtocolTVL:
     token_tvl_df: pl.DataFrame
 
     @classmethod
-    def fetch(cls, session, slug: str) -> "ProtocolTVL":
-        # Fetch data
+    def fetch(cls, slug: str, session: requests.Session | None = None) -> "ProtocolTVL":
+        session = session or new_session()
+
         url = PROTOCOL_DETAILS_ENDPOINT.format(slug=slug)
         data = get_data(session, url, retry_attempts=5)
         return cls.of(slug=slug, data=data)
@@ -48,17 +50,22 @@ class ProtocolTVL:
         chain_tvls = data.get("chainTvls", {})
 
         # TVL dataframe
-        tvl_df = cls.to_tvl_df(slug, chain_tvls)
+        tvl_df = make_tvl_df(slug, chain_tvls)
 
-        # Token TVL dataframe. Join the token and USD values.
-        tokens = cls.to_token_tvl_df(slug, chain_tvls)
-        tokens_usd = cls.to_token_tvl_usd_df(slug, chain_tvls)
+        # Token TVL
+        tokens = make_token_tvl_df(slug, chain_tvls)
+
+        # Token TVL-USD
+        tokens_usd = make_token_tvl_usd_df(slug, chain_tvls)
+
+        # Join TVL and TVL-USD
         token_tvl_df = tokens.join(
             tokens_usd,
             how="full",
             on=["protocol_slug", "chain", "dt", "token"],
             coalesce=True,
         )
+
         raise_for_schema_mismatch(
             actual_schema=token_tvl_df.schema,
             expected_schema=pl.Schema(TOKEN_TVL_SCHEMA),
@@ -69,95 +76,99 @@ class ProtocolTVL:
             token_tvl_df=token_tvl_df,
         )
 
-    @staticmethod
-    def to_tvl_df(slug: str, chain_tvls: dict):
-        tvl_records = []
+    def max_dt(self):
+        self.tvl_df
 
-        for chain, chain_data in chain_tvls.items():
-            for tvl_entry in chain_data.get("tvl", []):
-                dateval = dt_fromepoch(tvl_entry["date"])
 
-                if not epoch_is_date(tvl_entry["date"]):
-                    continue
+def make_tvl_df(slug: str, chain_tvls: dict):
+    tvl_records = []
 
-                tvl_records.append(
+    for chain, chain_data in chain_tvls.items():
+        for tvl_entry in chain_data.get("tvl", []):
+            epoch = tvl_entry["date"]
+            dateval = dt_fromepoch(epoch)
+
+            if not epoch_is_date(tvl_entry["date"]):
+                continue
+
+            tvl_records.append(
+                {
+                    "protocol_slug": slug,
+                    "chain": chain,
+                    "dt": dateval,
+                    "total_app_tvl": float(tvl_entry.get("totalLiquidityUSD")),
+                }
+            )
+
+    return pl.DataFrame(
+        tvl_records,
+        schema=TVL_SCHEMA,
+    )
+
+
+def make_token_tvl_df(slug: str, chain_tvls: dict):
+    tokens = []
+
+    for chain, chain_data in chain_tvls.items():
+        for tokens_entry in chain_data.get("tokens", []):
+            dateval = dt_fromepoch(tokens_entry["date"])
+
+            if not epoch_is_date(tokens_entry["date"]):
+                continue
+
+            token_tvls = tokens_entry.get("tokens", [])
+            for token in token_tvls:
+                tokens.append(
                     {
                         "protocol_slug": slug,
                         "chain": chain,
                         "dt": dateval,
-                        "total_app_tvl": float(tvl_entry.get("totalLiquidityUSD")),
+                        "token": token,
+                        "app_token_tvl": float(token_tvls[token]),
                     }
                 )
 
-        return pl.DataFrame(
-            tvl_records,
-            schema=TVL_SCHEMA,
-        )
+    return pl.DataFrame(
+        tokens,
+        schema={
+            "protocol_slug": pl.String(),
+            "chain": pl.String(),
+            "dt": pl.String(),
+            "token": pl.String(),
+            "app_token_tvl": pl.Float64(),
+        },
+    )
 
-    @staticmethod
-    def to_token_tvl_df(slug: str, chain_tvls: dict):
-        tokens = []
 
-        for chain, chain_data in chain_tvls.items():
-            for tokens_entry in chain_data.get("tokens", []):
-                dateval = dt_fromepoch(tokens_entry["date"])
+def make_token_tvl_usd_df(slug: str, chain_tvls: dict):
+    tokens_usd = []
 
-                if not epoch_is_date(tokens_entry["date"]):
-                    continue
+    for chain, chain_data in chain_tvls.items():
+        for tokens_usd_entry in chain_data.get("tokensInUsd", []):
+            dateval = dt_fromepoch(tokens_usd_entry["date"])
 
-                token_tvls = tokens_entry.get("tokens", [])
-                for token in token_tvls:
-                    tokens.append(
-                        {
-                            "protocol_slug": slug,
-                            "chain": chain,
-                            "dt": dateval,
-                            "token": token,
-                            "app_token_tvl": float(token_tvls[token]),
-                        }
-                    )
+            if not epoch_is_date(tokens_usd_entry["date"]):
+                continue
 
-        return pl.DataFrame(
-            tokens,
-            schema={
-                "protocol_slug": pl.String(),
-                "chain": pl.String(),
-                "dt": pl.String(),
-                "token": pl.String(),
-                "app_token_tvl": pl.Float64(),
-            },
-        )
+            token_usd_tvls = tokens_usd_entry.get("tokens", [])
+            for token in token_usd_tvls:
+                tokens_usd.append(
+                    {
+                        "protocol_slug": slug,
+                        "chain": chain,
+                        "dt": dateval,
+                        "token": token,
+                        "app_token_tvl_usd": float(token_usd_tvls[token]),
+                    }
+                )
 
-    @staticmethod
-    def to_token_tvl_usd_df(slug: str, chain_tvls: dict):
-        tokens_usd = []
-
-        for chain, chain_data in chain_tvls.items():
-            for tokens_usd_entry in chain_data.get("tokensInUsd", []):
-                dateval = dt_fromepoch(tokens_usd_entry["date"])
-
-                if not epoch_is_date(tokens_usd_entry["date"]):
-                    continue
-
-                token_usd_tvls = tokens_usd_entry.get("tokens", [])
-                for token in token_usd_tvls:
-                    tokens_usd.append(
-                        {
-                            "protocol_slug": slug,
-                            "chain": chain,
-                            "dt": dateval,
-                            "token": token,
-                            "app_token_tvl_usd": float(token_usd_tvls[token]),
-                        }
-                    )
-
-        return pl.DataFrame(
-            tokens_usd,
-            schema={
-                "protocol_slug": pl.String(),
-                "chain": pl.String(),
-                "dt": pl.String(),
-                "token": pl.String(),
-                "app_token_tvl_usd": pl.Float64(),
-            },
-        )
+    return pl.DataFrame(
+        tokens_usd,
+        schema={
+            "protocol_slug": pl.String(),
+            "chain": pl.String(),
+            "dt": pl.String(),
+            "token": pl.String(),
+            "app_token_tvl_usd": pl.Float64(),
+        },
+    )
