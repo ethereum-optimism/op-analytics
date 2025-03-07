@@ -41,7 +41,7 @@ def create_tables(group_name: str):
                 raise
 
             assert isinstance(result.summary, dict)
-            log.info(f"{ddl.basename} -> {result.written_rows} written rows", **result.summary)
+            log.info(f"CREATE TABLE {ddl.basename}")
             results[ddl.basename] = result.summary
 
     return results
