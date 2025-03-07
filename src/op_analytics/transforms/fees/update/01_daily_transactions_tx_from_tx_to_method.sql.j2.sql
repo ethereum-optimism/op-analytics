@@ -31,8 +31,8 @@ SELECT
   , method_id
 
   -- Aggregations
-  , COUNT(*) AS count_tx
-  , countIf(success) AS count_success_tx
+  , COUNT(*) AS count_transactions
+  , countIf(success) AS count_success_transactions
 
   , COUNT(DISTINCT block_number) AS distinct_blocks
 
