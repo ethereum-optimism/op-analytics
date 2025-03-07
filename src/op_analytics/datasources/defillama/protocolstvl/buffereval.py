@@ -2,10 +2,10 @@ from datetime import date, timedelta
 
 import polars as pl
 
-from op_analytics.coreutils.clickhouse.oplabs import run_query_oplabs, run_statememt_oplabs
+from op_analytics.coreutils.clickhouse.oplabs import run_query_oplabs
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydata import TablePath
-from op_analytics.coreutils.time import date_fromstr, date_tostr
+from op_analytics.coreutils.time import date_fromstr
 
 from ..dataaccess import DefiLlama
 
@@ -52,14 +52,13 @@ def get_buffered(process_dt: date):
     return slugs[0].intersection(slugs[1])
 
 
-def evaluate_buffer(process_dt: date):
-    """Evaluate and remove bad data from the buffer.
+def evaluate_buffer(process_dt: date) -> date:
+    """Evaluate the buffer and return the last date with complete data.
 
     Find dt values that are incomplete at process_dt. Alter table to delete data
     from the imcomplete dt values. This prevents us from writing bad data to GCS.
     """
     table1: TablePath = DefiLlama.PROTOCOLS_TVL.clickhouse_buffer_table()
-    table2: TablePath = DefiLlama.PROTOCOLS_TOKEN_TVL.clickhouse_buffer_table()
 
     # Query ClickHouse to the the total rows per dt and number of distinct protocol
     # slugs for the (-15 days, -10 days) period and for each of the different dt's
@@ -133,31 +132,17 @@ def evaluate_buffer(process_dt: date):
         if row["rows_outside_threshold"] or row["protocols_outside_threshold"]
     ]
 
+    last_complete_date: date
+
     if bad_dts:
         # Find the first bad date. We'll need to remove data from that one and
         # all subsequente dates up until process_dt.
         first_bad_date = date_fromstr(min(bad_dts))
+        last_complete_date = first_bad_date - timedelta(days=1)
 
-        to_remove: list[date] = []
-        dateval = first_bad_date
-        while dateval <= process_dt:
-            to_remove.append(dateval)
-            dateval = dateval + timedelta(days=1)
-
-        # Delete data for problematic dates
-        for t in [table1, table2]:
-            delete_query = f"""
-                ALTER TABLE {t.db}.{t.table}
-                DELETE WHERE process_dt = {{dtproc:Date}} AND dt IN ({{toremove:Array(Date)}})
-            """
-            run_statememt_oplabs(
-                delete_query,
-                parameters={
-                    "dtproc": process_dt,
-                    "toremove": to_remove,
-                },
-            )
-        to_remove_dts = [date_tostr(_) for _ in to_remove]
-        log.warning(f"Deleted incomplete data for {to_remove_dts}")
+        log.warning(f"Detected incomplete data for {bad_dts}")
     else:
         log.info("Did not detect incomplete data in the buffer.")
+        last_complete_date = process_dt
+
+    return last_complete_date

@@ -36,14 +36,15 @@ def execute_pull(process_dt: date | None = None):
 
     # Fetch from API And write to buffer.
     log.info(f"fetching and buffering data for {len(pending_ids)}/{len(slugs)} pending slugs")
-
-    breakpoint()
-
     write_to_buffer(pending_ids=pending_ids, process_dt=process_dt)
 
     # Evaluate the state of the buffer. Remove incomplete "dt" values from
     # the buffer so that they don't get copied over to GCS.
-    evaluate_buffer(process_dt)
+    last_complete_date = evaluate_buffer(process_dt)
 
     # Copy data from buffer to GCS.
-    return copy_to_gcs(process_dt=process_dt, last_n_days=TVL_TABLE_LAST_N_DAYS)
+    return copy_to_gcs(
+        process_dt=process_dt,
+        last_n_days=TVL_TABLE_LAST_N_DAYS,
+        max_valid_date=last_complete_date,
+    )
