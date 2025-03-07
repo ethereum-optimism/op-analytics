@@ -5,13 +5,13 @@ from dataclasses import asdict, dataclass
 from datetime import date
 
 import polars as pl
+import stamina
 from clickhouse_connect.driver.exceptions import DatabaseError
 from clickhouse_connect.driver.summary import QuerySummary
 
 from op_analytics.coreutils.clickhouse.client import new_stateful_client
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs
 from op_analytics.coreutils.logger import bound_contextvars, structlog
-from op_analytics.coreutils.time import date_tostr
 
 from .create import create_tables
 from .export import export_to_bigquery
@@ -38,28 +38,24 @@ class NoWrittenRows(Exception):
 class TransformTask:
     group_name: str
     dt: date
-
-    skip_create: bool
     update_only: list[str] | None
     raise_if_empty: bool
 
-    @property
-    def context(self):
-        return dict(dt=date_tostr(self.dt))
+    _created_tables: bool = False
 
     def execute(self):
         client = new_stateful_client("OPLABS")
-
-        with bound_contextvars(**self.context):
-            if not self.skip_create:
-                self.create_tables()
-            results = self.run_updates(client)
-            result_dicts = [_.to_dict() for _ in results]
-            self.write_marker(result_dicts)
-            return result_dicts
+        self.create_tables()
+        results = self.run_updates(client)
+        result_dicts = [_.to_dict() for _ in results]
+        self.write_marker(result_dicts)
+        return result_dicts
 
     def create_tables(self):
+        if self._created_tables:
+            return
         create_tables(self.group_name)
+        self._created_tables = True
 
     def run_updates(self, client) -> list[UpdateResult]:
         """Find the sequence of DDLs for this task and run them."""
@@ -93,8 +89,14 @@ class TransformTask:
     def run_update(self, client, step: Step):
         log.info(f"running ddl {step.name}")
 
+        retrier = stamina.RetryingCaller(
+            attempts=2,
+            wait_initial=3,
+        ).on(should_retry)
+
         try:
-            result: QuerySummary = client.command(
+            result: QuerySummary = retrier(
+                client.command,
                 cmd=step.sql_statement,
                 parameters={"dtparam": self.dt},
                 settings={"use_hive_partitioning": 1},
@@ -110,7 +112,7 @@ class TransformTask:
             if result.written_rows == 0:
                 msg = "possible data quality issue 0 rows were written!"
                 log.error(msg)
-                raise NoWrittenRows(f"{msg} context={self.context}")
+                raise NoWrittenRows(f"{msg} dt={self.dt}")
 
         return result
 
@@ -132,3 +134,18 @@ class TransformTask:
             table=TRANSFORM_MARKERS_TABLE,
             df_arrow=marker_df.to_arrow(),
         )
+
+
+def should_retry(_ex: Exception):
+    """Decide if we should retry the database command for a transform step."""
+
+    if isinstance(_ex, DatabaseError):
+        code636 = "ClickHouse error code 636"
+        if code636 in str(_ex):
+            # Code: 636. DB::Exception: The table structure cannot be extracted from a parquet format file,
+            # because there are no files with provided path in S3ObjectStorage or all files are empty. You
+            # can specify table structure manually: The table structure cannot be extracted from a parquet
+            # format file. You can specify the structure manually. (CANNOT_EXTRACT_TABLE_STRUCTURE)
+            log.warning(f"retrying for {code636}")
+            return True
+    return False

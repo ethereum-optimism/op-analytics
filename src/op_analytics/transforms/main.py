@@ -21,7 +21,6 @@ def execute_dt_transforms(
     group_name: str,
     range_spec: str | None = None,
     update_only: list[str] | None = None,
-    skip_create: bool = True,
     raise_if_empty: bool = True,
     force_complete: bool = False,
     max_tasks: int | None = None,
@@ -60,7 +59,6 @@ def execute_dt_transforms(
         transform_task = TransformTask(
             group_name=row["transform"],
             dt=row["dt"],
-            skip_create=skip_create,
             update_only=update_only,
             raise_if_empty=raise_if_empty,
         )
@@ -75,7 +73,7 @@ def execute_dt_transforms(
     summary = {}
     num_tasks = len(tasks)
     for ii, task in enumerate(tasks):
-        with bound_contextvars(task=f"{ii+1}/{num_tasks}"):
+        with bound_contextvars(task=f"{ii+1}/{num_tasks}", dt=date_tostr(task.dt)):
             try:
                 result = task.execute()
             except NoWrittenRows:
