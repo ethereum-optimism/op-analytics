@@ -5,7 +5,8 @@ from op_analytics.coreutils.time import now_date
 
 from ..dataaccess import DefiLlama
 from .copy import copy_to_gcs
-from .buffer import write_to_buffer
+from .buffereval import evaluate_buffer, get_buffered
+from .bufferwrite import write_to_buffer
 from .metadata import ProtocolMetadata
 
 log = structlog.get_logger()
@@ -29,10 +30,19 @@ def execute_pull(process_dt: date | None = None):
     # Create list of slugs to fetch protocol-specific data
     slugs = metadata.slugs()
 
-    # Fetch from API And write to buffer.
-    write_to_buffer(slugs, process_dt)
+    # Find out which slugs are still pending.
+    buffered_ids = get_buffered(process_dt=process_dt)
+    pending_ids = list(set(slugs) - set(buffered_ids))
 
-    # Evaluate the state of the buffer. Remove inconsistent data.
+    # Fetch from API And write to buffer.
+    log.info(f"fetching and buffering data for {len(pending_ids)}/{len(slugs)} pending slugs")
+
+    breakpoint()
+
+    write_to_buffer(pending_ids=pending_ids, process_dt=process_dt)
+
+    # Evaluate the state of the buffer. Remove incomplete "dt" values from
+    # the buffer so that they don't get copied over to GCS.
     evaluate_buffer(process_dt)
 
     # Copy data from buffer to GCS.
