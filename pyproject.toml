@@ -31,6 +31,7 @@ dependencies = [
     "typer>=0.12.5",
     "urllib3>=2.2.3",
     "sugar",
+    "dune-spice>=0.2.6",
 ]
 
 
@@ -66,7 +67,6 @@ dev-dependencies = [
     "plotly>=5.20.1",
     "nbformat>=4.2.0",
     "dagster-webserver>=1.9.7",
-    "dune-spice>=0.2.6",
 ]
 
 [tool.uv.sources]
