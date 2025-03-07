@@ -34,7 +34,7 @@ def write_to_buffer(pending_ids: list[str], process_dt: date):
             n=batch_size,
         ),
         total_tasks=total_tasks,
-        fork=False,  # Set to False when debugging locally
+        fork=True,  # Set to False when debugging locally
     )
 
     log.info("done fetching and buffering data")
@@ -104,10 +104,10 @@ def run_in_subprocesses[T](
     Using subprocesses helps control memory usage for long running jobs.
     """
     for i, task in enumerate(tasks):
+        log.info(f"running batch {i+1:03d}/{total_tasks:03d}", max_rss=memory_usage())
         if not fork:
             target(task)
         else:
-            log.info(f"running batch {i+1:03d}/{total_tasks:03d}", max_rss=memory_usage())
             ctx = mp.get_context("spawn")
             p = ctx.Process(target=target, args=(task,))
             p.start()
