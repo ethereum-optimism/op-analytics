@@ -14,6 +14,7 @@ class StepType(str, Enum):
     DIM = "dim"
     FACT = "fact"
     EXPORT = "export"
+    AGG = "agg"
 
 
 @dataclass
