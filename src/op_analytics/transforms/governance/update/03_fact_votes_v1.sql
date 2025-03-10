@@ -4,8 +4,23 @@ Time series of votes on proposals.
 
 */
 
+WITH blocks AS (
+  SELECT
+      dt
+      , toUInt64(assumeNotNull(b.number)) AS block_number
+      , b.timestamp AS block_timestamp
+  FROM 
+  blockbatch_gcs.read_date(
+      rootpath = 'ingestion/blocks_v1'
+      ,chain = 'op'
+      ,dt = { dtparam: Date }
+  ) b
+  WHERE b.number IS NOT NULL AND 
+)
+
 select
-    cast(t.block_timestamp as datetime) as dt
+    b.dt
+    , b.timestamp
     ,v.block_number as block_number
     ,v.transaction_hash as transaction_hash
     ,v.voter as voter_address
@@ -21,11 +36,6 @@ from dailydata_gcs.read_date(
     rootpath = 'agora/votes_v1',
     dt = '2000-01-01'
     ) v
-inner join blockbatch_gcs.read_date(
-    rootpath = 'ingestion/transactions_v1'
-    ,chain = 'op'
-    ,dt = { dtparam: Date }
-  ) t
-on v.transaction_hash = t.hash
-and v.block_number = t.block_number
+inner join blocks t
+on v.block_number = t.block_number
 settings use_hive_partitioning = 1;

@@ -4,6 +4,15 @@ Join DelegateVotesChanged event logs with delegation event data ingested from Ag
 
 */
 
+WITH blocks AS (
+  SELECT
+     block_number
+  FROM transforms_governance.fact_delegate_votes_changed_v1
+  WHERE dt =  { dtparam: Date }
+)
+
+
+
 select
     date_trunc('day', v.block_timestamp) as dt
     ,v.block_timestamp as block_timestamp
@@ -26,12 +35,20 @@ select
     ,v.previous_balance/1e18 as previous_balance
     ,v.new_balance/1e18 as new_balance
     ,(v.new_balance - v.previous_balance)/1e18 as delegation_amount
+
+
 from dailydata_gcs.read_date(
     rootpath = 'agora/delegate_changed_events_v1',
     dt       = '2000-01-01'
 ) d
+
 left join transforms_governance.fact_delegate_votes_changed_v1 v
+
+
 on d.transaction_hash = v.transaction_hash
 and toUInt64(assumeNotNull(d.block_number)) = v.block_number
 and v.block_number is not null
+
+WHERE block_number IN (blocks) AND v.dt = { dtparam: Date }
+
 settings use_hive_partitioning = 1;
