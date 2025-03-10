@@ -2,8 +2,8 @@ SELECT
   -- Descriptors
   dt
   , chain
-  , network
   , chain_id
+  , network
 
   -- Aggregations
   , count_transactions

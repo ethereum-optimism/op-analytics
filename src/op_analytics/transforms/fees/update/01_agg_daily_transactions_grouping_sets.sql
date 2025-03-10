@@ -14,8 +14,8 @@ WITH aggregates AS (
     -- Descriptors
     dt
     , chain
-    , network
     , chain_id
+    , network
     , from_address
     , to_address
     , method_id
@@ -74,10 +74,10 @@ WITH aggregates AS (
 
   GROUP BY
     GROUPING SETS(
-          (dt, chain, network, chain_id, from_address, to_address, method_id),
-          (dt, chain, network, chain_id, to_address, method_id),
-          (dt, chain, network, chain_id, to_address),
-          (dt, chain, network, chain_id)
+          (dt, chain, chain_id, network, from_address, to_address, method_id),
+          (dt, chain, chain_id, network, to_address, method_id),
+          (dt, chain, chain_id, network, to_address),
+          (dt, chain, chain_id, network)
       )
 )
 
@@ -85,8 +85,8 @@ SELECT
   -- Descriptors
   dt
   , chain
-  , network
   , chain_id
+  , network
 
   -- Use the '--' default value to avoid null values on the group by columns
   , ifNull(from_address, '--') AS from_address
