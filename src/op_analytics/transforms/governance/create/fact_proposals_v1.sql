@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `pct_against`             Float64,
     `pct_for`                 Float64,
     `pct_abstain`             Float64,
-    INDEX proposal_id_idx proposal_id TYPE minmax GRANULARITY 1,
+    INDEX created_block_ts_idx created_block_ts TYPE minmax GRANULARITY 1,
 )
 ENGINE = ReplacingMergeTree
-ORDER BY (proposal_id)
+ORDER BY (created_block_ts, proposal_id)

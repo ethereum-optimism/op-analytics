@@ -6,13 +6,15 @@ Decode Agora's raw proposals_v2 data dump into a comprehensive table of proposal
 
 with blockinfo as (
     select distinct
-        number,
-        timestamp
+        b.dt
+        ,b.number as block_number
+        ,b.timestamp as block_timestamp
     from blockbatch_gcs.read_date(
-        rootpath = 'ingestion/blocks_v1',
-        chain    = 'op',
-        dt       = '*-*-*'
-    )
+        rootpath = 'ingestion/blocks_v1'
+        ,chain    = 'op'
+        ,dt       = { dtparam: Date }
+    ) b
+    WHERE b.number IS NOT NULL
 )
 ,computed as (
   select
@@ -38,10 +40,10 @@ with blockinfo as (
       else 0 
     end as is_cancelled,
     p.proposal_id,
-    toDateTime(bcb.timestamp) as created_block_ts,
-    toDateTime(bsb.timestamp) as start_block_ts,
-    toDateTime(beb.timestamp) as end_block_ts,
-    toDateTime(bxb.timestamp) as cancelled_block_ts,
+    toDateTime(bcb.block_timestamp) as created_block_ts,
+    toDateTime(bsb.block_timestamp) as start_block_ts,
+    toDateTime(beb.block_timestamp) as end_block_ts,
+    toDateTime(bxb.block_timestamp) as cancelled_block_ts,
     ifNull(toDecimal256OrNull(extract(ifNull(p.proposal_results, ''), '"0":\\s*([^,}]+)'), 18) / 1e18, 0) as total_against_votes,
     ifNull(toDecimal256OrNull(extract(ifNull(p.proposal_results, ''), '"1":\\s*([^,}]+)'), 18) / 1e18, 0) as total_for_votes,
     ifNull(toDecimal256OrNull(extract(ifNull(p.proposal_results, ''), '"2":\\s*([^,}]+)'), 18) / 1e18,0) as total_abstain_votes,
@@ -50,10 +52,11 @@ with blockinfo as (
          rootpath = 'agora/proposals_v1',
          dt       = '2000-01-01'
        ) p
-    left join blockinfo bcb on p.created_block = bcb.number
-    left join blockinfo bsb on p.start_block = bsb.number
-    left join blockinfo beb on p.end_block = beb.number
-    left join blockinfo bxb on p.cancelled_block = bxb.number
+    left join blockinfo bcb on p.created_block = bcb.block_number
+    left join blockinfo bsb on p.start_block = bsb.block_number
+    left join blockinfo beb on p.end_block = beb.block_number
+    left join blockinfo bxb on p.cancelled_block = bxb.block_number
+    where created_block_ts in (select block_number from blockinfo) and p.dt = { dtparam: Date }
   settings use_hive_partitioning = 1
 )
 

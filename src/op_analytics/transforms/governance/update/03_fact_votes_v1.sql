@@ -7,7 +7,7 @@ Time series of votes on proposals.
 WITH blocks AS (
   SELECT
       dt
-      , toUInt64(assumeNotNull(b.number)) AS block_number
+      , b.number AS block_number
       , b.timestamp AS block_timestamp
   FROM 
   blockbatch_gcs.read_date(
@@ -15,12 +15,12 @@ WITH blocks AS (
       ,chain = 'op'
       ,dt = { dtparam: Date }
   ) b
-  WHERE b.number IS NOT NULL AND 
+  WHERE b.number IS NOT NULL 
 )
 
 select
-    b.dt
-    , b.timestamp
+    t.dt
+    ,t.block_timestamp
     ,v.block_number as block_number
     ,v.transaction_hash as transaction_hash
     ,v.voter as voter_address
@@ -38,4 +38,5 @@ from dailydata_gcs.read_date(
     ) v
 inner join blocks t
 on v.block_number = t.block_number
+where t.dt = { dtparam: Date }
 settings use_hive_partitioning = 1;
