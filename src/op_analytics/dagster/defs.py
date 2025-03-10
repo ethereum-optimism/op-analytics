@@ -8,6 +8,7 @@ from dagster import (
 from .utils.k8sconfig import OPK8sConfig, SMALL_POD
 from .utils.jobs import (
     create_schedule_for_group,
+    create_schedule_for_asset,
     create_schedule_for_selection,
 )
 
@@ -111,11 +112,11 @@ defs = Definitions(
             custom_k8s_config=SMALL_POD,
         ),
         #
-        # create_schedule_for_asset(
-        #     asset_name="transforms_fees",
-        #     cron_schedule="7 4,8,14,20 * * *",
-        #     default_status=DefaultScheduleStatus.RUNNING,
-        #     custom_k8s_config=SMALL_POD,
-        # ),
+        create_schedule_for_asset(
+            asset_name=["transforms", "fees"],
+            cron_schedule="7 4,8,14,20 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=SMALL_POD,
+        ),
     ],
 )
