@@ -38,4 +38,6 @@ from dailydata_gcs.read_date(
     ) v
 inner join blocks t
 on v.block_number = t.block_number
+WHERE v.block_number IN (SELECT block_number FROM blocks)
+
 settings use_hive_partitioning = 1;
