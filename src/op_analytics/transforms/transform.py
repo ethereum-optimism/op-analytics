@@ -13,7 +13,6 @@ from op_analytics.coreutils.clickhouse.client import new_stateful_client
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 
-from .create import create_tables
 from .export import export_to_bigquery
 from .markers import TRANSFORM_MARKERS_TABLE
 from .updates import Step, StepType, read_steps
@@ -41,24 +40,15 @@ class TransformTask:
     update_only: list[str] | None
     raise_if_empty: bool
 
-    _created_tables: bool = False
-
     def execute(self):
         client = new_stateful_client("OPLABS")
-        self.create_tables()
         results = self.run_updates(client)
         result_dicts = [_.to_dict() for _ in results]
         self.write_marker(result_dicts)
         return result_dicts
 
-    def create_tables(self):
-        if self._created_tables:
-            return
-        create_tables(self.group_name)
-        self._created_tables = True
-
     def run_updates(self, client) -> list[UpdateResult]:
-        """Find the sequence of DDLs for this task and run them."""
+        """Find the SQL update files for this task and run them."""
 
         results = []
 
