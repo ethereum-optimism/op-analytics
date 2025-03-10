@@ -8,6 +8,7 @@ from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_tostr, now_date
 from op_analytics.coreutils.clickhouse.client import new_stateful_client
 
+from .create import create_tables
 from .markers import MARKER_COLUMNS, existing_markers
 from .transform import TransformTask, NoWrittenRows
 
@@ -69,7 +70,10 @@ def execute_dt_transforms(
     client = new_stateful_client("OPLABS")
     client.command(f"CREATE DATABASE IF NOT EXISTS transforms_{group_name}")
 
-    # Execute transforms.
+    # Create tables for this group.
+    create_tables(group_name=group_name)
+
+    # Execute updates for this group.
     summary = {}
     num_tasks = len(tasks)
     for ii, task in enumerate(tasks):

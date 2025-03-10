@@ -1,11 +1,15 @@
 from dagster import (
+    AssetSelection,
     DefaultScheduleStatus,
     Definitions,
-    ScheduleDefinition,
     load_assets_from_modules,
 )
 
-from .utils.k8sconfig import op_analytics_asset_job, OPK8sConfig
+from .utils.k8sconfig import OPK8sConfig, SMALL_POD
+from .utils.jobs import (
+    create_schedule_for_group,
+    create_schedule_for_selection,
+)
 
 import importlib
 
@@ -16,7 +20,7 @@ MODULE_NAMES = [
     "dune",
     "github",
     "other",
-    "transform",
+    "transforms",
 ]
 
 
@@ -29,26 +33,6 @@ ASSETS = [
         key_prefix=name,
     )
 ]
-
-
-def create_schedule_for_group(
-    group: str,
-    cron_schedule: str,
-    default_status: DefaultScheduleStatus,
-    custom_k8s_config: OPK8sConfig | None = None,
-    k8s_pod_per_step: bool = False,
-):
-    return ScheduleDefinition(
-        name=group,
-        job=op_analytics_asset_job(
-            group=group,
-            custom_k8s_config=custom_k8s_config,
-            k8s_pod_per_step=k8s_pod_per_step,
-        ),
-        cron_schedule=cron_schedule,
-        execution_timezone="UTC",
-        default_status=default_status,
-    )
 
 
 defs = Definitions(
@@ -67,16 +51,6 @@ defs = Definitions(
         create_schedule_for_group(
             group="chainshourly",
             cron_schedule="38 * * * *",  # Run every hour
-            default_status=DefaultScheduleStatus.RUNNING,
-            custom_k8s_config=OPK8sConfig(
-                mem_request="720Mi",
-                mem_limit="2Gi",
-            ),
-        ),
-        #
-        create_schedule_for_group(
-            group="transform",
-            cron_schedule="17 */6 * * *",  # Run every 6 hours
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
                 mem_request="720Mi",
@@ -115,5 +89,33 @@ defs = Definitions(
             cron_schedule="0 10 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
         ),
+        #
+        create_schedule_for_selection(
+            job_name="transforms_misc",
+            selection=AssetSelection.assets(
+                ["transforms", "teleportr"],
+            ),
+            cron_schedule="47 4,8,14,20 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        create_schedule_for_selection(
+            job_name="transforms_interop",
+            selection=AssetSelection.assets(
+                ["transforms", "erc20transfers"],
+                ["transforms", "interop"],
+            ),
+            cron_schedule="17 4,8,14,20 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        # create_schedule_for_asset(
+        #     asset_name="transforms_fees",
+        #     cron_schedule="7 4,8,14,20 * * *",
+        #     default_status=DefaultScheduleStatus.RUNNING,
+        #     custom_k8s_config=SMALL_POD,
+        # ),
     ],
 )
