@@ -32,3 +32,12 @@ def teleportr(context: AssetExecutionContext):
 
     result = execute_dt_transforms(group_name="teleportr", force_complete=True)
     context.log.info(result)
+
+
+# TODO: Schedule the governance data pipeline once it has been prototyped.
+# @asset
+# def governance(context: AssetExecutionContext):
+#     """Run governance data pipeline."""
+#     from op_analytics.transforms.main import execute_dt_transforms
+#     result = execute_dt_transforms(group_name="governance", force_complete=True)
+#     context.log.info(result)
