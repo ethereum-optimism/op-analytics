@@ -94,7 +94,7 @@ defs = Definitions(
         create_schedule_for_selection(
             job_name="transforms_misc",
             selection=AssetSelection.assets(
-                "transforms_teleportr",
+                ["transforms", "teleportr"],
             ),
             cron_schedule="47 4,8,14,20 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
@@ -104,8 +104,8 @@ defs = Definitions(
         create_schedule_for_selection(
             job_name="transforms_interop",
             selection=AssetSelection.assets(
-                "transforms_erc20transfers",
-                "transforms_interop",
+                ["transforms", "erc20transfers"],
+                ["transforms", "interop"],
             ),
             cron_schedule="17 4,8,14,20 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
@@ -113,7 +113,7 @@ defs = Definitions(
         ),
         #
         create_schedule_for_asset(
-            asset_name="transforms_fees",
+            asset_name=["transforms", "fees"],
             cron_schedule="7 4,8,14,20 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
