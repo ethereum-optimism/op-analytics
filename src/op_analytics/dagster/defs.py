@@ -101,6 +101,16 @@ defs = Definitions(
         ),
         #
         create_schedule_for_selection(
+            job_name="transforms_dune",
+            selection=AssetSelection.assets(
+                ["transforms", "dune"],
+            ),
+            cron_schedule="47 4,8,14,20 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        create_schedule_for_selection(
             job_name="transforms_interop",
             selection=AssetSelection.assets(
                 ["transforms", "erc20transfers"],

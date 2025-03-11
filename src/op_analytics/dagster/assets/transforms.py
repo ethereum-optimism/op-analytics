@@ -25,3 +25,10 @@ def teleportr(context: AssetExecutionContext):
     """Run teleportr events transformations."""
     result = execute_dt_transforms(group_name="teleportr", force_complete=True)
     context.log.info(result)
+
+
+@asset
+def dune(context: AssetExecutionContext):
+    """Run dune transformations."""
+    result = execute_dt_transforms(group_name="dune", force_complete=True)
+    context.log.info(result)
