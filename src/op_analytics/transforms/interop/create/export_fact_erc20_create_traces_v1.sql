@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `is_erc7802` Bool,
     `has_oft_events` Bool,
     `has_ntt_events` Bool,
-    INDEX dt_idx chain TYPE minmax GRANULARITY 1,
+    INDEX dt_idx dt TYPE minmax GRANULARITY 1,
     INDEX chain_idx chain TYPE minmax GRANULARITY 1,
 )
 ENGINE = ReplacingMergeTree

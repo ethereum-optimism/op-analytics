@@ -3,6 +3,7 @@ import os
 import socket
 from dataclasses import asdict, dataclass
 from datetime import date
+from typing import Any
 
 import polars as pl
 import stamina
@@ -13,6 +14,7 @@ from op_analytics.coreutils.clickhouse.client import new_stateful_client
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 
+from .create import TableStructure
 from .export import export_to_bigquery
 from .markers import TRANSFORM_MARKERS_TABLE
 from .updates import Step, StepType, read_steps
@@ -37,20 +39,24 @@ class NoWrittenRows(Exception):
 class TransformTask:
     group_name: str
     dt: date
-    update_only: list[str] | None
+    tables: dict[str, TableStructure]
+    update_only: list[int] | None
     raise_if_empty: bool
 
     def execute(self):
-        client = new_stateful_client("OPLABS")
-        results = self.run_updates(client)
-        result_dicts = [_.to_dict() for _ in results]
-        self.write_marker(result_dicts)
-        return result_dicts
+        # Run the updates.
+        results = self.run_updates()
 
-    def run_updates(self, client) -> list[UpdateResult]:
+        # Write completion markers.
+        self.write_marker(results)
+
+        return results
+
+    def run_updates(self) -> list[dict[str, Any]]:
         """Find the SQL update files for this task and run them."""
+        client = new_stateful_client("OPLABS")
 
-        results = []
+        results: list[UpdateResult] = []
 
         for step in read_steps(group_name=self.group_name):
             with bound_contextvars(ddl=step.name):
@@ -74,10 +80,13 @@ class TransformTask:
                         select_statement=f"SELECT * FROM {step.db}.{step.table_name} FINAL",
                     )
 
-        return results
+        return [_.to_dict() for _ in results]
 
     def run_update(self, client, step: Step):
         log.info(f"running ddl {step.name}")
+
+        # Find the table structure for this update.
+        table: TableStructure = self.tables[step.table_name]
 
         retrier = stamina.RetryingCaller(
             attempts=2,
@@ -87,7 +96,7 @@ class TransformTask:
         try:
             result: QuerySummary = retrier(
                 client.command,
-                cmd=step.sql_statement,
+                cmd=step.get_sql_statement(table),
                 parameters={"dtparam": self.dt},
                 settings={"use_hive_partitioning": 1},
             )
@@ -119,6 +128,7 @@ class TransformTask:
                 )
             ]
         )
+
         insert_oplabs(
             database="etl_monitor",
             table=TRANSFORM_MARKERS_TABLE,

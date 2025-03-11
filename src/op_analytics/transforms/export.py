@@ -1,10 +1,8 @@
-from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.bigquery.load import load_unpartitioned_single_uri
-from op_analytics.coreutils.clickhouse.gcswrite import write_to_gcs
-
-
 from clickhouse_connect.driver.client import Client
 
+from op_analytics.coreutils.bigquery.load import load_unpartitioned_single_uri
+from op_analytics.coreutils.clickhouse.gcswrite import write_to_gcs
+from op_analytics.coreutils.logger import structlog
 
 log = structlog.get_logger()
 

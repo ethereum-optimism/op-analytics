@@ -3,14 +3,13 @@ from datetime import date
 
 import polars as pl
 
-from op_analytics.coreutils.logger import structlog, bound_contextvars
+from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_tostr, now_date
-from op_analytics.coreutils.clickhouse.client import new_stateful_client
 
-from .create import create_tables
+from .create import TableStructure, create_tables
 from .markers import MARKER_COLUMNS, existing_markers
-from .transform import TransformTask, NoWrittenRows
+from .transform import NoWrittenRows, TransformTask
 
 log = structlog.get_logger()
 
@@ -24,7 +23,6 @@ def execute_dt_transforms(
     update_only: list[str] | None = None,
     raise_if_empty: bool = True,
     force_complete: bool = False,
-    max_tasks: int | None = None,
 ):
     """Execute "dt" transformations from a specified "group_name" directory."""
 
@@ -34,6 +32,9 @@ def execute_dt_transforms(
 
     # Default to operating over the last 3 days.
     date_range = DateRange.from_spec(range_spec or "m2days")
+
+    # Create tables for this group.
+    tables: dict[str, TableStructure] = create_tables(group_name=group_name)
 
     # Candidates are all markers in the range_spec for the requested group
     candidate_markers_df = pl.DataFrame(
@@ -50,28 +51,26 @@ def execute_dt_transforms(
         existing_markers_df = existing_markers_df.filter(False)
 
     # Find which of the transform/dt pairs in the range_spec have not been processed yet.
-    markers_df = candidate_markers_df.join(existing_markers_df, on=MARKER_COLUMNS, how="anti")
-    log.info(f"{len(markers_df)}/{len(candidate_markers_df)} markers pending.")
+    pending_markers = candidate_markers_df.join(
+        existing_markers_df,
+        on=MARKER_COLUMNS,
+        how="anti",
+    ).to_dicts()
+    log.info(f"{len(pending_markers)}/{len(candidate_markers_df)} markers pending.")
 
     # Prepare transforms.
     tasks: list[TransformTask] = []
-    for row in markers_df.to_dicts():
+    for row in pending_markers:
         assert isinstance(row["dt"], date)
         transform_task = TransformTask(
             group_name=row["transform"],
             dt=row["dt"],
+            tables=tables,
             update_only=update_only,
             raise_if_empty=raise_if_empty,
         )
         tasks.append(transform_task)
     log.info(f"Prepared {len(tasks)} transform tasks.")
-
-    # Create database for this group if it does not exist yet.
-    client = new_stateful_client("OPLABS")
-    client.command(f"CREATE DATABASE IF NOT EXISTS transforms_{group_name}")
-
-    # Create tables for this group.
-    create_tables(group_name=group_name)
 
     # Execute updates for this group.
     summary = {}
@@ -97,6 +96,4 @@ def execute_dt_transforms(
             else:
                 summary[date_tostr(task.dt)] = result
 
-            if max_tasks is not None and ii + 1 >= max_tasks:
-                break
     return summary
