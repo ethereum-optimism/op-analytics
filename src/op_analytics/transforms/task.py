@@ -40,7 +40,7 @@ class TransformTask:
     group_name: str
     dt: date
     tables: dict[str, TableStructure]
-    update_only: list[str] | None
+    update_only: list[int] | None
     raise_if_empty: bool
 
     def execute(self):

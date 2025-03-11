@@ -73,7 +73,7 @@ def test_execute_task(mock_insert: MagicMock, mock_new: MagicMock):
     inserts = []
 
     for insert in mock_insert.call_args_list:
-        rows = pl.from_arrow(insert.kwargs["df_arrow"]).to_dicts()
+        rows = pl.from_arrow(insert.kwargs["df_arrow"]).to_dicts()  # type: ignore
 
         # Delete non-determnistics values.
         for row in rows:

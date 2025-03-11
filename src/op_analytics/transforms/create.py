@@ -94,7 +94,7 @@ def create_tables(group_name: str) -> dict[str, TableStructure]:
             )
 
             try:
-                result: QuerySummary = client.command(cmd=create.statetement)
+                result: QuerySummary = client.command(cmd=create.statement)
             except DatabaseError as ex:
                 log.error("database error", exc_info=ex)
                 raise
