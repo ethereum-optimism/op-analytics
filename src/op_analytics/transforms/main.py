@@ -9,7 +9,7 @@ from op_analytics.coreutils.time import date_tostr, now_date
 
 from .create import TableStructure, create_tables
 from .markers import MARKER_COLUMNS, existing_markers
-from .transform import NoWrittenRows, TransformTask
+from .task import NoWrittenRows, TransformTask
 
 log = structlog.get_logger()
 
