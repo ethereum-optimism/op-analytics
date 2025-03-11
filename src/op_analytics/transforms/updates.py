@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 from enum import Enum
 
-from op_analytics.coreutils.clickhouse.ddl import read_ddls, ClickHouseDDL
+from op_analytics.coreutils.clickhouse.ddl import ClickHouseDDL, read_ddls
 from op_analytics.coreutils.logger import structlog
 
 from .create import TableStructure

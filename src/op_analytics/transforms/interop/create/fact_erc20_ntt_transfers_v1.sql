@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `amount` UInt256,
     `from_address` FixedString(42),
     `to_address` FixedString(42),
-    INDEX dt_idx chain TYPE minmax GRANULARITY 1,
+    INDEX dt_idx dt TYPE minmax GRANULARITY 1,
     INDEX chain_idx chain TYPE minmax GRANULARITY 1,
 )
 ENGINE = ReplacingMergeTree
