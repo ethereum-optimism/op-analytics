@@ -4,6 +4,22 @@ Decode Agora's raw proposals_v2 data dump into a comprehensive table of proposal
 
 */
 
+
+-- Get the blocks for "dt"
+WITH blocks AS (
+  SELECT
+    b.dt
+    , b.number AS block_number
+    , b.timestamp AS block_timestamp
+  FROM
+    blockbatch_gcs.read_date(
+      b.rootpath = 'ingestion/blocks_v1'
+      , b.chain = 'op'
+      , b.dt = { dtparam: b.Date }
+    ) AS b
+  WHERE b.number IS NOT NULL
+)
+
 with blockinfo as (
     select distinct
         b.dt

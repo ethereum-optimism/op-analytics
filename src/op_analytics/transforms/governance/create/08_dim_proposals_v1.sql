@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS _placeholder_
 (
+    `dt`                      Date,
     `proposal_id`             String,
     `ordinal`                 UInt64,
     `created_block_ts`        DateTime,
@@ -26,4 +27,4 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     INDEX created_block_ts_idx created_block_ts TYPE minmax GRANULARITY 1,
 )
 ENGINE = ReplacingMergeTree
-ORDER BY (created_block_ts, proposal_id)
+ORDER BY (dt, proposal_id)
