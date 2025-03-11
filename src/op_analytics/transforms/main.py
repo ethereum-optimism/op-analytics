@@ -21,7 +21,7 @@ DIRECTORY = os.path.dirname(__file__)
 def execute_dt_transforms(
     group_name: str,
     range_spec: str | None = None,
-    update_only: list[str] | None = None,
+    update_only: list[int] | None = None,
     raise_if_empty: bool = True,
     force_complete: bool = False,
     allow_missing_gcs_data: bool = False,
