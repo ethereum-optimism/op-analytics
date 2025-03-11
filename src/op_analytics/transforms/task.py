@@ -138,7 +138,12 @@ class TransformTask:
 
 def should_retry(_ex: Exception):
     """Decide if we should retry the database command for a transform step."""
+    return False
 
+
+def example_retry(_ex: Exception):
+    # THIS IS AN EXAMPLE OF SOMETHING THAT MIGHT BE RETRIED.
+    # IN CASE WE NEED TO ADD THIS KIND OF LOGIC LATER ON.
     if isinstance(_ex, DatabaseError):
         code636 = "ClickHouse error code 636"
         if code636 in str(_ex):
