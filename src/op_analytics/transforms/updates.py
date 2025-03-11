@@ -2,8 +2,10 @@ import os
 from dataclasses import dataclass
 from enum import Enum
 
-from op_analytics.coreutils.clickhouse.ddl import read_ddls, ClickHouseDDL
+from op_analytics.coreutils.clickhouse.ddl import ClickHouseDDL, read_ddls
 from op_analytics.coreutils.logger import structlog
+
+from .create import TableStructure
 
 log = structlog.get_logger()
 
@@ -14,6 +16,7 @@ class StepType(str, Enum):
     DIM = "dim"
     FACT = "fact"
     EXPORT = "export"
+    AGG = "agg"
 
 
 @dataclass
@@ -31,8 +34,7 @@ class Step:
     def name(self):
         return self.ddl.basename
 
-    @property
-    def sql_statement(self):
+    def get_sql_statement(self, table: TableStructure):
         """Interpolate the table name on the DDL _placeholder_.
 
         This ensures the naming convention for the group db is used and is better
@@ -42,10 +44,16 @@ class Step:
         """
         # If no INSERT INTO line exists, add it at the start
         if "INSERT INTO" not in self.ddl.statement:
+            column_order = ", ".join(_.name for _ in table.columns)
+
             return f"""
-            INSERT INTO {self.db}.{self.table_name}
+            INSERT INTO {self.db}.{self.table_name} 
+            
+            SELECT {column_order} FROM (
             
             {self.ddl.statement}
+                
+            )
             """
 
         # Replace the _placeholder_ with the file name, which is the
@@ -54,24 +62,6 @@ class Step:
             "_placeholder_",
             f"{self.db}.{self.table_name}",
         )
-
-    @property
-    def select_statement(self):
-        """Extract the SELECT portion of the SQL statement.
-
-        This is used for exports where we need just the SELECT query without
-        the INSERT INTO portion.
-        """
-        lines = self.sql_statement.split("\n")
-
-        # Find first line starting with INSERT INTO
-        for i, line in enumerate(lines):
-            if line.strip().startswith("INSERT INTO"):
-                # Return all lines after this one, joined back together
-                return "\n".join(lines[i + 1 :]).strip()
-
-        # Raise if no INSERT INTO found
-        raise Exception("could not parse SELECT statement")
 
 
 def read_steps(group_name: str) -> list[Step]:
