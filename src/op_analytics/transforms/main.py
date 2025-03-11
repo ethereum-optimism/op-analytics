@@ -3,14 +3,14 @@ from datetime import date
 
 import polars as pl
 
-from op_analytics.coreutils.logger import structlog, bound_contextvars
+from op_analytics.coreutils.clickhouse.client import new_stateful_client
+from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_tostr, now_date
-from op_analytics.coreutils.clickhouse.client import new_stateful_client
 
-from .create import create_tables
+from .create import TableStructure, create_tables
 from .markers import MARKER_COLUMNS, existing_markers
-from .transform import TransformTask, NoWrittenRows
+from .transform import NoWrittenRows, TransformTask
 
 log = structlog.get_logger()
 
@@ -53,6 +53,13 @@ def execute_dt_transforms(
     markers_df = candidate_markers_df.join(existing_markers_df, on=MARKER_COLUMNS, how="anti")
     log.info(f"{len(markers_df)}/{len(candidate_markers_df)} markers pending.")
 
+    # Create database for this group if it does not exist yet.
+    client = new_stateful_client("OPLABS")
+    client.command(f"CREATE DATABASE IF NOT EXISTS transforms_{group_name}")
+
+    # Create tables for this group.
+    tables: dict[str, TableStructure] = create_tables(group_name=group_name)
+
     # Prepare transforms.
     tasks: list[TransformTask] = []
     for row in markers_df.to_dicts():
@@ -60,18 +67,12 @@ def execute_dt_transforms(
         transform_task = TransformTask(
             group_name=row["transform"],
             dt=row["dt"],
+            tables=tables,
             update_only=update_only,
             raise_if_empty=raise_if_empty,
         )
         tasks.append(transform_task)
     log.info(f"Prepared {len(tasks)} transform tasks.")
-
-    # Create database for this group if it does not exist yet.
-    client = new_stateful_client("OPLABS")
-    client.command(f"CREATE DATABASE IF NOT EXISTS transforms_{group_name}")
-
-    # Create tables for this group.
-    create_tables(group_name=group_name)
 
     # Execute updates for this group.
     summary = {}

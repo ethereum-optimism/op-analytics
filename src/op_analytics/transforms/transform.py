@@ -13,6 +13,7 @@ from op_analytics.coreutils.clickhouse.client import new_stateful_client
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 
+from .create import TableStructure
 from .export import export_to_bigquery
 from .markers import TRANSFORM_MARKERS_TABLE
 from .updates import Step, StepType, read_steps
@@ -37,6 +38,7 @@ class NoWrittenRows(Exception):
 class TransformTask:
     group_name: str
     dt: date
+    tables: dict[str, TableStructure]
     update_only: list[str] | None
     raise_if_empty: bool
 
@@ -79,6 +81,9 @@ class TransformTask:
     def run_update(self, client, step: Step):
         log.info(f"running ddl {step.name}")
 
+        # Find the table structure for this update.
+        table: TableStructure = self.tables[step.table_name]
+
         retrier = stamina.RetryingCaller(
             attempts=2,
             wait_initial=3,
@@ -87,7 +92,7 @@ class TransformTask:
         try:
             result: QuerySummary = retrier(
                 client.command,
-                cmd=step.sql_statement,
+                cmd=step.get_sql_statement(table),
                 parameters={"dtparam": self.dt},
                 settings={"use_hive_partitioning": 1},
             )

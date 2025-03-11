@@ -110,12 +110,5 @@ defs = Definitions(
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
         ),
-        #
-        # create_schedule_for_asset(
-        #     asset_name="transforms_fees",
-        #     cron_schedule="7 4,8,14,20 * * *",
-        #     default_status=DefaultScheduleStatus.RUNNING,
-        #     custom_k8s_config=SMALL_POD,
-        # ),
     ],
 )
