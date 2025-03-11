@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     INDEX dt_idx dt TYPE minmax GRANULARITY 1,
 )
 ENGINE = ReplacingMergeTree
-ORDER BY (dt, block_timestamp, block_number, transaction_hash, voter_address, proposal_id)
+ORDER BY (dt, block_timestamp, block_number, transaction_hash)
