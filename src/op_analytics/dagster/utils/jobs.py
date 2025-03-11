@@ -92,14 +92,15 @@ def create_schedule_for_selection(
 
 
 def create_schedule_for_asset(
-    asset_name: str,
+    job_name: str,
+    asset_name: list[str],
     cron_schedule: str,
     default_status: DefaultScheduleStatus,
     custom_k8s_config: OPK8sConfig | None = None,
     k8s_pod_per_step: bool = False,
 ):
     return create_schedule_for_selection(
-        job_name=asset_name,
+        job_name=job_name,
         selection=AssetSelection.assets(asset_name),
         cron_schedule=cron_schedule,
         default_status=default_status,

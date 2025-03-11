@@ -25,6 +25,7 @@ def execute_dt_transforms(
     raise_if_empty: bool = True,
     force_complete: bool = False,
     allow_missing_gcs_data: bool = False,
+    reverse: bool = False,
 ):
     """Execute "dt" transformations from a specified "group_name" directory."""
 
@@ -53,11 +54,18 @@ def execute_dt_transforms(
         existing_markers_df = existing_markers_df.filter(False)
 
     # Find which of the transform/dt pairs in the range_spec have not been processed yet.
-    pending_markers = candidate_markers_df.join(
-        existing_markers_df,
-        on=MARKER_COLUMNS,
-        how="anti",
-    ).to_dicts()
+    pending_markers = (
+        candidate_markers_df.join(
+            existing_markers_df,
+            on=MARKER_COLUMNS,
+            how="anti",
+        )
+        .sort(
+            by="dt",
+            descending=reverse,
+        )
+        .to_dicts()
+    )
     log.info(f"{len(pending_markers)}/{len(candidate_markers_df)} markers pending.")
 
     # Prepare transforms.
