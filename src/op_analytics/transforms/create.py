@@ -29,6 +29,49 @@ class TableStructure:
     columns: list[TableColumn]
 
 
+@dataclass
+class CreateStatement:
+    db_name: str
+    table_name: str
+    statement: str
+
+    def get_structure_query(self) -> str:
+        return f"""
+            SELECT 
+                position,
+                name AS column_name,
+                type AS data_type
+            FROM system.columns
+            WHERE database = '{self.db_name}' 
+            AND table = '{self.table_name}'
+            ORDER BY position
+            """
+
+    @classmethod
+    def of(cls, group_name: str, ddl: ClickHouseDDL) -> "CreateStatement":
+        # Remove the .sql suffix from the path.
+        table_name = ddl.basename.removesuffix(".sql")
+
+        # Remove the ##_ prefix if present.
+        table_name = NUMBER_PREFIX_RE.sub("", table_name)
+
+        db_name = f"transforms_{group_name}"
+
+        # Interpolate the table name on the DDL _placeholder_. This ensures
+        # the naming convention for the group db is used and is better than
+        # manually ensuring that DDL file names agree with table names.
+        create_statment = ddl.statement.replace(
+            "_placeholder_",
+            f"{db_name}.{table_name}",
+        )
+
+        return cls(
+            db_name=db_name,
+            table_name=table_name,
+            statement=create_statment,
+        )
+
+
 def create_tables(group_name: str) -> dict[str, TableStructure]:
     """Find all the CREATE DDLs for this group and run them."""
 
@@ -45,24 +88,13 @@ def create_tables(group_name: str) -> dict[str, TableStructure]:
     results = {}
     for ddl in ddls:
         with bound_contextvars(ddl=ddl.basename):
-            # Remove the .sql suffix from the path.
-            table_name = ddl.basename.removesuffix(".sql")
-
-            # Remove the ##_ prefix if present.
-            table_name = NUMBER_PREFIX_RE.sub("", table_name)
-
-            db_name = f"transforms_{group_name}"
-
-            # Interpolate the table name on the DDL _placeholder_. This ensures
-            # the naming convention for the group db is used and is better than
-            # manually ensuring that DDL file names agree with table names.
-            create_statment = ddl.statement.replace(
-                "_placeholder_",
-                f"{db_name}.{table_name}",
+            create = CreateStatement.of(
+                group_name=group_name,
+                ddl=ddl,
             )
 
             try:
-                result: QuerySummary = client.command(cmd=create_statment)
+                result: QuerySummary = client.command(cmd=create.statetement)
             except DatabaseError as ex:
                 log.error("database error", exc_info=ex)
                 raise
@@ -70,18 +102,7 @@ def create_tables(group_name: str) -> dict[str, TableStructure]:
             assert isinstance(result.summary, dict)
             log.info(f"CREATE {ddl.basename}")
 
-            df = pl.from_arrow(
-                client.query_arrow(f"""
-                SELECT 
-                    position,
-                    name AS column_name,
-                    type AS data_type
-                FROM system.columns
-                WHERE database = '{db_name}' 
-                AND table = '{table_name}'
-                ORDER BY position
-                """)
-            )
+            df = pl.from_arrow(client.query_arrow(create.get_structure_query()))
             assert isinstance(df, pl.DataFrame)
 
             columns: list[TableColumn] = []
@@ -93,8 +114,8 @@ def create_tables(group_name: str) -> dict[str, TableStructure]:
                     ),
                 )
 
-            results[table_name] = TableStructure(
-                name=table_name,
+            results[create.table_name] = TableStructure(
+                name=create.table_name,
                 columns=columns,
             )
 

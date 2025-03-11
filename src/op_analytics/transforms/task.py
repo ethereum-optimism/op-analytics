@@ -128,6 +128,7 @@ class TransformTask:
                 )
             ]
         )
+
         insert_oplabs(
             database="etl_monitor",
             table=TRANSFORM_MARKERS_TABLE,
