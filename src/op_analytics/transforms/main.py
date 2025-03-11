@@ -23,6 +23,7 @@ def execute_dt_transforms(
     update_only: list[str] | None = None,
     raise_if_empty: bool = True,
     force_complete: bool = False,
+    reverse: bool = False,
 ):
     """Execute "dt" transformations from a specified "group_name" directory."""
 
@@ -51,19 +52,19 @@ def execute_dt_transforms(
         existing_markers_df = existing_markers_df.filter(False)
 
     # Find which of the transform/dt pairs in the range_spec have not been processed yet.
-    pending_markers = candidate_markers_df.join(
-        existing_markers_df,
-        on=MARKER_COLUMNS,
-        how="anti",
-    ).to_dicts()
+    pending_markers = (
+        candidate_markers_df.join(
+            existing_markers_df,
+            on=MARKER_COLUMNS,
+            how="anti",
+        )
+        .sort(
+            by="dt",
+            descending=reverse,
+        )
+        .to_dicts()
+    )
     log.info(f"{len(pending_markers)}/{len(candidate_markers_df)} markers pending.")
-
-    # Create database for this group if it does not exist yet.
-    client = new_stateful_client("OPLABS")
-    client.command(f"CREATE DATABASE IF NOT EXISTS transforms_{group_name}")
-
-    # Create tables for this group.
-    tables: dict[str, TableStructure] = create_tables(group_name=group_name)
 
     # Prepare transforms.
     tasks: list[TransformTask] = []
