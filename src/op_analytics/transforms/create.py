@@ -38,6 +38,10 @@ def create_tables(group_name: str) -> dict[str, TableStructure]:
     )
 
     client = new_stateful_client("OPLABS")
+
+    # Create database for this group if it does not exist yet.
+    client.command(f"CREATE DATABASE IF NOT EXISTS transforms_{group_name}")
+
     results = {}
     for ddl in ddls:
         with bound_contextvars(ddl=ddl.basename):
@@ -78,6 +82,7 @@ def create_tables(group_name: str) -> dict[str, TableStructure]:
                 ORDER BY position
                 """)
             )
+            assert isinstance(df, pl.DataFrame)
 
             columns: list[TableColumn] = []
             for row in df.to_dicts():

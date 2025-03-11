@@ -3,7 +3,6 @@ from datetime import date
 
 import polars as pl
 
-from op_analytics.coreutils.clickhouse.client import new_stateful_client
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_tostr, now_date
@@ -49,16 +48,12 @@ def execute_dt_transforms(
     if force_complete:
         existing_markers_df = existing_markers_df.filter(False)
 
+    # Create tables for this group.
+    tables: dict[str, TableStructure] = create_tables(group_name=group_name)
+
     # Find which of the transform/dt pairs in the range_spec have not been processed yet.
     markers_df = candidate_markers_df.join(existing_markers_df, on=MARKER_COLUMNS, how="anti")
     log.info(f"{len(markers_df)}/{len(candidate_markers_df)} markers pending.")
-
-    # Create database for this group if it does not exist yet.
-    client = new_stateful_client("OPLABS")
-    client.command(f"CREATE DATABASE IF NOT EXISTS transforms_{group_name}")
-
-    # Create tables for this group.
-    tables: dict[str, TableStructure] = create_tables(group_name=group_name)
 
     # Prepare transforms.
     tasks: list[TransformTask] = []
