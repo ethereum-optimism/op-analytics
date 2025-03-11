@@ -123,6 +123,7 @@ defs = Definitions(
         ),
         #
         create_schedule_for_asset(
+            job_name="transforms_fees",
             asset_name=["transforms", "fees"],
             cron_schedule="7 4,8,14,20 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
