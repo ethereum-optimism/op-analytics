@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `sum_l2_gas_used` UInt64,
     `sum_success_l2_gas_used` UInt64,
     
-    `sum_tx_fee_native` Int64,
-    `sum_success_tx_fee_native` Int64,
+    `sum_tx_fee_native` Float64,
+    `sum_success_tx_fee_native` Float64,
     
     `sum_l1_fee_native` Float64,
     `sum_success_l1_fee_native` Float64,

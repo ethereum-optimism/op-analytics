@@ -29,8 +29,8 @@ WITH aggregates AS (
     , SUM(l2_gas_used) AS sum_l2_gas_used
     , sumIf(l2_gas_used, success) AS sum_success_l2_gas_used
 
-    , SUM(tx_fee_native) AS sum_tx_fee_native
-    , sumIf(tx_fee_native, success) AS sum_success_tx_fee_native
+    , SUM(CAST(tx_fee_native AS Nullable(Float64))) AS sum_tx_fee_native
+    , sumIf(CAST(tx_fee_native AS Nullable(Float64)), success) AS sum_success_tx_fee_native
 
     , SUM(CAST(l1_fee_native AS Nullable(Float64))) AS sum_l1_fee_native
     , sumIf(CAST(l1_fee_native AS Nullable(Float64)), success) AS sum_success_l1_fee_native
