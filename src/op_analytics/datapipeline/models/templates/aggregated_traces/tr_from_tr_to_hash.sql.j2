@@ -1,0 +1,146 @@
+-- NOTE: May not materialize this for now. We expect to use the to/from/method as our most granular in practice
+
+/*
+  Aggregate Trace Calls by day at the trace from/to and transaction hash level.
+  This is our most granular aggregation of traces, and comes enriched with transaction and trace gas fields.
+
+  Use cases include:
+  - Reducing table size for a better query and model-building experience than raw traces.
+  - Investigating specific transactions to see where the internal gas usage comes from.
+  - Investigating specific to / from combinations to evaluate what top-level user actions call them.
+*/
+
+SELECT
+  -- Descriptors
+  dt
+  , chain
+  , network
+  , chain_id
+  , trace_from_address
+  , trace_to_address
+  , trace_type
+  , block_timestamp
+  , block_number
+  , tx_from_address
+  , tx_to_address
+  , transaction_hash
+  , tx_method_id
+
+  -- Transaction-Level gas & fees
+  , tx_l2_gas_used
+  , tx_fee_native
+  , tx_l1_fee_native
+  , tx_l2_fee_native
+  , tx_l2_priority_fee_native
+  , tx_l2_base_fee_native
+  , tx_l2_legacy_extra_fee_native
+
+  -- Transaction-Level Gas Prices
+  , tx_l2_gas_price_gwei
+  , tx_l2_base_gas_price_gwei
+  , tx_l2_priority_gas_price_gwei
+  , tx_l2_legacy_extra_gas_price_gwei
+  , tx_l1_base_gas_price_gwei
+  , tx_l1_blob_base_gas_price_gwei
+
+  -- Transaction-Level transaction sizes
+  , tx_input_byte_length
+  , tx_input_zero_bytes
+  , tx_input_nonzero_bytes
+  , tx_l1_base_scaled_size
+  , tx_l1_blob_scaled_size
+  , tx_l1_gas_used_unified
+  , tx_estimated_size
+
+  -- Attributes
+  , tx_success
+  , is_system_transaction
+
+  -- Sum Internal Trace Gas
+  , SUM(trace_gas_used) AS sum_trace_gas_used
+  , SUM(trace_gas_used_minus_subtraces) AS sum_trace_gas_used_minus_subtraces
+
+  , SUM(tx_l2_fee_native_minus_subtraces) AS sum_tx_l2_fee_native_minus_subtraces
+  , SUM(tx_l2_base_fee_native_minus_subtraces) AS sum_tx_l2_base_fee_native_minus_subtraces
+  , SUM(tx_l2_priority_fee_native_minus_subtraces) AS sum_tx_l2_priority_fee_native_minus_subtraces
+  , SUM(tx_l2_legacy_base_fee_native_minus_subtraces) AS sum_tx_l2_legacy_base_fee_native_minus_subtraces
+
+  , SUM(tx_l2_gas_used_amortized_by_call) AS sum_tx_l2_gas_used_amortized_by_call
+  , SUM(tx_l1_gas_used_unified_amortized_by_call) AS sum_tx_l1_gas_used_unified_amortized_by_call
+  , SUM(tx_l1_base_scaled_size_amortized_by_call) AS sum_tx_l1_base_scaled_size_amortized_by_call
+  , SUM(tx_l1_blob_scaled_size_amortized_by_call) AS sum_tx_l1_blob_scaled_size_amortized_by_call
+  , SUM(tx_estimated_size_amortized_by_call) AS sum_tx_estimated_size_amortized_by_call
+
+  , SUM(tx_fee_native_amortized_by_call) AS sum_tx_fee_native_amortized_by_call
+  , SUM(tx_l2_fee_native_amortized_by_call) AS sum_tx_l2_fee_native_amortized_by_call
+  , SUM(tx_l1_fee_native_amortized_by_call) AS sum_tx_l1_fee_native_amortized_by_call
+  , SUM(tx_l2_base_fee_native_amortized_by_call) AS sum_tx_l2_base_fee_native_amortized_by_call
+  , SUM(tx_l2_priority_fee_native_amortized_by_call) AS sum_tx_l2_priority_fee_native_amortized_by_call
+
+  , SUM(tx_fee_native_l1_amortized_l2_minus_subtraces) AS sum_tx_fee_native_l1_amortized_l2_minus_subtraces
+
+  -- Count Call Types
+  , COUNT(*) FILTER (WHERE trace_address = '' AND call_type != '') AS count_top_level_calls
+  --count non-null trace addresses, null is the transaction-level call.
+  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type != '') AS count_internal_calls_all_types
+  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type != '' AND trace_success) AS count_internal_calls_all_types_trace_success
+  --static calls only read state, and can not write
+  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'staticcall') AS count_internal_calls_static_type
+  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'staticcall' AND trace_success) AS count_internal_calls_static_type_trace_success
+  --delegate calls call a function on another contract
+  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'delegatecall') AS count_internal_calls_delegate_type
+  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'delegatecall' AND trace_success) AS count_internal_calls_delegate_type_trace_success
+  --normal function calls
+  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'call') AS count_internal_calls_call_type
+  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'call' AND trace_success) AS count_internal_calls_call_type_trace_success
+
+FROM {{ refined_traces_fees }} AS tr LEFT JOIN {{ refined_txs_fees }} AS tx
+  ON
+    tr.block_number = tx.block_number
+    AND tx.transaction_hash = tx.transaction_hash
+
+GROUP BY
+  -- Descriptors
+  dt
+  , chain
+  , network
+  , chain_id
+  , trace_from_address
+  , trace_to_address
+  , trace_type
+  , block_timestamp
+  , block_number
+  , tx_from_address
+  , tx_to_address
+  , transaction_hash
+  , tx_method_id
+
+  -- Transaction-Level gas & fees
+  , tx_l2_gas_used
+  , tx_fee_native
+  , tx_l1_fee_native
+  , tx_l2_fee_native
+  , tx_l2_priority_fee_native
+  , tx_l2_base_fee_native
+  , tx_l2_legacy_extra_fee_native
+
+  -- Transaction-Level Gas Prices
+  , tx_l2_gas_price_gwei
+  , tx_l2_base_gas_price_gwei
+  , tx_l2_priority_gas_price_gwei
+  , tx_l2_legacy_extra_gas_price_gwei
+  , tx_l1_base_gas_price_gwei
+  , tx_l1_blob_base_gas_price_gwei
+
+  -- Transaction-Level transaction sizes
+  , tx_input_byte_length
+  , tx_input_zero_bytes
+  , tx_input_nonzero_bytes
+  , tx_l1_base_scaled_size
+  , tx_l1_blob_scaled_size
+  , tx_l1_gas_used_unified
+  , tx_estimated_size
+
+  -- Attributes
+  , tx_success
+  , is_system_transaction
