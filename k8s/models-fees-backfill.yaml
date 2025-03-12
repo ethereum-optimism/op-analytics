@@ -35,16 +35,16 @@ spec:
         - name: DUCKDB_DATADIR
           value: "/duckdbdata"
         - name: DUCKDB_MEMORY_LIMIT
-          value: "8"
+          value: "12"
         resources:
           limits:
             cpu: 1
             ephemeral-storage: 10Gi
-            memory: 8Gi
+            memory: 12Gi
           requests:
             cpu: 1
             ephemeral-storage: 10Gi
-            memory: 6Gi
+            memory: 10Gi
         volumeMounts:
         - mountPath: "/var/secrets"
           name: opanalyticsvault
