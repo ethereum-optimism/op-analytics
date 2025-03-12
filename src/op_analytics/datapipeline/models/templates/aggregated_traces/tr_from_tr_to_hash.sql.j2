@@ -10,7 +10,7 @@
   - Investigating specific to / from combinations to evaluate what top-level user actions call them.
 */
 
-SELECT
+SELECT -- noqa: ST06
   -- Descriptors
   tr.dt
   , tr.chain
@@ -78,23 +78,30 @@ SELECT
   , SUM(tr.tx_l2_priority_fee_native_amortized_by_call) AS sum_tx_l2_priority_fee_native_amortized_by_call
 
 
-  , SUM((tx.l1_fee_native / tr.num_traces_in_txn) + (tr.trace_gas_used - coalesce(tr.sum_subtraces_gas_used, 0)) * gwei_to_eth(tx.l2_gas_price_gwei)) AS sum_tx_fee_native_l1_amortized_l2_minus_subtraces
+  , SUM(
+    (tx.l1_fee_native / tr.num_traces_in_txn)
+    + (tr.trace_gas_used - coalesce(tr.sum_subtraces_gas_used, 0)) * gwei_to_eth(tx.l2_gas_price_gwei)
+  ) AS sum_tx_fee_native_l1_amortized_l2_minus_subtraces
 
 
   -- Count Call Types
   , COUNT(*) FILTER (WHERE tr.trace_address = '' AND tr.call_type != '') AS count_top_level_calls
   --count non-null trace addresses, null is the transaction-level call.
   , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type != '') AS count_internal_calls_all_types
-  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type != '' AND tr.trace_success) AS count_internal_calls_all_types_trace_success
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type != '' AND tr.trace_success)
+    AS count_internal_calls_all_types_trace_success
   --static calls only read state, and can not write
   , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'staticcall') AS count_internal_calls_static_type
-  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'staticcall' AND tr.trace_success) AS count_internal_calls_static_type_trace_success
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'staticcall' AND tr.trace_success)
+    AS count_internal_calls_static_type_trace_success
   --delegate calls call a function on another contract
   , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'delegatecall') AS count_internal_calls_delegate_type
-  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'delegatecall' AND tr.trace_success) AS count_internal_calls_delegate_type_trace_success
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'delegatecall' AND tr.trace_success)
+    AS count_internal_calls_delegate_type_trace_success
   --normal function calls
   , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'call') AS count_internal_calls_call_type
-  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'call' AND tr.trace_success) AS count_internal_calls_call_type_trace_success
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'call' AND tr.trace_success)
+    AS count_internal_calls_call_type_trace_success
 
 FROM {{ refined_traces_fees }} AS tr LEFT JOIN {{ refined_txs_fees }} AS tx
   ON
