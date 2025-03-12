@@ -1,3 +1,4 @@
+from typing import Any
 from dagster import (
     AssetSelection,
     DefaultScheduleStatus,
@@ -14,7 +15,7 @@ def op_analytics_asset_job(
     group: str,
     custom_k8s_config: OPK8sConfig | None,
     k8s_pod_per_step: bool,
-    job_tags: dict[str, str] | None = None,
+    job_tags: dict[str, Any] | None = None,
 ):
     return op_analytics_asset_selection_job(
         job_name=f"{group}_job",
@@ -30,7 +31,7 @@ def op_analytics_asset_selection_job(
     selection: AssetSelection,
     custom_k8s_config: OPK8sConfig | None,
     k8s_pod_per_step: bool,
-    job_tags: dict[str, str] | None = None,
+    job_tags: dict[str, Any] | None = None,
 ):
     k8s_config = new_k8s_config(custom_k8s_config)
 
@@ -59,7 +60,7 @@ def create_schedule_for_group(
     default_status: DefaultScheduleStatus,
     custom_k8s_config: OPK8sConfig | None = None,
     k8s_pod_per_step: bool = False,
-    job_tags: dict[str, str] | None = None,
+    job_tags: dict[str, Any] | None = None,
 ):
     return ScheduleDefinition(
         name=group,
@@ -82,7 +83,7 @@ def create_schedule_for_selection(
     default_status: DefaultScheduleStatus,
     custom_k8s_config: OPK8sConfig | None = None,
     k8s_pod_per_step: bool = False,
-    job_tags: dict[str, str] | None = None,
+    job_tags: dict[str, Any] | None = None,
 ):
     return ScheduleDefinition(
         name=job_name,
