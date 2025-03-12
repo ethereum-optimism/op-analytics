@@ -385,10 +385,10 @@ def aa_backfill_pt2():
     index = int(os.environ["JOB_COMPLETION_INDEX"])
 
     # Num job indexes (the paralellism specified on k8s)
-    num_indexes = 12
+    num_indexes = 6
 
     # Define start and end dates for the backfill.
-    start_date = datetime.strptime("20240101", "%Y%m%d")
+    start_date = datetime.strptime("20241001", "%Y%m%d")
     end_date = datetime.strptime("20241225", "%Y%m%d")
 
     # Generate date ranges with 3-day intervals
@@ -403,8 +403,44 @@ def aa_backfill_pt2():
         range_spec = f"@{d0}:{d1}"
         if ii % num_indexes == index:
             compute_blockbatch(
-                chains=normalize_chains("ALL,-kroma,-unichain_sepolia"),
+                chains=normalize_chains("ALL,-kroma,-unichain_sepolia,-base"),
                 models=["account_abstraction_prefilter", "account_abstraction"],
+                range_spec=range_spec,
+                read_from=DataLocation.GCS,
+                write_to=DataLocation.GCS,
+                dryrun=False,
+                force_complete=False,
+                fork_process=True,
+            )
+
+
+@app.command()
+def fees_backfill():
+    """Backfill fees."""
+    # Kubernetes job index.
+    index = int(os.environ["JOB_COMPLETION_INDEX"])
+
+    # Num job indexes (the paralellism specified on k8s)
+    num_indexes = 6
+
+    # Define start and end dates for the backfill.
+    start_date = datetime.strptime("20241001", "%Y%m%d")
+    end_date = datetime.strptime("20250107", "%Y%m%d")
+
+    # Generate date ranges with 3-day intervals
+    date_ranges = []
+    current_date = start_date
+    while current_date < end_date:
+        next_date = min(current_date + timedelta(days=2), end_date)
+        date_ranges.append((current_date.strftime("%Y%m%d"), next_date.strftime("%Y%m%d")))
+        current_date = next_date
+
+    for ii, (d0, d1) in enumerate(reversed(date_ranges)):
+        range_spec = f"@{d0}:{d1}"
+        if ii % num_indexes == index:
+            compute_blockbatch(
+                chains=normalize_chains("ALL,-kroma,-unichain_sepolia"),
+                models=["refined_traces"],
                 range_spec=range_spec,
                 read_from=DataLocation.GCS,
                 write_to=DataLocation.GCS,
