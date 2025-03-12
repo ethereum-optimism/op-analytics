@@ -15,12 +15,14 @@ from .utils.jobs import (
 import importlib
 
 MODULE_NAMES = [
+    "agora",
     "chainsdaily",
     "chainshourly",
     "defillama",
     "dune",
     "github",
-    "other",
+    "growthepie",
+    "l2beat",
     "transforms",
 ]
 
@@ -59,15 +61,31 @@ defs = Definitions(
             ),
         ),
         #
-        create_schedule_for_group(
-            group="defillama",
-            cron_schedule="0 14 * * *",
+        # Defillama protocols
+        create_schedule_for_selection(
+            job_name="defillama_protocols",
+            selection=AssetSelection.assets(
+                ["defillama", "protocol_tvl_flows_filtered"],
+            ).upstream(),
+            cron_schedule="0 12 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
                 mem_request="3Gi",
                 mem_limit="6Gi",
             ),
             k8s_pod_per_step=False,
+            job_tags={"dagster/max_retries": 3, "dagster/retry_strategy": "FROM_FAILURE"},
+        ),
+        #
+        # Defillama other
+        create_schedule_for_selection(
+            job_name="defillama_other",
+            selection=AssetSelection.assets(
+                ["defillama", "other"],
+            ).upstream(),
+            cron_schedule="0 14 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=SMALL_POD,
         ),
         #
         create_schedule_for_group(
@@ -84,11 +102,28 @@ defs = Definitions(
         ),
         #
         create_schedule_for_group(
-            group="other",
-            # Runs at 10 AM daily.
+            group="agora",
+            cron_schedule="0 10 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="3Gi",
+                mem_limit="4Gi",
+            ),
+        ),
+        #
+        create_schedule_for_group(
+            group="growthepie",
             # GrowThePie is generally a little delayed in providing data for the previous day.
             cron_schedule="0 10 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        create_schedule_for_group(
+            group="l2beat",
+            cron_schedule="0 8 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=SMALL_POD,
         ),
         #
         create_schedule_for_selection(
