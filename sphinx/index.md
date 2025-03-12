@@ -2,11 +2,18 @@
 myst:
   html_meta:
     "description lang=en": |
-      Top-level documentation for op-analytics
+      Top-level documentation for the op-analytics repo
 ---
 
-# OP Analytics
+# OP Labs Data Platform
 
+Welcome to the op-analytics repo documentation.
+
+```{toctree}
+:maxdepth: 2
+
+dataplatform/index
+```
 
 
 ## Getting Started
