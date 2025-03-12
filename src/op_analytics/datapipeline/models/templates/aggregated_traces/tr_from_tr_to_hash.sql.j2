@@ -12,107 +12,109 @@
 
 SELECT
   -- Descriptors
-  dt
-  , chain
-  , network
-  , chain_id
-  , trace_from_address
-  , trace_to_address
-  , trace_type
-  , block_timestamp
-  , block_number
-  , tx_from_address
-  , tx_to_address
-  , transaction_hash
-  , tx_method_id
+  tr.dt
+  , tr.chain
+  , tr.network
+  , tr.chain_id
+  , tr.trace_from_address
+  , tr.trace_to_address
+  , tr.trace_type
+  , tr.block_timestamp
+  , tr.block_number
+  , tx.from_address AS tx_from_address
+  , tx.to_address AS tx_to_address
+  , tr.transaction_hash
+  , tx.method_id AS tx_method_id
 
   -- Transaction-Level gas & fees
-  , tx_l2_gas_used
-  , tx_fee_native
-  , tx_l1_fee_native
-  , tx_l2_fee_native
-  , tx_l2_priority_fee_native
-  , tx_l2_base_fee_native
-  , tx_l2_legacy_extra_fee_native
+  , tx.l2_gas_used AS tx_l2_gas_used
+  , tx.tx_fee_native
+  , tx.l1_fee_native AS tx_l1_fee_native
+  , tx.l2_fee_native AS tx_l2_fee_native
+  , tx.l2_priority_fee_native AS tx_l2_priority_fee_native
+  , tx.l2_base_fee_native AS tx_l2_base_fee_native
+  , tx.l2_legacy_extra_fee_native AS tx_l2_legacy_extra_fee_native
 
   -- Transaction-Level Gas Prices
-  , tx_l2_gas_price_gwei
-  , tx_l2_base_gas_price_gwei
-  , tx_l2_priority_gas_price_gwei
-  , tx_l2_legacy_extra_gas_price_gwei
-  , tx_l1_base_gas_price_gwei
-  , tx_l1_blob_base_gas_price_gwei
+  , tx.l2_gas_price_gwei AS tx_l2_gas_price_gwei
+  , tx.l2_base_gas_price_gwei AS tx_l2_base_gas_price_gwei
+  , tx.l2_priority_gas_price_gwei AS tx_l2_priority_gas_price_gwei
+  , tx.l2_legacy_extra_gas_price_gwei AS tx_l2_legacy_extra_gas_price_gwei
+  , tx.l1_base_gas_price_gwei AS tx_l1_base_gas_price_gwei
+  , tx.l1_blob_base_gas_price_gwei AS tx_l1_blob_base_gas_price_gwei
 
   -- Transaction-Level transaction sizes
-  , tx_input_byte_length
-  , tx_input_zero_bytes
-  , tx_input_nonzero_bytes
-  , tx_l1_base_scaled_size
-  , tx_l1_blob_scaled_size
-  , tx_l1_gas_used_unified
-  , tx_estimated_size
+  , tx.input_byte_length AS tx_input_byte_length
+  , tx.input_zero_bytes AS tx_input_zero_bytes
+  , (tx.input_byte_length - tx.input_zero_bytes) AS tx_input_nonzero_bytes
+  , tx.l1_base_scaled_size AS tx_l1_base_scaled_size
+  , tx.l1_blob_scaled_size AS tx_l1_blob_scaled_size
+  , tx.l1_gas_used_unified AS tx_l1_gas_used_unified
+  , tx.estimated_size AS tx_estimated_size
 
   -- Attributes
-  , tx_success
-  , is_system_transaction
+  , tx.success AS tx_success
+  , tx.is_system_transaction
 
   -- Sum Internal Trace Gas
-  , SUM(trace_gas_used) AS sum_trace_gas_used
-  , SUM(trace_gas_used_minus_subtraces) AS sum_trace_gas_used_minus_subtraces
+  , SUM(tr.trace_gas_used) AS sum_trace_gas_used
+  , SUM(tr.gas_used_minus_subtraces) AS sum_trace_gas_used_minus_subtraces
 
-  , SUM(tx_l2_fee_native_minus_subtraces) AS sum_tx_l2_fee_native_minus_subtraces
-  , SUM(tx_l2_base_fee_native_minus_subtraces) AS sum_tx_l2_base_fee_native_minus_subtraces
-  , SUM(tx_l2_priority_fee_native_minus_subtraces) AS sum_tx_l2_priority_fee_native_minus_subtraces
-  , SUM(tx_l2_legacy_base_fee_native_minus_subtraces) AS sum_tx_l2_legacy_base_fee_native_minus_subtraces
+  , SUM(tr.tx_l2_fee_native_minus_subtraces) AS sum_tx_l2_fee_native_minus_subtraces
+  , SUM(tr.tx_l2_base_fee_native_minus_subtraces) AS sum_tx_l2_base_fee_native_minus_subtraces
+  , SUM(tr.tx_l2_priority_fee_native_minus_subtraces) AS sum_tx_l2_priority_fee_native_minus_subtraces
+  , SUM(tr.tx_l2_legacy_base_fee_native_minus_subtraces) AS sum_tx_l2_legacy_base_fee_native_minus_subtraces
 
-  , SUM(tx_l2_gas_used_amortized_by_call) AS sum_tx_l2_gas_used_amortized_by_call
-  , SUM(tx_l1_gas_used_unified_amortized_by_call) AS sum_tx_l1_gas_used_unified_amortized_by_call
-  , SUM(tx_l1_base_scaled_size_amortized_by_call) AS sum_tx_l1_base_scaled_size_amortized_by_call
-  , SUM(tx_l1_blob_scaled_size_amortized_by_call) AS sum_tx_l1_blob_scaled_size_amortized_by_call
-  , SUM(tx_estimated_size_amortized_by_call) AS sum_tx_estimated_size_amortized_by_call
+  , SUM(tr.tx_l2_gas_used_amortized_by_call) AS sum_tx_l2_gas_used_amortized_by_call
+  , SUM(tr.tx_l1_gas_used_unified_amortized_by_call) AS sum_tx_l1_gas_used_unified_amortized_by_call
+  , SUM(tr.tx_l1_base_scaled_size_amortized_by_call) AS sum_tx_l1_base_scaled_size_amortized_by_call
+  , SUM(tr.tx_l1_blob_scaled_size_amortized_by_call) AS sum_tx_l1_blob_scaled_size_amortized_by_call
+  , SUM(tr.tx_estimated_size_amortized_by_call) AS sum_tx_estimated_size_amortized_by_call
 
-  , SUM(tx_fee_native_amortized_by_call) AS sum_tx_fee_native_amortized_by_call
-  , SUM(tx_l2_fee_native_amortized_by_call) AS sum_tx_l2_fee_native_amortized_by_call
-  , SUM(tx_l1_fee_native_amortized_by_call) AS sum_tx_l1_fee_native_amortized_by_call
-  , SUM(tx_l2_base_fee_native_amortized_by_call) AS sum_tx_l2_base_fee_native_amortized_by_call
-  , SUM(tx_l2_priority_fee_native_amortized_by_call) AS sum_tx_l2_priority_fee_native_amortized_by_call
+  , SUM(tr.tx_fee_native_amortized_by_call) AS sum_tx_fee_native_amortized_by_call
+  , SUM(tr.tx_l2_fee_native_amortized_by_call) AS sum_tx_l2_fee_native_amortized_by_call
+  , SUM(tr.tx_l1_fee_native_amortized_by_call) AS sum_tx_l1_fee_native_amortized_by_call
+  , SUM(tr.tx_l2_base_fee_native_amortized_by_call) AS sum_tx_l2_base_fee_native_amortized_by_call
+  , SUM(tr.tx_l2_priority_fee_native_amortized_by_call) AS sum_tx_l2_priority_fee_native_amortized_by_call
 
-  , SUM(tx_fee_native_l1_amortized_l2_minus_subtraces) AS sum_tx_fee_native_l1_amortized_l2_minus_subtraces
+
+  , SUM((tx.l1_fee_native / tr.num_traces_in_txn) + (tr.trace_gas_used - coalesce(tr.sum_subtraces_gas_used, 0)) * gwei_to_eth(tx.l2_gas_price_gwei)) AS sum_tx_fee_native_l1_amortized_l2_minus_subtraces
+
 
   -- Count Call Types
-  , COUNT(*) FILTER (WHERE trace_address = '' AND call_type != '') AS count_top_level_calls
+  , COUNT(*) FILTER (WHERE tr.trace_address = '' AND tr.call_type != '') AS count_top_level_calls
   --count non-null trace addresses, null is the transaction-level call.
-  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type != '') AS count_internal_calls_all_types
-  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type != '' AND trace_success) AS count_internal_calls_all_types_trace_success
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type != '') AS count_internal_calls_all_types
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type != '' AND tr.trace_success) AS count_internal_calls_all_types_trace_success
   --static calls only read state, and can not write
-  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'staticcall') AS count_internal_calls_static_type
-  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'staticcall' AND trace_success) AS count_internal_calls_static_type_trace_success
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'staticcall') AS count_internal_calls_static_type
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'staticcall' AND tr.trace_success) AS count_internal_calls_static_type_trace_success
   --delegate calls call a function on another contract
-  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'delegatecall') AS count_internal_calls_delegate_type
-  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'delegatecall' AND trace_success) AS count_internal_calls_delegate_type_trace_success
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'delegatecall') AS count_internal_calls_delegate_type
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'delegatecall' AND tr.trace_success) AS count_internal_calls_delegate_type_trace_success
   --normal function calls
-  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'call') AS count_internal_calls_call_type
-  , COUNT(*) FILTER (WHERE trace_address != '' AND call_type = 'call' AND trace_success) AS count_internal_calls_call_type_trace_success
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'call') AS count_internal_calls_call_type
+  , COUNT(*) FILTER (WHERE tr.trace_address != '' AND tr.call_type = 'call' AND tr.trace_success) AS count_internal_calls_call_type_trace_success
 
 FROM {{ refined_traces_fees }} AS tr LEFT JOIN {{ refined_txs_fees }} AS tx
   ON
     tr.block_number = tx.block_number
-    AND tx.transaction_hash = tx.transaction_hash
+    AND tr.transaction_hash = tx.hash
 
 GROUP BY
   -- Descriptors
-  dt
-  , chain
-  , network
-  , chain_id
-  , trace_from_address
-  , trace_to_address
-  , trace_type
-  , block_timestamp
-  , block_number
+  tr.dt
+  , tr.chain
+  , tr.network
+  , tr.chain_id
+  , tr.trace_from_address
+  , tr.trace_to_address
+  , tr.trace_type
+  , tr.block_timestamp
+  , tr.block_number
   , tx_from_address
   , tx_to_address
-  , transaction_hash
+  , tr.transaction_hash
   , tx_method_id
 
   -- Transaction-Level gas & fees
@@ -143,4 +145,4 @@ GROUP BY
 
   -- Attributes
   , tx_success
-  , is_system_transaction
+  , tx.is_system_transaction

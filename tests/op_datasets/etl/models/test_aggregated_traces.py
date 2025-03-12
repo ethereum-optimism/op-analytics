@@ -1,0 +1,397 @@
+import datetime
+from decimal import Decimal
+from op_analytics.coreutils.testutils.inputdata import InputTestData
+from op_analytics.datapipeline.models.compute.testutils import IntermediateModelTestBase
+
+
+class TestAggregatedTraces001(IntermediateModelTestBase):
+    model = "aggregated_traces"
+    inputdata = InputTestData.at(__file__)
+    chains = ["op"]
+    dateval = datetime.date(2024, 11, 18)
+    block_filters = [
+        "{block_number} % 200 <= 1",
+    ]
+
+    _enable_fetching = True
+
+    def test_row_counts(self):
+        """Check row counts from each of the traces and txs results."""
+
+        assert self._duckdb_context is not None
+
+        row_counts = (
+            self._duckdb_context.client.sql(
+                """
+                SELECT 'agg1' as name, COUNT(*) as total FROM agg_traces_tr_from_tr_to_hash_v1
+                
+                UNION ALL
+                
+                SELECT 'agg2' as name, COUNT(*) as total FROM agg_traces_tr_to_hash_v1
+                
+                """
+            )
+            .pl()
+            .to_dicts()
+        )
+
+        assert row_counts == [
+            {"name": "agg1", "total": 7113},
+            {"name": "agg2", "total": 4486},
+        ]
+
+    def test_tr_from_tr_to_hash_schema(self):
+        """Verify the final refined transactions schema."""
+
+        assert self._duckdb_context is not None
+
+        schema = (
+            self._duckdb_context.client.sql("DESCRIBE agg_traces_tr_from_tr_to_hash_v1")
+            .pl()
+            .select("column_name", "column_type")
+            .to_dicts()
+        )
+        actual_schema = {row["column_name"]: row["column_type"] for row in schema}
+
+        assert actual_schema == {
+            "dt": "DATE",
+            "chain": "VARCHAR",
+            "network": "VARCHAR",
+            "chain_id": "INTEGER",
+            "trace_from_address": "VARCHAR",
+            "trace_to_address": "VARCHAR",
+            "trace_type": "VARCHAR",
+            "block_timestamp": "UINTEGER",
+            "block_number": "BIGINT",
+            "tx_from_address": "VARCHAR",
+            "tx_to_address": "VARCHAR",
+            "transaction_hash": "VARCHAR",
+            "tx_method_id": "VARCHAR",
+            "tx_l2_gas_used": "BIGINT",
+            "tx_fee_native": "DECIMAL(38,19)",
+            "tx_l1_fee_native": "DECIMAL(38,19)",
+            "tx_l2_fee_native": "DECIMAL(38,19)",
+            "tx_l2_priority_fee_native": "DECIMAL(38,19)",
+            "tx_l2_base_fee_native": "DECIMAL(38,19)",
+            "tx_l2_legacy_extra_fee_native": "DECIMAL(38,19)",
+            "tx_l2_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_l2_base_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_l2_priority_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_l2_legacy_extra_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_l1_base_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_l1_blob_base_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_input_byte_length": "INTEGER",
+            "tx_input_zero_bytes": "INTEGER",
+            "tx_input_nonzero_bytes": "INTEGER",
+            "tx_l1_base_scaled_size": "DECIMAL(38,12)",
+            "tx_l1_blob_scaled_size": "DECIMAL(38,12)",
+            "tx_l1_gas_used_unified": "BIGINT",
+            "tx_estimated_size": "BIGINT",
+            "tx_success": "BOOLEAN",
+            "is_system_transaction": "BOOLEAN",
+            "sum_trace_gas_used": "DECIMAL(38,0)",
+            "sum_trace_gas_used_minus_subtraces": "DECIMAL(38,0)",
+            "sum_tx_l2_fee_native_minus_subtraces": "DECIMAL(38,20)",
+            "sum_tx_l2_base_fee_native_minus_subtraces": "DECIMAL(38,20)",
+            "sum_tx_l2_priority_fee_native_minus_subtraces": "DECIMAL(38,20)",
+            "sum_tx_l2_legacy_base_fee_native_minus_subtraces": "DECIMAL(38,20)",
+            "sum_tx_l2_gas_used_amortized_by_call": "DOUBLE",
+            "sum_tx_l1_gas_used_unified_amortized_by_call": "DOUBLE",
+            "sum_tx_l1_base_scaled_size_amortized_by_call": "DOUBLE",
+            "sum_tx_l1_blob_scaled_size_amortized_by_call": "DOUBLE",
+            "sum_tx_estimated_size_amortized_by_call": "DOUBLE",
+            "sum_tx_fee_native_amortized_by_call": "DOUBLE",
+            "sum_tx_l2_fee_native_amortized_by_call": "DOUBLE",
+            "sum_tx_l1_fee_native_amortized_by_call": "DOUBLE",
+            "sum_tx_l2_base_fee_native_amortized_by_call": "DOUBLE",
+            "sum_tx_l2_priority_fee_native_amortized_by_call": "DOUBLE",
+            "sum_tx_fee_native_l1_amortized_l2_minus_subtraces": "DOUBLE",
+            "count_top_level_calls": "BIGINT",
+            "count_internal_calls_all_types": "BIGINT",
+            "count_internal_calls_all_types_trace_success": "BIGINT",
+            "count_internal_calls_static_type": "BIGINT",
+            "count_internal_calls_static_type_trace_success": "BIGINT",
+            "count_internal_calls_delegate_type": "BIGINT",
+            "count_internal_calls_delegate_type_trace_success": "BIGINT",
+            "count_internal_calls_call_type": "BIGINT",
+            "count_internal_calls_call_type_trace_success": "BIGINT",
+        }
+
+    def test_tr_to_hash_schema(self):
+        """Verify the final refined traces schema."""
+
+        assert self._duckdb_context is not None
+
+        schema = (
+            self._duckdb_context.client.sql("DESCRIBE agg_traces_tr_to_hash_v1")
+            .pl()
+            .select("column_name", "column_type")
+            .to_dicts()
+        )
+        actual_schema = {row["column_name"]: row["column_type"] for row in schema}
+
+        assert actual_schema == {
+            "dt": "DATE",
+            "chain": "VARCHAR",
+            "network": "VARCHAR",
+            "chain_id": "INTEGER",
+            "trace_to_address": "VARCHAR",
+            "block_timestamp": "UINTEGER",
+            "block_number": "BIGINT",
+            "tx_from_address": "VARCHAR",
+            "tx_to_address": "VARCHAR",
+            "transaction_hash": "VARCHAR",
+            "tx_method_id": "VARCHAR",
+            "tx_l2_gas_used": "BIGINT",
+            "tx_fee_native": "DECIMAL(38,19)",
+            "tx_l1_fee_native": "DECIMAL(38,19)",
+            "tx_l2_fee_native": "DECIMAL(38,19)",
+            "tx_l2_priority_fee_native": "DECIMAL(38,19)",
+            "tx_l2_base_fee_native": "DECIMAL(38,19)",
+            "tx_l2_legacy_extra_fee_native": "DECIMAL(38,19)",
+            "tx_l2_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_l2_base_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_l2_priority_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_l2_legacy_extra_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_l1_base_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_l1_blob_base_gas_price_gwei": "DECIMAL(38,10)",
+            "tx_input_byte_length": "INTEGER",
+            "tx_input_zero_bytes": "INTEGER",
+            "tx_input_nonzero_bytes": "INTEGER",
+            "tx_l1_base_scaled_size": "DECIMAL(38,12)",
+            "tx_l1_blob_scaled_size": "DECIMAL(38,12)",
+            "tx_l1_gas_used_unified": "BIGINT",
+            "tx_estimated_size": "BIGINT",
+            "tx_success": "BOOLEAN",
+            "is_system_transaction": "BOOLEAN",
+            "sum_trace_gas_used": "DECIMAL(38,0)",
+            "sum_trace_gas_used_minus_subtraces": "DECIMAL(38,0)",
+            "sum_tx_l2_fee_native_minus_subtraces": "DECIMAL(38,20)",
+            "sum_tx_l2_base_fee_native_minus_subtraces": "DECIMAL(38,20)",
+            "sum_tx_l2_priority_fee_native_minus_subtraces": "DECIMAL(38,20)",
+            "sum_tx_l2_legacy_base_fee_native_minus_subtraces": "DECIMAL(38,20)",
+            "sum_tx_l2_gas_used_amortized_by_call": "DOUBLE",
+            "sum_tx_l1_gas_used_unified_amortized_by_call": "DOUBLE",
+            "sum_tx_l1_base_scaled_size_amortized_by_call": "DOUBLE",
+            "sum_tx_l1_blob_scaled_size_amortized_by_call": "DOUBLE",
+            "sum_tx_estimated_size_amortized_by_call": "DOUBLE",
+            "sum_tx_fee_native_amortized_by_call": "DOUBLE",
+            "sum_tx_l2_fee_native_amortized_by_call": "DOUBLE",
+            "sum_tx_l1_fee_native_amortized_by_call": "DOUBLE",
+            "sum_tx_l2_base_fee_native_amortized_by_call": "DOUBLE",
+            "sum_tx_l2_priority_fee_native_amortized_by_call": "DOUBLE",
+            "sum_tx_fee_native_l1_amortized_l2_minus_subtraces": "DOUBLE",
+            "count_top_level_calls": "DECIMAL(38,0)",
+            "count_internal_calls_all_types": "DECIMAL(38,0)",
+            "count_internal_calls_all_types_trace_success": "DECIMAL(38,0)",
+            "count_internal_calls_static_type": "DECIMAL(38,0)",
+            "count_internal_calls_static_type_trace_success": "DECIMAL(38,0)",
+            "count_internal_calls_delegate_type": "DECIMAL(38,0)",
+            "count_internal_calls_delegate_type_trace_success": "DECIMAL(38,0)",
+            "count_internal_calls_call_type": "DECIMAL(38,0)",
+            "count_internal_calls_call_type_trace_success": "DECIMAL(38,0)",
+            "count_traces_type_all_types": "BIGINT",
+            "count_traces_trace_type_call": "BIGINT",
+            "count_traces_trace_type_suicide": "BIGINT",
+            "count_traces_trace_type_create": "BIGINT",
+            "count_traces_trace_type_create2": "BIGINT",
+            "count_traces_trace_type_create_any": "BIGINT",
+            "is_transaction_with_internal_call_type_call": "BOOLEAN",
+            "is_transaction_with_internal_call_type_call_or_delegate": "BOOLEAN",
+        }
+
+    def test_single_tx(self):
+        """Look at the transformation results for a single transaction."""
+
+        assert self._duckdb_context is not None
+
+        # ---------------------------
+        # A transaction with 3 traces
+        # ---------------------------
+        tx_hash = "0x24efe37e2759838fead0bc911b6a25e3f575716ebbcd002c2e8c89c5bb7bd894"
+
+        raw_traces = (
+            self._duckdb_context.client.sql(f"""
+        SELECT *
+        FROM blockbatch_refined_traces_refined_traces_fees_v1 WHERE transaction_hash = '{tx_hash}'
+        """)
+            .pl()
+            .to_dicts()
+        )
+        assert raw_traces == [
+            {
+                "chain_id": 10,
+                "network": "mainnet",
+                "block_number": 128144800,
+                "block_timestamp": 1731888377,
+                "transaction_hash": "0x24efe37e2759838fead0bc911b6a25e3f575716ebbcd002c2e8c89c5bb7bd894",
+                "transaction_index": 12,
+                "trace_from_address": "0x8717a864e8d69066ea50dc0b6ff4040edcaacf2a",
+                "trace_to_address": "0x1195cf65f83b3a5768f3c496d3a05ad6412c64b7",
+                "trace_gas_limit": 197308,
+                "trace_gas_used": 189126,
+                "trace_address": "",
+                "trace_type": "call",
+                "call_type": "call",
+                "error": "",
+                "trace_method_id": "0xd123b4d8",
+                "trace_success": True,
+                "trace_depth": 0,
+                "parent_trace_address": "none",
+                "num_traces_in_txn": 3,
+                "sum_subtraces_gas_used": Decimal("159392"),
+                "gas_used_minus_subtraces": Decimal("29734"),
+                "tx_l2_fee_native_minus_subtraces": Decimal("2.99317311000E-9"),
+                "tx_l2_base_fee_native_minus_subtraces": Decimal("1.977311000E-11"),
+                "tx_l2_priority_fee_native_minus_subtraces": Decimal("2.97340000000E-9"),
+                "tx_l2_legacy_base_fee_native_minus_subtraces": Decimal("0E-20"),
+                "tx_l2_gas_used_amortized_by_call": 63042.0,
+                "tx_l1_gas_used_unified_amortized_by_call": 1655.3333333333333,
+                "tx_l1_base_scaled_size_amortized_by_call": 8.652427333333334,
+                "tx_l1_blob_scaled_size_amortized_by_call": 104.928786625,
+                "tx_estimated_size_amortized_by_call": 103.33333333333333,
+                "tx_fee_native_amortized_by_call": 1.91754889993e-07,
+                "tx_l2_fee_native_amortized_by_call": 6.346122929999999e-09,
+                "tx_l1_fee_native_amortized_by_call": 1.85408767063e-07,
+                "tx_l2_base_fee_native_amortized_by_call": 4.192293e-11,
+                "tx_l2_priority_fee_native_amortized_by_call": 6.3042e-09,
+                "chain": "op",
+                "dt": datetime.date(2024, 11, 18),
+            },
+            {
+                "chain_id": 10,
+                "network": "mainnet",
+                "block_number": 128144800,
+                "block_timestamp": 1731888377,
+                "transaction_hash": "0x24efe37e2759838fead0bc911b6a25e3f575716ebbcd002c2e8c89c5bb7bd894",
+                "transaction_index": 12,
+                "trace_from_address": "0x1195cf65f83b3a5768f3c496d3a05ad6412c64b7",
+                "trace_to_address": "0x4b1ca7b8d0431a920fdb1812a4676b9a2ef9640b",
+                "trace_gas_limit": 162237,
+                "trace_gas_used": 159392,
+                "trace_address": "0",
+                "trace_type": "call",
+                "call_type": "delegatecall",
+                "error": "",
+                "trace_method_id": "0xd123b4d8",
+                "trace_success": True,
+                "trace_depth": 1,
+                "parent_trace_address": "",
+                "num_traces_in_txn": 3,
+                "sum_subtraces_gas_used": Decimal("3000"),
+                "gas_used_minus_subtraces": Decimal("156392"),
+                "tx_l2_fee_native_minus_subtraces": Decimal("1.574320068000E-8"),
+                "tx_l2_base_fee_native_minus_subtraces": Decimal("1.0400068000E-10"),
+                "tx_l2_priority_fee_native_minus_subtraces": Decimal("1.563920000000E-8"),
+                "tx_l2_legacy_base_fee_native_minus_subtraces": Decimal("0E-20"),
+                "tx_l2_gas_used_amortized_by_call": 63042.0,
+                "tx_l1_gas_used_unified_amortized_by_call": 1655.3333333333333,
+                "tx_l1_base_scaled_size_amortized_by_call": 8.652427333333334,
+                "tx_l1_blob_scaled_size_amortized_by_call": 104.928786625,
+                "tx_estimated_size_amortized_by_call": 103.33333333333333,
+                "tx_fee_native_amortized_by_call": 1.91754889993e-07,
+                "tx_l2_fee_native_amortized_by_call": 6.346122929999999e-09,
+                "tx_l1_fee_native_amortized_by_call": 1.85408767063e-07,
+                "tx_l2_base_fee_native_amortized_by_call": 4.192293e-11,
+                "tx_l2_priority_fee_native_amortized_by_call": 6.3042e-09,
+                "chain": "op",
+                "dt": datetime.date(2024, 11, 18),
+            },
+            {
+                "chain_id": 10,
+                "network": "mainnet",
+                "block_number": 128144800,
+                "block_timestamp": 1731888377,
+                "transaction_hash": "0x24efe37e2759838fead0bc911b6a25e3f575716ebbcd002c2e8c89c5bb7bd894",
+                "transaction_index": 12,
+                "trace_from_address": "0x1195cf65f83b3a5768f3c496d3a05ad6412c64b7",
+                "trace_to_address": "0x0000000000000000000000000000000000000001",
+                "trace_gas_limit": 139221,
+                "trace_gas_used": 3000,
+                "trace_address": "0,0",
+                "trace_type": "call",
+                "call_type": "staticcall",
+                "error": "",
+                "trace_method_id": "0xfac46ed3",
+                "trace_success": True,
+                "trace_depth": 2,
+                "parent_trace_address": "0",
+                "num_traces_in_txn": 3,
+                "sum_subtraces_gas_used": Decimal("0"),
+                "gas_used_minus_subtraces": Decimal("3000"),
+                "tx_l2_fee_native_minus_subtraces": Decimal("3.0199500000E-10"),
+                "tx_l2_base_fee_native_minus_subtraces": Decimal("1.99500000E-12"),
+                "tx_l2_priority_fee_native_minus_subtraces": Decimal("3.0000000000E-10"),
+                "tx_l2_legacy_base_fee_native_minus_subtraces": Decimal("0E-20"),
+                "tx_l2_gas_used_amortized_by_call": 63042.0,
+                "tx_l1_gas_used_unified_amortized_by_call": 1655.3333333333333,
+                "tx_l1_base_scaled_size_amortized_by_call": 8.652427333333334,
+                "tx_l1_blob_scaled_size_amortized_by_call": 104.928786625,
+                "tx_estimated_size_amortized_by_call": 103.33333333333333,
+                "tx_fee_native_amortized_by_call": 1.91754889993e-07,
+                "tx_l2_fee_native_amortized_by_call": 6.346122929999999e-09,
+                "tx_l1_fee_native_amortized_by_call": 1.85408767063e-07,
+                "tx_l2_base_fee_native_amortized_by_call": 4.192293e-11,
+                "tx_l2_priority_fee_native_amortized_by_call": 6.3042e-09,
+                "chain": "op",
+                "dt": datetime.date(2024, 11, 18),
+            },
+        ]
+
+        agged_traces_1 = (
+            self._duckdb_context.client.sql(f"""
+        SELECT *
+        FROM agg_traces_tr_from_tr_to_hash_v1 WHERE transaction_hash = '{tx_hash}'
+        """)
+            .pl()
+            .to_dicts()
+        )
+        assert raw_traces == [
+            {
+                "trace_type": "call",
+                "call_type": "call",
+                "trace_address": "",
+                "gas_used": 189126,
+            },
+            {
+                "trace_type": "call",
+                "call_type": "delegatecall",
+                "trace_address": "0",
+                "gas_used": 159392,
+            },
+            {
+                "trace_type": "call",
+                "call_type": "staticcall",
+                "trace_address": "0,0",
+                "gas_used": 3000,
+            },
+        ]
+
+        agged_traces_2 = (
+            self._duckdb_context.client.sql(f"""
+        SELECT *
+        FROM agg_traces_tr_to_hash_v1 WHERE transaction_hash = '{tx_hash}'
+        """)
+            .pl()
+            .to_dicts()
+        )
+        assert raw_traces == [
+            {
+                "trace_type": "call",
+                "call_type": "call",
+                "trace_address": "",
+                "gas_used": 189126,
+            },
+            {
+                "trace_type": "call",
+                "call_type": "delegatecall",
+                "trace_address": "0",
+                "gas_used": 159392,
+            },
+            {
+                "trace_type": "call",
+                "call_type": "staticcall",
+                "trace_address": "0,0",
+                "gas_used": 3000,
+            },
+        ]
