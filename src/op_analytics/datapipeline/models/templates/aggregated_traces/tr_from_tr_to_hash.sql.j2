@@ -18,12 +18,12 @@ SELECT
   , tr.chain_id
   , tr.trace_from_address
   , tr.trace_to_address
+  , tr.transaction_hash
   , tr.trace_type
   , tr.block_timestamp
   , tr.block_number
   , tx.from_address AS tx_from_address
   , tx.to_address AS tx_to_address
-  , tr.transaction_hash
   , tx.method_id AS tx_method_id
 
   -- Transaction-Level gas & fees
@@ -109,17 +109,17 @@ GROUP BY
   , tr.chain_id
   , tr.trace_from_address
   , tr.trace_to_address
+  , tr.transaction_hash
   , tr.trace_type
   , tr.block_timestamp
   , tr.block_number
   , tx_from_address
   , tx_to_address
-  , tr.transaction_hash
   , tx_method_id
 
   -- Transaction-Level gas & fees
   , tx_l2_gas_used
-  , tx_fee_native
+  , tx.tx_fee_native
   , tx_l1_fee_native
   , tx_l2_fee_native
   , tx_l2_priority_fee_native
