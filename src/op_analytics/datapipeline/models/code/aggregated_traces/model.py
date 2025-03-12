@@ -39,7 +39,8 @@ def aggregated_traces(
     )
 
     agg2 = auxiliary_templates["aggregated_traces/tr_to_hash"].create_table(
-        duckdb_context=ctx, template_parameters={"tr_from_tr_to_hash": agg1}
+        duckdb_context=ctx,
+        template_parameters={"tr_from_tr_to_hash": agg1},
     )
 
     return {
