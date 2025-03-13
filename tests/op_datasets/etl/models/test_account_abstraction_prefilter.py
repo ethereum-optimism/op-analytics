@@ -2,10 +2,10 @@ import datetime
 from datetime import date
 
 from op_analytics.coreutils.testutils.inputdata import InputTestData
-from op_analytics.datapipeline.models.compute.testutils import IntermediateModelTestBase
+from op_analytics.datapipeline.models.compute.testutils import ModelTestBase
 
 
-class TestAccountAbstractionPrefilter0001(IntermediateModelTestBase):
+class TestAccountAbstractionPrefilter0001(ModelTestBase):
     model = "account_abstraction_prefilter"
     inputdata = InputTestData.at(__file__)
     chains = ["base"]

@@ -1,10 +1,10 @@
 import datetime
 from decimal import Decimal
 from op_analytics.coreutils.testutils.inputdata import InputTestData
-from op_analytics.datapipeline.models.compute.testutils import IntermediateModelTestBase
+from op_analytics.datapipeline.models.compute.testutils import ModelTestBase
 
 
-class TestAggregatedTraces001(IntermediateModelTestBase):
+class TestAggregatedTraces001(ModelTestBase):
     model = "aggregated_traces"
     inputdata = InputTestData.at(__file__)
     chains = ["op"]

@@ -2,10 +2,10 @@ import datetime
 from datetime import date
 
 from op_analytics.coreutils.testutils.inputdata import InputTestData
-from op_analytics.datapipeline.models.compute.testutils import IntermediateModelTestBase
+from op_analytics.datapipeline.models.compute.testutils import ModelTestBase
 
 
-class TestTokenTransfers001(IntermediateModelTestBase):
+class TestTokenTransfers001(ModelTestBase):
     model = "token_transfers"
     inputdata = InputTestData.at(__file__)
     chains = ["op"]

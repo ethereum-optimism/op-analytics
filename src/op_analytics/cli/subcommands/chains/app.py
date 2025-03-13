@@ -15,7 +15,6 @@ from op_analytics.datapipeline.etl.blockbatch.main import compute_blockbatch
 from op_analytics.datapipeline.etl.ingestion import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
-from op_analytics.datapipeline.etl.intermediate.main import compute_intermediate
 from op_analytics.datapipeline.etl.loadbq.main import (
     load_superchain_raw_to_bq,
     load_superchain_4337_to_bq,
@@ -207,39 +206,6 @@ def ingest_blocks(
 
 
 @app.command()
-def intermediate_models(
-    chains: CHAINS_ARG,
-    models: Annotated[str, typer.Argument(help="Comma-separated list of models to be processed.")],
-    range_spec: DATES_ARG,
-    read_from: Annotated[
-        DataLocation,
-        typer.Option(
-            help="Where data will be read from.",
-            case_sensitive=False,
-        ),
-    ] = DataLocation.GCS,
-    write_to: WRITE_TO_OPTION = DataLocation.DISABLED,
-    dryrun: DRYRUN_OPTION = False,
-    force_complete: FORCE_COMPLETE_OPTION = False,
-    fork_process: FORK_PROCESS_OPTION = True,
-):
-    """Compute intermediate models for a range of dates."""
-    chain_list = normalize_chains(chains)
-    model_list = [_.strip() for _ in models.split(",")]
-
-    compute_intermediate(
-        chains=chain_list,
-        models=model_list,
-        range_spec=range_spec,
-        read_from=read_from,
-        write_to=write_to,
-        dryrun=dryrun,
-        force_complete=force_complete,
-        fork_process=fork_process,
-    )
-
-
-@app.command()
 def blockbatch_models(
     chains: CHAINS_ARG,
     models: Annotated[str, typer.Argument(help="Comma-separated list of models to be processed.")],
@@ -337,24 +303,6 @@ def noargs_blockbatch():
         force_complete=False,
         fork_process=True,
     )
-
-
-@app.command()
-def noargs_intermediate():
-    """No-args command to run daily intermediate models."""
-    for network in ["MAINNETS", "TESTNETS"]:
-        compute_intermediate(
-            chains=normalize_chains(network),
-            models=[
-                "daily_address_summary",
-                "contract_creation",
-            ],
-            range_spec="m3days",
-            read_from=DataLocation.GCS,
-            write_to=DataLocation.GCS,
-            dryrun=False,
-            force_complete=False,
-        )
 
 
 @app.command()
