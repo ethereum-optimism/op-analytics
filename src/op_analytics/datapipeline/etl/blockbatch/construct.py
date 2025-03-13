@@ -31,7 +31,7 @@ def construct_tasks(
     read_from: DataLocation,
     write_to: DataLocation,
 ) -> Generator[list[BlockBatchModelsTask], None, None]:
-    """Construct tasks to compute intermediate models.
+    """Construct tasks to compute blockbatch models.
 
     The function first creates a ModelDataSpec for all models requested. This is used to
     figure out model dependencies so we can separate the models into execution passes.

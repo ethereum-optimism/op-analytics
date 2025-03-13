@@ -70,11 +70,11 @@ class DataReaderTestUtil:
         return MockParquetData(context=self.context, dataset=dataset)
 
 
-class IntermediateModelTestBase(unittest.TestCase):
-    """Base Class for Intermediate Model Unit Tests.
+class ModelTestBase(unittest.TestCase):
+    """Base Class for models unit tests.
 
-    This class helps with fetching and locally storing sample data for use in intermediate
-    model unit tests.
+    This class helps with fetching and locally storing sample data for use in model unit
+    tests.
 
     The test data is stored in a local duckdb file. If the file does not exist the data is
     fetched from GCS and stored so it can be used by subsequent runs.
@@ -140,7 +140,7 @@ class IntermediateModelTestBase(unittest.TestCase):
             if not cls._enable_fetching:
                 raise RuntimeError(
                     dedent(
-                        """Intermediate Model Test Utils Error:
+                        """Model Test Utils Error:
                     
                     - Input test data has not been fetched yet.
                     
