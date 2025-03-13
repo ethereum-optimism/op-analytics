@@ -133,7 +133,6 @@ class IntermediateModelTestBase(unittest.TestCase):
             dir_name=os.path.dirname(db_path),
             db_file_name=db_file_name,
         )
-        cls._duckdb_context.connect_to_gcs()
 
         tables_exist = cls._tables_exist(datasets=model.input_datasets)
 
@@ -153,6 +152,7 @@ class IntermediateModelTestBase(unittest.TestCase):
 
             else:
                 log.info("Fetching test data from GCS.")
+                cls._duckdb_context.connect_to_gcs()
 
                 # We patch the markers database to use the real production database.
                 # This allows us to fetch test data straight from production.
