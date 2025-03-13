@@ -7,7 +7,7 @@ from dagster import (
 @asset
 def public_bucket(context: OpExecutionContext):
     """Pull Agora data."""
-    from op_analytics.datasources.agora import public_gcs_bucket
+    from op_analytics.datasources.agora import execute
 
-    result = public_gcs_bucket.execute_pull()
+    result = execute.execute_pull()
     context.log.info(result)

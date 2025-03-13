@@ -105,10 +105,7 @@ defs = Definitions(
             group="agora",
             cron_schedule="0 10 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
-            custom_k8s_config=OPK8sConfig(
-                mem_request="3Gi",
-                mem_limit="4Gi",
-            ),
+            custom_k8s_config=SMALL_POD,
         ),
         #
         create_schedule_for_group(

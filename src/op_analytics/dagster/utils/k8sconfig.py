@@ -22,9 +22,11 @@ SMALL_POD = OPK8sConfig(
     mem_limit="2Gi",
 )
 
+MEDIUM_POD = OPK8sConfig()
+
 
 def new_k8s_config(custom_config: OPK8sConfig | None):
-    k8s_config = custom_config or OPK8sConfig()
+    k8s_config = custom_config or MEDIUM_POD
 
     config = {
         "container_config": {
