@@ -16,7 +16,11 @@ def test_construct_marker():
             process_name="example",
         )
         actual = pl.from_arrow(marker).to_dicts()  # type: ignore
-        del actual["writer_name"]
+
+        # Remove non-deterministic fields.
+        for row in actual:
+            del row["writer_name"]
+
         assert actual == [
             {
                 "updated_at": datetime.datetime(2025, 2, 21, 5, 25),
