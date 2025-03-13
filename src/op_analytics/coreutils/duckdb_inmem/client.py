@@ -114,12 +114,16 @@ def init_client() -> DuckDBContext:
             log.info(f"initialized duckdb at {_DUCK_DB.db_path}")
 
             # Setup access to GCS
-            _DUCK_DB.connect_to_gcs()
+            connect_to_gcs(_DUCK_DB)
 
     if _DUCK_DB is None:
         raise RuntimeError("DuckDB client was not properly initialized.")
 
     return _DUCK_DB
+
+
+def connect_to_gcs(ctx: DuckDBContext):
+    ctx.connect_to_gcs()
 
 
 def sanitized_table_name(dataset_name: str) -> str:
