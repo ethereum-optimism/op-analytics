@@ -215,9 +215,33 @@ jobs:
       - checkout-dep-1
       - setup-python-env
       - run:
+          name: Show versions
+          command: |
+            uv pip freeze
+      - run:
           name: Run mypy
           command: |
             uv run mypy
+      - run:
+          name: Git lfs
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt update
+            sudo apt install git-lfs
+            git lfs install
+      - run:
+          command: |
+            git lfs ls-files -l | cut -d' ' -f1 | sort > .assets-id
+      - restore_cache:
+          key: v1-my-cache-key-{{ checksum ".assets-id" }}
+      - run:
+          command: |
+            git lfs pull
+      - save_cache:
+          key: v1-my-cache-key-{{ checksum ".assets-id" }}
+          paths:
+            - .git/lfs
+
       - run:
           name: Run pytest
           command: |
