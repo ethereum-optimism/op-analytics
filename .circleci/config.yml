@@ -213,7 +213,7 @@ jobs:
     resource_class: small
     steps:
       - checkout-dep-1
-      - setup-python-uv
+      - setup-python-env
       - run:
           name: Run mypy
           command: |
