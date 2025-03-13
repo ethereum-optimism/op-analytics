@@ -5,17 +5,17 @@ def test_agora_schemas():
     actual = INCREMENTAL_SCHEMAS[0].select()
     expected = """
         SELECT
-            CAST(id AS Nullable(String)) AS id
+            CAST(id AS String) AS id
 , CAST(delegate AS Nullable(String)) AS delegate
 , CAST(balance AS Nullable(String)) AS balance
-, CAST(block_number AS Nullable(Int64)) AS block_number
+, CAST(block_number AS Int64) AS block_number
 , CAST(ordinal AS Nullable(Int64)) AS ordinal
-, CAST(transaction_index AS Nullable(Int64)) AS transaction_index
-, CAST(log_index AS Nullable(Int64)) AS log_index
+, CAST(transaction_index AS Int64) AS transaction_index
+, CAST(log_index AS Int64) AS log_index
 , CAST(contract AS Nullable(String)) AS contract
         FROM s3(
             'https://storage.googleapis.com/agora-optimism-public-usw1/v1/snapshot/voting_power_snaps',
-            'csv'
+            'CSVWithNames'
         )
         
         """
@@ -27,7 +27,7 @@ def test_agora_schemas_auto_dt():
     expected = """
         SELECT
             toDate(now()) AS dt
-, CAST(proposal_id AS Nullable(String)) AS proposal_id
+, CAST(proposal_id AS String) AS proposal_id
 , CAST(contract AS Nullable(String)) AS contract
 , CAST(proposer AS Nullable(String)) AS proposer
 , CAST(description AS Nullable(String)) AS description
@@ -50,7 +50,7 @@ def test_agora_schemas_auto_dt():
 , CAST(proposal_type_id AS Nullable(Int64)) AS proposal_type_id
         FROM s3(
             'https://storage.googleapis.com/agora-optimism-public-usw1/v1/snapshot/proposals_v2',
-            'csv'
+            'CSVWithNames'
         )
         
         """
@@ -60,15 +60,15 @@ def test_agora_schemas_auto_dt():
 def test_agora_schemas_create():
     actual = INCREMENTAL_SCHEMAS[0].create()
     expected = """
-        CREATE TABLE IF NOT EXISTS transforms_agora.ingest_voting_power_snaps_v1
+        CREATE TABLE IF NOT EXISTS transforms_governance.ingest_voting_power_snaps_v1
         (
-            `id` Nullable(String),
+            `id` String,
 `delegate` Nullable(String),
 `balance` Nullable(String),
-`block_number` Nullable(Int64),
+`block_number` Int64,
 `ordinal` Nullable(Int64),
-`transaction_index` Nullable(Int64),
-`log_index` Nullable(Int64),
+`transaction_index` Int64,
+`log_index` Int64,
 `contract` Nullable(String),
 INDEX block_number_idx block_number TYPE minmax GRANULARITY 1
         )
@@ -81,10 +81,10 @@ INDEX block_number_idx block_number TYPE minmax GRANULARITY 1
 def test_agora_schemas_create_auto_dt():
     actual = OVERWRITE_SCHEMAS[0].create()
     expected = """
-        CREATE TABLE IF NOT EXISTS transforms_agora.ingest_proposals_v1
+        CREATE TABLE IF NOT EXISTS transforms_governance.ingest_proposals_v1
         (
             `dt` Date,
-`proposal_id` Nullable(String),
+`proposal_id` String,
 `contract` Nullable(String),
 `proposer` Nullable(String),
 `description` Nullable(String),
@@ -108,6 +108,6 @@ def test_agora_schemas_create_auto_dt():
 INDEX dt_idx dt TYPE minmax GRANULARITY 1
         )
         ENGINE = ReplacingMergeTree
-        ORDER BY (proposal_id)
+        ORDER BY (dt, proposal_id)
         """
     assert actual == expected

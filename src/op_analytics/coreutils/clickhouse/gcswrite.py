@@ -10,7 +10,6 @@ def write_to_gcs(
     gcs_path: str,
     select: str,
     client: Client | None = None,
-    settings: dict | None = None,
 ):
     """Writes a ClickHouse query directly to GCS.
 
@@ -33,7 +32,7 @@ def write_to_gcs(
 
     SETTINGS s3_truncate_on_insert = 1
     """
-    result = client.command(statement, settings=settings)
+    result = client.command(statement)
 
     if result.written_rows == 0:  # type: ignore
         raise Exception("empty result on write to gcs")

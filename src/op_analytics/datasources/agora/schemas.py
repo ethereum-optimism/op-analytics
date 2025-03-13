@@ -73,7 +73,12 @@ class AgoraSchema:
             indexes.append("INDEX block_number_idx block_number TYPE minmax GRANULARITY 1")
 
         columns = ",\n".join(create_cols + indexes)
-        order_by = ", ".join(self.order_by)
+
+        if self.auto_dt:
+            order_by_cols = ["dt", *self.order_by]
+        else:
+            order_by_cols = self.order_by
+        order_by = ", ".join(order_by_cols)
 
         return f"""
         CREATE TABLE IF NOT EXISTS {self.table_name()}
