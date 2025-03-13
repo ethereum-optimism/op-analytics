@@ -41,4 +41,4 @@ LEFT JOIN subtrace_aggregate AS subtrace_agg -- join on trace level 1 level down
     AND traces.trace_depth = (subtrace_agg.trace_depth - 1)
     AND traces.trace_address = subtrace_agg.parent_trace_address
 
-
+ORDER BY traces.block_number, traces.transaction_hash, traces.trace_depth, traces.parent_trace_address
