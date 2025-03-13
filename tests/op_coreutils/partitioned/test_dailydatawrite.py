@@ -16,6 +16,7 @@ def test_construct_marker():
             process_name="example",
         )
         actual = pl.from_arrow(marker).to_dicts()  # type: ignore
+        del actual["writer_name"]
         assert actual == [
             {
                 "updated_at": datetime.datetime(2025, 2, 21, 5, 25),
@@ -26,7 +27,6 @@ def test_construct_marker():
                 "data_path": "my/path/dt=2025-02-10/out.parquet",
                 "row_count": 10,
                 "process_name": "example",
-                "writer_name": "pedros-Apple-MacBook-Pro",
                 "dt": datetime.date(2025, 2, 10),
             }
         ]
