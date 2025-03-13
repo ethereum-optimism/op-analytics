@@ -2,7 +2,7 @@ SELECT
   pr_number
   , id
   , repo
-  , submitted_at
+  , parseDateTime(submitted_at,'%Y-%m-%dT%H:%i:%sZ') AS submitted_at
   , author_association
   , state
   , user.login AS user_login
