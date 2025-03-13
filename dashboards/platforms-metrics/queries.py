@@ -6,3 +6,7 @@ dailydata_gcs.read_date(
 )
 SETTINGS use_hive_partitioning = 1
 """
+
+github_pr_user_metrics = """
+SELECT * FROM "transforms_github"."fact_user_reviews_v1"
+"""

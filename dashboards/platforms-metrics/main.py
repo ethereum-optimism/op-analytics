@@ -8,7 +8,9 @@ import tabs.tab_dynamic_analysis as tab3
 from utils import (
     DATE_COLUMN_START,
     DATE_COLUMN_END,
+    EVENT_DATE,
     load_github_pr_data,
+    load_github_pr_user_events,
     get_prev_date_offset,
 )
 
@@ -95,12 +97,23 @@ def main() -> None:
     prev_data_index = (sorted_data[DATE_COLUMN_END] - prev_date_target).abs().idxmin()
     previous_data = sorted_data.loc[[prev_data_index]]
 
+    # Filter pr user data
+    # filtered_pr_user_data = pd.DataFrame()
+    pr_user_data = load_github_pr_user_events()
+    filtered_pr_user_data = pr_user_data.copy()
+    filtered_pr_user_data = filtered_pr_user_data[
+        filtered_pr_user_data[EVENT_DATE] >= pd.to_datetime(min_date)
+    ]
+    if repo:
+        filtered_pr_user_data = filtered_pr_user_data[filtered_pr_user_data["repo"] == repo]
+
     # Create tabs
     tab_main, tab_timing, tab_dynamic = st.tabs(["Main metrics", "Timing", "Dynamic Analysis"])
 
     with tab_main:
         tab1.render_tab1(
             filtered_data=filtered_data,
+            filtered_pr_user_data=filtered_pr_user_data,
             numeric_cols=numeric_cols,
             latest_data=latest_data,
             previous_data=previous_data,

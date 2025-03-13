@@ -11,6 +11,7 @@ import numpy as np
 # Constants
 DATE_COLUMN_START = "period_start"
 DATE_COLUMN_END = "period_end"
+EVENT_DATE = "submitted_at"
 DATA_PATH = Path(__file__).parent / "test_data/github_pr_metrics.csv"
 LOAD_CSV = False
 
@@ -44,6 +45,12 @@ FRIENDLY_LABELS = {
     "response_time_ratio": "Response Time Ratio",
     "contributor_engagement": "Contributor Engagement",
     "dt": "Data Timestamp",
+    "pr_number": "PR Number",
+    "id": "ID",
+    "submitted_at": "Submitted At",
+    "author_association": "Author Association",
+    "state": "State",
+    "user_login": "User",
 }
 
 PERIOD_TYPE_MAP = {
@@ -104,6 +111,24 @@ def load_github_pr_data() -> pd.DataFrame:
     return df
 
 
+def load_github_pr_user_events() -> pd.DataFrame:
+    """
+    Load the GitHub PR user events dataset from ClickHouse client.
+    """
+
+    client = clickhouse_connect.get_client(
+        host=st.secrets.clickhouse.host,
+        port=st.secrets.clickhouse.port,
+        username=st.secrets.clickhouse.username,
+        password=st.secrets.clickhouse.password,
+        secure=True,
+    )
+    df = client.query_df(queries.github_pr_user_metrics)
+    df[EVENT_DATE] = pd.to_datetime(df[EVENT_DATE])
+    df = df[df[EVENT_DATE] >= pd.to_datetime("2024-01-01")]
+    return df
+
+
 def plot_line_chart(
     df: pd.DataFrame,
     x_col: str,
@@ -121,6 +146,55 @@ def plot_line_chart(
         labels={col: FRIENDLY_LABELS.get(col, col) for col in y_cols + [x_col]},
     )
     fig.update_layout(legend_title_text="Metrics", xaxis_title="", yaxis_title=ylabel)
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def plot_line_chart_by_group(
+    df: pd.DataFrame,
+    x_col: str,
+    y_col: str,
+    group_by: str,
+    title: str = "",
+    markers: bool = False,
+    ylabel: str = "",
+    legend_title: str = "",
+) -> None:
+    """
+    Create a line chart with multiple lines based on a grouping field.
+
+    Args:
+        df: DataFrame containing the data
+        x_col: Column name for x-axis (typically time)
+        y_col: Column name for y-axis (the metric to plot)
+        group_by: Column name to group by (creates separate lines for each unique value)
+        title: Chart title
+        markers: Whether to show markers on the lines
+        ylabel: Label for y-axis
+        legend_title: Title for the legend (defaults to group_by column name)
+    """
+    # Ensure y_col is numeric
+    df = df.copy()
+    df[y_col] = pd.to_numeric(df[y_col], errors="coerce")
+
+    # Drop any rows with NaN values after conversion
+    df = df.dropna(subset=[y_col])
+
+    fig = px.line(
+        df,
+        x=x_col,
+        y=y_col,
+        color=group_by,
+        markers=markers,
+        title=title,
+        labels={
+            x_col: FRIENDLY_LABELS.get(x_col, x_col),
+            y_col: FRIENDLY_LABELS.get(y_col, y_col),
+            group_by: FRIENDLY_LABELS.get(group_by, group_by),
+        },
+    )
+    fig.update_layout(
+        legend_title_text=legend_title or group_by, xaxis_title="", yaxis_title=ylabel
+    )
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -211,7 +285,15 @@ def plot_scatter_two_metrics(
     if window and window.lower() != "all":
         df = df[df["period_type"] == window]
 
-    plot_df = df[[metric_x, metric_y, "repo", "period_type"]].dropna().copy()
+    # Ensure metrics are numeric
+    df = df.copy()
+    df[metric_x] = pd.to_numeric(df[metric_x], errors="coerce")
+    df[metric_y] = pd.to_numeric(df[metric_y], errors="coerce")
+
+    # Drop any rows with NaN values after conversion
+    df = df.dropna(subset=[metric_x, metric_y])
+
+    plot_df = df[[metric_x, metric_y, "repo", "period_type"]].copy()
 
     x_label = FRIENDLY_LABELS.get(metric_x, metric_x)
     y_label = FRIENDLY_LABELS.get(metric_y, metric_y)
@@ -236,21 +318,25 @@ def plot_scatter_two_metrics(
     )
 
     if show_regression and not plot_df.empty:
-        x_vals = plot_df[metric_x].values
-        y_vals = plot_df[metric_y].values
-        slope, intercept = np.polyfit(x_vals, y_vals, 1)
-        x_line = np.linspace(x_vals.min(), x_vals.max(), 50)
-        y_line = slope * x_line + intercept
+        # Convert to numpy arrays and ensure float type
+        x_vals = plot_df[metric_x].values.astype(float)
+        y_vals = plot_df[metric_y].values.astype(float)
 
-        fig.add_trace(
-            go.Scatter(
-                x=x_line,
-                y=y_line,
-                mode="lines",
-                name="Regression Line",
-                line=dict(color="red", dash="dot"),
+        # Only calculate regression if we have valid numeric data
+        if len(x_vals) > 1 and len(y_vals) > 1:
+            slope, intercept = np.polyfit(x_vals, y_vals, 1)
+            x_line = np.linspace(x_vals.min(), x_vals.max(), 50)
+            y_line = slope * x_line + intercept
+
+            fig.add_trace(
+                go.Scatter(
+                    x=x_line,
+                    y=y_line,
+                    mode="lines",
+                    name="Regression Line",
+                    line=dict(color="red", dash="dot"),
+                )
             )
-        )
 
     fig.update_layout(legend_title="Legend")
     return fig

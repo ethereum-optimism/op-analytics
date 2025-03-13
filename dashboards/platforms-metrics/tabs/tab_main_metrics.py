@@ -1,8 +1,11 @@
 import streamlit as st
+import pandas as pd
 from utils import (
     DATE_COLUMN_END,
+    EVENT_DATE,
     FRIENDLY_LABELS,
     plot_line_chart,
+    plot_line_chart_by_group,
     plot_line_dual_axis,
     LOWER_IS_BETTER_METRICS,
 )
@@ -10,6 +13,7 @@ from utils import (
 
 def render_tab1(
     filtered_data,
+    filtered_pr_user_data,
     numeric_cols,
     latest_data,
     previous_data,
@@ -306,4 +310,84 @@ def render_tab1(
                     y_right="approved_prs",
                     title="Review Requests vs. Approved PRs Over Time",
                     y_left_label="Review Requests",
+                )
+
+        st.subheader("Reviewer Activity")
+        with st.expander("Metric legend"):
+            st.markdown(
+                "- **Commenting Reviewer:** Users that provide PR feedback via review comments.\n"
+                "- **Approving Reviewer:** Users that provide PR feedback and approve proposed changes.\n"
+            )
+        valid_user_cols = ["user_login"]
+        approval_df = filtered_pr_user_data[filtered_pr_user_data["state"] == "APPROVED"]
+        commented_df = filtered_pr_user_data[filtered_pr_user_data["state"] == "COMMENTED"]
+
+        # Convert EVENT_DATE to month string for grouping
+        approval_df["month"] = pd.to_datetime(approval_df[EVENT_DATE]).dt.strftime("%Y-%m")
+        commented_df["month"] = pd.to_datetime(commented_df[EVENT_DATE]).dt.strftime("%Y-%m")
+
+        cr_users_ap_df = (
+            approval_df[["month"] + valid_user_cols]
+            .groupby(["month", "user_login"], as_index=False)
+            .size()
+            .rename(columns={"size": "count"})
+            .astype({"count": "int64"})  # Ensure count is integer type
+            .sort_values("month")  # Sort by month
+        )
+
+        if not cr_users_ap_df.empty:
+            # Get top 10 users by total activity
+            top_ap_users = (
+                cr_users_ap_df.groupby("user_login")["count"].sum().nlargest(20).index.tolist()
+            )
+
+            if top_ap_users:
+                # Filter for top users and prepare data for line chart
+                top_ap_users_df = cr_users_ap_df[
+                    cr_users_ap_df["user_login"].isin(top_ap_users)
+                ].copy()
+
+                # Create a line chart for each user
+                plot_line_chart_by_group(
+                    df=top_ap_users_df,
+                    x_col="month",
+                    y_col="count",
+                    group_by="user_login",
+                    title="Top 20 Approving Reviewers Over Time",
+                    ylabel="Number of Approvals",
+                    legend_title="Users",
+                    markers=True,  # Add markers to better distinguish between users
+                )
+
+        cr_users_cm_df = (
+            commented_df[["month"] + valid_user_cols]
+            .groupby(["month", "user_login"], as_index=False)
+            .size()
+            .rename(columns={"size": "count"})
+            .astype({"count": "int64"})  # Ensure count is integer type
+            .sort_values("month")  # Sort by month
+        )
+
+        if not cr_users_cm_df.empty:
+            # Get top 10 users by total activity
+            top_cm_users = (
+                cr_users_cm_df.groupby("user_login")["count"].sum().nlargest(20).index.tolist()
+            )
+
+            if top_cm_users:
+                # Filter for top users and prepare data for line chart
+                top_cm_users_df = cr_users_cm_df[
+                    cr_users_cm_df["user_login"].isin(top_cm_users)
+                ].copy()
+
+                # Create a line chart for each user
+                plot_line_chart_by_group(
+                    df=top_cm_users_df,
+                    x_col="month",
+                    y_col="count",
+                    group_by="user_login",
+                    title="Top 20 Commenting Reviewers Over Time",
+                    ylabel="Number of Comments",
+                    legend_title="Users",
+                    markers=True,  # Add markers to better distinguish between users
                 )
