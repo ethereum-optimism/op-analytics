@@ -106,8 +106,8 @@ defs = Definitions(
             cron_schedule="0 10 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
-                mem_request="3Gi",
-                mem_limit="4Gi",
+                mem_request="6Gi",
+                mem_limit="8Gi",
             ),
         ),
         #

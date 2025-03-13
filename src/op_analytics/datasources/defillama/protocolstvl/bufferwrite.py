@@ -1,17 +1,13 @@
 import itertools
-import multiprocessing as mp
-from datetime import date
-from typing import Any, Callable, Iterable
-
-from op_analytics.coreutils.logger import memory_usage, structlog
-
-
 from dataclasses import dataclass
+from datetime import date
 
 import polars as pl
 
+from op_analytics.coreutils.logger import memory_usage, structlog
 from op_analytics.coreutils.partitioned.dailydata import TablePath
 from op_analytics.coreutils.request import new_session
+from op_analytics.coreutils.subprocs import run_in_subprocesses
 
 log = structlog.get_logger()
 
@@ -91,35 +87,3 @@ def fetch_and_write(batch: Batch):
 
     _write_buffer(table=DFL.PROTOCOLS_TVL.clickhouse_buffer_table(), df=tvl_df)
     _write_buffer(table=DFL.PROTOCOLS_TOKEN_TVL.clickhouse_buffer_table(), df=token_tvl_df)
-
-
-def run_in_subprocesses[T](
-    target: Callable[[T], Any],
-    tasks: Iterable[T],
-    total_tasks: int,
-    fork: bool = True,
-):
-    """Run the callable in a subprocess.
-
-    Using subprocesses helps control memory usage for long running jobs.
-    """
-    for i, task in enumerate(tasks):
-        log.info(f"running batch {i+1:03d}/{total_tasks:03d}", max_rss=memory_usage())
-        if not fork:
-            target(task)
-        else:
-            ctx = mp.get_context("spawn")
-            p = ctx.Process(target=target, args=(task,))
-            p.start()
-            try:
-                p.join()
-            except KeyboardInterrupt:
-                log.info("Keyboard interrupt received. Terminating spawned process")
-                p.terminate()
-                p.join()
-                raise
-
-            if p.exitcode != 0:
-                raise Exception(f"forked process failed with exitcode={p.exitcode}")
-
-            log.info("forked process success", max_rss=memory_usage())
