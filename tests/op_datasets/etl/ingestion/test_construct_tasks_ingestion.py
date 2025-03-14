@@ -6,7 +6,7 @@ import pyarrow as pa
 
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
-from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
+from op_analytics.coreutils.partitioned.writerpartitioned import PartitionedWriteManager
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange, ChainMaxBlock
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.etl.ingestion.construct import construct_tasks

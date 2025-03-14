@@ -40,6 +40,9 @@ class Partition:
 
     cols: list[PartitionColumn]
 
+    def col_names(self):
+        return [_.name for _ in self.cols]
+
     def __hash__(self):
         return hash(self.path)
 

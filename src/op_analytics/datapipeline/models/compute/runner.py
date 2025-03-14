@@ -13,9 +13,9 @@ from op_analytics.coreutils.logger import (
     structlog,
 )
 from op_analytics.coreutils.partitioned.location import DataLocation
-from op_analytics.coreutils.partitioned.output import OutputData
 from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.partitioned.writehelper import WriteManager
+from op_analytics.coreutils.partitioned.writemanager import WriteManager
+from op_analytics.coreutils.partitioned.writerduckdb import OutputDuckDBRelation
 from op_analytics.datapipeline.models.compute.execute import PythonModel, PythonModelExecutor
 from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros, set_memory_limit
 
@@ -255,14 +255,12 @@ def steps(item: WorkItem) -> None:
                 )
 
             for result_name, rel in model_results.items():
-                df = ctx.relation_to_polars(rel)
-
                 task.write_manager.write(
-                    output_data=OutputData(
-                        dataframe=df,
+                    output_data=OutputDuckDBRelation(
+                        relation=ctx.as_relation(rel),
                         root_path=f"{task.output_root_path_prefix}/{task.model.fq_model_path}/{result_name}",
-                        default_partitions=[task.data_reader.partitions_dict()],
-                    ),
+                        partition=task.data_reader.partitions,
+                    )
                 )
 
         log.info("task", status="success", exitcode=0)
