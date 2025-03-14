@@ -44,11 +44,27 @@ defs = Definitions(
         #
         # Blockbatch Models
         create_schedule_for_selection(
-            job_name="blockbatch_models",
+            job_name="blockbatch_models_a",
             selection=AssetSelection.assets(
-                ["blockbatch", "update_all"],
+                ["blockbatch", "update_a"],
             ),
             cron_schedule="22,52 * * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="6Gi",
+                mem_limit="4Gi",
+                cpu_request="1",
+                cpu_limit="1",
+            ),
+        ),
+        #
+        # Blockbatch Models
+        create_schedule_for_selection(
+            job_name="blockbatch_models_b",
+            selection=AssetSelection.assets(
+                ["blockbatch", "update_b"],
+            ),
+            cron_schedule="7,37 * * * *",
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
                 mem_request="6Gi",

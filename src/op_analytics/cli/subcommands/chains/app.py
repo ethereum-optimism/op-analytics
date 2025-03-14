@@ -286,13 +286,13 @@ def aa_backfill_pt2():
     index = int(os.environ["JOB_COMPLETION_INDEX"])
 
     # Num job indexes (the paralellism specified on k8s)
-    num_indexes = 6
+    num_indexes = 12
 
     # Define start and end dates for the backfill.
     start_date = datetime.strptime("20241001", "%Y%m%d")
     end_date = datetime.strptime("20241225", "%Y%m%d")
 
-    # Generate date ranges with 3-day intervals
+    # Generate date ranges with N-day intervals
     date_ranges = []
     current_date = start_date
     while current_date < end_date:
@@ -304,7 +304,7 @@ def aa_backfill_pt2():
         range_spec = f"@{d0}:{d1}"
         if ii % num_indexes == index:
             compute_blockbatch(
-                chains=normalize_chains("ALL,-kroma,-unichain_sepolia,-base"),
+                chains=normalize_chains("ALL,-kroma,-unichain_sepolia"),
                 models=["account_abstraction_prefilter", "account_abstraction"],
                 range_spec=range_spec,
                 read_from=DataLocation.GCS,
@@ -322,18 +322,17 @@ def fees_backfill():
     index = int(os.environ["JOB_COMPLETION_INDEX"])
 
     # Num job indexes (the paralellism specified on k8s)
-    num_indexes = 6
+    num_indexes = 16
 
     # Define start and end dates for the backfill.
-    start_date = datetime.strptime("20241001", "%Y%m%d")
-    end_date = datetime.strptime("20241015", "%Y%m%d")
+    start_date = datetime.strptime("20241014", "%Y%m%d")
+    end_date = datetime.strptime("20250115", "%Y%m%d")
 
     # Generate date ranges with N-day intervals
-    N = 2
     date_ranges = []
     current_date = start_date
     while current_date < end_date:
-        next_date = min(current_date + timedelta(days=N), end_date)
+        next_date = min(current_date + timedelta(days=2), end_date)
         date_ranges.append((current_date.strftime("%Y%m%d"), next_date.strftime("%Y%m%d")))
         current_date = next_date
 

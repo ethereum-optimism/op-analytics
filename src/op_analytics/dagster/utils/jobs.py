@@ -1,3 +1,5 @@
+import os
+
 from typing import Any
 from dagster import (
     AssetSelection,
@@ -87,3 +89,9 @@ def create_schedule_for_selection(
         execution_timezone="UTC",
         default_status=default_status,
     )
+
+
+def get_logs_url():
+    job_name = os.environ.get("DAGSTER_RUN_JOB_NAME")
+
+    return f"https://optimistic.grafana.net/explore?schemaVersion=1&panes=%7B%22dar%22:%7B%22datasource%22:%22grafanacloud-logs%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22%7Bcluster%3D%5C%22oplabs-tools-data-primary%5C%22,%20namespace%3D%5C%22dagster%5C%22%7D%20%7C%3D%20%60{job_name}%60%22,%22queryType%22:%22range%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22grafanacloud-logs%22%7D,%22editorMode%22:%22builder%22,%22direction%22:%22backward%22%7D%5D,%22range%22:%7B%22from%22:%22now-3h%22,%22to%22:%22now%22%7D,%22panelsState%22:%7B%22logs%22:%7B%22visualisationType%22:%22logs%22,%22columns%22:%7B%220%22:%22Time%22,%221%22:%22Line%22%7D,%22labelFieldName%22:%22labels%22%7D%7D%7D%7D&orgId=1"

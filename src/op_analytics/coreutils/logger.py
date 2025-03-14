@@ -10,10 +10,19 @@ from op_analytics.coreutils.env.aware import current_environment, is_k8s
 
 CURRENT_ENV = current_environment().name
 
+DAGSTER_RUN_JOB_NAME = os.environ.get("DAGSTER_RUN_JOB_NAME")
+
 
 def add_oplabs_env(logger: logging.Logger, method_name: str, event_dict: EventDict) -> EventDict:
     if CURRENT_ENV != "UNDEFINED":
         event_dict["env"] = CURRENT_ENV
+
+    return event_dict
+
+
+def add_dagster_job(logger: logging.Logger, method_name: str, event_dict: EventDict) -> EventDict:
+    if DAGSTER_RUN_JOB_NAME is not None:
+        event_dict["dagster_job"] = DAGSTER_RUN_JOB_NAME
 
     return event_dict
 
@@ -50,6 +59,7 @@ def configuration():
             processors=[
                 # CALLSITE_PARAMETERS,
                 structlog.contextvars.merge_contextvars,
+                add_dagster_job,
                 structlog.processors.add_log_level,
                 structlog.dev.set_exc_info,
                 structlog.processors.TimeStamper(

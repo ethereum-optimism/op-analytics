@@ -8,8 +8,8 @@ metadata:
     component: models-backfill
 
 spec:
-  completions: 6         # Number of indexes to process
-  parallelism: 6          # How many pods can run in parallel
+  completions: 16         # Number of indexes to process
+  parallelism: 16          # How many pods can run in parallel
   completionMode: Indexed # This makes it an indexed job
   ttlSecondsAfterFinished: null
   backoffLimit: 3
@@ -22,7 +22,7 @@ spec:
       containers:
       - name: python-runner-fees-backfill
         imagePullPolicy: Always
-        image: ghcr.io/lithium323/op-analytics:v20250314.1
+        image: ghcr.io/lithium323/op-analytics:v20250314.2
         command: ["tini", "-v", "--", "opdata"]
         args: ["chains", "fees_backfill"]
         env:
