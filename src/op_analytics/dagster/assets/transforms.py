@@ -27,15 +27,6 @@ def teleportr(context: AssetExecutionContext):
     context.log.info(result)
 
 
-<<<<<<< HEAD
-# TODO: Schedule the governance data pipeline once it has been prototyped.
-# @asset
-# def governance(context: AssetExecutionContext):
-#     """Run governance data pipeline."""
-#     from op_analytics.transforms.main import execute_dt_transforms
-#     result = execute_dt_transforms(group_name="governance", force_complete=True)
-#     context.log.info(result)
-=======
 @asset
 def dune(context: AssetExecutionContext):
     """Run dune transformations."""
@@ -48,4 +39,3 @@ def fees(context: AssetExecutionContext):
     """Run fees transformations."""
     result = execute_dt_transforms(group_name="fees", force_complete=True)
     context.log.info(result)
->>>>>>> 3bab307593c242d4e8ec83ae5585fcabafbfaab8
