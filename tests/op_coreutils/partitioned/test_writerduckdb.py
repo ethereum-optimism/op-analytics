@@ -1,10 +1,13 @@
+from unittest.mock import patch
+
 from op_analytics.coreutils.partitioned.writerduckdb import OutputDuckDBRelation
 from op_analytics.coreutils.duckdb_inmem import init_client
 from op_analytics.coreutils.partitioned.partition import Partition
 
 
 def test_output_relation():
-    ctx = init_client()
+    with patch("op_analytics.coreutils.duckdb_inmem.client.connect_to_gcs"):
+        ctx = init_client()
 
     ctx.client.sql("""
     CREATE TABLE city_airport 
