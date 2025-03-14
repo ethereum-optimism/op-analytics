@@ -59,7 +59,10 @@ class DuckDBWriteManager(WriteManager):
         # Write the data.
         abs_path = self.location.absolute(relative_path)
         self.location.create_dir(relative_path)
-        output_data.without_partition_cols().write_parquet(file_name=abs_path)
+        output_data.without_partition_cols().write_parquet(
+            file_name=abs_path,
+            compression="zstd",
+        )
         log.info(f"wrote parquet file at {abs_path}", max_rss=memory_usage())
 
         # Verify the written data.
@@ -76,10 +79,14 @@ class DuckDBWriteManager(WriteManager):
         FROM parquet_file_metadata('{abs_path}')
         """).fetchone()[0]  # type: ignore
 
-        log.info(
-            f"verified parquet file {human_rows(num_rows)} {human_size(file_size)}",
-            max_rss=memory_usage(),
-        )
+        if num_rows > 0:
+            log.info(
+                f"verified parquet file {human_rows(num_rows)} {human_size(file_size)}",
+                max_rss=memory_usage(),
+            )
+        else:
+            log.warning("file is empty", max_rss=memory_usage())
+
         written[output_data.partition] = PartitionMetadata(row_count=num_rows)
 
         return written
