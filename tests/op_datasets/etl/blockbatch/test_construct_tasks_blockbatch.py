@@ -10,7 +10,7 @@ from op_analytics.datapipeline.etl.blockbatch.construct import construct_tasks, 
 from op_analytics.datapipeline.etl.blockbatch.task import BlockBatchModelsTask
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
+from op_analytics.coreutils.partitioned.writerduckdb import DuckDBWriteManager
 from op_analytics.coreutils.partitioned.partition import Partition, PartitionColumn
 from op_analytics.datapipeline.models.compute.execute import PythonModel
 from op_analytics.datapipeline.etl.ingestion.reader.ranges import ChainMaxBlock, BlockRange
@@ -132,7 +132,7 @@ def test_construct():
                     "max_block": 16424000,
                 },
             ),
-            write_manager=PartitionedWriteManager(
+            write_manager=DuckDBWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
@@ -188,7 +188,7 @@ def test_construct():
                     "max_block": 16432000,
                 },
             ),
-            write_manager=PartitionedWriteManager(
+            write_manager=DuckDBWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
@@ -244,7 +244,7 @@ def test_construct():
                     "max_block": 16440000,
                 },
             ),
-            write_manager=PartitionedWriteManager(
+            write_manager=DuckDBWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
@@ -300,7 +300,7 @@ def test_construct():
                     "max_block": 16448000,
                 },
             ),
-            write_manager=PartitionedWriteManager(
+            write_manager=DuckDBWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
@@ -356,7 +356,7 @@ def test_construct():
                     "max_block": 16456000,
                 },
             ),
-            write_manager=PartitionedWriteManager(
+            write_manager=DuckDBWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
@@ -412,7 +412,7 @@ def test_construct():
                     "max_block": 16464000,
                 },
             ),
-            write_manager=PartitionedWriteManager(
+            write_manager=DuckDBWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
@@ -468,7 +468,7 @@ def test_construct():
                     "max_block": 16472000,
                 },
             ),
-            write_manager=PartitionedWriteManager(
+            write_manager=DuckDBWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
@@ -522,7 +522,7 @@ def test_construct():
             inputs_ready=True,
             extra_marker_data={"num_blocks": 5000, "min_block": 6155000, "max_block": 6160000},
         ),
-        write_manager=PartitionedWriteManager(
+        write_manager=DuckDBWriteManager(
             location=DataLocation.GCS,
             partition_cols=["chain", "dt"],
             extra_marker_columns={
@@ -617,7 +617,7 @@ def test_construct_kroma():
                     "max_block": 18280000,
                 },
             ),
-            write_manager=PartitionedWriteManager(
+            write_manager=DuckDBWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
@@ -673,7 +673,7 @@ def test_construct_kroma():
                     "max_block": 18300000,
                 },
             ),
-            write_manager=PartitionedWriteManager(
+            write_manager=DuckDBWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={
@@ -729,7 +729,7 @@ def test_construct_kroma():
                     "max_block": 18320000,
                 },
             ),
-            write_manager=PartitionedWriteManager(
+            write_manager=DuckDBWriteManager(
                 location=DataLocation.GCS,
                 partition_cols=["chain", "dt"],
                 extra_marker_columns={

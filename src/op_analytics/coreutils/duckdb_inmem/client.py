@@ -71,14 +71,17 @@ class DuckDBContext:
         );
         """)
 
-    def relation_to_polars(self, rel: duckdb.DuckDBPyRelation | str) -> pl.DataFrame:
+    def as_relation(self, rel: duckdb.DuckDBPyRelation | str) -> duckdb.DuckDBPyRelation:
         if isinstance(rel, duckdb.DuckDBPyRelation):
-            return rel.pl()
+            return rel
 
         if isinstance(rel, str):
-            return self.client.sql(f"SELECT * FROM {rel}").pl()
+            return self.client.sql(f"SELECT * FROM {rel}")
 
         raise NotImplementedError()
+
+    def relation_to_polars(self, rel: duckdb.DuckDBPyRelation | str) -> pl.DataFrame:
+        return self.as_relation(rel).pl()
 
     def relation_to_arrow(self, rel: duckdb.DuckDBPyRelation | str) -> pa.Table:
         if isinstance(rel, duckdb.DuckDBPyRelation):
