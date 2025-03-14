@@ -1,3 +1,4 @@
+from typing import Any
 from dagster import (
     AssetSelection,
     DefaultScheduleStatus,
@@ -14,12 +15,14 @@ def op_analytics_asset_job(
     group: str,
     custom_k8s_config: OPK8sConfig | None,
     k8s_pod_per_step: bool,
+    job_tags: dict[str, Any] | None = None,
 ):
     return op_analytics_asset_selection_job(
         job_name=f"{group}_job",
         selection=AssetSelection.groups(group),
         custom_k8s_config=custom_k8s_config,
         k8s_pod_per_step=k8s_pod_per_step,
+        job_tags=job_tags,
     )
 
 
@@ -28,6 +31,7 @@ def op_analytics_asset_selection_job(
     selection: AssetSelection,
     custom_k8s_config: OPK8sConfig | None,
     k8s_pod_per_step: bool,
+    job_tags: dict[str, Any] | None = None,
 ):
     k8s_config = new_k8s_config(custom_k8s_config)
 
@@ -39,6 +43,7 @@ def op_analytics_asset_selection_job(
             name=job_name,
             selection=selection,
             executor_def=configured_k8s_executor,
+            tags=job_tags,
         )
     else:
         return define_asset_job(
@@ -55,6 +60,7 @@ def create_schedule_for_group(
     default_status: DefaultScheduleStatus,
     custom_k8s_config: OPK8sConfig | None = None,
     k8s_pod_per_step: bool = False,
+    job_tags: dict[str, Any] | None = None,
 ):
     return ScheduleDefinition(
         name=group,
@@ -62,6 +68,7 @@ def create_schedule_for_group(
             group=group,
             custom_k8s_config=custom_k8s_config,
             k8s_pod_per_step=k8s_pod_per_step,
+            job_tags=job_tags,
         ),
         cron_schedule=cron_schedule,
         execution_timezone="UTC",
@@ -76,6 +83,7 @@ def create_schedule_for_selection(
     default_status: DefaultScheduleStatus,
     custom_k8s_config: OPK8sConfig | None = None,
     k8s_pod_per_step: bool = False,
+    job_tags: dict[str, Any] | None = None,
 ):
     return ScheduleDefinition(
         name=job_name,
@@ -84,6 +92,7 @@ def create_schedule_for_selection(
             selection=selection,
             custom_k8s_config=custom_k8s_config,
             k8s_pod_per_step=k8s_pod_per_step,
+            job_tags=job_tags,
         ),
         cron_schedule=cron_schedule,
         execution_timezone="UTC",
@@ -92,14 +101,15 @@ def create_schedule_for_selection(
 
 
 def create_schedule_for_asset(
-    asset_name: str,
+    job_name: str,
+    asset_name: list[str],
     cron_schedule: str,
     default_status: DefaultScheduleStatus,
     custom_k8s_config: OPK8sConfig | None = None,
     k8s_pod_per_step: bool = False,
 ):
     return create_schedule_for_selection(
-        job_name=asset_name,
+        job_name=job_name,
         selection=AssetSelection.assets(asset_name),
         cron_schedule=cron_schedule,
         default_status=default_status,

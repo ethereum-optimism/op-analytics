@@ -1,4 +1,4 @@
-"""DuckDB UDFs that are shared across intermediate models."""
+"""DuckDB UDFs that are shared across models."""
 
 import threading
 import warnings

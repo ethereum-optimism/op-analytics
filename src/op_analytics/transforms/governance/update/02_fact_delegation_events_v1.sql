@@ -56,11 +56,7 @@ SELECT -- noqa: ST06
   , (v.new_balance - v.previous_balance) / 1e18 AS delegation_amount
 
 
-FROM
-  dailydata_gcs.read_date(
-    rootpath = 'agora/delegate_changed_events_v1'
-    , dt = '2000-01-01'
-  ) AS d
+FROM transforms_governance.ingest_delegate_changed_events_v1 AS d
 
 LEFT JOIN transforms_governance.fact_delegate_votes_changed_v1 AS v
   ON

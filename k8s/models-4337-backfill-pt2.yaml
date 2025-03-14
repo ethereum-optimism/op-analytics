@@ -8,8 +8,8 @@ metadata:
     component: models-backfill
 
 spec:
-  completions: 12         # Number of indexes to process
-  parallelism: 12          # How many pods can run in parallel
+  completions: 6         # Number of indexes to process
+  parallelism: 6          # How many pods can run in parallel
   completionMode: Indexed # This makes it an indexed job
   ttlSecondsAfterFinished: null
   backoffLimit: 3
@@ -22,7 +22,7 @@ spec:
       containers:
       - name: python-runner-4337-backfill-pt2
         imagePullPolicy: Always
-        image: ghcr.io/lithium323/op-analytics:v20250306.1
+        image: ghcr.io/lithium323/op-analytics:v20250313.1
         command: ["tini", "-v", "--", "opdata"]
         args: ["chains", "aa_backfill_pt2"]
         env:
@@ -35,16 +35,16 @@ spec:
         - name: DUCKDB_DATADIR
           value: "/duckdbdata"
         - name: DUCKDB_MEMORY_LIMIT
-          value: "6"
+          value: "10"
         resources:
           limits:
             cpu: 1
             ephemeral-storage: 10Gi
-            memory: 6Gi
+            memory: 10Gi
           requests:
             cpu: 1
             ephemeral-storage: 10Gi
-            memory: 4Gi
+            memory: 8Gi
         volumeMounts:
         - mountPath: "/var/secrets"
           name: opanalyticsvault

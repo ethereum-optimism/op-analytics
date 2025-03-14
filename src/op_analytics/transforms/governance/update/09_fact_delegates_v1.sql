@@ -6,7 +6,7 @@ Time series of all delegates and their voting power.
 
 WITH blocks AS (
   SELECT
-      dt
+      b.dt
       , b.number AS block_number
       , b.timestamp AS block_timestamp
   FROM 
@@ -26,10 +26,7 @@ select
     ,d.balance as voting_power
     ,d.transaction_index as transaction_index
     ,d.log_index as log_index
-from dailydata_gcs.read_date(
-    rootpath = 'agora/voting_power_snaps_v1',
-    dt       = '2000-01-01'
-) d
+from transforms_governance.ingest_voting_power_snaps_v1 d
 inner join blocks t
 on d.block_number = t.block_number
 where t.dt = { dtparam: Date }

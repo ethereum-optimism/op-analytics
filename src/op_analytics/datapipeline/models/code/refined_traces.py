@@ -56,6 +56,9 @@ def refined_traces(
         },
     )
 
+    # This table was materialized in duckdb temporarily.
+    ctx.client.sql(f"DROP TABLE {refined_traces_projection}")
+
     # Joins traces with transactions. Amorizes the transaction gas used and
     # fees across traces.
     traces_txs_join = auxiliary_templates["refined_traces/traces_txs_join"].create_table(
@@ -66,10 +69,7 @@ def refined_traces(
         },
     )
 
-    # These two tables were materialized in duckdb temporarily (with an ORDER BY)
-    # to improve the performance of the traces <> txs join. We don't need them
-    # anymore as the joined result is also materialized.
-    ctx.client.sql(f"DROP TABLE {refined_traces_projection}")
+    # This table was materialized in duckdb temporarily.
     ctx.client.sql(f"DROP TABLE {traces_with_gas_used}")
 
     return {

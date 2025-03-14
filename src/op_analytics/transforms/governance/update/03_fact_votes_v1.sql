@@ -33,11 +33,7 @@ WITH blocks AS (
       WHEN v.support = 2 THEN 'abstain'
     END AS decision
     , toDecimal256(v.weight, 18) / 1e18 AS voting_power
-  FROM
-    dailydata_gcs.read_date(
-      rootpath = 'agora/votes_v1'
-      , dt = '2000-01-01'
-    ) AS v
+  FROM transforms_governance.ingest_votes_v1 AS v
   WHERE
     v.block_number IN (SELECT b.block_number FROM blocks AS b)
 )

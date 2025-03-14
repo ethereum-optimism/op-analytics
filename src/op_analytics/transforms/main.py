@@ -2,6 +2,7 @@ import os
 from datetime import date
 
 import polars as pl
+from clickhouse_connect.driver.exceptions import DatabaseError
 
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
@@ -20,9 +21,11 @@ DIRECTORY = os.path.dirname(__file__)
 def execute_dt_transforms(
     group_name: str,
     range_spec: str | None = None,
-    update_only: list[str] | None = None,
+    update_only: list[int] | None = None,
     raise_if_empty: bool = True,
     force_complete: bool = False,
+    allow_missing_gcs_data: bool = False,
+    reverse: bool = False,
 ):
     """Execute "dt" transformations from a specified "group_name" directory."""
 
@@ -51,11 +54,18 @@ def execute_dt_transforms(
         existing_markers_df = existing_markers_df.filter(False)
 
     # Find which of the transform/dt pairs in the range_spec have not been processed yet.
-    pending_markers = candidate_markers_df.join(
-        existing_markers_df,
-        on=MARKER_COLUMNS,
-        how="anti",
-    ).to_dicts()
+    pending_markers = (
+        candidate_markers_df.join(
+            existing_markers_df,
+            on=MARKER_COLUMNS,
+            how="anti",
+        )
+        .sort(
+            by="dt",
+            descending=reverse,
+        )
+        .to_dicts()
+    )
     log.info(f"{len(pending_markers)}/{len(candidate_markers_df)} markers pending.")
 
     # Prepare transforms.
@@ -93,7 +103,26 @@ def execute_dt_transforms(
                 else:
                     raise
 
+            except Exception as ex:
+                if allow_missing_gcs_data and should_skip(date_tostr(task.dt), ex):
+                    log.warning("continuing despite exception")
+                    continue
+                raise
+
             else:
                 summary[date_tostr(task.dt)] = result
 
     return summary
+
+
+def should_skip(dt: str, _ex: Exception):
+    if isinstance(_ex, DatabaseError):
+        code636 = "ClickHouse error code 636"
+        if code636 in str(_ex):
+            # Code: 636. DB::Exception: The table structure cannot be extracted from a parquet format file,
+            # because there are no files with provided path in S3ObjectStorage or all files are empty. You
+            # can specify table structure manually: The table structure cannot be extracted from a parquet
+            # format file. You can specify the structure manually. (CANNOT_EXTRACT_TABLE_STRUCTURE)
+            log.warning(f"skipping {code636} make sure there is data at {dt=}")
+            return True
+    return False

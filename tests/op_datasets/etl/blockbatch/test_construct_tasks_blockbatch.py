@@ -19,9 +19,6 @@ from op_analytics.datapipeline.models.compute.modelspec import ModelsDataSpec
 
 def make_dataframe(path: str):
     with open(InputTestData.at(__file__).path(f"../testdata/{path}")) as fobj:
-        # The markers testdata used for intermediate models includes padded dates,
-        # so it does not match the query that we are mocking to get markers. We
-        # filter the data to a single data so that the mock is correct.
         return pl.DataFrame(
             json.load(fobj),
             schema={
