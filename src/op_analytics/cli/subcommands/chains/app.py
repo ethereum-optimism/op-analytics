@@ -289,8 +289,8 @@ def aa_backfill_pt2():
     num_indexes = 12
 
     # Define start and end dates for the backfill.
-    start_date = datetime.strptime("20241001", "%Y%m%d")
-    end_date = datetime.strptime("20241225", "%Y%m%d")
+    start_date = datetime.strptime("20241201", "%Y%m%d")
+    end_date = datetime.strptime("20250314", "%Y%m%d")
 
     # Generate date ranges with N-day intervals
     date_ranges = []
