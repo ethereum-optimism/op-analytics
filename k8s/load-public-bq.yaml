@@ -17,7 +17,7 @@ spec:
           containers:
           - name: python-runner-public-bq
             imagePullPolicy: IfNotPresent
-            image: ghcr.io/lithium323/op-analytics:v20250314.2
+            image: ghcr.io/lithium323/op-analytics:v20250314.3
             command: ["tini", "-v", "--", "opdata"]
             args: ["chains", "noargs_public_bq"]
             env:
