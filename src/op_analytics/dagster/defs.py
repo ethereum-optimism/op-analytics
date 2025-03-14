@@ -8,7 +8,6 @@ from dagster import (
 from .utils.k8sconfig import OPK8sConfig, SMALL_POD
 from .utils.jobs import (
     create_schedule_for_group,
-    create_schedule_for_asset,
     create_schedule_for_selection,
 )
 
@@ -16,6 +15,7 @@ import importlib
 
 MODULE_NAMES = [
     "agora",
+    "blockbatch",
     "chainsdaily",
     "chainshourly",
     "defillama",
@@ -41,6 +41,24 @@ ASSETS = [
 defs = Definitions(
     assets=ASSETS,
     schedules=[
+        #
+        # Blockbatch Models
+        create_schedule_for_selection(
+            job_name="blockbatch_models",
+            selection=AssetSelection.assets(
+                ["blockbatch", "update_all"],
+            ),
+            cron_schedule="22,52 * * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="6Gi",
+                mem_limit="4Gi",
+                cpu_request="1",
+                cpu_limit="1",
+            ),
+        ),
+        #
+        # Chain related daily jobs
         create_schedule_for_group(
             group="chainsdaily",
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
@@ -51,6 +69,7 @@ defs = Definitions(
             ),
         ),
         #
+        # Chain related hourly jobs
         create_schedule_for_group(
             group="chainshourly",
             cron_schedule="38 * * * *",  # Run every hour
@@ -124,7 +143,7 @@ defs = Definitions(
         ),
         #
         create_schedule_for_selection(
-            job_name="transforms_misc",
+            job_name="transforms_teleportr",
             selection=AssetSelection.assets(
                 ["transforms", "teleportr"],
             ),
@@ -154,9 +173,11 @@ defs = Definitions(
             custom_k8s_config=SMALL_POD,
         ),
         #
-        create_schedule_for_asset(
+        create_schedule_for_selection(
             job_name="transforms_fees",
-            asset_name=["transforms", "fees"],
+            selection=AssetSelection.assets(
+                ["transforms", "fees"],
+            ),
             cron_schedule="7 4,8,14,20 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,

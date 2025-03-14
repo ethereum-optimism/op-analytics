@@ -20,6 +20,7 @@ from op_analytics.datapipeline.etl.loadbq.main import (
     load_superchain_4337_to_bq,
 )
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
+from op_analytics.datapipeline.orchestrate import normalize_chains, normalize_blockbatch_models
 
 log = structlog.get_logger()
 
@@ -122,54 +123,6 @@ USE_POOL_OPTION = Annotated[
     bool,
     typer.Option(help="If true, uses a process pool instead of spawning a new process per task."),
 ]
-
-
-def normalize_chains(chains: str) -> list[str]:
-    # If for some reason we need to force exclude a chain, add it here.
-    not_included = set()
-
-    result = set()
-    for chain in chains.split(","):
-        if chain == "ALL":
-            result.update(goldsky_chains.goldsky_mainnet_chains())
-            result.update(goldsky_chains.goldsky_testnet_chains())
-        elif chain == "MAINNETS":
-            result.update(goldsky_chains.goldsky_mainnet_chains())
-        elif chain == "TESTNETS":
-            result.update(goldsky_chains.goldsky_testnet_chains())
-        elif chain.startswith("-"):
-            not_included.add(chain.removeprefix("-").strip())
-        else:
-            result.add(chain.strip())
-
-    excluded = result.intersection(not_included)
-    for chain in excluded:
-        log.warning(f"Excluding chain: {chain!r}")
-
-    return list(result - not_included)
-
-
-def normalize_blockbatch_models(models: str) -> list[str]:
-    not_included = set()
-
-    result = set()
-    for model in models.split(","):
-        if model == "MODELS":
-            result.add("contract_creation")
-            result.add("refined_traces")
-            result.add("token_transfers")
-            result.add("account_abstraction_prefilter")
-            result.add("account_abstraction")
-        elif model.startswith("-"):
-            not_included.add(model.removeprefix("-").strip())
-        else:
-            result.add(model.strip())
-
-    excluded = result.intersection(not_included)
-    for model in excluded:
-        log.warning(f"Excluding model: {model!r}")
-
-    return list(result - not_included)
 
 
 @app.command()
@@ -373,13 +326,14 @@ def fees_backfill():
 
     # Define start and end dates for the backfill.
     start_date = datetime.strptime("20241001", "%Y%m%d")
-    end_date = datetime.strptime("20250107", "%Y%m%d")
+    end_date = datetime.strptime("20241015", "%Y%m%d")
 
-    # Generate date ranges with 3-day intervals
+    # Generate date ranges with N-day intervals
+    N = 2
     date_ranges = []
     current_date = start_date
     while current_date < end_date:
-        next_date = min(current_date + timedelta(days=2), end_date)
+        next_date = min(current_date + timedelta(days=N), end_date)
         date_ranges.append((current_date.strftime("%Y%m%d"), next_date.strftime("%Y%m%d")))
         current_date = next_date
 
@@ -388,7 +342,7 @@ def fees_backfill():
         if ii % num_indexes == index:
             compute_blockbatch(
                 chains=normalize_chains("ALL,-kroma,-unichain_sepolia"),
-                models=["refined_traces"],
+                models=["refined_traces", "aggregated_traces"],
                 range_spec=range_spec,
                 read_from=DataLocation.GCS,
                 write_to=DataLocation.GCS,

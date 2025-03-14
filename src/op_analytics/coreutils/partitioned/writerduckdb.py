@@ -59,7 +59,10 @@ class DuckDBWriteManager(WriteManager):
         # Write the data.
         abs_path = self.location.absolute(relative_path)
         self.location.create_dir(relative_path)
-        output_data.without_partition_cols().write_parquet(file_name=abs_path)
+        output_data.without_partition_cols().write_parquet(
+            file_name=abs_path,
+            compression="zstd",
+        )
         log.info(f"wrote parquet file at {abs_path}", max_rss=memory_usage())
 
         # Verify the written data.

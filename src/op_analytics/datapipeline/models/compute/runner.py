@@ -64,7 +64,7 @@ def run_tasks(
     fork_process: bool = True,
     use_pool: bool = False,
     num_processes: int = 1,
-):
+) -> dict[str, int]:
     """Run tasks.
 
     The use_pool=True option should only be used when running locally to speed up backfills.
@@ -73,7 +73,7 @@ def run_tasks(
     """
     if dryrun:
         log.info("DRYRUN: No work will be done.")
-        return
+        return dict(total=0)
 
     if fork_process:
         if use_pool:
@@ -116,6 +116,7 @@ def run_tasks(
             executed += 1
 
     log.info("done", total=executed, success=success, fail=failure)
+    return dict(total=executed, success=success, fail=failure)
 
 
 def worker_function(task_queue, success_shared_counter, failure_shared_counter):
