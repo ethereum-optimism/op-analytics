@@ -36,11 +36,16 @@ def op_analytics_asset_selection_job(
             tags=job_tags,
         )
     else:
+        tags = {
+            "dagster-k8s/config": k8s_config,
+            **(job_tags or {}),
+        }
+
         return define_asset_job(
             name=job_name,
             selection=selection,
             executor_def=in_process_executor,
-            tags={"dagster-k8s/config": k8s_config},
+            tags=tags,
         )
 
 

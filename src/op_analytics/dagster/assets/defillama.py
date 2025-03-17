@@ -120,9 +120,12 @@ def yield_pools(context: AssetExecutionContext):
     DefiLlama.YIELD_POOLS_HISTORICAL.create_bigquery_external_table()
 
 
-@asset
+@asset(deps=[yield_pools])
 def lend_borrow_pools(context: AssetExecutionContext):
-    """Pull lend borrow pools data."""
+    """Pull lend borrow pools data.
+
+    The dependency on yield pools is only to force them to run in series.
+    """
     from op_analytics.datasources.defillama.lendborrowpools import execute
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
@@ -132,7 +135,7 @@ def lend_borrow_pools(context: AssetExecutionContext):
     DefiLlama.LEND_BORROW_POOLS_HISTORICAL.create_bigquery_external_table()
 
 
-@asset(deps=[chain_tvl, stablecoins, volumes_fees_revenue, lend_borrow_pools, yield_pools])
+@asset(deps=[chain_tvl, stablecoins, volumes_fees_revenue])
 def other(context: AssetExecutionContext):
     """Dummy asset to group other defillama assets."""
     context.log.info("i'm just a wrapper")
