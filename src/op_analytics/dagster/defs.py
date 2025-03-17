@@ -106,7 +106,24 @@ defs = Definitions(
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
                 mem_request="3Gi",
-                mem_limit="6Gi",
+                mem_limit="4Gi",
+            ),
+            k8s_pod_per_step=False,
+            job_tags={"dagster/max_retries": 3, "dagster/retry_strategy": "FROM_FAILURE"},
+        ),
+        #
+        # Defillama Pools
+        create_schedule_for_selection(
+            job_name="defillama_pools",
+            selection=AssetSelection.assets(
+                ["defillama", "yield_pools"],
+                ["defillama", "lend_borrow_pools"],
+            ).upstream(),
+            cron_schedule="0 15 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="3Gi",
+                mem_limit="4Gi",
             ),
             k8s_pod_per_step=False,
             job_tags={"dagster/max_retries": 3, "dagster/retry_strategy": "FROM_FAILURE"},
