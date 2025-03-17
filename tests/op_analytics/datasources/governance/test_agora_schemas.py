@@ -1,4 +1,4 @@
-from op_analytics.datasources.agora.schemas import INCREMENTAL_SCHEMAS, OVERWRITE_SCHEMAS
+from op_analytics.datasources.governance.schemas import INCREMENTAL_SCHEMAS, OVERWRITE_SCHEMAS
 
 
 def test_agora_schemas():
