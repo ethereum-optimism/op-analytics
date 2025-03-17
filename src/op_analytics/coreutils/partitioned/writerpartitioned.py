@@ -8,13 +8,22 @@ from .breakout import breakout_partitions
 from .dataaccess import init_data_access
 from .output import OutputData
 from .partition import WrittenParts, PartitionMetadata
-from .writehelper import WriteManager
+from .writemanager import WriteManager
 
 log = structlog.get_logger()
 
 
 @dataclass
 class PartitionedWriteManager(WriteManager):
+    """Write a single dataframe to possibly several partitions.
+
+    The dataframe is broken apart into one dataframe per partition
+    (see self.partition_cols).
+
+    No assumptions are made as to what partition values are present
+    in the dataframe. So this could end up writing many small files.
+    """
+
     @override
     def write_implementation(self, output_data: OutputData) -> WrittenParts:
         assert isinstance(output_data, OutputData)

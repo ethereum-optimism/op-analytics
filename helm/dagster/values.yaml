@@ -296,7 +296,7 @@ dagster-user-deployments:
       image:
         # When a tag is not supplied, it will default as the Helm chart version.
         repository: "ghcr.io/lithium323/op-analytics-dagster"
-        tag: "v20250313.002"
+        tag: "v20250317.004"
 
         # Change with caution! If you're using a fixed tag for pipeline run images, changing the
         # image pull policy to anything other than "Always" will use a cached/stale image, which is
@@ -608,9 +608,13 @@ runLauncher:
             value: "k8s"
           - name: PLAIN_LOGS
             value: "true"
+          - name: DUCKDB_DATADIR
+            value: "/duckdbdata"
           volumeMounts:
           - mountPath: "/var/secrets"
             name: opanalyticsvault
+          - mountPath: "/duckdbdata"
+            name: duckdbdata
         podSpecConfig:
           volumes:
           - name: opanalyticsvault
@@ -619,6 +623,9 @@ runLauncher:
               readOnly: true
               volumeAttributes:
                 secretProviderClass: dagster-secret-provider-class
+          - name: duckdbdata
+            emptyDir:
+              sizeLimit: 24Gi
 
 
     # This configuration will only be used if the CeleryK8sRunLauncher is selected

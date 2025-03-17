@@ -5,7 +5,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dataaccess import check_marker
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
-from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
+from op_analytics.coreutils.partitioned.writerpartitioned import PartitionedWriteManager
 from op_analytics.coreutils.rangeutils.blockrange import ChainMaxBlock
 
 from .batches import BlockBatch, split_block_range

@@ -9,7 +9,7 @@ class TestAccountAbstraction0001(ModelTestBase):
     model = "account_abstraction"
     inputdata = InputTestData.at(__file__)
     chains = ["base"]
-    dateval = date(2024, 9, 17)
+    target_range = date(2024, 9, 17)
     block_filters = [
         "{block_number} IN (19910194) OR block_number % 100 < 1",
     ]

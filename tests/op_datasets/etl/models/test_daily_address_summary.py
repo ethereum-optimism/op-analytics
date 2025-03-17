@@ -16,7 +16,7 @@ class TestDailyAddressSummary001(ModelTestBase):
     model = "daily_address_summary"
     inputdata = InputTestData.at(__file__)
     chains = ["op"]
-    dateval = date(2024, 10, 1)
+    target_range = date(2024, 10, 1)
     block_filters = [
         "{block_number} = 126078000",
         "{block_number} = 126073799",

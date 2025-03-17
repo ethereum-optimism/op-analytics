@@ -7,7 +7,7 @@ import pyarrow as pa
 from op_analytics.coreutils.duckdb_local.client import run_query_duckdb_local
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.output import ExpectedOutput, OutputData
-from op_analytics.coreutils.partitioned.writer import PartitionedWriteManager
+from op_analytics.coreutils.partitioned.writerpartitioned import PartitionedWriteManager
 from op_analytics.coreutils.path import repo_path
 
 
