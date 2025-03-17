@@ -98,8 +98,8 @@ class ModelTestBase(unittest.TestCase):
     # Chains that should be included in the test data.
     chains: list[str]
 
-    # Date that should be included in the test data.
-    dateval: date
+    # Block number or date used for fetching test data
+    target_range: int | date
 
     # Specify blocks that should be included in the test data.
     block_filters: list[str]
@@ -209,7 +209,16 @@ class ModelTestBase(unittest.TestCase):
     @classmethod
     def _fetch_test_data(cls, datasets: list[str]):
         """Fetch test data from GCS and save it to the local duckdb."""
-        datestr = cls.dateval.strftime("%Y%m%d")
+
+        if isinstance(cls.target_range, int):
+            range_spec = f"{cls.target_range}:+1"
+
+        elif isinstance(cls.target_range, date):
+            datestr = cls.target_range.strftime("%Y%m%d")
+            range_spec = f"@{datestr}:+1"
+
+        else:
+            raise NotImplementedError()
 
         from op_analytics.datapipeline.etl.blockbatch.construct import construct_tasks
 
@@ -217,7 +226,7 @@ class ModelTestBase(unittest.TestCase):
         for task_group in construct_tasks(
             chains=cls.chains,
             models=[cls.model],
-            range_spec=f"@{datestr}:+1",
+            range_spec=range_spec,
             read_from=DataLocation.GCS,
             write_to=DataLocation.GCS,
         ):
