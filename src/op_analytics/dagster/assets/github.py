@@ -11,7 +11,7 @@ def traffic(context: OpExecutionContext) -> None:
 
 @asset
 def activity(context: OpExecutionContext) -> None:
-    from op_analytics.datasources.github.traffic import execute
+    from op_analytics.datasources.github.activity import execute
 
     result = execute.execute_pull()
     context.log.info(result)
