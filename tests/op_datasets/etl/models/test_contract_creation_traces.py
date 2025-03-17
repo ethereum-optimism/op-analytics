@@ -10,7 +10,7 @@ class TestCreationTraces001(ModelTestBase):
     model = "contract_creation"
     inputdata = InputTestData.at(__file__)
     chains = ["op"]
-    dateval = date(2024, 11, 18)
+    target_range = date(2024, 11, 18)
     block_filters = [
         "{block_number} % 10000 <= 2",
     ]
