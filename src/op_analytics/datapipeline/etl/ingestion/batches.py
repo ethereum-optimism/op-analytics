@@ -38,7 +38,7 @@ class Delimiter:
 
 
 # Helful chart to see what trace file sizes by chain:
-# https://optimistic.grafana.net/explore?schemaVersion=1&panes=%7B%22dar%22:%7B%22datasource%22:%22grafanacloud-logs%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22max_over_time%28%7Bcluster%3D%5C%22oplabs-tools-data-primary%5C%22,%20namespace%3D%5C%22op-analytics%5C%22,%20container%3D%5C%22python-runner-ingestion%5C%22%7D%20%7C%3D%20%60done%20writing%60%20or%20%60traces%60%20%7C%3D%20%60size%60%20%7C%20json%20chain,%20size%20%7C%20unwrap%20size%20%5B24h%5D%29%20by%20%28chain%29%22,%22queryType%22:%22range%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22grafanacloud-logs%22%7D,%22editorMode%22:%22builder%22,%22direction%22:%22backward%22%7D%5D,%22range%22:%7B%22from%22:%22now-2d%22,%22to%22:%22now%22%7D,%22panelsState%22:%7B%22logs%22:%7B%22visualisationType%22:%22logs%22%7D%7D%7D%7D&orgId=1
+# https://optimistic.grafana.net/explore?schemaVersion=1&panes=%7B%22dar%22:%7B%22datasource%22:%22grafanacloud-logs%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22max_over_time%28%7Bcluster%3D%5C%22oplabs-tools-data-primary%5C%22,%20namespace%3D%5C%22op-analytics%5C%22,%20container%3D%5C%22python-runner-ingestion%5C%22%7D%20%7C%3D%20%60done%20writing%60%20or%20%60traces%60%20%7C%3D%20%60size%60%20%7C%20json%20chain,%20size%20%7C%20unwrap%20size%20%5B1h%5D%29%20by%20%28chain%29%22,%22queryType%22:%22range%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22grafanacloud-logs%22%7D,%22editorMode%22:%22builder%22,%22direction%22:%22backward%22%7D%5D,%22range%22:%7B%22from%22:%22now-2d%22,%22to%22:%22now%22%7D,%22panelsState%22:%7B%22logs%22:%7B%22visualisationType%22:%22logs%22%7D%7D%7D%7D&orgId=1
 MICROBATCH_SIZE_CONFIGURATION = {
     "automata": [
         Delimiter(0, 20000),
@@ -149,7 +149,7 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # Decreased on 2025/02/22
         Delimiter(block_number=3584000, batch_size=4000),
         # Decreased on 2025/
-        Delimiter(block_number=4560000, batch_size=4000),
+        Delimiter(block_number=4560000, batch_size=1000),
     ],
     "swan": [
         Delimiter(block_number=0, batch_size=20000),
@@ -176,6 +176,8 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=6948000, batch_size=2000),
         # Decreased on 2024/12/09.
         Delimiter(block_number=7216000, batch_size=800),
+        # Decreased on 2025/03/17.
+        Delimiter(block_number=11458400, batch_size=400),
     ],
     "xterio": [
         Delimiter(0, 20000),
