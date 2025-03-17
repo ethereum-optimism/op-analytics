@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import duckdb
 
 from op_analytics.coreutils.partitioned.reader import DataReader
-from op_analytics.coreutils.partitioned.writehelper import WriteManager
+from op_analytics.coreutils.partitioned.writemanager import WriteManager
 from op_analytics.datapipeline.models.compute.model import PythonModel
 
 

@@ -6,7 +6,11 @@ from clickhouse_connect.driver.client import Client
 from .client import init_client
 
 
-def write_to_gcs(gcs_path: str, select: str, client: Client | None = None):
+def write_to_gcs(
+    gcs_path: str,
+    select: str,
+    client: Client | None = None,
+):
     """Writes a ClickHouse query directly to GCS.
 
     See here for documentation: https://clickhouse.com/docs/en/integrations/s3#exporting-data

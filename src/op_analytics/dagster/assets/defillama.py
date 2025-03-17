@@ -23,20 +23,6 @@ def mappings_to_bq(context: AssetExecutionContext):
 
 
 @asset
-def chain_tvl(context: AssetExecutionContext):
-    """Pull historical chain tvl data."""
-    from op_analytics.datasources.defillama.chaintvl import execute
-    from op_analytics.datasources.defillama.dataaccess import DefiLlama
-
-    result = execute.execute_pull()
-    context.log.info(result)
-
-    DefiLlama.CHAINS_METADATA.create_bigquery_external_table()
-    DefiLlama.CHAINS_METADATA.create_bigquery_external_table_at_latest_dt()
-    DefiLlama.HISTORICAL_CHAIN_TVL.create_bigquery_external_table()
-
-
-@asset
 def protocol_tvl(context: AssetExecutionContext):
     """Pull protocol tvl data."""
 
@@ -70,6 +56,20 @@ def protocol_tvl_flows_filtered(context: AssetExecutionContext):
         view_name="defillama_tvl_breakdown_filtered",
         disposition="replace",
     )
+
+
+@asset
+def chain_tvl(context: AssetExecutionContext):
+    """Pull historical chain tvl data."""
+    from op_analytics.datasources.defillama.chaintvl import execute
+    from op_analytics.datasources.defillama.dataaccess import DefiLlama
+
+    result = execute.execute_pull()
+    context.log.info(result)
+
+    DefiLlama.CHAINS_METADATA.create_bigquery_external_table()
+    DefiLlama.CHAINS_METADATA.create_bigquery_external_table_at_latest_dt()
+    DefiLlama.HISTORICAL_CHAIN_TVL.create_bigquery_external_table()
 
 
 @asset
@@ -130,3 +130,9 @@ def lend_borrow_pools(context: AssetExecutionContext):
     context.log.info(result)
 
     DefiLlama.LEND_BORROW_POOLS_HISTORICAL.create_bigquery_external_table()
+
+
+@asset(deps=[chain_tvl, stablecoins, volumes_fees_revenue, lend_borrow_pools, yield_pools])
+def other(context: AssetExecutionContext):
+    """Dummy asset to group other defillama assets."""
+    context.log.info("i'm just a wrapper")

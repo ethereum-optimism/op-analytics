@@ -2,16 +2,18 @@
 myst:
   html_meta:
     "description lang=en": |
-      Top-level documentation for op-analytics
+      Top-level documentation for the op-analytics repo
 ---
 
-# OP Analytics
+# OP Labs Data Platform
 
+Welcome to the op-analytics repo documentation.
 
-Welcome to the OP Analytics repo documentation.
+```{toctree}
+:maxdepth: 2
 
-![OptimismCity](https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-city.png?raw=true)
-
+dataplatform/index
+```
 
 
 ## Getting Started
@@ -20,22 +22,9 @@ Welcome to the OP Analytics repo documentation.
 sections/quickstart
 ```
 
-## CLI Docs
-
-```{toctree}
-sections/cli/cli
-```
-
-
 ## Onchain Data
 
 ```{toctree}
 sections/onchain/onchain
 
-```
-
-## 3rd Party Data
-
-```{toctree}
-sections/3rdparty/3rdparty
 ```

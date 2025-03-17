@@ -2,7 +2,7 @@ from datetime import date
 from decimal import Decimal
 
 from op_analytics.coreutils.testutils.inputdata import InputTestData
-from op_analytics.datapipeline.models.compute.testutils import IntermediateModelTestBase
+from op_analytics.datapipeline.models.compute.testutils import ModelTestBase
 
 
 SYSTEM_ADDRESS = "0xdeaddeaddeaddeaddeaddeaddeaddeaddead0001"
@@ -12,7 +12,7 @@ MULTI_TXS_ADDRESS = "0xcef6d40144b0d76617664357a15559ecb145374f"
 INPUT_TEST_DATA = InputTestData.at(__file__)
 
 
-class TestDailyAddressSummary001(IntermediateModelTestBase):
+class TestDailyAddressSummary001(ModelTestBase):
     model = "daily_address_summary"
     inputdata = InputTestData.at(__file__)
     chains = ["op"]

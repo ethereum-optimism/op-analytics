@@ -13,7 +13,7 @@ from .location import DataLocation
 from .marker import Marker
 from .output import ExpectedOutput, OutputData
 from .partition import Partition, PartitionColumn, PartitionMetadata
-from .writer import PartitionedWriteManager
+from .writerpartitioned import PartitionedWriteManager
 
 log = structlog.get_logger()
 

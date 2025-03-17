@@ -7,7 +7,7 @@ import polars as pl
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.output import OutputData
-from op_analytics.coreutils.partitioned.writehelper import WriteManager
+from op_analytics.coreutils.partitioned.writemanager import WriteManager
 from op_analytics.coreutils.rangeutils.blockrange import ChainMaxBlock
 
 from .batches import BlockBatch

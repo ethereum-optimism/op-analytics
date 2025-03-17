@@ -25,8 +25,8 @@ maps to our schemas.
 |  receipts_root  |eth_getBlockByNumber|  receiptsRoot  |   string   |  receipts_root  |                STRING               |            receipts_root            |
 | withdrawals_root|eth_getBlockByNumber| withdrawalsRoot|   string   | withdrawals_root|                STRING               |           withdrawals_root          |
 |      miner      |eth_getBlockByNumber|      miner     |   string   |      miner      |                STRING               |                miner                |
-|    difficulty   |eth_getBlockByNumber|   difficulty   |   double   |    difficulty   |               FLOAT64               |              difficulty             |
-| total_difficulty|eth_getBlockByNumber| totalDifficulty|   double   | total_difficulty|               FLOAT64               |           total_difficulty          |
+|    difficulty   |eth_getBlockByNumber|   difficulty   |   double   |    difficulty   |               FLOAT64               |     cast(difficulty, 'Float64')     |
+| total_difficulty|eth_getBlockByNumber| totalDifficulty|   double   | total_difficulty|               FLOAT64               |  cast(total_difficulty, 'Float64')  |
 |       size      |eth_getBlockByNumber|      size      |    long    |       size      |                INT64                |                 size                |
 | base_fee_per_gas|eth_getBlockByNumber|  baseFeePerGas |    long    | base_fee_per_gas|                INT64                |           base_fee_per_gas          |
 |     gas_used    |eth_getBlockByNumber|     gasUsed    |    long    |     gas_used    |                INT64                |               gas_used              |

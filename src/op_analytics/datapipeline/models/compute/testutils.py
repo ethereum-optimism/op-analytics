@@ -70,11 +70,11 @@ class DataReaderTestUtil:
         return MockParquetData(context=self.context, dataset=dataset)
 
 
-class IntermediateModelTestBase(unittest.TestCase):
-    """Base Class for Intermediate Model Unit Tests.
+class ModelTestBase(unittest.TestCase):
+    """Base Class for models unit tests.
 
-    This class helps with fetching and locally storing sample data for use in intermediate
-    model unit tests.
+    This class helps with fetching and locally storing sample data for use in model unit
+    tests.
 
     The test data is stored in a local duckdb file. If the file does not exist the data is
     fetched from GCS and stored so it can be used by subsequent runs.
@@ -133,7 +133,6 @@ class IntermediateModelTestBase(unittest.TestCase):
             dir_name=os.path.dirname(db_path),
             db_file_name=db_file_name,
         )
-        cls._duckdb_context.connect_to_gcs()
 
         tables_exist = cls._tables_exist(datasets=model.input_datasets)
 
@@ -141,7 +140,7 @@ class IntermediateModelTestBase(unittest.TestCase):
             if not cls._enable_fetching:
                 raise RuntimeError(
                     dedent(
-                        """Intermediate Model Test Utils Error:
+                        """Model Test Utils Error:
                     
                     - Input test data has not been fetched yet.
                     
@@ -153,6 +152,7 @@ class IntermediateModelTestBase(unittest.TestCase):
 
             else:
                 log.info("Fetching test data from GCS.")
+                cls._duckdb_context.connect_to_gcs()
 
                 # We patch the markers database to use the real production database.
                 # This allows us to fetch test data straight from production.

@@ -32,3 +32,10 @@ def dune(context: AssetExecutionContext):
     """Run dune transformations."""
     result = execute_dt_transforms(group_name="dune", force_complete=True)
     context.log.info(result)
+
+
+@asset
+def fees(context: AssetExecutionContext):
+    """Run fees transformations."""
+    result = execute_dt_transforms(group_name="fees", force_complete=True)
+    context.log.info(result)

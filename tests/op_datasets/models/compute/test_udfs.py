@@ -1,12 +1,15 @@
 import datetime
 from decimal import Decimal
+from unittest.mock import patch
 
 from op_analytics.coreutils.duckdb_inmem import init_client
 from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros
 
 
 def test_macros_00():
-    ctx = init_client()
+    with patch("op_analytics.coreutils.duckdb_inmem.client.connect_to_gcs"):
+        ctx = init_client()
+
     create_duckdb_macros(ctx)
 
     ctx.client.sql("""

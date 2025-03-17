@@ -1,12 +1,12 @@
 from datetime import date
 
 from op_analytics.coreutils.testutils.inputdata import InputTestData
-from op_analytics.datapipeline.models.compute.testutils import IntermediateModelTestBase
+from op_analytics.datapipeline.models.compute.testutils import ModelTestBase
 
 CONTRACT_ADDRESS = "0xa16b2bc8053a320620a1ef33da325491ec064e4b"
 
 
-class TestCreationTraces001(IntermediateModelTestBase):
+class TestCreationTraces001(ModelTestBase):
     model = "contract_creation"
     inputdata = InputTestData.at(__file__)
     chains = ["op"]

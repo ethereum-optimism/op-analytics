@@ -37,9 +37,7 @@ def refined_traces(
     )
 
     # Project only the necessary fields from raw traces.
-    refined_traces_projection = auxiliary_templates[
-        "refined_traces/traces_projection"
-    ].create_table(
+    refined_traces_projection = auxiliary_templates["refined_traces/traces_projection"].create_view(
         duckdb_context=ctx,
         template_parameters={
             "raw_traces": input_datasets["ingestion/traces_v1"].as_subquery(),
@@ -49,7 +47,7 @@ def refined_traces(
     # Add up the gas used by the subtraces on each trace. Also include the
     # number of traces in the parent transaction, so that the transaction gas
     # used and fees can be amortized among traces.
-    traces_with_gas_used = auxiliary_templates["refined_traces/traces_with_gas_used"].create_table(
+    traces_with_gas_used = auxiliary_templates["refined_traces/traces_with_gas_used"].create_view(
         duckdb_context=ctx,
         template_parameters={
             "refined_traces_projection": refined_traces_projection,
@@ -58,19 +56,13 @@ def refined_traces(
 
     # Joins traces with transactions. Amorizes the transaction gas used and
     # fees across traces.
-    traces_txs_join = auxiliary_templates["refined_traces/traces_txs_join"].create_table(
+    traces_txs_join = auxiliary_templates["refined_traces/traces_txs_join"].create_view(
         duckdb_context=ctx,
         template_parameters={
             "traces_with_gas_used": traces_with_gas_used,
             "refined_transactions_fees": refined_txs,
         },
     )
-
-    # These two tables were materialized in duckdb temporarily (with an ORDER BY)
-    # to improve the performance of the traces <> txs join. We don't need them
-    # anymore as the joined result is also materialized.
-    ctx.client.sql(f"DROP TABLE {refined_traces_projection}")
-    ctx.client.sql(f"DROP TABLE {traces_with_gas_used}")
 
     return {
         "refined_transactions_fees_v1": refined_txs,

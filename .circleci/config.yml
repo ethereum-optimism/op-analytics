@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.0.1
-  utils: ethereum-optimism/circleci-utils@1.0.5
+  utils: ethereum-optimism/circleci-utils@1.0.16
 
 executors:
   default:
@@ -23,7 +23,6 @@ parameters:
         "run_op_governance_uploads",
         "run_op_stack_chain_revenue",
         "run_op_stack_metadata_upload",
-        "run-python-installation-and-dependency-check",
         "run_value_locked_flows_update",
         "run_weekly_l2_chain_data_uploads",
       ]
@@ -82,57 +81,6 @@ commands:
             python -m pipenv install
 
 jobs:
-  python-installation-and-dependency-check:
-    executor: default
-    steps:
-      - checkout-dep-1:
-          base_git_project: "op-analytics"
-      - setup-python-3-10
-      - setup-python-3-10-project-dependencies:
-          base_git_project: "op-analytics"
-      - run:
-          name: Show dependency graph
-          command: |
-            cd "op-analytics"
-            source ~/miniconda3/bin/activate py310
-            pipenv graph
-      - run:
-          name: Check for security vulnerabilities
-          command: |
-            cd "op-analytics"
-            source ~/miniconda3/bin/activate py310
-            pipenv check || echo "Pipenv check failed, but continuing workflow"
-      - run:
-          name: Show installed packages
-          command: |
-            cd "op-analytics"
-            source ~/miniconda3/bin/activate py310
-            pipenv run pip list
-      - run:
-          name: Check for dependency conflicts
-          command: |
-            cd "op-analytics"
-            source ~/miniconda3/bin/activate py310
-            echo "Checking for potential conflicts..."
-            pipenv graph | grep -E '\w+==.+\s+\w+==.+' || echo "No obvious conflicts found in dependency graph"
-
-            echo "Packages with multiple versions:"
-            pipenv graph | awk -F'==' '{print $1}' | sort | uniq -c | sort -nr | awk '$1 > 1 {print $0}'
-      - run:
-          name: Show environment information
-          command: |
-            cd "op-analytics"
-            source ~/miniconda3/bin/activate py310
-            pipenv --venv
-            pipenv --where
-            pipenv --py
-      - run:
-          name: List all installed packages with versions
-          command: |
-            cd "op-analytics"
-            source ~/miniconda3/bin/activate py310
-            pipenv run pip freeze
-
   setup-python-3-10-job:
     executor: default
     steps:
@@ -238,6 +186,7 @@ jobs:
 
   deploy-github-pages:
     executor: default
+    resource_class: small
     steps:
       - checkout-dep-1
       - setup-python-env
@@ -259,8 +208,57 @@ jobs:
           force-push: true
           src-pages-dir: /tmp/docs
 
+  cicd:
+    executor: default
+    resource_class: small
+    steps:
+      - checkout-dep-1
+      - setup-python-env
+      - run:
+          name: Show versions
+          command: |
+            uv pip freeze
+      - run:
+          name: Run mypy
+          command: |
+            uv run mypy
+      - run:
+          name: Git lfs
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt update
+            sudo apt install git-lfs
+            git lfs install
+      - run:
+          command: |
+            git lfs ls-files -l | cut -d' ' -f1 | sort > .assets-id
+      - restore_cache:
+          key: v1-my-cache-key-{{ checksum ".assets-id" }}
+      - run:
+          command: |
+            git lfs pull
+      - save_cache:
+          key: v1-my-cache-key-{{ checksum ".assets-id" }}
+          paths:
+            - .git/lfs
+
+      - run:
+          name: Run pytest
+          command: |
+            uv run pytest tests -v
+
 workflows:
   version: 2
+
+  run-cicd:
+    when:
+      or:
+        # run when manually triggered
+        - equal: [<< pipeline.parameters.run_job >>, "run-cicd"]
+        #run for every push
+        - equal: [<< pipeline.trigger_source >>, "webhook"]
+    jobs:
+      - cicd
 
   daily-l2-aggregate-later-loads:
     when:
@@ -458,17 +456,4 @@ workflows:
             branches:
               only: main
 
-  run-python-installation-and-dependency-check:
-    when:
-      or:
-        - equal:
-            [
-              << pipeline.parameters.run_job >>,
-              "run-python-installation-and-dependency-check",
-            ]
-        - and:
-            - equal: [<< pipeline.git.branch >>, "main"]
-            - not:
-                equal: [<< pipeline.trigger_source >>, "api"]
-    jobs:
-      - python-installation-and-dependency-check
+

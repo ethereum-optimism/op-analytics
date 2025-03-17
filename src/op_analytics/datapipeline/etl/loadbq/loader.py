@@ -7,7 +7,7 @@ from op_analytics.coreutils.bigquery.load import load_from_parquet_uris
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.partition import Partition, PartitionMetadata, WrittenParts
-from op_analytics.coreutils.partitioned.writehelper import WriteManager
+from op_analytics.coreutils.partitioned.writemanager import WriteManager
 
 
 log = structlog.get_logger()
