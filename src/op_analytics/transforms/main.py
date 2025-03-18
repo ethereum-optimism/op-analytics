@@ -21,7 +21,8 @@ DIRECTORY = os.path.dirname(__file__)
 def execute_dt_transforms(
     group_name: str,
     range_spec: str | None = None,
-    update_only: list[int] | None = None,
+    steps_to_run: list[int] | None = None,
+    steps_to_skip: list[int] | None = None,
     raise_if_empty: bool | list[int] = True,
     force_complete: bool = False,
     allow_missing_gcs_data: bool = False,
@@ -103,7 +104,8 @@ def execute_dt_transforms(
             group_name=row["transform"],
             dt=row["dt"],
             tables=tables,
-            update_only=update_only,
+            steps_to_run=steps_to_run,
+            steps_to_skip=steps_to_skip,
             raise_if_empty=raise_if_empty,
         )
         tasks.append(transform_task)

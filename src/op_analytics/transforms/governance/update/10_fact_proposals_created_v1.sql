@@ -7,8 +7,8 @@ WITH blocks AS (
   FROM
     blockbatch_gcs.read_date(
       rootpath = 'ingestion/blocks_v1'
-      ,chain = 'op'
-      ,dt = { dtparam: Date }
+      , chain = 'op'
+      , dt = { dtparam: Date }
     ) b
   WHERE b.number IS NOT NULL
 )

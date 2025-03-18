@@ -93,6 +93,14 @@ def create_tables(group_name: str) -> dict[str, TableStructure]:
                 ddl=ddl,
             )
 
+            # BEWARE: POSSIBLE DATA LOSS.
+            # Uncomment these lines and replace print -> client.command to drop
+            # or truncate existing tables when needed. This is useful to quickly
+            # clear out or replace all tables in a transforms group.
+            #
+            # print(f"DROP TABLE IF EXISTS {create.db_name}.{create.table_name}")
+            # print(f"TRUNCATE TABLE {create.db_name}.{create.table_name}")
+
             try:
                 result: QuerySummary = client.command(cmd=create.statement)
             except DatabaseError as ex:
