@@ -1,18 +1,22 @@
-WITH blockinfo AS (
-    SELECT DISTINCT
-        b.number AS block_number,
-        b.timestamp AS block_timestamp
-    FROM blockbatch_gcs.read_date(
-        rootpath = 'ingestion/blocks_v1',
-        chain    = 'op',
-        dt       = { dtparam: Date }
+-- Get the blocks for "dt"
+WITH blocks AS (
+  SELECT
+    b.dt
+    , b.number AS block_number
+    , b.timestamp AS block_timestamp
+  FROM
+    blockbatch_gcs.read_date(
+      rootpath = 'ingestion/blocks_v1'
+      , chain = 'op'
+      , dt = { dtparam: Date }
     ) AS b
-    WHERE b.number IS NOT NULL
+  WHERE b.number IS NOT NULL
 )
+
 SELECT
-    toDate(beb.block_timestamp) AS dt,
+    b.dt AS dt,
     p.proposal_id               AS proposal_id,
-    toDateTime(beb.block_timestamp) AS end_block_ts,
+    toDateTime(b.block_timestamp) AS end_block_ts,
 
     -- From your original logic:
     ifNull(
@@ -45,7 +49,8 @@ SELECT
     if(total_votes = 0, 0, total_abstain_votes / total_votes)     AS pct_abstain
 
 FROM transforms_governance.ingest_proposals_v1 AS p
-INNER JOIN blockinfo beb
-ON p.end_block = beb.block_number
+INNER JOIN blocks b
+ON p.end_block = b.block_number
 WHERE p.end_block IS NOT NULL
-SETTINGS use_hive_partitioning = 1;
+
+SETTINGS use_hive_partitioning = 1

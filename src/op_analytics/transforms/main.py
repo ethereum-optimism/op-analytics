@@ -22,12 +22,39 @@ def execute_dt_transforms(
     group_name: str,
     range_spec: str | None = None,
     update_only: list[int] | None = None,
-    raise_if_empty: bool = True,
+    raise_if_empty: bool | list[int] = True,
     force_complete: bool = False,
     allow_missing_gcs_data: bool = False,
     reverse: bool = False,
 ):
-    """Execute "dt" transformations from a specified "group_name" directory."""
+    """Execute "dt" transformations from a specified "group_name" directory.
+
+    Args:
+        group_name:
+            The name of the transform group to execute.
+
+        range_spec:
+            Date range specification string (e.g., "m2days" for last 2 days).
+
+        update_only:
+            List of specific transform IDs to run. If provided, only these
+            transforms will be executed.
+
+        raise_if_empty:
+            If True, raises an exception when no rows are written.
+            A list can be provided in which case only steps whose step index
+            is in the list will raise an exepction when no rows are written.
+
+        force_complete:
+            If True, ignores existing markers and re-runs all transforms.
+
+        allow_missing_gcs_data:
+            If True, continues execution even if GCS data is missing.
+
+        reverse:
+            If True, processes dates in reverse chronological order.
+
+    """
 
     group_dir = os.path.join(DIRECTORY, group_name)
     if not os.path.isdir(group_dir):

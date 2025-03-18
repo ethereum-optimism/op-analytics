@@ -11,8 +11,7 @@ WITH blocks AS (
 )
 
 
-
-SELECT -- noqa: ST06
+SELECT
   date_trunc('day', v.block_timestamp) AS dt
   , v.block_timestamp
   , d.block_number

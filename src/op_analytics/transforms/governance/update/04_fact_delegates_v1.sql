@@ -19,7 +19,7 @@ WITH blocks AS (
 )
 
 select
-    t.dt as dt
+    b.dt as dt
     ,cast(t.block_timestamp as datetime) as block_timestamp
     ,d.block_number as block_number
     ,d.delegate as delegate
@@ -27,7 +27,7 @@ select
     ,d.transaction_index as transaction_index
     ,d.log_index as log_index
 from transforms_governance.ingest_voting_power_snaps_v1 d
-inner join blocks t
-on d.block_number = t.block_number
+inner join blocks b
+on d.block_number = b.block_number
 where t.dt = { dtparam: Date }
-settings use_hive_partitioning = 1;
+settings use_hive_partitioning = 1

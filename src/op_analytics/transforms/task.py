@@ -41,7 +41,7 @@ class TransformTask:
     dt: date
     tables: dict[str, TableStructure]
     update_only: list[int] | None
-    raise_if_empty: bool
+    raise_if_empty: bool | list[int]
 
     def execute(self):
         # Run the updates.
@@ -102,12 +102,21 @@ class TransformTask:
             )
         except DatabaseError as ex:
             log.error("database error", exc_info=ex)
+            print(step.get_sql_statement(table))
             raise
 
         assert isinstance(result.summary, dict)
         log.info(f"{step.name} -> {result.written_rows} written rows", **result.summary)
 
-        if step.step_type == StepType.EXPORT or self.raise_if_empty:
+        should_raise = any(
+            [
+                step.step_type == StepType.EXPORT,
+                self.raise_if_empty is True,
+                isinstance(self.raise_if_empty, list) and step.index in self.raise_if_empty,
+            ]
+        )
+
+        if should_raise:
             if result.written_rows == 0:
                 msg = "possible data quality issue 0 rows were written!"
                 log.error(msg)
