@@ -2,6 +2,7 @@
 
 Decode DelegateVotesChanged event logs.
 
+This is not sourced Agora. We are reading the raw OP Mainnet logs.
 */
 
 SELECT
@@ -33,19 +34,7 @@ SELECT
   ) AS new_balance
 
   --Calculate the balance difference to get the (un)delegated OP amount
-  , reinterpretAsInt256(
-    reverse(
-      unhex(
-        substring(substring(l.data, 3), 65, 64)
-      )
-    )
-  ) - reinterpretAsInt256(
-    reverse(
-      unhex(
-        substring(substring(l.data, 3), 1, 64)
-      )
-    )
-  ) AS delegation_amount
+  , new_balance - previous_balance AS delegation_amount
 
 
 FROM
@@ -63,7 +52,8 @@ INNER JOIN
   ON l.block_number = t.number
 
 WHERE
-  l.topic0 = '0xdec2bacdd2f05b59de34da9b523dff8be42e5e38e818c82fdb0bae774387a724' --Decode DelegateVotesChanged logs
+  -- DelegateVotesChanged
+  l.topic0 = '0xdec2bacdd2f05b59de34da9b523dff8be42e5e38e818c82fdb0bae774387a724'
   AND l.address = '0x4200000000000000000000000000000000000042'
 
 SETTINGS use_hive_partitioning = 1
