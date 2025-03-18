@@ -8,7 +8,7 @@ WITH blocks AS (
   SELECT
     b.dt
     , b.number AS block_number
-    , b.timestamp AS block_timestamp
+    , fromUnixTimestamp(b.timestamp) AS block_timestamp
   FROM
     blockbatch_gcs.read_date(
       rootpath = 'ingestion/blocks_v1'

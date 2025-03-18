@@ -12,7 +12,7 @@ SELECT
   c.proposal_type_id,
   c.approval_threshold_perc,
 
-  s.start_block_ts,
+  started.start_block_ts,
 
   e.end_block_ts,
   e.total_against_votes,
@@ -29,8 +29,8 @@ SELECT
 
 FROM transforms_governance.fact_proposals_created_v1 AS c
 
-LEFT JOIN transforms_governance.fact_proposals_started_v1 s
-    ON c.proposal_id = s.proposal_id
+LEFT JOIN transforms_governance.fact_proposals_started_v1 started
+    ON c.proposal_id = started.proposal_id
 
 LEFT JOIN transforms_governance.fact_proposals_ended_v1 e
     ON c.proposal_id = e.proposal_id

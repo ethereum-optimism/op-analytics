@@ -6,8 +6,8 @@ This is not sourced Agora. We are reading the raw OP Mainnet logs.
 */
 
 SELECT
-  t.dt AS dt
-  , t.timestamp AS block_timestamp
+  b.dt AS dt
+  , fromUnixTimestamp(b.timestamp) AS block_timestamp
   , l.block_number
   , l.transaction_hash
   , l.log_index
@@ -48,8 +48,8 @@ INNER JOIN
     rootpath = 'ingestion/blocks_v1'
     , chain = 'op'
     , dt = { dtparam: Date }
-  ) AS t
-  ON l.block_number = t.number
+  ) AS b
+  ON l.block_number = b.number
 
 WHERE
   -- DelegateVotesChanged
