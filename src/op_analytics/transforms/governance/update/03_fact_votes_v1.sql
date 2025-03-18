@@ -1,7 +1,6 @@
 /**
 
 Time series of votes on proposals.
-
 */
 
 -- Get the blocks for "dt"
@@ -53,4 +52,4 @@ FROM votes AS v
 INNER JOIN blocks AS b
   ON v.block_number = b.block_number
 
-SETTINGS use_hive_partitioning = 1
+SETTINGS use_hive_partitioning = 1   -- noqa: PRS

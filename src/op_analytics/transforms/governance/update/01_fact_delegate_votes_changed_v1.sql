@@ -56,4 +56,4 @@ WHERE
   l.topic0 = '0xdec2bacdd2f05b59de34da9b523dff8be42e5e38e818c82fdb0bae774387a724'
   AND l.address = '0x4200000000000000000000000000000000000042'
 
-SETTINGS use_hive_partitioning = 1
+SETTINGS use_hive_partitioning = 1  -- noqa: PRS

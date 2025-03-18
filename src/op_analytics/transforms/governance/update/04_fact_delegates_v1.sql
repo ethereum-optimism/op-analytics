@@ -1,7 +1,6 @@
 /**
 
 Time series of all delegates and their voting power.
-
 */
 
 WITH blocks AS (
@@ -30,4 +29,5 @@ from transforms_governance.ingest_voting_power_snaps_v1 d
 inner join blocks b
 on d.block_number = b.block_number
 where t.dt = { dtparam: Date }
-settings use_hive_partitioning = 1
+
+settings use_hive_partitioning = 1  -- noqa: PRS

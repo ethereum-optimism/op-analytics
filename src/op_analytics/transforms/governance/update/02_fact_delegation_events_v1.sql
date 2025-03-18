@@ -83,4 +83,4 @@ LEFT JOIN votes_changed AS v
     d.transaction_hash = v.transaction_hash
     AND d.block_number = v.block_number
 
-SETTINGS use_hive_partitioning = 1
+SETTINGS use_hive_partitioning = 1  -- noqa: PRS
