@@ -14,13 +14,13 @@ from .utils.jobs import (
 import importlib
 
 MODULE_NAMES = [
-    "agora",
     "blockbatch",
     "chainsdaily",
     "chainshourly",
     "defillama",
     "dune",
     "github",
+    "governance",
     "growthepie",
     "l2beat",
     "transforms",
@@ -154,7 +154,7 @@ defs = Definitions(
         ),
         #
         create_schedule_for_group(
-            group="agora",
+            group="governance",
             cron_schedule="0 10 * * *",
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
