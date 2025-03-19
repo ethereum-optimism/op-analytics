@@ -53,7 +53,7 @@ SELECT
   , sum_l1_blob_scaled_size
   , sum_l1_gas_used_unified
   , sum_estimated_size
-FROM transforms_fees.agg_daily_transactions_grouping_sets
+FROM transforms_fees.agg_daily_transactions_grouping_sets FINAL
 WHERE
   dt = { dtparam: Date }
   AND from_address = '--'
