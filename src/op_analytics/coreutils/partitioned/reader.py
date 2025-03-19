@@ -59,6 +59,13 @@ class DataReader:
     def partitions_dict(self):
         return self.partitions.as_dict()
 
+    def debugging_context(self):
+        """Return a dictionary with partition and marker data for debugging."""
+        return {
+            **self.partitions_dict(),
+            **(self.extra_marker_data or {}),
+        }
+
     @property
     def paths_summary(self) -> dict[str, int]:
         return {dataset_name: len(paths) for dataset_name, paths in self.dataset_paths.items()}
