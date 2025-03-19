@@ -28,7 +28,7 @@ def execute_dt_transforms(
     allow_missing_gcs_data: bool = False,
     reverse: bool = False,
 ):
-    """Execute "dt" transformations from a specified "group_name" directory.
+    """Execute "dt" transformations for the specified "group_name" directory.
 
     Args:
         group_name:
@@ -37,9 +37,13 @@ def execute_dt_transforms(
         range_spec:
             Date range specification string (e.g., "m2days" for last 2 days).
 
-        update_only:
-            List of specific transform IDs to run. If provided, only these
-            transforms will be executed.
+        steps_to_run:
+            List of step indexes to run. If provided, only these steps will
+            be executed.
+
+        steps_to_skip:
+            List of sstep indexes to skip. If provided, these steps will be
+            skipped.
 
         raise_if_empty:
             If True, raises an exception when no rows are written.
@@ -115,7 +119,7 @@ def execute_dt_transforms(
     summary = {}
     num_tasks = len(tasks)
     for ii, task in enumerate(tasks):
-        with bound_contextvars(task=f"{ii+1}/{num_tasks}", dt=date_tostr(task.dt)):
+        with bound_contextvars(task=f"{ii + 1}/{num_tasks}", dt=date_tostr(task.dt)):
             try:
                 result = task.execute()
             except NoWrittenRows:
