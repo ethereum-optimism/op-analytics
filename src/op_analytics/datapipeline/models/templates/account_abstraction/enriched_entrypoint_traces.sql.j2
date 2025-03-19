@@ -167,7 +167,7 @@ all_prefiltered_traces AS (
 --  * innerHandleOp trace enriched with logs and handleOps
 --  * transaction from_address
 , enriched_traces AS (
-  SELECT -- noqa: ST06
+  SELECT
     t.dt
     , t.chain
     , t.chain_id

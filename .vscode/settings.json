@@ -24,7 +24,10 @@
     "sqlfluff.format.arguments": ["--FIX-EVEN-UNPARSABLE"],
     "sqlfluff.executablePath": "${workspaceFolder}/.venv/bin/sqlfluff",
     "sqlfluff.excludeRules": [
-        "CP03"
+        "CP03",
+        "AL09",
+        "ST03",
+        "ST06"
     ],
     "sqlfluff.ignoreLocalConfig": false,
     "sqlfluff.workingDirectory": "${fileDirname}"

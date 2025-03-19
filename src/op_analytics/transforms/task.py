@@ -40,8 +40,11 @@ class TransformTask:
     group_name: str
     dt: date
     tables: dict[str, TableStructure]
-    update_only: list[int] | None
-    raise_if_empty: bool
+
+    steps_to_run: list[int] | None
+    steps_to_skip: list[int] | None
+
+    raise_if_empty: bool | list[int]
 
     def execute(self):
         # Run the updates.
@@ -52,6 +55,17 @@ class TransformTask:
 
         return results
 
+    def should_skip_step(self, step_index: int) -> bool:
+        if self.steps_to_skip is not None:
+            if step_index in self.steps_to_skip:
+                return True
+
+        if self.steps_to_run is not None:
+            if step_index not in self.steps_to_run:
+                return True
+
+        return False
+
     def run_updates(self) -> list[dict[str, Any]]:
         """Find the SQL update files for this task and run them."""
         client = new_stateful_client("OPLABS")
@@ -60,7 +74,7 @@ class TransformTask:
 
         for step in read_steps(group_name=self.group_name):
             with bound_contextvars(ddl=step.name):
-                if self.update_only is not None and step.index not in self.update_only:
+                if self.should_skip_step(step.index):
                     log.info(f"skipping index={step.index} ddl={step.name}")
                     continue
 
@@ -83,7 +97,7 @@ class TransformTask:
         return [_.to_dict() for _ in results]
 
     def run_update(self, client, step: Step):
-        log.info(f"running ddl {step.name}")
+        log.info(f"UPDATE {step.name}")
 
         # Find the table structure for this update.
         table: TableStructure = self.tables[step.table_name]
@@ -102,12 +116,21 @@ class TransformTask:
             )
         except DatabaseError as ex:
             log.error("database error", exc_info=ex)
+            print(step.get_sql_statement(table))
             raise
 
         assert isinstance(result.summary, dict)
         log.info(f"{step.name} -> {result.written_rows} written rows", **result.summary)
 
-        if step.step_type == StepType.EXPORT or self.raise_if_empty:
+        should_raise = any(
+            [
+                step.step_type == StepType.EXPORT,
+                self.raise_if_empty is True,
+                isinstance(self.raise_if_empty, list) and step.index in self.raise_if_empty,
+            ]
+        )
+
+        if should_raise:
             if result.written_rows == 0:
                 msg = "possible data quality issue 0 rows were written!"
                 log.error(msg)
