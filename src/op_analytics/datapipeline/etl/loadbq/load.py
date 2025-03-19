@@ -48,7 +48,7 @@ def load_blockbatch_to_bq(
     success = 0
     for i, task in enumerate(date_tasks):
         with bound_contextvars(
-            task=f"{i+1}/{len(date_tasks)}",
+            task=f"{i + 1}/{len(date_tasks)}",
             **task.contextvars,
         ):
             if task.chains_not_ready:
@@ -74,3 +74,5 @@ def load_blockbatch_to_bq(
 
                 log.info("task", status=write_result.status)
                 success += 1
+
+    return dict(prepared=len(date_tasks), success=success)

@@ -47,13 +47,13 @@ class WorkItem:
 
     @property
     def progress(self):
-        return f"{self.index+1}/{self.total}"
+        return f"{self.index + 1}/{self.total}"
 
     def context(self):
         return dict(
             model=self.task.model.name,
             task=self.progress,
-            **self.task.data_reader.partitions_dict(),
+            **self.task.data_reader.debugging_context(),
         )
 
 
