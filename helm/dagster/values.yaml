@@ -610,6 +610,8 @@ runLauncher:
             value: "true"
           - name: DUCKDB_DATADIR
             value: "/duckdbdata"
+          - name: GOLDSKY_FINAL
+            value: "true"
           volumeMounts:
           - mountPath: "/var/secrets"
             name: opanalyticsvault

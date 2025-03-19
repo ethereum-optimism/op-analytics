@@ -243,39 +243,6 @@ def noargs_ingest():
     )
 
 
-@app.command()
-def noargs_blockbatch():
-    """No-args command to run blockbatch models."""
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=normalize_blockbatch_models("MODELS"),
-        range_spec="m16hours",
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
-
-
-@app.command()
-def noargs_public_bq():
-    """No-args command to load public datasets to BQ."""
-    load_superchain_raw_to_bq(
-        range_spec="m6days",
-        dryrun=False,
-        force_complete=False,
-        force_not_ready=False,
-    )
-
-    load_superchain_4337_to_bq(
-        range_spec="m6days",
-        dryrun=False,
-        force_complete=False,
-        force_not_ready=False,
-    )
-
-
 # Backfills
 
 
