@@ -15,7 +15,7 @@ def public_bucket(context: OpExecutionContext):
     context.log.info(result)
 
 
-@asset
+@asset(deps=[public_bucket])
 def transforms_governance(context: OpExecutionContext):
     """Execute governance transforms.
 
