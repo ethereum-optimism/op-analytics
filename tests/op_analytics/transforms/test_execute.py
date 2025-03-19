@@ -29,7 +29,8 @@ def test_execute_task(mock_insert: MagicMock, mock_new: MagicMock):
                 columns=[TableColumn(name="dummy", data_type="String")],
             ),
         },
-        update_only=[2, 3],
+        steps_to_run=[2, 3],
+        steps_to_skip=None,
         raise_if_empty=False,
     )
 
