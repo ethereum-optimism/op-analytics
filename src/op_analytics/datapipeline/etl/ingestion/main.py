@@ -34,18 +34,18 @@ def ingest(
     force_complete: bool = False,
     fork_process: bool = True,
     max_tasks: int | None = None,
-) -> None:
+) -> dict[str, int]:
     tasks = construct_tasks(chains, range_spec, read_from, write_to)
     log.info(f"constructed {len(tasks)} tasks.")
 
     if dryrun:
         log.info("DRYRUN: No work will be done.")
-        return
+        return dict(total=0)
 
     executed = 0
     executed_ok = 0
     for i, task in enumerate(tasks):
-        task.progress_indicator = f"{i+1}/{len(tasks)}"
+        task.progress_indicator = f"{i + 1}/{len(tasks)}"
         with bound_contextvars(**task.contextvars):
             # Decide if we need to run this task.
             if task.write_manager.all_outputs_complete():
@@ -71,6 +71,7 @@ def ingest(
                 break
 
     log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
+    return dict(total=executed, success=executed_ok, fail=executed - executed_ok)
 
 
 def execute(task, fork_process: bool) -> bool:

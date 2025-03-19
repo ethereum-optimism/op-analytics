@@ -15,6 +15,8 @@ import importlib
 
 MODULE_NAMES = [
     "blockbatch",
+    "blockingest",
+    "bqpublic",
     "chainsdaily",
     "chainshourly",
     "defillama",
@@ -51,8 +53,8 @@ defs = Definitions(
             cron_schedule="22,52 * * * *",
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
-                mem_request="6Gi",
-                mem_limit="4Gi",
+                mem_request="4Gi",
+                mem_limit="6Gi",
                 cpu_request="1",
                 cpu_limit="1",
             ),
@@ -67,11 +69,49 @@ defs = Definitions(
             cron_schedule="7,37 * * * *",
             default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
-                mem_request="6Gi",
-                mem_limit="4Gi",
+                mem_request="4Gi",
+                mem_limit="6Gi",
                 cpu_request="1",
                 cpu_limit="1",
             ),
+        ),
+        #
+        # Blockbatch Models
+        create_schedule_for_selection(
+            job_name="blockbatch_ingest",
+            selection=AssetSelection.assets(
+                ["blockingest", "audit_and_ingest"],
+            ),
+            cron_schedule="8,38 * * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=OPK8sConfig(
+                mem_request="6Gi",
+                mem_limit="8Gi",
+                cpu_request="1",
+                cpu_limit="1",
+            ),
+        ),
+        #
+        # Load superchain_raw to BQ
+        create_schedule_for_selection(
+            job_name="bqpublic_raw",
+            selection=AssetSelection.assets(
+                ["bqpublic", "superchain_raw"],
+            ),
+            cron_schedule="2 4,16 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        # Load superchain_4337 to BQ
+        create_schedule_for_selection(
+            job_name="bqpublic_4337",
+            selection=AssetSelection.assets(
+                ["bqpublic", "superchain_4337"],
+            ),
+            cron_schedule="32 4,16 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=SMALL_POD,
         ),
         #
         # Chain related daily jobs
