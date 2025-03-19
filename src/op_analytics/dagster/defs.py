@@ -15,6 +15,7 @@ import importlib
 
 MODULE_NAMES = [
     "blockbatch",
+    "bqpublic",
     "chainsdaily",
     "chainshourly",
     "defillama",
@@ -72,6 +73,28 @@ defs = Definitions(
                 cpu_request="1",
                 cpu_limit="1",
             ),
+        ),
+        #
+        # Load superchain_raw to BQ
+        create_schedule_for_selection(
+            job_name="bqpublic_raw",
+            selection=AssetSelection.assets(
+                ["bqpublic", "superchain_raw"],
+            ),
+            cron_schedule="2 4,16 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        # Load superchain_4337 to BQ
+        create_schedule_for_selection(
+            job_name="bqpublic_4337",
+            selection=AssetSelection.assets(
+                ["bqpublic", "superchain_4337"],
+            ),
+            cron_schedule="32 4,16 * * *",
+            default_status=DefaultScheduleStatus.RUNNING,
+            custom_k8s_config=SMALL_POD,
         ),
         #
         # Chain related daily jobs
