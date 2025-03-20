@@ -593,6 +593,9 @@ runLauncher:
       #     annotations:
       #       mykey: myvalue
       runK8sConfig:
+        podTemplateSpecMetadata:
+          annotations:
+            "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
         containerConfig:
           resources:
             limits:
