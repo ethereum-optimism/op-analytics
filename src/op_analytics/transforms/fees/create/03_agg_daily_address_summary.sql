@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `sum_success_l1_base_fee_native` Float64,
 
     `sum_l1_blob_fee_native` Float64,
-    `sum_sucess_l1_blob_fee_native` Float64
+    `sum_success_l1_blob_fee_native` Float64,
 
     `avg_l2_gas_price_gwei` Float64,
     `avg_l2_priority_gas_price_gwei` Float64,
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `sum_success_input_bytes_length` UInt64,
 
     `sum_input_nonzero_bytes` UInt64,
-    `sum_success_input_nonzero_bytes` UInt64
+    `sum_success_input_nonzero_bytes` UInt64,
     
     `sum_estimated_size` UInt64,
     `sum_success_estimated_size` UInt64,

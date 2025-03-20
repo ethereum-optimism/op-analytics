@@ -53,45 +53,32 @@ SELECT
   -- Aggregates
 
   , count(*) AS count_transactions
-
   , countIf(success) AS count_success_transactions
 
   , count(DISTINCT block_number) AS count_distinct_blocks
-
   , count(DISTINCT if(success, block_number, NULL)) AS count_distinct_success_blocks
 
   , min(block_number) AS min_block_number
-
   , max(block_number) AS max_block_number
-
   , max(block_number) - min(block_number) + 1 AS active_block_range
 
   , min(nonce) AS min_nonce
-
   , max(nonce) AS max_nonce
-
   , max(nonce) - min(nonce) + 1 AS active_nonce_range
 
   , min(block_timestamp) AS min_block_timestamp
-
   , max(block_timestamp) AS max_block_timestamp
-
   , max(block_timestamp) - min(block_timestamp) AS active_time_range
-
   , count(DISTINCT block_hour) AS count_distinct_active_hours
 
   , count(DISTINCT to_address) AS count_distinct_to_address
-
   , count(DISTINCT if(success, to_address, NULL)) AS count_distinct_success_to_address
-
   , count(DISTINCT method_id) AS count_distinct_method_id
 
   , sum(l2_gas_used) AS sum_l2_gas_used
-
   , sumIf(l2_gas_used, success) AS sum_success_l2_gas_used
 
   , sum(l1_gas_used_unified) AS sum_l1_gas_used_unified
-
   , sumIf(l1_gas_used_unified, success) AS sum_success_l1_gas_used_unified
 
   , sum(tx_fee_native) AS sum_tx_fee_native
