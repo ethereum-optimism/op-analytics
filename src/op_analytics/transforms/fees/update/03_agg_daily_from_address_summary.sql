@@ -95,24 +95,30 @@ SELECT
   , sumIf(l1_gas_used_unified, success) AS sum_success_l1_gas_used_unified
 
   , sum(tx_fee_native) AS sum_tx_fee_native
-
   , sumIf(tx_fee_native, success) AS sum_success_tx_fee_native
 
   -- L2 Fee and breakdown into BASE + PRIORITY
   , sum(l2_fee_native) AS sum_l2_fee_native
+  , sumIf(l2_fee_native, success) AS sum_success_l2_fee_native
 
   , sum(l2_base_fee_native) AS sum_l2_base_fee_native
+  , sumIf(l2_base_fee_native, success) AS sum_success_l2_base_fee_native
 
   , sum(l2_priority_fee_native) AS sum_l2_priority_fee_native
+  , sumIf(l2_priority_fee_native, success) AS sum_success_l2_priority_fee_native
 
   , sum(l2_legacy_extra_fee_native) AS sum_l2_legacy_extra_fee_native
+  , sumIf(l2_legacy_extra_fee_native, success) AS sum_success_l2_legacy_extra_fee_native
 
   -- L1 Fee and breakdown into BASE + BLOB
   , sum(l1_fee_native) AS sum_l1_fee_native
+  , sumIf(l1_fee_native, success) AS sum_success_l1_fee_native
 
   , sum(l1_base_fee_native) AS sum_l1_base_fee_native
+  , sumIf(l1_base_fee_native, success) AS sum_success_l1_base_fee_native
 
   , sum(l1_blob_fee_native) AS sum_l1_blob_fee_native
+  , sumIf(l1_blob_fee_native, success) AS sum_success_l1_blob_fee_native
 
   -- Transaction-Level Gas Prices
   , avgWeighted(l2_gas_price_gwei, l2_gas_used) AS avg_l2_gas_price_gwei
@@ -121,19 +127,18 @@ SELECT
   , avgWeighted(l1_base_gas_price_gwei, l2_gas_used) AS avg_l1_base_gas_price_gwei
   , avgWeighted(l1_blob_base_gas_price_gwei, l2_gas_used) AS avg_l1_blob_base_gas_price_gwei
 
-
   -- Data Processed
-  , sum(input_zero_bytes) AS input_zero_bytes_sum
-  , sumIf(input_zero_bytes, success) AS success_input_zero_bytes_sum
+  , sum(input_zero_bytes) AS sum_input_zero_bytes
+  , sumIf(input_zero_bytes, success) AS sum_success_input_zero_bytes
 
-  , sum(input_byte_length - input_zero_bytes) AS input_nonzero_bytes_sum
-  , sumIf(input_byte_length - input_zero_bytes, success) AS success_input_nonzero_bytes_sum
+  , sum(input_byte_length) AS sum_input_bytes_length
+  , sumIf(input_byte_length, success) AS sum_success_input_bytes_length
 
-  , sum(input_byte_length) AS input_byte_length_sum
-  , sumIf(input_byte_length, success) AS success_input_byte_length_sum
+  , sum(input_byte_length - input_zero_bytes) AS sum_input_nonzero_bytes
+  , sumIf(input_byte_length - input_zero_bytes, success) AS sum_success_input_nonzero_bytes
 
-  , sum(estimated_size) AS estimated_size_sum
-  , sumIf(estimated_size, success) AS success_estimated_size_sum
+  , sum(estimated_size) AS sum_estimated_size
+  , sumIf(estimated_size, success) AS sum_success_estimated_size
 
 FROM tx_fees
 
