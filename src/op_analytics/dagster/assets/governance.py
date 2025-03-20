@@ -1,7 +1,4 @@
-from dagster import (
-    OpExecutionContext,
-    asset,
-)
+from dagster import OpExecutionContext, asset
 
 from op_analytics.transforms.main import execute_dt_transforms
 
