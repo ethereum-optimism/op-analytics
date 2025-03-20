@@ -1,3 +1,48 @@
+WITH 
+
+tx_fees AS (
+  SELECT
+    dt
+    , chain
+    , chain_id
+    , network
+    , from_address
+    , to_address
+    , accurateCast(success, 'Bool') AS success
+    , accurateCast(block_number, 'UInt64') AS block_number
+    , accurateCast(nonce, 'UInt64') AS nonce
+    , accurateCast(block_timestamp, 'UInt64') AS block_timestamp
+    , accurateCast(block_hour, 'DateTime64(6)') AS block_hour
+    , accurateCast(method_id, 'FixedString(10)') AS method_id
+    , accurateCast(l2_gas_used, 'UInt256') AS l2_gas_used
+    , accurateCast(l1_gas_used_unified, 'UInt256') AS l1_gas_used_unified
+    , accurateCast(tx_fee_native, 'Float64') AS tx_fee_native
+    , accurateCast(l2_fee_native, 'Float64') AS l2_fee_native
+    , accurateCast(l2_base_fee_native, 'Float64') AS l2_base_fee_native
+    , accurateCast(l2_priority_fee_native, 'Float64') AS l2_priority_fee_native
+    , accurateCast(l2_legacy_extra_fee_native, 'Float64') AS l2_legacy_extra_fee_native
+    , accurateCast(l1_fee_native, 'Float64') AS l1_fee_native
+    , accurateCast(l1_base_fee_native, 'Float64') AS l1_base_fee_native
+    , accurateCast(l1_blob_fee_native, 'Float64') AS l1_blob_fee_native
+    , accurateCast(l2_gas_price_gwei, 'Float64') AS l2_gas_price_gwei
+    , accurateCast(l2_priority_gas_price_gwei, 'Float64') AS l2_priority_gas_price_gwei
+    , accurateCast(l2_legacy_extra_gas_price_gwei, 'Float64') AS l2_legacy_extra_gas_price_gwei
+    , accurateCast(l1_base_gas_price_gwei, 'Float64') AS l1_base_gas_price_gwei
+    , accurateCast(l1_blob_base_gas_price_gwei, 'Float64') AS l1_blob_base_gas_price_gwei
+    , accurateCast(input_byte_length, 'UInt32') AS input_byte_length
+    , accurateCast(input_zero_bytes, 'UInt32') AS input_zero_bytes
+    , accurateCast(estimated_size, 'UInt64') AS estimated_size
+  FROM
+    blockbatch_gcs.read_date(
+      rootpath = 'blockbatch/refined_traces/refined_transactions_fees_v1'
+      , chain = '*'
+      , dt = { dtparam: Date }
+    )
+  WHERE
+    NOT is_system_transaction
+)
+
+
 SELECT
   dt
   , chain
@@ -7,111 +52,90 @@ SELECT
 
   -- Aggregates
 
-  , count(*) AS tx_cnt
+  , count(*) AS count_transactions
 
-  , count(if(success, 1, NULL)) AS success_tx_cnt
+  , countIf(success) AS count_success_transactions
 
-  , count(DISTINCT block_number) AS block_cnt
+  , count(DISTINCT block_number) AS count_distinct_blocks
 
-  , count(DISTINCT if(success, block_number, NULL)) AS success_block_cnt
+  , count(DISTINCT if(success, block_number, NULL)) AS count_distinct_success_blocks
 
-  , min(block_number) AS block_number_min
+  , min(block_number) AS min_block_number
 
-  , max(block_number) AS block_number_max
+  , max(block_number) AS max_block_number
 
   , max(block_number) - min(block_number) + 1 AS active_block_range
 
-  , min(nonce) AS nonce_min
+  , min(nonce) AS min_nonce
 
-  , max(nonce) AS nonce_max
+  , max(nonce) AS max_nonce
 
   , max(nonce) - min(nonce) + 1 AS active_nonce_range
 
-  , min(block_timestamp) AS block_timestamp_min
+  , min(block_timestamp) AS min_block_timestamp
 
-  , max(block_timestamp) AS block_timestamp_max
+  , max(block_timestamp) AS max_block_timestamp
 
   , max(block_timestamp) - min(block_timestamp) AS active_time_range
 
-  , count(DISTINCT block_hour) AS active_hours_ucnt
+  , count(DISTINCT block_hour) AS count_distinct_active_hours
 
-  , count(DISTINCT to_address) AS to_address_ucnt
+  , count(DISTINCT to_address) AS count_distinct_to_address
 
-  , count(DISTINCT if(success, to_address, NULL)) AS success_to_address_ucnt
+  , count(DISTINCT if(success, to_address, NULL)) AS count_distinct_success_to_address
 
-  , count(DISTINCT method_id) AS method_id_ucnt
+  , count(DISTINCT method_id) AS count_distinct_method_id
 
-  , sum(l2_gas_used) AS l2_gas_used_sum
+  , sum(CAST(l2_gas_used AS UInt256)) AS sum_l2_gas_used
 
-  , sum(if(success, l2_gas_used, 0)) AS success_l2_gas_used_sum
+  , sumIf(CAST(l2_gas_used AS UInt256), success) AS sum_success_l2_gas_used
 
-  , sum(l1_gas_used_unified) AS l1_gas_used_unified_sum
+  , sum(CAST(l1_gas_used_unified AS UInt256)) AS sum_l1_gas_used_unified
 
-  , sum(if(success, l1_gas_used_unified, 0)) AS success_l1_gas_used_unified_sum
+  , sumIf(CAST(l1_gas_used_unified AS UInt256), success) AS sum_success_l1_gas_used_unified
 
-  , wei_to_eth(sum(tx_fee)) AS tx_fee_sum_eth
+  , sum(CAST(tx_fee_native AS Float64)) AS sum_tx_fee_native
 
-  , wei_to_eth(sum(if(success, tx_fee, 0))) AS success_tx_fee_sum_eth
+  , sumIf(tx_fee_native, success) AS sum_success_tx_fee_native
 
   -- L2 Fee and breakdown into BASE + PRIORITY
-  , wei_to_eth(sum(l2_fee)) AS l2_fee_sum_eth
+  , sum(l2_fee_native) AS sum_l2_fee_native
 
-  , wei_to_eth(sum(l2_base_fee)) AS l2_base_fee_sum_eth
+  , sum(l2_base_fee_native) AS sum_l2_base_fee_native
 
-  , wei_to_eth(sum(l2_priority_fee)) AS l2_priority_fee_sum_eth
+  , sum(l2_priority_fee_native) AS sum_l2_priority_fee_native
 
-  -- 2024-12-16 (pedro): Consider renaming the output column. We updated the
-  -- transactions view and the column coming out of the view no longer matches
-  -- the name we used for the aggregation. If we do a backfill of the adress
-  -- summary model we can consider updating the column name.
-  , wei_to_eth(sum(l2_legacy_extra_fee)) AS l2_base_legacy_fee_sum_eth
+  , sum(l2_legacy_extra_fee_native) AS sum_l2_legacy_extra_fee_native
 
   -- L1 Fee and breakdown into BASE + BLOB
-  , wei_to_eth(sum(l1_fee)) AS l1_fee_sum_eth
+  , sum(l1_fee_native) AS sum_l1_fee_native
 
-  , wei_to_eth(sum(l1_base_fee)) AS l1_base_fee_sum_eth
+  , sum(l1_base_fee_native) AS sum_l1_base_fee_native
 
-  , wei_to_eth(sum(l1_blob_fee)) AS l1_blob_fee_sum_eth
+  , sum(l1_blob_fee_native) AS sum_l1_blob_fee_native
 
-  -- L2 Price and breakdown into BASE + PRIORITY
-  , wei_to_gwei(safe_div(sum(l2_fee), sum(l2_gas_used)))
-    AS l2_gas_price_avg_gwei
+  -- Transaction-Level Gas Prices
+  , SUM(l2_gas_used * CAST(l2_gas_price_gwei AS Nullable(Float64))) / SUM(l2_gas_used) AS avg_l2_gas_price_gwei
+  , SUM(l2_gas_used * CAST(l2_priority_gas_price_gwei AS Nullable(Float64))) / SUM(l2_gas_used) AS avg_l2_priority_gas_price_gwei
+  , SUM(l2_gas_used * CAST(l2_legacy_extra_gas_price_gwei AS Nullable(Float64))) / SUM(l2_gas_used) AS avg_l2_legacy_extra_gas_price_gwei
+  , SUM(l2_gas_used * CAST(l1_base_gas_price_gwei AS Nullable(Float64))) / SUM(l2_gas_used) AS avg_l1_base_gas_price_gwei
+  , SUM(l2_gas_used * CAST(l1_blob_base_gas_price_gwei AS Nullable(Float64))) / SUM(l2_gas_used) AS avg_l1_blob_base_gas_price_gwei
 
-  , wei_to_gwei(safe_div(sum(l2_base_fee), sum(l2_gas_used)))
-    AS l2_base_price_avg_gwei
-
-  , wei_to_gwei(safe_div(sum(l2_priority_fee), sum(l2_gas_used)))
-    AS l2_priority_price_avg_gwei
-
-  -- L1 Price breakdown into BASE + BLOB
-  , wei_to_gwei(safe_div(sum(l1_base_fee), sum(l1_base_scaled_size))
-  ) AS l1_base_price_avg_gwei
-
-  , wei_to_gwei(safe_div(sum(l1_blob_fee), sum(l1_blob_scaled_size)))
-    AS l1_blob_fee_avg_gwei
 
   -- Data Processed
   , sum(input_zero_bytes) AS input_zero_bytes_sum
-  , sum(if(success, input_zero_bytes, 0)) AS success_input_zero_bytes_sum
+  , sumIf(input_zero_bytes, success) AS success_input_zero_bytes_sum
 
   , sum(input_byte_length - input_zero_bytes) AS input_nonzero_bytes_sum
-  , sum(if(success, input_byte_length - input_zero_bytes, 0)) AS success_input_nonzero_bytes_sum
+  , sumIf(input_byte_length - input_zero_bytes, success) AS success_input_nonzero_bytes_sum
 
   , sum(input_byte_length) AS input_byte_length_sum
-  , sum(if(success, input_byte_length, 0)) AS success_input_byte_length_sum
+  , sumIf(input_byte_length, success) AS success_input_byte_length_sum
 
   , sum(estimated_size) AS estimated_size_sum
-  , sum(if(success, estimated_size, 0)) AS success_estimated_size_sum
+  , sumIf(estimated_size, success) AS success_estimated_size_sum
 
-FROM
-  blockbatch_gcs.read_date(
-    rootpath = 'blockbatch/refined_traces/refined_transactions_fees_v1'
-    , chain = '*'
-    , dt = { dtparam: Date }
-  )
-WHERE
-  NOT is_system_transaction
-
+FROM tx_fees
 
 GROUP BY
   1
