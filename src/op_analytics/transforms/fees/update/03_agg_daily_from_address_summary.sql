@@ -1,4 +1,4 @@
-WITH 
+WITH
 
 tx_fees AS (
   SELECT
@@ -22,16 +22,16 @@ tx_fees AS (
     , accurateCast(l2_priority_fee_native, 'Float64') AS l2_priority_fee_native
     , accurateCast(l2_legacy_extra_fee_native, 'Float64') AS l2_legacy_extra_fee_native
     , accurateCast(l1_fee_native, 'Float64') AS l1_fee_native
-    , accurateCast(l1_base_fee_native, 'Float64') AS l1_base_fee_native
+    , accurateCast(coalesce(l1_base_fee_native, 0), 'Float64') AS l1_base_fee_native
     , accurateCast(l1_blob_fee_native, 'Float64') AS l1_blob_fee_native
     , accurateCast(l2_gas_price_gwei, 'Float64') AS l2_gas_price_gwei
     , accurateCast(l2_priority_gas_price_gwei, 'Float64') AS l2_priority_gas_price_gwei
     , accurateCast(l2_legacy_extra_gas_price_gwei, 'Float64') AS l2_legacy_extra_gas_price_gwei
-    , accurateCast(l1_base_gas_price_gwei, 'Float64') AS l1_base_gas_price_gwei
-    , accurateCast(l1_blob_base_gas_price_gwei, 'Float64') AS l1_blob_base_gas_price_gwei
+    , accurateCast(l1_base_gas_price_gwei, 'Nullable(Float64)') AS l1_base_gas_price_gwei
+    , accurateCast(l1_blob_base_gas_price_gwei, 'Nullable(Float64)') AS l1_blob_base_gas_price_gwei
     , accurateCast(input_byte_length, 'UInt32') AS input_byte_length
     , accurateCast(input_zero_bytes, 'UInt32') AS input_zero_bytes
-    , accurateCast(estimated_size, 'UInt64') AS estimated_size
+    , accurateCast(coalesce(estimated_size, 0), 'UInt64') AS estimated_size
   FROM
     blockbatch_gcs.read_date(
       rootpath = 'blockbatch/refined_traces/refined_transactions_fees_v1'
@@ -86,15 +86,15 @@ SELECT
 
   , count(DISTINCT method_id) AS count_distinct_method_id
 
-  , sum(CAST(l2_gas_used AS UInt256)) AS sum_l2_gas_used
+  , sum(l2_gas_used) AS sum_l2_gas_used
 
-  , sumIf(CAST(l2_gas_used AS UInt256), success) AS sum_success_l2_gas_used
+  , sumIf(l2_gas_used, success) AS sum_success_l2_gas_used
 
-  , sum(CAST(l1_gas_used_unified AS UInt256)) AS sum_l1_gas_used_unified
+  , sum(l1_gas_used_unified) AS sum_l1_gas_used_unified
 
-  , sumIf(CAST(l1_gas_used_unified AS UInt256), success) AS sum_success_l1_gas_used_unified
+  , sumIf(l1_gas_used_unified, success) AS sum_success_l1_gas_used_unified
 
-  , sum(CAST(tx_fee_native AS Float64)) AS sum_tx_fee_native
+  , sum(tx_fee_native) AS sum_tx_fee_native
 
   , sumIf(tx_fee_native, success) AS sum_success_tx_fee_native
 
@@ -115,11 +115,11 @@ SELECT
   , sum(l1_blob_fee_native) AS sum_l1_blob_fee_native
 
   -- Transaction-Level Gas Prices
-  , SUM(l2_gas_used * CAST(l2_gas_price_gwei AS Nullable(Float64))) / SUM(l2_gas_used) AS avg_l2_gas_price_gwei
-  , SUM(l2_gas_used * CAST(l2_priority_gas_price_gwei AS Nullable(Float64))) / SUM(l2_gas_used) AS avg_l2_priority_gas_price_gwei
-  , SUM(l2_gas_used * CAST(l2_legacy_extra_gas_price_gwei AS Nullable(Float64))) / SUM(l2_gas_used) AS avg_l2_legacy_extra_gas_price_gwei
-  , SUM(l2_gas_used * CAST(l1_base_gas_price_gwei AS Nullable(Float64))) / SUM(l2_gas_used) AS avg_l1_base_gas_price_gwei
-  , SUM(l2_gas_used * CAST(l1_blob_base_gas_price_gwei AS Nullable(Float64))) / SUM(l2_gas_used) AS avg_l1_blob_base_gas_price_gwei
+  , avgWeighted(l2_gas_price_gwei, l2_gas_used) AS avg_l2_gas_price_gwei
+  , avgWeighted(l2_priority_gas_price_gwei, l2_gas_used) AS avg_l2_priority_gas_price_gwei
+  , avgWeighted(l2_legacy_extra_gas_price_gwei, l2_gas_used) AS avg_l2_legacy_extra_gas_price_gwei
+  , avgWeighted(l1_base_gas_price_gwei, l2_gas_used) AS avg_l1_base_gas_price_gwei
+  , avgWeighted(l1_blob_base_gas_price_gwei, l2_gas_used) AS avg_l1_blob_base_gas_price_gwei
 
 
   -- Data Processed
@@ -138,8 +138,10 @@ SELECT
 FROM tx_fees
 
 GROUP BY
-  1
-  , 2
-  , 3
-  , 4
-  , 5
+  dt
+  , chain
+  , chain_id
+  , network
+  , from_address
+
+SETTINGS use_hive_partitioning = 1
