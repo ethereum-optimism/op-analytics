@@ -22,5 +22,9 @@ def transforms_governance(context: OpExecutionContext):
     - Decoding DelegateVotesChanged events.
     - Joining with raw blocks to provide block timestamps.
     """
-    result = execute_dt_transforms(group_name="governance", force_complete=True)
+    result = execute_dt_transforms(
+        group_name="governance",
+        raise_if_empty=[1, 2, 16],
+        force_complete=True,
+    )
     context.log.info(result)
