@@ -13,11 +13,11 @@ from .utils.jobs import (
 import importlib
 
 MODULE_NAMES = [
-    "blockbatch",
-    "blockingest",
+    "blockbatchingest",
+    "blockbatchload",
+    "blockbatchprocess",
     "bqpublic",
     "chainsdaily",
-    "chainshourly",
     "defillama",
     "dune",
     "github",
@@ -47,7 +47,7 @@ defs = Definitions(
         create_schedule_for_selection(
             job_name="blockbatch_ingest",
             selection=AssetSelection.assets(
-                ["blockingest", "audit_and_ingest"],
+                ["blockbatchingest", "audit_and_ingest"],
             ),
             cron_schedule="8,38 * * * *",
             custom_k8s_config=OPK8sConfig(
@@ -63,7 +63,7 @@ defs = Definitions(
         create_schedule_for_selection(
             job_name="blockbatch_models_a",
             selection=AssetSelection.assets(
-                ["blockbatch", "update_a"],
+                ["blockbatchprocess", "update_a"],
             ),
             cron_schedule="22,52 * * * *",
             custom_k8s_config=OPK8sConfig(
@@ -79,7 +79,7 @@ defs = Definitions(
         create_schedule_for_selection(
             job_name="blockbatch_models_b",
             selection=AssetSelection.assets(
-                ["blockbatch", "update_b"],
+                ["blockbatchprocess", "update_b"],
             ),
             cron_schedule="7,37 * * * *",
             custom_k8s_config=OPK8sConfig(
@@ -89,6 +89,13 @@ defs = Definitions(
                 cpu_limit="1",
             ),
             num_retries=None,
+        ),
+        #
+        # Chain related hourly jobs
+        create_schedule_for_group(
+            group="blockbatch_to_clickhouse",
+            cron_schedule="38 * * * *",  # Run every hour
+            custom_k8s_config=SMALL_POD,
         ),
         #
         # Load superchain_raw to BQ
@@ -117,16 +124,6 @@ defs = Definitions(
         create_schedule_for_group(
             group="chainsdaily",
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
-            custom_k8s_config=OPK8sConfig(
-                mem_request="720Mi",
-                mem_limit="2Gi",
-            ),
-        ),
-        #
-        # Chain related hourly jobs
-        create_schedule_for_group(
-            group="chainshourly",
-            cron_schedule="38 * * * *",  # Run every hour
             custom_k8s_config=OPK8sConfig(
                 mem_request="720Mi",
                 mem_limit="2Gi",
