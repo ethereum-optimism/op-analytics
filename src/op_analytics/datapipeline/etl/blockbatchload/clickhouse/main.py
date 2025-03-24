@@ -33,7 +33,7 @@ def load_to_clickhouse(
 
     # Candidate markers are for blockbatches produced upstream.
     candidate_markers_df = candidate_markers(
-        date_rannge=date_range,
+        date_range=date_range,
         root_paths=[d.root_path for d in datasets],
     )
 
