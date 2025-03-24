@@ -70,11 +70,11 @@ class DataReaderTestUtil:
         return MockParquetData(context=self.context, dataset=dataset)
 
 
-class IntermediateModelTestBase(unittest.TestCase):
-    """Base Class for Intermediate Model Unit Tests.
+class ModelTestBase(unittest.TestCase):
+    """Base Class for models unit tests.
 
-    This class helps with fetching and locally storing sample data for use in intermediate
-    model unit tests.
+    This class helps with fetching and locally storing sample data for use in model unit
+    tests.
 
     The test data is stored in a local duckdb file. If the file does not exist the data is
     fetched from GCS and stored so it can be used by subsequent runs.
@@ -98,8 +98,8 @@ class IntermediateModelTestBase(unittest.TestCase):
     # Chains that should be included in the test data.
     chains: list[str]
 
-    # Date that should be included in the test data.
-    dateval: date
+    # Block number or date used for fetching test data
+    target_range: int | date
 
     # Specify blocks that should be included in the test data.
     block_filters: list[str]
@@ -133,7 +133,6 @@ class IntermediateModelTestBase(unittest.TestCase):
             dir_name=os.path.dirname(db_path),
             db_file_name=db_file_name,
         )
-        cls._duckdb_context.connect_to_gcs()
 
         tables_exist = cls._tables_exist(datasets=model.input_datasets)
 
@@ -141,7 +140,7 @@ class IntermediateModelTestBase(unittest.TestCase):
             if not cls._enable_fetching:
                 raise RuntimeError(
                     dedent(
-                        """Intermediate Model Test Utils Error:
+                        """Model Test Utils Error:
                     
                     - Input test data has not been fetched yet.
                     
@@ -153,6 +152,7 @@ class IntermediateModelTestBase(unittest.TestCase):
 
             else:
                 log.info("Fetching test data from GCS.")
+                cls._duckdb_context.connect_to_gcs()
 
                 # We patch the markers database to use the real production database.
                 # This allows us to fetch test data straight from production.
@@ -209,17 +209,28 @@ class IntermediateModelTestBase(unittest.TestCase):
     @classmethod
     def _fetch_test_data(cls, datasets: list[str]):
         """Fetch test data from GCS and save it to the local duckdb."""
-        datestr = cls.dateval.strftime("%Y%m%d")
+
+        if isinstance(cls.target_range, int):
+            range_spec = f"{cls.target_range}:+1"
+
+        elif isinstance(cls.target_range, date):
+            datestr = cls.target_range.strftime("%Y%m%d")
+            range_spec = f"@{datestr}:+1"
+
+        else:
+            raise NotImplementedError()
 
         from op_analytics.datapipeline.etl.blockbatch.construct import construct_tasks
 
-        tasks = construct_tasks(
+        tasks = []
+        for task_group in construct_tasks(
             chains=cls.chains,
             models=[cls.model],
-            range_spec=f"@{datestr}:+1",
+            range_spec=range_spec,
             read_from=DataLocation.GCS,
             write_to=DataLocation.GCS,
-        )
+        ):
+            tasks.extend(task_group)
         assert len(tasks) > 0
         task = tasks[0]
 

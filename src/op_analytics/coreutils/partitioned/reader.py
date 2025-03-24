@@ -20,8 +20,7 @@ class DataReader:
     If data is incomplete any current parquet paths in GCS will be returned. It's
     up to the consumer to decide what to do with them.
 
-    On some cases it will be preferable to do no processing for incomplete data
-    (e.g. when processing intermediate models).
+    On some cases it will be preferable to do no processing for incomplete data.
 
     On other cases it can make sense to do partial processing (e.g. when loading
     data into BigQuery).
@@ -59,6 +58,13 @@ class DataReader:
 
     def partitions_dict(self):
         return self.partitions.as_dict()
+
+    def debugging_context(self):
+        """Return a dictionary with partition and marker data for debugging."""
+        return {
+            **self.partitions_dict(),
+            **(self.extra_marker_data or {}),
+        }
 
     @property
     def paths_summary(self) -> dict[str, int]:

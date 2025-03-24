@@ -26,8 +26,10 @@ SELECT
   , u.block_number
   , u.transaction_hash
   , u.log_index
-  , u.sender
-  , t.userop_sender
+  , u.sender AS logs_sender
+  , t.block_number AS trace_block_number
+  , t.userop_sender AS trace_sender
+  , t.transaction_hash AS trace_tx_hash
 FROM uops AS u
 FULL OUTER JOIN traces AS t
   ON

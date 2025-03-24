@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `contract_address` FixedString(42),
     `topic0` FixedString(66),
     `event_name` String,
-    INDEX dt_idx chain TYPE minmax GRANULARITY 1,
+    INDEX dt_idx dt TYPE minmax GRANULARITY 1,
     INDEX chain_idx chain TYPE minmax GRANULARITY 1,
 )
 ENGINE = ReplacingMergeTree

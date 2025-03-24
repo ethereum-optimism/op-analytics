@@ -1,7 +1,8 @@
 WITH
 
--- Traces that are innerHandleOp calls.
-decoded_traces AS (
+-- All traces in transactions that emit Entrypoint Contract logs. 
+-- (See prefiltering logic.)
+all_prefiltered_traces AS (
   SELECT
     t.dt
     , t.chain
@@ -29,6 +30,7 @@ decoded_traces AS (
     , t.status
     , t.trace_root
     , hexstr_method_id(t.input) AS method_id
+    , hexstr_method_id(t.input) IN ('{{ method_id_v6 }}', '{{ method_id_v7 }}') AS is_innerhandleop
     , IF(
       hexstr_method_id(t.input) IN ('{{ method_id_v6 }}', '{{ method_id_v7 }}')
       , decode_innerhandleop(t.input)
@@ -37,8 +39,134 @@ decoded_traces AS (
   FROM {{ prefiltered_traces }} AS t
 )
 
--- Destructure the decoded result into our custom column names.
-, decoded_traces_exploded AS (
+-- Flatten the decoded result and rename columns to get our desired traces schema.
+, decoded_traces_flattened AS (
+  SELECT
+    t.dt
+    , t.chain
+    , t.chain_id
+    , t.network
+    --
+    , t.block_timestamp
+    , t.block_number
+    , t.block_hash
+    , t.transaction_hash
+    , t.transaction_index
+    , t.from_address
+    , t.to_address
+    , t.value
+    , t.input
+    , t.output
+    , t.trace_type
+    , t.call_type
+    , t.reward_type
+    , t.gas
+    , t.gas_used
+    , t.subtraces
+    , t.trace_address
+    , t.error
+    , t.status
+    , t.trace_root
+    , t.method_id
+    , t.is_innerhandleop
+
+    --
+    -- The most important decoded fields.
+    , t.decoded['opinfo_sender'] AS userop_sender
+    , t.decoded['opinfo_paymaster'] AS userop_paymaster
+    , t.decoded['opinfo_userophash'] AS userop_hash
+    , t.decoded['calldata'] AS userop_calldata
+
+    --
+    -- Additional decoded fields (not as important but keeping them for completeness).
+    , t.decoded['decodeerror'] AS innerhandleop_decodeerror
+    , t.decoded['opinfo'] AS innerhandleop_opinfo
+    , t.decoded['context'] AS innerhandleop_context
+
+  FROM all_prefiltered_traces AS t
+)
+
+
+-- Find the tx_from_address by looking at the trace with trace_root = -1.
+-- See udfs.py for the definition of trace_address_root().
+, transactions AS (
+  SELECT
+    t.block_number
+    , t.transaction_hash
+    , t.from_address AS tx_from_address
+  FROM all_prefiltered_traces AS t
+  WHERE t.trace_root = -1
+)
+
+
+-- Find the handleOps traces. handleOps is the caller of innerHandleOp.
+, handleops AS (
+  SELECT
+    t.block_number
+    , t.transaction_hash
+    , t.from_address AS bundler_address
+    , t.trace_address AS handleops_trace
+  FROM all_prefiltered_traces AS t
+  WHERE t.method_id IN ('{{ handle_ops_v6 }}', '{{ handle_ops_v7 }}')
+)
+
+
+-- Get the InnerHandleOp traces and enrich them by joining with:
+--   * UserOperationEvent
+--   * handleOps -> bundler_address
+, innerhandleops AS (
+  SELECT
+    t.block_number
+    , t.transaction_hash
+
+    -- The bundler address. The bundler calls handleOps on the entrypoint.
+    , h.bundler_address
+
+    -- innerHandleOp is called by the entrypoint contract. 
+    , t.from_address AS entrypoint_contract_address
+
+    -- trace_address of the innerHandleOp call.
+    , t.trace_address AS innerhandleop_trace_address
+
+    , t.userop_sender
+    , t.userop_paymaster
+    , t.userop_hash
+    , t.userop_calldata
+    , t.innerhandleop_decodeerror
+    , t.innerhandleop_opinfo
+    , t.innerhandleop_context
+    , u.nonce AS useropevent_nonce
+    , u.success AS useropevent_success
+    , u.actualgascost AS useropevent_actualgascost
+    , u.actualgasused AS useropevent_actualgasused
+    , CASE
+      WHEN t.method_id = '{{ method_id_v6 }}' THEN 'v6'
+      WHEN t.method_id = '{{ method_id_v7 }}' THEN 'v7'
+    END AS entrypoint_contract_version
+
+  FROM decoded_traces_flattened AS t
+  LEFT JOIN {{ uops }} AS u
+    ON
+      t.block_number = u.block_number
+      AND t.transaction_hash = u.transaction_hash
+      AND t.userop_sender = u.sender
+      AND t.userop_paymaster = u.paymaster
+      AND t.userop_hash = u.userophash
+
+  LEFT JOIN handleops AS h
+    ON
+      t.block_number = h.block_number
+      AND t.transaction_hash = h.transaction_hash
+      AND trace_address_parent(t.trace_address) = h.handleops_trace
+
+  -- This value us only available for inn
+  WHERE is_innerhandleop
+)
+
+-- Enrich traces by joining them with:
+--  * innerHandleOp trace enriched with logs and handleOps
+--  * transaction from_address
+, enriched_traces AS (
   SELECT
     t.dt
     , t.chain
@@ -67,125 +195,79 @@ decoded_traces AS (
     , t.trace_root
     , t.method_id
 
-    --
-    -- The most important decoded fields.
-    , t.decoded['opinfo_sender'] AS userop_sender
-    , t.decoded['opinfo_paymaster'] AS userop_paymaster
-    , t.decoded['opinfo_userophash'] AS userop_hash
-    , t.decoded['calldata'] AS userop_calldata
+    -- The transaction from_address. Usually this is the bundler. Unless the bundler 
+    -- is nested under another parent transaction.
+    , tx.tx_from_address
 
-    --
-    -- Additional decoded fields (not as important but keeping them for completeness).
-    , t.decoded['decodeerror'] AS innerhandleop_decodeerror
-    , t.decoded['opinfo'] AS innerhandleop_opinfo
-    , t.decoded['context'] AS innerhandleop_context
+    -- The bundler address.
+    , i.bundler_address
 
-  FROM decoded_traces AS t
+    -- This is the from_address on the innerHandleOp trace. 
+    , i.entrypoint_contract_address
+    , i.entrypoint_contract_version
+
+    -- Values picked from the self join. Useful for debugging
+    , i.innerhandleop_trace_address
+
+    -- Flag the innerHandleOp traces.
+    , t.is_innerhandleop
+
+
+    -- Flag traces that are from the userop sender.
+    , t.from_address = i.userop_sender AS is_from_sender
+
+    -- The innerHandleOp fields are included for all subtraces of the innerHandleOp
+    -- This should enable analysis without an additional self-join.
+    , i.userop_sender
+    , i.userop_paymaster
+    , i.userop_hash
+    , i.userop_calldata
+
+    -- Additional decoded fields. 
+    , i.innerhandleop_decodeerror
+    , i.innerhandleop_opinfo
+    , i.innerhandleop_context
+
+    -- Values picked from the UserOperationEvent logs
+    , i.useropevent_nonce
+    , i.useropevent_success
+    , i.useropevent_actualgascost
+    , i.useropevent_actualgasused
+
+  FROM decoded_traces_flattened AS t
+
+  INNER JOIN innerhandleops AS i
+    ON
+      t.block_number = i.block_number
+      AND t.transaction_hash = i.transaction_hash
+      -- Subtraces of the innerHandleOp function call.
+      AND starts_with(t.trace_address, i.innerhandleop_trace_address)
+
+  LEFT JOIN transactions AS tx
+    ON
+      t.block_number = tx.block_number
+      AND t.transaction_hash = tx.transaction_hash
 )
 
-
--- InnerHandleOp traces joined to the corresponding UserOperationEvent
-, innerhandleops AS (
+, numbered_userops AS (
   SELECT
     t.block_number
     , t.transaction_hash
-    , t.userop_sender
-    , t.userop_paymaster
-    , t.userop_hash
-    , t.userop_calldata
-    , t.innerhandleop_decodeerror
-    , t.innerhandleop_opinfo
-    , t.innerhandleop_context
-    , t.trace_address AS innerhandleop_trace_address
-    , u.nonce AS useropevent_nonce
-    , u.success AS useropevent_success
-    , u.actualGasCost AS useropevent_actualgascost
-    , u.actualGasUsed AS useropevent_actualgasused
-    , CASE
-      WHEN t.method_id = '{{ method_id_v6 }}' THEN 'v6'
-      WHEN t.method_id = '{{ method_id_v7 }}' THEN 'v7'
-      ELSE NULL
-    END AS entrypoint_contract_version
-
-  FROM decoded_traces_exploded AS t
-  LEFT JOIN {{ uops }} AS u
-    ON
-      t.block_number = u.block_number
-      AND t.transaction_hash = u.transaction_hash
-      AND t.userop_sender = u.sender
-      AND t.userop_paymaster = u.paymaster
-      AND t.userop_hash = u.userophash
-
-  WHERE t.userop_sender IS NOT NULL
+    , t.trace_address AS userop_trace_address
+    , row_number()
+      OVER (PARTITION BY t.block_number, t.transaction_hash, t.innerhandleop_trace_address ORDER BY t.trace_address ASC)
+      AS userop_idx
+  FROM enriched_traces AS t
+  WHERE t.is_from_sender
 )
 
--- Enrich traces by matching them with:
---  * The decoded innerHandleOp trace (self-join) 
---  * The decoded UserOperationEvent (join with logs)
-SELECT -- noqa: ST06
-  t.dt
-  , t.chain
-  , t.chain_id
-  , t.network
-  --
-  , t.block_timestamp
-  , t.block_number
-  , t.block_hash
-  , t.transaction_hash
-  , t.transaction_index
-  , t.from_address
-  , t.to_address
-  , t.value
-  , t.input
-  , t.output
-  , t.trace_type
-  , t.call_type
-  , t.reward_type
-  , t.gas
-  , t.gas_used
-  , t.subtraces
-  , t.trace_address
-  , t.error
-  , t.status
-  , t.trace_root
-  , t.method_id
-
-  -- Flag the innerHandleOp traces.
-  , t.userop_sender IS NOT NULL AS is_innerhandleop
-
-  -- Flag traces that are subtraces of the innerhandleop (this is the same as the join condition)
-  , i.innerhandleop_trace_address IS NOT NULL AND starts_with(t.trace_address, i.innerhandleop_trace_address) AS is_innerhandleop_subtrace
-
-  -- Flag traces that are from the userop sender.
-  , t.from_address = i.userop_sender AS is_from_sender
-
-  -- The innerHandleOp fields are included for all subtraces of the innerHandleOp
-  -- This should enable analysis without an additional self-join.
-  , i.userop_sender
-  , i.userop_paymaster
-  , i.userop_hash
-  , i.userop_calldata
-
-  -- Additional decoded fields. 
-  , i.innerhandleop_decodeerror
-  , i.innerhandleop_opinfo
-  , i.innerhandleop_context
-
-  -- Values picked from the self join.
-  , i.innerhandleop_trace_address
-  , i.entrypoint_contract_version
-
-  -- Values picked from the UserOperationEvent logs
-  , i.useropevent_nonce
-  , i.useropevent_success
-  , i.useropevent_actualgascost
-  , i.useropevent_actualgasused
-
-FROM decoded_traces_exploded AS t
-
-LEFT JOIN innerhandleops AS i
+SELECT
+  t.*
+  , nu.userop_idx
+  , decimal_to_float_scale_18(t.useropevent_actualgascost) AS useropevent_actualgascost_eth
+FROM enriched_traces AS t
+LEFT JOIN numbered_userops AS nu
   ON
-    t.block_number = i.block_number
-    AND t.transaction_hash = i.transaction_hash
-    -- Subtraces of the innerHandleOp function call.
-    AND starts_with(t.trace_address, i.innerhandleop_trace_address)
+    t.block_number = nu.block_number
+    AND t.transaction_hash = nu.transaction_hash
+    AND t.trace_address = nu.userop_trace_address

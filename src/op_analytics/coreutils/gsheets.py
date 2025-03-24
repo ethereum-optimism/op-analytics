@@ -2,7 +2,8 @@ from unittest.mock import MagicMock
 
 import gspread
 import pandas as pd
-
+import stamina
+from gspread.exceptions import APIError
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.gcpauth import get_credentials
@@ -65,6 +66,7 @@ def update_gsheet(location_name: str, worksheet_name: str, dataframe: pd.DataFra
     log.info(f"Wrote {dataframe.shape} cells to Google Sheets: {location_name}#{worksheet_name}")
 
 
+@stamina.retry(on=APIError, attempts=3, wait_initial=10)
 def read_gsheet(location_name: str, worksheet_name: str):
     """Read data from a google sheet"""
     worksheet = get_worksheet(location_name, worksheet_name)

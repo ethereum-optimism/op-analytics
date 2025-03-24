@@ -40,6 +40,16 @@ class DataLocation(str, Enum):
 
         raise NotImplementedError()
 
+    def create_dir(self, path: str) -> None:
+        if self == DataLocation.GCS:
+            return
+        if self == DataLocation.LOCAL:
+            abs_path = self.absolute(path)
+            os.makedirs(os.path.dirname(abs_path), exist_ok=True)
+            return
+
+        raise NotImplementedError()
+
     def ensure_biguqery(self):
         if self not in (DataLocation.BIGQUERY, DataLocation.BIGQUERY_LOCAL_MARKERS):
             raise ValueError(f"invalid location for bigquery load: {self}")

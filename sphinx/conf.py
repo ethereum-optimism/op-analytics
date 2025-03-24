@@ -16,7 +16,6 @@ author = "OP Labs"
 
 extensions = [
     "myst_parser",
-    "sphinxcontrib.typer",
 ]
 
 templates_path = ["_templates"]

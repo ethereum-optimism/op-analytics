@@ -6,7 +6,6 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.markers_core import DateFilter, MarkerFilter
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 
-
 log = structlog.get_logger()
 
 

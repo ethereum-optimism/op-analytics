@@ -1,4 +1,4 @@
-"""DuckDB UDFs that are shared across intermediate models."""
+"""DuckDB UDFs that are shared across models."""
 
 import threading
 import warnings
@@ -106,6 +106,12 @@ UDFS = [
     IF(b = 0, NULL, a / b);
     """,
     #
+    # Convert a decimal string to float assuming 18 decimal places
+    # Split the 18 decimals, add the floating point '.', and then convert to double.
+    """CREATE OR REPLACE MACRO decimal_to_float_scale_18(a) AS
+    CAST(a[:-19] || '.' || lpad(a[-18:], 18, '0')  AS DOUBLE);
+    """,
+    #
     # Fee scalars required division by 1e6.
     # The micro function makes the division convenient without losing precision.
     """CREATE OR REPLACE MACRO micro(a)
@@ -175,11 +181,11 @@ UDFS = [
     """,
     #
     # Trace address root. Examples:
-    #  ""       -> "none"
-    #  "0"      -> "0"
-    #  "0,2"    -> "0"
-    #  "0,10,0" -> "0"
-    #  "0,100,0" -> "0"
+    #  ""       -> -1
+    #  "0"      -> 0
+    #  "0,2"    -> 0
+    #  "0,10,0" -> 0
+    #  "0,100,0" -> 0
     """CREATE OR REPLACE MACRO trace_address_root(a)
     AS CASE
       WHEN length(a) = 0 THEN -1

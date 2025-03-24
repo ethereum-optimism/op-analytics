@@ -4,8 +4,9 @@ from typing import Any
 
 
 import polars as pl
+import requests
 
-from op_analytics.coreutils.request import get_data
+from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.time import date_tostr
 
 
@@ -20,7 +21,7 @@ class ProtocolMetadata:
         return self.df.get_column("protocol_slug").to_list()
 
     @classmethod
-    def fetch(cls, session, process_dt: date) -> "ProtocolMetadata":
+    def fetch(cls, process_dt: date, session: requests.Session | None = None) -> "ProtocolMetadata":
         """Extract metadata from the protocols API response.
 
         Args:
@@ -29,6 +30,7 @@ class ProtocolMetadata:
         Returns:
             Polars DataFrame containing metadata.
         """
+        session = session or new_session()
         protocols = get_data(session, PROTOCOLS_ENDPOINT)
 
         metadata_records = [

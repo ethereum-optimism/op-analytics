@@ -8,8 +8,6 @@ from op_analytics.coreutils.logger import structlog
 
 log = structlog.get_logger()
 
-REGISTERED_FUNCTIONS = []
-
 
 def register_decoder(
     ctx: DuckDBContext,
@@ -20,7 +18,7 @@ def register_decoder(
 ):
     """Register a DuckDB function to decode data."""
 
-    if duckdb_function_name in REGISTERED_FUNCTIONS:
+    if duckdb_function_name in ctx.registered_functions:
         log.warning(f"duckdb function is already registered: {duckdb_function_name}")
         return
 
@@ -37,4 +35,4 @@ def register_decoder(
         return_type=DuckDBPyType(return_type),
     )
 
-    REGISTERED_FUNCTIONS.append(duckdb_function_name)
+    ctx.registered_functions.append(duckdb_function_name)

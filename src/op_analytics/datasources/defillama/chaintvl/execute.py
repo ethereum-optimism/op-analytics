@@ -14,10 +14,6 @@ from .metadata import ChainsMetadata
 
 log = structlog.get_logger()
 
-CHAINS_METADATA_ENDPOINT = "https://api.llama.fi/config"
-CHAINS_ENDPOINT = "https://api.llama.fi/v2/chains"
-CHAINS_TVL_ENDPOINT = "https://api.llama.fi/v2/historicalChainTvl/{slug}"
-
 
 TVL_TABLE_LAST_N_DAYS = 90
 

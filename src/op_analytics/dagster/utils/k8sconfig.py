@@ -2,9 +2,6 @@ import json
 
 from dataclasses import dataclass, field
 
-from dagster import AssetSelection, in_process_executor, define_asset_job
-from dagster_k8s import k8s_job_executor
-
 
 @dataclass
 class OPK8sConfig:
@@ -20,8 +17,16 @@ class OPK8sConfig:
         return new_k8s_config(self)
 
 
+SMALL_POD = OPK8sConfig(
+    mem_request="720Mi",
+    mem_limit="2Gi",
+)
+
+MEDIUM_POD = OPK8sConfig()
+
+
 def new_k8s_config(custom_config: OPK8sConfig | None):
-    k8s_config = custom_config or OPK8sConfig()
+    k8s_config = custom_config or MEDIUM_POD
 
     config = {
         "container_config": {
@@ -39,29 +44,3 @@ def new_k8s_config(custom_config: OPK8sConfig | None):
         raise ValueError("ivalid configuration. could not dump to json: {config}") from ex
 
     return config
-
-
-def op_analytics_asset_job(
-    group: str,
-    custom_k8s_config: OPK8sConfig | None,
-    k8s_pod_per_step: bool,
-):
-    selection = AssetSelection.groups(group)
-    k8s_config = new_k8s_config(custom_k8s_config)
-
-    if k8s_pod_per_step:
-        # NOTE: When using pod-per-step individual assets can override the k8s configuration
-        # See: https://docs.dagster.io/guides/deploy/deployment-options/kubernetes/customizing-your-deployment#kubernetes-configuration-on-individual-steps-in-a-run
-        configured_k8s_executor = k8s_job_executor.configured({"step_k8s_config": k8s_config})
-        return define_asset_job(
-            name=f"{group}_job",
-            selection=selection,
-            executor_def=configured_k8s_executor,
-        )
-    else:
-        return define_asset_job(
-            name=f"{group}_job",
-            selection=selection,
-            executor_def=in_process_executor,
-            tags={"dagster-k8s/config": k8s_config},
-        )

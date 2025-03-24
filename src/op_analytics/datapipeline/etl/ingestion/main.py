@@ -34,18 +34,18 @@ def ingest(
     force_complete: bool = False,
     fork_process: bool = True,
     max_tasks: int | None = None,
-) -> None:
+) -> dict[str, int]:
     tasks = construct_tasks(chains, range_spec, read_from, write_to)
     log.info(f"constructed {len(tasks)} tasks.")
 
     if dryrun:
         log.info("DRYRUN: No work will be done.")
-        return
+        return dict(total=0)
 
     executed = 0
     executed_ok = 0
     for i, task in enumerate(tasks):
-        task.progress_indicator = f"{i+1}/{len(tasks)}"
+        task.progress_indicator = f"{i + 1}/{len(tasks)}"
         with bound_contextvars(**task.contextvars):
             # Decide if we need to run this task.
             if task.write_manager.all_outputs_complete():
@@ -71,6 +71,7 @@ def ingest(
                 break
 
     log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
+    return dict(total=executed, success=executed_ok, fail=executed - executed_ok)
 
 
 def execute(task, fork_process: bool) -> bool:
@@ -137,9 +138,14 @@ def auditor(task: IngestionTask):
     # Iterate over all the registered audits.
     # Raises an exception if an audit is failing.
     passing_audits = 0
+    skipped_audits = 0
     for name, audit in REGISTERED_AUDITS.items():
         # Execute the audit!
-        result: pl.DataFrame = audit(task.input_dataframes)
+        result: pl.DataFrame | None = audit(task.chain, task.input_dataframes)
+
+        if result is None:
+            skipped_audits += 1
+            continue
 
         if not result.collect_schema().get("audit_name") == pl.String:
             raise Exception("Audit result DataFrame is missing column: audit_name[String]")
@@ -158,7 +164,7 @@ def auditor(task: IngestionTask):
             else:
                 passing_audits += 1
 
-    log.info(f"audit {passing_audits} checks OK")
+    log.info(f"audits: {skipped_audits} skipped, {passing_audits} OK")
 
     # Default values for "chain" and "dt" to be used in cases where one of the
     # other datsets is empty.  On chains with very low throughput (e.g. race) we

@@ -4,7 +4,7 @@ import polars as pl
 import requests
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.request import get_data
+from op_analytics.coreutils.request import get_data, new_session
 
 log = structlog.get_logger()
 
@@ -22,7 +22,9 @@ class ChainsMetadata:
     chains: list[str]
 
     @classmethod
-    def fetch(cls, session: requests.Session) -> "ChainsMetadata":
+    def fetch(cls, session: requests.Session | None = None) -> "ChainsMetadata":
+        session = session or new_session()
+
         # Call the chains endpoint to find the list of chains tracked by DefiLLama.
         chains_data = get_data(session, CHAINS_ENDPOINT)
         dfl_chains_list = get_dfl_chains(chains_data)

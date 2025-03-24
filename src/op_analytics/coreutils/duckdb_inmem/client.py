@@ -1,6 +1,6 @@
 import os
 import tempfile
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from threading import Lock
 
 import duckdb
@@ -28,6 +28,8 @@ class DuckDBContext:
     python_udfs_ready: bool = False
 
     is_closed: bool = False
+
+    registered_functions: list[str] = field(default_factory=list)
 
     @property
     def db_path(self):
@@ -69,14 +71,17 @@ class DuckDBContext:
         );
         """)
 
-    def relation_to_polars(self, rel: duckdb.DuckDBPyRelation | str) -> pl.DataFrame:
+    def as_relation(self, rel: duckdb.DuckDBPyRelation | str) -> duckdb.DuckDBPyRelation:
         if isinstance(rel, duckdb.DuckDBPyRelation):
-            return rel.pl()
+            return rel
 
         if isinstance(rel, str):
-            return self.client.sql(f"SELECT * FROM {rel}").pl()
+            return self.client.sql(f"SELECT * FROM {rel}")
 
         raise NotImplementedError()
+
+    def relation_to_polars(self, rel: duckdb.DuckDBPyRelation | str) -> pl.DataFrame:
+        return self.as_relation(rel).pl()
 
     def relation_to_arrow(self, rel: duckdb.DuckDBPyRelation | str) -> pa.Table:
         if isinstance(rel, duckdb.DuckDBPyRelation):
@@ -112,12 +117,16 @@ def init_client() -> DuckDBContext:
             log.info(f"initialized duckdb at {_DUCK_DB.db_path}")
 
             # Setup access to GCS
-            _DUCK_DB.connect_to_gcs()
+            connect_to_gcs(_DUCK_DB)
 
     if _DUCK_DB is None:
         raise RuntimeError("DuckDB client was not properly initialized.")
 
     return _DUCK_DB
+
+
+def connect_to_gcs(ctx: DuckDBContext):
+    ctx.connect_to_gcs()
 
 
 def sanitized_table_name(dataset_name: str) -> str:

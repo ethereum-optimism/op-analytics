@@ -15,9 +15,12 @@ from op_analytics.datapipeline.etl.blockbatch.main import compute_blockbatch
 from op_analytics.datapipeline.etl.ingestion import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
-from op_analytics.datapipeline.etl.intermediate.main import compute_intermediate
-from op_analytics.datapipeline.etl.loadbq import PipelineStage, load_to_bq
+from op_analytics.datapipeline.etl.loadbq.main import (
+    load_superchain_raw_to_bq,
+    load_superchain_4337_to_bq,
+)
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
+from op_analytics.datapipeline.orchestrate import normalize_chains, normalize_blockbatch_models
 
 log = structlog.get_logger()
 
@@ -122,54 +125,6 @@ USE_POOL_OPTION = Annotated[
 ]
 
 
-def normalize_chains(chains: str) -> list[str]:
-    # If for some reason we need to force exclude a chain, add it here.
-    not_included = set()
-
-    result = set()
-    for chain in chains.split(","):
-        if chain == "ALL":
-            result.update(goldsky_chains.goldsky_mainnet_chains())
-            result.update(goldsky_chains.goldsky_testnet_chains())
-        elif chain == "MAINNETS":
-            result.update(goldsky_chains.goldsky_mainnet_chains())
-        elif chain == "TESTNETS":
-            result.update(goldsky_chains.goldsky_testnet_chains())
-        elif chain.startswith("-"):
-            not_included.add(chain.removeprefix("-").strip())
-        else:
-            result.add(chain.strip())
-
-    excluded = result.intersection(not_included)
-    for chain in excluded:
-        log.warning(f"Excluding chain: {chain!r}")
-
-    return list(result - not_included)
-
-
-def normalize_blockbatch_models(models: str) -> list[str]:
-    not_included = set()
-
-    result = set()
-    for model in models.split(","):
-        if model == "MODELS":
-            result.add("contract_creation")
-            result.add("refined_traces")
-            result.add("token_transfers")
-            result.add("account_abstraction_prefilter")
-            result.add("account_abstraction")
-        elif model.startswith("-"):
-            not_included.add(model.removeprefix("-").strip())
-        else:
-            result.add(model.strip())
-
-    excluded = result.intersection(not_included)
-    for model in excluded:
-        log.warning(f"Excluding model: {model!r}")
-
-    return list(result - not_included)
-
-
 @app.command()
 def ingest_blocks(
     chains: CHAINS_ARG,
@@ -194,39 +149,6 @@ def ingest_blocks(
 
     ingest(
         chains=chain_list,
-        range_spec=range_spec,
-        read_from=read_from,
-        write_to=write_to,
-        dryrun=dryrun,
-        force_complete=force_complete,
-        fork_process=fork_process,
-    )
-
-
-@app.command()
-def intermediate_models(
-    chains: CHAINS_ARG,
-    models: Annotated[str, typer.Argument(help="Comma-separated list of models to be processed.")],
-    range_spec: DATES_ARG,
-    read_from: Annotated[
-        DataLocation,
-        typer.Option(
-            help="Where data will be read from.",
-            case_sensitive=False,
-        ),
-    ] = DataLocation.GCS,
-    write_to: WRITE_TO_OPTION = DataLocation.DISABLED,
-    dryrun: DRYRUN_OPTION = False,
-    force_complete: FORCE_COMPLETE_OPTION = False,
-    fork_process: FORK_PROCESS_OPTION = True,
-):
-    """Compute intermediate models for a range of dates."""
-    chain_list = normalize_chains(chains)
-    model_list = [_.strip() for _ in models.split(",")]
-
-    compute_intermediate(
-        chains=chain_list,
-        models=model_list,
         range_spec=range_spec,
         read_from=read_from,
         write_to=write_to,
@@ -277,26 +199,25 @@ def load_superchain_raw(
     dryrun: DRYRUN_OPTION = False,
     force_complete: FORCE_COMPLETE_OPTION = False,
     force_not_ready: FORCE_NOT_READY_OPTION = False,
-    write_to: Annotated[
-        DataLocation,
-        typer.Option(
-            help="Where data will be written to.",
-            case_sensitive=False,
-        ),
-    ] = DataLocation.BIGQUERY,
-    data: Annotated[
-        PipelineStage,
-        typer.Option(
-            help="Data that will be uploaded to BQ.",
-            case_sensitive=False,
-        ),
-    ] = PipelineStage.RAW_ONCHAIN,
 ):
     """Load superchain_raw tables to BigQuery."""
+    load_superchain_raw_to_bq(
+        range_spec=range_spec,
+        dryrun=dryrun,
+        force_complete=force_complete,
+        force_not_ready=force_not_ready,
+    )
 
-    load_to_bq(
-        stage=data,
-        location=write_to,
+
+@app.command()
+def load_superchain_4337(
+    range_spec: DATES_ARG,
+    dryrun: DRYRUN_OPTION = False,
+    force_complete: FORCE_COMPLETE_OPTION = False,
+    force_not_ready: FORCE_NOT_READY_OPTION = False,
+):
+    """Load superchain_raw tables to BigQuery."""
+    load_superchain_4337_to_bq(
         range_spec=range_spec,
         dryrun=dryrun,
         force_complete=force_complete,
@@ -313,7 +234,7 @@ def noargs_ingest():
 
     ingest(
         chains=normalize_chains("ALL"),
-        range_spec="m8hours",
+        range_spec="m16hours",
         read_from=RawOnchainDataProvider.GOLDSKY,
         write_to=DataLocation.GCS,
         dryrun=False,
@@ -322,100 +243,76 @@ def noargs_ingest():
     )
 
 
-@app.command()
-def noargs_blockbatch():
-    """No-args command to run blockbatch models."""
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=normalize_blockbatch_models("MODELS"),
-        range_spec="m8hours",
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
-
-
-@app.command()
-def noargs_intermediate():
-    """No-args command to run daily intermediate models."""
-    for network in ["MAINNETS", "TESTNETS"]:
-        compute_intermediate(
-            chains=normalize_chains(network),
-            models=[
-                "daily_address_summary",
-                "contract_creation",
-            ],
-            range_spec="m3days",
-            read_from=DataLocation.GCS,
-            write_to=DataLocation.GCS,
-            dryrun=False,
-            force_complete=False,
-        )
-
-
-@app.command()
-def noargs_public_bq():
-    """No-args command to load public datasets to BQ."""
-    load_to_bq(
-        stage=PipelineStage.RAW_ONCHAIN,
-        location=DataLocation.BIGQUERY,
-        range_spec="m3days",
-        dryrun=False,
-        force_complete=False,
-        force_not_ready=False,
-    )
-
-
 # Backfills
 
 
 @app.command()
 def aa_backfill_pt2():
-    """Backfill account abstraction prefilter."""
+    """Backfill account abstraction."""
     # Kubernetes job index.
     index = int(os.environ["JOB_COMPLETION_INDEX"])
 
-    # Define start and end dates for the backfill.
-    start_date = datetime.strptime("20241224", "%Y%m%d")
-    end_date = datetime.strptime("20250227", "%Y%m%d")
+    # Num job indexes (the paralellism specified on k8s)
+    num_indexes = 12
 
-    # Generate date ranges with 5-day intervals
+    # Define start and end dates for the backfill.
+    start_date = datetime.strptime("20241201", "%Y%m%d")
+    end_date = datetime.strptime("20250314", "%Y%m%d")
+
+    # Generate date ranges with N-day intervals
     date_ranges = []
     current_date = start_date
     while current_date < end_date:
-        next_date = min(current_date + timedelta(days=5), end_date)
+        next_date = min(current_date + timedelta(days=2), end_date)
         date_ranges.append((current_date.strftime("%Y%m%d"), next_date.strftime("%Y%m%d")))
         current_date = next_date
 
-    if index < len(date_ranges):
-        d0, d1 = date_ranges[index]
+    for ii, (d0, d1) in enumerate(reversed(date_ranges)):
         range_spec = f"@{d0}:{d1}"
-    else:
-        log.info(f"Index {index} out of range. Only {len(date_ranges)} date ranges defined.")
-        return
+        if ii % num_indexes == index:
+            compute_blockbatch(
+                chains=normalize_chains("ALL,-kroma,-unichain_sepolia"),
+                models=["account_abstraction_prefilter", "account_abstraction"],
+                range_spec=range_spec,
+                read_from=DataLocation.GCS,
+                write_to=DataLocation.GCS,
+                dryrun=False,
+                force_complete=False,
+                fork_process=True,
+            )
 
-    # Need to run prefilter first so that markers are created. Without markers then no tasks
-    # will be prepared for the second model.
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=["account_abstraction_prefilter"],
-        range_spec=range_spec,
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
 
-    compute_blockbatch(
-        chains=normalize_chains("ALL"),
-        models=["account_abstraction"],
-        range_spec=range_spec,
-        read_from=DataLocation.GCS,
-        write_to=DataLocation.GCS,
-        dryrun=False,
-        force_complete=False,
-        fork_process=True,
-    )
+@app.command()
+def fees_backfill():
+    """Backfill fees."""
+    # Kubernetes job index.
+    index = int(os.environ["JOB_COMPLETION_INDEX"])
+
+    # Num job indexes (the paralellism specified on k8s)
+    num_indexes = 16
+
+    # Define start and end dates for the backfill.
+    start_date = datetime.strptime("20250114", "%Y%m%d")
+    end_date = datetime.strptime("20250318", "%Y%m%d")
+
+    # Generate date ranges with N-day intervals
+    date_ranges = []
+    current_date = start_date
+    while current_date < end_date:
+        next_date = min(current_date + timedelta(days=2), end_date)
+        date_ranges.append((current_date.strftime("%Y%m%d"), next_date.strftime("%Y%m%d")))
+        current_date = next_date
+
+    for ii, (d0, d1) in enumerate(reversed(date_ranges)):
+        range_spec = f"@{d0}:{d1}"
+        if ii % num_indexes == index:
+            compute_blockbatch(
+                chains=normalize_chains("ALL,-kroma,-unichain_sepolia"),
+                models=["refined_traces", "aggregated_traces"],
+                range_spec=range_spec,
+                read_from=DataLocation.GCS,
+                write_to=DataLocation.GCS,
+                dryrun=False,
+                force_complete=False,
+                fork_process=True,
+            )
