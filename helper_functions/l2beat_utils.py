@@ -127,7 +127,8 @@ def get_l2beat_metadata():
         base_url = "https://api.github.com/repos/l2beat/l2beat/contents/packages/config/src"
 
         # Folders to navigate
-        folders = ["projects/layer2s", "projects/layer3s", "chains"] # "chains"
+        # folders = ["projects/layer2s", "projects/layer3s", "chains"] # "chains"
+        folders = ["projects"]
 
         # Regular expression patterns for parsing TypeScript files
         # Regular expression patterns for parsing TypeScript files
@@ -224,7 +225,9 @@ def get_l2beat_metadata():
         for folder in folders:
         # Request the content of the folder
                 folder_name = folder.split("/")[-1]
-                response = r.get(f"{base_url}/{folder}").json()
+                link_url = f"{base_url}/{folder}"
+                print(link_url)
+                response = r.get(link_url).json()
                 
                 # Initialize a list to collect data dictionaries before appending to DataFrame
                 data_list = []
@@ -288,14 +291,17 @@ def get_l2beat_metadata():
                 # Convert the list of dictionaries to a DataFrame and concatenate with the main DataFrame
                 df = pd.concat([df, pd.DataFrame(data_list)], ignore_index=True)
 
-                # Map sub-providers to the top-level entity
-                df['provider_entity'] = df['provider']  # Initialize with provider values
-                
-                df.loc[df['provider'].str.contains('Arbitrum', case=False, na=False), 'provider_entity'] = 'Arbitrum: Orbit'
-                df.loc[df['provider'].isin(['OP Stack', 'OVM']), 'provider_entity'] = 'Optimism: OP Stack'
-                df.loc[df['provider'].str.contains('Polygon', case=False, na=False), 'provider_entity'] = 'Polygon: CDK'
-                df.loc[df['provider'].str.contains('zkSync', case=False, na=False) | df['provider'].str.contains('ZK Stack', case=False, na=False), 'provider_entity'] = 'zkSync: ZK Stack'
-                df.loc[df['provider'].isin(['Starkware', 'Starknet','StarkEx']), 'provider_entity'] = 'Starkware: Starknet Stack'
+                try:
+                        # Map sub-providers to the top-level entity
+                        df['provider_entity'] = df['provider']  # Initialize with provider values
+                        
+                        df.loc[df['provider'].str.contains('Arbitrum', case=False, na=False), 'provider_entity'] = 'Arbitrum: Orbit'
+                        df.loc[df['provider'].isin(['OP Stack', 'OVM']), 'provider_entity'] = 'Optimism: OP Stack'
+                        df.loc[df['provider'].str.contains('Polygon', case=False, na=False), 'provider_entity'] = 'Polygon: CDK'
+                        df.loc[df['provider'].str.contains('zkSync', case=False, na=False) | df['provider'].str.contains('ZK Stack', case=False, na=False), 'provider_entity'] = 'zkSync: ZK Stack'
+                        df.loc[df['provider'].isin(['Starkware', 'Starknet','StarkEx']), 'provider_entity'] = 'Starkware: Starknet Stack'
+                except:
+                        break
 
         return df
 
