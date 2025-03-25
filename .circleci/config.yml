@@ -246,6 +246,17 @@ jobs:
           name: Run pytest
           command: |
             uv run pytest tests -v
+  
+  markdown-link-checker:
+    executor: default
+    resource_class: small
+    steps:
+      - checkout-dep-1
+      - setup-python-env
+      - run:
+          name: Run link checker script
+          command: |
+            uv run scripts/markdown_link_checker.py
 
 workflows:
   version: 2
@@ -255,10 +266,20 @@ workflows:
       or:
         # run when manually triggered
         - equal: [<< pipeline.parameters.run_job >>, "run-cicd"]
-        #run for every push
+        # run for every push
         - equal: [<< pipeline.trigger_source >>, "webhook"]
     jobs:
       - cicd
+
+  markdown-link-checker:
+    when:
+      or:
+        # run when manually triggered
+        - equal: [<< pipeline.parameters.run_job >>, "markdown-link-checker"]
+        # run for every push
+        - equal: [<< pipeline.trigger_source >>, "webhook"]
+    jobs:
+      - markdown-link-checker
 
   daily-l2-aggregate-later-loads:
     when:
