@@ -10,21 +10,19 @@ from op_analytics.coreutils.logger import structlog
 log = structlog.get_logger()
 
 
-def parquet_to_subquery(gcs_parquet_path: str, virtual_columns: str = "") -> str:
+def parquet_to_subquery(gcs_parquet_path: str) -> str:
     """Construct a Clickhouse SELECT statement to read parquet data from GCS."""
     gcs_path = gcs_parquet_path.replace("gs://", "https://storage.googleapis.com/")
 
     KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
     SECRET = env_get("GCS_HMAC_SECRET")
 
-    return f"""
-    SELECT {virtual_columns} *,
-        FROM s3(
-            '{gcs_path}',
-            '{KEY_ID}',
-            '{SECRET}',
-            'parquet'
-        )
+    return f"""s3(
+        '{gcs_path}',
+        '{KEY_ID}',
+        '{SECRET}',
+        'parquet'
+    )
     """
 
 
@@ -40,7 +38,8 @@ def generate_create_table_ddl(gcs_parquet_path: str, table_name: str):
 
     statement = f"""
     CREATE TEMPORARY TABLE new_table AS (
-        {parquet_to_subquery(gcs_parquet_path)}
+        SELECT *
+        FROM {parquet_to_subquery(gcs_parquet_path)}
     )
     """
     clt.command(statement)
