@@ -1,6 +1,5 @@
 from dagster import (
     AssetSelection,
-    DefaultScheduleStatus,
     Definitions,
     load_assets_from_modules,
 )
@@ -14,11 +13,11 @@ from .utils.jobs import (
 import importlib
 
 MODULE_NAMES = [
-    "blockbatch",
-    "blockingest",
+    "blockbatchingest",
+    "blockbatchload",
+    "blockbatchprocess",
     "bqpublic",
     "chainsdaily",
-    "chainshourly",
     "defillama",
     "dune",
     "github",
@@ -44,52 +43,59 @@ defs = Definitions(
     assets=ASSETS,
     schedules=[
         #
-        # Blockbatch Models
-        create_schedule_for_selection(
-            job_name="blockbatch_models_a",
-            selection=AssetSelection.assets(
-                ["blockbatch", "update_a"],
-            ),
-            cron_schedule="22,52 * * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
-            custom_k8s_config=OPK8sConfig(
-                mem_request="4Gi",
-                mem_limit="6Gi",
-                cpu_request="1",
-                cpu_limit="1",
-            ),
-        ),
-        #
-        # Blockbatch Models
-        create_schedule_for_selection(
-            job_name="blockbatch_models_b",
-            selection=AssetSelection.assets(
-                ["blockbatch", "update_b"],
-            ),
-            cron_schedule="7,37 * * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
-            custom_k8s_config=OPK8sConfig(
-                mem_request="4Gi",
-                mem_limit="6Gi",
-                cpu_request="1",
-                cpu_limit="1",
-            ),
-        ),
-        #
-        # Blockbatch Models
+        # Blockbatch Ingestion
         create_schedule_for_selection(
             job_name="blockbatch_ingest",
             selection=AssetSelection.assets(
-                ["blockingest", "audit_and_ingest"],
+                ["blockbatchingest", "audit_and_ingest"],
             ),
             cron_schedule="8,38 * * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
                 mem_request="6Gi",
                 mem_limit="8Gi",
                 cpu_request="1",
                 cpu_limit="1",
             ),
+            num_retries=None,
+        ),
+        #
+        # Blockbatch Models
+        create_schedule_for_selection(
+            job_name="blockbatch_models_a",
+            selection=AssetSelection.assets(
+                ["blockbatchprocess", "update_a"],
+            ),
+            cron_schedule="22,52 * * * *",
+            custom_k8s_config=OPK8sConfig(
+                mem_request="4Gi",
+                mem_limit="6Gi",
+                cpu_request="1",
+                cpu_limit="1",
+            ),
+            num_retries=None,
+        ),
+        #
+        # Blockbatch Models
+        create_schedule_for_selection(
+            job_name="blockbatch_models_b",
+            selection=AssetSelection.assets(
+                ["blockbatchprocess", "update_b"],
+            ),
+            cron_schedule="7,37 * * * *",
+            custom_k8s_config=OPK8sConfig(
+                mem_request="4Gi",
+                mem_limit="6Gi",
+                cpu_request="1",
+                cpu_limit="1",
+            ),
+            num_retries=None,
+        ),
+        #
+        # Chain related hourly jobs
+        create_schedule_for_group(
+            group="blockbatch_to_clickhouse",
+            cron_schedule="38 * * * *",  # Run every hour
+            custom_k8s_config=SMALL_POD,
         ),
         #
         # Load superchain_raw to BQ
@@ -99,8 +105,8 @@ defs = Definitions(
                 ["bqpublic", "superchain_raw"],
             ),
             cron_schedule="2 4,16 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
+            num_retries=None,
         ),
         #
         # Load superchain_4337 to BQ
@@ -110,26 +116,14 @@ defs = Definitions(
                 ["bqpublic", "superchain_4337"],
             ),
             cron_schedule="32 4,16 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
+            num_retries=None,
         ),
         #
         # Chain related daily jobs
         create_schedule_for_group(
             group="chainsdaily",
             cron_schedule="0 3 * * *",  # Runs at 3 AM daily
-            default_status=DefaultScheduleStatus.RUNNING,
-            custom_k8s_config=OPK8sConfig(
-                mem_request="720Mi",
-                mem_limit="2Gi",
-            ),
-        ),
-        #
-        # Chain related hourly jobs
-        create_schedule_for_group(
-            group="chainshourly",
-            cron_schedule="38 * * * *",  # Run every hour
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
                 mem_request="720Mi",
                 mem_limit="2Gi",
@@ -143,13 +137,11 @@ defs = Definitions(
                 ["defillama", "protocol_tvl_flows_filtered"],
             ).upstream(),
             cron_schedule="0 12 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
                 mem_request="3Gi",
                 mem_limit="4Gi",
             ),
             k8s_pod_per_step=False,
-            job_tags={"dagster/max_retries": 3, "dagster/retry_strategy": "FROM_FAILURE"},
         ),
         #
         # Defillama Pools
@@ -160,13 +152,11 @@ defs = Definitions(
                 ["defillama", "lend_borrow_pools"],
             ).upstream(),
             cron_schedule="0 15 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=OPK8sConfig(
                 mem_request="3Gi",
                 mem_limit="4Gi",
             ),
             k8s_pod_per_step=False,
-            job_tags={"dagster/max_retries": 3, "dagster/retry_strategy": "FROM_FAILURE"},
         ),
         #
         # Defillama other
@@ -176,27 +166,23 @@ defs = Definitions(
                 ["defillama", "other"],
             ).upstream(),
             cron_schedule="0 14 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
         ),
         #
         create_schedule_for_group(
             group="github",
             cron_schedule="0 2 * * *",  # Runs at 2 AM daily
-            default_status=DefaultScheduleStatus.RUNNING,
         ),
         #
         create_schedule_for_group(
             group="dune",
             # Runs at 8 AM daily.
             cron_schedule="0 8 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
         ),
         #
         create_schedule_for_group(
             group="governance",
             cron_schedule="0 10 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
         ),
         #
@@ -204,14 +190,12 @@ defs = Definitions(
             group="growthepie",
             # GrowThePie is generally a little delayed in providing data for the previous day.
             cron_schedule="0 10 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
         ),
         #
         create_schedule_for_group(
             group="l2beat",
             cron_schedule="0 8 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
         ),
         #
@@ -221,7 +205,6 @@ defs = Definitions(
                 ["transforms", "teleportr"],
             ),
             cron_schedule="47 4,8,14,20 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
         ),
         #
@@ -231,7 +214,6 @@ defs = Definitions(
                 ["transforms", "dune"],
             ),
             cron_schedule="47 4,8,14,20 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
         ),
         #
@@ -242,7 +224,6 @@ defs = Definitions(
                 ["transforms", "interop"],
             ),
             cron_schedule="17 4,8,14,20 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
         ),
         #
@@ -252,7 +233,6 @@ defs = Definitions(
                 ["transforms", "fees"],
             ),
             cron_schedule="7 4,8,14,20 * * *",
-            default_status=DefaultScheduleStatus.RUNNING,
             custom_k8s_config=SMALL_POD,
         ),
     ],

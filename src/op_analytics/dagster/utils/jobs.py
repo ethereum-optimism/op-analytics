@@ -52,23 +52,17 @@ def op_analytics_asset_selection_job(
 def create_schedule_for_group(
     group: str,
     cron_schedule: str,
-    default_status: DefaultScheduleStatus,
     custom_k8s_config: OPK8sConfig | None = None,
     k8s_pod_per_step: bool = False,
-    job_tags: dict[str, Any] | None = None,
+    num_retries: int | None = 3,
 ):
-    return ScheduleDefinition(
-        name=group,
-        job=op_analytics_asset_selection_job(
-            job_name=f"{group}_job",
-            selection=AssetSelection.groups(group),
-            custom_k8s_config=custom_k8s_config,
-            k8s_pod_per_step=k8s_pod_per_step,
-            job_tags=job_tags,
-        ),
+    return create_schedule_for_selection(
+        job_name=f"{group}_job",
+        selection=AssetSelection.groups(group),
         cron_schedule=cron_schedule,
-        execution_timezone="UTC",
-        default_status=default_status,
+        custom_k8s_config=custom_k8s_config,
+        k8s_pod_per_step=k8s_pod_per_step,
+        num_retries=num_retries,
     )
 
 
@@ -76,11 +70,15 @@ def create_schedule_for_selection(
     job_name: str,
     selection: AssetSelection,
     cron_schedule: str,
-    default_status: DefaultScheduleStatus,
     custom_k8s_config: OPK8sConfig | None = None,
     k8s_pod_per_step: bool = False,
-    job_tags: dict[str, Any] | None = None,
+    num_retries: int | None = 3,
 ):
+    if num_retries is not None:
+        job_tags = {"dagster/max_retries": num_retries, "dagster/retry_strategy": "FROM_FAILURE"}
+    else:
+        job_tags = None
+
     return ScheduleDefinition(
         name=job_name,
         job=op_analytics_asset_selection_job(
@@ -92,7 +90,7 @@ def create_schedule_for_selection(
         ),
         cron_schedule=cron_schedule,
         execution_timezone="UTC",
-        default_status=default_status,
+        default_status=DefaultScheduleStatus.RUNNING,
     )
 
 

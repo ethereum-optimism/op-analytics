@@ -12,7 +12,6 @@ from op_analytics.coreutils.time import date_tostr
 
 from clickhouse_connect.driver.exceptions import DatabaseError
 
-from .config import FILTER_ALLOWED_ROOT_PATHS
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
 from .table import BlockBatchTable
 
@@ -64,6 +63,7 @@ class InsertTask:
     dt: date
     min_block: int
     data_path: str
+    enforce_row_count: bool = False
 
     @property
     def context(self):
@@ -110,15 +110,15 @@ class InsertTask:
             raise Exception("loading into clickhouse should not result in more rows")
 
         if insert_result.written_rows < insert_result.read_rows:
-            if self.root_path in FILTER_ALLOWED_ROOT_PATHS:
+            if self.enforce_row_count:
+                raise Exception("loading into clickhouse should not result in fewer rows")
+            else:
                 num_filtered = insert_result.read_rows - insert_result.written_rows
                 log.warning(
                     f"{num_filtered} rows were filtered out",
                     written_rows=insert_result.written_rows,
                     read_rows=insert_result.read_rows,
                 )
-            else:
-                raise Exception("loading into clickhouse should not result in fewer rows")
 
         return insert_result
 
