@@ -275,7 +275,7 @@ workflows:
           commit-message: "GH Action Update - Agg Downloads"
           notebook-paths: >-
             [
-              {"dir": "op_chains_tracking", "notebook": "dune_opchain_uploads"},
+              # {"dir": "op_chains_tracking", "notebook": "dune_opchain_uploads"},
               {"dir": "other_chains_tracking", "notebook": "get_filtered_deployers"},
               {"dir": "other_chains_tracking", "notebook": "total_chain_data_to_uploads"}
             ]
