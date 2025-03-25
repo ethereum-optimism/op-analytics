@@ -44,15 +44,19 @@ def main():
 
 
 def check_absolute_path(destination: str):
-    print(destination)
+    print("ABS: ", destination)
     return
 
 
 def check_relative_path(link_file: str, destination: str):
-    print(link_file, destination)
+    print("REL: ", link_file, destination)
     return
 
 
 def check_url(destination: str):
-    print(destination)
+    print("URL: ", destination)
     return
+
+
+if __name__ == "__main__":
+    main()
