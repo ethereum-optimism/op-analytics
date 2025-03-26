@@ -1,5 +1,5 @@
 from datetime import date
-
+from dataclasses import dataclass
 from op_analytics.coreutils.clickhouse.ddl import ClickHouseTable
 from op_analytics.coreutils.logger import structlog, bound_contextvars
 from op_analytics.coreutils.rangeutils.daterange import DateRange
@@ -12,14 +12,30 @@ from .table import BlockBatchTable
 log = structlog.get_logger()
 
 
-def load_to_clickhouse(range_spec: str | None = None, max_tasks: int | None = None):
+@dataclass
+class GCSData:
+    root_path: str
+    enforce_row_count: bool = True
+
+
+def load_to_clickhouse(
+    datasets: list[GCSData],
+    range_spec: str | None = None,
+    max_tasks: int | None = None,
+):
     """Load blockbatch datasets to Clickhouse for the given date range."""
 
     # Default to operating over the last 3 days.
     date_range = DateRange.from_spec(range_spec or "m4days")
 
+    # Indexed by root_path
+    datasets_by_root_path = {d.root_path: d for d in datasets}
+
     # Candidate markers are for blockbatches produced upstream.
-    candidate_markers_df = candidate_markers(date_range)
+    candidate_markers_df = candidate_markers(
+        date_range=date_range,
+        root_paths=[d.root_path for d in datasets],
+    )
 
     # Existing markers are for blockbatches already loaded to ClickHouse.
     existing_markers_df = existing_markers(date_range)
@@ -51,6 +67,7 @@ def load_to_clickhouse(range_spec: str | None = None, max_tasks: int | None = No
             dt=row["dt"],
             min_block=row["min_block"],
             data_path=row["data_path"],
+            enforce_row_count=datasets_by_root_path[row["root_path"]].enforce_row_count,
         )
         tasks.append(insert_task)
 
@@ -59,7 +76,7 @@ def load_to_clickhouse(range_spec: str | None = None, max_tasks: int | None = No
     summary = []
     num_tasks = len(tasks)
     for ii, task in enumerate(tasks):
-        with bound_contextvars(task=f"{ii+1}/{num_tasks}"):
+        with bound_contextvars(task=f"{ii + 1}/{num_tasks}"):
             result = task.execute()
 
         summary.append(

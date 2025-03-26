@@ -73,9 +73,9 @@ class TransformTask:
         results: list[UpdateResult] = []
 
         for step in read_steps(group_name=self.group_name):
-            with bound_contextvars(ddl=step.name):
+            with bound_contextvars(ddl=step.name, step_index=step.index, step_name=step.name):
                 if self.should_skip_step(step.index):
-                    log.info(f"skipping index={step.index} ddl={step.name}")
+                    log.info("skipping")
                     continue
 
                 result = self.run_update(client, step)
@@ -134,7 +134,7 @@ class TransformTask:
             if result.written_rows == 0:
                 msg = "possible data quality issue 0 rows were written!"
                 log.error(msg)
-                raise NoWrittenRows(f"{msg} dt={self.dt}")
+                raise NoWrittenRows(f"{msg} dt={self.dt} step_index={step.index} step={step.name}")
 
         return result
 

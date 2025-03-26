@@ -54,7 +54,7 @@ def create_schedule_for_group(
     cron_schedule: str,
     custom_k8s_config: OPK8sConfig | None = None,
     k8s_pod_per_step: bool = False,
-    num_retries: int | None = None,
+    num_retries: int | None = 3,
 ):
     return create_schedule_for_selection(
         job_name=f"{group}_job",

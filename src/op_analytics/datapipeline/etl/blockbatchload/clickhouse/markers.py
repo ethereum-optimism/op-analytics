@@ -7,7 +7,6 @@ from op_analytics.coreutils.partitioned.markers_core import DateFilter, MarkerFi
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.datapipeline.etl.ingestion.reader.request import BLOCKBATCH_MARKERS_TABLE
 
-from .config import LOADABLE_ROOT_PATHS
 
 log = structlog.get_logger()
 
@@ -25,7 +24,7 @@ MARKER_COLUMNS = [
 ]
 
 
-def candidate_markers(date_range: DateRange) -> pl.DataFrame:
+def candidate_markers(date_range: DateRange, root_paths: list[str]) -> pl.DataFrame:
     """Query to find markers that exist in the daterange.
 
     Only markers from the configured ingestable root paths are considered.
@@ -43,7 +42,7 @@ def candidate_markers(date_range: DateRange) -> pl.DataFrame:
         ),
         projections=MARKER_COLUMNS,
         filters={
-            "roots": MarkerFilter(column="root_path", values=LOADABLE_ROOT_PATHS),
+            "roots": MarkerFilter(column="root_path", values=root_paths),
         },
     )
 
