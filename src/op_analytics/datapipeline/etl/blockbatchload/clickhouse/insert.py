@@ -2,14 +2,15 @@ import os
 import socket
 from dataclasses import asdict, dataclass
 from datetime import date
+from typing import Any
 
 import polars as pl
 
 from op_analytics.coreutils.clickhouse.ddl import read_ddl
 from op_analytics.coreutils.clickhouse.inferschema import parquet_to_subquery
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
-from op_analytics.coreutils.logger import structlog, bound_contextvars
-
+from op_analytics.coreutils.logger import structlog, bound_contextvars, human_rows
+from op_analytics.coreutils.time import date_tostr
 from clickhouse_connect.driver.exceptions import DatabaseError
 
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
@@ -27,6 +28,14 @@ class GCSData:
     input_root_paths: list[str]
     output_root_path: str
     enforce_row_count: bool = True
+
+    @classmethod
+    def pass_through(cls, root_path: str, enforce_row_count: bool = True):
+        return cls(
+            input_root_paths=[root_path],
+            output_root_path=root_path,
+            enforce_row_count=enforce_row_count,
+        )
 
     @staticmethod
     def sanitize_root_path(root_path: str):
@@ -113,28 +122,52 @@ class InsertTask:
     def context(self):
         return dict(blockbatch=self.blockbatch.partitioned_path)
 
-    def execute(self):
-        with bound_contextvars(**self.context):
-            insert_result = self.write()
-            self.write_marker(insert_result)
-            return insert_result
-
-    def write(self) -> InsertResult:
+    def construct_insert(self, dry_run: bool = False):
         select_ddl = self.dataset.read_insert_ddl()
 
         # If needed for debugging we can log out the DDL template
         # log.info(ddl)
 
+        # Replace the input tables in the template with s3() table functions.
         for input_root_path in self.dataset.input_root_paths:
             input_table = "gcs__" + self.dataset.sanitize_root_path(input_root_path)
             input_path = (
                 f"gs://oplabs-tools-data-sink/{input_root_path}/{self.blockbatch.partitioned_path}"
             )
-            input_s3 = parquet_to_subquery(gcs_parquet_path=input_path)
+            input_s3 = parquet_to_subquery(gcs_parquet_path=input_path, dry_run=dry_run)
             select_ddl = select_ddl.replace(input_table, input_s3)
+
+        # Replace the BLOCKBATCH_MIN_BLOCK placeholder in the template
+        # with the min block number of the blockbatch
+        select_ddl = select_ddl.replace(
+            "BLOCKBATCH_MIN_BLOCK",
+            str(self.blockbatch.min_block),
+        )
 
         output_table = self.dataset.output_table_name()
         insert_ddl = f"INSERT INTO {output_table}\n" + select_ddl
+        return insert_ddl
+
+    def dry_run(self):
+        insert_ddl = self.construct_insert(dry_run=True)
+        print(insert_ddl)
+
+    def execute(self) -> dict[str, Any]:
+        with bound_contextvars(**self.context):
+            insert_result = self.write()
+            self.write_marker(insert_result)
+
+            return dict(
+                dt=date_tostr(self.blockbatch.dt),
+                chain=self.blockbatch.chain,
+                table=self.dataset.output_table_name(),
+                min_block=self.blockbatch.min_block,
+                data_path=f"{self.dataset.output_root_path}/{self.blockbatch.partitioned_path}",
+                written_rows=insert_result.written_rows,
+            )
+
+    def write(self) -> InsertResult:
+        insert_ddl = self.construct_insert()
 
         # BE CAREFUL! At this point ddl may contain HMAC access info.
         # Do not print or log it when debugging.
@@ -148,7 +181,6 @@ class InsertTask:
             raise
 
         insert_result = InsertResult.from_raw(result)
-        log.info("insert results", **insert_result.to_dict())
 
         if insert_result.written_rows > insert_result.read_rows:
             raise Exception("loading into clickhouse should not result in more rows")
@@ -157,11 +189,11 @@ class InsertTask:
             if self.enforce_row_count:
                 raise Exception("loading into clickhouse should not result in fewer rows")
             else:
-                num_filtered = insert_result.read_rows - insert_result.written_rows
+                read_human = human_rows(insert_result.read_rows)
+                write_human = human_rows(insert_result.written_rows)
+                num_filtered = human_rows(insert_result.read_rows - insert_result.written_rows)
                 log.warning(
-                    f"{num_filtered} rows were filtered out",
-                    written_rows=insert_result.written_rows,
-                    read_rows=insert_result.read_rows,
+                    f"read {read_human} -> write {write_human} ({num_filtered} filtered out)",
                 )
 
         return insert_result

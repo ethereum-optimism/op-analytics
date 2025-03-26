@@ -98,6 +98,7 @@ SELECT
   , tr.chain
   , tr.chain_id
   , tr.network
+  , BLOCKBATCH_MIN_BLOCK AS blockbatch
   , tr.trace_to_address
   , tr.trace_from_address
   , tx.method_id

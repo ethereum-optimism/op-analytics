@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS OUTPUT_TABLE
     `chain` String,
     `chain_id` Int32,
     `network` String,
+    `blockbatch` UInt64, -- This is the min block number of the blockbatch
     `trace_to_address` FixedString(42),
     `trace_from_address` FixedString(42),
     `tx_method_id` String,
@@ -95,5 +96,5 @@ CREATE TABLE IF NOT EXISTS OUTPUT_TABLE
     `count_traces_trace_type_create_any` AggregateFunction(sum, UInt8),
 )
 ENGINE = ReplacingMergeTree
-ORDER BY (dt, chain, chain_id, network, trace_to_address, trace_from_address, tx_method_id)
+ORDER BY (dt, chain, chain_id, network, blockbatch, trace_to_address, trace_from_address, tx_method_id)
 TTL dt + INTERVAL 6 MONTH DELETE;

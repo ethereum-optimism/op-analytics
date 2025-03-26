@@ -10,12 +10,16 @@ from op_analytics.coreutils.logger import structlog
 log = structlog.get_logger()
 
 
-def parquet_to_subquery(gcs_parquet_path: str) -> str:
+def parquet_to_subquery(gcs_parquet_path: str, dry_run: bool = False) -> str:
     """Construct a Clickhouse SELECT statement to read parquet data from GCS."""
     gcs_path = gcs_parquet_path.replace("gs://", "https://storage.googleapis.com/")
 
-    KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
-    SECRET = env_get("GCS_HMAC_SECRET")
+    if dry_run:
+        KEY_ID = "<GCS_HMAC_ACCESS_KEY>"
+        SECRET = "<GCS_HMAC_SECRET>"
+    else:
+        KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
+        SECRET = env_get("GCS_HMAC_SECRET")
 
     return f"""s3(
         '{gcs_path}',
