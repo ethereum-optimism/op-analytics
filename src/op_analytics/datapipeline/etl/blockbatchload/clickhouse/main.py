@@ -81,11 +81,10 @@ def load_to_clickhouse(
     root_paths = set()
     for d in datasets:
         root_paths.update(d.input_root_paths)
-    root_paths = list(root_paths)
 
     candidate_markers_df = candidate_markers(
         date_range=date_range,
-        root_paths=root_paths,
+        root_paths=list(root_paths),
     )
 
     # Existing markers that have already been loaded to ClickHouse.
