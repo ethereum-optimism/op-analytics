@@ -158,6 +158,9 @@ def load_to_clickhouse(
 
     log.info(f"Prepared {len(tasks)} insert tasks.")
 
+    # Sort tasks by date (should still be somewhat random by chain)
+    tasks.sort(key=lambda x: x.blockbatch.dt)
+
     if dry_run and tasks:
         tasks[0].dry_run()
         log.warning("DRY RUN: Only the first task is shown.")
@@ -165,7 +168,7 @@ def load_to_clickhouse(
     summary = run_concurrently(
         function=lambda x: x.execute(),
         targets={t.blockbatch.partitioned_path: t for t in tasks},
-        max_workers=4,
+        max_workers=5,
     )
 
     return summary

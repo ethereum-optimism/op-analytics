@@ -182,19 +182,17 @@ class InsertTask:
 
         insert_result = InsertResult.from_raw(result)
 
+        read_human = human_rows(insert_result.read_rows)
+        write_human = human_rows(insert_result.written_rows)
+        num_filtered = human_rows(insert_result.read_rows - insert_result.written_rows)
+        log.info(f"read {read_human} -> write {write_human} ({num_filtered} filtered out)")
+
         if insert_result.written_rows > insert_result.read_rows:
             raise Exception("loading into clickhouse should not result in more rows")
 
         if insert_result.written_rows < insert_result.read_rows:
             if self.enforce_row_count:
                 raise Exception("loading into clickhouse should not result in fewer rows")
-            else:
-                read_human = human_rows(insert_result.read_rows)
-                write_human = human_rows(insert_result.written_rows)
-                num_filtered = human_rows(insert_result.read_rows - insert_result.written_rows)
-                log.warning(
-                    f"read {read_human} -> write {write_human} ({num_filtered} filtered out)",
-                )
 
         return insert_result
 

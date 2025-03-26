@@ -6,8 +6,9 @@ CREATE TABLE IF NOT EXISTS OUTPUT_TABLE
     `network` String,
     `blockbatch` UInt64, -- This is the min block number of the blockbatch
     `trace_to_address` FixedString(42),
-    `trace_from_address` FixedString(42),
+    `tx_to_address` FixedString(42),
     `tx_method_id` String,
+    `count_distinct_trace_from_addresses` AggregateFunction(uniq, FixedString(42)),
     `count_distinct_transactions` AggregateFunction(uniq, String),
     `count_distinct_success_transactions` AggregateFunction(uniq, Nullable(String)),
     `sum_tx_l2_gas_used` AggregateFunction(sum, UInt64),
@@ -96,5 +97,5 @@ CREATE TABLE IF NOT EXISTS OUTPUT_TABLE
     `count_traces_trace_type_create_any` AggregateFunction(sum, UInt8),
 )
 ENGINE = ReplacingMergeTree
-ORDER BY (dt, chain, chain_id, network, blockbatch, trace_to_address, trace_from_address, tx_method_id)
+ORDER BY (dt, chain, chain_id, network, blockbatch, trace_to_address, tx_to_address, tx_method_id)
 TTL dt + INTERVAL 6 MONTH DELETE;

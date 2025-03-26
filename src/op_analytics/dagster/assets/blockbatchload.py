@@ -4,10 +4,9 @@ from dagster import (
 )
 
 from op_analytics.datapipeline.etl.blockbatchload.clickhouse.main import (
-    load_to_clickhouse,
     GCSData,
+    load_to_clickhouse,
 )
-
 
 # NOTE: It is important to schedule all of the assets below in the same dagster job.
 # This will ensure that they run in series, which is preferred so that we don't
@@ -64,12 +63,22 @@ def aggreagated_traces(context: OpExecutionContext):
 
     result = load_to_clickhouse(
         datasets=[
+            #
             GCSData(
                 input_root_paths=[
                     "blockbatch/refined_traces/refined_transactions_fees_v1",
                     "blockbatch/refined_traces/refined_traces_fees_v1",
                 ],
-                output_root_path="blockbatch/aggregated_traces/traces_to_from_method_v1",
+                output_root_path="blockbatch/aggregated_traces/traces_trgrain_v1",
+                enforce_row_count=False,
+            ),
+            #
+            GCSData(
+                input_root_paths=[
+                    "blockbatch/refined_traces/refined_transactions_fees_v1",
+                    "blockbatch/refined_traces/refined_traces_fees_v1",
+                ],
+                output_root_path="blockbatch/aggregated_traces/traces_txgrain_v1",
                 enforce_row_count=False,
             ),
         ],

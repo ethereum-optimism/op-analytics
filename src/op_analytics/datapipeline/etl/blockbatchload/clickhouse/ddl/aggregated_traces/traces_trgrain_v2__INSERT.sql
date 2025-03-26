@@ -1,3 +1,7 @@
+/**
+Aggregation grain is tr_from_address, tr_to_address
+*/
+
 WITH
 
 refined_transactions AS (
@@ -5,9 +9,6 @@ refined_transactions AS (
     accurateCast(hash, 'String') AS tx_hash
     , accurateCast(block_number, 'UInt64') AS block_number
     , accurateCast(success, 'Bool') AS success
-    , accurateCast(from_address, 'String') AS from_address
-    , accurateCast(to_address, 'String') AS to_address
-    , accurateCast(method_id, 'String') AS method_id
     , accurateCast(l2_gas_used, 'UInt64') AS l2_gas_used
     , accurateCast(tx_fee_native, 'Float64') AS tx_fee_native
 
@@ -40,8 +41,8 @@ refined_transactions AS (
     , chain
     , chain_id
     , network
-    , accurateCast(trace_to_address, 'String') AS trace_to_address
-    , accurateCast(trace_from_address, 'String') AS trace_from_address
+    , accurateCast(trace_to_address, 'FixedString(42)') AS trace_to_address
+    , accurateCast(trace_from_address, 'FixedString(42)') AS trace_from_address
     , accurateCast(transaction_hash, 'String') AS transaction_hash
     , accurateCast(block_number, 'UInt64') AS block_number
     , accurateCast(num_traces_in_txn, 'UInt32') AS num_traces_in_txn
@@ -99,9 +100,8 @@ SELECT
   , tr.chain_id
   , tr.network
   , BLOCKBATCH_MIN_BLOCK AS blockbatch
-  , tr.trace_to_address
   , tr.trace_from_address
-  , tx.method_id
+  , tr.trace_to_address
 
   -- Aggregate transaction metrics, in transactions when a given contract was called
   /*
@@ -235,6 +235,6 @@ GROUP BY
   , tr.chain
   , tr.chain_id
   , tr.network
-  , tr.trace_to_address
   , tr.trace_from_address
-  , tx.method_id
+  , tr.trace_to_address
+

@@ -13,4 +13,4 @@ SELECT
     `from_address`,
     `to_address`,
     `token_id`
-FROM gcs__blockbatch.token_transfers__erc721_transfers_v1
+FROM gcs__token_transfers__erc721_transfers_v1
