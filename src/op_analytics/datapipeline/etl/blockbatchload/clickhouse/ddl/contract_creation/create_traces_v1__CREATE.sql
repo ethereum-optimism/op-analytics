@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS blockbatch.contract_creation__create_traces_v1
+CREATE TABLE IF NOT EXISTS OUTPUT_TABLE
 (
     `chain` String,
     `dt` Date,

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS blockbatch.token_transfers__erc20_transfers_v1
+CREATE TABLE IF NOT EXISTS OUTPUT_TABLE
 (
     `chain` String,
     `dt` Date,
