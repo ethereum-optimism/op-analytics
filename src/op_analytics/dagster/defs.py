@@ -92,8 +92,9 @@ defs = Definitions(
         ),
         #
         # Chain related hourly jobs
-        create_schedule_for_group(
-            group="blockbatch_to_clickhouse",
+        create_schedule_for_selection(
+            job_name="blockbatch_to_clickhouse",
+            selection=AssetSelection.groups("blockbatchload"),
             cron_schedule="38 * * * *",  # Run every hour
             custom_k8s_config=SMALL_POD,
         ),
