@@ -306,7 +306,7 @@ workflows:
         - equal:
             [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
     jobs:
-      - convert-and-run-notebooks-to-py-and-push:
+      - convert-and-run-notebooks-to-py:
           commit-message: "GH Action Update - Gov Uploads"
           notebook-paths: >-
             [
