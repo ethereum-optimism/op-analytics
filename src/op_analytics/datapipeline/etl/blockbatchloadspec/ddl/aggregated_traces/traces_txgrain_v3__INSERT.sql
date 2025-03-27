@@ -34,7 +34,7 @@ refined_transactions AS (
     , accurateCast(coalesce(l1_base_scaled_size, 0), 'Float64') AS l1_base_scaled_size
     , accurateCast(coalesce(l1_blob_scaled_size, 0), 'Float64') AS l1_blob_scaled_size
     , accurateCast(coalesce(estimated_size, 0), 'UInt64') AS estimated_size
-  FROM gcs__refined_traces__refined_transactions_fees_v1
+  FROM gcs__blockbatch.refined_traces__refined_transactions_fees_v1
 )
 
 , refined_traces AS (
@@ -90,9 +90,7 @@ refined_transactions AS (
     , if(trace_type = 'create2', 1, 0) AS is_type_create2
     , if(trace_type LIKE 'create%', 1, 0) AS is_type_create_any
 
-
-
-  FROM gcs__refined_traces__refined_traces_fees_v1
+  FROM gcs__blockbatch.refined_traces__refined_traces_fees_v1
 )
 
 

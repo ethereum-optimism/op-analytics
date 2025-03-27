@@ -6,14 +6,14 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.threads import run_concurrently
 
-from .insert import BlockBatch, GCSData, InsertTask
+from .insert import BlockBatch, LoadSpec, InsertTask
 from .markers import candidate_markers, existing_markers
 
 log = structlog.get_logger()
 
 
 def load_to_clickhouse(
-    datasets: list[GCSData],
+    datasets: list[LoadSpec],
     range_spec: str | None = None,
     dry_run: bool = False,
 ):
@@ -23,7 +23,7 @@ def load_to_clickhouse(
     one insert task per blockbatch.
 
     The GCSData objects describe the data to be loaded. The `output_root_path` should
-    match the `__CREATE.sql` and `__INSERT.sql` files in the "clickhouse/ddl" subdir.
+    match the `__CREATE.sql` and `__INSERT.sql` files in the "ddl" subdir.
 
     These two sql files control the structure of the destination ClickHouse table and
     the query that is used to read data from GCS and transform it before inserting it.
@@ -39,7 +39,7 @@ def load_to_clickhouse(
     CREATE sql files
     ----------------
 
-    The CREATE sql files are located under `clickhouse/ddl/<root_path>__CREATE.sql`. Note
+    The CREATE sql files are located under `ddl/<root_path>__CREATE.sql`. Note
     that `<root_path>` has slashes, so the files will appear nested in the file system.
 
     To avoid user error in table names the OUTPUT_TABLE placeholder is used in the CREATE
@@ -49,7 +49,7 @@ def load_to_clickhouse(
     INSERT sql files
     ----------------
 
-    The INSERT sql files are located under `clickhouse/ddl/<root_path>__INSERT.sql`. There
+    The INSERT sql files are located under `ddl/<root_path>__INSERT.sql`. There
     should be one INSERT sql file per CREATE sql file.
 
     Input root paths are indicated in the INSERT sql files using the `gcs__<sanitized_root_path>`
@@ -163,6 +163,7 @@ def load_to_clickhouse(
     if dry_run and tasks:
         tasks[0].dry_run()
         log.warning("DRY RUN: Only the first task is shown.")
+        return
 
     summary = run_concurrently(
         function=lambda x: x.execute(),
