@@ -120,7 +120,7 @@ class InsertTask:
 
         insert_result = InsertResult.from_raw(result)
 
-        ellapsed = human_interval(time.time() - start)
+        ellapsed = human_interval(int(time.time() - start))
         read_human = human_rows(insert_result.read_rows)
         write_human = human_rows(insert_result.written_rows)
         num_filtered = human_rows(insert_result.read_rows - insert_result.written_rows)
