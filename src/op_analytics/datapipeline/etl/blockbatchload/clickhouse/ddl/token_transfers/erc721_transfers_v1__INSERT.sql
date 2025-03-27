@@ -1,4 +1,3 @@
-INSERT INTO blockbatch.token_transfers__erc721_transfers_v1
 SELECT
     `chain`,
     `dt`,
@@ -14,6 +13,4 @@ SELECT
     `from_address`,
     `to_address`,
     `token_id`
-FROM (
-    {subquery}
-)
+FROM gcs__token_transfers__erc721_transfers_v1
