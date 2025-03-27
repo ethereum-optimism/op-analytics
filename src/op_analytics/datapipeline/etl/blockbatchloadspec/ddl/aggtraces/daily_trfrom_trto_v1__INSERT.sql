@@ -4,39 +4,7 @@ Aggregation grain is tr_to_address, tx_to_address, tx_method_id
 
 WITH
 
-refined_transactions AS (
-  SELECT
-    accurateCast(hash, 'String') AS tx_hash
-    , accurateCast(block_number, 'UInt64') AS block_number
-    , accurateCast(success, 'Bool') AS success
-    , accurateCast(from_address, 'FixedString(42)') AS from_address
-    , accurateCast(l2_gas_used, 'UInt64') AS l2_gas_used
-    , accurateCast(tx_fee_native, 'Float64') AS tx_fee_native
-
-    , accurateCast(l1_fee_native, 'Float64') AS l1_fee_native
-    , accurateCast(l2_fee_native, 'Float64') AS l2_fee_native
-    , accurateCast(l2_priority_fee_native, 'Float64') AS l2_priority_fee_native
-    , accurateCast(l2_base_fee_native, 'Float64') AS l2_base_fee_native
-    , accurateCast(l2_legacy_extra_fee_native, 'Float64') AS l2_legacy_extra_fee_native
-
-    , accurateCast(l2_gas_price_gwei, 'Float64') AS l2_gas_price_gwei
-    , accurateCast(l2_priority_gas_price_gwei, 'Float64') AS l2_priority_gas_price_gwei
-    , accurateCast(l2_legacy_extra_gas_price_gwei, 'Float64') AS l2_legacy_extra_gas_price_gwei
-    , accurateCast(coalesce(l1_base_gas_price_gwei, 0), 'Float64') AS l1_base_gas_price_gwei
-    , accurateCast(coalesce(l1_blob_base_gas_price_gwei, 0), 'Float64') AS l1_blob_base_gas_price_gwei
-
-    , accurateCast(input_byte_length, 'UInt32') AS input_byte_length
-    , accurateCast(input_zero_bytes, 'UInt32') AS input_zero_bytes
-    , input_byte_length - input_zero_bytes AS input_nonzero_bytes
-
-    , accurateCast(coalesce(l1_gas_used_unified, 0), 'UInt64') AS l1_gas_used_unified
-    , accurateCast(coalesce(l1_base_scaled_size, 0), 'Float64') AS l1_base_scaled_size
-    , accurateCast(coalesce(l1_blob_scaled_size, 0), 'Float64') AS l1_blob_scaled_size
-    , accurateCast(coalesce(estimated_size, 0), 'UInt64') AS estimated_size
-  FROM gcs__blockbatch.refined_traces__refined_transactions_fees_v1
-)
-
-, refined_traces AS (
+refined_traces AS (
   SELECT
     dt
     , chain
@@ -89,7 +57,37 @@ refined_transactions AS (
     , if(trace_type = 'create2', 1, 0) AS is_type_create2
     , if(trace_type LIKE 'create%', 1, 0) AS is_type_create_any
 
-  FROM gcs__blockbatch.refined_traces__refined_traces_fees_v1
+    -- Transaction Fields
+
+    , accurateCast(tx_success, 'Bool') AS tx_success
+    , accurateCast(tx_from_address, 'FixedString(42)') AS tx_from_address
+    , accurateCast(tx_to_address, 'FixedString(42)') AS tx_to_address
+    , accurateCast(tx_method_id, 'String') AS tx_method_id
+    , accurateCast(tx_l2_gas_used, 'UInt64') AS tx_l2_gas_used
+    , accurateCast(tx_fee_native, 'Float64') AS tx_fee_native
+
+    , accurateCast(tx_l1_fee_native, 'Float64') AS tx_l1_fee_native
+    , accurateCast(tx_l2_fee_native, 'Float64') AS tx_l2_fee_native
+    , accurateCast(tx_l2_priority_fee_native, 'Float64') AS tx_l2_priority_fee_native
+    , accurateCast(tx_l2_base_fee_native, 'Float64') AS tx_l2_base_fee_native
+    , accurateCast(tx_l2_legacy_extra_fee_native, 'Float64') AS tx_l2_legacy_extra_fee_native
+
+    , accurateCast(tx_l2_gas_price_gwei, 'Float64') AS tx_l2_gas_price_gwei
+    , accurateCast(tx_l2_priority_gas_price_gwei, 'Float64') AS tx_l2_priority_gas_price_gwei
+    , accurateCast(tx_l2_legacy_extra_gas_price_gwei, 'Float64') AS tx_l2_legacy_extra_gas_price_gwei
+    , accurateCast(coalesce(tx_l1_base_gas_price_gwei, 0), 'Float64') AS tx_l1_base_gas_price_gwei
+    , accurateCast(coalesce(tx_l1_blob_base_gas_price_gwei, 0), 'Float64') AS tx_l1_blob_base_gas_price_gwei
+
+    , accurateCast(coalesce(tx_l1_gas_used_unified, 0), 'Float64') AS tx_l1_gas_used_unified
+    , accurateCast(coalesce(tx_l1_base_scaled_size, 0), 'Float64') AS tx_l1_base_scaled_size
+    , accurateCast(coalesce(tx_l1_blob_scaled_size, 0), 'Float64') AS tx_l1_blob_scaled_size
+    , accurateCast(coalesce(tx_estimated_size, 0), 'Float64') AS tx_estimated_size
+
+    , accurateCast(tx_input_byte_length, 'UInt32') AS tx_input_byte_length
+    , accurateCast(tx_input_zero_bytes, 'UInt32') AS tx_input_zero_bytes
+    , accurateCast(tx_input_nonzero_bytes, 'UInt32') AS tx_input_nonzero_bytes
+
+  FROM gcs__blockbatch.refined_traces__refined_traces_fees_v2
 )
 
 
@@ -101,7 +99,7 @@ SELECT
   , tr.trace_from_address
   , tr.trace_to_address
 
-  , uniq(tx.from_address) AS count_distinct_tx_from_addresses
+  , uniq(tr.tx_from_address) AS count_distinct_tx_from_addresses
 
   -- Aggregate transaction metrics, in transactions when a given contract was called
   /*
@@ -114,46 +112,46 @@ SELECT
   */
 
   -- Transaction Counts
-  , uniq(tx.tx_hash) AS count_distinct_transactions
-  , uniq(CASE WHEN tx.success THEN tx.tx_hash END) AS count_distinct_success_transactions
+  , uniq(tr.transaction_hash) AS count_distinct_transactions
+  , uniq(CASE WHEN tr.tx_success THEN tr.transaction_hash END) AS count_distinct_success_transactions
 
   -- Transaction Level Gas and Fees
-  , sum(tx.l2_gas_used) AS sum_tx_l2_gas_used
-  , sum(CASE WHEN tx.success THEN tx.l2_gas_used ELSE 0 END) AS sum_tx_l2_gas_used_tx_success
+  , sum(tr.tx_l2_gas_used) AS sum_tx_l2_gas_used
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_l2_gas_used ELSE 0 END) AS sum_tx_l2_gas_used_tx_success
 
-  , sum(tx.tx_fee_native) AS sum_tx_fee_native
-  , sum(CASE WHEN tx.success THEN tx.tx_fee_native ELSE 0 END) AS sum_tx_fee_native_tx_success
+  , sum(tr.tx_fee_native) AS sum_tx_fee_native
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_fee_native ELSE 0 END) AS sum_tx_fee_native_tx_success
 
-  , sum(tx.l1_fee_native) AS sum_tx_l1_fee_native
-  , sum(CASE WHEN tx.success THEN tx.l1_fee_native ELSE 0 END) AS sum_tx_l1_fee_native_tx_success
+  , sum(tr.tx_l1_fee_native) AS sum_tx_l1_fee_native
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_l1_fee_native ELSE 0 END) AS sum_tx_l1_fee_native_tx_success
 
-  , sum(tx.l2_fee_native) AS sum_tx_l2_fee_native
-  , sum(CASE WHEN tx.success THEN tx.l2_fee_native ELSE 0 END) AS sum_tx_l2_fee_native_tx_success
+  , sum(tr.tx_l2_fee_native) AS sum_tx_l2_fee_native
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_l2_fee_native ELSE 0 END) AS sum_tx_l2_fee_native_tx_success
 
-  , sum(tx.l2_priority_fee_native) AS sum_tx_l2_priority_fee_native
-  , sum(CASE WHEN tx.success THEN tx.l2_priority_fee_native ELSE 0 END) AS sum_tx_l2_priority_fee_native_tx_success
+  , sum(tr.tx_l2_priority_fee_native) AS sum_tx_l2_priority_fee_native
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_l2_priority_fee_native ELSE 0 END) AS sum_tx_l2_priority_fee_native_tx_success
 
-  , sum(tx.l2_base_fee_native) AS sum_tx_l2_base_fee_native
-  , sum(CASE WHEN tx.success THEN tx.l2_base_fee_native ELSE 0 END) AS sum_tx_l2_base_fee_native_tx_success
+  , sum(tr.tx_l2_base_fee_native) AS sum_tx_l2_base_fee_native
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_l2_base_fee_native ELSE 0 END) AS sum_tx_l2_base_fee_native_tx_success
 
-  , sum(tx.l2_legacy_extra_fee_native) AS sum_tx_l2_legacy_extra_fee_native
-  , sum(CASE WHEN tx.success THEN tx.l2_legacy_extra_fee_native ELSE 0 END) AS sum_tx_l2_legacy_extra_fee_native_tx_success
+  , sum(tr.tx_l2_legacy_extra_fee_native) AS sum_tx_l2_legacy_extra_fee_native
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_l2_legacy_extra_fee_native ELSE 0 END) AS sum_tx_l2_legacy_extra_fee_native_tx_success
 
   -- Transaction-Level Gas Prices
-  , sum(tx.l2_gas_price_gwei * tx.l2_gas_used) AS weighted_sum_tx_l2_gas_price_gwei_called
-  , sum(tx.l2_priority_gas_price_gwei * tx.l2_gas_used) AS weighted_sum_tx_l2_priority_gas_price_gwei_called
-  , sum(tx.l2_legacy_extra_gas_price_gwei * tx.l2_gas_used) AS weighted_sum_tx_l2_legacy_extra_gas_price_gwei_called
-  , sum(tx.l1_base_gas_price_gwei * tx.l2_gas_used) AS weighted_sum_tx_l1_base_gas_price_gwei_called
-  , sum(tx.l1_blob_base_gas_price_gwei * tx.l2_gas_used) AS weighted_sum_tx_l1_blob_base_gas_price_gwei_called
+  , sum(tr.tx_l2_gas_price_gwei * tr.tx_l2_gas_used) AS weighted_sum_tx_l2_gas_price_gwei_called
+  , sum(tr.tx_l2_priority_gas_price_gwei * tr.tx_l2_gas_used) AS weighted_sum_tx_l2_priority_gas_price_gwei_called
+  , sum(tr.tx_l2_legacy_extra_gas_price_gwei * tr.tx_l2_gas_used) AS weighted_sum_tx_l2_legacy_extra_gas_price_gwei_called
+  , sum(tr.tx_l1_base_gas_price_gwei * tr.tx_l2_gas_used) AS weighted_sum_tx_l1_base_gas_price_gwei_called
+  , sum(tr.tx_l1_blob_base_gas_price_gwei * tr.tx_l2_gas_used) AS weighted_sum_tx_l1_blob_base_gas_price_gwei_called
 
   -- Transaction-Level transaction sizes
-  , sum(tx.input_byte_length) AS sum_tx_input_byte_length_called
-  , sum(tx.input_zero_bytes) AS sum_tx_input_zero_bytes_called
-  , sum(tx.input_nonzero_bytes) AS sum_tx_input_nonzero_bytes_called
-  , sum(tx.l1_base_scaled_size) AS sum_tx_l1_base_scaled_size_called
-  , sum(tx.l1_blob_scaled_size) AS sum_tx_l1_blob_scaled_size_called
-  , sum(tx.l1_gas_used_unified) AS sum_tx_l1_gas_used_unified_called
-  , sum(tx.estimated_size) AS sum_tx_estimated_size_called
+  , sum(tr.tx_input_byte_length) AS sum_tx_input_byte_length_called
+  , sum(tr.tx_input_zero_bytes) AS sum_tx_input_zero_bytes_called
+  , sum(tr.tx_input_nonzero_bytes) AS sum_tx_input_nonzero_bytes_called
+  , sum(tr.tx_l1_base_scaled_size) AS sum_tx_l1_base_scaled_size_called
+  , sum(tr.tx_l1_blob_scaled_size) AS sum_tx_l1_blob_scaled_size_called
+  , sum(tr.tx_l1_gas_used_unified) AS sum_tx_l1_gas_used_unified_called
+  , sum(tr.tx_estimated_size) AS sum_tx_estimated_size_called
 
   -- Sum Internal Trace Gas
   /*
@@ -163,13 +161,13 @@ SELECT
   */
 
   , sum(tr.trace_gas_used) AS sum_trace_gas_used
-  , sum(CASE WHEN tx.success THEN tr.trace_gas_used ELSE 0 END) AS sum_trace_gas_used_tx_success
+  , sum(CASE WHEN tr.tx_success THEN tr.trace_gas_used ELSE 0 END) AS sum_trace_gas_used_tx_success
 
   , sum(tr.gas_used_minus_subtraces) AS sum_trace_gas_used_minus_subtraces
-  , sum(CASE WHEN tx.success THEN tr.gas_used_minus_subtraces ELSE 0 END) AS sum_trace_gas_used_minus_subtraces_tx_success
+  , sum(CASE WHEN tr.tx_success THEN tr.gas_used_minus_subtraces ELSE 0 END) AS sum_trace_gas_used_minus_subtraces_tx_success
 
   , sum(tr.tx_l2_gas_used_amortized_by_call) AS sum_tx_l2_gas_used_amortized_by_call
-  , sum(CASE WHEN tx.success THEN tr.tx_l2_gas_used_amortized_by_call ELSE 0 END) AS sum_tx_l2_gas_used_amortized_by_call_tx_success
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_l2_gas_used_amortized_by_call ELSE 0 END) AS sum_tx_l2_gas_used_amortized_by_call_tx_success
 
   , sum(tr.tx_l1_gas_used_unified_amortized_by_call) AS sum_tx_l1_gas_used_unified_amortized_by_call
   , sum(tr.tx_l1_base_scaled_size_amortized_by_call) AS sum_tx_l1_base_scaled_size_amortized_by_call
@@ -177,25 +175,25 @@ SELECT
   , sum(tr.tx_estimated_size_amortized_by_call) AS sum_tx_estimated_size_amortized_by_call
 
   , sum(tr.tx_l2_fee_native_minus_subtraces) AS sum_tx_l2_fee_native_minus_subtraces
-  , sum(CASE WHEN tx.success THEN tr.tx_l2_fee_native_minus_subtraces ELSE 0 END) AS sum_tx_l2_fee_native_minus_subtraces_tx_success
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_l2_fee_native_minus_subtraces ELSE 0 END) AS sum_tx_l2_fee_native_minus_subtraces_tx_success
 
   , sum(tr.tx_l2_base_fee_native_minus_subtraces) AS sum_tx_l2_base_fee_native_minus_subtraces
   , sum(tr.tx_l2_priority_fee_native_minus_subtraces) AS sum_tx_l2_priority_fee_native_minus_subtraces
   , sum(tr.tx_l2_legacy_base_fee_native_minus_subtraces) AS sum_tx_l2_legacy_base_fee_native_minus_subtraces
 
   , sum(tr.tx_fee_native_amortized_by_call) AS sum_tx_fee_native_amortized_by_call
-  , sum(CASE WHEN tx.success THEN tr.tx_fee_native_amortized_by_call ELSE 0 END) AS sum_tx_fee_native_amortized_by_call_tx_success
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_fee_native_amortized_by_call ELSE 0 END) AS sum_tx_fee_native_amortized_by_call_tx_success
 
   , sum(tr.tx_l2_fee_native_amortized_by_call) AS sum_tx_l2_fee_native_amortized_by_call
-  , sum(CASE WHEN tx.success THEN tr.tx_l2_fee_native_amortized_by_call ELSE 0 END) AS sum_tx_l2_fee_native_amortized_by_call_tx_success
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_l2_fee_native_amortized_by_call ELSE 0 END) AS sum_tx_l2_fee_native_amortized_by_call_tx_success
 
   , sum(tr.tx_l1_fee_native_amortized_by_call) AS sum_tx_l1_fee_native_amortized_by_call
-  , sum(CASE WHEN tx.success THEN tr.tx_l1_fee_native_amortized_by_call ELSE 0 END) AS sum_tx_l1_fee_native_amortized_by_call_tx_success
+  , sum(CASE WHEN tr.tx_success THEN tr.tx_l1_fee_native_amortized_by_call ELSE 0 END) AS sum_tx_l1_fee_native_amortized_by_call_tx_success
 
   , sum(tr.tx_l2_base_fee_native_amortized_by_call) AS sum_tx_l2_base_fee_native_amortized_by_call
   , sum(tr.tx_l2_priority_fee_native_amortized_by_call) AS sum_tx_l2_priority_fee_native_amortized_by_call
 
-  , sum(tx.l1_fee_native / tr.num_traces_in_txn + CAST(tr.trace_gas_used - coalesce(tr.sum_subtraces_gas_used, 0) AS Float64) * tx.l2_gas_price_gwei * 1e-9) AS sum_tx_fee_native_l1_amortized_l2_minus_subtraces
+  , sum(tr.tx_l1_fee_native / tr.num_traces_in_txn + CAST(tr.trace_gas_used - coalesce(tr.sum_subtraces_gas_used, 0) AS Float64) * tr.tx_l2_gas_price_gwei * 1e-9) AS sum_tx_fee_native_l1_amortized_l2_minus_subtraces
 
 
   -- Calls
@@ -226,10 +224,7 @@ SELECT
   , sum(tr.is_type_create2) AS count_traces_trace_type_create2
   , sum(tr.is_type_create_any) AS count_traces_trace_type_create_any
 
-FROM refined_traces AS tr LEFT JOIN refined_transactions AS tx
-  ON
-    tr.block_number = tx.block_number
-    AND tr.transaction_hash = tx.tx_hash
+FROM refined_traces AS tr
 GROUP BY
   tr.dt
   , tr.chain

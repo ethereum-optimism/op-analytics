@@ -13,5 +13,5 @@ SELECT
     CAST(amount_lossless AS UInt256) AS `amount`, 
     `from_address`,
     `to_address`
-FROM gcs__token_transfers__erc20_transfers_v1
+FROM gcs__blockbatch.token_transfers__erc20_transfers_v1
 WHERE amount_lossless is not NULL

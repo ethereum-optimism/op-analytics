@@ -23,10 +23,6 @@ def daily_to_clickhouse(
     # Operate over recent days.
     range_spec = range_spec or "m4days"
 
-    # Create the output tables if they don't exist.
-    if not dry_run:
-        dataset.create_table()
-
     chains = goldsky_mainnet_chains()
 
     readers: dict[str, list[DataReader]] = construct_readers(
@@ -77,11 +73,15 @@ def daily_to_clickhouse(
     # Sort tasks by date (should still be somewhat random by chain)
     tasks.sort(key=lambda x: x.batch.dt)
 
-    if dry_run and tasks:
+    if dry_run:
         tasks[0].dry_run()
         log.warning("DRY RUN: Only the first task is shown.")
         return
 
+    # Create the output tables if they don't exist.
+    dataset.create_table()
+
+    # Run the tasks.
     summary = run_concurrently(
         function=lambda x: x.execute(),
         targets={t.batch.partitioned_path: t for t in tasks},

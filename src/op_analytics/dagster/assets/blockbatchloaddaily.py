@@ -17,26 +17,19 @@ from op_analytics.datapipeline.etl.blockbatchloaddaily.main import (
 def aggreagated_traces(context: OpExecutionContext):
     """Load aggregated traces blockbatch data to Clickhouse."""
 
-    result = daily_to_clickhouse(
-        LoadSpec(
-            input_root_paths=[
-                "blockbatch/refined_traces/refined_transactions_fees_v1",
-                "blockbatch/refined_traces/refined_traces_fees_v1",
-            ],
-            output_root_path="blockbatch/aggregated_traces/traces_trgrain_v3",
-            enforce_row_count=False,
-        ),
-    )
-    context.log.info(result)
+    AGG1 = "daily_trfrom_trto_v1"
+    AGG2 = "daily_trto_v1"
+    AGG3 = "daily_trto_txto_txmethod_v1"
 
-    result = daily_to_clickhouse(
-        LoadSpec(
-            input_root_paths=[
-                "blockbatch/refined_traces/refined_transactions_fees_v1",
-                "blockbatch/refined_traces/refined_traces_fees_v1",
-            ],
-            output_root_path="blockbatch/aggregated_traces/traces_txgrain_v3",
-            enforce_row_count=False,
-        ),
-    )
-    context.log.info(result)
+    for agg in [AGG1, AGG2, AGG3]:
+        result = daily_to_clickhouse(
+            dataset=LoadSpec(
+                input_root_paths=[
+                    "blockbatch/refined_traces/refined_traces_fees_v2",
+                ],
+                output_root_path=f"blockbatch_daily/aggtraces/{agg}",
+                enforce_row_count=False,
+            ),
+            range_spec="m4days",
+        )
+        context.log.info(result)
