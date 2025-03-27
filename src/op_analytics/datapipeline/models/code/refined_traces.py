@@ -65,6 +65,6 @@ def refined_traces(
     )
 
     return {
-        "refined_transactions_fees_v1": refined_txs,
-        "refined_traces_fees_v1": traces_txs_join,
+        "refined_transactions_fees_v2": refined_txs,
+        "refined_traces_fees_v2": traces_txs_join,
     }

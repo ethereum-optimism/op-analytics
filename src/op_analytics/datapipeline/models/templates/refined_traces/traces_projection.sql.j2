@@ -11,7 +11,7 @@ SELECT
   , r.from_address AS trace_from_address
   , r.to_address AS trace_to_address
   , r.gas AS trace_gas_limit
-  , r.gas_used AS trace_gas_used
+  , CAST(r.gas_used AS DOUBLE) AS trace_gas_used
   , r.trace_address
   , r.trace_type
   , r.call_type
