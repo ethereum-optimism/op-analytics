@@ -308,7 +308,7 @@ def fees_backfill():
         if ii % num_indexes == index:
             compute_blockbatch(
                 chains=normalize_chains("ALL,-kroma,-unichain_sepolia"),
-                models=["refined_traces", "aggregated_traces"],
+                models=["refined_traces"],
                 range_spec=range_spec,
                 read_from=DataLocation.GCS,
                 write_to=DataLocation.GCS,
