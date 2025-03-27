@@ -1,12 +1,14 @@
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.time import date_tostr
 from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chains
+
 from ..blockbatchloadspec.loadspec import LoadSpec
 from .insert import DtChainBatch, InsertTask
 from .markers import existing_markers
 from .readers import construct_readers
-from op_analytics.coreutils.partitioned.reader import DataReader
 
 log = structlog.get_logger()
 
@@ -22,9 +24,8 @@ def daily_to_clickhouse(
     range_spec = range_spec or "m4days"
 
     # Create the output tables if they don't exist.
-    # if not dry_run:
-    #     for d in datasets:
-    #         d.create_table()
+    if not dry_run:
+        dataset.create_table()
 
     chains = goldsky_mainnet_chains()
 
@@ -46,7 +47,9 @@ def daily_to_clickhouse(
         chains=chains,
         root_path=dataset.output_root_path,
     )
-    existing_markers_tuples = set((x["dt"], x["chain"]) for x in existing_markers_df.to_dicts())
+    existing_markers_tuples = set(
+        (date_tostr(x["dt"]), x["chain"]) for x in existing_markers_df.to_dicts()
+    )
 
     # Loop over readers and find which ones are pending.
     tasks: list[InsertTask] = []
@@ -69,7 +72,7 @@ def daily_to_clickhouse(
         )
         tasks.append(insert_task)
 
-    log.info(f"Prepared {len(tasks)} insert tasks.")
+    log.info(f"{len(tasks)}/{len(candidate_readers)} pending insert tasks.")
 
     # Sort tasks by date (should still be somewhat random by chain)
     tasks.sort(key=lambda x: x.batch.dt)
@@ -81,8 +84,8 @@ def daily_to_clickhouse(
 
     summary = run_concurrently(
         function=lambda x: x.execute(),
-        targets={t.blockbatch.partitioned_path: t for t in tasks},
-        max_workers=5,
+        targets={t.batch.partitioned_path: t for t in tasks},
+        max_workers=2,
     )
 
     return summary

@@ -1,12 +1,11 @@
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.partitioned.location import DataLocation
+from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.time import date_tostr
-from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_readers_bydate
 from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
 from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
-from op_analytics.coreutils.partitioned.location import DataLocation
-
 
 log = structlog.get_logger()
 

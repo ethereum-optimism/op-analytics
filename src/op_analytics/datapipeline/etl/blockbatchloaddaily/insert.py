@@ -1,15 +1,14 @@
 import os
 import socket
+import time
 from dataclasses import asdict, dataclass
-from datetime import date
 from typing import Any
 
 import polars as pl
 from clickhouse_connect.driver.exceptions import DatabaseError
 
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
-from op_analytics.coreutils.logger import bound_contextvars, human_rows, structlog
-from op_analytics.coreutils.time import date_tostr
+from op_analytics.coreutils.logger import bound_contextvars, human_interval, human_rows, structlog
 
 from ..blockbatchloadspec.loadspec import LoadSpec
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
@@ -25,7 +24,7 @@ class DtChainBatch:
     """Represent a single (dt,chain) that needs to be loaded into ClickHouse."""
 
     chain: str
-    dt: date
+    dt: str
     partitioned_path: str
 
 
@@ -97,7 +96,7 @@ class InsertTask:
             self.write_marker(insert_result)
 
             return dict(
-                dt=date_tostr(self.batch.dt),
+                dt=self.batch.dt,
                 chain=self.batch.chain,
                 table=self.dataset.output_table_name(),
                 written_rows=insert_result.written_rows,
@@ -106,9 +105,11 @@ class InsertTask:
     def write(self) -> InsertResult:
         insert_ddl = self.construct_insert()
 
+        start = time.time()
         # BE CAREFUL! At this point ddl may contain HMAC access info.
         # Do not print or log it when debugging.
         try:
+            log.info("running insert")
             result = run_statememt_oplabs(
                 statement=insert_ddl,
                 settings={"use_hive_partitioning": 1},
@@ -119,10 +120,13 @@ class InsertTask:
 
         insert_result = InsertResult.from_raw(result)
 
+        ellapsed = human_interval(time.time() - start)
         read_human = human_rows(insert_result.read_rows)
         write_human = human_rows(insert_result.written_rows)
         num_filtered = human_rows(insert_result.read_rows - insert_result.written_rows)
-        log.info(f"read {read_human} -> write {write_human} ({num_filtered} filtered out)")
+        log.info(
+            f"{ellapsed} read {read_human} -> write {write_human} ({num_filtered} filtered out)"
+        )
 
         if insert_result.written_rows > insert_result.read_rows:
             raise Exception("loading into clickhouse should not result in more rows")

@@ -98,9 +98,9 @@ SELECT
   , tr.chain
   , tr.chain_id
   , tr.network
-  , tr.trace_from_address
   , tr.trace_to_address
 
+  , uniq(tr.trace_from_address) AS count_distinct_trace_from_addresses
   , uniq(tx.from_address) AS count_distinct_tx_from_addresses
 
   -- Aggregate transaction metrics, in transactions when a given contract was called
@@ -235,5 +235,4 @@ GROUP BY
   , tr.chain
   , tr.chain_id
   , tr.network
-  , tr.trace_from_address
   , tr.trace_to_address
