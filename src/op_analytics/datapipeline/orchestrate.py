@@ -45,7 +45,6 @@ def normalize_blockbatch_models(models: str) -> list[str]:
         if model == "MODELS":
             result.add("contract_creation")
             result.add("refined_traces")
-            result.add("aggregated_traces")
             result.add("token_transfers")
             result.add("account_abstraction_prefilter")
             result.add("account_abstraction")
@@ -56,7 +55,6 @@ def normalize_blockbatch_models(models: str) -> list[str]:
             result.add("account_abstraction")
         elif model == "GROUPB":
             result.add("refined_traces")
-            result.add("aggregated_traces")
         elif model.startswith("-"):
             not_included.add(model.removeprefix("-").strip())
         else:

@@ -23,7 +23,6 @@ parameters:
         "run_op_governance_uploads",
         "run_op_stack_chain_revenue",
         "run_op_stack_metadata_upload",
-        "run_value_locked_flows_update",
         "run_weekly_l2_chain_data_uploads",
       ]
 
@@ -275,7 +274,6 @@ workflows:
           commit-message: "GH Action Update - Agg Downloads"
           notebook-paths: >-
             [
-              # {"dir": "op_chains_tracking", "notebook": "dune_opchain_uploads"},
               {"dir": "other_chains_tracking", "notebook": "get_filtered_deployers"},
               {"dir": "other_chains_tracking", "notebook": "total_chain_data_to_uploads"}
             ]
@@ -290,7 +288,7 @@ workflows:
         - equal: [<< pipeline.schedule.name >>, "run_market_data"]
         - equal: [<< pipeline.parameters.run_job >>, "run_market_data"]
     jobs:
-      - convert-and-run-notebooks-to-py-and-push:
+      - convert-and-run-notebooks-to-py:
           commit-message: "GH Action Update - Update Market Data"
           notebook-paths: >-
             [
@@ -308,7 +306,7 @@ workflows:
         - equal:
             [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
     jobs:
-      - convert-and-run-notebooks-to-py-and-push:
+      - convert-and-run-notebooks-to-py:
           commit-message: "GH Action Update - Gov Uploads"
           notebook-paths: >-
             [
@@ -353,24 +351,6 @@ workflows:
               {"dir": "op_chains_tracking/inputs", "notebook": "clean_chain_metadata_and_upload"},
               {"dir": "op_chains_tracking/clickhouse_builds", "notebook": "create_matviews"},
               {"dir": "op_chains_tracking/clickhouse_builds", "notebook": "create_superchain_data_view"}
-            ]
-          context:
-            - op-analytics-legacy
-            - circleci-repo-op-analytics
-            - op-analytics-gcp
-
-  run_value_locked_flows_update:
-    when:
-      or:
-        - equal: [<< pipeline.schedule.name >>, "run_value_locked_flows_update"]
-        - equal:
-            [<< pipeline.parameters.run_job >>, "run_value_locked_flows_update"]
-    jobs:
-      - convert-and-run-notebooks-to-py-and-push:
-          commit-message: "GH Action Update - Value Flows"
-          notebook-paths: >-
-            [
-              {"dir": "value_locked_flows", "notebook": "total_app_net_flows_async"}
             ]
           context:
             - op-analytics-legacy
