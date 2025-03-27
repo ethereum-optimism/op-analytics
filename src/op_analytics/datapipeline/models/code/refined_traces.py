@@ -17,8 +17,8 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         "refined_traces/traces_txs_join",
     ],
     expected_outputs=[
-        "refined_transactions_fees_v1",
-        "refined_traces_fees_v1",
+        "refined_transactions_fees_v2",
+        "refined_traces_fees_v2",
     ],
 )
 def refined_traces(
