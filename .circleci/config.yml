@@ -289,7 +289,7 @@ workflows:
         - equal: [<< pipeline.schedule.name >>, "run_market_data"]
         - equal: [<< pipeline.parameters.run_job >>, "run_market_data"]
     jobs:
-      - convert-and-run-notebooks-to-py-and-push:
+      - convert-and-run-notebooks-to-py:
           commit-message: "GH Action Update - Update Market Data"
           notebook-paths: >-
             [
