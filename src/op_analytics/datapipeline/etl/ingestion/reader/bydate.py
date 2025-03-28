@@ -89,9 +89,9 @@ def construct_readers_bydate(
                     log.warning("MISSING DATA")
                     num_suspect += 1
 
-    log.info(f"prepared {len(readers)} input batches.")
+    log.info(f"prepared {len(readers)} input dt,chain readers")
     if num_suspect > 0:
-        log.info(f"input not ready for {num_suspect} batches.")
+        log.info(f"input not ready for {num_suspect} dt,chain readers")
 
     return readers
 

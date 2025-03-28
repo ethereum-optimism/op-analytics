@@ -5,64 +5,19 @@ from datetime import date
 from typing import Any
 
 import polars as pl
-
-from op_analytics.coreutils.clickhouse.ddl import read_ddl
-from op_analytics.coreutils.clickhouse.inferschema import parquet_to_subquery
-from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
-from op_analytics.coreutils.logger import structlog, bound_contextvars, human_rows
-from op_analytics.coreutils.time import date_tostr
 from clickhouse_connect.driver.exceptions import DatabaseError
 
+from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
+from op_analytics.coreutils.logger import bound_contextvars, human_rows, structlog
+from op_analytics.coreutils.time import date_tostr
+
+from ..blockbatchloadspec.loadspec import LoadSpec
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
 
 log = structlog.get_logger()
 
 
 DIRECTORY = os.path.dirname(__file__)
-
-
-@dataclass
-class GCSData:
-    """Represent data in GCS that need to be loaded into ClickHouse."""
-
-    input_root_paths: list[str]
-    output_root_path: str
-    enforce_row_count: bool = True
-
-    @classmethod
-    def pass_through(cls, root_path: str, enforce_row_count: bool = True):
-        return cls(
-            input_root_paths=[root_path],
-            output_root_path=root_path,
-            enforce_row_count=enforce_row_count,
-        )
-
-    @staticmethod
-    def sanitize_root_path(root_path: str):
-        return root_path.removeprefix("blockbatch/").replace("/", "__")
-
-    def input_table_names(self):
-        return [self.sanitize_root_path(root_path) for root_path in self.input_root_paths]
-
-    def output_table_name(self):
-        return "blockbatch." + self.sanitize_root_path(self.output_root_path)
-
-    def read_insert_ddl(self):
-        ddl_path = self.output_root_path.removeprefix("blockbatch/")
-        return read_ddl(
-            path=os.path.join(DIRECTORY, f"ddl/{ddl_path}__INSERT.sql"),
-        )
-
-    def create_table(self):
-        ddl_path = self.output_root_path.removeprefix("blockbatch/")
-        create_ddl = read_ddl(
-            path=os.path.join(DIRECTORY, f"ddl/{ddl_path}__CREATE.sql"),
-        )
-
-        create_ddl = create_ddl.replace("OUTPUT_TABLE", self.output_table_name())
-
-        log.info(f"CREATE TABLE {self.output_table_name()}")
-        run_statememt_oplabs(statement=create_ddl)
 
 
 @dataclass
@@ -114,7 +69,7 @@ class InsertResult:
 
 @dataclass
 class InsertTask:
-    dataset: GCSData
+    dataset: LoadSpec
     blockbatch: BlockBatch
     enforce_row_count: bool = False
 
@@ -123,30 +78,21 @@ class InsertTask:
         return dict(blockbatch=self.blockbatch.partitioned_path)
 
     def construct_insert(self, dry_run: bool = False):
-        select_ddl = self.dataset.read_insert_ddl()
-
-        # If needed for debugging we can log out the DDL template
-        # log.info(ddl)
-
-        # Replace the input tables in the template with s3() table functions.
-        for input_root_path in self.dataset.input_root_paths:
-            input_table = "gcs__" + self.dataset.sanitize_root_path(input_root_path)
-            input_path = (
-                f"gs://oplabs-tools-data-sink/{input_root_path}/{self.blockbatch.partitioned_path}"
-            )
-            input_s3 = parquet_to_subquery(gcs_parquet_path=input_path, dry_run=dry_run)
-            select_ddl = select_ddl.replace(input_table, input_s3)
+        insert_ddl_template = self.dataset.insert_ddl_template(dry_run=dry_run)
 
         # Replace the BLOCKBATCH_MIN_BLOCK placeholder in the template
         # with the min block number of the blockbatch
-        select_ddl = select_ddl.replace(
+        select_ddl = insert_ddl_template.replace(
             "BLOCKBATCH_MIN_BLOCK",
             str(self.blockbatch.min_block),
         )
 
-        output_table = self.dataset.output_table_name()
-        insert_ddl = f"INSERT INTO {output_table}\n" + select_ddl
-        return insert_ddl
+        select_ddl = select_ddl.replace(
+            "INPUT_PARTITION_PATH",
+            self.blockbatch.partitioned_path,
+        )
+
+        return select_ddl
 
     def dry_run(self):
         insert_ddl = self.construct_insert(dry_run=True)

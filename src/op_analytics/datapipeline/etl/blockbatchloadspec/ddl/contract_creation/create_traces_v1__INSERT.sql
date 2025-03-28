@@ -26,4 +26,4 @@ SELECT
     `status`,
     `tx_method_id`,
     `code_bytelength`
-FROM gcs__contract_creation__create_traces_v1
+FROM gcs__blockbatch.contract_creation__create_traces_v1

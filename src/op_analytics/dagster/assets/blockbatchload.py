@@ -3,8 +3,8 @@ from dagster import (
     asset,
 )
 
-from op_analytics.datapipeline.etl.blockbatchload.clickhouse.main import (
-    GCSData,
+from op_analytics.datapipeline.etl.blockbatchload.main import (
+    LoadSpec,
     load_to_clickhouse,
 )
 
@@ -18,7 +18,7 @@ def contract_creation(context: OpExecutionContext):
     """Load contract creation blockbatch data to Clickhouse."""
     result = load_to_clickhouse(
         datasets=[
-            GCSData.pass_through(
+            LoadSpec.pass_through(
                 root_path="blockbatch/contract_creation/create_traces_v1",
                 enforce_row_count=True,
             ),
@@ -32,7 +32,7 @@ def erc20_transfers(context: OpExecutionContext):
     """Load ERC-20 transfers blockbatch data to Clickhouse."""
     result = load_to_clickhouse(
         datasets=[
-            GCSData.pass_through(
+            LoadSpec.pass_through(
                 root_path="blockbatch/token_transfers/erc20_transfers_v1",
                 # We don't enforce row count for this dataset because the INSERT sql
                 # includes a filter to include only rows where amount_lossless is not NULL.
@@ -48,39 +48,10 @@ def erc721_transfers(context: OpExecutionContext):
     """Load ERC-721 transfers blockbatch data to Clickhouse."""
     result = load_to_clickhouse(
         datasets=[
-            GCSData.pass_through(
+            LoadSpec.pass_through(
                 root_path="blockbatch/token_transfers/erc721_transfers_v1",
                 enforce_row_count=True,
             ),
         ]
-    )
-    context.log.info(result)
-
-
-@asset
-def aggreagated_traces(context: OpExecutionContext):
-    """Load aggregated traces blockbatch data to Clickhouse."""
-
-    result = load_to_clickhouse(
-        datasets=[
-            #
-            GCSData(
-                input_root_paths=[
-                    "blockbatch/refined_traces/refined_transactions_fees_v1",
-                    "blockbatch/refined_traces/refined_traces_fees_v1",
-                ],
-                output_root_path="blockbatch/aggregated_traces/traces_trgrain_v1",
-                enforce_row_count=False,
-            ),
-            #
-            GCSData(
-                input_root_paths=[
-                    "blockbatch/refined_traces/refined_transactions_fees_v1",
-                    "blockbatch/refined_traces/refined_traces_fees_v1",
-                ],
-                output_root_path="blockbatch/aggregated_traces/traces_txgrain_v1",
-                enforce_row_count=False,
-            ),
-        ],
     )
     context.log.info(result)

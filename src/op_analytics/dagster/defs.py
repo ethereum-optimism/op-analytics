@@ -14,8 +14,9 @@ import importlib
 
 MODULE_NAMES = [
     "blockbatchingest",
-    "blockbatchload",
     "blockbatchprocess",
+    "blockbatchload",
+    "blockbatchloaddaily",
     "bqpublic",
     "chainsdaily",
     "defillama",
@@ -91,11 +92,19 @@ defs = Definitions(
             num_retries=None,
         ),
         #
-        # Chain related hourly jobs
+        # Load blockbatch data into ClickHouse
         create_schedule_for_selection(
-            job_name="blockbatch_to_clickhouse",
+            job_name="blockbatch_load",
             selection=AssetSelection.groups("blockbatchload"),
             cron_schedule="38 * * * *",  # Run every hour
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        # Load blockbatch data into ClickHouse Daily
+        create_schedule_for_selection(
+            job_name="blockbatch_load_daily",
+            selection=AssetSelection.groups("blockbatchloaddaily"),
+            cron_schedule="47 4,10,16,22 * * *",
             custom_k8s_config=SMALL_POD,
         ),
         #
