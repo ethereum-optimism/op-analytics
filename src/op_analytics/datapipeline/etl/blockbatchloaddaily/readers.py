@@ -29,6 +29,7 @@ def construct_readers(
         read_from=DataLocation.GCS,
     )
 
+    total_readers = 0
     all_readers = {}
     date_range = DateRange.from_spec(range_spec)
     for dateval in date_range.dates():
@@ -46,5 +47,7 @@ def construct_readers(
             continue
 
         all_readers[datestr] = date_readers
+        total_readers += len(date_readers)
 
+    log.info(f"{total_readers} are ready to process across {len(all_readers)} dates")
     return all_readers

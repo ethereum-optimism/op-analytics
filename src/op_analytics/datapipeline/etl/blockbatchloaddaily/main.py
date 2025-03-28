@@ -17,6 +17,7 @@ def daily_to_clickhouse(
     dataset: LoadSpec,
     range_spec: str | None = None,
     dry_run: bool = False,
+    num_workers: int = 1,
 ):
     """Insert blockbatch data into Clickhouse at a dt,chain granularity."""
 
@@ -68,7 +69,7 @@ def daily_to_clickhouse(
         )
         tasks.append(insert_task)
 
-    log.info(f"{len(tasks)}/{len(candidate_readers)} pending insert tasks.")
+    log.info(f"{len(tasks)}/{len(candidate_readers)} pending dt,chain insert tasks.")
 
     # Sort tasks by date (should still be somewhat random by chain)
     tasks.sort(key=lambda x: x.batch.dt)
@@ -85,7 +86,7 @@ def daily_to_clickhouse(
     summary = run_concurrently(
         function=lambda x: x.execute(),
         targets={t.batch.partitioned_path: t for t in tasks},
-        max_workers=2,
+        max_workers=num_workers,
     )
 
     return summary

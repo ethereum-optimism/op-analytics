@@ -125,7 +125,8 @@ class InsertTask:
         write_human = human_rows(insert_result.written_rows)
         num_filtered = human_rows(insert_result.read_rows - insert_result.written_rows)
         log.info(
-            f"{ellapsed} read {read_human} -> write {write_human} ({num_filtered} filtered out)"
+            f"{ellapsed} read {read_human} -> write {write_human} ({num_filtered} filtered out)",
+            **result,
         )
 
         if insert_result.written_rows > insert_result.read_rows:

@@ -31,5 +31,6 @@ def aggreagated_traces(context: OpExecutionContext):
                 enforce_row_count=False,
             ),
             range_spec="m4days",
+            num_workers=2,
         )
         context.log.info(result)
