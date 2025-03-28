@@ -15,8 +15,6 @@ def all_inputs_ready(task: IngestionTask) -> bool:
 
     We don't want to ingest data that is too close to the tip of the chain
     because it might not yet be immutable.
-
-    We hard-code a 1hr buffer on the most recently seen block.
     """
     if task.read_from != RawOnchainDataProvider.GOLDSKY:
         raise ValueError(f"only goldsky is a suppported provider: {task.read_from}")

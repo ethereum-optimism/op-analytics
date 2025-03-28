@@ -58,8 +58,8 @@ sphinx-serve: .makemarkers/sphinx-docs
 #     DOCKER IMAGE
 # ----------------------------------------------------------------------------#
 
-IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250327.3
-IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250328.001
+IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250328.1
+IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250328.002
 
 
 .PHONY: uv-build
