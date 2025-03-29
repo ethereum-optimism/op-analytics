@@ -169,11 +169,31 @@ defs = Definitions(
             k8s_pod_per_step=False,
         ),
         #
-        # Defillama other
+        # Defillama Chain TVL
         create_schedule_for_selection(
-            job_name="defillama_other",
+            job_name="defillama_chaintvl",
             selection=AssetSelection.assets(
-                ["defillama", "other"],
+                ["defillama", "chain_tvl"],
+            ).upstream(),
+            cron_schedule="0 13 * * *",
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        # Defillama Stablecoins
+        create_schedule_for_selection(
+            job_name="defillama_stables",
+            selection=AssetSelection.assets(
+                ["defillama", "stablecoins"],
+            ).upstream(),
+            cron_schedule="30 13 * * *",
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        # Defillama Volume, Fees, Revenue
+        create_schedule_for_selection(
+            job_name="defillama_vfr",
+            selection=AssetSelection.assets(
+                ["defillama", "volumes_fees_revenue"],
             ).upstream(),
             cron_schedule="0 14 * * *",
             custom_k8s_config=SMALL_POD,
