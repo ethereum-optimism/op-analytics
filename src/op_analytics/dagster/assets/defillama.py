@@ -133,9 +133,3 @@ def lend_borrow_pools(context: AssetExecutionContext):
     context.log.info(result)
 
     DefiLlama.LEND_BORROW_POOLS_HISTORICAL.create_bigquery_external_table()
-
-
-@asset(deps=[chain_tvl, stablecoins, volumes_fees_revenue])
-def other(context: AssetExecutionContext):
-    """Dummy asset to group other defillama assets."""
-    context.log.info("i'm just a wrapper")
