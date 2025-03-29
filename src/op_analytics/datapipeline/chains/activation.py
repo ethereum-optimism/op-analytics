@@ -4,7 +4,12 @@ from datetime import date
 from op_analytics.coreutils.time import date_fromstr
 
 
+# The activation date can be obtained by running a query like this:
+#
+# SELECT min(timestamp) FROM arenaz_blocks
+#
 CHAIN_ACTIVATION_DATES = {
+    "arenaz": date_fromstr("2024-11-11"),
     "automata": date_fromstr("2024-07-17"),
     "base": date_fromstr("2023-06-15"),
     "bob": date_fromstr("2024-04-11"),
