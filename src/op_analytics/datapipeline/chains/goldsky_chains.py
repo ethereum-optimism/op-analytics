@@ -47,6 +47,7 @@ def goldsky_mainnet_chains() -> list[str]:
     # with many pods in parallel. So opted to hard-code the list.
     # return sorted(goldsky_mainnet_chains_df()["oplabs_db_schema"].to_list())
     return [
+        "arenaz",
         "automata",
         "base",
         "bob",
