@@ -67,10 +67,10 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=27730000, batch_size=200),
     ],
     "cyber": [
-        # https://cyberscan.co/block/1488000
+        # https://cyberscan.co/block/14848000
         Delimiter(0, 20000),
         Delimiter(block_number=9280000, batch_size=8000),
-        Delimiter(block_number=1488000, batch_size=4000),
+        Delimiter(block_number=14848000, batch_size=4000),
     ],
     "fraxtal": [
         # https://fraxscan.com/block/countdown/18200000
