@@ -149,7 +149,7 @@ def overlapping_markers(
     markers_df: pl.DataFrame,
     root_path: str,
     block_batch: BlockBatch,
-) -> str | None:
+) -> list[str]:
     """Check if there are any overlapping markers for a given block range.
 
     If there are overlapping markers, this means we have made mistake in setting the
@@ -158,10 +158,16 @@ def overlapping_markers(
     overlapping = markers_df.filter(
         pl.col("root_path") == root_path,
         pl.col("chain") == block_batch.chain,
-        pl.col("min_block") <= block_batch.max,
-        pl.col("max_block") >= block_batch.min,
+        pl.col("min_block") < block_batch.max,
+        pl.col("max_block") > block_batch.min,
     )
+
+    # Exclude exact matches
+    overlapping = overlapping.filter(
+        ~((pl.col("min_block") == block_batch.min) & (pl.col("max_block") == block_batch.max))
+    )
+
     if overlapping.is_empty():
-        return None
+        return []
 
     return overlapping["marker_path"].to_list()
