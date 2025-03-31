@@ -16,4 +16,7 @@ def chain_cls_to_str(chain_cls: type) -> str:
 
 
 # Map our chain names to the sugar sdk Chain class.
-SUGAR_CHAINS = {"op": AsyncOPChain(), "base": AsyncBaseChain()}
+SUGAR_CHAINS = {
+    "op": AsyncOPChain(),
+    "base": AsyncBaseChain(),
+}
