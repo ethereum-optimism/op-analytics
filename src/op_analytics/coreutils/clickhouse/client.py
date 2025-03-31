@@ -8,7 +8,7 @@ import polars as pl
 import pyarrow as pa
 from clickhouse_connect.driver.summary import QuerySummary
 
-from op_analytics.coreutils.env import env_get
+from op_analytics.coreutils.env.vault import env_get
 from op_analytics.coreutils.logger import structlog
 
 log = structlog.get_logger()

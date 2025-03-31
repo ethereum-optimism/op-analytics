@@ -2,7 +2,7 @@ import datetime
 from decimal import Decimal
 from unittest.mock import patch
 
-from op_analytics.coreutils.duckdb_inmem import init_client
+from op_analytics.coreutils.duckdb_inmem.client import init_client
 from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros
 
 

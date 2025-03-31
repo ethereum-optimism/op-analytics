@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from op_analytics.coreutils.duckdb_inmem import RemoteParquetData
+from op_analytics.coreutils.duckdb_inmem.client import RemoteParquetData
 from op_analytics.coreutils.logger import structlog
 
 from .location import DataLocation
