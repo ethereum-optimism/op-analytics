@@ -11,14 +11,14 @@ CPI_ENDPOINT = "https://api.daocpi.com/api/calculate-cpi"
 
 
 SNAPSHOT_SCHEMA = {
-    "snapshot_date": pl.String(),
+    "dt": pl.String(),
     "cpi_value": pl.Float64(),
     "active_percent": pl.Float64(),
     "inactive_percent": pl.Float64(),
 }
 
 COUNCIL_PERCENTAGES_SCHEMA = {
-    "snapshot_date": pl.String(),
+    "dt": pl.String(),
     "council_name": pl.String(),
     "original_percentage": pl.Float64(),
     "redistributed_percentage": pl.Float64(),
@@ -57,7 +57,7 @@ def construct_snapshots_df(results) -> pl.DataFrame:
         snapshot_date = item["date"]
 
         snapshot = {
-            "snapshot_date": snapshot_date,
+            "dt": snapshot_date,
             "cpi_value": item["cpi"],
             "active_percent": float(item["councilPercentages"]["active"]),
             "inactive_percent": float(item["councilPercentages"]["inactive"]),
@@ -102,7 +102,7 @@ def construct_council_percentages_df(results) -> pl.DataFrame:
                 redistributed_pct = float(redistributed[council])
 
             council_data = {
-                "snapshot_date": snapshot_date,
+                "dt": snapshot_date,
                 "council_name": council,
                 "original_percentage": original_pct,
                 "redistributed_percentage": redistributed_pct,

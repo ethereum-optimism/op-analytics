@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 import polars as pl
 import requests
@@ -10,7 +11,7 @@ from op_analytics.coreutils.misc import raise_for_schema_mismatch
 HISTORICAL_ENDPOINT = "https://api.daocpi.com/api/historic-cpi"
 
 HISTORICAL_CPI_SCHEMA = {
-    "date": pl.String(),
+    "dt": pl.String(),
     "hhi": pl.Float64(),
     "cpi": pl.Float64(),
 }
@@ -32,13 +33,15 @@ class HistoricalCPI:
             headers={"x-api-key": api_key},
         )
 
-        breakpoint()
-
         rows = []
         for row in response:
+            # date is formatted as "2024-11-30T00:00:00.000Z"
+            # we want to convert it to "2024-11-30"
+            dt = datetime.strptime(row["date"], "%Y-%m-%dT00:00:00.000Z").strftime("%Y-%m-%d")
+
             rows.append(
                 {
-                    "date": row["date"],
+                    "dt": dt,
                     "hhi": row["HHI"],
                     "cpi": row["CPI"],
                 }
