@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS blockbatch.token_transfers__erc20_transfers_v1
+CREATE TABLE IF NOT EXISTS OUTPUT_TABLE
 (
     `chain` String,
     `dt` Date,
@@ -11,9 +11,9 @@ CREATE TABLE IF NOT EXISTS blockbatch.token_transfers__erc20_transfers_v1
     `transaction_index` Int64,
     `log_index` Int64,
     `contract_address` FixedString(42),
-    `amount` UInt256,
     `from_address` FixedString(42),
     `to_address` FixedString(42),
+    `token_id` String,
     INDEX dt_idx dt TYPE minmax GRANULARITY 1,
     INDEX block_timestamp_idx block_timestamp TYPE minmax GRANULARITY 1,
 )

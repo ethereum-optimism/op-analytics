@@ -1,5 +1,4 @@
 from datetime import date
-from decimal import Decimal
 
 from op_analytics.coreutils.testutils.inputdata import InputTestData
 from op_analytics.datapipeline.models.compute.testutils import ModelTestBase
@@ -24,11 +23,11 @@ class TestRefinedTraces001(ModelTestBase):
         row_counts = (
             self._duckdb_context.client.sql(
                 """
-                SELECT 'traces' as name, COUNT(*) as total FROM refined_traces_fees_v1
+                SELECT 'traces' as name, COUNT(*) as total FROM refined_traces_fees_v2
                 
                 UNION ALL
                 
-                SELECT 'txs' as name, COUNT(*) as total FROM refined_transactions_fees_v1
+                SELECT 'txs' as name, COUNT(*) as total FROM refined_transactions_fees_v2
                 
                 """
             )
@@ -47,7 +46,7 @@ class TestRefinedTraces001(ModelTestBase):
         assert self._duckdb_context is not None
 
         schema = (
-            self._duckdb_context.client.sql("DESCRIBE refined_transactions_fees_v1")
+            self._duckdb_context.client.sql("DESCRIBE refined_transactions_fees_v2")
             .pl()
             .select("column_name", "column_type")
             .to_dicts()
@@ -120,7 +119,7 @@ class TestRefinedTraces001(ModelTestBase):
         assert self._duckdb_context is not None
 
         schema = (
-            self._duckdb_context.client.sql("DESCRIBE refined_traces_fees_v1")
+            self._duckdb_context.client.sql("DESCRIBE refined_traces_fees_v2")
             .pl()
             .select("column_name", "column_type")
             .to_dicts()
@@ -139,7 +138,7 @@ class TestRefinedTraces001(ModelTestBase):
             "trace_from_address": "VARCHAR",
             "trace_to_address": "VARCHAR",
             "trace_gas_limit": "BIGINT",
-            "trace_gas_used": "BIGINT",
+            "trace_gas_used": "DOUBLE",
             "trace_address": "VARCHAR",
             "trace_type": "VARCHAR",
             "call_type": "VARCHAR",
@@ -149,12 +148,35 @@ class TestRefinedTraces001(ModelTestBase):
             "trace_depth": "BIGINT",
             "parent_trace_address": "VARCHAR",
             "num_traces_in_txn": "BIGINT",
-            "sum_subtraces_gas_used": "DECIMAL(38,0)",
-            "gas_used_minus_subtraces": "DECIMAL(38,0)",
-            "tx_l2_fee_native_minus_subtraces": "DECIMAL(38,20)",
-            "tx_l2_base_fee_native_minus_subtraces": "DECIMAL(38,20)",
-            "tx_l2_priority_fee_native_minus_subtraces": "DECIMAL(38,20)",
-            "tx_l2_legacy_base_fee_native_minus_subtraces": "DECIMAL(38,20)",
+            "sum_subtraces_gas_used": "DOUBLE",
+            "gas_used_minus_subtraces": "DOUBLE",
+            "tx_success": "BOOLEAN",
+            "tx_from_address": "VARCHAR",
+            "tx_to_address": "VARCHAR",
+            "tx_method_id": "VARCHAR",
+            "tx_l2_gas_used": "BIGINT",
+            "tx_fee_native": "DOUBLE",
+            "tx_l1_fee_native": "DOUBLE",
+            "tx_l2_fee_native": "DOUBLE",
+            "tx_l2_priority_fee_native": "DOUBLE",
+            "tx_l2_base_fee_native": "DOUBLE",
+            "tx_l2_legacy_extra_fee_native": "DOUBLE",
+            "tx_l2_gas_price_gwei": "DOUBLE",
+            "tx_l2_priority_gas_price_gwei": "DOUBLE",
+            "tx_l2_legacy_extra_gas_price_gwei": "DOUBLE",
+            "tx_l1_base_gas_price_gwei": "DOUBLE",
+            "tx_l1_blob_base_gas_price_gwei": "DOUBLE",
+            "tx_l1_gas_used_unified": "DOUBLE",
+            "tx_l1_base_scaled_size": "DOUBLE",
+            "tx_l1_blob_scaled_size": "DOUBLE",
+            "tx_estimated_size": "DOUBLE",
+            "tx_input_byte_length": "INTEGER",
+            "tx_input_zero_bytes": "INTEGER",
+            "tx_input_nonzero_bytes": "INTEGER",
+            "tx_l2_fee_native_minus_subtraces": "DOUBLE",
+            "tx_l2_base_fee_native_minus_subtraces": "DOUBLE",
+            "tx_l2_priority_fee_native_minus_subtraces": "DOUBLE",
+            "tx_l2_legacy_base_fee_native_minus_subtraces": "DOUBLE",
             "tx_l2_gas_used_amortized_by_call": "DOUBLE",
             "tx_l1_gas_used_unified_amortized_by_call": "DOUBLE",
             "tx_l1_base_scaled_size_amortized_by_call": "DOUBLE",
@@ -227,8 +249,10 @@ class TestRefinedTraces001(ModelTestBase):
                 num_traces_in_txn,
                 sum_subtraces_gas_used,
                 gas_used_minus_subtraces,
-                tx_l2_gas_used_amortized_by_call
-            FROM refined_traces_fees_v1 WHERE transaction_hash = '{tx_hash}'
+                tx_l2_gas_used_amortized_by_call,
+                tx_l2_gas_used,
+                tx_estimated_size,
+            FROM refined_traces_fees_v2 WHERE transaction_hash = '{tx_hash}'
             """)
             .pl()
             .to_dicts()
@@ -240,26 +264,32 @@ class TestRefinedTraces001(ModelTestBase):
                 "trace_depth": 0,
                 "parent_trace_address": "none",
                 "num_traces_in_txn": 3,
-                "sum_subtraces_gas_used": Decimal("159392"),
-                "gas_used_minus_subtraces": Decimal("29734"),
+                "sum_subtraces_gas_used": 159392.0,
+                "gas_used_minus_subtraces": 29734.0,
                 "tx_l2_gas_used_amortized_by_call": 63042.0,
+                "tx_l2_gas_used": 189126,
+                "tx_estimated_size": 310.0,
             },
             {
                 "trace_address": "0",
                 "trace_depth": 1,
                 "parent_trace_address": "",
                 "num_traces_in_txn": 3,
-                "sum_subtraces_gas_used": Decimal("3000"),
-                "gas_used_minus_subtraces": Decimal("156392"),
+                "sum_subtraces_gas_used": 3000.0,
+                "gas_used_minus_subtraces": 156392.0,
                 "tx_l2_gas_used_amortized_by_call": 63042.0,
+                "tx_l2_gas_used": 189126,
+                "tx_estimated_size": 310.0,
             },
             {
                 "trace_address": "0,0",
                 "trace_depth": 2,
                 "parent_trace_address": "0",
                 "num_traces_in_txn": 3,
-                "sum_subtraces_gas_used": Decimal("0"),
-                "gas_used_minus_subtraces": Decimal("3000"),
+                "sum_subtraces_gas_used": 0.0,
+                "gas_used_minus_subtraces": 3000.0,
                 "tx_l2_gas_used_amortized_by_call": 63042.0,
+                "tx_l2_gas_used": 189126,
+                "tx_estimated_size": 310.0,
             },
         ]

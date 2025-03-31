@@ -24,7 +24,7 @@ def transforms_governance(context: OpExecutionContext):
     """
     result = execute_dt_transforms(
         group_name="governance",
-        raise_if_empty=[1, 2, 16],
+        raise_if_empty=[1, 16],
         force_complete=True,
     )
     context.log.info(result)

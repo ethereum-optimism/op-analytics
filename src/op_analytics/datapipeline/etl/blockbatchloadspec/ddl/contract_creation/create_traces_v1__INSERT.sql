@@ -1,4 +1,3 @@
-INSERT INTO blockbatch.contract_creation__create_traces_v1
 SELECT
     `chain`,
     `dt`,
@@ -27,6 +26,4 @@ SELECT
     `status`,
     `tx_method_id`,
     `code_bytelength`
-FROM (
-    {subquery}
-)
+FROM gcs__blockbatch.contract_creation__create_traces_v1

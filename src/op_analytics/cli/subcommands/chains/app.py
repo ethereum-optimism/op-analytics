@@ -292,8 +292,8 @@ def fees_backfill():
     num_indexes = 16
 
     # Define start and end dates for the backfill.
-    start_date = datetime.strptime("20250114", "%Y%m%d")
-    end_date = datetime.strptime("20250318", "%Y%m%d")
+    start_date = datetime.strptime("20250225", "%Y%m%d")
+    end_date = datetime.strptime("20250327", "%Y%m%d")
 
     # Generate date ranges with N-day intervals
     date_ranges = []
@@ -308,7 +308,7 @@ def fees_backfill():
         if ii % num_indexes == index:
             compute_blockbatch(
                 chains=normalize_chains("ALL,-kroma,-unichain_sepolia"),
-                models=["refined_traces", "aggregated_traces"],
+                models=["refined_traces"],
                 range_spec=range_spec,
                 read_from=DataLocation.GCS,
                 write_to=DataLocation.GCS,

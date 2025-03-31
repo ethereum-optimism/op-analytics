@@ -41,14 +41,19 @@ class Delimiter:
 # https://optimistic.grafana.net/explore?schemaVersion=1&panes=%7B%22dar%22:%7B%22datasource%22:%22grafanacloud-logs%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22max_over_time%28%7Bcluster%3D%5C%22oplabs-tools-data-primary%5C%22,%20namespace%3D%5C%22op-analytics%5C%22,%20container%3D%5C%22python-runner-ingestion%5C%22%7D%20%7C%3D%20%60done%20writing%60%20or%20%60traces%60%20%7C%3D%20%60size%60%20%7C%20json%20chain,%20size%20%7C%20unwrap%20size%20%5B1h%5D%29%20by%20%28chain%29%22,%22queryType%22:%22range%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22grafanacloud-logs%22%7D,%22editorMode%22:%22builder%22,%22direction%22:%22backward%22%7D%5D,%22range%22:%7B%22from%22:%22now-2d%22,%22to%22:%22now%22%7D,%22panelsState%22:%7B%22logs%22:%7B%22visualisationType%22:%22logs%22%7D%7D%7D%7D&orgId=1
 MICROBATCH_SIZE_CONFIGURATION = {
     "automata": [
+        # https://explorer.ata.network/block/11008000
         Delimiter(0, 20000),
         Delimiter(block_number=5440000, batch_size=8000),
+        Delimiter(block_number=11008000, batch_size=4000),
     ],
     "bob": [
+        # https://explorer.gobob.xyz/block/15168000
         Delimiter(0, 20000),
         Delimiter(block_number=9600000, batch_size=8000),
+        Delimiter(block_number=15168000, batch_size=4000),
     ],
     "base": [
+        # https://basescan.org/
         Delimiter(block_number=0, batch_size=10000),
         Delimiter(block_number=10000000, batch_size=5000),
         Delimiter(block_number=15000000, batch_size=2000),
@@ -62,24 +67,33 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=27730000, batch_size=200),
     ],
     "cyber": [
+        # https://cyberscan.co/block/1488000
         Delimiter(0, 20000),
         Delimiter(block_number=9280000, batch_size=8000),
+        Delimiter(block_number=1488000, batch_size=4000),
     ],
     "fraxtal": [
+        # https://fraxscan.com/block/countdown/18200000
         Delimiter(0, 20000),
         Delimiter(block_number=12600000, batch_size=8000),
+        Delimiter(block_number=18200000, batch_size=4000),
     ],
     "ham": [
+        # https://explorer.ham.fun/block/26590870
         Delimiter(block_number=0, batch_size=20000),
         # Reducing due to large memory usage fetching traces.
         Delimiter(block_number=15160000, batch_size=8000),
     ],
     "ink": [
+        # https://explorer.inkonchain.com/block/9704000
         Delimiter(block_number=0, batch_size=8000),
+        Delimiter(block_number=9696000, batch_size=4000),
     ],
     "kroma": [
+        # https://blockscout.kroma.network/block/24664000
         Delimiter(0, 20000),
         Delimiter(block_number=19080000, batch_size=8000),
+        Delimiter(block_number=24664000, batch_size=4000),
     ],
     "lisk": [
         Delimiter(0, 20000),
@@ -98,12 +112,16 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=21114000, batch_size=1000),
     ],
     "metal": [
+        # https://explorer.metall2.com/block/15824000
         Delimiter(0, 20000),
         Delimiter(block_number=10240000, batch_size=8000),
+        Delimiter(block_number=15824000, batch_size=4000),
     ],
     "mint": [
+        # https://explorer.mintchain.io/block/13800000
         Delimiter(0, 20000),
         Delimiter(block_number=8200000, batch_size=8000),
+        Delimiter(block_number=13800000, batch_size=4000),
     ],
     "mode": [
         Delimiter(0, 20000),
@@ -126,12 +144,16 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=0, batch_size=5000),
     ],
     "polynomial": [
+        # https://polynomialscan.io/block/12592000
         Delimiter(0, 20000),
         Delimiter(block_number=7000000, batch_size=8000),
+        Delimiter(block_number=12592000, batch_size=4000),
     ],
     "race": [
+        # https://racescan.io/block/11400000
         Delimiter(0, 20000),
         Delimiter(block_number=5800000, batch_size=8000),
+        Delimiter(block_number=11400000, batch_size=4000),
     ],
     "redstone": [
         Delimiter(block_number=0, batch_size=20000),
@@ -141,8 +163,10 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=9920000, batch_size=4000),
     ],
     "shape": [
+        # https://shapescan.xyz/block/countdown/10736000
         Delimiter(0, 20000),
         Delimiter(block_number=5160000, batch_size=8000),
+        Delimiter(block_number=10736000, batch_size=4000),
     ],
     "soneium": [
         Delimiter(0, 8000),
@@ -156,11 +180,13 @@ MICROBATCH_SIZE_CONFIGURATION = {
         # Reduced on 2024/11/16 to decrease pipeline latency. Swan has less blocks per second so
         # 20k blocks means more hours.
         Delimiter(block_number=2640000, batch_size=8000),
-        # Reducied on 2025/03/17 to further decrease pipeline latency.
+        # Reduced on 2025/03/17 to further decrease pipeline latency.
         Delimiter(block_number=4728000, batch_size=2000),
     ],
     "swell": [
+        # https://explorer.swellnetwork.io/block/5256000
         Delimiter(0, 8000),
+        Delimiter(block_number=5256000, batch_size=4000),
     ],
     "unichain": [
         Delimiter(0, 8000),
@@ -180,12 +206,16 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=11458400, batch_size=400),
     ],
     "xterio": [
+        # https://eth.xterscan.io/block/13336000
         Delimiter(0, 20000),
         Delimiter(block_number=7760000, batch_size=8000),
+        Delimiter(block_number=13336000, batch_size=4000),
     ],
     "zora": [
+        # https://explorer.zora.energy/block/28256000
         Delimiter(0, 20000),
         Delimiter(block_number=22680000, batch_size=8000),
+        Delimiter(block_number=28256000, batch_size=4000),
     ],
     # Testnets
     "ink_sepolia": [Delimiter(0, 5000)],

@@ -63,18 +63,23 @@ def blockbatch_views():
 
 @asset
 def blockbatch_views_bq():
-    """BigQuery external tables over GCS data:
+    """BigQuery external tables over GCS data. These views can be useful for
+    ad-hoc queries since BQ scales more than ClickHouse and and can process
+    large date ranges. In ClickHouse we are generlly limited to looking only
+    at one date at a time.
+
+    Tables included:
 
     - blockbatch_gcs.create_traces_v1
-    - blockbatch_gcs.refined_transactions_fees_v1
-    - blockbatch_gcs.refined_traces_fees_v1
+    - blockbatch_gcs.refined_transactions_fees_v2
+    - blockbatch_gcs.refined_traces_fees_v2
     """
     from op_analytics.coreutils.bigquery.gcsexternal import create_gcs_external_table
 
     MODEL_OUTPUTS = [
         ("contract_creation", "create_traces_v1"),
-        ("refined_traces", "refined_transactions_fees_v1"),
-        ("refined_traces", "refined_traces_fees_v1"),
+        ("refined_traces", "refined_transactions_fees_v2"),
+        ("refined_traces", "refined_traces_fees_v2"),
         ("token_transfers", "erc20_transfers_v1"),
         ("token_transfers", "erc721_transfers_v1"),
     ]

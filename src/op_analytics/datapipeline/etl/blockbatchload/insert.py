@@ -2,20 +2,32 @@ import os
 import socket
 from dataclasses import asdict, dataclass
 from datetime import date
+from typing import Any
 
 import polars as pl
-
-from op_analytics.coreutils.clickhouse.inferschema import parquet_to_subquery
-from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
-from op_analytics.coreutils.logger import structlog, bound_contextvars
-from op_analytics.coreutils.time import date_tostr
-
 from clickhouse_connect.driver.exceptions import DatabaseError
 
+from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
+from op_analytics.coreutils.logger import bound_contextvars, human_rows, structlog
+from op_analytics.coreutils.time import date_tostr
+
+from ..blockbatchloadspec.loadspec import LoadSpec
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
-from .table import BlockBatchTable
 
 log = structlog.get_logger()
+
+
+DIRECTORY = os.path.dirname(__file__)
+
+
+@dataclass
+class BlockBatch:
+    """Represent a blockbatch that needs to be loaded into ClickHouse."""
+
+    chain: str
+    dt: date
+    min_block: int
+    partitioned_path: str
 
 
 @dataclass
@@ -57,46 +69,57 @@ class InsertResult:
 
 @dataclass
 class InsertTask:
-    root_path: str
-    table_name: str
-    chain: str
-    dt: date
-    min_block: int
-    data_path: str
+    dataset: LoadSpec
+    blockbatch: BlockBatch
     enforce_row_count: bool = False
 
     @property
     def context(self):
-        return dict(
-            chain=self.chain,
-            dt=date_tostr(self.dt),
-            data_path=self.data_path,
+        return dict(blockbatch=self.blockbatch.partitioned_path)
+
+    def construct_insert(self, dry_run: bool = False):
+        insert_ddl_template = self.dataset.insert_ddl_template(dry_run=dry_run)
+
+        # Replace the BLOCKBATCH_MIN_BLOCK placeholder in the template
+        # with the min block number of the blockbatch
+        select_ddl = insert_ddl_template.replace(
+            "BLOCKBATCH_MIN_BLOCK",
+            str(self.blockbatch.min_block),
         )
 
-    def subquery(self):
-        return parquet_to_subquery(
-            gcs_parquet_path="gs://oplabs-tools-data-sink/" + self.data_path,
-            virtual_columns="chain, dt,",
+        select_ddl = select_ddl.replace(
+            "INPUT_PARTITION_PATH",
+            self.blockbatch.partitioned_path,
         )
 
-    def execute(self):
+        return select_ddl
+
+    def dry_run(self):
+        insert_ddl = self.construct_insert(dry_run=True)
+        print(insert_ddl)
+
+    def execute(self) -> dict[str, Any]:
         with bound_contextvars(**self.context):
             insert_result = self.write()
             self.write_marker(insert_result)
-            return insert_result
+
+            return dict(
+                dt=date_tostr(self.blockbatch.dt),
+                chain=self.blockbatch.chain,
+                table=self.dataset.output_table_name(),
+                min_block=self.blockbatch.min_block,
+                data_path=f"{self.dataset.output_root_path}/{self.blockbatch.partitioned_path}",
+                written_rows=insert_result.written_rows,
+            )
 
     def write(self) -> InsertResult:
-        ddl = BlockBatchTable(self.root_path).read_insert_ddl()
-        # If needed for debugging we can log out the DDL template
-        # log.info(ddl)
+        insert_ddl = self.construct_insert()
 
-        # BE CAREFUL! with_subquery may contain HMAC access info.
+        # BE CAREFUL! At this point ddl may contain HMAC access info.
         # Do not print or log it when debugging.
-        with_subquery = ddl.format(subquery=self.subquery())
-
         try:
             result = run_statememt_oplabs(
-                statement=with_subquery,
+                statement=insert_ddl,
                 settings={"use_hive_partitioning": 1},
             )
         except DatabaseError as ex:
@@ -104,7 +127,11 @@ class InsertTask:
             raise
 
         insert_result = InsertResult.from_raw(result)
-        log.info("insert results", **insert_result.to_dict())
+
+        read_human = human_rows(insert_result.read_rows)
+        write_human = human_rows(insert_result.written_rows)
+        num_filtered = human_rows(insert_result.read_rows - insert_result.written_rows)
+        log.info(f"read {read_human} -> write {write_human} ({num_filtered} filtered out)")
 
         if insert_result.written_rows > insert_result.read_rows:
             raise Exception("loading into clickhouse should not result in more rows")
@@ -112,13 +139,6 @@ class InsertTask:
         if insert_result.written_rows < insert_result.read_rows:
             if self.enforce_row_count:
                 raise Exception("loading into clickhouse should not result in fewer rows")
-            else:
-                num_filtered = insert_result.read_rows - insert_result.written_rows
-                log.warning(
-                    f"{num_filtered} rows were filtered out",
-                    written_rows=insert_result.written_rows,
-                    read_rows=insert_result.read_rows,
-                )
 
         return insert_result
 
@@ -126,11 +146,11 @@ class InsertTask:
         marker_df = pl.DataFrame(
             [
                 dict(
-                    root_path=self.root_path,
-                    chain=self.chain,
-                    dt=self.dt,
-                    min_block=self.min_block,
-                    data_path=self.data_path,
+                    root_path=self.dataset.output_root_path,
+                    chain=self.blockbatch.chain,
+                    dt=self.blockbatch.dt,
+                    min_block=self.blockbatch.min_block,
+                    data_path=self.blockbatch.partitioned_path,
                     loaded_row_count=insert_result.written_rows,
                     process_name=os.environ.get("PROCESS", "default"),
                     writer_name=socket.gethostname(),
