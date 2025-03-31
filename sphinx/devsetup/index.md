@@ -1,6 +1,14 @@
-# Getting Started
+---
+myst:
+  html_meta:
+    "description lang=en": |
+      Developer setup for the op-analytics repo
+---
 
-The op-analytics repo is the one stop shop for the Data Team at OP Labs.
+# Dev Setup
+
+This section will walk you through setting up your development environment for the op-analytics
+repo.
 
 
 ## Virtual Environment

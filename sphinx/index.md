@@ -19,7 +19,7 @@ dataplatform/index
 ## Getting Started
 
 ```{toctree}
-sections/quickstart
+devsetup/index
 ```
 
 ## Onchain Data
