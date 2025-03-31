@@ -1,6 +1,6 @@
 import os
 
-from op_analytics.coreutils.env import env_get_or_none
+from op_analytics.coreutils.env.vault import env_get_or_none
 from op_analytics.coreutils.logger import structlog
 from google.oauth2 import service_account
 
