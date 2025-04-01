@@ -104,8 +104,17 @@ def sanitize_string(s: str) -> str:
     """
     init()
 
-    for key, val in _STORE.values():
+    for key, val in _STORE.items():
+        # Handle special cases.
+        if val == "default":
+            continue
+
+        if key.endswith("_USER"):
+            continue
+        if key.endswith("_PORT"):
+            continue
+
         if isinstance(val, str):
-            s.replace(val, f"<{key}>")
+            s = s.replace(val, f"<{key}>")
 
     return s
