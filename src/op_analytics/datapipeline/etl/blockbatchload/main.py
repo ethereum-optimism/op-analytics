@@ -167,7 +167,7 @@ def load_to_clickhouse(
 
     summary = run_concurrently(
         function=lambda x: x.execute(),
-        targets={t.blockbatch.partitioned_path: t for t in tasks},
+        targets={t.key: t for t in tasks},
         max_workers=5,
     )
 
