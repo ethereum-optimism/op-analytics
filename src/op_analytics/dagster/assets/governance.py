@@ -28,3 +28,12 @@ def transforms_governance(context: OpExecutionContext):
         force_complete=True,
     )
     context.log.info(result)
+
+
+@asset
+def dao_powerindex(context: OpExecutionContext):
+    """Pull DAO Power Index data."""
+    from op_analytics.datasources.daopowerindex import execute
+
+    result = execute.execute_pull()
+    context.log.info(result)

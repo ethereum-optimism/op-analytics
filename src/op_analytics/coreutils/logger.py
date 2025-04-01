@@ -57,7 +57,7 @@ def configuration():
 
         return dict(
             processors=[
-                # CALLSITE_PARAMETERS,
+                CALLSITE_PARAMETERS,
                 structlog.contextvars.merge_contextvars,
                 add_dagster_job,
                 structlog.processors.add_log_level,
