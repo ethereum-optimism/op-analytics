@@ -58,8 +58,13 @@ sphinx-serve: .makemarkers/sphinx-docs
 #     DOCKER IMAGE
 # ----------------------------------------------------------------------------#
 
+# Used to be more importang when we were running jobs directly on kubernetes.
+# Somewhat obsolete now that everything is run through Dagster. It is still
+# used for backfills. 
 IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250328.1
-IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250331.001
+
+# Dagster image version.
+IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250401.001
 
 
 .PHONY: uv-build
