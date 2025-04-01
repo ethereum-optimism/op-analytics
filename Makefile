@@ -58,7 +58,7 @@ sphinx-serve: .makemarkers/sphinx-docs
 #     DOCKER IMAGE
 # ----------------------------------------------------------------------------#
 
-# Used to be more importang when we were running jobs directly on kubernetes.
+# Used to be more important when we were running jobs directly on kubernetes.
 # Somewhat obsolete now that everything is run through Dagster. It is still
 # used for backfills. 
 IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250401.3
