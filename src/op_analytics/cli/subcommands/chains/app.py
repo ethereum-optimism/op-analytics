@@ -316,3 +316,78 @@ def fees_backfill():
                 force_complete=False,
                 fork_process=True,
             )
+
+
+@app.command()
+def newchain_backfill():
+    """Backfill ingestion for a new chain."""
+    new_chain = "arenaz"
+
+    # Kubernetes job index.
+    index = int(os.environ["JOB_COMPLETION_INDEX"])
+
+    # Num job indexes (the paralellism specified on k8s)
+    num_indexes = 16
+
+    # Define start and end dates for the backfill.
+    start_date = datetime.strptime("20241111", "%Y%m%d")
+    end_date = datetime.strptime("20250401", "%Y%m%d")
+
+    # Generate date ranges with N-day intervals
+    date_ranges = []
+    current_date = start_date
+    while current_date < end_date:
+        next_date = min(current_date + timedelta(days=2), end_date)
+        date_ranges.append((current_date.strftime("%Y%m%d"), next_date.strftime("%Y%m%d")))
+        current_date = next_date
+
+    for ii, (d0, d1) in enumerate(reversed(date_ranges)):
+        range_spec = f"@{d0}:{d1}"
+        if ii % num_indexes == index:
+            ingest(
+                chains=normalize_chains(new_chain),
+                range_spec=range_spec,
+                read_from=RawOnchainDataProvider.GOLDSKY,
+                write_to=DataLocation.GCS,
+                dryrun=False,
+                force_complete=False,
+                fork_process=True,
+            )
+
+
+@app.command()
+def newchain_backfill_models():
+    """Backfill models for a new chain."""
+    new_chain = "arenaz"
+
+    # Kubernetes job index.
+    index = int(os.environ["JOB_COMPLETION_INDEX"])
+
+    # Num job indexes (the paralellism specified on k8s)
+    num_indexes = 16
+
+    # Define start and end dates for the backfill.
+    start_date = datetime.strptime("20241111", "%Y%m%d")
+    end_date = datetime.strptime("20250401", "%Y%m%d")
+
+    # Generate date ranges with N-day intervals
+    date_ranges = []
+    current_date = start_date
+    while current_date < end_date:
+        next_date = min(current_date + timedelta(days=2), end_date)
+        date_ranges.append((current_date.strftime("%Y%m%d"), next_date.strftime("%Y%m%d")))
+        current_date = next_date
+
+    for ii, (d0, d1) in enumerate(reversed(date_ranges)):
+        range_spec = f"@{d0}:{d1}"
+        if ii % num_indexes == index:
+            compute_blockbatch(
+                chains=normalize_chains(new_chain),
+                models=normalize_blockbatch_models("MODELS"),
+                range_spec=range_spec,
+                read_from=DataLocation.GCS,
+                write_to=DataLocation.GCS,
+                dryrun=False,
+                force_complete=False,
+                fork_process=True,
+            )

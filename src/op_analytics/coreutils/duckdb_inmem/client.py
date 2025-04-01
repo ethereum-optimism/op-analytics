@@ -63,6 +63,7 @@ class DuckDBContext:
         self.client.sql("INSTALL httpfs")
         KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
         SECRET = env_get("GCS_HMAC_SECRET")
+        log.info("create duckddb gcs secret")
         self.client.sql(f"""
         CREATE SECRET (
             TYPE GCS,
