@@ -74,6 +74,13 @@ class InsertTask:
     enforce_row_count: bool = False
 
     @property
+    def key(self):
+        return (
+            self.dataset.output_root_path,
+            self.blockbatch.partitioned_path,
+        )
+
+    @property
     def context(self):
         return dict(blockbatch=self.blockbatch.partitioned_path)
 
