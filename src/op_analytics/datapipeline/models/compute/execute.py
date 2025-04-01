@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 import duckdb
 
-from op_analytics.coreutils.duckdb_inmem import DuckDBContext
+from op_analytics.coreutils.duckdb_inmem.client import DuckDBContext
 from op_analytics.coreutils.logger import structlog
 
 from .model import PythonModel, AuxiliaryTemplate, ModelDataReader, ParquetData

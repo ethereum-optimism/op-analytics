@@ -9,7 +9,7 @@ from op_analytics.coreutils.partitioned.output import ExpectedOutput
 from op_analytics.coreutils.partitioned.writerpartitioned import PartitionedWriteManager
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange, ChainMaxBlock
 from op_analytics.coreutils.testutils.inputdata import InputTestData
-from op_analytics.datapipeline.etl.ingestion.construct import construct_tasks
+from op_analytics.datapipeline.etl.ingestion.construct import construct_tasks, overlapping_markers
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
 from op_analytics.datapipeline.etl.ingestion.task import IngestionTask
 from op_analytics.datapipeline.etl.ingestion.batches import BlockBatch
@@ -214,3 +214,52 @@ def test_construct():
             progress_indicator="",
         ),
     ]
+
+
+def test_overlapping_markers():
+    candidate_batch = BlockBatch(chain="mode", min=16000, max=24000)
+
+    markers_df = pl.DataFrame(
+        [
+            # This batch IS NOT OVERLAPPING, it is the preceding batch.
+            {
+                "root_path": "ingestion/blocks_v1",
+                "marker_path": "8000-16000",
+                "chain": "mode",
+                "min_block": 8000,
+                "max_block": 16000,
+            },
+            # This batch IS NOT OVERLAPPING, it is the same batch.
+            {
+                "root_path": "ingestion/blocks_v1",
+                "marker_path": "16000-24000",
+                "chain": "mode",
+                "min_block": 16000,
+                "max_block": 24000,
+            },
+            # This batch IS NOT OVERLAPPING, it is the next batch.
+            {
+                "root_path": "ingestion/blocks_v1",
+                "marker_path": "24000-32000",
+                "chain": "mode",
+                "min_block": 24000,
+                "max_block": 32000,
+            },
+            # This batch IS OVERLAPPING, it has 4000 blocks in common.
+            {
+                "root_path": "ingestion/blocks_v1",
+                "marker_path": "20000-24000",
+                "chain": "mode",
+                "min_block": 20000,
+                "max_block": 24000,
+            },
+        ]
+    )
+
+    actual = overlapping_markers(
+        markers_df,
+        "ingestion/blocks_v1",
+        candidate_batch,
+    )
+
+    assert actual == ["20000-24000"]

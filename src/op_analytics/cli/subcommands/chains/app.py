@@ -12,7 +12,7 @@ from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.datapipeline.chains import goldsky_chains
 from op_analytics.datapipeline.etl.blockbatch.main import compute_blockbatch
-from op_analytics.datapipeline.etl.ingestion import ingest
+from op_analytics.datapipeline.etl.ingestion.main import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
 from op_analytics.datapipeline.etl.loadbq.main import (

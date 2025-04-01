@@ -6,7 +6,7 @@ from typing import Generator, Protocol, Sequence
 
 import duckdb
 
-from op_analytics.coreutils.duckdb_inmem import init_client
+from op_analytics.coreutils.duckdb_inmem.client import init_client
 from op_analytics.coreutils.duckdb_local.client import disconnect_duckdb_local
 from op_analytics.coreutils.logger import (
     bound_contextvars,
