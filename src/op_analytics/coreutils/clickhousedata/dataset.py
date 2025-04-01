@@ -19,6 +19,10 @@ class ClickhouseDataset(str, Enum):
     See for example: DaoPowerIndex.
     """
 
+    @classmethod
+    def all_tables(cls) -> list["ClickhouseDataset"]:
+        return list(cls.__members__.values())
+
     @property
     def db(self):
         return "datasources_" + self.__class__.__name__.lower()
@@ -27,14 +31,14 @@ class ClickhouseDataset(str, Enum):
     def table(self):
         return self.value
 
-    def get_create_ddl(self):
+    def read_sql(self, subdir: str):
         directory = os.path.dirname(inspect.getfile(self.__class__))
-        ddl_path = os.path.join(directory, f"ddl/{self.table}.sql")
+        ddl_path = os.path.join(directory, f"{subdir}/{self.table}.sql")
         with open(ddl_path, "r") as fobj:
             return fobj.read().replace("_placeholder_", f"{self.db}.{self.table}")
 
     def create_table(self):
-        ddl = self.get_create_ddl()
+        ddl = self.read_sql(subdir="ddl")
         log.info(f"CREATE {self.db}.{self.table}")
         run_statememt_oplabs(ddl)
 
