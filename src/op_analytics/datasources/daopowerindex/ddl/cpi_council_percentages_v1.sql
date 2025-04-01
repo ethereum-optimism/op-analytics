@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `redistributed_percentage` Float64
 )
 ENGINE = ReplacingMergeTree
-ORDER BY (dt)
+ORDER BY (dt, council_name)
