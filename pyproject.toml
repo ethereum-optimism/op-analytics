@@ -1,6 +1,6 @@
 [project]
 name = "op-analytics"
-version = "20250328.1"
+version = "20250401.3"
 description = "Data analysis tools by OP Labs."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -75,6 +75,53 @@ sugar = { git = "https://github.com/velodrome-finance/sugar-sdk" }
 [tool.ruff]
 # Allow lines to be as long as 100.
 line-length = 100
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    "demos",
+    "helper_functions",
+    "notebooks",
+    "op_collective_economics",
+    "op_chains_tracking",
+    "op_governance_data",
+    "other_chains_tracking",
+    "reference_data",
+    "rpgf",
+    "value_locked_flows",
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+select = ["E4", "E7", "E9", "F"]
+ignore = []
 
 [tool.pytest.ini_options]
 filterwarnings = [

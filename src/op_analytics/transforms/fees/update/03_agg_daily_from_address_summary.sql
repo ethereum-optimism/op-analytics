@@ -34,7 +34,7 @@ tx_fees AS (
     , accurateCast(coalesce(estimated_size, 0), 'UInt64') AS estimated_size
   FROM
     blockbatch_gcs.read_date(
-      rootpath = 'blockbatch/refined_traces/refined_transactions_fees_v1'
+      rootpath = 'blockbatch/refined_traces/refined_transactions_fees_v2'
       , chain = '*'
       , dt = { dtparam: Date }
     )

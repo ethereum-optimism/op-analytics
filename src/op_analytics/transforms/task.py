@@ -12,6 +12,7 @@ from clickhouse_connect.driver.summary import QuerySummary
 
 from op_analytics.coreutils.clickhouse.client import new_stateful_client
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs
+from op_analytics.coreutils.env.vault import sanitize_string
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 
 from .create import TableStructure
@@ -108,16 +109,22 @@ class TransformTask:
         ).on(should_retry)
 
         try:
+            sql_statement = step.get_sql_statement(table)
             result: QuerySummary = retrier(
                 client.command,
-                cmd=step.get_sql_statement(table),
+                cmd=sql_statement,
                 parameters={"dtparam": self.dt},
                 settings={"use_hive_partitioning": 1},
             )
         except DatabaseError as ex:
             log.error("database error", exc_info=ex)
-            print(step.get_sql_statement(table))
-            raise
+            raise Exception(
+                f"""
+                Database error! 
+                
+                {sanitize_string(sql_statement)}
+                """
+            ) from ex
 
         assert isinstance(result.summary, dict)
         log.info(f"{step.name} -> {result.written_rows} written rows", **result.summary)

@@ -58,8 +58,13 @@ sphinx-serve: .makemarkers/sphinx-docs
 #     DOCKER IMAGE
 # ----------------------------------------------------------------------------#
 
-IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250328.1
-IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250331.001
+# Used to be more important when we were running jobs directly on kubernetes.
+# Somewhat obsolete now that everything is run through Dagster. It is still
+# used for backfills. 
+IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250401.3
+
+# Dagster image version.
+IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250401.005
 
 
 .PHONY: uv-build
@@ -75,8 +80,8 @@ docker-image: uv-build
 	docker build -f ./Dockerfile --platform linux/amd64 -t ${IMAGE_TAG} .
 
 
-.PHONY: docker-push
-docker-push: docker-image
+.PHONY: docker-k8s
+docker-k8s: docker-image
 	docker push ${IMAGE_TAG}
 
 
