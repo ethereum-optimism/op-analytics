@@ -95,3 +95,17 @@ def env_get_or_none(key: str):
         raise ValueError("OP_ANALYTICS_VAULT was not propertly initialized.")
 
     return _STORE.get(key)
+
+
+def sanitize_string(s: str) -> str:
+    """Sanitize a string for logging.
+
+    This will replace all vault values with a <key> string.
+    """
+    init()
+
+    for key, val in _STORE.values():
+        if isinstance(val, str):
+            s.replace(val, f"<{key}>")
+
+    return s
