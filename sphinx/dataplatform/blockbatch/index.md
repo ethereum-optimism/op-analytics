@@ -11,7 +11,8 @@ Let's cover the pattern in detail.
 ```{toctree}
 
 1-design
-2-observability
+2-markers
+3-models
 ingestion
 coreschemas
 ```

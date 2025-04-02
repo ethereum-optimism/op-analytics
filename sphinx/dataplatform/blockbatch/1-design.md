@@ -102,10 +102,27 @@ Date partitioning is introduced with the goal of making it easier to reason abou
 series. This is very importnat for the kinds of analytics we do at OP Labs. Pretty much all of our
 dashboards and reports have a date component on them. 
 
-The price we pay is we cannot do O(1) indexing of data given the block number. We also need to know
-the block timestamp for the block so we can formulate the date partition. As we will see, this turns
+The price we pay is we cannot do O(1) data access given the block number. We also need to know
+the block timestamp for the block so we can find the date partition and access the data. This turns
 out not to be a huge deal, because we can bootstrap knowledge of the date partition at ingestion
 time and then carry it forward in all our metadata from that point on.
+
+When ingesting data we can target the sourced blockes using the batch block range only. We proceed
+to audit the batch and then right before writing we split the batch into date partitions using
+the block timestamp column to determine which blocks go into each date.  Most of the time there is a
+single date per batch, but when the batch straddles a date boundary we end up with two dates and
+therefore two parquet files written to the data lake, for example
+
+```
+gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=op/dt=2021-11-30/000000630000.parquet
+gs://oplabs-tools-data-sink/ingestion/traces_v1/chain=op/dt=2021-12-01/000000630000.parquet
+```
+
+When processing data after ingestion we don't usually address the single batch, but rather we
+address all batches for a given date range. So we can use the list of files created at ingestion
+to find out what data needs to be processed.
+
+
 
 
 
