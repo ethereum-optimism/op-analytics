@@ -1,4 +1,4 @@
-CREATE TABLE _placeholder_
+CREATE TABLE IF NOT EXISTS _placeholder_
 (
     `id` String,
     `delegate` Nullable(String),
