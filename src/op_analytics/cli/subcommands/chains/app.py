@@ -289,11 +289,11 @@ def fees_backfill():
     index = int(os.environ["JOB_COMPLETION_INDEX"])
 
     # Num job indexes (the paralellism specified on k8s)
-    num_indexes = 16
+    num_indexes = 24
 
     # Define start and end dates for the backfill.
-    start_date = datetime.strptime("20250225", "%Y%m%d")
-    end_date = datetime.strptime("20250327", "%Y%m%d")
+    start_date = datetime.strptime("20240101", "%Y%m%d")
+    end_date = datetime.strptime("2025025", "%Y%m%d")
 
     # Generate date ranges with N-day intervals
     date_ranges = []
@@ -307,7 +307,7 @@ def fees_backfill():
         range_spec = f"@{d0}:{d1}"
         if ii % num_indexes == index:
             compute_blockbatch(
-                chains=normalize_chains("ALL,-kroma,-unichain_sepolia"),
+                chains=normalize_chains("ALL"),
                 models=["refined_traces"],
                 range_spec=range_spec,
                 read_from=DataLocation.GCS,
