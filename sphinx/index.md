@@ -21,10 +21,3 @@ dataplatform/index
 ```{toctree}
 devsetup/index
 ```
-
-## Onchain Data
-
-```{toctree}
-sections/onchain/onchain
-
-```

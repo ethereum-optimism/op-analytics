@@ -8,16 +8,13 @@ myst:
 # OP Labs Data Platform
 
 This guide takes you through the OP Labs Data Platform. We go over the platform architecture and
-we explain common patterns used by the platform to ingest and process data.
-
-We also have sections on specific products built on top of the data platform.
+common patterns used by the platform to ingest and process data.
 
 
 ```{toctree}
 
 architecture
+blockbatch/index
 patterns
 decisiontree
 ```
-
-
