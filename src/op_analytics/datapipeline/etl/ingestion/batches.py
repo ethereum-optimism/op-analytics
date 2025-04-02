@@ -39,7 +39,7 @@ class Delimiter:
 
 # Helpful chart to see what trace file sizes by chain:
 # https://optimistic.grafana.net/explore?schemaVersion=1&panes=%7B%22dar%22:%7B%22datasource%22:%22grafanacloud-logs%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22max_over_time%28%7Bcluster%3D%5C%22oplabs-tools-data-primary%5C%22,%20namespace%3D%5C%22dagster%5C%22%7D%20%7C%20decolorize%20%7C%3D%20%60blockbatch_ingest%60%20%7C%3D%20%60traces_v1%60%20%7C%3D%20%60size%60%20%7C%20logfmt%20size,%20chain%20%7C%20keep%20size,%20chain%20%7C%20unwrap%20bytes%28size%29%20%5B1h%5D%29%22,%22queryType%22:%22range%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22grafanacloud-logs%22%7D,%22editorMode%22:%22builder%22,%22direction%22:%22backward%22%7D%5D,%22range%22:%7B%22from%22:%22now-12h%22,%22to%22:%22now%22%7D,%22panelsState%22:%7B%22logs%22:%7B%22visualisationType%22:%22logs%22%7D%7D%7D%7D&orgId=1
-MICROBATCH_SIZE_CONFIGURATION = {
+BATCH_SIZE_CONFIGURATION = {
     "arenaz": [
         Delimiter(0, 4000),
     ],
@@ -254,7 +254,7 @@ def validate_microbatch_configuration(boundaries: list[Delimiter]):
                 )
 
 
-for config in MICROBATCH_SIZE_CONFIGURATION.values():
+for config in BATCH_SIZE_CONFIGURATION.values():
     validate_microbatch_configuration(config)
 
 
@@ -347,7 +347,7 @@ class BlockBatch:
 
 
 def split_block_range(chain: str, block_range: BlockRange) -> list[BlockBatch]:
-    boundaries = MICROBATCH_SIZE_CONFIGURATION[chain]
+    boundaries = BATCH_SIZE_CONFIGURATION[chain]
     return split_block_range_from_boundaries(chain, boundaries, block_range)
 
 
