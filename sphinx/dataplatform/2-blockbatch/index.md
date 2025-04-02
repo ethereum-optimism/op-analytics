@@ -1,4 +1,4 @@
-# Blockbatch
+# Blockbatch Processing
 
 
 At OP Labs we deal with data from more than 20 blockchains, so we needed a low cost, scalable and
@@ -12,7 +12,9 @@ Let's cover the pattern in detail.
 
 1-design
 2-markers
-3-models
-ingestion
-coreschemas
+3-ingestion
+4-models
+5-coreschemas
+6-loading
+7-public-datasets
 ```

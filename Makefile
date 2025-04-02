@@ -18,7 +18,7 @@ html: .makemarkers/sphinx-docs
 
 .makemarkers/sphinx-autogen: \
 	$(shell find src/op_analytics/datapipeline/schemas -type f -print0 | xargs -0 ls -t | head -n 1) \
-	src/op_analytics/cli/subcommands/misc/docsgen/coreschemas.md
+	src/op_analytics/cli/subcommands/misc/docsgen/5-coreschemas.md
 	@echo "Running sphinx documentation autegen."
 	uv run opdata misc generate_docs
 	@touch .makemarkers/sphinx-autogen
