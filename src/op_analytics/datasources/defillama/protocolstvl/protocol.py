@@ -49,14 +49,18 @@ class ProtocolTVL:
         # Each app entry can have tvl data in multiple chains. Loop through each chain
         chain_tvls = data.get("chainTvls", {})
 
-        # TVL dataframe
-        tvl_df = make_tvl_df(slug, chain_tvls)
+        try:
+            # TVL dataframe
+            tvl_df = make_tvl_df(slug, chain_tvls)
 
-        # Token TVL
-        tokens = make_token_tvl_df(slug, chain_tvls)
+            # Token TVL
+            tokens = make_token_tvl_df(slug, chain_tvls)
 
-        # Token TVL-USD
-        tokens_usd = make_token_tvl_usd_df(slug, chain_tvls)
+            # Token TVL-USD
+            tokens_usd = make_token_tvl_usd_df(slug, chain_tvls)
+
+        except Exception as ex:
+            raise Exception(f"Error processing data for slug={slug}") from ex
 
         # Join TVL and TVL-USD
         token_tvl_df = tokens.join(
@@ -110,13 +114,13 @@ def make_token_tvl_df(slug: str, chain_tvls: dict):
     tokens = []
 
     for chain, chain_data in chain_tvls.items():
-        for tokens_entry in chain_data.get("tokens", []):
+        for tokens_entry in chain_data.get("tokens") or []:
             dateval = dt_fromepoch(tokens_entry["date"])
 
             if not epoch_is_date(tokens_entry["date"]):
                 continue
 
-            token_tvls = tokens_entry.get("tokens", [])
+            token_tvls = tokens_entry.get("tokens") or []
             for token in token_tvls:
                 tokens.append(
                     {
@@ -144,13 +148,13 @@ def make_token_tvl_usd_df(slug: str, chain_tvls: dict):
     tokens_usd = []
 
     for chain, chain_data in chain_tvls.items():
-        for tokens_usd_entry in chain_data.get("tokensInUsd", []):
+        for tokens_usd_entry in chain_data.get("tokensInUsd") or []:
             dateval = dt_fromepoch(tokens_usd_entry["date"])
 
             if not epoch_is_date(tokens_usd_entry["date"]):
                 continue
 
-            token_usd_tvls = tokens_usd_entry.get("tokens", [])
+            token_usd_tvls = tokens_usd_entry.get("tokens") or []
             for token in token_usd_tvls:
                 tokens_usd.append(
                     {
