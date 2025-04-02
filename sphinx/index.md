@@ -21,3 +21,10 @@ dataplatform/index
 ```{toctree}
 devsetup/index
 ```
+
+
+## User Guide
+
+```{toctree}
+userguide/index
+```

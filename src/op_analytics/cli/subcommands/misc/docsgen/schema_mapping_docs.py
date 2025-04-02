@@ -20,7 +20,7 @@ def column_details_df(schema: CoreDataset) -> pd.DataFrame:
 
 def generate():
     template_path = repo_path("src/op_analytics/cli/subcommands/misc/docsgen/coreschemas.md")
-    output_path = repo_path("sphinx/dataplatform/blockbatch/coreschemas.md")
+    output_path = repo_path("sphinx/dataplatform/2-blockbatch/5-coreschemas.md")
 
     assert template_path is not None
     assert output_path is not None

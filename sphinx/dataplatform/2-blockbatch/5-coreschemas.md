@@ -1,9 +1,6 @@
-# Core Dataset Schemas
+# Raw Onchain Data Schemas
 
-This page has detailed mappings for all the columns included in our core dataset schemas. OP Labs
-uses BigQuery types for schemas throughout. It is important for us to understand how raw data
-maps to our schemas.
-
+This page has detailed mappings for all the columns included in our raw onchain dataset schemas.
 
 ## Blocks
 |       Name      |   JSON-RPC method  | JSON-RPC field |Goldsky Type|  Goldsky Field  |        OP Labs BigQuery Type        |          OP Labs Expression         |

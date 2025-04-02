@@ -13,8 +13,7 @@ common patterns used by the platform to ingest and process data.
 
 ```{toctree}
 
-architecture
-blockbatch/index
-patterns
-decisiontree
+1-architecture
+2-blockbatch/index
+3-datasources/index
 ```
