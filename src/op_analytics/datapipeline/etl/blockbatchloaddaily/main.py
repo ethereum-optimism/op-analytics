@@ -1,11 +1,11 @@
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.reader import DataReader
 from op_analytics.coreutils.rangeutils.daterange import DateRange
-from op_analytics.coreutils.threads import run_concurrently
+from op_analytics.coreutils.threads import run_concurrently_store_failures
 from op_analytics.coreutils.time import date_tostr
 from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chains
 
-from ..blockbatchloadspec.loadspec import LoadSpec
+from .loadspec import LoadSpec
 from .insert import DtChainBatch, InsertTask
 from .markers import existing_markers
 from .readers import construct_readers
@@ -66,7 +66,6 @@ def daily_to_clickhouse(
                 dt=dt,
                 partitioned_path=f"chain={chain}/dt={dt}/*.parquet",
             ),
-            enforce_row_count=dataset.enforce_row_count,
         )
         tasks.append(insert_task)
 
@@ -84,10 +83,18 @@ def daily_to_clickhouse(
     dataset.create_table()
 
     # Run the tasks.
-    summary = run_concurrently(
+    summary = run_concurrently_store_failures(
         function=lambda x: x.execute(),
         targets={t.batch.partitioned_path: t for t in tasks},
         max_workers=num_workers,
     )
 
-    return summary
+    if summary.failures:
+        msg = f"{len(summary.failures)} chain,dt tasks failed to execute: "
+
+        for task_id, error_msg in summary.failures.items():
+            log.error(f"failed task={task_id}: error={error_msg}")
+
+        log.error(msg)
+
+    return summary.results

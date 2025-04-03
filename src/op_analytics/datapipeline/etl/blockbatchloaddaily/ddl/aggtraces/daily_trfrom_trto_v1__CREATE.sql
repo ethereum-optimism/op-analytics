@@ -1,11 +1,11 @@
-CREATE TABLE IF NOT EXISTS OUTPUT_TABLE
+CREATE TABLE IF NOT EXISTS _placeholder_
 (
     `dt` Date,
     `chain` String,
     `chain_id` Int32,
     `network` String,
+    `trace_from_address` FixedString(42),
     `trace_to_address` FixedString(42),
-    `count_distinct_trace_from_addresses` UInt64,
     `count_distinct_tx_from_addresses` UInt64,
     `count_distinct_transactions` UInt64,
     `count_distinct_success_transactions` UInt64,
@@ -95,4 +95,4 @@ CREATE TABLE IF NOT EXISTS OUTPUT_TABLE
     `count_traces_trace_type_create_any` UInt64
 )
 ENGINE = ReplacingMergeTree
-ORDER BY (dt, chain, chain_id, network, trace_to_address)
+ORDER BY (dt, chain, chain_id, network, trace_from_address, trace_to_address)
