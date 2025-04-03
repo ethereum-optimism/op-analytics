@@ -62,6 +62,11 @@ class ProtocolTVL:
         except Exception as ex:
             raise Exception(f"Error processing data for slug={slug}: {ex}") from ex
 
+        raise_for_schema_mismatch(
+            actual_schema=tvl_df.schema,
+            expected_schema=pl.Schema(TVL_SCHEMA),
+        )
+
         # Join TVL and TVL-USD
         token_tvl_df = tokens.join(
             tokens_usd,
