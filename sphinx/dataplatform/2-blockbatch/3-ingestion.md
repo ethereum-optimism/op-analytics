@@ -17,7 +17,28 @@ Reading large amounts of data from the shared Goldsky ClickHouse instance is slo
 costs. So our ingestion process also helps make a copy of the data in our own GCS bucket which makes
 it faster and cheaper to access for any of our downstream procesisng.
 
+## Raw Data Audits
+
 Refer to 
 `src/op_analytics/datapipeline/etl/ingestion/audits/audits.py`
 for more details on the audits that are run on each block batch.
+
+## Raw Data Schemas
+
+The schemas that are used to ingest the raw data from Goldsky are defined in the following files:
+
+- `src/op_analytics/datapipeline/schemas/logs/v1.py`
+- `src/op_analytics/datapipeline/schemas/traces/v1.py`
+- `src/op_analytics/datapipeline/schemas/transactions/v1.py`
+- `src/op_analytics/datapipeline/schemas/blocks/v1.py`
+
+These files contain information about each of the columns in the raw data and how they get mapped
+from the Goldsky ClickHouse tables to data types that are compatible with parquet files and BigQuery.
+Keeping in mind that ClickHouse supports 256 size types and BigQuery does not.
+
+
+
+
+
+
 

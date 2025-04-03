@@ -14,7 +14,4 @@ Let's cover the pattern in detail.
 2-markers
 3-ingestion
 4-models
-5-coreschemas
-6-loading
-7-public-datasets
 ```
