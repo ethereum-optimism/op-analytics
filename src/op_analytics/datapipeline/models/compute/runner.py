@@ -116,6 +116,10 @@ def run_tasks(
             executed += 1
 
     log.info("done", total=executed, success=success, fail=failure)
+
+    if failure > 0:
+        raise Exception(f"Failed to execute {failure} out of {executed} tasks.")
+
     return dict(total=executed, success=success, fail=failure)
 
 

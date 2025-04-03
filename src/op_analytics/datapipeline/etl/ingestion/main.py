@@ -70,8 +70,13 @@ def ingest(
                 log.warning(f"stopping after {executed} tasks")
                 break
 
-    log.info("done", total=executed, success=executed_ok, fail=executed - executed_ok)
-    return dict(total=executed, success=executed_ok, fail=executed - executed_ok)
+    failures = executed - executed_ok
+    log.info("done", total=executed, success=executed_ok, fail=failures)
+
+    if failures > 0:
+        raise Exception(f"Failed to execute {failures} out of {executed} tasks.")
+
+    return dict(total=executed, success=executed_ok, fail=failures)
 
 
 def execute(task, fork_process: bool) -> bool:
