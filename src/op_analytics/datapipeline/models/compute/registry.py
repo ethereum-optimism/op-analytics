@@ -14,6 +14,7 @@ def register_model(
     input_datasets: list[str],
     expected_outputs: list[str],
     auxiliary_templates: list[str],
+    excluded_chains: list[str] | None = None,
 ) -> Callable[[ModelFunction], Any]:
     def decorator(func):
         function_name = func.__name__
@@ -33,6 +34,7 @@ def register_model(
                 expected_output_datasets=expected_outputs,
                 auxiliary_templates=auxiliary_templates,
                 model_func=func,
+                excluded_chains=excluded_chains or [],
             )
         return func
 

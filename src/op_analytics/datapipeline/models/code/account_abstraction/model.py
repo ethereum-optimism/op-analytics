@@ -31,6 +31,11 @@ log = structlog.get_logger()
         "useroperationevent_logs_v2",
         "enriched_entrypoint_traces_v2",
     ],
+    excluded_chains=[
+        # Exclude chains for which we don't have traces data.
+        "kroma",
+        "unichain_sepolia",
+    ],
 )
 def account_abstraction(
     ctx: DuckDBContext,
