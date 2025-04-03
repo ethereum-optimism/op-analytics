@@ -62,6 +62,7 @@ class PythonModel:
     expected_output_datasets: list[str]
     auxiliary_templates: list[str]
     model_func: ModelFunction
+    excluded_chains: list[str]
 
     def __post_init__(self):
         self._registry[self.path.function_name] = self
