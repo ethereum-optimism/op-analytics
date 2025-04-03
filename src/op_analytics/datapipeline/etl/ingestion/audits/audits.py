@@ -127,15 +127,24 @@ def dataset_consistent_block_timestamps(chain: str, dataframes: dict[str, pl.Dat
             how="left",
             validate="m:1",
         )
+
+        missing_timestamp = pl.col("timestamp").is_null()
+        mismatching_timestamp = pl.col("block_timestamp") != pl.col("timestamp")
+        fail_timestamp = missing_timestamp | mismatching_timestamp
+
         timestamp_check = joined.select(
             pl.lit(f"{name} block timestamp must agree with blocks dataframe").alias("audit_name"),
-            (pl.col("block_timestamp") != pl.col("timestamp")).sum().alias("failure_count"),
+            fail_timestamp.sum().alias("failure_count"),
         )
         audits.append(timestamp_check)
 
+        missing_dt = pl.col("dt").is_null()
+        mismatching_dt = pl.col("block_dt") != pl.col("dt")
+        fail_dt = missing_dt | mismatching_dt
+
         dt_check = joined.select(
             pl.lit(f"{name} block dt must agree with blocks dataframe").alias("audit_name"),
-            (pl.col("block_dt") != pl.col("dt")).sum().alias("failure_count"),
+            fail_dt.sum().alias("failure_count"),
         )
         audits.append(dt_check)
 
@@ -148,17 +157,20 @@ def transaction_count(chain: str, dataframes: dict[str, pl.DataFrame]):
     blocks_df = dataframes["blocks"].select("number", "transaction_count")
     transactions_df = dataframes["transactions"].select("block_number")
 
-    tx_count = transactions_df.group_by("block_number").count()
+    tx_count = transactions_df.group_by("block_number").len(name="txs_df_count")
     joined = blocks_df.join(
         tx_count, left_on="number", right_on="block_number", how="full", validate="1:1"
     )
 
-    failure_condition = pl.col("transaction_count") != pl.col("count")
+    # Check that the block tx count agrees with the number of transactions.
+    no_txs = pl.col("txs_df_count").is_null()
+    missing_txs = pl.col("transaction_count") > pl.col("txs_df_count")
+    failure_condition = no_txs | missing_txs
+
     check = joined.select(
         pl.lit("block transaction count must match observed transactions").alias("audit_name"),
         failure_condition.sum().alias("failure_count"),
     )
-
     if len(joined.filter(failure_condition)) > 0:
         # print to debug failures
         print(joined.filter(failure_condition))
@@ -203,7 +215,11 @@ def traces_count(chain: str, dataframes: dict[str, pl.DataFrame]):
     tx_count = dataframes["transactions"].group_by("block_number").len("num_txs")
 
     joined = traces_count.join(
-        tx_count, left_on="block_number", right_on="block_number", how="full", validate="1:1"
+        tx_count,
+        left_on="block_number",
+        right_on="block_number",
+        how="full",
+        validate="1:1",
     )
 
     no_traces = pl.col("num_traces").is_null()
