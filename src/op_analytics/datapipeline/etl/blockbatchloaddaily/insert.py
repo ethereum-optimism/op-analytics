@@ -10,7 +10,7 @@ from clickhouse_connect.driver.exceptions import DatabaseError
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
 from op_analytics.coreutils.logger import bound_contextvars, human_interval, human_rows, structlog
 
-from ..blockbatchloadspec.loadspec import LoadSpec
+from .loadspec import LoadSpec
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
 
 log = structlog.get_logger()
@@ -69,7 +69,6 @@ class InsertResult:
 class InsertTask:
     dataset: LoadSpec
     batch: DtChainBatch
-    enforce_row_count: bool = False
 
     @property
     def context(self):
@@ -130,11 +129,17 @@ class InsertTask:
         )
 
         if insert_result.written_rows > insert_result.read_rows:
-            raise Exception("loading into clickhouse should not result in more rows")
+            raise Exception(
+                f"chain={self.batch.chain}, dt={self.batch.dt} loading into clickhouse should not result in more rows"
+            )
 
-        if insert_result.written_rows < insert_result.read_rows:
-            if self.enforce_row_count:
-                raise Exception("loading into clickhouse should not result in fewer rows")
+        if insert_result.written_rows == 0:
+            if self.batch.chain in (self.dataset.ignore_non_zero_row_count or []):
+                log.warning("loading into clickhouse should not result in 0 rows")
+            else:
+                raise Exception(
+                    f"chain={self.batch.chain}, dt={self.batch.dt} loading into clickhouse should not result in 0 rows"
+                )
 
         return insert_result
 

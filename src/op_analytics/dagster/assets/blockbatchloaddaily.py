@@ -11,6 +11,7 @@ from op_analytics.datapipeline.etl.blockbatchloaddaily.datasets import (
     TRACES_AGG1,
     TRACES_AGG2,
     TRACES_AGG3,
+    DAILY_ADDRESS_SUMMARY,
 )
 
 # NOTE: It is important to schedule all of the assets below in the same dagster job.
@@ -22,7 +23,7 @@ from op_analytics.datapipeline.etl.blockbatchloaddaily.datasets import (
 def aggreagated_traces(context: OpExecutionContext):
     """Load aggregated traces blockbatch data to Clickhouse."""
 
-    for agg in [TRACES_AGG1, TRACES_AGG2, TRACES_AGG3]:
+    for agg in [TRACES_AGG1, TRACES_AGG2, TRACES_AGG3, DAILY_ADDRESS_SUMMARY]:
         result = daily_to_clickhouse(
             dataset=agg,
             range_spec="m4days",

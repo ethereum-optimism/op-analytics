@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS OUTPUT_TABLE
+CREATE TABLE IF NOT EXISTS _placeholder_
 (
     `dt` Date,
     `chain` String,

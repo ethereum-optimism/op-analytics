@@ -1,7 +1,6 @@
 import os
 from dataclasses import dataclass
 
-
 from op_analytics.coreutils.clickhouse.ddl import read_ddl
 from op_analytics.coreutils.clickhouse.inferschema import parquet_to_subquery
 from op_analytics.coreutils.clickhouse.oplabs import run_statememt_oplabs
@@ -20,15 +19,16 @@ class LoadSpec:
 
     input_root_paths: list[str]
     output_root_path: str
-    enforce_row_count: bool = True
+
+    # This is a list of chains for which non_zero row_count will not be enforced.
+    ignore_non_zero_row_count: list[str] | None = None
 
     @classmethod
-    def pass_through(cls, root_path: str, enforce_row_count: bool = True):
+    def pass_through(cls, root_path: str):
         """Special constructor for the case where the input and output are the same."""
         return cls(
             input_root_paths=[root_path],
             output_root_path=root_path,
-            enforce_row_count=enforce_row_count,
         )
 
     @staticmethod
@@ -41,22 +41,22 @@ class LoadSpec:
     @property
     def ddl_path(self):
         _, ddl_path = self.output_root_path.split("/", maxsplit=1)
-        return ddl_path
+        return f"ddl/{ddl_path}"
 
     def output_table_name(self):
         return self.sanitize_root_path(self.output_root_path)
 
     def read_insert_ddl(self):
         return read_ddl(
-            path=os.path.join(DIRECTORY, f"ddl/{self.ddl_path}__INSERT.sql"),
+            path=os.path.join(DIRECTORY, f"{self.ddl_path}__INSERT.sql"),
         )
 
     def create_table(self):
         create_ddl = read_ddl(
-            path=os.path.join(DIRECTORY, f"ddl/{self.ddl_path}__CREATE.sql"),
+            path=os.path.join(DIRECTORY, f"{self.ddl_path}__CREATE.sql"),
         )
 
-        create_ddl = create_ddl.replace("OUTPUT_TABLE", self.output_table_name())
+        create_ddl = create_ddl.replace("_placeholder_", self.output_table_name())
 
         log.info(f"CREATE TABLE {self.output_table_name()}")
         run_statememt_oplabs(statement=create_ddl)

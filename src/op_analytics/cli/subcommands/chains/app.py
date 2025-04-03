@@ -293,7 +293,7 @@ def fees_backfill():
 
     # Define start and end dates for the backfill.
     start_date = datetime.strptime("20240101", "%Y%m%d")
-    end_date = datetime.strptime("2025025", "%Y%m%d")
+    end_date = datetime.strptime("20250225", "%Y%m%d")
 
     # Generate date ranges with N-day intervals
     date_ranges = []
