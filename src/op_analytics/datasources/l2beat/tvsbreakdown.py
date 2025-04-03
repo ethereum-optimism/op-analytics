@@ -1,38 +1,9 @@
 import polars as pl
 import requests
-from typing import TypedDict, List
 
 from op_analytics.coreutils.request import new_session, get_data
 from op_analytics.coreutils.threads import run_concurrently
 from .utils import apply_schema, L2BeatProject
-
-
-class ChainInfo(TypedDict):
-    name: str
-    id: int
-
-
-class EscrowInfo(TypedDict):
-    amount: float
-    usdValue: float
-    escrowAddress: str
-    name: str
-    isSharedEscrow: bool
-    url: str
-
-
-class AssetInfo(TypedDict):
-    assetId: str
-    chain: ChainInfo
-    amount: float
-    usdValue: float
-    usdPrice: str
-    isGasToken: bool
-    escrows: List[EscrowInfo]
-    iconUrl: str
-    symbol: str
-    name: str
-    supply: str
 
 
 TVS_BREAKDOWN_SCHEMA: dict[str, type[pl.DataType]] = {
