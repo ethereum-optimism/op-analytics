@@ -82,6 +82,9 @@ def account_abstraction(
             errors.extend(val.run_as_data_quality_check(duckdb_context=ctx))
     if errors:
         log.error("failed data quality")
+        for error in errors[:10]:
+            log.error(str(error))
+
         raise Exception("\n\n".join([name] + [str(_) for _ in errors]))
     else:
         log.info("Data Quality OK")
