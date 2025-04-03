@@ -18,13 +18,14 @@ def daily_to_clickhouse(
     range_spec: str | None = None,
     dry_run: bool = False,
     num_workers: int = 1,
+    chains: list[str] | None = None,
 ):
     """Insert blockbatch data into Clickhouse at a dt,chain granularity."""
 
     # Operate over recent days.
     range_spec = range_spec or "m4days"
 
-    chains = goldsky_mainnet_chains()
+    chains = chains or goldsky_mainnet_chains()
 
     readers: dict[str, list[DataReader]] = construct_readers(
         range_spec=range_spec,
