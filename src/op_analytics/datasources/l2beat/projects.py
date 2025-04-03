@@ -9,6 +9,7 @@ from op_analytics.coreutils.misc import raise_for_schema_mismatch
 from .activity import fetch_activity
 from .tvl import fetch_tvl
 from .utils import L2BeatProject
+from .tvsbreakdown import fetch_tvs_breakdown
 
 SUMMARY_ENDPOINT = "https://l2beat.com/api/scaling/summary"
 
@@ -63,11 +64,15 @@ class L2BeatProjects:
         # Fetch Actvity
         activity_df = fetch_activity(projects=projects, query_range=query_range)
 
+        # Fetch TVS breakdown
+        tvs_breakdown_df = fetch_tvs_breakdown(projects=projects)
+
         return cls(
             df=summary_df,
             projects=projects,
             tvl_df=tvl_df,
             activity_df=activity_df,
+            tvs_breakdown_df=tvs_breakdown_df,
         )
 
 
