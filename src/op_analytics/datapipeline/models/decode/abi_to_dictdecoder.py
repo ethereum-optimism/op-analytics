@@ -17,7 +17,7 @@ from eth_abi_lite.decoding import (
 class DictionaryDecoder:
     """Decode binary data to a python dict."""
 
-    decoders: list[tuple[str, Union[BaseDecoder, "NamedDecoder"]]]
+    decoders: list[tuple[str, Union[HeadTailDecoder, "NamedDecoder"]]]
 
     def decode_event(self, hexstr: str):
         # skip 2 for "0x"
