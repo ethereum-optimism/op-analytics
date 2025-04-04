@@ -23,7 +23,7 @@ BQ_DATASET = "dailydata_l2beat"
 SUMMARY_TABLE = "chain_summary"
 TVL_TABLE = "tvl_history"
 ACTIVITY_TABLE = "activity_history"
-TVS_BREAKDOWN_TABLE = "tvs_breakdown_history"
+
 # Use "max" for backfill
 # Otherwise use 30d to get 6hr data intervals
 QUERY_RANGE = "30d"
