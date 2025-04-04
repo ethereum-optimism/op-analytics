@@ -52,7 +52,7 @@ sphinx-serve: .makemarkers/sphinx-docs
 # Used to be more important when we were running jobs directly on kubernetes.
 # Somewhat obsolete now that everything is run through Dagster. It is still
 # used for backfills. 
-IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250403.1
+IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250404.2
 
 # Dagster image version.
 IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250404.001
