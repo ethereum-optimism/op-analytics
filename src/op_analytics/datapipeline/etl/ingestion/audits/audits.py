@@ -164,8 +164,8 @@ def transaction_count(chain: str, dataframes: dict[str, pl.DataFrame]):
 
     # Check that the block tx count agrees with the number of transactions.
     no_txs = pl.col("txs_df_count").is_null()
-    missing_txs = pl.col("transaction_count") > pl.col("txs_df_count")
-    failure_condition = no_txs | missing_txs
+    mismatching_count = pl.col("transaction_count") != pl.col("txs_df_count")
+    failure_condition = no_txs | mismatching_count
 
     check = joined.select(
         pl.lit("block transaction count must match observed transactions").alias("audit_name"),
