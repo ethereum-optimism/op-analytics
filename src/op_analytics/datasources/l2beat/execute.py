@@ -64,7 +64,6 @@ def execute_pull():
 
         L2Beat.TVL.write(projects.tvl_df)
         L2Beat.ACTIVITY.write(projects.activity_df)
-        L2Beat.TVS_BREAKDOWN.write(projects.tvs_breakdown_df)
     else:
         overwrite_partitions_dynamic(
             df=most_recent_dates(projects.tvl_df, n_dates=7),
@@ -79,12 +78,8 @@ def execute_pull():
 
         L2Beat.TVL.write(most_recent_dates(projects.tvl_df, n_dates=7))
         L2Beat.ACTIVITY.write(most_recent_dates(projects.activity_df, n_dates=7))
-        L2Beat.TVS_BREAKDOWN.write(
-            most_recent_dates(projects.tvs_breakdown_df, n_dates=7)
-        )  # this is not working given no history
     return {
         "summary": dt_summary(projects.df),
         "tvl": dt_summary(projects.tvl_df),
         "activity": dt_summary(projects.activity_df),
-        "tvs_breakdown": dt_summary(projects.tvs_breakdown_df),
     }
