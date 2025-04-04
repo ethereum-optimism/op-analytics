@@ -10,22 +10,14 @@ from clickhouse_connect.driver.exceptions import DatabaseError
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
 from op_analytics.coreutils.logger import bound_contextvars, human_interval, human_rows, structlog
 
-from .loadspec import LoadSpec
+from .loadspec import ClickHouseDailyDataset
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
+from .readers import DtChainBatch
 
 log = structlog.get_logger()
 
 
 DIRECTORY = os.path.dirname(__file__)
-
-
-@dataclass
-class DtChainBatch:
-    """Represent a single (dt,chain) that needs to be loaded into ClickHouse."""
-
-    chain: str
-    dt: str
-    partitioned_path: str
 
 
 @dataclass
@@ -67,7 +59,7 @@ class InsertResult:
 
 @dataclass
 class InsertTask:
-    dataset: LoadSpec
+    dataset: ClickHouseDailyDataset
     batch: DtChainBatch
 
     @property
@@ -134,12 +126,15 @@ class InsertTask:
             )
 
         if insert_result.written_rows == 0:
-            if self.batch.chain in (self.dataset.ignore_non_zero_row_count or []):
-                log.warning("loading into clickhouse should not result in 0 rows")
+            if self.batch.chain in (self.dataset.ignore_zero_rows_chains or []):
+                log.warning(f"loaded 0 rows: chain={self.batch.chain}")
+
+            elif (self.batch.chain, self.batch.dt) in (
+                self.dataset.ignore_zero_rows_chain_dts or []
+            ):
+                log.warning(f"loaded 0 rows: chain={self.batch.chain}, dt={self.batch.dt}")
             else:
-                raise Exception(
-                    f"chain={self.batch.chain}, dt={self.batch.dt} loading into clickhouse should not result in 0 rows"
-                )
+                raise Exception(f"chain={self.batch.chain}, dt={self.batch.dt} loaded 0 rows")
 
         return insert_result
 
