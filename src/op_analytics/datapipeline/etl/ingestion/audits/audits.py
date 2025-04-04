@@ -204,20 +204,30 @@ def logs_count(chain: str, dataframes: dict[str, pl.DataFrame]):
 
 @register
 def traces_count(chain: str, dataframes: dict[str, pl.DataFrame]):
-    """The number of traces should be at least equal to the number of transactions."""
+    """There should be at least one trace per transaction."""
 
     # (pedro - 2025/03/02) We currently don't have traces for Kroma. But we are letting
     # it go through ingestion anyways.
     if chain == "kroma":
         return None
 
-    traces_count = dataframes["traces"].group_by("block_number").len("num_traces")
-    tx_count = dataframes["transactions"].group_by("block_number").len("num_txs")
+    traces_count = (
+        dataframes["traces"].group_by("block_number", "transaction_hash").len("num_traces")
+    )
+    tx_count = (
+        dataframes["transactions"]
+        .select(
+            pl.col("block_number"),
+            pl.col("hash").alias("transaction_hash"),
+            pl.lit(1).alias("num_txs"),
+        )
+        .unique()
+    )
 
-    joined = traces_count.join(
-        tx_count,
-        left_on="block_number",
-        right_on="block_number",
+    joined = tx_count.join(
+        traces_count,
+        left_on=["block_number", "transaction_hash"],
+        right_on=["block_number", "transaction_hash"],
         how="full",
         validate="1:1",
     )

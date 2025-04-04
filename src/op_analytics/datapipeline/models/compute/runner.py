@@ -64,6 +64,7 @@ def run_tasks(
     fork_process: bool = True,
     use_pool: bool = False,
     num_processes: int = 1,
+    raise_on_failures: bool = True,
 ) -> dict[str, int]:
     """Run tasks.
 
@@ -117,7 +118,7 @@ def run_tasks(
 
     log.info("done", total=executed, success=success, fail=failure)
 
-    if failure > 0:
+    if failure > 0 and raise_on_failures:
         raise Exception(f"Failed to execute {failure} out of {executed} tasks.")
 
     return dict(total=executed, success=success, fail=failure)
