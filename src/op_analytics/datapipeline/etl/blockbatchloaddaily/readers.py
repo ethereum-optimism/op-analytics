@@ -63,15 +63,19 @@ def construct_batches(
     if blockbatch_ready is None and clickhouse_ready is None:
         raise RuntimeError("No inputs were specified")
 
-    elif blockbatch_ready is None:
+    elif blockbatch_ready is None and clickhouse_ready is not None:
         ready = sorted(clickhouse_ready)
 
-    elif clickhouse_ready is None:
+    elif blockbatch_ready is not None and clickhouse_ready is None:
         ready = sorted(blockbatch_ready)
 
+    elif blockbatch_ready is not None and clickhouse_ready is not None:
+        set_blockbatch = set(blockbatch_ready)
+        set_clickhouse = set(clickhouse_ready)
+        ready = sorted(list(set_blockbatch.intersection(set_clickhouse)))
+
     else:
-        # Merge the two lists and sort them.
-        ready = sorted(list(set(blockbatch_ready) | set(clickhouse_ready)))
+        raise NotImplementedError("This should never happen")
 
     date_range = DateRange.from_spec(range_spec)
     log.info(f"{len(ready)} are ready to process across {len(date_range.dates())} dates")
