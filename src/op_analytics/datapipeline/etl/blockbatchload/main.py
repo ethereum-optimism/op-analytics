@@ -42,7 +42,7 @@ def load_to_clickhouse(
     The CREATE sql files are located under `ddl/<root_path>__CREATE.sql`. Note
     that `<root_path>` has slashes, so the files will appear nested in the file system.
 
-    To avoid user error in table names the OUTPUT_TABLE placeholder is used in the CREATE
+    To avoid user error in table names the _placeholder_ placeholder is used in the CREATE
     files. This placeholder is replaced with the actual table name which is derived from
     the `output_root_path` in the GCSData object.
 

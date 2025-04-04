@@ -1,4 +1,4 @@
-from .insert import LoadSpec
+from .loadspec import LoadSpec
 
 
 CONTRACT_CREATION = LoadSpec.pass_through(

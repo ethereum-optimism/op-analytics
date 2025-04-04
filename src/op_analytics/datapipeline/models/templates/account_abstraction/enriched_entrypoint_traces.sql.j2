@@ -30,9 +30,26 @@ all_prefiltered_traces AS (
     , t.status
     , t.trace_root
     , hexstr_method_id(t.input) AS method_id
-    , hexstr_method_id(t.input) IN ('{{ method_id_v6 }}', '{{ method_id_v7 }}') AS is_innerhandleop
+    , hexstr_method_id(t.input) IN ('{{ method_id_v6 }}', '{{ method_id_v7 }}') 
+    AND substring(t.input, 11, 20) = '00000000000000000000' AS is_innerhandleop
+
+    -- We only decode if we are sure that the input is an innerHandleOp call.
+
+    -- Here is how we detect collissions with the innerHandleOp method id.
+    -- The first argument of innerHandleOp is a "bytes" type and so the first 64 characteres
+    -- are the length prefix of the bytes. This length prefix cannot be greater than MAX(size_t)
+    -- otherwise it will overflow the size_t type.
+
+    -- Assuming size_t is UINT32 then MAX(size_t) is 4,294,967,295 which in hex padded to uint256
+    -- is 0x00000000000000000000000000000000000000000000000000000000ffffffff
+    -- or 56 leading zeros.
+
+    -- To keep things save then we will require only 20 leading zeros.
     , IF(
       hexstr_method_id(t.input) IN ('{{ method_id_v6 }}', '{{ method_id_v7 }}')
+      
+      AND substring(t.input, 11, 20) = '00000000000000000000'
+
       , decode_innerhandleop(t.input)
       , NULL
     ) AS decoded
@@ -159,7 +176,7 @@ all_prefiltered_traces AS (
       AND t.transaction_hash = h.transaction_hash
       AND trace_address_parent(t.trace_address) = h.handleops_trace
 
-  -- This value us only available for inn
+  -- This value us only available for innerHandleOp traces.
   WHERE is_innerhandleop
 )
 
