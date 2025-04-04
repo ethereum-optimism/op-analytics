@@ -29,31 +29,13 @@
 
 # Create an array with the block numbers
 BLOCKBATCHES=(
-28446601
-28446801
-28448201
-28448401
-28448601
-28448801
-28450201
-28450401
-28450601
-28452001
-28452201
-28452401
-28452601
-28454401
-28454601
-28440401
 28440601
-28440801
-28441001
-28442401
-28442601
-28442801
-28444201
-28444401
-28444601
+28430001
+28430201
+28430401
+28430601
+28430801
+28429801
 )
 
 # Set the chain
@@ -68,5 +50,5 @@ for BLOCKBATCH in "${BLOCKBATCHES[@]}"; do
     
     # Run the commands for each block
     ALLOW_WRITE=true GOLDSKY_FINAL=true uv run opdata chains ingest_blocks $CHAIN $BLOCKBATCH:+1 --read_from goldsky --write_to gcs --force_complete --no-fork_process
-    ALLOW_WRITE=true uv run opdata chains blockbatch_models $CHAIN MODELS $BLOCKBATCH:+1 --write_to gcs --no-fork_process --force_complete
+    ALLOW_WRITE=true uv run opdata chains blockbatch_models $CHAIN account_abstraction_prefilter,account_abstraction $BLOCKBATCH:+1 --write_to gcs --no-fork_process --force_complete
 done
