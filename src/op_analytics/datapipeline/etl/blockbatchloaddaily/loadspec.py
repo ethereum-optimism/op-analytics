@@ -1,5 +1,5 @@
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from op_analytics.coreutils.clickhouse.ddl import read_ddl
 from op_analytics.coreutils.clickhouse.inferschema import parquet_to_subquery
@@ -14,22 +14,43 @@ DIRECTORY = os.path.dirname(__file__)
 
 
 @dataclass
-class LoadSpec:
-    """The input datasets and output dataset associated with a load into ClickHouse task."""
+class ClickHouseDailyDataset:
+    """Represent a task to load data to ClickHouse by dt,chain.
 
-    input_root_paths: list[str]
+
+    A ClickHouseDailyDataset is defined by a SQL query that reads data for a given dt,chain
+    combination, transforms it and writes the result to ClickHouse.
+
+    The input data can be blockbatch data stored in GCS or data already loaded into ClickHouse
+    having `dt` and `chain` columns.
+    """
+
+    # Output root path determiens the ClickHouse table name where data will be loaded.
     output_root_path: str
 
-    # This is a list of chains for which non_zero row_count will not be enforced.
-    ignore_non_zero_row_count: list[str] | None = None
+    # This is the list of blockbatch root paths that are inputs to this load task.
+    inputs_blockbatch: list[str] = field(default_factory=list)
 
-    @classmethod
-    def pass_through(cls, root_path: str):
-        """Special constructor for the case where the input and output are the same."""
-        return cls(
-            input_root_paths=[root_path],
-            output_root_path=root_path,
-        )
+    # This is the list of ClickHouse root paths that are inputs to this load task.
+    inputs_clickhouse: list[str] = field(default_factory=list)
+
+    # This is a list of chains for which non_zero row_count will not be enforced.
+    ignore_zero_rows_chains: list[str] | None = None
+
+    # This is a list of chain,dt tuples for which non_zero row_count will not be enforced.
+    ignore_zero_rows_chain_dts: list[tuple[str, str]] | None = None
+
+    def __post_init__(self):
+        for root_path in self.inputs_blockbatch:
+            if not root_path.startswith("blockbatch/"):
+                raise ValueError(f"Invalid blockbatch input: {root_path}")
+
+        for root_path in self.inputs_clickhouse:
+            if not root_path.startswith("blockbatch_daily/"):
+                raise ValueError(f"Invalid clickhouse input: {root_path}")
+
+        if not self.output_root_path.startswith("blockbatch_daily/"):
+            raise ValueError(f"Invalid output: {self.output_root_path}")
 
     @staticmethod
     def sanitize_root_path(root_path: str):
@@ -68,7 +89,7 @@ class LoadSpec:
         # log.info(ddl)
 
         # Replace the input tables in the template with s3() table functions.
-        for input_root_path in self.input_root_paths:
+        for input_root_path in self.inputs_blockbatch:
             input_table = "gcs__" + self.sanitize_root_path(input_root_path)
             input_path = f"gs://oplabs-tools-data-sink/{input_root_path}/INPUT_PARTITION_PATH"
             input_s3 = parquet_to_subquery(gcs_parquet_path=input_path, dry_run=dry_run)
