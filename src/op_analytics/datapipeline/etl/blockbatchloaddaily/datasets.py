@@ -32,3 +32,10 @@ DAILY_ADDRESS_SUMMARY = LoadSpec(
         "xterio",
     ],
 )
+
+DAILY_SEGMENTS_FROM_ADDRESS_SUMMARY = LoadSpec(
+    input_root_paths=[
+        "blockbatch_daily/aggtxs/daily_address_summary_v1",
+    ],
+    output_root_path="blockbatch_daily/segments/agg_daily_segments_from_address_summary_v1",
+)
