@@ -20,6 +20,9 @@ def chains(context: OpExecutionContext):
 def tvs(context: OpExecutionContext):
     """Pull data from L2Beat TVS."""
     from op_analytics.datasources.l2beat import executetvs
+    from op_analytics.datasources.l2beat.dataaccess import L2Beat
 
     result = executetvs.execute_pull()
     context.log.info(result)
+
+    L2Beat.TVS_BREAKDOWN.create_bigquery_external_table()
