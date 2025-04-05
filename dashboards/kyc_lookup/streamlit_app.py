@@ -1,4 +1,6 @@
 import streamlit as st
+
+st.set_page_config(page_title="KYC Lookup Tool", page_icon="🗝️")
 import pandas as pd
 import numpy as np
 import requests
@@ -49,7 +51,6 @@ if not check_credentials():
     st.stop()
 
 # Continue with the rest of the app
-st.set_page_config(page_title="KYC Lookup Tool", page_icon="🗝️")
 st.title("🗝️ KYC Lookup Tool")
 
 st.subheader("Project Status")
