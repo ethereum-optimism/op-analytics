@@ -1,11 +1,11 @@
 import streamlit as st
-
-st.set_page_config(page_title="KYC Lookup Tool", page_icon="🗝️")
 import pandas as pd
 import numpy as np
 import requests
 from io import StringIO
 from datetime import datetime, timedelta, timezone
+
+st.set_page_config(page_title="KYC Lookup Tool", page_icon="🗝️")
 
 
 # Email and password verification functionality
