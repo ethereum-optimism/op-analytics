@@ -34,6 +34,7 @@ def ingest(
     force_complete: bool = False,
     fork_process: bool = True,
     max_tasks: int | None = None,
+    raise_on_failures: bool = True,
 ) -> dict[str, int]:
     tasks = construct_tasks(chains, range_spec, read_from, write_to)
     log.info(f"constructed {len(tasks)} tasks.")
@@ -73,7 +74,7 @@ def ingest(
     failures = executed - executed_ok
     log.info("done", total=executed, success=executed_ok, fail=failures)
 
-    if failures > 0:
+    if failures > 0 and raise_on_failures:
         raise Exception(f"Failed to execute {failures} out of {executed} tasks.")
 
     return dict(total=executed, success=executed_ok, fail=failures)
