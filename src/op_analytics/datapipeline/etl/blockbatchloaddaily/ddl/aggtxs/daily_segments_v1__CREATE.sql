@@ -95,4 +95,4 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `avg_wallet_avg_l1_gas_per_tx` Float64
 )
 ENGINE = ReplacingMergeTree
-ORDER BY (dt, chain, chain_id, network, wallet_segment);
+ORDER BY (dt, chain, chain_id, network, wallet_segment)
