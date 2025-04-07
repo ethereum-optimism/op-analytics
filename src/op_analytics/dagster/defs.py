@@ -253,7 +253,7 @@ defs = Definitions(
                 ["transforms", "erc20transfers"],
                 ["transforms", "interop"],
             ),
-            cron_schedule="17 4,8,14,20 * * *",
+            cron_schedule="17 4,16 * * *",
             custom_k8s_config=SMALL_POD,
         ),
         #
