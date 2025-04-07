@@ -19,9 +19,9 @@ DailyWalletActivity AS (
     avg_l1_blob_base_gas_price_gwei, sum_input_zero_bytes, sum_success_input_zero_bytes,
     sum_input_bytes_length, sum_success_input_bytes_length, sum_input_nonzero_bytes,
     sum_success_input_nonzero_bytes, sum_estimated_size, sum_success_estimated_size
-  FROM blockbatch_daily.aggtxs__daily_address_summary_v1 FINAL
-  WHERE 1=1
-    AND dt = {dtparam: Date}
+  FROM INPUT_CLICKHOUSE('blockbatch_daily/aggtxs/daily_address_summary_v1')
+  WHERE
+    1=1
     AND count_transactions > 0
 ),
 
