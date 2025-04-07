@@ -32,7 +32,7 @@ tx_fees AS (
     , accurateCast(input_byte_length, 'UInt32') AS input_byte_length
     , accurateCast(input_zero_bytes, 'UInt32') AS input_zero_bytes
     , accurateCast(coalesce(estimated_size, 0), 'UInt64') AS estimated_size
-  FROM gcs__blockbatch.refined_traces__refined_transactions_fees_v2
+  FROM INPUT_BLOCKBATCH('blockbatch/refined_traces/refined_transactions_fees_v2')
   WHERE
     NOT is_system_transaction
 )
