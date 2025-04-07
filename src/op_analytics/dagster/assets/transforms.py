@@ -16,7 +16,38 @@ def erc20transfers(context: AssetExecutionContext):
 @asset
 def interop(context: AssetExecutionContext):
     """Run interop dataset transformations."""
-    result = execute_dt_transforms(group_name="interop", force_complete=True)
+
+    # Run all steps except for 6 and 7.
+    result = execute_dt_transforms(
+        group_name="interop",
+        force_complete=True,
+        range_spec="m2days",
+        steps_to_run=None,
+        steps_to_skip=[6, 7],
+    )
+    context.log.info(result)
+
+    # For step 6 we need a back-dated run. What we do is detect ERC-20 create traces
+    # for conracts that have had at least one ERC-20 transfer. If we run at the present
+    # date then we might get a first transfer for a token that was created in the past.
+    # To cover that we sweep over the last 30 days of create traces.
+    result = execute_dt_transforms(
+        group_name="interop",
+        force_complete=True,
+        range_spec="m30days",
+        steps_to_run=[6],
+        steps_to_skip=None,
+    )
+    context.log.info(result)
+
+    # Run step 7 at the end. This exports the results of step 6 to GCS.
+    result = execute_dt_transforms(
+        group_name="interop",
+        force_complete=True,
+        range_spec="m1days",
+        steps_to_run=[7],
+        steps_to_skip=None,
+    )
     context.log.info(result)
 
 
