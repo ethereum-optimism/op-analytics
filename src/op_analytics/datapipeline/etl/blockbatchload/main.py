@@ -6,14 +6,14 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.threads import run_concurrently
 
-from .insert import BlockBatch, LoadSpec, InsertTask
+from .insert import BlockBatch, ClickHouseBlockBatchDataset, InsertTask
 from .markers import candidate_markers, existing_markers
 
 log = structlog.get_logger()
 
 
 def load_to_clickhouse(
-    datasets: list[LoadSpec],
+    datasets: list[ClickHouseBlockBatchDataset],
     range_spec: str | None = None,
     dry_run: bool = False,
 ):
@@ -151,7 +151,6 @@ def load_to_clickhouse(
                     min_block=block_batch["min_block"],
                     partitioned_path=block_batch["partitioned_path"],
                 ),
-                enforce_row_count=d.enforce_row_count,
             )
             tasks.append(insert_task)
 
