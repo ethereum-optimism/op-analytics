@@ -11,7 +11,7 @@ from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statemem
 from op_analytics.coreutils.logger import bound_contextvars, human_rows, structlog
 from op_analytics.coreutils.time import date_tostr
 
-from .loadspec import LoadSpec
+from .loadspec import ClickHouseBlockBatchDataset
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
 
 log = structlog.get_logger()
@@ -69,9 +69,8 @@ class InsertResult:
 
 @dataclass
 class InsertTask:
-    dataset: LoadSpec
+    dataset: ClickHouseBlockBatchDataset
     blockbatch: BlockBatch
-    enforce_row_count: bool = False
 
     @property
     def key(self):
@@ -144,7 +143,7 @@ class InsertTask:
             raise Exception("loading into clickhouse should not result in more rows")
 
         if insert_result.written_rows < insert_result.read_rows:
-            if self.enforce_row_count:
+            if self.dataset.enforce_non_zero_row_count:
                 raise Exception("loading into clickhouse should not result in fewer rows")
 
         return insert_result

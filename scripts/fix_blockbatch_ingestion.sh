@@ -44,5 +44,5 @@ for BLOCKBATCH in "${BLOCKBATCHES[@]}"; do
     
     # Run the commands for each block
     ALLOW_WRITE=true GOLDSKY_FINAL=true uv run opdata chains ingest_blocks $CHAIN $BLOCKBATCH:+1 --read_from goldsky --write_to gcs --force_complete --no-fork_process
-    # ALLOW_WRITE=true uv run opdata chains blockbatch_models $CHAIN account_abstraction_prefilter,account_abstraction $BLOCKBATCH:+1 --write_to gcs --no-fork_process --force_complete
+    ALLOW_WRITE=true uv run opdata chains blockbatch_models $CHAIN account_abstraction_prefilter,account_abstraction $BLOCKBATCH:+1 --write_to gcs --no-fork_process --force_complete
 done

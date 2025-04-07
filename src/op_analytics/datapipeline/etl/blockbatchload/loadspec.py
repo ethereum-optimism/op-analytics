@@ -14,22 +14,17 @@ DIRECTORY = os.path.dirname(__file__)
 
 
 @dataclass
-class LoadSpec:
+class ClickHouseBlockBatchDataset:
     """The input datasets and output dataset associated with a load into ClickHouse task."""
 
+    # This is the list of blockbatch root paths that are inputs to this load task.
     input_root_paths: list[str]
-    output_root_path: str
-    enforce_row_count: bool = True
-    enforce_non_zero_row_count: bool = False
 
-    @classmethod
-    def pass_through(cls, root_path: str, enforce_row_count: bool = True):
-        """Special constructor for the case where the input and output are the same."""
-        return cls(
-            input_root_paths=[root_path],
-            output_root_path=root_path,
-            enforce_row_count=enforce_row_count,
-        )
+    # Output root path determiens the ClickHouse table name where data will be loaded.
+    output_root_path: str
+
+    # This flag determines if the row count will be enforced.
+    enforce_non_zero_row_count: bool = False
 
     @staticmethod
     def sanitize_root_path(root_path: str):
