@@ -13,7 +13,7 @@ log = structlog.get_logger()
 
 
 def load_to_clickhouse(
-    datasets: list[ClickHouseBlockBatchDataset],
+    dataset: ClickHouseBlockBatchDataset,
     range_spec: str | None = None,
     dry_run: bool = False,
 ):
@@ -68,17 +68,12 @@ def load_to_clickhouse(
 
     # Create the output tables if they don't exist.
     if not dry_run:
-        for d in datasets:
-            d.create_table()
+        dataset.create_table()
 
     # Candidate markers are for blockbatches produced upstream.
-    root_paths = set()
-    for d in datasets:
-        root_paths.update(d.input_root_paths)
-
     candidate_markers_df = candidate_markers(
         date_range=date_range,
-        root_paths=list(root_paths),
+        root_paths=dataset.input_root_paths,
     )
 
     # Existing markers that have already been loaded to ClickHouse.
@@ -86,67 +81,67 @@ def load_to_clickhouse(
 
     # Loop over datasets and find which ones are pending.
     tasks: list[InsertTask] = []
-    for d in datasets:
-        # Candidate markers for this dataset.
-        candidates = (
-            candidate_markers_df.filter(pl.col("root_path").is_in(d.input_root_paths))
-            .select(
-                pl.col("root_path"),
-                pl.col("chain"),
-                pl.col("dt"),
-                pl.col("min_block"),
-                # The full data path looks like: "blockbatch/contract_creation/create_traces_v1/chain=automata/dt=2025-03-21/000010664000.parquet"
-                # The partitioned path is the part after the root path: "chain=automata/dt=2025-03-21/000010664000.parquet"
-                pl.col("data_path")
-                .str.split(pl.col("root_path") + "/")
-                .list.last()
-                .alias("partitioned_path"),
-            )
-            .unique()
-            .group_by("chain", "dt", "min_block", "partitioned_path")
-            .all()
-        ).to_dicts()
 
-        completed_batches = set(
-            [
-                (x["chain"], x["dt"], x["min_block"])
-                for x in existing_markers_df.filter(pl.col("root_path") == d.output_root_path)
-                .select("chain", "dt", "min_block")
-                .to_dicts()
-            ]
+    # Candidate markers for this dataset.
+    candidates = (
+        candidate_markers_df.filter(pl.col("root_path").is_in(dataset.input_root_paths))
+        .select(
+            pl.col("root_path"),
+            pl.col("chain"),
+            pl.col("dt"),
+            pl.col("min_block"),
+            # The full data path looks like: "blockbatch/contract_creation/create_traces_v1/chain=automata/dt=2025-03-21/000010664000.parquet"
+            # The partitioned path is the part after the root path: "chain=automata/dt=2025-03-21/000010664000.parquet"
+            pl.col("data_path")
+            .str.split(pl.col("root_path") + "/")
+            .list.last()
+            .alias("partitioned_path"),
         )
+        .unique()
+        .group_by("chain", "dt", "min_block", "partitioned_path")
+        .all()
+    ).to_dicts()
 
-        for block_batch in candidates:
-            ready = block_batch["root_path"]
+    completed_batches = set(
+        [
+            (x["chain"], x["dt"], x["min_block"])
+            for x in existing_markers_df.filter(pl.col("root_path") == dataset.output_root_path)
+            .select("chain", "dt", "min_block")
+            .to_dicts()
+        ]
+    )
 
-            # Skip batches that don't have all the required input root_paths.
-            if set(d.input_root_paths) != set(ready):
-                # If needed for debugging:
-                # missing = sorted(set(d.input_root_paths) - set(ready))
-                continue
+    for block_batch in candidates:
+        ready = block_batch["root_path"]
 
-            # Skip batches that have already been processed.
-            as_tuple = (block_batch["chain"], block_batch["dt"], block_batch["min_block"])
-            if as_tuple in completed_batches:
-                continue
+        # Skip batches that don't have all the required input root_paths.
+        if set(dataset.input_root_paths) != set(ready):
+            # If needed for debugging:
+            # missing = sorted(set(d.input_root_paths) - set(ready))
+            continue
 
-            # Collect the pending batches.
+        # Skip batches that have already been processed.
+        as_tuple = (block_batch["chain"], block_batch["dt"], block_batch["min_block"])
+        if as_tuple in completed_batches:
+            continue
 
-            assert isinstance(block_batch["chain"], str)
-            assert isinstance(block_batch["dt"], date)
-            assert isinstance(block_batch["min_block"], int)
-            assert isinstance(block_batch["partitioned_path"], str)
+        # Collect the pending batches.
 
-            insert_task = InsertTask(
-                dataset=d,
-                blockbatch=BlockBatch(
-                    chain=block_batch["chain"],
-                    dt=block_batch["dt"],
-                    min_block=block_batch["min_block"],
-                    partitioned_path=block_batch["partitioned_path"],
-                ),
-            )
-            tasks.append(insert_task)
+        assert isinstance(block_batch["chain"], str)
+        assert isinstance(block_batch["dt"], date)
+        assert isinstance(block_batch["min_block"], int)
+        assert isinstance(block_batch["partitioned_path"], str)
+
+        insert_task = InsertTask(
+            dataset=dataset,
+            blockbatch=BlockBatch(
+                chain=block_batch["chain"],
+                dt=block_batch["dt"],
+                min_block=block_batch["min_block"],
+                partitioned_path=block_batch["partitioned_path"],
+            ),
+        )
+        tasks.append(insert_task)
 
     log.info(f"Prepared {len(tasks)} insert tasks.")
 

@@ -21,19 +21,19 @@ from op_analytics.datapipeline.etl.blockbatchload.datasets import (
 @asset
 def contract_creation(context: OpExecutionContext):
     """Load contract creation blockbatch data to Clickhouse."""
-    result = load_to_clickhouse(datasets=[CONTRACT_CREATION])
+    result = load_to_clickhouse(dataset=CONTRACT_CREATION)
     context.log.info(result)
 
 
 @asset
 def erc20_transfers(context: OpExecutionContext):
     """Load ERC-20 transfers blockbatch data to Clickhouse."""
-    result = load_to_clickhouse(datasets=[ERC20_TRANSFERS])
+    result = load_to_clickhouse(dataset=ERC20_TRANSFERS)
     context.log.info(result)
 
 
 @asset
 def erc721_transfers(context: OpExecutionContext):
     """Load ERC-721 transfers blockbatch data to Clickhouse."""
-    result = load_to_clickhouse(datasets=[ERC721_TRANSFERS])
+    result = load_to_clickhouse(dataset=ERC721_TRANSFERS)
     context.log.info(result)
