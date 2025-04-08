@@ -84,7 +84,7 @@ def load_to_clickhouse(
 
     # Candidate markers for this dataset.
     candidates = (
-        candidate_markers_df.filter(pl.col("root_path").is_in(d.input_root_paths))
+        candidate_markers_df.filter(pl.col("root_path").is_in(dataset.input_root_paths))
         .select(
             pl.col("root_path"),
             pl.col("chain"),
@@ -105,7 +105,7 @@ def load_to_clickhouse(
     completed_batches = set(
         [
             (x["chain"], x["dt"], x["min_block"])
-            for x in existing_markers_df.filter(pl.col("root_path") == d.output_root_path)
+            for x in existing_markers_df.filter(pl.col("root_path") == dataset.output_root_path)
             .select("chain", "dt", "min_block")
             .to_dicts()
         ]
