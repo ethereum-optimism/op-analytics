@@ -7,7 +7,6 @@ from op_analytics.coreutils.partitioned.markers_core import DateFilter, MarkerFi
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.datapipeline.etl.ingestion.reader.request import BLOCKBATCH_MARKERS_TABLE
 
-
 log = structlog.get_logger()
 
 

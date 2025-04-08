@@ -61,12 +61,6 @@ def load_to_clickhouse(
 
     At runtime the placeholder will be replaced with the ClickHouse s3() table function call
     that provides the actual data in GCS for the blockbatch being processed.
-
-    The INSERT sql file also supports the `BLOCKBATCH_MIN_BLOCK` placeholder which is
-    replaced with the minimum block number of the blockbatch being processed. This can
-    be used to keep track of the blockbatch that produced some data in the output table.
-    It is specially useful to avoid duplicates by including this value in the ORDER BY
-    clause in the CREATE sql file.
     """
 
     # Operate over recent days.
