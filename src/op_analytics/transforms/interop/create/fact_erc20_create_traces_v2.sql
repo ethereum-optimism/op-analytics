@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `tx_method_id` String,
     `code_bytelength` Int64,
     `is_erc7802` Bool,
+    `first_seen` DateTime,
     INDEX dt_idx dt TYPE minmax GRANULARITY 1,
     INDEX chain_idx chain TYPE minmax GRANULARITY 1,
 )

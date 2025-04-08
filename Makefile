@@ -55,7 +55,7 @@ sphinx-serve: .makemarkers/sphinx-docs
 IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250404.2
 
 # Dagster image version.
-IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250404.003
+IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250408.004
 
 
 .PHONY: uv-build

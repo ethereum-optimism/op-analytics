@@ -67,15 +67,10 @@ class InsertTask:
         return dict(batch=self.batch.partitioned_path)
 
     def construct_insert(self, dry_run: bool = False):
-        insert_ddl_template = self.dataset.insert_ddl_template(dry_run=dry_run)
-
-        # Replace the INPUT_PARTITION_PATH placeholder in the template
-        select_ddl = insert_ddl_template.replace(
-            "INPUT_PARTITION_PATH",
-            self.batch.partitioned_path,
+        return self.dataset.insert_ddl_template(
+            batch=self.batch,
+            dry_run=dry_run,
         )
-
-        return select_ddl
 
     def dry_run(self):
         insert_ddl = self.construct_insert(dry_run=True)

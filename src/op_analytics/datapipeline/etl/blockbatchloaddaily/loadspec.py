@@ -6,6 +6,8 @@ from op_analytics.coreutils.clickhouse.inferschema import parquet_to_subquery
 from op_analytics.coreutils.clickhouse.oplabs import run_statememt_oplabs
 from op_analytics.coreutils.logger import structlog
 
+from .readers import DtChainBatch
+
 
 log = structlog.get_logger()
 
@@ -82,19 +84,53 @@ class ClickHouseDailyDataset:
         log.info(f"CREATE TABLE {self.output_table_name()}")
         run_statememt_oplabs(statement=create_ddl)
 
-    def insert_ddl_template(self, dry_run: bool = False):
+    def insert_ddl_template(self, batch: DtChainBatch, dry_run: bool = False):
         select_ddl = self.read_insert_ddl()
 
         # If needed for debugging we can log out the DDL template
         # log.info(ddl)
 
-        # Replace the input tables in the template with s3() table functions.
-        for input_root_path in self.inputs_blockbatch:
-            input_table = "gcs__" + self.sanitize_root_path(input_root_path)
-            input_path = f"gs://oplabs-tools-data-sink/{input_root_path}/INPUT_PARTITION_PATH"
-            input_s3 = parquet_to_subquery(gcs_parquet_path=input_path, dry_run=dry_run)
-            select_ddl = select_ddl.replace(input_table, input_s3)
+        select_ddl = self.replace_inputs_blockbatch(select_ddl, batch, dry_run)
+        select_ddl = self.replace_inputs_clickhouse(select_ddl, batch, dry_run)
 
         output_table = self.output_table_name()
         insert_ddl = f"INSERT INTO {output_table}\n" + select_ddl
+
         return insert_ddl
+
+    def replace_inputs_blockbatch(
+        self, select_ddl: str, batch: DtChainBatch, dry_run: bool = False
+    ):
+        for input_root_path in self.inputs_blockbatch:
+            # Prepare the s3 table function to read data from GCS.
+            input_path = f"gs://oplabs-tools-data-sink/{input_root_path}/{batch.partitioned_path}"
+            input_s3 = parquet_to_subquery(gcs_parquet_path=input_path, dry_run=dry_run)
+
+            # Replace the input table place holder with the GCS subquery.
+            placeholder = f"INPUT_BLOCKBATCH('{input_root_path}')"
+            select_ddl = select_ddl.replace(placeholder, input_s3)
+
+        return select_ddl
+
+    def replace_inputs_clickhouse(
+        self, select_ddl: str, batch: DtChainBatch, dry_run: bool = False
+    ):
+        for input_root_path in self.inputs_clickhouse:
+            # Prepare the ClickHouse subquery to read data from the input daily table.
+            input_clickhouse_table_name = self.sanitize_root_path(input_root_path)
+
+            subquery = f"""
+            (
+            SELECT
+                * 
+            FROM {input_clickhouse_table_name}
+            WHERE 
+                dt = '{batch.dt}'
+                AND chain = '{batch.chain}'
+            )
+            """
+
+            placeholder = f"INPUT_CLICKHOUSE('{input_root_path}')"
+            select_ddl = select_ddl.replace(placeholder, subquery)
+
+        return select_ddl
