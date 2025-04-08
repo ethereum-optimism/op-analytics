@@ -54,28 +54,16 @@ class L2BeatTVSBreakdown:
 
         # Fetch the TVS breakdown for each project
         projects_tvs = run_concurrently(
-            function=lambda x: L2BeatProjectTVS.fetch(x.slug, session),
+            function=lambda project: L2BeatProjectTVS.fetch(project, session),
             targets=l2beat_projects,
             max_workers=8,
         )
 
         rows = []
-        for project, parsed_data in projects_tvs.items():
-            project_rows = parsed_data.data
-            for row in project_rows:
-                row["dt"] = dt_fromepoch(row["timestamp"])
-                row["project_id"] = project.id
-                row["project_slug"] = project.slug
-            rows.extend(project_rows)
+        for parsed_data in projects_tvs.values():
+            rows.extend(parsed_data.data)
 
-        df = (
-            pl.DataFrame(rows)
-            .select(_[0] for _ in TVS_BREAKDOWN_SCHEMA)
-            .with_columns(
-                pl.col("token_address").str.to_lowercase().alias("token_address"),
-                pl.col("escrow_address").str.to_lowercase().alias("escrow_address"),
-            )
-        )
+        df = clean_dataframe(rows)
 
         # Check the data coming from the API is just as we expect it to be.
         raise_for_schema_mismatch(
@@ -92,35 +80,40 @@ class L2BeatProjectTVS:
     data: list[dict[str, Any]]
 
     @classmethod
-    def fetch(cls, slug: str, session: requests.Session | None = None) -> "L2BeatProjectTVS":
+    def fetch(
+        cls,
+        project: L2BeatProject,
+        session: requests.Session | None = None,
+    ) -> "L2BeatProjectTVS":
         session = session or new_session()
 
         data = get_data(
             session,
-            url=f"https://l2beat.com/api/scaling/tvs/{slug}/breakdown",
+            url=f"https://l2beat.com/api/scaling/tvs/{project.slug}/breakdown",
         )
 
         if not data.get("success"):
-            raise Exception(f"Failed to fetch data for project {slug}")
+            raise Exception(f"Failed to fetch data for project {project.slug}")
 
-        breakdown = data["data"].get("breakdown", {})
-        timestamp = data["data"]["dataTimestamp"]
-
-        parsed_rows = parse_tvs(timestamp, breakdown)
-
-        return cls(
-            slug=slug,
-            data=parsed_rows,
-        )
+        return cls(slug=project.slug, data=parse_tvs(data, project))
 
 
-def parse_tvs(timestamp: int, breakdown: dict[str, Any]) -> list[dict[str, Any]]:
-    # Process each category and its assets
+def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, Any]]:
+    breakdown = data["data"].get("breakdown", {})
+    timestamp = data["data"]["dataTimestamp"]
+
     rows = []
     for category, assets in breakdown.items():
         for asset in assets:
-            for escrow in asset.get("escrows", []):
+            # We produce one row per asset per escrow. If there are no escrows we still need to
+            # produce a row for the asset, so we set escrows to a list with a single null escrow.
+            escrows = asset.get("escrows") or [None]
+
+            for escrow in escrows:
                 row = {
+                    "dt": dt_fromepoch(timestamp),
+                    "project_id": project.id,
+                    "project_slug": project.slug,
                     "timestamp": timestamp,
                     "asset_id": asset["assetId"],
                     "chain_name": asset["chain"]["name"],
@@ -130,10 +123,10 @@ def parse_tvs(timestamp: int, breakdown: dict[str, Any]) -> list[dict[str, Any]]
                     "usd_price": float(asset["usdPrice"]),
                     "is_gas_token": asset.get("isGasToken"),
                     "token_address": asset.get("tokenAddress"),
-                    "escrow_address": escrow.get("escrowAddress"),
-                    "escrow_name": escrow.get("name"),
-                    "is_shared_escrow": escrow.get("isSharedEscrow"),
-                    "escrow_url": escrow.get("url"),
+                    "escrow_address": escrow.get("escrowAddress") if escrow else None,
+                    "escrow_name": escrow.get("name") if escrow else None,
+                    "is_shared_escrow": escrow.get("isSharedEscrow") if escrow else None,
+                    "escrow_url": escrow.get("url") if escrow else None,
                     "asset_url": asset.get("url"),
                     "icon_url": asset.get("iconUrl"),
                     "symbol": asset["symbol"],
@@ -142,5 +135,15 @@ def parse_tvs(timestamp: int, breakdown: dict[str, Any]) -> list[dict[str, Any]]
                     "category": category,
                 }
                 rows.append(row)
-
     return rows
+
+
+def clean_dataframe(rows: list[dict[str, Any]]) -> pl.DataFrame:
+    return (
+        pl.DataFrame(rows)
+        .select(_[0] for _ in TVS_BREAKDOWN_SCHEMA)
+        .with_columns(
+            pl.col("token_address").str.to_lowercase().alias("token_address"),
+            pl.col("escrow_address").str.to_lowercase().alias("escrow_address"),
+        )
+    )
