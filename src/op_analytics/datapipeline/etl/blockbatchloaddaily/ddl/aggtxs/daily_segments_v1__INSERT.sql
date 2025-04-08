@@ -141,16 +141,16 @@ SELECT
   avg(sum_success_estimated_size) AS avg_success_estimated_size_per_wallet,
 
   -- === AVERAGES PER TRANSACTION ===
-  sum(count_success_transactions) / nullIf(sum(count_transactions), 0) AS overall_success_rate,
-  sum(sum_tx_fee_native) / nullIf(sum(count_transactions), 0) AS overall_avg_tx_fee_native_per_tx,
-  sum(sum_l2_gas_used) / nullIf(sum(count_transactions), 0) AS overall_avg_l2_gas_per_tx,
-  sum(sum_l1_gas_used_unified) / nullIf(sum(count_transactions), 0) AS overall_avg_l1_gas_per_tx,
+  avgWeighted(count_success_transactions, count_transactions) AS overall_success_rate,
+  avgWeighted(sum_tx_fee_native, count_transactions) AS overall_avg_tx_fee_native_per_tx,
+  avgWeighted(sum_l2_gas_used, count_transactions) AS overall_avg_l2_gas_per_tx,
+  avgWeighted(sum_l1_gas_used_unified, count_transactions) AS overall_avg_l1_gas_per_tx,
 
-  -- === AVERAGES PER TRANSACTION ===
+  -- === AVERAGES PER WALLET ===
   avg(wallet_success_rate) AS avg_wallet_success_rate,
-  avg(wallet_avg_fee_per_tx) AS avg_wallet_avg_fee_per_tx,
-  avg(wallet_avg_l2_gas_per_tx) AS avg_wallet_avg_l2_gas_per_tx,
-  avg(wallet_avg_l1_gas_per_tx) AS avg_wallet_avg_l1_gas_per_tx
+  avgWeighted(wallet_avg_fee_per_tx, count_transactions) AS avg_wallet_avg_fee_per_tx,
+  avgWeighted(wallet_avg_l2_gas_per_tx, count_transactions) AS avg_wallet_avg_l2_gas_per_tx,
+  avgWeighted(wallet_avg_l1_gas_per_tx, count_transactions) AS avg_wallet_avg_l1_gas_per_tx
 
 FROM DailyWalletCohorts
 -- Group by date, chain, network, and segment, AND also group by just date, chain, network (for baseline)

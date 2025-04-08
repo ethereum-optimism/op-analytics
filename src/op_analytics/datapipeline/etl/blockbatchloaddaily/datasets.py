@@ -28,6 +28,18 @@ ALLOWED_EMPTY_CHAINS = [
     "arenaz",
     "race",
     "xterio",
+    "metal",
+    "redstone",
+    "bob",
+    "cyber",
+    "lisk",
+    "ham",
+    "mint",
+    "swan",
+    "polynomial",
+    "shape",
+    "automata",
+    "worldchain",
 ]
 
 ALLOWED_EMPTY_DATES = [
@@ -45,6 +57,19 @@ ALLOWED_EMPTY_DATES = [
     #
     ("swell", "2024-11-27"),
     ("swell", "2024-11-30"),
+    #
+    ("fraxtal", "2024-02-01"),
+    ("fraxtal", "2024-02-02"),
+    ("fraxtal", "2024-02-03"),
+    ("fraxtal", "2024-02-04"),
+    ("fraxtal", "2024-02-05"),
+    ("fraxtal", "2024-02-06"),
+    ("fraxtal", "2024-02-07"),
+    ("fraxtal", "2024-02-08"),
+    ("fraxtal", "2024-02-09"),
+    ("fraxtal", "2024-02-10"),
+    ("fraxtal", "2024-02-11"),
+    #
 ]
 
 DAILY_ADDRESS_SUMMARY = ClickHouseDailyDataset(

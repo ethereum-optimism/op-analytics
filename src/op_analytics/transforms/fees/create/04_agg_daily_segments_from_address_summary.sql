@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS transforms_fees.agg_daily_segments_from_address_summa
     `chain` String,
     `chain_id` Int32,
     `network` String,
-    `final_cohort` String,
+    `wallet_segment` String,
     
     -- Base Metrics
     `wallet_count` UInt64,
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS transforms_fees.agg_daily_segments_from_address_summa
     `total_tx_count` UInt64,
     `total_success_tx_count` UInt64,
     `avg_success_tx_count_per_wallet` Float64,
-    `avg_success_rate` Float64,
+    `overall_success_rate` Float64,
     
     -- Aggregated Distinct Counts (Averaged per Wallet)
     `avg_distinct_blocks_per_wallet` Float64,
@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS transforms_fees.agg_daily_segments_from_address_summa
     `avg_success_input_bytes_length_per_wallet` Float64,
     `avg_input_nonzero_bytes_per_wallet` Float64,
     `avg_success_input_nonzero_bytes_per_wallet` Float64,
+    
     -- Aggregated Estimated Size (Totals)
     `total_estimated_size` UInt64,
     `total_success_estimated_size` UInt64,
@@ -105,10 +106,16 @@ CREATE TABLE IF NOT EXISTS transforms_fees.agg_daily_segments_from_address_summa
     `avg_estimated_size_per_wallet` Float64,
     `avg_success_estimated_size_per_wallet` Float64,
     
-    -- Key Ratios per Transaction
-    `avg_tx_fee_native_per_tx` Float64,
-    `avg_l2_gas_per_tx` Float64,
-    `avg_l1_gas_per_tx` Float64
+    -- Key Ratios per Transaction (Overall metrics)
+    `overall_avg_tx_fee_native_per_tx` Float64,
+    `overall_avg_l2_gas_per_tx` Float64,
+    `overall_avg_l1_gas_per_tx` Float64,
+    
+    -- Per-Wallet Averaged Metrics
+    `avg_wallet_success_rate` Float64,
+    `avg_wallet_avg_fee_per_tx` Float64,
+    `avg_wallet_avg_l2_gas_per_tx` Float64,
+    `avg_wallet_avg_l1_gas_per_tx` Float64
 )
-ENGINE = ReplacingMergeTree
-ORDER BY (dt, chain, chain_id, network, final_cohort)
+ENGINE = ReplacingMergeTree()
+ORDER BY (dt, chain, chain_id, network, wallet_segment)
