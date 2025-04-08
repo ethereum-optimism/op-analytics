@@ -54,28 +54,16 @@ class L2BeatTVSBreakdown:
 
         # Fetch the TVS breakdown for each project
         projects_tvs = run_concurrently(
-            function=lambda x: L2BeatProjectTVS.fetch(x.slug, session),
+            function=lambda project: L2BeatProjectTVS.fetch(project, session),
             targets=l2beat_projects,
             max_workers=8,
         )
 
         rows = []
-        for project, parsed_data in projects_tvs.items():
-            project_rows = parsed_data.data
-            for row in project_rows:
-                row["dt"] = dt_fromepoch(row["timestamp"])
-                row["project_id"] = project.id
-                row["project_slug"] = project.slug
-            rows.extend(project_rows)
+        for parsed_data in projects_tvs.values():
+            rows.extend(parsed_data.data)
 
-        df = (
-            pl.DataFrame(rows)
-            .select(_[0] for _ in TVS_BREAKDOWN_SCHEMA)
-            .with_columns(
-                safe_lowercase("token_address"),
-                safe_lowercase("escrow_address"),
-            )
-        )
+        df = clean_dataframe(rows)
 
         # Check the data coming from the API is just as we expect it to be.
         raise_for_schema_mismatch(
@@ -92,35 +80,40 @@ class L2BeatProjectTVS:
     data: list[dict[str, Any]]
 
     @classmethod
-    def fetch(cls, slug: str, session: requests.Session | None = None) -> "L2BeatProjectTVS":
+    def fetch(
+        cls,
+        project: L2BeatProject,
+        session: requests.Session | None = None,
+    ) -> "L2BeatProjectTVS":
         session = session or new_session()
 
         data = get_data(
             session,
-            url=f"https://l2beat.com/api/scaling/tvs/{slug}/breakdown",
+            url=f"https://l2beat.com/api/scaling/tvs/{project.slug}/breakdown",
         )
 
         if not data.get("success"):
-            raise Exception(f"Failed to fetch data for project {slug}")
+            raise Exception(f"Failed to fetch data for project {project.slug}")
 
-        breakdown = data["data"].get("breakdown", {})
-        timestamp = data["data"]["dataTimestamp"]
-
-        parsed_rows = parse_tvs(timestamp, breakdown)
-
-        return cls(
-            slug=slug,
-            data=parsed_rows,
-        )
+        return cls(slug=project.slug, data=parse_tvs(data, project))
 
 
-def parse_tvs(timestamp: int, breakdown: dict[str, Any]) -> list[dict[str, Any]]:
+def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, Any]]:
+    breakdown = data["data"].get("breakdown", {})
+    timestamp = data["data"]["dataTimestamp"]
+
     rows = []
     for category, assets in breakdown.items():
         for asset in assets:
-            escrows = asset.get("escrows") or [None]  # fallback to [None] if no escrows
+            # We produce one row per asset per escrow. If there are no escrows we still need to
+            # produce a row for the asset, so we set escrows to a list with a single null escrow.
+            escrows = asset.get("escrows") or [None]
+
             for escrow in escrows:
                 row = {
+                    "dt": dt_fromepoch(timestamp),
+                    "project_id": project.id,
+                    "project_slug": project.slug,
                     "timestamp": timestamp,
                     "asset_id": asset["assetId"],
                     "chain_name": asset["chain"]["name"],
@@ -145,10 +138,12 @@ def parse_tvs(timestamp: int, breakdown: dict[str, Any]) -> list[dict[str, Any]]
     return rows
 
 
-def safe_lowercase(col_name: str) -> pl.Expr:
+def clean_dataframe(rows: list[dict[str, Any]]) -> pl.DataFrame:
     return (
-        pl.when(pl.col(col_name).is_not_null())
-        .then(pl.col(col_name).str.to_lowercase())
-        .otherwise(None)
-        .alias(col_name)
+        pl.DataFrame(rows)
+        .select(_[0] for _ in TVS_BREAKDOWN_SCHEMA)
+        .with_columns(
+            pl.col("token_address").str.to_lowercase().alias("token_address"),
+            pl.col("escrow_address").str.to_lowercase().alias("escrow_address"),
+        )
     )
