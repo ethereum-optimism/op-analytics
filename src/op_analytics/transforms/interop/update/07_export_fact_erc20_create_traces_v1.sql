@@ -62,6 +62,6 @@ SELECT
   , (chain_id, contract_address) IN (ntt_tokens) AS has_ntt_events
 
 FROM
-  transforms_interop.fact_erc20_create_traces_v1 FINAL
+  transforms_interop.fact_erc20_create_traces_v2 FINAL
 WHERE
   dt >= '2024-10-01'
