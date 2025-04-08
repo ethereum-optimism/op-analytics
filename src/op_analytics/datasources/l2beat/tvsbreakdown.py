@@ -72,8 +72,8 @@ class L2BeatTVSBreakdown:
             pl.DataFrame(rows)
             .select(_[0] for _ in TVS_BREAKDOWN_SCHEMA)
             .with_columns(
-                pl.col("token_address").str.to_lowercase().alias("token_address"),
-                pl.col("escrow_address").str.to_lowercase().alias("escrow_address"),
+                safe_lowercase("token_address"),
+                safe_lowercase("escrow_address"),
             )
         )
 
@@ -115,11 +115,11 @@ class L2BeatProjectTVS:
 
 
 def parse_tvs(timestamp: int, breakdown: dict[str, Any]) -> list[dict[str, Any]]:
-    # Process each category and its assets
     rows = []
     for category, assets in breakdown.items():
         for asset in assets:
-            for escrow in asset.get("escrows", []):
+            escrows = asset.get("escrows") or [None]  # fallback to [None] if no escrows
+            for escrow in escrows:
                 row = {
                     "timestamp": timestamp,
                     "asset_id": asset["assetId"],
@@ -130,10 +130,10 @@ def parse_tvs(timestamp: int, breakdown: dict[str, Any]) -> list[dict[str, Any]]
                     "usd_price": float(asset["usdPrice"]),
                     "is_gas_token": asset.get("isGasToken"),
                     "token_address": asset.get("tokenAddress"),
-                    "escrow_address": escrow.get("escrowAddress"),
-                    "escrow_name": escrow.get("name"),
-                    "is_shared_escrow": escrow.get("isSharedEscrow"),
-                    "escrow_url": escrow.get("url"),
+                    "escrow_address": escrow.get("escrowAddress") if escrow else None,
+                    "escrow_name": escrow.get("name") if escrow else None,
+                    "is_shared_escrow": escrow.get("isSharedEscrow") if escrow else None,
+                    "escrow_url": escrow.get("url") if escrow else None,
                     "asset_url": asset.get("url"),
                     "icon_url": asset.get("iconUrl"),
                     "symbol": asset["symbol"],
@@ -142,5 +142,13 @@ def parse_tvs(timestamp: int, breakdown: dict[str, Any]) -> list[dict[str, Any]]
                     "category": category,
                 }
                 rows.append(row)
-
     return rows
+
+
+def safe_lowercase(col_name: str) -> pl.Expr:
+    return (
+        pl.when(pl.col(col_name).is_not_null())
+        .then(pl.col(col_name).str.to_lowercase())
+        .otherwise(None)
+        .alias(col_name)
+    )
