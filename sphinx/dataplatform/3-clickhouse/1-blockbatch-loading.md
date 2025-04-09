@@ -1,4 +1,4 @@
-# Blockbatch Load: Onchain Data Pipelines in ClickHouse
+# Onchain Data Pipelines: Blockbatch Load
 
 The data produced by `blockbatch` processing is stored in GCS, so it is not easily accessible for
 dashboards and SQL-based data pipelines. In this section we go over how to explore and prototype
@@ -11,7 +11,7 @@ downstream analytics and dashboards.
 We have set up a parameterized view on our ClickHouse instance that allows you to query data from
 a blockbatch root path for a given chain and date. The parameterized view is defiend like this:
 
-```sql
+```
 CREATE VIEW blockbatch_gcs.read_date
 AS SELECT
     chain,
@@ -223,7 +223,7 @@ sent to the database.
 
 ### Prototyping and Backfilling 
 
-We use Juypter notebooks to prototype and backfill data pipelines. Notebooks for blockbatch data
+We use IPython notebooks to prototype and backfill data pipelines. Notebooks for blockbatch data
 pipelines are located in the `notebooks/adhoc/blockbatch_clickhouse` directory. Browse that
 directory for examples.
 
