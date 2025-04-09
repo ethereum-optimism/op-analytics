@@ -87,7 +87,7 @@ refined_traces AS (
     , accurateCast(tx_input_zero_bytes, 'UInt32') AS tx_input_zero_bytes
     , accurateCast(tx_input_nonzero_bytes, 'UInt32') AS tx_input_nonzero_bytes
 
-  FROM gcs__blockbatch.refined_traces__refined_traces_fees_v2
+  FROM INPUT_BLOCKBATCH('blockbatch/refined_traces/refined_traces_fees_v2')
 )
 
 
