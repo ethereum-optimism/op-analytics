@@ -1,31 +1,9 @@
 from .loadspec import ClickHouseDailyDataset
 
-TRACES_AGG1 = ClickHouseDailyDataset(
-    output_root_path="blockbatch_daily/aggtraces/daily_trfrom_trto_v1",
-    inputs_blockbatch=[
-        "blockbatch/refined_traces/refined_traces_fees_v2",
-    ],
-)
-
-
-TRACES_AGG2 = ClickHouseDailyDataset(
-    output_root_path="blockbatch_daily/aggtraces/daily_trto_v1",
-    inputs_blockbatch=[
-        "blockbatch/refined_traces/refined_traces_fees_v2",
-    ],
-)
-
-
-TRACES_AGG3 = ClickHouseDailyDataset(
-    output_root_path="blockbatch_daily/aggtraces/daily_trto_txto_txmethod_v1",
-    inputs_blockbatch=[
-        "blockbatch/refined_traces/refined_traces_fees_v2",
-    ],
-)
-
 
 ALLOWED_EMPTY_CHAINS = [
     "arenaz",
+    "kroma",
     "race",
     "xterio",
 ]
@@ -46,6 +24,36 @@ ALLOWED_EMPTY_DATES = [
     ("swell", "2024-11-27"),
     ("swell", "2024-11-30"),
 ]
+
+TRACES_AGG1 = ClickHouseDailyDataset(
+    output_root_path="blockbatch_daily/aggtraces/daily_trfrom_trto_v1",
+    inputs_blockbatch=[
+        "blockbatch/refined_traces/refined_traces_fees_v2",
+    ],
+    ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
+    ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
+)
+
+
+TRACES_AGG2 = ClickHouseDailyDataset(
+    output_root_path="blockbatch_daily/aggtraces/daily_trto_v1",
+    inputs_blockbatch=[
+        "blockbatch/refined_traces/refined_traces_fees_v2",
+    ],
+    ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
+    ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
+)
+
+
+TRACES_AGG3 = ClickHouseDailyDataset(
+    output_root_path="blockbatch_daily/aggtraces/daily_trto_txto_txmethod_v1",
+    inputs_blockbatch=[
+        "blockbatch/refined_traces/refined_traces_fees_v2",
+    ],
+    ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
+    ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
+)
+
 
 DAILY_ADDRESS_SUMMARY = ClickHouseDailyDataset(
     output_root_path="blockbatch_daily/aggtxs/daily_address_summary_v1",
