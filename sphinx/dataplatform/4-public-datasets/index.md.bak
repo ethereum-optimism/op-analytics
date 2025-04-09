@@ -50,7 +50,7 @@ following tables:
 
 ### Account Abstraction ([listing URL](https://console.cloud.google.com/bigquery/analytics-hub/exchanges/projects/523274563936/locations/us/dataExchanges/optimism_192d403716e/listings/optimism_superchain_4337_account_abstraction_data_1954d8919e1))
 
-OP Labs maintains account abstraction datasets for superchain chains. This includes the following
+OP Labs maintains account abstraction datastest for superchain chains. This includes the following
 tables:
 
 - `useroperationevent_logs_v2`: Decoded `UserOperationEvent` logs.
