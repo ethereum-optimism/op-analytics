@@ -154,7 +154,7 @@ Refer to the documentation for each of them in the code.
 
 ## Data Readiness, Markers, and Job Idempotency
 
-One of the trickiest parts of building data pipelines is triggering jobs. This amounts to answering
+One of the trickiest parts of building data pipelines is triggering jobs. This amouts to answering
 the question: when is the upstream data ready to be processed? To answer this question you need to
 define the unit of incremental processing and to understand when data is complete (becomes immutable)
 for that unit.
@@ -171,11 +171,11 @@ path is written to GCS.
 In the case of loading by date and chain this is more complex. We have to understand which batches
 cover a given date, and track when all of them are ready to be processed. We use a simple heuristic.
 We require that the batches for a give date do not have any block number gaps among them and that
-we ingest the batches that straddle the start and end of the date (i.e. we have data for the previous
+we ingest the batches that stradle the start and end of the date (i.e. we have data for the previous
 and the next dates). 
 
 Using the readiness detection approaches we can ensure that we will never run a ClickHouse load job
-on stale data. Before executing the load task the system check that the input data for the batch
+on stale data. Before exeucting the load task the system check that the input data for the batch
 (or chain/date) is ready. If it is not a warning is logged and the task is skipped. 
 
 We also store markers for load tasks. So we can make sure that a give load task is executed only
@@ -186,7 +186,7 @@ attempting to load any pending tasks for which we don't have markers yet.
 At the moment the only way to force a load task to execute more than once is by manually deleting
 the corresponding marker from the marker store table in ClickHouse. That said we always assume
 that the load job destination table is a ReplacingMergeTree that is configured to correctly handle
-duplicate rows in case a load task is executed more than once. We do this because our markers approach
+duplicate rows in case a load task is executed more than once. We do this because ur markers approach
 only guarantees at least once execution (and not exactly once).
 
 
@@ -196,7 +196,7 @@ Each dataset defined as a `ClickHouseBlockBatchDataset` or a `ClickHouseDailyDat
 of as a node in a data pipeline. The collection of nodes that are chained together forms a data
 pipeline.
 
-The operation and maintenance of these blockbatch data pipelines relies on the following:
+The operation and maintance of these blockbatch data pipelines relies on the following:
 
 - No node is ever executed until the input data is ready.
 - The go/pipeline Hex dashboard allows us to easily check if there is a problem with processing
@@ -237,7 +237,7 @@ assets python file:
 - `src/op_analytics/dagster/assets/blockbatchload.py`
 - `src/op_analytics/dagster/assets/blockbatchloaddaily.py`
 
-The sequence of exactly what gets executed can be customized as needed within the Dagster asset
+The sequence of exactly what gets executed can be customized as needed within the dagster asset
 definition function. In most cases all you will need is to call the `load_to_clickhouse` or
 `daily_to_clickhouse` function with the appropriate arguments.
 
@@ -265,9 +265,9 @@ and for the date and chain load jobs:
 - `etl_dashboard.blockbatch_daily_markers_status`
 - `etl_dashboard.blockbatch_daily_markers_missing`
 
-We write markers every time a load task completes successfully, so if a task runs more than once we
+We write markers every time a laod task completes successfully, so if a task runs more than once we
 have duplicates.  The `deduped` view helps query without duplicates. The `agged` view int turn
-aggregates markers at the `root_path`, `dt`, and `chain` level so that it is easy to find out
+aggregates markeres at the `root_path`, `dt`, and `chain` level so that it is easy to find out
 which chains and dates are missing data. 
 
 The `status` view brings in the data expectation (the batches that have been ingested) and then
@@ -276,5 +276,5 @@ daily completion percentages for each date.
 
 Finally the `missing` view gives us a raw list of batches that are missing. This view is used in
 the "ALERTS" tab in the dashboard and should ideally be empty all the time. In the dashboard query
-in Hex we set the delay threshold so that we only get alerts for batches that have been delayed by
+in Hex we set the delay threshold so that we only get alerets for batchs that have been delayed by
 longer than our latency SLA. 

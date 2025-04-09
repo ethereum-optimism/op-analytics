@@ -62,16 +62,16 @@ src/op_analytics/transforms/fees
 This group has 2 tables and 3 views.  For each of the two tables we have a corresponding `update`
 SQL statement that is used to populate the table.
 
-Note that it is perfectly fine to have any kind of SQL file in the `create` folder. Although it's
+Note that it is prefectly fine to have any kind of SQL file in the `create` folder. Although it's
 better not to get too creative. If you inspect the SQL files for the `views` you will see that they
-are straight-up `CREATE VIEW` ClickHouse statements.
+are stright-up `CREATE VIEW` ClickHouse statements.
 
 
 ## Transform Execution Model
 
 The execution model for a transform is very simple:
 
-- When the system runs a transforms it first runs all the `CREATE` statements in order according to
+- When the system runs a transforms it first runs all the `CREATE` statements in order accodring to
   their index.
 
 - It then runs all the `INSERT` statements in order according to their index.
@@ -106,7 +106,7 @@ manually backfill data.  Notebooks for transforms are located in the
 All transforms-related Dagster assets are defined in the `src/op_analytics/dagster/assets/transforms.py` file.
 There is no hard and fast rule for how to define the assets. Generally we schedule one asset per
 group, but there are cases where we may want to have more control over what is executed on each
-day and so each asset can decide how it calls the `execute_dt_transforms` function.
+day and so each assest can decide how it calls the `execute_dt_transforms` function.
 
 Similarly for Dagster jobs, there is no hard and fast rule but we generally define one scheduled
 job per transform group.  The jobs are defined in the `src/op_analytics/dagster/defs.py` file.

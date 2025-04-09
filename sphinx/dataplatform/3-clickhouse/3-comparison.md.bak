@@ -52,7 +52,7 @@ framework capabilities that can be powerful but are a black box.
 
 Testability and lineage are closely related. If I change something in an upstream model, which
 downstream models am I going to break? To answer this question you need lineage and you need
-a fast way to evaluate models to ensure everything will be OK. 
+a fast way to evaluate models to ensure everything will be ok. 
 
 Our philosophy on this is that structural problems will manifest while you prototype or shortly
 after you deploy (if you deploy a change without prototyping).  Semantic issues around the data
@@ -83,7 +83,7 @@ The above is specially true for a data warehouse like ClickHouse, where a lot of
 facilities are provided to you by the specific table engine that you pick when using a table.
 When creating a table you may also want to have indexes or use special data types and codecs to
 optimize compression. Or you may want to control how partitions or individual columns in a table
-are expired.  You want to do this speaking directly to the database and not through a YAML
+are expored.  You want to do this speaking directly to the database and not through a YAML
 or JSON config.
 
 Our approach centers around writing the exact CREATE TABLE statement that will be executed. There’s
@@ -104,5 +104,5 @@ and process involved. As team grows larger, platform maintainers need to worry a
 utilization and being able to have a common model for monitoring and executing jobs.
 
 This is when large-scale frameworks like dbt and SQLMesh can be most helpful. They get in the
-way of advanced platform users, but help beginner platform users avoid foot-guns and ensure a level
+way of advanced platform users, but help beginner platform users avoid footguns and ensure a level
 of uniformity across pipelines that is needed to keep global objectives and cost in check.

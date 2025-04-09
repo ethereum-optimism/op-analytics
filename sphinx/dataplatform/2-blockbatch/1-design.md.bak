@@ -2,10 +2,10 @@
 
 
 The `blockbatch` data processing pattern is designed around the idea of deterministic parallelism.
-For a given blockchain we should be able to unambiguously determine in advance how it will be broken
+For a given blockchain we should be able to unambigously determine in advance how it will be broken
 up  into batches for processing.
 
-This has two benefits.  First, it allows us to construct processing tasks that can be run in parallel 
+This has two benefits.  First, it allows us to constroct processing tasks that can be run in parallel 
 without having to look at the data. Second, the storage location of any processed results is also
 deterministic. So if we need to reprocess a batch, we will be sure that there won't be no duplicates
 at the storage layer. 
@@ -18,8 +18,8 @@ the batch size so that as a chain grows we can keep the amount of data per batch
 In `blockbatch` processing a single batch is processed by a single worker. So we should aim for
 batch sizes that fit well into a single worker's memory. 
 
-The main trade-off of this approach is that it requires the pipeline owner to be aware of batch
-sizes so they can be configured in advance, budgeting for any increase in data volume. Usually this
+The main tradeoff of this approach is that it requires the pipeline owner to be aware of batch
+sizes so they can be configured in advance, budgeting for any increas in data volumen. Usually this
 is not much work, but there can be scenarios where a chain explodes in popularity and the pipeline
 might stall.  Backdating an adjustment to the batch size is possible but will be annoying to do.
 
@@ -99,7 +99,7 @@ deterministic. For a given block we need to know then date on which it will be p
 not known until the block is actually produced.
 
 Date partitioning is introduced with the goal of making it easier to reason about the data as a time
-series. This is very important for the kinds of analytics we do at OP Labs. Pretty much all of our
+series. This is very importnat for the kinds of analytics we do at OP Labs. Pretty much all of our
 dashboards and reports have a date component on them. 
 
 The price we pay is we cannot do O(1) data access given the block number. We also need to know
@@ -107,7 +107,7 @@ the block timestamp for the block so we can find the date partition and access t
 out not to be a huge deal, because we can bootstrap knowledge of the date partition at ingestion
 time and then carry it forward in all our metadata from that point on.
 
-When ingesting data we can target the sourced blocks using the batch block range only. We proceed
+When ingesting data we can target the sourced blockes using the batch block range only. We proceed
 to audit the batch and then right before writing we split the batch into date partitions using
 the block timestamp column to determine which blocks go into each date.  Most of the time there is a
 single date per batch, but when the batch straddles a date boundary we end up with two dates and

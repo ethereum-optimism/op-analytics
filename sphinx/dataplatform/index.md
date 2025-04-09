@@ -15,7 +15,8 @@ common patterns used by the platform to ingest and process data.
 
 1-architecture
 2-blockbatch/index
+5-datasources/index
 3-clickhouse/index
 4-public-datasets/index
-5-datasources/index
+
 ```

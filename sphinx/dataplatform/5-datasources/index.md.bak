@@ -2,7 +2,7 @@
 
 
 At OP Labs we ingest data from many different third-party data sources. We have come up with some
-shared patterns to help us mange the common parts of the data ingestion processes.
+shared patterns to help us mange the commport parts of the data ingestion processes.
 
 
 ```{toctree}
