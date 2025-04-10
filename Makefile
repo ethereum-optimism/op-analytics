@@ -81,3 +81,6 @@ docker-dagster: uv-build
 	docker build -f ./Dockerfile.dagster --platform linux/amd64 -t ${IMAGE_TAG_DAGSTER} .
 	docker push ${IMAGE_TAG_DAGSTER}
 
+.PHONY: helm-dagster
+helm-dagster:
+	helm upgrade dagster dagster/dagster -f helm/dagster/values.yaml -n dagster
