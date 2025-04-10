@@ -28,5 +28,6 @@ def aggreagated_traces(context: OpExecutionContext):
             dataset=agg,
             range_spec="m4days",
             num_workers=2,
+            dagster_context=context,
         )
         context.log.info(result)

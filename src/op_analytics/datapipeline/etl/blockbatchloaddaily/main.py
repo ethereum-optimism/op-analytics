@@ -1,3 +1,5 @@
+from dagster import OpExecutionContext
+
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.threads import run_concurrently_store_failures
@@ -18,6 +20,7 @@ def daily_to_clickhouse(
     num_workers: int = 1,
     chains: list[str] | None = None,
     reverse: bool = True,
+    dagster_context: OpExecutionContext | None = None,
 ):
     """Insert blockbatch data into Clickhouse at a dt,chain granularity."""
 
@@ -70,11 +73,16 @@ def daily_to_clickhouse(
     )
 
     if summary.failures:
-        msg = f"{len(summary.failures)} chain,dt tasks failed to execute: "
-
         for task_id, error_msg in summary.failures.items():
-            log.error(f"failed task={task_id}: error={error_msg}")
+            detail = f"failed task={task_id}: error={error_msg}"
+            log.error(detail)
+            if dagster_context:
+                dagster_context.log.error(detail)
 
+        msg = f"output={dataset.output_root_path}: {len(summary.failures)} chain,dt tasks failed to execute"
         log.error(msg)
+        if dagster_context:
+            dagster_context.log.error(msg)
+        raise Exception(msg)
 
     return summary.results
