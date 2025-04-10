@@ -12,7 +12,7 @@ functionality in our data pipeline.
 
 ### Contents Overview
 
-Here we have some brief descriptions of some important directories and files in the repo.
+Here is an overview of some important directories and files in the repo.
 
 - `.circleci`: Configuration for CircleCI jobs.
 - `.github`: Configuration for CODEOWNERS.
