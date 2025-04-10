@@ -5,11 +5,7 @@ log = structlog.get_logger()
 
 
 class DefiLlama(DailyDataset):
-    """Supported defillama datasets.
-
-    This class includes utilities to read data from each dataset from a notebook
-    for ad-hoc use cases.
-    """
+    """Supported defillama datasets."""
 
     # Chain TVL
     CHAINS_METADATA = "chains_metadata_v1"
