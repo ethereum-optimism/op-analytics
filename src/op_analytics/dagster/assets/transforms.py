@@ -26,11 +26,11 @@ def interop(context: AssetExecutionContext):
         INTEROP_OFT_TRANSFERS,
     )
 
-    daily_to_clickhouse(dataset=INTEROP_ERC20_FIRST_SEEN)
-    daily_to_clickhouse(dataset=INTEROP_NTT_TRANSFERS)
-    daily_to_clickhouse(dataset=INTEROP_OFT_TRANSFERS)
-    daily_to_clickhouse(dataset=INTEROP_NTT_FIRST_SEEN)
-    daily_to_clickhouse(dataset=INTEROP_OFT_FIRST_SEEN)
+    daily_to_clickhouse(dataset=INTEROP_ERC20_FIRST_SEEN, dagster_context=context)
+    daily_to_clickhouse(dataset=INTEROP_NTT_TRANSFERS, dagster_context=context)
+    daily_to_clickhouse(dataset=INTEROP_OFT_TRANSFERS, dagster_context=context)
+    daily_to_clickhouse(dataset=INTEROP_NTT_FIRST_SEEN, dagster_context=context)
+    daily_to_clickhouse(dataset=INTEROP_OFT_FIRST_SEEN, dagster_context=context)
 
     # For step 6 we need a back-dated run. What we do is detect ERC-20 create traces
     # for conracts that have had at least one ERC-20 transfer. If we run at the present
