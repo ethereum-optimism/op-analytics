@@ -3,6 +3,7 @@ from dagster import OpExecutionContext
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.threads import run_concurrently_store_failures
 
+from .loadspec_date import ClickHouseDateETL
 from .loadspec_datechain import ClickHouseDateChainETL
 from .insert import InsertTask
 
@@ -10,7 +11,7 @@ log = structlog.get_logger()
 
 
 def daily_to_clickhouse(
-    dataset: ClickHouseDateChainETL,
+    dataset: ClickHouseDateChainETL | ClickHouseDateETL,
     range_spec: str | None = None,
     dry_run: bool = False,
     num_workers: int = 1,

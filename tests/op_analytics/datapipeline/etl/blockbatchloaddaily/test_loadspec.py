@@ -1,7 +1,15 @@
+import pytest
+
+from op_analytics.datapipeline.etl.blockbatchloaddaily.loadspec_date import (
+    ClickHouseDateETL,
+)
 from op_analytics.datapipeline.etl.blockbatchloaddaily.loadspec_datechain import (
     ClickHouseDateChainETL,
 )
-from op_analytics.datapipeline.etl.blockbatchloaddaily.readers import DateChainBatch
+from op_analytics.datapipeline.etl.blockbatchloaddaily.readers import (
+    ALL_CHAINS_SENTINEL,
+    DateChainBatch,
+)
 
 
 def test_loadspec_01():
@@ -329,8 +337,6 @@ SETTINGS use_hive_partitioning = 1
 def test_loadspec_03_BY_DATE_CHAIN():
     """NOTE: For this test we have created a daily_counts_v0 table
     that is not used in production.
-
-    In
     """
     dataset = ClickHouseDateChainETL(
         output_root_path="transforms_dummy/daily_counts_v0",
@@ -356,6 +362,46 @@ FROM
                 * 
             FROM blockbatch_daily.aggtxs__daily_address_summary_v1
             WHERE dt = '2024-01-01' AND chain = 'base'
+            )
+            
+GROUP BY 1
+"""
+    )
+
+
+def test_loadspec_03_BY_DATE():
+    """This is the same as the previous test but using a date level ETL."""
+    dataset = ClickHouseDateETL(
+        output_root_path="transforms_dummy/daily_counts_v0",
+        inputs_clickhouse=["blockbatch_daily/aggtxs/daily_address_summary_v1"],
+    )
+
+    assert dataset.output_table_name() == "transforms_dummy.daily_counts_v0"
+
+    # We get an error if we try to run a BY_DATE with a chain-specific batch:
+    with pytest.raises(AssertionError):
+        dataset.insert_ddl_template(
+            batch=DateChainBatch.of(chain="base", dt="2024-01-01"),
+            dry_run=True,
+        )
+
+    ddl = dataset.insert_ddl_template(
+        batch=DateChainBatch.of(chain=ALL_CHAINS_SENTINEL, dt="2024-01-01"),
+        dry_run=True,
+    )
+    assert ddl == (
+        """INSERT INTO transforms_dummy.daily_counts_v0
+SELECT
+  dt
+  , count(*) AS num_addresses
+  , sum(count_transactions) AS num_transactions
+
+FROM 
+            (
+            SELECT
+                * 
+            FROM blockbatch_daily.aggtxs__daily_address_summary_v1
+            WHERE dt = '2024-01-01'
             )
             
 GROUP BY 1

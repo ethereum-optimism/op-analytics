@@ -10,6 +10,7 @@ from clickhouse_connect.driver.exceptions import DatabaseError
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
 from op_analytics.coreutils.logger import bound_contextvars, human_interval, human_rows, structlog
 
+from .loadspec_date import ClickHouseDateETL
 from .loadspec_datechain import ClickHouseDateChainETL
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
 from .readers import DateChainBatch
@@ -59,7 +60,7 @@ class InsertResult:
 
 @dataclass
 class InsertTask:
-    dataset: ClickHouseDateChainETL
+    dataset: ClickHouseDateChainETL | ClickHouseDateETL
     batch: DateChainBatch
 
     @property
@@ -120,7 +121,7 @@ class InsertTask:
                 f"chain={self.batch.chain}, dt={self.batch.dt} loading into clickhouse should not result in more rows"
             )
 
-        if insert_result.written_rows == 0:
+        if isinstance(self.dataset, ClickHouseDateChainETL) and insert_result.written_rows == 0:
             if self.batch.chain in (self.dataset.ignore_zero_rows_chains or []):
                 log.warning(f"loaded 0 rows: chain={self.batch.chain}")
 
