@@ -47,9 +47,9 @@ class ClickHouseDateETL(ETLMixin):
 
         # Check each date and see if it is ready to be processed.
         ready_date_batches: list[DateChainBatch] = []
-        for date, batches in by_date.items():
-            ok = set(batches) == set(chains)
-            missing = set(chains) - set(batches)
+        for date, chain_batches in by_date.items():
+            ok = set(chain_batches) == set(chains)
+            missing = set(chains) - set(chain_batches)
 
             if ok:
                 ready_date_batches.append(
