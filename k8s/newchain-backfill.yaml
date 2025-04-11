@@ -22,7 +22,7 @@ spec:
       containers:
       - name: python-runner-newchain-backfill
         imagePullPolicy: Always
-        image: ghcr.io/lithium323/op-analytics:v20250404.2
+        image: ghcr.io/ethereum-optimism/op-analytics:v20250404.2
         command: ["tini", "-v", "--", "opdata"]
         args: ["chains", "newchain_backfill_models"]
         env:
