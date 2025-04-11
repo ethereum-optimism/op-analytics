@@ -46,8 +46,7 @@ class ETLMixin:
 
     @property
     def ddl_path(self):
-        _, ddl_path = self.output_root_path.split("/", maxsplit=1)
-        return f"ddl/{ddl_path}"
+        return f"ddl/{self.output_root_path}"
 
     def output_table_name(self):
         return self.sanitize_root_path(self.output_root_path)
@@ -66,34 +65,6 @@ class ETLMixin:
 
         log.info(f"CREATE TABLE {self.output_table_name()}")
         run_statememt_oplabs(statement=create_ddl)
-
-
-@dataclass
-class ClickHouseDateChainETL(ETLMixin):
-    """Represent a task to load data to ClickHouse by dt,chain.
-
-
-    A ClickHouseDateChainETL is defined by a SQL query that reads data for a given dt,chain
-    combination, transforms it and writes the result to ClickHouse.
-
-    The input data can be blockbatch data stored in GCS or data already loaded into ClickHouse
-    having `dt` and `chain` columns.
-    """
-
-    # Output root path determines the ClickHouse table name where data will be loaded.
-    output_root_path: str
-
-    # This is the list of blockbatch root paths that are inputs to this load task.
-    inputs_blockbatch: list[str] = field(default_factory=list)
-
-    # This is the list of ClickHouse root paths that are inputs to this load task.
-    inputs_clickhouse: list[str] = field(default_factory=list)
-
-    # This is a list of chains for which non_zero row_count will not be enforced.
-    ignore_zero_rows_chains: list[str] | None = None
-
-    # This is a list of chain,dt tuples for which non_zero row_count will not be enforced.
-    ignore_zero_rows_chain_dts: list[tuple[str, str]] | None = None
 
     def insert_ddl_template(self, batch: DateChainBatch, dry_run: bool = False):
         select_ddl = self.read_insert_ddl()
@@ -141,9 +112,7 @@ class ClickHouseDateChainETL(ETLMixin):
             SELECT
                 * 
             FROM {input_clickhouse_table_name}
-            WHERE 
-                dt = '{batch.dt}'
-                AND chain = '{batch.chain}'
+            WHERE {batch.clickhouse_filter}
             )
             """
 
@@ -151,6 +120,34 @@ class ClickHouseDateChainETL(ETLMixin):
             select_ddl = select_ddl.replace(placeholder, subquery)
 
         return select_ddl
+
+
+@dataclass
+class ClickHouseDateChainETL(ETLMixin):
+    """Represent a task to load data to ClickHouse by dt,chain.
+
+
+    A ClickHouseDateChainETL is defined by a SQL query that reads data for a given dt,chain
+    combination, transforms it and writes the result to ClickHouse.
+
+    The input data can be blockbatch data stored in GCS or data already loaded into ClickHouse
+    having `dt` and `chain` columns.
+    """
+
+    # Output root path determines the ClickHouse table name where data will be loaded.
+    output_root_path: str
+
+    # This is the list of blockbatch root paths that are inputs to this load task.
+    inputs_blockbatch: list[str] = field(default_factory=list)
+
+    # This is the list of ClickHouse root paths that are inputs to this load task.
+    inputs_clickhouse: list[str] = field(default_factory=list)
+
+    # This is a list of chains for which non_zero row_count will not be enforced.
+    ignore_zero_rows_chains: list[str] | None = None
+
+    # This is a list of chain,dt tuples for which non_zero row_count will not be enforced.
+    ignore_zero_rows_chain_dts: list[tuple[str, str]] | None = None
 
     def existing_markers(self, range_spec: str, chains: list[str]) -> set[DateChainBatch]:
         # Existing markers that have already been loaded to ClickHouse.

@@ -16,24 +16,37 @@ from .markers import query_blockbatch_daily_markers
 log = structlog.get_logger()
 
 
+# Sentinel value for by-date tasks which process data across all chains.
+# We use the same markers table for by-date-chain and by-date tasks, so
+# this sentinel is a way for us to identify by-date tasks.
+ALL_CHAINS_SENTINEL = "ALL"
+
+
 @dataclass(frozen=True, order=True)
 class DateChainBatch:
     """Represent a single (dt,chain) that needs to be loaded into ClickHouse."""
 
     dt: str
     chain: str
-    partitioned_path: str
+
+    @property
+    def partitioned_path(self) -> str:
+        if self.chain == ALL_CHAINS_SENTINEL:
+            return f"chain=*/dt={self.dt}/*.parquet"
+        return f"chain={self.chain}/dt={self.dt}/*.parquet"
+
+    @property
+    def clickhouse_filter(self) -> str:
+        if self.chain == ALL_CHAINS_SENTINEL:
+            return f"dt = '{self.dt}'"
+        return f"dt = '{self.dt}' AND chain = '{self.chain}'"
 
     @classmethod
     def of(cls, chain: str, dt: str | date) -> "DateChainBatch":
         if isinstance(dt, date):
             dt = date_tostr(dt)
 
-        return DateChainBatch(
-            chain=chain,
-            dt=dt,
-            partitioned_path=f"chain={chain}/dt={dt}/*.parquet",
-        )
+        return DateChainBatch(chain=chain, dt=dt)
 
 
 def construct_batches(
