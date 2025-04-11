@@ -9,7 +9,7 @@ from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chains
 
 from .markers import query_blockbatch_daily_markers
-from .readers import DateChainBatch, construct_batches
+from .readers import DateChainBatch, construct_batches, ALL_CHAINS_SENTINEL
 
 
 log = structlog.get_logger()
@@ -66,7 +66,14 @@ class ETLMixin:
         log.info(f"CREATE TABLE {self.output_table_name()}")
         run_statememt_oplabs(statement=create_ddl)
 
+    def validate_batch(self, batch: DateChainBatch):
+        """For date level ETLs we expect ALL_CHAINS_SENTINEL."""
+        if self.__class__.__name__ == "ClickHouseDateETL":
+            assert batch.chain == ALL_CHAINS_SENTINEL
+
     def insert_ddl_template(self, batch: DateChainBatch, dry_run: bool = False):
+        self.validate_batch(batch)
+
         select_ddl = self.read_insert_ddl()
 
         # If needed for debugging we can log out the DDL template
@@ -86,6 +93,8 @@ class ETLMixin:
         batch: DateChainBatch,
         dry_run: bool = False,
     ):
+        self.validate_batch(batch)
+
         for input_root_path in self.inputs_blockbatch:
             # Prepare the s3 table function to read data from GCS.
             input_path = f"gs://oplabs-tools-data-sink/{input_root_path}/{batch.partitioned_path}"
@@ -121,6 +130,18 @@ class ETLMixin:
 
         return select_ddl
 
+    def existing_markers(self, range_spec: str, chains: list[str]) -> set[DateChainBatch]:
+        # Existing markers that have already been loaded to ClickHouse.
+        date_range = DateRange.from_spec(range_spec)
+        existing_markers_df = query_blockbatch_daily_markers(
+            date_range=date_range,
+            chains=chains,
+            root_paths=[self.output_root_path],
+        )
+        return set(
+            DateChainBatch.of(chain=x["chain"], dt=x["dt"]) for x in existing_markers_df.to_dicts()
+        )
+
 
 @dataclass
 class ClickHouseDateChainETL(ETLMixin):
@@ -148,18 +169,6 @@ class ClickHouseDateChainETL(ETLMixin):
 
     # This is a list of chain,dt tuples for which non_zero row_count will not be enforced.
     ignore_zero_rows_chain_dts: list[tuple[str, str]] | None = None
-
-    def existing_markers(self, range_spec: str, chains: list[str]) -> set[DateChainBatch]:
-        # Existing markers that have already been loaded to ClickHouse.
-        date_range = DateRange.from_spec(range_spec)
-        existing_markers_df = query_blockbatch_daily_markers(
-            date_range=date_range,
-            chains=chains,
-            root_paths=[self.output_root_path],
-        )
-        return set(
-            DateChainBatch.of(chain=x["chain"], dt=x["dt"]) for x in existing_markers_df.to_dicts()
-        )
 
     def pending_batches(
         self, range_spec: str, chains: list[str] | None = None

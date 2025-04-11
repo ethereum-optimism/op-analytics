@@ -1,5 +1,5 @@
+from .loadspec_date import ClickHouseDateETL
 from .loadspec_datechain import ClickHouseDateChainETL
-
 
 ALLOWED_EMPTY_CHAINS = [
     "arenaz",
@@ -71,4 +71,12 @@ DAILY_SEGMENTS = ClickHouseDateChainETL(
     ],
     ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
     ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
+)
+
+
+# This dataset is not used in production. It was created for testing purposes.
+# This is an aggregation across all chains at the date level.
+DUMMY_AGGREGATE = ClickHouseDateETL(
+    output_root_path="transforms_dummy/daily_counts_v0",
+    inputs_clickhouse=["blockbatch_daily/aggtxs/daily_address_summary_v1"],
 )
