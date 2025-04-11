@@ -10,7 +10,7 @@ from clickhouse_connect.driver.exceptions import DatabaseError
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
 from op_analytics.coreutils.logger import bound_contextvars, human_interval, human_rows, structlog
 
-from .loadspec import ClickHouseDateChainETL
+from .loadspec_datechain import ClickHouseDateChainETL
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
 from .readers import DateChainBatch
 

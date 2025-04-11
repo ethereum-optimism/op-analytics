@@ -1,4 +1,6 @@
-from op_analytics.datapipeline.etl.blockbatchloaddaily.loadspec import ClickHouseDateChainETL
+from op_analytics.datapipeline.etl.blockbatchloaddaily.loadspec_datechain import (
+    ClickHouseDateChainETL,
+)
 
 
 def test_loadspec_01():
