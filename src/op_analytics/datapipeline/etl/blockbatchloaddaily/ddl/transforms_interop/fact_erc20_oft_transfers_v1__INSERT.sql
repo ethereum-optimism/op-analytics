@@ -9,8 +9,6 @@ conver OFTAdapter tokens.
 
 */
 
-INSERT INTO _placeholder_
-
 WITH
 
 oft_sent_events AS ( -- noqa: ST03
@@ -19,13 +17,7 @@ oft_sent_events AS ( -- noqa: ST03
     , transaction_hash
     , address AS contract_address
 
-  FROM
-    blockbatch_gcs.read_date(
-      rootpath = 'ingestion/logs_v1'
-      , chain = '*'
-      , dt = { dtparam: Date }
-    )
-
+  FROM INPUT_BLOCKBATCH('ingestion/logs_v1')
   WHERE
     -- OFT Docs:
     -- https://docs.layerzero.network/v2/home/token-standards/oft-standard
@@ -59,7 +51,6 @@ SELECT
   , t.from_address
   , t.to_address
 
-FROM blockbatch.token_transfers__erc20_transfers_v1 AS t
+FROM INPUT_CLICKHOUSE('blockbatch/token_transfers/erc20_transfers_v1') AS t
 WHERE
-  t.dt = { dtparam: Date }
-  AND (t.chain_id, t.transaction_hash, t.contract_address) IN (oft_sent_events)
+  (t.chain_id, t.transaction_hash, t.contract_address) IN (oft_sent_events)

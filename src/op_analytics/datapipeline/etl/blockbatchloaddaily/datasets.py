@@ -80,3 +80,45 @@ DUMMY_AGGREGATE = ClickHouseDateETL(
     output_root_path="transforms_dummy/daily_counts_v0",
     inputs_clickhouse=["blockbatch_daily/aggtxs/daily_address_summary_v1"],
 )
+
+
+################################################################################
+# Interop datasets
+################################################################################
+
+RAW_LOGS = "ingestion/logs_v1"
+ERC20_TRANSFERS = "blockbatch/token_transfers/erc20_transfers_v1"
+
+
+INTEROP_ERC20_FIRST_SEEN = ClickHouseDateChainETL(
+    output_root_path="transforms_interop/dim_erc20_first_seen_v1",
+    inputs_clickhouse=[ERC20_TRANSFERS],
+)
+
+INTEROP_NTT_TRANSFERS = ClickHouseDateChainETL(
+    output_root_path="transforms_interop/fact_erc20_ntt_transfers_v1",
+    inputs_blockbatch=[RAW_LOGS],
+    inputs_clickhouse=[ERC20_TRANSFERS],
+)
+
+INTEROP_OFT_TRANSFERS = ClickHouseDateChainETL(
+    output_root_path="transforms_interop/fact_erc20_oft_transfers_v1",
+    inputs_blockbatch=[
+        "ingestion/logs_v1",
+    ],
+    inputs_clickhouse=[ERC20_TRANSFERS],
+)
+
+INTEROP_NTT_FIRST_SEEN = ClickHouseDateChainETL(
+    output_root_path="transforms_interop/dim_erc20_ntt_first_seen_v1",
+    inputs_clickhouse=[
+        INTEROP_NTT_TRANSFERS.output_root_path,
+    ],
+)
+
+INTEROP_OFT_FIRST_SEEN = ClickHouseDateChainETL(
+    output_root_path="transforms_interop/dim_erc20_oft_first_seen_v1",
+    inputs_clickhouse=[
+        INTEROP_OFT_TRANSFERS.output_root_path,
+    ],
+)

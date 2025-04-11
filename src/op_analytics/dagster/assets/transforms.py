@@ -4,6 +4,7 @@ from dagster import (
 )
 
 from op_analytics.transforms.main import execute_dt_transforms
+from op_analytics.datapipeline.etl.blockbatchloaddaily.main import daily_to_clickhouse
 
 
 @asset
@@ -17,15 +18,19 @@ def erc20transfers(context: AssetExecutionContext):
 def interop(context: AssetExecutionContext):
     """Run interop dataset transformations."""
 
-    # Run all steps except for 6 and 7.
-    result = execute_dt_transforms(
-        group_name="interop",
-        force_complete=True,
-        range_spec="m2days",
-        steps_to_run=None,
-        steps_to_skip=[6, 7],
+    from op_analytics.datapipeline.etl.blockbatchloaddaily.datasets import (
+        INTEROP_ERC20_FIRST_SEEN,
+        INTEROP_NTT_FIRST_SEEN,
+        INTEROP_OFT_FIRST_SEEN,
+        INTEROP_NTT_TRANSFERS,
+        INTEROP_OFT_TRANSFERS,
     )
-    context.log.info(result)
+
+    daily_to_clickhouse(dataset=INTEROP_ERC20_FIRST_SEEN)
+    daily_to_clickhouse(dataset=INTEROP_NTT_TRANSFERS)
+    daily_to_clickhouse(dataset=INTEROP_OFT_TRANSFERS)
+    daily_to_clickhouse(dataset=INTEROP_NTT_FIRST_SEEN)
+    daily_to_clickhouse(dataset=INTEROP_OFT_FIRST_SEEN)
 
     # For step 6 we need a back-dated run. What we do is detect ERC-20 create traces
     # for conracts that have had at least one ERC-20 transfer. If we run at the present
