@@ -72,23 +72,3 @@ DAILY_SEGMENTS = ClickHouseDateChainETL(
     ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
     ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
 )
-
-
-CROSSCHAIN_SEGMENTS = ClickHouseDateChainETL(
-    output_root_path="blockbatch_daily/aggtxs/daily_segments_v1",
-    inputs_clickhouse=[
-        DAILY_SEGMENTS.output_root_path,
-    ],
-    ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
-    ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
-)
-
-
-ERC20_FIRST_TRANSFER = ClickHouseDateChainETL(
-    output_root_path="blockbatch_daily/transfers/erc20_first_seen_v1",
-    inputs_blockbatch=[
-        "blockbatch/token_transfers/erc20_transfers_v1",
-    ],
-    ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
-    ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
-)
