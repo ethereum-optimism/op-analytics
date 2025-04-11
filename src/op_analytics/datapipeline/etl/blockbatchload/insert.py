@@ -10,7 +10,7 @@ from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statemem
 from op_analytics.coreutils.logger import bound_contextvars, human_rows, structlog
 from op_analytics.coreutils.time import date_tostr
 
-from .loadspec import BlockBatch, ClickHouseBlockBatchDataset
+from .loadspec import BlockBatch, ClickHouseBlockBatchETL
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
 
 log = structlog.get_logger()
@@ -58,7 +58,7 @@ class InsertResult:
 
 @dataclass
 class InsertTask:
-    dataset: ClickHouseBlockBatchDataset
+    dataset: ClickHouseBlockBatchETL
     blockbatch: BlockBatch
 
     @property

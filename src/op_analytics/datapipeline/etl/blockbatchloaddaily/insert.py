@@ -10,9 +10,9 @@ from clickhouse_connect.driver.exceptions import DatabaseError
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
 from op_analytics.coreutils.logger import bound_contextvars, human_interval, human_rows, structlog
 
-from .loadspec import ClickHouseDailyDataset
+from .loadspec import ClickHouseDateChainETL
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
-from .readers import DtChainBatch
+from .readers import DateChainBatch
 
 log = structlog.get_logger()
 
@@ -59,8 +59,8 @@ class InsertResult:
 
 @dataclass
 class InsertTask:
-    dataset: ClickHouseDailyDataset
-    batch: DtChainBatch
+    dataset: ClickHouseDateChainETL
+    batch: DateChainBatch
 
     @property
     def context(self):

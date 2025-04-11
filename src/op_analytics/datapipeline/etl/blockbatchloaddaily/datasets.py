@@ -1,4 +1,4 @@
-from .loadspec import ClickHouseDailyDataset
+from .loadspec import ClickHouseDateChainETL
 
 
 ALLOWED_EMPTY_CHAINS = [
@@ -25,7 +25,7 @@ ALLOWED_EMPTY_DATES = [
     ("swell", "2024-11-30"),
 ]
 
-TRACES_AGG1 = ClickHouseDailyDataset(
+TRACES_AGG1 = ClickHouseDateChainETL(
     output_root_path="blockbatch_daily/aggtraces/daily_trfrom_trto_v1",
     inputs_blockbatch=[
         "blockbatch/refined_traces/refined_traces_fees_v2",
@@ -35,7 +35,7 @@ TRACES_AGG1 = ClickHouseDailyDataset(
 )
 
 
-TRACES_AGG2 = ClickHouseDailyDataset(
+TRACES_AGG2 = ClickHouseDateChainETL(
     output_root_path="blockbatch_daily/aggtraces/daily_trto_v1",
     inputs_blockbatch=[
         "blockbatch/refined_traces/refined_traces_fees_v2",
@@ -45,7 +45,7 @@ TRACES_AGG2 = ClickHouseDailyDataset(
 )
 
 
-TRACES_AGG3 = ClickHouseDailyDataset(
+TRACES_AGG3 = ClickHouseDateChainETL(
     output_root_path="blockbatch_daily/aggtraces/daily_trto_txto_txmethod_v1",
     inputs_blockbatch=[
         "blockbatch/refined_traces/refined_traces_fees_v2",
@@ -55,7 +55,7 @@ TRACES_AGG3 = ClickHouseDailyDataset(
 )
 
 
-DAILY_ADDRESS_SUMMARY = ClickHouseDailyDataset(
+DAILY_ADDRESS_SUMMARY = ClickHouseDateChainETL(
     output_root_path="blockbatch_daily/aggtxs/daily_address_summary_v1",
     inputs_blockbatch=[
         "blockbatch/refined_traces/refined_transactions_fees_v2",
@@ -64,7 +64,7 @@ DAILY_ADDRESS_SUMMARY = ClickHouseDailyDataset(
     ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
 )
 
-DAILY_SEGMENTS = ClickHouseDailyDataset(
+DAILY_SEGMENTS = ClickHouseDateChainETL(
     output_root_path="blockbatch_daily/aggtxs/daily_segments_v1",
     inputs_clickhouse=[
         DAILY_ADDRESS_SUMMARY.output_root_path,

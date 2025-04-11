@@ -25,7 +25,7 @@ class BlockBatch:
 
 
 @dataclass
-class ClickHouseBlockBatchDataset:
+class ClickHouseBlockBatchETL:
     """The input datasets and output dataset associated with a load into ClickHouse task."""
 
     # This is the list of blockbatch root paths that are inputs to this load task.

@@ -145,8 +145,8 @@ A couple of points worth noting:
 The job specification is defined in the `datasets.py` file.  For batch and daily we use the following
 python classes respectively:
 
-- `op_analytics.datapipeline.etl.blockbatchload.loadspec.ClickHouseBlockBatchDataset`
-- `op_analytics.datapipeline.etl.blockbatchloaddaily.loadspec.ClickHouseDailyDataset`
+- `op_analytics.datapipeline.etl.blockbatchload.loadspec.ClickHouseBlockBatchETL`
+- `op_analytics.datapipeline.etl.blockbatchloaddaily.loadspec.ClickHouseDateChainETL`
 
 The main goal for these classes is to be very explicit about the input datasets needed to produce
 the output dataset. They also support configuration options that are specific to the type of job. 
@@ -192,7 +192,7 @@ only guarantees at least once execution (and not exactly once).
 
 ## Building Data Pipelines
 
-Each dataset defined as a `ClickHouseBlockBatchDataset` or a `ClickHouseDailyDataset` can be thought
+Each dataset defined as a `ClickHouseBlockBatchETL` or a `ClickHouseDateChainETL` can be thought
 of as a node in a data pipeline. The collection of nodes that are chained together forms a data
 pipeline.
 

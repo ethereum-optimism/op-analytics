@@ -5,8 +5,8 @@ from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.threads import run_concurrently_store_failures
 from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chains
 
-from .loadspec import ClickHouseDailyDataset
-from .insert import DtChainBatch, InsertTask
+from .loadspec import ClickHouseDateChainETL
+from .insert import DateChainBatch, InsertTask
 from .markers import query_blockbatch_daily_markers
 from .readers import construct_batches
 
@@ -14,7 +14,7 @@ log = structlog.get_logger()
 
 
 def daily_to_clickhouse(
-    dataset: ClickHouseDailyDataset,
+    dataset: ClickHouseDateChainETL,
     range_spec: str | None = None,
     dry_run: bool = False,
     num_workers: int = 1,
@@ -29,7 +29,7 @@ def daily_to_clickhouse(
 
     chains = chains or goldsky_mainnet_chains()
 
-    ready_batches: list[DtChainBatch] = construct_batches(
+    ready_batches: list[DateChainBatch] = construct_batches(
         range_spec=range_spec,
         chains=chains,
         blockbatch_root_paths=dataset.inputs_blockbatch,
@@ -44,7 +44,7 @@ def daily_to_clickhouse(
         root_paths=[dataset.output_root_path],
     )
     existing_markers = set(
-        DtChainBatch.of(chain=x["chain"], dt=x["dt"]) for x in existing_markers_df.to_dicts()
+        DateChainBatch.of(chain=x["chain"], dt=x["dt"]) for x in existing_markers_df.to_dicts()
     )
 
     # Loop over batches and find which ones are pending.
