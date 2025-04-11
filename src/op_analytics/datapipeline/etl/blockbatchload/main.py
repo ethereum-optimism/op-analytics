@@ -6,14 +6,14 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.threads import run_concurrently
 
-from .insert import BlockBatch, ClickHouseBlockBatchDataset, InsertTask
+from .insert import BlockBatch, ClickHouseBlockBatchETL, InsertTask
 from .markers import candidate_markers, existing_markers
 
 log = structlog.get_logger()
 
 
 def load_to_clickhouse(
-    dataset: ClickHouseBlockBatchDataset,
+    dataset: ClickHouseBlockBatchETL,
     range_spec: str | None = None,
     dry_run: bool = False,
 ):

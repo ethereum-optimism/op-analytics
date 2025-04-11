@@ -6,7 +6,7 @@ from op_analytics.coreutils.clickhouse.inferschema import parquet_to_subquery
 from op_analytics.coreutils.clickhouse.oplabs import run_statememt_oplabs
 from op_analytics.coreutils.logger import structlog
 
-from .readers import DtChainBatch
+from .readers import DateChainBatch
 
 
 log = structlog.get_logger()
@@ -15,32 +15,12 @@ log = structlog.get_logger()
 DIRECTORY = os.path.dirname(__file__)
 
 
-@dataclass
-class ClickHouseDailyDataset:
-    """Represent a task to load data to ClickHouse by dt,chain.
+class ETLMixin:
+    """Shared functionality for the DateChain and Date ETL classes"""
 
-
-    A ClickHouseDailyDataset is defined by a SQL query that reads data for a given dt,chain
-    combination, transforms it and writes the result to ClickHouse.
-
-    The input data can be blockbatch data stored in GCS or data already loaded into ClickHouse
-    having `dt` and `chain` columns.
-    """
-
-    # Output root path determiens the ClickHouse table name where data will be loaded.
     output_root_path: str
-
-    # This is the list of blockbatch root paths that are inputs to this load task.
-    inputs_blockbatch: list[str] = field(default_factory=list)
-
-    # This is the list of ClickHouse root paths that are inputs to this load task.
-    inputs_clickhouse: list[str] = field(default_factory=list)
-
-    # This is a list of chains for which non_zero row_count will not be enforced.
-    ignore_zero_rows_chains: list[str] | None = None
-
-    # This is a list of chain,dt tuples for which non_zero row_count will not be enforced.
-    ignore_zero_rows_chain_dts: list[tuple[str, str]] | None = None
+    inputs_blockbatch: list[str]
+    inputs_clickhouse: list[str]
 
     def __post_init__(self):
         for root_path in self.inputs_blockbatch:
@@ -48,11 +28,11 @@ class ClickHouseDailyDataset:
                 raise ValueError(f"Invalid blockbatch input: {root_path}")
 
         for root_path in self.inputs_clickhouse:
-            if not root_path.startswith("blockbatch_daily/"):
-                raise ValueError(f"Invalid clickhouse input: {root_path}")
+            # Check that the patch can be sanitized.
+            self.sanitize_root_path(root_path)
 
-        if not self.output_root_path.startswith("blockbatch_daily/"):
-            raise ValueError(f"Invalid output: {self.output_root_path}")
+        # Check that the output root path can be sanitized.
+        self.sanitize_root_path(self.output_root_path)
 
     @staticmethod
     def sanitize_root_path(root_path: str):
@@ -84,7 +64,35 @@ class ClickHouseDailyDataset:
         log.info(f"CREATE TABLE {self.output_table_name()}")
         run_statememt_oplabs(statement=create_ddl)
 
-    def insert_ddl_template(self, batch: DtChainBatch, dry_run: bool = False):
+
+@dataclass
+class ClickHouseDateChainETL(ETLMixin):
+    """Represent a task to load data to ClickHouse by dt,chain.
+
+
+    A ClickHouseDateChainETL is defined by a SQL query that reads data for a given dt,chain
+    combination, transforms it and writes the result to ClickHouse.
+
+    The input data can be blockbatch data stored in GCS or data already loaded into ClickHouse
+    having `dt` and `chain` columns.
+    """
+
+    # Output root path determines the ClickHouse table name where data will be loaded.
+    output_root_path: str
+
+    # This is the list of blockbatch root paths that are inputs to this load task.
+    inputs_blockbatch: list[str] = field(default_factory=list)
+
+    # This is the list of ClickHouse root paths that are inputs to this load task.
+    inputs_clickhouse: list[str] = field(default_factory=list)
+
+    # This is a list of chains for which non_zero row_count will not be enforced.
+    ignore_zero_rows_chains: list[str] | None = None
+
+    # This is a list of chain,dt tuples for which non_zero row_count will not be enforced.
+    ignore_zero_rows_chain_dts: list[tuple[str, str]] | None = None
+
+    def insert_ddl_template(self, batch: DateChainBatch, dry_run: bool = False):
         select_ddl = self.read_insert_ddl()
 
         # If needed for debugging we can log out the DDL template
@@ -99,7 +107,10 @@ class ClickHouseDailyDataset:
         return insert_ddl
 
     def replace_inputs_blockbatch(
-        self, select_ddl: str, batch: DtChainBatch, dry_run: bool = False
+        self,
+        select_ddl: str,
+        batch: DateChainBatch,
+        dry_run: bool = False,
     ):
         for input_root_path in self.inputs_blockbatch:
             # Prepare the s3 table function to read data from GCS.
@@ -113,7 +124,10 @@ class ClickHouseDailyDataset:
         return select_ddl
 
     def replace_inputs_clickhouse(
-        self, select_ddl: str, batch: DtChainBatch, dry_run: bool = False
+        self,
+        select_ddl: str,
+        batch: DateChainBatch,
+        dry_run: bool = False,
     ):
         for input_root_path in self.inputs_clickhouse:
             # Prepare the ClickHouse subquery to read data from the input daily table.
