@@ -358,7 +358,7 @@ FROM
             WHERE dt = '2024-01-01' AND chain = 'base'
             )
             
-GROUP BY 1, 2, 3
+GROUP BY 1
 """
     )
 
