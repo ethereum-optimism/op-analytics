@@ -47,6 +47,8 @@ ingestion_markers AS (
   SELECT
     root_path AS model
     , dt
+    , chains_expected
+    , chains_observed
     , round(100.0 * length(arrayIntersect(chains_expected, chains_observed)) / length(chains_expected), 2) AS pct_expected
 
   FROM
@@ -58,8 +60,13 @@ ingestion_markers AS (
 )
 
 SELECT
-model
-, dt
-, pct_expected AS pct_complete
+  model
+  , dt
+  , CASE 
+    WHEN has(chains_observed, 'ALL') THEN 100.0
+    ELSE pct_expected 
+  END AS pct_complete
+  , chains_expected
+  , chains_observed
 FROM completion
 ORDER BY model, dt
