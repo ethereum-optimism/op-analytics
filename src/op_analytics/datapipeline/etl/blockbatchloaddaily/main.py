@@ -1,14 +1,10 @@
 from dagster import OpExecutionContext
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.rangeutils.daterange import DateRange
 from op_analytics.coreutils.threads import run_concurrently_store_failures
-from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chains
 
-from .loadspec import ClickHouseDateChainETL
-from .insert import DateChainBatch, InsertTask
-from .markers import query_blockbatch_daily_markers
-from .readers import construct_batches
+from .loadspec_datechain import ClickHouseDateChainETL
+from .insert import InsertTask
 
 log = structlog.get_logger()
 
@@ -27,33 +23,12 @@ def daily_to_clickhouse(
     # Operate over recent days.
     range_spec = range_spec or "m4days"
 
-    chains = chains or goldsky_mainnet_chains()
+    pending_batches = dataset.pending_batches(range_spec=range_spec, chains=chains)
 
-    ready_batches: list[DateChainBatch] = construct_batches(
-        range_spec=range_spec,
-        chains=chains,
-        blockbatch_root_paths=dataset.inputs_blockbatch,
-        clickhouse_root_paths=dataset.inputs_clickhouse,
-    )
-
-    # Existing markers that have already been loaded to ClickHouse.
-    date_range = DateRange.from_spec(range_spec)
-    existing_markers_df = query_blockbatch_daily_markers(
-        date_range=date_range,
-        chains=chains,
-        root_paths=[dataset.output_root_path],
-    )
-    existing_markers = set(
-        DateChainBatch.of(chain=x["chain"], dt=x["dt"]) for x in existing_markers_df.to_dicts()
-    )
-
-    # Loop over batches and find which ones are pending.
     tasks: list[InsertTask] = []
-    for batch in ready_batches:
-        if batch in existing_markers:
-            continue
+    for batch in pending_batches:
         tasks.append(InsertTask(dataset=dataset, batch=batch))
-    log.info(f"{len(tasks)}/{len(ready_batches)} pending dt,chain insert tasks.")
+    log.info(f"{len(tasks)}/{len(pending_batches)} pending dt,chain insert tasks.")
 
     # Sort tasks by date.
     tasks.sort(key=lambda x: x.batch.dt, reverse=reverse)

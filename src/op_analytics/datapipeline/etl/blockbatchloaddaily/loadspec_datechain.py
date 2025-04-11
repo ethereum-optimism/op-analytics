@@ -5,8 +5,11 @@ from op_analytics.coreutils.clickhouse.ddl import read_ddl
 from op_analytics.coreutils.clickhouse.inferschema import parquet_to_subquery
 from op_analytics.coreutils.clickhouse.oplabs import run_statememt_oplabs
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.rangeutils.daterange import DateRange
+from op_analytics.datapipeline.chains.goldsky_chains import goldsky_mainnet_chains
 
-from .readers import DateChainBatch
+from .markers import query_blockbatch_daily_markers
+from .readers import DateChainBatch, construct_batches
 
 
 log = structlog.get_logger()
@@ -148,3 +151,40 @@ class ClickHouseDateChainETL(ETLMixin):
             select_ddl = select_ddl.replace(placeholder, subquery)
 
         return select_ddl
+
+    def existing_markers(self, range_spec: str, chains: list[str]) -> set[DateChainBatch]:
+        # Existing markers that have already been loaded to ClickHouse.
+        date_range = DateRange.from_spec(range_spec)
+        existing_markers_df = query_blockbatch_daily_markers(
+            date_range=date_range,
+            chains=chains,
+            root_paths=[self.output_root_path],
+        )
+        return set(
+            DateChainBatch.of(chain=x["chain"], dt=x["dt"]) for x in existing_markers_df.to_dicts()
+        )
+
+    def pending_batches(
+        self, range_spec: str, chains: list[str] | None = None
+    ) -> list[DateChainBatch]:
+        chains = chains or goldsky_mainnet_chains()
+
+        ready_batches: list[DateChainBatch] = construct_batches(
+            range_spec=range_spec,
+            chains=chains,
+            blockbatch_root_paths=self.inputs_blockbatch,
+            clickhouse_root_paths=self.inputs_clickhouse,
+        )
+
+        # Existing markers that have already been loaded to ClickHouse.
+        existing_markers = self.existing_markers(range_spec=range_spec, chains=chains)
+
+        # Loop over batches and find which ones are pending.
+        batches: list[DateChainBatch] = []
+        for batch in ready_batches:
+            if batch in existing_markers:
+                continue
+            batches.append(batch)
+        log.info(f"{len(batches)}/{len(ready_batches)} pending dt,chain insert tasks.")
+
+        return batches
