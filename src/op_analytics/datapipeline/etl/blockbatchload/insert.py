@@ -1,7 +1,6 @@
 import os
 import socket
 from dataclasses import asdict, dataclass
-from datetime import date
 from typing import Any
 
 import polars as pl
@@ -11,23 +10,13 @@ from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statemem
 from op_analytics.coreutils.logger import bound_contextvars, human_rows, structlog
 from op_analytics.coreutils.time import date_tostr
 
-from .loadspec import ClickHouseBlockBatchDataset
+from .loadspec import BlockBatch, ClickHouseBlockBatchETL
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
 
 log = structlog.get_logger()
 
 
 DIRECTORY = os.path.dirname(__file__)
-
-
-@dataclass
-class BlockBatch:
-    """Represent a blockbatch that needs to be loaded into ClickHouse."""
-
-    chain: str
-    dt: date
-    min_block: int
-    partitioned_path: str
 
 
 @dataclass
@@ -69,7 +58,7 @@ class InsertResult:
 
 @dataclass
 class InsertTask:
-    dataset: ClickHouseBlockBatchDataset
+    dataset: ClickHouseBlockBatchETL
     blockbatch: BlockBatch
 
     @property
@@ -84,21 +73,10 @@ class InsertTask:
         return dict(blockbatch=self.blockbatch.partitioned_path)
 
     def construct_insert(self, dry_run: bool = False):
-        insert_ddl_template = self.dataset.insert_ddl_template(dry_run=dry_run)
-
-        # Replace the BLOCKBATCH_MIN_BLOCK placeholder in the template
-        # with the min block number of the blockbatch
-        select_ddl = insert_ddl_template.replace(
-            "BLOCKBATCH_MIN_BLOCK",
-            str(self.blockbatch.min_block),
+        return self.dataset.insert_ddl_template(
+            blockbatch=self.blockbatch,
+            dry_run=dry_run,
         )
-
-        select_ddl = select_ddl.replace(
-            "INPUT_PARTITION_PATH",
-            self.blockbatch.partitioned_path,
-        )
-
-        return select_ddl
 
     def dry_run(self):
         insert_ddl = self.construct_insert(dry_run=True)

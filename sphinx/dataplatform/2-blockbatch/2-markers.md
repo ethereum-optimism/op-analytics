@@ -1,6 +1,6 @@
 # Marker Metadata Layer
 
-Obervability is perhaps the most important aspect of any data pipeline. How can we be sure it is
+Observability is perhaps the most important aspect of any data pipeline. How can we be sure it is
 working as expected if we can't see what is happening? 
 
 For `blockbatch` processing  (and also for several other patterns at OP Labs) we introduce the idea
@@ -24,7 +24,7 @@ what data do we have in the data lake.
 
 ## Monitoring
 
-The `blockbatch_markers` table in ClickHouse stores the followign metadata for each parquet file in
+The `blockbatch_markers` table in ClickHouse stores the following metadata for each parquet file in
 the data lake:
 
 - `chain`: The chain the data belongs to.
@@ -45,14 +45,14 @@ processed on a given `dt`.  The markers table let's us very quickly query how ma
 actually processed for a given `dt`, and this is in fact what we use for our pipeline monitoring
 Hex dashboards (which can be found at `go/pipeline`).
 
-After data is ingested we can use the ingestion markers to formulate the expectaton for data that
-needs to be processsed across the different `blockbatch` models that we support.  That expectation
+After data is ingested we can use the ingestion markers to formulate the expectation for data that
+needs to be processed across the different `blockbatch` models that we support.  That expectation
 and markers for the output model `root_paths` are used to monitor the data processing parts of
 the pipeline.
 
 ## Job Planning
 
-Job planning is no different than processing. We can find out what data has been ingseted and not
+Job planning is no different than processing. We can find out what data has been ingested and not
 processed yet and then schedule work accordingly. In that way the `blockbatch_markers` table acts
 like a processing queue for pending work.
 

@@ -1,12 +1,13 @@
-# Third-Party Data
+# Third-Party Data Ingestion
 
 
-At OP Labs we ingest data from many different thidr-party data sources. We have come up with some
-shared patterns to help us mange the commport parts of the data ingestion processes.
+At OP Labs we ingest data from many different third-party data sources. To help implement data
+ingestion we have developed some common patterns which we cover in this section.
+
 
 
 ```{toctree}
-
-1-dailydata-gcs
-2-clickhouse-data
+1-overview
+2-dailydata-gcs
+3-clickhouse-data
 ```

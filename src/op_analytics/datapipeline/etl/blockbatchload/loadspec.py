@@ -1,5 +1,6 @@
 import os
 from dataclasses import dataclass
+from datetime import date
 
 from op_analytics.coreutils.clickhouse.ddl import read_ddl
 from op_analytics.coreutils.clickhouse.inferschema import parquet_to_subquery
@@ -14,7 +15,17 @@ DIRECTORY = os.path.dirname(__file__)
 
 
 @dataclass
-class ClickHouseBlockBatchDataset:
+class BlockBatch:
+    """Represent a blockbatch that needs to be loaded into ClickHouse."""
+
+    chain: str
+    dt: date
+    min_block: int
+    partitioned_path: str
+
+
+@dataclass
+class ClickHouseBlockBatchETL:
     """The input datasets and output dataset associated with a load into ClickHouse task."""
 
     # This is the list of blockbatch root paths that are inputs to this load task.
@@ -56,7 +67,7 @@ class ClickHouseBlockBatchDataset:
         log.info(f"CREATE TABLE {self.output_table_name()}")
         run_statememt_oplabs(statement=create_ddl)
 
-    def insert_ddl_template(self, dry_run: bool = False):
+    def insert_ddl_template(self, blockbatch: BlockBatch, dry_run: bool = False):
         select_ddl = self.read_insert_ddl()
 
         # If needed for debugging we can log out the DDL template
@@ -64,11 +75,54 @@ class ClickHouseBlockBatchDataset:
 
         # Replace the input tables in the template with s3() table functions.
         for input_root_path in self.input_root_paths:
-            input_table = "gcs__" + self.sanitize_root_path(input_root_path)
-            input_path = f"gs://oplabs-tools-data-sink/{input_root_path}/INPUT_PARTITION_PATH"
-            input_s3 = parquet_to_subquery(gcs_parquet_path=input_path, dry_run=dry_run)
-            select_ddl = select_ddl.replace(input_table, input_s3)
+            placeholder = f"INPUT_BLOCKBATCH('{input_root_path}')"
+
+            input_s3 = parquet_to_subquery(
+                gcs_parquet_path=f"gs://oplabs-tools-data-sink/{input_root_path}/{blockbatch.partitioned_path}",
+                dry_run=dry_run,
+            )
+            select_ddl = select_ddl.replace(placeholder, input_s3)
 
         output_table = self.output_table_name()
         insert_ddl = f"INSERT INTO {output_table}\n" + select_ddl
+
+        # The INSERT sql file  supports the `BLOCKBATCH_MIN_BLOCK()` placeholder which is
+        # replaced with the minimum block number of the blockbatch being processed. This can
+        # be used to keep track of the blockbatch that produced some data in the output table.
+        #
+        # An example of where this can be useful is a partial aggregation table where the
+        # batch aggregate can be much less data that all the rows in the batch, and the
+        # aggregation state can be reaggregated at a more meaningful grain afterwards.
+        #
+        # To be more concrete, imagine a table like:
+        #
+        # CREATE TABLE blockbatch_uniq_trace_from_addresses (
+        #     dt Date,
+        #     chain String,
+        #     batch_min_block UInt32,
+        #     count_distinct_trace_from AggregateFunction(uniq, Nullable(String))
+        # ) ENGINE = MergeTree() ORDER BY (dt, chain, batch_min_block);
+        #
+        # If we process a batch more than once we want to make sure that the result is
+        # deduplicated at the batch level, so including the batch_min_block in the ORDER BY
+        # is critical.
+        #
+        # The INSERT sql file will look like:
+        #
+        # SELECT
+        #     dt,
+        #     chain,
+        #     BLOCKBATCH_MIN_BLOCK() as batch_min_block,
+        #     uniq(trace_from_address)
+        # FROM input_blockbatch('blockbatch/traces')
+        # GROUP BY dt, chain, batch_min_block;
+        #
+        # The `BLOCKBATCH_MIN_BLOCK()` placeholder is replaced with the minimum block number
+        # of the blockbatch being processed.
+
+        insert_ddl = insert_ddl.replace(
+            "BLOCKBATCH_MIN_BLOCK()",
+            str(blockbatch.min_block),
+        )
+
         return insert_ddl

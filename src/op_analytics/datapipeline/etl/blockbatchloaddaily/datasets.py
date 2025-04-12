@@ -1,31 +1,9 @@
-from .loadspec import ClickHouseDailyDataset
-
-TRACES_AGG1 = ClickHouseDailyDataset(
-    output_root_path="blockbatch_daily/aggtraces/daily_trfrom_trto_v1",
-    inputs_blockbatch=[
-        "blockbatch/refined_traces/refined_traces_fees_v2",
-    ],
-)
-
-
-TRACES_AGG2 = ClickHouseDailyDataset(
-    output_root_path="blockbatch_daily/aggtraces/daily_trto_v1",
-    inputs_blockbatch=[
-        "blockbatch/refined_traces/refined_traces_fees_v2",
-    ],
-)
-
-
-TRACES_AGG3 = ClickHouseDailyDataset(
-    output_root_path="blockbatch_daily/aggtraces/daily_trto_txto_txmethod_v1",
-    inputs_blockbatch=[
-        "blockbatch/refined_traces/refined_traces_fees_v2",
-    ],
-)
-
+from .loadspec_date import ClickHouseDateETL
+from .loadspec_datechain import ClickHouseDateChainETL
 
 ALLOWED_EMPTY_CHAINS = [
     "arenaz",
+    "kroma",
     "race",
     "xterio",
     "metal",
@@ -72,7 +50,37 @@ ALLOWED_EMPTY_DATES = [
     #
 ]
 
-DAILY_ADDRESS_SUMMARY = ClickHouseDailyDataset(
+TRACES_AGG1 = ClickHouseDateChainETL(
+    output_root_path="blockbatch_daily/aggtraces/daily_trfrom_trto_v1",
+    inputs_blockbatch=[
+        "blockbatch/refined_traces/refined_traces_fees_v2",
+    ],
+    ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
+    ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
+)
+
+
+TRACES_AGG2 = ClickHouseDateChainETL(
+    output_root_path="blockbatch_daily/aggtraces/daily_trto_v1",
+    inputs_blockbatch=[
+        "blockbatch/refined_traces/refined_traces_fees_v2",
+    ],
+    ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
+    ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
+)
+
+
+TRACES_AGG3 = ClickHouseDateChainETL(
+    output_root_path="blockbatch_daily/aggtraces/daily_trto_txto_txmethod_v1",
+    inputs_blockbatch=[
+        "blockbatch/refined_traces/refined_traces_fees_v2",
+    ],
+    ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
+    ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
+)
+
+
+DAILY_ADDRESS_SUMMARY = ClickHouseDateChainETL(
     output_root_path="blockbatch_daily/aggtxs/daily_address_summary_v1",
     inputs_blockbatch=[
         "blockbatch/refined_traces/refined_transactions_fees_v2",
@@ -81,11 +89,19 @@ DAILY_ADDRESS_SUMMARY = ClickHouseDailyDataset(
     ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
 )
 
-DAILY_SEGMENTS = ClickHouseDailyDataset(
+DAILY_SEGMENTS = ClickHouseDateChainETL(
     output_root_path="blockbatch_daily/aggtxs/daily_segments_v1",
     inputs_clickhouse=[
         DAILY_ADDRESS_SUMMARY.output_root_path,
     ],
     ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
     ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
+)
+
+
+# This dataset is not used in production. It was created for testing purposes.
+# This is an aggregation across all chains at the date level.
+DUMMY_AGGREGATE = ClickHouseDateETL(
+    output_root_path="transforms_dummy/daily_counts_v0",
+    inputs_clickhouse=["blockbatch_daily/aggtxs/daily_address_summary_v1"],
 )

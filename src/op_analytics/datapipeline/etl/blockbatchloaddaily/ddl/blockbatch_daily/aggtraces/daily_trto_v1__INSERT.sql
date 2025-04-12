@@ -87,7 +87,7 @@ refined_traces AS (
     , accurateCast(tx_input_zero_bytes, 'UInt32') AS tx_input_zero_bytes
     , accurateCast(tx_input_nonzero_bytes, 'UInt32') AS tx_input_nonzero_bytes
 
-  FROM gcs__blockbatch.refined_traces__refined_traces_fees_v2
+  FROM INPUT_BLOCKBATCH('blockbatch/refined_traces/refined_traces_fees_v2')
 )
 
 
@@ -97,8 +97,6 @@ SELECT
   , tr.chain_id
   , tr.network
   , tr.trace_to_address
-  , tr.tx_to_address AS tx_to_address
-  , tr.tx_method_id AS tx_method_id
 
   , uniq(tr.trace_from_address) AS count_distinct_trace_from_addresses
   , uniq(tr.tx_from_address) AS count_distinct_tx_from_addresses
@@ -233,5 +231,3 @@ GROUP BY
   , tr.chain_id
   , tr.network
   , tr.trace_to_address
-  , tr.tx_to_address
-  , tr.tx_method_id

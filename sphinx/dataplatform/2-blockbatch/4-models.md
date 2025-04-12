@@ -34,7 +34,7 @@ And we have models where we do more complex contract analysis (including decodin
 
 ## Inexpensive Joins
 
-Blockchain data processing usually involves joining data from the diferent raw datasets. For example
+Blockchain data processing usually involves joining data from the different raw datasets. For example
 you may want to join logs with traces or transactions with traces.
 
 Outside of `blockbatch` data processing this is difficult because compute engines have to perform
@@ -73,7 +73,7 @@ information are:
 - The models we want to compute.
 
 Behind the scenes the system will figure out which batches need to be processed, using markers to
-determine which batches have already been procesed. Depending on the required input data it will
+determine which batches have already been processed. Depending on the required input data it will
 decide if the batches are ready to be processed (avoids processing incomplete or missing input).
 
 The interface is implemented as a single python function which can be called like this:
@@ -92,14 +92,14 @@ compute_blockbatch(
 ```
 
 The `read_from` and `write_to` parameters specify where the data is stored and where the results
-will be stored. We support both GCS and the local filesystem, but in practice we just use GCS most
-of the time. The local filesystem is useful for development and testing.
+will be stored. We support both GCS and the local file system, but in practice we just use GCS most
+of the time. The local file system is useful for development and testing.
 
 
 ## Model Definitions in Python
 
 In the interface above models are referenced by their name as a string. The actual definition of
-a model is a python function, which is decoraed with the `@register_model` decorator to specify
+a model is a python function, which is decorated with the `@register_model` decorator to specify
 the input datasets, auxiliary templates, and outputs that it produces. 
 
 An example model definition is shown below:
@@ -132,7 +132,7 @@ def refined_traces(
 
 
 The `input_datasets` and `expected_outputs` parameters in the decorator specify the data that is
-needed and the data that will be produced.  The `auxiliary_templates` parameter specifis the location
+needed and the data that will be produced.  The `auxiliary_templates` parameter specifies the location
 of `.sql` files that contain SQL logic that can be leveraged to compute the model. How the templates
 are used is up to the model definition.
 
@@ -156,9 +156,9 @@ an IPython notebook to do that. For reference we recommend looking at any notebo
 ## Integration Testing
 
 Integration tests are crucial to ensure that the model logic is correct.  Our integration test
-framework has a super useful featue which allows you to fetch real production data and use it in
+framework has a super useful feature which allows you to fetch real production data and use it in
 test. When setting up an integration test you specify the range_spec (as blocks or dates) that
-you wnat to test over and the first time you run the test it will fetch the real data and store it
+you want to test over and the first time you run the test it will fetch the real data and store it
 as a parquet file in the `testdata` directory in the repo.
 
 With test data in hand the integration test framework will run the model. You can define any kind

@@ -1,1 +1,0 @@
-# Daily Data in GCS

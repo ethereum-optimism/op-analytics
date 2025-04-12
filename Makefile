@@ -52,10 +52,10 @@ sphinx-serve: .makemarkers/sphinx-docs
 # Used to be more important when we were running jobs directly on kubernetes.
 # Somewhat obsolete now that everything is run through Dagster. It is still
 # used for backfills. 
-IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250404.2
+IMAGE_TAG = ghcr.io/ethereum-optimism/op-analytics:v20250404.2
 
 # Dagster image version.
-IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250408.001
+IMAGE_TAG_DAGSTER = ghcr.io/ethereum-optimism/op-analytics-dagster:v20250409.007
 
 
 .PHONY: uv-build
@@ -81,3 +81,6 @@ docker-dagster: uv-build
 	docker build -f ./Dockerfile.dagster --platform linux/amd64 -t ${IMAGE_TAG_DAGSTER} .
 	docker push ${IMAGE_TAG_DAGSTER}
 
+.PHONY: helm-dagster
+helm-dagster:
+	helm upgrade dagster dagster/dagster -f helm/dagster/values.yaml -n dagster

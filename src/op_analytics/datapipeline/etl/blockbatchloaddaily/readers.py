@@ -16,24 +16,37 @@ from .markers import query_blockbatch_daily_markers
 log = structlog.get_logger()
 
 
+# Sentinel value for by-date tasks which process data across all chains.
+# We use the same markers table for by-date-chain and by-date tasks, so
+# this sentinel is a way for us to identify by-date tasks.
+ALL_CHAINS_SENTINEL = "ALL"
+
+
 @dataclass(frozen=True, order=True)
-class DtChainBatch:
+class DateChainBatch:
     """Represent a single (dt,chain) that needs to be loaded into ClickHouse."""
 
     dt: str
     chain: str
-    partitioned_path: str
+
+    @property
+    def partitioned_path(self) -> str:
+        if self.chain == ALL_CHAINS_SENTINEL:
+            return f"chain=*/dt={self.dt}/*.parquet"
+        return f"chain={self.chain}/dt={self.dt}/*.parquet"
+
+    @property
+    def clickhouse_filter(self) -> str:
+        if self.chain == ALL_CHAINS_SENTINEL:
+            return f"dt = '{self.dt}'"
+        return f"dt = '{self.dt}' AND chain = '{self.chain}'"
 
     @classmethod
-    def of(cls, chain: str, dt: str | date) -> "DtChainBatch":
+    def of(cls, chain: str, dt: str | date) -> "DateChainBatch":
         if isinstance(dt, date):
             dt = date_tostr(dt)
 
-        return DtChainBatch(
-            chain=chain,
-            dt=dt,
-            partitioned_path=f"chain={chain}/dt={dt}/*.parquet",
-        )
+        return DateChainBatch(chain=chain, dt=dt)
 
 
 def construct_batches(
@@ -48,13 +61,13 @@ def construct_batches(
     complete and ready to process.
     """
 
-    blockbatch_ready: list[DtChainBatch] | None = construct_blockbatch_ready(
+    blockbatch_ready: list[DateChainBatch] | None = construct_blockbatch_ready(
         range_spec=range_spec,
         chains=chains,
         blockbatch_root_paths=blockbatch_root_paths,
     )
 
-    clickhouse_ready: list[DtChainBatch] | None = construct_clickhouse_ready(
+    clickhouse_ready: list[DateChainBatch] | None = construct_clickhouse_ready(
         range_spec=range_spec,
         chains=chains,
         clickhouse_root_paths=clickhouse_root_paths,
@@ -111,7 +124,7 @@ def construct_blockbatch_ready(
             log.warning(f"input data not ready for {reader.partitions_dict()}")
             continue
 
-        blockbatch_ready.append(DtChainBatch.of(chain=chain, dt=dt))
+        blockbatch_ready.append(DateChainBatch.of(chain=chain, dt=dt))
 
     return blockbatch_ready
 
@@ -134,7 +147,10 @@ def construct_clickhouse_ready(
     )
     clickhouse_markers = defaultdict(set)
     for row in input_markers_df.to_dicts():
-        clickhouse_markers[DtChainBatch.of(chain=row["chain"], dt=row["dt"])].add(row["root_path"])
+        chain = row["chain"]
+        dt = row["dt"]
+        root_path = row["root_path"]
+        clickhouse_markers[DateChainBatch.of(chain=chain, dt=dt)].add(root_path)
 
     clickhouse_ready = []
     for batch, ready_paths in clickhouse_markers.items():
