@@ -6,7 +6,7 @@ from typing import Generator, Protocol, Sequence
 
 import duckdb
 
-from op_analytics.coreutils.duckdb_inmem import init_client
+from op_analytics.coreutils.duckdb_inmem.client import init_client
 from op_analytics.coreutils.duckdb_local.client import disconnect_duckdb_local
 from op_analytics.coreutils.logger import (
     bound_contextvars,
@@ -64,6 +64,7 @@ def run_tasks(
     fork_process: bool = True,
     use_pool: bool = False,
     num_processes: int = 1,
+    raise_on_failures: bool = True,
 ) -> dict[str, int]:
     """Run tasks.
 
@@ -116,6 +117,10 @@ def run_tasks(
             executed += 1
 
     log.info("done", total=executed, success=success, fail=failure)
+
+    if failure > 0 and raise_on_failures:
+        raise Exception(f"Failed to execute {failure} out of {executed} tasks.")
+
     return dict(total=executed, success=success, fail=failure)
 
 

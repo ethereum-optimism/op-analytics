@@ -222,6 +222,10 @@ jobs:
           command: |
             uv run mypy
       - run:
+          name: Run ruff
+          command: |
+            uvx ruff check
+      - run:
           name: Git lfs
           command: |
             curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
@@ -274,7 +278,6 @@ workflows:
           commit-message: "GH Action Update - Agg Downloads"
           notebook-paths: >-
             [
-              # {"dir": "op_chains_tracking", "notebook": "dune_opchain_uploads"},
               {"dir": "other_chains_tracking", "notebook": "get_filtered_deployers"},
               {"dir": "other_chains_tracking", "notebook": "total_chain_data_to_uploads"}
             ]
@@ -289,7 +292,7 @@ workflows:
         - equal: [<< pipeline.schedule.name >>, "run_market_data"]
         - equal: [<< pipeline.parameters.run_job >>, "run_market_data"]
     jobs:
-      - convert-and-run-notebooks-to-py-and-push:
+      - convert-and-run-notebooks-to-py:
           commit-message: "GH Action Update - Update Market Data"
           notebook-paths: >-
             [
@@ -307,7 +310,7 @@ workflows:
         - equal:
             [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
     jobs:
-      - convert-and-run-notebooks-to-py-and-push:
+      - convert-and-run-notebooks-to-py:
           commit-message: "GH Action Update - Gov Uploads"
           notebook-paths: >-
             [

@@ -31,6 +31,11 @@ log = structlog.get_logger()
         "useroperationevent_logs_v2",
         "enriched_entrypoint_traces_v2",
     ],
+    excluded_chains=[
+        # Exclude chains for which we don't have traces data.
+        "kroma",
+        "unichain_sepolia",
+    ],
 )
 def account_abstraction(
     ctx: DuckDBContext,
@@ -82,6 +87,9 @@ def account_abstraction(
             errors.extend(val.run_as_data_quality_check(duckdb_context=ctx))
     if errors:
         log.error("failed data quality")
+        for error in errors[:10]:
+            log.error(str(error))
+
         raise Exception("\n\n".join([name] + [str(_) for _ in errors]))
     else:
         log.info("Data Quality OK")

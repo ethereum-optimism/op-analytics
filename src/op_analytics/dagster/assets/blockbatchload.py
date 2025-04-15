@@ -3,9 +3,14 @@ from dagster import (
     asset,
 )
 
-from op_analytics.datapipeline.etl.blockbatchload.clickhouse.main import (
-    GCSData,
+from op_analytics.datapipeline.etl.blockbatchload.main import (
     load_to_clickhouse,
+)
+
+from op_analytics.datapipeline.etl.blockbatchload.datasets import (
+    CONTRACT_CREATION,
+    ERC20_TRANSFERS,
+    ERC721_TRANSFERS,
 )
 
 # NOTE: It is important to schedule all of the assets below in the same dagster job.
@@ -16,71 +21,19 @@ from op_analytics.datapipeline.etl.blockbatchload.clickhouse.main import (
 @asset
 def contract_creation(context: OpExecutionContext):
     """Load contract creation blockbatch data to Clickhouse."""
-    result = load_to_clickhouse(
-        datasets=[
-            GCSData.pass_through(
-                root_path="blockbatch/contract_creation/create_traces_v1",
-                enforce_row_count=True,
-            ),
-        ]
-    )
+    result = load_to_clickhouse(dataset=CONTRACT_CREATION)
     context.log.info(result)
 
 
 @asset
 def erc20_transfers(context: OpExecutionContext):
     """Load ERC-20 transfers blockbatch data to Clickhouse."""
-    result = load_to_clickhouse(
-        datasets=[
-            GCSData.pass_through(
-                root_path="blockbatch/token_transfers/erc20_transfers_v1",
-                # We don't enforce row count for this dataset because the INSERT sql
-                # includes a filter to include only rows where amount_lossless is not NULL.
-                enforce_row_count=False,
-            ),
-        ]
-    )
+    result = load_to_clickhouse(dataset=ERC20_TRANSFERS)
     context.log.info(result)
 
 
 @asset
 def erc721_transfers(context: OpExecutionContext):
     """Load ERC-721 transfers blockbatch data to Clickhouse."""
-    result = load_to_clickhouse(
-        datasets=[
-            GCSData.pass_through(
-                root_path="blockbatch/token_transfers/erc721_transfers_v1",
-                enforce_row_count=True,
-            ),
-        ]
-    )
-    context.log.info(result)
-
-
-@asset
-def aggreagated_traces(context: OpExecutionContext):
-    """Load aggregated traces blockbatch data to Clickhouse."""
-
-    result = load_to_clickhouse(
-        datasets=[
-            #
-            GCSData(
-                input_root_paths=[
-                    "blockbatch/refined_traces/refined_transactions_fees_v1",
-                    "blockbatch/refined_traces/refined_traces_fees_v1",
-                ],
-                output_root_path="blockbatch/aggregated_traces/traces_trgrain_v1",
-                enforce_row_count=False,
-            ),
-            #
-            GCSData(
-                input_root_paths=[
-                    "blockbatch/refined_traces/refined_transactions_fees_v1",
-                    "blockbatch/refined_traces/refined_traces_fees_v1",
-                ],
-                output_root_path="blockbatch/aggregated_traces/traces_txgrain_v1",
-                enforce_row_count=False,
-            ),
-        ],
-    )
+    result = load_to_clickhouse(dataset=ERC721_TRANSFERS)
     context.log.info(result)
