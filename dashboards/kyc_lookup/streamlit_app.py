@@ -5,6 +5,8 @@ import requests
 from io import StringIO
 from datetime import datetime, timedelta, timezone
 
+st.set_page_config(page_title="KYC Lookup Tool", page_icon="🗝️")
+
 
 # Email and password verification functionality
 def check_credentials():
@@ -49,7 +51,6 @@ if not check_credentials():
     st.stop()
 
 # Continue with the rest of the app
-st.set_page_config(page_title="KYC Lookup Tool", page_icon="🗝️")
 st.title("🗝️ KYC Lookup Tool")
 
 st.subheader("Project Status")
@@ -223,17 +224,15 @@ def typeform_to_dataframe(response_data, existing_data=None):
 
     for item in items:
         grant_id = item.get("hidden", {}).get("grant_id", np.nan)
-        kyc_team_id = item.get("hidden", {}).get("kyc_team_id", np.nan)
         updated_at = item.get("submitted_at", np.nan)
 
-        if pd.isna(grant_id) and pd.isna(kyc_team_id):
+        if pd.isna(grant_id):
             continue
 
         entry = {
             "form_id": item.get("response_id", np.nan),
             "project_id": item.get("hidden", {}).get("project_id", np.nan),
             "grant_id": grant_id,
-            "kyc_team_id": kyc_team_id,
             "l2_address": item.get("hidden", {}).get("l2_address", np.nan),
             "updated_at": updated_at,
         }
@@ -272,12 +271,7 @@ def typeform_to_dataframe(response_data, existing_data=None):
 
     new_df = pd.DataFrame(form_entries)
 
-    if "kyc_team_id" not in new_df.columns and not new_df.empty:
-        new_df["kyc_team_id"] = np.nan
-
     if existing_data is not None:
-        if "kyc_team_id" not in existing_data.columns and not existing_data.empty:
-            existing_data["kyc_team_id"] = np.nan
         new_entries = new_df[~new_df["form_id"].isin(existing_data["form_id"])]
         updated_df = pd.concat([existing_data, new_entries], ignore_index=True)
     else:
@@ -374,8 +368,8 @@ def main():
     st.sidebar.header("Database Lookup")
     option = st.sidebar.selectbox("Project Type", ["Superchain", "Vendor", "Contribution Path"])
     search_term = st.sidebar.text_input("Enter search term (name, l2_address, or email)")
-    st.sidebar.header("Search by Grant/Team ID")
-    id_input = st.sidebar.text_input("Enter Grant ID or Team ID").strip()
+    st.sidebar.header("Search by Grant")
+    grant_id_input = st.sidebar.text_input("Enter Grant ID").strip()
 
     inquiries_df = process_inquiries(inquiries_data)
     cases_df = process_cases(cases_data)
@@ -521,130 +515,119 @@ def main():
     all_businesses = all_businesses[~(all_businesses["email"].isnull())]
     all_businesses.drop_duplicates(subset=["email", "business_name"], inplace=True)
 
+    # def generate_all_projects(typeform_data, all_contributors, all_businesses):
+    #     typeform_data['updated_at'] = pd.to_datetime(typeform_data['updated_at'], errors='coerce')
+    #     typeform_data_sorted = typeform_data.sort_values(by='updated_at', ascending=False)
+    #     typeform_data_unique = typeform_data_sorted.drop_duplicates(subset='grant_id', keep='first')
+    #     all_projects_rows = []
+    #     for index, row in typeform_data.iterrows():
+    #         grant_id = row['grant_id']
+    #         for i in range(10):
+    #             kyc_email = row.get(f'kyc_email{i}', np.nan)
+    #             if pd.notna(kyc_email):
+    #                 contributor_row = all_contributors.loc[all_contributors['email'] == kyc_email]
+    #                 status = contributor_row['status'].max() if not contributor_row.empty else 'not started'
+    #                 all_projects_rows.append({
+    #                     'grant_id': grant_id,
+    #                     'email': kyc_email,
+    #                     'status': status,
+    #                     'type': 'kyc'
+    #                 })
+    #         for i in range(5):
+    #             kyb_email = row.get(f'kyb_email{i}', np.nan)
+    #             if pd.notna(kyb_email):
+    #                 business_row = all_businesses.loc[all_businesses['email'] == kyb_email]
+    #                 status = business_row['status'].max() if not business_row.empty else 'not started'
+    #                 all_projects_rows.append({
+    #                     'grant_id': grant_id,
+    #                     'email': kyb_email,
+    #                     'status': status,
+    #                     'type': 'kyb'
+    #                 })
+    #     all_projects_df = pd.DataFrame(all_projects_rows)
+    #     return all_projects_df
+    # all_projects = generate_all_projects(typeform_data, all_contributors, all_businesses)
+
     typeform_data["grant_id"] = typeform_data["grant_id"].astype(str)
-    if "kyc_team_id" not in typeform_data.columns:
-        typeform_data["kyc_team_id"] = np.nan
-    typeform_data["kyc_team_id"] = typeform_data["kyc_team_id"].astype(str)
-
     projects_df["grant_id"] = projects_df["grant_id"].astype(str)
-    if "kyc_team_id" not in projects_df.columns:
-        projects_df["kyc_team_id"] = np.nan
-    projects_df["kyc_team_id"] = projects_df["kyc_team_id"].astype(str)
 
-    # Ensure consistent columns before merge for predictable suffixes
-    base_cols = ["project_id", "l2_address", "kyc_team_id", "updated_at"]
-    for df in [typeform_data, projects_df]:
-        for col in base_cols:
-            if col not in df.columns:
-                df[col] = np.nan
+    typeform_data = typeform_data.sort_values(by="updated_at").drop_duplicates(
+        subset="grant_id", keep="last"
+    )
+    projects_df = projects_df.drop_duplicates(subset="grant_id", keep="last")
 
     all_projects = pd.merge(
         typeform_data, projects_df, on="grant_id", how="outer", suffixes=("_typeform", "_project")
     )
-
-    # --- Robust Combination Logic ---
-    def combine_cols(df, base_name):
-        col_left = f"{base_name}_typeform"
-        col_right = f"{base_name}_project"
-        col_base = base_name  # Original name if no suffix applied
-
-        if col_left in df.columns and col_right in df.columns:
-            return df[col_left].combine_first(df[col_right])
-        elif col_left in df.columns:
-            return df[col_left]
-        elif col_right in df.columns:
-            return df[col_right]
-        elif col_base in df.columns:  # Check if original column exists (wasn't in both dfs)
-            return df[col_base]
-        else:
-            return pd.Series(np.nan, index=df.index)
-
-    # Combine columns using the safe function
-    all_projects["l2_address"] = combine_cols(all_projects, "l2_address")
-    all_projects["project_id"] = combine_cols(all_projects, "project_id")
-    all_projects["kyc_team_id"] = combine_cols(all_projects, "kyc_team_id")
-    all_projects["updated_at"] = combine_cols(all_projects, "updated_at")
-
-    # Create the unified lookup_id, prioritizing the combined kyc_team_id
-    all_projects["lookup_id"] = all_projects["kyc_team_id"].combine_first(all_projects["grant_id"])
-    # Clean up potential 'nan' strings and ensure string type
-    all_projects["lookup_id"] = (
-        all_projects["lookup_id"].replace(["nan", np.nan, None, pd.NA], "").astype(str)
+    all_projects["l2_address"] = all_projects["l2_address_typeform"].combine_first(
+        all_projects["l2_address_project"]
     )
-
-    # Drop intermediate suffixed columns
-    cols_to_drop = []
-    for base in ["l2_address", "project_id", "kyc_team_id", "updated_at"]:
-        cols_to_drop.extend([f"{base}_typeform", f"{base}_project"])
-
-    # Filter the list to only columns that actually exist in the DataFrame
-    existing_cols_to_drop = [col for col in cols_to_drop if col in all_projects.columns]
-    all_projects = all_projects.drop(columns=existing_cols_to_drop)
-
-    # Convert final updated_at to datetime
+    all_projects["project_id"] = all_projects["project_id_typeform"].combine_first(
+        all_projects["project_id_project"]
+    )
+    all_projects = all_projects.drop(
+        columns=[
+            "l2_address_typeform",
+            "l2_address_project",
+            "project_id_typeform",
+            "project_id_project",
+        ]
+    )
     all_projects["updated_at"] = pd.to_datetime(all_projects["updated_at"], errors="coerce")
-
-    # Now drop duplicates based on the definitive lookup_id
-    all_projects = all_projects.sort_values(by=["lookup_id", "updated_at"]).drop_duplicates(
-        subset="lookup_id", keep="last"
+    all_projects = all_projects.sort_values(by=["grant_id", "updated_at"]).drop_duplicates(
+        subset="grant_id", keep="last"
     )
 
     kyc_emails_dict = {}
     kyb_emails_dict = {}
 
     for index, row in all_projects.iterrows():
-        lookup_id = row["lookup_id"]
-        if pd.isna(lookup_id):
-            continue
+        grant_id = row["grant_id"]
 
         for i in range(10):
             kyc_email = row.get(f"kyc_email{i}")
             if pd.notna(kyc_email):
-                if lookup_id not in kyc_emails_dict:
-                    kyc_emails_dict[lookup_id] = set()
-                kyc_emails_dict[lookup_id].add(kyc_email)
+                if grant_id not in kyc_emails_dict:
+                    kyc_emails_dict[grant_id] = set()
+                kyc_emails_dict[grant_id].add(kyc_email)
 
         for i in range(5):
             kyb_email = row.get(f"kyb_email{i}")
             if pd.notna(kyb_email):
-                if lookup_id not in kyb_emails_dict:
-                    kyb_emails_dict[lookup_id] = set()
-                kyb_emails_dict[lookup_id].add(kyb_email)
+                if grant_id not in kyb_emails_dict:
+                    kyb_emails_dict[grant_id] = set()
+                kyb_emails_dict[grant_id].add(kyb_email)
 
-    kyc_emails = {lookup_id: list(emails) for lookup_id, emails in kyc_emails_dict.items()}
-    kyb_emails = {lookup_id: list(emails) for lookup_id, emails in kyb_emails_dict.items()}
+        kyc_emails = {grant_id: list(emails) for grant_id, emails in kyc_emails_dict.items()}
+        kyb_emails = {grant_id: list(emails) for grant_id, emails in kyb_emails_dict.items()}
 
     kyc_results = []
-    for lookup_id, emails in kyc_emails_dict.items():
+    for grant_id, emails in kyc_emails_dict.items():
         for email in emails:
             status = all_contributors.loc[all_contributors["email"] == email, "status"].values
             kyc_results.append(
                 {
                     "email": email,
-                    "lookup_id": lookup_id,
+                    "grant_id": grant_id,
                     "status": status[0] if status.size > 0 else "not started",
                 }
             )
     kyc_df = pd.DataFrame(kyc_results)
-    if "lookup_id" not in kyc_df.columns and not kyc_df.empty:
-        kyc_df["lookup_id"] = np.nan
-    kyc_df["lookup_id"] = kyc_df["lookup_id"].astype(str)
+    kyc_df["grant_id"] = kyc_df["grant_id"].astype(str)
 
     kyb_results = []
-    for lookup_id, emails in kyb_emails_dict.items():
+    for grant_id, emails in kyb_emails_dict.items():
         for email in emails:
             status = all_businesses.loc[all_businesses["email"] == email, "status"].values
             kyb_results.append(
                 {
                     "email": email,
-                    "lookup_id": lookup_id,
+                    "grant_id": grant_id,
                     "status": status[0] if status.size > 0 else "not started",
                 }
             )
     kyb_df = pd.DataFrame(kyb_results)
-    if "lookup_id" not in kyb_df.columns and not kyb_df.empty:
-        kyb_df["lookup_id"] = np.nan
-    kyb_df["lookup_id"] = kyb_df["lookup_id"].astype(str)
+    kyb_df["grant_id"] = kyb_df["grant_id"].astype(str)
 
     if option in ["Superchain", "Vendor"]:
         if search_term:
@@ -667,51 +650,14 @@ def main():
                 ["avatar", "email", "l2_address", "updated_at", "status"],
                 "This contributor is {status} for KYC.",
             )
-    elif option == "Grants Round":
-        st.header("Active Grants Rounds")
+    # elif option == 'Grants Round':
 
-        url = "https://api.github.com/repos/dioptx/the-trojans/contents/grants.projects.csv"
-
-        headers = {
-            "Authorization": f"token {st.secrets['github']['access_token']}",
-            "Accept": "application/vnd.github.v3.raw",
-        }
-
-        response = requests.get(url, headers=headers)
-
-        if response.status_code == 200:
-            csv_content = response.content.decode("utf-8")
-            df = pd.read_csv(StringIO(csv_content))
-            rounds_list = df.round_id.unique()
-            rounds_selection = st.multiselect(
-                "Select the Grant Round",
-                list(rounds_list),
-                ["rpgf2", "rpgf3", "season5-builders-19", "season5-growth-19"],
-            )
-
-            if "Other" in rounds_selection:
-                filtered_df = df[
-                    ~df["round_id"].isin(
-                        ["rpgf2", "rpgf3", "season5-builders-19", "season5-growth-19"]
-                    )
-                ]
-                if set(rounds_selection) - {"Other"}:
-                    filtered_df = pd.concat(
-                        [filtered_df, df[df["round_id"].isin(set(rounds_selection) - {"Other"})]]
-                    )
-            else:
-                filtered_df = df[df["round_id"].isin(rounds_selection)] if rounds_selection else df
-
-            st.write(filtered_df)
-        else:
-            st.error(f"Failed to fetch the file: {response.status_code}")
-
-    if id_input:
+    if grant_id_input:
         st.title("Grant Status")
-        id_input = str(id_input)
+        grant_id_input = str(grant_id_input)
 
-        kyc_matches = kyc_df[kyc_df["lookup_id"] == id_input]
-        kyb_matches = kyb_df[kyb_df["lookup_id"] == id_input]
+        kyc_matches = kyc_df[kyc_df["grant_id"] == grant_id_input]
+        kyb_matches = kyb_df[kyb_df["grant_id"] == grant_id_input]
 
         if kyc_matches.empty and kyb_matches.empty:
             st.write(
