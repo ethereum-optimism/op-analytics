@@ -37,9 +37,12 @@ class Delimiter:
         return self.block_number + self.batch_size
 
 
-# Helful chart to see what trace file sizes by chain:
-# https://optimistic.grafana.net/explore?schemaVersion=1&panes=%7B%22dar%22:%7B%22datasource%22:%22grafanacloud-logs%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22max_over_time%28%7Bcluster%3D%5C%22oplabs-tools-data-primary%5C%22,%20namespace%3D%5C%22op-analytics%5C%22,%20container%3D%5C%22python-runner-ingestion%5C%22%7D%20%7C%3D%20%60done%20writing%60%20or%20%60traces%60%20%7C%3D%20%60size%60%20%7C%20json%20chain,%20size%20%7C%20unwrap%20size%20%5B1h%5D%29%20by%20%28chain%29%22,%22queryType%22:%22range%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22grafanacloud-logs%22%7D,%22editorMode%22:%22builder%22,%22direction%22:%22backward%22%7D%5D,%22range%22:%7B%22from%22:%22now-2d%22,%22to%22:%22now%22%7D,%22panelsState%22:%7B%22logs%22:%7B%22visualisationType%22:%22logs%22%7D%7D%7D%7D&orgId=1
-MICROBATCH_SIZE_CONFIGURATION = {
+# Helpful chart to see what trace file sizes by chain:
+# https://optimistic.grafana.net/explore?schemaVersion=1&panes=%7B%22dar%22:%7B%22datasource%22:%22grafanacloud-logs%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22max_over_time%28%7Bcluster%3D%5C%22oplabs-tools-data-primary%5C%22,%20namespace%3D%5C%22dagster%5C%22%7D%20%7C%20decolorize%20%7C%3D%20%60blockbatch_ingest%60%20%7C%3D%20%60traces_v1%60%20%7C%3D%20%60size%60%20%7C%20logfmt%20size,%20chain%20%7C%20keep%20size,%20chain%20%7C%20unwrap%20bytes%28size%29%20%5B1h%5D%29%22,%22queryType%22:%22range%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22grafanacloud-logs%22%7D,%22editorMode%22:%22builder%22,%22direction%22:%22backward%22%7D%5D,%22range%22:%7B%22from%22:%22now-12h%22,%22to%22:%22now%22%7D,%22panelsState%22:%7B%22logs%22:%7B%22visualisationType%22:%22logs%22%7D%7D%7D%7D&orgId=1
+BATCH_SIZE_CONFIGURATION = {
+    "arenaz": [
+        Delimiter(0, 4000),
+    ],
     "automata": [
         # https://explorer.ata.network/block/11008000
         Delimiter(0, 20000),
@@ -67,10 +70,10 @@ MICROBATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=27730000, batch_size=200),
     ],
     "cyber": [
-        # https://cyberscan.co/block/1488000
+        # https://cyberscan.co/block/14848000
         Delimiter(0, 20000),
         Delimiter(block_number=9280000, batch_size=8000),
-        Delimiter(block_number=1488000, batch_size=4000),
+        Delimiter(block_number=14848000, batch_size=4000),
     ],
     "fraxtal": [
         # https://fraxscan.com/block/countdown/18200000
@@ -251,7 +254,7 @@ def validate_microbatch_configuration(boundaries: list[Delimiter]):
                 )
 
 
-for config in MICROBATCH_SIZE_CONFIGURATION.values():
+for config in BATCH_SIZE_CONFIGURATION.values():
     validate_microbatch_configuration(config)
 
 
@@ -344,7 +347,7 @@ class BlockBatch:
 
 
 def split_block_range(chain: str, block_range: BlockRange) -> list[BlockBatch]:
-    boundaries = MICROBATCH_SIZE_CONFIGURATION[chain]
+    boundaries = BATCH_SIZE_CONFIGURATION[chain]
     return split_block_range_from_boundaries(chain, boundaries, block_range)
 
 

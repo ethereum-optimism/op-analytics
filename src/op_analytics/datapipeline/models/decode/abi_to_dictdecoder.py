@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Union
 
 import orjson
 
@@ -9,6 +9,7 @@ from eth_abi_lite.decoding import (
     BaseDecoder,
     ContextFramesBytesIO,
     DynamicArrayDecoder,
+    HeadTailDecoder,
 )
 
 
@@ -16,7 +17,7 @@ from eth_abi_lite.decoding import (
 class DictionaryDecoder:
     """Decode binary data to a python dict."""
 
-    decoder: TupleDecoder
+    decoders: list[tuple[str, Union[HeadTailDecoder, "NamedDecoder"]]]
 
     def decode_event(self, hexstr: str):
         # skip 2 for "0x"
@@ -36,7 +37,7 @@ class DictionaryDecoder:
         return orjson.dumps(self.decode_function(hexstr)).decode()
 
     def decode(self, stream):
-        return dict(decoder(stream) for decoder in self.decoder.decoders)  # type: ignore
+        return dict(decoder(stream) for _, decoder in self.decoders)
 
     @classmethod
     def of(cls, abi_entry: dict) -> "DictionaryDecoder":
@@ -49,9 +50,19 @@ class DictionaryDecoder:
             if is_log and param["indexed"]:
                 continue
             decoder = abi_param_to_decoder(param)
-            decoders.append(decoder)
 
-        return cls(TupleDecoder(decoders=decoders))
+            assert decoder.field_name is not None
+
+            decoders.append(
+                (
+                    decoder.field_name,
+                    HeadTailDecoder(tail_decoder=decoder)
+                    if getattr(decoder, "is_dynamic", False)
+                    else decoder,
+                )
+            )
+
+        return cls(decoders=decoders)
 
 
 @dataclass

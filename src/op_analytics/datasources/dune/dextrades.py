@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import polars as pl
 import spice
 
-from op_analytics.coreutils.env import env_get
+from op_analytics.coreutils.env.vault import env_get
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 

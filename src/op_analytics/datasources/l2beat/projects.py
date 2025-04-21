@@ -37,15 +37,12 @@ SUMMARY_SCHEMA = {
 
 
 @dataclass
-class L2BeatProjects:
-    df: pl.DataFrame
+class L2BeatProjectsSummary:
     projects: list[L2BeatProject]
-
-    tvl_df: pl.DataFrame
-    activity_df: pl.DataFrame
+    summary_df: pl.DataFrame
 
     @classmethod
-    def fetch(cls, query_range: str = "30d", session: requests.Session | None = None):
+    def fetch(cls, session: requests.Session | None = None) -> "L2BeatProjectsSummary":
         session = session or new_session()
         summary = get_data(session, SUMMARY_ENDPOINT)
 
@@ -57,15 +54,41 @@ class L2BeatProjects:
         # Parse summary df
         summary_df = parse_summary(summary)
 
+        return cls(
+            projects=projects,
+            summary_df=summary_df,
+        )
+
+
+@dataclass
+class L2BeatProjects:
+    df: pl.DataFrame
+    projects: list[L2BeatProject]
+
+    tvl_df: pl.DataFrame
+    activity_df: pl.DataFrame
+
+    @classmethod
+    def fetch(cls, query_range: str = "30d", session: requests.Session | None = None):
+        session = session or new_session()
+
+        l2beat_projects = L2BeatProjectsSummary.fetch(session)
+
         # Fetch TVL
-        tvl_df = fetch_tvl(projects=projects, query_range=query_range)
+        tvl_df = fetch_tvl(
+            projects=l2beat_projects.projects,
+            query_range=query_range,
+        )
 
         # Fetch Actvity
-        activity_df = fetch_activity(projects=projects, query_range=query_range)
+        activity_df = fetch_activity(
+            projects=l2beat_projects.projects,
+            query_range=query_range,
+        )
 
         return cls(
-            df=summary_df,
-            projects=projects,
+            df=l2beat_projects.summary_df,
+            projects=l2beat_projects.projects,
             tvl_df=tvl_df,
             activity_df=activity_df,
         )

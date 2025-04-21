@@ -4,8 +4,13 @@ from dagster import (
 )
 
 from op_analytics.datapipeline.etl.blockbatchload.main import (
-    LoadSpec,
     load_to_clickhouse,
+)
+
+from op_analytics.datapipeline.etl.blockbatchload.datasets import (
+    CONTRACT_CREATION,
+    ERC20_TRANSFERS,
+    ERC721_TRANSFERS,
 )
 
 # NOTE: It is important to schedule all of the assets below in the same dagster job.
@@ -16,42 +21,19 @@ from op_analytics.datapipeline.etl.blockbatchload.main import (
 @asset
 def contract_creation(context: OpExecutionContext):
     """Load contract creation blockbatch data to Clickhouse."""
-    result = load_to_clickhouse(
-        datasets=[
-            LoadSpec.pass_through(
-                root_path="blockbatch/contract_creation/create_traces_v1",
-                enforce_row_count=True,
-            ),
-        ]
-    )
+    result = load_to_clickhouse(dataset=CONTRACT_CREATION)
     context.log.info(result)
 
 
 @asset
 def erc20_transfers(context: OpExecutionContext):
     """Load ERC-20 transfers blockbatch data to Clickhouse."""
-    result = load_to_clickhouse(
-        datasets=[
-            LoadSpec.pass_through(
-                root_path="blockbatch/token_transfers/erc20_transfers_v1",
-                # We don't enforce row count for this dataset because the INSERT sql
-                # includes a filter to include only rows where amount_lossless is not NULL.
-                enforce_row_count=False,
-            ),
-        ]
-    )
+    result = load_to_clickhouse(dataset=ERC20_TRANSFERS)
     context.log.info(result)
 
 
 @asset
 def erc721_transfers(context: OpExecutionContext):
     """Load ERC-721 transfers blockbatch data to Clickhouse."""
-    result = load_to_clickhouse(
-        datasets=[
-            LoadSpec.pass_through(
-                root_path="blockbatch/token_transfers/erc721_transfers_v1",
-                enforce_row_count=True,
-            ),
-        ]
-    )
+    result = load_to_clickhouse(dataset=ERC721_TRANSFERS)
     context.log.info(result)

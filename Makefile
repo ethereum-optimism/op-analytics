@@ -16,16 +16,7 @@ init:
 html: .makemarkers/sphinx-docs
 
 
-.makemarkers/sphinx-autogen: \
-	$(shell find src/op_analytics/datapipeline/schemas -type f -print0 | xargs -0 ls -t | head -n 1) \
-	src/op_analytics/cli/subcommands/misc/docsgen/coreschemas.md
-	@echo "Running sphinx documentation autegen."
-	uv run opdata misc generate_docs
-	@touch .makemarkers/sphinx-autogen
-
-
 .makemarkers/sphinx-docs: \
-	.makemarkers/sphinx-autogen \
 	$(shell find sphinx -type f -print0 | xargs -0 ls -t | head -n 1)
 	$(MAKE) -C sphinx clean
 	$(MAKE) -C sphinx html
@@ -58,8 +49,13 @@ sphinx-serve: .makemarkers/sphinx-docs
 #     DOCKER IMAGE
 # ----------------------------------------------------------------------------#
 
-IMAGE_TAG = ghcr.io/lithium323/op-analytics:v20250328.1
-IMAGE_TAG_DAGSTER = ghcr.io/lithium323/op-analytics-dagster:v20250329.002
+# Used to be more important when we were running jobs directly on kubernetes.
+# Somewhat obsolete now that everything is run through Dagster. It is still
+# used for backfills. 
+IMAGE_TAG = ghcr.io/ethereum-optimism/op-analytics:v20250404.2
+
+# Dagster image version.
+IMAGE_TAG_DAGSTER = ghcr.io/ethereum-optimism/op-analytics-dagster:v20250409.007
 
 
 .PHONY: uv-build
@@ -75,8 +71,8 @@ docker-image: uv-build
 	docker build -f ./Dockerfile --platform linux/amd64 -t ${IMAGE_TAG} .
 
 
-.PHONY: docker-push
-docker-push: docker-image
+.PHONY: docker-k8s
+docker-k8s: docker-image
 	docker push ${IMAGE_TAG}
 
 
@@ -85,3 +81,6 @@ docker-dagster: uv-build
 	docker build -f ./Dockerfile.dagster --platform linux/amd64 -t ${IMAGE_TAG_DAGSTER} .
 	docker push ${IMAGE_TAG_DAGSTER}
 
+.PHONY: helm-dagster
+helm-dagster:
+	helm upgrade dagster dagster/dagster -f helm/dagster/values.yaml -n dagster

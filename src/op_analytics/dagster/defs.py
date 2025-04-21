@@ -146,7 +146,7 @@ defs = Definitions(
             selection=AssetSelection.assets(
                 ["defillama", "protocol_tvl_flows_filtered"],
             ).upstream(),
-            cron_schedule="0 12 * * *",
+            cron_schedule="0 16 * * *",
             custom_k8s_config=OPK8sConfig(
                 mem_request="3Gi",
                 mem_limit="4Gi",
@@ -253,7 +253,7 @@ defs = Definitions(
                 ["transforms", "erc20transfers"],
                 ["transforms", "interop"],
             ),
-            cron_schedule="17 4,8,14,20 * * *",
+            cron_schedule="17 4,16 * * *",
             custom_k8s_config=SMALL_POD,
         ),
         #

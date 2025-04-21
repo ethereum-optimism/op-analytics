@@ -1,3 +1,7 @@
+from collections import defaultdict
+from dataclasses import dataclass
+from datetime import date
+
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.partitioned.reader import DataReader
@@ -7,47 +11,150 @@ from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_read
 from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
 from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 
+from .markers import query_blockbatch_daily_markers
+
 log = structlog.get_logger()
 
 
-def construct_readers(
+# Sentinel value for by-date tasks which process data across all chains.
+# We use the same markers table for by-date-chain and by-date tasks, so
+# this sentinel is a way for us to identify by-date tasks.
+ALL_CHAINS_SENTINEL = "ALL"
+
+
+@dataclass(frozen=True, order=True)
+class DateChainBatch:
+    """Represent a single (dt,chain) that needs to be loaded into ClickHouse."""
+
+    dt: str
+    chain: str
+
+    @property
+    def partitioned_path(self) -> str:
+        if self.chain == ALL_CHAINS_SENTINEL:
+            return f"chain=*/dt={self.dt}/*.parquet"
+        return f"chain={self.chain}/dt={self.dt}/*.parquet"
+
+    @property
+    def clickhouse_filter(self) -> str:
+        if self.chain == ALL_CHAINS_SENTINEL:
+            return f"dt = '{self.dt}'"
+        return f"dt = '{self.dt}' AND chain = '{self.chain}'"
+
+    @classmethod
+    def of(cls, chain: str, dt: str | date) -> "DateChainBatch":
+        if isinstance(dt, date):
+            dt = date_tostr(dt)
+
+        return DateChainBatch(chain=chain, dt=dt)
+
+
+def construct_batches(
     range_spec: str,
     chains: list[str],
-    input_root_paths: list[str],
+    blockbatch_root_paths: list[str],
+    clickhouse_root_paths: list[str],
 ):
-    """Insert blockbatch data into Clickhouse at a dt,chain granularity."""
+    """Construct the dt,chain batches that need to be loaded into ClickHouse.
 
-    # Prepare the request for input data.
+    This method only returns batches for which the source data is verified to be
+    complete and ready to process.
+    """
+
+    blockbatch_ready: list[DateChainBatch] | None = construct_blockbatch_ready(
+        range_spec=range_spec,
+        chains=chains,
+        blockbatch_root_paths=blockbatch_root_paths,
+    )
+
+    clickhouse_ready: list[DateChainBatch] | None = construct_clickhouse_ready(
+        range_spec=range_spec,
+        chains=chains,
+        clickhouse_root_paths=clickhouse_root_paths,
+    )
+
+    if blockbatch_ready is None and clickhouse_ready is None:
+        raise RuntimeError("No inputs were specified")
+
+    elif blockbatch_ready is None and clickhouse_ready is not None:
+        ready = sorted(clickhouse_ready)
+
+    elif blockbatch_ready is not None and clickhouse_ready is None:
+        ready = sorted(blockbatch_ready)
+
+    elif blockbatch_ready is not None and clickhouse_ready is not None:
+        set_blockbatch = set(blockbatch_ready)
+        set_clickhouse = set(clickhouse_ready)
+        ready = sorted(list(set_blockbatch.intersection(set_clickhouse)))
+
+    else:
+        raise NotImplementedError("This should never happen")
+
+    date_range = DateRange.from_spec(range_spec)
+    log.info(f"{len(ready)} are ready to process across {len(date_range.dates())} dates")
+    return ready
+
+
+def construct_blockbatch_ready(
+    range_spec: str,
+    chains: list[str],
+    blockbatch_root_paths: list[str],
+):
+    if not blockbatch_root_paths:
+        return None
+
+    # Get all the readers for blockbatch inputs.
     blockbatch_request = BlockBatchRequest.build(
         chains=chains,
         range_spec=range_spec,
-        root_paths_to_read=[RootPath.of(_) for _ in input_root_paths],
+        root_paths_to_read=[RootPath.of(_) for _ in blockbatch_root_paths],
     )
-
     readers: list[DataReader] = construct_readers_bydate(
         blockbatch_request=blockbatch_request,
         read_from=DataLocation.GCS,
     )
 
-    total_readers = 0
-    all_readers = {}
-    date_range = DateRange.from_spec(range_spec)
-    for dateval in date_range.dates():
-        datestr = date_tostr(dateval)
-        date_readers: list[DataReader] = [r for r in readers if r.partition_value("dt") == datestr]
+    # Find the batches for which blockbatch data is ready.
+    blockbatch_ready = []
+    for reader in readers:
+        chain = reader.partition_value("chain")
+        dt = reader.partition_value("dt")
 
-        is_ready = True
-        for r in date_readers:
-            if not r.inputs_ready:
-                log.warning(f"input data not ready for {r.partitions_dict()}")
-                is_ready = False
-        if not is_ready:
-            # Don't do anything until the input data is completely ready for a date
-            log.error(f"input data not ready for {datestr}")
+        if not reader.inputs_ready:
+            log.warning(f"input data not ready for {reader.partitions_dict()}")
             continue
 
-        all_readers[datestr] = date_readers
-        total_readers += len(date_readers)
+        blockbatch_ready.append(DateChainBatch.of(chain=chain, dt=dt))
 
-    log.info(f"{total_readers} are ready to process across {len(all_readers)} dates")
-    return all_readers
+    return blockbatch_ready
+
+
+def construct_clickhouse_ready(
+    range_spec: str,
+    chains: list[str],
+    clickhouse_root_paths: list[str],
+):
+    if not clickhouse_root_paths:
+        return None
+
+    # Get markers for the clickhouse inputs and find out which batches have
+    # ClickHouse inputs ready.
+    date_range = DateRange.from_spec(range_spec)
+    input_markers_df = query_blockbatch_daily_markers(
+        date_range=date_range,
+        chains=chains,
+        root_paths=clickhouse_root_paths,
+    )
+    clickhouse_markers = defaultdict(set)
+    for row in input_markers_df.to_dicts():
+        chain = row["chain"]
+        dt = row["dt"]
+        root_path = row["root_path"]
+        clickhouse_markers[DateChainBatch.of(chain=chain, dt=dt)].add(root_path)
+
+    clickhouse_ready = []
+    for batch, ready_paths in clickhouse_markers.items():
+        if ready_paths == set(clickhouse_root_paths):
+            clickhouse_ready.append(batch)
+
+    return clickhouse_ready

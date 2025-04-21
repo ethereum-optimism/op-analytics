@@ -20,7 +20,11 @@ MARKER_COLUMNS = [
 ]
 
 
-def existing_markers(date_range: DateRange, chains: list[str], root_path: str) -> pl.DataFrame:
+def query_blockbatch_daily_markers(
+    date_range: DateRange,
+    chains: list[str],
+    root_paths: list[str],
+) -> pl.DataFrame:
     """Query to find markers that have already been ingested in the date range."""
 
     markers_data_access = init_data_access()
@@ -39,9 +43,9 @@ def existing_markers(date_range: DateRange, chains: list[str], root_path: str) -
                 column="chain",
                 values=chains,
             ),
-            "root_path": MarkerFilter(
+            "root_paths": MarkerFilter(
                 column="root_path",
-                values=[root_path],
+                values=root_paths,
             ),
         },
     )
