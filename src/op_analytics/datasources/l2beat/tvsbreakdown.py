@@ -95,7 +95,12 @@ class L2BeatProjectTVS:
         if not data.get("success"):
             raise Exception(f"Failed to fetch data for project {project.slug}")
 
-        return cls(slug=project.slug, data=parse_tvs(data, project))
+        try:
+            parsed_data = parse_tvs(data, project)
+        except Exception as e:
+            raise Exception(f"Failed to parse TVS data for project {project}") from e
+
+        return cls(slug=project.slug, data=parsed_data)
 
 
 def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, Any]]:
@@ -107,27 +112,75 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
         for asset in assets:
             # We produce one row per asset per escrow. If there are no escrows we still need to
             # produce a row for the asset, so we set escrows to a list with a single null escrow.
-            escrows = asset.get("escrows") or [None]
+            if "escrows" in asset:
+                escrows = asset["escrows"]
+            elif "escrow" in asset:
+                escrows = [asset.get("escrow")]
+            else:
+                escrows = [None]
+            # Starting around 2025-04-17 the L2Beat API changed the structure of the JSON response
+            # for the TVS breakdown. We have to work around those changes here.
+
+            if "assetId" not in asset:
+                # New JSON structure
+                asset_id = asset["id"]
+            else:
+                asset_id = asset["assetId"]
+
+            if "chain" not in asset:
+                # New JSON structure
+                chain_name = asset["formula"]["chain"]
+                chain_id = None
+            else:
+                chain_name = asset["chain"]["name"]
+                chain_id = asset["chain"]["id"]
+
+            if "tokenAddress" not in asset:
+                # New JSON structure
+                try:
+                    token_address = asset["address"]["address"]
+                except KeyError:
+                    token_address = None
+            else:
+                token_address = asset["tokenAddress"]
+
+            if "url" not in asset:
+                # New JSON structure
+                try:
+                    url = asset["address"]["url"]
+                except KeyError:
+                    url = None
+            else:
+                url = asset.get("url")
 
             for escrow in escrows:
+                if escrow:
+                    if "address" in escrow:
+                        # New JSON structure
+                        escrow_address = escrow["address"]
+                    elif "escrowAddress" in escrow:
+                        escrow_address = escrow["escrowAddress"]
+                else:
+                    escrow_address = None
+
                 row = {
                     "dt": dt_fromepoch(timestamp),
                     "project_id": project.id,
                     "project_slug": project.slug,
                     "timestamp": timestamp,
-                    "asset_id": asset["assetId"],
-                    "chain_name": asset["chain"]["name"],
-                    "chain_id": asset["chain"]["id"],
+                    "asset_id": asset_id,
+                    "chain_name": chain_name,
+                    "chain_id": chain_id,
                     "amount": asset["amount"],
-                    "usd_value": asset["usdValue"],
-                    "usd_price": float(asset["usdPrice"]),
+                    "usd_value": float(asset["usdValue"]) if "usdValue" in asset else None,
+                    "usd_price": float(asset["usdPrice"]) if "usdPrice" in asset else None,
                     "is_gas_token": asset.get("isGasToken"),
-                    "token_address": asset.get("tokenAddress"),
-                    "escrow_address": escrow.get("escrowAddress") if escrow else None,
+                    "token_address": token_address,
+                    "escrow_address": escrow_address,
                     "escrow_name": escrow.get("name") if escrow else None,
                     "is_shared_escrow": escrow.get("isSharedEscrow") if escrow else None,
                     "escrow_url": escrow.get("url") if escrow else None,
-                    "asset_url": asset.get("url"),
+                    "asset_url": url,
                     "icon_url": asset.get("iconUrl"),
                     "symbol": asset["symbol"],
                     "name": asset.get("name"),
@@ -140,7 +193,13 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
 
 def clean_dataframe(rows: list[dict[str, Any]]) -> pl.DataFrame:
     return (
-        pl.DataFrame(rows)
+        pl.DataFrame(
+            rows,
+            schema_overrides={
+                "token_address": pl.String,
+                "escrow_address": pl.String,
+            },
+        )
         .select(_[0] for _ in TVS_BREAKDOWN_SCHEMA)
         .with_columns(
             pl.col("token_address").str.to_lowercase().alias("token_address"),
