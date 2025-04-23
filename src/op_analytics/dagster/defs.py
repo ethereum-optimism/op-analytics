@@ -146,7 +146,7 @@ defs = Definitions(
             selection=AssetSelection.assets(
                 ["defillama", "protocol_tvl_flows_filtered"],
             ).upstream(),
-            cron_schedule="0 16 * * *",
+            cron_schedule="0 6 * * *",
             custom_k8s_config=OPK8sConfig(
                 mem_request="3Gi",
                 mem_limit="4Gi",
@@ -161,7 +161,7 @@ defs = Definitions(
                 ["defillama", "yield_pools"],
                 ["defillama", "lend_borrow_pools"],
             ).upstream(),
-            cron_schedule="0 15 * * *",
+            cron_schedule="0 7 * * *",
             custom_k8s_config=OPK8sConfig(
                 mem_request="3Gi",
                 mem_limit="4Gi",
@@ -175,7 +175,7 @@ defs = Definitions(
             selection=AssetSelection.assets(
                 ["defillama", "chain_tvl"],
             ).upstream(),
-            cron_schedule="0 13 * * *",
+            cron_schedule="0 6 * * *",
             custom_k8s_config=SMALL_POD,
         ),
         #
@@ -185,7 +185,7 @@ defs = Definitions(
             selection=AssetSelection.assets(
                 ["defillama", "stablecoins"],
             ).upstream(),
-            cron_schedule="30 13 * * *",
+            cron_schedule="30 6 * * *",
             custom_k8s_config=SMALL_POD,
         ),
         #
@@ -195,7 +195,7 @@ defs = Definitions(
             selection=AssetSelection.assets(
                 ["defillama", "volumes_fees_revenue"],
             ).upstream(),
-            cron_schedule="0 14 * * *",
+            cron_schedule="0 6 * * *",
             custom_k8s_config=SMALL_POD,
         ),
         #
