@@ -84,6 +84,7 @@ class InsertTask:
 
     def execute(self) -> dict[str, Any]:
         with bound_contextvars(**self.context):
+            log.info("running insert")
             insert_result = self.write()
             self.write_marker(insert_result)
 

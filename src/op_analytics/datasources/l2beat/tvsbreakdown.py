@@ -110,14 +110,6 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
     rows = []
     for category, assets in breakdown.items():
         for asset in assets:
-            # We produce one row per asset per escrow. If there are no escrows we still need to
-            # produce a row for the asset, so we set escrows to a list with a single null escrow.
-            if "escrows" in asset:
-                escrows = asset["escrows"]
-            elif "escrow" in asset:
-                escrows = [asset.get("escrow")]
-            else:
-                escrows = [None]
             # Starting around 2025-04-17 the L2Beat API changed the structure of the JSON response
             # for the TVS breakdown. We have to work around those changes here.
 
@@ -129,7 +121,14 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
 
             if "chain" not in asset:
                 # New JSON structure
-                chain_name = asset["formula"]["chain"]
+                formula = asset["formula"]
+                if "chain" in formula:
+                    chain_name = formula["chain"]
+                elif "arguments" in formula:
+                    chain_name = formula["arguments"][0]["chain"]
+                else:
+                    raise Exception(f"Unknown asset structure: {asset}")
+
                 chain_id = None
             else:
                 chain_name = asset["chain"]["name"]
@@ -153,6 +152,18 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
             else:
                 url = asset.get("url")
 
+            # We produce one row per asset per escrow. If there are no escrows we still need to
+            # produce a row for the asset, so we set escrows to a list with a single null escrow.
+            if "escrows" in asset:
+                escrows = asset["escrows"]
+            elif "escrow" in asset:
+                if asset["escrow"] == "multiple":
+                    escrows = asset["formula"]["arguments"]
+                else:
+                    escrows = [asset.get("escrow")]
+            else:
+                escrows = [None]
+
             for escrow in escrows:
                 if escrow:
                     if "address" in escrow:
@@ -160,6 +171,8 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
                         escrow_address = escrow["address"]
                     elif "escrowAddress" in escrow:
                         escrow_address = escrow["escrowAddress"]
+                    else:
+                        raise Exception(f"Unknown escrow structure: {escrow}")
                 else:
                     escrow_address = None
 
