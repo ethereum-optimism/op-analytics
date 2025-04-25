@@ -64,7 +64,8 @@ class L2BeatTVSBreakdown:
 
         rows = []
         for parsed_data in projects_tvs.values():
-            rows.extend(parsed_data.data)
+            if parsed_data.data is not None:
+                rows.extend(parsed_data.data)
 
         df = clean_dataframe(rows)
 
@@ -96,7 +97,12 @@ class L2BeatProjectTVS:
         )
 
         if not data.get("success"):
-            raise Exception(f"Failed to fetch data for project {project.slug}")
+            # Some projects are not found in the TVS breakdown API, they return:
+            # {
+            # "success": false,
+            # "error": "Project not found."
+            # }
+            return cls(slug=project.slug, data=None)
 
         try:
             parsed_data = parse_tvs(data, project)
@@ -189,7 +195,8 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
                     elif "escrowAddress" in escrow:
                         escrow_address = escrow["escrowAddress"]
                     else:
-                        raise Exception(f"Unknown escrow structure: {escrow}")
+                        log.error(f"Unknown escrow structure: {escrow}")
+                        continue
                 else:
                     escrow_address = None
 
@@ -228,6 +235,10 @@ def clean_dataframe(rows: list[dict[str, Any]]) -> pl.DataFrame:
             schema_overrides={
                 "token_address": pl.String,
                 "escrow_address": pl.String,
+                "chain_id": pl.Int64,
+                "usd_price": pl.Float64,
+                "is_shared_escrow": pl.Boolean,
+                "supply": pl.String,
             },
         )
         .select(_[0] for _ in TVS_BREAKDOWN_SCHEMA)
