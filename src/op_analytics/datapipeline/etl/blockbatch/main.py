@@ -1,3 +1,4 @@
+import random
 from typing import Any
 
 from op_analytics.coreutils.logger import bound_contextvars, structlog
@@ -27,6 +28,11 @@ def compute_blockbatch(
             layer_result: dict[str, Any] = {}
             layer_result["depth"] = ii
             layer_result["models"] = set(_.model.name for _ in tasks)
+
+            # Randomize the task order to avoid a single failure preventing other tasks from running.
+            # If a task is constantly failing (e.g. due to out-of-memory) then a subsequent run will
+            # get a chance to run other tasks before running into the problematic task.
+            random.shuffle(tasks)
 
             task_results = run_tasks(
                 tasks=tasks,

@@ -331,3 +331,129 @@ def test_parse_tvs_zkfair():
             "category": "native",
         },
     ]
+
+
+def test_parse_tvs_zkfair_with_updated_l2beat_json():
+    # https://l2beat.com/api/scaling/tvs/zkfair/breakdown
+    response_data = {
+        "success": True,
+        "data": {
+            "dataTimestamp": 1745323200,
+            "breakdown": {
+                "canonical": [
+                    {
+                        "mode": "auto",
+                        "id": "zkfair-ZKS",
+                        "priceId": "zkspace",
+                        "symbol": "ZKS",
+                        "name": "Zks",
+                        "iconUrl": "https://assets.coingecko.com/coins/images/13585/large/image_2024-01-16_172847810.png?1705397359",
+                        "amount": 11547.44,
+                        "category": "other",
+                        "source": "canonical",
+                        "isAssociated": False,
+                        "address": {
+                            "address": "0xe4815AE53B124e7263F08dcDBBB757d41Ed658c6",
+                            "url": "https://etherscan.io/address/0xe4815AE53B124e7263F08dcDBBB757d41Ed658c6",
+                        },
+                        "formula": {
+                            "type": "balanceOfEscrow",
+                            "chain": "ethereum",
+                            "sinceTimestamp": 1702879283,
+                            "address": "0xe4815AE53B124e7263F08dcDBBB757d41Ed658c6",
+                            "decimals": 18,
+                            "escrowAddress": "0x9cb4706e20A18E59a48ffa7616d700A3891e1861",
+                        },
+                        "usdValue": 18.08,
+                        "escrow": {
+                            "address": "0x9cb4706e20A18E59a48ffa7616d700A3891e1861",
+                            "url": "https://etherscan.io/address/0x9cb4706e20A18E59a48ffa7616d700A3891e1861",
+                            "name": "OldBridge",
+                        },
+                    }
+                ],
+                "external": [],
+                "native": [
+                    {
+                        "mode": "auto",
+                        "id": "zkfair-ZKF",
+                        "priceId": "zkfair",
+                        "symbol": "ZKF",
+                        "name": "ZKF",
+                        "iconUrl": "https://assets.coingecko.com/coins/images/34288/large/r8A3J3kf_400x400.jpg?1704455147",
+                        "amount": 9923400000,
+                        "category": "other",
+                        "source": "native",
+                        "isAssociated": True,
+                        "address": {
+                            "address": "0x1cD3E2A23C45A690a18Ed93FD1412543f464158F",
+                            "url": "https://scan.zkfair.io/address/0x1cD3E2A23C45A690a18Ed93FD1412543f464158F",
+                        },
+                        "formula": {
+                            "type": "circulatingSupply",
+                            "sinceTimestamp": 1704412800,
+                            "apiId": "zkfair",
+                            "decimals": 18,
+                            "address": "0x1cD3E2A23C45A690a18Ed93FD1412543f464158F",
+                            "chain": "zkfair",
+                        },
+                        "usdValue": 538376.7,
+                    }
+                ],
+            },
+        },
+    }
+
+    actual = clean_dataframe(
+        parse_tvs(response_data, L2BeatProject(id="funki", slug="funki"))
+    ).to_dicts()
+    assert actual == [
+        {
+            "dt": "2025-04-22",
+            "project_id": "funki",
+            "project_slug": "funki",
+            "timestamp": 1745323200,
+            "asset_id": "zkfair-ZKS",
+            "chain_name": "ethereum",
+            "chain_id": None,
+            "amount": 11547.44,
+            "usd_value": 18.08,
+            "usd_price": None,
+            "is_gas_token": None,
+            "token_address": "0xe4815ae53b124e7263f08dcdbbb757d41ed658c6",
+            "escrow_address": "0x9cb4706e20a18e59a48ffa7616d700a3891e1861",
+            "escrow_name": "OldBridge",
+            "is_shared_escrow": None,
+            "escrow_url": "https://etherscan.io/address/0x9cb4706e20A18E59a48ffa7616d700A3891e1861",
+            "asset_url": "https://etherscan.io/address/0xe4815AE53B124e7263F08dcDBBB757d41Ed658c6",
+            "icon_url": "https://assets.coingecko.com/coins/images/13585/large/image_2024-01-16_172847810.png?1705397359",
+            "symbol": "ZKS",
+            "name": "Zks",
+            "supply": None,
+            "category": "canonical",
+        },
+        {
+            "dt": "2025-04-22",
+            "project_id": "funki",
+            "project_slug": "funki",
+            "timestamp": 1745323200,
+            "asset_id": "zkfair-ZKF",
+            "chain_name": "zkfair",
+            "chain_id": None,
+            "amount": 9923400000.0,
+            "usd_value": 538376.7,
+            "usd_price": None,
+            "is_gas_token": None,
+            "token_address": "0x1cd3e2a23c45a690a18ed93fd1412543f464158f",
+            "escrow_address": None,
+            "escrow_name": None,
+            "is_shared_escrow": None,
+            "escrow_url": None,
+            "asset_url": "https://scan.zkfair.io/address/0x1cD3E2A23C45A690a18Ed93FD1412543f464158F",
+            "icon_url": "https://assets.coingecko.com/coins/images/34288/large/r8A3J3kf_400x400.jpg?1704455147",
+            "symbol": "ZKF",
+            "name": "ZKF",
+            "supply": None,
+            "category": "native",
+        },
+    ]
