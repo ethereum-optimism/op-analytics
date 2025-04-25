@@ -136,21 +136,27 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
 
             if "tokenAddress" not in asset:
                 # New JSON structure
-                try:
-                    token_address = asset["address"]["address"]
-                except KeyError:
+                if "address" in asset and isinstance(asset["address"], dict):
+                    try:
+                        token_address = asset["address"]["address"]
+                    except KeyError:
+                        token_address = None
+                else:
                     token_address = None
             else:
                 token_address = asset["tokenAddress"]
 
-            if "url" not in asset:
-                # New JSON structure
-                try:
-                    url = asset["address"]["url"]
-                except KeyError:
-                    url = None
-            else:
-                url = asset.get("url")
+            try:
+                if "url" not in asset:
+                    # New JSON structure
+                    try:
+                        url = asset["address"]["url"]
+                    except KeyError:
+                        url = None
+                else:
+                    url = asset.get("url")
+            except Exception:
+                url = None
 
             # We produce one row per asset per escrow. If there are no escrows we still need to
             # produce a row for the asset, so we set escrows to a list with a single null escrow.
