@@ -80,7 +80,7 @@ class ETLMixin:
         # log.info(ddl)
 
         select_ddl = self.replace_inputs_blockbatch(select_ddl, batch, dry_run)
-        select_ddl = self.replace_inputs_clickhouse(select_ddl, batch, dry_run)
+        select_ddl = self.replace_inputs_clickhouse(select_ddl, batch)
 
         output_table = self.output_table_name()
         insert_ddl = f"INSERT INTO {output_table}\n" + select_ddl
@@ -110,25 +110,60 @@ class ETLMixin:
         self,
         select_ddl: str,
         batch: DateChainBatch,
-        dry_run: bool = False,
     ):
-        for input_root_path in self.inputs_clickhouse:
-            # Prepare the ClickHouse subquery to read data from the input daily table.
-            input_clickhouse_table_name = self.sanitize_root_path(input_root_path)
+        processed = select_ddl
 
-            subquery = f"""
-            (
-            SELECT
-                * 
-            FROM {input_clickhouse_table_name}
-            WHERE {batch.clickhouse_filter}
-            )
-            """
+        for input_root in self.inputs_clickhouse:
+            tbl_name = self.sanitize_root_path(input_root)
 
-            placeholder = f"INPUT_CLICKHOUSE('{input_root_path}')"
-            select_ddl = select_ddl.replace(placeholder, subquery)
+            # Handle the default case where no lookback_days are provided
+            simple_ph = f"INPUT_CLICKHOUSE('{input_root}')"
+            if simple_ph in processed:
+                subq = f"""(
+    SELECT *
+    FROM {tbl_name}
+    WHERE {batch.clickhouse_filter}
+    )"""
+                processed = processed.replace(simple_ph, subq)
+                continue  # go to next input_root
 
-        return select_ddl
+            # Handle the case where lookback_days are provided
+            start_marker = f"INPUT_CLICKHOUSE('{input_root}',"
+            start_idx = processed.find(start_marker)
+            if start_idx == -1:
+                continue
+
+            after_comma = processed[start_idx + len(start_marker) :]
+            quote_1 = after_comma.find("'")  # opening quote of 2nd arg
+            quote_2 = after_comma.find("'", quote_1 + 1)  # closing quote
+            paren = after_comma.find(")", quote_2)  # trailing )
+
+            arg_literal = after_comma[quote_1 + 1 : quote_2]  # e.g.  lookback_days=7
+            full_ph = processed[start_idx : start_idx + len(start_marker) + paren + 1]
+
+            lookback_days = None
+            if arg_literal.startswith("lookback_days="):
+                try:
+                    lookback_days = int(arg_literal.split("=", 1)[1])
+                except ValueError:
+                    raise ValueError(f"Invalid lookback_days value in macro {full_ph}")
+
+            # build WHERE clause
+            if lookback_days is None:
+                where_clause = batch.clickhouse_filter
+            else:
+                where_clause = (
+                    f"dt BETWEEN date_sub(day, {lookback_days}, '{batch.dt}') " f"AND '{batch.dt}'"
+                )
+
+            subq = f"""(
+    SELECT *
+    FROM {tbl_name}
+    WHERE {where_clause}
+    )"""
+            processed = processed.replace(full_ph, subq)
+
+        return processed
 
     def existing_markers(self, range_spec: str, chains: list[str]) -> set[DateChainBatch]:
         # Existing markers that have already been loaded to ClickHouse.
