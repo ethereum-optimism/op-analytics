@@ -81,7 +81,7 @@ class L2BeatTVSBreakdown:
 @dataclass
 class L2BeatProjectTVS:
     slug: str
-    data: list[dict[str, Any]]
+    data: list[dict[str, Any]] | None
 
     @classmethod
     def fetch(
