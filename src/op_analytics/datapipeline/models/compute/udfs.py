@@ -25,7 +25,7 @@ def hex_to_lossy(x: str | None) -> int | None:
     if x is None:
         return None
 
-    assert len(x) == 66
+    assert len(x) == 66, f"Expected 66 characters, got {len(x)}: {x}"
 
     # If the string beyond the 16 right-most bytes is zeros then the conversion
     # to BIGINT will be valid.
