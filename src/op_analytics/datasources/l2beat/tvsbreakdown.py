@@ -4,12 +4,15 @@ from typing import Any
 import polars as pl
 import requests
 
+from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.misc import raise_for_schema_mismatch
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import dt_fromepoch
 
 from .projects import L2BeatProject, L2BeatProjectsSummary
+
+log = structlog.get_logger()
 
 TVS_BREAKDOWN_SCHEMA: list[tuple[str, type[pl.DataType]]] = [
     ("dt", pl.String),
@@ -119,20 +122,27 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
             else:
                 asset_id = asset["assetId"]
 
-            if "chain" not in asset:
-                # New JSON structure
-                formula = asset["formula"]
-                if "chain" in formula:
-                    chain_name = formula["chain"]
-                elif "arguments" in formula:
-                    chain_name = formula["arguments"][0]["chain"]
+            try:
+                if "chain" not in asset:
+                    chain_id = None
+                    chain_name = None
+                    # New JSON structure
+                    formula = asset["formula"]
+                    if "chain" in formula:
+                        chain_name = formula["chain"]
+                    elif "arguments" in formula:
+                        for argument in formula["arguments"]:
+                            if "chain" in argument:
+                                chain_name = argument["chain"]
+                                break
                 else:
-                    raise Exception(f"Unknown asset structure: {asset}")
+                    chain_id = asset["chain"]["id"]
+                    chain_name = asset["chain"]["name"]
 
+            except Exception:
+                log.error(f"Failed to parse chain for asset {asset}")
                 chain_id = None
-            else:
-                chain_name = asset["chain"]["name"]
-                chain_id = asset["chain"]["id"]
+                chain_name = None
 
             if "tokenAddress" not in asset:
                 # New JSON structure
@@ -156,6 +166,7 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
                 else:
                     url = asset.get("url")
             except Exception:
+                log.error(f"Failed to parse URL for asset {asset}")
                 url = None
 
             # We produce one row per asset per escrow. If there are no escrows we still need to
