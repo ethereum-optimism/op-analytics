@@ -358,13 +358,4 @@ def split_block_range_from_boundaries(
 ) -> list[BlockBatch]:
     validate_microbatch_configuration(boundaries)
 
-    delimiter = find_batch_delimiter(boundaries, block_range.min)
-
-    batches: list[BlockBatch] = []
-    while delimiter.block_number < block_range.max:
-        new_delimiter = find_batch_delimiter(boundaries, delimiter.next_block)
-        if delimiter.next_block != new_delimiter.block_number:
-            raise ValueError(f"inconsisent batch: {delimiter}  ..  {new_delimiter}")
-        batches.append(BlockBatch(chain, delimiter.block_number, delimiter.next_block))
-        delimiter = new_delimiter
-    return batches
+    # TODO: Implement this.
