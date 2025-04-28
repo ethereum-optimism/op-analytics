@@ -18,12 +18,10 @@ HEADERS = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
-    "User-Agent": "MyAwesomeApp"  # replace with your GitHub username or app name
-}
 
 def get_l2beat_chain_summary():
     url = "https://l2beat.com/api/scaling/summary"
-    response = r.get(url)
+    response = r.get(url,headers=HEADERS)
     data = response.json()
 
     # Extract the projects data
@@ -343,11 +341,12 @@ def get_l2beat_metadata():
             ] = "Polygon: CDK"
             df.loc[
                 df["provider"].str.contains("zkSync", case=False, na=False)
+                | df["provider"].str.contains("ZKSync", case=False, na=False)
                 | df["provider"].str.contains("ZK Stack", case=False, na=False),
                 "provider_entity",
             ] = "zkSync: ZK Stack"
-            df.loc[df["provider"].isin(["Starkware", "Starknet", "StarkEx"]), "provider_entity"] = (
-                "Starkware: Starknet Stack"
+            df.loc[df["provider"].isin(["Starkware", "Starknet", "StarkEx", "SN Stack"]), "provider_entity"] = (
+                "Starkware: SN Stack"
             )
         except:
             break
