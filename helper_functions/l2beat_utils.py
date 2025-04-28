@@ -12,10 +12,18 @@ api_string = "https://api.l2beat.com/api/"
 # https://l2beat.com/api/tvl/scaling.json
 # https://l2beat.com/api/tvl/optimism.json
 
+import os
+GITHUB_TOKEN = os.getenv('GITHUB_API_TOKEN')
+HEADERS = {
+    "Authorization": f"Bearer {GITHUB_TOKEN}",
+    "Accept": "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+}
+
 
 def get_l2beat_chain_summary():
     url = "https://l2beat.com/api/scaling/summary"
-    response = r.get(url)
+    response = r.get(url,headers=HEADERS)
     data = response.json()
 
     # Extract the projects data
@@ -247,7 +255,7 @@ def get_l2beat_metadata():
         # Function to recursively get files from folders
         def get_files_from_folder(folder_url):
             try:
-                folder_contents = r.get(folder_url).json()
+                folder_contents = r.get(folder_url,headers=HEADERS).json()
                 for item in folder_contents:
                     if item["type"] == "dir":
                         # Recursively get files from subfolder
