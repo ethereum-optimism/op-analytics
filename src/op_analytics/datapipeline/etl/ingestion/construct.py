@@ -100,6 +100,18 @@ def new_task(
         eo: ExpectedOutput = block_batch.construct_expected_output(root_path=data_directory)
         expected_outputs.append(eo)
 
+        # Use the blocks dataset to check for overlapping markers.
+        if name == "blocks" and output_markers_df is not None:
+            overlapping = overlapping_markers(
+                markers_df=output_markers_df,
+                root_path=eo.root_path,
+                block_batch=block_batch,
+            )
+            if overlapping:
+                raise Exception(
+                    f"overlapping markers found: {block_batch} overlaps with {overlapping}"
+                )
+
         if check_marker(markers_df=output_markers_df, marker_path=eo.marker_path):
             complete_markers.append(eo.marker_path)
 
@@ -131,3 +143,31 @@ def new_task(
         ),
         progress_indicator="",
     )
+
+
+def overlapping_markers(
+    markers_df: pl.DataFrame,
+    root_path: str,
+    block_batch: BlockBatch,
+) -> list[str]:
+    """Check if there are any overlapping markers for a given block range.
+
+    If there are overlapping markers, this means we have made mistake in setting the
+    block batches (see batches.py).
+    """
+    overlapping = markers_df.filter(
+        pl.col("root_path") == root_path,
+        pl.col("chain") == block_batch.chain,
+        pl.col("min_block") < block_batch.max,
+        pl.col("max_block") > block_batch.min,
+    )
+
+    # Exclude exact matches
+    overlapping = overlapping.filter(
+        ~((pl.col("min_block") == block_batch.min) & (pl.col("max_block") == block_batch.max))
+    )
+
+    if overlapping.is_empty():
+        return []
+
+    return overlapping["marker_path"].to_list()

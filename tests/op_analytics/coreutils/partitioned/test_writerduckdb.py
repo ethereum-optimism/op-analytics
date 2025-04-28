@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 from op_analytics.coreutils.partitioned.writerduckdb import OutputDuckDBRelation
-from op_analytics.coreutils.duckdb_inmem import init_client
+from op_analytics.coreutils.duckdb_inmem.client import init_client
 from op_analytics.coreutils.partitioned.partition import Partition
 
 

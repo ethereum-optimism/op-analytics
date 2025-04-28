@@ -146,7 +146,7 @@ defs = Definitions(
             selection=AssetSelection.assets(
                 ["defillama", "protocol_tvl_flows_filtered"],
             ).upstream(),
-            cron_schedule="0 12 * * *",
+            cron_schedule="0 16 * * *",
             custom_k8s_config=OPK8sConfig(
                 mem_request="3Gi",
                 mem_limit="4Gi",
@@ -169,11 +169,31 @@ defs = Definitions(
             k8s_pod_per_step=False,
         ),
         #
-        # Defillama other
+        # Defillama Chain TVL
         create_schedule_for_selection(
-            job_name="defillama_other",
+            job_name="defillama_chaintvl",
             selection=AssetSelection.assets(
-                ["defillama", "other"],
+                ["defillama", "chain_tvl"],
+            ).upstream(),
+            cron_schedule="0 13 * * *",
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        # Defillama Stablecoins
+        create_schedule_for_selection(
+            job_name="defillama_stables",
+            selection=AssetSelection.assets(
+                ["defillama", "stablecoins"],
+            ).upstream(),
+            cron_schedule="30 13 * * *",
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        # Defillama Volume, Fees, Revenue
+        create_schedule_for_selection(
+            job_name="defillama_vfr",
+            selection=AssetSelection.assets(
+                ["defillama", "volumes_fees_revenue"],
             ).upstream(),
             cron_schedule="0 14 * * *",
             custom_k8s_config=SMALL_POD,
@@ -233,7 +253,7 @@ defs = Definitions(
                 ["transforms", "erc20transfers"],
                 ["transforms", "interop"],
             ),
-            cron_schedule="17 4,8,14,20 * * *",
+            cron_schedule="17 4,16 * * *",
             custom_k8s_config=SMALL_POD,
         ),
         #

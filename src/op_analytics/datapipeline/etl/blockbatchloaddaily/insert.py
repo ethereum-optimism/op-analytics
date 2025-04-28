@@ -10,22 +10,15 @@ from clickhouse_connect.driver.exceptions import DatabaseError
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
 from op_analytics.coreutils.logger import bound_contextvars, human_interval, human_rows, structlog
 
-from ..blockbatchloadspec.loadspec import LoadSpec
+from .loadspec_date import ClickHouseDateETL
+from .loadspec_datechain import ClickHouseDateChainETL
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
+from .readers import DateChainBatch
 
 log = structlog.get_logger()
 
 
 DIRECTORY = os.path.dirname(__file__)
-
-
-@dataclass
-class DtChainBatch:
-    """Represent a single (dt,chain) that needs to be loaded into ClickHouse."""
-
-    chain: str
-    dt: str
-    partitioned_path: str
 
 
 @dataclass
@@ -67,24 +60,18 @@ class InsertResult:
 
 @dataclass
 class InsertTask:
-    dataset: LoadSpec
-    batch: DtChainBatch
-    enforce_row_count: bool = False
+    dataset: ClickHouseDateChainETL | ClickHouseDateETL
+    batch: DateChainBatch
 
     @property
     def context(self):
         return dict(batch=self.batch.partitioned_path)
 
     def construct_insert(self, dry_run: bool = False):
-        insert_ddl_template = self.dataset.insert_ddl_template(dry_run=dry_run)
-
-        # Replace the INPUT_PARTITION_PATH placeholder in the template
-        select_ddl = insert_ddl_template.replace(
-            "INPUT_PARTITION_PATH",
-            self.batch.partitioned_path,
+        return self.dataset.insert_ddl_template(
+            batch=self.batch,
+            dry_run=dry_run,
         )
-
-        return select_ddl
 
     def dry_run(self):
         insert_ddl = self.construct_insert(dry_run=True)
@@ -130,11 +117,20 @@ class InsertTask:
         )
 
         if insert_result.written_rows > insert_result.read_rows:
-            raise Exception("loading into clickhouse should not result in more rows")
+            raise Exception(
+                f"chain={self.batch.chain}, dt={self.batch.dt} loading into clickhouse should not result in more rows"
+            )
 
-        if insert_result.written_rows < insert_result.read_rows:
-            if self.enforce_row_count:
-                raise Exception("loading into clickhouse should not result in fewer rows")
+        if isinstance(self.dataset, ClickHouseDateChainETL) and insert_result.written_rows == 0:
+            if self.batch.chain in (self.dataset.ignore_zero_rows_chains or []):
+                log.warning(f"loaded 0 rows: chain={self.batch.chain}")
+
+            elif (self.batch.chain, self.batch.dt) in (
+                self.dataset.ignore_zero_rows_chain_dts or []
+            ):
+                log.warning(f"loaded 0 rows: chain={self.batch.chain}, dt={self.batch.dt}")
+            else:
+                raise Exception(f"chain={self.batch.chain}, dt={self.batch.dt} loaded 0 rows")
 
         return insert_result
 

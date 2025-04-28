@@ -15,3 +15,6 @@ class L2Beat(DailyDataset):
 
     # Project TVL
     TVL = "tvl_v1"
+
+    # TVS breakdown
+    TVS_BREAKDOWN = "tvsbreakdown_v1"

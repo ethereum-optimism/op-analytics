@@ -1,7 +1,6 @@
 import os
 import socket
 from dataclasses import asdict, dataclass
-from datetime import date
 from typing import Any
 
 import polars as pl
@@ -11,23 +10,13 @@ from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statemem
 from op_analytics.coreutils.logger import bound_contextvars, human_rows, structlog
 from op_analytics.coreutils.time import date_tostr
 
-from ..blockbatchloadspec.loadspec import LoadSpec
+from .loadspec import BlockBatch, ClickHouseBlockBatchETL
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
 
 log = structlog.get_logger()
 
 
 DIRECTORY = os.path.dirname(__file__)
-
-
-@dataclass
-class BlockBatch:
-    """Represent a blockbatch that needs to be loaded into ClickHouse."""
-
-    chain: str
-    dt: date
-    min_block: int
-    partitioned_path: str
 
 
 @dataclass
@@ -69,30 +58,25 @@ class InsertResult:
 
 @dataclass
 class InsertTask:
-    dataset: LoadSpec
+    dataset: ClickHouseBlockBatchETL
     blockbatch: BlockBatch
-    enforce_row_count: bool = False
+
+    @property
+    def key(self):
+        return (
+            self.dataset.output_root_path,
+            self.blockbatch.partitioned_path,
+        )
 
     @property
     def context(self):
         return dict(blockbatch=self.blockbatch.partitioned_path)
 
     def construct_insert(self, dry_run: bool = False):
-        insert_ddl_template = self.dataset.insert_ddl_template(dry_run=dry_run)
-
-        # Replace the BLOCKBATCH_MIN_BLOCK placeholder in the template
-        # with the min block number of the blockbatch
-        select_ddl = insert_ddl_template.replace(
-            "BLOCKBATCH_MIN_BLOCK",
-            str(self.blockbatch.min_block),
+        return self.dataset.insert_ddl_template(
+            blockbatch=self.blockbatch,
+            dry_run=dry_run,
         )
-
-        select_ddl = select_ddl.replace(
-            "INPUT_PARTITION_PATH",
-            self.blockbatch.partitioned_path,
-        )
-
-        return select_ddl
 
     def dry_run(self):
         insert_ddl = self.construct_insert(dry_run=True)
@@ -100,6 +84,7 @@ class InsertTask:
 
     def execute(self) -> dict[str, Any]:
         with bound_contextvars(**self.context):
+            log.info("running insert")
             insert_result = self.write()
             self.write_marker(insert_result)
 
@@ -137,7 +122,7 @@ class InsertTask:
             raise Exception("loading into clickhouse should not result in more rows")
 
         if insert_result.written_rows < insert_result.read_rows:
-            if self.enforce_row_count:
+            if self.dataset.enforce_non_zero_row_count:
                 raise Exception("loading into clickhouse should not result in fewer rows")
 
         return insert_result

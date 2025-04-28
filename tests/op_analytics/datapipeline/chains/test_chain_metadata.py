@@ -171,6 +171,7 @@ def test_goldsky_chains():
 
         actual.sort()
         expected = [
+            "arenaz",
             "automata",
             "base",
             "bob",

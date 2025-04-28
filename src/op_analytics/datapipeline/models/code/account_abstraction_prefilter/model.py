@@ -18,6 +18,11 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
         "entrypoint_logs_v1",
         "entrypoint_traces_v1",
     ],
+    excluded_chains=[
+        # Exclude chains for which we don't have traces data.
+        "kroma",
+        "unichain_sepolia",
+    ],
 )
 def account_abstraction_prefilter(
     ctx: DuckDBContext,

@@ -82,6 +82,12 @@ def construct_tasks(
         for reader in readers:
             for model_obj in model_objs:
                 model_name = model_obj.name
+                datestr = reader.partition_value("dt")
+                chain = reader.partition_value("chain")
+
+                if chain in model_obj.excluded_chains:
+                    log.info(f"skipping excluded chain={chain} for {model_name}")
+                    continue
 
                 # Each model can have one or more outputs. There is 1 marker per output.
                 expected_outputs = []
@@ -89,9 +95,6 @@ def construct_tasks(
 
                 for dataset in model_obj.expected_output_datasets:
                     full_output_name = f"{model_name}/{dataset}"
-
-                    datestr = reader.partition_value("dt")
-                    chain = reader.partition_value("chain")
 
                     network = determine_network(chain)
                     if network == ChainNetwork.TESTNET:

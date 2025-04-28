@@ -6,7 +6,7 @@ from dagster import (
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.orchestrate import normalize_chains
 from op_analytics.dagster.utils.jobs import get_logs_url
-from op_analytics.datapipeline.etl.ingestion import ingest
+from op_analytics.datapipeline.etl.ingestion.main import ingest
 from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvider
 
 
