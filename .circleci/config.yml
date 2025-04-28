@@ -292,16 +292,19 @@ workflows:
         - equal: [<< pipeline.schedule.name >>, "run_market_data"]
         - equal: [<< pipeline.parameters.run_job >>, "run_market_data"]
     jobs:
+      - setup-python-3-10-job
       - convert-and-run-notebooks-to-py:
-          commit-message: "GH Action Update - Update Market Data"
-          notebook-paths: >-
-            [
-              {"dir": "reference_data/market_data", "notebook": "get_market_data"}
-            ]
+          requires:
+            - setup-python-3-10-job
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics
             - op-analytics-gcp
+          matrix:
+            parameters:
+              notebook_paths:
+                - reference_data/market_data/get_market_data
+
 
   run_op_governance_uploads:
     when:

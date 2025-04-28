@@ -18,8 +18,6 @@ HEADERS = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
-}
-
 
 def get_l2beat_chain_summary():
     url = "https://l2beat.com/api/scaling/summary"
@@ -176,7 +174,7 @@ def get_l2beat_metadata():
     def safe_get_content(url):
         if url:
             try:
-                response = r.get(url)
+                response = r.get(url,headers=HEADERS)
                 if response.status_code == 200:
                     return response.text
                 else:
