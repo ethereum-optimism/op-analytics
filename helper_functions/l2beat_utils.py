@@ -18,6 +18,7 @@ HEADERS = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
+}
 
 def get_l2beat_chain_summary():
     url = "https://l2beat.com/api/scaling/summary"
@@ -246,6 +247,11 @@ def get_l2beat_metadata():
         folder_name = folder.split("/")[-1]
         link_url = f"{base_url}/{folder}"
         # print(link_url)
+
+        skip_folders = ['_clingo','_templates']
+
+        if folder_name in skip_folders:
+            continue
 
         # Initialize a list to store all file URLs
         all_files = []
