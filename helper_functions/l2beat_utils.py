@@ -17,7 +17,7 @@ GITHUB_TOKEN = os.getenv('GITHUB_API_TOKEN')
 HEADERS = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",
     "Accept": "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28",
+    "X-GitHub-Api-Version": "2022-11-28"
 }
 
 def get_l2beat_chain_summary():
