@@ -25,7 +25,13 @@ def hex_to_lossy(x: str | None) -> int | None:
     if x is None:
         return None
 
-    assert len(x) == 66
+    # (pedrod) This fix was applied temporarily to let through some transfers on base
+    # that had a crazy amount with 258 hex characters. This was happening on a few
+    # transactions on batch (min_block=29132800, max_block=29133000)
+    # if len(x) == 258:
+    #     return None
+
+    assert len(x) == 66, f"Expected 66 characters, got {len(x)}: {x}"
 
     # If the string beyond the 16 right-most bytes is zeros then the conversion
     # to BIGINT will be valid.
