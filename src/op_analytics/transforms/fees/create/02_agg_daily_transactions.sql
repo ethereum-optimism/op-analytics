@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `count_transactions` UInt64,
     `count_success_transactions` UInt64,
     `distinct_blocks` UInt64,
+    `distinct_tx_to_address` UInt64,
+    `distinct_tx_from_address` UInt64,
     
     `sum_l2_gas_used` UInt64,
     `sum_success_l2_gas_used` UInt64,
