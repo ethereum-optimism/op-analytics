@@ -27,31 +27,35 @@ PERSONS_LEGACY_PATH = "legacy.persons.csv"
 BUSINESSES_LEGACY_PATH = "legacy.businesses.csv"
 
 # Data Settings
-CACHE_TTL_SECONDS = 600  # 10 minutes
+CACHE_TTL_SECONDS = 600  # 10 minutes (Applies to Typeform/GitHub now)
 EXPIRATION_DAYS = 365  # KYC/KYB expiration period
-PERSONA_MAX_PAGES_NORMAL = 200  # Max pages to fetch in normal mode
 PERSONA_MAX_PAGES_DEBUG = 1  # Max pages to fetch in debug mode
 
 # Status Constants
-STATUS_CLEARED = "🟢 cleared"
-STATUS_REJECTED = "🛑 rejected"
-STATUS_IN_REVIEW = "🟠 in review"
-STATUS_RETRY = "🌕 retry"
-STATUS_INCOMPLETE = "🔵 incomplete"
-STATUS_EXPIRED = "⚫ expired"
-STATUS_NOT_STARTED = "⚪ not started"
-STATUS_UNKNOWN = "❓ unknown"
-STATUS_NO_FORM = "📄 no form"
+STATUS_CLEARED = "🟢 Cleared"
+STATUS_REJECTED = "🛑 Rejected"
+STATUS_IN_REVIEW = "🟠 In Review"
+STATUS_RETRY = "🌕 Retry (Incomplete KYC)"  # Persona Inquiry status: pending/created/expired
+STATUS_INCOMPLETE = (
+    "🔵 Incomplete (KYB)"  # Persona Case status: Waiting on UBOs/pending/created/expired
+)
+STATUS_EXPIRED = "⚫ Expired"
+STATUS_NOT_STARTED = "⚪ Not Started"
+STATUS_UNKNOWN = "❓ Unknown"
+STATUS_NO_FORM = "📄 No Form Data"
 
-# Typeform Field ID - REMOVED Constant, will be loaded from secrets
-# TYPEFORM_NUM_CONTROLLERS_FIELD_ID = "v8dfrNJiIQaZ" # Example ID
+# --- Session State Keys ---
+SESSION_KEY_PERSONA_INQUIRIES = "raw_persona_inquiries"
+SESSION_KEY_PERSONA_CASES = "raw_persona_cases"
+SESSION_KEY_DATA_LOADED = "initial_data_loaded"
+SESSION_KEY_APPLIED_FILTERS = "applied_filters"
 
 
 # --- Authentication ---
 def check_credentials() -> bool:
     """Returns `True` if the user is authenticated."""
-    # (Authentication code remains the same)
 
+    # (Authentication logic remains the same)
     def login_form():
         st.warning("Please log in to access the KYC Lookup Tool.")
         with st.form("credentials"):
@@ -66,7 +70,7 @@ def check_credentials() -> bool:
                     correct_password = st.secrets.get("password", "")
 
                     if not allowed_emails or not correct_password:
-                        st.error("Authentication configuration missing.")
+                        st.error("Authentication configuration missing in secrets.")
                         return False
 
                     if (
@@ -91,50 +95,65 @@ def check_credentials() -> bool:
 
 
 # --- Data Fetching Utilities ---
-# (fetch_persona_data, fetch_typeform_data, fetch_github_csv remain the same as previous step)
-@st.cache_data(ttl=CACHE_TTL_SECONDS)
+
+
+# Persona fetching is NOT cached to allow UI updates during initial load
 def fetch_persona_data(
-    api_key: str, endpoint: str, debug_mode: bool = False
-) -> List[Dict[str, Any]]:
+    api_key: str,
+    endpoint: str,
+    status_indicator_ref,  # Pass the UI element reference
+    debug_mode: bool = False,
+) -> Optional[List[Dict[str, Any]]]:
     """
-    Fetches paginated data from a Persona API endpoint with progress updates.
+    Fetches paginated data from a Persona API endpoint with page-level UI updates.
     Limits pages fetched if debug_mode is True.
+    Returns None on critical fetch error, empty list on success with no data.
+    NOTE: Caching is disabled for this function to allow UI updates.
     """
     results = []
     headers = {"Authorization": f"Bearer {api_key}", "Persona-Version": "2023-01-05"}
     params: Dict[str, Any] = {"page[size]": 100}
     request_url = f"{PERSONA_BASE_URL}/{endpoint}"
     page_count = 0
-    max_pages = PERSONA_MAX_PAGES_DEBUG if debug_mode else float("inf")
+    max_pages = PERSONA_MAX_PAGES_DEBUG if debug_mode else 10000
     debug_msg = " (Debug Mode)" if debug_mode else ""
 
-    status_indicator = st.session_state.get("status_indicator")
-    initial_message = f"Fetching Persona {endpoint}{debug_msg}..."
-    if status_indicator:
-        status_indicator.info(initial_message)
+    # Initial message
+    status_indicator_ref.info(f"⏳ Fetching Persona {endpoint}{debug_msg}...")
 
     while True:
-        if debug_mode and page_count >= max_pages:
+        if page_count >= max_pages:
+            status_indicator_ref.warning(
+                f"⚠️ Reached max page limit ({max_pages}) for Persona {endpoint}{debug_msg}."
+            )
             break
 
         response = None
         page_num_display = page_count + 1
-        progress_message = f"Fetching Persona {endpoint} (Page {page_num_display}){debug_msg}... Fetched {len(results)} records."
-        if status_indicator:
-            status_indicator.info(progress_message)
+
+        # Update status before fetching the page
+        progress_message = f"⏳ Fetching Persona {endpoint} (Page {page_num_display}){debug_msg}... Fetched {len(results)} records."
+        status_indicator_ref.info(progress_message)
 
         try:
-            response = requests.get(request_url, headers=headers, params=params)
+            response = requests.get(request_url, headers=headers, params=params, timeout=30)
             response.raise_for_status()
             response_data = response.json()
             current_page_data = response_data.get("data", [])
-            if not current_page_data and page_count > 0:
-                if status_indicator:
-                    status_indicator.info(
-                        f"Finished fetching Persona {endpoint}{debug_msg}. Received empty page {page_num_display}."
-                    )
-                break
+
+            if not current_page_data and page_count == 0 and response.status_code == 200:
+                status_indicator_ref.info(
+                    f"✅ Finished Persona {endpoint}{debug_msg}. No records found."
+                )
+                break  # Valid empty response
+            elif not current_page_data and page_count > 0:
+                status_indicator_ref.info(
+                    f"✅ Finished Persona {endpoint}{debug_msg}. Reached end (Page {page_num_display})."
+                )
+                break  # End of data
+
             results.extend(current_page_data)
+
             next_link = response_data.get("links", {}).get("next")
             if next_link:
                 try:
@@ -144,112 +163,103 @@ def fetch_persona_data(
                     if next_cursor:
                         params = {"page[size]": 100, "page[after]": next_cursor}
                     else:
-                        if status_indicator:
-                            status_indicator.info(
-                                f"Finished fetching Persona {endpoint}{debug_msg}. No 'next' cursor found."
-                            )
+                        status_indicator_ref.warning(
+                            f"⚠️ Persona {endpoint}: 'next' link found but no cursor. Stopping."
+                        )
                         break
                 except Exception as e:
-                    st.error(f"Error parsing Persona 'next' link or cursor for {endpoint}: {e}")
-                    if status_indicator:
-                        status_indicator.warning(
-                            f"Error parsing 'next' link for Persona {endpoint}{debug_msg}. Stopping fetch."
-                        )
+                    status_indicator_ref.error(
+                        f"❌ Error parsing Persona 'next' link for {endpoint}: {e}"
+                    )
                     break
             else:
-                if status_indicator:
-                    status_indicator.info(
-                        f"Finished fetching Persona {endpoint}{debug_msg}. No 'next' link."
-                    )
-                break
+                status_indicator_ref.info(
+                    f"✅ Finished Persona {endpoint}{debug_msg}. No 'next' link found (Page {page_num_display})."
+                )
+                break  # No more pages
             page_count += 1
+
+        except requests.exceptions.Timeout:
+            error_msg = f"❌ Timeout error fetching Persona {endpoint} (Page {page_num_display}, URL: {request_url})"
+            st.error(error_msg)
+            status_indicator_ref.error(error_msg)
+            return None  # Indicate critical fetch failure
         except requests.exceptions.RequestException as e:
             error_url = request_url if response is None else response.url
-            st.error(
-                f"Error fetching data from Persona {endpoint} (Page {page_num_display}, URL: {error_url}): {e}"
-            )
+            error_msg = f"❌ Error fetching Persona {endpoint} (Page {page_num_display}, URL: {error_url}): {e}"
+            st.error(error_msg)
             if response is not None:
                 st.error(f"Response status: {response.status_code}, Content: {response.text[:500]}")
-            if status_indicator:
-                status_indicator.error(f"Error fetching Persona {endpoint}{debug_msg}. Check logs.")
-            return results
+            status_indicator_ref.error(error_msg)
+            return None  # Indicate fetch failure
         except Exception as e:
-            st.error(
-                f"An unexpected error occurred during Persona fetch for {endpoint} (Page {page_num_display}): {e}"
-            )
-            if status_indicator:
-                status_indicator.error(
-                    f"Unexpected error fetching Persona {endpoint}{debug_msg}. Check logs."
-                )
-            return results
+            error_msg = f"❌ Unexpected error during Persona fetch {endpoint} (Page {page_num_display}): {e}"
+            st.error(error_msg)
+            status_indicator_ref.error(error_msg)
+            return None  # Indicate unexpected error
 
-    if debug_mode and page_count >= max_pages:
-        st.warning(
-            f"Reached maximum page limit ({max_pages}) for Persona endpoint {endpoint}{debug_msg}. Data might be incomplete."
-        )
-        if status_indicator:
-            status_indicator.warning(f"Reached max pages for Persona {endpoint}{debug_msg}.")
-
-    final_msg = (
-        f"✅ Finished fetching {len(results)} records from Persona {endpoint}{debug_msg} (limited to {max_pages} page(s))."
-        if debug_mode
-        else f"✅ Finished fetching {len(results)} records from Persona {endpoint}."
+    # Final confirmation message
+    final_status = (
+        f"✅ Finished fetching {len(results)} records from Persona {endpoint}{debug_msg}."
     )
-    if status_indicator:
-        status_indicator.info(final_msg)
+    status_indicator_ref.info(final_status)
+
     return results
 
 
+# Typeform and GitHub fetching remain cached
 @st.cache_data(ttl=CACHE_TTL_SECONDS)
-def fetch_typeform_data(api_key: str, form_id: str) -> List[Dict[str, Any]]:
-    """Fetches paginated data for a Typeform form."""
+def fetch_typeform_data(api_key: str, form_id: str) -> Optional[List[Dict[str, Any]]]:
+    """Fetches paginated data for a Typeform form. (Cached)"""
+    # (Implementation remains the same as previous version)
     all_items = []
     headers = {"Authorization": f"Bearer {api_key}"}
     url = f"{TYPEFORM_BASE_URL}/forms/{form_id}/responses"
     params: Dict[str, Any] = {"page_size": 1000}
     page_count = 0
-    max_pages = 10
+    max_pages = 20
     total_items_expected = None
-
-    status_indicator = st.session_state.get("status_indicator")
-    if status_indicator:
-        status_indicator.info(f"Fetching Typeform {form_id}...")
 
     while page_count < max_pages:
         response = None
         page_num_display = page_count + 1
-        progress_message = f"Fetching Typeform {form_id} (Page {page_num_display})... Fetched {len(all_items)} records"
-        if total_items_expected:
-            progress_message += f" of ~{total_items_expected}"
-        progress_message += "."
-        if status_indicator:
-            status_indicator.info(progress_message)
 
         try:
-            response = requests.get(url, headers=headers, params=params)
+            response = requests.get(url, headers=headers, params=params, timeout=30)
             response.raise_for_status()
             data = response.json()
             items = data.get("items", [])
             all_items.extend(items)
+
             if page_count == 0 and "total_items" in data:
                 total_items_expected = data["total_items"]
+
             retrieved_items = len(all_items)
             current_page_size = len(items)
+
             if (
-                total_items_expected is not None and retrieved_items >= total_items_expected
-            ) or current_page_size < params.get("page_size", 1000):
+                (total_items_expected is not None and retrieved_items >= total_items_expected)
+                or current_page_size < params.get("page_size", 1000)
+                or current_page_size == 0
+            ):
                 break
+
             if items:
                 last_token = items[-1].get("token")
                 if last_token:
                     params["after"] = last_token
                 else:
                     st.warning(
-                        "Could not find 'token' in last Typeform item for pagination. Stopping."
+                        f"Could not find 'token' in last Typeform item (page {page_num_display}) for pagination. Stopping."
                     )
                     break
             else:
                 break
+        except requests.exceptions.Timeout:
+            st.error(
+                f"Timeout error fetching data from Typeform {form_id} (Page {page_num_display}, URL: {url})"
+            )
+            return None
         except requests.exceptions.RequestException as e:
             error_url = url if response is None else response.url
             st.error(
@@ -257,76 +267,64 @@ def fetch_typeform_data(api_key: str, form_id: str) -> List[Dict[str, Any]]:
             )
             if response is not None:
                 st.error(f"Response status: {response.status_code}, Content: {response.text[:500]}")
-            if status_indicator:
-                status_indicator.error(f"Error fetching Typeform {form_id}.")
-            return all_items
+            return None
         except Exception as e:
             st.error(
                 f"An unexpected error occurred during Typeform fetch (Page {page_num_display}): {e}"
             )
-            if status_indicator:
-                status_indicator.error(f"Unexpected error fetching Typeform {form_id}.")
-            return all_items
+            return None
         page_count += 1
 
     if page_count >= max_pages:
         st.warning(
             f"Reached maximum page limit ({max_pages}) for Typeform {form_id}. Data might be incomplete."
         )
-        if status_indicator:
-            status_indicator.warning(f"Reached max pages for Typeform {form_id}.")
-
-    if status_indicator:
-        status_indicator.info(
-            f"✅ Finished fetching {len(all_items)} records from Typeform {form_id}."
-        )
     return all_items
 
 
 @st.cache_data(ttl=CACHE_TTL_SECONDS)
 def fetch_github_csv(access_token: str, owner: str, repo: str, path: str) -> Optional[pd.DataFrame]:
-    """Fetches a CSV file from a GitHub repository and returns a DataFrame."""
+    """Fetches a CSV file from a GitHub repository and returns a DataFrame. (Cached)"""
+    # (Implementation remains the same as previous version)
     url = f"{GITHUB_BASE_API_URL}/{path}"
     headers = {"Authorization": f"token {access_token}", "Accept": "application/vnd.github.v3.raw"}
 
-    status_indicator = st.session_state.get("status_indicator")
-    if status_indicator:
-        status_indicator.info(f"Fetching GitHub {path}...")
-
     response = None
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=30)
         response.raise_for_status()
         csv_content = response.content.decode("utf-8")
         df = pd.read_csv(StringIO(csv_content))
-        if status_indicator:
-            status_indicator.info(f"✅ Fetched GitHub {path} ({len(df)} rows).")
         return df
+    except requests.exceptions.Timeout:
+        st.error(f"Timeout error fetching GitHub file {path} from {url}")
+        return None
     except requests.exceptions.RequestException as e:
         st.error(f"Failed to fetch GitHub file {path}: {e}")
         if response is not None:
             st.error(f"Response status: {response.status_code}")
             if response.status_code == 401:
-                st.error("GitHub token invalid/missing permissions ('repo' scope?).")
+                st.error("GitHub token seems invalid or lacks 'repo' scope permissions.")
             elif response.status_code == 404:
-                st.error(f"File not found at path: {path}")
-        if status_indicator:
-            status_indicator.error(f"Error fetching GitHub {path}.")
+                st.error(f"File not found at path: {path}. Check owner, repo, and path.")
+            elif response.status_code == 403:
+                st.error(
+                    f"Access forbidden for GitHub file: {path}. Check token permissions or rate limits."
+                )
         return None
     except pd.errors.EmptyDataError:
         st.warning(f"GitHub CSV file {path} is empty.")
-        if status_indicator:
-            status_indicator.warning(f"GitHub file {path} is empty.")
         return pd.DataFrame()
+    except UnicodeDecodeError:
+        st.error(f"Failed to decode GitHub file {path} as UTF-8. Is it a valid CSV?")
+        return None
     except Exception as e:
         st.error(f"An unexpected error occurred fetching or parsing GitHub CSV {path}: {e}")
-        if status_indicator:
-            status_indicator.error(f"Error parsing GitHub {path}.")
         return None
 
 
 # --- Data Processing Functions ---
-# (process_inquiries, process_cases remain the same)
+# (process_inquiries, process_cases, process_typeform, combine_legacy_live remain the same)
 def process_inquiries(raw_inquiries_data: List[Dict[str, Any]]) -> pd.DataFrame:
     """Processes raw Persona inquiry data into a structured DataFrame."""
     records = []
@@ -337,31 +335,33 @@ def process_inquiries(raw_inquiries_data: List[Dict[str, Any]]) -> pd.DataFrame:
         name_first = attributes.get("name-first", "") or ""
         name_middle = attributes.get("name-middle", "") or ""
         name_last = attributes.get("name-last", "") or ""
-        full_name = f"{name_first} {name_middle} {name_last}".strip().replace("  ", " ")
+        full_name = " ".join(filter(None, [name_first, name_middle, name_last])).strip()
         email_raw = attributes.get("email-address", "") or ""
-        email = email_raw.lower().strip() if "@" in email_raw else ""
+        email = email_raw.lower().strip() if isinstance(email_raw, str) and "@" in email_raw else ""
         updated_at_raw = attributes.get("updated-at")
         updated_at = pd.to_datetime(updated_at_raw, errors="coerce", utc=True)
         l2_address_raw = attributes.get("fields", {}).get("l-2-address", {}).get("value")
-        l2_address = np.nan
+        l2_address = ""
         if isinstance(l2_address_raw, str) and l2_address_raw.lower().strip().startswith("0x"):
             l2_address = l2_address_raw.lower().strip()
+
         status = STATUS_UNKNOWN
         if status_raw == "approved":
             status = STATUS_CLEARED
-        elif status_raw in ["expired", "pending", "created"]:
+        elif status_raw in ["pending", "created", "expired"]:
             status = STATUS_RETRY
         elif status_raw == "declined":
             status = STATUS_REJECTED
         elif status_raw == "needs_review":
             status = STATUS_IN_REVIEW
+
         if inquiry_id and email:
             records.append(
                 {
                     "inquiry_id": inquiry_id,
-                    "name": full_name,
+                    "name": full_name if full_name else None,
                     "email": email,
-                    "l2_address": l2_address,
+                    "l2_address": l2_address if l2_address else None,
                     "updated_at": updated_at,
                     "status": status,
                     "source": "persona_inquiry",
@@ -370,7 +370,8 @@ def process_inquiries(raw_inquiries_data: List[Dict[str, Any]]) -> pd.DataFrame:
     df = pd.DataFrame(records)
     if not df.empty:
         df["updated_at"] = pd.to_datetime(df["updated_at"], errors="coerce", utc=True)
-        df["l2_address"] = df["l2_address"].astype(str).replace("nan", "")
+        df["l2_address"] = df["l2_address"].fillna("").astype(str)
+        df["name"] = df["name"].fillna("").astype(str)
     return df
 
 
@@ -391,25 +392,27 @@ def process_cases(raw_cases_data: List[Dict[str, Any]]) -> pd.DataFrame:
         updated_at_raw = attributes.get("updated-at")
         updated_at = pd.to_datetime(updated_at_raw, errors="coerce", utc=True)
         l2_address_raw = fields.get("l-2-address", {}).get("value")
-        l2_address = np.nan
+        l2_address = ""
         if isinstance(l2_address_raw, str) and l2_address_raw.lower().strip().startswith("0x"):
             l2_address = l2_address_raw.lower().strip()
+
         status = STATUS_UNKNOWN
         if status_raw == "Approved":
             status = STATUS_CLEARED
-        elif status_raw in ["expired", "pending", "created", "Waiting on UBOs"]:
+        elif status_raw in ["pending", "created", "Waiting on UBOs", "expired"]:
             status = STATUS_INCOMPLETE
         elif status_raw == "Declined":
             status = STATUS_REJECTED
         elif status_raw in ["Ready for Review", "needs_review"]:
             status = STATUS_IN_REVIEW
+
         if case_id and email and business_name:
             records.append(
                 {
                     "case_id": case_id,
                     "business_name": business_name,
                     "email": email,
-                    "l2_address": l2_address,
+                    "l2_address": l2_address if l2_address else None,
                     "updated_at": updated_at,
                     "status": status,
                     "source": "persona_case",
@@ -418,26 +421,20 @@ def process_cases(raw_cases_data: List[Dict[str, Any]]) -> pd.DataFrame:
     df = pd.DataFrame(records)
     if not df.empty:
         df["updated_at"] = pd.to_datetime(df["updated_at"], errors="coerce", utc=True)
-        df["l2_address"] = df["l2_address"].astype(str).replace("nan", "")
+        df["l2_address"] = df["l2_address"].fillna("").astype(str)
+        df["business_name"] = df["business_name"].fillna("").astype(str)
     return df
 
 
-# Update process_typeform to accept the field ID from secrets
 def process_typeform(
     raw_typeform_data: List[Dict[str, Any]], num_controllers_field_id: Optional[str]
-) -> Optional[pd.DataFrame]:
-    """
-    Processes raw Typeform response data into a structured DataFrame.
-    Uses the provided field ID to distinguish KYC/KYB emails.
-    """
+) -> pd.DataFrame:
+    """Processes raw Typeform response data into a structured DataFrame."""
     if not raw_typeform_data:
-        return None
+        return pd.DataFrame()
     if not num_controllers_field_id:
         st.error(
-            "Typeform Number of Controllers Field ID not configured in secrets. Cannot process emails correctly."
-        )
-        num_controllers_field_id = (
-            "FIELD_ID_MISSING"  # Prevent errors below, but logic will be wrong
+            "Typeform Number of Controllers Field ID not configured. Cannot reliably distinguish KYC/KYB emails."
         )
 
     form_entries = []
@@ -445,55 +442,71 @@ def process_typeform(
         response_id = item.get("response_id")
         submitted_at_raw = item.get("submitted_at")
         submitted_at = pd.to_datetime(submitted_at_raw, errors="coerce", utc=True)
-        hidden = item.get("hidden", {})
+        hidden = item.get("hidden", {}) or {}
         grant_id = hidden.get("grant_id")
         project_id = hidden.get("project_id")
         l2_address_hidden = hidden.get("l2_address")
+
         if pd.isna(grant_id):
             continue
 
-        l2_address = np.nan
+        l2_address = ""
         if isinstance(l2_address_hidden, str) and l2_address_hidden.lower().strip().startswith(
             "0x"
         ):
             l2_address = l2_address_hidden.lower().strip()
 
-        kyc_emails = []
-        kyb_emails = []
+        kyc_emails, kyb_emails = [], []
         number_of_kyb_controllers = 0
-        found_controller_field = False
+        controller_field_encountered = False
         answers = item.get("answers", [])
         if not isinstance(answers, list):
             answers = []
 
+        if num_controllers_field_id:
+            for answer in answers:
+                field = answer.get("field", {})
+                if field.get("id") == num_controllers_field_id and field.get("type") == "number":
+                    number_of_kyb_controllers = answer.get("number", 0)
+                    if (
+                        not isinstance(number_of_kyb_controllers, int)
+                        or number_of_kyb_controllers < 0
+                    ):
+                        number_of_kyb_controllers = 0
+                    break
+
+        controller_field_encountered = False
+        potential_kyb_emails = []
         for answer in answers:
             field = answer.get("field", {})
             field_id = field.get("id")
             field_type = field.get("type")
 
-            # Use the field ID passed from secrets
-            if field_id == num_controllers_field_id and field_type == "number":
-                number_of_kyb_controllers = answer.get("number", 0)
-                found_controller_field = True
+            if num_controllers_field_id and field_id == num_controllers_field_id:
+                controller_field_encountered = True
                 continue
 
             if field_type == "email":
                 email_raw = answer.get("email")
                 if isinstance(email_raw, str) and "@" in email_raw:
                     email_clean = email_raw.lower().strip()
-                    if found_controller_field:
-                        kyb_emails.append(email_clean)
+                    if num_controllers_field_id and controller_field_encountered:
+                        potential_kyb_emails.append(email_clean)
                     else:
                         kyc_emails.append(email_clean)
 
-        kyb_emails = kyb_emails[:number_of_kyb_controllers]
+        if num_controllers_field_id and number_of_kyb_controllers > 0:
+            kyb_emails = potential_kyb_emails[:number_of_kyb_controllers]
+
+        kyc_emails = sorted(list(set(kyc_emails)))
+        kyb_emails = sorted(list(set(kyb_emails)))
 
         form_entries.append(
             {
                 "form_id": response_id,
                 "project_id": project_id,
                 "grant_id": str(grant_id).strip(),
-                "l2_address": l2_address,
+                "l2_address": l2_address if l2_address else None,
                 "submitted_at": submitted_at,
                 "kyc_emails": kyc_emails,
                 "kyb_emails": kyb_emails,
@@ -501,17 +514,16 @@ def process_typeform(
         )
 
     if not form_entries:
-        return None
+        return pd.DataFrame()
     df = pd.DataFrame(form_entries)
-    if not df.empty:
-        df["submitted_at"] = pd.to_datetime(df["submitted_at"], errors="coerce", utc=True)
-        df["l2_address"] = df["l2_address"].astype(str).replace("nan", "")
-        df["grant_id"] = df["grant_id"].astype(str)
+    df["submitted_at"] = pd.to_datetime(df["submitted_at"], errors="coerce", utc=True)
+    df["l2_address"] = df["l2_address"].fillna("").astype(str)
+    df["grant_id"] = df["grant_id"].astype(str)
+    df["kyc_emails"] = df["kyc_emails"].apply(lambda x: x if isinstance(x, list) else [])
+    df["kyb_emails"] = df["kyb_emails"].apply(lambda x: x if isinstance(x, list) else [])
     return df
 
 
-# --- Data Combining & Consolidation ---
-# (combine_legacy_live remains the same)
 def combine_legacy_live(
     legacy_df: Optional[pd.DataFrame],
     live_df: Optional[pd.DataFrame],
@@ -519,160 +531,179 @@ def combine_legacy_live(
     id_col: str,
     date_col: str = "updated_at",
 ) -> pd.DataFrame:
-    """
-    Combines legacy and live data, determines the latest record based on date,
-    and applies expiration logic.
-    """
-    if legacy_df is None:
+    """Combines legacy and live data, determines latest record, applies expiration."""
+    if legacy_df is None or legacy_df.empty:
         legacy_df = pd.DataFrame()
-    if live_df is None:
+    if live_df is None or live_df.empty:
         live_df = pd.DataFrame()
 
-    if legacy_df.empty:
-        combined_df = live_df.copy() if not live_df.empty else pd.DataFrame()
-    elif live_df.empty:
-        combined_df = legacy_df.copy()
-    else:
-        if date_col in legacy_df.columns:
-            legacy_df[date_col] = pd.to_datetime(legacy_df[date_col], errors="coerce", utc=True)
-        if date_col in live_df.columns:
-            live_df[date_col] = pd.to_datetime(live_df[date_col], errors="coerce", utc=True)
+    if legacy_df.empty and live_df.empty:
+        expected_cols = group_by_cols + [
+            id_col,
+            date_col,
+            "status",
+            "l2_address",
+            "name",
+            "business_name",
+            "source",
+        ]
+        return pd.DataFrame(columns=expected_cols)
 
-        required_cols = group_by_cols + [id_col, date_col, "status", "l2_address"]
-        optional_cols = ["name", "business_name"]
-        all_potential_cols = required_cols + optional_cols + ["source"]
-
-        for df in [legacy_df, live_df]:
-            for col in all_potential_cols:
-                if col not in df.columns:
-                    df[col] = np.nan
-
-        if "source" not in legacy_df.columns or legacy_df["source"].isnull().all():
-            legacy_df["source"] = "legacy"
-        if "source" not in live_df.columns or live_df["source"].isnull().all():
-            live_df["source"] = "live"
-
-        all_cols = list(set(legacy_df.columns) | set(live_df.columns))
-        legacy_df = legacy_df.reindex(columns=all_cols)
-        live_df = live_df.reindex(columns=all_cols)
-
-        combined_df = pd.concat([legacy_df, live_df], ignore_index=True)
-
-    if combined_df.empty or date_col not in combined_df.columns:
-        return pd.DataFrame()
+    if not legacy_df.empty and "source" not in legacy_df.columns:
+        legacy_df["source"] = "legacy"
+    if not live_df.empty and "source" not in live_df.columns:
+        live_df["source"] = "live"
 
     epoch_start = pd.Timestamp("1970-01-01", tz="UTC")
-    combined_df[date_col] = pd.to_datetime(combined_df[date_col], errors="coerce", utc=True).fillna(
-        epoch_start
-    )
+    for df in [legacy_df, live_df]:
+        if not df.empty and date_col in df.columns:
+            df[date_col] = pd.to_datetime(df[date_col], errors="coerce", utc=True)
+
+    potential_cols = set(group_by_cols) | {
+        id_col,
+        date_col,
+        "status",
+        "l2_address",
+        "name",
+        "business_name",
+        "source",
+    }
+    if not legacy_df.empty:
+        potential_cols.update(legacy_df.columns)
+    if not live_df.empty:
+        potential_cols.update(live_df.columns)
+    all_cols = list(potential_cols)
+
+    if not legacy_df.empty:
+        legacy_df = legacy_df.reindex(columns=all_cols, fill_value=np.nan)
+    if not live_df.empty:
+        live_df = live_df.reindex(columns=all_cols, fill_value=np.nan)
+
+    combined_df = pd.concat([legacy_df, live_df], ignore_index=True)
+
+    if date_col in combined_df.columns:
+        combined_df[date_col] = pd.to_datetime(
+            combined_df[date_col], errors="coerce", utc=True
+        ).fillna(epoch_start)
+    for col in group_by_cols:
+        if col in combined_df.columns:
+            combined_df[col] = (
+                combined_df[col].astype(str).str.lower().str.strip().replace("nan", "", regex=False)
+            )
 
     valid_group_by_cols = [col for col in group_by_cols if col in combined_df.columns]
     if not valid_group_by_cols:
-        st.error(f"Group_by columns missing: {group_by_cols}")
-        return pd.DataFrame()
-
-    fill_cols = ["status", "l2_address", "name", "business_name", "source", id_col]
-    for col in fill_cols:
-        if col in combined_df.columns:
-            combined_df[col] = combined_df.groupby(valid_group_by_cols)[col].ffill().bfill()
+        st.error(f"Critical Error: Group-by columns {group_by_cols} not found.")
+        return pd.DataFrame(columns=all_cols)
 
     combined_df = combined_df.sort_values(
-        by=valid_group_by_cols + [date_col], ascending=[True] * len(valid_group_by_cols) + [False]
+        by=valid_group_by_cols + [date_col],
+        ascending=[True] * len(valid_group_by_cols) + [False],
+        na_position="last",
     )
-    combined_df = combined_df.drop_duplicates(subset=valid_group_by_cols, keep="first")
+    latest_df = combined_df.drop_duplicates(subset=valid_group_by_cols, keep="first").copy()
 
-    if "status" in combined_df.columns:
+    if "status" in latest_df.columns and date_col in latest_df.columns:
         current_date_utc = datetime.now(timezone.utc)
         expiration_threshold = current_date_utc - timedelta(days=EXPIRATION_DAYS)
-        combined_df[date_col] = pd.to_datetime(combined_df[date_col], errors="coerce", utc=True)
-
-        expired_mask = (combined_df["status"] == STATUS_CLEARED) & (
-            combined_df[date_col] < expiration_threshold
+        latest_df[date_col] = pd.to_datetime(latest_df[date_col], errors="coerce", utc=True)
+        expired_mask = (
+            (latest_df["status"] == STATUS_CLEARED)
+            & (latest_df[date_col].notna())
+            & (latest_df[date_col] < expiration_threshold)
         )
-        combined_df.loc[expired_mask, "status"] = STATUS_EXPIRED
-        combined_df["status"] = combined_df["status"].fillna(STATUS_NOT_STARTED)
+        latest_df.loc[expired_mask, "status"] = STATUS_EXPIRED
+        latest_df["status"] = latest_df["status"].fillna(STATUS_NOT_STARTED)
     else:
-        st.warning("Column 'status' not found for expiration logic.")
+        st.warning(f"Columns 'status' or '{date_col}' not found. Cannot apply expiration logic.")
+        if "status" not in latest_df.columns:
+            latest_df["status"] = STATUS_NOT_STARTED
+        else:
+            latest_df["status"] = latest_df["status"].fillna(STATUS_NOT_STARTED)
 
-    combined_df[date_col] = combined_df[date_col].replace(epoch_start, pd.NaT)
-    combined_df.replace({np.nan: None}, inplace=True)
-    if "l2_address" in combined_df.columns:
-        combined_df["l2_address"] = combined_df["l2_address"].fillna("")
+    if date_col in latest_df.columns:
+        latest_df[date_col] = latest_df[date_col].replace(epoch_start, pd.NaT)
 
-    return combined_df
+    for col in ["l2_address", "name", "business_name", "source", id_col]:
+        if col in latest_df.columns:
+            latest_df[col] = latest_df[col].fillna("").astype(str)
+    for col in valid_group_by_cols:
+        latest_df[col] = latest_df[col].astype(str).str.lower().str.strip()
+
+    return latest_df
 
 
 # --- UI Interaction Functions ---
-# (perform_search remains the same)
 def perform_search(df: pd.DataFrame, search_term: str, search_fields: List[str]) -> pd.DataFrame:
     """Performs a case-insensitive search across specified fields in a DataFrame."""
-    if not search_term or df.empty:
-        return pd.DataFrame(columns=df.columns)  # Return empty df structure
+    if not search_term or df is None or df.empty:
+        return pd.DataFrame(columns=df.columns if df is not None else [])
+    search_term_lower = search_term.lower().strip()
+    if not search_term_lower:
+        return pd.DataFrame(columns=df.columns)
 
-    search_term_lower = search_term.lower()
     mask = pd.Series(False, index=df.index)
-
     for field in search_fields:
         if field in df.columns:
-            # Fill NA with empty string for safe searching
             mask |= (
                 df[field]
                 .fillna("")
                 .astype(str)
                 .str.lower()
-                .str.contains(search_term_lower, na=False)
+                .str.contains(search_term_lower, na=False, regex=False)
             )
-        else:
-            pass
-
     return df[mask]
 
 
-# Update display_search_results to use column_config
 def display_search_results(
     results_df: pd.DataFrame,
     search_type: str,
     all_persons_df: pd.DataFrame,
     all_businesses_df: pd.DataFrame,
 ):
-    """Displays search results in a structured format using column_config."""
-
-    # Add search context header
-    # st.subheader(f"Search Results: {search_type}") # Already added in main
-
-    if results_df.empty:
+    """Displays search results in a structured format."""
+    if results_df is None or results_df.empty:
         st.info("No matching results found.")
         return
 
-    # --- Define Column Configs ---
     column_config_base = {
-        "updated_at": st.column_config.DatetimeColumn("Last Updated", format="YYYY-MM-DD"),
-        "submitted_at": st.column_config.DatetimeColumn("Form Submitted", format="YYYY-MM-DD"),
-        "inquiry_id": st.column_config.TextColumn("Inquiry ID", help="Internal Persona Inquiry ID"),
-        "case_id": st.column_config.TextColumn("Case ID", help="Internal Persona Case ID"),
-        "form_id": st.column_config.TextColumn("Form ID", help="Internal Typeform Response ID"),
-        "project_id": st.column_config.TextColumn(
-            "Project ID", help="Internal Project ID (from Typeform/Legacy)"
+        "updated_at": st.column_config.DatetimeColumn("Last Updated", format="YYYY-MM-DD HH:mm"),
+        "submitted_at": st.column_config.DatetimeColumn(
+            "Form Submitted", format="YYYY-MM-DD HH:mm"
         ),
-        "l2_address": st.column_config.TextColumn(
-            "L2 Address"
-        ),  # Could potentially be LinkColumn if base URL known
-        "op_amt": st.column_config.NumberColumn("OP Amount", format="%.2f"),
-        "email": st.column_config.TextColumn("Email"),
-        "name": st.column_config.TextColumn("Individual Name"),
-        "business_name": st.column_config.TextColumn("Business Name"),
-        "project_name": st.column_config.TextColumn("Project Name"),
-        "round_id": st.column_config.TextColumn("Round ID"),
-        "status": st.column_config.TextColumn("KYC Status"),
-        "overall_status": st.column_config.TextColumn("Grant Status"),
-        "source": st.column_config.TextColumn("Latest Source"),
-        # Hide email lists by default in Grant search results table
+        "inquiry_id": st.column_config.TextColumn(
+            "Persona Inquiry ID", help="Internal Persona Inquiry ID", width="medium"
+        ),
+        "case_id": st.column_config.TextColumn(
+            "Persona Case ID", help="Internal Persona Case ID", width="medium"
+        ),
+        "form_id": st.column_config.TextColumn(
+            "Typeform Resp ID", help="Internal Typeform Response ID", width="medium"
+        ),
+        "project_id": st.column_config.TextColumn(
+            "Project ID", help="Internal Project ID (from Typeform/Legacy)", width="small"
+        ),
+        "l2_address": st.column_config.TextColumn("L2 Address", width="large"),
+        "op_amt": st.column_config.NumberColumn(
+            "OP Amount", format="%.2f", help="OP amount from legacy contributors data"
+        ),
+        "email": st.column_config.TextColumn("Email", width="medium"),
+        "name": st.column_config.TextColumn("Individual Name", width="medium"),
+        "business_name": st.column_config.TextColumn("Business Name", width="medium"),
+        "project_name": st.column_config.TextColumn("Project Name", width="medium"),
+        "round_id": st.column_config.TextColumn("Round ID", width="small"),
+        "status": st.column_config.TextColumn("KYC/KYB Status", width="medium"),
+        "overall_status": st.column_config.TextColumn("Grant Status", width="medium"),
+        "source": st.column_config.TextColumn(
+            "Latest Source", help="Origin of the latest status (live/legacy)", width="small"
+        ),
         "kyc_emails": None,
         "kyb_emails": None,
     }
+    st.markdown("---")
 
-    # --- Display Logic ---
     if search_type == "Individual (KYC)":
+        st.subheader("👤 Individual Search Results")
         cols_to_display = [
             "name",
             "email",
@@ -683,6 +714,7 @@ def display_search_results(
             "round_id",
             "op_amt",
             "source",
+            "inquiry_id",
         ]
         display_df = results_df[
             [col for col in cols_to_display if col in results_df.columns]
@@ -690,94 +722,133 @@ def display_search_results(
         st.dataframe(
             display_df, use_container_width=True, column_config=column_config_base, hide_index=True
         )
-        # Display summary for the first result
-        if not results_df.empty:
-            first_result = results_df.iloc[0]
-            st.markdown(
-                f"#### Latest Status for {first_result.get('name', first_result.get('email', 'Result'))}: **{first_result.get('status', STATUS_UNKNOWN)}**"
-            )
+        if not display_df.empty:
+            first_result = display_df.iloc[0]
+            name_display = first_result.get("name") or first_result.get("email", "N/A")
+            status_display = first_result.get("status", STATUS_UNKNOWN)
+            st.markdown(f"**Latest Status for {name_display}:** {status_display}")
 
     elif search_type == "Business (KYB)":
-        cols_to_display = ["business_name", "email", "l2_address", "status", "updated_at", "source"]
+        st.subheader("🏢 Business Search Results")
+        cols_to_display = [
+            "business_name",
+            "email",
+            "l2_address",
+            "status",
+            "updated_at",
+            "source",
+            "case_id",
+        ]
         display_df = results_df[
             [col for col in cols_to_display if col in results_df.columns]
         ].copy()
         st.dataframe(
             display_df, use_container_width=True, column_config=column_config_base, hide_index=True
         )
-        if not results_df.empty:
-            first_result = results_df.iloc[0]
-            st.markdown(
-                f"#### Latest Status for {first_result.get('business_name', first_result.get('email', 'Result'))}: **{first_result.get('status', STATUS_UNKNOWN)}**"
-            )
+        if not display_df.empty:
+            first_result = display_df.iloc[0]
+            name_display = first_result.get("business_name") or first_result.get("email", "N/A")
+            status_display = first_result.get("status", STATUS_UNKNOWN)
+            st.markdown(f"**Latest Status for {name_display}:** {status_display}")
 
     elif search_type == "Grant ID":
-        cols_to_display = [
+        st.subheader("📄 Grant Search Results")
+        cols_to_display_main = [
             "grant_id",
             "project_name",
             "round_id",
             "overall_status",
             "l2_address",
             "submitted_at",
-            "kyc_emails",
-            "kyb_emails",
+            "form_id",
         ]
-        display_df = results_df[
-            [col for col in cols_to_display if col in results_df.columns]
+        display_df_main = results_df[
+            [col for col in cols_to_display_main if col in results_df.columns]
         ].copy()
-        # Display main grant info table (hide email lists here)
         st.dataframe(
-            display_df, use_container_width=True, column_config=column_config_base, hide_index=True
+            display_df_main,
+            use_container_width=True,
+            column_config=column_config_base,
+            hide_index=True,
         )
 
-        # Display individual statuses separately below the main table
+        st.markdown("#### Linked Individuals & Businesses:")
         for index, grant_row in results_df.iterrows():
-            st.markdown("---")
             st.markdown(
-                f"#### Details for Grant: {grant_row['grant_id']} ({grant_row.get('project_name', 'N/A')})"
+                f"**Details for Grant:** `{grant_row['grant_id']}` (Project: {grant_row.get('project_name', 'N/A')})"
             )
-            st.markdown(
-                f"**Overall Status:** **{grant_row.get('overall_status', STATUS_UNKNOWN)}**"
-            )
-
             kyc_emails = grant_row.get("kyc_emails", [])
             kyb_emails = grant_row.get("kyb_emails", [])
 
             if kyc_emails:
                 st.markdown("**Individual KYC Statuses:**")
                 kyc_status_data = []
+                person_lookup = {}
+                if (
+                    all_persons_df is not None
+                    and not all_persons_df.empty
+                    and "email" in all_persons_df.columns
+                ):
+                    all_persons_df["email_lookup"] = (
+                        all_persons_df["email"].astype(str).str.lower().str.strip()
+                    )
+                    person_lookup = all_persons_df.set_index("email_lookup").to_dict("index")
                 for email in kyc_emails:
-                    person_row = all_persons_df[all_persons_df["email"] == email]
+                    email_lower = email.lower().strip()
+                    person_data = person_lookup.get(email_lower)
                     status = (
-                        person_row["status"].iloc[0] if not person_row.empty else STATUS_NOT_STARTED
+                        person_data.get("status", STATUS_NOT_STARTED)
+                        if person_data
+                        else STATUS_NOT_STARTED
                     )
-                    name = (
-                        person_row["name"].iloc[0]
-                        if not person_row.empty and pd.notna(person_row["name"].iloc[0])
-                        else "N/A"
-                    )
+                    name = person_data.get("name", "") if person_data else ""
+                    name_display = name if name else "N/A"
+                    last_update_raw = person_data.get("updated_at") if person_data else None
                     last_update = (
-                        pd.to_datetime(person_row["updated_at"].iloc[0]).strftime("%Y-%m-%d")
-                        if not person_row.empty and pd.notna(person_row["updated_at"].iloc[0])
+                        pd.to_datetime(last_update_raw).strftime("%Y-%m-%d")
+                        if pd.notna(last_update_raw)
                         else "N/A"
                     )
                     kyc_status_data.append(
-                        {"Email": email, "Name": name, "Status": status, "Last Update": last_update}
+                        {
+                            "Email": email,
+                            "Name": name_display,
+                            "Status": status,
+                            "Last Update": last_update,
+                        }
                     )
-                st.table(pd.DataFrame(kyc_status_data))  # Use st.table for simple display
+                st.dataframe(
+                    pd.DataFrame(kyc_status_data), use_container_width=True, hide_index=True
+                )
             else:
-                st.markdown("*No individual KYC emails linked.*")
+                st.markdown("*No individual KYC emails linked via Typeform.*")
 
             if kyb_emails:
                 st.markdown("**Business KYB Statuses:**")
                 kyb_status_data = []
+                business_lookup = {}
+                if (
+                    all_businesses_df is not None
+                    and not all_businesses_df.empty
+                    and "email" in all_businesses_df.columns
+                ):
+                    all_businesses_df["email_lookup"] = (
+                        all_businesses_df["email"].astype(str).str.lower().str.strip()
+                    )
+                    business_lookup = (
+                        all_businesses_df.groupby("email_lookup")
+                        .apply(lambda x: x.to_dict("records"))
+                        .to_dict()
+                    )
                 for email in kyb_emails:
-                    business_rows = all_businesses_df[all_businesses_df["email"] == email]
-                    if not business_rows.empty:
-                        for _, biz_row in business_rows.iterrows():
+                    email_lower = email.lower().strip()
+                    business_records = business_lookup.get(email_lower, [])
+                    if business_records:
+                        for biz_row in business_records:
+                            last_update_raw = biz_row.get("updated_at")
                             last_update = (
-                                pd.to_datetime(biz_row.get("updated_at")).strftime("%Y-%m-%d")
-                                if pd.notna(biz_row.get("updated_at"))
+                                pd.to_datetime(last_update_raw).strftime("%Y-%m-%d")
+                                if pd.notna(last_update_raw)
                                 else "N/A"
                             )
                             kyb_status_data.append(
@@ -792,21 +863,23 @@ def display_search_results(
                         kyb_status_data.append(
                             {
                                 "Email": email,
-                                "Business Name": "N/A",
+                                "Business Name": "N/A (Not Found)",
                                 "Status": STATUS_NOT_STARTED,
                                 "Last Update": "N/A",
                             }
                         )
-                st.table(pd.DataFrame(kyb_status_data))  # Use st.table for simple display
+                st.dataframe(
+                    pd.DataFrame(kyb_status_data), use_container_width=True, hide_index=True
+                )
             else:
-                st.markdown("*No business KYB emails linked.*")
+                st.markdown("*No business KYB emails linked via Typeform.*")
             st.markdown("---")
 
 
 # --- Main Application Logic ---
 def main():
     """Main function to run the Streamlit application."""
-    st.title("🗝️ KYC Lookup Tool")
+    st.title("🗝️ Optimism KYC/KYB Lookup Tool")
 
     if not check_credentials():
         st.stop()
@@ -816,93 +889,199 @@ def main():
     # --- Sidebar Setup ---
     st.sidebar.header("⚙️ Settings & Status")
     debug_mode_enabled = st.sidebar.checkbox(
-        "Enable Debug Mode (Limit Persona Data)", key="debug_mode", value=False
+        "Enable Debug Mode (Limit Persona Data)",
+        key="debug_mode",
+        value=False,
+        help="Fetches only the first page of data from Persona API endpoints.",
+        disabled=True,
     )
     if "status_indicator" not in st.session_state:
         st.session_state.status_indicator = st.sidebar.empty()
+    status_indicator = st.session_state.status_indicator
+
     if debug_mode_enabled:
-        st.warning("🐞 Debug Mode Active: Persona data is limited.", icon="⚠️")
+        st.warning("🐞 Debug Mode Active: Persona data fetching is limited.", icon="⚠️")
 
     # --- Load Secrets ---
-    st.session_state.status_indicator.info("Loading secrets...")
+    # (Secrets loading remains the same)
+    status_indicator.info("⏳ Loading secrets...")
     try:
         persona_api_key = st.secrets["persona"]["api_key"]
         typeform_key = st.secrets["typeform"]["typeform_key"]
         github_token = st.secrets["github"]["access_token"]
-        # Load Typeform Field ID from secrets (Improvement 3)
         typeform_num_controllers_field_id = st.secrets.get("typeform", {}).get(
             "num_controllers_field_id"
         )
 
         if not persona_api_key or not typeform_key or not github_token:
-            raise KeyError("API keys (Persona, Typeform, GitHub) are missing.")
+            raise KeyError("Essential API keys missing.")
         if not typeform_num_controllers_field_id:
-            st.warning(
-                "Typeform 'num_controllers_field_id' not found in secrets. Email parsing may be incorrect."
-            )
-            # Provide a default or handle error later in processing
-            # typeform_num_controllers_field_id = None # Let processing function handle None
+            status_indicator.warning("⚠️ Typeform 'num_controllers_field_id' missing.")
 
     except KeyError as e:
-        st.session_state.status_indicator.error(f"Missing secret config: {e}")
-        st.error(f"Fatal Error: Missing secret configuration: {e}. App cannot proceed.")
+        status_indicator.error(f"❌ Missing Secret Config: {e}")
+        st.error(f"Fatal Error: Missing required secret configuration: {e}.")
         st.stop()
-    except Exception as e:  # Catch other potential secret loading errors
-        st.session_state.status_indicator.error(f"Error loading secrets: {e}")
-        st.error(f"Fatal Error loading secrets: {e}. App cannot proceed.")
+    except Exception as e:
+        status_indicator.error(f"❌ Error Loading Secrets: {e}")
+        st.error(f"Fatal Error loading secrets: {e}.")
         st.stop()
+    status_indicator.info("✅ Secrets loaded.")
 
-    # --- Load Data ---
-    def load_all_data(persona_key, tf_key, gh_token, debug_enabled):
+    # --- Load Data (MODIFIED: Uses Session State for Persona) ---
+    def load_all_data(persona_key, tf_key, gh_token, debug_enabled, status_indicator_ref):
+        """
+        Loads all data sources. Fetches Persona data only if not already in session state.
+        Updates the status indicator.
+        """
         data = {}
-        status_indicator = st.session_state.get("status_indicator")
-        if status_indicator:
-            status_indicator.info("Fetching data... See sidebar for details.")
+        fetch_summary = []
+        overall_success = True
 
-        data["inquiries_raw"] = fetch_persona_data(
-            persona_key, "inquiries", debug_mode=debug_enabled
-        )
-        data["cases_raw"] = fetch_persona_data(persona_key, "cases", debug_mode=debug_enabled)
-        data["typeform_raw"] = fetch_typeform_data(tf_key, TYPEFORM_FORM_ID)
-        data["contributors_legacy"] = fetch_github_csv(
-            gh_token, GITHUB_OWNER, GITHUB_REPO, CONTRIBUTORS_PATH
-        )
-        data["projects_legacy"] = fetch_github_csv(
-            gh_token, GITHUB_OWNER, GITHUB_REPO, PROJECTS_PATH
-        )
-        data["persons_legacy"] = fetch_github_csv(
-            gh_token, GITHUB_OWNER, GITHUB_REPO, PERSONS_LEGACY_PATH
-        )
-        data["businesses_legacy"] = fetch_github_csv(
-            gh_token, GITHUB_OWNER, GITHUB_REPO, BUSINESSES_LEGACY_PATH
-        )
+        # Check if Persona data is already loaded in this session
+        if st.session_state.get(SESSION_KEY_DATA_LOADED, False):
+            status_indicator_ref.info("⏳ Loading Persona data from session...")
+            data[SESSION_KEY_PERSONA_INQUIRIES] = st.session_state.get(
+                SESSION_KEY_PERSONA_INQUIRIES, []
+            )
+            data[SESSION_KEY_PERSONA_CASES] = st.session_state.get(SESSION_KEY_PERSONA_CASES, [])
+            fetch_summary.append(
+                f"✅ Persona Inquiries: {len(data[SESSION_KEY_PERSONA_INQUIRIES])} records (from session)"
+            )
+            fetch_summary.append(
+                f"✅ Persona Cases: {len(data[SESSION_KEY_PERSONA_CASES])} records (from session)"
+            )
+            status_indicator_ref.info("✅ Persona data loaded from session.")
+        else:
+            # --- Initial Persona Fetching (Not Cached, with UI updates inside) ---
+            status_indicator_ref.info("⏳ Performing initial Persona data fetch...")
+            persona_actions = [
+                {
+                    "key": SESSION_KEY_PERSONA_INQUIRIES,
+                    "endpoint": "inquiries",
+                    "label": "Persona Inquiries",
+                },
+                {"key": SESSION_KEY_PERSONA_CASES, "endpoint": "cases", "label": "Persona Cases"},
+            ]
+            persona_load_success = True
+            for action in persona_actions:
+                result = fetch_persona_data(
+                    persona_key, action["endpoint"], status_indicator_ref, debug_enabled
+                )
+                if result is None:
+                    fetch_summary.append(f"❌ {action['label']}: Failed")
+                    data[action["key"]] = []
+                    overall_success = False
+                    persona_load_success = False  # Mark Persona load failed
+                else:
+                    count = len(result)
+                    fetch_summary.append(f"✅ {action['label']}: {count} records")
+                    data[action["key"]] = result
+                    # Store successful result in session state
+                    st.session_state[action["key"]] = result
 
-        if (
-            data.get("inquiries_raw") is None
-            or data.get("cases_raw") is None
-            or data.get("typeform_raw") is None
-        ):
-            st.warning("Failed to load some live data. Results may be incomplete.")
-        if (
-            data.get("contributors_legacy") is None
-            or data.get("projects_legacy") is None
-            or data.get("persons_legacy") is None
-            or data.get("businesses_legacy") is None
-        ):
-            st.warning("Failed to load some legacy data. Results may be incomplete.")
+            # Set the loaded flag only if both Persona fetches were successful
+            if persona_load_success:
+                st.session_state[SESSION_KEY_DATA_LOADED] = True
+                status_indicator_ref.info(
+                    "✅ Initial Persona fetch complete and stored in session."
+                )
+            else:
+                status_indicator_ref.error(
+                    "❌ Initial Persona fetch failed. Data may be incomplete."
+                )
 
-        if status_indicator:
-            status_indicator.info("Data fetching complete. Processing...")
-        return data
+        # --- Typeform & GitHub Fetching (Always use cache) ---
+        cached_fetch_actions = [
+            {
+                "key": "typeform_raw",
+                "type": "Typeform",
+                "args": [tf_key, TYPEFORM_FORM_ID],
+                "fetch_func": fetch_typeform_data,
+                "label": "Typeform Responses",
+            },
+            {
+                "key": "contributors_legacy",
+                "type": "GitHub",
+                "args": [gh_token, GITHUB_OWNER, GITHUB_REPO, CONTRIBUTORS_PATH],
+                "fetch_func": fetch_github_csv,
+                "label": "Legacy Contributors",
+            },
+            {
+                "key": "projects_legacy",
+                "type": "GitHub",
+                "args": [gh_token, GITHUB_OWNER, GITHUB_REPO, PROJECTS_PATH],
+                "fetch_func": fetch_github_csv,
+                "label": "Legacy Projects",
+            },
+            {
+                "key": "persons_legacy",
+                "type": "GitHub",
+                "args": [gh_token, GITHUB_OWNER, GITHUB_REPO, PERSONS_LEGACY_PATH],
+                "fetch_func": fetch_github_csv,
+                "label": "Legacy Persons",
+            },
+            {
+                "key": "businesses_legacy",
+                "type": "GitHub",
+                "args": [gh_token, GITHUB_OWNER, GITHUB_REPO, BUSINESSES_LEGACY_PATH],
+                "fetch_func": fetch_github_csv,
+                "label": "Legacy Businesses",
+            },
+        ]
 
+        for action in cached_fetch_actions:
+            label = action["label"]
+            status_indicator_ref.info(f"⏳ Fetching {label} (cached)...")
+            result = action["fetch_func"](*action["args"])  # Call cached fetch function
+
+            if result is None:  # Critical fetch error
+                fetch_summary.append(f"❌ {label}: Failed")
+                data[action["key"]] = [] if action["type"] == "Typeform" else pd.DataFrame()
+                overall_success = False
+            else:  # Success (potentially empty data)
+                count = len(result)
+                item_type = "records" if isinstance(result, list) else "rows"
+                fetch_summary.append(f"✅ {label}: {count} {item_type}")
+                data[action["key"]] = result
+
+        # Display final summary status
+        summary_message = "\n".join(fetch_summary)
+        status_indicator_ref.markdown(
+            f"**Data Load Status:**\n```\n{summary_message}\n```"
+        )  # Use markdown for better formatting
+
+        # Add processing message
+        if overall_success:
+            status_indicator_ref.info("⚙️ Processing data...")
+        else:
+            status_indicator_ref.warning("⚠️ Processing potentially incomplete data...")
+
+        # Rename keys for consistency before returning (map session keys back)
+        data_processed_keys = data.copy()
+        data_processed_keys["inquiries_raw"] = data_processed_keys.pop(
+            SESSION_KEY_PERSONA_INQUIRIES, []
+        )
+        data_processed_keys["cases_raw"] = data_processed_keys.pop(SESSION_KEY_PERSONA_CASES, [])
+
+        return data_processed_keys  # Return dict with original expected keys
+
+    # Call the data loading function
     loaded_data = load_all_data(
-        persona_api_key, typeform_key, github_token, debug_enabled=debug_mode_enabled
+        persona_api_key,
+        typeform_key,
+        github_token,
+        debug_enabled=debug_mode_enabled,
+        status_indicator_ref=status_indicator,
     )
 
     # --- Process Data ---
+    # Processing function remains cached
     @st.cache_data(max_entries=5)
     def process_and_consolidate_data(data_dict, tf_controller_field_id):
-        with st.spinner("Processing and consolidating data..."):
+        """Processes raw data and consolidates legacy/live information."""
+        # (Implementation remains the same as previous version)
+        with st.spinner("⚙️ Processing and consolidating data..."):
             processed = {}
             processed["persons_live_df"] = process_inquiries(data_dict.get("inquiries_raw", []))
             processed["businesses_live_df"] = process_cases(data_dict.get("cases_raw", []))
@@ -917,407 +1096,573 @@ def main():
             processed["projects_legacy_df"] = data_dict.get("projects_legacy", pd.DataFrame())
 
             processed["all_persons_df"] = combine_legacy_live(
-                processed["persons_legacy_df"],
-                processed["persons_live_df"],
+                legacy_df=processed["persons_legacy_df"],
+                live_df=processed["persons_live_df"],
                 group_by_cols=["email"],
                 id_col="inquiry_id",
                 date_col="updated_at",
             )
             processed["all_businesses_df"] = combine_legacy_live(
-                processed["businesses_legacy_df"],
-                processed["businesses_live_df"],
+                legacy_df=processed["businesses_legacy_df"],
+                live_df=processed["businesses_live_df"],
                 group_by_cols=["email", "business_name"],
                 id_col="case_id",
                 date_col="updated_at",
             )
 
-            processed["all_contributors_view"] = processed["contributors_legacy_df"]
+            processed["all_contributors_view"] = pd.DataFrame()
+            contributors_legacy_df = processed.get("contributors_legacy_df")
+            all_persons_df = processed.get("all_persons_df")
             if (
-                processed["contributors_legacy_df"] is not None
-                and not processed["contributors_legacy_df"].empty
-                and "email" in processed["contributors_legacy_df"].columns
-                and processed["all_persons_df"] is not None
-                and not processed["all_persons_df"].empty
+                contributors_legacy_df is not None
+                and not contributors_legacy_df.empty
+                and "email" in contributors_legacy_df.columns
+                and all_persons_df is not None
+                and not all_persons_df.empty
+                and "email" in all_persons_df.columns
             ):
-                person_status_cols = ["email", "status", "l2_address", "updated_at", "name"]
-                cols_to_merge = [
-                    col for col in person_status_cols if col in processed["all_persons_df"].columns
+                person_status_cols = [
+                    "email",
+                    "status",
+                    "l2_address",
+                    "updated_at",
+                    "name",
+                    "source",
+                    "inquiry_id",
                 ]
-                merged_contributors = processed["contributors_legacy_df"].merge(
-                    processed["all_persons_df"][cols_to_merge],
+                cols_to_merge = [col for col in person_status_cols if col in all_persons_df.columns]
+                contrib_merge = contributors_legacy_df.copy()
+                contrib_merge["email"] = contrib_merge["email"].astype(str).str.lower().str.strip()
+                persons_merge = all_persons_df[cols_to_merge].copy()
+                persons_merge["email"] = persons_merge["email"].astype(str).str.lower().str.strip()
+                persons_merge = persons_merge.drop_duplicates(subset=["email"], keep="first")
+                merged_contributors = pd.merge(
+                    contrib_merge,
+                    persons_merge,
                     on="email",
                     how="left",
                     suffixes=("_contrib", "_person"),
                 )
-                for col in ["status", "l2_address", "updated_at", "name"]:
+
+                for col in ["status", "l2_address", "updated_at", "name", "source", "inquiry_id"]:
                     p_col, c_col = f"{col}_person", f"{col}_contrib"
                     if p_col in merged_contributors.columns:
                         merged_contributors[col] = merged_contributors[p_col].fillna(
                             merged_contributors.get(c_col)
                         )
                         merged_contributors = merged_contributors.drop(
-                            columns=[p_col, c_col], errors="ignore"
+                            columns=[p_col], errors="ignore"
                         )
+                        if c_col in merged_contributors.columns:
+                            merged_contributors = merged_contributors.drop(
+                                columns=[c_col], errors="ignore"
+                            )
                     elif c_col in merged_contributors.columns:
                         merged_contributors[col] = merged_contributors[c_col]
                         merged_contributors = merged_contributors.drop(
                             columns=[c_col], errors="ignore"
                         )
+
                 if "status" in merged_contributors.columns:
                     merged_contributors["status"] = merged_contributors["status"].fillna(
                         STATUS_NOT_STARTED
                     )
                 else:
                     merged_contributors["status"] = STATUS_NOT_STARTED
-                merged_contributors.replace({np.nan: None}, inplace=True)
-                if "l2_address" in merged_contributors.columns:
-                    merged_contributors["l2_address"] = merged_contributors["l2_address"].fillna("")
-                dedup_cols = ["email", "round_id", "op_amt"]
-                valid_dedup_cols = [col for col in dedup_cols if col in merged_contributors.columns]
-                if len(valid_dedup_cols) == len(dedup_cols):
-                    merged_contributors.drop_duplicates(
-                        subset=valid_dedup_cols, inplace=True, keep="last"
-                    )
-                processed["all_contributors_view"] = merged_contributors
-            else:
-                processed["all_contributors_view"] = pd.DataFrame()
 
-            processed["all_projects_view"] = processed["typeform_df"]
-            if processed["typeform_df"] is not None and not processed["typeform_df"].empty:
-                if (
-                    processed["projects_legacy_df"] is not None
-                    and not processed["projects_legacy_df"].empty
-                    and "grant_id" in processed["projects_legacy_df"].columns
-                ):
-                    processed["typeform_df"]["grant_id"] = processed["typeform_df"][
-                        "grant_id"
-                    ].astype(str)
-                    processed["projects_legacy_df"]["grant_id"] = processed["projects_legacy_df"][
-                        "grant_id"
-                    ].astype(str)
-                    processed["projects_legacy_df"] = (
-                        processed["projects_legacy_df"]
-                        .sort_values("grant_id")
-                        .drop_duplicates("grant_id", keep="last")
+                merged_contributors.replace({np.nan: None, pd.NaT: None}, inplace=True)
+                for col in [
+                    "l2_address",
+                    "name",
+                    "project_name",
+                    "round_id",
+                    "source",
+                    "inquiry_id",
+                ]:
+                    if col in merged_contributors.columns:
+                        merged_contributors[col] = merged_contributors[col].fillna("").astype(str)
+                if "updated_at" in merged_contributors.columns:
+                    merged_contributors["updated_at"] = pd.to_datetime(
+                        merged_contributors["updated_at"], errors="coerce", utc=True
                     )
-                    processed["all_projects_view"] = pd.merge(
-                        processed["typeform_df"],
-                        processed["projects_legacy_df"][["grant_id", "project_name", "round_id"]],
-                        on="grant_id",
-                        how="left",
+                if "op_amt" in merged_contributors.columns:
+                    merged_contributors["op_amt"] = pd.to_numeric(
+                        merged_contributors["op_amt"], errors="coerce"
+                    )
+
+                dedup_cols = ["email", "round_id", "project_name"]
+                valid_dedup_cols = [col for col in dedup_cols if col in merged_contributors.columns]
+                if len(valid_dedup_cols) > 1:
+                    sort_cols = valid_dedup_cols + ["updated_at"]
+                    if "updated_at" in merged_contributors.columns:
+                        merged_contributors.sort_values(
+                            by=sort_cols,
+                            ascending=[True] * len(valid_dedup_cols) + [False],
+                            na_position="last",
+                            inplace=True,
+                        )
+                        merged_contributors.drop_duplicates(
+                            subset=valid_dedup_cols, keep="first", inplace=True
+                        )
+                    else:
+                        merged_contributors.drop_duplicates(
+                            subset=valid_dedup_cols, keep="first", inplace=True
+                        )
+                processed["all_contributors_view"] = merged_contributors
+
+            processed["all_projects_view"] = pd.DataFrame()
+            typeform_df = processed.get("typeform_df")
+            projects_legacy_df = processed.get("projects_legacy_df")
+            all_persons_df = processed.get("all_persons_df", pd.DataFrame())
+            all_businesses_df = processed.get("all_businesses_df", pd.DataFrame())
+            if typeform_df is not None and not typeform_df.empty:
+                projects_view_base = typeform_df.copy()
+                projects_view_base["grant_id"] = (
+                    projects_view_base["grant_id"].astype(str).str.strip()
+                )
+                if (
+                    projects_legacy_df is not None
+                    and not projects_legacy_df.empty
+                    and "grant_id" in projects_legacy_df.columns
+                    and "project_name" in projects_legacy_df.columns
+                ):
+                    proj_legacy_merge = projects_legacy_df[
+                        ["grant_id", "project_name", "round_id"]
+                    ].copy()
+                    proj_legacy_merge["grant_id"] = (
+                        proj_legacy_merge["grant_id"].astype(str).str.strip()
+                    )
+                    proj_legacy_merge = proj_legacy_merge.drop_duplicates("grant_id", keep="last")
+                    projects_view_base = pd.merge(
+                        projects_view_base, proj_legacy_merge, on="grant_id", how="left"
                     )
                 else:
-                    processed["all_projects_view"] = processed["typeform_df"].copy()
-                    if "project_name" not in processed["all_projects_view"].columns:
-                        processed["all_projects_view"]["project_name"] = "Unknown"
-                    if "round_id" not in processed["all_projects_view"].columns:
-                        processed["all_projects_view"]["round_id"] = "Unknown"
+                    if "project_name" not in projects_view_base.columns:
+                        projects_view_base["project_name"] = "Unknown (Legacy Missing)"
+                    if "round_id" not in projects_view_base.columns:
+                        projects_view_base["round_id"] = "Unknown (Legacy Missing)"
+
+                projects_view_base["project_name"] = projects_view_base["project_name"].fillna(
+                    "Unknown (Legacy Missing)"
+                )
+                projects_view_base["round_id"] = projects_view_base["round_id"].fillna(
+                    "Unknown (Legacy Missing)"
+                )
 
                 grant_statuses = []
-                for _, row in processed["all_projects_view"].iterrows():
+                persons_status_map = {}
+                if (
+                    not all_persons_df.empty
+                    and "email" in all_persons_df.columns
+                    and "status" in all_persons_df.columns
+                ):
+                    persons_status_map = (
+                        all_persons_df.drop_duplicates(subset=["email"], keep="first")
+                        .set_index(all_persons_df["email"].astype(str).str.lower().str.strip())[
+                            "status"
+                        ]
+                        .to_dict()
+                    )
+                businesses_status_map = {}
+                if (
+                    not all_businesses_df.empty
+                    and "email" in all_businesses_df.columns
+                    and "status" in all_businesses_df.columns
+                ):
+                    businesses_status_map = (
+                        all_businesses_df.dropna(subset=["email"])
+                        .groupby(all_businesses_df["email"].astype(str).str.lower().str.strip())[
+                            "status"
+                        ]
+                        .apply(list)
+                        .to_dict()
+                    )
+
+                for index, row in projects_view_base.iterrows():
                     kyc_emails = row.get("kyc_emails", [])
                     kyb_emails = row.get("kyb_emails", [])
                     individual_statuses = []
-                    if (
-                        not processed["all_persons_df"].empty
-                        and "email" in processed["all_persons_df"].columns
-                    ):
-                        statuses = processed["all_persons_df"][
-                            processed["all_persons_df"]["email"].isin(kyc_emails)
-                        ]["status"].tolist()
-                        individual_statuses.extend(
-                            statuses + [STATUS_NOT_STARTED] * (len(kyc_emails) - len(statuses))
-                        )
-                    else:
-                        individual_statuses.extend([STATUS_NOT_STARTED] * len(kyc_emails))
-                    if (
-                        not processed["all_businesses_df"].empty
-                        and "email" in processed["all_businesses_df"].columns
-                    ):
-                        statuses = processed["all_businesses_df"][
-                            processed["all_businesses_df"]["email"].isin(kyb_emails)
-                        ]["status"].tolist()
-                        individual_statuses.extend(
-                            statuses + [STATUS_NOT_STARTED] * (len(kyb_emails) - len(statuses))
-                        )
-                    else:
-                        individual_statuses.extend([STATUS_NOT_STARTED] * len(kyb_emails))
+                    for email in kyc_emails:
+                        if isinstance(email, str):
+                            individual_statuses.append(
+                                persons_status_map.get(email.lower().strip(), STATUS_NOT_STARTED)
+                            )
+                    for email in kyb_emails:
+                        best_status_for_email = STATUS_NOT_STARTED
+                        if isinstance(email, str):
+                            statuses_for_email = businesses_status_map.get(
+                                email.lower().strip(), []
+                            )
+                            if statuses_for_email:
+                                if STATUS_REJECTED in statuses_for_email:
+                                    best_status_for_email = STATUS_REJECTED
+                                elif STATUS_INCOMPLETE in statuses_for_email:
+                                    best_status_for_email = STATUS_INCOMPLETE
+                                elif STATUS_IN_REVIEW in statuses_for_email:
+                                    best_status_for_email = STATUS_IN_REVIEW
+                                elif STATUS_EXPIRED in statuses_for_email:
+                                    best_status_for_email = STATUS_EXPIRED
+                                elif STATUS_CLEARED in statuses_for_email:
+                                    best_status_for_email = STATUS_CLEARED
+                                else:
+                                    best_status_for_email = statuses_for_email[0]
+                        individual_statuses.append(best_status_for_email)
 
+                    overall_status = STATUS_UNKNOWN
                     if not kyc_emails and not kyb_emails:
                         overall_status = STATUS_NO_FORM
+                    elif not individual_statuses:
+                        overall_status = STATUS_NOT_STARTED
                     elif any(s == STATUS_REJECTED for s in individual_statuses):
                         overall_status = STATUS_REJECTED
-                    elif all(
-                        s == STATUS_CLEARED for s in individual_statuses if s != STATUS_NOT_STARTED
-                    ):
-                        if any(s != STATUS_NOT_STARTED for s in individual_statuses):
-                            overall_status = STATUS_CLEARED
-                        else:
-                            overall_status = STATUS_NOT_STARTED
-                    elif any(s == STATUS_IN_REVIEW for s in individual_statuses):
-                        overall_status = STATUS_IN_REVIEW
                     elif any(s == STATUS_INCOMPLETE for s in individual_statuses):
                         overall_status = STATUS_INCOMPLETE
                     elif any(s == STATUS_RETRY for s in individual_statuses):
                         overall_status = STATUS_RETRY
+                    elif any(s == STATUS_IN_REVIEW for s in individual_statuses):
+                        overall_status = STATUS_IN_REVIEW
                     elif any(s == STATUS_EXPIRED for s in individual_statuses):
                         overall_status = STATUS_EXPIRED
-                    else:
+                    elif all(
+                        s in [STATUS_CLEARED, STATUS_NOT_STARTED] for s in individual_statuses
+                    ) and any(s == STATUS_CLEARED for s in individual_statuses):
+                        overall_status = STATUS_CLEARED
+                    elif all(s == STATUS_NOT_STARTED for s in individual_statuses):
                         overall_status = STATUS_NOT_STARTED
+                    else:
+                        overall_status = STATUS_UNKNOWN
                     grant_statuses.append(overall_status)
 
-                processed["all_projects_view"]["overall_status"] = grant_statuses
-            else:
-                processed["all_projects_view"] = pd.DataFrame()
+                projects_view_base["overall_status"] = grant_statuses
+                processed["all_projects_view"] = projects_view_base
         return processed
 
+    # Call the processing function (result will be cached)
     processed_data = process_and_consolidate_data(loaded_data, typeform_num_controllers_field_id)
-    st.session_state.status_indicator.success("Data loaded and processed. Ready.")
 
+    # Final status update after processing is complete
+    status_indicator.success("✅ Data loaded and processed. Ready.")
+
+    # Extract final DataFrames for display
     all_persons_df = processed_data.get("all_persons_df", pd.DataFrame())
     all_businesses_df = processed_data.get("all_businesses_df", pd.DataFrame())
     all_contributors_view = processed_data.get("all_contributors_view", pd.DataFrame())
     all_projects_view = processed_data.get("all_projects_view", pd.DataFrame())
 
     # --- Display Information ---
-    st.subheader("Project Status Information")
+    st.subheader("ℹ️ Project Status Information")
     with st.expander("About the Results & Status Codes", expanded=False):
+        # (Content remains the same)
         st.markdown(
-            "**Every project must complete KYC (or KYB for businesses) in order to receive tokens or join the Superchain.**"
-        )
-        st.info(
-            "This tool looks up the **latest known status** by combining live data (Persona) and historical records. Expiration (1 year) is applied to 'cleared' statuses."
+            """
+            This tool provides the latest known KYC (Know Your Customer) or KYB (Know Your Business)
+            status for individuals and projects involved with Optimism grants. Status is determined
+            by combining live data from Persona (our verification provider) with historical records.
+
+            **Key Points:**
+            * **Expiration:** Statuses automatically expire after **365 days**. Expired records require renewal.
+            * **Data Sources:** Live data (Persona Inquiries/Cases), Typeform submissions (linking emails to grants), Legacy CSVs (GitHub).
+            * **Search:** Use the sidebar to look up by Individual (email, name, L2), Business (email, name, L2), or Grant ID.
+            * **Consolidated Views:** The tabs below show filterable tables of all known contributors, businesses, and projects.
+            """
         )
         st.markdown("**Status Code Meanings:**")
-        st.markdown(f"- **{STATUS_CLEARED}**: Approved and current.")
-        st.markdown(f"- **{STATUS_REJECTED}**: Declined. Cannot proceed.")
-        st.markdown(f"- **{STATUS_IN_REVIEW}**: Pending compliance review (allow up to 72 hours).")
+        st.markdown(f"- **{STATUS_CLEARED}**: Verification approved and current.")
+        st.markdown(f"- **{STATUS_REJECTED}**: Verification declined. Cannot proceed.")
         st.markdown(
-            f"- **{STATUS_RETRY}**: Incomplete submission (Persona: pending/created). Needs re-attempt at kyc.optimism.io."
+            f"- **{STATUS_IN_REVIEW}**: Submitted, pending compliance review (allow up to 72 hours)."
         )
         st.markdown(
-            f"- **{STATUS_INCOMPLETE}**: Business verification waiting on controller(s) (Persona Case: Waiting on UBOs). Check emails."
+            f"- **{STATUS_RETRY}**: Individual KYC incomplete (Persona status: `pending`, `created`, `expired`). Needs user action at [kyc.optimism.io](https://kyc.optimism.io/)."
+        )
+        st.markdown(
+            f"- **{STATUS_INCOMPLETE}**: Business KYB incomplete (Persona Case status: `Waiting on UBOs`, `pending`, `created`, `expired`). Check associated emails for actions needed from controllers."
         )
         st.markdown(
             f"- **{STATUS_EXPIRED}**: Previously cleared, but older than {EXPIRATION_DAYS} days. Needs renewal."
         )
-        st.markdown(f"- **{STATUS_NOT_STARTED}**: No KYC/KYB record found for this email/entity.")
         st.markdown(
-            f"- **{STATUS_NO_FORM}**: Grant ID found, but no associated Typeform submission linking emails."
+            f"- **{STATUS_NOT_STARTED}**: No verification record found, or process not initiated in Persona yet."
         )
-        st.markdown(f"- **{STATUS_UNKNOWN}**: An unexpected status was encountered from the API.")
+        st.markdown(
+            f"- **{STATUS_NO_FORM}**: Grant ID found (likely legacy), but no corresponding Typeform submission linking emails was found."
+        )
+        st.markdown(
+            f"- **{STATUS_UNKNOWN}**: An unexpected status was encountered from an API or during processing."
+        )
 
     # --- UI Interaction ---
     st.sidebar.header("🔍 Database Lookup")
     option = st.sidebar.selectbox(
-        "Search By", ["Individual (KYC)", "Business (KYB)", "Grant ID"], key="search_option"
-    )
-    search_term_input = st.sidebar.text_input(
-        "Enter Search Term (Email, Name, L2 Address, Grant ID)", key="search_term"
+        "Search By",
+        ["Individual (KYC)", "Business (KYB)", "Grant ID"],
+        key="search_option",
+        help="Select the type of entity you want to search for.",
     )
 
-    if st.sidebar.button("Clear Cache & Refresh Data"):
+    # Use on_change with a callback to handle search on Enter/blur
+    def trigger_search():
+        # We might want to store the search term in session state here
+        # if we need it to persist across reruns independent of the widget state
+        st.session_state.current_search_term = st.session_state.search_term_widget_key
+        pass  # Just trigger rerun
+
+    search_term_input = st.sidebar.text_input(
+        "Enter Search Term",
+        key="search_term_widget_key",  # Use a distinct key for the widget
+        help="Enter Email, Name, L2 Address, or Grant ID. Search runs on Enter/blur.",
+        on_change=trigger_search,  # Trigger rerun when input changes
+    )
+    # Use the value from the widget's session state key for the actual search
+    search_term_to_use = st.session_state.get("search_term_widget_key", "").strip()
+
+    # --- Clear Cache Button ---
+    if st.sidebar.button(
+        "🔄 Clear Cache & Refresh Data", help="Clears cached data and re-fetches everything."
+    ):
         st.cache_data.clear()
-        st.session_state.clear()
-        st.success("Cache cleared. Rerunning...")
+        # Clear session state related to loaded data
+        keys_to_clear = [
+            SESSION_KEY_PERSONA_INQUIRIES,
+            SESSION_KEY_PERSONA_CASES,
+            SESSION_KEY_DATA_LOADED,
+            SESSION_KEY_APPLIED_FILTERS,
+        ]
+        for key in keys_to_clear:
+            if key in st.session_state:
+                del st.session_state[key]
+        st.success("Cache and session data cleared. Refreshing...")
+        status_indicator.info("⏳ Refreshing data after cache clear...")
         st.rerun()
 
     # --- Display Search Results ---
     st.divider()
-    st.header("Search Results")
-    results_df = pd.DataFrame()
-
-    search_term_to_use = search_term_input.strip()
+    st.header("🔎 Search Results")
     search_triggered = bool(search_term_to_use)
-
     if search_triggered:
-        # Add search context (Improvement 2)
         st.markdown(f"Searching **{option}** for: `{search_term_to_use}`")
-        with st.spinner("Searching..."):
-            if option == "Individual (KYC)":
-                search_fields = ["name", "email", "l2_address"]
-                results_df = perform_search(
-                    all_contributors_view, search_term_to_use, search_fields
-                )
-                display_search_results(results_df, option, all_persons_df, all_businesses_df)
-            elif option == "Business (KYB)":
-                search_fields = ["business_name", "email", "l2_address"]
-                results_df = perform_search(all_businesses_df, search_term_to_use, search_fields)
-                display_search_results(results_df, option, all_persons_df, all_businesses_df)
-            elif option == "Grant ID":
-                search_fields = [
-                    "grant_id",
-                    "project_name",
-                    "l2_address",
-                    "kyc_emails",
-                    "kyb_emails",
-                ]
-                term_lower = search_term_to_use.lower()
-                if all_projects_view is not None and not all_projects_view.empty:
-                    mask = pd.Series(False, index=all_projects_view.index)
-                    for field in ["grant_id", "project_name", "l2_address"]:
-                        if field in all_projects_view.columns:
-                            mask |= (
-                                all_projects_view[field]
-                                .fillna("")
-                                .astype(str)
-                                .str.lower()
-                                .str.contains(term_lower, na=False)
-                            )
-                    for email_list_col in ["kyc_emails", "kyb_emails"]:
-                        if email_list_col in all_projects_view.columns:
-                            mask |= all_projects_view[email_list_col].apply(
-                                lambda emails: any(term_lower in email.lower() for email in emails)
-                                if isinstance(emails, list)
-                                else False
-                            )
-                    results_df = all_projects_view[mask]
-                else:
-                    results_df = pd.DataFrame()
-                display_search_results(results_df, option, all_persons_df, all_businesses_df)
+        # No spinner needed here as data is already loaded (from session/cache)
+        # with st.spinner("Searching..."):
+        results_df = pd.DataFrame()
+        if option == "Individual (KYC)":
+            search_fields = ["name", "email", "l2_address"]
+            results_df = perform_search(all_contributors_view, search_term_to_use, search_fields)
+        elif option == "Business (KYB)":
+            search_fields = ["business_name", "email", "l2_address"]
+            results_df = perform_search(all_businesses_df, search_term_to_use, search_fields)
+        elif option == "Grant ID":
+            search_fields_text = ["grant_id", "project_name", "l2_address"]
+            search_fields_list = ["kyc_emails", "kyb_emails"]
+            term_lower = search_term_to_use.lower()
+            if all_projects_view is not None and not all_projects_view.empty:
+                mask = pd.Series(False, index=all_projects_view.index)
+                for field in search_fields_text:
+                    if field in all_projects_view.columns:
+                        mask |= (
+                            all_projects_view[field]
+                            .fillna("")
+                            .astype(str)
+                            .str.lower()
+                            .str.contains(term_lower, na=False, regex=False)
+                        )
+                for email_list_col in search_fields_list:
+                    if email_list_col in all_projects_view.columns:
+
+                        def check_email_list(emails):
+                            if isinstance(emails, list):
+                                return any(
+                                    term_lower in email.lower()
+                                    for email in emails
+                                    if isinstance(email, str)
+                                )
+                            return False
+
+                        mask |= all_projects_view[email_list_col].apply(check_email_list)
+                results_df = all_projects_view[mask]
+            else:
+                results_df = pd.DataFrame()
+        # Display results
+        display_search_results(results_df, option, all_persons_df, all_businesses_df)
     else:
         st.info("Use the sidebar to search for an individual, business, or grant.")
 
     # --- Display Filterable Tables ---
     st.divider()
-    st.header("Consolidated Views")
+    st.header("📊 Consolidated Views")
 
-    # --- Filtering Widgets ---
+    # --- Filtering Widgets (Wrapped in Form) ---
     st.sidebar.header("📊 Filter Views")
-    statuses_contributors = (
-        all_contributors_view["status"]
-        if all_contributors_view is not None and "status" in all_contributors_view
-        else pd.Series()
+
+    # Initialize session state for filters if not already present
+    if SESSION_KEY_APPLIED_FILTERS not in st.session_state:
+        st.session_state[SESSION_KEY_APPLIED_FILTERS] = {"statuses": [], "rounds": []}
+
+    # Get available options for filters
+    combined_statuses = pd.concat(
+        [
+            all_contributors_view["status"].dropna()
+            if all_contributors_view is not None and "status" in all_contributors_view
+            else pd.Series(),
+            all_businesses_df["status"].dropna()
+            if all_businesses_df is not None and "status" in all_businesses_df
+            else pd.Series(),
+            all_projects_view["overall_status"].dropna()
+            if all_projects_view is not None and "overall_status" in all_projects_view
+            else pd.Series(),
+        ]
+    ).unique()
+    available_statuses = sorted([s for s in combined_statuses if pd.notna(s)])
+
+    available_rounds = []
+    if all_projects_view is not None and "round_id" in all_projects_view:
+        available_rounds = sorted(list(all_projects_view["round_id"].dropna().unique()))
+
+    # Set defaults for the widgets based on currently applied filters or all options if none applied yet
+    default_statuses = (
+        st.session_state[SESSION_KEY_APPLIED_FILTERS]["statuses"]
+        if st.session_state[SESSION_KEY_APPLIED_FILTERS]["statuses"]
+        else available_statuses
     )
-    statuses_businesses = (
-        all_businesses_df["status"]
-        if all_businesses_df is not None and "status" in all_businesses_df
-        else pd.Series()
+    default_rounds = (
+        st.session_state[SESSION_KEY_APPLIED_FILTERS]["rounds"]
+        if st.session_state[SESSION_KEY_APPLIED_FILTERS]["rounds"]
+        else available_rounds
     )
-    statuses_projects = (
-        all_projects_view["overall_status"]
-        if all_projects_view is not None and "overall_status" in all_projects_view
-        else pd.Series()
-    )
-    available_statuses = list(
-        pd.concat([statuses_contributors, statuses_businesses, statuses_projects]).dropna().unique()
-    )
-    available_statuses.sort()
-    available_rounds = (
-        list(all_projects_view["round_id"].dropna().unique())
-        if all_projects_view is not None and "round_id" in all_projects_view
-        else []
-    )
-    available_rounds.sort()
-    default_statuses = available_statuses
-    default_rounds = available_rounds
-    selected_statuses = st.sidebar.multiselect(
-        "Filter by Status", available_statuses, default=default_statuses
-    )
-    selected_rounds = st.sidebar.multiselect(
-        "Filter by Round ID (Projects)", available_rounds, default=default_rounds
-    )
+
+    # Create a form for the filters
+    with st.sidebar.form("filter_form"):
+        st.markdown("Select filters and click Apply.")
+        selected_statuses_widget = st.multiselect(
+            "Filter by Status",
+            available_statuses,
+            default=default_statuses,
+            key="filter_widget_status",
+        )
+        selected_rounds_widget = st.multiselect(
+            "Filter by Round ID (Projects)",
+            available_rounds,
+            default=default_rounds,
+            key="filter_widget_round",
+        )
+        submitted = st.form_submit_button("Apply Filters")
+        if submitted:
+            st.session_state[SESSION_KEY_APPLIED_FILTERS]["statuses"] = selected_statuses_widget
+            st.session_state[SESSION_KEY_APPLIED_FILTERS]["rounds"] = selected_rounds_widget
+            st.rerun()  # Rerun to apply the filters
 
     # --- Apply Filters and Display Tabs ---
-    # Define base column config for tables (Improvement 1)
+    applied_statuses = st.session_state[SESSION_KEY_APPLIED_FILTERS]["statuses"]
+    applied_rounds = st.session_state[SESSION_KEY_APPLIED_FILTERS]["rounds"]
+
+    # Define base column config
     table_column_config = {
-        "updated_at": st.column_config.DatetimeColumn("Last Updated", format="YYYY-MM-DD"),
-        "submitted_at": st.column_config.DatetimeColumn("Form Submitted", format="YYYY-MM-DD"),
+        "updated_at": st.column_config.DatetimeColumn(
+            "Last Updated", format="YYYY-MM-DD HH:mm", width="small"
+        ),
+        "submitted_at": st.column_config.DatetimeColumn(
+            "Form Submitted", format="YYYY-MM-DD HH:mm", width="small"
+        ),
         "l2_address": st.column_config.TextColumn("L2 Address", width="medium"),
-        "op_amt": st.column_config.NumberColumn("OP Amount", format="%.2f"),
-        # Hide internal IDs by default
+        "op_amt": st.column_config.NumberColumn("OP Amount", format="%.2f", width="small"),
+        "email": st.column_config.TextColumn("Email", width="medium"),
+        "name": st.column_config.TextColumn("Individual Name", width="medium"),
+        "business_name": st.column_config.TextColumn("Business Name", width="medium"),
+        "project_name": st.column_config.TextColumn("Project Name", width="medium"),
+        "round_id": st.column_config.TextColumn("Round ID", width="small"),
+        "status": st.column_config.TextColumn("KYC/KYB Status", width="medium"),
+        "overall_status": st.column_config.TextColumn("Grant Status", width="medium"),
         "inquiry_id": None,
         "case_id": None,
         "form_id": None,
         "project_id": None,
-        "source": None,  # Hide source column in tables
-        "kyc_emails": None,  # Hide email lists in project table
+        "source": None,
+        "kyc_emails": None,
         "kyb_emails": None,
     }
 
-    tab1, tab2, tab3 = st.tabs(["Contributors (KYC)", "Businesses (KYB)", "Projects (Grants)"])
+    tab1, tab2, tab3 = st.tabs(
+        ["👤 Contributors (KYC)", "🏢 Businesses (KYB)", "📄 Projects (Grants)"]
+    )
 
     with tab1:
         st.subheader("All Contributors (Latest KYC Status)")
-        if all_contributors_view is not None and not all_contributors_view.empty:
-            if "status" in all_contributors_view.columns:
-                filtered_contributors = all_contributors_view[
-                    all_contributors_view["status"].isin(selected_statuses)
+        df_to_display = all_contributors_view
+        if df_to_display is not None and not df_to_display.empty:
+            # Apply filter only if filter list is not empty (i.e., user selected specific statuses)
+            if applied_statuses and "status" in df_to_display.columns:
+                filtered_contributors = df_to_display[
+                    df_to_display["status"].isin(applied_statuses)
                 ]
-                st.dataframe(
-                    filtered_contributors,
-                    use_container_width=True,
-                    column_config=table_column_config,
-                    hide_index=True,
-                )  # Apply config
-                st.caption(
-                    f"Displaying {len(filtered_contributors)} of {len(all_contributors_view)} contributors."
-                )
             else:
-                st.warning("Missing 'status' column in contributor data.")
-                st.dataframe(
-                    all_contributors_view,
-                    use_container_width=True,
-                    column_config=table_column_config,
-                    hide_index=True,
-                )  # Apply config
+                filtered_contributors = (
+                    df_to_display  # Show all if no specific statuses are selected
+                )
+
+            contributor_cols = [
+                "name",
+                "email",
+                "l2_address",
+                "status",
+                "updated_at",
+                "project_name",
+                "round_id",
+                "op_amt",
+            ]
+            display_df = filtered_contributors[
+                [col for col in contributor_cols if col in filtered_contributors.columns]
+            ]
+            st.dataframe(
+                display_df,
+                use_container_width=True,
+                column_config=table_column_config,
+                hide_index=True,
+            )
+            st.caption(
+                f"Displaying {len(filtered_contributors)} of {len(df_to_display)} contributors based on applied filters."
+            )
         else:
             st.warning("No contributor data available.")
 
     with tab2:
         st.subheader("All Businesses (Latest KYB Status)")
-        if all_businesses_df is not None and not all_businesses_df.empty:
-            if "status" in all_businesses_df.columns:
-                filtered_businesses = all_businesses_df[
-                    all_businesses_df["status"].isin(selected_statuses)
-                ]
-                st.dataframe(
-                    filtered_businesses,
-                    use_container_width=True,
-                    column_config=table_column_config,
-                    hide_index=True,
-                )  # Apply config
-                st.caption(
-                    f"Displaying {len(filtered_businesses)} of {len(all_businesses_df)} businesses."
-                )
+        df_to_display = all_businesses_df
+        if df_to_display is not None and not df_to_display.empty:
+            if applied_statuses and "status" in df_to_display.columns:
+                filtered_businesses = df_to_display[df_to_display["status"].isin(applied_statuses)]
             else:
-                st.warning("Missing 'status' column in business data.")
-                st.dataframe(
-                    all_businesses_df,
-                    use_container_width=True,
-                    column_config=table_column_config,
-                    hide_index=True,
-                )  # Apply config
+                filtered_businesses = df_to_display
+
+            business_cols = ["business_name", "email", "l2_address", "status", "updated_at"]
+            display_df = filtered_businesses[
+                [col for col in business_cols if col in filtered_businesses.columns]
+            ]
+            st.dataframe(
+                display_df,
+                use_container_width=True,
+                column_config=table_column_config,
+                hide_index=True,
+            )
+            st.caption(
+                f"Displaying {len(filtered_businesses)} of {len(df_to_display)} businesses based on applied filters."
+            )
         else:
             st.warning("No business data available.")
 
     with tab3:
         st.subheader("All Projects (Overall Grant Status)")
-        if all_projects_view is not None and not all_projects_view.empty:
-            status_col_exists = "overall_status" in all_projects_view.columns
-            round_col_exists = "round_id" in all_projects_view.columns
-            if status_col_exists and round_col_exists:
-                filtered_projects = all_projects_view[
-                    all_projects_view["overall_status"].isin(selected_statuses)
-                    & all_projects_view["round_id"].isin(selected_rounds)
+        df_to_display = all_projects_view
+        if df_to_display is not None and not df_to_display.empty:
+            filtered_projects = df_to_display.copy()
+            if applied_statuses and "overall_status" in filtered_projects.columns:
+                filtered_projects = filtered_projects[
+                    filtered_projects["overall_status"].isin(applied_statuses)
                 ]
-            elif status_col_exists:
-                filtered_projects = all_projects_view[
-                    all_projects_view["overall_status"].isin(selected_statuses)
+            if applied_rounds and "round_id" in filtered_projects.columns:
+                filtered_projects = filtered_projects[
+                    filtered_projects["round_id"].isin(applied_rounds)
                 ]
-                st.warning("Missing 'round_id' column for filtering projects.")
-            elif round_col_exists:
-                filtered_projects = all_projects_view[
-                    all_projects_view["round_id"].isin(selected_rounds)
-                ]
-                st.warning("Missing 'overall_status' column for filtering projects.")
-            else:
-                filtered_projects = all_projects_view
-                st.warning(
-                    "Missing 'overall_status' and 'round_id' columns for filtering projects."
-                )
 
-            cols_to_show = [
+            project_cols = [
                 "grant_id",
                 "project_name",
                 "round_id",
@@ -1325,15 +1670,18 @@ def main():
                 "l2_address",
                 "submitted_at",
             ]
+            display_df = filtered_projects[
+                [col for col in project_cols if col in filtered_projects.columns]
+            ]
             st.dataframe(
-                filtered_projects[
-                    [col for col in cols_to_show if col in filtered_projects.columns]
-                ],
+                display_df,
                 use_container_width=True,
                 column_config=table_column_config,
                 hide_index=True,
-            )  # Apply config
-            st.caption(f"Displaying {len(filtered_projects)} of {len(all_projects_view)} projects.")
+            )
+            st.caption(
+                f"Displaying {len(filtered_projects)} of {len(df_to_display)} projects based on applied filters."
+            )
         else:
             st.warning("No project data available.")
 
