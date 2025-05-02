@@ -9,6 +9,8 @@ SELECT
   , count_transactions
   , count_success_transactions
   , distinct_blocks
+  , distinct_tx_to_address
+  , distinct_tx_from_address
 
   -- Gas Usage
   , sum_l2_gas_used

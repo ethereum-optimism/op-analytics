@@ -25,6 +25,8 @@ WITH aggregates AS (
     , countIf(success) AS count_success_transactions
 
     , COUNT(DISTINCT block_number) AS distinct_blocks
+    , COUNT(DISTINCT to_address) AS distinct_tx_to_address
+    , COUNT(DISTINCT from_address) AS distinct_tx_from_address
 
     , SUM(l2_gas_used) AS sum_l2_gas_used
     , sumIf(l2_gas_used, success) AS sum_success_l2_gas_used
@@ -97,6 +99,8 @@ SELECT
   , count_transactions
   , count_success_transactions
   , distinct_blocks
+  , distinct_tx_to_address
+  , distinct_tx_from_address
 
   -- Gas Usage
   , sum_l2_gas_used
