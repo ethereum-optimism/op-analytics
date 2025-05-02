@@ -16,7 +16,7 @@ def audit_and_ingest(context: OpExecutionContext):
 
     result = ingest(
         chains=normalize_chains("ALL"),
-        range_spec="m16hours",
+        range_spec="m32hours",
         read_from=RawOnchainDataProvider.GOLDSKY,
         write_to=DataLocation.GCS,
         dryrun=False,
