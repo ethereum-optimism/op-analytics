@@ -356,14 +356,11 @@ SELECT
   , count(*) AS num_addresses
   , sum(count_transactions) AS num_transactions
 
-FROM 
-            (
-            SELECT
-                * 
-            FROM blockbatch_daily.aggtxs__daily_address_summary_v1
-            WHERE dt = '2024-01-01' AND chain = 'base'
-            )
-            
+FROM (
+    SELECT *
+    FROM blockbatch_daily.aggtxs__daily_address_summary_v1
+    WHERE dt = '2024-01-01' AND chain = 'base'
+    )
 GROUP BY 1
 """
     )
@@ -396,14 +393,11 @@ SELECT
   , count(*) AS num_addresses
   , sum(count_transactions) AS num_transactions
 
-FROM 
-            (
-            SELECT
-                * 
-            FROM blockbatch_daily.aggtxs__daily_address_summary_v1
-            WHERE dt = '2024-01-01'
-            )
-            
+FROM (
+    SELECT *
+    FROM blockbatch_daily.aggtxs__daily_address_summary_v1
+    WHERE dt = '2024-01-01'
+    )
 GROUP BY 1
 """
     )
