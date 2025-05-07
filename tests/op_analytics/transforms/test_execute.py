@@ -20,16 +20,12 @@ def test_execute_task(mock_insert: MagicMock, mock_new: MagicMock):
         group_name="interop",
         dt=datetime.date(2023, 1, 1),
         tables={
-            "fact_erc20_oft_transfers_v1": TableStructure(
-                name="fact_erc20_oft_transfers_v1",
-                columns=[TableColumn(name="dummy", data_type="String")],
-            ),
-            "fact_erc20_ntt_transfers_v1": TableStructure(
-                name="fact_erc20_ntt_transfers_v1",
+            "fact_erc20_create_traces_v2": TableStructure(
+                name="fact_erc20_create_traces_v2",
                 columns=[TableColumn(name="dummy", data_type="String")],
             ),
         },
-        steps_to_run=[2, 3],
+        steps_to_run=[6],
         steps_to_skip=None,
         raise_if_empty=False,
     )
@@ -51,11 +47,7 @@ def test_execute_task(mock_insert: MagicMock, mock_new: MagicMock):
         {
             "parameters": {"dtparam": datetime.date(2023, 1, 1)},
             "settings": {"use_hive_partitioning": 1},
-        },
-        {
-            "parameters": {"dtparam": datetime.date(2023, 1, 1)},
-            "settings": {"use_hive_partitioning": 1},
-        },
+        }
     ]
 
     inserts = []
@@ -83,7 +75,7 @@ def test_execute_task(mock_insert: MagicMock, mock_new: MagicMock):
                 {
                     "transform": "interop",
                     "dt": datetime.date(2023, 1, 1),
-                    "metadata": '[{"name": "02_fact_erc20_oft_transfers_v1.sql", "result": {"written_rows": 100}}, {"name": "03_fact_erc20_ntt_transfers_v1.sql", "result": {"written_rows": 100}}]',
+                    "metadata": '[{"name": "06_fact_erc20_create_traces_v2.sql", "result": {"written_rows": 100}}]',
                     "process_name": "default",
                 }
             ],
