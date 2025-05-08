@@ -91,7 +91,7 @@ class TestPrometheusClient:
         mock_response.json.return_value = mock_prometheus_response["instant"]
         mock_get.return_value = mock_response
 
-        test_time = int(datetime.now().timestamp())
+        test_time = datetime.fromtimestamp(int(datetime.now().timestamp()))
         result = prometheus_client.query("test_metric", time=test_time)
 
         assert result["status"] == "success"
@@ -186,5 +186,6 @@ class TestPrometheusDataSource:
         mock_response.json.return_value = {"status": "error", "error": "Test error"}
         mock_get.return_value = mock_response
 
+        test_time = datetime.now()
         with pytest.raises(ValueError, match="Query failed"):
-            prometheus_datasource.instant_query_to_table("test_metric")
+            prometheus_datasource.instant_query_to_table("test_metric", time=test_time)
