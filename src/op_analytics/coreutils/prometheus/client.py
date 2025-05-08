@@ -2,7 +2,7 @@
 
 import requests
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Union
 from dataclasses import dataclass
 
 
@@ -25,7 +25,7 @@ class PrometheusClient:
         Returns:
             Dict containing the query results.
         """
-        params = {"query": query, "time": int(time.timestamp())}
+        params: Dict[str, Union[str, int]] = {"query": query, "time": int(time.timestamp())}
 
         response = requests.get(
             f"{self.base_url}/query",
@@ -57,7 +57,7 @@ class PrometheusClient:
         Returns:
             Dict containing the query results.
         """
-        params = {
+        params: Dict[str, Union[str, int]] = {
             "query": query,
             "start": int(start.timestamp()),
             "end": int(end.timestamp()),
