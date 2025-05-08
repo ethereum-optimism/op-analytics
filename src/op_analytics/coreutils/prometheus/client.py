@@ -1,9 +1,14 @@
 """Prometheus client utilities for querying metrics."""
 
-import requests
-from datetime import datetime
-from typing import Dict, Any, Union
+from typing import Dict, Any, Union, Optional
 from dataclasses import dataclass
+import requests
+
+from op_analytics.coreutils.request import get_data, new_session
+from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.time import datetime, now
+
+log = structlog.get_logger()
 
 
 @dataclass
@@ -13,6 +18,14 @@ class PrometheusClient:
     username: str
     password: str
     base_url: str
+    retry_attempts: int = 3
+    session: Optional[requests.Session] = None
+
+    def __post_init__(self):
+        """Initialize the HTTP session if not provided."""
+        if self.session is None:
+            self.session = new_session()
+            self.session.auth = (self.username, self.password)
 
     def query(self, query: str, time: datetime, timeout: int = 10) -> Dict[str, Any]:
         """Execute a PromQL query.
@@ -25,17 +38,36 @@ class PrometheusClient:
         Returns:
             Dict containing the query results.
         """
+        start_time = now()
         params: Dict[str, Union[str, int]] = {"query": query, "time": int(time.timestamp())}
+        url = f"{self.base_url}/query"
 
-        response = requests.get(
-            f"{self.base_url}/query",
-            params=params,
-            auth=(self.username, self.password),
-            timeout=timeout,
-        )
+        assert self.session is not None, "Session not initialized"
 
-        response.raise_for_status()
-        return response.json()
+        try:
+            response = get_data(
+                session=self.session,
+                url=url,
+                params=params,
+                retry_attempts=self.retry_attempts,
+                timeout=timeout,
+            )
+            duration = (now() - start_time).total_seconds()
+            log.info(
+                "Prometheus query executed",
+                query=query,
+                duration=f"{duration:.2f}s",
+            )
+            return response
+        except Exception as e:
+            duration = (now() - start_time).total_seconds()
+            log.error(
+                "Prometheus query failed",
+                query=query,
+                error=str(e),
+                duration=f"{duration:.2f}s",
+            )
+            raise
 
     def query_range(
         self,
@@ -57,19 +89,38 @@ class PrometheusClient:
         Returns:
             Dict containing the query results.
         """
+        query_start_time = now()
         params: Dict[str, Union[str, int]] = {
             "query": query,
             "start": int(start.timestamp()),
             "end": int(end.timestamp()),
             "step": step,
         }
+        url = f"{self.base_url}/query_range"
 
-        response = requests.get(
-            f"{self.base_url}/query_range",
-            params=params,
-            auth=(self.username, self.password),
-            timeout=timeout,
-        )
+        assert self.session is not None, "Session not initialized"
 
-        response.raise_for_status()
-        return response.json()
+        try:
+            response = get_data(
+                session=self.session,
+                url=url,
+                params=params,
+                retry_attempts=self.retry_attempts,
+                timeout=timeout,
+            )
+            duration = (now() - query_start_time).total_seconds()
+            log.info(
+                "Prometheus range query executed",
+                query=query,
+                duration=f"{duration:.2f}s",
+            )
+            return response
+        except Exception as e:
+            duration = (now() - query_start_time).total_seconds()
+            log.error(
+                "Prometheus range query failed",
+                query=query,
+                error=str(e),
+                duration=f"{duration:.2f}s",
+            )
+            raise
