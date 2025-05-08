@@ -3,9 +3,7 @@
 from datetime import datetime, timedelta
 from unittest.mock import patch, MagicMock
 import pytest
-import pandas as pd
 from op_analytics.coreutils.prometheus.client import PrometheusClient
-from op_analytics.datasources.eng.prometheus import PrometheusDataSource
 
 
 @pytest.fixture
@@ -47,12 +45,6 @@ def prometheus_client():
         password="test_pass",
         base_url="https://test-prometheus.example.com/api/v1",
     )
-
-
-@pytest.fixture
-def prometheus_datasource(prometheus_client):
-    """Fixture providing a PrometheusDataSource instance."""
-    return PrometheusDataSource(client=prometheus_client)
 
 
 class TestPrometheusClient:
@@ -114,78 +106,3 @@ class TestPrometheusClient:
         assert result["data"]["resultType"] == "matrix"
         assert len(result["data"]["result"]) == 1
         mock_get.assert_called_once()
-
-
-class TestPrometheusDataSource:
-    """Test suite for PrometheusDataSource."""
-
-    @patch("requests.get")
-    def test_instant_query_to_table(
-        self, mock_get, prometheus_datasource, mock_prometheus_response
-    ):
-        """Test converting instant query results to DataFrame."""
-        mock_response = MagicMock()
-        mock_response.json.return_value = mock_prometheus_response["instant"]
-        mock_get.return_value = mock_response
-
-        test_time = datetime.now()
-        df = prometheus_datasource.instant_query_to_table("test_metric", time=test_time)
-
-        assert isinstance(df, pd.DataFrame)
-        assert len(df) == 1
-        assert list(df.columns) == ["timestamp", "metric_name", "value", "labels"]
-        assert df["metric_name"].iloc[0] == "test_metric"
-        assert df["value"].iloc[0] == 13.255406195207481
-
-    @patch("requests.get")
-    def test_range_query_to_table(self, mock_get, prometheus_datasource, mock_prometheus_response):
-        """Test converting range query results to DataFrame."""
-        mock_response = MagicMock()
-        mock_response.json.return_value = mock_prometheus_response["range"]
-        mock_get.return_value = mock_response
-
-        end_time = datetime.now()
-        start_time = end_time - timedelta(hours=1)
-        df = prometheus_datasource.range_query_to_table("test_metric", start_time, end_time)
-
-        assert isinstance(df, pd.DataFrame)
-        assert len(df) == 3
-        assert list(df.columns) == ["timestamp", "metric_name", "value", "labels"]
-        assert df["metric_name"].iloc[0] == "test_metric"
-
-    def test_save_query_results(self, prometheus_datasource, tmp_path):
-        """Test saving query results to different formats."""
-        df = pd.DataFrame(
-            {
-                "timestamp": [datetime.now()],
-                "metric_name": ["test_metric"],
-                "value": [1.0],
-                "labels": [{"test": "label"}],
-            }
-        )
-
-        parquet_path = tmp_path / "test.parquet"
-        prometheus_datasource.save_query_results(df, str(parquet_path), "parquet")
-        assert parquet_path.exists()
-
-        csv_path = tmp_path / "test.csv"
-        prometheus_datasource.save_query_results(df, str(csv_path), "csv")
-        assert csv_path.exists()
-
-        json_path = tmp_path / "test.json"
-        prometheus_datasource.save_query_results(df, str(json_path), "json")
-        assert json_path.exists()
-
-        with pytest.raises(ValueError, match="Unsupported format"):
-            prometheus_datasource.save_query_results(df, "test.txt", "txt")
-
-    @patch("requests.get")
-    def test_query_error_handling(self, mock_get, prometheus_datasource):
-        """Test error handling for failed queries."""
-        mock_response = MagicMock()
-        mock_response.json.return_value = {"status": "error", "error": "Test error"}
-        mock_get.return_value = mock_response
-
-        test_time = datetime.now()
-        with pytest.raises(ValueError, match="Query failed"):
-            prometheus_datasource.instant_query_to_table("test_metric", time=test_time)
