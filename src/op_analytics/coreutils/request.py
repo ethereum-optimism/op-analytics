@@ -38,6 +38,7 @@ def get_data(
     retry_attempts: int | None = None,
     params: dict[str, Any] | None = None,
     emit_log: bool = True,
+    timeout: int | None = None,
 ):
     """Helper function to reuse an existing HTTP session to fetch data from a URL.
 
@@ -55,6 +56,7 @@ def get_data(
             headers=headers,
             params=params,
             emit_log=emit_log,
+            timeout=timeout,
         )
 
     # Retry on exceptions.
@@ -74,6 +76,7 @@ def get_data(
                 headers=headers,
                 params=params,
                 emit_log=emit_log,
+                timeout=timeout,
             )
 
 
@@ -83,9 +86,10 @@ def _get_data(
     headers: dict[str, str],
     params: dict[str, Any] | None = None,
     emit_log: bool = True,
+    timeout: int | None = None,
 ):
     start = time.time()
-    resp = session.request(method="GET", url=url, headers=headers, params=params)
+    resp = session.request(method="GET", url=url, headers=headers, params=params, timeout=timeout)
 
     resp.raise_for_status()
 
