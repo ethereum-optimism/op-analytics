@@ -214,7 +214,11 @@ def get_l2beat_metadata():
 
     # Function to check if any config item contains the word 'UpcomingL'
     def check_upcoming(configs):
-        return any("upcomingl" in config.lower() for config in configs)
+        try:
+            return any("upcoming" in config.lower() for config in configs)
+        except Exception:
+            return False
+
 
     def determine_provider(file_content):
         if "opStackL" in file_content:  # opStackL2 or opStackL3
