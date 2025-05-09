@@ -12,3 +12,6 @@ class Dune(DailyDataset):
 
     # DEX Trades
     DEX_TRADES = "daily_dex_trades_summary_v1"
+
+    # Bespoke
+    UNI_LM_2025 = "unichain_lm_summary_2025_v1"
