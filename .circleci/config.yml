@@ -314,16 +314,17 @@ workflows:
             [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
     jobs:
       - convert-and-run-notebooks-to-py:
-          commit-message: "GH Action Update - Gov Uploads"
-          notebook-paths: >-
-            [
-              {"dir": "op_governance_data", "notebook": "op_circulating_supply"},
-              {"dir": "op_governance_data", "notebook": "op_votable_supply"}
-            ]
+          requires:
+            - setup-python-3-10-job
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics
             - op-analytics-gcp
+          matrix:
+            parameters:
+              notebook_paths:
+                - op_governance_data/op_circulating_supply
+                - op_governance_data/op_votable_supply
 
   run_op_stack_chain_revenue:
     when:
