@@ -18,7 +18,7 @@ def export_to_bigquery(client: Client, db: str, table: str, select_statement):
         client=client,
     )
 
-    # Create a lod job to write data to BQ.
+    # Create a load job to write data to BQ.
     load_unpartitioned_single_uri(
         source_uri=f"gs://{gcs_path}",
         dataset=f"clickhouse_export__{db}",

@@ -196,7 +196,6 @@ def test_goldsky_chains():
             "swell",
             "unichain",
             "worldchain",
-            "xterio",
             "zora",
         ]
         assert actual == expected
