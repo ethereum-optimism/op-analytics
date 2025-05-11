@@ -16,7 +16,7 @@ def write_to_buffer(pending_ids: list[str], process_dt: date):
     """Pull data from DefiLlama and write to the ClickHouse buffer."""
 
     # Split into batches of "batch_size" slugs per batch.
-    batch_size = 120
+    batch_size = 40
     num_pending = len(pending_ids)
     total_tasks = (num_pending // batch_size) + (1 if num_pending % batch_size > 0 else 0)
 
