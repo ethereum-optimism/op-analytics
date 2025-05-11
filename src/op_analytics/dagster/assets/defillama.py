@@ -29,8 +29,17 @@ def protocol_tvl(context: AssetExecutionContext):
     from op_analytics.datasources.defillama.protocolstvl import execute
     from op_analytics.datasources.defillama.dataaccess import DefiLlama
 
-    result = execute.execute_pull()
-    context.log.info(result)
+    attempts = 1
+    while True:
+        try:
+            result = execute.execute_pull()
+            context.log.info(result)
+            break
+        except Exception as e:
+            context.log.error(f"protocolstvl failed attempt #{attempts}: {e}")
+            attempts += 1
+            if attempts > 3:
+                raise e
 
     DefiLlama.PROTOCOLS_METADATA.create_bigquery_external_table()
     DefiLlama.PROTOCOLS_METADATA.create_bigquery_external_table_at_latest_dt()

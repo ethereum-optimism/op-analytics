@@ -66,6 +66,9 @@ def extract_chain_metadata(chain_metadata: dict, dfl_chains: list) -> pl.DataFra
         symbol = chain_data.get("symbol")
         is_evm = extract_category_data(chain_data, "EVM")
         is_superchain = extract_category_data(chain_data, "Superchain")
+
+        print(chain_data)
+
         layer = extract_layer(chain_data)
 
         chain_metadata_records.append(
@@ -88,7 +91,19 @@ def extract_chain_metadata(chain_metadata: dict, dfl_chains: list) -> pl.DataFra
 
 def extract_category_data(row: dict, category_type: str) -> int:
     """Checks to see if chain metadata contains an EVM category"""
-    return 1 if "categories" in row and category_type in row["categories"] else 0
+    if "categories" not in row:
+        return 0
+
+    row_categories = row["categories"]
+
+    if not isinstance(row_categories, list):
+        return 0
+
+    if category_type in row_categories:
+        return 1
+
+    else:
+        return 0
 
 
 def extract_layer(row: dict) -> str:
