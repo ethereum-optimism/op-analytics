@@ -19,7 +19,7 @@ UNI_LM_QUERY_ID = 5084901
 
 @dataclass
 class DuneUniLMSummary:
-    """Summary of daily dex trades from Dune."""
+    """Summary of daily uniswap LM program data (2025) from Dune."""
 
     df: pl.DataFrame
 
