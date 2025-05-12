@@ -72,7 +72,7 @@ def goldsky_mainnet_chains() -> list[str]:
         "swell",
         "unichain",
         "worldchain",
-        "xterio",
+        # "xterio", # (pedro - 2025/05/10) Exclude xterio due to chain shutting down.
         "zora",
     ]
 

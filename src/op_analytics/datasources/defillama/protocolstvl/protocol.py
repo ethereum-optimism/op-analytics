@@ -41,7 +41,7 @@ class ProtocolTVL:
         session = session or new_session()
 
         url = PROTOCOL_DETAILS_ENDPOINT.format(slug=slug)
-        data = get_data(session, url, retry_attempts=5)
+        data = get_data(session, url, retry_attempts=2)
         return cls.of(slug=slug, data=data)
 
     @classmethod
