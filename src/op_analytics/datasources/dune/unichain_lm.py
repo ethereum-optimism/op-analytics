@@ -26,8 +26,8 @@ class DuneUniLMSummary:
     @classmethod
     def fetch(
         cls,
-        min_dt: str | None = None,
-        max_dt: str | None = None,
+        min_dt: str | None = '2025-01-01', # Run All-Time as default
+        max_dt: str | None = '2035-01-01',
     ) -> "DuneUniLMSummary":
         """Fetch Dune Uniswap LM summary."""
 
