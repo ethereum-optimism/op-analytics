@@ -31,12 +31,12 @@ DailyWalletCohorts AS (
     dwa.*, -- Select all columns from DailyWalletActivity
     -- Define segments based on daily transaction count
     multiIf(
-      dwa.count_transactions >= 501, '>500_tx_per_day',    -- Tier5: Automated (High Freq)
-      dwa.count_transactions >= 51,  '51-500_tx_per_day',  -- Tier4: Automated (Low Freq)
-      dwa.count_transactions >= 16,  '16-50_tx_per_day',   -- Tier3: Power users
-      dwa.count_transactions >= 2,   '2-15_tx_per_day',    -- Tier2: Organic activity
-      dwa.count_transactions = 1,    '1_tx_per_day',       -- Tier1: Organic activity (Single)
-      'undefined' -- Fallback (shouldn't be hit due to WHERE clause above)
+      dwa.count_transactions >= 501, '>500_tx_per_day',   
+      dwa.count_transactions >= 51,  '51-500_tx_per_day',
+      dwa.count_transactions >= 16,  '16-50_tx_per_day',
+      dwa.count_transactions >= 2,   '2-15_tx_per_day',
+      dwa.count_transactions = 1,    '1_tx_per_day',
+      'undefined'
     ) AS segment,
     dwa.count_success_transactions / nullIf(dwa.count_transactions, 0) AS wallet_success_rate,
     dwa.sum_tx_fee_native / nullIf(dwa.count_transactions, 0) AS wallet_avg_fee_per_tx,
@@ -158,18 +158,4 @@ GROUP BY GROUPING SETS (
   (dt, chain, chain_id, network, segment),
   (dt, chain, chain_id, network)
 )
--- Order results for readability
-ORDER BY
-  dt ASC, chain ASC, network ASC,
-  multiIf(
-    wallet_segment = '>500_tx_per_day', 1,
-    wallet_segment = '51-500_tx_per_day', 2,
-    wallet_segment = '16-50_tx_per_day', 3,
-    wallet_segment = '2-15_tx_per_day', 4,
-    wallet_segment = '1_tx_per_day', 5,
-    wallet_segment = 'Baseline', 6,
-    99 -- Fallback for any unexpected segment names
-  ) ASC,
-  chain_id ASC
-
 SETTINGS use_hive_partitioning = 1
