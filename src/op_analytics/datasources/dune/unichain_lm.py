@@ -8,9 +8,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 
 from .dataaccess import Dune
-from .utils import determine_lookback
 
-from datetime import datetime
 
 log = structlog.get_logger()
 
@@ -26,23 +24,27 @@ class DuneUniLMSummary:
     @classmethod
     def fetch(
         cls,
-        min_dt: str | None = '2025-01-01', # Run All-Time as default
-        max_dt: str | None = '2035-01-01',
+        min_dt: str | None = "2025-01-01",  # Run All-Time as default
+        max_dt: str | None = "2035-01-01",
     ) -> "DuneUniLMSummary":
         """Fetch Dune Uniswap LM summary."""
 
+        # Ensure we have valid datetime strings
+        start_date = f"{min_dt} 00:00:00" if min_dt is not None else "2025-01-01 00:00:00"
+        end_date = f"{max_dt} 00:00:00" if max_dt is not None else "2035-01-01 00:00:00"
+
         df = (
             spice.query(
-                UNI_LM_QUERY_ID,
-                # Runs every time so we are guaranteed to get fresh results.
+                query_or_execution=UNI_LM_QUERY_ID,
                 refresh=True,
                 parameters={
-                    "start_date": min_dt + ' 00:00:00',
-                    "end_date": max_dt + ' 00:00:00',
+                    "start_date": start_date,
+                    "end_date": end_date,
                 },
                 api_key=env_get("DUNE_API_KEY"),
                 cache=False,
                 performance="large",
+                poll=True,  # Required to get DataFrame result
             )
             .with_columns(
                 pl.col("period")
@@ -57,10 +59,9 @@ class DuneUniLMSummary:
 
 
 def execute_pull(
-    min_dt: str | None = '2025-01-01', # Run All-Time as default
-    max_dt: str | None = '2035-01-01',
+    min_dt: str | None = "2025-01-01",  # Run All-Time as default
+    max_dt: str | None = "2035-01-01",
 ):
-
     """Fetch and write to GCS."""
     result = DuneUniLMSummary.fetch(
         min_dt=min_dt,
