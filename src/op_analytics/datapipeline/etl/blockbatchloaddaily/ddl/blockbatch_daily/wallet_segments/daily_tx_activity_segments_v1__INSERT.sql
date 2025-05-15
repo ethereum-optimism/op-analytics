@@ -31,12 +31,12 @@ DailyWalletCohorts AS (
     dwa.*, -- Select all columns from DailyWalletActivity
     -- Define segments based on daily transaction count
     multiIf(
-      dwa.count_transactions >= 501, '>500_tx_per_day',   
-      dwa.count_transactions >= 51,  '51-500_tx_per_day',
-      dwa.count_transactions >= 16,  '16-50_tx_per_day',
-      dwa.count_transactions >= 2,   '2-15_tx_per_day',
-      dwa.count_transactions = 1,    '1_tx_per_day',
-      'undefined'
+      dwa.count_transactions >= 501, '>500_tx_per_day',    -- Tier5: Automated (High Freq)
+      dwa.count_transactions >= 51,  '51-500_tx_per_day',  -- Tier4: Automated (Low Freq)
+      dwa.count_transactions >= 16,  '16-50_tx_per_day',   -- Tier3: Power users
+      dwa.count_transactions >= 2,   '2-15_tx_per_day',    -- Tier2: Organic activity
+      dwa.count_transactions = 1,    '1_tx_per_day',       -- Tier1: Organic activity (Single)
+      'undefined' -- Fallback (shouldn't be hit due to WHERE clause above)
     ) AS segment,
     dwa.count_success_transactions / nullIf(dwa.count_transactions, 0) AS wallet_success_rate,
     dwa.sum_tx_fee_native / nullIf(dwa.count_transactions, 0) AS wallet_avg_fee_per_tx,
@@ -141,16 +141,16 @@ SELECT
   avg(sum_success_estimated_size) AS avg_success_estimated_size_per_wallet,
 
   -- === AVERAGES PER TRANSACTION ===
-  sum(count_success_transactions) / nullIf(sum(count_transactions), 0) AS overall_success_rate,
-  sum(sum_tx_fee_native) / nullIf(sum(count_transactions), 0) AS overall_avg_tx_fee_native_per_tx,
-  sum(sum_l2_gas_used) / nullIf(sum(count_transactions), 0) AS overall_avg_l2_gas_per_tx,
-  sum(sum_l1_gas_used_unified) / nullIf(sum(count_transactions), 0) AS overall_avg_l1_gas_per_tx,
+  avgWeighted(count_success_transactions, count_transactions) AS overall_success_rate,
+  avgWeighted(sum_tx_fee_native, count_transactions) AS overall_avg_tx_fee_native_per_tx,
+  avgWeighted(sum_l2_gas_used, count_transactions) AS overall_avg_l2_gas_per_tx,
+  avgWeighted(sum_l1_gas_used_unified, count_transactions) AS overall_avg_l1_gas_per_tx,
 
-  -- === AVERAGES PER TRANSACTION ===
+  -- === AVERAGES PER WALLET ===
   avg(wallet_success_rate) AS avg_wallet_success_rate,
-  avg(wallet_avg_fee_per_tx) AS avg_wallet_avg_fee_per_tx,
-  avg(wallet_avg_l2_gas_per_tx) AS avg_wallet_avg_l2_gas_per_tx,
-  avg(wallet_avg_l1_gas_per_tx) AS avg_wallet_avg_l1_gas_per_tx
+  avgWeighted(wallet_avg_fee_per_tx, count_transactions) AS avg_wallet_avg_fee_per_tx,
+  avgWeighted(wallet_avg_l2_gas_per_tx, count_transactions) AS avg_wallet_avg_l2_gas_per_tx,
+  avgWeighted(wallet_avg_l1_gas_per_tx, count_transactions) AS avg_wallet_avg_l1_gas_per_tx
 
 FROM DailyWalletCohorts
 -- Group by date, chain, network, and segment, AND also group by just date, chain, network (for baseline)
@@ -158,4 +158,18 @@ GROUP BY GROUPING SETS (
   (dt, chain, chain_id, network, segment),
   (dt, chain, chain_id, network)
 )
+-- Order results for readability
+ORDER BY
+  dt ASC, chain ASC, network ASC,
+  multiIf(
+    wallet_segment = '>500_tx_per_day', 1,
+    wallet_segment = '51-500_tx_per_day', 2,
+    wallet_segment = '16-50_tx_per_day', 3,
+    wallet_segment = '2-15_tx_per_day', 4,
+    wallet_segment = '1_tx_per_day', 5,
+    wallet_segment = 'Baseline', 6,
+    99 -- Fallback for any unexpected segment names
+  ) ASC,
+  chain_id ASC
+
 SETTINGS use_hive_partitioning = 1
