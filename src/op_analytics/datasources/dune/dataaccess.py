@@ -14,4 +14,5 @@ class Dune(DailyDataset):
     DEX_TRADES = "daily_dex_trades_summary_v1"
 
     # Bespoke
-    UNI_LM_2025 = "unichain_lm_summary_2025_v1"
+    ETH_PRICE_VOL = "daily_eth_price_volatility_v1"
+
