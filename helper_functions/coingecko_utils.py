@@ -62,3 +62,73 @@ def get_token_data_by_granularity(cg_id, granularity='daily', show_current=True,
                 return pd.DataFrame()  # Return an empty DataFrame if all retries fail
 
     return pd.DataFrame()  # Return an empty DataFrame if the loop completes without success
+
+def get_token_ohlc_by_granularity(cg_id, granularity='daily', show_current=True, num_days=365, max_retries=3, delay=5):
+    header = {
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0'
+    }
+
+    # Only 'daily' granularity is supported for OHLC; API uses `days` param
+    valid_day_options = ['1', '7', '14', '30', '90', '180', '365', 'max']
+    days_param = str(num_days) if str(num_days) in valid_day_options else '365'
+
+    for attempt in range(max_retries):
+        try:
+            # Fetch token metadata
+            info_api = f'https://api.coingecko.com/api/v3/coins/{cg_id}'
+            info = r.get(info_api, headers=header).json()
+            symbol = info['symbol']
+            cg_name = info['name']
+            details = info.get('detail_platforms', {})
+
+            # OHLC endpoint
+            ohlc_url = f'https://api.coingecko.com/api/v3/coins/{cg_id}/ohlc?vs_currency=usd&days={days_param}'
+            print(f"Fetching: {ohlc_url}")
+            res = r.get(ohlc_url, headers=header)
+
+            if res.status_code == 429:  # Rate limited
+                print(f"Rate limited. Attempt {attempt + 1}/{max_retries}. Retrying in {delay} seconds...")
+                time.sleep(delay)
+                continue
+
+            res.raise_for_status()
+            ohlc_data = res.json()
+
+            if not ohlc_data:
+                print("No OHLC data returned.")
+                return pd.DataFrame()
+
+            # Parse OHLC data
+            df = pd.DataFrame(ohlc_data, columns=["timestamp", "open", "high", "low", "close"])
+            df["date"] = pd.to_datetime(df["timestamp"], unit="ms")
+            df.drop(columns="timestamp", inplace=True)
+
+            # Drop the latest row if show_current is False
+            if not show_current:
+                df = df.iloc[:-1]
+
+            # Add metadata
+            df["cg_id"] = cg_id
+            df["symbol"] = symbol
+            df["name"] = cg_name
+            df["details"] = str(details)
+
+            df.sort_values(by='date')
+
+            # Reorder columns to put 'date' first
+            cols = ['date'] + [col for col in df.columns if col != 'date']
+            df = df[cols]
+
+            return df.sort_values(by='date')
+
+        except r.exceptions.RequestException as e:
+            print(f"Error: {e}")
+            if attempt < max_retries - 1:
+                print(f"Retrying in {delay} seconds...")
+                time.sleep(delay)
+            else:
+                print("Max retries reached. Returning empty DataFrame.")
+                return pd.DataFrame()
+
+    return pd.DataFrame()
