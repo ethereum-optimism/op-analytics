@@ -46,7 +46,7 @@ class PlatformMetricsDailyPull:
                 "started_at": pl.Date(),
                 "stopped_at": pl.Date(),
             },
-        ).rename({"date": "dt"})
+        ).rename({"started_at": "dt"})
         jobs_df_truncated = last_n_days(
             jobs_df,
             n_dates=7,
