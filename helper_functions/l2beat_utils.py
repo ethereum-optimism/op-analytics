@@ -364,3 +364,4 @@ def get_l2beat_metadata():
     return df
 
     # Display the DataFrame
+
