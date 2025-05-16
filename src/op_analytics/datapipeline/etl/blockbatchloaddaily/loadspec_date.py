@@ -24,6 +24,12 @@ class ClickHouseDateETL(ETLMixin):
     # This is the list of ClickHouse root paths that are inputs to this load task.
     inputs_clickhouse: list[str] = field(default_factory=list)
 
+    # This is the list of chains that are allowed to have zero rows.
+    ignore_zero_rows_chains: list[str] = field(default_factory=list)
+
+    # This is the list of (chain, date) tuples that are allowed to have zero rows.
+    ignore_zero_rows_chain_dts: list[tuple[str, str]] = field(default_factory=list)
+
     def pending_batches(
         self, range_spec: str, chains: list[str] | None = None
     ) -> list[DateChainBatch]:
@@ -48,8 +54,16 @@ class ClickHouseDateETL(ETLMixin):
         # Check each date and see if it is ready to be processed.
         ready_date_batches: list[DateChainBatch] = []
         for date, chain_batches in by_date.items():
-            ok = set(chain_batches) == set(chains)
-            missing = set(chains) - set(chain_batches)
+            # Filter out chains that are in the ignore list
+            required_chains = [c for c in chains if c not in self.ignore_zero_rows_chains]
+
+            # For each required chain, check if it's in the chain-date ignore list
+            required_chains = [
+                c for c in required_chains if (c, date) not in self.ignore_zero_rows_chain_dts
+            ]
+
+            ok = set(chain_batches).issuperset(set(required_chains))
+            missing = set(required_chains) - set(chain_batches)
 
             if ok:
                 ready_date_batches.append(
