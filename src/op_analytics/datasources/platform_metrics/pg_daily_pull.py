@@ -14,7 +14,7 @@ log = structlog.get_logger()
 
 
 @dataclass
-class PlatformMetricsDailyPull:
+class PostgresDailyPull:
     """Daily pull of platform metrics."""
 
     jobs_df: pl.DataFrame
@@ -54,7 +54,7 @@ class PlatformMetricsDailyPull:
             date_column_type_is_str=True,
         )
 
-        return PlatformMetricsDailyPull(
+        return PostgresDailyPull(
             # Use the full dataframe when backfilling:
             jobs_df=jobs_df,
             # Use truncated dataframe when running daily:
