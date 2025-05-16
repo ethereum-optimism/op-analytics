@@ -82,6 +82,14 @@ DAILY_TX_ACTIVITY_SEGMENTS = ClickHouseDateChainETL(
     ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
 )
 
+DAILY_CROSS_CHAIN_SEGMENTS = ClickHouseDateETL(
+    output_root_path="blockbatch_daily/wallet_segments/daily_cross_chain_segments_v1",
+    inputs_clickhouse=[
+        DAILY_ADDRESS_SUMMARY.output_root_path,
+    ],
+    ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
+    ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
+)
 
 # This dataset is not used in production. It was created for testing purposes.
 # This is an aggregation across all chains at the date level.
