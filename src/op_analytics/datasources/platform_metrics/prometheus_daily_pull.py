@@ -20,7 +20,7 @@ base_url = env_get_or_none("PROMETHEUS_ENG_BASE_URL")
 
 
 @dataclass
-class PlatformMetricsDailyPull:
+class PrometheusDailyPull:
     """Daily pull of platform metrics."""
 
     metrics_df: pl.DataFrame
@@ -70,7 +70,7 @@ class PlatformMetricsDailyPull:
             date_column_type_is_str=True,
         )
 
-        return PlatformMetricsDailyPull(
+        return PrometheusDailyPull(
             # Use the full dataframe when backfilling:
             metrics_df=metrics_df,
             # Use truncated dataframe when running daily:
