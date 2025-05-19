@@ -8,7 +8,7 @@ def test_read_ddls():
     assert isinstance(transforms_dir, str)
 
     # Read all SQL files in the ddl directory
-    ddls = read_ddls(transforms_dir, "interop/update/*ntt*")
+    ddls = read_ddls(transforms_dir, "interop/update/*fact*")
 
     # Verify we got some DDL files back
     assert len(ddls) == 2
@@ -16,6 +16,6 @@ def test_read_ddls():
     # Verify each DDL is a non-empty string
     paths = [_.basename for _ in ddls]
     assert paths == [
-        "03_fact_erc20_ntt_transfers_v1.sql",
-        "04_dim_erc20_ntt_first_seen_v1.sql",
+        "06_fact_erc20_create_traces_v2.sql",
+        "07_export_fact_erc20_create_traces_v1.sql",
     ]
