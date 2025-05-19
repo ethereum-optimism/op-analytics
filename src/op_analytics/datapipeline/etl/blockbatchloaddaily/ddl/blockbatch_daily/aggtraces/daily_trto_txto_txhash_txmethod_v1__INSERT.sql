@@ -232,4 +232,6 @@ GROUP BY
   , tr.network
   , tr.trace_to_address
   , tr.tx_to_address
+  , tr.transaction_hash
+  , tr.tx_success
   , tr.tx_method_id
