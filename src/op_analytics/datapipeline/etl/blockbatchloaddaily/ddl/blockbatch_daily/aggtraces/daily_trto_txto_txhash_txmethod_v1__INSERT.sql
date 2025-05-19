@@ -1,5 +1,5 @@
 /**
-Aggregation grain is tr_to_address, tx_to_address, tx_method_id
+Aggregation grain is tr_to_address, tx_to_address, tx_method_id, tx_hash
 */
 
 WITH
