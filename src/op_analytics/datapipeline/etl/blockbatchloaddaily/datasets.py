@@ -54,6 +54,15 @@ TRACES_AGG3 = ClickHouseDateChainETL(
     ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
 )
 
+TRACES_AGG4 = ClickHouseDateChainETL(
+    output_root_path="blockbatch_daily/aggtraces/daily_trto_txto_txhash_txmethod_v1",
+    inputs_blockbatch=[
+        "blockbatch/refined_traces/refined_traces_fees_v2",
+    ],
+    ignore_zero_rows_chains=ALLOWED_EMPTY_CHAINS,
+    ignore_zero_rows_chain_dts=ALLOWED_EMPTY_DATES,
+)
+
 
 DAILY_ADDRESS_SUMMARY = ClickHouseDateChainETL(
     output_root_path="blockbatch_daily/aggtxs/daily_address_summary_v1",

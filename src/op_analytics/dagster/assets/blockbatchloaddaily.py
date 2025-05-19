@@ -11,6 +11,7 @@ from op_analytics.datapipeline.etl.blockbatchloaddaily.datasets import (
     TRACES_AGG1,
     TRACES_AGG2,
     TRACES_AGG3,
+    TRACES_AGG4,
     DAILY_ADDRESS_SUMMARY,
     DAILY_TX_ACTIVITY_SEGMENTS,
 )
@@ -28,6 +29,7 @@ def aggreagated_traces(context: OpExecutionContext):
         TRACES_AGG1,
         TRACES_AGG2,
         TRACES_AGG3,
+        TRACES_AGG4,
         DAILY_ADDRESS_SUMMARY,
         DAILY_TX_ACTIVITY_SEGMENTS,
     ]:
