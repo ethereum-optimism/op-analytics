@@ -249,17 +249,6 @@ jobs:
           name: Run pytest
           command: |
             uv run pytest tests -v
-  
-  markdown-link-checker:
-    executor: default
-    resource_class: small
-    steps:
-      - checkout-dep-1
-      - setup-python-env
-      - run:
-          name: Run link checker script
-          command: |
-            uv run scripts/markdown_link_checker.py
 
 workflows:
   version: 2
@@ -464,5 +453,3 @@ workflows:
           filters:
             branches:
               only: main
-
-
