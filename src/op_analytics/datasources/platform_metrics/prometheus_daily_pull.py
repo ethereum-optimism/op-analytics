@@ -4,13 +4,11 @@ import polars as pl
 import pandas as pd
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.dailydatautils import dt_summary, last_n_days
+from op_analytics.coreutils.partitioned.dailydatautils import last_n_days
 from op_analytics.coreutils.time import now_dt
 from op_analytics.coreutils.env.vault import env_get_or_none
 from datetime import datetime, timedelta
 from op_analytics.coreutils.prometheus.client import PrometheusClient
-
-from .dataaccess import PlatformMetrics
 
 log = structlog.get_logger()
 
@@ -63,12 +61,12 @@ class PrometheusDailyPull:
             },
         ).rename({"datetime": "dt"})
 
-        metrics_df_truncated = last_n_days(
-            metrics_df,
-            n_dates=7,
-            reference_dt=current_dt,
-            date_column_type_is_str=True,
-        )
+        # metrics_df_truncated = last_n_days(
+        #     metrics_df,
+        #     n_dates=7,
+        #     reference_dt=current_dt,
+        #     date_column_type_is_str=True,
+        # )
 
         return PrometheusDailyPull(
             # Use the full dataframe when backfilling:

@@ -3,12 +3,10 @@ from dataclasses import dataclass
 import polars as pl
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.partitioned.dailydatautils import dt_summary, last_n_days
+from op_analytics.coreutils.partitioned.dailydatautils import last_n_days
 from op_analytics.coreutils.time import now_dt
 from op_analytics.coreutils.postgres.client import PostgresClient
 from op_analytics.coreutils.env.vault import env_get
-
-from .dataaccess import PlatformMetrics
 
 log = structlog.get_logger()
 
@@ -47,12 +45,13 @@ class PostgresDailyPull:
                 "stopped_at": pl.Date(),
             },
         ).rename({"started_at": "dt"})
-        jobs_df_truncated = last_n_days(
-            jobs_df,
-            n_dates=7,
-            reference_dt=current_dt,
-            date_column_type_is_str=True,
-        )
+
+        # jobs_df_truncated = last_n_days(
+        #     jobs_df,
+        #     n_dates=7,
+        #     reference_dt=current_dt,
+        #     date_column_type_is_str=True,
+        # )
 
         return PostgresDailyPull(
             # Use the full dataframe when backfilling:

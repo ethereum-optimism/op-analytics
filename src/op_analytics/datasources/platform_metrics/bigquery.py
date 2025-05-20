@@ -6,11 +6,10 @@ from op_analytics.coreutils.bigquery.write import (
 )
 from op_analytics.coreutils.logger import structlog
 
-from .pg_daily_pull import PostgresDailyPull
-from .prometheus_daily_pull import PrometheusDailyPull
+from op_analytics.datasources.platform_metrics.pg_daily_pull import PostgresDailyPull
+from op_analytics.datasources.platform_metrics.prometheus_daily_pull import PrometheusDailyPull
 
 log = structlog.get_logger()
-
 
 # BigQuery Dataset and Tables
 BQ_DATASET = "platform_metrics"
@@ -23,7 +22,6 @@ def write_pg_to_bq(data: PostgresDailyPull):
 
     This operation will be retired soon. Data will move to GCS + Clickhouse.
     """
-
     jobs_df = data.jobs_df_truncated.rename({"dt": "date"})
 
     if os.environ.get("CREATE_TABLES") == "true":

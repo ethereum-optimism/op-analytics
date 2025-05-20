@@ -1,10 +1,10 @@
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 
-from .dataaccess import PlatformMetrics
-from .pg_daily_pull import PostgresDailyPull
-from .prometheus_daily_pull import PrometheusDailyPull
-from .bigquery import write_pg_to_bq, write_prom_to_bq
+from op_analytics.datasources.platform_metrics.dataaccess import PlatformMetrics
+from op_analytics.datasources.platform_metrics.pg_daily_pull import PostgresDailyPull
+from op_analytics.datasources.platform_metrics.prometheus_daily_pull import PrometheusDailyPull
+from op_analytics.datasources.platform_metrics.bigquery import write_pg_to_bq, write_prom_to_bq
 
 log = structlog.get_logger()
 
@@ -18,12 +18,12 @@ def execute_pull():
 
     PlatformMetrics.JOBS.write(
         dataframe=data_pg.jobs_df,
-        sort_by=["dt", "metric"],
+        sort_by=["dt", "id"],
     )
 
     PlatformMetrics.PROMETHEUS_METRICS.write(
         dataframe=data_prom.metrics_df,
-        sort_by=["dt", "referrer"],
+        sort_by=["dt", "metric"],
     )
 
     summary["gcs"] = {
