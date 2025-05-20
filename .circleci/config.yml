@@ -263,16 +263,6 @@ workflows:
     jobs:
       - cicd
 
-  markdown-link-checker:
-    when:
-      or:
-        # run when manually triggered
-        - equal: [<< pipeline.parameters.run_job >>, "markdown-link-checker"]
-        # run for every push
-        - equal: [<< pipeline.trigger_source >>, "webhook"]
-    jobs:
-      - markdown-link-checker
-
   daily-l2-aggregate-later-loads:
     when:
       or:
