@@ -61,16 +61,16 @@ class PrometheusDailyPull:
             },
         ).rename({"datetime": "dt"})
 
-        metrics_df_truncated = last_n_days(
-            metrics_df,
-            n_dates=7,
-            reference_dt=current_dt,
-            date_column_type_is_str=True,
-        )
+        # metrics_df_truncated = last_n_days(
+        #     metrics_df,
+        #     n_dates=7,
+        #     reference_dt=current_dt,
+        #     date_column_type_is_str=True,
+        # )
 
         return PrometheusDailyPull(
             # Use the full dataframe when backfilling:
-            # metrics_df=metrics_df,
+            metrics_df=metrics_df,
             # Use truncated dataframe when running daily:
-            metrics_df=metrics_df_truncated,
+            # metrics_df=metrics_df_truncated,
         )

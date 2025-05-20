@@ -46,16 +46,16 @@ class PostgresDailyPull:
             },
         ).rename({"started_at": "dt"})
 
-        jobs_df_truncated = last_n_days(
-            jobs_df,
-            n_dates=7,
-            reference_dt=current_dt,
-            date_column_type_is_str=True,
-        )
+        # jobs_df_truncated = last_n_days(
+        #     jobs_df,
+        #     n_dates=7,
+        #     reference_dt=current_dt,
+        #     date_column_type_is_str=True,
+        # )
 
         return PostgresDailyPull(
             # Use the full dataframe when backfilling:
-            # jobs_df=jobs_df,
+            jobs_df=jobs_df,
             # Use truncated dataframe when running daily:
-            jobs_df=jobs_df_truncated,
+            # jobs_df=jobs_df_truncated,
         )
