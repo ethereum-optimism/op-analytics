@@ -22,7 +22,7 @@ def write_pg_to_bq(data: PostgresDailyPull):
 
     This operation will be retired soon. Data will move to GCS + Clickhouse.
     """
-    jobs_df = data.jobs_df_truncated.rename({"dt": "date"})
+    jobs_df = data.jobs_df.rename({"dt": "date"})
 
     if os.environ.get("CREATE_TABLES") == "true":
         # Use with care. Should only really be used the
@@ -49,7 +49,7 @@ def write_prom_to_bq(data: PrometheusDailyPull):
     This operation will be retired soon. Data will move to GCS + Clickhouse.
     """
 
-    metrics_df = data.metrics_df_truncated.rename({"dt": "date"})
+    metrics_df = data.metrics_df.rename({"dt": "date"})
 
     if os.environ.get("CREATE_TABLES") == "true":
         # Use with care. Should only really be used the
