@@ -57,13 +57,13 @@ def write_prom_to_bq(data: PrometheusDailyPull):
         overwrite_unpartitioned_table(
             df=metrics_df,
             dataset=BQ_DATASET,
-            table_name=ANALYTICS_TABLE_PG,
+            table_name=ANALYTICS_TABLE_PROM,
         )
     else:
         upsert_unpartitioned_table(
             df=metrics_df,
             dataset=BQ_DATASET,
-            table_name=ANALYTICS_TABLE_PG,
+            table_name=ANALYTICS_TABLE_PROM,
             unique_keys=["date", "metric", "unix_time"],
         )
 

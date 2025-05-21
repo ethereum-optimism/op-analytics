@@ -34,8 +34,8 @@ def execute_pull():
     )
 
     summary["gcs"] = {
-        "jobs_df": dt_summary(data_pg.jobs_df_truncated),
-        "metrics_df": dt_summary(data_prom.metrics_df_truncated),
+        "jobs_df": dt_summary(data_pg.jobs_df),
+        "metrics_df": dt_summary(data_prom.metrics_df),
     }
 
     return summary
