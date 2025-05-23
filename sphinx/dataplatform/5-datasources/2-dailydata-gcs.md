@@ -165,7 +165,7 @@ that in the monitoring dashboard as well, right along side the number of hours s
 
 Here is a snapshot of part of the dashboard from April 2025:
 <div style="text-align: center;">
-    <img src="../_static/images/dailydata-monitor.png" alt="architecture" width="70%"/>
+    <img src="../../_static/images//dailydata-monitor.png" alt="dailydata-monitor" width="70%"/>
 </div>
 
 
