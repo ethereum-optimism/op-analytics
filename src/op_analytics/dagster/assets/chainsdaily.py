@@ -56,9 +56,13 @@ def blockbatch_views():
     NOTE: The "use_hive_partitioning = 1" is required or else the dt and chain columns
     will not be availble in the result.
     """
-    from op_analytics.coreutils.clickhouse.gcsview import create_blockbatch_gcs_view
+    from op_analytics.coreutils.clickhouse.gcsview import (
+        create_blockbatch_gcs_view,
+        create_blockbatch_date_range_gcs_view,
+    )
 
     create_blockbatch_gcs_view()
+    create_blockbatch_date_range_gcs_view()
 
 
 @asset

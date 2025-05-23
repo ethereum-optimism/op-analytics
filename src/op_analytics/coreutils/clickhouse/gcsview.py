@@ -49,6 +49,67 @@ def create_blockbatch_gcs_view():
     log.info(f"created clickhouse parameterized view in db={db_name}")
 
 
+def create_blockbatch_date_range_gcs_view():
+    """Create a parameterized view for blockbatch models.
+
+    The parameterized view requires the user to specify the model and the
+    chain and dt partitions that will be queried.
+    """
+
+    db_name = "blockbatch_gcs"
+
+    KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
+    SECRET = env_get("GCS_HMAC_SECRET")
+
+    db_statement = f"CREATE DATABASE IF NOT EXISTS {db_name}"
+
+    view_name = f"{db_name}.read_date_range"
+
+    # Given two dates genrates all of the YYYY-MM-DD dates between them.
+    function_statement = """
+    CREATE FUNCTION IF NOT EXISTS dt_range AS
+    (dt_from, dt_to) -> (SELECT * FROM s3(
+            concat(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/',
+                {rootpath:String},
+                '/chain=',
+                {chain:String},
+    """
+
+    # Documentation for wildcards in path:
+    # https://clickhouse.com/docs/engines/table-engines/integrations/s3#wildcards-in-path
+    # {some_string,another_string,yet_another_one}
+    view_statement = f"""
+    
+    
+    CREATE VIEW IF NOT EXISTS {view_name} AS
+    SELECT
+        chain, CAST(dt as Date) AS dt,  *
+    FROM s3(
+            concat(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/',
+                {{rootpath:String}},
+                '/chain=',
+                {{chain:String}},
+                '/dt=',
+                 dt_range({{dt_from:String}}, {{dt_to:String}}),
+                '/*.parquet'
+            ),
+            '{KEY_ID}',
+            '{SECRET}',
+            'parquet'
+        )
+    SETTINGS use_hive_partitioning = 1
+    """
+
+    clt = init_client("OPLABS")
+    clt.command(db_statement)
+    clt.command(function_statement)
+    clt.command(view_statement)
+
+    log.info(f"created clickhouse parameterized view in db={db_name}")
+
+
 def create_dailydata_gcs_view():
     """Create parameterized views to read ingested DailyData datasets.
 
