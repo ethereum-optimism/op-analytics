@@ -94,7 +94,14 @@ print("getting data - l2beat")
 print("getting metadata - l2beat")
 l2beat_meta = ltwo.get_l2beat_metadata()
 l2beat_meta["chain"] = l2beat_meta["slug"]
-l2beat_meta["is_upcoming"] = l2beat_meta["is_upcoming"].fillna(False)
+
+# Ensure all required boolean columns exist
+boolean_columns = ["is_upcoming", "is_archived", "is_current_chain"]
+for col in boolean_columns:
+    if col not in l2beat_meta.columns:
+        l2beat_meta[col] = False
+    else:
+        l2beat_meta[col] = l2beat_meta[col].fillna(False)
 
 
 # In[9]:

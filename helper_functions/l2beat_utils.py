@@ -261,18 +261,22 @@ def get_l2beat_metadata():
         all_files = []
 
         # Function to recursively get files from folders
+        @ru.retry_with_backoff(max_retries=3, initial_delay=1, backoff_factor=2)
         def get_files_from_folder(folder_url):
-            try:
-                folder_contents = r.get(folder_url,headers=HEADERS).json()
-                for item in folder_contents:
-                    if item["type"] == "dir":
-                        # Recursively get files from subfolder
-                        get_files_from_folder(item["url"])
-                    elif item["type"] == "file" and item["name"].endswith(".ts"):
-                        if item["name"] not in ["index.ts", "index.test.ts"]:
-                            all_files.append(item)
-            except Exception as e:
-                print(f"Error processing folder {folder_url}: {e}")
+            response = r.get(folder_url, headers=HEADERS)
+            response.raise_for_status()
+            
+            folder_contents = response.json()
+            if not isinstance(folder_contents, list):
+                raise ValueError(f"Unexpected response format from {folder_url}")
+            
+            for item in folder_contents:
+                if item.get("type") == "dir":
+                    # Recursively get files from subfolder
+                    get_files_from_folder(item["url"])
+                elif item.get("type") == "file" and item.get("name", "").endswith(".ts"):
+                    if item.get("name") not in ["index.ts", "index.test.ts"]:
+                        all_files.append(item)
 
         # Get all files from main folder and subfolders
         get_files_from_folder(link_url)
