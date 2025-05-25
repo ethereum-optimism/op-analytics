@@ -35,7 +35,7 @@ class PrometheusDailyPull:
         )  # Should it be hard coded to start of data creation 2025-05-07?
 
         range_result = client.query_range(
-            query="sum(increase(nat_tests_total[1h]))", start=start_time, end=end_time, step="1d"
+            query="sum(increase(nat_tests_total[1d  ]))", start=start_time, end=end_time, step="1d"
         )
 
         # Extract the list of values (timestamp and value pairs)
@@ -61,16 +61,16 @@ class PrometheusDailyPull:
             },
         ).rename({"datetime": "dt"})
 
-        # metrics_df_truncated = last_n_days(
-        #     metrics_df,
-        #     n_dates=7,
-        #     reference_dt=current_dt,
-        #     date_column_type_is_str=True,
-        # )
+        metrics_df_truncated = last_n_days(
+            metrics_df,
+            n_dates=7,
+            reference_dt=current_dt,
+            date_column_type_is_str=False,
+        )
 
         return PrometheusDailyPull(
             # Use the full dataframe when backfilling:
-            metrics_df=metrics_df,
+            # metrics_df=metrics_df,
             # Use truncated dataframe when running daily:
-            # metrics_df=metrics_df_truncated,
+            metrics_df=metrics_df_truncated,
         )
