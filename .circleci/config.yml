@@ -258,7 +258,7 @@ workflows:
       or:
         # run when manually triggered
         - equal: [<< pipeline.parameters.run_job >>, "run-cicd"]
-        #run for every push
+        # run for every push
         - equal: [<< pipeline.trigger_source >>, "webhook"]
     jobs:
       - cicd
@@ -443,5 +443,3 @@ workflows:
           filters:
             branches:
               only: main
-
-
