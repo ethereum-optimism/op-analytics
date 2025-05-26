@@ -1,5 +1,3 @@
-# test_execute.py
-
 from unittest.mock import patch, MagicMock
 
 
@@ -20,6 +18,7 @@ def test_execute_pull():
         # Mock PostgresDailyPull.fetch()
         mock_pg_instance = MagicMock()
         mock_pg_instance.jobs_df = "jobs_df"
+        mock_pg_instance.pipelines_df = "pipelines_df"
         mock_pg_pull.fetch.return_value = mock_pg_instance
 
         # Mock PrometheusDailyPull.fetch()
@@ -44,6 +43,10 @@ def test_execute_pull():
             dataframe="jobs_df",
             sort_by=["dt", "id"],
         )
+        mock_platform_metrics.PIPELINES.write.assert_called_once_with(
+            dataframe="pipelines_df",
+            sort_by=["dt", "id"],
+        )
         mock_platform_metrics.PROMETHEUS_METRICS.write.assert_called_once_with(
             dataframe="metrics_df",
             sort_by=["dt", "metric"],
@@ -51,12 +54,14 @@ def test_execute_pull():
 
         # Assert dt_summary calls
         mock_dt_summary.assert_any_call("jobs_df")
+        mock_dt_summary.assert_any_call("pipelines_df")
         mock_dt_summary.assert_any_call("metrics_df")
 
         # Assert result structure
         assert result == {
             "gcs": {
                 "jobs_df": "summary_of_jobs_df",
+                "pipelines_df": "summary_of_pipelines_df",
                 "metrics_df": "summary_of_metrics_df",
             }
         }
