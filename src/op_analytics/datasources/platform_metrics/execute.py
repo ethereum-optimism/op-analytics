@@ -4,7 +4,6 @@ from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.datasources.platform_metrics.dataaccess import PlatformMetrics
 from op_analytics.datasources.platform_metrics.pg_daily_pull import PostgresDailyPull
 from op_analytics.datasources.platform_metrics.prometheus_daily_pull import PrometheusDailyPull
-# from op_analytics.datasources.platform_metrics.bigquery import write_pg_to_bq, write_prom_to_bq
 
 log = structlog.get_logger()
 
@@ -20,6 +19,11 @@ def execute_pull():
         sort_by=["dt", "id"],
     )
 
+    PlatformMetrics.PIPELINES.write(
+        dataframe=data_pg.pipelines_df,
+        sort_by=["dt", "id"],
+    )
+
     PlatformMetrics.PROMETHEUS_METRICS.write(
         dataframe=data_prom.metrics_df,
         sort_by=["dt", "metric"],
@@ -27,6 +31,7 @@ def execute_pull():
 
     summary["gcs"] = {
         "jobs_df": dt_summary(data_pg.jobs_df),
+        "pipelines_df": dt_summary(data_pg.pipelines_df),
         "metrics_df": dt_summary(data_prom.metrics_df),
     }
 

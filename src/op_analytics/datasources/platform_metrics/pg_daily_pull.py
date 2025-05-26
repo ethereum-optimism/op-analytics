@@ -16,6 +16,7 @@ class PostgresDailyPull:
     """Daily pull of platform metrics."""
 
     jobs_df: pl.DataFrame
+    pipelines_df: pl.DataFrame
 
     @classmethod
     def fetch(cls):
@@ -28,11 +29,10 @@ class PostgresDailyPull:
         )
 
         current_dt: str = now_dt()
-        query = "SELECT * FROM public.jobs"
+        job_query = "SELECT * FROM public.jobs"
+        pipeline_query = "SELECT id, number::VARCHAR, commit, branch, CAST(created_at::VARCHAR AS DATE) as created_at FROM public.pipelines"
 
-        # TODO: Add query for pipeline table to get branch for filtering.
-
-        jobs_raw_data = client.run_query(query)
+        jobs_raw_data = client.run_query(job_query)
         jobs_df = pl.DataFrame(
             jobs_raw_data,
             schema={
@@ -55,9 +55,30 @@ class PostgresDailyPull:
             date_column_type_is_str=False,
         )
 
+        pipelines_raw_data = client.run_query(pipeline_query)
+        pipelines_df = pl.DataFrame(
+            pipelines_raw_data,
+            schema={
+                "id": pl.String,
+                "number": pl.String,
+                "commit": pl.String,
+                "branch": pl.String,
+                "created_at": pl.Date(),
+            },
+        ).rename({"created_at": "dt"})
+
+        pipelines_df_truncated = last_n_days(
+            pipelines_df,
+            n_dates=7,
+            reference_dt=current_dt,
+            date_column_type_is_str=False,
+        )
+
         return PostgresDailyPull(
             # Use the full dataframe when backfilling:
             # jobs_df=jobs_df,
+            # pipelines_df=pipelines_df,
             # Use truncated dataframe when running daily:
             jobs_df=jobs_df_truncated,
+            pipelines_df=pipelines_df_truncated,
         )
