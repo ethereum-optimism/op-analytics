@@ -59,7 +59,7 @@ class L2BeatTVSBreakdown:
         projects_tvs = run_concurrently(
             function=lambda project: L2BeatProjectTVS.fetch(project, session),
             targets=l2beat_projects,
-            max_workers=8,
+            max_workers=4,
         )
 
         rows = []
@@ -162,18 +162,12 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
             else:
                 token_address = asset["tokenAddress"]
 
-            try:
-                if "url" not in asset:
-                    # New JSON structure
-                    try:
-                        url = asset["address"]["url"]
-                    except KeyError:
-                        url = None
-                else:
-                    url = asset.get("url")
-            except Exception:
-                log.error(f"Failed to parse URL for asset {asset}")
-                url = None
+            url = None
+
+            if "url" in asset:
+                url = asset["url"]
+            elif isinstance(asset.get("address"), dict):
+                url = asset["address"].get("url")
 
             # We produce one row per asset per escrow. If there are no escrows we still need to
             # produce a row for the asset, so we set escrows to a list with a single null escrow.
@@ -187,7 +181,18 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
             else:
                 escrows = [None]
 
-            for escrow in escrows:
+            valid_escrows = []
+            for esc in escrows:
+                if (
+                    isinstance(esc, dict)
+                    and esc.get("type") == "balanceOfEscrow"
+                    and "escrowAddress" in esc
+                ):
+                    valid_escrows.append(esc)
+                else:
+                    valid_escrows.append(None)
+
+            for escrow in valid_escrows:
                 if escrow:
                     if "address" in escrow:
                         # New JSON structure
