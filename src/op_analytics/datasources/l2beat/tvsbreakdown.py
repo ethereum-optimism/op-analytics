@@ -181,29 +181,52 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
             else:
                 escrows = [None]
 
-            valid_escrows = []
-            for esc in escrows:
-                if (
+            def is_valid_escrow(esc: dict[str, Any] | None) -> bool:
+                return (
                     isinstance(esc, dict)
                     and esc.get("type") == "balanceOfEscrow"
                     and "escrowAddress" in esc
-                ):
-                    valid_escrows.append(esc)
-                else:
-                    valid_escrows.append(None)
+                )
 
-            for escrow in valid_escrows:
-                if escrow:
-                    if "address" in escrow:
-                        # New JSON structure
-                        escrow_address = escrow["address"]
-                    elif "escrowAddress" in escrow:
-                        escrow_address = escrow["escrowAddress"]
-                    else:
-                        log.error(f"Unknown escrow structure: {escrow}")
-                        continue
-                else:
-                    escrow_address = None
+            def get_escrow_address(esc: dict[str, Any]) -> str | None:
+                if "address" in esc:
+                    return esc["address"]
+                return esc.get("escrowAddress")
+
+            for esc in escrows:
+                if not is_valid_escrow(esc):
+                    # Create a row with null escrow data
+                    row = {
+                        "dt": dt_fromepoch(timestamp),
+                        "project_id": project.id,
+                        "project_slug": project.slug,
+                        "timestamp": timestamp,
+                        "asset_id": asset_id,
+                        "chain_name": chain_name,
+                        "chain_id": chain_id,
+                        "amount": asset["amount"],
+                        "usd_value": float(asset["usdValue"]) if "usdValue" in asset else None,
+                        "usd_price": float(asset["usdPrice"]) if "usdPrice" in asset else None,
+                        "is_gas_token": asset.get("isGasToken"),
+                        "token_address": token_address,
+                        "escrow_address": None,
+                        "escrow_name": None,
+                        "is_shared_escrow": None,
+                        "escrow_url": None,
+                        "asset_url": url,
+                        "icon_url": asset.get("iconUrl"),
+                        "symbol": asset["symbol"],
+                        "name": asset.get("name"),
+                        "supply": asset.get("supply"),
+                        "category": category,
+                    }
+                    rows.append(row)
+                    continue
+
+                escrow_address = get_escrow_address(esc)
+                if not escrow_address:
+                    log.error(f"Unknown escrow structure: {esc}")
+                    continue
 
                 row = {
                     "dt": dt_fromepoch(timestamp),
@@ -219,9 +242,9 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
                     "is_gas_token": asset.get("isGasToken"),
                     "token_address": token_address,
                     "escrow_address": escrow_address,
-                    "escrow_name": escrow.get("name") if escrow else None,
-                    "is_shared_escrow": escrow.get("isSharedEscrow") if escrow else None,
-                    "escrow_url": escrow.get("url") if escrow else None,
+                    "escrow_name": esc.get("name"),
+                    "is_shared_escrow": esc.get("isSharedEscrow"),
+                    "escrow_url": esc.get("url"),
                     "asset_url": url,
                     "icon_url": asset.get("iconUrl"),
                     "symbol": asset["symbol"],
