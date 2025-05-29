@@ -181,54 +181,19 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
             else:
                 escrows = [None]
 
-            def is_valid_escrow(esc: dict[str, Any] | None) -> bool:
-                return (
-                    isinstance(esc, dict)
-                    and esc.get("type") == "balanceOfEscrow"
-                    and "escrowAddress" in esc
-                )
+            def get_escrow_address(esc: dict[str, Any] | None) -> str | None:
+                if not isinstance(esc, dict):
+                    return None
+                return esc.get("address") or esc.get("escrowAddress")
 
-            def get_escrow_address(esc: dict[str, Any]) -> str | None:
-                if "address" in esc:
-                    return esc["address"]
-                return esc.get("escrowAddress")
+            def get_escrow_name(esc: dict[str, Any] | None) -> str | None:
+                if not isinstance(esc, dict):
+                    return None
+                return esc.get("name")
 
-            for esc in escrows:
-                if not is_valid_escrow(esc):
-                    # Create a row with null escrow data
-                    row = {
-                        "dt": dt_fromepoch(timestamp),
-                        "project_id": project.id,
-                        "project_slug": project.slug,
-                        "timestamp": timestamp,
-                        "asset_id": asset_id,
-                        "chain_name": chain_name,
-                        "chain_id": chain_id,
-                        "amount": asset["amount"],
-                        "usd_value": float(asset["usdValue"]) if "usdValue" in asset else None,
-                        "usd_price": float(asset["usdPrice"]) if "usdPrice" in asset else None,
-                        "is_gas_token": asset.get("isGasToken"),
-                        "token_address": token_address,
-                        "escrow_address": None,
-                        "escrow_name": None,
-                        "is_shared_escrow": None,
-                        "escrow_url": None,
-                        "asset_url": url,
-                        "icon_url": asset.get("iconUrl"),
-                        "symbol": asset["symbol"],
-                        "name": asset.get("name"),
-                        "supply": asset.get("supply"),
-                        "category": category,
-                    }
-                    rows.append(row)
-                    continue
-
-                escrow_address = get_escrow_address(esc)
-                if not escrow_address:
-                    log.error(f"Unknown escrow structure: {esc}")
-                    continue
-
-                row = {
+            def create_row(esc: dict[str, Any] | None = None) -> dict[str, Any]:
+                escrow_address = get_escrow_address(esc) if esc else None
+                return {
                     "dt": dt_fromepoch(timestamp),
                     "project_id": project.id,
                     "project_slug": project.slug,
@@ -242,9 +207,9 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
                     "is_gas_token": asset.get("isGasToken"),
                     "token_address": token_address,
                     "escrow_address": escrow_address,
-                    "escrow_name": esc.get("name"),
-                    "is_shared_escrow": esc.get("isSharedEscrow"),
-                    "escrow_url": esc.get("url"),
+                    "escrow_name": get_escrow_name(esc) if esc else None,
+                    "is_shared_escrow": esc.get("isSharedEscrow") if esc else None,
+                    "escrow_url": esc.get("url") if esc else None,
                     "asset_url": url,
                     "icon_url": asset.get("iconUrl"),
                     "symbol": asset["symbol"],
@@ -252,7 +217,17 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
                     "supply": asset.get("supply"),
                     "category": category,
                 }
-                rows.append(row)
+
+            # Get valid escrows (those with an address)
+            valid_escrows = [esc for esc in escrows if get_escrow_address(esc)]
+
+            # If no valid escrows, create a row with null escrow data
+            if not valid_escrows:
+                rows.append(create_row())
+            else:
+                # Create a row for each valid escrow
+                for esc in valid_escrows:
+                    rows.append(create_row(esc))
     return rows
 
 
