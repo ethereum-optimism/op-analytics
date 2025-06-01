@@ -27,8 +27,8 @@ class ETLMixin:
 
     def __post_init__(self):
         for root_path in self.inputs_blockbatch:
-            if not root_path.startswith("blockbatch/"):
-                raise ValueError(f"Invalid blockbatch input: {root_path}")
+            if not (root_path.startswith("blockbatch/") or root_path.startswith("ingestion/")):
+                raise ValueError(f"Invalid inputs_blockbatch input: {root_path}")
 
         for root_path in self.inputs_clickhouse:
             # Check that the patch can be sanitized.
