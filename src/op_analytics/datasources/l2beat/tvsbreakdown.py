@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from typing import Any
-import time
 
 import polars as pl
 import requests
@@ -58,7 +57,7 @@ class L2BeatTVSBreakdown:
 
         # Fetch the TVS breakdown for each project
         projects_tvs = run_concurrently(
-            function=lambda project: cls._fetch_with_retry(project, session),
+            function=lambda project: L2BeatProjectTVS.fetch(project, session),
             targets=l2beat_projects,
             max_workers=1,
         )
@@ -78,25 +77,6 @@ class L2BeatTVSBreakdown:
 
         return cls(df=df)
 
-    @staticmethod
-    def _fetch_with_retry(project, session):
-        for _ in range(3):
-            try:
-                return L2BeatProjectTVS.fetch(project, session)
-            except requests.HTTPError as e:
-                if e.response.status_code == 429:
-                    log.warning(
-                        f"[{project.slug}] Attempt {attempt+1}: Rate limited (429), retrying in 3s..."
-                    )
-                    time.sleep(10)
-                else:
-                    log.error(f"[{project.slug}] Attempt {attempt+1}: {e}")
-                    raise
-            except Exception:
-                log.error(f"[{project.slug}] Attempt {attempt+1}: {e}, retrying in 1s...")
-                time.sleep(10)
-        return None
-
 
 @dataclass
 class L2BeatProjectTVS:
@@ -114,6 +94,7 @@ class L2BeatProjectTVS:
         data = get_data(
             session,
             url=f"https://l2beat.com/api/scaling/tvs/{project.slug}/breakdown",
+            retry_attempts=5,
         )
 
         if not data.get("success"):
