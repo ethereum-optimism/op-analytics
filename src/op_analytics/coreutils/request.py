@@ -38,8 +38,8 @@ def get_data(
     retry_attempts: int | None = None,
     params: dict[str, Any] | None = None,
     emit_log: bool = True,
-    timeout: int | None = None,
-    retries_timeout: int = 600,
+    timeout: int | None = None,  # this is the timeout for a single call
+    retries_timeout: int = 600,  # this is the total timeout for all retries
     retries_wait_initial: int = 10,
     retries_wait_max: int = 60,
 ):
