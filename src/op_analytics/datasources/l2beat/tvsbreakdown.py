@@ -95,6 +95,9 @@ class L2BeatProjectTVS:
             session,
             url=f"https://l2beat.com/api/scaling/tvs/{project.slug}/breakdown",
             retry_attempts=5,
+            retries_timeout=3600,
+            retries_wait_initial=60,
+            retries_wait_max=240,
         )
 
         if not data.get("success"):
