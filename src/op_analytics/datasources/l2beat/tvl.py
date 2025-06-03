@@ -32,7 +32,7 @@ def fetch_tvl(
             retry_attempts=5,
         ),
         targets=projects,
-        max_workers=8,
+        max_workers=2,
     )
 
     # Convert to dataframe
