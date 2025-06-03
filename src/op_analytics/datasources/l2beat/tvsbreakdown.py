@@ -59,7 +59,7 @@ class L2BeatTVSBreakdown:
         projects_tvs = run_concurrently(
             function=lambda project: L2BeatProjectTVS.fetch(project, session),
             targets=l2beat_projects,
-            max_workers=4,
+            max_workers=1,
         )
 
         rows = []
@@ -94,6 +94,10 @@ class L2BeatProjectTVS:
         data = get_data(
             session,
             url=f"https://l2beat.com/api/scaling/tvs/{project.slug}/breakdown",
+            retry_attempts=5,
+            retries_timeout=3600,
+            retries_wait_initial=60,
+            retries_wait_max=240,
         )
 
         if not data.get("success"):
