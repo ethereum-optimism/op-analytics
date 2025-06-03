@@ -27,7 +27,9 @@ def fetch_tvl(
     # Call api
     all_data = run_concurrently(
         function=lambda x: get_data(
-            session, url=f"https://l2beat.com/api/scaling/tvs/{x.slug}?range={query_range}"
+            session,
+            url=f"https://l2beat.com/api/scaling/tvs/{x.slug}?range={query_range}",
+            retry_attempts=5,
         ),
         targets=projects,
         max_workers=8,
