@@ -39,6 +39,9 @@ def get_data(
     params: dict[str, Any] | None = None,
     emit_log: bool = True,
     timeout: int | None = None,
+    retries_timeout: int = 600,
+    retries_wait_initial: int = 10,
+    retries_wait_max: int = 60,
 ):
     """Helper function to reuse an existing HTTP session to fetch data from a URL.
 
@@ -63,9 +66,9 @@ def get_data(
     for attempt in stamina.retry_context(
         on=retry_logger,
         attempts=retry_attempts,
-        timeout=600,
-        wait_initial=10,
-        wait_max=60,
+        timeout=retries_timeout,
+        wait_initial=retries_wait_initial,
+        wait_max=retries_wait_max,
     ):
         with attempt:
             if attempt.num > 1:
