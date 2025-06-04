@@ -305,7 +305,6 @@ workflows:
               notebook_paths:
                 - reference_data/market_data/get_market_data
 
-
   run_op_governance_uploads:
     when:
       or:
@@ -313,6 +312,7 @@ workflows:
         - equal:
             [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
     jobs:
+      - setup-python-3-10-job
       - convert-and-run-notebooks-to-py:
           requires:
             - setup-python-3-10-job
