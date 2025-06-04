@@ -384,12 +384,12 @@ workflows:
               "run_weekly_l2_chain_data_uploads",
             ]
     jobs:
-      - convert-and-run-notebooks-to-py-and-push:
+      - convert-and-run-notebooks-to-py:
           commit-message: "GH Action Update - Weekly"
-          notebook-paths: >-
-            [
-              {"dir": "other_chains_tracking", "notebook": "get_desybil_wallets"}
-            ]
+          matrix:
+            parameters:
+              notebook_paths:
+                - other_chains_tracking/get_desybil_wallets
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics
