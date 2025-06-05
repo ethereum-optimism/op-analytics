@@ -45,7 +45,7 @@ def aggreagated_traces(context: OpExecutionContext):
     for agg in datasets:
         result = daily_to_clickhouse(
             dataset=agg,
-            range_spec="m4days",
+            range_spec="m7days",
             num_workers=2,
             dagster_context=context,
         )
