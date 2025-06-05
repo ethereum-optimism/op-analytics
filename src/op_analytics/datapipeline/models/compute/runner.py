@@ -100,10 +100,10 @@ def run_tasks(
                     raise
 
                 if p.exitcode != 0:
-                    log.error("task", status="fail", exitcode=p.exitcode)
+                    log.error("task", status="fail", exitcode=p.exitcode, **item.context())
                     failure += 1
                 else:
-                    log.info("task", status="success", exitcode=0)
+                    log.info("task", status="success", exitcode=0, **item.context())
                     success += 1
 
                 executed += 1
@@ -223,6 +223,7 @@ def pending_items(
                         "task",
                         status="already_complete",
                         min_block=task.data_reader.get_marker_data("min_block"),
+                        **item.context(),
                     )
                     continue
                 else:

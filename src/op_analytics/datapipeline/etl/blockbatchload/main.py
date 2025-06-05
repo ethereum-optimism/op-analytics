@@ -64,7 +64,7 @@ def load_to_clickhouse(
     """
 
     # Operate over recent days.
-    date_range = DateRange.from_spec(range_spec or "m4days")
+    date_range = DateRange.from_spec(range_spec or "m7days")
 
     # Create the output tables if they don't exist.
     if not dry_run:
