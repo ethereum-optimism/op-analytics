@@ -29,6 +29,7 @@ BUSINESSES_LEGACY_PATH = "legacy.businesses.csv"
 # Data Settings
 CACHE_TTL_SECONDS = 600  # 10 minutes (Applies to Typeform/GitHub now)
 EXPIRATION_DAYS = 365  # KYC/KYB expiration period
+FILTER_LAST_YEAR_DAYS = 365  # Only keep records within the last year
 PERSONA_MAX_PAGES_DEBUG = 1  # Max pages to fetch in debug mode
 
 # Status Constants
@@ -97,6 +98,16 @@ def check_credentials() -> bool:
 # --- Data Fetching Utilities ---
 
 
+def get_date_filter_threshold() -> datetime:
+    """Returns the datetime threshold for filtering records within the last year."""
+    return datetime.now(timezone.utc) - timedelta(days=FILTER_LAST_YEAR_DAYS)
+
+
+def format_date_for_persona_api(dt: datetime) -> str:
+    """Formats a datetime for Persona API date filtering."""
+    return dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+
 # Persona fetching is NOT cached to allow UI updates during initial load
 def fetch_persona_data(
     api_key: str,
@@ -107,19 +118,30 @@ def fetch_persona_data(
     """
     Fetches paginated data from a Persona API endpoint with page-level UI updates.
     Limits pages fetched if debug_mode is True.
+    Filters records to only include those within the last year.
     Returns None on critical fetch error, empty list on success with no data.
     NOTE: Caching is disabled for this function to allow UI updates.
     """
     results = []
     headers = {"Authorization": f"Bearer {api_key}", "Persona-Version": "2023-01-05"}
-    params: Dict[str, Any] = {"page[size]": 100}
+
+    # Add date filtering for the last year
+    date_threshold = get_date_filter_threshold()
+    date_filter = format_date_for_persona_api(date_threshold)
+
+    params: Dict[str, Any] = {
+        "page[size]": 100,
+        "filter[updated-at-gte]": date_filter,  # Filter records updated in the last year
+    }
+
     request_url = f"{PERSONA_BASE_URL}/{endpoint}"
     page_count = 0
     max_pages = PERSONA_MAX_PAGES_DEBUG if debug_mode else 10000
     debug_msg = " (Debug Mode)" if debug_mode else ""
+    filter_msg = f" (Last {FILTER_LAST_YEAR_DAYS} days)"
 
     # Initial message
-    status_indicator_ref.info(f"⏳ Fetching Persona {endpoint}{debug_msg}...")
+    status_indicator_ref.info(f"⏳ Fetching Persona {endpoint}{debug_msg}{filter_msg}...")
 
     while True:
         if page_count >= max_pages:
@@ -132,7 +154,7 @@ def fetch_persona_data(
         page_num_display = page_count + 1
 
         # Update status before fetching the page
-        progress_message = f"⏳ Fetching Persona {endpoint} (Page {page_num_display}){debug_msg}... Fetched {len(results)} records."
+        progress_message = f"⏳ Fetching Persona {endpoint} (Page {page_num_display}){debug_msg}{filter_msg}... Fetched {len(results)} records."
         status_indicator_ref.info(progress_message)
 
         try:
@@ -174,7 +196,7 @@ def fetch_persona_data(
                     break
             else:
                 status_indicator_ref.info(
-                    f"✅ Finished Persona {endpoint}{debug_msg}. No 'next' link found (Page {page_num_display})."
+                    f"✅ Finished Persona {endpoint}{debug_msg}{filter_msg}. No 'next' link found (Page {page_num_display})."
                 )
                 break  # No more pages
             page_count += 1
@@ -199,9 +221,7 @@ def fetch_persona_data(
             return None  # Indicate unexpected error
 
     # Final confirmation message
-    final_status = (
-        f"✅ Finished fetching {len(results)} records from Persona {endpoint}{debug_msg}."
-    )
+    final_status = f"✅ Finished fetching {len(results)} records from Persona {endpoint}{debug_msg}{filter_msg}."
     status_indicator_ref.info(final_status)
 
     return results
@@ -210,12 +230,18 @@ def fetch_persona_data(
 # Typeform and GitHub fetching remain cached
 @st.cache_data(ttl=CACHE_TTL_SECONDS)
 def fetch_typeform_data(api_key: str, form_id: str) -> Optional[List[Dict[str, Any]]]:
-    """Fetches paginated data for a Typeform form. (Cached)"""
-    # (Implementation remains the same as previous version)
+    """Fetches paginated data for a Typeform form, filtering to last year only. (Cached)"""
+    # Calculate date filter for the last year
+    date_threshold = get_date_filter_threshold()
+    since_date = date_threshold.strftime("%Y-%m-%dT%H:%M:%SZ")
+
     all_items = []
     headers = {"Authorization": f"Bearer {api_key}"}
     url = f"{TYPEFORM_BASE_URL}/forms/{form_id}/responses"
-    params: Dict[str, Any] = {"page_size": 1000}
+    params: Dict[str, Any] = {
+        "page_size": 1000,
+        "since": since_date,  # Filter responses submitted in the last year
+    }
     page_count = 0
     max_pages = 20
     total_items_expected = None
@@ -284,8 +310,7 @@ def fetch_typeform_data(api_key: str, form_id: str) -> Optional[List[Dict[str, A
 
 @st.cache_data(ttl=CACHE_TTL_SECONDS)
 def fetch_github_csv(access_token: str, owner: str, repo: str, path: str) -> Optional[pd.DataFrame]:
-    """Fetches a CSV file from a GitHub repository and returns a DataFrame. (Cached)"""
-    # (Implementation remains the same as previous version)
+    """Fetches a CSV file from a GitHub repository and returns a DataFrame, filtered to last year. (Cached)"""
     url = f"{GITHUB_BASE_API_URL}/{path}"
     headers = {"Authorization": f"token {access_token}", "Accept": "application/vnd.github.v3.raw"}
 
@@ -295,6 +320,10 @@ def fetch_github_csv(access_token: str, owner: str, repo: str, path: str) -> Opt
         response.raise_for_status()
         csv_content = response.content.decode("utf-8")
         df = pd.read_csv(StringIO(csv_content))
+
+        # Apply date filtering to the CSV data
+        df = filter_csv_by_date(df, path)
+
         return df
     except requests.exceptions.Timeout:
         st.error(f"Timeout error fetching GitHub file {path} from {url}")
@@ -321,6 +350,57 @@ def fetch_github_csv(access_token: str, owner: str, repo: str, path: str) -> Opt
     except Exception as e:
         st.error(f"An unexpected error occurred fetching or parsing GitHub CSV {path}: {e}")
         return None
+
+
+def filter_csv_by_date(df: pd.DataFrame, file_path: str) -> pd.DataFrame:
+    """Filters CSV data to only include records within the last year based on available date columns."""
+    if df is None or df.empty:
+        return df
+
+    date_threshold = get_date_filter_threshold()
+    original_count = len(df)
+
+    # Define potential date columns for different CSV files
+    date_columns_map = {
+        CONTRIBUTORS_PATH: ["updated_at", "created_at", "date"],
+        PROJECTS_PATH: ["updated_at", "created_at", "date", "submitted_at"],
+        PERSONS_LEGACY_PATH: ["updated_at", "created_at", "date"],
+        BUSINESSES_LEGACY_PATH: ["updated_at", "created_at", "date"],
+    }
+
+    potential_date_cols = date_columns_map.get(
+        file_path, ["updated_at", "created_at", "date", "submitted_at"]
+    )
+
+    # Find the first available date column
+    date_col_to_use = None
+    for col in potential_date_cols:
+        if col in df.columns:
+            date_col_to_use = col
+            break
+
+    if date_col_to_use is None:
+        st.warning(f"No date column found in {file_path} for filtering. Including all records.")
+        return df
+
+    # Convert date column and filter
+    try:
+        df[date_col_to_use] = pd.to_datetime(df[date_col_to_use], errors="coerce", utc=True)
+        # Filter to records within the last year
+        filtered_df = df[df[date_col_to_use] >= date_threshold].copy()
+        filtered_count = len(filtered_df)
+
+        if filtered_count < original_count:
+            st.info(
+                f"Filtered {file_path}: {filtered_count}/{original_count} records within last {FILTER_LAST_YEAR_DAYS} days (by {date_col_to_use})"
+            )
+
+        return filtered_df
+    except Exception as e:
+        st.warning(
+            f"Error filtering {file_path} by date column {date_col_to_use}: {e}. Including all records."
+        )
+        return df
 
 
 # --- Data Processing Functions ---
@@ -631,6 +711,190 @@ def combine_legacy_live(
         latest_df[col] = latest_df[col].astype(str).str.lower().str.strip()
 
     return latest_df
+
+
+def detect_data_mismatches(processed_data: Dict[str, Any]) -> Dict[str, pd.DataFrame]:
+    """
+    Detects and returns mismatches between different data providers.
+    Returns a dictionary with different types of mismatches.
+    """
+    mismatches = {}
+
+    # Extract data sources
+    typeform_df = processed_data.get("typeform_df", pd.DataFrame())
+    persons_live_df = processed_data.get("persons_live_df", pd.DataFrame())
+    businesses_live_df = processed_data.get("businesses_live_df", pd.DataFrame())
+    persons_legacy_df = processed_data.get("persons_legacy_df", pd.DataFrame())
+    businesses_legacy_df = processed_data.get("businesses_legacy_df", pd.DataFrame())
+    contributors_legacy_df = processed_data.get("contributors_legacy_df", pd.DataFrame())
+    projects_legacy_df = processed_data.get("projects_legacy_df", pd.DataFrame())
+
+    # 1. Typeform submissions without corresponding Persona records
+    if not typeform_df.empty and (not persons_live_df.empty or not businesses_live_df.empty):
+        typeform_emails = set()
+        for _, row in typeform_df.iterrows():
+            kyc_emails = row.get("kyc_emails", [])
+            kyb_emails = row.get("kyb_emails", [])
+            if isinstance(kyc_emails, list):
+                typeform_emails.update([email.lower().strip() for email in kyc_emails])
+            if isinstance(kyb_emails, list):
+                typeform_emails.update([email.lower().strip() for email in kyb_emails])
+
+        persona_emails = set()
+        if not persons_live_df.empty and "email" in persons_live_df.columns:
+            persona_emails.update(
+                persons_live_df["email"].astype(str).str.lower().str.strip().tolist()
+            )
+        if not businesses_live_df.empty and "email" in businesses_live_df.columns:
+            persona_emails.update(
+                businesses_live_df["email"].astype(str).str.lower().str.strip().tolist()
+            )
+
+        # Emails in Typeform but not in Persona
+        typeform_only_emails = typeform_emails - persona_emails
+        if typeform_only_emails:
+            typeform_mismatch_data = []
+            for _, row in typeform_df.iterrows():
+                kyc_emails = row.get("kyc_emails", [])
+                kyb_emails = row.get("kyb_emails", [])
+                all_emails = []
+                if isinstance(kyc_emails, list):
+                    all_emails.extend(kyc_emails)
+                if isinstance(kyb_emails, list):
+                    all_emails.extend(kyb_emails)
+
+                mismatched_emails = [
+                    email for email in all_emails if email.lower().strip() in typeform_only_emails
+                ]
+                if mismatched_emails:
+                    typeform_mismatch_data.append(
+                        {
+                            "grant_id": row.get("grant_id", ""),
+                            "project_id": row.get("project_id", ""),
+                            "submitted_at": row.get("submitted_at"),
+                            "l2_address": row.get("l2_address", ""),
+                            "missing_emails": ", ".join(mismatched_emails),
+                            "email_type": "KYC"
+                            if any(email in kyc_emails for email in mismatched_emails)
+                            else "KYB",
+                            "mismatch_type": "Typeform submission without Persona record",
+                        }
+                    )
+
+            if typeform_mismatch_data:
+                mismatches["typeform_without_persona"] = pd.DataFrame(typeform_mismatch_data)
+
+    # 2. Persona records without corresponding Typeform submissions
+    if (not persons_live_df.empty or not businesses_live_df.empty) and not typeform_df.empty:
+        persona_only_emails = persona_emails - typeform_emails
+        if persona_only_emails:
+            persona_mismatch_data = []
+
+            # Check persons
+            if not persons_live_df.empty:
+                for _, row in persons_live_df.iterrows():
+                    email = str(row.get("email", "")).lower().strip()
+                    if email in persona_only_emails:
+                        persona_mismatch_data.append(
+                            {
+                                "email": row.get("email", ""),
+                                "name": row.get("name", ""),
+                                "inquiry_id": row.get("inquiry_id", ""),
+                                "status": row.get("status", ""),
+                                "updated_at": row.get("updated_at"),
+                                "l2_address": row.get("l2_address", ""),
+                                "record_type": "Individual KYC",
+                                "mismatch_type": "Persona record without Typeform submission",
+                            }
+                        )
+
+            # Check businesses
+            if not businesses_live_df.empty:
+                for _, row in businesses_live_df.iterrows():
+                    email = str(row.get("email", "")).lower().strip()
+                    if email in persona_only_emails:
+                        persona_mismatch_data.append(
+                            {
+                                "email": row.get("email", ""),
+                                "business_name": row.get("business_name", ""),
+                                "case_id": row.get("case_id", ""),
+                                "status": row.get("status", ""),
+                                "updated_at": row.get("updated_at"),
+                                "l2_address": row.get("l2_address", ""),
+                                "record_type": "Business KYB",
+                                "mismatch_type": "Persona record without Typeform submission",
+                            }
+                        )
+
+            if persona_mismatch_data:
+                mismatches["persona_without_typeform"] = pd.DataFrame(persona_mismatch_data)
+
+    # 3. Legacy records without live counterparts
+    if not contributors_legacy_df.empty and not persons_live_df.empty:
+        legacy_emails = set()
+        if "email" in contributors_legacy_df.columns:
+            legacy_emails.update(
+                contributors_legacy_df["email"].astype(str).str.lower().str.strip().tolist()
+            )
+
+        live_emails = set()
+        if "email" in persons_live_df.columns:
+            live_emails.update(
+                persons_live_df["email"].astype(str).str.lower().str.strip().tolist()
+            )
+
+        legacy_only_emails = legacy_emails - live_emails
+        if legacy_only_emails:
+            legacy_mismatch_data = []
+            for _, row in contributors_legacy_df.iterrows():
+                email = str(row.get("email", "")).lower().strip()
+                if email in legacy_only_emails:
+                    legacy_mismatch_data.append(
+                        {
+                            "email": row.get("email", ""),
+                            "name": row.get("name", ""),
+                            "project_name": row.get("project_name", ""),
+                            "round_id": row.get("round_id", ""),
+                            "op_amt": row.get("op_amt", ""),
+                            "l2_address": row.get("l2_address", ""),
+                            "updated_at": row.get("updated_at"),
+                            "mismatch_type": "Legacy contributor without live Persona record",
+                        }
+                    )
+
+            if legacy_mismatch_data:
+                mismatches["legacy_without_live"] = pd.DataFrame(legacy_mismatch_data)
+
+    # 4. Projects without corresponding Typeform submissions
+    if not projects_legacy_df.empty and not typeform_df.empty:
+        legacy_grant_ids = set()
+        if "grant_id" in projects_legacy_df.columns:
+            legacy_grant_ids.update(projects_legacy_df["grant_id"].astype(str).str.strip().tolist())
+
+        typeform_grant_ids = set()
+        if "grant_id" in typeform_df.columns:
+            typeform_grant_ids.update(typeform_df["grant_id"].astype(str).str.strip().tolist())
+
+        projects_only_grant_ids = legacy_grant_ids - typeform_grant_ids
+        if projects_only_grant_ids:
+            projects_mismatch_data = []
+            for _, row in projects_legacy_df.iterrows():
+                grant_id = str(row.get("grant_id", "")).strip()
+                if grant_id in projects_only_grant_ids:
+                    projects_mismatch_data.append(
+                        {
+                            "grant_id": row.get("grant_id", ""),
+                            "project_name": row.get("project_name", ""),
+                            "round_id": row.get("round_id", ""),
+                            "updated_at": row.get("updated_at"),
+                            "mismatch_type": "Legacy project without Typeform submission",
+                        }
+                    )
+
+            if projects_mismatch_data:
+                mismatches["projects_without_typeform"] = pd.DataFrame(projects_mismatch_data)
+
+    return mismatches
 
 
 # --- UI Interaction Functions ---
@@ -1335,6 +1599,10 @@ def main():
 
                 projects_view_base["overall_status"] = grant_statuses
                 processed["all_projects_view"] = projects_view_base
+
+        # Detect mismatches between data providers
+        processed["mismatches"] = detect_data_mismatches(processed)
+
         return processed
 
     # Call the processing function (result will be cached)
@@ -1348,20 +1616,22 @@ def main():
     all_businesses_df = processed_data.get("all_businesses_df", pd.DataFrame())
     all_contributors_view = processed_data.get("all_contributors_view", pd.DataFrame())
     all_projects_view = processed_data.get("all_projects_view", pd.DataFrame())
+    mismatches_data = processed_data.get("mismatches", {})
 
     # --- Display Information ---
     st.subheader("ℹ️ Project Status Information")
     with st.expander("About the Results & Status Codes", expanded=False):
-        # (Content remains the same)
         st.markdown(
-            """
+            f"""
             This tool provides the latest known KYC (Know Your Customer) or KYB (Know Your Business)
             status for individuals and projects involved with Optimism grants. Status is determined
             by combining live data from Persona (our verification provider) with historical records.
 
             **Key Points:**
-            * **Expiration:** Statuses automatically expire after **365 days**. Expired records require renewal.
+            * **Data Filtering:** Only records from the last **{FILTER_LAST_YEAR_DAYS} days** are included to focus on recent activity.
+            * **Expiration:** Statuses automatically expire after **{EXPIRATION_DAYS} days**. Expired records require renewal.
             * **Data Sources:** Live data (Persona Inquiries/Cases), Typeform submissions (linking emails to grants), Legacy CSVs (GitHub).
+            * **Mismatch Detection:** The "Mismatches" tab identifies records that exist in one data source but not others.
             * **Search:** Use the sidebar to look up by Individual (email, name, L2), Business (email, name, L2), or Grant ID.
             * **Consolidated Views:** The tabs below show filterable tables of all known contributors, businesses, and projects.
             """
@@ -1580,8 +1850,8 @@ def main():
         "kyb_emails": None,
     }
 
-    tab1, tab2, tab3 = st.tabs(
-        ["👤 Contributors (KYC)", "🏢 Businesses (KYB)", "📄 Projects (Grants)"]
+    tab1, tab2, tab3, tab4 = st.tabs(
+        ["👤 Contributors (KYC)", "🏢 Businesses (KYB)", "📄 Projects (Grants)", "⚠️ Mismatches"]
     )
 
     with tab1:
@@ -1684,6 +1954,111 @@ def main():
             )
         else:
             st.warning("No project data available.")
+
+    with tab4:
+        st.subheader("Data Mismatches Between Providers")
+        st.info(
+            "This tab shows records that exist in one data source but not in others, helping identify data inconsistencies."
+        )
+
+        if mismatches_data:
+            # Create expandable sections for each mismatch type
+            mismatch_configs = {
+                "typeform_without_persona": {
+                    "title": "📝 Typeform Submissions Missing in Persona",
+                    "description": "Grant submissions that have KYC/KYB emails but no corresponding Persona verification records.",
+                    "columns": [
+                        "grant_id",
+                        "project_id",
+                        "missing_emails",
+                        "email_type",
+                        "submitted_at",
+                        "l2_address",
+                    ],
+                },
+                "persona_without_typeform": {
+                    "title": "🔍 Persona Records Missing in Typeform",
+                    "description": "Verification records in Persona that don't link to any grant submissions.",
+                    "columns": [
+                        "email",
+                        "name",
+                        "business_name",
+                        "record_type",
+                        "status",
+                        "updated_at",
+                        "l2_address",
+                    ],
+                },
+                "legacy_without_live": {
+                    "title": "📜 Legacy Contributors Missing Live Records",
+                    "description": "Historical contributors who don't have current Persona verification records.",
+                    "columns": [
+                        "email",
+                        "name",
+                        "project_name",
+                        "round_id",
+                        "op_amt",
+                        "updated_at",
+                        "l2_address",
+                    ],
+                },
+                "projects_without_typeform": {
+                    "title": "🏗️ Legacy Projects Missing Typeform Submissions",
+                    "description": "Projects from legacy data that don't have corresponding grant submission forms.",
+                    "columns": ["grant_id", "project_name", "round_id", "updated_at"],
+                },
+            }
+
+            total_mismatches = sum(len(df) for df in mismatches_data.values())
+            st.metric("Total Mismatched Records", total_mismatches)
+
+            for mismatch_key, config in mismatch_configs.items():
+                if mismatch_key in mismatches_data and not mismatches_data[mismatch_key].empty:
+                    df = mismatches_data[mismatch_key]
+                    with st.expander(f"{config['title']} ({len(df)} records)", expanded=False):
+                        st.markdown(f"**Description:** {config['description']}")
+
+                        # Display available columns
+                        available_cols = [col for col in config["columns"] if col in df.columns]
+                        if available_cols:
+                            display_df = df[available_cols].copy()
+
+                            # Apply column config
+                            mismatch_column_config = {
+                                "updated_at": st.column_config.DatetimeColumn(
+                                    "Last Updated", format="YYYY-MM-DD HH:mm"
+                                ),
+                                "submitted_at": st.column_config.DatetimeColumn(
+                                    "Form Submitted", format="YYYY-MM-DD HH:mm"
+                                ),
+                                "l2_address": st.column_config.TextColumn(
+                                    "L2 Address", width="medium"
+                                ),
+                                "op_amt": st.column_config.NumberColumn("OP Amount", format="%.2f"),
+                                "email": st.column_config.TextColumn("Email", width="medium"),
+                                "missing_emails": st.column_config.TextColumn(
+                                    "Missing Emails", width="large"
+                                ),
+                                "mismatch_type": None,  # Hide this column as it's shown in the title
+                            }
+
+                            st.dataframe(
+                                display_df,
+                                use_container_width=True,
+                                column_config=mismatch_column_config,
+                                hide_index=True,
+                            )
+                        else:
+                            st.dataframe(df, use_container_width=True, hide_index=True)
+        else:
+            st.success(
+                "🎉 No data mismatches detected! All records are properly linked across data providers."
+            )
+            st.info("This means:")
+            st.markdown("- All Typeform submissions have corresponding Persona records")
+            st.markdown("- All Persona records link to grant submissions")
+            st.markdown("- Legacy data aligns with live verification records")
+            st.markdown("- All projects have proper form submissions")
 
 
 # --- Entry Point ---
