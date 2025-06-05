@@ -38,7 +38,7 @@ def fetch_activity(
     all_data = run_concurrently(
         function=lambda x: fetch_project_data(x, session, query_range),
         targets=projects,
-        max_workers=1,
+        max_workers=2,
     )
 
     # Convert to dataframe
