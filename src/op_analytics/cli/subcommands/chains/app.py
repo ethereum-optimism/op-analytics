@@ -11,6 +11,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.datapipeline.chains import goldsky_chains
+from op_analytics.datapipeline.chains.aggregator import build_all_chains_metadata
 from op_analytics.datapipeline.etl.blockbatch.main import compute_blockbatch
 from op_analytics.datapipeline.etl.ingestion.main import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
@@ -56,6 +57,48 @@ def get_receipts(chain: str, tx_hashes: list[str]):
     """Get transaction receipts."""
     txs = rpcs.get_receipts(chain, tx_hashes)
     print(json.dumps(txs, indent=2))
+
+
+@app.command(name="build-metadata")
+def build_metadata_command(
+    output_bq_table: Annotated[
+        str,
+        typer.Option(
+            "--output-bq-table", help="Target BigQuery table name for aggregated metadata output"
+        ),
+    ],
+    manual_mappings_file: Annotated[
+        str,
+        typer.Option("--manual-mappings-file", help="Path to manual mappings configuration file"),
+    ],
+    bq_project_id: Annotated[
+        str, typer.Option("--bq-project-id", help="BigQuery project ID for data operations")
+    ],
+    bq_dataset_id: Annotated[
+        str, typer.Option("--bq-dataset-id", help="BigQuery dataset ID for table operations")
+    ],
+):
+    """
+    Build aggregated metadata for all chains.
+
+    This command orchestrates the complete chain metadata aggregation pipeline,
+    including data loading, preprocessing, entity resolution, deduplication,
+    enrichment, and output to BigQuery.
+    """
+    print("Building chain metadata with the following parameters:")
+    print(f"  Output BigQuery Table: {output_bq_table}")
+    print(f"  Manual Mappings File: {manual_mappings_file}")
+    print(f"  BigQuery Project ID: {bq_project_id}")
+    print(f"  BigQuery Dataset ID: {bq_dataset_id}")
+    print()
+
+    # Call the aggregator function
+    build_all_chains_metadata(
+        output_bq_table=output_bq_table,
+        manual_mappings_filepath=manual_mappings_file,
+        bq_project_id=bq_project_id,
+        bq_dataset_id=bq_dataset_id,
+    )
 
 
 @app.command()

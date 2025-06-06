@@ -19,6 +19,7 @@ MODULE_NAMES = [
     "blockbatchloaddaily",
     "bqpublic",
     "chainsdaily",
+    "chain_metadata",
     "defillama",
     "dune",
     "github",
