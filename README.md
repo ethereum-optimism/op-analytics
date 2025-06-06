@@ -1,5 +1,7 @@
 # OP Analytics
 
+See **[Optimism Data and Dashboards](https://docs.optimism.io/app-developers/tools/data-and-dashboards?utm_source=github&utm_medium=data_repo&utm_campaign=data_dashboard)**
+
 Please visit our documentation site:
 
 #### 📄 [OP Analytics Repo Documentation](https://static.optimism.io/op-analytics/sphinx/html/index.html)
