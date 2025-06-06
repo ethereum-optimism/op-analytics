@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import polars as pl
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.misc import camel_to_snake, raise_for_schema_mismatch
+from op_analytics.coreutils.misc import raise_for_schema_mismatch
 from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
@@ -43,6 +43,8 @@ SUPERCHAIN_ADDRESS_LIST_SCHEMA = pl.Schema(
         "system_config_owner": pl.String,
         "system_config_proxy": pl.String,
         "unsafe_block_signer": pl.String,
+        "l2_output_oracle_proxy": pl.String,
+        "eth_lockbox_proxy": pl.String,
     }
 )
 
@@ -77,13 +79,21 @@ def pull_superchain_address_list() -> SuperchainAddressList:
     address_list_raw_df = pl.DataFrame(records)
 
     # Flatten the schema and convert to snake case.
-    address_list_df = process_metadata_pull(address_list_raw_df).with_columns(dt=pl.lit(DEFAULT_DT))
+    address_list_df = process_metadata_pull(address_list_raw_df)
 
     # Check the final schema is as expected. If something changes upstream the
     # exception will warn us.
     raise_for_schema_mismatch(
         actual_schema=address_list_df.schema,
         expected_schema=SUPERCHAIN_ADDRESS_LIST_SCHEMA,
+    )
+
+    # Add dt column after schema validation
+    address_list_df = address_list_df.with_columns(dt=pl.lit(DEFAULT_DT))
+
+    address_list_df = address_list_df.select(
+        pl.col("chain_id"),
+        *[pl.col(col).str.to_lowercase() for col in address_list_df.columns if col != "chain_id"],
     )
 
     ChainsMeta.SUPERCHAIN_ADDRESS_LIST.write(
@@ -98,7 +108,27 @@ def process_metadata_pull(df) -> pl.DataFrame:
     """
     Cleanup metadata from Superchain token list.
     """
-    df = df.rename(lambda c: camel_to_snake(c)).with_columns(
+
+    # First convert PascalCase to snake_case, handling acronyms correctly
+    def convert_to_snake_case(name):
+        # Handle special cases for acronyms
+        name = name.replace("WETH", "Weth")
+        name = name.replace("ERC721", "Erc721")
+        name = name.replace("ERC20", "Erc20")
+        name = name.replace("MIPS", "Mips")
+
+        # Convert to snake_case
+        result = name[0].lower()
+        for char in name[1:]:
+            if char.isupper():
+                result += "_" + char.lower()
+            else:
+                result += char
+        return result
+
+    df = df.rename(convert_to_snake_case)
+
+    df = df.with_columns(pl.col("chain_id").cast(pl.Int32)).with_columns(
         pl.col("^.*address.*$").str.to_lowercase()
     )
 

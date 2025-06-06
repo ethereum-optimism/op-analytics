@@ -19,3 +19,6 @@ class ChainsMeta(DailyDataset):
 
     # A dimension table that pulls the token list from the ethereum-optimism repo.
     SUPERCHAIN_TOKEN_LIST = "superchain_token_list_v1"
+
+    # A dimension table that pulls the address list from the ethereum-optimism repo.
+    SUPERCHAIN_ADDRESS_LIST = "superchain_address_list_v1"
