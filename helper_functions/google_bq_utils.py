@@ -133,15 +133,15 @@ def validate_schema(df, schema):
         extra = df_columns - schema_columns
         raise ValueError(f"Schema mismatch. Missing: {missing}, Extra: {extra}")
     
-def get_bq_type(column_name, column_type, series):
+def get_bq_type(column_name, column_type, series=None):
     column_name = str(column_name)
     column_type = str(column_type)
 
-    if pu.is_repeated_field(series):
+    if series is not None and pu.is_repeated_field(series):
         if series.apply(lambda x: isinstance(x, dict)).any():
             return 'RECORD'
         else:
-            return 'STRING'  # For lists, we'll store as JSON strings
+            return 'STRING'
     
     if (column_name == 'date' or column_name == 'dt' or 
         column_name.endswith('_dt') or column_name.startswith('dt_')):
