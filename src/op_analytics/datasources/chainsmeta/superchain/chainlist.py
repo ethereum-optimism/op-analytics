@@ -61,6 +61,10 @@ def pull_superchain_chain_list() -> SuperchainChainList:
     # Flatten the schema and convert to snake case.
     chain_list_df = process_metadata_pull(chain_list_raw_df)
 
+    # Reorder columns to match the expected schema
+    expected_column_order = list(SUPERCHAIN_CHAIN_LIST_SCHEMA.keys())
+    chain_list_df = chain_list_df.select(expected_column_order)
+
     # Check the final schema is as expected. If something changes upstream the
     # exception will warn us.
     raise_for_schema_mismatch(
@@ -68,7 +72,9 @@ def pull_superchain_chain_list() -> SuperchainChainList:
         expected_schema=SUPERCHAIN_CHAIN_LIST_SCHEMA,
     )
 
+    # Convert gas_paying_token to lowercase, handling null values
     chain_list_df = chain_list_df.with_columns(pl.col("gas_paying_token").str.to_lowercase())
+
     # Add dt column after schema validation
     chain_list_df = chain_list_df.with_columns(dt=pl.lit(DEFAULT_DT))
 
@@ -105,7 +111,7 @@ def process_metadata_pull(df) -> pl.DataFrame:
         )
         .drop(["parent", "faultProofs"])
         .rename(convert_to_snake_case)
-        .with_columns(pl.col("chain_id").cast(pl.Int32))
+        .with_columns(pl.col("chain_id").cast(pl.Int32), pl.col("superchain_level").cast(pl.Int32))
     )
 
     return df
