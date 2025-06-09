@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import polars as pl
 
 from op_analytics.coreutils.logger import structlog
-from op_analytics.coreutils.misc import raise_for_schema_mismatch
+from op_analytics.coreutils.misc import raise_for_schema_mismatch, camel_to_snake
 from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import get_data, new_session
@@ -90,18 +90,6 @@ def process_metadata_pull(df) -> pl.DataFrame:
     """
     Cleanup metadata from Superchain chain list.
     """
-
-    # First convert PascalCase to snake_case, handling acronyms correctly
-    def convert_to_snake_case(name):
-        # Convert to snake_case
-        result = name[0].lower()
-        for char in name[1:]:
-            if char.isupper():
-                result += "_" + char.lower()
-            else:
-                result += char
-        return result
-
     # Flatten nested objects and rename columns
     df = (
         df.with_columns(
@@ -110,7 +98,7 @@ def process_metadata_pull(df) -> pl.DataFrame:
             pl.col("faultProofs").struct.field("status").alias("fault_proofs_status"),
         )
         .drop(["parent", "faultProofs"])
-        .rename(convert_to_snake_case)
+        .rename(lambda c: camel_to_snake(c))
         .with_columns(pl.col("chain_id").cast(pl.Int32), pl.col("superchain_level").cast(pl.Int32))
     )
 
