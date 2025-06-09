@@ -56,7 +56,7 @@ def get_l2beat_activity_data(data="activity", granularity="daily"):
     df = pd.DataFrame()
 
     api_url = api_string + data
-    response = r.get(api_url)
+    response = r.get(api_url, headers=HEADERS)
     response.raise_for_status()  # Check if the request was successful
     json_data = response.json()["projects"]
 
@@ -101,7 +101,7 @@ def get_all_l2beat_data(granularity="daily"):
 @ru.retry_with_backoff(max_retries=3, initial_delay=1, backoff_factor=2)
 def get_daily_aoc_by_token():
     api_url = "https://api.l2beat.com/api/tvl"
-    response = r.get(api_url)
+    response = r.get(api_url, headers=HEADERS)
     response.raise_for_status()
     data = response.json()
 
