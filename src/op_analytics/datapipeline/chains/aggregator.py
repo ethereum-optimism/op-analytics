@@ -20,8 +20,8 @@ def build_all_chains_metadata(
     Build aggregated metadata for all chains with comprehensive processing pipeline.
 
     This function orchestrates the complete chain metadata aggregation pipeline,
-    including data loading, preprocessing, entity resolution, deduplication,
-    enrichment, and output to BigQuery.
+    including data loading, preprocessing, combination, entity resolution, deduplication,
+    enrichment, validation, and output to BigQuery.
 
     Args:
         output_bq_table (str): Target BigQuery table name for aggregated metadata
@@ -44,8 +44,8 @@ def build_all_chains_metadata(
 
     # TODO: Implement the following pipeline steps:
 
-    # Step 1: Load Data
-    # Intent: Load chain metadata from multiple BigQuery data sources:
+    # Step 1: Load Data Sources
+    # Intent: Load chain metadata from multiple BigQuery data sources using standardized loaders:
     # - op_stack_chain_metadata from api_table_uploads (OP Labs source, source_rank=1)
     # - Goldsky chain usage data from daily_aggegate_l2_chain_usage_goldsky (OP Labs source, source_rank=1)
     # - L2Beat activity data from daily_l2beat_l2_activity (L2Beat source, source_rank=2)
@@ -53,64 +53,82 @@ def build_all_chains_metadata(
     # - GrowThePie activity data from daily_growthepie_l2_activity (GrowThePie source, source_rank=3)
     # - Dune transaction data from dune_all_txs (Dune source, source_rank=4.5)
     # - DefiLlama chain TVL data from daily_defillama_chain_tvl (DefiLlama source, source_rank=5)
-    # - Manual mappings CSV file for known corrections/overrides
-    # Each source loader should return standardized DataFrames with consistent columns
-    log.info("Step 1: Load Data - Not yet implemented")
+    # - Manual mappings file for known corrections/overrides and special case handling
+    # Each source loader should return standardized DataFrames with consistent core columns
+    # Design allows easy addition of new data sources by implementing the standardized interface
+    # Note: Some sources will have unique metadata fields (e.g., L2Beat stage, DA layer) that others lack
+    log.info("Step 1: Load Data Sources - Not yet implemented")
 
-    # Step 2: Combine
-    # Intent: Concatenate all source DataFrames into a single unified dataset:
-    # - Union all source_dfs into all_sources_df using pd.concat()
-    # - Ensure consistent schema across all sources before concatenation
-    # - Log total records combined from all sources
-    # - This creates the raw comprehensive dataset for further processing
-    log.info("Step 2: Combine - Not yet implemented")
-
-    # Step 3: Preprocess
-    # Intent: Clean and standardize the combined data with key transformations:
+    # Step 2: Preprocess Individual Sources
+    # Intent: Clean and standardize each data source individually before combining:
     # - Generate chain_key column (hash of chain_name for grouping similar names)
-    # - Standardize chain_id column (ensure consistent format, handle special cases)
-    # - Apply data type conversions and handle missing values
-    # - Normalize chain names, symbols for consistency
-    # - This prepares data for entity resolution and grouping
-    log.info("Step 3: Preprocess - Not yet implemented")
+    # - Standardize chain_id column (ensure consistent format, handle known collisions)
+    # - Apply source-specific transformations and data type conversions
+    # - Normalize chain names and symbols for consistency across sources
+    # - Apply "best display name" selection logic (e.g., prefer "Arbitrum One" over "Arbitrum")
+    # - Handle special cases through repeatable functions (e.g., Celo L1->L2 transition)
+    # This preprocessing ensures each source is standardized before entity resolution
+    log.info("Step 2: Preprocess Individual Sources - Not yet implemented")
 
-    # Step 4: Entity Resolution
-    # Intent: Generate unified_key and apply manual mappings before grouping:
+    # Step 3: Combine Preprocessed Sources
+    # Intent: Concatenate all preprocessed source DataFrames into unified dataset:
+    # - Union all preprocessed source_dfs into all_sources_df using pd.concat()
+    # - Maintain source attribution and ranking for later prioritization
+    # - Log total records combined from all sources
+    # - Result is a comprehensive dataset ready for entity resolution
+    log.info("Step 3: Combine Preprocessed Sources - Not yet implemented")
+
+    # Step 4: Entity Resolution (Most Complex Step)
+    # Intent: Generate unified_key and apply manual mappings to resolve chain entities:
     # - Create unified_key column combining chain_id, chain_key, and display_name logic
-    # - Apply manual mappings to correct data inconsistencies (e.g., chain_id overrides)
-    # - Handle special cases like 'molten' chain_id corrections based on source
-    # - This creates canonical identifiers for grouping duplicate entities
-    # - Manual mappings are applied BEFORE grouping to ensure correct entity resolution
+    # - Apply manual mappings to correct data inconsistencies and handle edge cases
+    # - Use metadata file approach for special cases (e.g., Celo -l2 suffix) rather than hardcoded logic
+    # - Handle chain_id collisions through sophisticated matching algorithms
+    # - Manual mappings applied BEFORE grouping to ensure correct entity resolution
+    # Success of this step depends heavily on quality of preprocessing in Steps 1-2
     log.info("Step 4: Entity Resolution - Not yet implemented")
 
-    # Step 5: Deduplication
+    # Step 5: Deduplication and Attribute Merging
     # Intent: Group by unified_key and merge attributes using source prioritization:
     # - Group records by unified_key (represents same chain entity)
     # - Within each group, sort by source_rank (lower rank = higher priority)
     # - Select primary record from highest priority source
-    # - Aggregate fields: min_dt_day (min), max_dt_day (max), data_sources (concat), all_chain_keys (concat)
+    # - Aggregate temporal fields: min_dt_day (min), max_dt_day (max)
+    # - Concatenate tracking fields: data_sources, all_chain_keys
     # - Apply secondary deduplication using is_dupe logic for remaining duplicates
-    # - Results in one canonical record per unique chain
-    log.info("Step 5: Deduplication - Not yet implemented")
+    # - Results in one canonical record per unique chain entity
+    log.info("Step 5: Deduplication and Attribute Merging - Not yet implemented")
 
-    # Step 6: Enrichment
-    # Intent: Enhance deduplicated data with op_stack_chain_metadata enrichment:
+    # Step 6: Field Enrichment
+    # Intent: Enhance deduplicated data with additional metadata fields:
     # - Load op_stack_chain_metadata specifically for enrichment (not as competing source)
-    # - Left join with deduplicated data on chain_id (handle Celo -l2 suffix matching)
+    # - Left join with deduplicated data on chain_id using flexible matching logic
     # - Coalesce/add fields: gas_token, da_layer, public_mainnet_launch_date, etc.
     # - Calculate derived fields: provider_entity_w_superchain, eth_eco_l2l3, etc.
-    # - Apply business logic overrides (e.g., Celo max_dt_day correction)
-    # - Finalize all_chain_keys field aggregation
-    log.info("Step 6: Enrichment - Not yet implemented")
+    # - Alternative approach: Join back to original datasets using chain aliases for field extraction
+    # - Integration point for registry ingestion and manual mapping outputs
+    # - Apply business logic overrides using metadata file configurations
+    log.info("Step 6: Field Enrichment - Not yet implemented")
 
-    # Step 7: Output
-    # Intent: Write the final enriched and deduplicated metadata to BigQuery:
+    # Step 7: Data Quality Validation
+    # Intent: Perform comprehensive error checking and data quality validation:
+    # - Detect potential duplicates (exact matches or high similarity across columns)
+    # - Validate data consistency and completeness
+    # - Check for unexpected chain_id collisions or mapping conflicts
+    # - Generate data quality reports and warnings
+    # - Flag records requiring manual review
+    # - Ensure final dataset meets quality standards before output
+    log.info("Step 7: Data Quality Validation - Not yet implemented")
+
+    # Step 8: Output to BigQuery
+    # Intent: Write the final validated metadata to BigQuery with comprehensive logging:
     # - Format final DataFrame according to target BigQuery schema requirements
-    # - Validate data quality and completeness before writing
+    # - Perform final data validation before writing
     # - Write to specified BigQuery table using write_full_df_to_bq with if_exists='replace'
-    # - Log success/failure status and record counts
-    # - Update processing metadata and create audit logs
-    log.info("Step 7: Output - Not yet implemented")
+    # - Log detailed success/failure status and record counts
+    # - Update processing metadata and create comprehensive audit logs
+    # - Generate summary statistics and data lineage information
+    log.info("Step 8: Output to BigQuery - Not yet implemented")
 
     log.info("Pipeline execution finished")
 
