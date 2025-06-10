@@ -35,6 +35,14 @@ def superchain_chain_list(context: OpExecutionContext):
 
     result = chainlist.execute_pull()
     context.log.info(result)
+    
+@asset  
+def superchain_address_list(context: OpExecutionContext):
+    """Pull superchain address list from ethereum optimism."""
+    from op_analytics.datasources.chainsmeta.superchain import addresslist
+
+    result = addresslist.execute_pull()
+    context.log.info(result)
 
 
 @asset
