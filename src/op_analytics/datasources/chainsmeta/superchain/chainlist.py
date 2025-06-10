@@ -18,20 +18,20 @@ URL_BASE = (
 SUPERCHAIN_CHAIN_LIST = "chainList.json"
 
 SUPERCHAIN_CHAIN_LIST_SCHEMA = pl.Schema(
-    {
-        "name": pl.String,
-        "identifier": pl.String,
-        "chain_id": pl.Int32,
-        "rpc": pl.List(pl.String),
-        "explorers": pl.List(pl.String),
-        "superchain_level": pl.Int32,
-        "governed_by_optimism": pl.Boolean,
-        "data_availability_type": pl.String,
-        "parent_type": pl.String,
-        "parent_chain": pl.String,
-        "gas_paying_token": pl.String,
-        "fault_proofs_status": pl.String,
-    }
+    [
+        ("name", pl.String),
+        ("identifier", pl.String),
+        ("chain_id", pl.Int32),
+        ("rpc", pl.List(pl.String)),
+        ("explorers", pl.List(pl.String)),
+        ("superchain_level", pl.Int32),
+        ("governed_by_optimism", pl.Boolean),
+        ("data_availability_type", pl.String),
+        ("parent_type", pl.String),
+        ("parent_chain", pl.String),
+        ("gas_paying_token", pl.String),
+        ("fault_proofs_status", pl.String),
+    ]
 )
 
 
