@@ -9,12 +9,14 @@ from .systemconfig import SystemConfig
 
 log = structlog.get_logger()
 
-
 # ClickHouse columns for insert
 COLUMNS = [
     "process_dt",
-    "chain",
+    "name",
+    "identifier",
     "chain_id",
+    "rpc_url",
+    "system_config_proxy",
     "batch_inbox_slot",
     "dispute_game_factory_slot",
     "l1_cross_domain_messenger_slot",
@@ -53,8 +55,11 @@ COLUMNS = [
 
 COLUMN_TYPE_NAMES = [
     "Date",  # process_dt
-    "String",  # chain
+    "String",  # name
+    "String",  # identifier
     "Int32",  # chain_id
+    "String",  # rpc_url (chain's RPC)
+    "FixedString(66)",  # system_config_proxy
     "FixedString(66)",  # batch_inbox_slot
     "FixedString(66)",  # dispute_game_factory_slot
     "FixedString(66)",  # l1_cross_domain_messenger_slot
@@ -92,8 +97,8 @@ COLUMN_TYPE_NAMES = [
 
 # Chain-dependent delay between RPC requests
 SPEED_BUMP = {
-    "op": 1.0,
-    "worldchain": 1.0,
+    "mainnet/op": 1.0,
+    "mainnet/worldchain": 1.0,
 }
 
 DEFAULT_SPEED_BUMP = 0.4
@@ -103,10 +108,11 @@ DEFAULT_SPEED_BUMP = 0.4
 class ChainSystemConfig:
     """A single system config for a blockchain."""
 
-    rpc_endpoint: str
-    chain: str
+    name: str
+    identifier: str
     chain_id: int
-    system_config: SystemConfig  # Changed from list[SystemConfig] to single SystemConfig
+    rpc_url: str
+    system_config_proxy: str
 
     def fetch(self, process_dt: date):
         """Call RPC and insert.
@@ -119,25 +125,34 @@ class ChainSystemConfig:
         session = new_session()
         client = init_client("OPLABS")
 
+        # Create SystemConfig instance from the proxy address
+        system_config = SystemConfig(system_config_proxy=self.system_config_proxy)
+
         data = []
-        config_metadata = self.system_config.call_rpc(
-            rpc_endpoint=self.rpc_endpoint,
+        config_metadata = system_config.call_rpc(
+            rpc_endpoint=self.rpc_url,
             session=session,
             speed_bump=SPEED_BUMP.get(
-                self.chain, DEFAULT_SPEED_BUMP
+                self.identifier, DEFAULT_SPEED_BUMP
             ),  # avoid hitting the RPC rate limit
         )
 
         if config_metadata is None:
             # an error was encountered
-            log.warning(f"error encountered for chain {self.chain}")
+            log.warning(f"error encountered for chain {self.identifier}")
             return 0
 
         row = config_metadata.to_dict()
         row["process_dt"] = process_dt
+        row["name"] = self.name
+        row["identifier"] = self.identifier
+        row["chain_id"] = self.chain_id
+        row["rpc_url"] = self.rpc_url
+        row["system_config_proxy"] = self.system_config_proxy
+
         data.append([row[_] for _ in COLUMNS])
 
-        log.info(f"fetched system config metadata from rpc for chain {self.chain}")
+        log.info(f"fetched system config metadata from rpc for chain {self.identifier}")
 
         result = client.insert(
             table="chainsmeta.fact_chain_system_config_v1",
@@ -146,7 +161,7 @@ class ChainSystemConfig:
             column_type_names=COLUMN_TYPE_NAMES,
         )
         log.info(
-            f"inserted system config metadata for chain {self.chain}, {result.written_rows} written rows"
+            f"inserted system config metadata for chain {self.identifier}, {result.written_rows} written rows"
         )
 
         return result.written_rows
