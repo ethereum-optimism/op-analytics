@@ -5,7 +5,7 @@ from op_analytics.coreutils.time import now_date
 from op_analytics.coreutils.logger import structlog
 
 from .endpoints import find_system_configs
-from .chainsystemconfig import ChainSystemConfig, store_system_config_data
+from .chainsystemconfig import ChainSystemConfig, SystemConfigList
 
 log = structlog.get_logger()
 
@@ -35,16 +35,6 @@ def execute_pull(process_dt: date | None = None):
         f"System config pull completed: {len(successful_data)} successful, {len(run_results.failures)} failed (out of {len(targets)} total)"
     )
 
-    # Store the collected data to GCS
-    if successful_data:
-        store_system_config_data(successful_data)
-        log.info(f"Stored {len(successful_data)} system config records to GCS")
-    else:
-        log.warning("No successful system config data to store")
+    processed_data = SystemConfigList.store_system_config_data(successful_data)
 
-    # Return summary for compatibility
-    return {
-        "successful_count": len(successful_data),
-        "failed_count": len(run_results.failures),
-        "total_count": len(targets),
-    }
+    return processed_data

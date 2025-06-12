@@ -27,4 +27,4 @@ class ChainsMeta(DailyDataset):
     SUPERCHAIN_ADDRESS_LIST = "superchain_address_list_v1"
 
     # A dimension table that stores system config metadata for chains.
-    SYSTEM_CONFIG = "system_config_v1"
+    SYSTEM_CONFIG_LIST = "system_config_v1"
