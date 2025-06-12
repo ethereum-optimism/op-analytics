@@ -5,7 +5,7 @@ from op_analytics.coreutils.time import now_date
 from op_analytics.coreutils.logger import structlog
 
 from .endpoints import find_system_configs
-from .chainsystemconfig import ChainSystemConfig
+from .chainsystemconfig import ChainSystemConfig, store_system_config_data
 
 log = structlog.get_logger()
 
@@ -21,15 +21,30 @@ def execute_pull(process_dt: date | None = None):
         return x.fetch(process_dt=process_dt)
 
     # Run each chain on a separate thread.
+    # Reduced max_workers to avoid overwhelming the Ethereum RPC endpoint
     run_results = run_concurrently_store_failures(
         function=_fetch,
         targets=targets,
-        max_workers=8,
+        max_workers=3,  # Reduced from 8 to 3 to avoid rate limiting
     )
+
+    # Collect successful results (filter out None values)
+    successful_data = [result for result in run_results.results.values() if result is not None]
 
     log.info(
-        f"System config pull completed: {len(run_results.results)} successful, {len(run_results.failures)} failed"
+        f"System config pull completed: {len(successful_data)} successful, {len(run_results.failures)} failed (out of {len(targets)} total)"
     )
 
-    # Return just the successful results (matching the erc20tokens pattern)
-    return run_results.results
+    # Store the collected data to GCS
+    if successful_data:
+        store_system_config_data(successful_data)
+        log.info(f"Stored {len(successful_data)} system config records to GCS")
+    else:
+        log.warning("No successful system config data to store")
+
+    # Return summary for compatibility
+    return {
+        "successful_count": len(successful_data),
+        "failed_count": len(run_results.failures),
+        "total_count": len(targets),
+    }

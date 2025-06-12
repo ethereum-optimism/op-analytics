@@ -1,105 +1,66 @@
 from dataclasses import dataclass
 from datetime import date
 
-from op_analytics.coreutils.clickhouse.client import init_client
+import polars as pl
+
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.misc import raise_for_schema_mismatch
+from op_analytics.coreutils.partitioned.dailydata import DEFAULT_DT
 from op_analytics.coreutils.request import new_session
 
+from ..dataaccess import ChainsMeta
 from .systemconfig import SystemConfig
 
 log = structlog.get_logger()
 
-# ClickHouse columns for insert
-COLUMNS = [
-    "process_dt",
-    "name",
-    "identifier",
-    "chain_id",
-    "rpc_url",
-    "system_config_proxy",
-    "batch_inbox_slot",
-    "dispute_game_factory_slot",
-    "l1_cross_domain_messenger_slot",
-    "l1_erc721_bridge_slot",
-    "l1_standard_bridge_slot",
-    "optimism_mintable_erc20_factory_slot",
-    "optimism_portal_slot",
-    "start_block_slot",
-    "unsafe_block_signer_slot",
-    "version",
-    "basefee_scalar",
-    "batch_inbox",
-    "batcher_hash",
-    "blob_basefee_scalar",
-    "dispute_game_factory",
-    "eip1559_denominator",
-    "eip1559_elasticity",
-    "gas_limit",
-    "l1_cross_domain_messenger",
-    "l1_erc721_bridge",
-    "l1_standard_bridge",
-    "maximum_gas_limit",
-    "minimum_gas_limit",
-    "operator_fee_constant",
-    "operator_fee_scalar",
-    "optimism_mintable_erc20_factory",
-    "optimism_portal",
-    "overhead",
-    "owner",
-    "scalar",
-    "start_block",
-    "unsafe_block_signer",
-    "version_hex",
-]
+ETHEREUM_RPC_URL = "https://ethereum-rpc.publicnode.com"
 
-
-COLUMN_TYPE_NAMES = [
-    "Date",  # process_dt
-    "String",  # name
-    "String",  # identifier
-    "Int32",  # chain_id
-    "String",  # rpc_url (chain's RPC)
-    "FixedString(66)",  # system_config_proxy
-    "FixedString(66)",  # batch_inbox_slot
-    "FixedString(66)",  # dispute_game_factory_slot
-    "FixedString(66)",  # l1_cross_domain_messenger_slot
-    "FixedString(66)",  # l1_erc721_bridge_slot
-    "FixedString(66)",  # l1_standard_bridge_slot
-    "FixedString(66)",  # optimism_mintable_erc20_factory_slot
-    "FixedString(66)",  # optimism_portal_slot
-    "FixedString(66)",  # start_block_slot
-    "FixedString(66)",  # unsafe_block_signer_slot
-    "UInt256",  # version
-    "UInt32",  # basefee_scalar
-    "FixedString(42)",  # batch_inbox
-    "FixedString(66)",  # batcher_hash
-    "UInt64",  # blob_basefee_scalar
-    "FixedString(42)",  # dispute_game_factory
-    "UInt32",  # eip1559_denominator
-    "UInt32",  # eip1559_elasticity
-    "UInt64",  # gas_limit
-    "FixedString(42)",  # l1_cross_domain_messenger
-    "FixedString(42)",  # l1_erc721_bridge
-    "FixedString(42)",  # l1_standard_bridge
-    "UInt64",  # maximum_gas_limit
-    "UInt64",  # minimum_gas_limit
-    "UInt64",  # operator_fee_constant
-    "UInt32",  # operator_fee_scalar
-    "FixedString(42)",  # optimism_mintable_erc20_factory
-    "FixedString(42)",  # optimism_portal
-    "UInt256",  # overhead
-    "FixedString(42)",  # owner
-    "UInt256",  # scalar
-    "FixedString(42)",  # start_block
-    "FixedString(42)",  # unsafe_block_signer
-    "String",  # version_hex
-]
-
-# Chain-dependent delay between RPC requests
-SPEED_BUMP = {
-    "mainnet/op": 1.0,
-    "mainnet/worldchain": 1.0,
-}
+# Schema for system config data
+SYSTEM_CONFIG_SCHEMA = pl.Schema(
+    {
+        "contract_address": pl.String,
+        "block_number": pl.Int64,
+        "block_timestamp": pl.Int64,
+        "batch_inbox_slot": pl.String,
+        "dispute_game_factory_slot": pl.String,
+        "l1_cross_domain_messenger_slot": pl.String,
+        "l1_erc721_bridge_slot": pl.String,
+        "l1_standard_bridge_slot": pl.String,
+        "optimism_mintable_erc20_factory_slot": pl.String,
+        "optimism_portal_slot": pl.String,
+        "start_block_slot": pl.String,
+        "unsafe_block_signer_slot": pl.String,
+        "version": pl.Utf8,  # Changed to String to handle large 256-bit integers, nullable if not supported
+        "basefee_scalar": pl.Int64,
+        "batch_inbox": pl.Utf8,
+        "batcher_hash": pl.Utf8,
+        "blob_basefee_scalar": pl.Int64,
+        "dispute_game_factory": pl.Utf8,
+        "eip1559_denominator": pl.Int64,
+        "eip1559_elasticity": pl.Int64,
+        "gas_limit": pl.Int64,
+        "l1_cross_domain_messenger": pl.Utf8,
+        "l1_erc721_bridge": pl.Utf8,
+        "l1_standard_bridge": pl.Utf8,
+        "maximum_gas_limit": pl.Int64,
+        "minimum_gas_limit": pl.Int64,
+        "operator_fee_constant": pl.Int64,  # Null for chains that don't support this method
+        "operator_fee_scalar": pl.Int64,  # Null for chains that don't support this method
+        "optimism_mintable_erc20_factory": pl.Utf8,
+        "optimism_portal": pl.Utf8,
+        "overhead": pl.Utf8,  # Changed to String to handle large 256-bit integers, nullable if not supported
+        "owner": pl.Utf8,
+        "scalar": pl.Utf8,  # Changed to String to handle large 256-bit integers, nullable if not supported
+        "start_block": pl.Utf8,
+        "unsafe_block_signer": pl.Utf8,
+        "version_hex": pl.Utf8,
+        "name": pl.String,
+        "identifier": pl.String,
+        "chain_id": pl.Int64,
+        "rpc_url": pl.String,
+        "system_config_proxy": pl.String,
+    }
+)
 
 DEFAULT_SPEED_BUMP = 0.4
 
@@ -115,53 +76,92 @@ class ChainSystemConfig:
     system_config_proxy: str
 
     def fetch(self, process_dt: date):
-        """Call RPC and insert.
+        """Call RPC and return system config data.
 
-        Call a chain's system config contract and store the results.
+        Call a chain's system config contract and return the results as a dictionary.
 
         The system config contract is a single contract that contains all the
         system config data for a chain.
         """
         session = new_session()
-        client = init_client("OPLABS")
 
         # Create SystemConfig instance from the proxy address
         system_config = SystemConfig(system_config_proxy=self.system_config_proxy)
 
-        data = []
         config_metadata = system_config.call_rpc(
-            rpc_endpoint=self.rpc_url,
+            rpc_endpoint=ETHEREUM_RPC_URL,
             session=session,
-            speed_bump=SPEED_BUMP.get(
-                self.identifier, DEFAULT_SPEED_BUMP
-            ),  # avoid hitting the RPC rate limit
+            speed_bump=DEFAULT_SPEED_BUMP,
         )
 
         if config_metadata is None:
             # an error was encountered
             log.warning(f"error encountered for chain {self.identifier}")
-            return 0
+            return None
 
         row = config_metadata.to_dict()
-        row["process_dt"] = process_dt
         row["name"] = self.name
         row["identifier"] = self.identifier
         row["chain_id"] = self.chain_id
         row["rpc_url"] = self.rpc_url
         row["system_config_proxy"] = self.system_config_proxy
 
-        data.append([row[_] for _ in COLUMNS])
+        # Convert large integers to strings to avoid Polars overflow, handle None values
+        row["scalar"] = str(row["scalar"]) if row["scalar"] is not None else None
+        row["overhead"] = str(row["overhead"]) if row["overhead"] is not None else None
+        row["version"] = str(row["version"]) if row["version"] is not None else None
 
         log.info(f"fetched system config metadata from rpc for chain {self.identifier}")
 
-        result = client.insert(
-            table="chainsmeta.fact_chain_system_config_v1",
-            data=data,
-            column_names=COLUMNS,
-            column_type_names=COLUMN_TYPE_NAMES,
-        )
-        log.info(
-            f"inserted system config metadata for chain {self.identifier}, {result.written_rows} written rows"
-        )
+        return row
 
-        return result.written_rows
+
+def store_system_config_data(system_config_data: list):
+    """Store system config data to GCS."""
+    if not system_config_data:
+        log.warning("No system config data to store")
+        return
+
+    # Create DataFrame from the collected data
+    system_config_df = pl.DataFrame(system_config_data)
+
+    # Check the final schema is as expected
+    raise_for_schema_mismatch(
+        actual_schema=system_config_df.schema,
+        expected_schema=SYSTEM_CONFIG_SCHEMA,
+    )
+
+    # Add dt column after schema validation
+    system_config_df = system_config_df.with_columns(dt=pl.lit(DEFAULT_DT))
+
+    # Convert address columns to lowercase
+    address_columns = [
+        col
+        for col in system_config_df.columns
+        if "address" in col.lower()
+        or col.endswith("_proxy")
+        or col
+        in [
+            "batch_inbox",
+            "dispute_game_factory",
+            "l1_cross_domain_messenger",
+            "l1_erc721_bridge",
+            "l1_standard_bridge",
+            "optimism_mintable_erc20_factory",
+            "optimism_portal",
+            "owner",
+            "start_block",
+            "unsafe_block_signer",
+        ]
+    ]
+
+    for col in address_columns:
+        if col in system_config_df.columns:
+            system_config_df = system_config_df.with_columns(pl.col(col).str.to_lowercase())
+
+    ChainsMeta.SYSTEM_CONFIG.write(
+        dataframe=system_config_df,
+        sort_by=["chain_id"],
+    )
+
+    log.info(f"Stored {len(system_config_data)} system config records to GCS")
