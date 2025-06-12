@@ -232,6 +232,11 @@ class SystemConfigMetadata:
                 return data[key]
             return default_value
 
+        def safe_decode_string(key: str, default_value: str | None = None) -> str | None:
+            if key in data:
+                return decode_string_from_abi(data[key])
+            return default_value
+
         try:
             return cls(
                 contract_address=config.system_config_proxy,
@@ -271,7 +276,7 @@ class SystemConfigMetadata:
                 scalar=safe_decode("scalar", "uint256", None),
                 start_block=safe_decode_address("startBlock"),
                 unsafe_block_signer=safe_decode_address("unsafeBlockSigner"),
-                version_hex=decode_string_from_abi(data["version"]),
+                version_hex=safe_decode_string(data["version"]),
             )
         except Exception as ex:
             raise SystemConfigError(dict(data=data, config=config)) from ex
