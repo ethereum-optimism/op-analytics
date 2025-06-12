@@ -199,7 +199,7 @@ class SystemConfigList:
         ]
         for col in address_columns:
             system_config_df = system_config_df.with_columns(
-                pl.col(col).apply(_normalize_address).alias(col)
+                pl.col(col).map_elements(_normalize_address, return_dtype=pl.String)
             )
         # Check schema
         raise_for_schema_mismatch(

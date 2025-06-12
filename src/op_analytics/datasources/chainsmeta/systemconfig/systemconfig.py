@@ -227,6 +227,11 @@ class SystemConfigMetadata:
                 return decode_address(data[key])
             return default_value
 
+        def safe_get(key: str, default_value: Any = None):
+            if key in data:
+                return data[key]
+            return default_value
+
         try:
             return cls(
                 contract_address=config.system_config_proxy,
