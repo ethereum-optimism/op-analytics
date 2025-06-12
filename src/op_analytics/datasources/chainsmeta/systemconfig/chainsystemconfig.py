@@ -64,6 +64,15 @@ SYSTEM_CONFIG_SCHEMA = pl.Schema(
 DEFAULT_SPEED_BUMP = 0.4
 
 
+# --- Helpers ---
+def _normalize_address(val: str | None) -> str | None:
+    return val.lower() if isinstance(val, str) else val
+
+
+def _int_to_str(val):
+    return str(val) if val is not None else None
+
+
 @dataclass
 class ChainSystemConfig:
     """A single system config for a blockchain."""
@@ -74,45 +83,35 @@ class ChainSystemConfig:
     rpc_url: str
     system_config_proxy: str
 
-    def fetch(self, process_dt: date):
-        """Call RPC and return system config data.
-
-        Call a chain's system config contract and return the results as a dictionary.
-
-        The system config contract is a single contract that contains all the
-        system config data for a chain.
-        """
+    def fetch(self, process_dt: date) -> dict | None:
+        """Call RPC and return system config data as a dict, or None on error."""
         session = new_session()
-
-        # Create SystemConfig instance from the proxy address
         system_config = SystemConfig(system_config_proxy=self.system_config_proxy)
-
         config_metadata = system_config.call_rpc(
             rpc_endpoint=ETHEREUM_RPC_URL,
             session=session,
             speed_bump=DEFAULT_SPEED_BUMP,
         )
-
         if config_metadata is None:
             # an error was encountered
             log.warning(f"error encountered for chain {self.identifier}")
             return None
-
         row = config_metadata.to_dict()
-        row["name"] = self.name
-        row["identifier"] = self.identifier
-        row["chain_id"] = self.chain_id
-        row["rpc_url"] = self.rpc_url
-        row["system_config_proxy"] = self.system_config_proxy
-        row["dt"] = process_dt
-
-        # Convert large integers to strings to avoid Polars overflow, handle None values
-        row["scalar"] = str(row["scalar"]) if row["scalar"] is not None else None
-        row["overhead"] = str(row["overhead"]) if row["overhead"] is not None else None
-        row["version"] = str(row["version"]) if row["version"] is not None else None
-
+        row.update(
+            {
+                "name": self.name,
+                "identifier": self.identifier,
+                "chain_id": self.chain_id,
+                "rpc_url": self.rpc_url,
+                "system_config_proxy": self.system_config_proxy,
+                "dt": process_dt,
+                # Convert large ints to str for polars
+                "scalar": _int_to_str(row.get("scalar")),
+                "overhead": _int_to_str(row.get("overhead")),
+                "version": _int_to_str(row.get("version")),
+            }
+        )
         log.info(f"fetched system config metadata from rpc for chain {self.identifier}")
-
         return row
 
 
@@ -122,17 +121,15 @@ class SystemConfigList:
 
     system_config_df: pl.DataFrame
 
-    def store_system_config_data(system_config_data: list):
-        """Store system config data to GCS."""
+    @staticmethod
+    def store_system_config_data(system_config_data: list[dict]) -> "SystemConfigList | None":
+        """Store system config data to GCS and return SystemConfigList, or None if empty."""
         if not system_config_data:
             log.warning("No system config data to store")
-            return
-
-        # Create DataFrame from the collected data
+            return None
         system_config_df = pl.DataFrame(system_config_data)
-
-        # reorder columns
-        system_config_df = system_config_df.select(
+        # Reorder columns
+        col_order = [
             "name",
             "identifier",
             "chain_id",
@@ -174,34 +171,37 @@ class SystemConfigList:
             "unsafe_block_signer",
             "version_hex",
             "dt",
-        )
-
-        # Convert address columns to lowercase
-        address_columns = [
-            col
-            for col in system_config_df.columns
-            if "address" in col.lower()
-            or col.endswith("_proxy")
-            or col
-            in [
-                "batch_inbox",
-                "dispute_game_factory",
-                "l1_cross_domain_messenger",
-                "l1_erc721_bridge",
-                "l1_standard_bridge",
-                "optimism_mintable_erc20_factory",
-                "optimism_portal",
-                "owner",
-                "start_block",
-                "unsafe_block_signer",
-            ]
         ]
-
+        system_config_df = system_config_df.select(
+            [c for c in col_order if c in system_config_df.columns]
+        )
+        # Normalize address columns
+        address_columns = [
+            c
+            for c in system_config_df.columns
+            if (
+                "address" in c.lower()
+                or c.endswith("_proxy")
+                or c
+                in [
+                    "batch_inbox",
+                    "dispute_game_factory",
+                    "l1_cross_domain_messenger",
+                    "l1_erc721_bridge",
+                    "l1_standard_bridge",
+                    "optimism_mintable_erc20_factory",
+                    "optimism_portal",
+                    "owner",
+                    "start_block",
+                    "unsafe_block_signer",
+                ]
+            )
+        ]
         for col in address_columns:
-            if col in system_config_df.columns:
-                system_config_df = system_config_df.with_columns(pl.col(col).str.to_lowercase())
-
-        # Check the final schema is as expected
+            system_config_df = system_config_df.with_columns(
+                pl.col(col).apply(_normalize_address).alias(col)
+            )
+        # Check schema
         raise_for_schema_mismatch(
             actual_schema=system_config_df.schema,
             expected_schema=SYSTEM_CONFIG_SCHEMA,
@@ -210,7 +210,6 @@ class SystemConfigList:
             dataframe=system_config_df,
             sort_by=["chain_id"],
         )
-
         log.info(f"Stored {len(system_config_data)} system config records to GCS")
 
         return SystemConfigList(system_config_df=system_config_df)

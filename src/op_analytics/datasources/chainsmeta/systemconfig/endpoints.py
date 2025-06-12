@@ -41,16 +41,13 @@ def find_system_configs() -> list[ChainSystemConfig]:
 
     log.info(f"found {len(df)} chains to update system configs for")
 
-    result = []
-    for row in df.to_dicts():
-        result.append(
-            ChainSystemConfig(
-                name=row["name"],
-                identifier=row["identifier"],
-                chain_id=row["chain_id"],
-                rpc_url=row["rpc_url"],
-                system_config_proxy=row["system_config_proxy"],
-            )
+    return [
+        ChainSystemConfig(
+            name=row["name"],
+            identifier=row["identifier"],
+            chain_id=row["chain_id"],
+            rpc_url=row["rpc_url"],
+            system_config_proxy=row["system_config_proxy"],
         )
-
-    return result
+        for row in df.to_dicts()
+    ]

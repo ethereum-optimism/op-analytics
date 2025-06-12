@@ -183,9 +183,9 @@ class SystemConfigMetadata:
 
     @classmethod
     def of(cls, config: SystemConfig, response: list[dict]) -> Optional["SystemConfigMetadata"]:
+        """Parse the RPC response into SystemConfigMetadata, handling errors and missing fields."""
         data: dict[str, Any] = {}
         failed_methods = []
-
         for item in response:
             if "error" in item:
                 code = item["error"].get("code")
@@ -214,25 +214,20 @@ class SystemConfigMetadata:
             else:
                 raise Exception("invalid item id: " + item["id"])
 
-        # Log failed methods if any
         if failed_methods:
             log.info(f"methods {failed_methods} not supported by {config}, using default values")
 
+        def safe_decode(key: str, decode_type: str, default_value: Any = None):
+            if key in data:
+                return decode(decode_type, data[key])
+            return default_value
+
+        def safe_decode_address(key: str, default_value: str = None):
+            if key in data:
+                return decode_address(data[key])
+            return default_value
+
         try:
-            # Helper function to safely get and decode values with defaults
-            def safe_decode(key: str, decode_type: str, default_value: Any = None):
-                if key in data:
-                    return decode(decode_type, data[key])
-                return default_value
-
-            def safe_decode_address(key: str, default_value: str = None):
-                if key in data:
-                    return decode_address(data[key])
-                return default_value
-
-            def safe_get(key: str, default_value: str = None):
-                return data.get(key, default_value)
-
             return cls(
                 contract_address=config.system_config_proxy,
                 block_number=data["block_number"],
@@ -262,12 +257,8 @@ class SystemConfigMetadata:
                 l1_standard_bridge=safe_decode_address("l1StandardBridge"),
                 maximum_gas_limit=safe_decode("maximumGasLimit", "uint64", None),
                 minimum_gas_limit=safe_decode("minimumGasLimit", "uint64", None),
-                operator_fee_constant=safe_decode(
-                    "operatorFeeConstant", "uint64", None
-                ),  # This will be None if missing
-                operator_fee_scalar=safe_decode(
-                    "operatorFeeScalar", "uint32", None
-                ),  # This will be None if missing
+                operator_fee_constant=safe_decode("operatorFeeConstant", "uint64", None),
+                operator_fee_scalar=safe_decode("operatorFeeScalar", "uint32", None),
                 optimism_mintable_erc20_factory=safe_decode_address("optimismMintableERC20Factory"),
                 optimism_portal=safe_decode_address("optimismPortal"),
                 overhead=safe_decode("overhead", "uint256", None),
@@ -281,14 +272,10 @@ class SystemConfigMetadata:
             raise SystemConfigError(dict(data=data, config=config)) from ex
 
 
+# --- Decoding Helpers ---
 def decode_address(hexstr: str) -> str:
     """Decode an Ethereum address from hex."""
     return "0x" + hexstr[-40:]
-
-
-def decode_hash(hexstr: str) -> str:
-    """Decode an Ethereum hash from hex."""
-    return hexstr
 
 
 def decode(typestr: str, hexstr: str):
