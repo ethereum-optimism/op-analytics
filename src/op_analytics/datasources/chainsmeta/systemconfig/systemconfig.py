@@ -222,7 +222,7 @@ class SystemConfigMetadata:
                 return decode(decode_type, data[key])
             return default_value
 
-        def safe_decode_address(key: str, default_value: str = None):
+        def safe_decode_address(key: str, default_value: str | None = None) -> str | None:
             if key in data:
                 return decode_address(data[key])
             return default_value

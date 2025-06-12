@@ -19,6 +19,7 @@ def test_chain_system_config_fetch_success(monkeypatch):
             name="test", identifier="id", chain_id=1, rpc_url="url", system_config_proxy="proxy"
         )
         row = csc.fetch(process_dt=date(2024, 1, 1))
+        assert row is not None  # First check that row is not None
         assert row["name"] == "test"
         assert row["scalar"] == "123"
         assert row["overhead"] == "456"
