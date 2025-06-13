@@ -1,4 +1,4 @@
-from op_analytics.datasources.chainsmeta.systemconfig.systemconfig import (
+from op_analytics.datasources.chainsmeta.systemconfig.rpc import (
     decode_address,
     decode,
     decode_string_from_abi,

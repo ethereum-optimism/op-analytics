@@ -1,6 +1,6 @@
 from datetime import date
 from unittest.mock import patch, MagicMock
-from op_analytics.datasources.chainsmeta.systemconfig.chainsystemconfig import (
+from op_analytics.datasources.chainsmeta.systemconfig.chains import (
     ChainSystemConfig,
     SystemConfigList,
 )

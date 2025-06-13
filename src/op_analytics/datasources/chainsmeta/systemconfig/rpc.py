@@ -82,7 +82,7 @@ class SystemConfigResponseError(Exception):
 
 
 @dataclass(frozen=True)
-class SystemConfig:
+class RPCManager:
     """A system config contract for a blockchain."""
 
     system_config_proxy: str
@@ -182,7 +182,7 @@ class SystemConfigMetadata:
         return asdict(self)
 
     @classmethod
-    def of(cls, config: SystemConfig, response: list[dict]) -> Optional["SystemConfigMetadata"]:
+    def of(cls, config: RPCManager, response: list[dict]) -> Optional["SystemConfigMetadata"]:
         """Parse the RPC response into SystemConfigMetadata, handling errors and missing fields."""
         data: dict[str, Any] = {}
         failed_methods = []
@@ -276,7 +276,7 @@ class SystemConfigMetadata:
                 scalar=safe_decode("scalar", "uint256", None),
                 start_block=safe_decode_address("startBlock"),
                 unsafe_block_signer=safe_decode_address("unsafeBlockSigner"),
-                version_hex=safe_decode_string(data["version"]),
+                version_hex=safe_decode_string("version"),
             )
         except Exception as ex:
             raise SystemConfigError(dict(data=data, config=config)) from ex
