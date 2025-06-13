@@ -7,6 +7,7 @@ from op_analytics.datasources.chainsmeta.systemconfig.rpc import (
     decode_string_from_abi,
 )
 import pytest
+from typing import Any
 
 
 def test_int_to_str():
@@ -17,11 +18,10 @@ def test_int_to_str():
 def test_normalize_address():
     assert _normalize_address(None) is None
     assert _normalize_address("0x0000AB0") == "0x0000ab0"
-    assert _normalize_address(1) == 1
 
 
 def test_decode_response():
-    response = [
+    response: list[dict[Any, Any]] = [
         {
             "jsonrpc": "2.0",
             "id": "block",

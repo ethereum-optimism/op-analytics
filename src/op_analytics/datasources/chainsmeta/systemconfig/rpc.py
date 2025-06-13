@@ -153,7 +153,7 @@ class SystemConfigMetadata:
     optimism_portal_slot: str
     start_block_slot: str
     unsafe_block_signer_slot: str
-    version: Optional[str]
+    version: Optional[int]
     basefee_scalar: Optional[int]
     batch_inbox: Optional[str]
     batcher_hash: Optional[str]
