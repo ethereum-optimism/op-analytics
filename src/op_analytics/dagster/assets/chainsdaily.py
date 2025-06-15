@@ -29,6 +29,33 @@ def superchain_token_list(context: OpExecutionContext):
 
 
 @asset
+def superchain_chain_list(context: OpExecutionContext):
+    """Pull superchain chain list from ethereum optimism."""
+    from op_analytics.datasources.chainsmeta.superchain import chainlist
+
+    result = chainlist.execute_pull()
+    context.log.info(result)
+
+
+@asset
+def superchain_address_list(context: OpExecutionContext):
+    """Pull superchain address list from ethereum optimism."""
+    from op_analytics.datasources.chainsmeta.superchain import addresslist
+
+    result = addresslist.execute_pull()
+    context.log.info(result)
+
+
+@asset
+def system_config(context: OpExecutionContext):
+    """Pull system config from rpcs."""
+    from op_analytics.datasources.chainsmeta.systemconfig import execute
+
+    result = execute.execute_pull()
+    context.log.info(result)
+
+
+@asset
 def erc20tokens(context: OpExecutionContext):
     """Pull metadata for ERC-20 tokens."""
     from op_analytics.datasources.chainsmeta.erc20tokens import execute
