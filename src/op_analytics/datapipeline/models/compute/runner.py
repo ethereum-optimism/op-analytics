@@ -2,7 +2,7 @@ import multiprocessing as mp
 import os
 import sys
 from dataclasses import dataclass
-from typing import Generator, Protocol, Sequence
+from typing import Protocol, Sequence
 
 import duckdb
 
@@ -76,43 +76,45 @@ def run_tasks(
         log.info("DRYRUN: No work will be done.")
         return dict(total=0)
 
+    pending_items = find_pending_items(tasks, force_complete=force_complete)
+
     if fork_process:
         if use_pool:
             executed, success, failure = run_pool(
                 num_processes=num_processes,
-                tasks=tasks,
-                force_complete=force_complete,
+                pending_items=pending_items,
             )
         else:
             executed = 0
             success = 0
             failure = 0
-            for item in pending_items(tasks, force_complete=force_complete):
-                ctx = mp.get_context("spawn")
-                p = ctx.Process(target=steps, args=(item,))
-                p.start()
-                try:
-                    p.join()
-                except KeyboardInterrupt:
-                    log.info("Keyboard interrupt received. Terminating spawned process")
-                    p.terminate()
-                    p.join()
-                    raise
+            for item in pending_items:
+                with bound_contextvars(**item.context()):
+                    ctx = mp.get_context("spawn")
+                    p = ctx.Process(target=steps, args=(item,))
+                    p.start()
+                    try:
+                        p.join()
+                    except KeyboardInterrupt:
+                        log.info("Keyboard interrupt received. Terminating spawned process")
+                        p.terminate()
+                        p.join()
+                        raise
 
-                if p.exitcode != 0:
-                    log.error("task", status="fail", exitcode=p.exitcode, **item.context())
-                    failure += 1
-                else:
-                    log.info("task", status="success", exitcode=0, **item.context())
-                    success += 1
+                    if p.exitcode != 0:
+                        log.error("task", status="fail", exitcode=p.exitcode)
+                        failure += 1
+                    else:
+                        log.info("task", status="success", exitcode=0)
+                        success += 1
 
-                executed += 1
+                    executed += 1
 
     else:
         executed = 0
         success = 0
         failure = 0
-        for item in pending_items(tasks, force_complete=force_complete):
+        for item in pending_items:
             steps(item)
             executed += 1
 
@@ -144,11 +146,7 @@ def worker_function(task_queue, success_shared_counter, failure_shared_counter):
             continue
 
 
-def run_pool(
-    num_processes: int,
-    tasks: Sequence[ModelsTask],
-    force_complete: bool,
-):
+def run_pool(num_processes: int, pending_items: list[WorkItem]):
     # Task queue nad worker processes.
     queue: mp.Queue = mp.Queue(maxsize=num_processes)
     success_shared_counter = mp.Value("i", 0)
@@ -172,7 +170,7 @@ def run_pool(
             w.start()
 
         # Submit work to queue.
-        for work in pending_items(tasks, force_complete=force_complete):
+        for work in pending_items:
             queue.put(work)
             executed += 1
 
@@ -199,10 +197,9 @@ def run_pool(
     return executed, success, failure
 
 
-def pending_items(
-    tasks: Sequence[ModelsTask], force_complete: bool
-) -> Generator[WorkItem, None, None]:
+def find_pending_items(tasks: Sequence[ModelsTask], force_complete: bool) -> list[WorkItem]:
     """Yield only work items that need to be executed."""
+    result = []
     for i, task in enumerate(tasks):
         item = WorkItem(
             task=task,
@@ -223,7 +220,6 @@ def pending_items(
                         "task",
                         status="already_complete",
                         min_block=task.data_reader.get_marker_data("min_block"),
-                        **item.context(),
                     )
                     continue
                 else:
@@ -234,7 +230,9 @@ def pending_items(
             if task.write_manager.location == DataLocation.LOCAL:
                 disconnect_duckdb_local()
 
-        yield item
+            result.append(item)
+
+    return result
 
 
 def steps(item: WorkItem) -> None:
