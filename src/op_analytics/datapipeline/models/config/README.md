@@ -30,8 +30,8 @@ Example:
 This file defines the source addresses and chains that generate revenue share transfers. Each entry contains:
 
 ```yaml
-- revshare_from_chain: <string>           # The chain where the revenue is generated
-  revshare_from_addresses: [<addresses>]  # List of addresses that generate revenue
+- revshare_from_chain: <string>           # The chain where the fees are generated
+  revshare_from_addresses: [<addresses>]  # List of addresses that send revshare
   token_addresses: [<addresses>]          # List of token addresses to track (including 'native' for native token)
   expected_chains: [<chains>]             # List of chains where transfers should be found
 ```
@@ -46,7 +46,7 @@ Example:
     - native
     - 0x789...
   expected_chains:
-    - optimism
+    - base
     - ethereum
 ```
 
