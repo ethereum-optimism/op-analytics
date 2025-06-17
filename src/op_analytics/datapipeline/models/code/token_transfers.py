@@ -12,11 +12,13 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
     auxiliary_templates=[
         "token_transfers",
         "native_transfers",
+        "revshare_transfers",
     ],
     expected_outputs=[
         "erc20_transfers_v1",
         "erc721_transfers_v1",
         "native_transfers_v1",
+        "revshare_transfers_v1",
     ],
 )
 def token_transfers(
@@ -43,8 +45,19 @@ def token_transfers(
         },
     )
 
+    revshare_transfers = auxiliary_templates["revshare_transfers"].to_relation(
+        duckdb_context=ctx,
+        template_parameters={
+            "all_transfers": all_transfers,
+            "native_transfers": native_transfers,
+            "from_addresses_config": "src/op_analytics/datapipeline/models/config/revshare_from_addresses.yaml",
+            "to_addresses_config": "src/op_analytics/datapipeline/models/config/revshare_to_addresses.yaml",
+        },
+    )
+
     return {
         "erc20_transfers_v1": erc20_transfers,
         "erc721_transfers_v1": erc721_transfers,
         "native_transfers_v1": native_transfers,
+        "revshare_transfers_v1": revshare_transfers,
     }
