@@ -37,7 +37,7 @@ RAW_CHAIN_METADATA_SCHEMA = pl.Schema(
         "l2beat_slug": pl.String,
         "growthepie_origin_key": pl.String,
         "gas_token": pl.String,
-        "cgt_coingecko_api_key": pl.String,
+        "cgt_coingecko_api": pl.String,
         "chain_layer": pl.String,
         "block_time_sec": pl.Float64,
         "da_layer": pl.String,

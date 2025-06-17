@@ -42,10 +42,10 @@ def get_token_ids_from_metadata() -> List[str]:
     # Load chain metadata
     chain_metadata = load_chain_metadata()
 
-    # Get unique non-null CoinGecko API keys
+    # Get token IDs from chain metadata
     token_ids = (
-        chain_metadata.filter(pl.col("cgt_coingecko_api_key").is_not_null())
-        .select("cgt_coingecko_api_key")
+        chain_metadata.filter(pl.col("cgt_coingecko_api").is_not_null())
+        .select("cgt_coingecko_api")
         .unique()
         .to_series()
         .to_list()
