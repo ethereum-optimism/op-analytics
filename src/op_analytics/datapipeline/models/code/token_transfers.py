@@ -7,13 +7,16 @@ from op_analytics.datapipeline.models.compute.types import NamedRelations
 @register_model(
     input_datasets=[
         "ingestion/logs_v1",
+        "ingestion/traces_v1",
     ],
     auxiliary_templates=[
         "token_transfers",
+        "native_transfers",
     ],
     expected_outputs=[
         "erc20_transfers_v1",
         "erc721_transfers_v1",
+        "native_transfers_v1",
     ],
 )
 def token_transfers(
@@ -33,7 +36,15 @@ def token_transfers(
         "* EXCLUDE (amount, amount_lossless)"
     )
 
+    native_transfers = auxiliary_templates["native_transfers"].to_relation(
+        duckdb_context=ctx,
+        template_parameters={
+            "raw_traces": input_datasets["ingestion/traces_v1"].as_subquery(),
+        },
+    )
+
     return {
         "erc20_transfers_v1": erc20_transfers,
         "erc721_transfers_v1": erc721_transfers,
+        "native_transfers_v1": native_transfers,
     }
