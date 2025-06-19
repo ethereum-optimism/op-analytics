@@ -1,3 +1,4 @@
+INSERT INTO transforms_interop.fact_erc20_ntt_transfers_v1
 /**
 
 ERC-20 Transfer transactions that also emit an NTT Delivery event.
@@ -20,8 +21,6 @@ https://optimistic.etherscan.io/tx/0x9ae78927d9771a2bcd89fc9eb467c063753dc30214d
 
 */
 
-INSERT INTO _placeholder_
-
 WITH
 
 
@@ -33,13 +32,13 @@ ntt_delivery_events AS ( -- noqa: ST03
     , transaction_hash
     , log_index
 
-  FROM
-    blockbatch_gcs.read_date(
-      rootpath = 'ingestion/logs_v1'
-      , chain = '*'
-      , dt = { dtparam: Date }
+  FROM s3(
+        'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/logs_v1/chain=base/dt=2025-01-01/*.parquet',
+        '<GCS_HMAC_ACCESS_KEY>',
+        '<GCS_HMAC_SECRET>',
+        'parquet'
     )
-
+    
   WHERE
     --
     -- Delivery(
@@ -71,13 +70,18 @@ SELECT
   , t.from_address
   , t.to_address
 
-FROM blockbatch.token_transfers__erc20_transfers_v1 AS t
-
+FROM 
+            (
+            SELECT
+                * 
+            FROM blockbatch.token_transfers__erc20_transfers_v1
+            WHERE dt = '2025-01-01' AND chain = 'base'
+            )
+             AS t
 INNER JOIN ntt_delivery_events AS n
   ON
     t.chain_id = n.chain_id
     AND t.transaction_hash = n.transaction_hash
 WHERE
-  t.dt = { dtparam: Date }
   -- Transfer is before Delivery
-  AND t.log_index < n.log_index
+  t.log_index < n.log_index
