@@ -70,3 +70,10 @@ def fees(context: AssetExecutionContext):
     """Run fees transformations."""
     result = execute_dt_transforms(group_name="fees", force_complete=True)
     context.log.info(result)
+
+
+@asset
+def systemconfig(context: AssetExecutionContext):
+    """Run systemconfig transformations."""
+    result = execute_dt_transforms(group_name="systemconfig", force_complete=True)
+    context.log.info(result)
