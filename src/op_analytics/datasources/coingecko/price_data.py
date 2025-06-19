@@ -177,7 +177,7 @@ class CoinGeckoDataSource:
 
                             price_data = TokenPriceData.from_api_response(
                                 token_data={"id": token_data["id"]},
-                                timestamp=timestamp,
+                                timestamp=int(timestamp),
                                 price=price,
                                 market_cap=market_cap,
                                 volume=volume,
@@ -195,7 +195,7 @@ class CoinGeckoDataSource:
 
                         price_data = TokenPriceData.from_api_response(
                             token_data={"id": batch[0]},
-                            timestamp=timestamp,
+                            timestamp=int(timestamp),
                             price=price,
                             market_cap=market_cap,
                             volume=volume,
