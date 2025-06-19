@@ -260,3 +260,130 @@ class CoinGeckoDataSource:
             Polars DataFrame with price data
         """
         return self.get_token_prices(token_ids, days=1, vs_currency=vs_currency)
+
+    def get_top_tokens_by_market_cap(self, limit: int = 100, vs_currency: str = "usd") -> List[str]:
+        """
+        Fetch the top tokens by market cap from CoinGecko.
+
+        Args:
+            limit: Number of top tokens to fetch (default: 100)
+            vs_currency: Currency for market cap calculation (default: usd)
+
+        Returns:
+            List of CoinGecko token IDs
+        """
+        self._rate_limit()
+
+        url = f"{COINGECKO_API_BASE}/coins/markets"
+        params = {
+            "vs_currency": vs_currency,
+            "order": "market_cap_desc",
+            "per_page": str(limit),
+            "page": "1",
+            "sparkline": "false",
+        }
+
+        try:
+            response = self.session.get(url, params=params)
+            response.raise_for_status()
+            data = response.json()
+
+            if not data:
+                log.warning("No data returned for top tokens")
+                return []
+
+            token_ids = [token["id"] for token in data]
+            log.info("Fetched top tokens by market cap", count=len(token_ids))
+            return token_ids
+
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:  # Too Many Requests
+                raise CoinGeckoRateLimit(f"Rate limit exceeded: {e}")
+            log.error("API request failed", error=str(e), status_code=e.response.status_code)
+            raise
+        except JSONDecodeError as e:
+            log.error("Invalid JSON response", error=str(e))
+            raise CoinGeckoResponseError(f"Invalid JSON response: {e}")
+
+    def get_token_metadata(self, token_ids: List[str]) -> pl.DataFrame:
+        """
+        Fetch metadata for a list of tokens from CoinGecko.
+
+        Args:
+            token_ids: List of CoinGecko token IDs
+
+        Returns:
+            Polars DataFrame with token metadata
+        """
+        all_metadata = []
+        failed_tokens = []
+
+        for token_id in token_ids:
+            self._rate_limit()
+
+            url = f"{COINGECKO_API_BASE}/coins/{token_id}"
+            params = {
+                "localization": "false",
+                "tickers": "false",
+                "market_data": "false",
+                "community_data": "false",
+                "developer_data": "false",
+                "sparkline": "false",
+            }
+
+            try:
+                response = self.session.get(url, params=params)
+                response.raise_for_status()
+                data = response.json()
+
+                # Extract contract addresses from detail_platforms
+                contract_addresses = {}
+                if "detail_platforms" in data:
+                    for platform, details in data["detail_platforms"].items():
+                        if isinstance(details, dict) and "contract_address" in details:
+                            contract_addresses[platform] = details["contract_address"]
+
+                # Create metadata record
+                metadata = {
+                    "token_id": data["id"],
+                    "name": data.get("name", ""),
+                    "symbol": data.get("symbol", "").upper(),
+                    "description": data.get("description", {}).get("en", ""),
+                    "categories": data.get("categories", []),
+                    "homepage": data.get("links", {}).get("homepage", []),
+                    "blockchain_site": data.get("links", {}).get("blockchain_site", []),
+                    "official_forum_url": data.get("links", {}).get("official_forum_url", []),
+                    "chat_url": data.get("links", {}).get("chat_url", []),
+                    "announcement_url": data.get("links", {}).get("announcement_url", []),
+                    "twitter_screen_name": data.get("links", {}).get("twitter_screen_name", ""),
+                    "telegram_channel_identifier": data.get("links", {}).get(
+                        "telegram_channel_identifier", ""
+                    ),
+                    "subreddit_url": data.get("links", {}).get("subreddit_url", ""),
+                    "repos_url": data.get("links", {}).get("repos_url", {}),
+                    "contract_addresses": contract_addresses,
+                    "last_updated": datetime.now().isoformat(),
+                }
+
+                all_metadata.append(metadata)
+                log.info("Fetched metadata for token", token_id=token_id)
+
+            except requests.exceptions.HTTPError as e:
+                if e.response.status_code == 429:  # Too Many Requests
+                    raise CoinGeckoRateLimit(f"Rate limit exceeded: {e}")
+                elif e.response.status_code == 404:  # Token not found
+                    log.warning("Token not found in CoinGecko", token_id=token_id)
+                    failed_tokens.append(token_id)
+                    continue
+                log.error("API request failed", error=str(e), status_code=e.response.status_code)
+                raise
+            except JSONDecodeError as e:
+                log.error("Invalid JSON response", error=str(e))
+                raise CoinGeckoResponseError(f"Invalid JSON response: {e}")
+
+        if failed_tokens:
+            log.warning("Failed to fetch metadata for tokens", failed_tokens=failed_tokens)
+
+        # Convert to DataFrame
+        df = pl.DataFrame(all_metadata)
+        return df

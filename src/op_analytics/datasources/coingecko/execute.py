@@ -11,7 +11,9 @@ import polars as pl
 from op_analytics.coreutils.bigquery.write import most_recent_dates
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.misc import raise_for_schema_mismatch
+from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import new_session
+from op_analytics.coreutils.time import now_dt
 from op_analytics.datapipeline.chains.load import load_chain_metadata
 
 from .dataaccess import CoinGecko
@@ -30,6 +32,25 @@ PRICE_DF_SCHEMA = {
     "market_cap_usd": pl.Float64,
     "total_volume_usd": pl.Float64,
     "last_updated": pl.String,
+}
+
+METADATA_DF_SCHEMA = {
+    "dt": pl.String,
+    "token_id": pl.String,
+    "name": pl.String,
+    "symbol": pl.String,
+    "description": pl.String,
+    "categories": pl.List(pl.String),
+    "homepage": pl.List(pl.String),
+    "blockchain_site": pl.List(pl.String),
+    "official_forum_url": pl.List(pl.String),
+    "chat_url": pl.List(pl.String),
+    "announcement_url": pl.List(pl.String),
+    "twitter_screen_name": pl.String,
+    "telegram_channel_identifier": pl.String,
+    "subreddit_url": pl.String,
+    "repos_url": pl.String,
+    "contract_addresses": pl.String,  # JSON string of platform -> address mapping
 }
 
 
@@ -62,7 +83,7 @@ def read_token_ids_from_file(filepath: str) -> list[str]:
     """
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"File not found: {filepath}")
-    token_ids = set()
+    token_ids: set[str] = set()
     ext = os.path.splitext(filepath)[1].lower()
     if ext == ".txt":
         with open(filepath, "r") as f:
@@ -73,7 +94,7 @@ def read_token_ids_from_file(filepath: str) -> list[str]:
     elif ext == ".csv":
         with open(filepath, newline="") as csvfile:
             reader = csv.DictReader(csvfile)
-            if "token_id" in reader.fieldnames:
+            if reader.fieldnames and "token_id" in reader.fieldnames:
                 for row in reader:
                     tid = row["token_id"].strip()
                     if tid:
@@ -90,26 +111,53 @@ def read_token_ids_from_file(filepath: str) -> list[str]:
     return list(token_ids)
 
 
-def get_token_ids_from_metadata_and_file(extra_token_ids_file: str | None = None) -> list[str]:
+def get_token_ids_from_metadata_and_file(
+    extra_token_ids_file: str | None = None, include_top_tokens: int = 0
+) -> list[str]:
     """
     Get unique list of CoinGecko token IDs from chain metadata and an optional file.
+
+    Args:
+        extra_token_ids_file: Optional path to file with extra token IDs
+        include_top_tokens: Number of top tokens by market cap to include (0 for none)
     """
-    token_ids = set(get_token_ids_from_metadata())
+    token_ids: set[str] = set(get_token_ids_from_metadata())
+
     if extra_token_ids_file:
         extra_ids = read_token_ids_from_file(extra_token_ids_file)
         token_ids.update(extra_ids)
-    token_ids = list(token_ids)
-    log.info("final_token_ids", count=len(token_ids))
-    return token_ids
+
+    if include_top_tokens > 0:
+        # Fetch top tokens by market cap
+        session = new_session()
+        data_source = CoinGeckoDataSource(session=session)
+        try:
+            top_token_ids = data_source.get_top_tokens_by_market_cap(limit=include_top_tokens)
+            token_ids.update(top_token_ids)
+            log.info("Added top tokens by market cap", count=len(top_token_ids))
+        except Exception as e:
+            log.error("Failed to fetch top tokens by market cap", error=str(e))
+            # Continue without top tokens if there's an error
+
+    result = list(token_ids)
+    log.info("final_token_ids", count=len(result))
+    return result
 
 
-def execute_pull(days: int = 30, extra_token_ids_file: str | None = None):
+def execute_pull(
+    days: int = 365,
+    extra_token_ids_file: str | None = None,
+    include_top_tokens: int = 0,
+    fetch_metadata: bool = False,
+):
     """
     Execute the CoinGecko price data pull.
 
     Args:
         days: Number of days of historical data to fetch
         extra_token_ids_file: Optional path to file with extra token IDs
+        include_top_tokens: Number of top tokens by market cap to include (0 for none)
+        fetch_metadata: Whether to fetch and write token metadata
 
     Returns:
         The actual price_df with the fetched price data
@@ -117,8 +165,8 @@ def execute_pull(days: int = 30, extra_token_ids_file: str | None = None):
     session = new_session()
     data_source = CoinGeckoDataSource(session=session)
 
-    # Get list of token IDs (from metadata and optional file)
-    token_ids = get_token_ids_from_metadata_and_file(extra_token_ids_file)
+    # Get list of token IDs (from metadata, optional file, and optionally top tokens)
+    token_ids = get_token_ids_from_metadata_and_file(extra_token_ids_file, include_top_tokens)
     print(f"Fetching data for {len(token_ids)} tokens: {token_ids}")
 
     if not token_ids:
@@ -150,7 +198,50 @@ def execute_pull(days: int = 30, extra_token_ids_file: str | None = None):
     # Create BigQuery external table
     CoinGecko.DAILY_PRICES.create_bigquery_external_table()
 
-    return price_df
+    # Fetch and write metadata if requested
+    if fetch_metadata:
+        try:
+            print(f"Fetching metadata for {len(token_ids)} tokens...")
+            metadata_df = data_source.get_token_metadata(token_ids)
+
+            if not metadata_df.is_empty():
+                # Convert contract_addresses dict to JSON string for storage
+                metadata_df = metadata_df.with_columns(pl.col("contract_addresses").cast(pl.Utf8))
+
+                # Add dt partition column (following DefiLlama pattern)
+                metadata_df = metadata_df.with_columns(dt=pl.lit(now_dt()))
+
+                # Schema assertions to help our future selves reading this code.
+                raise_for_schema_mismatch(
+                    actual_schema=metadata_df.schema,
+                    expected_schema=pl.Schema(METADATA_DF_SCHEMA),
+                )
+
+                # Write metadata (partitioned by dt, replaces existing data for that date)
+                CoinGecko.TOKEN_METADATA.write(
+                    dataframe=metadata_df,
+                    sort_by=["token_id"],
+                )
+
+                # Create BigQuery external table for metadata
+                CoinGecko.TOKEN_METADATA.create_bigquery_external_table()
+
+                print(f"Successfully wrote metadata for {len(metadata_df)} tokens")
+            else:
+                print("No metadata to write")
+
+        except Exception as e:
+            log.error("failed_to_fetch_metadata", error=str(e))
+            print(f"Error fetching metadata: {e}")
+            # Continue without metadata if there's an error
+
+    # Return summary information following DefiLlama pattern
+    return {
+        "price_df": dt_summary(price_df),
+        "metadata_df": dt_summary(metadata_df)
+        if fetch_metadata and "metadata_df" in locals()
+        else None,
+    }
 
 
 if __name__ == "__main__":
@@ -160,7 +251,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--days",
         type=int,
-        default=30,
+        default=365,
         help="Number of days of historical data to fetch",
     )
     parser.add_argument(
@@ -169,6 +260,27 @@ if __name__ == "__main__":
         default=None,
         help="Optional path to a file (csv or txt) with extra token IDs to include",
     )
+    parser.add_argument(
+        "--include-top-tokens",
+        type=int,
+        default=0,
+        help="Number of top tokens by market cap to include (0 for none)",
+    )
+    parser.add_argument(
+        "--fetch-metadata",
+        action="store_true",
+        help="Whether to fetch and write token metadata",
+    )
     args = parser.parse_args()
 
-    execute_pull(days=args.days, extra_token_ids_file=args.extra_token_ids_file)
+    result = execute_pull(
+        days=args.days,
+        extra_token_ids_file=args.extra_token_ids_file,
+        include_top_tokens=args.include_top_tokens,
+        fetch_metadata=args.fetch_metadata,
+    )
+
+    if result is not None:
+        print(f"Successfully processed {len(result['price_df'])} price records")
+        if result["metadata_df"]:
+            print(f"Successfully processed {len(result['metadata_df'])} metadata records")
