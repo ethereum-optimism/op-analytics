@@ -12,4 +12,4 @@ class CoinGecko(DailyDataset):
     """Supported CoinGecko datasets."""
 
     # Daily token price data
-    DAILY_PRICES = "fact_coingecko_daily_prices_v1"
+    DAILY_PRICES = "coingecko_daily_prices_v1"

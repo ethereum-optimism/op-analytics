@@ -125,16 +125,16 @@ class CoinGeckoDataSource:
         """
         self._rate_limit()
 
-        # CoinGecko API has a limit of 100 tokens per request
         all_price_data = []
         failed_tokens = []
 
-        for i in range(0, len(token_ids), 100):
-            batch = token_ids[i : i + 100]
-            ids_param = ",".join(batch)
+        # Use different approaches based on whether we have an API key
+        if self._api_key:
+            # Pro API can handle up to 100 tokens per request
+            for i in range(0, len(token_ids), 100):
+                batch = token_ids[i : i + 100]
+                ids_param = ",".join(batch)
 
-            # Use different endpoints based on whether we have an API key
-            if self._api_key:
                 url = f"{COINGECKO_API_BASE}/coins/markets"
                 params = {
                     "vs_currency": vs_currency,
@@ -142,30 +142,18 @@ class CoinGeckoDataSource:
                     "days": str(days),
                     "interval": "daily",
                 }
-            else:
-                # For free tier, we need to fetch each coin individually
-                url = f"{COINGECKO_API_BASE}/coins/{batch[0]}/market_chart"
-                params = {
-                    "vs_currency": vs_currency,
-                    "days": str(days),
-                    "interval": "daily",
-                }
 
-            try:
-                response = self.session.get(url, params=params)
-                response.raise_for_status()
-                data = response.json()
+                try:
+                    response = self.session.get(url, params=params)
+                    response.raise_for_status()
+                    data = response.json()
 
-                if not data:
-                    log.warning("No data returned for tokens", tokens=batch)
-                    continue
+                    if not data:
+                        log.warning("No data returned for tokens", tokens=batch)
+                        continue
 
-                log.info(
-                    "Received data for tokens", count=len(data) if isinstance(data, list) else 1
-                )
+                    log.info("Received data for tokens", count=len(data))
 
-                # Handle different response formats for free vs pro API
-                if self._api_key:
                     for token_data in data:
                         prices = token_data.get("prices", [])
                         market_caps = token_data.get("market_caps", [])
@@ -183,7 +171,39 @@ class CoinGeckoDataSource:
                                 volume=volume,
                             )
                             all_price_data.append(price_data)
-                else:
+
+                except requests.exceptions.HTTPError as e:
+                    if e.response.status_code == 429:  # Too Many Requests
+                        raise CoinGeckoRateLimit(f"Rate limit exceeded: {e}")
+                    log.error(
+                        "API request failed", error=str(e), status_code=e.response.status_code
+                    )
+                    raise
+                except JSONDecodeError as e:
+                    log.error("Invalid JSON response", error=str(e))
+                    raise CoinGeckoResponseError(f"Invalid JSON response: {e}")
+
+        else:
+            # Free API - need to fetch each token individually
+            for token_id in token_ids:
+                url = f"{COINGECKO_API_BASE}/coins/{token_id}/market_chart"
+                params = {
+                    "vs_currency": vs_currency,
+                    "days": str(days),
+                    "interval": "daily",
+                }
+
+                try:
+                    response = self.session.get(url, params=params)
+                    response.raise_for_status()
+                    data = response.json()
+
+                    if not data:
+                        log.warning("No data returned for token", token_id=token_id)
+                        continue
+
+                    log.info("Received data for token", token_id=token_id)
+
                     # Free API response format
                     prices = data.get("prices", [])
                     market_caps = data.get("market_caps", [])
@@ -194,7 +214,7 @@ class CoinGeckoDataSource:
                         volume = volumes[idx][1] if idx < len(volumes) else None
 
                         price_data = TokenPriceData.from_api_response(
-                            token_data={"id": batch[0]},
+                            token_data={"id": token_id},
                             timestamp=int(timestamp),
                             price=price,
                             market_cap=market_cap,
@@ -202,20 +222,20 @@ class CoinGeckoDataSource:
                         )
                         all_price_data.append(price_data)
 
-            except requests.exceptions.HTTPError as e:
-                if e.response.status_code == 429:  # Too Many Requests
-                    raise CoinGeckoRateLimit(f"Rate limit exceeded: {e}")
-                elif e.response.status_code == 404:  # Token not found
-                    failed_token = batch[0] if not self._api_key else None
-                    if failed_token:
-                        log.warning("Token not found in CoinGecko", token_id=failed_token)
-                        failed_tokens.append(failed_token)
-                    continue
-                log.error("API request failed", error=str(e), status_code=e.response.status_code)
-                raise
-            except JSONDecodeError as e:
-                log.error("Invalid JSON response", error=str(e))
-                raise CoinGeckoResponseError(f"Invalid JSON response: {e}")
+                except requests.exceptions.HTTPError as e:
+                    if e.response.status_code == 429:  # Too Many Requests
+                        raise CoinGeckoRateLimit(f"Rate limit exceeded: {e}")
+                    elif e.response.status_code == 404:  # Token not found
+                        log.warning("Token not found in CoinGecko", token_id=token_id)
+                        failed_tokens.append(token_id)
+                        continue
+                    log.error(
+                        "API request failed", error=str(e), status_code=e.response.status_code
+                    )
+                    raise
+                except JSONDecodeError as e:
+                    log.error("Invalid JSON response", error=str(e))
+                    raise CoinGeckoResponseError(f"Invalid JSON response: {e}")
 
         if failed_tokens:
             log.warning("Failed to fetch data for tokens", failed_tokens=failed_tokens)
