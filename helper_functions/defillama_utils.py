@@ -541,11 +541,27 @@ def get_latest_chain_tvl():
 	return df
 
 def get_chain_list():
-	df = get_latest_chain_tvl()
-	df = df[['name']]
-	df = df.drop_duplicates()
-	return df
+	try:
+		df = get_latest_chain_tvl()
 		
+		# Check if df is None or empty
+		if df is None or df.empty:
+			print("Warning: get_latest_chain_tvl returned None or empty DataFrame")
+			return pd.DataFrame(columns=['name'])
+		
+		df = df[['name']]
+		df = df.drop_duplicates()
+		return df
+		
+	except Exception as e:
+		print(f"Error in get_chain_list: {e}")
+		print(f"Exception type: {type(e).__name__}")
+		import traceback
+		print("Traceback:")
+		print(traceback.format_exc())
+		
+		# Return an empty DataFrame with expected columns
+		return pd.DataFrame(columns=['name'])
 
 def get_historical_chain_tvl(chain_name):
     df = pd.DataFrame()
@@ -681,9 +697,32 @@ def get_chain_category_data():
 def get_config():
 	# Fetch JSON data from the API
 	url = "https://api.llama.fi/config"
-	response = r.get(url)
-	data = response.json()
-	return data
+	try:
+		response = r.get(url, timeout=30)
+		response.raise_for_status()  # Raise an exception for bad HTTP status codes
+		
+		# Check if response is valid JSON
+		try:
+			data = response.json()
+			return data
+		except r.exceptions.JSONDecodeError as e:
+			print(f"JSON decode error for {url}: {e}")
+			print(f"Response status code: {response.status_code}")
+			print(f"Response content (first 500 chars): {response.text[:500]}")
+			
+			# Return a minimal fallback structure
+			return {
+				"protocols": [],
+				"chainCoingeckoIds": {}
+			}
+			
+	except r.exceptions.RequestException as e:
+		print(f"Request error for {url}: {e}")
+		# Return a minimal fallback structure
+		return {
+			"protocols": [],
+			"chainCoingeckoIds": {}
+		}
 
 def get_protocols_config():
 	data = get_config()
@@ -694,21 +733,52 @@ def get_protocols_config():
 	return protocols_df
 
 def get_chains_config():
-	data = get_config()
-	chains_data = data["chainCoingeckoIds"]
-	
-	# Create pandas dataframe for chains
-	chains_df = pd.DataFrame(chains_data)
-	# Transpose the chains dataframe
-	chains_df = chains_df.transpose()
-	# Combine the two "chainId" fields into one
-	chains_df.fillna({'chainId': chains_df['chainid']}, inplace=True)
-	chains_df.drop(columns=['chainid'], inplace=True)
-	# Reset index and rename index column
-	chains_df.reset_index(inplace=True)
-	chains_df.rename(columns={'index': 'defillama_slug'}, inplace=True)
+	try:
+		data = get_config()
+		
+		# Check if data is valid and contains the expected structure
+		if not data or "chainCoingeckoIds" not in data:
+			print("Warning: Invalid or empty config data received from DefiLlama API")
+			# Return an empty DataFrame with expected columns
+			return pd.DataFrame(columns=['defillama_slug', 'chainId', 'geckoId', 'cmcId', 'symbol'])
+		
+		chains_data = data["chainCoingeckoIds"]
+		
+		# Check if chains_data is empty or None
+		if not chains_data:
+			print("Warning: No chain data found in DefiLlama config")
+			return pd.DataFrame(columns=['defillama_slug', 'chainId', 'geckoId', 'cmcId', 'symbol'])
+		
+		# Create pandas dataframe for chains
+		chains_df = pd.DataFrame(chains_data)
+		
+		# Check if DataFrame is empty
+		if chains_df.empty:
+			print("Warning: Empty chains DataFrame created from DefiLlama config")
+			return pd.DataFrame(columns=['defillama_slug', 'chainId', 'geckoId', 'cmcId', 'symbol'])
+		
+		# Transpose the chains dataframe
+		chains_df = chains_df.transpose()
+		
+		# Combine the two "chainId" fields into one
+		chains_df.fillna({'chainId': chains_df['chainid']}, inplace=True)
+		chains_df.drop(columns=['chainid'], inplace=True)
+		
+		# Reset index and rename index column
+		chains_df.reset_index(inplace=True)
+		chains_df.rename(columns={'index': 'defillama_slug'}, inplace=True)
 
-	return chains_df
+		return chains_df
+		
+	except Exception as e:
+		print(f"Error in get_chains_config: {e}")
+		print(f"Exception type: {type(e).__name__}")
+		import traceback
+		print("Traceback:")
+		print(traceback.format_exc())
+		
+		# Return an empty DataFrame with expected columns
+		return pd.DataFrame(columns=['defillama_slug', 'chainId', 'geckoId', 'cmcId', 'symbol'])
 
 
 def get_fees_revenue(chain_name, exclude_total_data_chart=True, exclude_total_data_chart_breakdown=True, data_type='totalRevenue'):
