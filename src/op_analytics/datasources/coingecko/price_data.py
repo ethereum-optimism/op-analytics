@@ -171,9 +171,9 @@ class CoinGeckoDataSource:
                         market_caps = token_data.get("market_caps", [])
                         volumes = token_data.get("total_volumes", [])
 
-                        for i, (timestamp, price) in enumerate(prices):
-                            market_cap = market_caps[i][1] if i < len(market_caps) else None
-                            volume = volumes[i][1] if i < len(volumes) else None
+                        for idx, (timestamp, price) in enumerate(prices):
+                            market_cap = market_caps[idx][1] if idx < len(market_caps) else None
+                            volume = volumes[idx][1] if idx < len(volumes) else None
 
                             price_data = TokenPriceData.from_api_response(
                                 token_data={"id": token_data["id"]},
@@ -189,9 +189,9 @@ class CoinGeckoDataSource:
                     market_caps = data.get("market_caps", [])
                     volumes = data.get("total_volumes", [])
 
-                    for i, (timestamp, price) in enumerate(prices):
-                        market_cap = market_caps[i][1] if i < len(market_caps) else None
-                        volume = volumes[i][1] if i < len(volumes) else None
+                    for idx, (timestamp, price) in enumerate(prices):
+                        market_cap = market_caps[idx][1] if idx < len(market_caps) else None
+                        volume = volumes[idx][1] if idx < len(volumes) else None
 
                         price_data = TokenPriceData.from_api_response(
                             token_data={"id": batch[0]},
