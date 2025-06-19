@@ -79,7 +79,7 @@ class CoinGeckoDataSource:
 
     def __init__(self, session: Optional[requests.Session] = None):
         self.session = session or new_session()
-        self._last_request_time = 0
+        self._last_request_time: float = 0.0
 
         # Try to get API key, but don't fail if it doesn't exist
         try:
