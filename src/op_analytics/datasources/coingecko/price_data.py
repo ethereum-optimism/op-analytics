@@ -79,7 +79,7 @@ class CoinGeckoDataSource:
 
     def __init__(self, session: Optional[requests.Session] = None):
         self.session = session or new_session()
-        self._last_request_time = 0
+        self._last_request_time: float = 0.0
 
         # Try to get API key, but don't fail if it doesn't exist
         try:
@@ -171,13 +171,13 @@ class CoinGeckoDataSource:
                         market_caps = token_data.get("market_caps", [])
                         volumes = token_data.get("total_volumes", [])
 
-                        for i, (timestamp, price) in enumerate(prices):
-                            market_cap = market_caps[i][1] if i < len(market_caps) else None
-                            volume = volumes[i][1] if i < len(volumes) else None
+                        for idx, (timestamp, price) in enumerate(prices):
+                            market_cap = market_caps[idx][1] if idx < len(market_caps) else None
+                            volume = volumes[idx][1] if idx < len(volumes) else None
 
                             price_data = TokenPriceData.from_api_response(
                                 token_data={"id": token_data["id"]},
-                                timestamp=timestamp,
+                                timestamp=int(timestamp),
                                 price=price,
                                 market_cap=market_cap,
                                 volume=volume,
@@ -189,13 +189,13 @@ class CoinGeckoDataSource:
                     market_caps = data.get("market_caps", [])
                     volumes = data.get("total_volumes", [])
 
-                    for i, (timestamp, price) in enumerate(prices):
-                        market_cap = market_caps[i][1] if i < len(market_caps) else None
-                        volume = volumes[i][1] if i < len(volumes) else None
+                    for idx, (timestamp, price) in enumerate(prices):
+                        market_cap = market_caps[idx][1] if idx < len(market_caps) else None
+                        volume = volumes[idx][1] if idx < len(volumes) else None
 
                         price_data = TokenPriceData.from_api_response(
                             token_data={"id": batch[0]},
-                            timestamp=timestamp,
+                            timestamp=int(timestamp),
                             price=price,
                             market_cap=market_cap,
                             volume=volume,
