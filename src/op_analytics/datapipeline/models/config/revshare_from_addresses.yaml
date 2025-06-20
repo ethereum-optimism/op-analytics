@@ -1,131 +1,131 @@
-- revshare_from_chain: base
-  revshare_from_addresses:
-    - 0x09C7bAD99688a55a2e83644BFAed09e62bDcCcBA  # Base Fee Disburser Proxy
-    - 0x45969D00739d518f0Dde41920B67cE30395135A0  # Base Fee Disburser Implementation
-  token_addresses:
-    - native
+base:
+  addresses:
+    - "0x09C7bAD99688a55a2e83644BFAed09e62bDcCcBA"
+    - "0x45969D00739d518f0Dde41920B67cE30395135A0"
+  tokens:
+    - "native"
   expected_chains:
-    - base
+    - "base"
 
-- revshare_from_chain: zora
-  revshare_from_addresses:
-    - 0xe900b3Edc1BA0430CFa9a204A1027B90825ac951  # Zora Disburser
-  token_addresses:
-    - native
+zora:
+  addresses:
+    - "0xe900b3Edc1BA0430CFa9a204A1027B90825ac951"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: op
-  revshare_from_addresses:
-    - 0x99c9fc46f92e8a1c0dec1b1747d010903e884be1  # OPM L1 Standard Bridge
-  token_addresses:
-    - native
+op:
+  addresses:
+    - "0x99c9fc46f92e8a1c0dec1b1747d010903e884be1"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: mode
-  revshare_from_addresses:
-    - 0xed4811010a86f7c39134fbc20206d906ad1176b6  # Mode Disburser
-  token_addresses:
-    - native
+mode:
+  addresses:
+    - "0xed4811010a86f7c39134fbc20206d906ad1176b6"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: raas_conduit
-  revshare_from_addresses:
-    - 0x13f37e6b638ca83e7090bb3722b3ae04bf884019  # Conduit Disburser 1
-    - 0x4a4962275DF8C60a80d3a25faEc5AA7De116A746  # Conduit Disburser 3
-    - 0x09315fc454919a37d02d320272fc23a0653f67f9  # Conduit Disburser 4
-  token_addresses:
-    - native
+raas_conduit:
+  addresses:
+    - "0x13f37e6b638ca83e7090bb3722b3ae04bf884019"
+    - "0x4a4962275DF8C60a80d3a25faEc5AA7De116A746"
+    - "0x09315fc454919a37d02d320272fc23a0653f67f9"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: lyra
-  revshare_from_addresses:
-    - 0x793e01dCf6F9759Bf26dd7869b03129e64217537  # Conduit Disburser - Derive
-  token_addresses:
-    - native
+lyra:
+  addresses:
+    - "0x793e01dCf6F9759Bf26dd7869b03129e64217537"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: raas_gelato
-  revshare_from_addresses:
-    - 0xBeA2Bc852a160B8547273660E22F4F08C2fa9Bbb  # Gelato Disburser
-  token_addresses:
-    - native
+raas_gelato:
+  addresses:
+    - "0xBeA2Bc852a160B8547273660E22F4F08C2fa9Bbb"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: raas_altlayer
-  revshare_from_addresses:
-    - 0x83AF9DD63534BF02921c8bE11f7428Ac70B05A1c  # AltLayer Disburser
-  token_addresses:
-    - native
+raas_altlayer:
+  addresses:
+    - "0x83AF9DD63534BF02921c8bE11f7428Ac70B05A1c"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: redstone
-  revshare_from_addresses:
-    - 0x7B60C79860ab5DB0368751210Ff29784d3DC18bF  # Lattice Disburser
-  token_addresses:
-    - native
+redstone:
+  addresses:
+    - "0x7B60C79860ab5DB0368751210Ff29784d3DC18bF"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: swanchain
-  revshare_from_addresses:
-    - 0xe945D527De9c5121EdA9cF48e23CDF691894D4c0  # SwanChain Disburser
-  token_addresses:
-    - native
+swanchain:
+  addresses:
+    - "0xe945D527De9c5121EdA9cF48e23CDF691894D4c0"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: kroma
-  revshare_from_addresses:
-    - 0x9d89Bca142498FE047bD3E169De8eD028AFaB07F  # Lightscale Disburser
-  token_addresses:
-    - native
+kroma:
+  addresses:
+    - "0x9d89Bca142498FE047bD3E169De8eD028AFaB07F"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: world
-  revshare_from_addresses:
-    - 0xb2aa0c2c4fd6bfcbf699d4c787cd6cc0dc461a9d  # Alchemy Disburser - World
-  token_addresses:
-    - native
+world:
+  addresses:
+    - "0xb2aa0c2c4fd6bfcbf699d4c787cd6cc0dc461a9d"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: shape
-  revshare_from_addresses:
-    - 0xee1af3f99af8c5b93512fbe2a3f0dd5568ce087f  # Alchemy Disburser - Shape
-  token_addresses:
-    - native
+shape:
+  addresses:
+    - "0xee1af3f99af8c5b93512fbe2a3f0dd5568ce087f"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: soneium
-  revshare_from_addresses:
-    - 0x641af675C39E56E5611686Ae07921AFb7d5C1f39  # Soneium Disburser
-    - 0xF07b3169ffF67A8AECdBb18d9761AEeE34591112  # Soneium Disburser
-  token_addresses:
-    - native
+soneium:
+  addresses:
+    - "0x641af675C39E56E5611686Ae07921AFb7d5C1f39"
+    - "0xF07b3169ffF67A8AECdBb18d9761AEeE34591112"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: ink
-  revshare_from_addresses:
-    - 0x267be1c1d684f78cb4f6a176c4911b741e4ffdc0  # Ink Disburser
-  token_addresses:
-    - native
+ink:
+  addresses:
+    - "0x267be1c1d684f78cb4f6a176c4911b741e4ffdc0"
+  tokens:
+    - "native"
   expected_chains:
-    - ethereum
+    - "ethereum"
 
-- revshare_from_chain: unichain
-  revshare_from_addresses:
-    - 0x4300c0D3c0d3c0d3c0d3c0d3C0D3c0d3c0d30001  # Unichain Disburser
-  token_addresses:
-    - native
+unichain:
+  addresses:
+    - "0x4300c0D3c0d3c0d3c0d3c0d3c0d3C0D3c0d30001"
+  tokens:
+    - "native"
   expected_chains:
-    - unichain
+    - "unichain"
