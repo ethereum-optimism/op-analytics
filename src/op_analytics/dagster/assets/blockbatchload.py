@@ -11,6 +11,7 @@ from op_analytics.datapipeline.etl.blockbatchload.datasets import (
     CONTRACT_CREATION,
     ERC20_TRANSFERS,
     ERC721_TRANSFERS,
+    NATIVE_TRANSFERS,
 )
 
 # NOTE: It is important to schedule all of the assets below in the same dagster job.
@@ -36,4 +37,11 @@ def erc20_transfers(context: OpExecutionContext):
 def erc721_transfers(context: OpExecutionContext):
     """Load ERC-721 transfers blockbatch data to Clickhouse."""
     result = load_to_clickhouse(dataset=ERC721_TRANSFERS)
+    context.log.info(result)
+
+
+@asset
+def native_transfers(context: OpExecutionContext):
+    """Load native transfers blockbatch data to Clickhouse."""
+    result = load_to_clickhouse(dataset=NATIVE_TRANSFERS)
     context.log.info(result)
