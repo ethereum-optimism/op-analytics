@@ -109,6 +109,7 @@ def blockbatch_views_bq():
         ("refined_traces", "refined_traces_fees_v2"),
         ("token_transfers", "erc20_transfers_v1"),
         ("token_transfers", "erc721_transfers_v1"),
+        ("native_transfers", "native_transfers_v1"),
     ]
 
     for model, output in MODEL_OUTPUTS:
