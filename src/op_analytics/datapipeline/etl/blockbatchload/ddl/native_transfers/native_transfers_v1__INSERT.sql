@@ -16,5 +16,5 @@ SELECT
     `input_method_id`,
     `call_type`,
     `transfer_type`
-FROM INPUT_BLOCKBATCH('blockbatch/token_transfers/native_transfers_v1')
+FROM INPUT_BLOCKBATCH('blockbatch/native_transfers/native_transfers_v1')
 WHERE amount_lossless IS NOT NULL 
