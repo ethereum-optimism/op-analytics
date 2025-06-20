@@ -94,6 +94,7 @@ def read_token_ids_from_file(filepath: str) -> list[str]:
                     token_ids.add(tid)
     elif ext == ".csv":
         with open(filepath, newline="") as csvfile:
+            # First try to read as CSV with headers
             reader = csv.DictReader(csvfile)
             if reader.fieldnames and "token_id" in reader.fieldnames:
                 for row in reader:
@@ -103,12 +104,14 @@ def read_token_ids_from_file(filepath: str) -> list[str]:
             else:
                 # fallback: treat as single-column CSV
                 csvfile.seek(0)
-                fallback_reader = csv.reader(csvfile)
-                for row in fallback_reader:
-                    if row:  # Check if row is not empty
-                        tid = row[0].strip()
-                        if tid and tid != "token_id":
-                            token_ids.add(tid)
+                # Use a separate context to avoid type conflicts
+                with open(filepath, newline="") as fallback_file:
+                    fallback_reader = csv.reader(fallback_file)
+                    for row in fallback_reader:  # type: ignore[assignment]
+                        if row:  # Check if row is not empty
+                            tid = row[0].strip()
+                            if tid and tid != "token_id":
+                                token_ids.add(tid)
     else:
         raise ValueError(f"Unsupported file extension: {ext}")
     return list(token_ids)
