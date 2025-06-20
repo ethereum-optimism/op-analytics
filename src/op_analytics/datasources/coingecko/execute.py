@@ -103,8 +103,8 @@ def read_token_ids_from_file(filepath: str) -> list[str]:
             else:
                 # fallback: treat as single-column CSV
                 csvfile.seek(0)
-                reader = csv.reader(csvfile)
-                for row in reader:
+                fallback_reader = csv.reader(csvfile)
+                for row in fallback_reader:
                     if row:  # Check if row is not empty
                         tid = row[0].strip()
                         if tid and tid != "token_id":
@@ -161,12 +161,11 @@ def _fetch_and_write_metadata(
         Summary of the metadata operation or None if failed
     """
     try:
-        print(f"Fetching metadata for {len(token_ids)} tokens...")
+        log.info("fetching_metadata", token_count=len(token_ids))
         metadata_df = data_source.get_token_metadata(token_ids)
-        print(f"Successfully fetched metadata for {len(metadata_df)} tokens")
+        log.info("fetched_metadata", token_count=len(metadata_df))
     except Exception as e:
         log.error("failed_to_fetch_metadata", error=str(e))
-        print(f"Error fetching metadata: {e}")
         return None
 
     if not metadata_df.is_empty():
@@ -215,10 +214,10 @@ def _fetch_and_write_metadata(
         CoinGecko.TOKEN_METADATA.create_bigquery_external_table()
         CoinGecko.TOKEN_METADATA.create_bigquery_external_table_at_latest_dt()
 
-        print(f"Successfully wrote metadata for {len(metadata_df)} tokens")
+        log.info("wrote_metadata", token_count=len(metadata_df))
         return dt_summary(metadata_df)
     else:
-        print("No metadata to write")
+        log.info("no_metadata_to_write")
         return None
 
 
@@ -241,7 +240,7 @@ def execute_metadata_pull(
 
     # Get list of token IDs (from metadata, optional file, and optionally top tokens)
     token_ids = get_token_ids_from_metadata_and_file(extra_token_ids_file, include_top_tokens)
-    print(f"Fetching metadata for {len(token_ids)} tokens: {token_ids}")
+    log.info("metadata_pull_start", token_count=len(token_ids))
 
     if not token_ids:
         log.error("no_token_ids_found")
@@ -279,7 +278,7 @@ def execute_pull(
 
     # Get list of token IDs (from metadata, optional file, and optionally top tokens)
     token_ids = get_token_ids_from_metadata_and_file(extra_token_ids_file, include_top_tokens)
-    print(f"Fetching data for {len(token_ids)} tokens: {token_ids}")
+    log.info("price_pull_start", token_count=len(token_ids))
 
     if not token_ids:
         log.error("no_token_ids_found")
@@ -287,14 +286,16 @@ def execute_pull(
 
     # Fetch price data for all tokens (get_token_prices now handles multiple tokens properly)
     try:
-        print(f"Fetching price data for {len(token_ids)} tokens...")
+        log.info("fetching_price_data", token_count=len(token_ids))
         price_df = data_source.get_token_prices(token_ids, days=days)
-        print(f"Successfully fetched data for {len(price_df)} token-days")
-        print(f"Date range: {price_df['dt'].min()} to {price_df['dt'].max()}")
-        print(f"Unique dates: {price_df['dt'].n_unique()}")
+        log.info(
+            "fetched_price_data",
+            row_count=len(price_df),
+            date_range=f"{str(price_df['dt'].min())} to {str(price_df['dt'].max())}",
+            unique_dates=price_df["dt"].n_unique(),
+        )
     except Exception as e:
         log.error("failed_to_fetch_price_data", error=str(e))
-        print(f"Error fetching price data: {e}")
         return None
 
     # Schema assertions to help our future selves reading this code.
@@ -304,27 +305,26 @@ def execute_pull(
     )
 
     # Write prices
-    print("Writing price data to GCS...")
-    print(f"Original data: {len(price_df)} rows")
+    log.info("writing_price_data", original_rows=len(price_df))
 
     filtered_price_df = most_recent_dates(
         price_df, n_dates=PRICE_TABLE_LAST_N_DAYS, date_column="dt"
     )
-    print(f"After filtering to last {PRICE_TABLE_LAST_N_DAYS} days: {len(filtered_price_df)} rows")
-    print(
-        f"Filtered date range: {filtered_price_df['dt'].min()} to {filtered_price_df['dt'].max()}"
+    log.info(
+        "filtered_price_data",
+        filtered_rows=len(filtered_price_df),
+        date_range=f"{str(filtered_price_df['dt'].min())} to {str(filtered_price_df['dt'].max())}",
     )
 
     CoinGecko.DAILY_PRICES.write(
         dataframe=filtered_price_df,
         sort_by=["token_id"],
     )
-    print("Successfully wrote price data to GCS")
+    log.info("wrote_price_data")
 
     # Create BigQuery external table
-    print("Creating BigQuery external table for price data...")
     CoinGecko.DAILY_PRICES.create_bigquery_external_table()
-    print("Successfully created BigQuery external table for price data")
+    log.info("created_price_external_table")
 
     # Fetch and write metadata if requested
     metadata_summary = None
@@ -387,6 +387,6 @@ if __name__ == "__main__":
 
     if result is not None:
         if "price_df" in result and result["price_df"]:
-            print("Successfully processed price data")
+            log.info("completed_price_processing")
         if result["metadata_df"]:
-            print("Successfully processed metadata data")
+            log.info("completed_metadata_processing")
