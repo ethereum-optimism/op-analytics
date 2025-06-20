@@ -20,6 +20,7 @@ MODULE_NAMES = [
     "bqpublic",
     "chainsdaily",
     "chain_metadata",
+    "coingecko",
     "defillama",
     "dune",
     "github",
@@ -227,6 +228,12 @@ defs = Definitions(
         create_schedule_for_group(
             group="l2beat",
             cron_schedule="0 8 * * *",
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        create_schedule_for_group(
+            group="coingecko",
+            cron_schedule="30 0 * * *",  # Runs at 00:30 UTC daily
             custom_k8s_config=SMALL_POD,
         ),
         #
