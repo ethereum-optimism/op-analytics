@@ -2,7 +2,7 @@
 Execute CoinGecko price data collection.
 """
 
-from typing import List
+from typing import List, Dict, Any
 import os
 import csv
 
@@ -103,10 +103,12 @@ def read_token_ids_from_file(filepath: str) -> list[str]:
             else:
                 # fallback: treat as single-column CSV
                 csvfile.seek(0)
-                for row in csvfile:
-                    tid = row.strip()
-                    if tid and tid != "token_id":
-                        token_ids.add(tid)
+                reader = csv.reader(csvfile)
+                for row in reader:
+                    if row:  # Check if row is not empty
+                        tid = row[0].strip()
+                        if tid and tid != "token_id":
+                            token_ids.add(tid)
     else:
         raise ValueError(f"Unsupported file extension: {ext}")
     return list(token_ids)
@@ -147,7 +149,7 @@ def get_token_ids_from_metadata_and_file(
 
 def _fetch_and_write_metadata(
     token_ids: list[str], data_source: CoinGeckoDataSource
-) -> dict | None:
+) -> Dict[str, Any] | None:
     """
     Fetch and write metadata for the given token IDs.
 
@@ -200,7 +202,7 @@ def _fetch_and_write_metadata(
         # Schema assertions to help our future selves reading this code.
         raise_for_schema_mismatch(
             actual_schema=metadata_df.schema,
-            expected_schema=pl.Schema(METADATA_DF_SCHEMA),
+            expected_schema=pl.Schema(METADATA_DF_SCHEMA),  # type: ignore[arg-type]
         )
 
         # Write metadata (partitioned by dt, replaces existing data for that date)
@@ -223,7 +225,7 @@ def _fetch_and_write_metadata(
 def execute_metadata_pull(
     extra_token_ids_file: str | None = None,
     include_top_tokens: int = 0,
-):
+) -> Dict[str, Any] | None:
     """
     Execute the CoinGecko metadata pull only.
 
@@ -259,7 +261,7 @@ def execute_pull(
     extra_token_ids_file: str | None = None,
     include_top_tokens: int = 0,
     fetch_metadata: bool = False,
-):
+) -> Dict[str, Any] | None:
     """
     Execute the CoinGecko price data pull.
 
@@ -298,7 +300,7 @@ def execute_pull(
     # Schema assertions to help our future selves reading this code.
     raise_for_schema_mismatch(
         actual_schema=price_df.schema,
-        expected_schema=pl.Schema(PRICE_DF_SCHEMA),
+        expected_schema=pl.Schema(PRICE_DF_SCHEMA),  # type: ignore[arg-type]
     )
 
     # Write prices
@@ -384,6 +386,7 @@ if __name__ == "__main__":
         )
 
     if result is not None:
-        print(f"Successfully processed {len(result['price_df'])} price records")
+        if "price_df" in result and result["price_df"]:
+            print("Successfully processed price data")
         if result["metadata_df"]:
-            print(f"Successfully processed {len(result['metadata_df'])} metadata records")
+            print("Successfully processed metadata data")
