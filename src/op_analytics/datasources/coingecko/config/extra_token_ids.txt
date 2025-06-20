@@ -1,0 +1,5 @@
+ethereum
+optimism
+usd-coin
+bitcoin
+solana
