@@ -3,6 +3,7 @@ CoinGecko price data source for fetching daily token prices.
 """
 
 import time
+import json
 from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
@@ -58,7 +59,7 @@ class TokenPriceData:
         cls,
         token_data: dict,
         timestamp: int,
-        price: float,
+        price_usd: float,
         market_cap: Optional[float],
         volume: Optional[float],
     ) -> "TokenPriceData":
@@ -67,7 +68,7 @@ class TokenPriceData:
         return cls(
             token_id=token_data["id"],
             dt=date.date().isoformat(),
-            price_usd=price,
+            price_usd=price_usd,
             market_cap_usd=market_cap,
             total_volume_usd=volume,
             last_updated=datetime.now().isoformat(),
@@ -163,14 +164,14 @@ class CoinGeckoDataSource:
                             market_cap = market_caps[idx][1] if idx < len(market_caps) else None
                             volume = volumes[idx][1] if idx < len(volumes) else None
 
-                            price_data = TokenPriceData.from_api_response(
+                            price_data_obj = TokenPriceData.from_api_response(
                                 token_data={"id": token_data["id"]},
                                 timestamp=int(timestamp),
-                                price=price,
+                                price_usd=price,
                                 market_cap=market_cap,
                                 volume=volume,
                             )
-                            all_price_data.append(price_data)
+                            all_price_data.append(price_data_obj)
 
                 except requests.exceptions.HTTPError as e:
                     if e.response.status_code == 429:  # Too Many Requests
@@ -213,14 +214,14 @@ class CoinGeckoDataSource:
                         market_cap = market_caps[idx][1] if idx < len(market_caps) else None
                         volume = volumes[idx][1] if idx < len(volumes) else None
 
-                        price_data = TokenPriceData.from_api_response(
+                        price_data_obj = TokenPriceData.from_api_response(
                             token_data={"id": token_id},
                             timestamp=int(timestamp),
-                            price=price,
+                            price_usd=price,
                             market_cap=market_cap,
                             volume=volume,
                         )
-                        all_price_data.append(price_data)
+                        all_price_data.append(price_data_obj)
 
                 except requests.exceptions.HTTPError as e:
                     if e.response.status_code == 429:  # Too Many Requests
@@ -360,8 +361,8 @@ class CoinGeckoDataSource:
                         "telegram_channel_identifier", ""
                     ),
                     "subreddit_url": data.get("links", {}).get("subreddit_url", ""),
-                    "repos_url": data.get("links", {}).get("repos_url", {}),
-                    "contract_addresses": contract_addresses,
+                    "repos_url": json.dumps(data.get("links", {}).get("repos_url", {})),
+                    "contract_addresses": json.dumps(contract_addresses),
                     "last_updated": datetime.now().isoformat(),
                 }
 

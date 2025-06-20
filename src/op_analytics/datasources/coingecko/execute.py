@@ -49,8 +49,9 @@ METADATA_DF_SCHEMA = {
     "twitter_screen_name": pl.String,
     "telegram_channel_identifier": pl.String,
     "subreddit_url": pl.String,
-    "repos_url": pl.String,
+    "repos_url": pl.String,  # JSON string of platform -> repo URLs mapping
     "contract_addresses": pl.String,  # JSON string of platform -> address mapping
+    "last_updated": pl.String,
 }
 
 
@@ -144,6 +145,115 @@ def get_token_ids_from_metadata_and_file(
     return result
 
 
+def _fetch_and_write_metadata(
+    token_ids: list[str], data_source: CoinGeckoDataSource
+) -> dict | None:
+    """
+    Fetch and write metadata for the given token IDs.
+
+    Args:
+        token_ids: List of token IDs to fetch metadata for
+        data_source: CoinGecko data source instance
+
+    Returns:
+        Summary of the metadata operation or None if failed
+    """
+    try:
+        print(f"Fetching metadata for {len(token_ids)} tokens...")
+        metadata_df = data_source.get_token_metadata(token_ids)
+        print(f"Successfully fetched metadata for {len(metadata_df)} tokens")
+    except Exception as e:
+        log.error("failed_to_fetch_metadata", error=str(e))
+        print(f"Error fetching metadata: {e}")
+        return None
+
+    if not metadata_df.is_empty():
+        # Convert contract_addresses dict to JSON string for storage
+        metadata_df = metadata_df.with_columns(pl.col("contract_addresses").cast(pl.Utf8))
+
+        # Add dt partition column (following DefiLlama pattern)
+        metadata_df = metadata_df.with_columns(dt=pl.lit(now_dt()))
+
+        # Reorder columns to match schema (dt should be first)
+        metadata_df = metadata_df.select(
+            [
+                "dt",
+                "token_id",
+                "name",
+                "symbol",
+                "description",
+                "categories",
+                "homepage",
+                "blockchain_site",
+                "official_forum_url",
+                "chat_url",
+                "announcement_url",
+                "twitter_screen_name",
+                "telegram_channel_identifier",
+                "subreddit_url",
+                "repos_url",
+                "contract_addresses",
+                "last_updated",
+            ]
+        )
+
+        # Schema assertions to help our future selves reading this code.
+        raise_for_schema_mismatch(
+            actual_schema=metadata_df.schema,
+            expected_schema=pl.Schema(METADATA_DF_SCHEMA),
+        )
+
+        # Write metadata (partitioned by dt, replaces existing data for that date)
+        CoinGecko.TOKEN_METADATA.write(
+            dataframe=metadata_df,
+            sort_by=["token_id"],
+        )
+
+        # Create BigQuery external table for metadata (using default partition)
+        CoinGecko.TOKEN_METADATA.create_bigquery_external_table()
+        CoinGecko.TOKEN_METADATA.create_bigquery_external_table_at_latest_dt()
+
+        print(f"Successfully wrote metadata for {len(metadata_df)} tokens")
+        return dt_summary(metadata_df)
+    else:
+        print("No metadata to write")
+        return None
+
+
+def execute_metadata_pull(
+    extra_token_ids_file: str | None = None,
+    include_top_tokens: int = 0,
+):
+    """
+    Execute the CoinGecko metadata pull only.
+
+    Args:
+        extra_token_ids_file: Optional path to file with extra token IDs
+        include_top_tokens: Number of top tokens by market cap to include (0 for none)
+
+    Returns:
+        Summary of the metadata fetch operation
+    """
+    session = new_session()
+    data_source = CoinGeckoDataSource(session=session)
+
+    # Get list of token IDs (from metadata, optional file, and optionally top tokens)
+    token_ids = get_token_ids_from_metadata_and_file(extra_token_ids_file, include_top_tokens)
+    print(f"Fetching metadata for {len(token_ids)} tokens: {token_ids}")
+
+    if not token_ids:
+        log.error("no_token_ids_found")
+        return None
+
+    # Fetch and write metadata
+    metadata_summary = _fetch_and_write_metadata(token_ids, data_source)
+
+    # Return summary information following DefiLlama pattern
+    return {
+        "metadata_df": metadata_summary,
+    }
+
+
 def execute_pull(
     days: int = 365,
     extra_token_ids_file: str | None = None,
@@ -178,6 +288,8 @@ def execute_pull(
         print(f"Fetching price data for {len(token_ids)} tokens...")
         price_df = data_source.get_token_prices(token_ids, days=days)
         print(f"Successfully fetched data for {len(price_df)} token-days")
+        print(f"Date range: {price_df['dt'].min()} to {price_df['dt'].max()}")
+        print(f"Unique dates: {price_df['dt'].n_unique()}")
     except Exception as e:
         log.error("failed_to_fetch_price_data", error=str(e))
         print(f"Error fetching price data: {e}")
@@ -190,57 +302,37 @@ def execute_pull(
     )
 
     # Write prices
-    CoinGecko.DAILY_PRICES.write(
-        dataframe=most_recent_dates(price_df, n_dates=PRICE_TABLE_LAST_N_DAYS, date_column="dt"),
-        sort_by=["token_id"],
+    print("Writing price data to GCS...")
+    print(f"Original data: {len(price_df)} rows")
+
+    filtered_price_df = most_recent_dates(
+        price_df, n_dates=PRICE_TABLE_LAST_N_DAYS, date_column="dt"
+    )
+    print(f"After filtering to last {PRICE_TABLE_LAST_N_DAYS} days: {len(filtered_price_df)} rows")
+    print(
+        f"Filtered date range: {filtered_price_df['dt'].min()} to {filtered_price_df['dt'].max()}"
     )
 
+    CoinGecko.DAILY_PRICES.write(
+        dataframe=filtered_price_df,
+        sort_by=["token_id"],
+    )
+    print("Successfully wrote price data to GCS")
+
     # Create BigQuery external table
+    print("Creating BigQuery external table for price data...")
     CoinGecko.DAILY_PRICES.create_bigquery_external_table()
+    print("Successfully created BigQuery external table for price data")
 
     # Fetch and write metadata if requested
+    metadata_summary = None
     if fetch_metadata:
-        try:
-            print(f"Fetching metadata for {len(token_ids)} tokens...")
-            metadata_df = data_source.get_token_metadata(token_ids)
-
-            if not metadata_df.is_empty():
-                # Convert contract_addresses dict to JSON string for storage
-                metadata_df = metadata_df.with_columns(pl.col("contract_addresses").cast(pl.Utf8))
-
-                # Add dt partition column (following DefiLlama pattern)
-                metadata_df = metadata_df.with_columns(dt=pl.lit(now_dt()))
-
-                # Schema assertions to help our future selves reading this code.
-                raise_for_schema_mismatch(
-                    actual_schema=metadata_df.schema,
-                    expected_schema=pl.Schema(METADATA_DF_SCHEMA),
-                )
-
-                # Write metadata (partitioned by dt, replaces existing data for that date)
-                CoinGecko.TOKEN_METADATA.write(
-                    dataframe=metadata_df,
-                    sort_by=["token_id"],
-                )
-
-                # Create BigQuery external table for metadata
-                CoinGecko.TOKEN_METADATA.create_bigquery_external_table()
-
-                print(f"Successfully wrote metadata for {len(metadata_df)} tokens")
-            else:
-                print("No metadata to write")
-
-        except Exception as e:
-            log.error("failed_to_fetch_metadata", error=str(e))
-            print(f"Error fetching metadata: {e}")
-            # Continue without metadata if there's an error
+        metadata_summary = _fetch_and_write_metadata(token_ids, data_source)
 
     # Return summary information following DefiLlama pattern
     return {
         "price_df": dt_summary(price_df),
-        "metadata_df": dt_summary(metadata_df)
-        if fetch_metadata and "metadata_df" in locals()
-        else None,
+        "metadata_df": metadata_summary,
     }
 
 
@@ -271,14 +363,25 @@ if __name__ == "__main__":
         action="store_true",
         help="Whether to fetch and write token metadata",
     )
+    parser.add_argument(
+        "--metadata-only",
+        action="store_true",
+        help="Fetch and write only metadata (no price data)",
+    )
     args = parser.parse_args()
 
-    result = execute_pull(
-        days=args.days,
-        extra_token_ids_file=args.extra_token_ids_file,
-        include_top_tokens=args.include_top_tokens,
-        fetch_metadata=args.fetch_metadata,
-    )
+    if args.metadata_only:
+        result = execute_metadata_pull(
+            extra_token_ids_file=args.extra_token_ids_file,
+            include_top_tokens=args.include_top_tokens,
+        )
+    else:
+        result = execute_pull(
+            days=args.days,
+            extra_token_ids_file=args.extra_token_ids_file,
+            include_top_tokens=args.include_top_tokens,
+            fetch_metadata=args.fetch_metadata,
+        )
 
     if result is not None:
         print(f"Successfully processed {len(result['price_df'])} price records")

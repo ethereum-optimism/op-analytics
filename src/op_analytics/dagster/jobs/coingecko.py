@@ -14,14 +14,14 @@ def collect_coingecko_prices():
     Collect daily price data from CoinGecko.
     """
     # Use the same parameters as your current setup
-    # Fetch 365 days of data and include extra token IDs from config and top 100 tokens by market cap
+    # Fetch 180 days of data and include extra token IDs from config and top 25 tokens by market cap
     extra_token_ids_file = repo_path(
         "src/op_analytics/datasources/coingecko/config/extra_token_ids.txt"
     )
     return execute_pull(
-        days=365,
+        days=180,
         extra_token_ids_file=extra_token_ids_file,
-        include_top_tokens=100,
+        include_top_tokens=25,
         fetch_metadata=True,
     )
 
