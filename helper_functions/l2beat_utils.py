@@ -263,23 +263,58 @@ def get_l2beat_metadata():
         # Function to recursively get files from folders
         @ru.retry_with_backoff(max_retries=3, initial_delay=1, backoff_factor=2)
         def get_files_from_folder(folder_url):
-            response = r.get(folder_url, headers=HEADERS)
-            response.raise_for_status()
-            
-            folder_contents = response.json()
-            if not isinstance(folder_contents, list):
-                raise ValueError(f"Unexpected response format from {folder_url}")
-            
-            for item in folder_contents:
-                if item.get("type") == "dir":
-                    # Recursively get files from subfolder
-                    get_files_from_folder(item["url"])
-                elif item.get("type") == "file" and item.get("name", "").endswith(".ts"):
-                    if item.get("name") not in ["index.ts", "index.test.ts"]:
-                        all_files.append(item)
+            try:
+                response = r.get(folder_url, headers=HEADERS)
+                response.raise_for_status()
+                
+                folder_contents = response.json()
+                if not isinstance(folder_contents, list):
+                    raise ValueError(f"Unexpected response format from {folder_url}")
+                
+                for item in folder_contents:
+                    if item.get("type") == "dir":
+                        # Recursively get files from subfolder
+                        get_files_from_folder(item["url"])
+                    elif item.get("type") == "file" and item.get("name", "").endswith(".ts"):
+                        if item.get("name") not in ["index.ts", "index.test.ts"]:
+                            all_files.append(item)
+            except Exception as e:
+                print(f"Failed to fetch metadata from GitHub API: {e}")
+                print("This is likely due to authentication issues or L2Beat repository changes.")
+                print("Returning minimal metadata DataFrame.")
+                # Return early to avoid further processing
+                return
 
         # Get all files from main folder and subfolders
         get_files_from_folder(link_url)
+        
+        # If no files were found (due to API failure), return a minimal DataFrame
+        if not all_files:
+            print("No metadata files found. Returning minimal DataFrame with basic chain information.")
+            # Create a minimal DataFrame with basic chain information
+            minimal_data = {
+                "layer": ["L2"],
+                "slug": ["unknown"],
+                "file_name": ["unknown"],
+                "chainId": [None],
+                "name": ["Unknown Chain"],
+                "explorerUrl": [None],
+                "rpcUrl": [None],
+                "category": [None],
+                "provider": [None],
+                "hostChain": [None],
+                "da_provider_name": [None],
+                "badges": [None],
+                "is_upcoming": [False],
+                "is_archived": [False],
+                "is_current_chain": [True],
+                "websites": [None],
+                "documentation": [None],
+                "repositories": [None],
+            }
+            df = pd.DataFrame(minimal_data)
+            df["provider_entity"] = df["provider"]
+            return df
 
         # Initialize a list to collect data dictionaries before appending to DataFrame
         data_list = []

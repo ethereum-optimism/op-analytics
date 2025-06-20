@@ -53,23 +53,23 @@ try:
     gtp_api = gtp.get_growthepie_api_data()
     gtp_meta_api = gtp.get_growthepie_api_meta()
     gtp_api = gtp_api.rename(columns={"date": "dt"})
+    
+    # update datatype for bq uploads
+    if "enable_contracts" in gtp_meta_api:
+        gtp_meta_api["enable_contracts"] = gtp_meta_api["enable_contracts"].astype(bool)
+
+    if "colors" in gtp_meta_api:
+        gtp_meta_api["colors"] = gtp_meta_api["colors"].astype(str)
+        
 except Exception as e:
     print(f"An error occurred: {e}")
     print(f"Exception type: {type(e).__name__}")
     import traceback
     print("Traceback:")
     print(traceback.format_exc())
-
-
-# In[5]:
-
-
-# update datatype for bq uploads
-if "enable_contracts" in gtp_meta_api:
-    gtp_meta_api["enable_contracts"] = gtp_meta_api["enable_contracts"].astype(bool)
-
-if "colors" in gtp_meta_api:
-    gtp_meta_api["colors"] = gtp_meta_api["colors"].astype(str)
+    # Initialize empty DataFrames if API calls fail
+    gtp_api = pd.DataFrame()
+    gtp_meta_api = pd.DataFrame()
 
 
 # In[6]:
@@ -77,7 +77,7 @@ if "colors" in gtp_meta_api:
 
 print("getting assets onchain - l2beat")
 # l2beat_aoc = ltwo.get_daily_aoc_by_token()
-# l2beat_aoc = l2beat_aoc.rename(columns={"project": "chain", "date": "dt"})
+# l2beat_aoc = ltwo.aoc.rename(columns={"project": "chain", "date": "dt"})
 time.sleep(3)  # rate limits
 
 
@@ -141,21 +141,26 @@ for col in boolean_columns:
 
 print("getting data - growthepie")
 try:
-    combined_gtp_df = gtp_api.merge(
-        gtp_meta_api[["origin_key", "chain_name", "evm_chain_id"]],
-        on="origin_key",
-        how="left",
-    )
-    combined_gtp_df["dt"] = pd.to_datetime(combined_gtp_df["dt"], errors="coerce")
+    if not gtp_api.empty and not gtp_meta_api.empty:
+        combined_gtp_df = gtp_api.merge(
+            gtp_meta_api[["origin_key", "chain_name", "evm_chain_id"]],
+            on="origin_key",
+            how="left",
+        )
+        combined_gtp_df["dt"] = pd.to_datetime(combined_gtp_df["dt"], errors="coerce")
 
-    combined_gtp_df = combined_gtp_df.drop(columns=("index"))
-    # combined_gtp_df.sample(5)
+        combined_gtp_df = combined_gtp_df.drop(columns=("index"))
+        # combined_gtp_df.sample(5)
+    else:
+        print("GrowThePie API data is empty, skipping merge")
+        combined_gtp_df = pd.DataFrame()
 except Exception as e:
     print(f"An error occurred: {e}")
     print(f"Exception type: {type(e).__name__}")
     import traceback
     print("Traceback:")
     print(traceback.format_exc())
+    combined_gtp_df = pd.DataFrame()
 
 
 # In[12]:
@@ -164,17 +169,18 @@ except Exception as e:
 # Check Columns
 # Assuming combined_gtp_df is your DataFrame
 try:
-    column_names = combined_gtp_df.columns
+    if not combined_gtp_df.empty:
+        column_names = combined_gtp_df.columns
 
-    for col in column_names:
-        if col.endswith("_usd"):
-            # Construct the new column name by replacing '_usd' with '_eth'
-            new_col_name = col.replace("_usd", "_eth")
+        for col in column_names:
+            if col.endswith("_usd"):
+                # Construct the new column name by replacing '_usd' with '_eth'
+                new_col_name = col.replace("_usd", "_eth")
 
-            # Check if the new column name exists in the DataFrame
-            if new_col_name not in combined_gtp_df.columns:
-                # If it doesn't exist, create the column and fill it with nan values
-                combined_gtp_df[new_col_name] = np.nan
+                # Check if the new column name exists in the DataFrame
+                if new_col_name not in combined_gtp_df.columns:
+                    # If it doesn't exist, create the column and fill it with nan values
+                    combined_gtp_df[new_col_name] = np.nan
 except Exception as e:
     print(f"An error occurred: {e}")
     print(f"Exception type: {type(e).__name__}")
@@ -187,7 +193,7 @@ except Exception as e:
 
 
 # Add Metadata
-opstack_metadata = opstack_metadata = pd.read_csv(
+opstack_metadata = pd.read_csv(
     "../op_chains_tracking/outputs/chain_metadata.csv"
 )
 # combined_l2b_df["l2beat_slug"] = combined_l2b_df["chain"]
@@ -329,10 +335,12 @@ folder = "outputs/"
 bqu.write_df_to_bq_table(l2beat_meta, "l2beat_l2_metadata")
 # time.sleep(1)
 try:
-    bqu.write_df_to_bq_table(combined_gtp_df, "daily_growthepie_l2_activity")
-    time.sleep(1)
-    bqu.write_df_to_bq_table(gtp_meta_api, "growthepie_l2_metadata")
-    time.sleep(1)
+    if not combined_gtp_df.empty:
+        bqu.write_df_to_bq_table(combined_gtp_df, "daily_growthepie_l2_activity")
+        time.sleep(1)
+    if not gtp_meta_api.empty:
+        bqu.write_df_to_bq_table(gtp_meta_api, "growthepie_l2_metadata")
+        time.sleep(1)
 # bqu.write_df_to_bq_table(l2b_enriched_df, "daily_l2beat_l2_activity")
 # time.sleep(1)
 # bqu.write_df_to_bq_table(l2b_monthly_df, "monthly_l2beat_l2_activity")
@@ -357,12 +365,14 @@ except Exception as e:
 
 # Post to Dune API
 try:
-    d.write_dune_api_from_pandas(
-        combined_gtp_df, "growthepie_l2_activity", "L2 Usage Activity from GrowThePie"
-    )
-    d.write_dune_api_from_pandas(
-        gtp_meta_api, "growthepie_l2_metadata", "L2 Metadata from GrowThePie"
-    )
+    if not combined_gtp_df.empty:
+        d.write_dune_api_from_pandas(
+            combined_gtp_df, "growthepie_l2_activity", "L2 Usage Activity from GrowThePie"
+        )
+    if not gtp_meta_api.empty:
+        d.write_dune_api_from_pandas(
+            gtp_meta_api, "growthepie_l2_metadata", "L2 Metadata from GrowThePie"
+        )
 except Exception as e:
     print(f"An error occurred: {e}")
     print(f"Exception type: {type(e).__name__}")
