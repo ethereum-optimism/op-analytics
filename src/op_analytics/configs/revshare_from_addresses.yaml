@@ -1,0 +1,145 @@
+# Canonical list of revshare from addresses.
+# Maintained in version control for auditability and external reference.
+# To update, edit this file and re-run the loader script.
+base:
+  addresses:
+    - "0x09C7bAD99688a55a2e83644BFAed09e62bDcCcBA"
+    - "0x45969D00739d518f0Dde41920B67cE30395135A0"
+  tokens:
+    - "native"
+  expected_chains:
+    - "base"
+  end_date: null
+  chain_id: 8453
+zora:
+  addresses:
+    - "0xe900b3Edc1BA0430CFa9a204A1027B90825ac951"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: null
+  chain_id: 7777777
+op:
+  addresses:
+    - "0x99c9fc46f92e8a1c0dec1b1747d010903e884be1"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: null
+  chain_id: 10
+mode:
+  addresses:
+    - "0xed4811010a86f7c39134fbc20206d906ad1176b6"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: null
+  chain_id: 34443
+raas_conduit:
+  addresses:
+    - "0x13f37e6b638ca83e7090bb3722b3ae04bf884019"
+    - "0x4a4962275DF8C60a80d3a25faEc5AA7De116A746"
+    - "0x09315fc454919a37d02d320272fc23a0653f67f9"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: null
+  chain_id: null
+lyra:
+  addresses:
+    - "0x793e01dCf6F9759Bf26dd7869b03129e64217537"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: null
+  chain_id: 957
+raas_gelato:
+  addresses:
+    - "0xBeA2Bc852a160B8547273660E22F4F08C2fa9Bbb"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: null
+  chain_id: null
+raas_altlayer:
+  addresses:
+    - "0x83AF9DD63534BF02921c8bE11f7428Ac70B05A1c"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: null
+  chain_id: null
+redstone:
+  addresses:
+    - "0x7B60C79860ab5DB0368751210Ff29784d3DC18bF"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: null
+  chain_id: 690
+swanchain:
+  addresses:
+    - "0xe945D527De9c5121EdA9cF48e23CDF691894D4c0"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: null
+  chain_id: 254
+kroma:
+  addresses:
+    - "0x9d89Bca142498FE047bD3E169De8eD028AFaB07F"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: 255
+world:
+  addresses:
+    - "0xb2aa0c2c4fd6bfcbf699d4c787cd6cc0dc461a9d"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: 480
+shape:
+  addresses:
+    - "0xee1af3f99af8c5b93512fbe2a3f0dd5568ce087f"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: 360
+soneium:
+  addresses:
+    - "0x641af675C39E56E5611686Ae07921AFb7d5C1f39"
+    - "0xF07b3169ffF67A8AECdBb18d9761AEeE34591112"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: 1868
+ink:
+  addresses:
+    - "0x267be1c1d684f78cb4f6a176c4911b741e4ffdc0"
+  tokens:
+    - "native"
+  expected_chains:
+    - "ethereum"
+  end_date: 57073
+unichain:
+  addresses:
+    - "0x4300c0D3c0d3c0d3c0d3c0d3c0d3C0D3c0d30001"
+  tokens:
+    - "native"
+  expected_chains:
+    - "unichain"
+  end_date: 130 

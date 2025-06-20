@@ -13,7 +13,7 @@ class TestRevshareTransfersConfig(unittest.TestCase):
     def setUp(self):
         """Set up test paths."""
         repo_root = Path(__file__).resolve().parents[5]
-        self.config_dir = repo_root / "src/op_analytics/datapipeline/models/config"
+        self.config_dir = repo_root / "src/op_analytics/configs"
         self.sql_dir = (
             repo_root / "src/op_analytics/datapipeline/etl/blockbatchload/ddl/revshare_transfers"
         )
@@ -77,12 +77,43 @@ class TestRevshareTransfersConfig(unittest.TestCase):
         with open(insert_sql, "r") as f:
             content = f.read()
 
-        # Check for key components
-        self.assertIn("WITH from_addresses AS (", content)
-        self.assertIn("to_addresses AS (", content)
+        # Check for key components in the new simplified SQL
         self.assertIn("-- Native transfers", content)
         self.assertIn("-- ERC20 transfers", content)
-        self.assertIn("hasAny(f.revshare_from_addresses, [t.from_address])", content)
+        self.assertIn("revshare_from_addresses AS f", content)
+        self.assertIn("revshare_to_addresses AS ta", content)
+        self.assertIn("hasAny(f.tokens, [lower(t.contract_address)])", content)
+
+    def test_no_duplicate_addresses(self):
+        """Test that there are no duplicate addresses (case-insensitive) in from/to YAML configs."""
+        # Check from_addresses
+        from_path = self.config_dir / "revshare_from_addresses.yaml"
+        with open(from_path, "r") as f:
+            from_config = yaml.safe_load(f)
+        all_from = []
+        for chain_config in from_config.values():
+            all_from.extend([str(addr).lower() for addr in chain_config["addresses"]])
+        from_dupes = set([a for a in all_from if all_from.count(a) > 1])
+        self.assertFalse(from_dupes, f"Duplicate addresses in from_addresses: {from_dupes}")
+
+        # Check to_addresses
+        to_path = self.config_dir / "revshare_to_addresses.yaml"
+        with open(to_path, "r") as f:
+            to_config = yaml.safe_load(f)
+        all_to = [str(addr).lower() for addr in to_config.keys()]
+        to_dupes = set([a for a in all_to if all_to.count(a) > 1])
+        self.assertFalse(to_dupes, f"Duplicate addresses in to_addresses: {to_dupes}")
+
+    def test_no_duplicate_tokens(self):
+        """Test that there are no duplicate tokens within each address configuration."""
+        from_path = self.config_dir / "revshare_from_addresses.yaml"
+        with open(from_path, "r") as f:
+            from_config = yaml.safe_load(f)
+
+        for chain_name, chain_config in from_config.items():
+            tokens = [str(token).lower() for token in chain_config["tokens"]]
+            token_dupes = set([t for t in tokens if tokens.count(t) > 1])
+            self.assertFalse(token_dupes, f"Duplicate tokens in {chain_name}: {token_dupes}")
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ def load_config(config_name: str) -> dict:
     """Load configuration from YAML file."""
     config_path = (
         Path(__file__).parent.parent.parent.parent.parent.parent.parent.parent.parent
-        / "src/op_analytics/datapipeline/models/config"
+        / "src/op_analytics/configs"
         / f"{config_name}.yaml"
     )
     with open(config_path, "r") as f:

@@ -15,6 +15,11 @@ from op_analytics.datapipeline.etl.blockbatchload.datasets import (
     REVSHARE_TRANSFERS,
 )
 
+from op_analytics.datapipeline.etl.blockbatchload.yaml_loaders import (
+    load_revshare_from_addresses_to_clickhouse,
+    load_revshare_to_addresses_to_clickhouse,
+)
+
 # NOTE: It is important to schedule all of the assets below in the same dagster job.
 # This will ensure that they run in series, which is preferred so that we don't
 # overload the ClickHouse database.
@@ -49,6 +54,20 @@ def native_transfers(context: OpExecutionContext):
 
 
 @asset
+def revshare_from_addresses(context: OpExecutionContext):
+    """Load revshare from addresses YAML to Clickhouse."""
+    load_revshare_from_addresses_to_clickhouse()
+    context.log.info("Loaded revshare_from_addresses to ClickHouse.")
+
+
+@asset
+def revshare_to_addresses(context: OpExecutionContext):
+    """Load revshare to addresses YAML to Clickhouse."""
+    load_revshare_to_addresses_to_clickhouse()
+    context.log.info("Loaded revshare_to_addresses to ClickHouse.")
+
+
+@asset(deps=[revshare_from_addresses, revshare_to_addresses])
 def revshare_transfers(context: OpExecutionContext):
     """Load revshare transfers blockbatch data to Clickhouse."""
     result = load_to_clickhouse(dataset=REVSHARE_TRANSFERS)
