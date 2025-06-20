@@ -266,5 +266,14 @@ defs = Definitions(
             cron_schedule="7 4,8,14,20 * * *",
             custom_k8s_config=SMALL_POD,
         ),
+        #
+        create_schedule_for_selection(
+            job_name="transforms_systemconfig",
+            selection=AssetSelection.assets(
+                ["transforms", "systemconfig"],
+            ),
+            cron_schedule="7 1,13 * * *",
+            custom_k8s_config=SMALL_POD,
+        ),
     ],
 )
