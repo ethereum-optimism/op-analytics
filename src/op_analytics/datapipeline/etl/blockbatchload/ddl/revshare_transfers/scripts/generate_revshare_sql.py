@@ -16,7 +16,7 @@ from pathlib import Path
 def load_config(config_name: str) -> dict:
     """Load configuration from YAML file."""
     config_path = (
-        Path(__file__).parent.parent
+        Path(__file__).parent.parent.parent.parent.parent.parent.parent.parent.parent
         / "src/op_analytics/datapipeline/models/config"
         / f"{config_name}.yaml"
     )
@@ -75,10 +75,7 @@ def generate_sql():
     to_addresses = load_config("revshare_to_addresses")
 
     # Read the template SQL (everything after the CTEs)
-    template_path = (
-        Path(__file__).parent.parent
-        / "src/op_analytics/datapipeline/etl/blockbatchload/ddl/revshare_transfers/revshare_transfers_v1__INSERT.sql"
-    )
+    template_path = Path(__file__).parent.parent / "revshare_transfers_v1__INSERT.sql"
 
     with open(template_path, "r") as f:
         content = f.read()
@@ -104,10 +101,7 @@ def generate_sql():
     new_sql.append("\n".join(lines[main_query_start:]))
 
     # Write the new SQL file
-    output_path = (
-        Path(__file__).parent.parent
-        / "src/op_analytics/datapipeline/etl/blockbatchload/ddl/revshare_transfers/revshare_transfers_v1__INSERT.sql"
-    )
+    output_path = Path(__file__).parent.parent / "revshare_transfers_v1__INSERT.sql"
 
     with open(output_path, "w") as f:
         f.write("\n".join(new_sql))

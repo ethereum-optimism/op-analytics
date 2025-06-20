@@ -26,6 +26,7 @@ This approach allows you to:
 
 - `revshare_transfers_v1__CREATE.sql` - Table creation DDL
 - `revshare_transfers_v1__INSERT.sql` - Generated INSERT SQL (do not edit manually)
+- `scripts/generate_revshare_sql.py` - Script to generate SQL from YAML configs
 - `README.md` - This documentation
 
 ## Configuration Format
