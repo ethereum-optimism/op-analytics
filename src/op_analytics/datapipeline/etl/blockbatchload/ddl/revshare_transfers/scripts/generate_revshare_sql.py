@@ -74,13 +74,11 @@ def generate_sql():
     from_addresses = load_config("revshare_from_addresses")
     to_addresses = load_config("revshare_to_addresses")
 
-    # Read the template SQL (everything after the CTEs)
     template_path = Path(__file__).parent.parent / "revshare_transfers_v1__INSERT.sql"
 
     with open(template_path, "r") as f:
         content = f.read()
 
-    # Find where the CTEs end and the main query begins
     lines = content.split("\n")
     main_query_start = None
 
@@ -92,7 +90,6 @@ def generate_sql():
     if main_query_start is None:
         raise ValueError("Could not find '-- Native transfers' marker in SQL file")
 
-    # Generate new SQL
     new_sql = []
     new_sql.append(generate_from_addresses_sql(from_addresses))
     new_sql.append("")
@@ -100,7 +97,6 @@ def generate_sql():
     new_sql.append("")
     new_sql.append("\n".join(lines[main_query_start:]))
 
-    # Write the new SQL file
     output_path = Path(__file__).parent.parent / "revshare_transfers_v1__INSERT.sql"
 
     with open(output_path, "w") as f:
