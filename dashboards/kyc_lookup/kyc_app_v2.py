@@ -1193,32 +1193,63 @@ def main():
     status_indicator.info("✅ Secrets loaded.")
 
     # --- Load Data (MODIFIED: Uses Session State for Persona) ---
-    def load_all_data(persona_key, tf_key, gh_token, debug_enabled, status_indicator_ref):
+    @st.cache_data(ttl=CACHE_TTL_SECONDS, show_spinner=False)
+    def load_cached_data(persona_key, tf_key, gh_token, debug_enabled):
+        """
+        Cached wrapper for loading external data sources (Typeform, GitHub).
+        Persona data is handled separately via session state.
+        """
+        data = {}
+
+        # Typeform data
+        typeform_result = fetch_typeform_data(tf_key, TYPEFORM_FORM_ID)
+        data["typeform_raw"] = typeform_result if typeform_result is not None else []
+
+        # GitHub CSV data - explicitly check for None to avoid DataFrame boolean ambiguity
+        contributors_result = fetch_github_csv(
+            gh_token, GITHUB_OWNER, GITHUB_REPO, CONTRIBUTORS_PATH
+        )
+        data["contributors_legacy"] = (
+            contributors_result if contributors_result is not None else pd.DataFrame()
+        )
+
+        projects_result = fetch_github_csv(gh_token, GITHUB_OWNER, GITHUB_REPO, PROJECTS_PATH)
+        data["projects_legacy"] = projects_result if projects_result is not None else pd.DataFrame()
+
+        persons_result = fetch_github_csv(gh_token, GITHUB_OWNER, GITHUB_REPO, PERSONS_LEGACY_PATH)
+        data["persons_legacy"] = persons_result if persons_result is not None else pd.DataFrame()
+
+        businesses_result = fetch_github_csv(
+            gh_token, GITHUB_OWNER, GITHUB_REPO, BUSINESSES_LEGACY_PATH
+        )
+        data["businesses_legacy"] = (
+            businesses_result if businesses_result is not None else pd.DataFrame()
+        )
+
+        return data
+
+    def load_all_data(persona_key, tf_key, gh_token, debug_enabled):
         """
         Loads all data sources. Fetches Persona data only if not already in session state.
-        Updates the status indicator.
+        Uses cached function for external data to avoid repeated API calls during searches.
         """
         data = {}
         fetch_summary = []
         overall_success = True
 
+        # Use the status indicator from session state
+        status_ref = st.session_state.status_indicator
+
         # Check if Persona data is already loaded in this session
         if st.session_state.get(SESSION_KEY_DATA_LOADED, False):
-            status_indicator_ref.info("⏳ Loading Persona data from session...")
+            # Load from session state silently (no status updates to avoid triggering during searches)
             data[SESSION_KEY_PERSONA_INQUIRIES] = st.session_state.get(
                 SESSION_KEY_PERSONA_INQUIRIES, []
             )
             data[SESSION_KEY_PERSONA_CASES] = st.session_state.get(SESSION_KEY_PERSONA_CASES, [])
-            fetch_summary.append(
-                f"✅ Persona Inquiries: {len(data[SESSION_KEY_PERSONA_INQUIRIES])} records (from session)"
-            )
-            fetch_summary.append(
-                f"✅ Persona Cases: {len(data[SESSION_KEY_PERSONA_CASES])} records (from session)"
-            )
-            status_indicator_ref.info("✅ Persona data loaded from session.")
         else:
             # --- Initial Persona Fetching (Not Cached, with UI updates inside) ---
-            status_indicator_ref.info("⏳ Performing initial Persona data fetch...")
+            status_ref.info("⏳ Performing initial Persona data fetch...")
             persona_actions = [
                 {
                     "key": SESSION_KEY_PERSONA_INQUIRIES,
@@ -1230,7 +1261,7 @@ def main():
             persona_load_success = True
             for action in persona_actions:
                 result = fetch_persona_data(
-                    persona_key, action["endpoint"], status_indicator_ref, debug_enabled
+                    persona_key, action["endpoint"], status_ref, debug_enabled
                 )
                 if result is None:
                     fetch_summary.append(f"❌ {action['label']}: Failed")
@@ -1247,79 +1278,23 @@ def main():
             # Set the loaded flag only if both Persona fetches were successful
             if persona_load_success:
                 st.session_state[SESSION_KEY_DATA_LOADED] = True
-                status_indicator_ref.info(
-                    "✅ Initial Persona fetch complete and stored in session."
-                )
+                status_ref.info("✅ Initial Persona fetch complete and stored in session.")
             else:
-                status_indicator_ref.error(
-                    "❌ Initial Persona fetch failed. Data may be incomplete."
-                )
+                status_ref.error("❌ Initial Persona fetch failed. Data may be incomplete.")
 
-        # --- Typeform & GitHub Fetching (Always use cache) ---
-        cached_fetch_actions = [
-            {
-                "key": "typeform_raw",
-                "type": "Typeform",
-                "args": [tf_key, TYPEFORM_FORM_ID],
-                "fetch_func": fetch_typeform_data,
-                "label": "Typeform Responses",
-            },
-            {
-                "key": "contributors_legacy",
-                "type": "GitHub",
-                "args": [gh_token, GITHUB_OWNER, GITHUB_REPO, CONTRIBUTORS_PATH],
-                "fetch_func": fetch_github_csv,
-                "label": "Legacy Contributors",
-            },
-            {
-                "key": "projects_legacy",
-                "type": "GitHub",
-                "args": [gh_token, GITHUB_OWNER, GITHUB_REPO, PROJECTS_PATH],
-                "fetch_func": fetch_github_csv,
-                "label": "Legacy Projects",
-            },
-            {
-                "key": "persons_legacy",
-                "type": "GitHub",
-                "args": [gh_token, GITHUB_OWNER, GITHUB_REPO, PERSONS_LEGACY_PATH],
-                "fetch_func": fetch_github_csv,
-                "label": "Legacy Persons",
-            },
-            {
-                "key": "businesses_legacy",
-                "type": "GitHub",
-                "args": [gh_token, GITHUB_OWNER, GITHUB_REPO, BUSINESSES_LEGACY_PATH],
-                "fetch_func": fetch_github_csv,
-                "label": "Legacy Businesses",
-            },
-        ]
+                # --- Load cached external data ---
+        is_initial_load = not st.session_state.get(SESSION_KEY_DATA_LOADED, False)
 
-        for action in cached_fetch_actions:
-            label = action["label"]
-            status_indicator_ref.info(f"⏳ Fetching {label} (cached)...")
-            result = action["fetch_func"](*action["args"])  # Call cached fetch function
+        if is_initial_load:
+            status_ref.info("⏳ Loading external data sources (cached)...")
 
-            if result is None:  # Critical fetch error
-                fetch_summary.append(f"❌ {label}: Failed")
-                data[action["key"]] = [] if action["type"] == "Typeform" else pd.DataFrame()
-                overall_success = False
-            else:  # Success (potentially empty data)
-                count = len(result)
-                item_type = "records" if isinstance(result, list) else "rows"
-                fetch_summary.append(f"✅ {label}: {count} {item_type}")
-                data[action["key"]] = result
+        # Load all external data in one cached call
+        cached_data = load_cached_data(persona_key, tf_key, gh_token, debug_enabled)
+        data.update(cached_data)
 
-        # Display final summary status
-        summary_message = "\n".join(fetch_summary)
-        status_indicator_ref.markdown(
-            f"**Data Load Status:**\n```\n{summary_message}\n```"
-        )  # Use markdown for better formatting
-
-        # Add processing message
-        if overall_success:
-            status_indicator_ref.info("⚙️ Processing data...")
-        else:
-            status_indicator_ref.warning("⚠️ Processing potentially incomplete data...")
+        # Display summary only on initial load
+        if is_initial_load:
+            status_ref.success("✅ All data sources loaded successfully.")
 
         # Rename keys for consistency before returning (map session keys back)
         data_processed_keys = data.copy()
@@ -1336,7 +1311,6 @@ def main():
         typeform_key,
         github_token,
         debug_enabled=debug_mode_enabled,
-        status_indicator_ref=status_indicator,
     )
 
     # --- Process Data ---
@@ -1608,8 +1582,12 @@ def main():
     # Call the processing function (result will be cached)
     processed_data = process_and_consolidate_data(loaded_data, typeform_num_controllers_field_id)
 
-    # Final status update after processing is complete
-    status_indicator.success("✅ Data loaded and processed. Ready.")
+    # Final status update after processing is complete (only on initial load)
+    if not st.session_state.get(SESSION_KEY_DATA_LOADED, False) or st.session_state.get(
+        "show_final_status", True
+    ):
+        status_indicator.success("✅ Data loaded and processed. Ready.")
+        st.session_state["show_final_status"] = False  # Prevent showing again during searches
 
     # Extract final DataFrames for display
     all_persons_df = processed_data.get("all_persons_df", pd.DataFrame())
@@ -1670,21 +1648,12 @@ def main():
         help="Select the type of entity you want to search for.",
     )
 
-    # Use on_change with a callback to handle search on Enter/blur
-    def trigger_search():
-        # We might want to store the search term in session state here
-        # if we need it to persist across reruns independent of the widget state
-        st.session_state.current_search_term = st.session_state.search_term_widget_key
-        pass  # Just trigger rerun
-
-    search_term_input = st.sidebar.text_input(
+    # Simple search input without triggering reruns
+    search_term_to_use = st.sidebar.text_input(
         "Enter Search Term",
-        key="search_term_widget_key",  # Use a distinct key for the widget
-        help="Enter Email, Name, L2 Address, or Grant ID. Search runs on Enter/blur.",
-        on_change=trigger_search,  # Trigger rerun when input changes
-    )
-    # Use the value from the widget's session state key for the actual search
-    search_term_to_use = st.session_state.get("search_term_widget_key", "").strip()
+        key="search_term_widget_key",
+        help="Enter Email, Name, L2 Address, or Grant ID. Search updates automatically.",
+    ).strip()
 
     # --- Clear Cache Button ---
     if st.sidebar.button(
@@ -1697,6 +1666,7 @@ def main():
             SESSION_KEY_PERSONA_CASES,
             SESSION_KEY_DATA_LOADED,
             SESSION_KEY_APPLIED_FILTERS,
+            "show_final_status",
         ]
         for key in keys_to_clear:
             if key in st.session_state:
