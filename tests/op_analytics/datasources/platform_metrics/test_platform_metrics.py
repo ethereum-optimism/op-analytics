@@ -30,7 +30,7 @@ def test_execute_pull():
         mock_dt_summary.side_effect = lambda df: f"summary_of_{df}"
 
         # Import and call the function under test
-        from op_analytics.datasources.platform_metrics.execute import execute_pull
+        from op_analytics.datasources.platformmetrics.execute import execute_pull
 
         result = execute_pull()
 

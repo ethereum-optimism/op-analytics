@@ -6,8 +6,8 @@ from op_analytics.coreutils.bigquery.write import (
 )
 from op_analytics.coreutils.logger import structlog
 
-from op_analytics.datasources.platform_metrics.pg_daily_pull import PostgresDailyPull
-from op_analytics.datasources.platform_metrics.prometheus_daily_pull import PrometheusDailyPull
+from op_analytics.datasources.platformmetrics.pg_daily_pull import PostgresDailyPull
+from op_analytics.datasources.platformmetrics.prometheus_daily_pull import PrometheusDailyPull
 
 log = structlog.get_logger()
 
