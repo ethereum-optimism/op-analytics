@@ -1,0 +1,36 @@
+# Canonical list of revshare to addresses.
+# Maintained in version control for auditability and external reference.
+# To update, edit this file and re-run the loader script.
+0x9c3631dDE5c8316bE5B7554B0CcD2631C15a9A05:
+  description: OP Receiver - Base
+  end_date: null
+  expected_chains:
+    - base
+    - ethereum
+0xa3d596eafab6b13ab18d40fae1a962700c84adea:
+  description: OP Receiver
+  end_date: null
+  expected_chains:
+    - ethereum
+0x391716d440C151C42cdf1C95C1d83A5427Bca52C:
+  description: OP Receiver
+  end_date: '2024-07-04'
+  expected_chains:
+    - ethereum
+0xC2eC5Dd60CBD5242b8cdeB9d0d37Ff6024584631:
+  description: OP Receiver
+  end_date: null
+  expected_chains:
+    - ethereum
+0x4300C0D3C0D3C0D3C0d3C0d3c0d3C0d3C0d30002:
+  description: OP Receiver - Unichain
+  end_date: null
+  expected_chains:
+    - unichain
+    - ethereum
+0x16A27462B4D61BDD72CbBabd3E43e11791F7A28c:
+  description: OP Receiver - Soneium
+  end_date: null
+  expected_chains:
+    - soneium
+    - ethereum 

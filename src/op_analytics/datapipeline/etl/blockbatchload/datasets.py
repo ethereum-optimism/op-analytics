@@ -28,3 +28,13 @@ NATIVE_TRANSFERS = ClickHouseBlockBatchETL(
     # includes a filter to include only rows where amount_lossless is not NULL.
     enforce_non_zero_row_count=False,
 )
+
+REVSHARE_TRANSFERS = ClickHouseBlockBatchETL(
+    input_root_paths=[
+        "blockbatch/token_transfers/erc20_transfers_v1",
+        "blockbatch/native_transfers/native_transfers_v1",
+    ],
+    output_root_path="blockbatch/revshare_transfers/revshare_transfers_v1",
+    # We don't enforce row count for this dataset because it depends on config matching
+    enforce_non_zero_row_count=False,
+)
