@@ -53,7 +53,7 @@ class TestNativeTransfers001(ModelTestBase):
             "trace_address": "VARCHAR",
             "from_address": "VARCHAR",
             "to_address": "VARCHAR",
-            "amount": "UBIGINT",
+            "amount": "DECIMAL(38,0)",
             "amount_lossless": "VARCHAR",
             "input_method_id": "VARCHAR",
             "call_type": "VARCHAR",
