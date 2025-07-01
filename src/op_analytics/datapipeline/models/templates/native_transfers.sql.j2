@@ -11,7 +11,7 @@ SELECT
   , t.trace_address
   , t.from_address
   , t.to_address
-  , t.value_64 AS amount
+  , CAST(t.value_lossless AS DECIMAL(38,0)) AS amount
   , t.value_lossless AS amount_lossless
   , substring(t.input,1,10) AS input_method_id
   , t.call_type
@@ -21,5 +21,6 @@ FROM {{ raw_traces }} AS t
 WHERE 
   t.trace_type = 'call'
   AND (t.call_type NOT IN ('delegatecall', 'callcode', 'staticcall') OR t.call_type IS NULL)
-  AND t.value_64 > 0
+  AND t.value_lossless IS NOT NULL
+  AND t.value_lossless != '0'
   AND t.status = 1
