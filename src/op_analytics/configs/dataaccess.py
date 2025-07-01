@@ -4,7 +4,7 @@ Revshare configuration data source access definitions.
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.clickhousedata import ClickhouseDataset
-from op_analytics.coreutils.clickhouse.oplabs import run_statememt_oplabs
+from op_analytics.coreutils.clickhouse.oplabs import run_statement_oplabs
 
 log = structlog.get_logger()
 
@@ -21,7 +21,7 @@ class RevshareConfig(ClickhouseDataset):
     def write(self, dataframe):
         """Override write to ensure database exists before table creation."""
         # Create database if it doesn't exist (following transforms/create.py pattern)
-        run_statememt_oplabs(f"CREATE DATABASE IF NOT EXISTS {self.db}")
+        run_statement_oplabs(f"CREATE DATABASE IF NOT EXISTS {self.db}")
 
         # Use the standard ClickHouseDataset write method
         super().write(dataframe)
