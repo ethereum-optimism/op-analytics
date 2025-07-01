@@ -9,7 +9,6 @@ base:
     - "native"
   expected_chains:
     - "base"
-  end_date: null
   chain_id: 8453
 zora:
   addresses:
@@ -18,7 +17,6 @@ zora:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: null
   chain_id: 7777777
 op:
   addresses:
@@ -27,7 +25,6 @@ op:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: null
   chain_id: 10
 mode:
   addresses:
@@ -36,7 +33,6 @@ mode:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: null
   chain_id: 34443
 raas_conduit:
   addresses:
@@ -47,7 +43,6 @@ raas_conduit:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: null
   chain_id: null
 lyra:
   addresses:
@@ -56,7 +51,6 @@ lyra:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: null
   chain_id: 957
 raas_gelato:
   addresses:
@@ -65,7 +59,6 @@ raas_gelato:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: null
   chain_id: null
 raas_altlayer:
   addresses:
@@ -74,7 +67,6 @@ raas_altlayer:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: null
   chain_id: null
 redstone:
   addresses:
@@ -83,7 +75,6 @@ redstone:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: null
   chain_id: 690
 swanchain:
   addresses:
@@ -92,7 +83,6 @@ swanchain:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: null
   chain_id: 254
 kroma:
   addresses:
@@ -101,7 +91,7 @@ kroma:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: 255
+  chain_id: 255
 world:
   addresses:
     - "0xb2aa0c2c4fd6bfcbf699d4c787cd6cc0dc461a9d"
@@ -109,7 +99,7 @@ world:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: 480
+  chain_id: 480
 shape:
   addresses:
     - "0xee1af3f99af8c5b93512fbe2a3f0dd5568ce087f"
@@ -117,7 +107,7 @@ shape:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: 360
+  chain_id: 360
 soneium:
   addresses:
     - "0x641af675C39E56E5611686Ae07921AFb7d5C1f39"
@@ -126,7 +116,7 @@ soneium:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: 1868
+  chain_id: 1868
 ink:
   addresses:
     - "0x267be1c1d684f78cb4f6a176c4911b741e4ffdc0"
@@ -134,7 +124,7 @@ ink:
     - "native"
   expected_chains:
     - "ethereum"
-  end_date: 57073
+  chain_id: 57073
 unichain:
   addresses:
     - "0x4300c0D3c0d3c0d3c0d3c0d3c0d3C0D3c0d30001"
@@ -142,4 +132,4 @@ unichain:
     - "native"
   expected_chains:
     - "unichain"
-  end_date: 130 
+  chain_id: 130 

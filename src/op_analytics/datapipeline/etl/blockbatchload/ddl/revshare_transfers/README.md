@@ -46,7 +46,20 @@ The SQL joins against the address tables to:
 - `revshare_transfers_v1__CREATE.sql` - Table creation DDL
 - `revshare_transfers_v1__INSERT.sql` - Main ETL SQL (references ClickHouse tables)
 - `scripts/generate_revshare_sql.py` - Legacy script (no longer used)
-- `README.md` - This documentation
+
+## Benefits of This Architecture
+
+✅ **Clean separation**: YAML configs separate from SQL logic  
+✅ **Easy maintenance**: Add/remove addresses by editing YAML files  
+✅ **Proper dependencies**: Dagster ensures correct execution order  
+✅ **No embedded data**: SQL file is clean and readable  
+✅ **Version control**: Address changes are tracked in YAML files  
+
+## Usage
+
+1. **Edit YAML files** to modify address configurations
+2. **Run Dagster job** - dependencies ensure proper ordering
+3. **No SQL regeneration needed** - config tables are updated automatically
 
 ## Configuration Format
 
