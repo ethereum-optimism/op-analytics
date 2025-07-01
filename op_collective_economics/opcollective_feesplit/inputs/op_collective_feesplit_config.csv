@@ -9,3 +9,17 @@ zora,7777777,ethereum,0xe900b3Edc1BA0430CFa9a204A1027B90825ac951,sender,Zora Dis
 mode,34443,ethereum,0xed4811010a86f7c39134fbc20206d906ad1176b6,sender,Mode Disburser
 conduit,,ethereum,0x13f37e6b638ca83e7090bb3722b3ae04bf884019,sender,Conduit Disburser
 op,10,ethereum,0x99c9fc46f92e8a1c0dec1b1747d010903e884be1,sender,OP Mainnet L1 Standard Bridge
+unichain,130,unichain,0x4300C0D3C0D3C0D3C0d3C0d3c0d3C0d3C0d30002,receiver,Unichain Fee Split
+soneium,1868,soneium,0x16A27462B4D61BDD72CbBabd3E43e11791F7A28c,receiver,Soneium Fee Split
+unichain,130,unichain,0x4300c0D3c0d3c0d3c0d3c0d3c0d3C0D3c0d30001,sender,Unichain Fee Split
+soneium,1868,soneium,0x641af675C39E56E5611686Ae07921AFb7d5C1f39,sender,Soneium Fee Split
+soneium,1868,soneium,0xF07b3169ffF67A8AECdBb18d9761AEeE34591112,sender,Soneium Fee Split
+ink,57073,ethereum,0x267be1c1d684f78cb4f6a176c4911b741e4ffdc0,sender,Ink Fee Split
+shape,360,ethereum,0xee1af3f99af8c5b93512fbe2a3f0dd5568ce087f,sender,Shape Fee Split
+world,480,ethereum,0xb2aa0c2c4fd6bfcbf699d4c787cd6cc0dc461a9d,sender,World Fee Split
+kroma,255,ethereum,0x9d89Bca142498FE047bD3E169De8eD028AFaB07F,sender,Kroma Fee Split
+swanchain,254,ethereum,0xe945D527De9c5121EdA9cF48e23CDF691894D4c0,sender,Swan Fee Split
+redstone,690,ethereum,0x7B60C79860ab5DB0368751210Ff29784d3DC18bF,sender,Redstone Fee Split
+altlayer,,ethereum,0x83AF9DD63534BF02921c8bE11f7428Ac70B05A1c,sender,Altlayer Fee Split
+gelato,,ethereum,0xBeA2Bc852a160B8547273660E22F4F08C2fa9Bbb,sender,Gelato Fee Split
+conduit,,ethereum,0x09315fc454919a37d02d320272fc23a0653f67f9,sender,Conduit Disburser 3
