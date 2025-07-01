@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS revshare_from_addresses (
+CREATE TABLE IF NOT EXISTS _placeholder_ (
     chain String,
     address String,
     tokens Array(String),

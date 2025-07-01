@@ -13,13 +13,12 @@ WITH native_transfers AS (
     , t.trace_address
     , lower(t.from_address) AS from_address
     , lower(t.to_address) AS to_address
-    , CAST(t.amount_lossless AS UINT256) AS amount
-    , t.amount_lossless
+    , toUInt64(t.amount) AS amount
     , t.transfer_type
     , NULL AS token_address
     , f.chain AS revshare_from_chain
     , f.chain_id AS revshare_from_chain_id
-    , [f.address] AS revshare_from_addresses
+    , f.address AS revshare_from_address
     , f.tokens AS token_addresses
     , f.expected_chains AS from_expected_chains
     , ta.expected_chains AS to_expected_chains
@@ -33,7 +32,7 @@ WITH native_transfers AS (
     ON lower(ta.address) = lower(t.to_address)
       AND t.chain = ta.expected_chains[1]
       AND (ta.end_date IS NULL OR t.dt <= toDate(ta.end_date))
-  WHERE t.amount_lossless IS NOT NULL
+  -- WHERE t.amount IS NOT NULL
 ),
 
 -- ERC20 transfers
@@ -48,16 +47,15 @@ erc20_transfers AS (
     , t.block_hash
     , t.transaction_hash
     , t.transaction_index
-    , t.trace_address
+    , NULL AS trace_address
     , lower(t.from_address) AS from_address
     , lower(t.to_address) AS to_address
-    , CAST(t.amount_lossless AS UINT256) AS amount
-    , t.amount_lossless
+    , toUInt64(t.amount) AS amount
     , 'token' AS transfer_type
     , lower(t.contract_address) AS token_address
     , f.chain AS revshare_from_chain
     , f.chain_id AS revshare_from_chain_id
-    , [f.address] AS revshare_from_addresses
+    , f.address AS revshare_from_address
     , f.tokens AS token_addresses
     , f.expected_chains AS from_expected_chains
     , ta.expected_chains AS to_expected_chains
@@ -72,7 +70,7 @@ erc20_transfers AS (
     ON lower(ta.address) = lower(t.to_address)
       AND t.chain = ta.expected_chains[1]
       AND (ta.end_date IS NULL OR t.dt <= toDate(ta.end_date))
-  WHERE t.amount_lossless IS NOT NULL
+  -- WHERE t.amount IS NOT NULL
 )
 
 -- Combine native and ERC20 transfers

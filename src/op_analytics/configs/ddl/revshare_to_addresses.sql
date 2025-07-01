@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS revshare_to_addresses (
+CREATE TABLE IF NOT EXISTS _placeholder_ (
     address String,
     description String,
     end_date Nullable(String),
