@@ -67,7 +67,7 @@ def revshare_to_addresses(context: OpExecutionContext):
     context.log.info("Loaded revshare_to_addresses to ClickHouse.")
 
 
-@asset(deps=[revshare_from_addresses, revshare_to_addresses])
+@asset(deps=[revshare_from_addresses, revshare_to_addresses, native_transfers, erc20_transfers])
 def revshare_transfers(context: OpExecutionContext):
     """Load revshare transfers blockbatch data to Clickhouse."""
     result = load_to_clickhouse(dataset=REVSHARE_TRANSFERS)
