@@ -68,11 +68,16 @@ class ChainTokens:
         client = init_client("OPLABS")
 
         total_written_rows = 0
+        total_processed = 0
+        total_failed = 0
+
         with bound_contextvars(chain=self.chain):
             for batch in itertools.batched(self.tokens, n=30):
                 data = []
+                batch_failed = 0
 
                 for token in batch:
+                    total_processed += 1
                     token_metadata = token.call_rpc(
                         rpc_endpoint=self.rpc_endpoint,
                         session=session,
@@ -83,24 +88,41 @@ class ChainTokens:
 
                     if token_metadata is None:
                         # an error was encountered
-                        log.warning(f"error encountered for: {token}")
+                        batch_failed += 1
+                        total_failed += 1
+                        log.debug(
+                            f"skipped token due to missing functions or parsing errors: {token}"
+                        )
                         continue
 
                     row = token_metadata.to_dict()
                     row["process_dt"] = process_dt
                     data.append([row[_] for _ in COLUMNS])
 
-                log.info(f"fetched token metadata from rpc for {len(batch)} tokens")
-
-                result = client.insert(
-                    table="chainsmeta.fact_erc20_token_metadata_v1",
-                    data=data,
-                    column_names=COLUMNS,
-                    column_type_names=COLUMN_TYPE_NAMES,
-                )
                 log.info(
-                    f"inserted token medatata {len(batch)} tokens, {result.written_rows} written rows"
+                    f"fetched token metadata from rpc for {len(batch)} tokens (failed: {batch_failed})"
                 )
-                total_written_rows += result.written_rows
+
+                if data:  # Only insert if we have data
+                    result = client.insert(
+                        table="chainsmeta.fact_erc20_token_metadata_v1",
+                        data=data,
+                        column_names=COLUMNS,
+                        column_type_names=COLUMN_TYPE_NAMES,
+                    )
+                    log.info(
+                        f"inserted token metadata {len(data)} tokens, {result.written_rows} written rows"
+                    )
+                    total_written_rows += result.written_rows
+
+        # Log final statistics
+        success_rate = (
+            ((total_processed - total_failed) / total_processed * 100) if total_processed > 0 else 0
+        )
+        log.info(
+            f"token metadata processing complete for {self.chain}: "
+            f"processed={total_processed}, failed={total_failed}, "
+            f"success_rate={success_rate:.1f}%, written_rows={total_written_rows}"
+        )
 
         return total_written_rows
