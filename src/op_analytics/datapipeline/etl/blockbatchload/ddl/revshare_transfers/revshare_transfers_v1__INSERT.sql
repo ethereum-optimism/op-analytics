@@ -24,13 +24,13 @@ WITH native_transfers AS (
     , ta.expected_chains AS to_expected_chains
     , ta.description AS to_address_description
   FROM INPUT_BLOCKBATCH('blockbatch/native_transfers/native_transfers_v1') AS t
-  INNER JOIN revshare_from_addresses AS f
+  INNER JOIN datasources_revshareconfig.revshare_from_addresses AS f
     ON lower(f.address) = lower(t.from_address)
-      AND t.chain = f.expected_chains[1]
+      AND has(f.expected_chains, t.chain)
       AND (f.end_date IS NULL OR t.dt <= toDate(f.end_date))
-  INNER JOIN revshare_to_addresses AS ta
+  INNER JOIN datasources_revshareconfig.revshare_to_addresses AS ta
     ON lower(ta.address) = lower(t.to_address)
-      AND t.chain = ta.expected_chains[1]
+      AND has(ta.expected_chains, t.chain)
       AND (ta.end_date IS NULL OR t.dt <= toDate(ta.end_date))
   -- WHERE t.amount IS NOT NULL
 ),
@@ -61,14 +61,14 @@ erc20_transfers AS (
     , ta.expected_chains AS to_expected_chains
     , ta.description AS to_address_description
   FROM INPUT_BLOCKBATCH('blockbatch/token_transfers/erc20_transfers_v1') AS t
-  INNER JOIN revshare_from_addresses AS f
+  INNER JOIN datasources_revshareconfig.revshare_from_addresses AS f
     ON lower(f.address) = lower(t.from_address)
-      AND t.chain = f.expected_chains[1]
+      AND has(f.expected_chains, t.chain)
       AND hasAny(f.tokens, [lower(t.contract_address)])
       AND (f.end_date IS NULL OR t.dt <= toDate(f.end_date))
-  INNER JOIN revshare_to_addresses AS ta
+  INNER JOIN datasources_revshareconfig.revshare_to_addresses AS ta
     ON lower(ta.address) = lower(t.to_address)
-      AND t.chain = ta.expected_chains[1]
+      AND has(ta.expected_chains, t.chain)
       AND (ta.end_date IS NULL OR t.dt <= toDate(ta.end_date))
   -- WHERE t.amount IS NOT NULL
 )

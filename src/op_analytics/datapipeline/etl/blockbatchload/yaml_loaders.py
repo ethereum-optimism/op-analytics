@@ -21,16 +21,16 @@ def load_revshare_from_addresses_to_clickhouse():
     rows = []
     for chain, conf in from_config.items():
         for addr in conf["addresses"]:
-            rows.append(
-                {
-                    "chain": chain,
-                    "address": str(addr).lower(),
-                    "tokens": [str(token).lower() for token in conf["tokens"]],
-                    "expected_chains": conf["expected_chains"],
-                    "end_date": conf.get("end_date"),
-                    "chain_id": conf.get("chain_id"),
-                }
-            )
+            row = {
+                "chain": chain,
+                "address": str(addr).lower(),
+                "tokens": [str(token).lower() for token in conf["tokens"]],
+                "expected_chains": conf["expected_chains"],
+                "end_date": conf.get("end_date"),
+                "chain_id": conf.get("chain_id"),
+            }
+            rows.append(row)
+            # print(f"DEBUG - From addresses row: {row}")
 
     # Convert to Polars DataFrame and write using ClickHouseDataset
     df = pl.DataFrame(rows)
@@ -50,14 +50,14 @@ def load_revshare_to_addresses_to_clickhouse():
     # Prepare data for insertion
     rows = []
     for addr, conf in to_config.items():
-        rows.append(
-            {
-                "address": str(addr).lower(),
-                "description": conf["description"],
-                "end_date": conf.get("end_date"),
-                "expected_chains": conf["expected_chains"],
-            }
-        )
+        row = {
+            "address": str(addr).lower(),
+            "description": conf["description"],
+            "end_date": conf.get("end_date"),
+            "expected_chains": conf["expected_chains"],
+        }
+        rows.append(row)
+        # print(f"DEBUG - To addresses row: {row}")
 
     # Convert to Polars DataFrame and write using ClickHouseDataset
     df = pl.DataFrame(rows)
