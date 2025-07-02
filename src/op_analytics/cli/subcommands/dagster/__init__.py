@@ -136,8 +136,9 @@ def run_command(command, description):
         )
 
         # Stream output in real-time
-        for line in process.stdout:
-            print(line.rstrip())
+        if process.stdout is not None:
+            for line in process.stdout:
+                print(line.rstrip())
 
         process.wait()
         result = subprocess.CompletedProcess(
