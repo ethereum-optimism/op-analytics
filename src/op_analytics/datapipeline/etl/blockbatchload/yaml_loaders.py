@@ -1,7 +1,6 @@
 import yaml
 import polars as pl
 from pathlib import Path
-from op_analytics.coreutils.path import repo_path
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.configs.dataaccess import RevshareConfig
@@ -9,11 +8,39 @@ from op_analytics.configs.dataaccess import RevshareConfig
 log = structlog.get_logger()
 
 
+def _get_config_path(config_filename: str) -> Path:
+    """Get the path to a config file by navigating from the current file's location.
+
+    Note: We originally tried using repo_path() from op_analytics.coreutils.path, but it
+    was returning None in the Dagster execution environment (likely Kubernetes/Docker)
+    because the working directory was not the repository root. This custom implementation
+    is more robust as it doesn't rely on the working directory and provides better error
+    messages when files can't be found.
+    """
+    # Start from the current file's directory
+    current_dir = Path(__file__).parent
+
+    # Navigate up to find the repository root (where uv.lock is)
+    while current_dir != current_dir.parent:
+        if (current_dir / "uv.lock").exists():
+            break
+        current_dir = current_dir.parent
+    else:
+        raise FileNotFoundError("Could not find repository root (uv.lock not found)")
+
+    # Navigate to the config file
+    config_path = current_dir / "src" / "op_analytics" / "configs" / config_filename
+    if not config_path.exists():
+        raise FileNotFoundError(f"Config file not found: {config_path}")
+
+    return config_path
+
+
 def load_revshare_from_addresses_to_clickhouse():
     """Load revshare from addresses YAML into ClickHouse table."""
 
     # Read YAML config
-    config_path = Path(repo_path("src/op_analytics/configs/revshare_from_addresses.yaml"))
+    config_path = _get_config_path("revshare_from_addresses.yaml")
     with open(config_path) as f:
         from_config = yaml.safe_load(f)
 
@@ -43,7 +70,7 @@ def load_revshare_to_addresses_to_clickhouse():
     """Load revshare to addresses YAML into ClickHouse table."""
 
     # Read YAML config
-    config_path = Path(repo_path("src/op_analytics/configs/revshare_to_addresses.yaml"))
+    config_path = _get_config_path("revshare_to_addresses.yaml")
     with open(config_path) as f:
         to_config = yaml.safe_load(f)
 

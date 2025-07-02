@@ -100,3 +100,15 @@ python -m pytest tests/op_analytics/datapipeline/etl/models/test_revshare_transf
 - The system processes both native transfers (ETH) and ERC20 token transfers
 - All addresses are normalized to lowercase for consistent matching
 - Date filtering uses `end_date` fields (null = no filtering) 
+
+## Troubleshooting
+
+### Path Resolution Issues
+If you encounter errors related to finding the YAML configuration files (e.g., `TypeError: argument should be a str or an os.PathLike object where __fspath__ returns a str, not 'NoneType'`), this is likely due to the Dagster execution environment not having the correct working directory.
+
+The system uses a custom path resolution function (`_get_config_path`) in `yaml_loaders.py` that navigates from the current file's location to find the repository root and config files. This is more robust than the standard `repo_path()` function which can fail in containerized environments.
+
+If you need to debug path resolution:
+1. Check that `uv.lock` exists in the repository root
+2. Verify the config files exist at `src/op_analytics/configs/revshare_*.yaml`
+3. The error messages will indicate exactly which file couldn't be found 
