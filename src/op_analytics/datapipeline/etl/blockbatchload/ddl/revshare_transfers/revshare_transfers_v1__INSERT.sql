@@ -13,16 +13,13 @@ WITH native_transfers AS (
     , t.trace_address
     , lower(t.from_address) AS from_address
     , lower(t.to_address) AS to_address
-    , toUInt64(t.amount) AS amount
+    , t.amount AS amount
     , t.transfer_type
     , NULL AS token_address
     , f.chain AS revshare_from_chain
     , f.chain_id AS revshare_from_chain_id
     , f.address AS revshare_from_address
-    , f.tokens AS token_addresses
-    , f.expected_chains AS from_expected_chains
-    , ta.expected_chains AS to_expected_chains
-    , ta.description AS to_address_description
+
   FROM INPUT_BLOCKBATCH('blockbatch/native_transfers/native_transfers_v1') AS t
   INNER JOIN datasources_revshareconfig.revshare_from_addresses AS f
     ON lower(f.address) = lower(t.from_address)
@@ -50,16 +47,12 @@ erc20_transfers AS (
     , NULL AS trace_address
     , lower(t.from_address) AS from_address
     , lower(t.to_address) AS to_address
-    , toUInt64(t.amount) AS amount
+    , t.amount
     , 'token' AS transfer_type
     , lower(t.contract_address) AS token_address
     , f.chain AS revshare_from_chain
     , f.chain_id AS revshare_from_chain_id
-    , f.address AS revshare_from_address
-    , f.tokens AS token_addresses
-    , f.expected_chains AS from_expected_chains
-    , ta.expected_chains AS to_expected_chains
-    , ta.description AS to_address_description
+
   FROM INPUT_BLOCKBATCH('blockbatch/token_transfers/erc20_transfers_v1') AS t
   INNER JOIN datasources_revshareconfig.revshare_from_addresses AS f
     ON lower(f.address) = lower(t.from_address)
