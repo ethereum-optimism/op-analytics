@@ -103,12 +103,24 @@ python -m pytest tests/op_analytics/datapipeline/etl/models/test_revshare_transf
 
 ## Troubleshooting
 
-### Path Resolution Issues
-If you encounter errors related to finding the YAML configuration files (e.g., `TypeError: argument should be a str or an os.PathLike object where __fspath__ returns a str, not 'NoneType'`), this is likely due to the Dagster execution environment not having the correct working directory.
+### Path Resolution Issues (Fixed)
+The system now uses an improved path resolution function (`_get_config_path`) in `yaml_loaders.py` that works reliably in both local development and Dagster/Docker environments.
 
-The system uses a custom path resolution function (`_get_config_path`) in `yaml_loaders.py` that navigates from the current file's location to find the repository root and config files. This is more robust than the standard `repo_path()` function which can fail in containerized environments.
+**Key improvements:**
+- **Strategy 1**: Finds config files in the installed package (works in Dagster/Docker)
+- **Strategy 2**: Uses `repo_path()` for local development
+- **Strategy 3**: Tries common container paths
+- **Strategy 4**: Walks up from current file location
+- **Strategy 5**: Uses relative paths as fallback
 
-If you need to debug path resolution:
-1. Check that `uv.lock` exists in the repository root
-2. Verify the config files exist at `src/op_analytics/configs/revshare_*.yaml`
-3. The error messages will indicate exactly which file couldn't be found 
+**Debugging:**
+- Check the logs for debug messages showing which strategy found the config file
+- The system will log the exact path where the config file was found
+- If all strategies fail, you'll get a clear error message indicating which file couldn't be found
+
+**Common scenarios:**
+- **Local development**: Usually uses Strategy 2 (repo_path)
+- **Dagster/Docker**: Usually uses Strategy 1 (installed package)
+- **Container environments**: May use Strategy 3 (container paths)
+
+The config files are automatically included in the package distribution, so they should be available in all environments where the package is installed.
