@@ -360,6 +360,7 @@ def process_chunk(df):
 def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'dt'], max_retries=3):
     for attempt in range(max_retries):
         try:
+            # Create a fresh client on each attempt to handle token expiration
             client = connect_bq_client(project_id)
             if client is None:
                 raise Exception("Failed to connect to BigQuery")
@@ -473,7 +474,7 @@ def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads
     raise Exception("Failed to upsert data to BigQuery after all retry attempts")
 
 # WARNING THE DELETES TABLES
-def delete_bq_table(dataset_id, table_id, project_id=os.getenv("BQ_PROJECT_ID")):
+def delete_bq_table(dataset_id, table_id, project_id=os.getenv("BQ_PROJECT_ID"), max_retries=3):
     """
     Deletes a table from a BigQuery dataset.
 
@@ -482,23 +483,50 @@ def delete_bq_table(dataset_id, table_id, project_id=os.getenv("BQ_PROJECT_ID"))
         table_id (str): The ID of the table to be deleted.
         project_id (str, optional): The ID of the Google Cloud project. If not provided,
             the project ID from the environment variable GOOGLE_CLOUD_PROJECT will be used.
+        max_retries (int): Maximum number of retry attempts for token expiration.
 
     Returns:
         bool: True if the table was deleted successfully, False otherwise.
     """
-    client = connect_bq_client(project_id = project_id)
+    for attempt in range(max_retries):
+        try:
+            # Create a fresh client on each attempt to handle token expiration
+            client = connect_bq_client(project_id=project_id)
+            if client is None:
+                raise Exception("Failed to connect to BigQuery")
 
-    # Get the table reference
-    table_ref = client.dataset(dataset_id).table(table_id)
+            # Get the table reference
+            table_ref = client.dataset(dataset_id).table(table_id)
 
-    try:
-        # Delete the table
-        client.delete_table(table_ref, not_found_ok=True)
-        print(f"Table '{table_id}' deleted successfully from dataset '{dataset_id}'.")
-        return True
-    except Exception as e:
-        print(f"Error deleting table '{table_id}' from dataset '{dataset_id}': {e}")
-        return False
+            # Delete the table
+            client.delete_table(table_ref, not_found_ok=True)
+            print(f"Table '{table_id}' deleted successfully from dataset '{dataset_id}'.")
+            return True
+            
+        except OAuthError as e:
+            if "stale" in str(e).lower() or "invalid_grant" in str(e).lower():
+                print(f"OAuth token expired on attempt {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    print("Waiting before retry...")
+                    time.sleep(2 ** attempt)  # Exponential backoff
+                    continue
+                else:
+                    print("All attempts failed due to token expiration")
+                    return False
+            else:
+                print(f"OAuth error on attempt {attempt + 1}: {e}")
+                return False
+        except Exception as e:
+            print(f"Error deleting table '{table_id}' from dataset '{dataset_id}' on attempt {attempt + 1}: {e}")
+            if attempt < max_retries - 1:
+                print("Waiting before retry...")
+                time.sleep(2 ** attempt)  # Exponential backoff
+                continue
+            else:
+                return False
+    
+    print("All retry attempts failed")
+    return False
 
 def run_query_to_df(query, project_id=os.getenv("BQ_PROJECT_ID"), max_retries=3):
     for attempt in range(max_retries):
