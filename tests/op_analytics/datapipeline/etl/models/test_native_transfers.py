@@ -12,7 +12,7 @@ class TestNativeTransfers001(ModelTestBase):
     block_filters = [
         "{block_number} IN (128145990, 128145989) OR block_number % 100 < 2",
     ]
-    _enable_fetching = False
+    _enable_fetching = False  # Temporarily enable to fetch test data
 
     def test_overall_totals(self):
         assert self._duckdb_context is not None
