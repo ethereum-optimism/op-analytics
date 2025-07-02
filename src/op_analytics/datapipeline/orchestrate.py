@@ -52,7 +52,6 @@ def normalize_blockbatch_models(models: str) -> list[str]:
             result.add("contract_creation")
             result.add("token_transfers")
             result.add("native_transfers")
-            result.add("revshare_transfers")
             result.add("account_abstraction_prefilter")
             result.add("account_abstraction")
         elif model == "GROUPB":
