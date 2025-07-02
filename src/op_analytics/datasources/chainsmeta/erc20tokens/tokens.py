@@ -4,7 +4,13 @@ from typing import Any, Optional
 
 import requests
 import stamina
-from requests.exceptions import JSONDecodeError
+from requests.exceptions import (
+    JSONDecodeError,
+    SSLError,
+    ConnectionError,
+    Timeout,
+    RequestException,
+)
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import new_session
@@ -38,6 +44,12 @@ ERC20_METHODS = {
 
 class RateLimit(Exception):
     """Raised when a rate limit error is encountered on the JSON-RPC response."""
+
+    pass
+
+
+class RPCConnectionError(Exception):
+    """Raised when there's a connection error to the RPC endpoint."""
 
     pass
 
@@ -93,7 +105,7 @@ class Token:
 
         return batch
 
-    @stamina.retry(on=RateLimit, attempts=3, wait_initial=10)
+    @stamina.retry(on=(RateLimit, RPCConnectionError), attempts=3, wait_initial=10)
     def call_rpc(
         self,
         rpc_endpoint: str | None = None,
@@ -104,7 +116,11 @@ class Token:
         rpc_endpoint = rpc_endpoint or get_rpc_for_chain(chain_id=self.chain_id)
 
         start = time.perf_counter()
-        response = session.post(rpc_endpoint, json=self.rpc_batch())
+        try:
+            response = session.post(rpc_endpoint, json=self.rpc_batch())
+        except (SSLError, ConnectionError, Timeout, RequestException) as ex:
+            log.warning(f"RPC connection error for {self} at {rpc_endpoint}: {ex}")
+            raise RPCConnectionError(f"Connection error to RPC endpoint: {ex}") from ex
 
         try:
             response_data = response.json()

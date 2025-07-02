@@ -6,7 +6,7 @@ from op_analytics.coreutils.clickhouse.client import init_client
 from op_analytics.coreutils.logger import bound_contextvars, structlog
 from op_analytics.coreutils.request import new_session
 
-from .tokens import Token
+from .tokens import Token, RPCConnectionError
 
 log = structlog.get_logger()
 
@@ -78,26 +78,37 @@ class ChainTokens:
 
                 for token in batch:
                     total_processed += 1
-                    token_metadata = token.call_rpc(
-                        rpc_endpoint=self.rpc_endpoint,
-                        session=session,
-                        speed_bump=SPEED_BUMP.get(
-                            token.chain, DEFAULT_SPEED_BUMP
-                        ),  # avoid hitting the RPC rate limit
-                    )
+                    try:
+                        token_metadata = token.call_rpc(
+                            rpc_endpoint=self.rpc_endpoint,
+                            session=session,
+                            speed_bump=SPEED_BUMP.get(
+                                token.chain, DEFAULT_SPEED_BUMP
+                            ),  # avoid hitting the RPC rate limit
+                        )
 
-                    if token_metadata is None:
-                        # an error was encountered
+                        if token_metadata is None:
+                            # an error was encountered
+                            batch_failed += 1
+                            total_failed += 1
+                            log.debug(
+                                f"skipped token due to missing functions or parsing errors: {token}"
+                            )
+                            continue
+
+                        row = token_metadata.to_dict()
+                        row["process_dt"] = process_dt
+                        data.append([row[_] for _ in COLUMNS])
+                    except RPCConnectionError as e:
                         batch_failed += 1
                         total_failed += 1
-                        log.debug(
-                            f"skipped token due to missing functions or parsing errors: {token}"
-                        )
+                        log.debug(f"skipped token due to RPC connection error: {token}, {e}")
                         continue
-
-                    row = token_metadata.to_dict()
-                    row["process_dt"] = process_dt
-                    data.append([row[_] for _ in COLUMNS])
+                    except Exception as e:
+                        batch_failed += 1
+                        total_failed += 1
+                        log.warning(f"skipped token due to unexpected error: {token}, {e}")
+                        continue
 
                 log.info(
                     f"fetched token metadata from rpc for {len(batch)} tokens (failed: {batch_failed})"

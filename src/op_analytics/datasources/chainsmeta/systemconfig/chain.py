@@ -5,7 +5,7 @@ import requests
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import new_session
 
-from .rpc import RPCManager
+from .rpc import RPCManager, RPCConnectionError
 
 log = structlog.get_logger()
 
@@ -35,11 +35,14 @@ class ChainSystemConfig:
         session = session or new_session()
 
         system_config = RPCManager(system_config_proxy=system_config_proxy)
-        config_metadata = system_config.call_rpc(
-            rpc_endpoint=ETHEREUM_RPC_URL,
-            session=session,
-            speed_bump=DEFAULT_SPEED_BUMP,
-        )
+        try:
+            config_metadata = system_config.call_rpc(
+                rpc_endpoint=ETHEREUM_RPC_URL,
+                session=session,
+                speed_bump=DEFAULT_SPEED_BUMP,
+            )
+        except RPCConnectionError as e:
+            raise Exception(f"RPC connection error for chain {chain_id}: {e}") from e
 
         if config_metadata is None:
             raise Exception(f"error encountered for chain {chain_id}")
