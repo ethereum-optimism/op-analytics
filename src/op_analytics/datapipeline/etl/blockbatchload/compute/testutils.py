@@ -32,9 +32,9 @@ class BlockBatchTestBase(unittest.TestCase):
 
     # Input parameters (must be set by child class)
     dataset = None  # The blockbatchload dataset spec (e.g. REVSHARE_TRANSFERS)
-    chains = []  # List of chains to test
+    chains: list[str] = []  # List of chains to test
     target_range = None  # date or int
-    block_filters = []  # List of block filter SQL strings
+    block_filters: list[str] = []  # List of block filter SQL strings
     inputdata = None  # InputTestData.at(__file__)
 
     # Internal variables

@@ -3,14 +3,15 @@ Integration tests for revshare transfers blockbatchload pipeline.
 Tests the YAML loaders and dataset configuration.
 """
 
+import os
 import unittest
 import yaml
 from pathlib import Path
-from op_analytics.coreutils.path import repo_path
 
 from op_analytics.datapipeline.etl.blockbatchload.yaml_loaders import (
     load_revshare_from_addresses_to_clickhouse,
     load_revshare_to_addresses_to_clickhouse,
+    _get_config_path,
 )
 from op_analytics.datapipeline.etl.blockbatchload.datasets import REVSHARE_TRANSFERS
 from op_analytics.datapipeline.etl.blockbatchload.compute.testutils import BlockBatchTestBase
@@ -59,8 +60,8 @@ class TestRevshareTransfersIntegration(unittest.TestCase):
 
     def test_config_files_exist_and_valid(self):
         """Test that actual config files are valid and contain expected data."""
-        from_path = repo_path("src/op_analytics/configs/revshare_from_addresses.yaml")
-        to_path = repo_path("src/op_analytics/configs/revshare_to_addresses.yaml")
+        from_path = _get_config_path("revshare_from_addresses.yaml")
+        to_path = _get_config_path("revshare_to_addresses.yaml")
 
         # Test from addresses config
         with open(from_path, "r") as f:
@@ -87,8 +88,18 @@ class TestRevshareTransfersIntegration(unittest.TestCase):
 
     def test_sql_files_exist_and_valid(self):
         """Test that SQL files exist and contain expected content."""
-        sql_dir = repo_path(
-            "src/op_analytics/datapipeline/etl/blockbatchload/ddl/revshare_transfers"
+        # Get the current file's directory and navigate to the SQL directory
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        repo_root = os.path.join(current_dir, "..", "..", "..", "..", "..", "..")
+        sql_dir = os.path.join(
+            repo_root,
+            "src",
+            "op_analytics",
+            "datapipeline",
+            "etl",
+            "blockbatchload",
+            "ddl",
+            "revshare_transfers",
         )
 
         create_sql = Path(sql_dir) / "revshare_transfers_v1__CREATE.sql"
@@ -108,13 +119,13 @@ class TestRevshareTransfersIntegration(unittest.TestCase):
 
 
 class TestRevshareTransfersBlockBatch(BlockBatchTestBase):
-    dataset = REVSHARE_TRANSFERS
+    dataset = REVSHARE_TRANSFERS  # type: ignore
     chains = ["base"]
-    target_range = "@20250622:20250623"
+    target_range = "@20250622:20250623"  # type: ignore
     block_filters = [
         "{block_number} IN (31880531)",
     ]
-    inputdata = InputTestData.at(__file__)
+    inputdata = InputTestData.at(__file__)  # type: ignore
     _enable_fetching = False  # Set to True only when fetching test data for the first time
 
     def test_specific_base_transfer(self):
