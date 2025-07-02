@@ -1,6 +1,7 @@
 import yaml
 import polars as pl
 from pathlib import Path
+from op_analytics.coreutils.path import repo_path
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.configs.dataaccess import RevshareConfig
@@ -12,7 +13,7 @@ def load_revshare_from_addresses_to_clickhouse():
     """Load revshare from addresses YAML into ClickHouse table."""
 
     # Read YAML config
-    config_path = Path(__file__).parents[3] / "configs" / "revshare_from_addresses.yaml"
+    config_path = Path(repo_path("src/op_analytics/configs/revshare_from_addresses.yaml"))
     with open(config_path) as f:
         from_config = yaml.safe_load(f)
 
@@ -42,7 +43,7 @@ def load_revshare_to_addresses_to_clickhouse():
     """Load revshare to addresses YAML into ClickHouse table."""
 
     # Read YAML config
-    config_path = Path(__file__).parents[3] / "configs" / "revshare_to_addresses.yaml"
+    config_path = Path(repo_path("src/op_analytics/configs/revshare_to_addresses.yaml"))
     with open(config_path) as f:
         to_config = yaml.safe_load(f)
 
