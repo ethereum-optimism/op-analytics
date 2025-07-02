@@ -138,8 +138,6 @@ def run_command(command, description):
         if process.stdout is not None:
             for line in process.stdout:
                 print(line.rstrip())
-        else:
-            log.warning("Could not capture Docker build output")
 
         process.wait()
         result = subprocess.CompletedProcess(
