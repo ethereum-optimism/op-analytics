@@ -17,7 +17,21 @@ def _get_config_path(config_filename: str) -> Path:
     is more robust as it doesn't rely on the working directory and provides better error
     messages when files can't be found.
     """
-    # Start from the current file's directory
+    # Try multiple strategies to find the config file
+
+    # Strategy 1: Try repo_path() first (works in most environments)
+    try:
+        from op_analytics.coreutils.path import repo_path
+
+        repo_root = repo_path("src/op_analytics/configs")
+        if repo_root is not None:
+            config_path = Path(repo_root) / config_filename
+            if config_path.exists():
+                return config_path
+    except Exception:
+        pass
+
+    # Strategy 2: Walk up from current file location (fallback)
     current_dir = Path(__file__).parent
 
     # Navigate up to find the repository root (where uv.lock is)
@@ -26,6 +40,18 @@ def _get_config_path(config_filename: str) -> Path:
             break
         current_dir = current_dir.parent
     else:
+        # Strategy 3: Try common container paths
+        container_paths = [
+            Path("/app/src/op_analytics/configs"),
+            Path("/workspace/src/op_analytics/configs"),
+            Path("/code/src/op_analytics/configs"),
+        ]
+
+        for container_path in container_paths:
+            config_path = container_path / config_filename
+            if config_path.exists():
+                return config_path
+
         raise FileNotFoundError("Could not find repository root (uv.lock not found)")
 
     # Navigate to the config file
