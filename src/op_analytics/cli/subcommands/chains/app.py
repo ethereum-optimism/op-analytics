@@ -488,12 +488,11 @@ def blockbatch_loads(
 
     # Load the dataset
     print(f"Loading {dataset_name}...")
-    result = load_to_clickhouse(
+    load_to_clickhouse(
         dataset=dataset,
         range_spec=range_spec,
         dry_run=dryrun,
     )
-    print(result)
 
 
 @app.command()

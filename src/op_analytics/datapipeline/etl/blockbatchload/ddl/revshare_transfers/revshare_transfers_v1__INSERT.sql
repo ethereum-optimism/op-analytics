@@ -13,12 +13,11 @@ WITH native_transfers AS (
     , t.trace_address
     , lower(t.from_address) AS from_address
     , lower(t.to_address) AS to_address
-    , t.amount AS amount
+    , t.amount
     , t.transfer_type
     , NULL AS token_address
     , f.chain AS revshare_from_chain
     , f.chain_id AS revshare_from_chain_id
-    , f.address AS revshare_from_address
 
   FROM INPUT_BLOCKBATCH('blockbatch/native_transfers/native_transfers_v1') AS t
   INNER JOIN datasources_revshareconfig.revshare_from_addresses AS f
