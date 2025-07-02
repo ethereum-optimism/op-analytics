@@ -20,6 +20,13 @@ from op_analytics.datapipeline.etl.loadbq.main import (
     load_superchain_raw_to_bq,
     load_superchain_4337_to_bq,
 )
+from op_analytics.datapipeline.etl.blockbatchload.main import (
+    load_to_clickhouse,
+)
+from op_analytics.datapipeline.etl.blockbatchload.yaml_loaders import (
+    load_revshare_from_addresses_to_clickhouse,
+    load_revshare_to_addresses_to_clickhouse,
+)
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 from op_analytics.datapipeline.orchestrate import normalize_chains, normalize_blockbatch_models
 
@@ -435,3 +442,67 @@ def newchain_backfill_models():
                 force_complete=False,
                 fork_process=True,
             )
+
+
+# ClickHouse Load Commands
+
+
+@app.command()
+def blockbatch_loads(
+    dataset_name: Annotated[
+        str,
+        typer.Argument(
+            help="Name of the dataset to load (e.g., 'revshare_transfers', 'contract_creation')"
+        ),
+    ],
+    range_spec: Annotated[str, typer.Argument(help="Range of dates to be processed.")],
+    dryrun: DRYRUN_OPTION = False,
+):
+    """Load blockbatch data to ClickHouse.
+    Lower case name of the dataset is the name of the dataset in the datasets module.
+    """
+    # Dynamically get the dataset object from the datasets module
+    import op_analytics.datapipeline.etl.blockbatchload.datasets as datasets_module
+
+    # Convert dataset_name to the constant name (e.g., "revshare_transfers" -> "REVSHARE_TRANSFERS")
+    constant_name = dataset_name.upper()
+
+    try:
+        dataset = getattr(datasets_module, constant_name)
+    except AttributeError:
+        # Get all available datasets for better error message
+        available_datasets = [
+            name.lower()
+            for name in dir(datasets_module)
+            if name.isupper() and not name.startswith("_")
+        ]
+        print(f"Error: Unknown dataset '{dataset_name}'")
+        print(f"Available datasets: {', '.join(available_datasets)}")
+        raise typer.Exit(1)
+
+    # Load revshare config first if needed for revshare_transfers
+    if dataset_name == "revshare_transfers":
+        print("Loading revshare configuration...")
+        load_revshare_from_addresses_to_clickhouse()
+        load_revshare_to_addresses_to_clickhouse()
+
+    # Load the dataset
+    print(f"Loading {dataset_name}...")
+    load_to_clickhouse(
+        dataset=dataset,
+        range_spec=range_spec,
+        dry_run=dryrun,
+    )
+
+
+@app.command()
+def load_revshare_config():
+    """Load revshare configuration YAML to ClickHouse."""
+    print("Loading revshare_from_addresses...")
+    load_revshare_from_addresses_to_clickhouse()
+    print("Loading revshare_to_addresses...")
+    load_revshare_to_addresses_to_clickhouse()
+    print("Revshare configuration loaded successfully.")
+
+
+# Backfills
