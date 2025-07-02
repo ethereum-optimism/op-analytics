@@ -11,7 +11,7 @@ SELECT
   , t.trace_address
   , t.from_address
   , t.to_address
-  , CAST(t.value_lossless AS DECIMAL(38,0)) AS amount
+  , CAST(t.value_lossless AS DECIMAL(38, 0)) AS amount
   , t.value_lossless AS amount_lossless
   , substring(t.input,1,10) AS input_method_id
   , t.call_type
