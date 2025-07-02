@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS _placeholder_
     `transfer_type` String,
     `token_address` String,
     `revshare_from_chain` String,
-    `revshare_from_chain_id` Nullable(Int32)
+    `revshare_from_chain_id` Nullable(Int32),
     INDEX dt_idx dt TYPE minmax GRANULARITY 1,
     INDEX block_timestamp_idx block_timestamp TYPE minmax GRANULARITY 1,
     INDEX revshare_from_chain_idx revshare_from_chain TYPE minmax GRANULARITY 1,

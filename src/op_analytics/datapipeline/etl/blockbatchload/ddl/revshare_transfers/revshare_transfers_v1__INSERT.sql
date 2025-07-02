@@ -29,7 +29,7 @@ WITH native_transfers AS (
     ON lower(ta.address) = lower(t.to_address)
       AND has(ta.expected_chains, t.chain)
       AND (ta.end_date IS NULL OR t.dt <= toDate(ta.end_date))
-  -- WHERE t.amount IS NOT NULL
+
 ),
 
 -- ERC20 transfers
@@ -63,7 +63,7 @@ erc20_transfers AS (
     ON lower(ta.address) = lower(t.to_address)
       AND has(ta.expected_chains, t.chain)
       AND (ta.end_date IS NULL OR t.dt <= toDate(ta.end_date))
-  -- WHERE t.amount IS NOT NULL
+
 )
 
 -- Combine native and ERC20 transfers
