@@ -17,8 +17,6 @@ def _get_config_path(config_filename: str) -> Path:
     is more robust as it doesn't rely on the working directory and provides better error
     messages when files can't be found.
     """
-    # Try multiple strategies to find the config file
-
     # Strategy 1: Try repo_path() first (works in most environments)
     try:
         from op_analytics.coreutils.path import repo_path
@@ -45,6 +43,7 @@ def _get_config_path(config_filename: str) -> Path:
             Path("/app/src/op_analytics/configs"),
             Path("/workspace/src/op_analytics/configs"),
             Path("/code/src/op_analytics/configs"),
+            Path("/usr/local/lib/python3.12/site-packages/op_analytics/configs"),
         ]
 
         for container_path in container_paths:
@@ -52,7 +51,30 @@ def _get_config_path(config_filename: str) -> Path:
             if config_path.exists():
                 return config_path
 
-        raise FileNotFoundError("Could not find repository root (uv.lock not found)")
+        # Strategy 4: Try relative to the current file's location
+        # Navigate from the current file location to find the configs directory
+        current_file_dir = Path(__file__).parent
+        possible_config_paths = [
+            current_file_dir / ".." / ".." / ".." / ".." / "configs" / config_filename,
+            current_file_dir / ".." / ".." / ".." / "configs" / config_filename,
+            current_file_dir / ".." / ".." / "configs" / config_filename,
+        ]
+
+        for config_path in possible_config_paths:
+            if config_path.resolve().exists():
+                return config_path.resolve()
+
+        # Strategy 5: Try to find the config file anywhere in the package
+        import op_analytics
+
+        op_analytics_root = Path(op_analytics.__file__).parent
+        config_path = op_analytics_root / "configs" / config_filename
+        if config_path.exists():
+            return config_path
+
+        raise FileNotFoundError(
+            f"Could not find config file '{config_filename}' in any expected location"
+        )
 
     # Navigate to the config file
     config_path = current_dir / "src" / "op_analytics" / "configs" / config_filename
