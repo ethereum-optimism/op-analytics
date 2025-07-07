@@ -111,4 +111,34 @@ def get_unique_chain_ids_from_dfs(dataframes):
 
         print(chain_ids_string)
         return chain_ids_string
+
+def get_rpc_urls_dict():
+    """
+    Get a dictionary mapping chain names to their RPC URLs from the metadata file.
+    Returns a dict where keys are chain names and values are RPC URLs.
+    """
+    df = get_op_stack_metadata_df()
+    # Filter out rows where rpc_url is null or empty
+    rpc_df = df[df['rpc_url'].notna() & (df['rpc_url'] != '')]
+    
+    # Create dictionary mapping chain_name to rpc_url
+    rpc_dict = dict(zip(rpc_df['chain_name'], rpc_df['rpc_url']))
+    
+    return rpc_dict
+
+def get_rpc_url_by_chain_name(chain_name):
+    """
+    Get RPC URL for a specific chain by its name.
+    Returns the RPC URL if found, None otherwise.
+    Includes fallback for Ethereum if not found in metadata.
+    """
+    rpc_dict = get_rpc_urls_dict()
+    rpc_url = rpc_dict.get(chain_name)
+    
+    # Fallback for Ethereum if not found in metadata
+    if not rpc_url and chain_name.lower() in ['ethereum', 'eth', 'mainnet']:
+        rpc_url = "https://eth.llamarpc.com"
+        print(f"Using fallback Ethereum RPC for {chain_name}: {rpc_url}")
+    
+    return rpc_url
                 
