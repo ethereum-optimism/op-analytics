@@ -29,7 +29,7 @@ This file defines the "from" addresses for revshare transfers - addresses that s
   - Transfers after this date will be excluded
 
 - **`chain_id`** (integer): The chain ID for the chain sending revshare
-  - Example:  `120` for Unichain, `8453` for Base
+  - Example:  `130` for Unichain, `8453` for Base
   - Used for joining back with other datasets
 
 #### Example Configuration
