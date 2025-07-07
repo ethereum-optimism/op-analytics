@@ -18,6 +18,7 @@ from op_analytics.coreutils.partitioned.writemanager import WriteManager
 from op_analytics.coreutils.partitioned.writerduckdb import OutputDuckDBRelation
 from op_analytics.datapipeline.models.compute.execute import PythonModel, PythonModelExecutor
 from op_analytics.datapipeline.models.compute.udfs import create_duckdb_macros, set_memory_limit
+from op_analytics.coreutils.threads import ProgressTracker
 
 log = structlog.get_logger()
 
@@ -114,9 +115,21 @@ def run_tasks(
         executed = 0
         success = 0
         failure = 0
-        for item in pending_items:
-            steps(item)
-            executed += 1
+
+        # Add ETA tracking for non-forked execution
+        tracker = ProgressTracker(total_tasks=len(pending_items))
+
+        for i, item in enumerate(pending_items):
+            with bound_contextvars(**item.context(), eta=tracker.eta()):
+                try:
+                    steps(item)
+                    success += 1
+                except Exception as ex:
+                    log.error("task", status="fail", exc_info=ex)
+                    failure += 1
+                finally:
+                    tracker.completed_tasks += 1
+                    executed += 1
 
     log.info("done", total=executed, success=success, fail=failure)
 
