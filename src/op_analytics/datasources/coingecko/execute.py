@@ -19,6 +19,7 @@ from op_analytics.datapipeline.chains.load import load_chain_metadata
 from .dataaccess import CoinGecko
 from .price_data import CoinGeckoDataSource
 
+
 log = structlog.get_logger()
 
 
@@ -227,6 +228,7 @@ def _fetch_and_write_metadata(
 def execute_metadata_pull(
     extra_token_ids_file: str | None = None,
     include_top_tokens: int = 0,
+    token_id: str | None = None,
 ) -> Dict[str, Any] | None:
     """
     Execute the CoinGecko metadata pull only.
@@ -234,6 +236,7 @@ def execute_metadata_pull(
     Args:
         extra_token_ids_file: Optional path to file with extra token IDs
         include_top_tokens: Number of top tokens by market cap to include (0 for none)
+        token_id: Optional single token ID to process (if provided, ignores other token sources)
 
     Returns:
         Summary of the metadata fetch operation
@@ -242,7 +245,14 @@ def execute_metadata_pull(
     data_source = CoinGeckoDataSource(session=session)
 
     # Get list of token IDs (from metadata, optional file, and optionally top tokens)
-    token_ids = get_token_ids_from_metadata_and_file(extra_token_ids_file, include_top_tokens)
+    if token_id is not None:
+        # Use single token if provided
+        token_ids = [token_id]
+        log.info("single_token_mode", token_id=token_id)
+    else:
+        # Use normal token collection logic
+        token_ids = get_token_ids_from_metadata_and_file(extra_token_ids_file, include_top_tokens)
+
     log.info("metadata_pull_start", token_count=len(token_ids))
 
     if not token_ids:
@@ -263,6 +273,8 @@ def execute_pull(
     extra_token_ids_file: str | None = None,
     include_top_tokens: int = 0,
     fetch_metadata: bool = False,
+    skip_existing_partitions: bool = False,
+    token_id: str | None = None,
 ) -> Dict[str, Any] | None:
     """
     Execute the CoinGecko price data pull.
@@ -272,6 +284,8 @@ def execute_pull(
         extra_token_ids_file: Optional path to file with extra token IDs
         include_top_tokens: Number of top tokens by market cap to include (0 for none)
         fetch_metadata: Whether to fetch and write token metadata
+        skip_existing_partitions: Whether to skip writing partitions that already exist
+        token_id: Optional single token ID to process (if provided, ignores other token sources)
 
     Returns:
         The actual price_df with the fetched price data
@@ -280,7 +294,14 @@ def execute_pull(
     data_source = CoinGeckoDataSource(session=session)
 
     # Get list of token IDs (from metadata, optional file, and optionally top tokens)
-    token_ids = get_token_ids_from_metadata_and_file(extra_token_ids_file, include_top_tokens)
+    if token_id is not None:
+        # Use single token if provided
+        token_ids = [token_id]
+        log.info("single_token_mode", token_id=token_id)
+    else:
+        # Use normal token collection logic
+        token_ids = get_token_ids_from_metadata_and_file(extra_token_ids_file, include_top_tokens)
+
     log.info("price_pull_start", token_count=len(token_ids))
 
     if not token_ids:
@@ -300,6 +321,58 @@ def execute_pull(
     except Exception as e:
         log.error("failed_to_fetch_price_data", error=str(e))
         return None
+
+    # Filter out existing partitions if requested
+    if skip_existing_partitions and not price_df.is_empty():
+        from op_analytics.coreutils.partitioned.dataaccess import init_data_access
+        from op_analytics.coreutils.partitioned.dailydatawrite import (
+            determine_location,
+            MARKERS_TABLE,
+        )
+        from op_analytics.coreutils.partitioned.output import ExpectedOutput
+
+        # Get unique dates from the fetched data
+        unique_dates = price_df["dt"].unique().to_list()
+
+        # Check which dates already have complete markers
+        client = init_data_access()
+        location = determine_location()
+
+        existing_dates = []
+        for dt in unique_dates:
+            # Construct the expected output marker path for this date
+            expected_output = ExpectedOutput(
+                root_path=CoinGecko.DAILY_PRICES.root_path,
+                file_name="out.parquet",
+                marker_path=f"{dt}/{CoinGecko.DAILY_PRICES.root_path}",
+            )
+
+            if client.marker_exists(
+                data_location=location,
+                marker_path=expected_output.marker_path,
+                markers_table=MARKERS_TABLE,
+            ):
+                existing_dates.append(dt)
+
+        if existing_dates:
+            # Filter out existing dates from the price data
+            original_count = len(price_df)
+            price_df = price_df.filter(~pl.col("dt").is_in(existing_dates))
+
+            log.info(
+                "filtered_existing_partitions",
+                original_rows=original_count,
+                filtered_rows=len(price_df),
+                skipped_dates=len(existing_dates),
+                skipped_date_list=existing_dates,
+            )
+
+            if price_df.is_empty():
+                log.info("all_partitions_already_exist")
+                return {
+                    "price_df": None,
+                    "metadata_df": None,
+                }
 
     # Schema assertions to help our future selves reading this code.
     raise_for_schema_mismatch(
@@ -373,12 +446,24 @@ if __name__ == "__main__":
         action="store_true",
         help="Fetch and write only metadata (no price data)",
     )
+    parser.add_argument(
+        "--skip-existing-partitions",
+        action="store_true",
+        help="Skip writing partitions that already exist",
+    )
+    parser.add_argument(
+        "--token-id",
+        type=str,
+        default=None,
+        help="Optional single token ID to process (if provided, ignores other token sources)",
+    )
     args = parser.parse_args()
 
     if args.metadata_only:
         result = execute_metadata_pull(
             extra_token_ids_file=args.extra_token_ids_file,
             include_top_tokens=args.include_top_tokens,
+            token_id=args.token_id,
         )
     else:
         result = execute_pull(
@@ -386,6 +471,8 @@ if __name__ == "__main__":
             extra_token_ids_file=args.extra_token_ids_file,
             include_top_tokens=args.include_top_tokens,
             fetch_metadata=args.fetch_metadata,
+            skip_existing_partitions=args.skip_existing_partitions,
+            token_id=args.token_id,
         )
 
     if result is not None:

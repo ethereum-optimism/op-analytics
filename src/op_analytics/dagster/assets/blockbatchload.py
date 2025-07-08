@@ -55,7 +55,10 @@ class NativeTransfersConfig(Config):
 @asset
 def native_transfers(context: OpExecutionContext, config: NativeTransfersConfig):
     """Load native transfers blockbatch data to Clickhouse."""
-    result = load_to_clickhouse(dataset=NATIVE_TRANSFERS)
+    result = load_to_clickhouse(
+        dataset=NATIVE_TRANSFERS,
+        range_spec=config.range_spec,
+    )
     context.log.info(result)
 
 
