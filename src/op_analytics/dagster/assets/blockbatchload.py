@@ -1,6 +1,7 @@
 from dagster import (
     OpExecutionContext,
     asset,
+    Field,
 )
 
 from op_analytics.datapipeline.etl.blockbatchload.main import (
@@ -46,10 +47,11 @@ def erc721_transfers(context: OpExecutionContext):
     context.log.info(result)
 
 
-@asset(config_schema={"range_spec": str})
+@asset(config_schema={"range_spec": Field(str, default_value="m7days")})
 def native_transfers(context: OpExecutionContext):
     """Load native transfers blockbatch data to Clickhouse."""
-    result = load_to_clickhouse(dataset=NATIVE_TRANSFERS, range_spec=context.op_config.get("range_spec", None))
+    context.log.info(context.op_config.get("range_spec"))
+    result = load_to_clickhouse(dataset=NATIVE_TRANSFERS, range_spec=context.op_config.get("range_spec"))
     context.log.info(result)
 
 
