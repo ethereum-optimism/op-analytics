@@ -49,14 +49,7 @@ def erc721_transfers(context: OpExecutionContext):
 @asset(config_schema={"range_spec": str})
 def native_transfers(context: OpExecutionContext):
     """Load native transfers blockbatch data to Clickhouse."""
-<<<<<<< HEAD
     result = load_to_clickhouse(dataset=NATIVE_TRANSFERS, range_spec=context.op_config.get("range_spec", None))
-=======
-    result = load_to_clickhouse(
-        dataset=NATIVE_TRANSFERS,
-        range_spec=config.range_spec,
-    )
->>>>>>> main
     context.log.info(result)
 
 
