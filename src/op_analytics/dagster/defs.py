@@ -19,6 +19,8 @@ MODULE_NAMES = [
     "blockbatchloaddaily",
     "bqpublic",
     "chainsdaily",
+    "chain_metadata",
+    "coingecko",
     "defillama",
     "dune",
     "github",
@@ -229,6 +231,12 @@ defs = Definitions(
             custom_k8s_config=SMALL_POD,
         ),
         #
+        create_schedule_for_group(
+            group="coingecko",
+            cron_schedule="30 0 * * *",  # Runs at 00:30 UTC daily
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
         create_schedule_for_selection(
             job_name="transforms_teleportr",
             selection=AssetSelection.assets(
@@ -263,6 +271,15 @@ defs = Definitions(
                 ["transforms", "fees"],
             ),
             cron_schedule="7 4,8,14,20 * * *",
+            custom_k8s_config=SMALL_POD,
+        ),
+        #
+        create_schedule_for_selection(
+            job_name="transforms_systemconfig",
+            selection=AssetSelection.assets(
+                ["transforms", "systemconfig"],
+            ),
+            cron_schedule="7 1,13 * * *",
             custom_k8s_config=SMALL_POD,
         ),
     ],

@@ -48,7 +48,7 @@ class L2BeatProjectsSummary:
 
         # Collect the list of projects tracked by L2Beat
         projects = []
-        for project_data in list(summary["data"]["projects"].values()):
+        for project_data in list(summary["projects"].values()):
             projects.append(L2BeatProject(id=project_data["id"], slug=project_data["slug"]))
 
         # Parse summary df
@@ -100,7 +100,7 @@ def parse_summary(summary):
     # Here we adapat the incoming data to match our existing schema.
     # This is a temporary patch while we work on migrating L2Beat to the
     # DailyData pattern.
-    projects_summary = list(summary["data"]["projects"].values())
+    projects_summary = list(summary["projects"].values())
 
     df = (
         pl.DataFrame(projects_summary)

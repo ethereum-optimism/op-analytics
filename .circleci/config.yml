@@ -149,18 +149,15 @@ jobs:
           service_account_email: GCP_SERVICE_ACCOUNT_EMAIL
           workload_identity_pool_id: GCP_WIP_ID
           workload_identity_pool_provider_id: GCP_WIP_PROVIDER_ID
-      - checkout-dep-1:
-          base_git_project: "op-analytics"
+      - checkout
       - setup-python-3-10
       - setup-python-3-10-project-dependencies:
-          base_git_project: "op-analytics"
+          base_git_project: "."
       - run:
           name: Generate and run Python scripts
           command: |
             export PATH=~/miniconda3/bin:$PATH
             source ~/miniconda3/bin/activate py310
-
-            cd "op-analytics"
 
             echo '<< parameters.notebook-paths >>' | jq -c '.[]' | while read -r notebook; do
               dir=$(echo $notebook | jq -r '.dir')
@@ -181,7 +178,7 @@ jobs:
           condition: << parameters.push >>
           commit-message: "<< parameters.commit-message >>"
           skip-ci: << parameters.skip-ci >>
-          folder: "op-analytics"
+          folder: "."
 
   deploy-github-pages:
     executor: default
@@ -274,17 +271,19 @@ workflows:
               "daily_l2_aggregate_later_loads",
             ]
     jobs:
-      - convert-and-run-notebooks-to-py-and-push:
-          commit-message: "GH Action Update - Agg Downloads"
-          notebook-paths: >-
-            [
-              {"dir": "other_chains_tracking", "notebook": "get_filtered_deployers"},
-              {"dir": "other_chains_tracking", "notebook": "total_chain_data_to_uploads"}
-            ]
+      - setup-python-3-10-job
+      - convert-and-run-notebooks-to-py:
+          requires:
+            - setup-python-3-10-job
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics
             - op-analytics-gcp
+          matrix:
+            parameters:
+              notebook_paths:
+                - other_chains_tracking/get_filtered_deployers
+                - other_chains_tracking/total_chain_data_to_uploads
 
   run_market_data:
     when:
@@ -305,7 +304,6 @@ workflows:
               notebook_paths:
                 - reference_data/market_data/get_market_data
 
-
   run_op_governance_uploads:
     when:
       or:
@@ -313,6 +311,7 @@ workflows:
         - equal:
             [<< pipeline.parameters.run_job >>, "run_op_governance_uploads"]
     jobs:
+      - setup-python-3-10-job
       - convert-and-run-notebooks-to-py:
           requires:
             - setup-python-3-10-job
@@ -353,6 +352,7 @@ workflows:
             [<< pipeline.parameters.run_job >>, "run_op_stack_metadata_upload"]
     jobs:
       - convert-and-run-notebooks-to-py-and-push:
+          push: always
           commit-message: "GH Action Update - Generate Chain Metadata, Matviews and Views"
           notebook-paths: >-
             [
@@ -384,12 +384,12 @@ workflows:
               "run_weekly_l2_chain_data_uploads",
             ]
     jobs:
-      - convert-and-run-notebooks-to-py-and-push:
+      - convert-and-run-notebooks-to-py:
           commit-message: "GH Action Update - Weekly"
-          notebook-paths: >-
-            [
-              {"dir": "other_chains_tracking", "notebook": "get_desybil_wallets"}
-            ]
+          matrix:
+            parameters:
+              notebook_paths:
+                - other_chains_tracking/get_desybil_wallets
           context:
             - op-analytics-legacy
             - circleci-repo-op-analytics

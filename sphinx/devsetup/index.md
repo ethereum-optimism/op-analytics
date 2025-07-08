@@ -139,6 +139,13 @@ Finally update the Dagster helm chart, telling it about the new image by running
 
 You can do both of the above at once with `make docker-dagster && make helm-dagster`.
 
+- **Alternative:** You can use the CLI to automate all of the above in one step:
+
+  ```sh
+  uv run opdata dagster bump-version --auto-bump
+  ```
+  - See `uv run opdata dagster bump-version --help` for more options (e.g. set a specific version, skip build, etc.)
+
 
 ## Updating the Docs
 

@@ -4,14 +4,15 @@ import json
 from google.cloud import bigquery
 from google.oauth2 import service_account
 from google.api_core.exceptions import NotFound
+from google.auth.exceptions import OAuthError
 import pandas_utils as pu
 import pandas as pd
 import math
 import subprocess
+import time
+import logging
 
 dotenv.load_dotenv()
-
-import logging
 
 # Setup logging configuration
 logging.basicConfig(level=logging.ERROR)  # Set logging level to ERROR
@@ -65,27 +66,48 @@ def setup_google_cloud_env():
     
     return True, None
 
-def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
-        # Check if running in a GCP environment and will use the default credentials
-        # -------------- start OIDC login
-        # In this case the enviroment variables already contain the credentials set up by the GCP login performed
+def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID"), max_retries=3):
+    """
+    Connect to BigQuery with retry mechanism for token expiration.
+    
+    Args:
+        project_id: The Google Cloud project ID
+        max_retries: Maximum number of retry attempts for token refresh
+    
+    Returns:
+        BigQuery client or None if all retries fail
+    """
+    for attempt in range(max_retries):
         try:
-            logging.info("Using OIDC login")
-            #project_id is taken from the environment variables GOOGLE_CLOUD_PROJECT
-            client=bigquery.Client()
+            # Check if running in a GCP environment and will use the default credentials
+            # -------------- start OIDC login
+            # In this case the environment variables already contain the credentials set up by the GCP login performed
+            logging.info(f"Attempt {attempt + 1}: Using OIDC login")
+            # project_id is taken from the environment variables GOOGLE_CLOUD_PROJECT
+            client = bigquery.Client()
             return client
+        except OAuthError as e:
+            if "stale" in str(e).lower() or "invalid_grant" in str(e).lower():
+                logging.warning(f"OAuth token expired on attempt {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    logging.info("Waiting before retry...")
+                    time.sleep(2 ** attempt)  # Exponential backoff
+                    continue
+                else:
+                    logging.error("All OIDC attempts failed due to token expiration")
+            else:
+                logging.error(f"OAuth error on attempt {attempt + 1}: {e}")
         except Exception as e:
-            logging.error(f"Exception occurred while trying to use OIDC login")
+            logging.error(f"Exception occurred while trying to use OIDC login on attempt {attempt + 1}: {e}")
 
+        # If OIDC fails, try local machine credentials
         try: 
-            logging.info("Using local machine credentials")
+            logging.info(f"Attempt {attempt + 1}: Using local machine credentials")
             setup_google_cloud_env()
             client = bigquery.Client(project=project_id)
             return client
         except Exception as e:
-            logging.error(f"Exception occurred while trying to get logging configuration file")
-            return None
-        # -------------- end OIDC login
+            logging.error(f"Exception occurred while trying to get local credentials on attempt {attempt + 1}: {e}")
 
         # Check if running locally
         is_running_local = os.environ.get("IS_RUNNING_LOCAL", "False").lower() == "true"
@@ -108,8 +130,13 @@ def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID")):
             client = bigquery.Client(credentials=credentials, project=project_id)
             return client
         except Exception as e:
-            logging.critical(f"Exception occurred while trying to get logging configuration file")
-            return None
+            logging.critical(f"Exception occurred while trying to get service account credentials on attempt {attempt + 1}: {e}")
+            if attempt < max_retries - 1:
+                time.sleep(2 ** attempt)  # Exponential backoff
+                continue
+    
+    logging.critical("All authentication methods failed")
+    return None
 
 def check_table_exists(client, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID")):
     table_ref = f"{project_id}.{dataset_id}.{table_id}"
@@ -133,15 +160,15 @@ def validate_schema(df, schema):
         extra = df_columns - schema_columns
         raise ValueError(f"Schema mismatch. Missing: {missing}, Extra: {extra}")
     
-def get_bq_type(column_name, column_type, series):
+def get_bq_type(column_name, column_type, series=None):
     column_name = str(column_name)
     column_type = str(column_type)
 
-    if pu.is_repeated_field(series):
+    if series is not None and pu.is_repeated_field(series):
         if series.apply(lambda x: isinstance(x, dict)).any():
             return 'RECORD'
         else:
-            return 'STRING'  # For lists, we'll store as JSON strings
+            return 'STRING'
     
     if (column_name == 'date' or column_name == 'dt' or 
         column_name.endswith('_dt') or column_name.startswith('dt_')):
@@ -179,74 +206,121 @@ def drop_table_if_exists(client, project_id, dataset_id, table_id):
         
 def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', 
                          write_mode='overwrite', project_id=os.getenv("BQ_PROJECT_ID"), 
-                         chunk_size=100000):
+                         chunk_size=100000, max_retries=3):
     print(f"Start Writing {dataset_id}.{table_id}")
     
-    client = connect_bq_client(project_id)
-
-    # Check if the table exists
-    table_ref = f"{project_id}.{dataset_id}.{table_id}"
-    try:
-        table = client.get_table(table_ref)
-        # Use existing schema if table exists
-        schema = table.schema
-    except NotFound:
-        # Create schema based on the first chunk if table doesn't exist
-        first_chunk = df.iloc[:chunk_size]
-        schema = create_schema(first_chunk)
-
-    first_chunk = df.iloc[:chunk_size]
-    
-    # Set the write disposition
-    write_disposition = (bigquery.WriteDisposition.WRITE_APPEND if write_mode == 'append' 
-                         else bigquery.WriteDisposition.WRITE_TRUNCATE)
-
-    # Create a job configuration
-    job_config = bigquery.LoadJobConfig(
-        write_disposition=write_disposition,
-        schema=schema
-    )
-
-    # Calculate the number of chunks
-    total_rows = len(df)
-    num_chunks = math.ceil(total_rows / chunk_size)
-
-    for i, (_, chunk_df) in enumerate(df.groupby(df.index // chunk_size)):
-        # Reset index for each chunk
-        chunk_df = chunk_df.reset_index(drop=True)
-        # Ensure chain id isn't weird
+    for attempt in range(max_retries):
         try:
-            for col in df.columns:
-                if ('chain_id' in col.lower() or 'chainid' in col.lower()) and (df[col].dtype == 'object' or df[col].dtype == 'string'):
-                    chunk_df[col] = chunk_df[col].apply(clean_chain_id)
-        except Exception as e:
-            print(f"An error occurred while processing column {col}: {str(e)}")
+            client = connect_bq_client(project_id)
+            if client is None:
+                raise Exception("Failed to connect to BigQuery")
+
+            # Check if the table exists
+            table_ref = f"{project_id}.{dataset_id}.{table_id}"
+            try:
+                table = client.get_table(table_ref)
+                # Use existing schema if table exists
+                schema = table.schema
                 
-        # Process the chunk (flatten nested data, etc.)
-        # print("Original DataFrame columns:", df.columns.tolist())
-        # print("Chunk columns before processing:", chunk_df.columns.tolist())
-        chunk_df = process_chunk(chunk_df)
-        # print("Chunk columns after processing:", chunk_df.columns.tolist())
-        # print("Schema fields:", [field.name for field in schema])
+                # Check for new columns and update schema if needed
+                existing_columns = set(field.name for field in table.schema)
+                new_columns = set(df.columns) - existing_columns
+                
+                if new_columns:
+                    print(f"Adding new columns to {table_id}: {', '.join(new_columns)}")
+                    new_schema = table.schema[:]
+                    for new_col in new_columns:
+                        bq_data_type = get_bq_type(new_col, str(df[new_col].dtype))
+                        new_schema.append(bigquery.SchemaField(new_col, bq_data_type))
+                    
+                    table.schema = new_schema
+                    client.update_table(table, ['schema'])
+                    schema = new_schema  # Update schema for validation
+                    
+            except NotFound:
+                # Create schema based on the first chunk if table doesn't exist
+                first_chunk = df.iloc[:chunk_size]
+                schema = create_schema(first_chunk)
 
-        validate_schema(chunk_df, schema)
-        # Load the chunk into BigQuery
-        job = client.load_table_from_dataframe(
-            chunk_df, f"{dataset_id}.{table_id}", job_config=job_config
-        )
+            first_chunk = df.iloc[:chunk_size]
+            
+            # Set the write disposition
+            write_disposition = (bigquery.WriteDisposition.WRITE_APPEND if write_mode == 'append' 
+                                 else bigquery.WriteDisposition.WRITE_TRUNCATE)
 
-        try:
-            job.result()  # Wait for the job to complete
-            print(f"Chunk {i+1}/{num_chunks} loaded successfully to {dataset_id}.{table_id}")
+            # Create a job configuration
+            job_config = bigquery.LoadJobConfig(
+                write_disposition=write_disposition,
+                schema=schema
+            )
+
+            # Calculate the number of chunks
+            total_rows = len(df)
+            num_chunks = math.ceil(total_rows / chunk_size)
+
+            for i, (_, chunk_df) in enumerate(df.groupby(df.index // chunk_size)):
+                # Reset index for each chunk
+                chunk_df = chunk_df.reset_index(drop=True)
+                # Ensure chain id isn't weird
+                try:
+                    for col in df.columns:
+                        if ('chain_id' in col.lower() or 'chainid' in col.lower()) and (df[col].dtype == 'object' or df[col].dtype == 'string'):
+                            chunk_df[col] = chunk_df[col].apply(clean_chain_id)
+                except Exception as e:
+                    print(f"An error occurred while processing column {col}: {str(e)}")
+                        
+                # Process the chunk (flatten nested data, etc.)
+                # print("Original DataFrame columns:", df.columns.tolist())
+                # print("Chunk columns before processing:", chunk_df.columns.tolist())
+                chunk_df = process_chunk(chunk_df)
+                # print("Chunk columns after processing:", chunk_df.columns.tolist())
+                # print("Schema fields:", [field.name for field in schema])
+
+                validate_schema(chunk_df, schema)
+                # Load the chunk into BigQuery
+                job = client.load_table_from_dataframe(
+                    chunk_df, f"{dataset_id}.{table_id}", job_config=job_config
+                )
+
+                try:
+                    job.result()  # Wait for the job to complete
+                    print(f"Chunk {i+1}/{num_chunks} loaded successfully to {dataset_id}.{table_id}")
+                except Exception as e:
+                    print(f"Error loading chunk {i+1}/{num_chunks} to BigQuery: {e}")
+                    raise  # Re-raise the exception for higher-level error handling
+
+                # If it's not the first chunk, change write mode to append
+                if i == 0 and write_mode == 'overwrite':
+                    job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND
+
+            print(f"All data loaded successfully to {dataset_id}.{table_id}")
+            return  # Success, exit the retry loop
+            
+        except OAuthError as e:
+            if "stale" in str(e).lower() or "invalid_grant" in str(e).lower():
+                print(f"OAuth token expired on attempt {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    print("Waiting before retry...")
+                    time.sleep(2 ** attempt)  # Exponential backoff
+                    continue
+                else:
+                    print("All attempts failed due to token expiration")
+                    raise
+            else:
+                print(f"OAuth error on attempt {attempt + 1}: {e}")
+                raise
         except Exception as e:
-            print(f"Error loading chunk {i+1}/{num_chunks} to BigQuery: {e}")
-            raise  # Re-raise the exception for higher-level error handling
-
-        # If it's not the first chunk, change write mode to append
-        if i == 0 and write_mode == 'overwrite':
-            job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND
-
-    print(f"All data loaded successfully to {dataset_id}.{table_id}")
+            print(f"Error on attempt {attempt + 1}: {e}")
+            if attempt < max_retries - 1:
+                print("Waiting before retry...")
+                time.sleep(2 ** attempt)  # Exponential backoff
+                continue
+            else:
+                print("All attempts failed")
+                raise
+    
+    print("All retry attempts failed")
+    raise Exception("Failed to write data to BigQuery after all retry attempts")
 
 def create_schema(df):
     # print('makin schema')
@@ -283,85 +357,124 @@ def process_chunk(df):
 
     return processed_df
 
-def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'dt']):
-    client = connect_bq_client(project_id)
-    table_ref = f"{project_id}.{dataset_id}.{table_id}"
+def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads', project_id=os.getenv("BQ_PROJECT_ID"), unique_keys=['chain', 'dt'], max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            # Create a fresh client on each attempt to handle token expiration
+            client = connect_bq_client(project_id)
+            if client is None:
+                raise Exception("Failed to connect to BigQuery")
+                
+            table_ref = f"{project_id}.{dataset_id}.{table_id}"
 
-    for key in unique_keys:
-        if key in df.columns:
+            for key in unique_keys:
+                if key in df.columns:
+                    try:
+                        df[key] = df[key].fillna('none')
+                    except Exception as e:
+                        print(f"Warning: Could not fill NULLs for column {key}. Error: {str(e)}")
+            
             try:
-                df[key] = df[key].fillna('none')
-            except Exception as e:
-                print(f"Warning: Could not fill NULLs for column {key}. Error: {str(e)}")
-    
-    try:
-        # Check if the table exists
-        if check_table_exists(client, table_id, dataset_id, project_id):
-            # Get the existing table schema
-            table = client.get_table(table_ref)
-            existing_columns = set(field.name for field in table.schema)
-            
-            # Identify new columns
-            new_columns = set(df.columns) - existing_columns
+                # Check if the table exists
+                if check_table_exists(client, table_id, dataset_id, project_id):
+                    # Get the existing table schema
+                    table = client.get_table(table_ref)
+                    existing_columns = set(field.name for field in table.schema)
+                    
+                    # Identify new columns
+                    new_columns = set(df.columns) - existing_columns
 
-            # After checking for new columns
-            missing_columns = existing_columns - set(df.columns)
-            if missing_columns:
-                for col in missing_columns:
-                    df[col] = None  # or an appropriate default value
+                    # After checking for new columns
+                    missing_columns = existing_columns - set(df.columns)
+                    if missing_columns:
+                        for col in missing_columns:
+                            df[col] = None  # or an appropriate default value
+                    
+                    # If there are new columns, alter the table
+                    if new_columns:
+                        new_schema = table.schema[:]
+                        for new_col in new_columns:
+                            bq_data_type = get_bq_type(new_col, str(df[new_col].dtype))
+                            new_schema.append(bigquery.SchemaField(new_col, bq_data_type))
+                        
+                        table.schema = new_schema
+                        client.update_table(table, ['schema'])
+                        logger.info(f"Added new columns to {table_id}: {', '.join(new_columns)}")
+                        
+                    # Create staging table for upsert
+                    staging_table_id = f"{table_id}_staging"
+                    staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
+                    
+                    # Write data to staging table (overwrite mode)
+                    # print(df.head(5))
+                    delete_bq_table(table_id = staging_table_id, dataset_id = dataset_id, project_id=project_id)
+                    write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
+                    
+                    # Perform upsert from staging table to main table
+                    merge_query = f"""
+                    MERGE `{table_ref}` T
+                    USING `{staging_table_ref}` S
+                    ON {" AND ".join([f"T.{key} = S.{key}" for key in unique_keys])}
+                    WHEN MATCHED THEN
+                      UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in df.columns if col not in unique_keys])}
+                    WHEN NOT MATCHED THEN
+                      INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f'S.{col}' for col in df.columns])})
+                    """
+                    
+                    # Execute the merge query
+                    query_job = client.query(merge_query)
+                    query_job.result()
+                    
+                    logger.info(f"Append and upsert to {dataset_id}.{table_id} completed successfully")
+                    
+                    # Clean up staging table
+                    client.delete_table(staging_table_ref)
+                    delete_bq_table(table_id = staging_table_id, dataset_id = dataset_id, project_id=project_id)
+                    logger.info(f"Staging table {staging_table_ref} deleted.")
+                    
+                else:
+                    # If the table doesn't exist, just create it by writing the data (overwrite mode)
+                    write_df_to_bq_table(df, table_id, dataset_id, write_mode='overwrite', project_id=project_id)
             
-            # If there are new columns, alter the table
-            if new_columns:
-                new_schema = table.schema[:]
-                for new_col in new_columns:
-                    bq_data_type = get_bq_type(new_col, str(df[new_col].dtype))
-                    new_schema.append(bigquery.SchemaField(new_col, bq_data_type))
-                
-                table.schema = new_schema
-                client.update_table(table, ['schema'])
-                logger.info(f"Added new columns to {table_id}: {', '.join(new_columns)}")
-                
-            # Create staging table for upsert
-            staging_table_id = f"{table_id}_staging"
-            staging_table_ref = f"{project_id}.{dataset_id}.{staging_table_id}"
+            except OAuthError as e:
+                if "stale" in str(e).lower() or "invalid_grant" in str(e).lower():
+                    print(f"OAuth token expired on attempt {attempt + 1}: {e}")
+                    if attempt < max_retries - 1:
+                        print("Waiting before retry...")
+                        time.sleep(2 ** attempt)  # Exponential backoff
+                        continue
+                    else:
+                        print("All attempts failed due to token expiration")
+                        raise
+                else:
+                    print(f"OAuth error on attempt {attempt + 1}: {e}")
+                    raise
+            except Exception as e:
+                logger.error(f"Error during append_and_upsert_df_to_bq_table on attempt {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    print("Waiting before retry...")
+                    time.sleep(2 ** attempt)  # Exponential backoff
+                    continue
+                else:
+                    raise  # Re-raise the exception for higher-level error handling
             
-            # Write data to staging table (overwrite mode)
-            # print(df.head(5))
-            delete_bq_table(table_id = staging_table_id, dataset_id = dataset_id, project_id=project_id)
-            write_df_to_bq_table(df, staging_table_id, dataset_id, write_mode='overwrite', project_id=project_id)
+            return  # Success, exit the retry loop
             
-            # Perform upsert from staging table to main table
-            merge_query = f"""
-            MERGE `{table_ref}` T
-            USING `{staging_table_ref}` S
-            ON {" AND ".join([f"T.{key} = S.{key}" for key in unique_keys])}
-            WHEN MATCHED THEN
-              UPDATE SET {", ".join([f"T.{col} = S.{col}" for col in df.columns if col not in unique_keys])}
-            WHEN NOT MATCHED THEN
-              INSERT ({", ".join(df.columns)}) VALUES ({", ".join([f'S.{col}' for col in df.columns])})
-            """
-            
-            # Execute the merge query
-            query_job = client.query(merge_query)
-            query_job.result()
-            
-            logger.info(f"Append and upsert to {dataset_id}.{table_id} completed successfully")
-            
-            # Clean up staging table
-            client.delete_table(staging_table_ref)
-            delete_bq_table(table_id = staging_table_id, dataset_id = dataset_id, project_id=project_id)
-            logger.info(f"Staging table {staging_table_ref} deleted.")
-            
-        else:
-            # If the table doesn't exist, just create it by writing the data (overwrite mode)
-            write_df_to_bq_table(df, table_id, dataset_id, write_mode='overwrite', project_id=project_id)
+        except Exception as e:
+            print(f"Error on attempt {attempt + 1}: {e}")
+            if attempt < max_retries - 1:
+                print("Waiting before retry...")
+                time.sleep(2 ** attempt)  # Exponential backoff
+                continue
+            else:
+                print("All attempts failed")
+                raise
     
-    except Exception as e:
-        logger.error(f"Error during append_and_upsert_df_to_bq_table: {e}")
-        raise  # Re-raise the exception for higher-level error handling
+    print("All retry attempts failed")
+    raise Exception("Failed to upsert data to BigQuery after all retry attempts")
 
 # WARNING THE DELETES TABLES
-def delete_bq_table(dataset_id, table_id, project_id=os.getenv("BQ_PROJECT_ID")):
+def delete_bq_table(dataset_id, table_id, project_id=os.getenv("BQ_PROJECT_ID"), max_retries=3):
     """
     Deletes a table from a BigQuery dataset.
 
@@ -370,30 +483,87 @@ def delete_bq_table(dataset_id, table_id, project_id=os.getenv("BQ_PROJECT_ID"))
         table_id (str): The ID of the table to be deleted.
         project_id (str, optional): The ID of the Google Cloud project. If not provided,
             the project ID from the environment variable GOOGLE_CLOUD_PROJECT will be used.
+        max_retries (int): Maximum number of retry attempts for token expiration.
 
     Returns:
         bool: True if the table was deleted successfully, False otherwise.
     """
-    client = connect_bq_client(project_id = project_id)
+    for attempt in range(max_retries):
+        try:
+            # Create a fresh client on each attempt to handle token expiration
+            client = connect_bq_client(project_id=project_id)
+            if client is None:
+                raise Exception("Failed to connect to BigQuery")
 
-    # Get the table reference
-    table_ref = client.dataset(dataset_id).table(table_id)
+            # Get the table reference
+            table_ref = client.dataset(dataset_id).table(table_id)
 
-    try:
-        # Delete the table
-        client.delete_table(table_ref, not_found_ok=True)
-        print(f"Table '{table_id}' deleted successfully from dataset '{dataset_id}'.")
-        return True
-    except Exception as e:
-        print(f"Error deleting table '{table_id}' from dataset '{dataset_id}': {e}")
-        return False
+            # Delete the table
+            client.delete_table(table_ref, not_found_ok=True)
+            print(f"Table '{table_id}' deleted successfully from dataset '{dataset_id}'.")
+            return True
+            
+        except OAuthError as e:
+            if "stale" in str(e).lower() or "invalid_grant" in str(e).lower():
+                print(f"OAuth token expired on attempt {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    print("Waiting before retry...")
+                    time.sleep(2 ** attempt)  # Exponential backoff
+                    continue
+                else:
+                    print("All attempts failed due to token expiration")
+                    return False
+            else:
+                print(f"OAuth error on attempt {attempt + 1}: {e}")
+                return False
+        except Exception as e:
+            print(f"Error deleting table '{table_id}' from dataset '{dataset_id}' on attempt {attempt + 1}: {e}")
+            if attempt < max_retries - 1:
+                print("Waiting before retry...")
+                time.sleep(2 ** attempt)  # Exponential backoff
+                continue
+            else:
+                return False
+    
+    print("All retry attempts failed")
+    return False
 
-def run_query_to_df(query, project_id=os.getenv("BQ_PROJECT_ID")):
-    client = connect_bq_client(project_id)
-    # Run the query and get the results as a pandas DataFrame
-    query_job = client.query(query)
-    results = query_job.result().to_dataframe()
-    return results
+def run_query_to_df(query, project_id=os.getenv("BQ_PROJECT_ID"), max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            client = connect_bq_client(project_id)
+            if client is None:
+                raise Exception("Failed to connect to BigQuery")
+                
+            query_job = client.query(query)
+            df = query_job.to_dataframe()
+            return df
+            
+        except OAuthError as e:
+            if "stale" in str(e).lower() or "invalid_grant" in str(e).lower():
+                print(f"OAuth token expired on attempt {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    print("Waiting before retry...")
+                    time.sleep(2 ** attempt)  # Exponential backoff
+                    continue
+                else:
+                    print("All attempts failed due to token expiration")
+                    raise
+            else:
+                print(f"OAuth error on attempt {attempt + 1}: {e}")
+                raise
+        except Exception as e:
+            print(f"Error on attempt {attempt + 1}: {e}")
+            if attempt < max_retries - 1:
+                print("Waiting before retry...")
+                time.sleep(2 ** attempt)  # Exponential backoff
+                continue
+            else:
+                print("All attempts failed")
+                raise
+    
+    print("All retry attempts failed")
+    raise Exception("Failed to run query after all retry attempts")
      
      
 def run_query_and_save_csv(query, destination_file, project_id=os.getenv("BQ_PROJECT_ID")):

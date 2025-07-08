@@ -296,7 +296,7 @@ dagster-user-deployments:
       image:
         # When a tag is not supplied, it will default as the Helm chart version.
         repository: "ghcr.io/ethereum-optimism/op-analytics-dagster"
-        tag: "v20250510.003"
+        tag: "v20250708.002"
 
         # Change with caution! If you're using a fixed tag for pipeline run images, changing the
         # image pull policy to anything other than "Always" will use a cached/stale image, which is
@@ -1417,4 +1417,3 @@ pipelineRun:
   #   ENV_ONE: one
   #   ENV_TWO: two
   env: {}
-
