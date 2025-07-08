@@ -55,7 +55,7 @@ def goldsky_mainnet_chains() -> list[str]:
         "fraxtal",
         "ham",
         "ink",
-        "kroma",
+        # "kroma",  # (ggarner - 2025/07/07) Exclude kroma due to chain shutting down.
         "lisk",
         "lyra",
         "metal",

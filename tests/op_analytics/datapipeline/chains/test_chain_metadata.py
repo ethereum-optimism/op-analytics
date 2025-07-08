@@ -179,7 +179,6 @@ def test_goldsky_chains():
             "fraxtal",
             "ham",
             "ink",
-            "kroma",
             "lisk",
             "lyra",
             "metal",
