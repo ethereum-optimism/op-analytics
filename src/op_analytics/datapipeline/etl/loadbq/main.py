@@ -27,7 +27,6 @@ def load_superchain_raw_to_bq(
         dryrun=dryrun,
         force_complete=force_complete,
         force_not_ready=force_not_ready,
-        excluded_chains=["kroma"],
     )
 
 
