@@ -18,7 +18,7 @@ WITH native_transfers AS (
     , NULL AS token_address
     , f.chain AS revshare_from_chain
     , f.chain_id AS revshare_from_chain_id
-    , f.address IS NOT NULL AS is_revshare_transfer
+    , f.address IS NOT NULL AND f.address != '' AS is_revshare_transfer
 
   FROM INPUT_BLOCKBATCH('blockbatch/native_transfers/native_transfers_v1') AS t
   INNER JOIN datasources_revshareconfig.revshare_to_addresses AS ta
@@ -54,7 +54,7 @@ erc20_transfers AS (
     , lower(t.contract_address) AS token_address
     , f.chain AS revshare_from_chain
     , f.chain_id AS revshare_from_chain_id
-    , f.address IS NOT NULL AS is_revshare_transfer
+    , f.address IS NOT NULL AND f.address != '' AS is_revshare_transfer
 
   FROM INPUT_BLOCKBATCH('blockbatch/token_transfers/erc20_transfers_v1') AS t
   INNER JOIN datasources_revshareconfig.revshare_to_addresses AS ta
