@@ -63,6 +63,8 @@ This file defines the "to" addresses for revshare transfers - OP receiver addres
 
 - **`expected_chains`** (array of strings): Chains where we look for this address to receive revshare
   - Example: `["ethereum"]`, `["base", "ethereum"]`
+  - Special value `"all"` can be used to match transfers from any chain
+  - Example: `["all"]` matches all chains
   - Used for filtering transfers to the chains where they are expected.
 
 #### Example Configuration
@@ -73,6 +75,11 @@ This file defines the "to" addresses for revshare transfers - OP receiver addres
   expected_chains:
     - "base"
     - "ethereum"
+
+"0x16A27462B4D61BDD72CbBabd3E43e11791F7A28c":
+  description: "OP Receiver - All Chains"
+  expected_chains:
+    - "all"
 ```
 
 ## Usage
