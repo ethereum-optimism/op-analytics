@@ -18,16 +18,19 @@ WITH native_transfers AS (
     , NULL AS token_address
     , f.chain AS revshare_from_chain
     , f.chain_id AS revshare_from_chain_id
+    , f.address IS NOT NULL AS is_revshare_transfer
 
   FROM INPUT_BLOCKBATCH('blockbatch/native_transfers/native_transfers_v1') AS t
-  INNER JOIN datasources_revshareconfig.revshare_from_addresses AS f
-    ON lower(f.address) = lower(t.from_address)
-      AND has(f.expected_chains, t.chain)
-      AND (f.end_date IS NULL OR t.dt <= toDate(f.end_date))
   INNER JOIN datasources_revshareconfig.revshare_to_addresses AS ta
-    ON lower(ta.address) = lower(t.to_address)
+    ON
+      lower(ta.address) = lower(t.to_address)
       AND has(ta.expected_chains, t.chain)
       AND (ta.end_date IS NULL OR t.dt <= toDate(ta.end_date))
+  LEFT JOIN datasources_revshareconfig.revshare_from_addresses AS f
+    ON
+      lower(f.address) = lower(t.from_address)
+      AND has(f.expected_chains, t.chain)
+      AND (f.end_date IS NULL OR t.dt <= toDate(f.end_date))
 
 ),
 
@@ -51,17 +54,20 @@ erc20_transfers AS (
     , lower(t.contract_address) AS token_address
     , f.chain AS revshare_from_chain
     , f.chain_id AS revshare_from_chain_id
+    , f.address IS NOT NULL AS is_revshare_transfer
 
   FROM INPUT_BLOCKBATCH('blockbatch/token_transfers/erc20_transfers_v1') AS t
-  INNER JOIN datasources_revshareconfig.revshare_from_addresses AS f
-    ON lower(f.address) = lower(t.from_address)
+  INNER JOIN datasources_revshareconfig.revshare_to_addresses AS ta
+    ON
+      lower(ta.address) = lower(t.to_address)
+      AND has(ta.expected_chains, t.chain)
+      AND (ta.end_date IS NULL OR t.dt <= toDate(ta.end_date))
+  LEFT JOIN datasources_revshareconfig.revshare_from_addresses AS f
+    ON
+      lower(f.address) = lower(t.from_address)
       AND has(f.expected_chains, t.chain)
       AND hasAny(f.tokens, [lower(t.contract_address)])
       AND (f.end_date IS NULL OR t.dt <= toDate(f.end_date))
-  INNER JOIN datasources_revshareconfig.revshare_to_addresses AS ta
-    ON lower(ta.address) = lower(t.to_address)
-      AND has(ta.expected_chains, t.chain)
-      AND (ta.end_date IS NULL OR t.dt <= toDate(ta.end_date))
 
 )
 
