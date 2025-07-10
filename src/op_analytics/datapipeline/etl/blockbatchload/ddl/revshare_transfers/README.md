@@ -41,6 +41,20 @@ The SQL joins against the address tables to:
 - Handle both native and ERC20 transfers
 - Combine results with UNION ALL
 
+## Join Logic & Data Output
+
+The system uses a specific join strategy:
+
+- **INNER JOIN** to `revshare_to_addresses` - **All transfers go TO revshare addresses**
+- **LEFT JOIN** to `revshare_from_addresses` - **Some transfers come FROM revshare addresses**
+
+### Boolean Field: `is_revshare_transfer`
+
+- **`TRUE`** - Transfer comes FROM a revshare address AND goes TO a revshare address (full revshare transfer)
+- **`FALSE`** - Transfer only goes TO a revshare address (incoming transfer from external address)
+
+**Note**: All results are guaranteed to have transfers going TO revshare addresses due to the INNER JOIN. The boolean field identifies the subset that also originates from revshare addresses.
+
 ## File Structure
 
 - `revshare_transfers_v1__CREATE.sql` - Table creation DDL
