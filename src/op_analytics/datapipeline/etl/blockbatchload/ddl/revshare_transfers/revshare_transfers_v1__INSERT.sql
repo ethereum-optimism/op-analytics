@@ -24,7 +24,7 @@ WITH native_transfers AS (
   INNER JOIN datasources_revshareconfig.revshare_to_addresses AS ta
     ON
       lower(ta.address) = lower(t.to_address)
-      AND has(ta.expected_chains, t.chain)
+      AND (has(ta.expected_chains, t.chain) OR has(ta.expected_chains, 'all'))
       AND (ta.end_date IS NULL OR t.dt <= toDate(ta.end_date))
   LEFT JOIN datasources_revshareconfig.revshare_from_addresses AS f
     ON
@@ -60,7 +60,7 @@ erc20_transfers AS (
   INNER JOIN datasources_revshareconfig.revshare_to_addresses AS ta
     ON
       lower(ta.address) = lower(t.to_address)
-      AND has(ta.expected_chains, t.chain)
+      AND (has(ta.expected_chains, t.chain) OR has(ta.expected_chains, 'all'))
       AND (ta.end_date IS NULL OR t.dt <= toDate(ta.end_date))
   LEFT JOIN datasources_revshareconfig.revshare_from_addresses AS f
     ON
