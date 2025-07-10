@@ -14,7 +14,7 @@ from op_analytics.coreutils.request import new_session
 from op_analytics.datapipeline.chains.tokens import get_token_ids_from_metadata_and_file
 
 from ..dataaccess import DefiLlama
-from .price_data import DefiLlamaTokenPrices, TOKEN_PRICES_SCHEMA
+from .price_data import DefiLlamaTokenPrices, TOKEN_PRICES_SCHEMA, mask_api_key_in_text
 
 log = structlog.get_logger()
 
@@ -22,6 +22,8 @@ log = structlog.get_logger()
 def execute_pull_current(
     extra_token_ids_file: str | None = None,
     token_id: str | None = None,
+    show_progress: bool = False,
+    batch_size: int = 50,
 ) -> Dict[str, Any] | None:
     """
     Execute DeFiLlama current price data pull.
@@ -29,67 +31,84 @@ def execute_pull_current(
     Args:
         extra_token_ids_file: Optional path to file with extra token IDs
         token_id: Optional single token ID to process (if provided, ignores other token sources)
+        show_progress: Whether to show progress logging for token processing
+        batch_size: Number of tokens to process per batch (when show_progress=True)
 
     Returns:
         Summary of the price fetch operation
     """
-    session = new_session()
-
-    # Get list of token IDs
-    if token_id is not None:
-        # Use single token if provided
-        token_ids = [token_id]
-        log.info("single_token_mode", token_id=token_id)
-    else:
-        # Use normal token collection logic
-        token_ids = get_token_ids_from_metadata_and_file(
-            extra_token_ids_file=extra_token_ids_file, include_top_tokens=0, top_tokens_fetcher=None
-        )
-
-    log.info("current_price_pull_start", token_count=len(token_ids))
-
-    if not token_ids:
-        log.error("no_token_ids_found")
-        return None
-
-    # Fetch current prices
     try:
-        log.info("fetching_current_prices", token_count=len(token_ids))
-        price_data = DefiLlamaTokenPrices.fetch_prices_current(token_ids, session=session)
+        session = new_session()
 
-        if price_data.is_empty():
-            log.warning("no_price_data_returned")
+        # Get list of token IDs
+        if token_id is not None:
+            # Use single token if provided
+            token_ids = [token_id]
+            log.info("single_token_mode", token_id=token_id)
+        else:
+            # Use normal token collection logic
+            token_ids = get_token_ids_from_metadata_and_file(
+                extra_token_ids_file=extra_token_ids_file,
+                include_top_tokens=0,
+                top_tokens_fetcher=None,
+            )
+
+        log.info("current_price_pull_start", token_count=len(token_ids))
+
+        if not token_ids:
+            log.error("no_token_ids_found")
             return None
 
-        log.info("fetched_current_prices", row_count=len(price_data))
+        # Fetch current prices
+        try:
+            log.info(
+                "fetching_current_prices", token_count=len(token_ids), show_progress=show_progress
+            )
+
+            if show_progress:
+                price_data = DefiLlamaTokenPrices.fetch_prices_current_with_progress(
+                    token_ids, session=session, batch_size=batch_size
+                )
+            else:
+                price_data = DefiLlamaTokenPrices.fetch_prices_current(token_ids, session=session)
+
+            if price_data.is_empty():
+                log.warning("no_price_data_returned")
+                return None
+
+            log.info("fetched_current_prices", row_count=len(price_data))
+
+        except Exception as e:
+            log.error("failed_to_fetch_current_prices", error=mask_api_key_in_text(str(e)))
+            return None
+
+        # Schema assertions
+        raise_for_schema_mismatch(
+            actual_schema=price_data.df.schema,
+            expected_schema=TOKEN_PRICES_SCHEMA,
+        )
+
+        # Write prices (current prices are typically just one day)
+        log.info("writing_current_price_data", rows=len(price_data.df))
+
+        DefiLlama.TOKEN_PRICES.write(
+            dataframe=price_data.df,
+            sort_by=["token_id"],
+        )
+        log.info("wrote_current_price_data")
+
+        # Create BigQuery external table
+        DefiLlama.TOKEN_PRICES.create_bigquery_external_table()
+        log.info("created_price_external_table")
+
+        # Return summary information
+        return {
+            "price_df": dt_summary(price_data.df),
+        }
 
     except Exception as e:
-        log.error("failed_to_fetch_current_prices", error=str(e))
+        log.error("execute_pull_current_failed", error=mask_api_key_in_text(str(e)))
         return None
-
-    # Schema assertions
-    raise_for_schema_mismatch(
-        actual_schema=price_data.df.schema,
-        expected_schema=TOKEN_PRICES_SCHEMA,
-    )
-
-    # Write prices (current prices are typically just one day)
-    log.info("writing_current_price_data", rows=len(price_data.df))
-
-    DefiLlama.TOKEN_PRICES.write(
-        dataframe=price_data.df,
-        sort_by=["token_id"],
-    )
-    log.info("wrote_current_price_data")
-
-    # Create BigQuery external table
-    DefiLlama.TOKEN_PRICES.create_bigquery_external_table()
-    log.info("created_price_external_table")
-
-    # Return summary information
-    return {
-        "price_df": dt_summary(price_data.df),
-    }
 
 
 def execute_pull_historical(
@@ -102,6 +121,9 @@ def execute_pull_historical(
     period: str = "1d",
     search_width: str | None = None,
     skip_existing_partitions: bool = False,
+    show_progress: bool = False,
+    batch_size: int = 50,
+    time_chunk_days: int = 7,
 ) -> Dict[str, Any] | None:
     """
     Execute DeFiLlama historical price data pull.
@@ -116,154 +138,207 @@ def execute_pull_historical(
         period: Duration between data points (e.g., '1d', '1h', '1w')
         search_width: Time range on either side to find price data
         skip_existing_partitions: Whether to skip writing partitions that already exist
+        show_progress: Whether to show progress logging for token processing
+        batch_size: Number of tokens to process per batch (when show_progress=True)
+        time_chunk_days: Number of days per API call chunk (default: 7)
 
     Returns:
         Summary of the price fetch operation
     """
-    session = new_session()
-
-    # Get list of token IDs
-    if token_id is not None:
-        # Use single token if provided
-        token_ids = [token_id]
-        log.info("single_token_mode", token_id=token_id)
-    else:
-        # Use normal token collection logic
-        token_ids = get_token_ids_from_metadata_and_file(
-            extra_token_ids_file=extra_token_ids_file, include_top_tokens=0, top_tokens_fetcher=None
-        )
-
-    log.info("historical_price_pull_start", token_count=len(token_ids))
-
-    if not token_ids:
-        log.error("no_token_ids_found")
-        return None
-
-    # Fetch historical prices
     try:
-        log.info("fetching_historical_prices", token_count=len(token_ids))
+        session = new_session()
 
-        if start_timestamp is not None or end_timestamp is not None:
-            # Use explicit timestamps
-            price_data = DefiLlamaTokenPrices.fetch_prices_historical(
-                token_ids=token_ids,
-                start_timestamp=start_timestamp,
-                end_timestamp=end_timestamp,
-                span=span,
-                period=period,
-                search_width=search_width,
-                session=session,
-            )
+        # Get list of token IDs
+        if token_id is not None:
+            # Use single token if provided
+            token_ids = [token_id]
+            log.info("single_token_mode", token_id=token_id)
         else:
-            # Use days parameter
-            price_data = DefiLlamaTokenPrices.fetch_prices_by_days(
-                token_ids=token_ids,
-                days=days,
-                session=session,
+            # Use normal token collection logic
+            token_ids = get_token_ids_from_metadata_and_file(
+                extra_token_ids_file=extra_token_ids_file,
+                include_top_tokens=0,
+                top_tokens_fetcher=None,
             )
-
-        if price_data.is_empty():
-            log.warning("no_price_data_returned")
-            return None
 
         log.info(
-            "fetched_historical_prices",
-            row_count=len(price_data.df),
-            date_range=f"{str(price_data.df['dt'].min())} to {str(price_data.df['dt'].max())}",
-            unique_dates=price_data.df["dt"].n_unique(),
+            "historical_price_pull_start",
+            token_count=len(token_ids),
+            time_chunk_days=time_chunk_days,
         )
 
-    except Exception as e:
-        log.error("failed_to_fetch_historical_prices", error=str(e))
-        return None
+        if not token_ids:
+            log.error("no_token_ids_found")
+            return None
 
-    # Filter out existing partitions if requested
-    if skip_existing_partitions and not price_data.df.is_empty():
-        from op_analytics.coreutils.partitioned.dataaccess import init_data_access
-        from op_analytics.coreutils.partitioned.dailydatawrite import (
-            determine_location,
-            MARKERS_TABLE,
-        )
-        from op_analytics.coreutils.partitioned.output import ExpectedOutput
-
-        # Get unique dates from the fetched data
-        unique_dates = price_data.df["dt"].unique().to_list()
-
-        # Check which dates already have complete markers
-        client = init_data_access()
-        location = determine_location()
-
-        existing_dates = []
-        for dt in unique_dates:
-            # Construct the expected output marker path for this date
-            expected_output = ExpectedOutput(
-                root_path=DefiLlama.TOKEN_PRICES.root_path,
-                file_name="out.parquet",
-                marker_path=f"{dt}/{DefiLlama.TOKEN_PRICES.root_path}",
+        # Fetch historical prices
+        try:
+            log.info(
+                "fetching_historical_prices",
+                token_count=len(token_ids),
+                show_progress=show_progress,
+                time_chunk_days=time_chunk_days,
             )
 
-            if client.marker_exists(
-                data_location=location,
-                marker_path=expected_output.marker_path,
-                markers_table=MARKERS_TABLE,
-            ):
-                existing_dates.append(dt)
+            if start_timestamp is not None or end_timestamp is not None:
+                # Use explicit timestamps
+                if show_progress:
+                    price_data = DefiLlamaTokenPrices.fetch_prices_historical_with_progress(
+                        token_ids=token_ids,
+                        start_timestamp=start_timestamp,
+                        end_timestamp=end_timestamp,
+                        span=span,
+                        period=period,
+                        search_width=search_width,
+                        session=session,
+                        batch_size=batch_size,
+                        time_chunk_days=time_chunk_days,
+                    )
+                else:
+                    price_data = DefiLlamaTokenPrices.fetch_prices_historical(
+                        token_ids=token_ids,
+                        start_timestamp=start_timestamp,
+                        end_timestamp=end_timestamp,
+                        span=span,
+                        period=period,
+                        search_width=search_width,
+                        session=session,
+                        time_chunk_days=time_chunk_days,
+                    )
+            else:
+                # Use days parameter
+                if show_progress:
+                    # For days-based fetching, we need to calculate the timestamp parameters
+                    from datetime import datetime, timedelta
 
-        if existing_dates:
-            # Filter out existing dates from the price data
-            original_count = len(price_data.df)
-            price_data.df = price_data.df.filter(~pl.col("dt").is_in(existing_dates))
+                    start_date = datetime.now() - timedelta(days=days)
+                    start_timestamp = int(start_date.timestamp())
+
+                    price_data = DefiLlamaTokenPrices.fetch_prices_historical_with_progress(
+                        token_ids=token_ids,
+                        start_timestamp=start_timestamp,
+                        span=days,
+                        period="1d",
+                        session=session,
+                        batch_size=batch_size,
+                        time_chunk_days=time_chunk_days,
+                    )
+                else:
+                    price_data = DefiLlamaTokenPrices.fetch_prices_by_days(
+                        token_ids=token_ids,
+                        days=days,
+                        session=session,
+                        time_chunk_days=time_chunk_days,
+                    )
+
+            if price_data.is_empty():
+                log.warning("no_price_data_returned")
+                return None
 
             log.info(
-                "filtered_existing_partitions",
-                original_rows=original_count,
-                filtered_rows=len(price_data.df),
-                skipped_dates=len(existing_dates),
-                skipped_date_list=existing_dates,
+                "fetched_historical_prices",
+                row_count=len(price_data.df),
+                date_range=f"{str(price_data.df['dt'].min())} to {str(price_data.df['dt'].max())}",
+                unique_dates=price_data.df["dt"].n_unique(),
             )
 
-            if price_data.df.is_empty():
-                log.info("all_partitions_already_exist")
-                return {
-                    "price_df": None,
-                }
+        except Exception as e:
+            log.error("failed_to_fetch_historical_prices", error=mask_api_key_in_text(str(e)))
+            return None
 
-    # Schema assertions
-    raise_for_schema_mismatch(
-        actual_schema=price_data.df.schema,
-        expected_schema=TOKEN_PRICES_SCHEMA,
-    )
+        # Filter out existing partitions if requested
+        if skip_existing_partitions and not price_data.df.is_empty():
+            from op_analytics.coreutils.partitioned.dataaccess import init_data_access
+            from op_analytics.coreutils.partitioned.dailydatawrite import (
+                determine_location,
+                MARKERS_TABLE,
+            )
+            from op_analytics.coreutils.partitioned.output import ExpectedOutput
 
-    # Write prices
-    log.info("writing_historical_price_data", rows=len(price_data.df))
+            # Get unique dates from the fetched data
+            unique_dates = price_data.df["dt"].unique().to_list()
 
-    # Use the requested days parameter for filtering
-    filtered_price_df = most_recent_dates(price_data.df, n_dates=days, date_column="dt")
-    log.info(
-        "filtered_price_data",
-        filtered_rows=len(filtered_price_df),
-        date_range=f"{str(filtered_price_df['dt'].min())} to {str(filtered_price_df['dt'].max())}",
-    )
+            # Check which dates already have complete markers
+            client = init_data_access()
+            location = determine_location()
 
-    DefiLlama.TOKEN_PRICES.write(
-        dataframe=filtered_price_df,
-        sort_by=["token_id"],
-    )
-    log.info("wrote_historical_price_data")
+            existing_dates = []
+            for dt in unique_dates:
+                # Construct the expected output marker path for this date
+                expected_output = ExpectedOutput(
+                    root_path=DefiLlama.TOKEN_PRICES.root_path,
+                    file_name="out.parquet",
+                    marker_path=f"{dt}/{DefiLlama.TOKEN_PRICES.root_path}",
+                )
 
-    # Create BigQuery external table
-    DefiLlama.TOKEN_PRICES.create_bigquery_external_table()
-    log.info("created_price_external_table")
+                if client.marker_exists(
+                    data_location=location,
+                    marker_path=expected_output.marker_path,
+                    markers_table=MARKERS_TABLE,
+                ):
+                    existing_dates.append(dt)
 
-    # Return summary information
-    return {
-        "price_df": dt_summary(price_data.df),
-    }
+            if existing_dates:
+                # Filter out existing dates from the price data
+                original_count = len(price_data.df)
+                price_data.df = price_data.df.filter(~pl.col("dt").is_in(existing_dates))
+
+                log.info(
+                    "filtered_existing_partitions",
+                    original_rows=original_count,
+                    filtered_rows=len(price_data.df),
+                    skipped_dates=len(existing_dates),
+                    skipped_date_list=existing_dates,
+                )
+
+                if price_data.df.is_empty():
+                    log.info("all_partitions_already_exist")
+                    return {
+                        "price_df": None,
+                    }
+
+        # Schema assertions
+        raise_for_schema_mismatch(
+            actual_schema=price_data.df.schema,
+            expected_schema=TOKEN_PRICES_SCHEMA,
+        )
+
+        # Write prices
+        log.info("writing_historical_price_data", rows=len(price_data.df))
+
+        # Use the requested days parameter for filtering
+        filtered_price_df = most_recent_dates(price_data.df, n_dates=days, date_column="dt")
+        log.info(
+            "filtered_price_data",
+            filtered_rows=len(filtered_price_df),
+            date_range=f"{str(filtered_price_df['dt'].min())} to {str(filtered_price_df['dt'].max())}",
+        )
+
+        DefiLlama.TOKEN_PRICES.write(
+            dataframe=filtered_price_df,
+            sort_by=["token_id"],
+        )
+        log.info("wrote_historical_price_data")
+
+        # Create BigQuery external table
+        DefiLlama.TOKEN_PRICES.create_bigquery_external_table()
+        log.info("created_price_external_table")
+
+        # Return summary information
+        return {
+            "price_df": dt_summary(price_data.df),
+        }
+
+    except Exception as e:
+        log.error("execute_pull_historical_failed", error=mask_api_key_in_text(str(e)))
+        return None
 
 
 def execute_pull_first_prices(
     extra_token_ids_file: str | None = None,
     token_id: str | None = None,
+    show_progress: bool = False,
+    batch_size: int = 50,
 ) -> Dict[str, Any] | None:
     """
     Execute DeFiLlama first recorded price data pull.
@@ -271,67 +346,84 @@ def execute_pull_first_prices(
     Args:
         extra_token_ids_file: Optional path to file with extra token IDs
         token_id: Optional single token ID to process (if provided, ignores other token sources)
+        show_progress: Whether to show progress logging for token processing
+        batch_size: Number of tokens to process per batch (when show_progress=True)
 
     Returns:
         Summary of the price fetch operation
     """
-    session = new_session()
-
-    # Get list of token IDs
-    if token_id is not None:
-        # Use single token if provided
-        token_ids = [token_id]
-        log.info("single_token_mode", token_id=token_id)
-    else:
-        # Use normal token collection logic
-        token_ids = get_token_ids_from_metadata_and_file(
-            extra_token_ids_file=extra_token_ids_file, include_top_tokens=0, top_tokens_fetcher=None
-        )
-
-    log.info("first_price_pull_start", token_count=len(token_ids))
-
-    if not token_ids:
-        log.error("no_token_ids_found")
-        return None
-
-    # Fetch first prices
     try:
-        log.info("fetching_first_prices", token_count=len(token_ids))
-        price_data = DefiLlamaTokenPrices.fetch_first_prices(token_ids, session=session)
+        session = new_session()
 
-        if price_data.is_empty():
-            log.warning("no_price_data_returned")
+        # Get list of token IDs
+        if token_id is not None:
+            # Use single token if provided
+            token_ids = [token_id]
+            log.info("single_token_mode", token_id=token_id)
+        else:
+            # Use normal token collection logic
+            token_ids = get_token_ids_from_metadata_and_file(
+                extra_token_ids_file=extra_token_ids_file,
+                include_top_tokens=0,
+                top_tokens_fetcher=None,
+            )
+
+        log.info("first_price_pull_start", token_count=len(token_ids))
+
+        if not token_ids:
+            log.error("no_token_ids_found")
             return None
 
-        log.info("fetched_first_prices", row_count=len(price_data))
+        # Fetch first prices
+        try:
+            log.info(
+                "fetching_first_prices", token_count=len(token_ids), show_progress=show_progress
+            )
+
+            if show_progress:
+                price_data = DefiLlamaTokenPrices.fetch_first_prices_with_progress(
+                    token_ids, session=session, batch_size=batch_size
+                )
+            else:
+                price_data = DefiLlamaTokenPrices.fetch_first_prices(token_ids, session=session)
+
+            if price_data.is_empty():
+                log.warning("no_price_data_returned")
+                return None
+
+            log.info("fetched_first_prices", row_count=len(price_data))
+
+        except Exception as e:
+            log.error("failed_to_fetch_first_prices", error=mask_api_key_in_text(str(e)))
+            return None
+
+        # Schema assertions
+        raise_for_schema_mismatch(
+            actual_schema=price_data.df.schema,
+            expected_schema=TOKEN_PRICES_SCHEMA,
+        )
+
+        # Write prices
+        log.info("writing_first_price_data", rows=len(price_data.df))
+
+        DefiLlama.TOKEN_PRICES.write(
+            dataframe=price_data.df,
+            sort_by=["token_id"],
+        )
+        log.info("wrote_first_price_data")
+
+        # Create BigQuery external table
+        DefiLlama.TOKEN_PRICES.create_bigquery_external_table()
+        log.info("created_price_external_table")
+
+        # Return summary information
+        return {
+            "price_df": dt_summary(price_data.df),
+        }
 
     except Exception as e:
-        log.error("failed_to_fetch_first_prices", error=str(e))
+        log.error("execute_pull_first_prices_failed", error=mask_api_key_in_text(str(e)))
         return None
-
-    # Schema assertions
-    raise_for_schema_mismatch(
-        actual_schema=price_data.df.schema,
-        expected_schema=TOKEN_PRICES_SCHEMA,
-    )
-
-    # Write prices
-    log.info("writing_first_price_data", rows=len(price_data.df))
-
-    DefiLlama.TOKEN_PRICES.write(
-        dataframe=price_data.df,
-        sort_by=["token_id"],
-    )
-    log.info("wrote_first_price_data")
-
-    # Create BigQuery external table
-    DefiLlama.TOKEN_PRICES.create_bigquery_external_table()
-    log.info("created_price_external_table")
-
-    # Return summary information
-    return {
-        "price_df": dt_summary(price_data.df),
-    }
 
 
 if __name__ == "__main__":
@@ -397,32 +489,60 @@ if __name__ == "__main__":
         action="store_true",
         help="Skip writing partitions that already exist (for historical mode)",
     )
+    parser.add_argument(
+        "--show-progress",
+        action="store_true",
+        help="Show progress logging for token processing",
+    )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=50,
+        help="Number of tokens to process per batch (when --show-progress is enabled)",
+    )
+    parser.add_argument(
+        "--time-chunk-days",
+        type=int,
+        default=7,
+        help="Number of days per API call chunk (default: 7, helps avoid timeouts on large requests)",
+    )
     args = parser.parse_args()
 
-    if args.mode == "current":
-        result = execute_pull_current(
-            extra_token_ids_file=args.extra_token_ids_file,
-            token_id=args.token_id,
-        )
-    elif args.mode == "historical":
-        result = execute_pull_historical(
-            days=args.days,
-            extra_token_ids_file=args.extra_token_ids_file,
-            token_id=args.token_id,
-            start_timestamp=args.start_timestamp,
-            end_timestamp=args.end_timestamp,
-            span=args.span,
-            period=args.period,
-            search_width=args.search_width,
-            skip_existing_partitions=args.skip_existing_partitions,
-        )
-    elif args.mode == "first":
-        result = execute_pull_first_prices(
-            extra_token_ids_file=args.extra_token_ids_file,
-            token_id=args.token_id,
-        )
+    try:
+        if args.mode == "current":
+            result = execute_pull_current(
+                extra_token_ids_file=args.extra_token_ids_file,
+                token_id=args.token_id,
+                show_progress=args.show_progress,
+                batch_size=args.batch_size,
+            )
+        elif args.mode == "historical":
+            result = execute_pull_historical(
+                days=args.days,
+                extra_token_ids_file=args.extra_token_ids_file,
+                token_id=args.token_id,
+                start_timestamp=args.start_timestamp,
+                end_timestamp=args.end_timestamp,
+                span=args.span,
+                period=args.period,
+                search_width=args.search_width,
+                skip_existing_partitions=args.skip_existing_partitions,
+                show_progress=args.show_progress,
+                batch_size=args.batch_size,
+                time_chunk_days=args.time_chunk_days,
+            )
+        elif args.mode == "first":
+            result = execute_pull_first_prices(
+                extra_token_ids_file=args.extra_token_ids_file,
+                token_id=args.token_id,
+                show_progress=args.show_progress,
+                batch_size=args.batch_size,
+            )
 
-    if result is not None:
-        log.info("completed_price_processing")
-    else:
-        log.error("failed_price_processing")
+        if result is not None:
+            log.info("completed_price_processing")
+        else:
+            log.error("failed_price_processing")
+
+    except Exception as e:
+        log.error("main_execution_failed", error=mask_api_key_in_text(str(e)))

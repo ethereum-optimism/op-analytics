@@ -42,25 +42,10 @@ def get_token_ids_from_metadata() -> List[str]:
     )
     token_ids.extend(coingecko_ids)
 
-    # Get gas token IDs
-    gas_token_ids = (
-        chain_metadata.filter(pl.col("gas_token").is_not_null())
-        .select("gas_token")
-        .unique()
-        .to_series()
-        .to_list()
-    )
-    token_ids.extend(gas_token_ids)
-
     # Remove duplicates
     token_ids = list(set(token_ids))
 
-    log.info(
-        "found_token_ids",
-        count=len(token_ids),
-        coingecko_count=len(coingecko_ids),
-        gas_token_count=len(gas_token_ids),
-    )
+    log.info("found_token_ids", count=len(token_ids))
     return token_ids
 
 
