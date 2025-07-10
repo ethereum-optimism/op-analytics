@@ -1,9 +1,8 @@
 from dagster import (
     OpExecutionContext,
     asset,
-    Config,
+    Field,
 )
-from typing import Optional
 
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.datapipeline.etl.blockbatch.main import compute_blockbatch
@@ -11,18 +10,14 @@ from op_analytics.datapipeline.orchestrate import normalize_blockbatch_models, n
 from op_analytics.dagster.utils.jobs import get_logs_url
 
 
-class UpdateAConfig(Config):
-    range_spec: Optional[str] = None  # Default is None
-
-
-@asset
-def update_a(context: OpExecutionContext, config: UpdateAConfig):
+@asset(config_schema={"range_spec": Field(str, default_value="m24hours")})
+def update_a(context: OpExecutionContext):
     context.log.info(f"LOGS URL: {get_logs_url()}")
-
+    context.log.info(context.op_config.get("range_spec"))
     result = compute_blockbatch(
         chains=normalize_chains("ALL"),
         models=normalize_blockbatch_models("GROUPA"),
-        range_spec=config.range_spec or "m24hours",
+        range_spec=context.op_config.get("range_spec"),
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,
@@ -32,18 +27,14 @@ def update_a(context: OpExecutionContext, config: UpdateAConfig):
     context.log.info(result)
 
 
-class UpdateBConfig(Config):
-    range_spec: Optional[str] = None  # Default is None
-
-
-@asset
-def update_b(context: OpExecutionContext, config: UpdateBConfig):
+@asset(config_schema={"range_spec": Field(str, default_value="m24hours")})
+def update_b(context: OpExecutionContext):
     context.log.info(f"LOGS URL: {get_logs_url()}")
-
+    context.log.info(context.op_config.get("range_spec"))
     result = compute_blockbatch(
         chains=normalize_chains("ALL"),
         models=normalize_blockbatch_models("GROUPB"),
-        range_spec=config.range_spec or "m24hours",
+        range_spec=context.op_config.get("range_spec"),
         read_from=DataLocation.GCS,
         write_to=DataLocation.GCS,
         dryrun=False,
