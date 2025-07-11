@@ -293,7 +293,6 @@ class DefiLlamaTokenPrices:
             DefiLlamaTokenPrices instance with historical price data
         """
         session = session or new_session()
-        api_key = env_get("DEFILLAMA_API_KEY")
 
         # If we have a span and it's large, or if we have a large time range, chunk the requests
         should_chunk = False
@@ -458,7 +457,6 @@ class DefiLlamaTokenPrices:
             total_days = 30
 
         # Create time chunks using only start timestamps
-        chunk_size_seconds = time_chunk_days * 24 * 3600
         time_chunks = []
 
         current_start = actual_start
@@ -575,7 +573,6 @@ class DefiLlamaTokenPrices:
             DefiLlamaTokenPrices instance with historical price data
         """
         session = session or new_session()
-        api_key = env_get("DEFILLAMA_API_KEY")
 
         # Determine if we need time chunking
         should_chunk = False
@@ -760,7 +757,6 @@ class DefiLlamaTokenPrices:
             total_days = 30
 
         # Create time chunks using only start timestamps
-        chunk_size_seconds = time_chunk_days * 24 * 3600
         time_chunks = []
 
         current_start = actual_start
