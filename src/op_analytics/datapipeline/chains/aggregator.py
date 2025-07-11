@@ -6,6 +6,7 @@ performing entity resolution, deduplication, and enrichment before outputting to
 """
 
 from op_analytics.coreutils.logger import structlog
+from op_analytics.datapipeline.chains.mapping_utils import load_manual_mappings
 
 log = structlog.get_logger()
 
@@ -41,6 +42,24 @@ def build_all_chains_metadata(
         bq_project_id=bq_project_id,
         bq_dataset_id=bq_dataset_id,
     )
+
+    # Load manual mappings configuration early in the pipeline
+    try:
+        manual_mappings = load_manual_mappings(manual_mappings_filepath)
+        log.info(
+            "Manual mappings loaded successfully",
+            mapping_count=len(manual_mappings),
+            filepath=manual_mappings_filepath,
+        )
+    except Exception as e:
+        log.error(
+            "Failed to load manual mappings",
+            error=str(e),
+            filepath=manual_mappings_filepath,
+        )
+        raise RuntimeError(
+            f"Failed to load manual mappings from {manual_mappings_filepath}: {e}"
+        ) from e
 
     # TODO: Implement the following pipeline steps:
 
@@ -86,7 +105,26 @@ def build_all_chains_metadata(
     # - Handle chain_id collisions through sophisticated matching algorithms
     # - Manual mappings applied BEFORE grouping to ensure correct entity resolution
     # Success of this step depends heavily on quality of preprocessing in Steps 1-2
-    log.info("Step 4: Entity Resolution - Not yet implemented")
+    log.info("Step 4: Entity Resolution - Starting implementation with manual mappings")
+
+    # Example of how manual mappings would be integrated:
+    # When Step 4 is implemented, it would include:
+    # combined_df = ... # Result from Step 3
+    #
+    # # Apply manual mappings to resolve special cases and data inconsistencies
+    # resolved_df = apply_mapping_rules(combined_df, manual_mappings)
+    #
+    # # Continue with unified_key generation and entity resolution
+    # resolved_df = resolved_df.with_columns([
+    #     # Generate unified_key for entity resolution
+    #     pl.coalesce([
+    #         pl.col("chain_id"),
+    #         pl.col("chain_key"),
+    #         pl.col("display_name").str.to_lowercase().str.replace_all(r"[^\w]+", "")
+    #     ]).alias("unified_key")
+    # ])
+
+    log.info("Step 4: Entity Resolution - Manual mapping integration ready")
 
     # Step 5: Deduplication and Attribute Merging
     # Intent: Group by unified_key and merge attributes using source prioritization:
@@ -134,11 +172,11 @@ def build_all_chains_metadata(
 
 
 if __name__ == "__main__":
-    # Example usage with placeholder values
+    # Example usage with enhanced manual mappings support
     # In production, these would come from command line arguments or configuration
     build_all_chains_metadata(
         output_bq_table="aggregated_chains_metadata",
-        manual_mappings_filepath="config/manual_mappings.json",
+        manual_mappings_filepath="src/op_analytics/datapipeline/chains/resources/manual_chain_mappings.csv",
         bq_project_id="op-analytics-dev",
         bq_dataset_id="chains_metadata",
     )
