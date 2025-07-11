@@ -2,9 +2,7 @@
 Execute CoinGecko price data collection.
 """
 
-from typing import List, Dict, Any
-import os
-import csv
+from typing import Dict, Any
 
 import polars as pl
 
@@ -14,16 +12,15 @@ from op_analytics.coreutils.misc import raise_for_schema_mismatch
 from op_analytics.coreutils.partitioned.dailydatautils import dt_summary
 from op_analytics.coreutils.request import new_session
 from op_analytics.coreutils.time import now_dt
-from op_analytics.datapipeline.chains.load import load_chain_metadata
+from op_analytics.datapipeline.chains.tokens import (
+    get_token_ids_from_metadata_and_file,
+)
 
 from .dataaccess import CoinGecko
 from .price_data import CoinGeckoDataSource
 
 
 log = structlog.get_logger()
-
-
-PRICE_TABLE_LAST_N_DAYS = 90
 
 
 PRICE_DF_SCHEMA = {
@@ -56,99 +53,22 @@ METADATA_DF_SCHEMA = {
 }
 
 
-def get_token_ids_from_metadata() -> List[str]:
+def get_coingecko_top_tokens_fetcher(session):
     """
-    Get list of CoinGecko token IDs from the chain metadata.
-
-    Returns:
-        List of CoinGecko token IDs
-    """
-    # Load chain metadata
-    chain_metadata = load_chain_metadata()
-
-    # Get token IDs from chain metadata
-    token_ids = (
-        chain_metadata.filter(pl.col("cgt_coingecko_api").is_not_null())
-        .select("cgt_coingecko_api")
-        .unique()
-        .to_series()
-        .to_list()
-    )
-
-    log.info("found_token_ids", count=len(token_ids))
-    return token_ids
-
-
-def read_token_ids_from_file(filepath: str) -> list[str]:
-    """
-    Read token IDs from a CSV or TXT file. Assumes one token_id per line or a column named 'token_id'.
-    """
-    if not os.path.exists(filepath):
-        raise FileNotFoundError(f"File not found: {filepath}")
-    token_ids: set[str] = set()
-    ext = os.path.splitext(filepath)[1].lower()
-    if ext == ".txt":
-        with open(filepath, "r") as f:
-            for line in f:
-                tid = line.strip()
-                if tid:
-                    token_ids.add(tid)
-    elif ext == ".csv":
-        with open(filepath, newline="") as csvfile:
-            # First try to read as CSV with headers
-            reader = csv.DictReader(csvfile)
-            if reader.fieldnames and "token_id" in reader.fieldnames:
-                for row in reader:
-                    tid = row["token_id"].strip()
-                    if tid:
-                        token_ids.add(tid)
-            else:
-                # fallback: treat as single-column CSV
-                csvfile.seek(0)
-                # Use a separate context to avoid type conflicts
-                with open(filepath, newline="") as fallback_file:
-                    fallback_reader = csv.reader(fallback_file)
-                    for row in fallback_reader:  # type: ignore[assignment]
-                        if row:  # Check if row is not empty
-                            tid = row[0].strip()
-                            if tid and tid != "token_id":
-                                token_ids.add(tid)
-    else:
-        raise ValueError(f"Unsupported file extension: {ext}")
-    return list(token_ids)
-
-
-def get_token_ids_from_metadata_and_file(
-    extra_token_ids_file: str | None = None, include_top_tokens: int = 0
-) -> list[str]:
-    """
-    Get unique list of CoinGecko token IDs from chain metadata and an optional file.
+    Create a top tokens fetcher function for CoinGecko.
 
     Args:
-        extra_token_ids_file: Optional path to file with extra token IDs
-        include_top_tokens: Number of top tokens by market cap to include (0 for none)
+        session: HTTP session to use for requests
+
+    Returns:
+        Function that fetches top tokens by market cap
     """
-    token_ids: set[str] = set(get_token_ids_from_metadata())
 
-    if extra_token_ids_file:
-        extra_ids = read_token_ids_from_file(extra_token_ids_file)
-        token_ids.update(extra_ids)
-
-    if include_top_tokens > 0:
-        # Fetch top tokens by market cap
-        session = new_session()
+    def fetcher(limit: int) -> list[str]:
         data_source = CoinGeckoDataSource(session=session)
-        try:
-            top_token_ids = data_source.get_top_tokens_by_market_cap(limit=include_top_tokens)
-            token_ids.update(top_token_ids)
-            log.info("Added top tokens by market cap", count=len(top_token_ids))
-        except Exception as e:
-            log.error("Failed to fetch top tokens by market cap", error=str(e))
-            # Continue without top tokens if there's an error
+        return data_source.get_top_tokens_by_market_cap(limit=limit)
 
-    result = list(token_ids)
-    log.info("final_token_ids", count=len(result))
-    return result
+    return fetcher
 
 
 def _fetch_and_write_metadata(
@@ -251,7 +171,14 @@ def execute_metadata_pull(
         log.info("single_token_mode", token_id=token_id)
     else:
         # Use normal token collection logic
-        token_ids = get_token_ids_from_metadata_and_file(extra_token_ids_file, include_top_tokens)
+        top_tokens_fetcher = (
+            get_coingecko_top_tokens_fetcher(session) if include_top_tokens > 0 else None
+        )
+        token_ids = get_token_ids_from_metadata_and_file(
+            extra_token_ids_file=extra_token_ids_file,
+            include_top_tokens=include_top_tokens,
+            top_tokens_fetcher=top_tokens_fetcher,
+        )
 
     log.info("metadata_pull_start", token_count=len(token_ids))
 
@@ -300,7 +227,14 @@ def execute_pull(
         log.info("single_token_mode", token_id=token_id)
     else:
         # Use normal token collection logic
-        token_ids = get_token_ids_from_metadata_and_file(extra_token_ids_file, include_top_tokens)
+        top_tokens_fetcher = (
+            get_coingecko_top_tokens_fetcher(session) if include_top_tokens > 0 else None
+        )
+        token_ids = get_token_ids_from_metadata_and_file(
+            extra_token_ids_file=extra_token_ids_file,
+            include_top_tokens=include_top_tokens,
+            top_tokens_fetcher=top_tokens_fetcher,
+        )
 
     log.info("price_pull_start", token_count=len(token_ids))
 
@@ -383,9 +317,7 @@ def execute_pull(
     # Write prices
     log.info("writing_price_data", original_rows=len(price_df))
 
-    filtered_price_df = most_recent_dates(
-        price_df, n_dates=PRICE_TABLE_LAST_N_DAYS, date_column="dt"
-    )
+    filtered_price_df = most_recent_dates(price_df, n_dates=days, date_column="dt")
     log.info(
         "filtered_price_data",
         filtered_rows=len(filtered_price_df),
