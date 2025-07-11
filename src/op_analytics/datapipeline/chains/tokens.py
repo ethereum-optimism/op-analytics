@@ -8,6 +8,7 @@ for use across different price data sources (CoinGecko, DeFiLlama, etc.).
 from typing import List
 import os
 import csv
+import json
 
 import polars as pl
 
@@ -22,6 +23,7 @@ def get_token_ids_from_metadata() -> List[str]:
     Get list of token IDs from the chain metadata.
 
     Extracts both CoinGecko API IDs and gas token IDs from the chain metadata.
+    Handles both simple string format and dictionary format for cgt_coingecko_api.
 
     Returns:
         List of token IDs (could be CoinGecko slugs or chain:address format)
@@ -32,15 +34,34 @@ def get_token_ids_from_metadata() -> List[str]:
     # Get token IDs from chain metadata - check both coingecko and gas_token fields
     token_ids = []
 
-    # Get CoinGecko IDs
-    coingecko_ids = (
+    # Get CoinGecko IDs - handle both string and dictionary formats
+    coingecko_rows = (
         chain_metadata.filter(pl.col("cgt_coingecko_api").is_not_null())
         .select("cgt_coingecko_api")
         .unique()
         .to_series()
         .to_list()
     )
-    token_ids.extend(coingecko_ids)
+
+    for api_value in coingecko_rows:
+        if api_value:
+            # Try to parse as JSON dictionary first
+            try:
+                parsed_dict = json.loads(api_value)
+                if isinstance(parsed_dict, dict):
+                    # Extract all values from the dictionary (these are the coingecko API IDs)
+                    token_ids.extend(parsed_dict.values())
+                    log.info(
+                        "parsed_dictionary_format",
+                        api_value=api_value,
+                        extracted_ids=list(parsed_dict.values()),
+                    )
+                else:
+                    # If it's not a dict, treat as simple string
+                    token_ids.append(api_value)
+            except (json.JSONDecodeError, TypeError):
+                # If JSON parsing fails, treat as simple string
+                token_ids.append(api_value)
 
     # Remove duplicates
     token_ids = list(set(token_ids))
@@ -140,22 +161,95 @@ def get_token_ids_from_metadata_and_file(
     return result
 
 
+def get_coingecko_token_for_block(chain_name: str, block_number: int) -> str | None:
+    """
+    Get the appropriate CoinGecko token ID for a specific chain and block number.
+
+    For chains with changing gas tokens, this function will return the correct
+    token ID based on the block number.
+
+    Args:
+        chain_name: Name of the chain (e.g., "fraxtal")
+        block_number: Block number to check
+
+    Returns:
+        CoinGecko token ID string, or None if not found
+    """
+    # Load chain metadata
+    chain_metadata = load_chain_metadata()
+
+    # Find the row for this chain
+    chain_row = (
+        chain_metadata.filter(pl.col("chain_name") == chain_name)
+        .select("cgt_coingecko_api")
+        .to_series()
+        .to_list()
+    )
+
+    if not chain_row or not chain_row[0]:
+        return None
+
+    api_value = chain_row[0]
+
+    # Try to parse as JSON dictionary
+    try:
+        parsed_dict = json.loads(api_value)
+        if isinstance(parsed_dict, dict):
+            # Convert keys to integers for comparison
+            block_ranges = {int(k): v for k, v in parsed_dict.items()}
+
+            # Find the appropriate token ID based on block number
+            # Get all starting blocks <= current block, then take the maximum
+            valid_starts = [start for start in block_ranges.keys() if start <= block_number]
+            if valid_starts:
+                latest_start = max(valid_starts)
+                return block_ranges[latest_start]
+            else:
+                return None
+        else:
+            # If it's not a dict, return as simple string
+            return api_value
+    except (json.JSONDecodeError, TypeError):
+        # If JSON parsing fails, return as simple string
+        return api_value
+
+
 def get_coingecko_token_ids() -> List[str]:
     """
     Get only CoinGecko token IDs from chain metadata.
+    Handles both string and dictionary formats.
 
     Returns:
         List of CoinGecko token IDs
     """
     chain_metadata = load_chain_metadata()
 
-    token_ids = (
+    token_ids = []
+    coingecko_rows = (
         chain_metadata.filter(pl.col("cgt_coingecko_api").is_not_null())
         .select("cgt_coingecko_api")
         .unique()
         .to_series()
         .to_list()
     )
+
+    for api_value in coingecko_rows:
+        if api_value:
+            # Try to parse as JSON dictionary first
+            try:
+                parsed_dict = json.loads(api_value)
+                if isinstance(parsed_dict, dict):
+                    # Extract all values from the dictionary
+                    token_ids.extend(parsed_dict.values())
+                else:
+                    # If it's not a dict, treat as simple string
+                    token_ids.append(api_value)
+            except (json.JSONDecodeError, TypeError):
+                # If JSON parsing fails, treat as simple string
+                token_ids.append(api_value)
+
+    # Remove duplicates
+    token_ids = list(set(token_ids))
 
     log.info("found_coingecko_token_ids", count=len(token_ids))
     return token_ids
