@@ -32,7 +32,7 @@ def get_token_ids_from_metadata() -> List[str]:
     chain_metadata = load_chain_metadata()
 
     # Get token IDs from chain metadata - check both coingecko and gas_token fields
-    token_ids = []
+    token_ids: List[str] = []
 
     # Get CoinGecko IDs - handle both string and dictionary formats
     coingecko_rows = (
@@ -224,7 +224,7 @@ def get_coingecko_token_ids() -> List[str]:
     """
     chain_metadata = load_chain_metadata()
 
-    token_ids = []
+    token_ids: List[str] = []
     coingecko_rows = (
         chain_metadata.filter(pl.col("cgt_coingecko_api").is_not_null())
         .select("cgt_coingecko_api")
