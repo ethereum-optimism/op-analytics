@@ -9,7 +9,6 @@ from clickhouse_connect.driver.exceptions import DatabaseError
 from op_analytics.coreutils.clickhouse.oplabs import insert_oplabs, run_statememt_oplabs
 from op_analytics.coreutils.logger import bound_contextvars, human_rows, structlog
 from op_analytics.coreutils.time import date_tostr
-from op_analytics.coreutils.storage.gcs_parquet import init_gcsfs_client
 
 from .loadspec import BlockBatch, ClickHouseBlockBatchETL
 from .markers import BLOCKBATCH_MARKERS_DW_TABLE
@@ -86,33 +85,9 @@ class InsertTask:
         insert_ddl = self.construct_insert(dry_run=True)
         print(insert_ddl)
 
-    def validate_gcs_input_files(self):
-        """Validate that all required GCS input files exist before processing."""
-        gcs_client = init_gcsfs_client()
-
-        for input_root_path in self.dataset.input_root_paths:
-            gcs_path = (
-                f"oplabs-tools-data-sink/{input_root_path}/{self.blockbatch.partitioned_path}"
-            )
-
-            try:
-                # Check if the file exists in GCS
-                if not gcs_client.exists(gcs_path):
-                    raise FileNotFoundError(
-                        f"Required GCS input file does not exist: gs://{gcs_path}"
-                    )
-                log.info(f"validated GCS input file exists: gs://{gcs_path}")
-            except Exception as e:
-                log.error(f"failed to validate GCS input file: gs://{gcs_path}", exc_info=e)
-                raise
-
     def execute(self) -> dict[str, Any]:
         with bound_contextvars(**self.context):
             log.info("running insert")
-
-            # Validate GCS input files exist before processing
-            self.validate_gcs_input_files()
-
             insert_result = self.write()
             self.write_marker(insert_result)
 
@@ -136,17 +111,6 @@ class InsertTask:
                 settings={"use_hive_partitioning": 1},
             )
         except DatabaseError as ex:
-            # Handle specific ClickHouse error for missing GCS files
-            if "ClickHouse error code 636" in str(ex):
-                log.error(
-                    f"GCS file not found or empty for {self.blockbatch.chain} {self.blockbatch.dt} "
-                    f"min_block={self.blockbatch.min_block}. This should have been caught by validation.",
-                    exc_info=ex,
-                )
-                raise FileNotFoundError(
-                    f"ClickHouse cannot read GCS file for {self.blockbatch.chain} {self.blockbatch.dt} "
-                    f"min_block={self.blockbatch.min_block}. Source files may be missing or empty."
-                ) from ex
             log.error("database error", exc_info=ex)
             raise
 
