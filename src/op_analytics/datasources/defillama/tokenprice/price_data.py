@@ -357,7 +357,7 @@ class DefiLlamaTokenPrices:
         # Build URL with parameters
         url = COINS_CHART_ENDPOINT.format(api_key=api_key, coins=tokens_str)
 
-        params = {}
+        params: dict[str, int | str] = {}
         if start_timestamp is not None:
             params["start"] = start_timestamp
         # Only include end_timestamp if start_timestamp is not provided
@@ -435,6 +435,7 @@ class DefiLlamaTokenPrices:
         session = session or new_session()
 
         # Calculate the actual time range to chunk
+        span_days: int = int(span) if span > 0 else 0
         if start_timestamp and end_timestamp:
             # Use provided timestamps
             actual_start = start_timestamp
@@ -443,15 +444,13 @@ class DefiLlamaTokenPrices:
         elif start_timestamp and span > 0:
             # Start timestamp + span days
             actual_start = start_timestamp
-            span_days: int = int(span)
             actual_end = start_timestamp + (span_days * 24 * 3600)
-            total_days = span_days
+            total_days = float(span_days)
         elif end_timestamp and span > 0:
             # End timestamp - span days
-            span_days: int = int(span)
             actual_start = end_timestamp - (span_days * 24 * 3600)
             actual_end = end_timestamp
-            total_days = span_days
+            total_days = float(span_days)
         else:
             # Default to last 30 days if no clear range
             actual_end = int(datetime.now().timestamp())
@@ -658,7 +657,7 @@ class DefiLlamaTokenPrices:
             # Build URL with parameters
             url = COINS_CHART_ENDPOINT.format(api_key=api_key, coins=tokens_str)
 
-            params = {}
+            params: dict[str, int | str] = {}
             if start_timestamp is not None:
                 params["start"] = start_timestamp
             if end_timestamp is not None:
@@ -742,20 +741,19 @@ class DefiLlamaTokenPrices:
         session = session or new_session()
 
         # Calculate the actual time range to chunk
+        span_days: int = int(span) if span > 0 else 0
         if start_timestamp and end_timestamp:
             actual_start = start_timestamp
             actual_end = end_timestamp
             total_days = (actual_end - actual_start) / (24 * 3600)
         elif start_timestamp and span > 0:
             actual_start = start_timestamp
-            span_days: int = int(span)
             actual_end = start_timestamp + (span_days * 24 * 3600)
-            total_days = span_days
+            total_days = float(span_days)
         elif end_timestamp and span > 0:
-            span_days: int = int(span)
             actual_start = end_timestamp - (span_days * 24 * 3600)
             actual_end = end_timestamp
-            total_days = span_days
+            total_days = float(span_days)
         else:
             actual_end = int(datetime.now().timestamp())
             actual_start = actual_end - (30 * 24 * 3600)
