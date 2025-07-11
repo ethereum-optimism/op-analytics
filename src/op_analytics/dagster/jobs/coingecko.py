@@ -23,6 +23,8 @@ def collect_coingecko_prices():
         extra_token_ids_file=extra_token_ids_file,
         include_top_tokens=100,
         fetch_metadata=True,
+        skip_existing_partitions=False,
+        token_id=None,
     )
 
 

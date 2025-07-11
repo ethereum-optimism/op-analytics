@@ -23,6 +23,6 @@
   expected_chains:
     - unichain
 "0x16A27462B4D61BDD72CbBabd3E43e11791F7A28c":
-  description: OP Receiver - Soneium
+  description: OP Receiver - All Chains
   expected_chains:
-    - soneium
+    - all

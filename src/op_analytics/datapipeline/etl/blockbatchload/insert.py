@@ -71,7 +71,10 @@ class InsertTask:
 
     @property
     def context(self):
-        return dict(blockbatch=self.blockbatch.partitioned_path)
+        return dict(
+            dataset=self.dataset.output_root_path,
+            blockbatch=self.blockbatch.partitioned_path,
+        )
 
     def construct_insert(self, dry_run: bool = False):
         return self.dataset.insert_ddl_template(
