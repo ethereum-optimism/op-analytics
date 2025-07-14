@@ -4,16 +4,14 @@ from unittest.mock import patch, MagicMock
 def test_execute_pull():
     # Patch all dependencies used in execute_pull
     with (
+        patch("op_analytics.datasources.platformmetrics.execute.PostgresDailyPull") as mock_pg_pull,
         patch(
-            "op_analytics.datasources.platform_metrics.execute.PostgresDailyPull"
-        ) as mock_pg_pull,
-        patch(
-            "op_analytics.datasources.platform_metrics.execute.PrometheusDailyPull"
+            "op_analytics.datasources.platformmetrics.execute.PrometheusDailyPull"
         ) as mock_prom_pull,
         patch(
-            "op_analytics.datasources.platform_metrics.execute.PlatformMetrics"
-        ) as mock_platform_metrics,
-        patch("op_analytics.datasources.platform_metrics.execute.dt_summary") as mock_dt_summary,
+            "op_analytics.datasources.platformmetrics.execute.PlatformMetrics"
+        ) as mock_platformmetrics,
+        patch("op_analytics.datasources.platformmetrics.execute.dt_summary") as mock_dt_summary,
     ):
         # Mock PostgresDailyPull.fetch()
         mock_pg_instance = MagicMock()
@@ -39,15 +37,15 @@ def test_execute_pull():
         mock_prom_pull.fetch.assert_called_once()
 
         # Assert writes
-        mock_platform_metrics.JOBS.write.assert_called_once_with(
+        mock_platformmetrics.JOBS.write.assert_called_once_with(
             dataframe="jobs_df",
             sort_by=["dt", "id"],
         )
-        mock_platform_metrics.PIPELINES.write.assert_called_once_with(
+        mock_platformmetrics.PIPELINES.write.assert_called_once_with(
             dataframe="pipelines_df",
             sort_by=["dt", "id"],
         )
-        mock_platform_metrics.PROMETHEUS_METRICS.write.assert_called_once_with(
+        mock_platformmetrics.PROMETHEUS_METRICS.write.assert_called_once_with(
             dataframe="metrics_df",
             sort_by=["dt", "metric"],
         )
