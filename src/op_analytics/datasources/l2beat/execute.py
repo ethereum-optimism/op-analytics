@@ -43,11 +43,14 @@ def execute_pull():
         session=session,
     )
 
+    # Patch for writing to BQ as L2Beat evolved the API from a single provider to a list of providers
+    mod_summary_df = projects.df.with_columns(pl.col("providers").arr.join(",").alias("provider"))
+
     # Write to BQ.
     # NOTE: For L2Beat we have used native BQ writes in the past, so keeping that approach.
     # We still write to GCS so that we have a marker created in our etl_monitor table which
-    # can help us track when the data pull succeded/failed.
-    overwrite_unpartitioned_table(projects.df, BQ_DATASET, f"{SUMMARY_TABLE}_latest")
+    # can help us track when the data pull succeeded/failed.
+    overwrite_unpartitioned_table(mod_summary_df, BQ_DATASET, f"{SUMMARY_TABLE}_latest")
     L2Beat.CHAIN_SUMMARY.write(projects.df.with_columns(dt=pl.lit(DEFAULT_DT)))
 
     if QUERY_RANGE == "max":
