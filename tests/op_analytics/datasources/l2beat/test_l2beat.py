@@ -11,7 +11,7 @@ TESTDATA = InputTestData.at(__file__)
 
 
 def test_parse_summary():
-    with open(TESTDATA.path("mockdata/l2beat_scaling_summary_v2.json")) as fobj:
+    with open(TESTDATA.path("mockdata/l2beat_scaling_summary_v3.json")) as fobj:
         data = json.load(fobj)
 
     df = parse_summary(data)
@@ -28,7 +28,7 @@ def test_parse_summary():
             "type": "layer2",
             "hostChain": "Ethereum",
             "category": "Optimistic Rollup",
-            "provider": "OP Stack",
+            "providers": ["OP Stack"],
             "purposes": ["Universal"],
             "isArchived": False,
             "isUpcoming": False,
@@ -50,7 +50,7 @@ def test_parse_summary():
             "type": "layer2",
             "hostChain": "Ethereum",
             "category": "Optimistic Rollup",
-            "provider": "Arbitrum",
+            "providers": ["Arbitrum"],
             "purposes": ["Universal"],
             "isArchived": False,
             "isUpcoming": False,
@@ -72,7 +72,7 @@ def test_parse_summary():
             "type": "layer2",
             "hostChain": "Ethereum",
             "category": "Optimistic Rollup",
-            "provider": "OP Stack",
+            "providers": ["OP Stack"],
             "purposes": ["Universal"],
             "isArchived": False,
             "isUpcoming": False,
@@ -94,7 +94,7 @@ def test_parse_summary():
             "type": "layer2",
             "hostChain": "Ethereum",
             "category": "Other",
-            "provider": None,
+            "providers": None,
             "purposes": ["Universal"],
             "isArchived": False,
             "isUpcoming": False,
@@ -116,7 +116,7 @@ def test_parse_summary():
             "type": "layer2",
             "hostChain": "Ethereum",
             "category": "Optimium",
-            "provider": "OP Stack",
+            "providers": ["OP Stack"],
             "purposes": ["Universal"],
             "isArchived": False,
             "isUpcoming": False,

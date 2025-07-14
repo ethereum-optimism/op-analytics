@@ -19,7 +19,7 @@ SUMMARY_SCHEMA = {
     "type": pl.String(),
     "hostChain": pl.String(),
     "category": pl.String(),
-    "provider": pl.String(),
+    "providers": pl.List(pl.String()),
     "purposes": pl.List(pl.String()),
     "isArchived": pl.Boolean(),
     "isUpcoming": pl.Boolean(),
@@ -97,7 +97,7 @@ class L2BeatProjects:
 def parse_summary(summary):
     # Parse the summary and store as a dataframe.
     # (pedrod - 2025/01/31) L2Beat updated their naming from TVL to TVS.
-    # Here we adapat the incoming data to match our existing schema.
+    # Here we adapt the incoming data to match our existing schema.
     # This is a temporary patch while we work on migrating L2Beat to the
     # DailyData pattern.
     projects_summary = list(summary["projects"].values())
