@@ -58,6 +58,7 @@ class DuneUniLMSummary:
                 .otherwise(
                     pl.col("period").str.strptime(pl.Datetime, format="%Y-%m-%d", strict=False)
                 )
+                .cast(pl.Date)
                 .cast(pl.Utf8)
                 .alias("dt")
             )
