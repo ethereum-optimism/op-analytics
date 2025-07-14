@@ -11,6 +11,7 @@ from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange
 from op_analytics.datapipeline.chains import goldsky_chains
+from op_analytics.datapipeline.chains.aggregator import build_all_chains_metadata
 from op_analytics.datapipeline.etl.blockbatch.main import compute_blockbatch
 from op_analytics.datapipeline.etl.ingestion.main import ingest
 from op_analytics.datapipeline.etl.ingestion.batches import split_block_range
@@ -18,6 +19,13 @@ from op_analytics.datapipeline.etl.ingestion.sources import RawOnchainDataProvid
 from op_analytics.datapipeline.etl.loadbq.main import (
     load_superchain_raw_to_bq,
     load_superchain_4337_to_bq,
+)
+from op_analytics.datapipeline.etl.blockbatchload.main import (
+    load_to_clickhouse,
+)
+from op_analytics.datapipeline.etl.blockbatchload.yaml_loaders import (
+    load_revshare_from_addresses_to_clickhouse,
+    load_revshare_to_addresses_to_clickhouse,
 )
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 from op_analytics.datapipeline.orchestrate import normalize_chains, normalize_blockbatch_models
@@ -56,6 +64,48 @@ def get_receipts(chain: str, tx_hashes: list[str]):
     """Get transaction receipts."""
     txs = rpcs.get_receipts(chain, tx_hashes)
     print(json.dumps(txs, indent=2))
+
+
+@app.command(name="build-metadata")
+def build_metadata_command(
+    output_bq_table: Annotated[
+        str,
+        typer.Option(
+            "--output-bq-table", help="Target BigQuery table name for aggregated metadata output"
+        ),
+    ],
+    manual_mappings_file: Annotated[
+        str,
+        typer.Option("--manual-mappings-file", help="Path to manual mappings configuration file"),
+    ],
+    bq_project_id: Annotated[
+        str, typer.Option("--bq-project-id", help="BigQuery project ID for data operations")
+    ],
+    bq_dataset_id: Annotated[
+        str, typer.Option("--bq-dataset-id", help="BigQuery dataset ID for table operations")
+    ],
+):
+    """
+    Build aggregated metadata for all chains.
+
+    This command orchestrates the complete chain metadata aggregation pipeline,
+    including data loading, preprocessing, entity resolution, deduplication,
+    enrichment, and output to BigQuery.
+    """
+    print("Building chain metadata with the following parameters:")
+    print(f"  Output BigQuery Table: {output_bq_table}")
+    print(f"  Manual Mappings File: {manual_mappings_file}")
+    print(f"  BigQuery Project ID: {bq_project_id}")
+    print(f"  BigQuery Dataset ID: {bq_dataset_id}")
+    print()
+
+    # Call the aggregator function
+    build_all_chains_metadata(
+        output_bq_table=output_bq_table,
+        manual_mappings_filepath=manual_mappings_file,
+        bq_project_id=bq_project_id,
+        bq_dataset_id=bq_dataset_id,
+    )
 
 
 @app.command()
@@ -392,3 +442,67 @@ def newchain_backfill_models():
                 force_complete=False,
                 fork_process=True,
             )
+
+
+# ClickHouse Load Commands
+
+
+@app.command()
+def blockbatch_loads(
+    dataset_name: Annotated[
+        str,
+        typer.Argument(
+            help="Name of the dataset to load (e.g., 'revshare_transfers', 'contract_creation')"
+        ),
+    ],
+    range_spec: Annotated[str, typer.Argument(help="Range of dates to be processed.")],
+    dryrun: DRYRUN_OPTION = False,
+):
+    """Load blockbatch data to ClickHouse.
+    Lower case name of the dataset is the name of the dataset in the datasets module.
+    """
+    # Dynamically get the dataset object from the datasets module
+    import op_analytics.datapipeline.etl.blockbatchload.datasets as datasets_module
+
+    # Convert dataset_name to the constant name (e.g., "revshare_transfers" -> "REVSHARE_TRANSFERS")
+    constant_name = dataset_name.upper()
+
+    try:
+        dataset = getattr(datasets_module, constant_name)
+    except AttributeError:
+        # Get all available datasets for better error message
+        available_datasets = [
+            name.lower()
+            for name in dir(datasets_module)
+            if name.isupper() and not name.startswith("_")
+        ]
+        print(f"Error: Unknown dataset '{dataset_name}'")
+        print(f"Available datasets: {', '.join(available_datasets)}")
+        raise typer.Exit(1)
+
+    # Load revshare config first if needed for revshare_transfers
+    if dataset_name == "revshare_transfers":
+        print("Loading revshare configuration...")
+        load_revshare_from_addresses_to_clickhouse()
+        load_revshare_to_addresses_to_clickhouse()
+
+    # Load the dataset
+    print(f"Loading {dataset_name}...")
+    load_to_clickhouse(
+        dataset=dataset,
+        range_spec=range_spec,
+        dry_run=dryrun,
+    )
+
+
+@app.command()
+def load_revshare_config():
+    """Load revshare configuration YAML to ClickHouse."""
+    print("Loading revshare_from_addresses...")
+    load_revshare_from_addresses_to_clickhouse()
+    print("Loading revshare_to_addresses...")
+    load_revshare_to_addresses_to_clickhouse()
+    print("Revshare configuration loaded successfully.")
+
+
+# Backfills

@@ -22,71 +22,93 @@ HEADERS = {
 
 def get_l2beat_chain_summary():
     url = "https://l2beat.com/api/scaling/summary"
-    response = r.get(url,headers=HEADERS)
-    data = response.json()
+    try:
+        # Don't use GitHub headers for L2Beat API calls
+        response = r.get(url)
+        response.raise_for_status()
+        data = response.json()
 
-    # Extract the projects data
-    projects = data["data"]["projects"]
+        # Check if the response has the expected structure
+        if "data" not in data or "projects" not in data["data"]:
+            print("Unexpected response structure from L2Beat API")
+            print(f"Response keys: {list(data.keys()) if isinstance(data, dict) else 'Not a dict'}")
+            # Return empty DataFrame with expected columns
+            return pd.DataFrame(columns=["dt"])
 
-    # Normalize the data while preserving arrays
-    df = json_normalize(projects.values(), sep="_")
+        # Extract the projects data
+        projects = data["data"]["projects"]
 
-    # Function to safely access nested dictionaries
-    def safe_get(dict_obj, *keys):
-        for key in keys:
-            # print(f"Accessing key: {key}")
-            # print(f"Current dict_obj: {dict_obj}")
-            if isinstance(dict_obj, dict) and key in dict_obj:
-                dict_obj = dict_obj[key]
-            else:
-                print(f"Key {key} not found or dict_obj is not a dictionary")
-                return None
-        return dict_obj
+        # Normalize the data while preserving arrays
+        df = json_normalize(projects.values(), sep="_")
 
-    # Ensure 'risks' is a list
-    df["risks"] = df["risks"].apply(lambda x: x if isinstance(x, list) else [])
+        # Function to safely access nested dictionaries
+        def safe_get(dict_obj, *keys):
+            for key in keys:
+                # print(f"Accessing key: {key}")
+                # print(f"Current dict_obj: {dict_obj}")
+                if isinstance(dict_obj, dict) and key in dict_obj:
+                    dict_obj = dict_obj[key]
+                else:
+                    print(f"Key {key} not found or dict_obj is not a dictionary")
+                    return None
+            return dict_obj
 
-    df = pu.parse_json_fields(df)
+        # Ensure 'risks' is a list
+        if "risks" in df.columns:
+            df["risks"] = df["risks"].apply(lambda x: x if isinstance(x, list) else [])
 
-    return df
+        df = pu.parse_json_fields(df)
+
+        return df
+    except Exception as e:
+        print(f"Error fetching L2Beat chain summary: {e}")
+        print("Returning empty DataFrame")
+        # Return empty DataFrame with expected columns
+        return pd.DataFrame(columns=["dt"])
 
 
 @ru.retry_with_backoff(max_retries=3, initial_delay=1, backoff_factor=2)
 def get_l2beat_activity_data(data="activity", granularity="daily"):
     df = pd.DataFrame()
 
-    api_url = api_string + data
-    response = r.get(api_url)
-    response.raise_for_status()  # Check if the request was successful
-    json_data = response.json()["projects"]
+    try:
+        api_url = api_string + data
+        # Don't use GitHub headers for L2Beat API calls
+        response = r.get(api_url)
+        response.raise_for_status()  # Check if the request was successful
+        json_data = response.json()["projects"]
 
-    # Create an empty list to collect rows
-    rows_list = []
+        # Create an empty list to collect rows
+        rows_list = []
 
-    # Iterate over the chains
-    for chain_name in json_data:
-        # if chain_name != 'combined':
-        if data == "activity":
-            daily_data = json_data[chain_name][granularity]["data"]
-            types = json_data[chain_name][granularity]["types"]
-        elif data == "tvl":
-            daily_data = json_data[chain_name]["charts"][granularity]["data"]
-            types = json_data[chain_name]["charts"][granularity]["types"]
-        else:
-            print("not configured - need to configure for this API endpoint")
-            return
+        # Iterate over the chains
+        for chain_name in json_data:
+            # if chain_name != 'combined':
+            if data == "activity":
+                daily_data = json_data[chain_name][granularity]["data"]
+                types = json_data[chain_name][granularity]["types"]
+            elif data == "tvl":
+                daily_data = json_data[chain_name]["charts"][granularity]["data"]
+                types = json_data[chain_name]["charts"][granularity]["types"]
+            else:
+                print("not configured - need to configure for this API endpoint")
+                return df
 
-        # Iterate through each day's data
-        for day_data in daily_data:
-            # Create a dictionary for each day's data
-            data_dict = dict(zip(types, day_data))
-            data_dict["chain"] = chain_name  # Add the chain name to the dictionary
-            rows_list.append(data_dict)
+            # Iterate through each day's data
+            for day_data in daily_data:
+                # Create a dictionary for each day's data
+                data_dict = dict(zip(types, day_data))
+                data_dict["chain"] = chain_name  # Add the chain name to the dictionary
+                rows_list.append(data_dict)
 
-    # Create a DataFrame from the list of rows
-    df = pd.DataFrame(rows_list)
-    df["timestamp"] = pd.to_datetime(df["timestamp"], unit="s")
-    return df
+        # Create a DataFrame from the list of rows
+        df = pd.DataFrame(rows_list)
+        df["timestamp"] = pd.to_datetime(df["timestamp"], unit="s")
+        return df
+    except Exception as e:
+        print(f"Error fetching L2Beat activity data: {e}")
+        print("Returning empty DataFrame")
+        return df
 
 
 def get_all_l2beat_data(granularity="daily"):
@@ -100,37 +122,43 @@ def get_all_l2beat_data(granularity="daily"):
 
 @ru.retry_with_backoff(max_retries=3, initial_delay=1, backoff_factor=2)
 def get_daily_aoc_by_token():
-    api_url = "https://api.l2beat.com/api/tvl"
-    response = r.get(api_url)
-    response.raise_for_status()
-    data = response.json()
+    try:
+        api_url = "https://api.l2beat.com/api/tvl"
+        # Don't use GitHub headers for L2Beat API calls
+        response = r.get(api_url)
+        response.raise_for_status()
+        data = response.json()
 
-    rows = []
-    # timestamp = datetime.fromtimestamp(data['timestamp'] / 1000).strftime('%Y-%m-%d')
-    # Use today's date in UTC
-    timestamp = datetime.now(timezone.utc)
-    timestamp_date = timestamp.strftime("%Y-%m-%d")
+        rows = []
+        # timestamp = datetime.fromtimestamp(data['timestamp'] / 1000).strftime('%Y-%m-%d')
+        # Use today's date in UTC
+        timestamp = datetime.now(timezone.utc)
+        timestamp_date = timestamp.strftime("%Y-%m-%d")
 
-    for project_name, project_data in data["projects"].items():
-        for token_type, tokens in project_data["tokens"].items():
-            for token in tokens:
-                rows.append(
-                    {
-                        "dt": timestamp_date,
-                        "project": project_name,
-                        "token_type": token_type,
-                        "asset_id": token["assetId"],
-                        "address": token["address"],
-                        "source_chain": token["chain"],
-                        "source_chain_id": token["chainId"],
-                        "source": token["source"],
-                        "usd_value": token["usdValue"],
-                        "dt_updated": timestamp,
-                    }
-                )
-    df = pd.DataFrame(rows)
-    df["dt"] = pd.to_datetime(df["dt"], errors="coerce")
-    return df
+        for project_name, project_data in data["projects"].items():
+            for token_type, tokens in project_data["tokens"].items():
+                for token in tokens:
+                    rows.append(
+                        {
+                            "dt": timestamp_date,
+                            "project": project_name,
+                            "token_type": token_type,
+                            "asset_id": token["assetId"],
+                            "address": token["address"],
+                            "source_chain": token["chain"],
+                            "source_chain_id": token["chainId"],
+                            "source": token["source"],
+                            "usd_value": token["usdValue"],
+                            "dt_updated": timestamp,
+                        }
+                    )
+        df = pd.DataFrame(rows)
+        df["dt"] = pd.to_datetime(df["dt"], errors="coerce")
+        return df
+    except Exception as e:
+        print(f"Error fetching L2Beat daily AOC data: {e}")
+        print("Returning empty DataFrame")
+        return pd.DataFrame()
 
 
 def get_l2beat_metadata():
@@ -261,21 +289,60 @@ def get_l2beat_metadata():
         all_files = []
 
         # Function to recursively get files from folders
+        @ru.retry_with_backoff(max_retries=3, initial_delay=1, backoff_factor=2)
         def get_files_from_folder(folder_url):
             try:
-                folder_contents = r.get(folder_url,headers=HEADERS).json()
+                response = r.get(folder_url, headers=HEADERS)
+                response.raise_for_status()
+                
+                folder_contents = response.json()
+                if not isinstance(folder_contents, list):
+                    raise ValueError(f"Unexpected response format from {folder_url}")
+                
                 for item in folder_contents:
-                    if item["type"] == "dir":
+                    if item.get("type") == "dir":
                         # Recursively get files from subfolder
                         get_files_from_folder(item["url"])
-                    elif item["type"] == "file" and item["name"].endswith(".ts"):
-                        if item["name"] not in ["index.ts", "index.test.ts"]:
+                    elif item.get("type") == "file" and item.get("name", "").endswith(".ts"):
+                        if item.get("name") not in ["index.ts", "index.test.ts"]:
                             all_files.append(item)
             except Exception as e:
-                print(f"Error processing folder {folder_url}: {e}")
+                print(f"Failed to fetch metadata from GitHub API: {e}")
+                print("This is likely due to authentication issues or L2Beat repository changes.")
+                print("Returning minimal metadata DataFrame.")
+                # Return early to avoid further processing
+                return
 
         # Get all files from main folder and subfolders
         get_files_from_folder(link_url)
+        
+        # If no files were found (due to API failure), return a minimal DataFrame
+        if not all_files:
+            print("No metadata files found. Returning minimal DataFrame with basic chain information.")
+            # Create a minimal DataFrame with basic chain information
+            minimal_data = {
+                "layer": ["L2"],
+                "slug": ["unknown"],
+                "file_name": ["unknown"],
+                "chainId": [None],
+                "name": ["Unknown Chain"],
+                "explorerUrl": [None],
+                "rpcUrl": [None],
+                "category": [None],
+                "provider": [None],
+                "hostChain": [None],
+                "da_provider_name": [None],
+                "badges": [None],
+                "is_upcoming": [False],
+                "is_archived": [False],
+                "is_current_chain": [True],
+                "websites": [None],
+                "documentation": [None],
+                "repositories": [None],
+            }
+            df = pd.DataFrame(minimal_data)
+            df["provider_entity"] = df["provider"]
+            return df
 
         # Initialize a list to collect data dictionaries before appending to DataFrame
         data_list = []

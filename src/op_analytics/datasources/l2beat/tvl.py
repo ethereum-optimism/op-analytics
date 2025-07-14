@@ -17,6 +17,18 @@ TVL_SCHEMA: dict[str, type[pl.DataType]] = {
 }
 
 
+def fetch_project_data(project, session, query_range):
+    result = get_data(
+        session,
+        url=f"https://l2beat.com/api/scaling/tvs/{project.slug}?range={query_range}",
+        retry_attempts=5,
+        retries_timeout=3600,
+        retries_wait_initial=60,
+        retries_wait_max=240,
+    )
+    return result
+
+
 def fetch_tvl(
     projects: list[L2BeatProject],
     query_range: str,
@@ -26,11 +38,9 @@ def fetch_tvl(
 
     # Call api
     all_data = run_concurrently(
-        function=lambda x: get_data(
-            session, url=f"https://l2beat.com/api/scaling/tvs/{x.slug}?range={query_range}"
-        ),
+        function=lambda x: fetch_project_data(x, session, query_range),
         targets=projects,
-        max_workers=8,
+        max_workers=2,
     )
 
     # Convert to dataframe

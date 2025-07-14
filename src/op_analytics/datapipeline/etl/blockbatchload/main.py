@@ -64,20 +64,31 @@ def load_to_clickhouse(
     """
 
     # Operate over recent days.
-    date_range = DateRange.from_spec(range_spec or "m4days")
+    date_range = DateRange.from_spec(range_spec or "m7days")
+
+    log.info(
+        f"Loading dataset '{dataset.output_root_path}' for date range {date_range.min} to {date_range.max}"
+    )
+    log.info(f"Input root paths: {dataset.input_root_paths}")
 
     # Create the output tables if they don't exist.
     if not dry_run:
         dataset.create_table()
 
     # Candidate markers are for blockbatches produced upstream.
+    log.info("Querying candidate markers from GCS...")
     candidate_markers_df = candidate_markers(
         date_range=date_range,
         root_paths=dataset.input_root_paths,
     )
+    log.info(f"Found {len(candidate_markers_df)} candidate markers in GCS")
 
     # Existing markers that have already been loaded to ClickHouse.
+    log.info(
+        "Querying existing markers from ClickHouse table 'etl_monitor.blockbatch_markers_datawarehouse'..."
+    )
     existing_markers_df = existing_markers(date_range)
+    log.info(f"Found {len(existing_markers_df)} existing markers in ClickHouse")
 
     # Loop over datasets and find which ones are pending.
     tasks: list[InsertTask] = []
@@ -111,18 +122,22 @@ def load_to_clickhouse(
         ]
     )
 
+    total_candidates = len(candidates)
+    skipped_incomplete = 0
+    skipped_completed = 0
+
     for block_batch in candidates:
         ready = block_batch["root_path"]
 
         # Skip batches that don't have all the required input root_paths.
         if set(dataset.input_root_paths) != set(ready):
-            # If needed for debugging:
-            # missing = sorted(set(d.input_root_paths) - set(ready))
+            skipped_incomplete += 1
             continue
 
         # Skip batches that have already been processed.
         as_tuple = (block_batch["chain"], block_batch["dt"], block_batch["min_block"])
         if as_tuple in completed_batches:
+            skipped_completed += 1
             continue
 
         # Collect the pending batches.
@@ -143,7 +158,11 @@ def load_to_clickhouse(
         )
         tasks.append(insert_task)
 
-    log.info(f"Prepared {len(tasks)} insert tasks.")
+    log.info("Task preparation summary:")
+    log.info(f"  Total candidate batches: {total_candidates}")
+    log.info(f"  Skipped (incomplete inputs): {skipped_incomplete}")
+    log.info(f"  Skipped (already completed): {skipped_completed}")
+    log.info(f"  Pending tasks: {len(tasks)}")
 
     # Sort tasks by date (should still be somewhat random by chain)
     tasks.sort(key=lambda x: x.blockbatch.dt)
@@ -151,7 +170,11 @@ def load_to_clickhouse(
     if dry_run and tasks:
         tasks[0].dry_run()
         log.warning("DRY RUN: Only the first task is shown.")
-        return
+        return {"total": 0, "success": 0, "fail": 0}
+
+    if not tasks:
+        log.info("No tasks to execute.")
+        return {"total": 0, "success": 0, "fail": 0}
 
     summary = run_concurrently(
         function=lambda x: x.execute(),
@@ -159,4 +182,13 @@ def load_to_clickhouse(
         max_workers=5,
     )
 
-    return summary
+    # Convert the summary to a format similar to blockbatch_models
+    total_executed = len(summary)
+    success_count = sum(1 for result in summary.values() if result is not None)
+    failure_count = total_executed - success_count
+
+    log.info(
+        f"Execution summary: total={total_executed}, success={success_count}, fail={failure_count}"
+    )
+
+    return {"total": total_executed, "success": success_count, "fail": failure_count}

@@ -59,7 +59,7 @@ class L2BeatTVSBreakdown:
         projects_tvs = run_concurrently(
             function=lambda project: L2BeatProjectTVS.fetch(project, session),
             targets=l2beat_projects,
-            max_workers=8,
+            max_workers=1,
         )
 
         rows = []
@@ -94,6 +94,10 @@ class L2BeatProjectTVS:
         data = get_data(
             session,
             url=f"https://l2beat.com/api/scaling/tvs/{project.slug}/breakdown",
+            retry_attempts=5,
+            retries_timeout=3600,
+            retries_wait_initial=60,
+            retries_wait_max=240,
         )
 
         if not data.get("success"):
@@ -162,18 +166,12 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
             else:
                 token_address = asset["tokenAddress"]
 
-            try:
-                if "url" not in asset:
-                    # New JSON structure
-                    try:
-                        url = asset["address"]["url"]
-                    except KeyError:
-                        url = None
-                else:
-                    url = asset.get("url")
-            except Exception:
-                log.error(f"Failed to parse URL for asset {asset}")
-                url = None
+            url = None
+
+            if "url" in asset:
+                url = asset["url"]
+            elif isinstance(asset.get("address"), dict):
+                url = asset["address"].get("url")
 
             # We produce one row per asset per escrow. If there are no escrows we still need to
             # produce a row for the asset, so we set escrows to a list with a single null escrow.
@@ -187,20 +185,19 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
             else:
                 escrows = [None]
 
-            for escrow in escrows:
-                if escrow:
-                    if "address" in escrow:
-                        # New JSON structure
-                        escrow_address = escrow["address"]
-                    elif "escrowAddress" in escrow:
-                        escrow_address = escrow["escrowAddress"]
-                    else:
-                        log.error(f"Unknown escrow structure: {escrow}")
-                        continue
-                else:
-                    escrow_address = None
+            def get_escrow_address(esc: dict[str, Any] | None) -> str | None:
+                if not isinstance(esc, dict):
+                    return None
+                return esc.get("address") or esc.get("escrowAddress")
 
-                row = {
+            def get_escrow_name(esc: dict[str, Any] | None) -> str | None:
+                if not isinstance(esc, dict):
+                    return None
+                return esc.get("name")
+
+            def create_row(esc: dict[str, Any] | None = None) -> dict[str, Any]:
+                escrow_address = get_escrow_address(esc) if esc else None
+                return {
                     "dt": dt_fromepoch(timestamp),
                     "project_id": project.id,
                     "project_slug": project.slug,
@@ -214,9 +211,9 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
                     "is_gas_token": asset.get("isGasToken"),
                     "token_address": token_address,
                     "escrow_address": escrow_address,
-                    "escrow_name": escrow.get("name") if escrow else None,
-                    "is_shared_escrow": escrow.get("isSharedEscrow") if escrow else None,
-                    "escrow_url": escrow.get("url") if escrow else None,
+                    "escrow_name": get_escrow_name(esc) if esc else None,
+                    "is_shared_escrow": esc.get("isSharedEscrow") if esc else None,
+                    "escrow_url": esc.get("url") if esc else None,
                     "asset_url": url,
                     "icon_url": asset.get("iconUrl"),
                     "symbol": asset["symbol"],
@@ -224,7 +221,17 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
                     "supply": asset.get("supply"),
                     "category": category,
                 }
-                rows.append(row)
+
+            # Get valid escrows (those with an address)
+            valid_escrows = [esc for esc in escrows if get_escrow_address(esc)]
+
+            # If no valid escrows, create a row with null escrow data
+            if not valid_escrows:
+                rows.append(create_row())
+            else:
+                # Create a row for each valid escrow
+                for esc in valid_escrows:
+                    rows.append(create_row(esc))
     return rows
 
 
