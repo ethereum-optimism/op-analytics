@@ -51,7 +51,7 @@ def execute_pull():
     # We still write to GCS so that we have a marker created in our etl_monitor table which
     # can help us track when the data pull succeeded/failed.
     overwrite_unpartitioned_table(mod_summary_df, BQ_DATASET, f"{SUMMARY_TABLE}_latest")
-    L2Beat.CHAIN_SUMMARY.write(projects.df.with_columns(dt=pl.lit(DEFAULT_DT)))
+    L2Beat.CHAIN_SUMMARY.write(mod_summary_df.with_columns(dt=pl.lit(DEFAULT_DT)))
 
     if QUERY_RANGE == "max":
         overwrite_partitioned_table(
@@ -82,7 +82,7 @@ def execute_pull():
         L2Beat.TVL.write(most_recent_dates(projects.tvl_df, n_dates=7))
         L2Beat.ACTIVITY.write(most_recent_dates(projects.activity_df, n_dates=7))
     return {
-        "summary": dt_summary(projects.df),
+        "summary": dt_summary(mod_summary_df),
         "tvl": dt_summary(projects.tvl_df),
         "activity": dt_summary(projects.activity_df),
     }
