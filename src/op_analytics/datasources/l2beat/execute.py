@@ -44,7 +44,23 @@ def execute_pull():
     )
 
     # Patch for writing to BQ as L2Beat evolved the API from a single provider to a list of providers
-    mod_summary_df = projects.df.with_columns(pl.col("providers").arr.join(",").alias("provider"))
+    # Get column names
+    cols = projects.df.columns
+    providers_idx = cols.index("providers")
+
+    # Create new column and remove old one
+    mod_summary_df = projects.df.with_columns(
+        pl.col("providers")
+        .fill_null([])
+        .list.join(",")
+        .fill_null("")
+        .alias("provider")
+    ).drop("providers")
+
+    # Reorder columns: insert 'provider' where 'providers' was
+    cols.remove("providers")
+    cols.insert(providers_idx, "provider")
+    mod_summary_df = mod_summary_df.select(cols)
 
     # Write to BQ.
     # NOTE: For L2Beat we have used native BQ writes in the past, so keeping that approach.
