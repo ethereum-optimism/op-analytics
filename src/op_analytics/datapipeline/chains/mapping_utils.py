@@ -196,7 +196,6 @@ def apply_mapping_rules(df: pl.DataFrame, mappings: List[Dict[str, Any]]) -> pl.
 
     for mapping in mappings:
         try:
-            initial_rows = result_df.height
             result_df, affected = _apply_single_mapping_rule(result_df, mapping)
             rules_applied += 1
             rows_affected += affected
@@ -293,7 +292,6 @@ def _build_identifier_condition(identifier_type: str, identifier_value: str) -> 
         return pl.col("source_name").str.to_lowercase() == identifier_value.lower()
     elif identifier_type == "slug":
         # Handle various slug column names - check which columns actually exist
-        slug_cols = ["slug", "l2beat_slug", "defillama_slug"]
         # This function will be called on the DataFrame, so we need to check existence at runtime
         # For now, create a condition that checks the main 'slug' column
         return pl.col("slug").str.to_lowercase() == identifier_value.lower()
