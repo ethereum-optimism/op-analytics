@@ -7,5 +7,4 @@ display_name_preference,display_name,arbitrum,,display_name,Arbitrum One,,Prefer
 display_name_preference,display_name,optimism,,display_name,OP Mainnet,,Prefer 'OP Mainnet' over 'Optimism',true
 display_name_preference,display_name,polygon,,display_name,Polygon PoS,,Prefer 'Polygon PoS' over 'Polygon',true
 field_override,display_name,Polygon PoS,,provider,Polygon,,Override provider for Polygon PoS,true
-field_override,display_name,Polygon PoS,,provider_entity,Polygon: CDK,,Override provider entity for Polygon PoS,true
-chain_id_override,chain_name,test_disabled,,chain_id,NULL,,Example of disabled rule,false 
+field_override,display_name,Polygon PoS,,provider_entity,Polygon: CDK,,Override provider entity for Polygon PoS,true 
