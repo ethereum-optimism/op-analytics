@@ -1,5 +1,6 @@
 import polars as pl
 
+from notebooks.adhoc.l2beat.debug_l2beat import projects
 from op_analytics.coreutils.bigquery.write import (
     most_recent_dates,
     overwrite_partitioned_table,
@@ -44,7 +45,11 @@ def execute_pull():
     )
 
     # Patch for writing to BQ as L2Beat evolved the API from a single provider to a list of providers
-    mod_summary_df = projects.df.with_columns(pl.col("providers").arr.join(",").alias("provider"))
+    mod_summary_df = projects.df.with_columns(
+        pl.col("providers")
+        .map_elements(lambda x: ",".join(x))
+        .alias("provider")
+    )
 
     # Write to BQ.
     # NOTE: For L2Beat we have used native BQ writes in the past, so keeping that approach.
