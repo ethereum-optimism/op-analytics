@@ -231,10 +231,10 @@ defs = Definitions(
             cron_schedule="0 8 * * *",
             custom_k8s_config=SMALL_POD,
         ),
-        #
+        # Platform metrics
         create_schedule_for_group(
             group="platformmetrics",
-            cron_schedule="0 */6 * * *",
+            cron_schedule="0 */6 * * *",  # Runs at xx:00 every 6 hours
             custom_k8s_config=SMALL_POD,
         ),
         #
