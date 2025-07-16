@@ -61,6 +61,8 @@ def load_manual_mappings(filepath: str) -> List[Dict[str, Any]]:
                 "target_field": pl.String,
                 "new_value": pl.String,
                 "conditions": pl.String,
+                "start_date": pl.String,
+                "end_date": pl.String,
                 "description": pl.String,
                 "enabled": pl.String,
             },
@@ -152,6 +154,8 @@ def _validate_mapping_rule(mapping: Dict[str, Any], row_index: int) -> Dict[str,
         "target_field": mapping["target_field"].strip(),
         "new_value": mapping.get("new_value", "").strip() if mapping.get("new_value") else None,
         "conditions": mapping.get("conditions", "").strip() if mapping.get("conditions") else None,
+        "start_date": mapping.get("start_date", "").strip() if mapping.get("start_date") else None,
+        "end_date": mapping.get("end_date", "").strip() if mapping.get("end_date") else None,
         "description": mapping.get("description", "").strip()
         if mapping.get("description")
         else None,
@@ -258,6 +262,21 @@ def _apply_single_mapping_rule(
         if additional_condition is not None:
             base_condition = base_condition & additional_condition
 
+    # Add date range condition if specified
+    date_col = "date"
+    start_date = mapping.get("start_date")
+    end_date = mapping.get("end_date")
+    if start_date or end_date:
+        if date_col not in df.columns:
+            # If date range is specified but no date column, skip mapping
+            return df, 0
+        # Assume date column is string or datetime; parse as needed
+        date_expr = pl.col(date_col)
+        if start_date:
+            base_condition = base_condition & (date_expr >= pl.lit(start_date))
+        if end_date:
+            base_condition = base_condition & (date_expr <= pl.lit(end_date))
+
     # Count matching rows before transformation
     matching_rows = df.filter(base_condition).height
 
@@ -267,8 +286,6 @@ def _apply_single_mapping_rule(
     # Apply the specific mapping transformation
     if mapping_type == "chain_id_override":
         result_df = _apply_chain_id_override(df, base_condition, new_value)
-    elif mapping_type == "chain_id_suffix":
-        result_df = _apply_chain_id_suffix(df, base_condition, new_value)
     elif mapping_type == "display_name_preference":
         result_df = _apply_display_name_preference(df, base_condition, new_value)
     elif mapping_type == "field_override":
@@ -332,41 +349,30 @@ def _apply_chain_id_override(
     )
 
 
-def _apply_chain_id_suffix(df: pl.DataFrame, condition: pl.Expr, suffix: str) -> pl.DataFrame:
-    """Apply chain_id suffix transformation."""
-    if not suffix:
-        return df
-
-    return df.with_columns(
-        pl.when(condition)
-        .then(pl.col("chain_id") + pl.lit(suffix))
-        .otherwise(pl.col("chain_id"))
-        .alias("chain_id")
-    )
-
-
-def _apply_display_name_preference(
-    df: pl.DataFrame, condition: pl.Expr, new_value: str
-) -> pl.DataFrame:
-    """Apply display name preference transformation."""
-    return df.with_columns(
-        pl.when(condition)
-        .then(pl.lit(new_value))
-        .otherwise(pl.col("display_name"))
-        .alias("display_name")
-    )
-
-
 def _apply_field_override(
     df: pl.DataFrame, condition: pl.Expr, target_field: str, new_value: Optional[str]
 ) -> pl.DataFrame:
-    """Apply generic field override transformation."""
+    """Apply generic field override transformation, supporting templated new_value."""
     if new_value and new_value.lower() in ["null", "none", ""]:
         new_value = None
 
+    # Support templated new_value, e.g., {chain_id}-l2
+    def _template_func(row):
+        if new_value is None:
+            return None
+        if "{" in new_value and "}" in new_value:
+            # Replace {field} with row[field] for all fields present
+            out = new_value
+            for col in df.columns:
+                out = out.replace(f"{{{col}}}", str(row[col]) if row[col] is not None else "")
+            return out
+        return new_value
+
+    # Apply the override with templating only to matching rows
+    # Use map_elements for matching rows, otherwise keep original
     return df.with_columns(
         pl.when(condition)
-        .then(pl.lit(new_value))
+        .then(pl.struct(df.columns).map_elements(_template_func))
         .otherwise(pl.col(target_field))
         .alias(target_field)
     )
