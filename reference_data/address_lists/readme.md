@@ -74,3 +74,11 @@ Airdrop #5 address lists, category eligibility, and total OP received. Claims we
 - `is_[category]`: True/False indicates if the address was eligible for the category
 - `multiplier`: The address' multiplier bonus, if qualified
 - `op_total`: Total OP the address received. *Note: These numbers need to be divided by 10^18 to get to the # of OP (they are in raw form, not decimal adjusted)*
+
+## SuperStacks
+
+#### op_superstacks_addresses_detailed_list.csv
+SuperStacks address lists and total OP received. Claims were available at [app.optimism.io/superstacks](https:/app.optimism.io/superstacks). See [Optimism Docs](https://community.optimism.io/op-token/superstacks-allocation/).
+
+- `address`: User address
+- `op_total`: Total OP the address received. *Note: These numbers need to be divided by 10^18 to get to the # of OP (they are in raw form, not decimal adjusted)*

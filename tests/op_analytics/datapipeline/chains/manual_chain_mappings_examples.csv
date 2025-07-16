@@ -1,0 +1,16 @@
+mapping_type,identifier_type,identifier_value,source_filter,target_field,new_value,conditions,start_date,end_date,description,enabled
+chain_id_override,chain_id,1234,,chain_id,NULL,,,,Override chain_id 1234 to NULL,false
+chain_id_override,slug,molten,,chain_id,360,,'2024-01-01',,Override chain_id for slug 'molten' to 360 after Jan 1, 2024,false
+field_override,chain_name,celol2,,chain_id,{chain_id}-l2,,'2024-01-01',,Add -l2 suffix to chain_id for chain_name 'celol2' after Jan 1, 2024,false
+field_override,chain_id,5678,,chain_id,{chain_id}-test,,,'2023-01-01','2023-12-31',Add -test suffix to chain_id 5678 only in 2023,false
+display_name_preference,display_name,arbitrum,,display_name,Arbitrum One,,,,Prefer 'Arbitrum One' for display_name 'arbitrum',false
+display_name_preference,display_name,optimism,,display_name,OP Mainnet,,'2024-01-01',,Prefer 'OP Mainnet' for display_name 'optimism' after Jan 1, 2024,false
+field_override,chain_name,kardia,,chain_id,24,,,'2024-06-01',Override chain_id for chain_name 'kardia' until June 1, 2024,false
+field_override,display_name,Polygon PoS,,provider,Polygon,,'2024-01-01','2024-12-31',Override provider for display_name 'Polygon PoS' in 2024,false
+field_override,display_name,Polygon PoS,,provider_entity,Polygon: CDK,,,,Override provider_entity for display_name 'Polygon PoS',false
+field_override,source_name,op_labs,,is_evm,true,,,,Override is_evm for source_name 'op_labs' to true,false
+source_filter,chain_name,arbitrum,op_labs,display_name,Arbitrum One,,'2024-01-01',,Apply only for source 'op_labs' and chain_name 'arbitrum' after Jan 1, 2024,false
+conditional_transform,chain_name,celo,,chain_id,{chain_id}-l2,layer=L2,'2024-01-01',,Add -l2 suffix to chain_id for chain_name 'celo' when layer is L2 after Jan 1, 2024,false
+conditional_transform,display_name,Polygon PoS,,provider,Polygon,layer=L2,,'2024-12-31',Override provider for Polygon PoS only when layer is L2 until Dec 31, 2024,false
+field_override,slug,example_slug,,display_name,Example Chain,,,,Override display_name for slug 'example_slug',false
+field_override,chain_id,9999,,display_name,Test Chain,,,,Override display_name for chain_id 9999,false 
