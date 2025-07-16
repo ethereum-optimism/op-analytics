@@ -69,6 +69,9 @@ BATCH_SIZE_CONFIGURATION = {
         # (2025/03/17) Go to 200 blocks per batch. Trace file size is at ~55MB.
         Delimiter(block_number=27730000, batch_size=200),
     ],
+    "celo": [
+        Delimiter(block_number=0, batch_size=1000),
+    ],
     "cyber": [
         # https://cyberscan.co/block/14848000
         Delimiter(0, 20000),

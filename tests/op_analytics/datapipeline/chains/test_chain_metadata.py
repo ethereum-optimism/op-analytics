@@ -175,6 +175,7 @@ def test_goldsky_chains():
             "automata",
             "base",
             "bob",
+            "celo",
             "cyber",
             "fraxtal",
             "ham",
