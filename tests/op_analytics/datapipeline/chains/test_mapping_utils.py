@@ -109,7 +109,7 @@ def test_apply_mapping_rules_chain_id_override():
 
 
 def test_apply_mapping_rules_chain_id_suffix():
-    """Test chain_id suffix transformation."""
+    """Test chain_id suffix transformation (now via field_override)."""
     df = pl.DataFrame(
         {
             "chain_name": ["celo", "other"],
@@ -120,12 +120,12 @@ def test_apply_mapping_rules_chain_id_suffix():
 
     mappings = [
         {
-            "mapping_type": "chain_id_suffix",
+            "mapping_type": "field_override",
             "identifier_type": "chain_name",
             "identifier_value": "celo",
             "source_filter": None,
             "target_field": "chain_id",
-            "new_value": "-l2",
+            "new_value": "{chain_id}-l2",
             "conditions": "layer=L2",
             "row_index": 0,
         }
@@ -137,7 +137,7 @@ def test_apply_mapping_rules_chain_id_suffix():
 
 
 def test_apply_mapping_rules_display_name_preference():
-    """Test display name preference transformation."""
+    """Test display name preference transformation (now via field_override)."""
     df = pl.DataFrame(
         {
             "display_name": ["Arbitrum", "Other Chain"],
@@ -147,7 +147,7 @@ def test_apply_mapping_rules_display_name_preference():
 
     mappings = [
         {
-            "mapping_type": "display_name_preference",
+            "mapping_type": "field_override",
             "identifier_type": "display_name",
             "identifier_value": "arbitrum",
             "source_filter": None,
@@ -220,7 +220,7 @@ def test_apply_mapping_rules_field_override():
 
 
 def test_apply_mapping_rules_multiple_rules():
-    """Test applying multiple mapping rules in sequence."""
+    """Test applying multiple mapping rules in sequence (all via field_override)."""
     df = pl.DataFrame(
         {
             "chain_name": ["arbitrum", "celo"],
@@ -232,7 +232,7 @@ def test_apply_mapping_rules_multiple_rules():
 
     mappings = [
         {
-            "mapping_type": "display_name_preference",
+            "mapping_type": "field_override",
             "identifier_type": "display_name",
             "identifier_value": "arbitrum",
             "source_filter": None,
@@ -242,12 +242,12 @@ def test_apply_mapping_rules_multiple_rules():
             "row_index": 0,
         },
         {
-            "mapping_type": "chain_id_suffix",
+            "mapping_type": "field_override",
             "identifier_type": "chain_name",
             "identifier_value": "celo",
             "source_filter": None,
             "target_field": "chain_id",
-            "new_value": "-l2",
+            "new_value": "{chain_id}-l2",
             "conditions": "layer=L2",
             "row_index": 1,
         },
@@ -288,7 +288,7 @@ def test_apply_mapping_rules_no_matching_rows():
 
 
 def test_apply_mapping_rules_with_conditions():
-    """Test mapping rules with additional conditions."""
+    """Test mapping rules with additional conditions (all via field_override)."""
     df = pl.DataFrame(
         {
             "chain_name": ["test", "test"],
@@ -299,12 +299,12 @@ def test_apply_mapping_rules_with_conditions():
 
     mappings = [
         {
-            "mapping_type": "chain_id_suffix",
+            "mapping_type": "field_override",
             "identifier_type": "chain_name",
             "identifier_value": "test",
             "source_filter": None,
             "target_field": "chain_id",
-            "new_value": "-l2",
+            "new_value": "{chain_id}-l2",
             "conditions": "layer=L2",
             "row_index": 0,
         }

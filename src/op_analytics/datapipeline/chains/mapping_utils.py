@@ -287,7 +287,7 @@ def _apply_single_mapping_rule(
     if mapping_type == "chain_id_override":
         result_df = _apply_chain_id_override(df, base_condition, new_value)
     elif mapping_type == "display_name_preference":
-        result_df = _apply_display_name_preference(df, base_condition, new_value)
+        result_df = _apply_field_override(df, base_condition, "display_name", new_value)
     elif mapping_type == "field_override":
         result_df = _apply_field_override(df, base_condition, target_field, new_value)
     else:
