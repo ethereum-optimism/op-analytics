@@ -2,7 +2,7 @@ import polars as pl
 import pytest
 from op_analytics.datapipeline.chains.mapping_utils import apply_mapping_rules
 
-EXAMPLES_CSV = ".cursor/features/chain_metadata_aggregator/manual_chain_mappings_examples.csv"
+EXAMPLES_CSV = "tests/op_analytics/datapipeline/chains/manual_chain_mappings_examples.csv"
 
 
 def test_apply_all_example_mappings():
