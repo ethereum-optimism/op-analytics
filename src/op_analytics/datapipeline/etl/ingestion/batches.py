@@ -70,6 +70,7 @@ BATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=27730000, batch_size=200),
     ],
     "celo": [
+        # https://celoscan.io/chart/tx
         Delimiter(block_number=0, batch_size=2000),
     ],
     "cyber": [
@@ -77,6 +78,16 @@ BATCH_SIZE_CONFIGURATION = {
         Delimiter(0, 20000),
         Delimiter(block_number=9280000, batch_size=8000),
         Delimiter(block_number=14848000, batch_size=4000),
+    ],
+    "ethereum": [
+        #  https://etherscan.io/chart/tx
+        Delimiter(block_number=0, batch_size=20000),
+        #  2017/04/12 around the time when transaction volume picked up.
+        #  Choosing batch_size 5000 because this is the batch size sufficient
+        #  for base when it was handling 2.5M tx/day, and ethereum stays in the
+        #  range of 500K-1.5M tx/day from this block onward
+        #  (never exceeding 2.5M tx/day)
+        Delimiter(block_number=3520000, batch_size=5000),
     ],
     "fraxtal": [
         # https://fraxscan.com/block/countdown/18200000

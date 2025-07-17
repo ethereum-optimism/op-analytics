@@ -177,6 +177,7 @@ def test_goldsky_chains():
             "bob",
             "celo",
             "cyber",
+            "ethereum",
             "fraxtal",
             "ham",
             "ink",

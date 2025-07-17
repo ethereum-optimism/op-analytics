@@ -29,7 +29,6 @@ MODULE_NAMES = [
     "l2beat",
     "platformmetrics",
     "transforms",
-    "superhealth",
 ]
 
 
@@ -288,12 +287,6 @@ defs = Definitions(
                 ["transforms", "systemconfig"],
             ),
             cron_schedule="7 1,13 * * *",
-            custom_k8s_config=SMALL_POD,
-        ),
-        #
-        create_schedule_for_group(
-            group="superhealth",
-            cron_schedule="0 0 1 1 *",
             custom_k8s_config=SMALL_POD,
         ),
     ],
