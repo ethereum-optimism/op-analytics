@@ -51,6 +51,7 @@ def goldsky_mainnet_chains() -> list[str]:
         "automata",
         "base",
         "bob",
+        "celo",
         "cyber",
         "fraxtal",
         "ham",
