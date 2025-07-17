@@ -13,6 +13,7 @@ CHAIN_ACTIVATION_DATES = {
     "automata": date_fromstr("2024-07-17"),
     "base": date_fromstr("2023-06-15"),
     "bob": date_fromstr("2024-04-11"),
+    "celo": date_fromstr("2025-03-26"),
     "cyber": date_fromstr("2024-04-18"),
     "fraxtal": date_fromstr("2024-02-01"),
     "ham": date_fromstr("2024-05-24"),
