@@ -70,7 +70,7 @@ BATCH_SIZE_CONFIGURATION = {
         Delimiter(block_number=27730000, batch_size=200),
     ],
     "celo": [
-        Delimiter(block_number=0, batch_size=1000),
+        Delimiter(block_number=0, batch_size=2000),
     ],
     "cyber": [
         # https://cyberscan.co/block/14848000
