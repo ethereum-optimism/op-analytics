@@ -17,6 +17,7 @@ def test_transaction_count_audit_matching_counts():
             }
         ),
     }
+
     check = transaction_count("base", dataframes).to_dicts()
     assert check == [
         {
