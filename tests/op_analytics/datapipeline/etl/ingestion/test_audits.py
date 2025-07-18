@@ -24,6 +24,14 @@ def test_transaction_count_audit_matching_counts():
         }
     ]
 
+    check = transaction_count("ethereum", dataframes).to_dicts()
+    assert check == [
+        {
+            "audit_name": "block transaction count must match observed transactions",
+            "failure_count": 0,
+        }
+    ]
+
 def test_transaction_count_audit_zero_counts_null_txs():
     dataframes = {
         "blocks": pl.DataFrame(
@@ -39,6 +47,14 @@ def test_transaction_count_audit_zero_counts_null_txs():
         ),
     }
     check = transaction_count("base", dataframes).to_dicts()
+    assert check == [
+        {
+            "audit_name": "block transaction count must match observed transactions",
+            "failure_count": 1,
+        }
+    ]
+
+    check = transaction_count("ethereum", dataframes).to_dicts()
     assert check == [
         {
             "audit_name": "block transaction count must match observed transactions",
@@ -96,6 +112,14 @@ def test_transaction_count_audit_mismatching_counts():
     assert check == [
         {
             "audit_name": "block transaction count must match observed transactions",
+            "failure_count": 2,  # Only the first block should fail
+        }
+    ]
+
+    check = transaction_count("ethereum", dataframes).to_dicts()
+    assert check == [
+        {
+            "audit_name": "block transaction count must match observed transactions",
             "failure_count": 1,  # Only the first block should fail
         }
     ]
@@ -118,6 +142,14 @@ def test_transaction_count_audit_empty_transactions():
         ),
     }
     check = transaction_count("base", dataframes).to_dicts()
+    assert check == [
+        {
+            "audit_name": "block transaction count must match observed transactions",
+            "failure_count": 3,  # All blocks should fail
+        }
+    ]
+
+    check = transaction_count("ethereum", dataframes).to_dicts()
     assert check == [
         {
             "audit_name": "block transaction count must match observed transactions",
