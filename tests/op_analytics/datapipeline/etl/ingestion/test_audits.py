@@ -1,6 +1,7 @@
 from op_analytics.datapipeline.etl.ingestion.audits.audits import transaction_count
+
 import polars as pl
-import pytest
+
 
 def test_transaction_count_audit_matching_counts():
     dataframes = {
