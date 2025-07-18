@@ -83,10 +83,8 @@ BATCH_SIZE_CONFIGURATION = {
         #  https://etherscan.io/chart/tx
         Delimiter(block_number=0, batch_size=2000),
         #  2017/04/12 around the time when transaction volume picked up.
-        #  Choosing batch_size 5000 because this is the batch size sufficient
-        #  for base when it was handling 2.5M tx/day, and ethereum stays in the
-        #  range of 500K-1.5M tx/day from this block onward
-        #  (never exceeding 2.5M tx/day)
+        #  Using smaller batch sizes because the number of logs per batch
+        #  is empirically high
         Delimiter(block_number=3520000, batch_size=500),
     ],
     "fraxtal": [
