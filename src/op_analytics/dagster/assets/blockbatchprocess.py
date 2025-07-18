@@ -31,8 +31,12 @@ def update_a(context: OpExecutionContext):
 def update_b(context: OpExecutionContext):
     context.log.info(f"LOGS URL: {get_logs_url()}")
     context.log.info(context.op_config.get("range_spec"))
+
+    excluded_chains = {"celo"}
+    chains = [chain for chain in normalize_chains("ALL") if chain not in excluded_chains]
+
     result = compute_blockbatch(
-        chains=normalize_chains("ALL"),
+        chains=chains,
         models=normalize_blockbatch_models("GROUPB"),
         range_spec=context.op_config.get("range_spec"),
         read_from=DataLocation.GCS,
