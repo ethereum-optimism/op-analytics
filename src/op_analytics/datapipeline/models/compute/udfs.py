@@ -139,6 +139,26 @@ UDFS = [
     AS a * 0.0625::DECIMAL(5, 5);
     """,
     #
+    # Cast to DECIMAL(38,0) - for large integer values to prevent overflow
+    """CREATE OR REPLACE MACRO dec38(a)
+    AS CAST(a AS DECIMAL(38, 0));
+    """,
+    #
+    # Cast to DECIMAL(38,6) - for values with 6 decimal places  
+    """CREATE OR REPLACE MACRO dec38_6(a)
+    AS CAST(a AS DECIMAL(38, 6));
+    """,
+    #
+    # Multiply two values safely using DECIMAL(38,0) to prevent overflow
+    """CREATE OR REPLACE MACRO safe_mul(a, b)
+    AS dec38(a) * dec38(b);
+    """,
+    #
+    # Multiply value by decimal scalar safely
+    """CREATE OR REPLACE MACRO safe_mul_scalar(a, b)
+    AS dec38(a) * dec38_6(b);
+    """,
+    #
     # Count zero bytes for binary data that is encoded as a hex string.
     """CREATE OR REPLACE MACRO hexstr_zero_bytes(a)
     AS count_zero_bytes(unhex(substr(a, 3)));

@@ -50,10 +50,10 @@ pb AS (
     , micro(t.receipt_l1_blob_base_fee_scalar) AS l1_blob_base_fee_scalar
 
     -- L2 Fees and breakdown into BASE and PRIORITY contributions
-    , if(t.max_priority_fee_per_gas = 0 AND t.gas_price > 0, t.gas_price - b.base_fee_per_gas, 0) AS legacy_extra_fee_per_gas
-    , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.gas_price * t.receipt_gas_used END AS l2_fee
-    , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.max_priority_fee_per_gas * t.receipt_gas_used END AS l2_priority_fee
-    , CASE WHEN t.gas_price = 0 THEN 0 ELSE b.base_fee_per_gas * t.receipt_gas_used END AS l2_base_fee
+    , if(t.max_priority_fee_per_gas = 0 AND t.gas_price > 0, dec38(t.gas_price) - dec38(b.base_fee_per_gas), 0) AS legacy_extra_fee_per_gas
+    , CASE WHEN t.gas_price = 0 THEN 0 ELSE safe_mul(t.gas_price, t.receipt_gas_used) END AS l2_fee
+    , CASE WHEN t.gas_price = 0 THEN 0 ELSE safe_mul(t.max_priority_fee_per_gas, t.receipt_gas_used) END AS l2_priority_fee
+    , CASE WHEN t.gas_price = 0 THEN 0 ELSE safe_mul(b.base_fee_per_gas, t.receipt_gas_used) END AS l2_base_fee
 
     -- Transaction Information
     , hexstr_method_id(t.input) AS method_id
@@ -85,7 +85,7 @@ pb AS (
     *
     -- Note that this is the "unified" L1 Gas Used.
     -- The meaning of the field has changed in Fjord.
-    , coalesce(receipt_l1_gas_used, 16 * estimated_size) AS l1_gas_used_unified
+    , coalesce(receipt_l1_gas_used, 16 * dec38(estimated_size)) AS l1_gas_used_unified
   FROM (
     SELECT
       *
@@ -93,11 +93,11 @@ pb AS (
       -- This is not equivalent to L1 Gas Used.
 
       , CASE
-        WHEN ((16 * l1_base_fee_scalar * l1_gas_price) + (l1_blob_base_fee_scalar * l1_blob_base_fee)) = 0
+        WHEN ((dec38_6(16) * l1_base_fee_scalar * dec38(l1_gas_price)) + (l1_blob_base_fee_scalar * dec38(l1_blob_base_fee))) = 0
           THEN NULL
-        ELSE (l1_fee / (
-          (16 * l1_base_fee_scalar * l1_gas_price)
-          + (l1_blob_base_fee_scalar * l1_blob_base_fee)
+        ELSE (dec38(l1_fee) / (
+          (dec38_6(16) * l1_base_fee_scalar * dec38(l1_gas_price))
+          + (l1_blob_base_fee_scalar * dec38(l1_blob_base_fee))
         ))::INT64
       END
         AS estimated_size
@@ -119,12 +119,12 @@ pb AS (
     , if(l2_priority_fee = 0, l2_fee - l2_base_fee, 0) AS l2_legacy_extra_fee
 
     -- L1 Base
-    , div16(l1_gas_used_unified) * coalesce(16 * l1_base_fee_scalar, l1_fee_scalar) * l1_gas_price AS l1_base_fee
-    , div16(l1_gas_used_unified) * coalesce(16 * l1_base_fee_scalar, l1_fee_scalar) AS l1_base_scaled_size
+    , dec38(div16(l1_gas_used_unified)) * dec38_6(coalesce(safe_mul_scalar(16, l1_base_fee_scalar), l1_fee_scalar)) * dec38(l1_gas_price) AS l1_base_fee
+    , dec38(div16(l1_gas_used_unified)) * dec38_6(coalesce(safe_mul_scalar(16, l1_base_fee_scalar), l1_fee_scalar)) AS l1_base_scaled_size
 
     -- L1 Blob
-    , coalesce(div16(l1_gas_used_unified) * l1_blob_base_fee_scalar * l1_blob_base_fee, 0) AS l1_blob_fee
-    , coalesce(div16(l1_gas_used_unified) * l1_blob_base_fee_scalar, 0) AS l1_blob_scaled_size
+    , coalesce(dec38(div16(l1_gas_used_unified)) * dec38_6(l1_blob_base_fee_scalar) * dec38(l1_blob_base_fee), 0) AS l1_blob_fee
+    , coalesce(dec38(div16(l1_gas_used_unified)) * dec38_6(l1_blob_base_fee_scalar), 0) AS l1_blob_scaled_size
 
   FROM pt2
 )
