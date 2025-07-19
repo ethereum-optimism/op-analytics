@@ -309,6 +309,39 @@ def test_conversion_from_hex_to_number():
             assert lossy == int(lossless)
 
 
+def test_hex_to_lossy_variable_length():
+    """Test hex_to_lossy with variable length hex strings (multiples of 64 + 2).
+    
+    This test demonstrates that we fixed the original issue where hex_to_lossy
+    would fail with AssertionError on strings longer than 66 characters.
+    """
+    ctx = init_client()
+    create_duckdb_macros(ctx)
+
+    actual = ctx.client.sql("""
+    SELECT 
+        -- Standard 66 chars (should work as before)
+        hex_to_lossy('0x00000000000000000000000000000000000000000000000000000001c0000001') AS test_66,
+        
+        -- 130 chars (should now work instead of crashing)
+        hex_to_lossy('0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c0000001') AS test_130,
+        
+        -- Invalid: not multiple of 64 (should return NULL)
+        hex_to_lossy('0x123456789') AS test_invalid_length,
+        
+        -- Invalid: no 0x prefix (should return NULL)
+        hex_to_lossy('123456789abcdef123456789abcdef123456789abcdef123456789abcdef1234') AS test_no_prefix
+    """).fetchall()[0]
+
+    expected = (
+        0x01c0000001,  # 66 chars - last 16 hex chars 
+        0x01c0000001,  # 130 chars - last 16 hex chars (now works!)
+        None,          # Invalid length
+        None,          # No 0x prefix  
+    )
+    assert actual == expected
+
+
 def test_indexed_event_arg_to_address():
     ctx = init_client()
     create_duckdb_macros(ctx)
