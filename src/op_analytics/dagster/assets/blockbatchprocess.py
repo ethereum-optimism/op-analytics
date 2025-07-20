@@ -15,7 +15,7 @@ def update_a(context: OpExecutionContext):
     context.log.info(f"LOGS URL: {get_logs_url()}")
     context.log.info(context.op_config.get("range_spec"))
 
-    excluded_chains = {"celo"}
+    excluded_chains = {"celo", "ethereum"}
     chains = [chain for chain in normalize_chains("ALL") if chain not in excluded_chains]
 
     result = compute_blockbatch(
