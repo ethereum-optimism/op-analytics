@@ -177,7 +177,7 @@ def test_goldsky_chains():
             "bob",
             "celo",
             "cyber",
-            "ethereum",
+            # "ethereum", (ggarner - 2025/07/14) Exclude ethereum due to downstream dtype issues
             "fraxtal",
             "ham",
             "ink",
