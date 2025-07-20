@@ -119,6 +119,27 @@ def test_div16():
     assert actual == expected
 
 
+def test_decimal_casting_functions():
+    ctx = init_client()
+    create_duckdb_macros(ctx)
+
+    actual = ctx.client.sql("""
+    SELECT
+        dec38(1285446742109188) AS large_int,
+        dec38_12(1.123456789012) AS decimal_precision_12,
+        safe_mul(1000000000, 25000) AS safe_multiplication,
+        safe_mul_scalar(1000000000, 1.5) AS safe_scalar_mul
+     """).fetchall()[0]
+
+    expected = (
+        Decimal("1285446742109188"),
+        Decimal("1.123456789012"),
+        Decimal("25000000000000"),
+        Decimal("1500000000.000000"),
+    )
+    assert actual == expected
+
+
 def test_hexstr_bytelen():
     ctx = init_client()
     create_duckdb_macros(ctx)
@@ -286,6 +307,39 @@ def test_conversion_from_hex_to_number():
     for lossy, lossless in actual:
         if lossy is not None:
             assert lossy == int(lossless)
+
+
+def test_hex_to_lossy_variable_length():
+    """Test hex_to_lossy with variable length hex strings (multiples of 64 + 2).
+    
+    This test demonstrates that we fixed the original issue where hex_to_lossy
+    would fail with AssertionError on strings longer than 66 characters.
+    """
+    ctx = init_client()
+    create_duckdb_macros(ctx)
+
+    actual = ctx.client.sql("""
+    SELECT 
+        -- Standard 66 chars (should work as before)
+        hex_to_lossy('0x00000000000000000000000000000000000000000000000000000001c0000001') AS test_66,
+        
+        -- 130 chars (should now work instead of crashing)
+        hex_to_lossy('0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c0000001') AS test_130,
+        
+        -- Invalid: not multiple of 64 (should return NULL)
+        hex_to_lossy('0x123456789') AS test_invalid_length,
+        
+        -- Invalid: no 0x prefix (should return NULL)
+        hex_to_lossy('123456789abcdef123456789abcdef123456789abcdef123456789abcdef1234') AS test_no_prefix
+    """).fetchall()[0]
+
+    expected = (
+        0x01c0000001,  # 66 chars - last 16 hex chars 
+        0x01c0000001,  # 130 chars - last 16 hex chars (now works!)
+        None,          # Invalid length
+        None,          # No 0x prefix  
+    )
+    assert actual == expected
 
 
 def test_indexed_event_arg_to_address():

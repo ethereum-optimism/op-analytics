@@ -21,28 +21,37 @@ def count_zero_bytes(x: bytes) -> int:
 
 
 def hex_to_lossy(x: str | None) -> int | None:
-    """Assumes that "x" is a hex string with the leading "0x" prefix."""
+    """Assumes that "x" is a hex string with the leading "0x" prefix.
+    
+    Handles variable-length hex strings that are multiples of 64 hex chars + "0x" prefix.
+    Examples: 66 chars (32 bytes), 130 chars (64 bytes), 194 chars (96 bytes), etc.
+    """
     if x is None:
         return None
 
-    # (pedrod) This fix was applied temporarily to let through some transfers on base
-    # that had a crazy amount with 258 hex characters. This was happening on a few
-    # transactions on batch (min_block=29132800, max_block=29133000)
-    # if len(x) == 258:
-    #     return None
-
-    assert len(x) == 66, f"Expected 66 characters, got {len(x)}: {x}"
+    # Validate format: must start with "0x" and have a multiple of 64 hex characters after
+    if not x.startswith("0x"):
+        return None
+    
+    hex_chars = len(x) - 2  # Remove "0x" prefix
+    if hex_chars == 0 or hex_chars % 64 != 0:
+        return None
 
     # If the string beyond the 16 right-most bytes is zeros then the conversion
     # to BIGINT will be valid.
     #
     # NOTE (pedrod): I also attempted to use the HUGEINT return type but it resulted
     # in an incorrect conversion from the python type to the duckdb type.
-    if x[:-16] == "0x000000000000000000000000000000000000000000000000":
-        return int("0x" + x[-16:], 0)
+    
+    # Check if all leading bytes (everything except last 16 hex chars) are zero
+    leading_part = x[:-16]  # Everything except last 16 hex chars (8 bytes)
+    expected_zeros = "0x" + "0" * (len(leading_part) - 2)  # "0x" + zeros for the leading part
+    
+    if leading_part == expected_zeros:
+        return int("0x" + x[-16:], 0)  # Convert last 16 hex chars (8 bytes) to int
 
-    # There are non-zero bytes beyond the right-most 32 bytes.
-    # This means this number cannot be represented as a hugeint.
+    # There are non-zero bytes beyond the right-most 16 bytes.
+    # This means this number cannot be represented as a bigint.
     return None
 
 
@@ -137,6 +146,26 @@ UDFS = [
     # Division by 16 for DECIMAL types.
     """CREATE OR REPLACE MACRO div16(a)
     AS a * 0.0625::DECIMAL(5, 5);
+    """,
+    #
+    # Cast to DECIMAL(38,0) - for large integer values to prevent overflow
+    """CREATE OR REPLACE MACRO dec38(a)
+    AS CAST(a AS DECIMAL(38, 0));
+    """,
+    #
+    # Cast to DECIMAL(38,12) - for values with 12 decimal places (L1 fee calculations)
+    """CREATE OR REPLACE MACRO dec38_12(a)
+    AS CAST(a AS DECIMAL(38, 12));
+    """,
+    #
+    # Multiply two values safely using DECIMAL(38,0) to prevent overflow
+    """CREATE OR REPLACE MACRO safe_mul(a, b)
+    AS dec38(a) * dec38(b);
+    """,
+    #
+    # Multiply value by decimal scalar safely (used for L1 fee scalars)
+    """CREATE OR REPLACE MACRO safe_mul_scalar(a, b)
+    AS dec38(a) * CAST(b AS DECIMAL(38, 6));
     """,
     #
     # Count zero bytes for binary data that is encoded as a hex string.

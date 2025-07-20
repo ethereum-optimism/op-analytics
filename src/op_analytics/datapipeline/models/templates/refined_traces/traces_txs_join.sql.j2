@@ -36,16 +36,16 @@ SELECT
 
   -- Parent trace fees.
   -- the subtraces will never add up to part of whole, but leave as is
-  , r.gas_used_minus_subtraces * gwei_to_eth(t.l2_gas_price_gwei)
+  , CAST(r.gas_used_minus_subtraces * gwei_to_eth(t.l2_gas_price_gwei) AS DOUBLE)
     AS tx_l2_fee_native_minus_subtraces
 
-  , r.gas_used_minus_subtraces * gwei_to_eth(t.l2_base_gas_price_gwei)
+  , CAST(r.gas_used_minus_subtraces * gwei_to_eth(t.l2_base_gas_price_gwei) AS DOUBLE)
     AS tx_l2_base_fee_native_minus_subtraces
 
-  , r.gas_used_minus_subtraces * gwei_to_eth(t.l2_priority_gas_price_gwei)
+  , CAST(r.gas_used_minus_subtraces * gwei_to_eth(t.l2_priority_gas_price_gwei) AS DOUBLE)
     AS tx_l2_priority_fee_native_minus_subtraces
 
-  , r.gas_used_minus_subtraces * gwei_to_eth(t.l2_legacy_extra_gas_price_gwei)
+  , CAST(r.gas_used_minus_subtraces * gwei_to_eth(t.l2_legacy_extra_gas_price_gwei) AS DOUBLE)
     AS tx_l2_legacy_base_fee_native_minus_subtraces
 
   -- Amortize evenly across all calls
