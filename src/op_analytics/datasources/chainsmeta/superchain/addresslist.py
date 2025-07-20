@@ -81,6 +81,14 @@ def pull_superchain_address_list() -> SuperchainAddressList:
     # Flatten the schema and convert to snake case.
     address_list_df = process_metadata_pull(address_list_raw_df)
 
+    # Get the column names from the schema, we don't need to worry about missing columns
+    # as schema validation will catch that later
+    schema_columns = list(SUPERCHAIN_ADDRESS_LIST_SCHEMA.keys())
+
+    # Reorder columns that exist in the dataframe according to schema order
+    existing_columns = [col for col in schema_columns if col in address_list_df.columns]
+    address_list_df = address_list_df.select(existing_columns)
+
     # Check the final schema is as expected. If something changes upstream the
     # exception will warn us.
     raise_for_schema_mismatch(

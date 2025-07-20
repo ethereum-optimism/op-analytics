@@ -55,7 +55,7 @@ sphinx-serve: .makemarkers/sphinx-docs
 IMAGE_TAG = ghcr.io/ethereum-optimism/op-analytics:v20250404.2
 
 # Dagster image version.
-IMAGE_TAG_DAGSTER = ghcr.io/ethereum-optimism/op-analytics-dagster:v20250720.001
+IMAGE_TAG_DAGSTER = ghcr.io/ethereum-optimism/op-analytics-dagster:v20250720.002
 
 
 .PHONY: uv-build
