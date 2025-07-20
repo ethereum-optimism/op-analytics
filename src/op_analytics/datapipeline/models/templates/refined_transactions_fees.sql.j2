@@ -93,10 +93,10 @@ pb AS (
       -- This is not equivalent to L1 Gas Used.
 
       , CASE
-        WHEN ((dec38_6(16) * l1_base_fee_scalar * dec38(l1_gas_price)) + (l1_blob_base_fee_scalar * dec38(l1_blob_base_fee))) = 0
+        WHEN ((dec38_12(16) * l1_base_fee_scalar * dec38(l1_gas_price)) + (l1_blob_base_fee_scalar * dec38(l1_blob_base_fee))) = 0
           THEN NULL
         ELSE (dec38(l1_fee) / (
-          (dec38_6(16) * l1_base_fee_scalar * dec38(l1_gas_price))
+          (dec38_12(16) * l1_base_fee_scalar * dec38(l1_gas_price))
           + (l1_blob_base_fee_scalar * dec38(l1_blob_base_fee))
         ))::INT64
       END
@@ -119,12 +119,12 @@ pb AS (
     , if(l2_priority_fee = 0, l2_fee - l2_base_fee, 0) AS l2_legacy_extra_fee
 
     -- L1 Base
-    , dec38(div16(l1_gas_used_unified)) * dec38_6(coalesce(safe_mul_scalar(16, l1_base_fee_scalar), l1_fee_scalar)) * dec38(l1_gas_price) AS l1_base_fee
-    , dec38(div16(l1_gas_used_unified)) * dec38_6(coalesce(safe_mul_scalar(16, l1_base_fee_scalar), l1_fee_scalar)) AS l1_base_scaled_size
+    , dec38(div16(l1_gas_used_unified)) * dec38_12(coalesce(safe_mul_scalar(16, l1_base_fee_scalar), l1_fee_scalar)) * dec38(l1_gas_price) AS l1_base_fee
+    , dec38(div16(l1_gas_used_unified)) * dec38_12(coalesce(safe_mul_scalar(16, l1_base_fee_scalar), l1_fee_scalar)) AS l1_base_scaled_size
 
     -- L1 Blob
-    , coalesce(dec38(div16(l1_gas_used_unified)) * dec38_6(l1_blob_base_fee_scalar) * dec38(l1_blob_base_fee), 0) AS l1_blob_fee
-    , coalesce(dec38(div16(l1_gas_used_unified)) * dec38_6(l1_blob_base_fee_scalar), 0) AS l1_blob_scaled_size
+    , coalesce(dec38(div16(l1_gas_used_unified)) * dec38_12(l1_blob_base_fee_scalar) * dec38(l1_blob_base_fee), 0) AS l1_blob_fee
+    , coalesce(dec38(div16(l1_gas_used_unified)) * dec38_12(l1_blob_base_fee_scalar), 0) AS l1_blob_scaled_size
 
   FROM pt2
 )

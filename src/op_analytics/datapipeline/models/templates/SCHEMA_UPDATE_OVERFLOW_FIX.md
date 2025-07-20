@@ -6,12 +6,12 @@ This document contains the SQL commands needed to update existing ClickHouse tab
 
 ## What Changed
 
-The overflow fix involved changing several columns from `BIGINT` and `DOUBLE` to `DECIMAL` types to safely handle large arithmetic operations:
+The overflow fix involved changing columns with actual INT64 overflow issues from `BIGINT` to `DECIMAL` types to safely handle large arithmetic operations:
 
-- **Gas fee calculations**: `BIGINT` → `DECIMAL(38,0)` 
-- **Complex multiplications**: `DOUBLE` → `DECIMAL(38,20)`
-- **Size calculations**: `DECIMAL(38,12)` → `DECIMAL(38,6)` (improved precision)
-- **Unified gas calculations**: `BIGINT` → `DECIMAL(38,0)`
+- **Gas fee calculations**: `BIGINT` → `DECIMAL(38,0)` (prevents overflow in gas_price × gas_used)
+- **Size calculations**: Maintained `DECIMAL(38,12)` (preserved original precision)
+- **Unified gas calculations**: `BIGINT` → `DECIMAL(38,0)` (prevents overflow)
+- **Trace calculations**: Kept as `DOUBLE` (no overflow issues, calculations already work fine)
 
 ## Required Schema Updates
 
@@ -28,23 +28,24 @@ ALTER TABLE refined_transactions_fees_v2
   MODIFY COLUMN l2_legacy_extra_fee DECIMAL(38,0),
   MODIFY COLUMN l1_gas_used_unified DECIMAL(38,0);
 
--- Update L1 fee calculation columns to DECIMAL(38,6) for better precision
+-- Update L1 fee calculation columns to DECIMAL(38,12) to maintain original precision
 ALTER TABLE refined_transactions_fees_v2
-  MODIFY COLUMN l1_base_fee DECIMAL(38,6),
-  MODIFY COLUMN l1_base_scaled_size DECIMAL(38,6),
-  MODIFY COLUMN l1_blob_fee DECIMAL(38,6),
-  MODIFY COLUMN l1_blob_scaled_size DECIMAL(38,6);
+  MODIFY COLUMN l1_base_fee DECIMAL(38,12),
+  MODIFY COLUMN l1_base_scaled_size DECIMAL(38,12),
+  MODIFY COLUMN l1_blob_fee DECIMAL(38,12),
+  MODIFY COLUMN l1_blob_scaled_size DECIMAL(38,12);
 ```
 
 ### 2. Update `refined_traces_fees_v2` Table
 
 ```sql
--- Update trace fee calculation columns to DECIMAL(38,20) for high precision
-ALTER TABLE refined_traces_fees_v2
-  MODIFY COLUMN tx_l2_fee_native_minus_subtraces DECIMAL(38,20),
-  MODIFY COLUMN tx_l2_base_fee_native_minus_subtraces DECIMAL(38,20),
-  MODIFY COLUMN tx_l2_priority_fee_native_minus_subtraces DECIMAL(38,20),
-  MODIFY COLUMN tx_l2_legacy_base_fee_native_minus_subtraces DECIMAL(38,20);
+-- Note: These columns remain as DOUBLE since they don't have overflow issues
+-- ALTER TABLE refined_traces_fees_v2
+--   MODIFY COLUMN tx_l2_fee_native_minus_subtraces DOUBLE,
+--   MODIFY COLUMN tx_l2_base_fee_native_minus_subtraces DOUBLE,
+--   MODIFY COLUMN tx_l2_priority_fee_native_minus_subtraces DOUBLE,
+--   MODIFY COLUMN tx_l2_legacy_base_fee_native_minus_subtraces DOUBLE;
+-- No changes needed - these were already DOUBLE and work fine.
 ```
 
 ## Execution Instructions
@@ -60,16 +61,12 @@ ALTER TABLE refined_transactions_fees_v2
   MODIFY COLUMN tx_fee DECIMAL(38,0),
   MODIFY COLUMN l2_legacy_extra_fee DECIMAL(38,0),
   MODIFY COLUMN l1_gas_used_unified DECIMAL(38,0),
-  MODIFY COLUMN l1_base_fee DECIMAL(38,6),
-  MODIFY COLUMN l1_base_scaled_size DECIMAL(38,6),
-  MODIFY COLUMN l1_blob_fee DECIMAL(38,6),
-  MODIFY COLUMN l1_blob_scaled_size DECIMAL(38,6);
+  MODIFY COLUMN l1_base_fee DECIMAL(38,12),
+  MODIFY COLUMN l1_base_scaled_size DECIMAL(38,12),
+  MODIFY COLUMN l1_blob_fee DECIMAL(38,12),
+  MODIFY COLUMN l1_blob_scaled_size DECIMAL(38,12);
 
-ALTER TABLE refined_traces_fees_v2
-  MODIFY COLUMN tx_l2_fee_native_minus_subtraces DECIMAL(38,20),
-  MODIFY COLUMN tx_l2_base_fee_native_minus_subtraces DECIMAL(38,20),
-  MODIFY COLUMN tx_l2_priority_fee_native_minus_subtraces DECIMAL(38,20),
-  MODIFY COLUMN tx_l2_legacy_base_fee_native_minus_subtraces DECIMAL(38,20);
+-- Note: refined_traces_fees_v2 columns remain DOUBLE - no changes needed
 ```
 
 ### Option 2: Execute Incrementally (Safer for Large Tables)
@@ -154,11 +151,7 @@ ALTER TABLE refined_transactions_fees_v2
   MODIFY COLUMN l1_blob_fee DECIMAL(38,12),
   MODIFY COLUMN l1_blob_scaled_size DECIMAL(38,12);
 
-ALTER TABLE refined_traces_fees_v2
-  MODIFY COLUMN tx_l2_fee_native_minus_subtraces DOUBLE,
-  MODIFY COLUMN tx_l2_base_fee_native_minus_subtraces DOUBLE,
-  MODIFY COLUMN tx_l2_priority_fee_native_minus_subtraces DOUBLE,
-  MODIFY COLUMN tx_l2_legacy_base_fee_native_minus_subtraces DOUBLE;
+-- Note: refined_traces_fees_v2 was unchanged, so no rollback needed
 ```
 
 ## Related Files

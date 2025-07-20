@@ -153,9 +153,9 @@ UDFS = [
     AS CAST(a AS DECIMAL(38, 0));
     """,
     #
-    # Cast to DECIMAL(38,6) - for values with 6 decimal places  
-    """CREATE OR REPLACE MACRO dec38_6(a)
-    AS CAST(a AS DECIMAL(38, 6));
+    # Cast to DECIMAL(38,12) - for values with 12 decimal places (L1 fee calculations)
+    """CREATE OR REPLACE MACRO dec38_12(a)
+    AS CAST(a AS DECIMAL(38, 12));
     """,
     #
     # Multiply two values safely using DECIMAL(38,0) to prevent overflow
@@ -163,9 +163,9 @@ UDFS = [
     AS dec38(a) * dec38(b);
     """,
     #
-    # Multiply value by decimal scalar safely
+    # Multiply value by decimal scalar safely (used for L1 fee scalars)
     """CREATE OR REPLACE MACRO safe_mul_scalar(a, b)
-    AS dec38(a) * dec38_6(b);
+    AS dec38(a) * CAST(b AS DECIMAL(38, 6));
     """,
     #
     # Count zero bytes for binary data that is encoded as a hex string.

@@ -126,14 +126,14 @@ def test_decimal_casting_functions():
     actual = ctx.client.sql("""
     SELECT
         dec38(1285446742109188) AS large_int,
-        dec38_6(1.123456) AS decimal_precision,
+        dec38_12(1.123456789012) AS decimal_precision_12,
         safe_mul(1000000000, 25000) AS safe_multiplication,
         safe_mul_scalar(1000000000, 1.5) AS safe_scalar_mul
      """).fetchall()[0]
 
     expected = (
         Decimal("1285446742109188"),
-        Decimal("1.123456"),
+        Decimal("1.123456789012"),
         Decimal("25000000000000"),
         Decimal("1500000000.000000"),
     )
