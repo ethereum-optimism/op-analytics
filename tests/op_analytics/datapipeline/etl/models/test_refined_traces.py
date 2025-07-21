@@ -50,7 +50,7 @@ class TestRefinedTraces001(ModelTestBase):
             (effective_l2_priority_fee_per_gas + base_fee_per_gas + legacy_extra_fee_per_gas) - gas_price AS diff,
             ( l1_fee + l2_base_fee+l2_priority_fee+l2_legacy_extra_fee) - tx_fee AS diff_2,
             *
-        FROM refined_transactions_fees
+        FROM refined_transactions_fees_v2
         WHERE
             gas_price > 0
             AND transaction_index > 0
