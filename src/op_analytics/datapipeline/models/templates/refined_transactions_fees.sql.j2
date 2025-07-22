@@ -37,12 +37,17 @@ pb AS (
     -- t.input, --comment out for now to save on data space
     -- t.blob_versioned_hashes -- bring in if/when we apply this to L1, or see L2 blobs
 
-    -- L1 Fees
+    -- L1 and L2 Fees
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.receipt_l1_fee END AS l1_fee
     , t.receipt_l1_gas_price AS l1_gas_price
     , t.receipt_l1_blob_base_fee AS l1_blob_base_fee
     , b.base_fee_per_gas
     , t.max_priority_fee_per_gas
+    , CASE
+        WHEN t.gas_price = 0 THEN 0
+        WHEN t.max_priority_fee_per_gas = 0 THEN 0
+        ELSE least(t.max_priority_fee_per_gas, t.max_fee_per_gas - b.base_fee_per_gas)
+      END AS effective_l2_priority_fee_per_gas
 
     -- L1 Fee Scalars
     , t.receipt_l1_fee_scalar::DECIMAL(12, 6) AS l1_fee_scalar
@@ -52,7 +57,11 @@ pb AS (
     -- L2 Fees and breakdown into BASE and PRIORITY contributions
     , if(t.max_priority_fee_per_gas = 0 AND t.gas_price > 0, t.gas_price - b.base_fee_per_gas, 0) AS legacy_extra_fee_per_gas
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.gas_price * t.receipt_gas_used END AS l2_fee
-    , CASE WHEN t.gas_price = 0 THEN 0 ELSE t.max_priority_fee_per_gas * t.receipt_gas_used END AS l2_priority_fee
+    , CASE
+        WHEN t.gas_price = 0 THEN 0
+        WHEN t.max_priority_fee_per_gas = 0 THEN 0
+        ELSE least(t.max_priority_fee_per_gas, t.max_fee_per_gas - b.base_fee_per_gas) * t.receipt_gas_used
+      END AS l2_priority_fee
     , CASE WHEN t.gas_price = 0 THEN 0 ELSE b.base_fee_per_gas * t.receipt_gas_used END AS l2_base_fee
 
     -- Transaction Information
@@ -154,7 +163,8 @@ SELECT
   -- Gas Prices
   , wei_to_gwei(gas_price) AS l2_gas_price_gwei
   , wei_to_gwei(base_fee_per_gas) AS l2_base_gas_price_gwei
-  , wei_to_gwei(max_priority_fee_per_gas) AS l2_priority_gas_price_gwei
+  , wei_to_gwei(max_priority_fee_per_gas) AS max_l2_priority_gas_price_gwei
+  , wei_to_gwei(effective_l2_priority_fee_per_gas) AS l2_priority_gas_price_gwei
   , wei_to_gwei(legacy_extra_fee_per_gas) AS l2_legacy_extra_gas_price_gwei
 
   , wei_to_gwei(l1_gas_price) AS l1_base_gas_price_gwei

@@ -42,8 +42,14 @@ def get_op_stack_metadata_df():
 def find_root_dir():
     current_dir = os.path.abspath(os.getcwd())
     while True:
-        if os.path.basename(current_dir) == 'op-analytics':  # Check if we are already in op-analytics
+        # Check if we're already in the op-analytics project root by looking for characteristic directories
+        if (os.path.exists(os.path.join(current_dir, 'op_chains_tracking')) and 
+            os.path.exists(os.path.join(current_dir, 'helper_functions'))):
             return current_dir
+        # Check if we are already in a directory named 'op-analytics'
+        if os.path.basename(current_dir) == 'op-analytics':
+            return current_dir
+        # Check if there's an 'op-analytics' subdirectory
         if os.path.exists(os.path.join(current_dir, 'op-analytics')):
             print(current_dir)
             print('adding op-analytics')
