@@ -1,3 +1,3 @@
-from .opstack import OpStackChainMetadataLoader
+from .bq_chain_metadata import BQChainMetadataLoader
 
-__all__ = ["OpStackChainMetadataLoader"]
+__all__ = ["BQChainMetadataLoader"]
