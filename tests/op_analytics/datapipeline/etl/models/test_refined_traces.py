@@ -24,11 +24,11 @@ class TestRefinedTraces001(ModelTestBase):
             self._duckdb_context.client.sql(
                 """
                 SELECT 'traces' as name, COUNT(*) as total FROM refined_traces_fees_v2
-                
+
                 UNION ALL
-                
+
                 SELECT 'txs' as name, COUNT(*) as total FROM refined_transactions_fees_v2
-                
+
                 """
             )
             .pl()
@@ -39,6 +39,31 @@ class TestRefinedTraces001(ModelTestBase):
             {"name": "traces", "total": 12508},
             {"name": "txs", "total": 256},
         ]
+
+    def test_refined_tx_fees_diff(self):
+        """Check the difference between the calculated fees and the actual fees."""
+        assert self._duckdb_context is not None
+
+        row_counts = (
+            self._duckdb_context.client.sql("""
+        SELECT
+            (effective_l2_priority_fee_per_gas + base_fee_per_gas + legacy_extra_fee_per_gas) - gas_price AS diff,
+            ( l1_fee + l2_base_fee+l2_priority_fee+l2_legacy_extra_fee) - tx_fee AS diff_2,
+            *
+        FROM refined_transactions_fees_v2
+        WHERE
+            gas_price > 0
+            AND transaction_index > 0
+            AND (
+                (effective_l2_priority_fee_per_gas + base_fee_per_gas + legacy_extra_fee_per_gas) - gas_price != 0
+                OR ( l1_fee + l2_base_fee+l2_priority_fee+l2_legacy_extra_fee) - tx_fee != 0
+            )
+        """)
+            .pl()
+            .to_dicts()
+        )
+
+        assert len(row_counts) == 0
 
     def test_refined_txs_schema(self):
         """Verify the final refined transactions schema."""
@@ -75,6 +100,7 @@ class TestRefinedTraces001(ModelTestBase):
             "l1_blob_base_fee": "BIGINT",
             "base_fee_per_gas": "BIGINT",
             "max_priority_fee_per_gas": "BIGINT",
+            "effective_l2_priority_fee_per_gas": "BIGINT",
             "l1_fee_scalar": "DECIMAL(12,6)",
             "l1_base_fee_scalar": "DECIMAL(26,7)",
             "l1_blob_base_fee_scalar": "DECIMAL(26,7)",
@@ -107,6 +133,7 @@ class TestRefinedTraces001(ModelTestBase):
             "l2_legacy_extra_fee_native": "DECIMAL(38,19)",
             "l2_gas_price_gwei": "DECIMAL(38,10)",
             "l2_base_gas_price_gwei": "DECIMAL(38,10)",
+            "max_l2_priority_gas_price_gwei": "DECIMAL(38,10)",
             "l2_priority_gas_price_gwei": "DECIMAL(38,10)",
             "l2_legacy_extra_gas_price_gwei": "DECIMAL(38,10)",
             "l1_base_gas_price_gwei": "DECIMAL(38,10)",
@@ -242,7 +269,7 @@ class TestRefinedTraces001(ModelTestBase):
 
         subtraces_refined = (
             self._duckdb_context.client.sql(f"""
-            SELECT 
+            SELECT
                 trace_address,
                 trace_depth,
                 parent_trace_address,
