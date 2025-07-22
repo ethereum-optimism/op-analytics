@@ -15,6 +15,10 @@ class CsvChainMetadataLoader(BaseChainMetadataLoader):
         log.info("Loading chain metadata from CSV", path=self.csv_path)
         try:
             df = pl.read_csv(self.csv_path)
+            # Strip whitespace from all string columns
+            for col in df.columns:
+                if df.schema[col] == pl.String:
+                    df = df.with_columns(df[col].str.strip_chars().alias(col))
         except Exception as e:
             log.error("Failed to load CSV", path=self.csv_path, error=str(e))
             raise
