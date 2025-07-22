@@ -2,13 +2,11 @@ import polars as pl
 from unittest.mock import patch
 from op_analytics.datapipeline.chains.loaders.l2beat_loader import L2BeatChainMetadataLoader
 
+# Mock DataFrame with raw L2Beat columns as expected by the loader
 SAMPLE_DF = pl.DataFrame(
     {
-        "chain_id": ["optimism", "base"],
-        "chain_name": ["Optimism", "Base"],
-        "display_name": ["Optimism", "Base"],
-        "source_name": ["l2beat", "l2beat"],
-        "source_rank": [2, 2],
+        "id": ["optimism", "base"],
+        "name": ["Optimism", "Base"],
     }
 )
 
