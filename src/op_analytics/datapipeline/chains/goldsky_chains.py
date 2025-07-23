@@ -51,7 +51,9 @@ def goldsky_mainnet_chains() -> list[str]:
         "automata",
         "base",
         "bob",
+        "celo",
         "cyber",
+        # "ethereum", (ggarner - 2025/07/14) Exclude ethereum due to downstream dtype issues
         "fraxtal",
         "ham",
         "ink",

@@ -47,8 +47,18 @@ class DuneUniLMSummary:
                 poll=True,  # Required to get DataFrame result
             )
             .with_columns(
-                pl.col("period")
-                .str.strptime(pl.Date, format="%Y-%m-%d %H:%M:%S", strict=False)
+                pl.when(
+                    pl.col("period")
+                    .str.strptime(pl.Datetime, format="%Y-%m-%d %H:%M:%S", strict=False)
+                    .is_not_null()
+                )
+                .then(
+                    pl.col("period").str.strptime(pl.Datetime, format="%Y-%m-%d %H:%M:%S", strict=False)
+                )
+                .otherwise(
+                    pl.col("period").str.strptime(pl.Datetime, format="%Y-%m-%d", strict=False)
+                )
+                .cast(pl.Date)
                 .cast(pl.Utf8)
                 .alias("dt")
             )

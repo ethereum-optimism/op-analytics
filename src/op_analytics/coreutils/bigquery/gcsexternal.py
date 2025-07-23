@@ -19,6 +19,11 @@ def create_gcs_external_table(
     """
     client = init_client()
 
+    # Create the dataset/schema if it doesn't exist
+    dataset_job = client.query(f"CREATE SCHEMA IF NOT EXISTS {db_name}")
+    dataset_job.result()
+    log.info(f"created bigquery dataset: {db_name}")
+
     # Construct the SQL DDL statement
     table_id = f"{db_name}.{table_name}"
     ddl_statement = f"""
