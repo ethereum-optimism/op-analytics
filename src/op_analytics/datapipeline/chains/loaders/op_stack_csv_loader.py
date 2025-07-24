@@ -2,24 +2,28 @@ import polars as pl
 from op_analytics.coreutils.logger import structlog
 from op_analytics.datapipeline.chains.loaders.base import BaseChainMetadataLoader, LoaderRegistry
 from op_analytics.datapipeline.chains.schemas import harmonize_to_canonical_schema
-from op_analytics.coreutils.path import repo_path
 
 log = structlog.get_logger()
 
 
-class OpStackChainMetadataLoader(BaseChainMetadataLoader):
+class GenericCsvChainMetadataLoader(BaseChainMetadataLoader):
     """
-    Loads chain metadata from the op_chains_tracking/inputs/chain_metadata_raw.csv file.
+    Loads chain metadata from a user-specified CSV file.
+    The CSV must contain columns: chain_name, defillama_slug, l2beat_slug, dune_schema, mainnet_chain_id, etc.
+    Requires 'csv_path' as a keyword argument.
     """
 
     def load_data(self, **kwargs) -> pl.DataFrame:
-        log.info("Loading OP Stack chain metadata from local CSV")
-
-        csv_path = repo_path("op_chains_tracking/inputs/chain_metadata_raw.csv")
+        csv_path = kwargs.get("csv_path")
+        if not isinstance(csv_path, str):
+            raise ValueError(
+                "csv_path (str) is required as a keyword argument for GenericCsvChainMetadataLoader"
+            )
+        log.info("Loading chain metadata from CSV", csv_path=csv_path)
         df = pl.read_csv(csv_path)
 
         if df.height == 0:
-            log.warning("op_chains_tracking/inputs/chain_metadata_raw.csv is empty.")
+            log.warning(f"{csv_path} is empty.")
             return harmonize_to_canonical_schema(pl.DataFrame())
 
         df = df.rename({"mainnet_chain_id": "chain_id"})
@@ -33,7 +37,7 @@ class OpStackChainMetadataLoader(BaseChainMetadataLoader):
                     pl.col("dune_schema"),
                     pl.col("chain_name").str.to_lowercase().str.replace_all(" ", "-"),
                 ).alias("chain_key"),
-                pl.lit("op_stack_csv").alias("source_name"),
+                pl.lit("csv_loader").alias("source_name"),
                 pl.lit(0).cast(pl.Int32).alias("source_rank"),
             ]
         )
@@ -41,4 +45,4 @@ class OpStackChainMetadataLoader(BaseChainMetadataLoader):
         return harmonize_to_canonical_schema(df)
 
 
-LoaderRegistry.register("op_stack_csv", OpStackChainMetadataLoader)
+LoaderRegistry.register("csv_loader", GenericCsvChainMetadataLoader)
