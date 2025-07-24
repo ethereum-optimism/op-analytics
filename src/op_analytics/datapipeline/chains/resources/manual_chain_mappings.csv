@@ -7,4 +7,29 @@ display_name_preference,display_name,arbitrum,,display_name,Arbitrum One,,,,Pref
 display_name_preference,display_name,optimism,,display_name,OP Mainnet,,,,Prefer 'OP Mainnet' over 'Optimism',true
 display_name_preference,display_name,polygon,,display_name,Polygon PoS,,,,Prefer 'Polygon PoS' over 'Polygon',true
 field_override,display_name,Polygon PoS,,provider,Polygon,,,,Override provider for Polygon PoS,true
-field_override,display_name,Polygon PoS,,provider_entity,Polygon: CDK,,,,Override provider entity for Polygon PoS,true 
+field_override,display_name,Polygon PoS,,provider_entity,Polygon: CDK,,,,Override provider entity for Polygon PoS,true
+field_override,chain,*OP Stack*,,provider,OP Stack,chain contains OP Stack,,,Set provider to OP Stack for chains containing OP Stack,true
+field_override,chain,*OP Stack*,,provider_entity,Optimism: OP Stack,chain contains OP Stack,,,Set provider_entity for OP Stack chains,true
+field_override,provider,OP Stack,,provider_entity,Optimism: OP Stack,,,,Set provider_entity for chains with OP Stack provider,true
+field_override,source,csv,,source_name,CSV Data,,,,Standardize CSV source display name,true
+field_override,source,defillama,,source_name,DefiLlama API,,,,Standardize DefiLlama source display name,true
+field_override,source,l2beat,,source_name,L2Beat API,,,,Standardize L2Beat source display name,true
+field_override,source,dune,,source_name,Dune Analytics,,,,Standardize Dune source display name,true
+field_override,source,op labs,,source_name,OP Labs Internal,,,,Standardize OP Labs source display name,true
+field_override,source,goldsky,,source_name,Goldsky Data,,,,Standardize Goldsky source display name,true
+display_name_preference,display_name,Base,,display_name,Base Mainnet,,,,Prefer 'Base Mainnet' over 'Base',true
+display_name_preference,display_name,Zora,,display_name,Zora Network,,,,Prefer 'Zora Network' over 'Zora',true
+display_name_preference,display_name,Mode,,display_name,Mode Network,,,,Prefer 'Mode Network' over 'Mode',true
+field_override,chain_name,ethereum,,layer,L1,,,,Set Ethereum as L1,true
+field_override,chain_name,bitcoin,,layer,L1,,,,Set Bitcoin as L1,true
+field_override,chain_name,*mainnet*,,is_mainnet,true,chain_name contains mainnet,,,Set mainnet flag for chains containing 'mainnet',true
+field_override,chain_name,*testnet*,,is_testnet,true,chain_name contains testnet,,,Set testnet flag for chains containing 'testnet',true
+column_rename,*,chainId,defillama,chain_id,{chainId},,,,Rename chainId to chain_id for DefiLlama,true
+column_rename,*,name,defillama,display_name,{name},,,,Rename name to display_name for DefiLlama,true
+column_rename,*,gecko_id,defillama,coingecko_id,{gecko_id},,,,Rename gecko_id to coingecko_id for DefiLlama,true
+column_rename,*,cmcId,defillama,coinmarketcap_id,{cmcId},,,,Rename cmcId to coinmarketcap_id for DefiLlama,true
+column_rename,*,name,l2beat,display_name,{name},,,,Rename name to display_name for L2Beat,true
+column_rename,*,chainId,l2beat,chain_id,{chainId},,,,Rename chainId to chain_id for L2Beat,true
+column_rename,*,mainnet_chain_id,csv,chain_id,{mainnet_chain_id},,,,Rename mainnet_chain_id to chain_id for CSV,true
+field_override,chain_id,*,,chain_id_str,{chain_id},,,,Convert chain_id to string type,true
+field_override,source,*,,source_rank,{source_rank_map},,,,Map source to source_rank,true 

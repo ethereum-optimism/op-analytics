@@ -1,18 +1,15 @@
 import polars as pl
 from op_analytics.coreutils.logger import structlog
 from op_analytics.datapipeline.chains.loaders.base import BaseChainMetadataLoader, LoaderRegistry
-from op_analytics.datapipeline.chains.schemas import harmonize_to_canonical_schema
+from op_analytics.datapipeline.chains.schemas import (
+    harmonize_to_canonical_schema,
+    generate_chain_key,
+)
 
 log = structlog.get_logger()
 
 
 class GenericCsvChainMetadataLoader(BaseChainMetadataLoader):
-    """
-    Loads chain metadata from a user-specified CSV file.
-    The CSV must contain columns: chain_name, defillama_slug, l2beat_slug, dune_schema, mainnet_chain_id, etc.
-    Requires 'csv_path' as a keyword argument.
-    """
-
     def load_data(self, **kwargs) -> pl.DataFrame:
         csv_path = kwargs.get("csv_path")
         if not isinstance(csv_path, str):
@@ -26,23 +23,17 @@ class GenericCsvChainMetadataLoader(BaseChainMetadataLoader):
             log.warning(f"{csv_path} is empty.")
             return harmonize_to_canonical_schema(pl.DataFrame())
 
-        df = df.rename({"mainnet_chain_id": "chain_id"})
-
         df = df.with_columns(
             [
-                pl.col("chain_name").alias("chain"),
-                pl.coalesce(
-                    pl.col("defillama_slug"),
-                    pl.col("l2beat_slug"),
-                    pl.col("dune_schema"),
-                    pl.col("chain_name").str.to_lowercase().str.replace_all(" ", "-"),
-                ).alias("chain_key"),
-                pl.lit("csv_loader").alias("source_name"),
-                pl.lit(0).cast(pl.Int32).alias("source_rank"),
+                generate_chain_key("chain_name"),
+                pl.lit("csv").alias("source"),
+                pl.lit(1).alias("source_rank"),
             ]
         )
 
-        return harmonize_to_canonical_schema(df)
+        df = harmonize_to_canonical_schema(df)
+        log.info(f"Loaded {len(df)} chains from CSV")
+        return df
 
 
 LoaderRegistry.register("csv_loader", GenericCsvChainMetadataLoader)

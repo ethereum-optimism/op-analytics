@@ -4,7 +4,7 @@ Centralized schemas and harmonization utilities for the chain metadata pipeline.
 
 import polars as pl
 from op_analytics.coreutils.logger import structlog
-from polars.type_aliases import PolarsDataType
+from polars._typing import PolarsDataType
 
 log = structlog.get_logger()
 
@@ -80,3 +80,18 @@ def harmonize_to_canonical_schema(df: pl.DataFrame) -> pl.DataFrame:
     output_df = output_df.select(final_cols)
 
     return output_df
+
+
+def generate_chain_key(source_field: str) -> pl.Expr:
+    """
+    Generate a consistent chain_key from a source field.
+
+    Args:
+        source_field: The name of the column to use for generating the chain_key
+
+    Returns:
+        A Polars expression that generates a normalized chain_key
+    """
+    return (
+        pl.col(source_field).str.to_lowercase().str.replace_all(r"[^a-z0-9]", "").alias("chain_key")
+    )
