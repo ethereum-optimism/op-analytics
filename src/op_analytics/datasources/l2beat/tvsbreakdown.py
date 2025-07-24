@@ -5,10 +5,10 @@ import polars as pl
 import requests
 
 from op_analytics.coreutils.logger import structlog
+from op_analytics.coreutils.misc import raise_for_schema_mismatch
 from op_analytics.coreutils.request import get_data, new_session
 from op_analytics.coreutils.threads import run_concurrently
 from op_analytics.coreutils.time import dt_fromepoch
-from op_analytics.coreutils.misc import raise_for_schema_mismatch
 
 from .projects import L2BeatProject, L2BeatProjectsSummary
 
