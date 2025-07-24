@@ -1,46 +1,47 @@
-import pandas as pd
+import polars as pl
+from unittest.mock import patch
 from op_analytics.datasources.chainsmeta.bq_chain_metadata import BQChainMetadataLoader
-import op_analytics.coreutils.bigquery.client as bigquery_client
+from op_analytics.datapipeline.chains.schemas import CHAIN_METADATA_SCHEMA
 
 
-class MockQueryJob:
-    def __init__(self, pandas_df):
-        self.pandas_df = pandas_df
-
-    def to_dataframe(self):
-        return self.pandas_df
-
-
-class MockClient:
-    def query(self, query_string):
-        pandas_df = pd.DataFrame(
-            {
-                "chain_id": [10, 11],
-                "chain_name": ["OP Mainnet", "Base"],
-                "display_name": ["OP Mainnet", "Base"],
-                "public_mainnet_launch_date": ["2021-11-11", "2023-07-13"],
-            }
-        )
-        return MockQueryJob(pandas_df)
-
-
-def test_bq_chain_metadata_loader(monkeypatch):
-    bigquery_client._CLIENT = None
-    mock_client = MockClient()
-    monkeypatch.setattr(
-        "op_analytics.coreutils.bigquery.client._CLIENT",
-        mock_client,
+@patch("op_analytics.datasources.chainsmeta.bq_chain_metadata.pl.from_pandas")
+def test_bq_chain_metadata_loader_success(mock_from_pandas):
+    # Mock the DataFrame that pl.from_pandas will return
+    mock_from_pandas.return_value = pl.DataFrame(
+        {
+            "chain_name": ["optimism", "base"],
+            "chain_id": ["10", "8453"],
+            "display_name": ["Optimism", "Base"],
+            "public_mainnet_launch_date": ["2021-11-11", "2023-08-09"],
+        }
     )
 
-    loader = BQChainMetadataLoader(bq_project_id="test-project")
+    # Run the loader
+    loader = BQChainMetadataLoader(bq_project_id="test-project", bq_dataset_id="test-dataset")
     df = loader.run()
-    required = set(loader.REQUIRED_FIELDS)
-    assert required.issubset(set(df.columns)), (
-        f"Missing required columns: {required - set(df.columns)}"
+
+    # Assertions
+    assert isinstance(df, pl.DataFrame)
+    assert df.height == 2
+    assert "chain_key" in df.columns
+    assert df["chain_key"][0] == "optimism"
+    assert list(df.columns) == list(CHAIN_METADATA_SCHEMA.keys())
+
+
+@patch("op_analytics.datasources.chainsmeta.bq_chain_metadata.pl.from_pandas")
+def test_bq_chain_metadata_loader_empty(mock_from_pandas):
+    # Mock an empty DataFrame
+    mock_from_pandas.return_value = pl.DataFrame(
+        {
+            "chain_name": [],
+            "chain_id": [],
+            "display_name": [],
+            "public_mainnet_launch_date": [],
+        }
     )
-    assert (df["source_name"] == "op labs").all()
-    assert (df["source_rank"] == 1).all()
-    assert df["chain_id"].to_list() == [10, 11]
-    assert df["chain_name"].to_list() == ["OP Mainnet", "Base"]
-    assert df["display_name"].to_list() == ["OP Mainnet", "Base"]
-    assert df["public_mainnet_launch_date"].to_list() == ["2021-11-11", "2023-07-13"]
+
+    loader = BQChainMetadataLoader(bq_project_id="test-project", bq_dataset_id="test-dataset")
+    df = loader.run()
+
+    assert df.height == 0
+    assert list(df.columns) == list(CHAIN_METADATA_SCHEMA.keys())

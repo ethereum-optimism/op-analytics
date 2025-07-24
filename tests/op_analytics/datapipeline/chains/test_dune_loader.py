@@ -1,31 +1,49 @@
 import polars as pl
 from unittest.mock import patch
 from op_analytics.datapipeline.chains.loaders.dune_loader import DuneChainMetadataLoader
-
-# Mock DataFrame with raw Dune columns as expected by the loader
-SAMPLE_DF = pl.DataFrame(
-    {
-        "chain": ["Ethereum", "Optimism"],
-    }
-)
+from op_analytics.datapipeline.chains.schemas import CHAIN_METADATA_SCHEMA
 
 
-class MockDuneDexTradesSummary:
-    df = SAMPLE_DF
+@patch("op_analytics.datasources.dune.dextrades.DuneDexTradesSummary.fetch")
+def test_dune_loader_success(mock_fetch):
+    # Mock the API response
+    mock_df = pl.DataFrame(
+        {
+            "blockchain": ["optimism", "base"],
+            "dt": ["2023-01-01", "2023-01-01"],
+        }
+    )
+
+    class MockApiResponse:
+        df = mock_df
+
+    mock_fetch.return_value = MockApiResponse()
+
+    # Run the loader
+    loader = DuneChainMetadataLoader()
+    df = loader.run()
+
+    # Sort by chain_key to ensure consistent order
+    df = df.sort("chain_key")
+
+    # Assertions
+    assert isinstance(df, pl.DataFrame)
+    assert df.height == 2
+    assert "chain_key" in df.columns
+    assert df["chain_key"][1] == "optimism"
+    assert list(df.columns) == list(CHAIN_METADATA_SCHEMA.keys())
 
 
-def test_dune_chain_metadata_loader(monkeypatch):
-    with patch(
-        "op_analytics.datasources.dune.dextrades.DuneDexTradesSummary.fetch",
-        return_value=MockDuneDexTradesSummary,
-    ):
-        loader = DuneChainMetadataLoader()
-        df = loader.run()
-        required = set(loader.REQUIRED_FIELDS)
-        assert required.issubset(set(df.columns)), (
-            f"Missing required columns: {required - set(df.columns)}"
-        )
-        assert (df["source_name"] == "dune").all()
-        assert (df["source_rank"] == 4.5).all()
-        assert df["chain_name"].to_list() == ["Ethereum", "Optimism"]
-        assert df["display_name"].to_list() == ["Ethereum", "Optimism"]
+@patch("op_analytics.datasources.dune.dextrades.DuneDexTradesSummary.fetch")
+def test_dune_loader_empty(mock_fetch):
+    # Mock an empty API response
+    class MockApiResponse:
+        df = pl.DataFrame({"blockchain": []})  # Ensure column exists for logic
+
+    mock_fetch.return_value = MockApiResponse()
+
+    loader = DuneChainMetadataLoader()
+    df = loader.run()
+
+    assert df.height == 0
+    assert list(df.columns) == list(CHAIN_METADATA_SCHEMA.keys())

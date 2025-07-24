@@ -1,34 +1,50 @@
 import polars as pl
 from unittest.mock import patch
 from op_analytics.datapipeline.chains.loaders.defillama_loader import DefiLlamaChainMetadataLoader
-
-# Mock DataFrame with raw DefiLlama columns as expected by the loader
-SAMPLE_DF = pl.DataFrame(
-    {
-        "chain_id": [1, 2],
-        "chain_name": ["Ethereum", "Optimism"],
-    }
-)
+from op_analytics.datapipeline.chains.schemas import CHAIN_METADATA_SCHEMA
 
 
-class MockChainsMetadata:
-    df = SAMPLE_DF
-    chains = ["Ethereum", "Optimism"]
+@patch("op_analytics.datasources.defillama.chaintvl.metadata.ChainsMetadata.fetch")
+def test_defillama_loader_success(mock_fetch):
+    # Mock the API response
+    mock_df = pl.DataFrame(
+        {
+            "chain_name": ["Optimism", "Base"],
+            "chain_id": [10, 8453],
+            "gecko_id": ["optimism", "base"],
+            "layer": ["L2", "L2"],
+            "is_superchain": [True, True],
+        }
+    )
+
+    class MockApiResponse:
+        df = mock_df
+
+    mock_fetch.return_value = MockApiResponse()
+
+    # Run the loader
+    loader = DefiLlamaChainMetadataLoader()
+    df = loader.run()
+
+    # Assertions
+    assert isinstance(df, pl.DataFrame)
+    assert df.height == 2
+    assert "chain_key" in df.columns
+    assert df["chain_key"][0] == "optimism"
+    assert df["gas_token"][0] == "optimism"
+    assert list(df.columns) == list(CHAIN_METADATA_SCHEMA.keys())
 
 
-def test_defillama_chain_metadata_loader(monkeypatch):
-    with patch(
-        "op_analytics.datasources.defillama.chaintvl.metadata.ChainsMetadata.fetch",
-        return_value=MockChainsMetadata,
-    ):
-        loader = DefiLlamaChainMetadataLoader()
-        df = loader.run()
-        required = set(loader.REQUIRED_FIELDS)
-        assert required.issubset(set(df.columns)), (
-            f"Missing required columns: {required - set(df.columns)}"
-        )
-        assert (df["source_name"] == "defillama").all()
-        assert (df["source_rank"] == 5).all()
-        assert df["chain_id"].to_list() == [1, 2]
-        assert df["chain_name"].to_list() == ["Ethereum", "Optimism"]
-        assert df["display_name"].to_list() == ["Ethereum", "Optimism"]
+@patch("op_analytics.datasources.defillama.chaintvl.metadata.ChainsMetadata.fetch")
+def test_defillama_loader_empty(mock_fetch):
+    # Mock an empty API response
+    class MockApiResponse:
+        df = pl.DataFrame()
+
+    mock_fetch.return_value = MockApiResponse()
+
+    loader = DefiLlamaChainMetadataLoader()
+    df = loader.run()
+
+    assert df.height == 0
+    assert list(df.columns) == list(CHAIN_METADATA_SCHEMA.keys())

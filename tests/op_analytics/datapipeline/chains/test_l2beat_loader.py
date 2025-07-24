@@ -1,34 +1,54 @@
 import polars as pl
 from unittest.mock import patch
 from op_analytics.datapipeline.chains.loaders.l2beat_loader import L2BeatChainMetadataLoader
-
-# Mock DataFrame with raw L2Beat columns as expected by the loader
-SAMPLE_DF = pl.DataFrame(
-    {
-        "id": ["optimism", "base"],
-        "name": ["Optimism", "Base"],
-    }
-)
+from op_analytics.datapipeline.chains.schemas import CHAIN_METADATA_SCHEMA
 
 
-class MockL2BeatProjectsSummary:
-    summary_df = SAMPLE_DF
-    projects: list[str] = ["optimism", "base"]
+@patch("op_analytics.datasources.l2beat.projects.L2BeatProjectsSummary.fetch")
+def test_l2beat_loader_success(mock_fetch):
+    # Mock the API response
+    mock_df = pl.DataFrame(
+        {
+            "name": ["Optimism", "Base"],
+            "id": ["optimism", "base"],
+            "category": ["Optimistic Rollup", "Optimistic Rollup"],
+            "stage": ["Stage 1", "Stage 0"],
+            "provider": ["OP Stack", "OP Stack"],
+            "providers": [["OP Stack"], ["OP Stack"]],
+            "da_badge": ["DA Layer", "DA Layer"],
+            "isUpcoming": [False, False],
+            "isArchived": [False, False],
+        }
+    )
+
+    class MockApiResponse:
+        summary_df = mock_df
+
+    mock_fetch.return_value = MockApiResponse()
+
+    # Run the loader
+    loader = L2BeatChainMetadataLoader()
+    df = loader.run()
+
+    # Assertions
+    assert isinstance(df, pl.DataFrame)
+    assert df.height == 2
+    assert "chain_key" in df.columns
+    assert df["chain_key"][0] == "optimism"
+    assert df["l2b_stage"][0] == "Stage 1"
+    assert list(df.columns) == list(CHAIN_METADATA_SCHEMA.keys())
 
 
-def test_l2beat_chain_metadata_loader(monkeypatch):
-    with patch(
-        "op_analytics.datasources.l2beat.projects.L2BeatProjectsSummary.fetch",
-        return_value=MockL2BeatProjectsSummary,
-    ):
-        loader = L2BeatChainMetadataLoader()
-        df = loader.run()
-        required = set(loader.REQUIRED_FIELDS)
-        assert required.issubset(set(df.columns)), (
-            f"Missing required columns: {required - set(df.columns)}"
-        )
-        assert (df["source_name"] == "l2beat").all()
-        assert (df["source_rank"] == 2).all()
-        assert df["chain_id"].to_list() == ["optimism", "base"]
-        assert df["chain_name"].to_list() == ["Optimism", "Base"]
-        assert df["display_name"].to_list() == ["Optimism", "Base"]
+@patch("op_analytics.datasources.l2beat.projects.L2BeatProjectsSummary.fetch")
+def test_l2beat_loader_empty(mock_fetch):
+    # Mock an empty API response
+    class MockApiResponse:
+        summary_df = pl.DataFrame()
+
+    mock_fetch.return_value = MockApiResponse()
+
+    loader = L2BeatChainMetadataLoader()
+    df = loader.run()
+
+    assert df.height == 0
+    assert list(df.columns) == list(CHAIN_METADATA_SCHEMA.keys())

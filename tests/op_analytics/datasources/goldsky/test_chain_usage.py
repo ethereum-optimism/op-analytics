@@ -1,52 +1,51 @@
-import pandas as pd
+import polars as pl
+from unittest.mock import patch
 from op_analytics.datasources.goldsky.chain_usage import GoldskyChainUsageLoader
-import op_analytics.coreutils.bigquery.client as bigquery_client
+from op_analytics.datapipeline.chains.schemas import CHAIN_METADATA_SCHEMA
 
 
-class MockQueryJob:
-    def __init__(self, pandas_df):
-        self.pandas_df = pandas_df
-
-    def to_dataframe(self):
-        return self.pandas_df
-
-
-class MockClient:
-    def query(self, query_string):
-        pandas_df = pd.DataFrame(
-            {
-                "dt": ["2024-01-01", "2024-01-02"],
-                "chain_id": [10, 11],
-                "chain_name": ["OP Mainnet", "Base"],
-                "display_name": ["OP Mainnet", "Base"],
-                "num_raw_txs": [1000, 2000],
-                "l2_gas_used": [500000, 800000],
-                "l2_eth_fees_per_day": [123.45, 678.90],
-            }
-        )
-        return MockQueryJob(pandas_df)
-
-
-def test_goldsky_chain_usage_loader(monkeypatch):
-    bigquery_client._CLIENT = None
-    mock_client = MockClient()
-    monkeypatch.setattr(
-        "op_analytics.coreutils.bigquery.client._CLIENT",
-        mock_client,
+@patch("op_analytics.datasources.goldsky.chain_usage.pl.from_pandas")
+def test_goldsky_loader_success(mock_from_pandas):
+    # Mock the DataFrame that pl.from_pandas will return
+    mock_from_pandas.return_value = pl.DataFrame(
+        {
+            "chain_name": ["optimism", "base"],
+            "chain_id": ["10", "8453"],
+            "dt": ["2023-01-01", "2023-01-01"],
+            "num_raw_txs": [100, 200],
+            "l2_gas_used": [1000, 2000],
+            "l2_eth_fees_per_day": [0.1, 0.2],
+        }
     )
 
-    loader = GoldskyChainUsageLoader(bq_project_id="test-project")
+    # Run the loader
+    loader = GoldskyChainUsageLoader(bq_project_id="test-project", bq_dataset_id="test-dataset")
     df = loader.run()
-    required = set(loader.REQUIRED_FIELDS)
-    assert required.issubset(set(df.columns)), (
-        f"Missing required columns: {required - set(df.columns)}"
+
+    # Assertions
+    assert isinstance(df, pl.DataFrame)
+    assert df.height == 2
+    assert "chain_key" in df.columns
+    assert df["chain_key"][0] == "optimism"
+    assert list(df.columns) == list(CHAIN_METADATA_SCHEMA.keys())
+
+
+@patch("op_analytics.datasources.goldsky.chain_usage.pl.from_pandas")
+def test_goldsky_loader_empty(mock_from_pandas):
+    # Mock an empty DataFrame
+    mock_from_pandas.return_value = pl.DataFrame(
+        {
+            "chain_name": [],
+            "chain_id": [],
+            "dt": [],
+            "num_raw_txs": [],
+            "l2_gas_used": [],
+            "l2_eth_fees_per_day": [],
+        }
     )
-    assert (df["source_name"] == "op labs").all()
-    assert (df["source_rank"] == 1).all()
-    assert df["chain_id"].to_list() == [10, 11]
-    assert df["chain_name"].to_list() == ["OP Mainnet", "Base"]
-    assert df["display_name"].to_list() == ["OP Mainnet", "Base"]
-    assert df["dt"].to_list() == ["2024-01-01", "2024-01-02"]
-    assert df["num_raw_txs"].to_list() == [1000, 2000]
-    assert df["l2_gas_used"].to_list() == [500000, 800000]
-    assert df["l2_eth_fees_per_day"].to_list() == [123.45, 678.90]
+
+    loader = GoldskyChainUsageLoader(bq_project_id="test-project", bq_dataset_id="test-dataset")
+    df = loader.run()
+
+    assert df.height == 0
+    assert list(df.columns) == list(CHAIN_METADATA_SCHEMA.keys())

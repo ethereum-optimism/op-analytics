@@ -9,17 +9,7 @@ log = structlog.get_logger()
 class BaseChainMetadataLoader(abc.ABC):
     """
     Abstract base class for all chain metadata loaders.
-    Enforces a canonical schema and validation for downstream aggregation.
     """
-
-    # Required fields for the canonical chain metadata schema.
-    # - chain_id: Unique identifier for the chain (int or str, depending on source)
-    # - chain_name: Standardized name for the chain (e.g., 'optimism', 'base')
-    # - display_name: Human-friendly display name (e.g., 'Optimism Mainnet')
-    # - source_name: Name of the data source/loader (e.g., 'defillama', 'l2beat')
-    # - source_rank: Numeric rank for source precedence in deduplication/merging
-    REQUIRED_FIELDS = ["chain_id", "chain_name", "display_name", "source_name", "source_rank"]
-    OPTIONAL_FIELDS = ["dt_day"]
 
     def __init__(self, **kwargs):
         self.config = kwargs
@@ -28,23 +18,25 @@ class BaseChainMetadataLoader(abc.ABC):
     @abc.abstractmethod
     def load_data(self, **kwargs) -> pl.DataFrame:
         """
-        Load raw data from the source and return as a Polars DataFrame.
+        Load raw data from the source, map to canonical field names,
+        and harmonize to the canonical schema.
         Must be implemented by all loaders.
         """
         pass
 
     def validate_output(self, df: pl.DataFrame) -> pl.DataFrame:
         """
-        Ensure DataFrame has all required fields.
+        Validates the output DataFrame.
+        Ensures the primary key 'chain_key' exists and is not null.
         """
-        missing = [f for f in self.REQUIRED_FIELDS if f not in df.columns]
-        if missing:
-            log.error(
-                "Missing required fields in loader output",
-                fields=missing,
+        if "chain_key" not in df.columns:
+            raise ValueError("Output DataFrame must contain a 'chain_key' column.")
+
+        if df.height > 0 and df["chain_key"].is_null().any():
+            log.warning(
+                "Loader output contains null 'chain_key' values.",
                 loader=self.__class__.__name__,
             )
-            raise ValueError(f"Missing required fields: {missing}")
         return df
 
     def run(self, **kwargs) -> pl.DataFrame:
