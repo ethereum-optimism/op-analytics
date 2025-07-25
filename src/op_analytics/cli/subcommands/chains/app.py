@@ -505,4 +505,48 @@ def load_revshare_config():
     print("Revshare configuration loaded successfully.")
 
 
+@app.command()
+def load_daily_aggregations(
+    aggregation_type: Annotated[
+        str,
+        typer.Argument(
+            help="Type of aggregation: 'traces', 'transactions', or 'all'"
+        ),
+    ],
+    range_spec: DATES_ARG,
+    dryrun: DRYRUN_OPTION = False,
+):
+    """Load daily aggregation data to ClickHouse."""
+    from op_analytics.datapipeline.etl.blockbatchloaddaily.main import daily_to_clickhouse
+    from op_analytics.datapipeline.etl.blockbatchloaddaily.datasets import (
+        TRACES_AGG1,
+        TRACES_AGG2, 
+        TRACES_AGG3,
+        DAILY_ADDRESS_SUMMARY,
+    )
+
+    datasets_to_run = []
+    
+    if aggregation_type.lower() in ["traces", "all"]:
+        datasets_to_run.extend([TRACES_AGG1, TRACES_AGG2, TRACES_AGG3])
+    
+    if aggregation_type.lower() in ["transactions", "all"]:
+        datasets_to_run.append(DAILY_ADDRESS_SUMMARY)
+    
+    if not datasets_to_run:
+        print(f"Error: Unknown aggregation type '{aggregation_type}'")
+        print("Available types: traces, transactions, all")
+        raise typer.Exit(1)
+
+    for dataset in datasets_to_run:
+        dataset_name = dataset.output_root_path.split("/")[-1]
+        print(f"Loading {dataset_name}...")
+        
+        daily_to_clickhouse(
+            dataset=dataset,
+            range_spec=range_spec,
+            dry_run=dryrun,
+        )
+
+
 # Backfills
