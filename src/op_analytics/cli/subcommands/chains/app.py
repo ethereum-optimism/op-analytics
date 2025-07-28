@@ -105,6 +105,7 @@ def build_metadata_command(
         manual_mappings_filepath=manual_mappings_file,
         bq_project_id=bq_project_id,
         bq_dataset_id=bq_dataset_id,
+        csv_path="src/op_analytics/datapipeline/chains/resources/chain_metadata.csv",
     )
 
 

@@ -33,6 +33,7 @@ def all_chains_metadata_asset(context: AssetExecutionContext, config: ChainMetad
         manual_mappings_filepath=config.manual_mappings_filepath,
         bq_project_id=config.bq_project_id,
         bq_dataset_id=config.bq_dataset_id,
+        csv_path="src/op_analytics/datapipeline/chains/resources/chain_metadata.csv",
     )
 
     log.info("Chain metadata aggregation asset completed successfully")
