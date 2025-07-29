@@ -3,10 +3,7 @@ Centralized schemas and harmonization utilities for the chain metadata pipeline.
 """
 
 import polars as pl
-from op_analytics.coreutils.logger import structlog
 from polars._typing import PolarsDataType
-
-log = structlog.get_logger()
 
 # Single source of truth for the canonical output schema.
 CHAIN_METADATA_SCHEMA: dict[str, PolarsDataType] = {
@@ -40,46 +37,23 @@ CHAIN_METADATA_SCHEMA: dict[str, PolarsDataType] = {
 }
 
 
-def harmonize_to_canonical_schema(df: pl.DataFrame) -> pl.DataFrame:
-    """
-    Harmonizes a DataFrame to the canonical chain metadata schema.
-
-    - Ensures all columns from CHAIN_METADATA_SCHEMA exist, adding them as null if missing.
-    - Casts all existing columns to the correct canonical dtype, handling casting errors gracefully.
-    - Selects and orders columns to exactly match the canonical schema definition.
-
-    Args:
-        df: The input Polars DataFrame to harmonize.
-
-    Returns:
-        A new DataFrame that conforms to the canonical schema.
-    """
-    if df.height == 0:
-        log.warning(
-            "Input DataFrame is empty. Returning an empty DataFrame with the canonical schema."
-        )
-        return pl.DataFrame(schema=CHAIN_METADATA_SCHEMA)
-
-    output_df = df
-
-    # Add missing columns as nulls
-    for col_name, col_type in CHAIN_METADATA_SCHEMA.items():
-        if col_name not in output_df.columns:
-            output_df = output_df.with_columns(pl.lit(None, dtype=col_type).alias(col_name))
-
-    # Cast existing columns to the correct type
-    cast_expressions = []
-    for col_name, col_type in CHAIN_METADATA_SCHEMA.items():
-        if col_name in output_df.columns:
-            cast_expressions.append(pl.col(col_name).cast(col_type, strict=False))
-
-    output_df = output_df.with_columns(cast_expressions)
-
-    # Select and order columns to match the schema
-    final_cols = list(CHAIN_METADATA_SCHEMA.keys())
-    output_df = output_df.select(final_cols)
-
-    return output_df
+DEFAULT_VALUES = {
+    "is_current_chain": True,
+    "is_upcoming": False,
+    "eth_eco_l2l3": False,
+    "eth_eco_l2": False,
+    "is_evm": True,  # Most chains are EVM
+    "layer": "L1",  # Default to L1 if not specified
+    "provider": None,
+    "provider_entity": None,
+    "provider_entity_w_superchain": "Other",  # Keep as "Other" to match BQ pattern
+    "alignment": None,
+    "gas_token": "ETH",
+    "da_layer": "Ethereum",
+    "output_root_layer": "Ethereum",
+    "l2b_da_layer": "Ethereum",
+    "l2b_stage": "Not applicable",
+}
 
 
 def generate_chain_key(source_field: str) -> pl.Expr:
