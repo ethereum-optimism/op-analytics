@@ -20,18 +20,19 @@ TOP_CONTRACTS_QUERY_ID = 5536798
 N_DAYS = 7
 CHUNK_SIZE = 7
 
-# Expected schema for validation
+# Expected schema for validation (based on actual Dune query output)
 TOP_CONTRACTS_SCHEMA = pl.Schema({
-    "dt": pl.Utf8,
-    "chain": pl.Utf8,
+    "blockchain": pl.Utf8,
     "chain_id": pl.Int64,
-    "contract_address": pl.Utf8,
-    "gas_fees_sum": pl.Float64,
-    "gas_fees_sum_usd": pl.Float64,
-    "tx_count": pl.Int64,
-    "name": pl.Utf8,
-    "gas_fees_pct_of_chain": pl.Float64,
-    "rank_within_chain": pl.Int64,
+    "dt": pl.Utf8,  # transformed from block_date
+    "tx_to": pl.Utf8,
+    "tx_fee_currency": pl.Utf8,
+    "currency_symbol": pl.Utf8,
+    "num_txs": pl.Int64,
+    "raw_gas_used": pl.Int64,
+    "tx_fee_usd": pl.Float64,
+    "tx_fee": pl.Float64,
+    "chain_day_rank": pl.Int64,
 })
 
 
@@ -233,7 +234,7 @@ def execute_pull(
                 # Write this chunk immediately to GCS
                 Dune.TOP_CONTRACTS.write(
                     dataframe=result.df,
-                    sort_by=["dt", "chain_id", "rank_within_chain"],
+                    sort_by=["dt", "chain_id", "chain_day_rank"],
                 )
                 total_rows_written += result.df.shape[0]
                 all_written_dfs.append(result.df)
@@ -274,7 +275,7 @@ def execute_pull(
         min_date = str(combined_df["dt"].min())
         max_date = str(combined_df["dt"].max())
         summary["date_range"] = f"{min_date} to {max_date}"
-        summary["unique_chains"] = len(combined_df["chain"].unique())
-        summary["unique_contracts"] = len(combined_df["contract_address"].unique())
+        summary["unique_chains"] = len(combined_df["blockchain"].unique())
+        summary["unique_contracts"] = len(combined_df["tx_to"].unique())
 
     return summary 
