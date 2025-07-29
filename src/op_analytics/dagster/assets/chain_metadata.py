@@ -14,8 +14,8 @@ class ChainMetadataConfig(Config):
     bq_project_id: str = Field(description="BigQuery project ID for data operations")
     bq_dataset_id: str = Field(description="BigQuery dataset ID for table operations")
     csv_path: str = Field(
-        default="src/op_analytics/datapipeline/chains/resources/chain_metadata.csv",
-        description="Path to the chain metadata CSV file",
+        default="src/op_analytics/datapipeline/chains/resources/manual_chain_mappings.csv",
+        description="Path to the chain metadata CSV file (base chain data)",
     )
 
 

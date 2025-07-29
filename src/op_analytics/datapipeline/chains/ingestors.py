@@ -77,7 +77,7 @@ def ingest_from_csv(csv_path: str) -> pl.DataFrame:
     return _process_df(
         df=pl.read_csv(csv_path),
         chain_key_col="chain_name",
-        source="csv",
+        source="CSV Data",
         rank=1,
         renames={},
     )
@@ -89,10 +89,9 @@ def ingest_from_l2beat() -> pl.DataFrame:
     df = _process_df(
         df=df,
         chain_key_col="id",
-        source="l2beat",
+        source="L2Beat API",
         rank=2,
         renames={
-            "id": "chain_key",
             "name": "display_name",
             "stage": "l2b_stage",
             "da_badge": "l2b_da_layer",
@@ -112,7 +111,7 @@ def ingest_from_defillama() -> pl.DataFrame:
     return _process_df(
         df=ChainsMetadata.fetch().df,
         chain_key_col="chain_name",
-        source="defillama",
+        source="DefiLlama API",
         rank=3,
         renames={"chain_name": "display_name", "symbol": "gas_token"},
     )
@@ -126,7 +125,7 @@ def ingest_from_dune() -> pl.DataFrame:
     return _process_df(
         df=df,
         chain_key_col=chain_col,
-        source="dune",
+        source="Dune Analytics",
         rank=4,
         renames={chain_col: "display_name", "project": "provider", "version": "provider_entity"},
     )
@@ -140,7 +139,7 @@ def ingest_from_bq_op_stack(project_id: str, dataset_id: str) -> pl.DataFrame:
     return _process_df(
         df=df,
         chain_key_col="chain_name",
-        source="op labs",
+        source="OP Labs Internal",
         rank=1,
         renames={"mainnet_chain_id": "chain_id", "public_mainnet_launch_date": "op_governed_start"},
     )
@@ -155,7 +154,7 @@ def ingest_from_bq_goldsky(project_id: str, dataset_id: str) -> pl.DataFrame:
     return _process_df(
         df=df,
         chain_key_col="chain_name",
-        source="goldsky",
+        source="Goldsky Data",
         rank=5,
         renames={},
     )

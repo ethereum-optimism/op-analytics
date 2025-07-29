@@ -36,7 +36,9 @@ def mock_l2beat_api():
                 "vm_badge": ["VM Badge"],
             }
         )
-        mock_fetch.return_value = mock_df
+        mock_response = MagicMock()
+        mock_response.summary_df = mock_df
+        mock_fetch.return_value = mock_response
         yield mock_fetch
 
 
@@ -46,7 +48,9 @@ def mock_defillama_api():
         "op_analytics.datasources.defillama.chaintvl.metadata.ChainsMetadata.fetch"
     ) as mock_fetch:
         mock_df = pl.DataFrame({"chain_name": ["defillama_chain_1"], "symbol": ["DLLAMA"]})
-        mock_fetch.return_value = mock_df
+        mock_response = MagicMock()
+        mock_response.df = mock_df
+        mock_fetch.return_value = mock_response
         yield mock_fetch
 
 
@@ -109,7 +113,7 @@ def test_ingest_from_bq_op_stack(mock_bigquery_client):
     )
     mock_bigquery_client.query.return_value = mock_query_job
 
-    df = ingestors.ingest_from_bq_op_stack_metadata(project_id="p", dataset_id="d")
+    df = ingestors.ingest_from_bq_op_stack(project_id="p", dataset_id="d")
     assert df.shape[0] == 1
 
 
@@ -124,7 +128,5 @@ def test_ingest_from_bq_goldsky(mock_bigquery_client):
 
 def test_empty_dataframe_handling(monkeypatch):
     monkeypatch.setattr(pl, "read_csv", lambda *args, **kwargs: pl.DataFrame())
-    with pytest.raises(
-        ValueError, match="Ingestion from source 'csv' returned an empty DataFrame."
-    ):
+    with pytest.raises(ValueError, match="Empty DataFrame from CSV Data"):
         ingestors.ingest_from_csv("dummy_path")
