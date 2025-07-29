@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import timedelta
+from typing import Any
 
 import polars as pl
 import spice
@@ -174,7 +175,7 @@ def execute_pull(
     min_usd_per_day_threshold: int = 100,
     chunk_days: int = CHUNK_SIZE,
     force_complete: bool = False,
-):
+) -> dict[str, Any]:
     """
     Fetch and write to GCS with automatic chunking for large date ranges.
     
@@ -185,6 +186,9 @@ def execute_pull(
         min_usd_per_day_threshold: Minimum USD threshold per day
         chunk_days: Number of days per chunk to avoid query timeouts
         force_complete: If True, re-process all chunks even if data exists
+        
+    Returns:
+        Dictionary with processing statistics and data summary
     """
     chunks = _create_date_chunks(min_dt, max_dt, chunk_days)
     
@@ -254,7 +258,7 @@ def execute_pull(
     log.info(f"Processing complete: {chunks_processed} chunks processed, {chunks_skipped} chunks skipped, {total_rows_written:,} total rows written")
 
     # Generate summary following the pattern from other datasources
-    summary = {
+    summary: dict[str, Any] = {
         "chunks_processed": chunks_processed,
         "chunks_skipped": chunks_skipped,
         "total_chunks": len(chunks),
@@ -265,7 +269,11 @@ def execute_pull(
     if all_written_dfs:
         combined_df = pl.concat(all_written_dfs, how="vertical")
         summary["data_summary"] = dt_summary(combined_df)
-        summary["date_range"] = f"{combined_df['dt'].min()} to {combined_df['dt'].max()}"
+        
+        # Safely handle date range formatting
+        min_date = str(combined_df["dt"].min())
+        max_date = str(combined_df["dt"].max())
+        summary["date_range"] = f"{min_date} to {max_date}"
         summary["unique_chains"] = len(combined_df["chain"].unique())
         summary["unique_contracts"] = len(combined_df["contract_address"].unique())
 

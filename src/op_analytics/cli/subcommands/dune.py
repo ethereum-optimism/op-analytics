@@ -22,14 +22,14 @@ FORCE_COMPLETE_OPTION = Annotated[
 @app.command()
 def top_contracts(
     min_dt: Annotated[
-        str,
+        str | None,
         typer.Option(
             "--min-dt",
             help="Start date in YYYY-MM-DD format. If not provided, defaults to 7 days ago."
         ),
     ] = None,
     max_dt: Annotated[
-        str,
+        str | None,
         typer.Option(
             "--max-dt", 
             help="End date in YYYY-MM-DD format. If not provided, defaults to today."
