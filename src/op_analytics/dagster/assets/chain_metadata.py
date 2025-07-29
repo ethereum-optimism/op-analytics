@@ -1,10 +1,9 @@
 from dagster import AssetExecutionContext, Config, asset
 from pydantic import Field
 
-from op_analytics.coreutils.logger import structlog
-from op_analytics.datapipeline.chains.aggregator import build_all_chains_metadata
+import polars as pl
 
-log = structlog.get_logger()
+from op_analytics.datapipeline.chains.aggregator import build_all_chains_metadata
 
 
 class ChainMetadataConfig(Config):
@@ -14,26 +13,24 @@ class ChainMetadataConfig(Config):
     manual_mappings_filepath: str = Field(description="Path to manual mappings configuration file")
     bq_project_id: str = Field(description="BigQuery project ID for data operations")
     bq_dataset_id: str = Field(description="BigQuery dataset ID for table operations")
+    csv_path: str = Field(
+        default="src/op_analytics/datapipeline/chains/resources/chain_metadata.csv",
+        description="Path to the chain metadata CSV file",
+    )
 
 
 @asset
-def all_chains_metadata_asset(context: AssetExecutionContext, config: ChainMetadataConfig):
-    log.info("Chain metadata aggregation asset started")
-
-    log.info(
-        "Asset configuration",
+def all_chains_metadata_asset(
+    context: AssetExecutionContext, config: ChainMetadataConfig
+) -> pl.DataFrame:
+    """Asset that aggregates chain metadata from multiple sources."""
+    result_df: pl.DataFrame = build_all_chains_metadata(
         output_bq_table=config.output_bq_table,
         manual_mappings_filepath=config.manual_mappings_filepath,
         bq_project_id=config.bq_project_id,
         bq_dataset_id=config.bq_dataset_id,
+        csv_path=config.csv_path,
     )
 
-    build_all_chains_metadata(
-        output_bq_table=config.output_bq_table,
-        manual_mappings_filepath=config.manual_mappings_filepath,
-        bq_project_id=config.bq_project_id,
-        bq_dataset_id=config.bq_dataset_id,
-        csv_path="src/op_analytics/datapipeline/chains/resources/chain_metadata.csv",
-    )
-
-    log.info("Chain metadata aggregation asset completed successfully")
+    context.log.info(f"Chain metadata aggregation completed: {result_df.height} records")
+    return result_df

@@ -4,8 +4,6 @@ Functional ingestors for the chain metadata pipeline.
 Each function fetches data from a source and returns a standardized Polars DataFrame.
 """
 
-from typing import Optional
-
 import polars as pl
 
 from op_analytics.coreutils.bigquery.client import init_client
@@ -36,7 +34,7 @@ def _process_df(
     chain_key_col: str,
     source: str,
     rank: int,
-    renames: Optional[dict[str, str]] = None,
+    renames: dict[str, str] = {},
 ) -> pl.DataFrame:
     """Common processing: validate → add metadata → rename → finalize."""
     if df.height == 0:
@@ -48,8 +46,7 @@ def _process_df(
         pl.lit(rank).alias("source_rank"),
     )
 
-    if renames:
-        df = df.rename(renames)
+    df = df.rename(renames)
 
     # Add missing columns and cast to schema
     df = df.with_columns(
@@ -77,18 +74,24 @@ def _process_df(
 
 def ingest_from_csv(csv_path: str) -> pl.DataFrame:
     """Ingests chain metadata from a local CSV file."""
-    return _process_df(pl.read_csv(csv_path), "chain_name", "csv", 1)
+    return _process_df(
+        df=pl.read_csv(csv_path),
+        chain_key_col="chain_name",
+        source="csv",
+        rank=1,
+        renames={},
+    )
 
 
 def ingest_from_l2beat() -> pl.DataFrame:
     """Ingests chain metadata from the L2Beat API."""
     df: pl.DataFrame = L2BeatProjectsSummary.fetch().summary_df
     df = _process_df(
-        df,
-        "id",
-        "l2beat",
-        2,
-        {
+        df=df,
+        chain_key_col="id",
+        source="l2beat",
+        rank=2,
+        renames={
             "id": "chain_key",
             "name": "display_name",
             "stage": "l2b_stage",
@@ -107,11 +110,11 @@ def ingest_from_l2beat() -> pl.DataFrame:
 def ingest_from_defillama() -> pl.DataFrame:
     """Ingests chain metadata from the DefiLlama API."""
     return _process_df(
-        ChainsMetadata.fetch().df,
-        "chain_name",
-        "defillama",
-        3,
-        {"chain_name": "display_name", "symbol": "gas_token"},
+        df=ChainsMetadata.fetch().df,
+        chain_key_col="chain_name",
+        source="defillama",
+        rank=3,
+        renames={"chain_name": "display_name", "symbol": "gas_token"},
     )
 
 
@@ -121,11 +124,11 @@ def ingest_from_dune() -> pl.DataFrame:
     chain_col: str = "blockchain" if "blockchain" in df.columns else "chain_name"
 
     return _process_df(
-        df,
-        chain_col,
-        "dune",
-        4,
-        {chain_col: "display_name", "project": "provider", "version": "provider_entity"},
+        df=df,
+        chain_key_col=chain_col,
+        source="dune",
+        rank=4,
+        renames={chain_col: "display_name", "project": "provider", "version": "provider_entity"},
     )
 
 
@@ -135,11 +138,11 @@ def ingest_from_bq_op_stack(project_id: str, dataset_id: str) -> pl.DataFrame:
     df: pl.DataFrame = pl.from_pandas(client.query(OP_STACK_QUERY).to_dataframe())
 
     return _process_df(
-        df,
-        "chain_name",
-        "op labs",
-        1,
-        {"mainnet_chain_id": "chain_id", "public_mainnet_launch_date": "op_governed_start"},
+        df=df,
+        chain_key_col="chain_name",
+        source="op labs",
+        rank=1,
+        renames={"mainnet_chain_id": "chain_id", "public_mainnet_launch_date": "op_governed_start"},
     )
 
 
@@ -149,4 +152,10 @@ def ingest_from_bq_goldsky(project_id: str, dataset_id: str) -> pl.DataFrame:
     df: pl.DataFrame = pl.from_pandas(client.query(GOLDSKY_QUERY).to_dataframe())
     df = df.with_columns(pl.col("chain_name").alias("display_name"))
 
-    return _process_df(df, "chain_name", "goldsky", 5)
+    return _process_df(
+        df=df,
+        chain_key_col="chain_name",
+        source="goldsky",
+        rank=5,
+        renames={},
+    )
