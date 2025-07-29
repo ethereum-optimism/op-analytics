@@ -16,6 +16,7 @@ log = structlog.get_logger()
 
 TOP_CONTRACTS_QUERY_ID = 5536798
 N_DAYS = 7
+CHUNK_SIZE = 7
 
 
 @dataclass
@@ -68,7 +69,7 @@ class DuneTopContractsSummary:
         return DuneTopContractsSummary(df=df)
 
 
-def _create_date_chunks(min_dt: str | None, max_dt: str | None, chunk_days: int = 30):
+def _create_date_chunks(min_dt: str | None, max_dt: str | None, chunk_days: int = CHUNK_SIZE):
     """
     Break a date range into smaller chunks to avoid query failures.
     Processes from most recent to earliest date.
@@ -90,7 +91,10 @@ def _create_date_chunks(min_dt: str | None, max_dt: str | None, chunk_days: int 
     
     # If the range is small, return as single chunk
     if (end_date - start_date).days <= chunk_days:
-        return [(min_dt, max_dt)]
+        # Convert to proper date strings
+        start_str = start_date.strftime("%Y-%m-%d")
+        end_str = end_date.strftime("%Y-%m-%d")
+        return [(start_str, end_str)]
     
     # Break into chunks, working backwards from most recent
     chunks = []
@@ -113,7 +117,7 @@ def execute_pull(
     max_dt: str | None = None,
     top_n_contracts_per_chain: int = 5000,
     min_usd_per_day_threshold: int = 100,
-    chunk_days: int = 30,
+    chunk_days: int = CHUNK_SIZE,
 ):
     """
     Fetch and write to GCS with automatic chunking for large date ranges.
