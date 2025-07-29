@@ -74,7 +74,7 @@ def top_contracts(
         # Force re-process existing data
         uv run opdata dune top-contracts --force-complete
     """
-    print(f"Fetching Dune top contracts data...")
+    print("Fetching Dune top contracts data...")
     print(f"  Date range: {min_dt or 'auto'} to {max_dt or 'auto'}")
     print(f"  Top contracts per chain: {top_n_contracts_per_chain}")
     print(f"  Min USD threshold: ${min_usd_per_day_threshold}")
