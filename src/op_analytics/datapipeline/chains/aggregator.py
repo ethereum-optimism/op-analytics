@@ -19,10 +19,9 @@ from op_analytics.datapipeline.chains.mapping_utils import (
 log = structlog.get_logger()
 
 
-def _run_ingestors(bq_project_id: str, bq_dataset_id: str, csv_path: str) -> list[pl.DataFrame]:
+def _run_ingestors(bq_project_id: str, bq_dataset_id: str) -> list[pl.DataFrame]:
     """Run all ingestors and return successful results."""
     ingestor_configs: list[tuple[str, Callable[[], pl.DataFrame]]] = [
-        ("CSV", lambda: ingestors.ingest_from_csv(csv_path)),
         ("L2Beat", ingestors.ingest_from_l2beat),
         ("DefiLlama", ingestors.ingest_from_defillama),
         ("Dune", ingestors.ingest_from_dune),
@@ -44,15 +43,15 @@ def build_all_chains_metadata(
     manual_mappings_filepath: str,
     bq_project_id: str,
     bq_dataset_id: str,
-    csv_path: str,
+    csv_path: str = "",  # Kept for backward compatibility but not used
 ) -> pl.DataFrame:
     """
     Orchestrates the complete chain metadata aggregation pipeline.
 
     Pipeline: ingest → concat → dedupe → map → write
     """
-    # Ingest from all sources
-    dataframes: list[pl.DataFrame] = _run_ingestors(bq_project_id, bq_dataset_id, csv_path)
+    # Ingest from all sources (CSV removed as it's redundant)
+    dataframes: list[pl.DataFrame] = _run_ingestors(bq_project_id, bq_dataset_id)
 
     # Combine and deduplicate
     all_chains_df: pl.DataFrame = pl.concat(dataframes, how="vertical")
