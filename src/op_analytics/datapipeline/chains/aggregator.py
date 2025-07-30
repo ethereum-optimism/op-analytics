@@ -53,11 +53,9 @@ def build_all_chains_metadata(
     # Ingest from all sources (CSV removed as it's redundant)
     dataframes: list[pl.DataFrame] = _run_ingestors(bq_project_id, bq_dataset_id)
 
-    # Combine and deduplicate
+    # Combine and deduplicate based on source rank (highest rank wins)
     all_chains_df: pl.DataFrame = pl.concat(dataframes, how="vertical")
-    unique_df: pl.DataFrame = all_chains_df.unique(
-        subset=["chain_key", "source_name"], keep="first"
-    )
+    unique_df: pl.DataFrame = all_chains_df.sort("source_rank").group_by("chain_key").first()
     log.info(f"Aggregated {unique_df.height} unique records")
 
     # Apply manual mappings
