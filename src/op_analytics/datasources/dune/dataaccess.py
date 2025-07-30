@@ -18,3 +18,6 @@ class Dune(DailyDataset):
 
     # Bespoke
     UNI_LM_2025 = "unichain_lm_summary_2025_v1"
+
+    # Top Contracts
+    TOP_CONTRACTS = "daily_top_contracts_summary_v1"
