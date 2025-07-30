@@ -69,11 +69,6 @@ def mock_bigquery_client():
         yield mock_client
 
 
-# ----------------------------------------
-# Core Ingestion Tests
-# ----------------------------------------
-
-
 def test_ingest_from_l2beat(mock_l2beat_api):
     df = ingestors.ingest_from_l2beat()
     assert df.shape[0] == 1
@@ -125,11 +120,6 @@ def test_empty_dataframe_handling():
         ingestors._process_df(empty_df, "chain_key", "test", 1)
 
 
-# ----------------------------------------
-# Deduplication Tests
-# ----------------------------------------
-
-
 def test_calculate_content_hash():
     """Test that content hash calculation is consistent."""
     df1 = pl.DataFrame(
@@ -142,7 +132,7 @@ def test_calculate_content_hash():
 
     df2 = pl.DataFrame(
         {
-            "chain_key": ["chain2", "chain1"],  # Different order
+            "chain_key": ["chain2", "chain1"],
             "display_name": ["Chain 2", "Chain 1"],
             "source_name": ["test", "test"],
         }
@@ -151,9 +141,8 @@ def test_calculate_content_hash():
     hash1 = ingestors._calculate_content_hash(df1)
     hash2 = ingestors._calculate_content_hash(df2)
 
-    # Hashes should be the same due to sorting
     assert hash1 == hash2
-    assert len(hash1) == 128  # blake2b produces 64-byte (128 hex char) hash
+    assert len(hash1) == 128
 
 
 def test_calculate_content_hash_different_data():
@@ -163,11 +152,7 @@ def test_calculate_content_hash_different_data():
     )
 
     df2 = pl.DataFrame(
-        {
-            "chain_key": ["chain1"],
-            "display_name": ["Chain 1 Modified"],  # Different content
-            "source_name": ["test"],
-        }
+        {"chain_key": ["chain1"], "display_name": ["Chain 1 Modified"], "source_name": ["test"]}
     )
 
     hash1 = ingestors._calculate_content_hash(df1)
@@ -179,7 +164,7 @@ def test_calculate_content_hash_different_data():
 @patch("op_analytics.datapipeline.chains.ingestors._hash_exists")
 @patch("op_analytics.datapipeline.chains.datasets.ChainMetadata.L2BEAT.write")
 def test_ingest_with_deduplication_new_data(mock_write, mock_hash_exists):
-    """Test ingestion when data is new (hash doesn't exist)."""
+    """Test ingestion when data is new."""
     mock_hash_exists.return_value = False
 
     test_df = pl.DataFrame(
@@ -196,14 +181,14 @@ def test_ingest_with_deduplication_new_data(mock_write, mock_hash_exists):
         process_dt=date(2024, 1, 1),
     )
 
-    assert result is True  # Data was written
+    assert result is True
     mock_write.assert_called_once()
 
 
 @patch("op_analytics.datapipeline.chains.ingestors._hash_exists")
 @patch("op_analytics.datapipeline.chains.datasets.ChainMetadata.L2BEAT.write")
 def test_ingest_with_deduplication_existing_data(mock_write, mock_hash_exists):
-    """Test ingestion when data already exists (hash exists)."""
+    """Test ingestion when data already exists."""
     mock_hash_exists.return_value = True
 
     test_df = pl.DataFrame(
@@ -220,7 +205,7 @@ def test_ingest_with_deduplication_existing_data(mock_write, mock_hash_exists):
         process_dt=date(2024, 1, 1),
     )
 
-    assert result is False  # Data was skipped
+    assert result is False
     mock_write.assert_not_called()
 
 
@@ -231,7 +216,7 @@ def test_ingest_with_deduplication_empty_data(mock_write, mock_hash_exists):
     mock_hash_exists.return_value = False
 
     def mock_fetch():
-        return pl.DataFrame()  # Empty DataFrame
+        return pl.DataFrame()
 
     result = ingestors.ingest_with_deduplication(
         source_name="Test Source",
@@ -240,13 +225,11 @@ def test_ingest_with_deduplication_empty_data(mock_write, mock_hash_exists):
         process_dt=date(2024, 1, 1),
     )
 
-    assert result is False  # No data to write
+    assert result is False
     mock_write.assert_not_called()
 
 
 def test_hash_exists_error_handling():
     """Test that _hash_exists handles read errors gracefully."""
-    # This should return False when dataset.read raises an exception
     result = ingestors._hash_exists(ChainMetadata.L2BEAT, date(2024, 1, 1), "dummy_hash")
-    # Should return False when data doesn't exist or can't be read
-    assert result in [True, False]  # Either is acceptable for this test
+    assert result in [True, False]

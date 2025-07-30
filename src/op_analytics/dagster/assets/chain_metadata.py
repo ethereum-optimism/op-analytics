@@ -32,11 +32,6 @@ class ChainMetadataConfig(Config):
     )
 
 
-# ----------------------------------------
-# Partitioned Ingestor Assets
-# ----------------------------------------
-
-
 @asset(
     group_name="chain_metadata",
     compute_kind="python",
@@ -132,11 +127,6 @@ def bq_goldsky_daily(context: AssetExecutionContext, config: ChainMetadataConfig
     return result
 
 
-# ----------------------------------------
-# Aggregation Asset
-# ----------------------------------------
-
-
 @asset(
     group_name="chain_metadata",
     compute_kind="python",
@@ -154,7 +144,6 @@ def aggregated_daily(
     """Aggregate all chain metadata sources into final dataset."""
     context.log.info("Starting daily chain metadata aggregation")
 
-    # Log which sources were updated
     updates = {
         "L2Beat": l2beat_daily,
         "DefiLlama": defillama_daily,
@@ -168,27 +157,20 @@ def aggregated_daily(
 
     context.log.info(f"Updated: {updated}, Skipped: {skipped}")
 
-    # Use existing aggregator (note: csv_path is required but not used since we removed CSV ingestor)
     result_df = build_all_chains_metadata(
         output_bq_table=config.output_bq_table,
         manual_mappings_filepath="resources/manual_chain_mappings.csv",
         bq_project_id=config.bq_project_id,
         bq_dataset_id=config.bq_dataset_id,
-        csv_path="",  # Not used since we removed CSV from aggregator
+        csv_path="",
     )
 
-    # Store in partitioned storage
     process_dt = date.fromisoformat(config.process_date) if config.process_date else now_date()
     df_with_date = result_df.with_columns(pl.lit(process_dt).alias("dt"))
     ChainMetadata.AGGREGATED.write(df_with_date, sort_by=["chain_key"])
 
     context.log.info(f"Aggregated {result_df.height} records to {config.output_bq_table}")
     return result_df
-
-
-# ----------------------------------------
-# Legacy Asset (for backward compatibility)
-# ----------------------------------------
 
 
 @asset
@@ -201,7 +183,7 @@ def all_chains_metadata_asset(
         manual_mappings_filepath="resources/manual_chain_mappings.csv",
         bq_project_id=config.bq_project_id,
         bq_dataset_id=config.bq_dataset_id,
-        csv_path="",  # Not used
+        csv_path="",
     )
 
     context.log.info(f"Chain metadata aggregation completed: {result_df.height} records")
