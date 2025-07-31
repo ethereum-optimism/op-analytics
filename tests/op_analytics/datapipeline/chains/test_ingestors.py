@@ -100,7 +100,7 @@ def test_ingest_from_bq_op_stack(mock_bigquery_client):
     )
     mock_bigquery_client.query.return_value = mock_query_job
 
-    df = ingestors.ingest_from_bq_op_stack(project_id="p", dataset_id="d")
+    df = ingestors.ingest_from_bq_op_stack()
     assert df.shape[0] == 1
 
 
@@ -109,7 +109,7 @@ def test_ingest_from_bq_goldsky(mock_bigquery_client):
     mock_query_job.to_dataframe.return_value = pd.DataFrame({"chain_name": ["bq_goldsky_1"]})
     mock_bigquery_client.query.return_value = mock_query_job
 
-    df = ingestors.ingest_from_bq_goldsky(project_id="p", dataset_id="d")
+    df = ingestors.ingest_from_bq_goldsky()
     assert df.shape[0] == 1
 
 

@@ -1,9 +1,4 @@
-"""
-Functional ingestors for the chain metadata pipeline.
-
-Each function fetches data from a source and returns a standardized Polars DataFrame.
-Enhanced with hash-based deduplication and partitioned storage.
-"""
+"""Functional ingestors for chain metadata pipeline."""
 
 from datetime import date
 from hashlib import blake2b
@@ -27,8 +22,8 @@ from op_analytics.datasources.l2beat.projects import L2BeatProjectsSummary
 
 log = structlog.get_logger()
 
-OP_STACK_QUERY: str = "SELECT mainnet_chain_id, chain_name, display_name, public_mainnet_launch_date FROM `api_table_uploads.op_stack_chain_metadata`"
-GOLDSKY_QUERY: str = "SELECT dt, chain_id, chain_name, num_raw_txs, l2_gas_used, l2_eth_fees_per_day FROM `api_table_uploads.daily_aggegate_l2_chain_usage_goldsky`"
+OP_STACK_QUERY = "SELECT mainnet_chain_id, chain_name, display_name, public_mainnet_launch_date FROM `api_table_uploads.op_stack_chain_metadata`"
+GOLDSKY_QUERY = "SELECT dt, chain_id, chain_name, num_raw_txs, l2_gas_used, l2_eth_fees_per_day FROM `api_table_uploads.daily_aggegate_l2_chain_usage_goldsky`"
 
 
 def _calculate_content_hash(df: pl.DataFrame) -> str:
@@ -42,7 +37,7 @@ def _calculate_content_hash(df: pl.DataFrame) -> str:
 def _hash_exists(dataset: ChainMetadata, process_dt: date, content_hash: str) -> bool:
     """Check if content hash already exists for the given date."""
     try:
-        dataset.read(
+        dataset.read_polars(
             min_date=process_dt.strftime("%Y-%m-%d"), max_date=process_dt.strftime("%Y-%m-%d")
         )
         return True
@@ -56,11 +51,7 @@ def ingest_with_deduplication(
     dataset: ChainMetadata,
     process_dt: date | None = None,
 ) -> bool:
-    """
-    Generic ingestor with content-hash deduplication.
-
-    Returns True if data was written, False if skipped due to no changes.
-    """
+    """Generic ingestor with content-hash deduplication."""
     process_dt = process_dt or now_date()
 
     try:
@@ -75,8 +66,13 @@ def ingest_with_deduplication(
             log.info(f"Skipping {source_name} - content unchanged (hash: {content_hash[:8]}...)")
             return False
 
-        df_with_date = df.with_columns(pl.lit(process_dt).alias("dt"))
-        dataset.write(df_with_date, sort_by=["chain_key"] if "chain_key" in df.columns else None)
+        df_with_metadata = df.with_columns(
+            [pl.lit(process_dt).alias("dt"), pl.lit(content_hash).alias("content_hash")]
+        )
+
+        sort_cols = ["chain_key"] if "chain_key" in df.columns else None
+        dataset.write(df_with_metadata, sort_by=sort_cols)
+
         log.info(f"Wrote {df.height} records from {source_name} (hash: {content_hash[:8]}...)")
         return True
 
@@ -135,7 +131,7 @@ def ingest_from_csv(csv_path: str) -> pl.DataFrame:
 
 def ingest_from_l2beat() -> pl.DataFrame:
     """Ingests chain metadata from the L2Beat API."""
-    df: pl.DataFrame = L2BeatProjectsSummary.fetch().summary_df
+    df = L2BeatProjectsSummary.fetch().summary_df
     df = _process_df(
         df=df,
         chain_key_col="id",
@@ -169,8 +165,8 @@ def ingest_from_defillama() -> pl.DataFrame:
 
 def ingest_from_dune() -> pl.DataFrame:
     """Ingests chain metadata from a Dune query."""
-    df: pl.DataFrame = DuneDexTradesSummary.fetch().df
-    chain_col: str = "blockchain" if "blockchain" in df.columns else "chain_name"
+    df = DuneDexTradesSummary.fetch().df
+    chain_col = "blockchain" if "blockchain" in df.columns else "chain_name"
 
     return _process_df(
         df=df,
@@ -181,10 +177,10 @@ def ingest_from_dune() -> pl.DataFrame:
     )
 
 
-def ingest_from_bq_op_stack(project_id: str, dataset_id: str) -> pl.DataFrame:
+def ingest_from_bq_op_stack() -> pl.DataFrame:
     """Ingests OP Stack metadata from BigQuery."""
     client = init_client()
-    df: pl.DataFrame = pl.from_pandas(client.query(OP_STACK_QUERY).to_dataframe())
+    df = pl.from_pandas(client.query(OP_STACK_QUERY).to_dataframe())
 
     return _process_df(
         df=df,
@@ -195,10 +191,10 @@ def ingest_from_bq_op_stack(project_id: str, dataset_id: str) -> pl.DataFrame:
     )
 
 
-def ingest_from_bq_goldsky(project_id: str, dataset_id: str) -> pl.DataFrame:
+def ingest_from_bq_goldsky() -> pl.DataFrame:
     """Ingests chain usage data from Goldsky via BigQuery."""
     client = init_client()
-    df: pl.DataFrame = pl.from_pandas(client.query(GOLDSKY_QUERY).to_dataframe())
+    df = pl.from_pandas(client.query(GOLDSKY_QUERY).to_dataframe())
     df = df.with_columns(pl.col("chain_name").alias("display_name"))
 
     return _process_df(

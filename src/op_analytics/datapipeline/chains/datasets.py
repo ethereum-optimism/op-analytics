@@ -1,8 +1,4 @@
-"""
-Chain metadata datasets for partitioned storage.
-
-Uses the existing DailyDataset pattern for consistent partitioning and marker management.
-"""
+"""Chain metadata datasets for partitioned storage."""
 
 from op_analytics.coreutils.partitioned.dailydata import DailyDataset
 

@@ -1,11 +1,8 @@
-"""
-Centralized schemas and harmonization utilities for the chain metadata pipeline.
-"""
+"""Centralized schemas and harmonization utilities for chain metadata pipeline."""
 
 import polars as pl
 from polars._typing import PolarsDataType
 
-# Single source of truth for the canonical output schema.
 CHAIN_METADATA_SCHEMA: dict[str, PolarsDataType] = {
     "chain": pl.Utf8,
     "chain_key": pl.Utf8,
@@ -31,9 +28,8 @@ CHAIN_METADATA_SCHEMA: dict[str, PolarsDataType] = {
     "provider_entity_w_superchain": pl.Utf8,
     "eth_eco_l2l3": pl.Boolean,
     "eth_eco_l2": pl.Boolean,
-    # Keep legacy fields for now to aid in merging, will be dropped later.
-    "source_name": pl.Utf8,
-    "source_rank": pl.Int32,
+    "source_name": pl.Utf8,  # Legacy field for merging
+    "source_rank": pl.Int32,  # Legacy field for merging
 }
 
 
@@ -42,11 +38,11 @@ DEFAULT_VALUES = {
     "is_upcoming": False,
     "eth_eco_l2l3": False,
     "eth_eco_l2": False,
-    "is_evm": True,  # Most chains are EVM
-    "layer": "L1",  # Default to L1 if not specified
+    "is_evm": True,
+    "layer": "L1",
     "provider": None,
     "provider_entity": None,
-    "provider_entity_w_superchain": "Other",  # Keep as "Other" to match BQ pattern
+    "provider_entity_w_superchain": "Other",
     "alignment": None,
     "gas_token": "ETH",
     "da_layer": "Ethereum",
@@ -57,15 +53,12 @@ DEFAULT_VALUES = {
 
 
 def generate_chain_key(source_field: str) -> pl.Expr:
-    """
-    Generate a consistent chain_key from a source field.
-
-    Args:
-        source_field: The name of the column to use for generating the chain_key
-
-    Returns:
-        A Polars expression that generates a normalized chain_key
-    """
+    """Generate a normalized chain key from source field."""
     return (
-        pl.col(source_field).str.to_lowercase().str.replace_all(r"[^a-z0-9]", "").alias("chain_key")
+        pl.col(source_field)
+        .str.to_lowercase()
+        .str.replace_all(r"[^a-z0-9]", "_", literal=False)
+        .str.replace_all(r"_+", "_", literal=False)
+        .str.strip_chars("_")
+        .alias("chain_key")
     )

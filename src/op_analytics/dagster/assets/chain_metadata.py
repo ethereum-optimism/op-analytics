@@ -6,7 +6,10 @@ import polars as pl
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.time import now_date
-from op_analytics.datapipeline.chains.aggregator import build_all_chains_metadata
+from op_analytics.datapipeline.chains.aggregator import (
+    build_all_chains_metadata,
+    build_all_chains_metadata_from_gcs,
+)
 from op_analytics.datapipeline.chains.datasets import ChainMetadata
 from op_analytics.datapipeline.chains.ingestors import (
     ingest_with_deduplication,
@@ -47,7 +50,6 @@ def l2beat_daily(context: AssetExecutionContext, config: ChainMetadataConfig) ->
         dataset=ChainMetadata.L2BEAT,
         process_dt=process_dt,
     )
-    context.log.info(f"L2Beat: {'updated' if result else 'skipped (no changes)'}")
     return result
 
 
@@ -66,7 +68,6 @@ def defillama_daily(context: AssetExecutionContext, config: ChainMetadataConfig)
         dataset=ChainMetadata.DEFILLAMA,
         process_dt=process_dt,
     )
-    context.log.info(f"DefiLlama: {'updated' if result else 'skipped (no changes)'}")
     return result
 
 
@@ -85,7 +86,6 @@ def dune_daily(context: AssetExecutionContext, config: ChainMetadataConfig) -> b
         dataset=ChainMetadata.DUNE,
         process_dt=process_dt,
     )
-    context.log.info(f"Dune: {'updated' if result else 'skipped (no changes)'}")
     return result
 
 
@@ -100,11 +100,10 @@ def bq_op_stack_daily(context: AssetExecutionContext, config: ChainMetadataConfi
 
     result = ingest_with_deduplication(
         source_name="BQ OP Stack",
-        fetch_func=lambda: ingest_from_bq_op_stack(config.bq_project_id, config.bq_dataset_id),
+        fetch_func=ingest_from_bq_op_stack,
         dataset=ChainMetadata.BQ_OP_STACK,
         process_dt=process_dt,
     )
-    context.log.info(f"BQ OP Stack: {'updated' if result else 'skipped (no changes)'}")
     return result
 
 
@@ -119,11 +118,10 @@ def bq_goldsky_daily(context: AssetExecutionContext, config: ChainMetadataConfig
 
     result = ingest_with_deduplication(
         source_name="BQ Goldsky",
-        fetch_func=lambda: ingest_from_bq_goldsky(config.bq_project_id, config.bq_dataset_id),
+        fetch_func=ingest_from_bq_goldsky,
         dataset=ChainMetadata.BQ_GOLDSKY,
         process_dt=process_dt,
     )
-    context.log.info(f"BQ Goldsky: {'updated' if result else 'skipped (no changes)'}")
     return result
 
 
@@ -142,32 +140,17 @@ def aggregated_daily(
     bq_goldsky_daily: bool,
 ) -> pl.DataFrame:
     """Aggregate all chain metadata sources into final dataset."""
-    context.log.info("Starting daily chain metadata aggregation")
+    process_dt = date.fromisoformat(config.process_date) if config.process_date else now_date()
 
-    updates = {
-        "L2Beat": l2beat_daily,
-        "DefiLlama": defillama_daily,
-        "Dune": dune_daily,
-        "BQ OP Stack": bq_op_stack_daily,
-        "BQ Goldsky": bq_goldsky_daily,
-    }
-
-    updated = [name for name, status in updates.items() if status]
-    skipped = [name for name, status in updates.items() if not status]
-
-    context.log.info(f"Updated: {updated}, Skipped: {skipped}")
-
-    result_df = build_all_chains_metadata(
+    result_df = build_all_chains_metadata_from_gcs(
         output_bq_table=config.output_bq_table,
         manual_mappings_filepath="resources/manual_chain_mappings.csv",
-        bq_project_id=config.bq_project_id,
-        bq_dataset_id=config.bq_dataset_id,
-        csv_path="",
+        process_dt=process_dt,
     )
 
-    process_dt = date.fromisoformat(config.process_date) if config.process_date else now_date()
-    df_with_date = result_df.with_columns(pl.lit(process_dt).alias("dt"))
-    ChainMetadata.AGGREGATED.write(df_with_date, sort_by=["chain_key"])
+    if result_df.height > 0:
+        df_with_date = result_df.with_columns(pl.lit(process_dt).alias("dt"))
+        ChainMetadata.AGGREGATED.write(df_with_date, sort_by=["chain_key"])
 
     context.log.info(f"Aggregated {result_df.height} records to {config.output_bq_table}")
     return result_df
@@ -178,7 +161,7 @@ def all_chains_metadata_asset(
     context: AssetExecutionContext, config: ChainMetadataConfig
 ) -> pl.DataFrame:
     """Legacy asset that aggregates chain metadata from multiple sources."""
-    result_df: pl.DataFrame = build_all_chains_metadata(
+    result_df = build_all_chains_metadata(
         output_bq_table=config.output_bq_table,
         manual_mappings_filepath="resources/manual_chain_mappings.csv",
         bq_project_id=config.bq_project_id,
