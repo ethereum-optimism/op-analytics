@@ -119,7 +119,7 @@ class TestDailyAddressSummary001(ModelTestBase):
         assert self._duckdb_context is not None
 
         # Transaction that is relevant for this test:
-        # https://optimistic.etherscan.io/tx/0x2ab7a335f3ecc0236ac9fc0c4832f4500d299ee40abf99e5609fa16309f82763
+        # https://explorer.optimism.io/tx/0x2ab7a335f3ecc0236ac9fc0c4832f4500d299ee40abf99e5609fa16309f82763
 
         actual = (
             self._duckdb_context.client.sql(f"""
@@ -217,8 +217,8 @@ class TestDailyAddressSummary001(ModelTestBase):
         assert self._duckdb_context is not None
 
         # Transactions that are relevant for this test:
-        # https://optimistic.etherscan.io/tx/0x0c8c81cc9a97f4d66f4f78ef2bbb5a64c23358db2c4ba6ad35e338f2d2fa3535
-        # https://optimistic.etherscan.io/tx/0x8aa91fc3fb1c11cd4aba16130697a1fa52fd74ae7ee9f23627b6b8b42fec0a34
+        # https://explorer.optimism.io/tx/0x0c8c81cc9a97f4d66f4f78ef2bbb5a64c23358db2c4ba6ad35e338f2d2fa3535
+        # https://explorer.optimism.io/tx/0x8aa91fc3fb1c11cd4aba16130697a1fa52fd74ae7ee9f23627b6b8b42fec0a34
 
         actual = (
             self._duckdb_context.client.sql(f"""
