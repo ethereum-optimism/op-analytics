@@ -12,13 +12,17 @@ from op_analytics.datapipeline.chains.mapping_utils import (
     apply_mapping_rules,
     load_manual_mappings,
 )
+from op_analytics.coreutils.partitioned.dailydatawrite import determine_location
+from op_analytics.datapipeline.chains import ingestors
 
 log = structlog.get_logger()
 
 
 def _read_latest_from_gcs(process_dt: date) -> list[pl.DataFrame]:
-    """Read latest data from all GCS partitioned sources."""
+    """Read latest data from all partitioned sources."""
+
     date_str = process_dt.strftime("%Y-%m-%d")
+    location = determine_location()  # Use the same location as writes
 
     sources = [
         (ChainMetadata.L2BEAT, "L2Beat"),
@@ -32,14 +36,12 @@ def _read_latest_from_gcs(process_dt: date) -> list[pl.DataFrame]:
 
     for dataset, name in sources:
         try:
-            df = dataset.read_polars(min_date=date_str, max_date=date_str)
-            if df.height > 0:
-                log.info(f"Read {df.height} records from {name} GCS partition")
-                dataframes.append(df)
-            else:
-                log.warning(f"No data found for {name} on {date_str}")
+            # Use only min_date for single date to avoid min_date=max_date issue
+            df = dataset.read_polars(min_date=date_str, location=location)
+            log.info(f"Read {df.height} records from {name} partition")
+            dataframes.append(df)
         except Exception as e:
-            log.error(f"Failed to read {name} from GCS: {e}")
+            log.error(f"Failed to read {name} from partitioned storage: {e}")
             continue
 
     return dataframes
@@ -84,8 +86,6 @@ def build_all_chains_metadata(
     log.warning(
         "Using legacy aggregator - consider migrating to build_all_chains_metadata_from_gcs()"
     )
-
-    from op_analytics.datapipeline.chains import ingestors
 
     ingestor_configs = [
         ("L2Beat", ingestors.ingest_from_l2beat),
