@@ -116,6 +116,7 @@ class InsertTask:
             **result,
         )
 
+        # TODO: read rows and write rows may not be equal by definition and cant be used for identifying success
         if insert_result.written_rows > insert_result.read_rows:
             raise Exception(
                 f"chain={self.batch.chain}, dt={self.batch.dt} loading into clickhouse should not result in more rows"
