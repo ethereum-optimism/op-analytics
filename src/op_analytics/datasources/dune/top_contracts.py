@@ -80,8 +80,23 @@ class DuneTopContractsSummary:
                 .cast(pl.Utf8)
                 .alias("dt")
             )
+            .with_columns(
+                [
+                    pl.col("chain_id").cast(pl.Int64),
+                    pl.col("num_txs").cast(pl.Int64),
+                    pl.col("raw_gas_used").cast(pl.Int64),
+                ]
+            )
             .drop("block_date")
         )
+
+        # Get the column names from the schema, we don't need to worry about missing columns
+        # as schema validation will catch that later
+        schema_columns = list(TOP_CONTRACTS_SCHEMA.keys())
+
+        # Reorder columns that exist in the dataframe according to schema order
+        existing_columns = [col for col in schema_columns if col in df.columns]
+        df = df.select(existing_columns)
 
         return DuneTopContractsSummary(df=df)
 
