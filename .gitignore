@@ -34,6 +34,10 @@ Pipfile.lock
 # Coverage
 .coverage
 
+# Wallet balance inputs and outputs
+src/op_analytics/datasources/walletbalances/inputs/
+src/op_analytics/datasources/walletbalances/outputs/
+
 # GSheets locations
 .gsheets.json
 
