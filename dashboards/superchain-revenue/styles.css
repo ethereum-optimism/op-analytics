@@ -1,0 +1,437 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-background: #000000;
+    --color-surface: #111111;
+    --color-surface-light: #1a1a1a;
+    --color-border: #333333;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #cccccc;
+    --color-text-muted: #888888;
+    --color-accent: #ff0420;
+    --color-accent-hover: #e6031c;
+    --color-success: #00d395;
+    --color-warning: #ffb800;
+    --color-error: #ff4757;
+    --color-optimism-red: #ff0420;
+    --color-optimism-blue: #0090ff;
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --border-radius: 8px;
+    --shadow: 0 4px 16px rgba(255, 4, 32, 0.1);
+    --transition: all 0.2s ease-in-out;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-light) 100%);
+    border-bottom: 1px solid var(--color-border);
+    padding: 24px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.header-content {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.header-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--color-optimism-red) 0%, var(--color-optimism-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.header-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    font-weight: 400;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.time-toggle {
+    display: flex;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.toggle-btn {
+    padding: 12px 24px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.toggle-btn:hover {
+    background: var(--color-surface-light);
+    color: var(--color-text-primary);
+}
+
+.toggle-btn.active {
+    background: var(--color-accent);
+    color: white;
+}
+
+.revshare-link {
+    color: var(--color-optimism-blue);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 12px 24px;
+    border: 1px solid var(--color-optimism-blue);
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.revshare-link:hover {
+    background: var(--color-optimism-blue);
+    color: white;
+}
+
+/* Metrics Section */
+.metrics-section {
+    padding: 48px 0;
+    background: var(--color-surface);
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.metric-card {
+    background: var(--color-surface-light);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-optimism-red), var(--color-optimism-blue));
+}
+
+.metric-value {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--color-text-primary);
+}
+
+.metric-label {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.metric-subtitle {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+/* Chart Section */
+.chart-section {
+    padding: 48px 0;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 32px;
+    text-align: center;
+    color: var(--color-text-primary);
+}
+
+.chart-container {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    height: 400px;
+    position: relative;
+}
+
+/* Table Section */
+.table-section {
+    padding: 48px 0;
+    background: var(--color-surface);
+}
+
+.table-container {
+    background: var(--color-surface-light);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+.financial-table,
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.financial-table th,
+.financial-table td,
+.transactions-table th,
+.transactions-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.financial-table th,
+.transactions-table th {
+    background: var(--color-surface);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    position: sticky;
+    top: 0;
+}
+
+.financial-table td,
+.transactions-table td {
+    color: var(--color-text-secondary);
+}
+
+.financial-table tr:hover,
+.transactions-table tr:hover {
+    background: var(--color-surface);
+}
+
+/* Logo Section */
+.logos-section {
+    padding: 48px 0;
+}
+
+.logos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.chain-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    margin: 0 auto;
+    position: relative;
+}
+
+.chain-logo:hover {
+    border-color: var(--color-accent);
+    transform: scale(1.05);
+    box-shadow: var(--shadow);
+}
+
+.chain-logo-text {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+/* Transactions Section */
+.transactions-section {
+    padding: 48px 0;
+}
+
+.tx-hash-link {
+    color: var(--color-optimism-blue);
+    text-decoration: none;
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+.tx-hash-link:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding: 24px 0;
+    text-align: center;
+    color: var(--color-text-muted);
+}
+
+/* Loading */
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-border);
+    border-top: 3px solid var(--color-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading p {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    background: var(--color-surface-light);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 12px;
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s;
+    max-width: 250px;
+    line-height: 1.4;
+}
+
+.tooltip.visible {
+    opacity: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+    
+    .header-title {
+        font-size: 2rem;
+    }
+    
+    .metric-value {
+        font-size: 2.5rem;
+    }
+    
+    .controls {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .logos-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .chain-logo {
+        width: 60px;
+        height: 60px;
+        font-size: 1.2rem;
+    }
+}
+
+/* Chart.js Custom Styles */
+canvas {
+    background: transparent !important;
+}
+
+/* Utility Classes */
+.text-success {
+    color: var(--color-success);
+}
+
+.text-warning {
+    color: var(--color-warning);
+}
+
+.text-error {
+    color: var(--color-error);
+}
+
+.hidden {
+    display: none;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}

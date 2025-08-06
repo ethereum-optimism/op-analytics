@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superchain Revenue Dashboard | Optimism Collective</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="config.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="header-title">Superchain Revenue Dashboard</h1>
+                <p class="header-subtitle">Real-time revenue sharing data across the Optimism Collective</p>
+            </div>
+            <div class="controls">
+                <div class="time-toggle">
+                    <button id="monthly-btn" class="toggle-btn active">Latest Month</button>
+                    <button id="quarterly-btn" class="toggle-btn">Latest Quarter</button>
+                </div>
+                <a href="https://github.com/ethereum-optimism/op-analytics" target="_blank" class="revshare-link">
+                    See Revshare Rules
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- High-Level Metrics -->
+    <section class="metrics-section">
+        <div class="container">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="monthly-earnings">--</div>
+                    <div class="metric-label">Monthly Optimism Earnings</div>
+                    <div class="metric-subtitle" id="earnings-subtitle">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="market-share">--</div>
+                    <div class="metric-label">Share of L2 Transaction Fees</div>
+                    <div class="metric-subtitle" id="market-share-subtitle">--</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Monthly Earnings Chart -->
+    <section class="chart-section">
+        <div class="container">
+            <h2 class="section-title">Monthly Earnings by Chain</h2>
+            <div class="chart-container">
+                <canvas id="earnings-chart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Financial Statement Table -->
+    <section class="table-section">
+        <div class="container">
+            <h2 class="section-title">Financial Statement</h2>
+            <div class="table-container">
+                <table id="financial-table" class="financial-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <!-- Months will be added dynamically -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>L2 Fees</td>
+                            <!-- Values will be added dynamically -->
+                        </tr>
+                        <tr>
+                            <td>L1 Costs</td>
+                            <!-- Values will be added dynamically -->
+                        </tr>
+                        <tr>
+                            <td>Net Onchain Profit</td>
+                            <!-- Values will be added dynamically -->
+                        </tr>
+                        <tr>
+                            <td>Chain Governor Profit</td>
+                            <!-- Values will be added dynamically -->
+                        </tr>
+                        <tr>
+                            <td>Revshare to Optimism</td>
+                            <!-- Values will be added dynamically -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chain Logo Bubbles -->
+    <section class="logos-section">
+        <div class="container">
+            <h2 class="section-title">Chain Performance</h2>
+            <div class="logos-grid" id="chain-logos">
+                <!-- Chain logos will be added dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Transactions Log -->
+    <section class="transactions-section">
+        <div class="container">
+            <h2 class="section-title">Revenue Transfer Transactions</h2>
+            <div class="table-container">
+                <table id="transactions-table" class="transactions-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Chain</th>
+                            <th>Transaction Hash</th>
+                            <th>Value (ETH)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Transactions will be added dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Optimism Collective. Built with love for the Superchain.</p>
+        </div>
+    </footer>
+
+    <!-- Loading Indicator -->
+    <div id="loading" class="loading">
+        <div class="loading-spinner"></div>
+        <p>Loading dashboard data...</p>
+    </div>
+
+    <!-- Tooltip -->
+    <div id="tooltip" class="tooltip"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
