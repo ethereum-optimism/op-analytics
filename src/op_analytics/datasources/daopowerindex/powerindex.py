@@ -66,6 +66,10 @@ def construct_snapshots_df(results) -> pl.DataFrame:
 
     snapshots_df = pl.DataFrame(snapshots)
 
+    snapshots_df = snapshots_df.with_columns(
+        pl.col("cpi_value").cast(pl.Float64)
+    )
+
     raise_for_schema_mismatch(
         actual_schema=snapshots_df.schema,
         expected_schema=pl.Schema(SNAPSHOT_SCHEMA),
@@ -110,6 +114,10 @@ def construct_council_percentages_df(results) -> pl.DataFrame:
             council_percentages.append(council_data)
 
     council_percentages_df = pl.DataFrame(council_percentages)
+
+    council_percentages_df = council_percentages_df.with_columns(
+        pl.col("redistributed_percentage").cast(pl.Float64)
+    )
 
     raise_for_schema_mismatch(
         actual_schema=council_percentages_df.schema,
