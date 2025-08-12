@@ -33,6 +33,7 @@ dependencies = [
     "sugar",
     "dune-spice>=0.2.6",
     "cloud-sql-python-connector[pg8000]>=1.18.1",
+    "notebook>=7.4.5",
 ]
 
 

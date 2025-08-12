@@ -206,8 +206,8 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
                     "chain_name": chain_name,
                     "chain_id": chain_id,
                     "amount": asset["amount"],
-                    "usd_value": float(asset["usdValue"]) if "usdValue" in asset else None,
-                    "usd_price": float(asset["usdPrice"]) if "usdPrice" in asset else None,
+                    "usd_value": float(asset["value"]) if "value" in asset else None,
+                    "usd_price": float(asset["value"]) / float(asset["amount"]) if "value" in asset and "amount" in asset and asset["amount"] > 0 else None,
                     "is_gas_token": asset.get("isGasToken"),
                     "token_address": token_address,
                     "escrow_address": escrow_address,
@@ -246,6 +246,8 @@ def clean_dataframe(rows: list[dict[str, Any]]) -> pl.DataFrame:
                 "usd_price": pl.Float64,
                 "is_shared_escrow": pl.Boolean,
                 "supply": pl.String,
+                "escrow_url": pl.String,
+                "escrow_name": pl.String,
             },
         )
         .select(_[0] for _ in TVS_BREAKDOWN_SCHEMA)
