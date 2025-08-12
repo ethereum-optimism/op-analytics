@@ -26,14 +26,14 @@ def test_parse_tvs_funki():
                         "assetId": "ethereum-0x9F52c8ecbEe10e00D9faaAc5Ee9Ba0fF6550F511",
                         "chain": {"name": "ethereum", "id": 1},
                         "amount": 9419186.975963663,
-                        "value": 416047.46675758,
+                        "valueForProject": 416047.46675758,
                         "usdPrice": "0.04417021",
                         "isGasToken": False,
                         "tokenAddress": "0x9F52c8ecbEe10e00D9faaAc5Ee9Ba0fF6550F511",
                         "escrows": [
                             {
                                 "amount": 9419186.975963663,
-                                "value": 416047.46675758,
+                                "valueForProject": 416047.46675758,
                                 "escrowAddress": "0xA2C1C1A473250094a6244F2bcf6Cb51F670Ad3aC",
                                 "name": "L1StandardBridge",
                                 "isSharedEscrow": False,
@@ -50,13 +50,13 @@ def test_parse_tvs_funki():
                         "assetId": "ethereum-native",
                         "chain": {"name": "ethereum", "id": 1},
                         "amount": 72.52974917119296,
-                        "value": 111459.32322348957,
+                        "valueForProject": 111459.32322348957,
                         "usdPrice": "1536.7394",
                         "isGasToken": True,
                         "escrows": [
                             {
                                 "amount": 72.52974917119296,
-                                "value": 111459.32322348957,
+                                "valueForProject": 111459.32322348957,
                                 "escrowAddress": "0x5C9C7f98eD153a2deAA981eB5C97B31744AccF22",
                                 "name": "OptimismPortal",
                                 "isSharedEscrow": False,
@@ -72,14 +72,14 @@ def test_parse_tvs_funki():
                         "assetId": "ethereum-0xdAC17F958D2ee523a2206206994597C13D831ec7",
                         "chain": {"name": "ethereum", "id": 1},
                         "amount": 47.307409,
-                        "value": 47.2901843723831,
+                        "valueForProject": 47.2901843723831,
                         "usdPrice": "0.9996359",
                         "isGasToken": False,
                         "tokenAddress": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
                         "escrows": [
                             {
                                 "amount": 47.307409,
-                                "value": 47.2901843723831,
+                                "valueForProject": 47.2901843723831,
                                 "escrowAddress": "0xA2C1C1A473250094a6244F2bcf6Cb51F670Ad3aC",
                                 "name": "L1StandardBridge",
                                 "isSharedEscrow": False,
@@ -96,14 +96,14 @@ def test_parse_tvs_funki():
                         "assetId": "ethereum-0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
                         "chain": {"name": "ethereum", "id": 1},
                         "amount": 19.1,
-                        "value": 19.098713615,
+                        "valueForProject": 19.098713615,
                         "usdPrice": "0.99993265",
                         "isGasToken": False,
                         "tokenAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
                         "escrows": [
                             {
                                 "amount": 19.1,
-                                "value": 19.098713615,
+                                "valueForProject": 19.098713615,
                                 "escrowAddress": "0xA2C1C1A473250094a6244F2bcf6Cb51F670Ad3aC",
                                 "name": "L1StandardBridge",
                                 "isSharedEscrow": False,
@@ -238,7 +238,7 @@ def test_parse_tvs_zkfair():
                         "assetId": "ethereum-0xe4815AE53B124e7263F08dcDBBB757d41Ed658c6",
                         "chain": {"name": "ethereum", "id": 1},
                         "amount": 11547.4375,
-                        "value": 29.096637164725003,
+                        "valueForProject": 29.096637164725003,
                         "usdPrice": "0.0025197484",
                         "tokenAddress": "0xe4815AE53B124e7263F08dcDBBB757d41Ed658c6",
                         "escrows": [
@@ -263,7 +263,7 @@ def test_parse_tvs_zkfair():
                         "assetId": "zkfair-0x1cD3E2A23C45A690a18Ed93FD1412543f464158F",
                         "chain": {"name": "zkfair", "id": 42766},
                         "amount": 9886400000,
-                        "value": 832179.2176959999,
+                        "valueForProject": 832179.2176959999,
                         "usdPrice": "0.00008417414",
                         "tokenAddress": "0x1cD3E2A23C45A690a18Ed93FD1412543f464158F",
                         "iconUrl": "https://assets.coingecko.com/coins/images/34288/large/r8A3J3kf_400x400.jpg?1704455147",
@@ -364,7 +364,7 @@ def test_parse_tvs_zkfair_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x9cb4706e20A18E59a48ffa7616d700A3891e1861",
                         },
-                        "value": 18.08,
+                        "valueForProject": 18.08,
                         "escrow": {
                             "address": "0x9cb4706e20A18E59a48ffa7616d700A3891e1861",
                             "url": "https://etherscan.io/address/0x9cb4706e20A18E59a48ffa7616d700A3891e1861",
@@ -397,7 +397,7 @@ def test_parse_tvs_zkfair_with_updated_l2beat_json():
                             "address": "0x1cD3E2A23C45A690a18Ed93FD1412543f464158F",
                             "chain": "zkfair",
                         },
-                        "value": 538376.7,
+                        "valueForProject": 538376.7,
                     }
                 ],
             },
@@ -500,7 +500,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 202157200,
+                        "valueForProject": 202157200,
                         "isGasToken": True,
                         "escrow": "multiple",
                     },
@@ -527,7 +527,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
-                        "value": 33032418,
+                        "valueForProject": 33032418,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
@@ -558,7 +558,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
-                        "value": 7810013,
+                        "valueForProject": 7810013,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
@@ -589,7 +589,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
-                        "value": 4359694.5,
+                        "valueForProject": 4359694.5,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
@@ -620,7 +620,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 6,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
-                        "value": 2828759.5,
+                        "valueForProject": 2828759.5,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
@@ -651,7 +651,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
-                        "value": 45384.84,
+                        "valueForProject": 45384.84,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
@@ -682,7 +682,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
-                        "value": 32391.03,
+                        "valueForProject": 32391.03,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
@@ -713,7 +713,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
-                        "value": 214.89,
+                        "valueForProject": 214.89,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
@@ -744,7 +744,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
-                        "value": 0.86,
+                        "valueForProject": 0.86,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
@@ -777,7 +777,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x755610f5Be536Ad7afBAa7c10F3E938Ea3aa1877",
                         },
-                        "value": 72045040,
+                        "valueForProject": 72045040,
                         "isGasToken": False,
                     },
                     {
@@ -802,7 +802,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "address": "0x9151434b16b9763660705744891fA906F660EcC5",
                             "decimals": 6,
                         },
-                        "value": 40958648,
+                        "valueForProject": 40958648,
                         "isGasToken": False,
                     },
                     {
@@ -827,7 +827,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "address": "0x7DCC39B4d1C53CB31e1aBc0e358b43987FEF80f7",
                             "decimals": 18,
                         },
-                        "value": 28887326,
+                        "valueForProject": 28887326,
                         "isGasToken": False,
                     },
                     {
@@ -852,7 +852,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "address": "0xc3eACf0612346366Db554C991D7858716db09f58",
                             "decimals": 18,
                         },
-                        "value": 16919968,
+                        "valueForProject": 16919968,
                         "isGasToken": False,
                     },
                     {
@@ -877,7 +877,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "address": "0x2416092f143378750bb29b79eD961ab195CcEea5",
                             "decimals": 18,
                         },
-                        "value": 15048706,
+                        "valueForProject": 15048706,
                         "isGasToken": False,
                     },
                 ],
@@ -904,7 +904,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "address": "0x078D782b760474a361dDA0AF3839290b0EF57AD6",
                             "decimals": 6,
                         },
-                        "value": 127459496,
+                        "valueForProject": 127459496,
                         "isGasToken": False,
                     }
                 ],
@@ -1352,7 +1352,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1788038500,
+                        "valueForProject": 1788038500,
                         "isGasToken": True,
                         "escrow": "multiple",
                     },
@@ -1379,7 +1379,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 773116740,
+                        "valueForProject": 773116740,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1410,7 +1410,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 220779490,
+                        "valueForProject": 220779490,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1441,7 +1441,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 209429140,
+                        "valueForProject": 209429140,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1472,7 +1472,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 173353090,
+                        "valueForProject": 173353090,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1503,7 +1503,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 102710864,
+                        "valueForProject": 102710864,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1534,7 +1534,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 57941228,
+                        "valueForProject": 57941228,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1565,7 +1565,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 57300792,
+                        "valueForProject": 57300792,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1596,7 +1596,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 45621812,
+                        "valueForProject": 45621812,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1627,7 +1627,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 34346032,
+                        "valueForProject": 34346032,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1658,7 +1658,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 20634558,
+                        "valueForProject": 20634558,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1689,7 +1689,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 19480644,
+                        "valueForProject": 19480644,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1720,7 +1720,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 13489163,
+                        "valueForProject": 13489163,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1751,7 +1751,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 12692178,
+                        "valueForProject": 12692178,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1782,7 +1782,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 11494325,
+                        "valueForProject": 11494325,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1813,7 +1813,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 8840619,
+                        "valueForProject": 8840619,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1844,7 +1844,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 7442726,
+                        "valueForProject": 7442726,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1889,7 +1889,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 4350566.5,
+                        "valueForProject": 4350566.5,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1920,7 +1920,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 4333965,
+                        "valueForProject": 4333965,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1951,7 +1951,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 3370164.2,
+                        "valueForProject": 3370164.2,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -1996,7 +1996,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 2967255.2,
+                        "valueForProject": 2967255.2,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2027,7 +2027,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 2778393.8,
+                        "valueForProject": 2778393.8,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2058,7 +2058,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1990790,
+                        "valueForProject": 1990790,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2089,7 +2089,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1845832.1,
+                        "valueForProject": 1845832.1,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2120,7 +2120,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1657441.1,
+                        "valueForProject": 1657441.1,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2151,7 +2151,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1283453.5,
+                        "valueForProject": 1283453.5,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2182,7 +2182,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1231229.4,
+                        "valueForProject": 1231229.4,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2213,7 +2213,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1223188.8,
+                        "valueForProject": 1223188.8,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2244,7 +2244,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 2,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1115545,
+                        "valueForProject": 1115545,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2275,7 +2275,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1025710.8,
+                        "valueForProject": 1025710.8,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2306,7 +2306,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 959550.75,
+                        "valueForProject": 959550.75,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2337,7 +2337,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 648560.2,
+                        "valueForProject": 648560.2,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2368,7 +2368,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 619619.56,
+                        "valueForProject": 619619.56,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2399,7 +2399,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 557915.1,
+                        "valueForProject": 557915.1,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2430,7 +2430,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 547165.44,
+                        "valueForProject": 547165.44,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2461,7 +2461,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 500819.06,
+                        "valueForProject": 500819.06,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2492,7 +2492,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 431593.6,
+                        "valueForProject": 431593.6,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2523,7 +2523,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 364431.97,
+                        "valueForProject": 364431.97,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2554,7 +2554,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 361644,
+                        "valueForProject": 361644,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2585,7 +2585,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 346828.6,
+                        "valueForProject": 346828.6,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2616,7 +2616,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 292079.8,
+                        "valueForProject": 292079.8,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2647,7 +2647,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 284831.1,
+                        "valueForProject": 284831.1,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2678,7 +2678,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 260204.1,
+                        "valueForProject": 260204.1,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2709,7 +2709,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 232078.61,
+                        "valueForProject": 232078.61,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2740,7 +2740,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 215764.6,
+                        "valueForProject": 215764.6,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2771,7 +2771,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 212086.6,
+                        "valueForProject": 212086.6,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2802,7 +2802,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 211065.45,
+                        "valueForProject": 211065.45,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2833,7 +2833,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 205849.31,
+                        "valueForProject": 205849.31,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2864,7 +2864,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 191383.38,
+                        "valueForProject": 191383.38,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2895,7 +2895,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 189995.83,
+                        "valueForProject": 189995.83,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2926,7 +2926,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 169773.34,
+                        "valueForProject": 169773.34,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2957,7 +2957,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 168846.16,
+                        "valueForProject": 168846.16,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -2988,7 +2988,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 162155.16,
+                        "valueForProject": 162155.16,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3019,7 +3019,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 147158.05,
+                        "valueForProject": 147158.05,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3050,7 +3050,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 144143.81,
+                        "valueForProject": 144143.81,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3081,7 +3081,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 140791.4,
+                        "valueForProject": 140791.4,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3112,7 +3112,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 139989.39,
+                        "valueForProject": 139989.39,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3143,7 +3143,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 129962.82,
+                        "valueForProject": 129962.82,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3174,7 +3174,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 129890.65,
+                        "valueForProject": 129890.65,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3205,7 +3205,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 109429.85,
+                        "valueForProject": 109429.85,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3236,7 +3236,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 104836.91,
+                        "valueForProject": 104836.91,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3267,7 +3267,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 100464.05,
+                        "valueForProject": 100464.05,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3298,7 +3298,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 92576.11,
+                        "valueForProject": 92576.11,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3329,7 +3329,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 81772.02,
+                        "valueForProject": 81772.02,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3360,7 +3360,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 80183.62,
+                        "valueForProject": 80183.62,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3391,7 +3391,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 70828.01,
+                        "valueForProject": 70828.01,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3422,7 +3422,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 70008.63,
+                        "valueForProject": 70008.63,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3453,7 +3453,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 60853.58,
+                        "valueForProject": 60853.58,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3484,7 +3484,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 60784.95,
+                        "valueForProject": 60784.95,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3515,7 +3515,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 59822.68,
+                        "valueForProject": 59822.68,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3546,7 +3546,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 48373.77,
+                        "valueForProject": 48373.77,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3577,7 +3577,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 45164.06,
+                        "valueForProject": 45164.06,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3608,7 +3608,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 43988.1,
+                        "valueForProject": 43988.1,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3639,7 +3639,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 41293.76,
+                        "valueForProject": 41293.76,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3670,7 +3670,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 40161.45,
+                        "valueForProject": 40161.45,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3701,7 +3701,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 36882.95,
+                        "valueForProject": 36882.95,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3732,7 +3732,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 36287.28,
+                        "valueForProject": 36287.28,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3763,7 +3763,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 35321.88,
+                        "valueForProject": 35321.88,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3794,7 +3794,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 34605.3,
+                        "valueForProject": 34605.3,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3825,7 +3825,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 34129.46,
+                        "valueForProject": 34129.46,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3856,7 +3856,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 33165.02,
+                        "valueForProject": 33165.02,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3887,7 +3887,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 29578.06,
+                        "valueForProject": 29578.06,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3918,7 +3918,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 28702.12,
+                        "valueForProject": 28702.12,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3949,7 +3949,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 28150.2,
+                        "valueForProject": 28150.2,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -3980,7 +3980,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 26992.58,
+                        "valueForProject": 26992.58,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4011,7 +4011,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 26504.29,
+                        "valueForProject": 26504.29,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4042,7 +4042,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 23418.71,
+                        "valueForProject": 23418.71,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4073,7 +4073,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 23348.46,
+                        "valueForProject": 23348.46,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4104,7 +4104,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 19279.15,
+                        "valueForProject": 19279.15,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4135,7 +4135,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 18586.7,
+                        "valueForProject": 18586.7,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4166,7 +4166,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 17162.68,
+                        "valueForProject": 17162.68,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4197,7 +4197,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 16729.3,
+                        "valueForProject": 16729.3,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4228,7 +4228,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 16578.12,
+                        "valueForProject": 16578.12,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4259,7 +4259,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 16013.3,
+                        "valueForProject": 16013.3,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4290,7 +4290,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 2,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 15998.7,
+                        "valueForProject": 15998.7,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4321,7 +4321,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 14179.56,
+                        "valueForProject": 14179.56,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4352,7 +4352,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 13244.93,
+                        "valueForProject": 13244.93,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4383,7 +4383,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 11136.29,
+                        "valueForProject": 11136.29,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4414,7 +4414,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 9967.76,
+                        "valueForProject": 9967.76,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4445,7 +4445,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 8804.99,
+                        "valueForProject": 8804.99,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4476,7 +4476,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 8412.72,
+                        "valueForProject": 8412.72,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4507,7 +4507,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 7191.19,
+                        "valueForProject": 7191.19,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4538,7 +4538,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 6421.32,
+                        "valueForProject": 6421.32,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4569,7 +4569,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 5939.85,
+                        "valueForProject": 5939.85,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4600,7 +4600,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 5908.44,
+                        "valueForProject": 5908.44,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4631,7 +4631,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 5467.3,
+                        "valueForProject": 5467.3,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4662,7 +4662,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 5444.84,
+                        "valueForProject": 5444.84,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4704,7 +4704,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 5426.8,
+                        "valueForProject": 5426.8,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4735,7 +4735,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 9,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 5352.29,
+                        "valueForProject": 5352.29,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4766,7 +4766,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 5185.09,
+                        "valueForProject": 5185.09,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4797,7 +4797,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 4716.17,
+                        "valueForProject": 4716.17,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4828,7 +4828,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 4292.77,
+                        "valueForProject": 4292.77,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4859,7 +4859,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 4224.51,
+                        "valueForProject": 4224.51,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4890,7 +4890,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 4114.55,
+                        "valueForProject": 4114.55,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4921,7 +4921,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 3853.47,
+                        "valueForProject": 3853.47,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4952,7 +4952,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 3795.67,
+                        "valueForProject": 3795.67,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -4983,7 +4983,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 3251.54,
+                        "valueForProject": 3251.54,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5014,7 +5014,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 3202.9,
+                        "valueForProject": 3202.9,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5045,7 +5045,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 3167.79,
+                        "valueForProject": 3167.79,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5076,7 +5076,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 3057.28,
+                        "valueForProject": 3057.28,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5107,7 +5107,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 2878.17,
+                        "valueForProject": 2878.17,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5138,7 +5138,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 2849.79,
+                        "valueForProject": 2849.79,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5169,7 +5169,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 2782.99,
+                        "valueForProject": 2782.99,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5200,7 +5200,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 2753.23,
+                        "valueForProject": 2753.23,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5231,7 +5231,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 2652.43,
+                        "valueForProject": 2652.43,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5262,7 +5262,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 2381.93,
+                        "valueForProject": 2381.93,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5293,7 +5293,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 2372.13,
+                        "valueForProject": 2372.13,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5324,7 +5324,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 2148.5,
+                        "valueForProject": 2148.5,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5355,7 +5355,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 9,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1947.4,
+                        "valueForProject": 1947.4,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5386,7 +5386,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 9,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1933.5,
+                        "valueForProject": 1933.5,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5417,7 +5417,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1916.6,
+                        "valueForProject": 1916.6,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5448,7 +5448,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1884.01,
+                        "valueForProject": 1884.01,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5479,7 +5479,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1835.24,
+                        "valueForProject": 1835.24,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5510,7 +5510,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1752.98,
+                        "valueForProject": 1752.98,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5541,7 +5541,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1747.89,
+                        "valueForProject": 1747.89,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5572,7 +5572,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1411.64,
+                        "valueForProject": 1411.64,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5603,7 +5603,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1316.08,
+                        "valueForProject": 1316.08,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5634,7 +5634,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 999.57,
+                        "valueForProject": 999.57,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5665,7 +5665,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 986.27,
+                        "valueForProject": 986.27,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5696,7 +5696,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 856.61,
+                        "valueForProject": 856.61,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5727,7 +5727,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 831.04,
+                        "valueForProject": 831.04,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5758,7 +5758,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 825.23,
+                        "valueForProject": 825.23,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5789,7 +5789,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 6,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 716.47,
+                        "valueForProject": 716.47,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5820,7 +5820,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 691.64,
+                        "valueForProject": 691.64,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5851,7 +5851,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 690.96,
+                        "valueForProject": 690.96,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5882,7 +5882,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 567.79,
+                        "valueForProject": 567.79,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5913,7 +5913,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 536,
+                        "valueForProject": 536,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5944,7 +5944,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 535.11,
+                        "valueForProject": 535.11,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -5975,7 +5975,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 6,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 491.31,
+                        "valueForProject": 491.31,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6006,7 +6006,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 440.64,
+                        "valueForProject": 440.64,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6037,7 +6037,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 428.65,
+                        "valueForProject": 428.65,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6068,7 +6068,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 379.38,
+                        "valueForProject": 379.38,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6099,7 +6099,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 378.25,
+                        "valueForProject": 378.25,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6130,7 +6130,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 365.82,
+                        "valueForProject": 365.82,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6161,7 +6161,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 333.93,
+                        "valueForProject": 333.93,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6192,7 +6192,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 328.88,
+                        "valueForProject": 328.88,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6223,7 +6223,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 320.49,
+                        "valueForProject": 320.49,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6254,7 +6254,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 295.16,
+                        "valueForProject": 295.16,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6285,7 +6285,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 284.04,
+                        "valueForProject": 284.04,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6316,7 +6316,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 244.2,
+                        "valueForProject": 244.2,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6347,7 +6347,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 243.01,
+                        "valueForProject": 243.01,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6378,7 +6378,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 234.12,
+                        "valueForProject": 234.12,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6409,7 +6409,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 232.79,
+                        "valueForProject": 232.79,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6440,7 +6440,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 227.89,
+                        "valueForProject": 227.89,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6471,7 +6471,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 223.53,
+                        "valueForProject": 223.53,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6502,7 +6502,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 214.52,
+                        "valueForProject": 214.52,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6533,7 +6533,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 190.79,
+                        "valueForProject": 190.79,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6564,7 +6564,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 179.33,
+                        "valueForProject": 179.33,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6595,7 +6595,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 163.3,
+                        "valueForProject": 163.3,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6626,7 +6626,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 158.63,
+                        "valueForProject": 158.63,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6657,7 +6657,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 139.16,
+                        "valueForProject": 139.16,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6688,7 +6688,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 130.99,
+                        "valueForProject": 130.99,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6719,7 +6719,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 129.18,
+                        "valueForProject": 129.18,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6750,7 +6750,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 126.53,
+                        "valueForProject": 126.53,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6781,7 +6781,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 124.29,
+                        "valueForProject": 124.29,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6812,7 +6812,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 114.33,
+                        "valueForProject": 114.33,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6843,7 +6843,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 104.4,
+                        "valueForProject": 104.4,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6874,7 +6874,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 101.23,
+                        "valueForProject": 101.23,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6905,7 +6905,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 99.45,
+                        "valueForProject": 99.45,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6936,7 +6936,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 91.2,
+                        "valueForProject": 91.2,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6967,7 +6967,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 85.97,
+                        "valueForProject": 85.97,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -6998,7 +6998,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 84.11,
+                        "valueForProject": 84.11,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7029,7 +7029,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 82.09,
+                        "valueForProject": 82.09,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7060,7 +7060,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 79.56,
+                        "valueForProject": 79.56,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7091,7 +7091,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 75.36,
+                        "valueForProject": 75.36,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7122,7 +7122,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 72.44,
+                        "valueForProject": 72.44,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7153,7 +7153,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 68.02,
+                        "valueForProject": 68.02,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7184,7 +7184,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 65.34,
+                        "valueForProject": 65.34,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7215,7 +7215,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 63.66,
+                        "valueForProject": 63.66,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7246,7 +7246,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 61.42,
+                        "valueForProject": 61.42,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7277,7 +7277,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 4,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 60.54,
+                        "valueForProject": 60.54,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7308,7 +7308,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 54.65,
+                        "valueForProject": 54.65,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7339,7 +7339,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 41.79,
+                        "valueForProject": 41.79,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7370,7 +7370,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 36.19,
+                        "valueForProject": 36.19,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7401,7 +7401,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 33.94,
+                        "valueForProject": 33.94,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7432,7 +7432,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 6,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 33.73,
+                        "valueForProject": 33.73,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7463,7 +7463,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 33.47,
+                        "valueForProject": 33.47,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7494,7 +7494,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 31.98,
+                        "valueForProject": 31.98,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7525,7 +7525,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 30.22,
+                        "valueForProject": 30.22,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7556,7 +7556,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 25.39,
+                        "valueForProject": 25.39,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7587,7 +7587,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 24.46,
+                        "valueForProject": 24.46,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7618,7 +7618,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 23.73,
+                        "valueForProject": 23.73,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7649,7 +7649,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 22.91,
+                        "valueForProject": 22.91,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7680,7 +7680,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 22.82,
+                        "valueForProject": 22.82,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7711,7 +7711,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 22.22,
+                        "valueForProject": 22.22,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7742,7 +7742,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 19.76,
+                        "valueForProject": 19.76,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7773,7 +7773,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 13.33,
+                        "valueForProject": 13.33,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7804,7 +7804,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 13.01,
+                        "valueForProject": 13.01,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7835,7 +7835,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 12.21,
+                        "valueForProject": 12.21,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7866,7 +7866,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 11.29,
+                        "valueForProject": 11.29,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7897,7 +7897,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 10.59,
+                        "valueForProject": 10.59,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7928,7 +7928,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 9.79,
+                        "valueForProject": 9.79,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7959,7 +7959,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 9.39,
+                        "valueForProject": 9.39,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -7990,7 +7990,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 9.28,
+                        "valueForProject": 9.28,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8021,7 +8021,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 8.57,
+                        "valueForProject": 8.57,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8052,7 +8052,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 6.62,
+                        "valueForProject": 6.62,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8083,7 +8083,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 5.42,
+                        "valueForProject": 5.42,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8114,7 +8114,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 3.18,
+                        "valueForProject": 3.18,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8145,7 +8145,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 2.75,
+                        "valueForProject": 2.75,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8176,7 +8176,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 2.53,
+                        "valueForProject": 2.53,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8207,7 +8207,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1.95,
+                        "valueForProject": 1.95,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8238,7 +8238,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 6,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1.66,
+                        "valueForProject": 1.66,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8269,7 +8269,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 9,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1.07,
+                        "valueForProject": 1.07,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8300,7 +8300,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 1.01,
+                        "valueForProject": 1.01,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8331,7 +8331,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 0.95,
+                        "valueForProject": 0.95,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8362,7 +8362,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 0.63,
+                        "valueForProject": 0.63,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8393,7 +8393,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 0.24,
+                        "valueForProject": 0.24,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8424,7 +8424,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 0.12,
+                        "valueForProject": 0.12,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8455,7 +8455,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 0.06,
+                        "valueForProject": 0.06,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8486,7 +8486,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 6,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 0.04,
+                        "valueForProject": 0.04,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8517,7 +8517,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 0.02,
+                        "valueForProject": 0.02,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8548,7 +8548,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "value": 0.01,
+                        "valueForProject": 0.01,
                         "isGasToken": False,
                         "escrow": {
                             "address": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
@@ -8580,7 +8580,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
                             "decimals": 6,
                         },
-                        "value": 752891000,
+                        "valueForProject": 752891000,
                         "isGasToken": False,
                     },
                     {
@@ -8605,7 +8605,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x9623063377AD1B27544C965cCd7342f7EA7e88C7",
                             "decimals": 18,
                         },
-                        "value": 339949120,
+                        "valueForProject": 339949120,
                         "isGasToken": False,
                     },
                     {
@@ -8645,7 +8645,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 151344430,
+                        "valueForProject": 151344430,
                         "isGasToken": False,
                     },
                     {
@@ -8671,7 +8671,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 6,
                             "escrowAddress": "0xcEe284F754E854890e311e3280b767F80797180d",
                         },
-                        "value": 118094520,
+                        "valueForProject": 118094520,
                         "isGasToken": False,
                     },
                     {
@@ -8697,7 +8697,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xcEe284F754E854890e311e3280b767F80797180d",
                         },
-                        "value": 81497616,
+                        "valueForProject": 81497616,
                         "isGasToken": False,
                     },
                     {
@@ -8722,7 +8722,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xc87B37a581ec3257B734886d9d3a581F5A9d056c",
                             "decimals": 18,
                         },
-                        "value": 50946324,
+                        "valueForProject": 50946324,
                         "isGasToken": False,
                     },
                     {
@@ -8747,7 +8747,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xf8173a39c56a554837C4C7f104153A005D284D11",
                             "decimals": 18,
                         },
-                        "value": 41790780,
+                        "valueForProject": 41790780,
                         "isGasToken": False,
                     },
                     {
@@ -8787,7 +8787,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 39550572,
+                        "valueForProject": 39550572,
                         "isGasToken": False,
                     },
                     {
@@ -8813,7 +8813,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xcEe284F754E854890e311e3280b767F80797180d",
                         },
-                        "value": 27760414,
+                        "valueForProject": 27760414,
                         "isGasToken": False,
                     },
                     {
@@ -8853,7 +8853,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 21730446,
+                        "valueForProject": 21730446,
                         "isGasToken": False,
                     },
                     {
@@ -8878,7 +8878,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x2416092f143378750bb29b79eD961ab195CcEea5",
                             "decimals": 18,
                         },
-                        "value": 13473132,
+                        "valueForProject": 13473132,
                         "isGasToken": False,
                     },
                     {
@@ -8903,7 +8903,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x93FA0B88C0C78e45980Fa74cdd87469311b7B3E4",
                             "decimals": 18,
                         },
-                        "value": 12190705,
+                        "valueForProject": 12190705,
                         "isGasToken": False,
                     },
                     {
@@ -8928,7 +8928,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
                             "decimals": 9,
                         },
-                        "value": 10647225,
+                        "valueForProject": 10647225,
                         "isGasToken": False,
                     },
                     {
@@ -8953,7 +8953,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x4186BFC76E2E237523CBC30FD220FE055156b41F",
                             "decimals": 18,
                         },
-                        "value": 9007704,
+                        "valueForProject": 9007704,
                         "isGasToken": False,
                     },
                     {
@@ -8979,7 +8979,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xcEe284F754E854890e311e3280b767F80797180d",
                         },
-                        "value": 7811257.5,
+                        "valueForProject": 7811257.5,
                         "isGasToken": False,
                     },
                     {
@@ -9004,7 +9004,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x6694340fc020c5E6B96567843da2df01b2CE1eb6",
                             "decimals": 18,
                         },
-                        "value": 6537856.5,
+                        "valueForProject": 6537856.5,
                         "isGasToken": False,
                     },
                     {
@@ -9029,7 +9029,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x7189fb5B6504bbfF6a852B13B7B82a3c118fDc27",
                             "decimals": 18,
                         },
-                        "value": 5556049,
+                        "valueForProject": 5556049,
                         "isGasToken": False,
                     },
                     {
@@ -9054,7 +9054,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xa61F74247455A40b01b0559ff6274441FAfa22A3",
                             "decimals": 18,
                         },
-                        "value": 3848257,
+                        "valueForProject": 3848257,
                         "isGasToken": False,
                     },
                     {
@@ -9079,7 +9079,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
                             "decimals": 18,
                         },
-                        "value": 3212324.8,
+                        "valueForProject": 3212324.8,
                         "isGasToken": False,
                     },
                     {
@@ -9105,7 +9105,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xcEe284F754E854890e311e3280b767F80797180d",
                         },
-                        "value": 2597449.2,
+                        "valueForProject": 2597449.2,
                         "isGasToken": False,
                     },
                     {
@@ -9130,7 +9130,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x371c7ec6D8039ff7933a2AA28EB827Ffe1F52f07",
                             "decimals": 18,
                         },
-                        "value": 2327456.5,
+                        "valueForProject": 2327456.5,
                         "isGasToken": False,
                     },
                     {
@@ -9155,7 +9155,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x7dfF72693f6A4149b17e7C6314655f6A9F7c8B33",
                             "decimals": 18,
                         },
-                        "value": 2096853.5,
+                        "valueForProject": 2096853.5,
                         "isGasToken": False,
                     },
                     {
@@ -9181,7 +9181,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xcEe284F754E854890e311e3280b767F80797180d",
                         },
-                        "value": 1897842,
+                        "valueForProject": 1897842,
                         "isGasToken": False,
                     },
                     {
@@ -9207,7 +9207,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xcEe284F754E854890e311e3280b767F80797180d",
                         },
-                        "value": 1282676.1,
+                        "valueForProject": 1282676.1,
                         "isGasToken": False,
                     },
                     {
@@ -9239,12 +9239,12 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 {
                                     "type": "const",
                                     "sinceTimestamp": 1724876200,
-                                    "value": "1000000000000000000000000000",
+                                    "valueForProject": "1000000000000000000000000000",
                                     "decimals": 18,
                                 },
                             ],
                         },
-                        "value": 1175532.2,
+                        "valueForProject": 1175532.2,
                         "isGasToken": False,
                     },
                     {
@@ -9269,7 +9269,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x2297aEbD383787A160DD0d9F71508148769342E3",
                             "decimals": 8,
                         },
-                        "value": 1134607.4,
+                        "valueForProject": 1134607.4,
                         "isGasToken": False,
                     },
                     {
@@ -9294,7 +9294,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xabD587f2607542723b17f14d00d99b987C29b074",
                             "decimals": 18,
                         },
-                        "value": 1027383.25,
+                        "valueForProject": 1027383.25,
                         "isGasToken": False,
                     },
                     {
@@ -9319,7 +9319,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x99C409E5f62E4bd2AC142f17caFb6810B8F0BAAE",
                             "decimals": 18,
                         },
-                        "value": 987338.1,
+                        "valueForProject": 987338.1,
                         "isGasToken": False,
                     },
                     {
@@ -9344,7 +9344,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
                             "decimals": 18,
                         },
-                        "value": 836065.7,
+                        "valueForProject": 836065.7,
                         "isGasToken": False,
                     },
                     {
@@ -9369,7 +9369,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xD56734d7f9979dD94FAE3d67C7e928234e71cD4C",
                             "decimals": 6,
                         },
-                        "value": 661898.5,
+                        "valueForProject": 661898.5,
                         "isGasToken": False,
                     },
                     {
@@ -9395,7 +9395,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xcEe284F754E854890e311e3280b767F80797180d",
                         },
-                        "value": 642614.2,
+                        "valueForProject": 642614.2,
                         "isGasToken": False,
                     },
                     {
@@ -9420,7 +9420,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xD8724322f44E5c58D7A815F542036fb17DbbF839",
                             "decimals": 18,
                         },
-                        "value": 137293.05,
+                        "valueForProject": 137293.05,
                         "isGasToken": False,
                     },
                     {
@@ -9445,7 +9445,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x05AEa20947A9A376eF50218633BB0a5A05d40A0C",
                             "decimals": 18,
                         },
-                        "value": 18435.91,
+                        "valueForProject": 18435.91,
                         "isGasToken": False,
                     },
                     {
@@ -9470,7 +9470,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x80137510979822322193FC997d400D5A6C747bf7",
                             "decimals": 18,
                         },
-                        "value": 9780.53,
+                        "valueForProject": 9780.53,
                         "isGasToken": False,
                     },
                 ],
@@ -9497,7 +9497,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
                             "decimals": 6,
                         },
-                        "value": 3809801200,
+                        "valueForProject": 3809801200,
                         "isGasToken": False,
                     },
                     {
@@ -9523,7 +9523,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x912CE59144191C1204E64559FE8253a0e49E6548",
                             "chain": "arbitrum",
                         },
-                        "value": 1648243800,
+                        "valueForProject": 1648243800,
                         "isGasToken": False,
                     },
                     {
@@ -9549,7 +9549,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
                             "chain": "arbitrum",
                         },
-                        "value": 156450210,
+                        "valueForProject": 156450210,
                         "isGasToken": False,
                     },
                     {
@@ -9574,7 +9574,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xf3527ef8dE265eAa3716FB312c12847bFBA66Cef",
                             "decimals": 18,
                         },
-                        "value": 104615810,
+                        "valueForProject": 104615810,
                         "isGasToken": False,
                     },
                     {
@@ -9599,7 +9599,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x6985884C4392D348587B19cb9eAAf157F13271cd",
                             "decimals": 18,
                         },
-                        "value": 100321450,
+                        "valueForProject": 100321450,
                         "isGasToken": False,
                     },
                     {
@@ -9625,7 +9625,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x4Cb9a7AE498CEDcBb5EAe9f25736aE7d428C9D66",
                             "chain": "arbitrum",
                         },
-                        "value": 71655944,
+                        "valueForProject": 71655944,
                         "isGasToken": False,
                     },
                     {
@@ -9650,7 +9650,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x18c11FD286C5EC11c3b683Caa813B77f5163A122",
                             "decimals": 18,
                         },
-                        "value": 34585432,
+                        "valueForProject": 34585432,
                         "isGasToken": False,
                     },
                     {
@@ -9675,7 +9675,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x3082CC23568eA640225c2467653dB90e9250AaA0",
                             "decimals": 18,
                         },
-                        "value": 31936868,
+                        "valueForProject": 31936868,
                         "isGasToken": False,
                     },
                     {
@@ -9700,7 +9700,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x092bAaDB7DEf4C3981454dD9c0A0D7FF07bCFc86",
                             "decimals": 18,
                         },
-                        "value": 28157994,
+                        "valueForProject": 28157994,
                         "isGasToken": False,
                     },
                     {
@@ -9725,7 +9725,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x59D9356E565Ab3A36dD77763Fc0d87fEaf85508C",
                             "decimals": 18,
                         },
-                        "value": 16870366,
+                        "valueForProject": 16870366,
                         "isGasToken": False,
                     },
                     {
@@ -9750,7 +9750,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F",
                             "decimals": 18,
                         },
-                        "value": 16703602,
+                        "valueForProject": 16703602,
                         "isGasToken": False,
                     },
                     {
@@ -9776,7 +9776,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xdadeca1167fe47499e53Eb50F261103630974905",
                             "chain": "arbitrum",
                         },
-                        "value": 15219622,
+                        "valueForProject": 15219622,
                         "isGasToken": False,
                     },
                     {
@@ -9802,7 +9802,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xF18e4466F26B4cA55bbAb890b314a54976E45B17",
                             "chain": "arbitrum",
                         },
-                        "value": 10784607,
+                        "valueForProject": 10784607,
                         "isGasToken": False,
                     },
                     {
@@ -9827,7 +9827,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x178412e79c25968a32e89b11f63B33F733770c2A",
                             "decimals": 18,
                         },
-                        "value": 9448122,
+                        "valueForProject": 9448122,
                         "isGasToken": False,
                     },
                     {
@@ -9853,7 +9853,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x3d9907F9a368ad0a51Be60f7Da3b97cf940982D8",
                             "chain": "arbitrum",
                         },
-                        "value": 7531524,
+                        "valueForProject": 7531524,
                         "isGasToken": False,
                     },
                     {
@@ -9879,7 +9879,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x3404149e9EE6f17Fb41DB1Ce593ee48FBDcD9506",
                             "chain": "arbitrum",
                         },
-                        "value": 7368428.5,
+                        "valueForProject": 7368428.5,
                         "isGasToken": False,
                     },
                     {
@@ -9905,7 +9905,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x8B0E6f19Ee57089F7649A455D89D7bC6314D04e8",
                             "chain": "arbitrum",
                         },
-                        "value": 6750716,
+                        "valueForProject": 6750716,
                         "isGasToken": False,
                     },
                     {
@@ -9930,7 +9930,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
                             "decimals": 8,
                         },
-                        "value": 5807910,
+                        "valueForProject": 5807910,
                         "isGasToken": False,
                     },
                     {
@@ -9955,7 +9955,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x95aB45875cFFdba1E5f451B950bC2E42c0053f39",
                             "decimals": 18,
                         },
-                        "value": 5598060,
+                        "valueForProject": 5598060,
                         "isGasToken": False,
                     },
                     {
@@ -9980,7 +9980,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xe3b3FE7bcA19cA77Ad877A5Bebab186bEcfAD906",
                             "decimals": 18,
                         },
-                        "value": 3845135.5,
+                        "valueForProject": 3845135.5,
                         "isGasToken": False,
                     },
                     {
@@ -10006,7 +10006,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xbC4c97Fb9befaa8B41448e1dFcC5236dA543217F",
                             "chain": "arbitrum",
                         },
-                        "value": 3637484.2,
+                        "valueForProject": 3637484.2,
                         "isGasToken": False,
                     },
                     {
@@ -10032,7 +10032,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x7E7a7C916c19a45769f6BDAF91087f93c6C12F78",
                             "chain": "arbitrum",
                         },
-                        "value": 3471878,
+                        "valueForProject": 3471878,
                         "isGasToken": False,
                     },
                     {
@@ -10058,7 +10058,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xD77B108d4f6cefaa0Cae9506A934e825BEccA46E",
                             "chain": "arbitrum",
                         },
-                        "value": 3016866.8,
+                        "valueForProject": 3016866.8,
                         "isGasToken": False,
                     },
                     {
@@ -10084,7 +10084,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xaeDF7656fBB47c5B97dD529aC1D0e807E051f2dd",
                             "chain": "arbitrum",
                         },
-                        "value": 3013951.2,
+                        "valueForProject": 3013951.2,
                         "isGasToken": False,
                     },
                     {
@@ -10110,7 +10110,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x13A7DeDb7169a17bE92B0E3C7C2315B46f4772B3",
                             "chain": "arbitrum",
                         },
-                        "value": 2106170.8,
+                        "valueForProject": 2106170.8,
                         "isGasToken": False,
                     },
                     {
@@ -10135,7 +10135,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x9d2F299715D94d8A7E6F5eaa8E654E8c74a988A7",
                             "decimals": 18,
                         },
-                        "value": 1936914,
+                        "valueForProject": 1936914,
                         "isGasToken": False,
                     },
                     {
@@ -10160,7 +10160,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
                             "decimals": 18,
                         },
-                        "value": 1639803.8,
+                        "valueForProject": 1639803.8,
                         "isGasToken": False,
                     },
                     {
@@ -10186,7 +10186,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xc24A365A870821EB83Fd216c9596eDD89479d8d7",
                             "chain": "arbitrum",
                         },
-                        "value": 1377990.6,
+                        "valueForProject": 1377990.6,
                         "isGasToken": False,
                     },
                     {
@@ -10211,7 +10211,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x1B01514A2B3CdEf16fD3c680a818A0Ab97Da8a09",
                             "decimals": 18,
                         },
-                        "value": 1117711.8,
+                        "valueForProject": 1117711.8,
                         "isGasToken": False,
                     },
                     {
@@ -10237,7 +10237,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xB299751B088336E165dA313c33e3195B8c6663A6",
                             "chain": "arbitrum",
                         },
-                        "value": 804559.7,
+                        "valueForProject": 804559.7,
                         "isGasToken": False,
                     },
                     {
@@ -10263,7 +10263,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x10393c20975cF177a3513071bC110f7962CD67da",
                             "chain": "arbitrum",
                         },
-                        "value": 307228.38,
+                        "valueForProject": 307228.38,
                         "isGasToken": False,
                     },
                     {
@@ -10288,7 +10288,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x66E535e8D2ebf13F49F3D49e5c50395a97C137b1",
                             "decimals": 18,
                         },
-                        "value": 280435.72,
+                        "valueForProject": 280435.72,
                         "isGasToken": False,
                     },
                     {
@@ -10314,7 +10314,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x11F98c7E42A367DaB4f200d2fdc460fb445CE9a8",
                             "chain": "arbitrum",
                         },
-                        "value": 145288.69,
+                        "valueForProject": 145288.69,
                         "isGasToken": False,
                     },
                     {
@@ -10339,7 +10339,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x3405E88af759992937b84E58F2Fe691EF0EeA320",
                             "decimals": 18,
                         },
-                        "value": 114462.54,
+                        "valueForProject": 114462.54,
                         "isGasToken": False,
                     },
                     {
@@ -10365,7 +10365,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x088cd8f5eF3652623c22D48b1605DCfE860Cd704",
                             "chain": "arbitrum",
                         },
-                        "value": 93282.79,
+                        "valueForProject": 93282.79,
                         "isGasToken": False,
                     },
                     {
@@ -10391,7 +10391,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0xF19547f9ED24aA66b03c3a552D181Ae334FBb8DB",
                             "chain": "arbitrum",
                         },
-                        "value": 71153.16,
+                        "valueForProject": 71153.16,
                         "isGasToken": False,
                     },
                     {
@@ -10417,7 +10417,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x87AAfFdF26c6885f6010219208D5B161ec7609c0",
                             "chain": "arbitrum",
                         },
-                        "value": 7469.21,
+                        "valueForProject": 7469.21,
                         "isGasToken": False,
                     },
                     {
@@ -10443,7 +10443,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "address": "0x20547341E58fB558637FA15379C92e11F7b7F710",
                             "chain": "arbitrum",
                         },
-                        "value": 5463.53,
+                        "valueForProject": 5463.53,
                         "isGasToken": False,
                     },
                 ],
@@ -10640,7 +10640,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 808942200,
+                        "valueForProject": 808942200,
                         "escrow": "multiple",
                     },
                     {
@@ -10696,7 +10696,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 566375040,
+                        "valueForProject": 566375040,
                         "escrow": "multiple",
                     },
                     {
@@ -10752,7 +10752,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 471948380,
+                        "valueForProject": 471948380,
                         "escrow": "multiple",
                     },
                     {
@@ -10808,7 +10808,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 309963840,
+                        "valueForProject": 309963840,
                         "escrow": "multiple",
                     },
                     {
@@ -10876,7 +10876,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 275159420,
+                        "valueForProject": 275159420,
                         "escrow": "multiple",
                     },
                     {
@@ -10932,7 +10932,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 188693700,
+                        "valueForProject": 188693700,
                         "escrow": "multiple",
                     },
                     {
@@ -10988,7 +10988,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 162797970,
+                        "valueForProject": 162797970,
                         "escrow": "multiple",
                     },
                     {
@@ -11044,7 +11044,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 91933976,
+                        "valueForProject": 91933976,
                         "escrow": "multiple",
                     },
                     {
@@ -11100,7 +11100,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 66251652,
+                        "valueForProject": 66251652,
                         "escrow": "multiple",
                     },
                     {
@@ -11156,7 +11156,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 35894164,
+                        "valueForProject": 35894164,
                         "escrow": "multiple",
                     },
                     {
@@ -11212,7 +11212,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 24507578,
+                        "valueForProject": 24507578,
                         "escrow": "multiple",
                     },
                     {
@@ -11268,7 +11268,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 19501054,
+                        "valueForProject": 19501054,
                         "escrow": "multiple",
                     },
                     {
@@ -11324,7 +11324,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 19495794,
+                        "valueForProject": 19495794,
                         "escrow": "multiple",
                     },
                     {
@@ -11380,7 +11380,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 15781851,
+                        "valueForProject": 15781851,
                         "escrow": "multiple",
                     },
                     {
@@ -11450,7 +11450,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 7759480.5,
+                        "valueForProject": 7759480.5,
                         "escrow": "multiple",
                     },
                     {
@@ -11506,7 +11506,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 6751987,
+                        "valueForProject": 6751987,
                         "escrow": "multiple",
                     },
                     {
@@ -11562,7 +11562,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 6215188,
+                        "valueForProject": 6215188,
                         "escrow": "multiple",
                     },
                     {
@@ -11618,7 +11618,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 5427576,
+                        "valueForProject": 5427576,
                         "escrow": "multiple",
                     },
                     {
@@ -11674,7 +11674,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 4022029.5,
+                        "valueForProject": 4022029.5,
                         "escrow": "multiple",
                     },
                     {
@@ -11730,7 +11730,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 3289748.8,
+                        "valueForProject": 3289748.8,
                         "escrow": "multiple",
                     },
                     {
@@ -11786,7 +11786,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 2428410.8,
+                        "valueForProject": 2428410.8,
                         "escrow": "multiple",
                     },
                     {
@@ -11842,7 +11842,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 2340070.5,
+                        "valueForProject": 2340070.5,
                         "escrow": "multiple",
                     },
                     {
@@ -11898,7 +11898,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1984953.8,
+                        "valueForProject": 1984953.8,
                         "escrow": "multiple",
                     },
                     {
@@ -11954,7 +11954,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1900578.1,
+                        "valueForProject": 1900578.1,
                         "escrow": "multiple",
                     },
                     {
@@ -12010,7 +12010,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1875462.5,
+                        "valueForProject": 1875462.5,
                         "escrow": "multiple",
                     },
                     {
@@ -12066,7 +12066,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1567807.6,
+                        "valueForProject": 1567807.6,
                         "escrow": "multiple",
                     },
                     {
@@ -12122,7 +12122,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1388613.9,
+                        "valueForProject": 1388613.9,
                         "escrow": "multiple",
                     },
                     {
@@ -12178,7 +12178,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1210668.4,
+                        "valueForProject": 1210668.4,
                         "escrow": "multiple",
                     },
                     {
@@ -12234,7 +12234,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1131933,
+                        "valueForProject": 1131933,
                         "escrow": "multiple",
                     },
                     {
@@ -12290,7 +12290,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1015502.06,
+                        "valueForProject": 1015502.06,
                         "escrow": "multiple",
                     },
                     {
@@ -12346,7 +12346,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 980229.5,
+                        "valueForProject": 980229.5,
                         "escrow": "multiple",
                     },
                     {
@@ -12402,7 +12402,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 794798.7,
+                        "valueForProject": 794798.7,
                         "escrow": "multiple",
                     },
                     {
@@ -12458,7 +12458,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 699920.8,
+                        "valueForProject": 699920.8,
                         "escrow": "multiple",
                     },
                     {
@@ -12514,7 +12514,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 687795.2,
+                        "valueForProject": 687795.2,
                         "escrow": "multiple",
                     },
                     {
@@ -12570,7 +12570,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 670377.2,
+                        "valueForProject": 670377.2,
                         "escrow": "multiple",
                     },
                     {
@@ -12626,7 +12626,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 622541.6,
+                        "valueForProject": 622541.6,
                         "escrow": "multiple",
                     },
                     {
@@ -12682,7 +12682,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 602115.06,
+                        "valueForProject": 602115.06,
                         "escrow": "multiple",
                     },
                     {
@@ -12738,7 +12738,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 575163.6,
+                        "valueForProject": 575163.6,
                         "escrow": "multiple",
                     },
                     {
@@ -12794,7 +12794,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 504851.12,
+                        "valueForProject": 504851.12,
                         "escrow": "multiple",
                     },
                     {
@@ -12850,7 +12850,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 468993.22,
+                        "valueForProject": 468993.22,
                         "escrow": "multiple",
                     },
                     {
@@ -12906,7 +12906,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 354649.53,
+                        "valueForProject": 354649.53,
                         "escrow": "multiple",
                     },
                     {
@@ -12962,7 +12962,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 352851.78,
+                        "valueForProject": 352851.78,
                         "escrow": "multiple",
                     },
                     {
@@ -13018,7 +13018,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 343456.7,
+                        "valueForProject": 343456.7,
                         "escrow": "multiple",
                     },
                     {
@@ -13074,7 +13074,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 340226.88,
+                        "valueForProject": 340226.88,
                         "escrow": "multiple",
                     },
                     {
@@ -13130,7 +13130,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 311063.12,
+                        "valueForProject": 311063.12,
                         "escrow": "multiple",
                     },
                     {
@@ -13186,7 +13186,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 287291.22,
+                        "valueForProject": 287291.22,
                         "escrow": "multiple",
                     },
                     {
@@ -13242,7 +13242,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 230020.16,
+                        "valueForProject": 230020.16,
                         "escrow": "multiple",
                     },
                     {
@@ -13298,7 +13298,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 222888.81,
+                        "valueForProject": 222888.81,
                         "escrow": "multiple",
                     },
                     {
@@ -13354,7 +13354,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 222866.02,
+                        "valueForProject": 222866.02,
                         "escrow": "multiple",
                     },
                     {
@@ -13410,7 +13410,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 212492.06,
+                        "valueForProject": 212492.06,
                         "escrow": "multiple",
                     },
                     {
@@ -13466,7 +13466,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 180432.73,
+                        "valueForProject": 180432.73,
                         "escrow": "multiple",
                     },
                     {
@@ -13522,7 +13522,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 163057.23,
+                        "valueForProject": 163057.23,
                         "escrow": "multiple",
                     },
                     {
@@ -13578,7 +13578,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 162095.45,
+                        "valueForProject": 162095.45,
                         "escrow": "multiple",
                     },
                     {
@@ -13634,7 +13634,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 161726.06,
+                        "valueForProject": 161726.06,
                         "escrow": "multiple",
                     },
                     {
@@ -13690,7 +13690,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 160468.31,
+                        "valueForProject": 160468.31,
                         "escrow": "multiple",
                     },
                     {
@@ -13746,7 +13746,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 154026.11,
+                        "valueForProject": 154026.11,
                         "escrow": "multiple",
                     },
                     {
@@ -13802,7 +13802,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 148114.95,
+                        "valueForProject": 148114.95,
                         "escrow": "multiple",
                     },
                     {
@@ -13858,7 +13858,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 137834.95,
+                        "valueForProject": 137834.95,
                         "escrow": "multiple",
                     },
                     {
@@ -13914,7 +13914,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 132196.27,
+                        "valueForProject": 132196.27,
                         "escrow": "multiple",
                     },
                     {
@@ -13970,7 +13970,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 122551.9,
+                        "valueForProject": 122551.9,
                         "escrow": "multiple",
                     },
                     {
@@ -14026,7 +14026,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 116220.72,
+                        "valueForProject": 116220.72,
                         "escrow": "multiple",
                     },
                     {
@@ -14082,7 +14082,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 115151.16,
+                        "valueForProject": 115151.16,
                         "escrow": "multiple",
                     },
                     {
@@ -14138,7 +14138,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 103122.75,
+                        "valueForProject": 103122.75,
                         "escrow": "multiple",
                     },
                     {
@@ -14194,7 +14194,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 95625.14,
+                        "valueForProject": 95625.14,
                         "escrow": "multiple",
                     },
                     {
@@ -14250,7 +14250,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 93799.5,
+                        "valueForProject": 93799.5,
                         "escrow": "multiple",
                     },
                     {
@@ -14306,7 +14306,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 91633.95,
+                        "valueForProject": 91633.95,
                         "escrow": "multiple",
                     },
                     {
@@ -14362,7 +14362,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 88966.81,
+                        "valueForProject": 88966.81,
                         "escrow": "multiple",
                     },
                     {
@@ -14418,7 +14418,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 79695.47,
+                        "valueForProject": 79695.47,
                         "escrow": "multiple",
                     },
                     {
@@ -14474,7 +14474,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 78927.05,
+                        "valueForProject": 78927.05,
                         "escrow": "multiple",
                     },
                     {
@@ -14530,7 +14530,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 78056.11,
+                        "valueForProject": 78056.11,
                         "escrow": "multiple",
                     },
                     {
@@ -14586,7 +14586,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 71446.86,
+                        "valueForProject": 71446.86,
                         "escrow": "multiple",
                     },
                     {
@@ -14642,7 +14642,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 67397.31,
+                        "valueForProject": 67397.31,
                         "escrow": "multiple",
                     },
                     {
@@ -14698,7 +14698,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 62731.24,
+                        "valueForProject": 62731.24,
                         "escrow": "multiple",
                     },
                     {
@@ -14754,7 +14754,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 58462.09,
+                        "valueForProject": 58462.09,
                         "escrow": "multiple",
                     },
                     {
@@ -14810,7 +14810,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 54667.94,
+                        "valueForProject": 54667.94,
                         "escrow": "multiple",
                     },
                     {
@@ -14866,7 +14866,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 51351.17,
+                        "valueForProject": 51351.17,
                         "escrow": "multiple",
                     },
                     {
@@ -14922,7 +14922,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 49677.3,
+                        "valueForProject": 49677.3,
                         "escrow": "multiple",
                     },
                     {
@@ -14978,7 +14978,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 49455.61,
+                        "valueForProject": 49455.61,
                         "escrow": "multiple",
                     },
                     {
@@ -15034,7 +15034,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 48955.34,
+                        "valueForProject": 48955.34,
                         "escrow": "multiple",
                     },
                     {
@@ -15090,7 +15090,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 41180.78,
+                        "valueForProject": 41180.78,
                         "escrow": "multiple",
                     },
                     {
@@ -15146,7 +15146,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 39996.02,
+                        "valueForProject": 39996.02,
                         "escrow": "multiple",
                     },
                     {
@@ -15202,7 +15202,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 37479,
+                        "valueForProject": 37479,
                         "escrow": "multiple",
                     },
                     {
@@ -15258,7 +15258,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 34898.67,
+                        "valueForProject": 34898.67,
                         "escrow": "multiple",
                     },
                     {
@@ -15314,7 +15314,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 33733.25,
+                        "valueForProject": 33733.25,
                         "escrow": "multiple",
                     },
                     {
@@ -15370,7 +15370,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 30508.52,
+                        "valueForProject": 30508.52,
                         "escrow": "multiple",
                     },
                     {
@@ -15426,7 +15426,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 28021.04,
+                        "valueForProject": 28021.04,
                         "escrow": "multiple",
                     },
                     {
@@ -15482,7 +15482,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 26760.73,
+                        "valueForProject": 26760.73,
                         "escrow": "multiple",
                     },
                     {
@@ -15538,7 +15538,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 25759.54,
+                        "valueForProject": 25759.54,
                         "escrow": "multiple",
                     },
                     {
@@ -15594,7 +15594,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 25384.09,
+                        "valueForProject": 25384.09,
                         "escrow": "multiple",
                     },
                     {
@@ -15650,7 +15650,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 24798.38,
+                        "valueForProject": 24798.38,
                         "escrow": "multiple",
                     },
                     {
@@ -15706,7 +15706,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 24311.96,
+                        "valueForProject": 24311.96,
                         "escrow": "multiple",
                     },
                     {
@@ -15762,7 +15762,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 18281.59,
+                        "valueForProject": 18281.59,
                         "escrow": "multiple",
                     },
                     {
@@ -15818,7 +15818,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 17651.38,
+                        "valueForProject": 17651.38,
                         "escrow": "multiple",
                     },
                     {
@@ -15874,7 +15874,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 17112.15,
+                        "valueForProject": 17112.15,
                         "escrow": "multiple",
                     },
                     {
@@ -15930,7 +15930,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 16559.45,
+                        "valueForProject": 16559.45,
                         "escrow": "multiple",
                     },
                     {
@@ -15986,7 +15986,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 15957.17,
+                        "valueForProject": 15957.17,
                         "escrow": "multiple",
                     },
                     {
@@ -16042,7 +16042,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 15341.07,
+                        "valueForProject": 15341.07,
                         "escrow": "multiple",
                     },
                     {
@@ -16098,7 +16098,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 14893.99,
+                        "valueForProject": 14893.99,
                         "escrow": "multiple",
                     },
                     {
@@ -16154,7 +16154,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 13073.39,
+                        "valueForProject": 13073.39,
                         "escrow": "multiple",
                     },
                     {
@@ -16210,7 +16210,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 10238.82,
+                        "valueForProject": 10238.82,
                         "escrow": "multiple",
                     },
                     {
@@ -16266,7 +16266,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 8069.01,
+                        "valueForProject": 8069.01,
                         "escrow": "multiple",
                     },
                     {
@@ -16322,7 +16322,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 8064.83,
+                        "valueForProject": 8064.83,
                         "escrow": "multiple",
                     },
                     {
@@ -16378,7 +16378,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 8058.87,
+                        "valueForProject": 8058.87,
                         "escrow": "multiple",
                     },
                     {
@@ -16434,7 +16434,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 7667.05,
+                        "valueForProject": 7667.05,
                         "escrow": "multiple",
                     },
                     {
@@ -16490,7 +16490,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 7463.37,
+                        "valueForProject": 7463.37,
                         "escrow": "multiple",
                     },
                     {
@@ -16546,7 +16546,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 7410.28,
+                        "valueForProject": 7410.28,
                         "escrow": "multiple",
                     },
                     {
@@ -16602,7 +16602,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 6826.88,
+                        "valueForProject": 6826.88,
                         "escrow": "multiple",
                     },
                     {
@@ -16658,7 +16658,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 6549.08,
+                        "valueForProject": 6549.08,
                         "escrow": "multiple",
                     },
                     {
@@ -16714,7 +16714,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 6443.06,
+                        "valueForProject": 6443.06,
                         "escrow": "multiple",
                     },
                     {
@@ -16799,7 +16799,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 6143.7,
+                        "valueForProject": 6143.7,
                         "escrow": "multiple",
                     },
                     {
@@ -16855,7 +16855,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 6098.13,
+                        "valueForProject": 6098.13,
                         "escrow": "multiple",
                     },
                     {
@@ -16911,7 +16911,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 6062.42,
+                        "valueForProject": 6062.42,
                         "escrow": "multiple",
                     },
                     {
@@ -16967,7 +16967,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 5963.87,
+                        "valueForProject": 5963.87,
                         "escrow": "multiple",
                     },
                     {
@@ -17023,7 +17023,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 5511.95,
+                        "valueForProject": 5511.95,
                         "escrow": "multiple",
                     },
                     {
@@ -17079,7 +17079,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 4826.09,
+                        "valueForProject": 4826.09,
                         "escrow": "multiple",
                     },
                     {
@@ -17135,7 +17135,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 4802.43,
+                        "valueForProject": 4802.43,
                         "escrow": "multiple",
                     },
                     {
@@ -17191,7 +17191,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 4510.37,
+                        "valueForProject": 4510.37,
                         "escrow": "multiple",
                     },
                     {
@@ -17247,7 +17247,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 3235.91,
+                        "valueForProject": 3235.91,
                         "escrow": "multiple",
                     },
                     {
@@ -17303,7 +17303,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 2978.02,
+                        "valueForProject": 2978.02,
                         "escrow": "multiple",
                     },
                     {
@@ -17359,7 +17359,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 2694.32,
+                        "valueForProject": 2694.32,
                         "escrow": "multiple",
                     },
                     {
@@ -17415,7 +17415,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 2107.95,
+                        "valueForProject": 2107.95,
                         "escrow": "multiple",
                     },
                     {
@@ -17471,7 +17471,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 2095.77,
+                        "valueForProject": 2095.77,
                         "escrow": "multiple",
                     },
                     {
@@ -17527,7 +17527,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 2053.8,
+                        "valueForProject": 2053.8,
                         "escrow": "multiple",
                     },
                     {
@@ -17583,7 +17583,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 2008.44,
+                        "valueForProject": 2008.44,
                         "escrow": "multiple",
                     },
                     {
@@ -17639,7 +17639,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1905.82,
+                        "valueForProject": 1905.82,
                         "escrow": "multiple",
                     },
                     {
@@ -17695,7 +17695,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1883.25,
+                        "valueForProject": 1883.25,
                         "escrow": "multiple",
                     },
                     {
@@ -17751,7 +17751,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1769.93,
+                        "valueForProject": 1769.93,
                         "escrow": "multiple",
                     },
                     {
@@ -17807,7 +17807,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1700.67,
+                        "valueForProject": 1700.67,
                         "escrow": "multiple",
                     },
                     {
@@ -17863,7 +17863,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1398.78,
+                        "valueForProject": 1398.78,
                         "escrow": "multiple",
                     },
                     {
@@ -17919,7 +17919,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1366.19,
+                        "valueForProject": 1366.19,
                         "escrow": "multiple",
                     },
                     {
@@ -17975,7 +17975,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1348.34,
+                        "valueForProject": 1348.34,
                         "escrow": "multiple",
                     },
                     {
@@ -18031,7 +18031,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1304.12,
+                        "valueForProject": 1304.12,
                         "escrow": "multiple",
                     },
                     {
@@ -18087,7 +18087,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1206.22,
+                        "valueForProject": 1206.22,
                         "escrow": "multiple",
                     },
                     {
@@ -18143,7 +18143,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1174.85,
+                        "valueForProject": 1174.85,
                         "escrow": "multiple",
                     },
                     {
@@ -18199,7 +18199,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1170.54,
+                        "valueForProject": 1170.54,
                         "escrow": "multiple",
                     },
                     {
@@ -18255,7 +18255,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1070.22,
+                        "valueForProject": 1070.22,
                         "escrow": "multiple",
                     },
                     {
@@ -18311,7 +18311,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1033.52,
+                        "valueForProject": 1033.52,
                         "escrow": "multiple",
                     },
                     {
@@ -18367,7 +18367,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 1024.92,
+                        "valueForProject": 1024.92,
                         "escrow": "multiple",
                     },
                     {
@@ -18423,7 +18423,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 975.12,
+                        "valueForProject": 975.12,
                         "escrow": "multiple",
                     },
                     {
@@ -18479,7 +18479,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 963.18,
+                        "valueForProject": 963.18,
                         "escrow": "multiple",
                     },
                     {
@@ -18535,7 +18535,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 960.72,
+                        "valueForProject": 960.72,
                         "escrow": "multiple",
                     },
                     {
@@ -18591,7 +18591,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 759.67,
+                        "valueForProject": 759.67,
                         "escrow": "multiple",
                     },
                     {
@@ -18647,7 +18647,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 728.11,
+                        "valueForProject": 728.11,
                         "escrow": "multiple",
                     },
                     {
@@ -18703,7 +18703,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 669.11,
+                        "valueForProject": 669.11,
                         "escrow": "multiple",
                     },
                     {
@@ -18759,7 +18759,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 537.73,
+                        "valueForProject": 537.73,
                         "escrow": "multiple",
                     },
                     {
@@ -18815,7 +18815,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 429.83,
+                        "valueForProject": 429.83,
                         "escrow": "multiple",
                     },
                     {
@@ -18871,7 +18871,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 417.71,
+                        "valueForProject": 417.71,
                         "escrow": "multiple",
                     },
                     {
@@ -18927,7 +18927,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 401.01,
+                        "valueForProject": 401.01,
                         "escrow": "multiple",
                     },
                     {
@@ -18983,7 +18983,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 372.38,
+                        "valueForProject": 372.38,
                         "escrow": "multiple",
                     },
                     {
@@ -19039,7 +19039,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 326.48,
+                        "valueForProject": 326.48,
                         "escrow": "multiple",
                     },
                     {
@@ -19095,7 +19095,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 311.69,
+                        "valueForProject": 311.69,
                         "escrow": "multiple",
                     },
                     {
@@ -19151,7 +19151,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 273.74,
+                        "valueForProject": 273.74,
                         "escrow": "multiple",
                     },
                     {
@@ -19207,7 +19207,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 245.47,
+                        "valueForProject": 245.47,
                         "escrow": "multiple",
                     },
                     {
@@ -19263,7 +19263,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 242.97,
+                        "valueForProject": 242.97,
                         "escrow": "multiple",
                     },
                     {
@@ -19319,7 +19319,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 236.98,
+                        "valueForProject": 236.98,
                         "escrow": "multiple",
                     },
                     {
@@ -19375,7 +19375,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 225.71,
+                        "valueForProject": 225.71,
                         "escrow": "multiple",
                     },
                     {
@@ -19431,7 +19431,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 207.37,
+                        "valueForProject": 207.37,
                         "escrow": "multiple",
                     },
                     {
@@ -19487,7 +19487,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 195.74,
+                        "valueForProject": 195.74,
                         "escrow": "multiple",
                     },
                     {
@@ -19543,7 +19543,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 181.79,
+                        "valueForProject": 181.79,
                         "escrow": "multiple",
                     },
                     {
@@ -19599,7 +19599,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 179.57,
+                        "valueForProject": 179.57,
                         "escrow": "multiple",
                     },
                     {
@@ -19655,7 +19655,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 176.07,
+                        "valueForProject": 176.07,
                         "escrow": "multiple",
                     },
                     {
@@ -19711,7 +19711,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 161.8,
+                        "valueForProject": 161.8,
                         "escrow": "multiple",
                     },
                     {
@@ -19767,7 +19767,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 149.77,
+                        "valueForProject": 149.77,
                         "escrow": "multiple",
                     },
                     {
@@ -19823,7 +19823,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 130.6,
+                        "valueForProject": 130.6,
                         "escrow": "multiple",
                     },
                     {
@@ -19879,7 +19879,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 128.39,
+                        "valueForProject": 128.39,
                         "escrow": "multiple",
                     },
                     {
@@ -19935,7 +19935,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 111.02,
+                        "valueForProject": 111.02,
                         "escrow": "multiple",
                     },
                     {
@@ -19991,7 +19991,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 104.67,
+                        "valueForProject": 104.67,
                         "escrow": "multiple",
                     },
                     {
@@ -20047,7 +20047,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 86.13,
+                        "valueForProject": 86.13,
                         "escrow": "multiple",
                     },
                     {
@@ -20103,7 +20103,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 75.97,
+                        "valueForProject": 75.97,
                         "escrow": "multiple",
                     },
                     {
@@ -20159,7 +20159,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 59.16,
+                        "valueForProject": 59.16,
                         "escrow": "multiple",
                     },
                     {
@@ -20215,7 +20215,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 57.9,
+                        "valueForProject": 57.9,
                         "escrow": "multiple",
                     },
                     {
@@ -20271,7 +20271,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 53.47,
+                        "valueForProject": 53.47,
                         "escrow": "multiple",
                     },
                     {
@@ -20327,7 +20327,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 47.29,
+                        "valueForProject": 47.29,
                         "escrow": "multiple",
                     },
                     {
@@ -20383,7 +20383,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 44.17,
+                        "valueForProject": 44.17,
                         "escrow": "multiple",
                     },
                     {
@@ -20439,7 +20439,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 37.71,
+                        "valueForProject": 37.71,
                         "escrow": "multiple",
                     },
                     {
@@ -20495,7 +20495,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 35.54,
+                        "valueForProject": 35.54,
                         "escrow": "multiple",
                     },
                     {
@@ -20551,7 +20551,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 33.93,
+                        "valueForProject": 33.93,
                         "escrow": "multiple",
                     },
                     {
@@ -20607,7 +20607,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 25.8,
+                        "valueForProject": 25.8,
                         "escrow": "multiple",
                     },
                     {
@@ -20663,7 +20663,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 25.08,
+                        "valueForProject": 25.08,
                         "escrow": "multiple",
                     },
                     {
@@ -20719,7 +20719,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 19.98,
+                        "valueForProject": 19.98,
                         "escrow": "multiple",
                     },
                     {
@@ -20775,7 +20775,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 12.83,
+                        "valueForProject": 12.83,
                         "escrow": "multiple",
                     },
                     {
@@ -20831,7 +20831,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 11.39,
+                        "valueForProject": 11.39,
                         "escrow": "multiple",
                     },
                     {
@@ -20887,7 +20887,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 10.7,
+                        "valueForProject": 10.7,
                         "escrow": "multiple",
                     },
                     {
@@ -20943,7 +20943,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 10.67,
+                        "valueForProject": 10.67,
                         "escrow": "multiple",
                     },
                     {
@@ -20999,7 +20999,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 9.61,
+                        "valueForProject": 9.61,
                         "escrow": "multiple",
                     },
                     {
@@ -21055,7 +21055,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 8.31,
+                        "valueForProject": 8.31,
                         "escrow": "multiple",
                     },
                     {
@@ -21111,7 +21111,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 6.64,
+                        "valueForProject": 6.64,
                         "escrow": "multiple",
                     },
                     {
@@ -21167,7 +21167,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 4.55,
+                        "valueForProject": 4.55,
                         "escrow": "multiple",
                     },
                     {
@@ -21223,7 +21223,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 3.39,
+                        "valueForProject": 3.39,
                         "escrow": "multiple",
                     },
                     {
@@ -21279,7 +21279,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 3.15,
+                        "valueForProject": 3.15,
                         "escrow": "multiple",
                     },
                     {
@@ -21335,7 +21335,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 3.11,
+                        "valueForProject": 3.11,
                         "escrow": "multiple",
                     },
                     {
@@ -21391,7 +21391,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 2.8,
+                        "valueForProject": 2.8,
                         "escrow": "multiple",
                     },
                     {
@@ -21447,7 +21447,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 2.35,
+                        "valueForProject": 2.35,
                         "escrow": "multiple",
                     },
                     {
@@ -21503,7 +21503,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 0.5,
+                        "valueForProject": 0.5,
                         "escrow": "multiple",
                     },
                     {
@@ -21559,7 +21559,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 0.34,
+                        "valueForProject": 0.34,
                         "escrow": "multiple",
                     },
                     {
@@ -21615,7 +21615,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 0.26,
+                        "valueForProject": 0.26,
                         "escrow": "multiple",
                     },
                     {
@@ -21671,7 +21671,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 0.01,
+                        "valueForProject": 0.01,
                         "escrow": "multiple",
                     },
                     {
@@ -21727,7 +21727,7 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
                                 },
                             ],
                         },
-                        "value": 0.01,
+                        "valueForProject": 0.01,
                         "escrow": "multiple",
                     },
                 ],
