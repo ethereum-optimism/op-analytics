@@ -21903,12 +21903,6 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
         },
     }
 
-    # Normalize: ensure each breakdown item has 'value' equal to 'valueForProject'
-    for _section in ("canonical", "native", "external"):
-        for _item in response_data["data"]["breakdown"].get(_section, []):
-            if "value" not in _item and "valueForProject" in _item:
-                _item["value"] = _item["valueForProject"]
-
     actual = clean_dataframe(
         parse_tvs(response_data, L2BeatProject(id="unichain", slug="unichain"))
     ).to_dicts()
