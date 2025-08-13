@@ -207,7 +207,7 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
                     "chain_id": chain_id,
                     "amount": asset["amount"],
                     "usd_value": float(asset["valueForProject"]) if "valueForProject" in asset else None,
-                    "usd_price": float(asset["valueForProject"]) / float(asset["amount"]) if "valueForProject" in asset and "amount" in asset and asset["amount"] > 0 else None,
+                    "usd_price": float(asset["value"]) / float(asset["amount"]) if "value" in asset and "amount" in asset and asset["amount"] > 0 else None,
                     "is_gas_token": asset.get("isGasToken"),
                     "token_address": token_address,
                     "escrow_address": escrow_address,

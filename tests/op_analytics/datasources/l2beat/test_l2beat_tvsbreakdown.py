@@ -26,6 +26,7 @@ def test_parse_tvs_funki():
                         "assetId": "ethereum-0x9F52c8ecbEe10e00D9faaAc5Ee9Ba0fF6550F511",
                         "chain": {"name": "ethereum", "id": 1},
                         "amount": 9419186.975963663,
+                        "value": 416047.46675758,
                         "valueForProject": 416047.46675758,
                         "usdPrice": "0.04417021",
                         "isGasToken": False,
@@ -50,6 +51,7 @@ def test_parse_tvs_funki():
                         "assetId": "ethereum-native",
                         "chain": {"name": "ethereum", "id": 1},
                         "amount": 72.52974917119296,
+                        "value": 111459.32322348957,
                         "valueForProject": 111459.32322348957,
                         "usdPrice": "1536.7394",
                         "isGasToken": True,
@@ -72,6 +74,7 @@ def test_parse_tvs_funki():
                         "assetId": "ethereum-0xdAC17F958D2ee523a2206206994597C13D831ec7",
                         "chain": {"name": "ethereum", "id": 1},
                         "amount": 47.307409,
+                        "value": 47.2901843723831,
                         "valueForProject": 47.2901843723831,
                         "usdPrice": "0.9996359",
                         "isGasToken": False,
@@ -96,6 +99,7 @@ def test_parse_tvs_funki():
                         "assetId": "ethereum-0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
                         "chain": {"name": "ethereum", "id": 1},
                         "amount": 19.1,
+                        "value": 19.098713615,
                         "valueForProject": 19.098713615,
                         "usdPrice": "0.99993265",
                         "isGasToken": False,
@@ -238,6 +242,7 @@ def test_parse_tvs_zkfair():
                         "assetId": "ethereum-0xe4815AE53B124e7263F08dcDBBB757d41Ed658c6",
                         "chain": {"name": "ethereum", "id": 1},
                         "amount": 11547.4375,
+                        "value": 29.096637164725003,
                         "valueForProject": 29.096637164725003,
                         "usdPrice": "0.0025197484",
                         "tokenAddress": "0xe4815AE53B124e7263F08dcDBBB757d41Ed658c6",
@@ -263,6 +268,7 @@ def test_parse_tvs_zkfair():
                         "assetId": "zkfair-0x1cD3E2A23C45A690a18Ed93FD1412543f464158F",
                         "chain": {"name": "zkfair", "id": 42766},
                         "amount": 9886400000,
+                        "value": 832179.2176959999,
                         "valueForProject": 832179.2176959999,
                         "usdPrice": "0.00008417414",
                         "tokenAddress": "0x1cD3E2A23C45A690a18Ed93FD1412543f464158F",
@@ -364,6 +370,7 @@ def test_parse_tvs_zkfair_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x9cb4706e20A18E59a48ffa7616d700A3891e1861",
                         },
+                        "value": 18.08,
                         "valueForProject": 18.08,
                         "escrow": {
                             "address": "0x9cb4706e20A18E59a48ffa7616d700A3891e1861",
@@ -397,6 +404,7 @@ def test_parse_tvs_zkfair_with_updated_l2beat_json():
                             "address": "0x1cD3E2A23C45A690a18Ed93FD1412543f464158F",
                             "chain": "zkfair",
                         },
+                        "value": 538376.7,
                         "valueForProject": 538376.7,
                     }
                 ],
@@ -500,6 +508,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                                 },
                             ],
                         },
+                        "value": 202157200,
                         "valueForProject": 202157200,
                         "isGasToken": True,
                         "escrow": "multiple",
@@ -527,6 +536,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
+                        "value": 33032418,
                         "valueForProject": 33032418,
                         "isGasToken": False,
                         "escrow": {
@@ -558,6 +568,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
+                        "value": 7810013,
                         "valueForProject": 7810013,
                         "isGasToken": False,
                         "escrow": {
@@ -589,6 +600,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
+                        "value": 4359694.5,
                         "valueForProject": 4359694.5,
                         "isGasToken": False,
                         "escrow": {
@@ -620,6 +632,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 6,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
+                        "value": 2828759.5,
                         "valueForProject": 2828759.5,
                         "isGasToken": False,
                         "escrow": {
@@ -651,6 +664,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
+                        "value": 45384.84,
                         "valueForProject": 45384.84,
                         "isGasToken": False,
                         "escrow": {
@@ -682,6 +696,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
+                        "value": 32391.03,
                         "valueForProject": 32391.03,
                         "isGasToken": False,
                         "escrow": {
@@ -713,6 +728,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
+                        "value": 214.89,
                         "valueForProject": 214.89,
                         "isGasToken": False,
                         "escrow": {
@@ -744,6 +760,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x81014F44b0a345033bB2b3B21C7a1A308B35fEeA",
                         },
+                        "value": 0.86,
                         "valueForProject": 0.86,
                         "isGasToken": False,
                         "escrow": {
@@ -777,6 +794,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0x755610f5Be536Ad7afBAa7c10F3E938Ea3aa1877",
                         },
+                        "value": 72045040,
                         "valueForProject": 72045040,
                         "isGasToken": False,
                     },
@@ -802,6 +820,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "address": "0x9151434b16b9763660705744891fA906F660EcC5",
                             "decimals": 6,
                         },
+                        "value": 40958648,
                         "valueForProject": 40958648,
                         "isGasToken": False,
                     },
@@ -827,6 +846,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "address": "0x7DCC39B4d1C53CB31e1aBc0e358b43987FEF80f7",
                             "decimals": 18,
                         },
+                        "value": 28887326,
                         "valueForProject": 28887326,
                         "isGasToken": False,
                     },
@@ -852,6 +872,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "address": "0xc3eACf0612346366Db554C991D7858716db09f58",
                             "decimals": 18,
                         },
+                        "value": 16919968,
                         "valueForProject": 16919968,
                         "isGasToken": False,
                     },
@@ -877,6 +898,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "address": "0x2416092f143378750bb29b79eD961ab195CcEea5",
                             "decimals": 18,
                         },
+                        "value": 15048706,
                         "valueForProject": 15048706,
                         "isGasToken": False,
                     },
@@ -904,6 +926,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
                             "address": "0x078D782b760474a361dDA0AF3839290b0EF57AD6",
                             "decimals": 6,
                         },
+                        "value": 127459496,
                         "valueForProject": 127459496,
                         "isGasToken": False,
                     }
@@ -1106,7 +1129,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
             "symbol": "DAI",
             "name": "Dai Stablecoin",
             "supply": None,
-            "category": "canonical"
+            "category": "canonical",
         },
         {
             "dt": "2025-04-25",
@@ -1250,7 +1273,7 @@ def test_parse_tvs_unichain_with_updated_l2beat_json():
             "symbol": "rsETH",
             "name": "KelpDao Restaked ETH",
             "supply": None,
-            "category": "external"
+            "category": "external",
         },
         {
             "dt": "2025-04-25",
@@ -1352,6 +1375,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 },
                             ],
                         },
+                        "value": 1788038500,
                         "valueForProject": 1788038500,
                         "isGasToken": True,
                         "escrow": "multiple",
@@ -1379,6 +1403,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 773116740,
                         "valueForProject": 773116740,
                         "isGasToken": False,
                         "escrow": {
@@ -1410,6 +1435,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 220779490,
                         "valueForProject": 220779490,
                         "isGasToken": False,
                         "escrow": {
@@ -1441,6 +1467,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 209429140,
                         "valueForProject": 209429140,
                         "isGasToken": False,
                         "escrow": {
@@ -1472,6 +1499,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 173353090,
                         "valueForProject": 173353090,
                         "isGasToken": False,
                         "escrow": {
@@ -1503,6 +1531,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 102710864,
                         "valueForProject": 102710864,
                         "isGasToken": False,
                         "escrow": {
@@ -1534,6 +1563,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 57941228,
                         "valueForProject": 57941228,
                         "isGasToken": False,
                         "escrow": {
@@ -1565,6 +1595,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 57300792,
                         "valueForProject": 57300792,
                         "isGasToken": False,
                         "escrow": {
@@ -1596,6 +1627,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 45621812,
                         "valueForProject": 45621812,
                         "isGasToken": False,
                         "escrow": {
@@ -1627,6 +1659,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 34346032,
                         "valueForProject": 34346032,
                         "isGasToken": False,
                         "escrow": {
@@ -1658,6 +1691,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 20634558,
                         "valueForProject": 20634558,
                         "isGasToken": False,
                         "escrow": {
@@ -1689,6 +1723,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 19480644,
                         "valueForProject": 19480644,
                         "isGasToken": False,
                         "escrow": {
@@ -1720,6 +1755,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 13489163,
                         "valueForProject": 13489163,
                         "isGasToken": False,
                         "escrow": {
@@ -1751,6 +1787,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 12692178,
                         "valueForProject": 12692178,
                         "isGasToken": False,
                         "escrow": {
@@ -1782,6 +1819,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 11494325,
                         "valueForProject": 11494325,
                         "isGasToken": False,
                         "escrow": {
@@ -1813,6 +1851,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 8840619,
                         "valueForProject": 8840619,
                         "isGasToken": False,
                         "escrow": {
@@ -1844,6 +1883,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 7442726,
                         "valueForProject": 7442726,
                         "isGasToken": False,
                         "escrow": {
@@ -1889,6 +1929,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 },
                             ],
                         },
+                        "value": 4350566.5,
                         "valueForProject": 4350566.5,
                         "isGasToken": False,
                         "escrow": {
@@ -1920,6 +1961,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 4333965,
                         "valueForProject": 4333965,
                         "isGasToken": False,
                         "escrow": {
@@ -1951,6 +1993,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 3370164.2,
                         "valueForProject": 3370164.2,
                         "isGasToken": False,
                         "escrow": {
@@ -1996,6 +2039,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 },
                             ],
                         },
+                        "value": 2967255.2,
                         "valueForProject": 2967255.2,
                         "isGasToken": False,
                         "escrow": {
@@ -2027,6 +2071,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 2778393.8,
                         "valueForProject": 2778393.8,
                         "isGasToken": False,
                         "escrow": {
@@ -2058,6 +2103,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1990790,
                         "valueForProject": 1990790,
                         "isGasToken": False,
                         "escrow": {
@@ -2089,6 +2135,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1845832.1,
                         "valueForProject": 1845832.1,
                         "isGasToken": False,
                         "escrow": {
@@ -2120,6 +2167,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1657441.1,
                         "valueForProject": 1657441.1,
                         "isGasToken": False,
                         "escrow": {
@@ -2151,6 +2199,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1283453.5,
                         "valueForProject": 1283453.5,
                         "isGasToken": False,
                         "escrow": {
@@ -2182,6 +2231,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1231229.4,
                         "valueForProject": 1231229.4,
                         "isGasToken": False,
                         "escrow": {
@@ -2213,6 +2263,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1223188.8,
                         "valueForProject": 1223188.8,
                         "isGasToken": False,
                         "escrow": {
@@ -2244,6 +2295,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 2,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1115545,
                         "valueForProject": 1115545,
                         "isGasToken": False,
                         "escrow": {
@@ -2275,6 +2327,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1025710.8,
                         "valueForProject": 1025710.8,
                         "isGasToken": False,
                         "escrow": {
@@ -2306,6 +2359,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 959550.75,
                         "valueForProject": 959550.75,
                         "isGasToken": False,
                         "escrow": {
@@ -2337,6 +2391,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 648560.2,
                         "valueForProject": 648560.2,
                         "isGasToken": False,
                         "escrow": {
@@ -2368,6 +2423,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 619619.56,
                         "valueForProject": 619619.56,
                         "isGasToken": False,
                         "escrow": {
@@ -2399,6 +2455,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 557915.1,
                         "valueForProject": 557915.1,
                         "isGasToken": False,
                         "escrow": {
@@ -2430,6 +2487,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 547165.44,
                         "valueForProject": 547165.44,
                         "isGasToken": False,
                         "escrow": {
@@ -2461,6 +2519,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 500819.06,
                         "valueForProject": 500819.06,
                         "isGasToken": False,
                         "escrow": {
@@ -2492,6 +2551,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 431593.6,
                         "valueForProject": 431593.6,
                         "isGasToken": False,
                         "escrow": {
@@ -2523,6 +2583,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 364431.97,
                         "valueForProject": 364431.97,
                         "isGasToken": False,
                         "escrow": {
@@ -2554,6 +2615,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 361644,
                         "valueForProject": 361644,
                         "isGasToken": False,
                         "escrow": {
@@ -2585,6 +2647,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 346828.6,
                         "valueForProject": 346828.6,
                         "isGasToken": False,
                         "escrow": {
@@ -2616,6 +2679,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 292079.8,
                         "valueForProject": 292079.8,
                         "isGasToken": False,
                         "escrow": {
@@ -2647,6 +2711,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 284831.1,
                         "valueForProject": 284831.1,
                         "isGasToken": False,
                         "escrow": {
@@ -2678,6 +2743,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 260204.1,
                         "valueForProject": 260204.1,
                         "isGasToken": False,
                         "escrow": {
@@ -2709,6 +2775,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 232078.61,
                         "valueForProject": 232078.61,
                         "isGasToken": False,
                         "escrow": {
@@ -2740,6 +2807,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 215764.6,
                         "valueForProject": 215764.6,
                         "isGasToken": False,
                         "escrow": {
@@ -2771,6 +2839,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 212086.6,
                         "valueForProject": 212086.6,
                         "isGasToken": False,
                         "escrow": {
@@ -2802,6 +2871,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 211065.45,
                         "valueForProject": 211065.45,
                         "isGasToken": False,
                         "escrow": {
@@ -2833,6 +2903,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 205849.31,
                         "valueForProject": 205849.31,
                         "isGasToken": False,
                         "escrow": {
@@ -2864,6 +2935,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 191383.38,
                         "valueForProject": 191383.38,
                         "isGasToken": False,
                         "escrow": {
@@ -2895,6 +2967,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 189995.83,
                         "valueForProject": 189995.83,
                         "isGasToken": False,
                         "escrow": {
@@ -2926,6 +2999,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 169773.34,
                         "valueForProject": 169773.34,
                         "isGasToken": False,
                         "escrow": {
@@ -2957,6 +3031,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 168846.16,
                         "valueForProject": 168846.16,
                         "isGasToken": False,
                         "escrow": {
@@ -2988,6 +3063,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 162155.16,
                         "valueForProject": 162155.16,
                         "isGasToken": False,
                         "escrow": {
@@ -3019,6 +3095,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 147158.05,
                         "valueForProject": 147158.05,
                         "isGasToken": False,
                         "escrow": {
@@ -3050,6 +3127,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 144143.81,
                         "valueForProject": 144143.81,
                         "isGasToken": False,
                         "escrow": {
@@ -3081,6 +3159,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 140791.4,
                         "valueForProject": 140791.4,
                         "isGasToken": False,
                         "escrow": {
@@ -3112,6 +3191,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 139989.39,
                         "valueForProject": 139989.39,
                         "isGasToken": False,
                         "escrow": {
@@ -3143,6 +3223,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 129962.82,
                         "valueForProject": 129962.82,
                         "isGasToken": False,
                         "escrow": {
@@ -3174,6 +3255,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 129890.65,
                         "valueForProject": 129890.65,
                         "isGasToken": False,
                         "escrow": {
@@ -3205,6 +3287,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 109429.85,
                         "valueForProject": 109429.85,
                         "isGasToken": False,
                         "escrow": {
@@ -3236,6 +3319,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 104836.91,
                         "valueForProject": 104836.91,
                         "isGasToken": False,
                         "escrow": {
@@ -3267,6 +3351,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 100464.05,
                         "valueForProject": 100464.05,
                         "isGasToken": False,
                         "escrow": {
@@ -3298,6 +3383,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 92576.11,
                         "valueForProject": 92576.11,
                         "isGasToken": False,
                         "escrow": {
@@ -3329,6 +3415,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 81772.02,
                         "valueForProject": 81772.02,
                         "isGasToken": False,
                         "escrow": {
@@ -3360,6 +3447,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 80183.62,
                         "valueForProject": 80183.62,
                         "isGasToken": False,
                         "escrow": {
@@ -3391,6 +3479,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 70828.01,
                         "valueForProject": 70828.01,
                         "isGasToken": False,
                         "escrow": {
@@ -3422,6 +3511,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 70008.63,
                         "valueForProject": 70008.63,
                         "isGasToken": False,
                         "escrow": {
@@ -3453,6 +3543,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 60853.58,
                         "valueForProject": 60853.58,
                         "isGasToken": False,
                         "escrow": {
@@ -3484,6 +3575,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 60784.95,
                         "valueForProject": 60784.95,
                         "isGasToken": False,
                         "escrow": {
@@ -3515,6 +3607,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 59822.68,
                         "valueForProject": 59822.68,
                         "isGasToken": False,
                         "escrow": {
@@ -3546,6 +3639,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 48373.77,
                         "valueForProject": 48373.77,
                         "isGasToken": False,
                         "escrow": {
@@ -3577,6 +3671,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 45164.06,
                         "valueForProject": 45164.06,
                         "isGasToken": False,
                         "escrow": {
@@ -3608,6 +3703,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 43988.1,
                         "valueForProject": 43988.1,
                         "isGasToken": False,
                         "escrow": {
@@ -3639,6 +3735,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 41293.76,
                         "valueForProject": 41293.76,
                         "isGasToken": False,
                         "escrow": {
@@ -3670,6 +3767,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 40161.45,
                         "valueForProject": 40161.45,
                         "isGasToken": False,
                         "escrow": {
@@ -3701,6 +3799,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 36882.95,
                         "valueForProject": 36882.95,
                         "isGasToken": False,
                         "escrow": {
@@ -3732,6 +3831,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 36287.28,
                         "valueForProject": 36287.28,
                         "isGasToken": False,
                         "escrow": {
@@ -3763,6 +3863,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 35321.88,
                         "valueForProject": 35321.88,
                         "isGasToken": False,
                         "escrow": {
@@ -3794,6 +3895,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 34605.3,
                         "valueForProject": 34605.3,
                         "isGasToken": False,
                         "escrow": {
@@ -3825,6 +3927,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 34129.46,
                         "valueForProject": 34129.46,
                         "isGasToken": False,
                         "escrow": {
@@ -3856,6 +3959,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 33165.02,
                         "valueForProject": 33165.02,
                         "isGasToken": False,
                         "escrow": {
@@ -3887,6 +3991,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 29578.06,
                         "valueForProject": 29578.06,
                         "isGasToken": False,
                         "escrow": {
@@ -3918,6 +4023,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 28702.12,
                         "valueForProject": 28702.12,
                         "isGasToken": False,
                         "escrow": {
@@ -3949,6 +4055,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 28150.2,
                         "valueForProject": 28150.2,
                         "isGasToken": False,
                         "escrow": {
@@ -3980,6 +4087,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 26992.58,
                         "valueForProject": 26992.58,
                         "isGasToken": False,
                         "escrow": {
@@ -4011,6 +4119,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 26504.29,
                         "valueForProject": 26504.29,
                         "isGasToken": False,
                         "escrow": {
@@ -4042,6 +4151,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 23418.71,
                         "valueForProject": 23418.71,
                         "isGasToken": False,
                         "escrow": {
@@ -4073,6 +4183,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 23348.46,
                         "valueForProject": 23348.46,
                         "isGasToken": False,
                         "escrow": {
@@ -4104,6 +4215,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 19279.15,
                         "valueForProject": 19279.15,
                         "isGasToken": False,
                         "escrow": {
@@ -4135,6 +4247,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 18586.7,
                         "valueForProject": 18586.7,
                         "isGasToken": False,
                         "escrow": {
@@ -4166,6 +4279,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 17162.68,
                         "valueForProject": 17162.68,
                         "isGasToken": False,
                         "escrow": {
@@ -4197,6 +4311,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 16729.3,
                         "valueForProject": 16729.3,
                         "isGasToken": False,
                         "escrow": {
@@ -4228,6 +4343,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 16578.12,
                         "valueForProject": 16578.12,
                         "isGasToken": False,
                         "escrow": {
@@ -4259,6 +4375,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 16013.3,
                         "valueForProject": 16013.3,
                         "isGasToken": False,
                         "escrow": {
@@ -4290,6 +4407,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 2,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 15998.7,
                         "valueForProject": 15998.7,
                         "isGasToken": False,
                         "escrow": {
@@ -4321,6 +4439,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 14179.56,
                         "valueForProject": 14179.56,
                         "isGasToken": False,
                         "escrow": {
@@ -4352,6 +4471,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 13244.93,
                         "valueForProject": 13244.93,
                         "isGasToken": False,
                         "escrow": {
@@ -4383,6 +4503,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 11136.29,
                         "valueForProject": 11136.29,
                         "isGasToken": False,
                         "escrow": {
@@ -4414,6 +4535,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 9967.76,
                         "valueForProject": 9967.76,
                         "isGasToken": False,
                         "escrow": {
@@ -4445,6 +4567,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 8804.99,
                         "valueForProject": 8804.99,
                         "isGasToken": False,
                         "escrow": {
@@ -4476,6 +4599,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 8412.72,
                         "valueForProject": 8412.72,
                         "isGasToken": False,
                         "escrow": {
@@ -4507,6 +4631,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 7191.19,
                         "valueForProject": 7191.19,
                         "isGasToken": False,
                         "escrow": {
@@ -4538,6 +4663,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 6421.32,
                         "valueForProject": 6421.32,
                         "isGasToken": False,
                         "escrow": {
@@ -4569,6 +4695,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 5939.85,
                         "valueForProject": 5939.85,
                         "isGasToken": False,
                         "escrow": {
@@ -4600,6 +4727,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 5908.44,
                         "valueForProject": 5908.44,
                         "isGasToken": False,
                         "escrow": {
@@ -4631,6 +4759,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 5467.3,
                         "valueForProject": 5467.3,
                         "isGasToken": False,
                         "escrow": {
@@ -4662,6 +4791,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 5444.84,
                         "valueForProject": 5444.84,
                         "isGasToken": False,
                         "escrow": {
@@ -4704,6 +4834,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                                 },
                             ],
                         },
+                        "value": 5426.8,
                         "valueForProject": 5426.8,
                         "isGasToken": False,
                         "escrow": {
@@ -4735,6 +4866,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 9,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 5352.29,
                         "valueForProject": 5352.29,
                         "isGasToken": False,
                         "escrow": {
@@ -4766,6 +4898,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 5185.09,
                         "valueForProject": 5185.09,
                         "isGasToken": False,
                         "escrow": {
@@ -4797,6 +4930,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 4716.17,
                         "valueForProject": 4716.17,
                         "isGasToken": False,
                         "escrow": {
@@ -4828,6 +4962,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 4292.77,
                         "valueForProject": 4292.77,
                         "isGasToken": False,
                         "escrow": {
@@ -4859,6 +4994,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 4224.51,
                         "valueForProject": 4224.51,
                         "isGasToken": False,
                         "escrow": {
@@ -4890,6 +5026,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 4114.55,
                         "valueForProject": 4114.55,
                         "isGasToken": False,
                         "escrow": {
@@ -4921,6 +5058,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 3853.47,
                         "valueForProject": 3853.47,
                         "isGasToken": False,
                         "escrow": {
@@ -4952,6 +5090,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 3795.67,
                         "valueForProject": 3795.67,
                         "isGasToken": False,
                         "escrow": {
@@ -4983,6 +5122,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 3251.54,
                         "valueForProject": 3251.54,
                         "isGasToken": False,
                         "escrow": {
@@ -5014,6 +5154,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 3202.9,
                         "valueForProject": 3202.9,
                         "isGasToken": False,
                         "escrow": {
@@ -5045,6 +5186,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 3167.79,
                         "valueForProject": 3167.79,
                         "isGasToken": False,
                         "escrow": {
@@ -5076,6 +5218,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 3057.28,
                         "valueForProject": 3057.28,
                         "isGasToken": False,
                         "escrow": {
@@ -5107,6 +5250,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 2878.17,
                         "valueForProject": 2878.17,
                         "isGasToken": False,
                         "escrow": {
@@ -5138,6 +5282,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 2849.79,
                         "valueForProject": 2849.79,
                         "isGasToken": False,
                         "escrow": {
@@ -5169,6 +5314,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 2782.99,
                         "valueForProject": 2782.99,
                         "isGasToken": False,
                         "escrow": {
@@ -5200,6 +5346,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 2753.23,
                         "valueForProject": 2753.23,
                         "isGasToken": False,
                         "escrow": {
@@ -5231,6 +5378,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 2652.43,
                         "valueForProject": 2652.43,
                         "isGasToken": False,
                         "escrow": {
@@ -5262,6 +5410,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 2381.93,
                         "valueForProject": 2381.93,
                         "isGasToken": False,
                         "escrow": {
@@ -5293,6 +5442,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 2372.13,
                         "valueForProject": 2372.13,
                         "isGasToken": False,
                         "escrow": {
@@ -5324,6 +5474,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 2148.5,
                         "valueForProject": 2148.5,
                         "isGasToken": False,
                         "escrow": {
@@ -5355,6 +5506,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 9,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1947.4,
                         "valueForProject": 1947.4,
                         "isGasToken": False,
                         "escrow": {
@@ -5386,6 +5538,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 9,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1933.5,
                         "valueForProject": 1933.5,
                         "isGasToken": False,
                         "escrow": {
@@ -5417,6 +5570,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1916.6,
                         "valueForProject": 1916.6,
                         "isGasToken": False,
                         "escrow": {
@@ -5448,6 +5602,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1884.01,
                         "valueForProject": 1884.01,
                         "isGasToken": False,
                         "escrow": {
@@ -5479,6 +5634,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1835.24,
                         "valueForProject": 1835.24,
                         "isGasToken": False,
                         "escrow": {
@@ -5510,6 +5666,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1752.98,
                         "valueForProject": 1752.98,
                         "isGasToken": False,
                         "escrow": {
@@ -5541,6 +5698,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1747.89,
                         "valueForProject": 1747.89,
                         "isGasToken": False,
                         "escrow": {
@@ -5572,6 +5730,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1411.64,
                         "valueForProject": 1411.64,
                         "isGasToken": False,
                         "escrow": {
@@ -5603,6 +5762,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 1316.08,
                         "valueForProject": 1316.08,
                         "isGasToken": False,
                         "escrow": {
@@ -5634,6 +5794,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 999.57,
                         "valueForProject": 999.57,
                         "isGasToken": False,
                         "escrow": {
@@ -5665,6 +5826,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 986.27,
                         "valueForProject": 986.27,
                         "isGasToken": False,
                         "escrow": {
@@ -5696,6 +5858,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 856.61,
                         "valueForProject": 856.61,
                         "isGasToken": False,
                         "escrow": {
@@ -5727,6 +5890,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 831.04,
                         "valueForProject": 831.04,
                         "isGasToken": False,
                         "escrow": {
@@ -5758,6 +5922,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 18,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 825.23,
                         "valueForProject": 825.23,
                         "isGasToken": False,
                         "escrow": {
@@ -5789,6 +5954,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 6,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "value": 716.47,
                         "valueForProject": 716.47,
                         "isGasToken": False,
                         "escrow": {
@@ -5820,6 +5986,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
+                        "valueForProject": 691.64,
                         "valueForProject": 691.64,
                         "isGasToken": False,
                         "escrow": {
@@ -10576,7 +10743,6 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
             "category": "canonical",
         },
     ]
-
 
 
 def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
@@ -21736,6 +21902,12 @@ def test_parse_tvs_polygon_pos_with_updated_l2beat_json():
             },
         },
     }
+
+    # Normalize: ensure each breakdown item has 'value' equal to 'valueForProject'
+    for _section in ("canonical", "native", "external"):
+        for _item in response_data["data"]["breakdown"].get(_section, []):
+            if "value" not in _item and "valueForProject" in _item:
+                _item["value"] = _item["valueForProject"]
 
     actual = clean_dataframe(
         parse_tvs(response_data, L2BeatProject(id="unichain", slug="unichain"))
