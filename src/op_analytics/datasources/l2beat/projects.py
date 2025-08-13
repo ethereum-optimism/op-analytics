@@ -127,7 +127,11 @@ def parse_summary(summary):
             tvl_ether=pl.col("tvl").struct["breakdown"].struct["ether"],
             tvl_stablecoin=pl.col("tvl").struct["breakdown"].struct["stablecoin"],
             tvl_associated=pl.col("tvl").struct["breakdown"].struct["associated"],
-            tvl_associated_tokens=pl.col("tvl").struct["associatedTokens"],
+            tvl_associated_tokens=(
+                pl.col("tvl_associated_tokens")
+                .list.eval(pl.element().struct["symbol"])
+                .list.drop_nulls()
+            ),
         )
         .drop("badges", "risks", "tvl")
     )
