@@ -5986,7 +5986,7 @@ def test_parse_tvs_arbitrum_with_updated_l2beat_json():
                             "decimals": 8,
                             "escrowAddress": "0xa3A7B6F88361F48403514059F1F16C8E78d60EeC",
                         },
-                        "valueForProject": 691.64,
+                        "value": 691.64,
                         "valueForProject": 691.64,
                         "isGasToken": False,
                         "escrow": {
