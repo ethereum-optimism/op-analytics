@@ -122,14 +122,23 @@ def parse_summary(summary):
             )
             .list.drop_nulls()
             .list.first(),
-            # Extract nested values out of the tvl column.
             tvl_total=pl.col("tvl").struct["breakdown"].struct["total"],
             tvl_ether=pl.col("tvl").struct["breakdown"].struct["ether"],
             tvl_stablecoin=pl.col("tvl").struct["breakdown"].struct["stablecoin"],
             tvl_associated=pl.col("tvl").struct["breakdown"].struct["associated"],
-            tvl_associated_tokens=pl.col("tvl").struct["associatedTokens"],
+            # handle both ["ARB"] and [{"symbol":"ARB"}]
+            tvl_associated_tokens_raw=pl.col("tvl").struct["associatedTokens"],
         )
-        .drop("badges", "risks", "tvl")
+        .with_columns(
+            tvl_associated_tokens=pl.col("tvl").map_elements(
+                lambda tvl: [
+                    (t.get("symbol") if isinstance(t, dict) else t)
+                    for t in (tvl.get("associatedTokens") or [])
+                ],
+                return_dtype=pl.List(pl.Utf8),
+            )
+        )
+        .drop("badges", "risks", "tvl_associated_tokens_raw", "tvl")
     )
 
     raise_for_schema_mismatch(
