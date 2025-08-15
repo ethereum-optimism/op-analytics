@@ -152,6 +152,10 @@ class TokenMetadata:
                     log.warning(f"rpc returned -32000 'execution reverted' {token}")
                     return None
 
+                if code == 3:  # "execution reverted"
+                    log.warning(f"rpc returned 3 'execution reverted' {token}")
+                    return None
+
                 raise Exception(f"JSON-RPC error: {item} [{token}]")
 
             if "result" not in item:

@@ -29,6 +29,9 @@ google-cloud = "*"
 google-cloud-bigquery = "*"
 google-auth = "*"
 pydantic = "*"
+seaborn = "*"
+matplotlib = "*"
+scipy = "*"
 
 [dev-packages]
 

@@ -67,3 +67,13 @@ temp_clickhouse_address_upload.ipynb
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Miniconda/Anaconda installers and environments
+Miniconda*.sh
+Anaconda*.sh
+Miniconda*.exe
+Anaconda*.exe
+Miniconda*.pkg
+Anaconda*.pkg
+*.conda
+conda-meta/
