@@ -52,148 +52,54 @@ class WalletTokenBalance:
 
 
 class WalletBalancePuller:
-    """Main class for pulling wallet token balances."""
+    """Core wallet balance puller for individual wallet-token queries."""
     
     def __init__(self, rpc_endpoint: str, rate_limit_delay: float = 0.1):
         self.rpc_endpoint = rpc_endpoint
         self.rate_limit_delay = rate_limit_delay
         self.session = new_session()
     
-    def read_wallet_addresses(self, csv_path: str) -> list[WalletAddress]:
-        """Read wallet addresses from CSV file.
-        
-        Expected CSV format:
-        - Column 'address' (required)
-        - Column 'label' (optional)
-        """
-        wallets = []
-        with open(csv_path, 'r') as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                if 'address' not in row:
-                    raise ValueError("CSV must contain 'address' column")
-                
-                address = row['address'].strip()
-                if not address:
-                    continue
-                    
-                label = row.get('label', '').strip() or None
-                wallets.append(WalletAddress(address=address, label=label))
-        
-        log.info(f"Loaded {len(wallets)} wallet addresses from {csv_path}")
-        return wallets
-    
-    def read_token_addresses(self, csv_path: str) -> list[TokenAddress]:
-        """Read token addresses from CSV file.
-        
-        Expected CSV format:
-        - Column 'address' (required)
-        - Column 'symbol' (optional)
-        - Column 'decimals' (optional)
-        """
-        tokens = []
-        with open(csv_path, 'r') as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                if 'address' not in row:
-                    raise ValueError("CSV must contain 'address' column")
-                
-                address = row['address'].strip()
-                if not address:
-                    continue
-                    
-                symbol = row.get('symbol', '').strip() or None
-                decimals_str = row.get('decimals', '').strip()
-                decimals = int(decimals_str) if decimals_str.isdigit() else None
-                
-                tokens.append(TokenAddress(
-                    address=address,
-                    symbol=symbol,
-                    decimals=decimals
-                ))
-        
-        log.info(f"Loaded {len(tokens)} token addresses from {csv_path}")
-        return tokens
-    
-    @stamina.retry(
-        on=(requests.exceptions.RequestException, requests.exceptions.Timeout), 
-        attempts=3, 
-        wait_initial=5
-    )
-    def fetch_safe_multisig_addresses(self, safe_api_url: str) -> list[WalletAddress]:
-        """Fetch Safe multisig addresses from API endpoint.
+    def get_balance(self, wallet_address: str, token_address: str, token_symbol: Optional[str] = None, token_decimals: Optional[int] = None) -> WalletTokenBalance:
+        """Get balance for a single wallet-token combination.
         
         Args:
-            safe_api_url: API endpoint that returns {"safes": ["0x123...", "0x456..."]}
-        
-        Returns:
-            List of WalletAddress objects with 'locked multisig' labels
-        """
-        try:
-            response = self.session.get(safe_api_url, timeout=60)
-            
-            if response.status_code != 200:
-                log.error(f"Failed to fetch Safe addresses: HTTP {response.status_code}")
-                return []
-            
-            data = response.json()
-            
-            if 'safes' not in data:
-                log.error("API response missing 'safes' field")
-                return []
-            
-            safe_addresses = data['safes']
-            wallets = []
-            
-            for address in safe_addresses:
-                if address and isinstance(address, str):
-                    # Clean up address format
-                    clean_address = address.strip()
-                    if clean_address.startswith('0x'):
-                        wallets.append(WalletAddress(
-                            address=clean_address,
-                            label="locked multisig"
-                        ))
-            
-            log.info(f"Fetched {len(wallets)} Safe multisig addresses from API")
-            return wallets
-            
-        except Exception as e:
-            log.error(f"Error fetching Safe addresses: {str(e)}")
-            return []
-    
-    def combine_wallet_sources(
-        self, 
-        csv_wallets: list[WalletAddress], 
-        safe_wallets: list[WalletAddress]
-    ) -> list[WalletAddress]:
-        """Combine wallet addresses from multiple sources and remove duplicates.
-        
-        Args:
-            csv_wallets: Wallets from CSV file
-            safe_wallets: Wallets from Safe API
+            wallet_address: The wallet address to query
+            token_address: The ERC20 token contract address
+            token_symbol: Optional token symbol for labeling
+            token_decimals: Optional token decimals (will query if not provided)
             
         Returns:
-            Deduplicated list of wallet addresses
+            WalletTokenBalance with the query result
         """
-        # Use a dict to track unique addresses and preserve the first label encountered
-        unique_wallets = {}
+        # Get balance
+        balance_raw = self.get_erc20_balance(wallet_address, token_address)
         
-        # Add CSV wallets first (they take priority for labeling)
-        for wallet in csv_wallets:
-            unique_wallets[wallet.address.lower()] = wallet
+        # Get or use token decimals
+        decimals = token_decimals
+        if decimals is None:
+            decimals = self.get_token_decimals(token_address)
         
-        # Add Safe API wallets, but don't overwrite existing ones
-        for wallet in safe_wallets:
-            addr_key = wallet.address.lower()
-            if addr_key not in unique_wallets:
-                unique_wallets[addr_key] = wallet
+        # Calculate formatted balance
+        balance_formatted = None
+        if balance_raw is not None and decimals is not None:
+            try:
+                balance_int = int(balance_raw)
+                balance_formatted = balance_int / (10 ** decimals)
+            except (ValueError, ZeroDivisionError):
+                pass
         
-        result = list(unique_wallets.values())
+        # Rate limiting
+        time.sleep(self.rate_limit_delay)
         
-        log.info(f"Combined wallet sources: {len(csv_wallets)} from CSV + {len(safe_wallets)} from API = {len(result)} unique wallets")
-        
-        return result
+        return WalletTokenBalance(
+            wallet=wallet_address,
+            wallet_label=None,  # No label in generic function
+            token=token_address,
+            token_symbol=token_symbol,
+            balance=balance_raw,
+            decimals=decimals,
+            balance_formatted=balance_formatted
+        )
     
     @stamina.retry(
         on=(RateLimit, requests.exceptions.RequestException, requests.exceptions.Timeout), 
@@ -319,43 +225,169 @@ class WalletBalancePuller:
         except Exception as e:
             log.warning(f"Failed to get decimals, will retry: {str(e)}", token=token_address)
             raise  # Re-raise to trigger retry
+
+
+class BatchWalletBalancePuller:
+    """Orchestrates batch wallet balance operations with CSV inputs and Safe API integration."""
+    
+    def __init__(self, puller: WalletBalancePuller):
+        self.puller = puller
+    
+    def read_wallet_addresses(self, csv_path: str) -> list[WalletAddress]:
+        """Read wallet addresses from CSV file.
+        
+        Expected CSV format:
+        - Column 'address' (required)
+        - Column 'label' (optional)
+        """
+        wallets = []
+        with open(csv_path, 'r') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if 'address' not in row:
+                    raise ValueError("CSV must contain 'address' column")
+                
+                address = row['address'].strip()
+                if not address:
+                    continue
+                    
+                label = row.get('label', '').strip() or None
+                wallets.append(WalletAddress(address=address, label=label))
+        
+        log.info(f"Loaded {len(wallets)} wallet addresses from {csv_path}")
+        return wallets
+    
+    def read_token_addresses(self, csv_path: str) -> list[TokenAddress]:
+        """Read token addresses from CSV file.
+        
+        Expected CSV format:
+        - Column 'address' (required)
+        - Column 'symbol' (optional)
+        - Column 'decimals' (optional)
+        """
+        tokens = []
+        with open(csv_path, 'r') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if 'address' not in row:
+                    raise ValueError("CSV must contain 'address' column")
+                
+                address = row['address'].strip()
+                if not address:
+                    continue
+                    
+                symbol = row.get('symbol', '').strip() or None
+                decimals_str = row.get('decimals', '').strip()
+                decimals = int(decimals_str) if decimals_str.isdigit() else None
+                
+                tokens.append(TokenAddress(
+                    address=address,
+                    symbol=symbol,
+                    decimals=decimals
+                ))
+        
+        log.info(f"Loaded {len(tokens)} token addresses from {csv_path}")
+        return tokens
+    
+    @stamina.retry(
+        on=(requests.exceptions.RequestException, requests.exceptions.Timeout), 
+        attempts=3, 
+        wait_initial=5
+    )
+    def fetch_safe_multisig_addresses(self, safe_api_url: str) -> list[WalletAddress]:
+        """Fetch Safe multisig addresses from API endpoint.
+        
+        Args:
+            safe_api_url: API endpoint that returns {"safes": ["0x123...", "0x456..."]}
+        
+        Returns:
+            List of WalletAddress objects with 'locked multisig' labels
+        """
+        try:
+            response = self.puller.session.get(safe_api_url, timeout=60)
+            
+            if response.status_code != 200:
+                log.error(f"Failed to fetch Safe addresses: HTTP {response.status_code}")
+                return []
+            
+            data = response.json()
+            
+            if 'safes' not in data:
+                log.error("API response missing 'safes' field")
+                return []
+            
+            safe_addresses = data['safes']
+            wallets = []
+            
+            for address in safe_addresses:
+                if address and isinstance(address, str):
+                    # Clean up address format
+                    clean_address = address.strip()
+                    if clean_address.startswith('0x'):
+                        wallets.append(WalletAddress(
+                            address=clean_address,
+                            label="locked multisig"
+                        ))
+            
+            log.info(f"Fetched {len(wallets)} Safe multisig addresses from API")
+            return wallets
+            
+        except Exception as e:
+            log.error(f"Error fetching Safe addresses: {str(e)}")
+            return []
+    
+    def combine_wallet_sources(
+        self, 
+        csv_wallets: list[WalletAddress], 
+        safe_wallets: list[WalletAddress]
+    ) -> list[WalletAddress]:
+        """Combine wallet addresses from multiple sources and remove duplicates.
+        
+        Args:
+            csv_wallets: Wallets from CSV file
+            safe_wallets: Wallets from Safe API
+            
+        Returns:
+            Deduplicated list of wallet addresses
+        """
+        # Use a dict to track unique addresses and preserve the first label encountered
+        unique_wallets = {}
+        
+        # Add CSV wallets first (they take priority for labeling)
+        for wallet in csv_wallets:
+            unique_wallets[wallet.address.lower()] = wallet
+        
+        # Add Safe API wallets, but don't overwrite existing ones
+        for wallet in safe_wallets:
+            addr_key = wallet.address.lower()
+            if addr_key not in unique_wallets:
+                unique_wallets[addr_key] = wallet
+        
+        result = list(unique_wallets.values())
+        
+        log.info(f"Combined wallet sources: {len(csv_wallets)} from CSV + {len(safe_wallets)} from API = {len(result)} unique wallets")
+        
+        return result
     
     def query_wallet_token_balance(
         self, 
         wallet: WalletAddress, 
         token: TokenAddress
     ) -> WalletTokenBalance:
-        """Query balance for a specific wallet-token combination."""
+        """Query balance for a specific wallet-token combination with labels."""
         
-        # Get balance
-        balance_raw = self.get_erc20_balance(wallet.address, token.address)
-        
-        # Get or use token decimals
-        decimals = token.decimals
-        if decimals is None:
-            decimals = self.get_token_decimals(token.address)
-        
-        # Calculate formatted balance
-        balance_formatted = None
-        if balance_raw is not None and decimals is not None:
-            try:
-                balance_int = int(balance_raw)
-                balance_formatted = balance_int / (10 ** decimals)
-            except (ValueError, ZeroDivisionError):
-                pass
-        
-        # Rate limiting
-        time.sleep(self.rate_limit_delay)
-        
-        return WalletTokenBalance(
-            wallet=wallet.address,
-            wallet_label=wallet.label,
-            token=token.address,
+        # Use the core puller to get the balance
+        result = self.puller.get_balance(
+            wallet_address=wallet.address,
+            token_address=token.address,
             token_symbol=token.symbol,
-            balance=balance_raw,
-            decimals=decimals,
-            balance_formatted=balance_formatted
+            token_decimals=token.decimals
         )
+        
+        # Add the wallet label back
+        result.wallet_label = wallet.label
+        
+        return result
     
     def pull_all_balances(
         self, 
@@ -418,28 +450,32 @@ def execute_wallet_balance_pull(
              rpc_endpoint=rpc_endpoint,
              safe_api_url=safe_api_url)
     
+    # Create the core puller
     puller = WalletBalancePuller(
         rpc_endpoint=rpc_endpoint,
         rate_limit_delay=rate_limit_delay
     )
     
+    # Create the batch orchestrator
+    batch_puller = BatchWalletBalancePuller(puller)
+    
     # Load input data
-    csv_wallets = puller.read_wallet_addresses(wallets_csv)
-    tokens = puller.read_token_addresses(tokens_csv)
+    csv_wallets = batch_puller.read_wallet_addresses(wallets_csv)
+    tokens = batch_puller.read_token_addresses(tokens_csv)
     
     # Optionally fetch Safe multisig addresses
     safe_wallets = []
     if safe_api_url:
-        safe_wallets = puller.fetch_safe_multisig_addresses(safe_api_url)
+        safe_wallets = batch_puller.fetch_safe_multisig_addresses(safe_api_url)
     
     # Combine and deduplicate wallet sources
-    wallets = puller.combine_wallet_sources(csv_wallets, safe_wallets)
+    wallets = batch_puller.combine_wallet_sources(csv_wallets, safe_wallets)
     
     # Pull balances
-    results = puller.pull_all_balances(wallets, tokens)
+    results = batch_puller.pull_all_balances(wallets, tokens)
     
     # Save results
-    puller.save_results_to_csv(results, output_csv)
+    batch_puller.save_results_to_csv(results, output_csv)
     
     log.info("Wallet balance pull completed successfully")
     return results
