@@ -60,7 +60,7 @@ def evaluate_buffer(process_dt: date) -> date:
     """
     table1: TablePath = DefiLlama.PROTOCOLS_TVL.clickhouse_buffer_table()
 
-    # Query ClickHouse to the the total rows per dt and number of distinct protocol
+    # Query ClickHouse to the total rows per dt and number of distinct protocol
     # slugs for the (-15 days, -10 days) period and for each of the different dt's
     # on the last 5 days.
 
