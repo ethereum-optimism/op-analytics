@@ -1,8 +1,8 @@
 import time
+import re
 from urllib3.util.retry import Retry
 
 import requests
-import stamina
 from requests.adapters import HTTPAdapter
 from typing import Any
 from op_analytics.coreutils.logger import structlog
@@ -17,6 +17,40 @@ DEFAULT_RETRY_STRATEGY = Retry(
 )
 
 
+def mask_api_key_in_text(text: str) -> str:
+    """
+    Mask API keys in any text (error messages, URLs, etc.).
+
+    This function looks for common API key patterns and masks them for secure logging.
+
+    Args:
+        text: Text that may contain API keys
+
+    Returns:
+        Text with API keys masked
+    """
+    # Pattern to find DeFiLlama API keys
+    defillama_pattern = r"(https://pro-api\.llama\.fi/)([^/\s]+)"
+
+    def replace_defillama_match(match):
+        base_url, api_key = match.groups()
+        if len(api_key) > 8:
+            masked_key = api_key[:4] + "*" * (len(api_key) - 8) + api_key[-4:]
+        else:
+            masked_key = "*" * len(api_key)
+        return f"{base_url}{masked_key}"
+
+    # Apply DeFiLlama masking
+    text = re.sub(defillama_pattern, replace_defillama_match, text)
+
+    # Add more patterns here for other APIs as needed
+    # Example for generic API keys in URLs:
+    # generic_pattern = r"(https?://[^/]+/)([a-zA-Z0-9]{20,})"
+    # text = re.sub(generic_pattern, replace_generic_match, text)
+
+    return text
+
+
 def new_session() -> requests.Session:
     session = requests.Session()
     adapter = HTTPAdapter(max_retries=DEFAULT_RETRY_STRATEGY)
@@ -24,11 +58,6 @@ def new_session() -> requests.Session:
     session.mount("https://", adapter)
 
     return session
-
-
-def retry_logger(exc: Exception) -> bool:
-    log.error(f"retrying exception {exc}")
-    return True
 
 
 def get_data(
@@ -62,17 +91,18 @@ def get_data(
             timeout=timeout,
         )
 
-    # Retry on exceptions.
-    for attempt in stamina.retry_context(
-        on=retry_logger,
-        attempts=retry_attempts,
-        timeout=retries_timeout,
-        wait_initial=retries_wait_initial,
-        wait_max=retries_wait_max,
-    ):
-        with attempt:
-            if attempt.num > 1:
-                log.warning(f"retry attempt {url}", attempt=attempt.num)
+    # Custom retry logic to avoid stamina's API key exposure
+    last_exception = None
+    wait_time = retries_wait_initial
+    total_wait_time = 0
+
+    for attempt in range(1, retry_attempts + 1):
+        try:
+            if attempt > 1:
+                # Mask API keys in the URL before logging retry attempts
+                masked_url = mask_api_key_in_text(url)
+                log.warning(f"retry attempt {masked_url}", attempt=attempt)
+
             return _get_data(
                 session=session,
                 url=url,
@@ -81,6 +111,49 @@ def get_data(
                 emit_log=emit_log,
                 timeout=timeout,
             )
+
+        except Exception as e:
+            last_exception = e
+
+            # Mask API keys in the exception message before logging
+            masked_error = mask_api_key_in_text(str(e))
+            log.error(f"retrying exception {masked_error}")
+
+            # If this is the last attempt, don't wait
+            if attempt == retry_attempts:
+                break
+
+            # Check if we've exceeded the total timeout
+            if total_wait_time >= retries_timeout:
+                log.error(
+                    "retry timeout exceeded",
+                    total_wait_time=total_wait_time,
+                    retries_timeout=retries_timeout,
+                )
+                break
+
+            # Wait before the next attempt
+            actual_wait = min(wait_time, retries_wait_max)
+            if total_wait_time + actual_wait > retries_timeout:
+                actual_wait = retries_timeout - total_wait_time
+
+            if actual_wait > 0:
+                log.warning(
+                    f"waiting {actual_wait}s before retry", attempt=attempt, wait_time=actual_wait
+                )
+                time.sleep(actual_wait)
+                total_wait_time += actual_wait
+
+            # Exponential backoff
+            wait_time *= 2
+
+    # If we get here, all attempts failed
+    if last_exception:
+        # Mask API keys in the final exception message
+        masked_error = mask_api_key_in_text(str(last_exception))
+        raise type(last_exception)(masked_error) from last_exception
+    else:
+        raise Exception("All retry attempts failed")
 
 
 def _get_data(
@@ -97,8 +170,12 @@ def _get_data(
     resp.raise_for_status()
 
     if resp.status_code != 200:
-        raise Exception(f"status={resp.status_code}, url={url!r}")
+        # Mask API keys in the URL before including in exception
+        masked_url = mask_api_key_in_text(url)
+        raise Exception(f"status={resp.status_code}, url={masked_url!r}")
 
     if emit_log:
-        log.info(f"Fetched from {url}: {time.time() - start:.2f} seconds")
+        # Mask API keys in the URL before logging
+        masked_url = mask_api_key_in_text(url)
+        log.info(f"Fetched from {masked_url}: {time.time() - start:.2f} seconds")
     return resp.json()
