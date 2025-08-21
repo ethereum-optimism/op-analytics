@@ -7,7 +7,7 @@ This directory contains the scripts, files and methodology used to calculate RPG
  
 The following directory contains the method, necessary inputs and final results for RPGF4 voting. The scripts used for this process are written in python and are contained within a detailed notebook for review and testing. All results have been validated within different teams to ensure accurate allocations to recipient projects.
 
-For any validation, please clone the directory and and follow the instructions detailed.
+For any validation, please clone the directory and follow the instructions detailed.
 
 ### Required inputs 
 
