@@ -209,6 +209,7 @@ class ClickHouseDateChainETL(ETLMixin):
         self, range_spec: str, chains: list[str] | None = None
     ) -> list[DateChainBatch]:
         chains = chains or goldsky_mainnet_chains()
+        chains = [chain for chain in chains if chain != "celo"]
 
         ready_batches: list[DateChainBatch] = construct_batches(
             range_spec=range_spec,
