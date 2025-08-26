@@ -66,23 +66,18 @@ def get_gas_limit_for_date(date_str: str, gas_limits_df: pl.DataFrame, chain: st
 def fetch_random_sample_blocks(
     chain: str,
     date: str,
-    num_blocks: int = 100,
+    num_blocks: Optional[int] = None,
+    sample_fraction: Optional[float] = None,  # e.g. 0.01 for 1%
     gas_limit: Optional[int] = None,
     seed: Optional[int] = None
 ) -> Tuple[pl.DataFrame, int]:
     """
-    Fetch a random sample of N blocks from a given day.
+    Fetch a random sample of blocks from a given day.
 
-    Args:
-        chain: Chain name
-        date: Date in YYYY-MM-DD format
-        num_blocks: Number of blocks to randomly sample
-        gas_limit: Optional gas limit (will be looked up if not provided)
-        seed: Random seed for reproducibility
-
-    Returns:
-        Tuple of (DataFrame with transaction data, gas_limit used)
+    If sample_fraction is provided (0< f ≤1), we select ceil(f * total_blocks) blocks
+    using a deterministic hash-based ordering (seeded). Otherwise we select num_blocks.
     """
+
     # Get gas limit if not provided
     if gas_limit is None:
         gas_limits_df = load_gas_limits(get_gas_limits_path(chain))
@@ -94,57 +89,111 @@ def fetch_random_sample_blocks(
 
     # Deterministic hash-based ordering for sampling (faster than full rand())
     order_expr = (
-        f"bitXor(cityHash64(block_number), toUInt64({seed}))" if seed is not None else "cityHash64(block_number)"
+        f"bitXor(cityHash64(block_number), toUInt64({seed}))" if seed is not None
+        else "cityHash64(block_number)"
     )
 
-    # Query to randomly sample N blocks and get their transactions
-    query = f"""
-    WITH all_blocks AS (
-        SELECT DISTINCT block_number
-        FROM s3(
-            'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
-            '{KEY_ID}',
-            '{SECRET}',
-            'parquet'
+    # Clamp/normalize fraction on the Python side for safety
+    use_fraction = None
+    if sample_fraction is not None:
+        use_fraction = max(0.0, min(1.0, float(sample_fraction)))
+
+    if use_fraction and use_fraction > 0.0:
+        # One-shot query that computes K = ceil(f * total_blocks) and takes first K by deterministic order
+        query = f"""
+        WITH all_blocks AS (
+            SELECT DISTINCT block_number
+            FROM s3(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
+                '{KEY_ID}','{SECRET}','parquet'
+            )
+        ),
+        sampled_ordered AS (
+            SELECT block_number,
+                   row_number() OVER (ORDER BY {order_expr}) AS rn
+            FROM all_blocks
+        ),
+        sample_target AS (
+            SELECT greatest(toUInt64(1), toUInt64(ceil(count() * {use_fraction}))) AS k
+            FROM all_blocks
+        ),
+        sampled_blocks AS (
+            SELECT so.block_number
+            FROM sampled_ordered so
+            CROSS JOIN sample_target st
+            WHERE so.rn <= st.k
+        ),
+        block_stats AS (
+            SELECT
+                t.block_number,
+                SUM((LENGTH(t.input) / 2) - 1) AS block_total_calldata,
+                SUM(t.receipt_gas_used)       AS block_total_gas_used
+            FROM s3(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
+                '{KEY_ID}','{SECRET}','parquet'
+            ) t
+            INNER JOIN sampled_blocks sb ON t.block_number = sb.block_number
+            GROUP BY t.block_number
         )
-    ),
-    sampled_blocks AS (
-        SELECT block_number
-        FROM all_blocks
-        ORDER BY {order_expr}
-        LIMIT {num_blocks}
-    ),
-    block_stats AS (
         SELECT
             t.block_number,
-            SUM((LENGTH(t.input) / 2) - 1) AS block_total_calldata,
-            SUM(t.receipt_gas_used) AS block_total_gas_used
+            t.transaction_index,
+            t.input,
+            (LENGTH(t.input) / 2) - 1 AS calldata_size,
+            bs.block_total_calldata,
+            bs.block_total_gas_used
         FROM s3(
             'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
-            '{KEY_ID}',
-            '{SECRET}',
-            'parquet'
+            '{KEY_ID}','{SECRET}','parquet'
         ) t
-        INNER JOIN sampled_blocks sb ON t.block_number = sb.block_number
-        GROUP BY t.block_number
-    )
-    SELECT
-        t.block_number,
-        t.transaction_index,
-        t.input,
-        (LENGTH(t.input) / 2) - 1 AS calldata_size,
-        bs.block_total_calldata,
-        bs.block_total_gas_used
-    FROM s3(
-        'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
-        '{KEY_ID}',
-        '{SECRET}',
-        'parquet'
-    ) t
-    INNER JOIN block_stats bs ON t.block_number = bs.block_number
-    ORDER BY t.block_number, t.transaction_index
-    SETTINGS use_hive_partitioning = 1
-    """
+        INNER JOIN block_stats bs ON t.block_number = bs.block_number
+        ORDER BY t.block_number, t.transaction_index
+        SETTINGS use_hive_partitioning = 1
+        """
+    else:
+        # Fallback: fixed N blocks (keeps your original LIMIT plan)
+        n = int(num_blocks or 100)
+        query = f"""
+        WITH all_blocks AS (
+            SELECT DISTINCT block_number
+            FROM s3(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
+                '{KEY_ID}','{SECRET}','parquet'
+            )
+        ),
+        sampled_blocks AS (
+            SELECT block_number
+            FROM all_blocks
+            ORDER BY {order_expr}
+            LIMIT {n}
+        ),
+        block_stats AS (
+            SELECT
+                t.block_number,
+                SUM((LENGTH(t.input) / 2) - 1) AS block_total_calldata,
+                SUM(t.receipt_gas_used)       AS block_total_gas_used
+            FROM s3(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
+                '{KEY_ID}','{SECRET}','parquet'
+            ) t
+            INNER JOIN sampled_blocks sb ON t.block_number = sb.block_number
+            GROUP BY t.block_number
+        )
+        SELECT
+            t.block_number,
+            t.transaction_index,
+            t.input,
+            (LENGTH(t.input) / 2) - 1 AS calldata_size,
+            bs.block_total_calldata,
+            bs.block_total_gas_used
+        FROM s3(
+            'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
+            '{KEY_ID}','{SECRET}','parquet'
+        ) t
+        INNER JOIN block_stats bs ON t.block_number = bs.block_number
+        ORDER BY t.block_number, t.transaction_index
+        SETTINGS use_hive_partitioning = 1
+        """
 
     result_df = run_query(instance="OPLABS", query=query)
 
@@ -159,6 +208,7 @@ def fetch_random_sample_blocks(
     ])
 
     return result_df, gas_limit
+
 
 
 def fetch_top_percentile_blocks(
