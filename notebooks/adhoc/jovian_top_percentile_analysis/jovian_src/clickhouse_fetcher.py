@@ -151,7 +151,6 @@ def fetch_random_sample_blocks(
         SETTINGS use_hive_partitioning = 1
         """
     else:
-        # Fallback: fixed N blocks (keeps your original LIMIT plan)
         n = int(num_blocks or 100)
         query = f"""
         WITH all_blocks AS (
