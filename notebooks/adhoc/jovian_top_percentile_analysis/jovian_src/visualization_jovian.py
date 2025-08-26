@@ -144,7 +144,7 @@ def plot_compression_ratio_histogram(
 
             # DA efficiency
             if block.total_calldata_size > 0:
-                da_eff = block.total_size_estimate / block.total_calldata_size
+                da_eff = block.total_size_estimate / (block.total_calldata_size + 100 * block.tx_count)
                 da_efficiencies.append(da_eff * 100)  # Convert to percentage
 
     if not compression_ratios:
