@@ -11,7 +11,7 @@ from pathlib import Path
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
-from jovian_src.chain_config import get_gas_limits_path
+from .chain_config import get_gas_limits_path
 
 
 sys.path.append(str(Path(__file__).parent.parent))

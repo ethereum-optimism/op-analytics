@@ -14,9 +14,9 @@ import sys
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
 
-from jovian_src.analysis_functions import JovianAnalysisResult
-from jovian_src.chain_config import get_chain_display_name, get_chain_color
-from core import BlockAnalysis
+from .analysis_functions import JovianAnalysisResult
+from .chain_config import get_chain_display_name, get_chain_color
+from .core import BlockAnalysis
 
 # Set style for consistent visualizations
 plt.style.use('seaborn-v0_8-darkgrid')

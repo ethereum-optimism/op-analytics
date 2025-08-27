@@ -23,7 +23,7 @@ from op_analytics.datapipeline.etl.ingestion.reader.bydate import construct_read
 from op_analytics.datapipeline.etl.ingestion.reader.request import BlockBatchRequest
 from op_analytics.datapipeline.etl.ingestion.reader.rootpaths import RootPath
 
-from config import JovianConfig, AnalysisConfig
+from .config import JovianConfig, AnalysisConfig
 
 
 # =============================================================================
@@ -545,7 +545,7 @@ class DataLoader:
         self.storage = storage
         self.jovian_config = jovian_config
         # Import here to avoid circular imports
-        from config import DEFAULT_ANALYSIS_CONFIG
+        from .config import DEFAULT_ANALYSIS_CONFIG
         self.analysis_config = analysis_config or DEFAULT_ANALYSIS_CONFIG
 
     def fetch_transactions(self, chain: str, date: str, use_cache: bool = True,

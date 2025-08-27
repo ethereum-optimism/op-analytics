@@ -14,15 +14,15 @@ import sys
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
 
-from core import (
+from .core import (
     CalldataAnalyzer,
     BlockAnalysis,
     JovianConfig,
     AnalysisConfig,
     parse_calldata
 )
-from jovian_src.clickhouse_fetcher import load_gas_limits, get_gas_limit_for_date
-from jovian_src.chain_config import get_chain_display_name, DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS
+from .clickhouse_fetcher import load_gas_limits, get_gas_limit_for_date
+from .chain_config import get_chain_display_name, DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS
 
 
 @dataclass

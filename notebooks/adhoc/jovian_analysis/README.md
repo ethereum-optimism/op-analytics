@@ -25,10 +25,9 @@ This project analyzes blockchain blocks to determine optimal Jovian calldata foo
 ```
 jovian_analysis/
 ├── README.md                       # This file
-├── config.py                       # Configuration parameters
-├── core.py                         # Core Jovian analysis engine
-├── jovian_src/                     # Source code modules
-│   ├── __init__.py
+├── jovian_src/                     # All Python source code
+│   ├── core.py                     # Core Jovian analysis engine
+│   ├── config.py                   # Configuration parameters
 │   ├── analysis_functions.py       # Jovian analysis functions
 │   ├── visualization_jovian.py     # Histogram generation
 │   ├── clickhouse_fetcher.py       # Data fetching with gas limits
@@ -39,14 +38,19 @@ jovian_analysis/
 │   ├── base_jovian_analysis_final_random.ipynb
 │   ├── base_jovian_analysis_final_top_percentile.ipynb
 │   ├── quick_tests.ipynb
-│   └── datapull/                   # Data pulling utilities
+│   └── .cache/                      # Cached block data
+│       ├── op/
+│       │   ├── top_percentile/
+│       │   └── random_sample/
+│       └── base/
+│           ├── top_percentile/
+│           └── random_sample/
 ├── gas_limits/                      # Historical gas limits data
 │   ├── op_gas_limits.csv
 │   └── base_gas_limits.csv
-├── results/                         # Analysis outputs (created on run)
-│   ├── op/
-│   └── base/
-└── __pycache__/                     # Python cache (auto-generated)
+└── results/                         # Analysis outputs (created on run)
+    ├── op/
+    └── base/
 ```
 
 ## Installation
@@ -187,6 +191,9 @@ python jovian_src/analysis_functions.py
 
 # Test visualization
 python jovian_src/visualization_jovian.py
+
+# Test core functionality
+python jovian_src/core.py
 ```
 
 ## Contributing
