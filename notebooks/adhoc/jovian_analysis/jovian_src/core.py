@@ -781,8 +781,8 @@ class TransactionAnalysis:
     transaction_hash: str
     calldata_size: int
     fastlz_size: int
-    da_usage_estimate: float
-    calldata_footprint: float
+    da_usage_estimate: int
+    da_footprint: float
     compression_ratio: float
 
 
@@ -791,7 +791,7 @@ class BlockAnalysis:
     """Result of analyzing a block."""
     block_number: int
     tx_count: int
-    total_calldata_footprint: float
+    total_da_footprint: float
     total_da_usage_estimate: float
     calldata_utilization: float
     exceeds_limit: bool
@@ -813,7 +813,7 @@ class CalldataAnalyzer:
         self.analysis_config = analysis_config
         self.compressor = FastLZCompressor()
 
-    def calculate_da_usage_estimate(self, calldata: bytes, fastlz_size: Optional[int] = None) -> float:
+    def calculate_da_usage_estimate(self, calldata: bytes, fastlz_size: Optional[int] = None) -> int:
         """Calculate Jovian DA (Data Availability) usage estimate for calldata.
 
         This is the single source of truth for DA usage estimation calculations.
@@ -842,7 +842,7 @@ class CalldataAnalyzer:
         )
         return da_usage_estimate
 
-    def calculate_footprint(self, calldata: bytes, footprint_cost: int, fastlz_size: Optional[int] = None) -> float:
+    def calculate_footprint(self, calldata: bytes, footprint_cost: int, fastlz_size: Optional[int] = None) -> int:
         """Calculate calldata footprint for a transaction.
 
         Args:
@@ -878,7 +878,7 @@ class CalldataAnalyzer:
             calldata_size=len(calldata),
             fastlz_size=fastlz_size,
             da_usage_estimate=da_usage_estimate,
-            calldata_footprint=footprint,
+            da_footprint=footprint,
             compression_ratio=compression_ratio
         )
 
@@ -907,7 +907,7 @@ class CalldataAnalyzer:
             transactions.append(tx_analysis)
 
         # Calculate block-level metrics using pre-computed transaction results
-        total_footprint = sum(tx.calldata_footprint for tx in transactions)
+        total_footprint = sum(tx.da_footprint for tx in transactions)
         total_da_usage_estimate = sum(tx.da_usage_estimate for tx in transactions)
         total_calldata_size = sum(tx.calldata_size for tx in transactions)
         total_fastlz_size = sum(tx.fastlz_size for tx in transactions)
@@ -936,12 +936,12 @@ class CalldataAnalyzer:
         return BlockAnalysis(
             block_number=block_number,
             tx_count=len(transactions),
-            total_calldata_footprint=total_footprint,
+            total_da_footprint=total_footprint,
             total_da_usage_estimate=total_da_usage_estimate,
             calldata_utilization=utilization,
             exceeds_limit=exceeds_limit,
             avg_footprint_per_tx=total_footprint / len(transactions),
-            max_tx_footprint=max(tx.calldata_footprint for tx in transactions),
+            max_tx_footprint=max(tx.da_footprint for tx in transactions),
             transactions=transactions,
             footprint_cost=footprint_cost,
             block_gas_limit=self.jovian_config.block_gas_limit,
@@ -1018,7 +1018,7 @@ class CalldataAnalyzer:
         return BlockAnalysis(
             block_number=block_number,
             tx_count=tx_count,
-            total_calldata_footprint=total_footprint,
+            total_da_footprint=total_footprint,
             total_da_usage_estimate=total_da_usage_estimate,
             calldata_utilization=utilization,
             exceeds_limit=exceeds_limit,

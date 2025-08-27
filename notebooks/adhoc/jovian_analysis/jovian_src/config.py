@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 from pathlib import Path
 from .constants import (
-    DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS,
+    DEFAULT_DA_FOOTPRINT_GAS_SCALARS,
     DEFAULT_BLOCK_GAS_LIMIT,
     FASTLZ_INTERCEPT,
     FASTLZ_COEFFICIENT,
@@ -30,20 +30,20 @@ class JovianConfig:
         intercept: Jovian intercept parameter for size calculation
         fastlz_coef: FastLZ compression coefficient
         block_gas_limit: Maximum gas limit per block
-        default_calldata_footprint_gas_scalars: Default scalars to test for calldata footprint
+        default_da_footprint_gas_scalars: Default scalars to test for DA footprint
         data_dir: Directory for storing block data
     """
     min_transaction_size: int = 100
     intercept: int = FASTLZ_INTERCEPT
     fastlz_coef: int = FASTLZ_COEFFICIENT
     block_gas_limit: int = DEFAULT_BLOCK_GAS_LIMIT
-    default_calldata_footprint_gas_scalars: Optional[List[int]] = None
+    default_da_footprint_gas_scalars: Optional[List[int]] = None
     data_dir: Optional[Path] = None
 
     def __post_init__(self):
         """Initialize default values after dataclass initialization."""
-        if self.default_calldata_footprint_gas_scalars is None:
-            self.default_calldata_footprint_gas_scalars = DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS
+        if self.default_da_footprint_gas_scalars is None:
+            self.default_da_footprint_gas_scalars = DEFAULT_DA_FOOTPRINT_GAS_SCALARS
 
         if self.data_dir is None:
             self.data_dir = Path("block_data")

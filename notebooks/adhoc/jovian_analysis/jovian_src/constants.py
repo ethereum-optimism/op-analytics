@@ -18,8 +18,8 @@ DEFAULT_BLOCK_GAS_LIMIT = 150_000_000
 # CALLDATA FOOTPRINT GAS SCALARS
 # =============================================================================
 
-# Default calldata footprint gas scalars to test
-DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS = [160, 400, 600, 800]
+# Default DA footprint gas scalars to test
+DEFAULT_DA_FOOTPRINT_GAS_SCALARS = [160, 400, 600, 800]
 
 # Dynamic limit divisor for gas limit calculations
 DYNAMIC_LIMIT_DIVISOR = 800

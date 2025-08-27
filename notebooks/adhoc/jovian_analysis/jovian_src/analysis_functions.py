@@ -19,13 +19,13 @@ from .core import (
 )
 from .clickhouse_fetcher import load_gas_limits, get_gas_limit_for_date
 from .chain_config import get_chain_display_name
-from .constants import DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS
+from .constants import DEFAULT_DA_FOOTPRINT_GAS_SCALARS
 
 
 @dataclass
 class JovianAnalysisResult:
-    """Results from analyzing blocks with a specific calldata footprint gas scalar."""
-    calldata_footprint_gas_scalar: int
+    """Results from analyzing blocks with a specific DA footprint gas scalar."""
+    da_footprint_gas_scalar: int
     gas_limit: int
     chain: str
     sampling_method: str  # "top_percentile" or "random"
@@ -52,7 +52,7 @@ class JovianAnalysisResult:
 def perform_jovian_analysis(
     df: pl.DataFrame,
     gas_limit: int,
-    calldata_footprint_gas_scalars: List[int] = None,
+    da_footprint_gas_scalars: List[int] = None,
     chain: str = "base",
     sampling_method: str = "top_percentile",
     start_date: str = None,
@@ -65,7 +65,7 @@ def perform_jovian_analysis(
     Args:
         df: Transaction data from blocks
         gas_limit: Gas limit for the period
-        calldata_footprint_gas_scalars: List of scalars to test (default: [160, 400, 600, 800])
+        da_footprint_gas_scalars: List of scalars to test (default: [160, 400, 600, 800])
         chain: Chain name for context
         sampling_method: Method used to sample blocks
         start_date: Analysis start date (YYYY-MM-DD format)
@@ -73,10 +73,10 @@ def perform_jovian_analysis(
         show_progress: Show progress bars
 
     Returns:
-        Dictionary mapping calldata footprint gas scalar to analysis results
+        Dictionary mapping DA footprint gas scalar to analysis results
     """
-    if calldata_footprint_gas_scalars is None:
-        calldata_footprint_gas_scalars = DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS
+    if da_footprint_gas_scalars is None:
+        da_footprint_gas_scalars = DEFAULT_DA_FOOTPRINT_GAS_SCALARS
 
     # Create analyzer with appropriate config
     jovian_config = JovianConfig(block_gas_limit=gas_limit)
@@ -95,16 +95,16 @@ def perform_jovian_analysis(
         print(f"Sampling Method: {sampling_method}")
         print(f"Date Range: {date_range}")
         print(f"Gas Limit: {gas_limit:,}")
-        print(f"Calldata Footprint Gas Scalars: {calldata_footprint_gas_scalars}")
+        print(f"DA Footprint Gas Scalars: {da_footprint_gas_scalars}")
         print("=" * 60)
 
-    for scalar in calldata_footprint_gas_scalars:
+    for scalar in da_footprint_gas_scalars:
         if show_progress:
-            print(f"\n📊 Analyzing {get_chain_display_name(chain)} with calldata footprint gas scalar: {scalar}")
+            print(f"\n📊 Analyzing {get_chain_display_name(chain)} with DA footprint gas scalar: {scalar}")
             print(f"   Effective limit: {gas_limit / scalar:,.0f} bytes")
             print(f"   Sampling method: {sampling_method}")
 
-        # Analyze blocks with this scalar (using calldata_footprint_gas_scalar param for compatibility)
+        # Analyze blocks with this scalar (using da_footprint_gas_scalar param for compatibility)
         block_analyses = analyzer.analyze_multiple_blocks(df, scalar, show_progress)
 
         # Calculate aggregate statistics
@@ -131,7 +131,7 @@ def perform_jovian_analysis(
 
 def calculate_aggregate_statistics(
     block_analyses: List[BlockAnalysis],
-    calldata_footprint_gas_scalar: int,
+    da_footprint_gas_scalar: int,
     gas_limit: int,
     chain: str = "base",
     sampling_method: str = "top_percentile",
@@ -143,7 +143,7 @@ def calculate_aggregate_statistics(
 
     Args:
         block_analyses: List of BlockAnalysis objects
-        calldata_footprint_gas_scalar: Scalar used
+        da_footprint_gas_scalar: Scalar used
         gas_limit: Gas limit
         chain: Chain name
         sampling_method: Sampling method used
@@ -155,7 +155,7 @@ def calculate_aggregate_statistics(
     """
     if not block_analyses:
         return JovianAnalysisResult(
-            calldata_footprint_gas_scalar=calldata_footprint_gas_scalar,
+            da_footprint_gas_scalar=da_footprint_gas_scalar,
             gas_limit=gas_limit,
             chain=chain,
             sampling_method=sampling_method,
@@ -417,23 +417,23 @@ def create_compression_ratio_bins(compression_ratios: List[float]) -> Dict[str, 
 
 def calculate_scalar_limits(
     gas_limit: int,
-    calldata_footprint_gas_scalars: List[int] = None
+    da_footprint_gas_scalars: List[int] = None
 ) -> Dict[int, int]:
     """
-    Calculate effective calldata limits for different scalars.
+    Calculate effective DA limits for different scalars.
 
     Args:
         gas_limit: Current gas limit
-        calldata_footprint_gas_scalars: List of scalars to calculate
+        da_footprint_gas_scalars: List of scalars to calculate
 
     Returns:
         Dictionary mapping scalar to effective limit
     """
-    if calldata_footprint_gas_scalars is None:
-        calldata_footprint_gas_scalars = DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS
+    if da_footprint_gas_scalars is None:
+        da_footprint_gas_scalars = DEFAULT_DA_FOOTPRINT_GAS_SCALARS
 
     limits = {}
-    for scalar in calldata_footprint_gas_scalars:
+    for scalar in da_footprint_gas_scalars:
         limits[scalar] = gas_limit // scalar
 
     return limits
@@ -457,7 +457,7 @@ def generate_jovian_recommendation(
         over_gas_used_blocks = int(round(share_over_1 * measured_blocks))
 
         recommendation = {
-            "calldata_footprint_gas_scalar": scalar,
+            "da_footprint_gas_scalar": scalar,
             "blocks_exceeding_pct": result.percentage_exceeding,
             "avg_utilization": result.avg_utilization,
             "max_utilization": result.max_utilization,
@@ -490,7 +490,7 @@ def generate_jovian_recommendation(
     optimal = None
     for rec in recommendations:
         if rec["meets_target"]:
-            if optimal is None or rec["calldata_footprint_gas_scalar"] > optimal["calldata_footprint_gas_scalar"]:
+            if optimal is None or rec["da_footprint_gas_scalar"] > optimal["da_footprint_gas_scalar"]:
                 optimal = rec
     if optimal is None:
         optimal = min(recommendations, key=lambda x: x["blocks_exceeding_pct"])
@@ -504,14 +504,14 @@ def generate_jovian_recommendation(
         "start_date": start_date,
         "end_date": end_date,
         "date_range": date_range,
-        "optimal_calldata_footprint_gas_scalar": optimal["calldata_footprint_gas_scalar"],
+        "optimal_da_footprint_gas_scalar": optimal["da_footprint_gas_scalar"],
         "optimal_assessment": optimal["assessment"],
         "optimal_excess_rate": optimal["blocks_exceeding_pct"],
         "optimal_compression_ratio": optimal["avg_compression_ratio"],
         "recommendation_type": "constant",
         "rationale": (
-            f"For {chain_name} ({date_range}): Calldata footprint gas scalar of "
-            f"{optimal['calldata_footprint_gas_scalar']} provides {optimal['assessment'].lower()} "
+            f"For {chain_name} ({date_range}): DA footprint gas scalar of "
+            f"{optimal['da_footprint_gas_scalar']} provides {optimal['assessment'].lower()} "
             f"configuration with {optimal['blocks_exceeding_pct']:.2f}% blocks exceeding limit "
             f"(avg compression: {optimal['avg_compression_ratio']:.2f}x)"
         ),
@@ -588,4 +588,4 @@ if __name__ == "__main__":
     print("   - generate_jovian_recommendation()")
     print("   - analyze_block_size_distribution()")
     print("   - calculate_compression_metrics()")
-    print("\n📊 Calldata footprint gas scalars (Jovian): ", DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS)
+    print("\n📊 DA footprint gas scalars (Jovian): ", DEFAULT_DA_FOOTPRINT_GAS_SCALARS)

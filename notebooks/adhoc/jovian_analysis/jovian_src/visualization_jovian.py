@@ -17,7 +17,7 @@ from .chain_config import get_chain_display_name, get_chain_color
 from .core import BlockAnalysis
 from .constants import (
     DEFAULT_GAS_LIMIT,
-    DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS,
+    DEFAULT_DA_FOOTPRINT_GAS_SCALARS,
     HISTOGRAM_BINS,
     FIGURE_SIZE_LARGE,
     PLOT_DPI
@@ -85,7 +85,7 @@ def plot_da_usage_estimates_histogram(
                 label=f'Mean: {np.mean(da_usage_estimates):,.0f}')
 
     # Add vertical lines for scalar limits
-    scalars = DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS
+    scalars = DEFAULT_DA_FOOTPRINT_GAS_SCALARS
     scalar_colors = ['blue', 'purple', 'brown', 'pink']
     for scalar, scolor in zip(scalars, scalar_colors):
         limit = gas_limit / scalar
@@ -380,7 +380,7 @@ def plot_excess_distribution(
         # Calculate excess percentages for exceeding blocks
         exceeding_blocks = [b for b in result.block_analyses if b.exceeds_limit]
         excess_pcts = [
-            (b.total_calldata_footprint - result.gas_limit) / result.gas_limit * 100
+            (b.total_da_footprint - result.gas_limit) / result.gas_limit * 100
             for b in exceeding_blocks
         ]
 
@@ -561,7 +561,7 @@ def plot_over_utilization_percentages(
     return fig
 
 
-def plot_calldata_footprint_gas_scalar_comparison(
+def plot_da_footprint_gas_scalar_comparison(
     results_by_scalar: Dict[int, JovianAnalysisResult],
     chain: str = "base",
     start_date: str = None,
@@ -836,7 +836,7 @@ def generate_all_visualizations(
 
     # 6. Scalar comparison
     print("📊 Generating scalar comparison...")
-    fig6 = plot_calldata_footprint_gas_scalar_comparison(
+    fig6 = plot_da_footprint_gas_scalar_comparison(
         results_by_scalar,
         chain=chain,
         start_date=start_date,
