@@ -1,55 +1,58 @@
-# Fjord Top Percentile Analysis
+# Jovian Calldata Analysis
 
-Comprehensive analysis of the top 1% fullest blocks by calldata size for understanding Fjord footprint limits.
+Comprehensive analysis of Superchain blocks to determine optimal Jovian calldata footprint gas scalar configuration by analyzing the fullest blocks (top 1%), random sampling, and testing multiple footprint costs.
 
 ## Overview
 
-This project analyzes blockchain blocks to determine optimal Fjord footprint cost configuration by:
-- Fetching only the top 1% fullest blocks (by calldata size) from ClickHouse
+This project analyzes blockchain blocks to determine optimal Jovian calldata footprint gas scalar configuration by:
+- Fetching the top 1% fullest blocks (by calldata size) from ClickHouse or random sampling (1%) from the block history
 - Using dynamic gas limits from historical time series data
-- Testing multiple footprint costs [160, 400, 600, 800]
+- Testing multiple calldata footprint gas scalars [160, 400, 600, 800]
 - Generating comprehensive visualizations and recommendations
+- Supporting multiple chains: Base, OP Mainnet etc.
 
 ## Key Features
 
-- **Efficient Data Fetching**: SQL-based percentile filtering reduces data by ~99%
 - **Dynamic Gas Limits**: Uses actual historical gas limits (30M to 240M+)
-- **FastLZ Compression**: Realistic size estimates using Fjord's compression algorithm
-- **Comprehensive Analysis**: Tests multiple footprint costs to find optimal configuration
+- **FastLZ Compression**: Realistic size estimates using Jovian's compression algorithm
+- **Comprehensive Analysis**: Tests multiple calldata footprint gas scalars to find optimal configuration
 - **Required Visualizations**: All 5 required histograms and distributions
+- **Multi-Chain Support**: Analyze Base, OP Mainnet etc.
+- **Dual Sampling Methods**: Top percentile analysis and random sampling
 
 ## Project Structure
 
 ```
-fjord_top_percentile_analysis/
-├── CLAUDE.md                       # Project context and documentation
+jovian_analysis/
 ├── README.md                       # This file
-├── config.py                        # Configuration parameters
-├── core.py                          # Core Fjord analysis engine
-├── gas_limits/
-│   └── base_average_gas_limit.csv  # Historical gas limits
-├── fjord_src/
+├── config.py                       # Configuration parameters
+├── core.py                         # Core Jovian analysis engine
+├── jovian_src/                     # Source code modules
+│   ├── __init__.py
+│   ├── analysis_functions.py       # Jovian analysis functions
+│   ├── visualization_jovian.py     # Histogram generation
 │   ├── clickhouse_fetcher.py       # Data fetching with gas limits
-│   ├── analysis_functions.py       # Fjord analysis functions
-│   └── visualization.py            # Histogram generation
-├── notebooks/
-│   └── top_1_percent_analysis.ipynb # Main analysis notebook
-├── data/                            # Cached data (created on run)
-└── results/                         # Analysis outputs (created on run)
+│   └── chain_config.py             # Chain-specific configurations
+├── notebooks/                       # Jupyter notebooks
+│   ├── op_jovian_analysis_final_random.ipynb
+│   ├── op_jovian_analysis_final_top_percentile.ipynb
+│   ├── base_jovian_analysis_final_random.ipynb
+│   ├── base_jovian_analysis_final_top_percentile.ipynb
+│   ├── quick_tests.ipynb
+│   └── datapull/                   # Data pulling utilities
+├── gas_limits/                      # Historical gas limits data
+│   ├── op_gas_limits.csv
+│   └── base_gas_limits.csv
+├── results/                         # Analysis outputs (created on run)
+│   ├── op/
+│   └── base/
+└── __pycache__/                     # Python cache (auto-generated)
 ```
 
 ## Installation
 
-1. Ensure you have the required dependencies:
-```bash
-pip install polars pandas numpy matplotlib seaborn clickhouse-driver
-```
+Ensure you have the required dependencies by following the instructions in the [OP Labs Data Platform](https://static.optimism.io/op-analytics/sphinx/html/index.html).
 
-2. Set up environment variables for ClickHouse access:
-```bash
-export GCS_HMAC_ACCESS_KEY="your_key"
-export GCS_HMAC_SECRET="your_secret"
-```
 
 ## Usage
 
@@ -58,7 +61,25 @@ export GCS_HMAC_SECRET="your_secret"
 Run the main analysis notebook:
 ```bash
 cd notebooks
-jupyter notebook top_1_percent_analysis.ipynb
+jupyter notebook op_jovian_analysis_final_top_percentile.ipynb
+```
+
+### Configuration
+
+Edit the configuration section in the notebook:
+
+```python
+# Chain selection
+CHAIN = "base"  # Options: base, optimism, mode, zora, world, ink, soneium
+
+# Sampling method
+SAMPLING_METHOD = "top_percentile"  # or "random"
+PERCENTILE = 99.0    # For top percentile (99 = top 1%)
+NUM_BLOCKS = 100     # For random sampling
+
+# Date range
+START_DATE = "2024-08-01"
+END_DATE = "2024-08-07"
 ```
 
 ### Programmatic Usage
@@ -115,6 +136,26 @@ figures = generate_all_visualizations(
 - **600**: 15x multiplier (conservative)
 - **800**: 20x multiplier (very conservative)
 
+## Gas Limits
+
+Gas limits are loaded from CSV files in `gas_limits/`:
+- `base_gas_limits.csv`
+- `op_gas_limits.csv`
+- etc.
+
+If no gas limit file exists for a chain, defaults to 240,000,000.
+
+## Output
+
+Results are saved to: `results/{chain}/{start_date}_to_{end_date}/`
+
+Generated files:
+- Size estimates histogram
+- Blocks exceeding analysis
+- Compression analysis
+- Trend analysis
+- Scalar comparison
+
 ## Results
 
 The analysis provides:
@@ -127,11 +168,10 @@ The analysis provides:
 
 - **Transaction Data**: ClickHouse via GCS parquet files
 - **Gas Limits**: Historical CSV with daily gas limits
-- **Chains**: Base (primary), extensible to other chains
+- **Chains**: Base, OP Mainnet etc.
 
 ## Performance
 
-- **Data Reduction**: ~99% by fetching only top 1% blocks
 - **Caching**: Local parquet files for repeated analysis
 - **Parallel Processing**: Multi-threaded data fetching and analysis
 
@@ -140,7 +180,7 @@ The analysis provides:
 Test individual modules:
 ```bash
 # Test data fetching
-python fjord_src/clickhouse_fetcher.py
+python jovian_src/clickhouse_fetcher.py
 
 # Test analysis functions
 python jovian_src/analysis_functions.py
@@ -151,7 +191,7 @@ python jovian_src/visualization_jovian.py
 
 ## Contributing
 
-See CLAUDE.md for detailed project context and development guidelines.
+This project is part of the op-analytics repository. Please follow the project's contribution guidelines.
 
 ## License
 
