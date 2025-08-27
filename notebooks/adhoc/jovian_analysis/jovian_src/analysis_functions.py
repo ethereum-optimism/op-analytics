@@ -1,6 +1,6 @@
 """
 Jovian analysis functions leveraging the calculation engine from core.py.
-Provides comprehensive analysis for multiple calldata footprint gas scalars and gas limits.
+Provides comprehensive analysis for multiple DA footprint gas scalars and gas limits.
 Includes compression ratio analysis and multi-chain support.
 """
 
@@ -15,7 +15,6 @@ from .core import (
     BlockAnalysis,
     JovianConfig,
     AnalysisConfig,
-    parse_calldata
 )
 from .clickhouse_fetcher import load_gas_limits, get_gas_limit_for_date
 from .chain_config import get_chain_display_name
@@ -60,7 +59,7 @@ def perform_jovian_analysis(
     show_progress: bool = True
 ) -> Dict[int, JovianAnalysisResult]:
     """
-    Perform comprehensive Jovian analysis for multiple calldata footprint gas scalars.
+    Perform comprehensive Jovian analysis for multiple DA footprint gas scalars.
 
     Args:
         df: Transaction data from blocks
@@ -208,7 +207,7 @@ def calculate_aggregate_statistics(
 
     if exceeding:
         excess_percentages = [
-            (block.total_calldata_footprint - gas_limit) / gas_limit * 100
+            (block.total_da_footprint - gas_limit) / gas_limit * 100
             for block in exceeding
         ]
         avg_excess_pct = np.mean(excess_percentages)
@@ -219,7 +218,7 @@ def calculate_aggregate_statistics(
     compression_metrics = calculate_compression_metrics(block_analyses)
 
     return JovianAnalysisResult(
-        calldata_footprint_gas_scalar=calldata_footprint_gas_scalar,
+        da_footprint_gas_scalar=da_footprint_gas_scalar,
         gas_limit=gas_limit,
         chain=chain,
         sampling_method=sampling_method,
