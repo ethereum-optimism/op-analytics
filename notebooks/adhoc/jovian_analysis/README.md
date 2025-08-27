@@ -32,10 +32,12 @@ jovian_analysis/
 │   ├── analysis_functions.py       # Jovian analysis functions
 │   ├── visualization_jovian.py     # Histogram generation
 │   ├── clickhouse_fetcher.py       # Data fetching with gas limits
-│   └── chain_config.py             # Chain-specific configurations
+│   ├── chain_config.py             # Chain-specific configurations
+│   └── constants.py                # Centralized constants and hardcoded values
 ├── notebooks/                       # Jupyter notebooks
 │   ├── jovian_analysis.ipynb       # 🆕 Consolidated analysis notebook
-│   ├── da_throttling_timeseries_analysis.ipynb  # 🆕 Time-series analysis of DA throttling events
+│   ├── da_throttling_analysis.ipynb # 🆕 DA throttling analysis notebook
+│   ├── saved_output_html/           # 📁 Saved HTML outputs from analysis
 │   ├── archive/                     # 📁 Archived old notebooks
 │   │   ├── op_jovian_analysis_final_random.ipynb
 │   │   ├── op_jovian_analysis_final_top_percentile.ipynb
@@ -203,58 +205,6 @@ python jovian_src/visualization_jovian.py
 
 # Test core functionality
 python jovian_src/core.py
-```
-
-## Time-Series Analysis of DA Throttling Events
-
-### Overview
-
-The `da_throttling_timeseries_analysis.ipynb` notebook provides specialized analysis for understanding DA throttling behavior patterns over time. This is particularly useful for analyzing specific events where DA throttling occurred.
-
-### Key Analysis Periods
-
-1. **May 27-29, 2024**: 48+ hour range with DA throttling (9:05 AM - 9:35 AM CDT on 5/28)
-   - **Sampling**: 10% random blocks for performance
-   - **Focus**: Identify throttling start/end and recovery patterns
-   - **Granularity**: 1-minute moving averages
-
-2. **July 31, 2024**: 1-hour range (5:30 PM - 6:30 PM PT)
-   - **Sampling**: 100% of blocks for high resolution
-   - **Focus**: Fine-grained throttling behavior analysis
-   - **Granularity**: 30-second moving averages
-
-### Metrics Analyzed
-
-- **Block-Level Time Series**:
-  - Total transaction count per block
-  - Total DA usage estimate per block
-  - Total DA footprint (utilization ratio)
-  - Block gas used vs gas limit
-  - Throttling status detection
-
-- **Moving Averages**:
-  - Configurable time windows (1-minute for long periods, 30-second for short periods)
-  - Smooths out noise to reveal trends
-  - Helps identify throttling onset and recovery
-
-- **Throttling Detection**:
-  - Utilization threshold: 95% of gas limit
-  - Duration threshold: 5 minutes minimum
-  - Automatic identification of throttling periods
-
-### Visualization Outputs
-
-The notebook generates comprehensive 4-panel visualizations:
-1. **DA Usage Estimate**: Raw values + moving averages
-2. **DA Footprint vs Gas Limit**: Utilization patterns with threshold lines
-3. **Transaction Count**: Volume patterns over time
-4. **Throttling Status**: Binary throttling detection + utilization ratios
-
-### Usage
-
-```bash
-cd notebooks
-jupyter notebook da_throttling_timeseries_analysis.ipynb
 ```
 
 ### Configuration
