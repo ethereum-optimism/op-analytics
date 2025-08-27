@@ -798,7 +798,7 @@ class BlockAnalysis:
     avg_footprint_per_tx: float
     max_tx_footprint: float
     transactions: List[TransactionAnalysis]
-    footprint_cost: int
+    footprint_scalar: int
     block_gas_limit: int
     block_gas_used: Optional[int] = None
     utilization_vs_gas_used: Optional[float] = None
@@ -842,12 +842,12 @@ class CalldataAnalyzer:
         )
         return da_usage_estimate
 
-    def calculate_footprint(self, calldata: bytes, footprint_cost: int, fastlz_size: Optional[int] = None) -> int:
+    def calculate_footprint(self, calldata: bytes, footprint_scalar: int, fastlz_size: Optional[int] = None) -> int:
         """Calculate calldata footprint for a transaction.
 
         Args:
             calldata: Raw calldata bytes
-            footprint_cost: Cost multiplier for the footprint calculation
+            footprint_scalar: Scalar multiplier for the footprint calculation
             fastlz_size: Pre-computed FastLZ compressed size (without +68 offset).
                         If None, will compute compression internally.
 
@@ -855,9 +855,9 @@ class CalldataAnalyzer:
             float: Calculated footprint value
         """
         da_usage_estimate = self.calculate_da_usage_estimate(calldata, fastlz_size)
-        return da_usage_estimate * footprint_cost
+        return da_usage_estimate * footprint_scalar
 
-    def analyze_transaction(self, tx_row: Dict[str, Any], footprint_cost: int) -> TransactionAnalysis:
+    def analyze_transaction(self, tx_row: Dict[str, Any], footprint_scalar: int) -> TransactionAnalysis:
         """Analyze a single transaction."""
         calldata_hex = tx_row.get('input', '0x')
         calldata = parse_calldata(calldata_hex)
@@ -869,9 +869,10 @@ class CalldataAnalyzer:
         da_usage_estimate = self.calculate_da_usage_estimate(calldata, fastlz_size)
 
         # Calculate footprint using the centralized footprint function
-        footprint = self.calculate_footprint(calldata, footprint_cost, fastlz_size)
+        footprint = self.calculate_footprint(calldata, footprint_scalar, fastlz_size)
 
-        compression_ratio = len(calldata) / fastlz_size if fastlz_size > 0 else 0
+        compression_ratio = len(calldata) + 100 / da_usage_estimate
+
 
         return TransactionAnalysis(
             transaction_hash=tx_row.get('transaction_hash', ''),
@@ -882,7 +883,7 @@ class CalldataAnalyzer:
             compression_ratio=compression_ratio
         )
 
-    def analyze_block(self, block_df: pl.DataFrame, footprint_cost: int, *, show_tx_progress: bool = False) -> BlockAnalysis:
+    def analyze_block(self, block_df: pl.DataFrame, footprint_scalar: int, *, show_tx_progress: bool = False) -> BlockAnalysis:
         """Analyze all transactions in a block."""
         if len(block_df) == 0:
             raise ValueError("No transactions in block")
@@ -892,7 +893,7 @@ class CalldataAnalyzer:
         # OPTIMIZATION: For large blocks without detailed transaction analysis needs,
         # use vectorized operations to calculate aggregates directly
         if len(block_df) > 1000 and not show_tx_progress:
-            return self._analyze_block_vectorized(block_df, footprint_cost)
+            return self._analyze_block_vectorized(block_df, footprint_scalar)
 
         # Original detailed analysis path for smaller blocks or when progress is needed
         transactions = []
@@ -903,7 +904,7 @@ class CalldataAnalyzer:
             iterator = tqdm(iterator, total=len(block_df), desc=f"Analyzing block {block_number}")
 
         for row in iterator:
-            tx_analysis = self.analyze_transaction(row, footprint_cost)
+            tx_analysis = self.analyze_transaction(row, footprint_scalar)
             transactions.append(tx_analysis)
 
         # Calculate block-level metrics using pre-computed transaction results
@@ -943,7 +944,7 @@ class CalldataAnalyzer:
             avg_footprint_per_tx=total_footprint / len(transactions),
             max_tx_footprint=max(tx.da_footprint for tx in transactions),
             transactions=transactions,
-            footprint_cost=footprint_cost,
+            footprint_scalar=footprint_scalar,
             block_gas_limit=self.jovian_config.block_gas_limit,
             total_calldata_size=total_calldata_size,
             total_fastlz_size=total_fastlz_size,
@@ -951,7 +952,7 @@ class CalldataAnalyzer:
             utilization_vs_gas_used=utilization_vs_gas_used,
         )
 
-    def _analyze_block_vectorized(self, block_df: pl.DataFrame, footprint_cost: int) -> BlockAnalysis:
+    def _analyze_block_vectorized(self, block_df: pl.DataFrame, footprint_scalar: int) -> BlockAnalysis:
         """OPTIMIZATION: Vectorized block analysis for large blocks without individual transaction details."""
         block_number = block_df['block_number'][0]
         tx_count = len(block_df)
@@ -991,13 +992,13 @@ class CalldataAnalyzer:
         total_calldata_size = sum(calldata_sizes)
         total_fastlz_size = sum(fastlz_sizes)
         total_da_usage_estimate = sum(da_usage_estimates)
-        total_footprint = total_da_usage_estimate * footprint_cost
+        total_footprint = total_da_usage_estimate * footprint_scalar
 
         utilization = total_footprint / self.jovian_config.block_gas_limit
         exceeds_limit = total_footprint > self.jovian_config.block_gas_limit
 
         # Calculate max footprint for this block
-        max_tx_footprint = max(da_est * footprint_cost for da_est in da_usage_estimates) if da_usage_estimates else 0
+        max_tx_footprint = max(da_est * footprint_scalar for da_est in da_usage_estimates) if da_usage_estimates else 0
 
         block_gas_used = None
         if "block_total_gas_used" in block_df.columns:
@@ -1025,7 +1026,7 @@ class CalldataAnalyzer:
             avg_footprint_per_tx=total_footprint / tx_count,
             max_tx_footprint=max_tx_footprint,
             transactions=[],  # Empty for vectorized analysis to save memory
-            footprint_cost=footprint_cost,
+            footprint_scalar=footprint_scalar,
             block_gas_limit=self.jovian_config.block_gas_limit,
             total_calldata_size=total_calldata_size,
             total_fastlz_size=total_fastlz_size,
@@ -1033,7 +1034,7 @@ class CalldataAnalyzer:
             utilization_vs_gas_used=utilization_vs_gas_used,
         )
 
-    def analyze_multiple_blocks(self, df: pl.DataFrame, footprint_cost: int,
+    def analyze_multiple_blocks(self, df: pl.DataFrame, footprint_scalar: int,
                               show_progress: bool = True) -> List[BlockAnalysis]:
         """Analyze multiple blocks from a DataFrame."""
         block_groups = list(df.group_by("block_number"))
@@ -1044,11 +1045,11 @@ class CalldataAnalyzer:
         # Use multiprocessing for large datasets
         if (self.analysis_config.use_multiprocessing and
             len(block_groups) >= self.analysis_config.multiprocessing_threshold):
-            return self._analyze_blocks_parallel(block_groups, footprint_cost, show_progress)
+            return self._analyze_blocks_parallel(block_groups, footprint_scalar, show_progress)
         else:
-            return self._analyze_blocks_sequential(block_groups, footprint_cost, show_progress)
+            return self._analyze_blocks_sequential(block_groups, footprint_scalar, show_progress)
 
-    def _analyze_blocks_sequential(self, block_groups: List[Tuple], footprint_cost: int,
+    def _analyze_blocks_sequential(self, block_groups: List[Tuple], footprint_scalar: int,
                                  show_progress: bool) -> List[BlockAnalysis]:
         """Analyze blocks sequentially."""
         results = []
@@ -1059,7 +1060,7 @@ class CalldataAnalyzer:
 
         for block_num, block_df in iterator:
             try:
-                result = self.analyze_block(block_df, footprint_cost)
+                result = self.analyze_block(block_df, footprint_scalar)
                 results.append(result)
             except Exception as e:
                 if show_progress:
@@ -1067,7 +1068,7 @@ class CalldataAnalyzer:
 
         return results
 
-    def _analyze_blocks_parallel(self, block_groups: List[Tuple], footprint_cost: int,
+    def _analyze_blocks_parallel(self, block_groups: List[Tuple], footprint_scalar: int,
                                show_progress: bool) -> List[BlockAnalysis]:
         """Analyze blocks using multiprocessing."""
         # Prepare arguments for workers
@@ -1078,7 +1079,7 @@ class CalldataAnalyzer:
             'block_gas_limit': self.jovian_config.block_gas_limit,
         }
 
-        args_list = [(block_df, footprint_cost, config_dict) for block_num, block_df in block_groups]
+        args_list = [(block_df, footprint_scalar, config_dict) for block_num, block_df in block_groups]
 
         # Determine number of workers
         configured_workers = self.analysis_config.num_analysis_workers or mp.cpu_count()
@@ -1115,7 +1116,7 @@ class CalldataAnalyzer:
 def _analyze_block_worker(args: Tuple) -> Optional[BlockAnalysis]:
     """Worker function for multiprocessing block analysis."""
     try:
-        block_data, footprint_cost, config_dict = args
+        block_data, footprint_scalar, config_dict = args
 
         # Recreate config and analyzer
         jovian_config = JovianConfig(**config_dict)
@@ -1123,7 +1124,7 @@ def _analyze_block_worker(args: Tuple) -> Optional[BlockAnalysis]:
         analyzer = CalldataAnalyzer(jovian_config, analysis_config)
 
         # Analyze the block
-        return analyzer.analyze_block(block_data, footprint_cost)
+        return analyzer.analyze_block(block_data, footprint_scalar)
 
     except Exception as e:
         return None
