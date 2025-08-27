@@ -818,7 +818,7 @@ class CalldataAnalyzer:
         if not calldata:
             return float(self.jovian_config.min_transaction_size)
 
-        fastlz_size = self.compressor.compress_len(calldata)
+        fastlz_size = self.compressor.compress_len(calldata) + 68
         size_estimate = max(
             self.jovian_config.min_transaction_size,
             self.jovian_config.intercept + self.jovian_config.fastlz_coef * fastlz_size / 1e6
