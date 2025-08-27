@@ -104,8 +104,8 @@ class L2BeatProjectTVS:
         if not data.get("success"):
             # Some projects are not found in the TVS breakdown API, they return:
             # {
-            #   "success": false,
-            #   "error": "Project not found."
+            # "success": false,
+            # "error": "Project not found."
             # }
             return cls(slug=project.slug, data=None)
 
@@ -188,14 +188,14 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
         else:
             token_address = asset["tokenAddress"]
 
-        # URL (asset-level)
         url = None
         if "url" in asset:
             url = asset["url"]
         elif isinstance(asset.get("address"), dict):
             url = asset["address"].get("url")
 
-        # Escrows (supports both shapes)
+        # We produce one row per asset per escrow. If there are no escrows we still need to
+        # produce a row for the asset, so we set escrows to a list with a single null escrow.
         if "escrows" in asset:
             escrows = asset["escrows"]
         elif "escrow" in asset:
@@ -247,14 +247,15 @@ def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, An
                 "category": category_value,
             }
 
-        # valid escrows only (one row per valid escrow, else one row with null escrow)
+        # Get valid escrows (those with an address)
         valid_escrows = [esc for esc in escrows if get_escrow_address(esc)]
+
+        # If no valid escrows, create a row with null escrow data
         if not valid_escrows:
             rows.append(create_row())
         else:
             for esc in valid_escrows:
                 rows.append(create_row(esc))
-
     return rows
 
 
