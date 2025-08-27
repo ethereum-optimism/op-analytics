@@ -813,21 +813,48 @@ class CalldataAnalyzer:
         self.analysis_config = analysis_config
         self.compressor = FastLZCompressor()
 
-    def calculate_size_estimate(self, calldata: bytes) -> float:
-        """Calculate Jovian size estimate for calldata."""
+    def calculate_size_estimate(self, calldata: bytes, fastlz_size: Optional[int] = None) -> float:
+        """Calculate Jovian size estimate for calldata.
+
+        This is the single source of truth for size estimation calculations.
+        Can accept pre-computed FastLZ size to avoid duplicate compression calls.
+
+        Args:
+            calldata: Raw calldata bytes
+            fastlz_size: Pre-computed FastLZ compressed size (without +68 offset).
+                        If None, will compute compression internally.
+
+        Returns:
+            float: Calculated size estimate in bytes
+        """
         if not calldata:
             return float(self.jovian_config.min_transaction_size)
 
-        fastlz_size = self.compressor.compress_len(calldata) + 68
+        # Use pre-computed FastLZ size if provided, otherwise compute it
+        if fastlz_size is None:
+            fastlz_size = self.compressor.compress_len(calldata)
+
+        # Add the +68 offset that's part of the Jovian calculation
+        adjusted_fastlz_size = fastlz_size + 68
         size_estimate = max(
             self.jovian_config.min_transaction_size,
-            self.jovian_config.intercept + self.jovian_config.fastlz_coef * fastlz_size / 1e6
+            self.jovian_config.intercept + self.jovian_config.fastlz_coef * adjusted_fastlz_size / 1e6
         )
         return size_estimate
 
-    def calculate_footprint(self, calldata: bytes, footprint_cost: int) -> float:
-        """Calculate calldata footprint for a transaction."""
-        size_estimate = self.calculate_size_estimate(calldata)
+    def calculate_footprint(self, calldata: bytes, footprint_cost: int, fastlz_size: Optional[int] = None) -> float:
+        """Calculate calldata footprint for a transaction.
+
+        Args:
+            calldata: Raw calldata bytes
+            footprint_cost: Cost multiplier for the footprint calculation
+            fastlz_size: Pre-computed FastLZ compressed size (without +68 offset).
+                        If None, will compute compression internally.
+
+        Returns:
+            float: Calculated footprint value
+        """
+        size_estimate = self.calculate_size_estimate(calldata, fastlz_size)
         return size_estimate * footprint_cost
 
     def analyze_transaction(self, tx_row: Dict[str, Any], footprint_cost: int) -> TransactionAnalysis:
@@ -835,32 +862,16 @@ class CalldataAnalyzer:
         calldata_hex = tx_row.get('input', '0x')
         calldata = parse_calldata(calldata_hex)
 
-        # OPTIMIZATION: Calculate FastLZ compression once and reuse for all calculations
-        # Original code had 3 redundant computations:
-        # 1. Direct compress_len() call
-        # 2. compress_len() inside calculate_size_estimate()
-        # 3. compress_len() inside calculate_footprint() -> calculate_size_estimate()
+        # Calculate FastLZ compression once and reuse for all calculations
         fastlz_size = self.compressor.compress_len(calldata)
 
-        # OPTIMIZATION: Calculate size estimate using pre-computed fastlz_size
-        # instead of calling calculate_size_estimate() which would recompute compression
-        if not calldata:
-            size_estimate = float(self.jovian_config.min_transaction_size)
-        else:
-            size_estimate = max(
-                self.jovian_config.min_transaction_size,
-                self.jovian_config.intercept + self.jovian_config.fastlz_coef * fastlz_size / 1e6
-            )
+        # Use the centralized size estimation function with pre-computed FastLZ size
+        size_estimate = self.calculate_size_estimate(calldata, fastlz_size)
 
-        # OPTIMIZATION: Calculate footprint using pre-computed size_estimate
-        footprint = size_estimate * footprint_cost
+        # Calculate footprint using the centralized footprint function
+        footprint = self.calculate_footprint(calldata, footprint_cost, fastlz_size)
 
         compression_ratio = len(calldata) / fastlz_size if fastlz_size > 0 else 0
-
-        # CORRECTNESS CHECK: Results should be identical to original implementation
-        # Original path: compress_len() -> calculate_size_estimate() -> calculate_footprint()
-        # Optimized path: compress_len() -> inline size_estimate -> inline footprint
-        # Mathematical equivalence: guaranteed by identical formulas
 
         return TransactionAnalysis(
             transaction_hash=tx_row.get('transaction_hash', ''),
@@ -964,16 +975,13 @@ class CalldataAnalyzer:
                 calldata = parse_calldata(calldata_hex)
                 calldata_size = len(calldata)
 
-                # Calculate compression and size estimate
+                # Calculate compression and size estimate using centralized functions
                 if not calldata:
                     fastlz_size = 0
                     size_estimate = float(self.jovian_config.min_transaction_size)
                 else:
                     fastlz_size = self.compressor.compress_len(calldata)
-                    size_estimate = max(
-                        self.jovian_config.min_transaction_size,
-                        self.jovian_config.intercept + self.jovian_config.fastlz_coef * fastlz_size / 1e6
-                    )
+                    size_estimate = self.calculate_size_estimate(calldata, fastlz_size)
 
                 calldata_sizes.append(calldata_size)
                 fastlz_sizes.append(fastlz_size)
