@@ -9,12 +9,8 @@ import polars as pl
 import numpy as np
 from typing import Dict, List, Any, Optional
 from pathlib import Path
-import sys
 from matplotlib.ticker import PercentFormatter
 from typing import Callable, Optional, List
-
-# Add parent directory to path for imports
-sys.path.append(str(Path(__file__).parent.parent))
 
 from .analysis_functions import JovianAnalysisResult
 from .chain_config import get_chain_display_name, get_chain_color

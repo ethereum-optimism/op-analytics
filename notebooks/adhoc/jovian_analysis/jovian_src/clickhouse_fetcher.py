@@ -8,14 +8,11 @@ import pandas as pd
 from typing import Tuple, Optional, List, Dict
 from datetime import datetime
 from pathlib import Path
-import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 from .chain_config import get_gas_limits_path
 
-
-sys.path.append(str(Path(__file__).parent.parent))
-
+# Import from parent package
 from op_analytics.coreutils.clickhouse.client import run_query
 from op_analytics.coreutils.env.vault import env_get
 
