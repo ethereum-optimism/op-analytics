@@ -18,7 +18,8 @@ from .core import (
     parse_calldata
 )
 from .clickhouse_fetcher import load_gas_limits, get_gas_limit_for_date
-from .chain_config import get_chain_display_name, DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS
+from .chain_config import get_chain_display_name
+from .constants import DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS
 
 
 @dataclass

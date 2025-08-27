@@ -11,6 +11,7 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 from .chain_config import get_gas_limits_path
+from .constants import DEFAULT_GAS_LIMIT
 
 # Import from parent package
 from op_analytics.coreutils.clickhouse.client import run_query
@@ -398,7 +399,7 @@ def fetch_multiple_dates_parallel(
 
             except Exception as e:
                 print(f"❌ Error fetching {date}: {e}")
-                results[date] = (pl.DataFrame(), gas_limits.get(date, 240_000_000))
+                results[date] = (pl.DataFrame(), gas_limits.get(date, DEFAULT_GAS_LIMIT))
 
     elapsed = time.time() - start_time
     if verbose:
@@ -413,7 +414,7 @@ def fetch_date_range_single_query(
     sampling_method: str = "random",
     num_blocks_per_day: int = 100,
     percentile: float = 99.0,
-    gas_limit: int = 240_000_000,
+    gas_limit: int = DEFAULT_GAS_LIMIT,
     seed: Optional[int] = None
 ) -> pl.DataFrame:
     """

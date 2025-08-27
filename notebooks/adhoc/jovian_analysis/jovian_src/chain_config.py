@@ -5,6 +5,9 @@ Defines chain-specific parameters and configurations.
 
 from typing import Dict, Any, List
 from pathlib import Path
+from .constants import (
+    CHAIN_DEFAULT_GAS_LIMIT
+)
 
 # Chain configurations
 CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
@@ -12,7 +15,7 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "name": "Base",
         "display_name": "Base",
         "gas_limits_file": "base_gas_limits.csv",
-        "default_gas_limit": 30_000_000,
+        "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#0052FF",  # Base blue
         "priority": 1,
         "enabled": True
@@ -21,7 +24,7 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "name": "OP",
         "display_name": "OP Mainnet",
         "gas_limits_file": "op_gas_limits.csv",
-        "default_gas_limit": 30_000_000,
+        "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#FF0420",  # OP red
         "priority": 2,
         "enabled": True
@@ -30,7 +33,7 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "name": "Mode",
         "display_name": "Mode",
         "gas_limits_file": "mode_gas_limits.csv",
-        "default_gas_limit": 30_000_000,
+        "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#DFFE00",  # Mode yellow-green
         "priority": 3,
         "enabled": True
@@ -39,7 +42,7 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "name": "Zora",
         "display_name": "Zora",
         "gas_limits_file": "zora_gas_limits.csv",
-        "default_gas_limit": 30_000_000,
+        "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#000000",  # Zora black
         "priority": 4,
         "enabled": True
@@ -48,7 +51,7 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "name": "World",
         "display_name": "World Chain",
         "gas_limits_file": "world_gas_limits.csv",
-        "default_gas_limit": 30_000_000,
+        "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#00D4FF",  # World cyan
         "priority": 5,
         "enabled": True
@@ -57,7 +60,7 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "name": "Ink",
         "display_name": "Ink",
         "gas_limits_file": "ink_gas_limits.csv",
-        "default_gas_limit": 30_000_000,
+        "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#2D2D2D",  # Ink dark gray
         "priority": 6,
         "enabled": True
@@ -66,15 +69,12 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "name": "Soneium",
         "display_name": "Soneium",
         "gas_limits_file": "soneium_gas_limits.csv",
-        "default_gas_limit": 30_000_000,
+        "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#9B59B6",  # Soneium purple
         "priority": 7,
         "enabled": True
     }
 }
-
-# Default Jovian calldata footprint gas scalar values to test
-DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS = [160, 400, 600, 800]
 
 # Sampling methods
 SAMPLING_METHODS = {
@@ -120,4 +120,4 @@ def get_gas_limits_path(chain: str) -> Path:
 
 def get_default_gas_limit(chain: str) -> int:
     """Get default gas limit for a chain."""
-    return CHAIN_CONFIGS.get(chain, {}).get("default_gas_limit", 30_000_000)
+    return CHAIN_CONFIGS.get(chain, {}).get("default_gas_limit", CHAIN_DEFAULT_GAS_LIMIT)

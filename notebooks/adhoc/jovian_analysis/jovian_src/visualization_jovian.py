@@ -15,6 +15,13 @@ from typing import Callable, Optional, List
 from .analysis_functions import JovianAnalysisResult
 from .chain_config import get_chain_display_name, get_chain_color
 from .core import BlockAnalysis
+from .constants import (
+    DEFAULT_GAS_LIMIT,
+    DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS,
+    HISTOGRAM_BINS,
+    FIGURE_SIZE_LARGE,
+    PLOT_DPI
+)
 
 # Set style for consistent visualizations
 plt.style.use('seaborn-v0_8-darkgrid')
@@ -28,7 +35,7 @@ def plot_size_estimates_histogram(
     end_date: str = None,
     title: str = None,
     save_path: Optional[Path] = None,
-    gas_limit: int = 240_000_000
+    gas_limit: int = DEFAULT_GAS_LIMIT
 ) -> plt.Figure:
     """
     Plot histogram of total size estimates - two versions: with and without scalar limits.
@@ -45,13 +52,13 @@ def plot_size_estimates_histogram(
     size_estimates = [block.total_size_estimate for block in block_analyses]
 
     # Create figure with two subplots side by side
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=FIGURE_SIZE_LARGE)
 
     # Use chain color
     color = get_chain_color(chain)
 
     # ========== LEFT PLOT: Without scalar limits ==========
-    n1, bins1, patches1 = ax1.hist(size_estimates, bins=50, edgecolor='black', alpha=0.7, color=color)
+    n1, bins1, patches1 = ax1.hist(size_estimates, bins=HISTOGRAM_BINS, edgecolor='black', alpha=0.7, color=color)
     ax1.set_xlabel('Size Estimate (bytes)', fontsize=11)
     ax1.set_ylabel('Number of Blocks', fontsize=11)
     ax1.set_title(f'{title}', fontsize=12, fontweight='bold')
@@ -66,7 +73,7 @@ def plot_size_estimates_histogram(
     ax1.grid(True, alpha=0.3)
 
     # ========== RIGHT PLOT: With scalar limits ==========
-    n2, bins2, patches2 = ax2.hist(size_estimates, bins=50, edgecolor='black', alpha=0.7, color=color)
+    n2, bins2, patches2 = ax2.hist(size_estimates, bins=HISTOGRAM_BINS, edgecolor='black', alpha=0.7, color=color)
     ax2.set_xlabel('Size Estimate (bytes)', fontsize=11)
     ax2.set_ylabel('Number of Blocks', fontsize=11)
     ax2.set_title(f'{title} (with Scalar Limits)', fontsize=12, fontweight='bold')
@@ -78,7 +85,7 @@ def plot_size_estimates_histogram(
                 label=f'Mean: {np.mean(size_estimates):,.0f}')
 
     # Add vertical lines for scalar limits
-    scalars = [160, 400, 600, 800]
+    scalars = DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS
     scalar_colors = ['blue', 'purple', 'brown', 'pink']
     for scalar, scolor in zip(scalars, scalar_colors):
         limit = gas_limit / scalar
@@ -106,7 +113,7 @@ def plot_size_estimates_histogram(
 
     if save_path:
         save_path.parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(save_path, dpi=150, bbox_inches='tight')
+        plt.savefig(save_path, dpi=PLOT_DPI, bbox_inches='tight')
         print(f"✅ Saved size estimates histogram to {save_path}")
 
     return fig
