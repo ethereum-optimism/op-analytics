@@ -266,8 +266,8 @@ def calculate_compression_metrics(block_analyses: List[BlockAnalysis]) -> Dict[s
             compression_ratio = block.total_calldata_size / block.total_fastlz_size
             compression_ratios.append(compression_ratio)
 
-            # DA efficiency: size_estimate / original_calldata
-            da_efficiency = block.total_size_estimate / block.total_calldata_size
+            # DA efficiency: da_usage_estimate / original_calldata
+            da_efficiency = block.total_da_usage_estimate / block.total_calldata_size
             da_efficiency_ratios.append(da_efficiency)
 
     return {
@@ -534,8 +534,8 @@ def analyze_block_size_distribution(
     if not block_analyses:
         return {"error": "No blocks to analyze"}
 
-    # Extract size estimates
-    total_sizes = [block.total_size_estimate for block in block_analyses]
+    # Extract DA usage estimates
+    total_da_usage_estimates = [block.total_da_usage_estimate for block in block_analyses]
     calldata_sizes = [block.total_calldata_size for block in block_analyses]
     compressed_sizes = [block.total_fastlz_size for block in block_analyses]
 
@@ -546,19 +546,19 @@ def analyze_block_size_distribution(
             compression_ratios.append(calldata / compressed)
 
     return {
-        "size_estimates": {
-            "min": min(total_sizes),
-            "max": max(total_sizes),
-            "mean": np.mean(total_sizes),
-            "median": np.median(total_sizes),
-            "std": np.std(total_sizes),
+        "da_usage_estimates": {
+            "min": min(total_da_usage_estimates),
+            "max": max(total_da_usage_estimates),
+            "mean": np.mean(total_da_usage_estimates),
+            "median": np.median(total_da_usage_estimates),
+            "std": np.std(total_da_usage_estimates),
             "percentiles": {
-                "p25": np.percentile(total_sizes, 25),
-                "p50": np.percentile(total_sizes, 50),
-                "p75": np.percentile(total_sizes, 75),
-                "p90": np.percentile(total_sizes, 90),
-                "p95": np.percentile(total_sizes, 95),
-                "p99": np.percentile(total_sizes, 99)
+                "p25": np.percentile(total_da_usage_estimates, 25),
+                "p50": np.percentile(total_da_usage_estimates, 50),
+                "p75": np.percentile(total_da_usage_estimates, 75),
+                "p90": np.percentile(total_da_usage_estimates, 90),
+                "p95": np.percentile(total_da_usage_estimates, 95),
+                "p99": np.percentile(total_da_usage_estimates, 99)
             }
         },
         "calldata_sizes": {

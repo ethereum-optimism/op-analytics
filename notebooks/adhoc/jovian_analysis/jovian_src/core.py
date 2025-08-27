@@ -781,7 +781,7 @@ class TransactionAnalysis:
     transaction_hash: str
     calldata_size: int
     fastlz_size: int
-    size_estimate: float
+    da_usage_estimate: float
     calldata_footprint: float
     compression_ratio: float
 
@@ -792,7 +792,7 @@ class BlockAnalysis:
     block_number: int
     tx_count: int
     total_calldata_footprint: float
-    total_size_estimate: float
+    total_da_usage_estimate: float
     calldata_utilization: float
     exceeds_limit: bool
     avg_footprint_per_tx: float
@@ -813,10 +813,10 @@ class CalldataAnalyzer:
         self.analysis_config = analysis_config
         self.compressor = FastLZCompressor()
 
-    def calculate_size_estimate(self, calldata: bytes, fastlz_size: Optional[int] = None) -> float:
-        """Calculate Jovian size estimate for calldata.
+    def calculate_da_usage_estimate(self, calldata: bytes, fastlz_size: Optional[int] = None) -> float:
+        """Calculate Jovian DA (Data Availability) usage estimate for calldata.
 
-        This is the single source of truth for size estimation calculations.
+        This is the single source of truth for DA usage estimation calculations.
         Can accept pre-computed FastLZ size to avoid duplicate compression calls.
 
         Args:
@@ -825,7 +825,7 @@ class CalldataAnalyzer:
                         If None, will compute compression internally.
 
         Returns:
-            float: Calculated size estimate in bytes
+            float: Calculated DA usage estimate in bytes
         """
         if not calldata:
             return float(self.jovian_config.min_transaction_size)
@@ -836,11 +836,11 @@ class CalldataAnalyzer:
 
         # Add the +68 offset that's part of the Jovian calculation
         adjusted_fastlz_size = fastlz_size + 68
-        size_estimate = max(
+        da_usage_estimate = max(
             self.jovian_config.min_transaction_size,
             self.jovian_config.intercept + self.jovian_config.fastlz_coef * adjusted_fastlz_size / 1e6
         )
-        return size_estimate
+        return da_usage_estimate
 
     def calculate_footprint(self, calldata: bytes, footprint_cost: int, fastlz_size: Optional[int] = None) -> float:
         """Calculate calldata footprint for a transaction.
@@ -854,8 +854,8 @@ class CalldataAnalyzer:
         Returns:
             float: Calculated footprint value
         """
-        size_estimate = self.calculate_size_estimate(calldata, fastlz_size)
-        return size_estimate * footprint_cost
+        da_usage_estimate = self.calculate_da_usage_estimate(calldata, fastlz_size)
+        return da_usage_estimate * footprint_cost
 
     def analyze_transaction(self, tx_row: Dict[str, Any], footprint_cost: int) -> TransactionAnalysis:
         """Analyze a single transaction."""
@@ -865,8 +865,8 @@ class CalldataAnalyzer:
         # Calculate FastLZ compression once and reuse for all calculations
         fastlz_size = self.compressor.compress_len(calldata)
 
-        # Use the centralized size estimation function with pre-computed FastLZ size
-        size_estimate = self.calculate_size_estimate(calldata, fastlz_size)
+        # Use the centralized DA usage estimation function with pre-computed FastLZ size
+        da_usage_estimate = self.calculate_da_usage_estimate(calldata, fastlz_size)
 
         # Calculate footprint using the centralized footprint function
         footprint = self.calculate_footprint(calldata, footprint_cost, fastlz_size)
@@ -877,7 +877,7 @@ class CalldataAnalyzer:
             transaction_hash=tx_row.get('transaction_hash', ''),
             calldata_size=len(calldata),
             fastlz_size=fastlz_size,
-            size_estimate=size_estimate,
+            da_usage_estimate=da_usage_estimate,
             calldata_footprint=footprint,
             compression_ratio=compression_ratio
         )
@@ -908,7 +908,7 @@ class CalldataAnalyzer:
 
         # Calculate block-level metrics using pre-computed transaction results
         total_footprint = sum(tx.calldata_footprint for tx in transactions)
-        total_size_estimate = sum(tx.size_estimate for tx in transactions)
+        total_da_usage_estimate = sum(tx.da_usage_estimate for tx in transactions)
         total_calldata_size = sum(tx.calldata_size for tx in transactions)
         total_fastlz_size = sum(tx.fastlz_size for tx in transactions)
         utilization = total_footprint / self.jovian_config.block_gas_limit
@@ -937,7 +937,7 @@ class CalldataAnalyzer:
             block_number=block_number,
             tx_count=len(transactions),
             total_calldata_footprint=total_footprint,
-            total_size_estimate=total_size_estimate,
+            total_da_usage_estimate=total_da_usage_estimate,
             calldata_utilization=utilization,
             exceeds_limit=exceeds_limit,
             avg_footprint_per_tx=total_footprint / len(transactions),
@@ -960,7 +960,7 @@ class CalldataAnalyzer:
         # This avoids the O(n) iter_rows() loop for large blocks
         calldata_sizes = []
         fastlz_sizes = []
-        size_estimates = []
+        da_usage_estimates = []
 
         # Process in chunks to manage memory for very large blocks
         chunk_size = 1000
@@ -981,23 +981,23 @@ class CalldataAnalyzer:
                     size_estimate = float(self.jovian_config.min_transaction_size)
                 else:
                     fastlz_size = self.compressor.compress_len(calldata)
-                    size_estimate = self.calculate_size_estimate(calldata, fastlz_size)
+                    da_usage_estimate = self.calculate_da_usage_estimate(calldata, fastlz_size)
 
                 calldata_sizes.append(calldata_size)
                 fastlz_sizes.append(fastlz_size)
-                size_estimates.append(size_estimate)
+                da_usage_estimates.append(da_usage_estimate)
 
         # VECTORIZED AGGREGATIONS: Calculate totals without storing individual transactions
         total_calldata_size = sum(calldata_sizes)
         total_fastlz_size = sum(fastlz_sizes)
-        total_size_estimate = sum(size_estimates)
-        total_footprint = total_size_estimate * footprint_cost
+        total_da_usage_estimate = sum(da_usage_estimates)
+        total_footprint = total_da_usage_estimate * footprint_cost
 
         utilization = total_footprint / self.jovian_config.block_gas_limit
         exceeds_limit = total_footprint > self.jovian_config.block_gas_limit
 
         # Calculate max footprint for this block
-        max_tx_footprint = max(size_est * footprint_cost for size_est in size_estimates) if size_estimates else 0
+        max_tx_footprint = max(da_est * footprint_cost for da_est in da_usage_estimates) if da_usage_estimates else 0
 
         block_gas_used = None
         if "block_total_gas_used" in block_df.columns:
@@ -1019,7 +1019,7 @@ class CalldataAnalyzer:
             block_number=block_number,
             tx_count=tx_count,
             total_calldata_footprint=total_footprint,
-            total_size_estimate=total_size_estimate,
+            total_da_usage_estimate=total_da_usage_estimate,
             calldata_utilization=utilization,
             exceeds_limit=exceeds_limit,
             avg_footprint_per_tx=total_footprint / tx_count,

@@ -28,7 +28,7 @@ plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_palette("husl")
 
 
-def plot_size_estimates_histogram(
+def plot_da_usage_estimates_histogram(
     block_analyses: List[BlockAnalysis],
     chain: str = "base",
     start_date: str = None,
@@ -48,8 +48,8 @@ def plot_size_estimates_histogram(
         date_suffix = f" ({start_date} → {end_date})" if start_date and end_date else ""
         title = f"{get_chain_display_name(chain)}: Distribution of Block Size Estimates{date_suffix}"
 
-    # Extract size estimates
-    size_estimates = [block.total_size_estimate for block in block_analyses]
+    # Extract DA usage estimates
+    da_usage_estimates = [block.total_da_usage_estimate for block in block_analyses]
 
     # Create figure with two subplots side by side
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=FIGURE_SIZE_LARGE)
@@ -58,31 +58,31 @@ def plot_size_estimates_histogram(
     color = get_chain_color(chain)
 
     # ========== LEFT PLOT: Without scalar limits ==========
-    n1, bins1, patches1 = ax1.hist(size_estimates, bins=HISTOGRAM_BINS, edgecolor='black', alpha=0.7, color=color)
+    n1, bins1, patches1 = ax1.hist(da_usage_estimates, bins=HISTOGRAM_BINS, edgecolor='black', alpha=0.7, color=color)
     ax1.set_xlabel('Size Estimate (bytes)', fontsize=11)
     ax1.set_ylabel('Number of Blocks', fontsize=11)
     ax1.set_title(f'{title}', fontsize=12, fontweight='bold')
 
     # Add only mean and median lines
-    ax1.axvline(np.median(size_estimates), color='green', linestyle='-', linewidth=2,
-                label=f'Median: {np.median(size_estimates):,.0f}')
-    ax1.axvline(np.mean(size_estimates), color='red', linestyle='--', linewidth=2,
-                label=f'Mean: {np.mean(size_estimates):,.0f}')
+    ax1.axvline(np.median(da_usage_estimates), color='green', linestyle='-', linewidth=2,
+                label=f'Median: {np.median(da_usage_estimates):,.0f}')
+    ax1.axvline(np.mean(da_usage_estimates), color='red', linestyle='--', linewidth=2,
+                label=f'Mean: {np.mean(da_usage_estimates):,.0f}')
 
     ax1.legend(loc='upper right', fontsize=10)
     ax1.grid(True, alpha=0.3)
 
     # ========== RIGHT PLOT: With scalar limits ==========
-    n2, bins2, patches2 = ax2.hist(size_estimates, bins=HISTOGRAM_BINS, edgecolor='black', alpha=0.7, color=color)
+    n2, bins2, patches2 = ax2.hist(da_usage_estimates, bins=HISTOGRAM_BINS, edgecolor='black', alpha=0.7, color=color)
     ax2.set_xlabel('Size Estimate (bytes)', fontsize=11)
     ax2.set_ylabel('Number of Blocks', fontsize=11)
     ax2.set_title(f'{title} (with Scalar Limits)', fontsize=12, fontweight='bold')
 
     # Add mean and median
-    ax2.axvline(np.median(size_estimates), color='green', linestyle='-', linewidth=2,
-                label=f'Median: {np.median(size_estimates):,.0f}')
-    ax2.axvline(np.mean(size_estimates), color='red', linestyle='--', linewidth=2,
-                label=f'Mean: {np.mean(size_estimates):,.0f}')
+    ax2.axvline(np.median(da_usage_estimates), color='green', linestyle='-', linewidth=2,
+                label=f'Median: {np.median(da_usage_estimates):,.0f}')
+    ax2.axvline(np.mean(da_usage_estimates), color='red', linestyle='--', linewidth=2,
+                label=f'Mean: {np.mean(da_usage_estimates):,.0f}')
 
     # Add vertical lines for scalar limits
     scalars = DEFAULT_CALLDATA_FOOTPRINT_GAS_SCALARS
@@ -97,12 +97,12 @@ def plot_size_estimates_histogram(
 
     # Add statistics text to left plot only
     stats_text = (
-        f"Total Blocks: {len(size_estimates):,}\n"
-        f"Min: {min(size_estimates):,.0f}\n"
-        f"Max: {max(size_estimates):,.0f}\n"
-        f"Mean: {np.mean(size_estimates):,.0f}\n"
-        f"Median: {np.median(size_estimates):,.0f}\n"
-        f"Std Dev: {np.std(size_estimates):,.0f}"
+        f"Total Blocks: {len(da_usage_estimates):,}\n"
+        f"Min: {min(da_usage_estimates):,.0f}\n"
+        f"Max: {max(da_usage_estimates):,.0f}\n"
+        f"Mean: {np.mean(da_usage_estimates):,.0f}\n"
+        f"Median: {np.median(da_usage_estimates):,.0f}\n"
+        f"Std Dev: {np.std(da_usage_estimates):,.0f}"
     )
     ax1.text(0.02, 0.98, stats_text, transform=ax1.transAxes,
              verticalalignment='top', horizontalalignment='right',
@@ -149,7 +149,7 @@ def plot_compression_ratio_histogram(
 
             # DA efficiency
             if block.total_calldata_size > 0:
-                da_eff = block.total_size_estimate / (block.total_calldata_size + 100 * block.tx_count)
+                da_eff = block.total_da_usage_estimate / (block.total_calldata_size + 100 * block.tx_count)
                 da_efficiencies.append(da_eff * 100)  # Convert to percentage
 
     if not compression_ratios:
@@ -780,15 +780,15 @@ def generate_all_visualizations(
 
     # 1. Size estimates histogram (with gas_limit for vertical lines)
     print("📊 Generating enhanced size estimates histogram...")
-    fig1 = plot_size_estimates_histogram(
+    fig1 = plot_da_usage_estimates_histogram(
         block_analyses,
         chain=chain,
         start_date=start_date,
         end_date=end_date,
-        save_path=output_dir / "1_size_estimates_histogram.png" if output_dir else None,
+        save_path=output_dir / "1_da_usage_estimates_histogram.png" if output_dir else None,
         gas_limit=gas_limit
     )
-    figures["size_estimates"] = fig1
+    figures["da_usage_estimates"] = fig1
 
     # 2. Compression ratio histogram (Jovian feature)
     print("📊 Generating compression ratio histogram...")
@@ -911,15 +911,15 @@ def plot_comprehensive_summary(
     # ========== Plot 1: Size Distribution with All Limits ==========
     ax1 = fig.add_subplot(gs[0, 0])
 
-    # Collect all size estimates
-    all_size_estimates = []
+    # Collect all DA usage estimates
+    all_da_usage_estimates = []
     for result in results_by_scalar.values():
         for block in result.block_analyses:
-            all_size_estimates.append(block.total_size_estimate)
+            all_da_usage_estimates.append(block.total_da_usage_estimate)
 
-    if all_size_estimates:
+    if all_da_usage_estimates:
         # Create histogram
-        n, bins, patches = ax1.hist(all_size_estimates, bins=40, edgecolor='black',
+        n, bins, patches = ax1.hist(all_da_usage_estimates, bins=40, edgecolor='black',
                                     alpha=0.7, color=chain_color)
 
         # Add vertical lines for each scalar limit
@@ -930,8 +930,8 @@ def plot_comprehensive_summary(
                        label=f'Limit @ {scalar}: {limit:,.0f}')
 
         # Add mean and median lines
-        median_val = np.median(all_size_estimates)
-        mean_val = np.mean(all_size_estimates)
+        median_val = np.median(all_da_usage_estimates)
+        mean_val = np.mean(all_da_usage_estimates)
         ax1.axvline(median_val, color='green', linestyle='-', linewidth=2,
                    label=f'Median: {median_val:,.0f}')
         ax1.axvline(mean_val, color='red', linestyle='--', linewidth=2,
@@ -978,7 +978,7 @@ def plot_comprehensive_summary(
             ratio = block.total_calldata_size / block.total_fastlz_size
             compression_ratios.append(ratio)
         if block.total_calldata_size > 0:
-            da_eff = block.total_size_estimate / block.total_calldata_size * 100
+            da_eff = block.total_da_usage_estimate / block.total_calldata_size * 100
             da_efficiencies.append(da_eff)
 
     if compression_ratios:
