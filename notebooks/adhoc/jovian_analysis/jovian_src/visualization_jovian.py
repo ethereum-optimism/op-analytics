@@ -10,6 +10,8 @@ import numpy as np
 from typing import Dict, List, Any, Optional
 from pathlib import Path
 import sys
+from matplotlib.ticker import PercentFormatter
+from typing import Callable, Optional, List
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -1098,3 +1100,83 @@ def plot_comprehensive_summary(
         print(f"✅ Saved comprehensive summary to {save_path}")
 
     return fig
+
+
+def plot_block_metric_distribution(
+    scalar_to_peek: int,
+    analysis_results: dict,
+    metric_fn: Callable,  # function from block → scalar
+    title: str,
+    xlabel: str,
+    percent_scale: bool = True,
+    value_filter: Optional[Callable] = None,
+    chain_name: str = "CHAIN",
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    min_calldata: bool = False,
+):
+    """
+    Generic block-level metric distribution plot.
+
+    Parameters:
+    - scalar_to_peek: int key into analysis_results
+    - analysis_results: dict of scalar → result
+    - metric_fn: function that computes a float value from a block
+    - title: str, for plot title
+    - xlabel: str, for x-axis label
+    - percent_scale: whether to scale values ×100 and format as %
+    - value_filter: optional filter to apply on computed values
+    - chain_name: str for chain display name
+    - start_date, end_date: optional range display
+    - min_calldata: if True, only include blocks with total_calldata_size > 0
+    """
+    res = analysis_results[scalar_to_peek]
+    blocks = res.block_analyses
+    if min_calldata:
+        blocks = [b for b in blocks if b.total_calldata_size > 0]
+
+    # Compute values
+    values = []
+    for b in blocks:
+        try:
+            val = metric_fn(b)
+            if val is not None and (value_filter is None or value_filter(val)):
+                values.append(val)
+        except Exception:
+            continue
+
+    if not values:
+        print(f"⚠️ No valid values to plot for: {title}")
+        return
+
+    values = np.array(values)
+    mean_val   = float(np.mean(values))
+    median_val = float(np.median(values))
+
+    range_str = f" ({start_date} → {end_date})" if start_date and end_date else ""
+    title_str = f"{chain_name}: {title}{range_str}"
+
+    print(f"📊 {title}")
+    print(f"   n blocks: {len(values):,}")
+    print(f"   mean:   {mean_val:.2%}" if percent_scale else f"   mean:   {mean_val:.4f}")
+    print(f"   median: {median_val:.2%}" if percent_scale else f"   median: {median_val:.4f}")
+
+    # Plot
+    plt.figure(figsize=(9, 5))
+    plot_vals = values * 100 if percent_scale else values
+    plt.hist(plot_vals, bins=40, edgecolor='black', alpha=0.75)
+
+    # Add mean / median lines
+    plt.axvline(mean_val * 100 if percent_scale else mean_val, linestyle='--', linewidth=2, label=f"Mean: {mean_val*100:.1f}%" if percent_scale else f"Mean: {mean_val:.4f}")
+    plt.axvline(median_val * 100 if percent_scale else median_val, linestyle='-', linewidth=2, label=f"Median: {median_val*100:.1f}%" if percent_scale else f"Median: {median_val:.4f}")
+
+    plt.xlabel(xlabel)
+    plt.ylabel("Blocks")
+    plt.title(title_str)
+
+    if percent_scale:
+        plt.gca().xaxis.set_major_formatter(PercentFormatter(xmax=100))
+    plt.grid(alpha=0.25)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
