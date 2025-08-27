@@ -33,11 +33,13 @@ jovian_analysis/
 │   ├── clickhouse_fetcher.py       # Data fetching with gas limits
 │   └── chain_config.py             # Chain-specific configurations
 ├── notebooks/                       # Jupyter notebooks
-│   ├── op_jovian_analysis_final_random.ipynb
-│   ├── op_jovian_analysis_final_top_percentile.ipynb
-│   ├── base_jovian_analysis_final_random.ipynb
-│   ├── base_jovian_analysis_final_top_percentile.ipynb
-│   ├── quick_tests.ipynb
+│   ├── jovian_analysis.ipynb       # 🆕 Consolidated analysis notebook
+│   ├── archive/                     # 📁 Archived old notebooks
+│   │   ├── op_jovian_analysis_final_random.ipynb
+│   │   ├── op_jovian_analysis_final_top_percentile.ipynb
+│   │   ├── base_jovian_analysis_final_random.ipynb
+│   │   ├── base_jovian_analysis_final_top_percentile.ipynb
+│   │   └── quick_tests.ipynb
 │   └── .cache/                      # Cached block data
 │       ├── op/
 │       │   ├── top_percentile/
@@ -57,15 +59,14 @@ jovian_analysis/
 
 Ensure you have the required dependencies by following the instructions in the [OP Labs Data Platform](https://static.optimism.io/op-analytics/sphinx/html/index.html).
 
-
 ## Usage
 
 ### Quick Start
 
-Run the main analysis notebook:
+Run the consolidated analysis notebook:
 ```bash
 cd notebooks
-jupyter notebook op_jovian_analysis_final_top_percentile.ipynb
+jupyter notebook jovian_analysis.ipynb
 ```
 
 ### Configuration
@@ -74,16 +75,21 @@ Edit the configuration section in the notebook:
 
 ```python
 # Chain selection
-CHAIN = "base"  # Options: base, optimism, mode, zora, world, ink, soneium
+CHAIN = "base"  # Options: base, op
 
 # Sampling method
-SAMPLING_METHOD = "top_percentile"  # or "random"
+SAMPLING_METHOD = "top_percentile"  # "top_percentile" or "random"
 PERCENTILE = 99.0    # For top percentile (99 = top 1%)
-NUM_BLOCKS = 100     # For random sampling
+SAMPLE_FRACTION = 0.01  # For random sampling (1% = 0.01)
 
 # Date range
-START_DATE = "2024-08-01"
-END_DATE = "2024-08-07"
+START_DATE = "2025-03-01"
+END_DATE = "2025-06-30"
+
+# Analysis parameters
+FORCE_REFRESH = False  # Set True to ignore cache and re-download
+SAVE_RESULTS = True    # Save results to files
+SHOW_PLOTS = True      # Display plots inline
 ```
 
 ### Programmatic Usage
@@ -99,7 +105,7 @@ gas_limits = load_gas_limits()
 # Fetch data
 df, gas_limit = fetch_top_percentile_blocks(
     chain="base",
-    date="2024-08-01",
+    date="2025-03-01",
     percentile=99.0,
     gas_limit=120_000_000
 )
@@ -151,7 +157,7 @@ If no gas limit file exists for a chain, defaults to 240,000,000.
 
 ## Output
 
-Results are saved to: `results/{chain}/{start_date}_to_{end_date}/`
+Results are saved to: `results/{chain}/jovian_analysis_{method}_{start_date}_{end_date}/`
 
 Generated files:
 - Size estimates histogram
@@ -178,6 +184,7 @@ The analysis provides:
 
 - **Caching**: Local parquet files for repeated analysis
 - **Parallel Processing**: Multi-threaded data fetching and analysis
+- **Smart Sampling**: Top percentile or random sampling for efficient analysis
 
 ## Testing
 
