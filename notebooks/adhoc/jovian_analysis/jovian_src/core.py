@@ -790,6 +790,8 @@ class TransactionAnalysis:
 class BlockAnalysis:
     """Result of analyzing a block."""
     block_number: int
+    block_timestamp: int
+    base_fee_per_gas: int
     tx_count: int
     total_da_footprint: float
     total_da_usage_estimate: float
@@ -889,6 +891,8 @@ class CalldataAnalyzer:
             raise ValueError("No transactions in block")
 
         block_number = block_df['block_number'][0]
+        block_timestamp = block_df['block_timestamp'][0]
+        base_fee_per_gas = block_df['base_fee_per_gas'][0]
 
         # OPTIMIZATION: For large blocks without detailed transaction analysis needs,
         # use vectorized operations to calculate aggregates directly
@@ -936,6 +940,8 @@ class CalldataAnalyzer:
 
         return BlockAnalysis(
             block_number=block_number,
+            block_timestamp=block_timestamp,
+            base_fee_per_gas=base_fee_per_gas,
             tx_count=len(transactions),
             total_da_footprint=total_footprint,
             total_da_usage_estimate=total_da_usage_estimate,

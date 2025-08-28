@@ -173,7 +173,7 @@ def fetch_random_sample_blocks(
             (LENGTH(t.input) / 2) - 1 AS calldata_size,
             bs.block_total_calldata,
             bs.block_total_gas_used,
-            bs.block_timestamp,
+            bs.block_timestamp as block_timestamp,
             bbf.base_fee_per_gas
         FROM s3(
             'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
