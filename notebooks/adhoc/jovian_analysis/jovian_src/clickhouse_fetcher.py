@@ -10,6 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
+from datetime import timezone
 from .chain_config import get_gas_limits_path
 from .constants import DEFAULT_GAS_LIMIT
 
@@ -67,7 +68,9 @@ def fetch_random_sample_blocks(
     num_blocks: Optional[int] = None,
     sample_fraction: Optional[float] = None,  # e.g. 0.01 for 1%
     gas_limit: Optional[int] = None,
-    seed: Optional[int] = None
+    seed: Optional[int] = None,
+    start_datetime: Optional[datetime] = None,
+    end_datetime: Optional[datetime] = None
 ) -> Tuple[pl.DataFrame, int]:
     """
     Fetch a random sample of blocks from a given day.
@@ -91,6 +94,24 @@ def fetch_random_sample_blocks(
         else "cityHash64(block_number)"
     )
 
+    if start_datetime and end_datetime:
+        # If naïve but represent UTC, attach UTC tzinfo without shifting
+        if start_datetime.tzinfo is None:
+            start_datetime = start_datetime.replace(tzinfo=timezone.utc)
+        else:
+            start_datetime = start_datetime.astimezone(timezone.utc)
+
+        if end_datetime.tzinfo is None:
+            end_datetime = end_datetime.replace(tzinfo=timezone.utc)
+        else:
+            end_datetime = end_datetime.astimezone(timezone.utc)
+
+        start_ts = int(start_datetime.timestamp())
+        end_ts   = int(end_datetime.timestamp())
+        time_filter = f"block_timestamp >= {start_ts} AND block_timestamp <= {end_ts}"
+    else:
+        time_filter = "1"
+
     # Clamp/normalize fraction on the Python side for safety
     use_fraction = None
     if sample_fraction is not None:
@@ -100,23 +121,25 @@ def fetch_random_sample_blocks(
         # One-shot query that computes K = ceil(f * total_blocks) and takes first K by deterministic order
         query = f"""
         WITH all_blocks AS (
-            SELECT DISTINCT block_number
+            SELECT DISTINCT block_number, block_timestamp
             FROM s3(
                 'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
                 '{KEY_ID}','{SECRET}','parquet'
             )
         ),
         sampled_ordered AS (
-            SELECT block_number,
+            SELECT block_number, block_timestamp,
                    row_number() OVER (ORDER BY {order_expr}) AS rn
             FROM all_blocks
+            WHERE {time_filter}
         ),
         sample_target AS (
             SELECT greatest(toUInt64(1), toUInt64(ceil(count() * {use_fraction}))) AS k
             FROM all_blocks
+            WHERE {time_filter}
         ),
         sampled_blocks AS (
-            SELECT so.block_number
+            SELECT so.block_number, so.block_timestamp
             FROM sampled_ordered so
             CROSS JOIN sample_target st
             WHERE so.rn <= st.k
@@ -124,6 +147,7 @@ def fetch_random_sample_blocks(
         block_stats AS (
             SELECT
                 t.block_number,
+                t.block_timestamp,
                 SUM((LENGTH(t.input) / 2) - 1) AS block_total_calldata,
                 SUM(t.receipt_gas_used)       AS block_total_gas_used
             FROM s3(
@@ -131,21 +155,33 @@ def fetch_random_sample_blocks(
                 '{KEY_ID}','{SECRET}','parquet'
             ) t
             INNER JOIN sampled_blocks sb ON t.block_number = sb.block_number
-            GROUP BY t.block_number
+            GROUP BY t.block_number, t.block_timestamp
+        )
+        ,blocks_with_base_fee AS (
+            SELECT
+                b.number,
+                b.base_fee_per_gas
+            FROM s3(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/blocks_v1/chain={chain}/dt={date}/*.parquet',
+                '{KEY_ID}','{SECRET}','parquet'
+            ) b
         )
         SELECT
-            t.block_number,
+            t.block_number as block_number,
             t.transaction_index,
             t.input,
             (LENGTH(t.input) / 2) - 1 AS calldata_size,
             bs.block_total_calldata,
-            bs.block_total_gas_used
+            bs.block_total_gas_used,
+            bs.block_timestamp,
+            bbf.base_fee_per_gas
         FROM s3(
             'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
             '{KEY_ID}','{SECRET}','parquet'
         ) t
         INNER JOIN block_stats bs ON t.block_number = bs.block_number
-        ORDER BY t.block_number, t.transaction_index
+        INNER JOIN blocks_with_base_fee bbf ON t.block_number = bbf.number
+        ORDER BY bs.block_timestamp, t.block_number, t.transaction_index
         SETTINGS use_hive_partitioning = 1
         """
     else:
