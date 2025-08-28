@@ -39,11 +39,6 @@ jovian_analysis/
 │   ├── da_throttling_analysis.ipynb # 🆕 DA throttling analysis notebook
 │   ├── saved_output_html/           # 📁 Saved HTML outputs from analysis
 │   ├── archive/                     # 📁 Archived old notebooks
-│   │   ├── op_jovian_analysis_final_random.ipynb
-│   │   ├── op_jovian_analysis_final_top_percentile.ipynb
-│   │   ├── base_jovian_analysis_final_random.ipynb
-│   │   ├── base_jovian_analysis_final_top_percentile.ipynb
-│   │   └── quick_tests.ipynb
 │   └── .cache/                      # Cached block data
 │       ├── op/
 │       │   ├── top_percentile/
@@ -52,8 +47,8 @@ jovian_analysis/
 │           ├── top_percentile/
 │           └── random_sample/
 ├── gas_limits/                      # Historical gas limits data
-│   ├── op_gas_limits.csv
-│   └── base_gas_limits.csv
+│   ├── op_gas_limits.csv           # OP Mainnet gas limits
+│   └── base_gas_limits.csv         # Base gas limits
 └── results/                         # Analysis outputs (created on run)
     ├── op/
     └── base/
@@ -206,6 +201,14 @@ python jovian_src/visualization_jovian.py
 # Test core functionality
 python jovian_src/core.py
 ```
+
+## DA Throttling Analysis
+
+The `da_throttling_analysis.ipynb` notebook provides:
+- Time-series analysis of DA throttling events
+- Moving averages and trend detection
+- Throttling period identification
+- Performance metrics over time
 
 ### Configuration
 
