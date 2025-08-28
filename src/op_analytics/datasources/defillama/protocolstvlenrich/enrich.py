@@ -29,6 +29,7 @@ EXCLUDE_CATEGORIES = [
     "Anchor BTC",
     "Liquid Staking",
     "Liquid Restaking",
+    "Canonical Bridge"
 ]
 
 
