@@ -28,3 +28,11 @@ def unichain_lm(context: OpExecutionContext):
     result = execute_pull()
     context.log.info(result)
 
+@asset
+def top_contracts(context: OpExecutionContext):
+    """Pull top contracts from Dune."""
+    from op_analytics.datasources.dune.top_contracts import execute_pull
+
+    result = execute_pull()
+    context.log.info(result)
+

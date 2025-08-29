@@ -6,6 +6,7 @@ uops AS (
     , transaction_hash
     , log_index
     , sender
+    , success
   FROM account_abstraction__useroperationevent_logs
 )
 
@@ -38,4 +39,4 @@ FULL OUTER JOIN traces AS t
     AND u.sender = t.userop_sender
 WHERE
   u.sender IS NULL
-  OR t.userop_sender IS NULL
+  OR (t.userop_sender IS NULL AND u.success)
