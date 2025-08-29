@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 # ! pipenv run jupyter nbconvert --to python clean_chain_metadata_and_upload.ipynb
@@ -24,7 +24,7 @@ import os
 dotenv.load_dotenv()
 
 
-# In[3]:
+# In[ ]:
 
 
 # Read the CSV file
@@ -33,7 +33,7 @@ df = pd.read_csv('chain_metadata_raw.csv')
 table_name = 'op_stack_chain_metadata'
 
 
-# In[4]:
+# In[ ]:
 
 
 import math
@@ -59,11 +59,12 @@ def convert_to_int_or_keep_string(value):
 
 # Trim columns
 df.columns = df.columns.str.replace(" ", "").str.strip()
-df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-# Datetime
-df['public_mainnet_launch_date'] = pd.to_datetime(df['public_mainnet_launch_date'], errors='coerce')
-df['op_chain_start'] = pd.to_datetime(df['op_chain_start'], errors='coerce')
-df['op_governed_start'] = pd.to_datetime(df['op_governed_start'], errors='coerce')
+df = df.map(lambda x: x.strip() if isinstance(x, str) else x)
+# Datetime - specify format to avoid warnings
+df['public_mainnet_launch_date'] = pd.to_datetime(df['public_mainnet_launch_date'], errors='coerce', format='mixed')
+df['op_chain_start'] = pd.to_datetime(df['op_chain_start'], errors='coerce', format='mixed')
+df['op_governed_start'] = pd.to_datetime(df['op_governed_start'], errors='coerce', format='mixed')
+df['migration_start'] = pd.to_datetime(df['migration_start'], errors='coerce', format='mixed')
 # ChainID
 # Apply the function to the column
 df['mainnet_chain_id'] = df['mainnet_chain_id'].apply(convert_to_int_or_keep_string)
@@ -75,11 +76,8 @@ df = ops.generate_alignment_column(df)
 object_columns = df.select_dtypes(include=['object']).columns
 df[object_columns] = df[object_columns].fillna('')
 
-# Save the cleaned DataFrame to a new CSV file
-df.to_csv('../outputs/chain_metadata.csv', index=False)
 
-
-# In[6]:
+# In[ ]:
 
 
 # df.dtypes
@@ -103,4 +101,12 @@ bqu.write_df_to_bq_table(df, table_name)
 
 #CH Upload
 ch.write_df_to_clickhouse(df, table_name, if_exists='replace')
+
+
+# In[ ]:
+
+
+df['last_updated'] = pd.Timestamp.now()
+# Save the cleaned DataFrame to a new CSV file
+df.to_csv('../outputs/chain_metadata.csv', index=False)
 

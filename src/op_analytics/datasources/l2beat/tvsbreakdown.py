@@ -1,3 +1,4 @@
+import datetime
 from dataclasses import dataclass
 from typing import Any
 
@@ -117,121 +118,144 @@ class L2BeatProjectTVS:
 
 
 def parse_tvs(data: dict[str, Any], project: L2BeatProject) -> list[dict[str, Any]]:
-    breakdown = data["data"].get("breakdown", {})
-    timestamp = data["data"]["dataTimestamp"]
+    payload = data.get("data")
+    now_ts = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+
+    # --- Determine response shape (backwards compatible) ---
+    if isinstance(payload, dict) and "breakdown" in payload:
+        # Old shape:
+        # data = {
+        #   "data": {
+        #     "breakdown": { "<category>": [assets...] },
+        #     "dataTimestamp": <int>
+        #   },
+        #   "success": true
+        # }
+        breakdown = payload.get("breakdown", {})
+        timestamp = payload.get("dataTimestamp") or now_ts
+
+        # Iterator yields (asset, legacy_category)
+        item_iter = (
+            (asset, category) for category, assets in breakdown.items() for asset in assets
+        )
+
+    elif isinstance(payload, list):
+        # New shape:
+        # data = { "data": [assets...], "success": true }
+        item_iter = ((asset, None) for asset in payload)
+        timestamp = now_ts
+
+    else:
+        # Unexpected shape – be conservative and return no rows
+        return []
 
     rows = []
-    for category, assets in breakdown.items():
-        for asset in assets:
-            # Starting around 2025-04-17 the L2Beat API changed the structure of the JSON response
-            # for the TVS breakdown. We have to work around those changes here.
 
-            if "assetId" not in asset:
-                # New JSON structure
-                asset_id = asset["id"]
-            else:
-                asset_id = asset["assetId"]
+    for asset, legacy_category in item_iter:
+        # asset_id: support both shapes
+        asset_id = asset["id"] if "assetId" not in asset else asset["assetId"]
 
-            try:
-                if "chain" not in asset:
-                    chain_id = None
-                    chain_name = None
-                    # New JSON structure
-                    formula = asset["formula"]
-                    if "chain" in formula:
-                        chain_name = formula["chain"]
-                    elif "arguments" in formula:
-                        for argument in formula["arguments"]:
-                            if "chain" in argument:
-                                chain_name = argument["chain"]
-                                break
-                else:
-                    chain_id = asset["chain"]["id"]
-                    chain_name = asset["chain"]["name"]
-
-            except Exception:
-                log.error(f"Failed to parse chain for asset {asset}")
+        # chain parsing (supports both shapes)
+        try:
+            if "chain" not in asset:
                 chain_id = None
                 chain_name = None
-
-            if "tokenAddress" not in asset:
-                # New JSON structure
-                if "address" in asset and isinstance(asset["address"], dict):
-                    try:
-                        token_address = asset["address"]["address"]
-                    except KeyError:
-                        token_address = None
+                formula = asset.get("formula") or {}
+                if "chain" in formula:
+                    chain_name = formula["chain"]
                 else:
+                    for argument in formula.get("arguments", []):
+                        if isinstance(argument, dict) and "chain" in argument:
+                            chain_name = argument["chain"]
+                            break
+            else:
+                chain_id = asset["chain"]["id"]
+                chain_name = asset["chain"]["name"]
+        except Exception:
+            log.error(f"Failed to parse chain for asset {asset}")
+            chain_id = None
+            chain_name = None
+
+        # token address (supports both shapes)
+        if "tokenAddress" not in asset:
+            if "address" in asset and isinstance(asset["address"], dict):
+                try:
+                    token_address = asset["address"]["address"]
+                except KeyError:
                     token_address = None
             else:
-                token_address = asset["tokenAddress"]
+                token_address = None
+        else:
+            token_address = asset["tokenAddress"]
 
-            url = None
+        url = None
+        if "url" in asset:
+            url = asset["url"]
+        elif isinstance(asset.get("address"), dict):
+            url = asset["address"].get("url")
 
-            if "url" in asset:
-                url = asset["url"]
-            elif isinstance(asset.get("address"), dict):
-                url = asset["address"].get("url")
-
-            # We produce one row per asset per escrow. If there are no escrows we still need to
-            # produce a row for the asset, so we set escrows to a list with a single null escrow.
-            if "escrows" in asset:
-                escrows = asset["escrows"]
-            elif "escrow" in asset:
-                if asset["escrow"] == "multiple":
-                    escrows = asset["formula"]["arguments"]
-                else:
-                    escrows = [asset.get("escrow")]
+        # We produce one row per asset per escrow. If there are no escrows we still need to
+        # produce a row for the asset, so we set escrows to a list with a single null escrow.
+        if "escrows" in asset:
+            escrows = asset["escrows"]
+        elif "escrow" in asset:
+            if asset["escrow"] == "multiple":
+                formula = asset.get("formula") or {}
+                escrows = formula.get("arguments", [])
             else:
-                escrows = [None]
+                escrows = [asset.get("escrow")]
+        else:
+            escrows = [None]
 
-            def get_escrow_address(esc: dict[str, Any] | None) -> str | None:
-                if not isinstance(esc, dict):
-                    return None
-                return esc.get("address") or esc.get("escrowAddress")
+        def get_escrow_address(esc: dict[str, Any] | None) -> str | None:
+            if not isinstance(esc, dict):
+                return None
+            return esc.get("address") or esc.get("escrowAddress")
 
-            def get_escrow_name(esc: dict[str, Any] | None) -> str | None:
-                if not isinstance(esc, dict):
-                    return None
-                return esc.get("name")
+        def get_escrow_name(esc: dict[str, Any] | None) -> str | None:
+            if not isinstance(esc, dict):
+                return None
+            return esc.get("name")
 
-            def create_row(esc: dict[str, Any] | None = None) -> dict[str, Any]:
-                escrow_address = get_escrow_address(esc) if esc else None
-                return {
-                    "dt": dt_fromepoch(timestamp),
-                    "project_id": project.id,
-                    "project_slug": project.slug,
-                    "timestamp": timestamp,
-                    "asset_id": asset_id,
-                    "chain_name": chain_name,
-                    "chain_id": chain_id,
-                    "amount": asset["amount"],
-                    "usd_value": float(asset["usdValue"]) if "usdValue" in asset else None,
-                    "usd_price": float(asset["usdPrice"]) if "usdPrice" in asset else None,
-                    "is_gas_token": asset.get("isGasToken"),
-                    "token_address": token_address,
-                    "escrow_address": escrow_address,
-                    "escrow_name": get_escrow_name(esc) if esc else None,
-                    "is_shared_escrow": esc.get("isSharedEscrow") if esc else None,
-                    "escrow_url": esc.get("url") if esc else None,
-                    "asset_url": url,
-                    "icon_url": asset.get("iconUrl"),
-                    "symbol": asset["symbol"],
-                    "name": asset.get("name"),
-                    "supply": asset.get("supply"),
-                    "category": category,
-                }
+        def create_row(esc: dict[str, Any] | None = None) -> dict[str, Any]:
+            escrow_address = get_escrow_address(esc) if esc else None
+            # Category: prefer new "source", else legacy category key
+            category_value = asset.get("source", legacy_category)
 
-            # Get valid escrows (those with an address)
-            valid_escrows = [esc for esc in escrows if get_escrow_address(esc)]
+            return {
+                "dt": dt_fromepoch(timestamp),
+                "project_id": project.id,
+                "project_slug": project.slug,
+                "timestamp": timestamp,
+                "asset_id": asset_id,
+                "chain_name": chain_name,
+                "chain_id": chain_id,
+                "amount": asset["amount"],
+                "usd_value": float(asset["valueForProject"]) if "valueForProject" in asset else None,
+                "usd_price": float(asset["value"]) / float(asset["amount"]) if "value" in asset and "amount" in asset and asset["amount"] > 0 else None,
+                "is_gas_token": asset.get("isGasToken"),
+                "token_address": token_address,
+                "escrow_address": escrow_address,
+                "escrow_name": get_escrow_name(esc) if esc else None,
+                "is_shared_escrow": esc.get("isSharedEscrow") if isinstance(esc, dict) else None,
+                "escrow_url": esc.get("url") if isinstance(esc, dict) else None,
+                "asset_url": url,
+                "icon_url": asset.get("iconUrl"),
+                "symbol": asset["symbol"],
+                "name": asset.get("name"),
+                "supply": asset.get("supply"),
+                "category": category_value,
+            }
 
-            # If no valid escrows, create a row with null escrow data
-            if not valid_escrows:
-                rows.append(create_row())
-            else:
-                # Create a row for each valid escrow
-                for esc in valid_escrows:
-                    rows.append(create_row(esc))
+        # Get valid escrows (those with an address)
+        valid_escrows = [esc for esc in escrows if get_escrow_address(esc)]
+
+        # If no valid escrows, create a row with null escrow data
+        if not valid_escrows:
+            rows.append(create_row())
+        else:
+            for esc in valid_escrows:
+                rows.append(create_row(esc))
     return rows
 
 
@@ -246,6 +270,8 @@ def clean_dataframe(rows: list[dict[str, Any]]) -> pl.DataFrame:
                 "usd_price": pl.Float64,
                 "is_shared_escrow": pl.Boolean,
                 "supply": pl.String,
+                "escrow_url": pl.String,
+                "escrow_name": pl.String,
             },
         )
         .select(_[0] for _ in TVS_BREAKDOWN_SCHEMA)
