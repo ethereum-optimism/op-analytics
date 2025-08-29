@@ -40,5 +40,5 @@ FULL OUTER JOIN traces AS t
     AND u.transaction_hash = t.transaction_hash
     AND u.sender = t.userop_sender
 WHERE
-  (u.sender IS NULL AND t.userop_sender IS NOT NULL)
-  OR (t.userop_sender IS NULL AND u.sender IS NOT NULL)
+  t.userop_sender IS NULL
+  AND u.sender IS NOT NULL
