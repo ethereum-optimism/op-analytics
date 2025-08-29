@@ -7,6 +7,9 @@ uops AS (
     , log_index
     , sender
   FROM account_abstraction__useroperationevent_logs
+  WHERE
+    success
+    OR COALESCE(CAST(actualGasUsed AS BIGINT), 0) > 0
 )
 
 , traces AS (
@@ -37,5 +40,5 @@ FULL OUTER JOIN traces AS t
     AND u.transaction_hash = t.transaction_hash
     AND u.sender = t.userop_sender
 WHERE
-  u.sender IS NULL
-  OR t.userop_sender IS NULL
+  (u.sender IS NULL AND t.userop_sender IS NOT NULL)
+  OR (t.userop_sender IS NULL AND u.sender IS NOT NULL)
