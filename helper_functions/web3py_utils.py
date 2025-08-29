@@ -81,7 +81,7 @@ def getAverageBlockTime(endpoint, trailing_num_blocks = 500):
 def getBlockByTimestamp(etherscan_api, timestamp):
         timestamp_convert = pu.datetime_to_unix_timestamp(timestamp)
 
-        url = 'https://api-optimistic.etherscan.io/api?module=block&action=getblocknobytime&timestamp={}&closest=before&apikey={}'.format(timestamp_convert, etherscan_api)
+        url = 'https://explorer.optimism.io/api?module=block&action=getblocknobytime&timestamp={}&closest=before&apikey={}'.format(timestamp_convert, etherscan_api)
 
         res = r.get(url).json()['result']
         

@@ -16,7 +16,7 @@ https://basescan.org/tx/0x39f958600df4faff77320801daea1c9757209f93e653b545d35985
 But we can also have mor complex transactions that have several Transfer events
 before the Delivery event, for example:
 
-https://optimistic.etherscan.io/tx/0x9ae78927d9771a2bcd89fc9eb467c063753dc30214d4b858e0cb6e02151dc592#eventlog
+https://explorer.optimism.io/tx/0x9ae78927d9771a2bcd89fc9eb467c063753dc30214d4b858e0cb6e02151dc592#eventlog
 
 */
 
