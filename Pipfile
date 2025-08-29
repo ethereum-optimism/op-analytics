@@ -32,7 +32,6 @@ pydantic = "*"
 seaborn = "*"
 matplotlib = "*"
 scipy = "*"
-nbconvert = "*"
 
 [dev-packages]
 
