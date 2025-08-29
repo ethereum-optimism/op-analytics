@@ -2,52 +2,71 @@ import sys
 import types
 import pytest
 
-# Stub out heavy dependencies used during import
-sys.modules.setdefault("duckdb", types.SimpleNamespace(DuckDBPyConnection=object, DuckDBPyRelation=object))
-sys.modules.setdefault("polars", types.SimpleNamespace(DataFrame=object))
-sys.modules.setdefault("pyarrow", types.SimpleNamespace(Table=object))
-sys.modules.setdefault("overrides", types.SimpleNamespace(EnforceOverrides=object, override=lambda f: f))
-sys.modules.setdefault("orjson", types.SimpleNamespace())
+# Stub out heavy dependencies used during import. The real modules pull in
+# native dependencies that are not available in the test environment, so we
+# provide minimal ``ModuleType`` shims instead of ``SimpleNamespace`` objects to
+# keep ``mypy`` satisfied.
+
+duckdb_stub = types.ModuleType("duckdb")
+setattr(duckdb_stub, "DuckDBPyConnection", object)
+setattr(duckdb_stub, "DuckDBPyRelation", object)
+sys.modules.setdefault("duckdb", duckdb_stub)
+
+polars_stub = types.ModuleType("polars")
+setattr(polars_stub, "DataFrame", object)
+sys.modules.setdefault("polars", polars_stub)
+
+pyarrow_stub = types.ModuleType("pyarrow")
+setattr(pyarrow_stub, "Table", object)
+sys.modules.setdefault("pyarrow", pyarrow_stub)
+
+overrides_stub = types.ModuleType("overrides")
+setattr(overrides_stub, "EnforceOverrides", object)
+setattr(overrides_stub, "override", lambda f: f)
+sys.modules.setdefault("overrides", overrides_stub)
+
+orjson_stub = types.ModuleType("orjson")
+sys.modules.setdefault("orjson", orjson_stub)
 
 decoders_stub = types.ModuleType(
-    "op_analytics.datapipeline.models.code.account_abstraction.decoders"
+    "op_analytics.datapipeline.models.code.account_abstraction.decoders",
 )
-decoders_stub.register_4337_decoders = lambda ctx: None
+setattr(decoders_stub, "register_4337_decoders", lambda ctx: None)
 sys.modules.setdefault(
     "op_analytics.datapipeline.models.code.account_abstraction.decoders",
     decoders_stub,
 )
 
 compute_model_stub = types.ModuleType(
-    "op_analytics.datapipeline.models.compute.model"
+    "op_analytics.datapipeline.models.compute.model",
 )
-compute_model_stub.AuxiliaryTemplate = type("AuxiliaryTemplate", (), {})
-sys.modules.setdefault(
-    "op_analytics.datapipeline.models.compute.model", compute_model_stub
-)
+setattr(compute_model_stub, "AuxiliaryTemplate", type("AuxiliaryTemplate", (), {}))
+sys.modules.setdefault("op_analytics.datapipeline.models.compute.model", compute_model_stub)
 
 compute_registry_stub = types.ModuleType(
-    "op_analytics.datapipeline.models.compute.registry"
+    "op_analytics.datapipeline.models.compute.registry",
 )
-compute_registry_stub.register_model = lambda *a, **k: (lambda f: f)
-sys.modules.setdefault(
-    "op_analytics.datapipeline.models.compute.registry", compute_registry_stub
-)
+setattr(compute_registry_stub, "register_model", lambda *a, **k: (lambda f: f))
+sys.modules.setdefault("op_analytics.datapipeline.models.compute.registry", compute_registry_stub)
 
 compute_types_stub = types.ModuleType(
-    "op_analytics.datapipeline.models.compute.types"
+    "op_analytics.datapipeline.models.compute.types",
 )
-compute_types_stub.NamedRelations = dict
-sys.modules.setdefault(
-    "op_analytics.datapipeline.models.compute.types", compute_types_stub
-)
+setattr(compute_types_stub, "NamedRelations", dict)
+sys.modules.setdefault("op_analytics.datapipeline.models.compute.types", compute_types_stub)
 
 dummy_logger = types.ModuleType("op_analytics.coreutils.logger")
-dummy_logger.memory_usage = lambda: 0
-dummy_logger.structlog = types.SimpleNamespace(
-    get_logger=lambda: types.SimpleNamespace(info=lambda *a, **k: None, error=lambda *a, **k: None)
+setattr(dummy_logger, "memory_usage", lambda: 0)
+setattr(
+    dummy_logger,
+    "structlog",
+    types.SimpleNamespace(
+        get_logger=lambda: types.SimpleNamespace(
+            info=lambda *a, **k: None, error=lambda *a, **k: None
+        )
+    ),
 )
-dummy_logger.human_size = lambda *a, **k: "0B"
+setattr(dummy_logger, "human_size", lambda *a, **k: "0B")
 sys.modules.setdefault("op_analytics.coreutils.logger", dummy_logger)
 
 from op_analytics.datapipeline.models.code.account_abstraction import model
@@ -77,9 +96,7 @@ class DummyTemplate:
 
 def test_data_quality_error_reports_template(monkeypatch):
     # Patch decoder registration to no-op to avoid needing DuckDB setup
-    monkeypatch.setattr(
-        model, "register_4337_decoders", lambda ctx: None
-    )
+    monkeypatch.setattr(model, "register_4337_decoders", lambda ctx: None)
 
     ctx = object()
     input_datasets = {
