@@ -1,0 +1,55 @@
+{# Optional day filter used by each CTE when "dt" is provided #}
+{% macro where_dt() -%}
+  {% if dt %}
+  WHERE CAST(dt AS DATE) = DATE '{{ dt }}'
+  {% endif %}
+{%- endmacro %}
+
+WITH all_txs AS (
+    SELECT
+        CAST(dt AS DATE) AS dt_day,
+        lower(replace(coalesce(NULLIF(CAST(chain_id AS VARCHAR), '0'), display_name, blockchain), ' ', '')) AS chain_key,
+        blockchain,
+        max(num_txs)            AS txs_per_day,
+        max(num_blocks)         AS blocks_per_day,
+        max(median_tx_fee_usd)  AS median_tx_fee_usd,
+        max(tx_fee_usd)         AS tx_fee_usd
+    FROM {{ txs_table }}
+    {{ where_dt() }}
+    GROUP BY 1,2,3
+    HAVING max(num_blocks) > 0
+),
+all_gas AS (
+    SELECT
+        CAST(dt AS DATE) AS dt_day,
+        lower(replace(coalesce(NULLIF(CAST(chain_id AS VARCHAR), '0'), blockchain), ' ', '')) AS chain_key,
+        blockchain,
+        max(CAST(sum_evm_gas_used AS BIGINT)) AS sum_evm_gas_used
+    FROM {{ gas_table }}
+    {{ where_dt() }}
+    GROUP BY 1,2,3
+),
+all_fees AS (
+    SELECT
+        CAST(dt AS DATE) AS dt_day,
+        lower(replace(coalesce(NULLIF(CAST(chain_id AS VARCHAR), '0'), blockchain), ' ', '')) AS chain_key,
+        blockchain,
+        max(CAST(NULLIF(tx_fee_usd, 0) AS BIGINT)) AS sum_tx_fee_usd
+    FROM {{ fees_table }}
+    {{ where_dt() }}
+    GROUP BY 1,2,3
+)
+SELECT
+    t.dt_day,
+    CASE WHEN t.blockchain = 'plume' THEN '98866' ELSE t.chain_key END AS chain_key,
+    max(txs_per_day)                                   AS txs_per_day,
+    max(blocks_per_day)                                AS blocks_per_day,
+    max(median_tx_fee_usd)                             AS median_tx_fee_usd,
+    max(coalesce(f.sum_tx_fee_usd, t.tx_fee_usd))      AS tx_fee_usd,
+    max(g.sum_evm_gas_used)                            AS sum_evm_gas_used,
+    max(CAST(g.sum_evm_gas_used AS DOUBLE) / (60*60*24)) AS sum_evm_gas_used_per_second
+FROM all_txs t
+LEFT JOIN all_gas  g ON t.dt_day = g.dt_day AND t.blockchain = g.blockchain
+LEFT JOIN all_fees f ON t.dt_day = f.dt_day AND t.blockchain = f.blockchain
+GROUP BY 1,2
+ORDER BY 1,2;

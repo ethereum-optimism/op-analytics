@@ -1,0 +1,106 @@
+WITH daily_native_prices AS (
+  SELECT
+    DATE_TRUNC('day', timestamp) AS price_date,
+    symbol,
+    APPROX_PERCENTILE(price, 0.5) AS med_price
+  FROM prices.day
+  WHERE timestamp BETWEEN DATE {{ start_date | sqlquote }} AND DATE {{ end_date | sqlquote }}
+    AND contract_address = 0x0000000000000000000000000000000000000000
+  GROUP BY 1, 2
+),
+blocks AS (
+  SELECT
+    blockchain,
+    DATE_TRUNC('day', time) AS dt,
+    COUNT(*) AS num_blocks
+  FROM evms.blocks
+  WHERE time BETWEEN DATE {{ start_date | sqlquote }} AND DATE {{ end_date | sqlquote }}
+  GROUP BY 1, 2
+  UNION ALL
+  SELECT
+    f.blockchain,
+    f.block_date AS dt,
+    COUNT(DISTINCT f.block_number) AS num_blocks
+  FROM gas.fees f
+  WHERE f.blockchain NOT IN (
+      SELECT
+        blockchain
+        FROM evms.blocks
+      WHERE time > NOW() - INTERVAL '90' DAY
+      GROUP BY 1
+    )
+    AND f.block_date BETWEEN DATE {{ start_date | sqlquote }} AND DATE {{ end_date | sqlquote }}
+    AND f.block_time >= DATE {{ start_date | sqlquote }}
+    AND f.block_month BETWEEN
+        DATE_TRUNC('month', DATE {{ start_date | sqlquote }})
+        AND DATE_TRUNC('month', DATE {{ end_date | sqlquote }})
+    {% if single_chain and single_chain != "none" %}
+    AND f.blockchain = {{ single_chain | sqlquote }}
+    {% endif %}
+  GROUP BY 1, 2
+),
+fees AS (
+  SELECT
+    f.blockchain,
+    f.block_date AS dt,
+    i.name AS display_name,
+    i.chain_id,
+    f.tx_fee_currency,
+    COUNT_IF(f.tx_fee > 0) AS num_txs,
+    SUM(COALESCE(tfc.trx_fee_ratio, 1) * f.tx_fee) AS tx_fee_native,
+    SUM(
+      COALESCE(
+        COALESCE(tfc.trx_fee_ratio, 1) * f.tx_fee_usd,
+        COALESCE(tfc.trx_fee_ratio, 1) * f.tx_fee * p.med_price
+      )
+    ) AS tx_fee_usd,
+    APPROX_PERCENTILE(COALESCE(tfc.trx_fee_ratio, 1) * f.tx_fee, 0.5) AS median_tx_fee_native,
+    APPROX_PERCENTILE(
+      COALESCE(
+        COALESCE(tfc.trx_fee_ratio, 1) * f.tx_fee_usd,
+        COALESCE(tfc.trx_fee_ratio, 1) * f.tx_fee * p.med_price
+      ),
+      0.5
+    ) AS median_tx_fee_usd
+  FROM gas.fees f
+  LEFT JOIN evms.info i
+    ON i.blockchain = f.blockchain
+  LEFT JOIN metrics.tron_fee_correction tfc
+    ON tfc.day = f.block_date
+    AND f.blockchain = 'tron'
+  LEFT JOIN daily_native_prices p
+    ON p.price_date = f.block_date
+    AND p.symbol = i.native_token_symbol
+    AND f.tx_fee_usd IS NULL
+  WHERE f.block_date BETWEEN DATE {{ start_date | sqlquote }} AND DATE {{ end_date | sqlquote }}
+    AND f.block_time >= DATE {{ start_date | sqlquote }}
+    AND f.block_month BETWEEN
+      DATE_TRUNC('month', DATE {{ start_date | sqlquote }})
+      AND DATE_TRUNC('month', DATE {{ end_date | sqlquote }})
+    AND (f.gas_price > 0 OR f.gas_price IS NULL)
+    AND (f.gas_used > 0 OR f.gas_used IS NULL)
+    {% if single_chain and single_chain != "none" %}
+    AND f.blockchain = {{ single_chain | sqlquote }}
+    {% endif %}
+    AND (f.blockchain != 'tron' OR tfc.day IS NOT NULL)
+  GROUP BY 1, 2, 3, 4, 5
+)
+SELECT
+  f.blockchain,
+  f.dt,
+  COALESCE(i.name, f.display_name, INITCAP(f.blockchain)) AS display_name,
+  COALESCE(f.chain_id, i.chain_id) AS chain_id,
+  f.tx_fee_currency,
+  f.num_txs,
+  b.num_blocks,
+  f.tx_fee_native,
+  f.tx_fee_usd,
+  f.median_tx_fee_native,
+  f.median_tx_fee_usd
+FROM fees f
+LEFT JOIN blocks b
+  ON f.dt = b.dt
+  AND f.blockchain = b.blockchain
+LEFT JOIN evms.info i
+  ON i.blockchain = f.blockchain
+ORDER BY f.blockchain, f.dt

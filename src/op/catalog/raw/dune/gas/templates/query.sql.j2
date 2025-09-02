@@ -1,0 +1,38 @@
+WITH date_rng AS (
+    SELECT
+      CAST(DATE_TRUNC('day', NOW() - INTERVAL '{{ trailing_days }}' day) AS date) AS st,
+      CAST(DATE_TRUNC('day', NOW() - INTERVAL '{{ ending_days }}'  day) AS date) AS ed
+),
+excl_gas AS (
+    SELECT chains
+    FROM UNNEST(ARRAY['solana','linea','ronin','zksync','scroll','mantle','zkevm']) AS t(chains)
+),
+gas AS (
+    SELECT
+        t.blockchain,
+        DATE_TRUNC('day', t.block_time) AS dt,
+        SUM(
+          gas_used - CASE WHEN t.blockchain = 'Arbitrum' THEN l1_gas_used ELSE 0 END
+        ) AS sum_evm_gas_used
+    FROM evms.transactions t
+    WHERE t.blockchain NOT IN (SELECT chains FROM excl_gas)
+      AND t.block_time >= (SELECT st FROM date_rng)
+      AND t.block_time <= (SELECT ed FROM date_rng)
+      AND 1 = (
+        CASE
+            WHEN '{{ single_chain }}' = 'none' THEN 1
+            WHEN '{{ single_chain }}' = t.blockchain THEN 1
+            ELSE 0
+        END
+      )
+    GROUP BY 1,2
+)
+SELECT
+  g.blockchain,
+  g.dt,
+  g.sum_evm_gas_used,
+  i.chain_id
+FROM gas g
+JOIN evms.info i
+    ON i.blockchain = g.blockchain
+ORDER BY g.blockchain, g.dt

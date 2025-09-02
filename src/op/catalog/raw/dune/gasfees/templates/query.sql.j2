@@ -1,0 +1,15 @@
+SELECT
+    m.blockchain,
+    m.block_date AS dt,
+    m.gas_fees_usd AS tx_fee_usd,
+    i.chain_id,
+    COALESCE(i.name, INITCAP(m.blockchain)) AS display_name
+FROM metrics.gas_fees_daily m
+LEFT JOIN evms.info i
+    ON m.blockchain = i.blockchain
+WHERE m.block_date >= DATE_TRUNC('day', NOW() - INTERVAL '{{ trailing_days }}' day)
+  AND m.block_date <= DATE_TRUNC('day', NOW() - INTERVAL '{{ ending_days }}' day)
+  {% if single_chain != "none" %}
+  AND m.blockchain = '{{ single_chain }}'
+  {% endif %}
+ORDER BY m.blockchain, m.block_date

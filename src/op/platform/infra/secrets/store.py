@@ -1,0 +1,9 @@
+from typing import Optional, Protocol
+
+class Store(Protocol):
+    """Typed interface for retrieving secrets."""
+    def get(self, key: str) -> str: ...
+    def try_get(self, key: str) -> Optional[str]: ...
+    def snapshot(self) -> dict[str, str]:
+        """Best-effort readonly view for tools like sanitizers."""
+        ...
