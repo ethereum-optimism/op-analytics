@@ -9,15 +9,13 @@ This project analyzes blockchain blocks to determine optimal Jovian calldata foo
 - Using dynamic gas limits from historical time series data
 - Testing multiple calldata footprint gas scalars [160, 400, 600, 800]
 - Generating comprehensive visualizations and recommendations
-- Supporting multiple chains: Base, OP Mainnet etc.
+- Supporting multiple chains: Base, OP Mainnet, Mode, Ink, Soneium, Unichain, Worldchain, etc.
 
 ## Key Features
 
 - **Dynamic Gas Limits**: Uses actual historical gas limits (30M to 240M+)
 - **FastLZ Compression**: Realistic size estimates using Jovian's compression algorithm
-- **Comprehensive Analysis**: Tests multiple calldata footprint gas scalars to find optimal configuration
-- **Required Visualizations**: All 5 required histograms and distributions
-- **Multi-Chain Support**: Analyze Base, OP Mainnet etc.
+- **Multi-Chain Support**: Analyze Base, OP Mainnet, Mode, Ink, Soneium, Unichain, Worldchain, etc.
 - **Dual Sampling Methods**: Top percentile analysis and random sampling
 - **Time-Series Analysis**: Analyze DA throttling events with moving averages and throttling detection
 
@@ -30,28 +28,19 @@ jovian_analysis/
 │   ├── core.py                     # Core Jovian analysis engine
 │   ├── config.py                   # Configuration parameters
 │   ├── analysis_functions.py       # Jovian analysis functions
-│   ├── visualization_jovian.py     # Histogram generation
+│   ├── visualization_jovian.py     # Visualization generation
 │   ├── clickhouse_fetcher.py       # Data fetching with gas limits
 │   ├── chain_config.py             # Chain-specific configurations
-│   └── constants.py                # Centralized constants and hardcoded values
+│   └── constants.py                # Constants and hardcoded values
 ├── notebooks/                       # Jupyter notebooks
 │   ├── jovian_analysis.ipynb       # 🆕 Consolidated analysis notebook
 │   ├── da_throttling_analysis.ipynb # 🆕 DA throttling analysis notebook
 │   ├── saved_output_html/           # 📁 Saved HTML outputs from analysis
 │   ├── archive/                     # 📁 Archived old notebooks
 │   └── .cache/                      # Cached block data
-│       ├── op/
-│       │   ├── top_percentile/
-│       │   └── random_sample/
-│       └── base/
-│           ├── top_percentile/
-│           └── random_sample/
 ├── gas_limits/                      # Historical gas limits data
-│   ├── op_gas_limits.csv           # OP Mainnet gas limits
-│   └── base_gas_limits.csv         # Base gas limits
 └── results/                         # Analysis outputs (created on run)
-    ├── op/
-    └── base/
+
 ```
 
 ## Installation
@@ -74,7 +63,7 @@ Edit the configuration section in the notebook:
 
 ```python
 # Chain selection
-CHAIN = "base"  # Options: base, op
+CHAIN = "base"  # Options: base, op, mode, ink, soneium, unichain, worldchain
 
 # Sampling method
 SAMPLING_METHOD = "top_percentile"  # "top_percentile" or "random"
@@ -148,11 +137,15 @@ figures = generate_all_visualizations(
 ## Gas Limits
 
 Gas limits are loaded from CSV files in `gas_limits/`:
-- `base_gas_limits.csv`
-- `op_gas_limits.csv`
-- etc.
+- `base_gas_limits.csv` - Base gas limits
+- `op_gas_limits.csv` - OP Mainnet gas limits
+- `mode_gas_limits.csv` - Mode gas limits
+- `ink_gas_limits.csv` - Ink gas limits
+- `soneium_gas_limits.csv` - Soneium gas limits
+- `unichain_gas_limits.csv` - Unichain gas limits
+- `worldchain_gas_limits.csv` - Worldchain gas limits
 
-If no gas limit file exists for a chain, defaults to 240,000,000.
+If no gas limit file exists for a chain, defaults to 30,000,000.
 
 ## Output
 
@@ -164,6 +157,8 @@ Generated files:
 - Compression analysis
 - Trend analysis
 - Scalar comparison
+
+HTML outputs are also saved to `notebooks/saved_output_html/` for easy sharing and viewing.
 
 ## Results
 
@@ -177,13 +172,8 @@ The analysis provides:
 
 - **Transaction Data**: ClickHouse via GCS parquet files
 - **Gas Limits**: Historical CSV with daily gas limits
-- **Chains**: Base, OP Mainnet etc.
+- **Chains**: Base, OP Mainnet, Mode, Ink, Soneium, Unichain, Worldchain
 
-## Performance
-
-- **Caching**: Local parquet files for repeated analysis
-- **Parallel Processing**: Multi-threaded data fetching and analysis
-- **Smart Sampling**: Top percentile or random sampling for efficient analysis
 
 ## Testing
 
