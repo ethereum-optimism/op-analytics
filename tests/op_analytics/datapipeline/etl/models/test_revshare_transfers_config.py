@@ -13,7 +13,7 @@ class TestRevshareTransfersConfig(unittest.TestCase):
     def setUp(self):
         """Set up test paths."""
         repo_root = Path(__file__).resolve().parents[5]
-        self.config_dir = repo_root / "src/op_analytics/configs"
+        self.config_dir = repo_root / "src/op_analytics/configs/revshare"
         self.sql_dir = (
             repo_root / "src/op_analytics/datapipeline/etl/blockbatchload/ddl/revshare_transfers"
         )

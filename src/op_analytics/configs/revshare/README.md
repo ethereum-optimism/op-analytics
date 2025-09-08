@@ -4,7 +4,9 @@ This directory contains YAML configuration files used by the op-analytics data p
 
 ## Revshare Transfers Configuration
 
-### revshare_from_addresses.yaml
+Note: Revshare YAMLs are now organized under `src/op_analytics/configs/revshare/`.
+
+### revshare/revshare_from_addresses.yaml
 
 This file defines the "from" addresses for revshare transfers - addresses that send funds to OP receivers.
 
@@ -46,7 +48,7 @@ base:
   chain_id: 8453
 ```
 
-### revshare_to_addresses.yaml
+### revshare/revshare_to_addresses.yaml
 
 This file defines the "to" addresses for revshare transfers - OP receiver addresses that receive funds.
 
@@ -119,4 +121,4 @@ python -m pytest tests/op_analytics/datapipeline/etl/models/test_revshare_transf
 - All addresses are normalized to lowercase in the database
 - Changes to these files are version controlled in git
 - The system automatically loads these configs into ClickHouse tables
-- No SQL modifications are needed when updating addresses 
+- No SQL modifications are needed when updating addresses

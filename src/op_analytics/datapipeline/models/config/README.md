@@ -4,7 +4,7 @@ This directory contains configuration files for identifying and tracking revenue
 
 ## Configuration Files
 
-### revshare_to_addresses.yaml
+### revshare/revshare_to_addresses.yaml
 
 This file defines the destination addresses that receive revenue share transfers. Each entry contains:
 
@@ -25,7 +25,7 @@ Example:
   end_date: '2024-07-04'  # Will only receive transfers until this date
 ```
 
-### revshare_from_addresses.yaml
+### revshare/revshare_from_addresses.yaml
 
 This file defines the source addresses and chains that generate revenue share transfers. Each entry contains:
 

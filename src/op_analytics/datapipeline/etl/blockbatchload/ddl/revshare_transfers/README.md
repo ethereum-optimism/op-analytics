@@ -9,8 +9,8 @@ The revshare transfers system processes both native transfers (ETH) and ERC20 to
 ## Architecture
 
 ### 1. Configuration Files
-- **From addresses**: `src/op_analytics/configs/revshare_from_addresses.yaml`
-- **To addresses**: `src/op_analytics/configs/revshare_to_addresses.yaml`
+- **From addresses**: `src/op_analytics/configs/revshare/revshare_from_addresses.yaml`
+- **To addresses**: `src/op_analytics/configs/revshare/revshare_to_addresses.yaml`
 
 ### 2. Dagster Assets
 The system uses three Dagster assets that run in sequence:
@@ -27,7 +27,7 @@ The system uses three Dagster assets that run in sequence:
 ## How It Works
 
 ### Step 1: Configuration Management
-Edit the YAML files in `src/op_analytics/configs/` to add/remove addresses or modify configurations.
+Edit the YAML files in `src/op_analytics/configs/revshare/` to add/remove addresses or modify configurations.
 
 ### Step 2: Dagster Execution
 When you run the Dagster job:

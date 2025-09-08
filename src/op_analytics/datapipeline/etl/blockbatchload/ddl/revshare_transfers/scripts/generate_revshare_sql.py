@@ -15,11 +15,17 @@ from pathlib import Path
 
 def load_config(config_name: str) -> dict:
     """Load configuration from YAML file."""
-    config_path = (
-        Path(__file__).parent.parent.parent.parent.parent.parent.parent.parent.parent
-        / "src/op_analytics/configs"
-        / f"{config_name}.yaml"
-    )
+    base = Path(__file__).parent.parent.parent.parent.parent.parent.parent.parent.parent
+    # Prefer configs/revshare then fallback to configs
+    candidates = [
+        base / "src/op_analytics/configs/revshare" / f"{config_name}.yaml",
+        base / "src/op_analytics/configs" / f"{config_name}.yaml",
+    ]
+    for config_path in candidates:
+        if config_path.exists():
+            break
+    else:
+        raise FileNotFoundError(f"Could not find config YAML for {config_name} in {candidates}")
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
 

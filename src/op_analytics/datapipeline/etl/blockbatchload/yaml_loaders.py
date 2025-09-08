@@ -22,10 +22,15 @@ def _get_config_path(config_filename: str) -> Path:
         import op_analytics
 
         op_analytics_root = Path(op_analytics.__file__).parent
-        config_path = op_analytics_root / "configs" / config_filename
-        if config_path.exists():
-            log.debug(f"Found config file in installed package: {config_path}")
-            return config_path
+        # Check both root configs and configs/revshare
+        candidates = [
+            op_analytics_root / "configs" / "revshare" / config_filename,
+            op_analytics_root / "configs" / config_filename,
+        ]
+        for config_path in candidates:
+            if config_path.exists():
+                log.debug(f"Found config file in installed package: {config_path}")
+                return config_path
     except Exception as e:
         log.debug(f"Strategy 1 failed: {e}")
 
@@ -35,10 +40,14 @@ def _get_config_path(config_filename: str) -> Path:
 
         repo_root = repo_path("src/op_analytics/configs")
         if repo_root is not None:
-            config_path = Path(repo_root) / config_filename
-            if config_path.exists():
-                log.debug(f"Found config file via repo_path: {config_path}")
-                return config_path
+            candidates = [
+                Path(repo_root) / "revshare" / config_filename,
+                Path(repo_root) / config_filename,
+            ]
+            for config_path in candidates:
+                if config_path.exists():
+                    log.debug(f"Found config file via repo_path: {config_path}")
+                    return config_path
     except Exception as e:
         log.debug(f"Strategy 2 failed: {e}")
 
@@ -51,10 +60,10 @@ def _get_config_path(config_filename: str) -> Path:
     ]
 
     for container_path in container_paths:
-        config_path = container_path / config_filename
-        if config_path.exists():
-            log.debug(f"Found config file in container path: {config_path}")
-            return config_path
+        for config_path in [container_path / "revshare" / config_filename, container_path / config_filename]:
+            if config_path.exists():
+                log.debug(f"Found config file in container path: {config_path}")
+                return config_path
 
     # Strategy 4: Walk up from current file location (fallback)
     current_dir = Path(__file__).parent
@@ -69,6 +78,9 @@ def _get_config_path(config_filename: str) -> Path:
         # Navigate from the current file location to find the configs directory
         current_file_dir = Path(__file__).parent
         possible_config_paths = [
+            current_file_dir / ".." / ".." / ".." / ".." / "configs" / "revshare" / config_filename,
+            current_file_dir / ".." / ".." / ".." / "configs" / "revshare" / config_filename,
+            current_file_dir / ".." / ".." / "configs" / "revshare" / config_filename,
             current_file_dir / ".." / ".." / ".." / ".." / "configs" / config_filename,
             current_file_dir / ".." / ".." / ".." / "configs" / config_filename,
             current_file_dir / ".." / ".." / "configs" / config_filename,
@@ -84,12 +96,19 @@ def _get_config_path(config_filename: str) -> Path:
         )
 
     # Navigate to the config file
-    config_path = current_dir / "src" / "op_analytics" / "configs" / config_filename
-    if not config_path.exists():
-        raise FileNotFoundError(f"Config file not found: {config_path}")
+    # Try root configs then configs/revshare under repo root
+    candidates = [
+        current_dir / "src" / "op_analytics" / "configs" / "revshare" / config_filename,
+        current_dir / "src" / "op_analytics" / "configs" / config_filename,
+    ]
+    for config_path in candidates:
+        if config_path.exists():
+            log.debug(f"Found config file via uv.lock walk: {config_path}")
+            return config_path
 
-    log.debug(f"Found config file via uv.lock walk: {config_path}")
-    return config_path
+    raise FileNotFoundError(
+        f"Config file not found in repo configs or configs/revshare: {config_filename}"
+    )
 
 
 def load_revshare_from_addresses_to_clickhouse():
