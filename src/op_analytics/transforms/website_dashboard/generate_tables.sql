@@ -20,7 +20,6 @@ BEGIN
       WHERE dt >= '2021-01-01'
           AND dt < DATE_TRUNC(CURRENT_DATE(),MONTH)
       AND layer = 'L2' -- L2s Only
-    
     GROUP BY 1,2,3,4,5,6,7,8,9,10,11
   )
   , days_per_mo AS (
@@ -87,10 +86,8 @@ BEGIN
       SUM(sum_txs) AS sum_txs,
         SUM(sum_txs/unique_dt) AS sum_txs_per_day,
         SUM(sum_txs/(unique_dt*(60*60*24))) AS sum_txs_per_sec,
-      
       SUM(sum_total_dex_volume_usd) AS sum_dex_volume_usd,
         SUM(sum_total_dex_volume_usd/unique_dt) AS sum_dex_volume_usd_per_day,
-      
       SUM(sum_total_rev_txn_fees_eth) AS sum_total_rev_txn_fees_eth,
         SUM(sum_total_rev_txn_fees_eth/unique_dt) AS sum_total_rev_txn_fees_eth_per_day,
       SUM(sum_total_rev_txn_fees_usd) AS sum_total_rev_txn_fees_usd,
@@ -99,7 +96,6 @@ BEGIN
         SUM(sum_revshare_estimated_eth/unique_dt) AS sum_revshare_estimated_eth_per_day,
       SUM(sum_revshare_estimated_usd) AS sum_revshare_estimated_usd,
         SUM(sum_revshare_estimated_usd/unique_dt) AS sum_revshare_estimated_usd_per_day,
-      
       SUM(sum_revshare_actual_eth) AS sum_revshare_actual_eth,
         SUM(sum_revshare_actual_eth/unique_dt) AS sum_revshare_actual_eth_per_day,
       SUM(sum_revshare_actual_usd) AS sum_revshare_actual_usd,
@@ -110,8 +106,25 @@ BEGIN
   SELECT *
     , dense_rank() over (order by dt_month DESC) AS month_recency_rank
   FROM aggregates
-  WHERE dt_month > '2024-06-01'
   ORDER BY dt_month DESC;
+  CREATE TEMP TABLE chain_measurements AS
+  WITH cte AS (
+    SELECT
+      display_name,
+      SUM(IFNULL(sum_revshare_estimated_eth, 0)) AS estimated_eth,
+      SUM(IFNULL(sum_revshare_actual_eth, 0)) AS actual_eth
+    FROM base
+    WHERE agg_display_name = 'Optimism: Superchain'
+    GROUP BY 1
+  )
+  SELECT
+    display_name,
+    STRUCT(
+      estimated_eth,
+      actual_eth
+    ) AS all_time_revshare
+  FROM cte
+  ;
   CREATE TEMP TABLE rainbow_figure AS
   WITH cte AS (
   SELECT
@@ -129,6 +142,7 @@ BEGIN
       ORDER BY dt_month DESC
     ) AS timeline
   FROM cte
+  WHERE dt_month > '2024-06-01'
   GROUP BY 1;
   CREATE TEMP TABLE tiles AS
   WITH tot_superchain AS (
@@ -164,7 +178,6 @@ BEGIN
     SELECT
       dt_month,
       SAFE_DIVIDE(ts.sum_total_rev_txn_fees_usd, te.sum_total_rev_txn_fees_usd) AS ecosystem_pct_of_l2_rev_fees_usd,
-      
       SAFE_DIVIDE(ts.sum_total_rev_txn_fees_usd, te.sum_total_rev_txn_fees_usd)
         - LAG(SAFE_DIVIDE(ts.sum_total_rev_txn_fees_usd, te.sum_total_rev_txn_fees_usd), 1) OVER w AS mom_ecosystem_pct_of_l2_rev_fees_usd,
       SAFE_DIVIDE(ts.sum_txs, te.sum_txs) AS ecosystem_pct_of_l2_txs,
@@ -179,7 +192,6 @@ BEGIN
         ts.sum_total_rev_txn_fees_eth_per_day - LAG(ts.sum_total_rev_txn_fees_eth_per_day, 1) OVER w,
         LAG(ts.sum_total_rev_txn_fees_eth_per_day, 1) OVER w
       ) AS mom_sum_total_rev_txn_fees_eth_per_day,
-      
       ts.sum_dex_volume_usd_per_day,
       SAFE_DIVIDE(
         ts.sum_dex_volume_usd_per_day - LAG(ts.sum_dex_volume_usd_per_day, 1) OVER w,
@@ -190,7 +202,6 @@ BEGIN
         ts.sum_txs_per_day - LAG(ts.sum_txs_per_day, 1) OVER w,
         LAG(ts.sum_txs_per_day, 1) OVER w
       ) AS mom_sum_txs_per_day,
-      
       ts.latest_app_tvl_usd,
       SAFE_DIVIDE(
         ts.latest_app_tvl_usd - LAG(ts.latest_app_tvl_usd, 1) OVER w,
@@ -255,6 +266,7 @@ BEGIN
       all_time_sum_revshare_actual_usd AS revshare_actual_usd
     ) AS all_time_revenue
   FROM cte
+  WHERE dt_month > '2024-06-01'
   QUALIFY ROW_NUMBER() OVER(ORDER BY dt_month DESC) = 1
   ;
 END
