@@ -174,7 +174,8 @@ def fetch_random_sample_blocks(
             bs.block_total_calldata,
             bs.block_total_gas_used,
             bs.block_timestamp as block_timestamp,
-            bbf.base_fee_per_gas
+            bbf.base_fee_per_gas,
+            t.transaction_type
         FROM s3(
             'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
             '{KEY_ID}','{SECRET}','parquet'
@@ -218,7 +219,8 @@ def fetch_random_sample_blocks(
             t.input,
             (LENGTH(t.input) / 2) - 1 AS calldata_size,
             bs.block_total_calldata,
-            bs.block_total_gas_used
+            bs.block_total_gas_used,
+            t.transaction_type
         FROM s3(
             'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
             '{KEY_ID}','{SECRET}','parquet'
@@ -326,7 +328,8 @@ def fetch_top_percentile_blocks(
         t.input,
         (LENGTH(t.input) / 2) - 1 AS calldata_size,
         tb.total_calldata AS block_total_calldata,
-        tb.total_gas_used AS block_total_gas_used
+        tb.total_gas_used AS block_total_gas_used,
+        t.transaction_type
     FROM s3(
         'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
         '{KEY_ID}',
@@ -525,7 +528,8 @@ def fetch_date_range_single_query(
             (LENGTH(t.input) / 2) - 1 AS calldata_size,
             bs.block_total_calldata,
             bs.block_total_gas_used,
-            t.dt as date
+            t.dt as date,
+            t.transaction_type
         FROM s3(
             'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt=*/∗.parquet',
             '{KEY_ID}',
@@ -578,7 +582,8 @@ def fetch_date_range_single_query(
             (LENGTH(t.input) / 2) - 1 AS calldata_size,
             tb.total_calldata AS block_total_calldata,
             tb.total_gas_used AS block_total_gas_used,
-            t.dt as date
+            t.dt as date,
+            t.transaction_type
         FROM s3(
             'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt=*/∗.parquet',
             '{KEY_ID}',
