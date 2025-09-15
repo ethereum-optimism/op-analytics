@@ -838,8 +838,7 @@ class CalldataAnalyzer:
         if fastlz_size is None:
             fastlz_size = self.compressor.compress_len(calldata)
 
-        # Add the +72 offset that's part of the Jovian calculation
-        # adjusted_fastlz_size = fastlz_size + 68
+        # We best approximate the in-protocol calculation by adding the min_transaction_size to the fastlz_size-based estimate of compressed calldata
         da_usage_estimate = max(
             self.jovian_config.min_transaction_size,
             (self.jovian_config.intercept + self.jovian_config.fastlz_coef * fastlz_size) / 1e6 + 72
