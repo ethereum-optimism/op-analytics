@@ -1130,8 +1130,8 @@ class CalldataAnalyzer:
         with ProcessPoolExecutor(max_workers=num_workers) as executor:
             # Submit all tasks
             future_to_block = {
-                executor.submit(_analyze_block_worker, args): args[3] if len(args) > 3 else "unknown"
-                for args in args_list
+                executor.submit(_analyze_block_worker, args): f"block_{i}"
+                for i, args in enumerate(args_list)
             }
 
             # Collect results
@@ -1147,6 +1147,9 @@ class CalldataAnalyzer:
                 except Exception as e:
                     if show_progress:
                         tqdm.write(f"⚠️  Error processing block: {e}")
+
+        if show_progress:
+            print(f"   📊 Collected {len(results)} valid block analyses out of {len(args_list)} blocks")
 
         return results
 
@@ -1165,4 +1168,6 @@ def _analyze_block_worker(args: Tuple) -> Optional[BlockAnalysis]:
         return analyzer.analyze_block(block_data, footprint_scalar)
 
     except Exception as e:
+        # Log the error for debugging
+        print(f"Error in block analysis: {e}")
         return None

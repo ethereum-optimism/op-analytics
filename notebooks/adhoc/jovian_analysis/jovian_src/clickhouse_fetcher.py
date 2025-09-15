@@ -11,7 +11,6 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 from datetime import timezone
-from .chain_config import get_gas_limits_path
 from .constants import DEFAULT_GAS_LIMIT
 
 # Import from parent package
@@ -200,6 +199,7 @@ def fetch_random_sample_blocks(
         block_stats AS (
             SELECT
                 t.block_number,
+                t.block_timestamp,
                 SUM((LENGTH(t.input) / 2) - 1) AS block_total_calldata,
                 SUM(t.receipt_gas_used)       AS block_total_gas_used
             FROM s3(
@@ -207,7 +207,7 @@ def fetch_random_sample_blocks(
                 '{KEY_ID}','{SECRET}','parquet'
             ) t
             INNER JOIN sampled_blocks sb ON t.block_number = sb.block_number
-            GROUP BY t.block_number
+            GROUP BY t.block_number, t.block_timestamp
         )
         ,blocks_with_base_fee AS (
             SELECT
@@ -220,12 +220,13 @@ def fetch_random_sample_blocks(
             ) b
         )
         SELECT
-            t.block_number,
+            t.block_number as block_number,
             t.transaction_index,
             t.input,
             (LENGTH(t.input) / 2) - 1 AS calldata_size,
             bs.block_total_calldata,
             bs.block_total_gas_used,
+            bs.block_timestamp as block_timestamp,
             bgl.gas_limit,
             t.transaction_type
         FROM s3(
@@ -312,6 +313,7 @@ def fetch_top_percentile_blocks(
     WITH top_blocks AS (
         SELECT
             block_number,
+            block_timestamp,
             SUM((LENGTH(input) / 2) - 1) AS total_calldata,
             SUM(receipt_gas_used) AS total_gas_used
         FROM s3(
@@ -320,7 +322,7 @@ def fetch_top_percentile_blocks(
             '{SECRET}',
             'parquet'
         )
-        GROUP BY block_number
+        GROUP BY block_number, block_timestamp
         HAVING total_calldata >= {threshold}
         ORDER BY total_calldata DESC
         {limit_clause}
@@ -338,12 +340,13 @@ def fetch_top_percentile_blocks(
         ) b
     )
     SELECT
-        t.block_number,
+        t.block_number as block_number,
         t.transaction_index,
         t.input,
         (LENGTH(t.input) / 2) - 1 AS calldata_size,
         tb.total_calldata AS block_total_calldata,
         tb.total_gas_used AS block_total_gas_used,
+        tb.block_timestamp as block_timestamp,
         bgl.gas_limit,
         bgl.base_fee_per_gas,
         t.transaction_type
@@ -514,6 +517,7 @@ def fetch_date_range_single_query(
         block_stats AS (
             SELECT
                 t.block_number,
+                t.block_timestamp,
                 t.dt,
                 SUM((LENGTH(t.input) / 2) - 1) AS block_total_calldata,
                 SUM(t.receipt_gas_used) AS block_total_gas_used
@@ -524,7 +528,7 @@ def fetch_date_range_single_query(
                 'parquet'
             ) t
             INNER JOIN sampled_blocks sb ON t.block_number = sb.block_number AND t.dt = sb.dt
-            GROUP BY t.block_number, t.dt
+            GROUP BY t.block_number, t.block_timestamp, t.dt
         ),
         blocks_with_gas_limit AS (
             SELECT
@@ -540,12 +544,13 @@ def fetch_date_range_single_query(
             ) b
         )
         SELECT
-            t.block_number,
+            t.block_number as block_number,
             t.transaction_index,
             t.input,
             (LENGTH(t.input) / 2) - 1 AS calldata_size,
             bs.block_total_calldata,
             bs.block_total_gas_used,
+            bs.block_timestamp as block_timestamp,
             bgl.gas_limit,
             bgl.base_fee_per_gas,
             t.dt as date,
@@ -610,7 +615,7 @@ def fetch_date_range_single_query(
             ) b
         )
         SELECT
-            t.block_number,
+            t.block_number as block_number,
             t.transaction_index,
             t.input,
             (LENGTH(t.input) / 2) - 1 AS calldata_size,
