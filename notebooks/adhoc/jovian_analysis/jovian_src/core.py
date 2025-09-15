@@ -900,6 +900,12 @@ class CalldataAnalyzer:
         block_timestamp = block_df['block_timestamp'][0]
         base_fee_per_gas = block_df['base_fee_per_gas'][0]
 
+        # Get actual gas limit from block data if available, otherwise use config
+        if 'gas_limit' in block_df.columns:
+            actual_gas_limit = block_df['gas_limit'][0]
+        else:
+            actual_gas_limit = self.jovian_config.block_gas_limit
+
         # OPTIMIZATION: For large blocks without detailed transaction analysis needs,
         # use vectorized operations to calculate aggregates directly
         if len(block_df) > 1000 and not show_tx_progress:
@@ -924,8 +930,8 @@ class CalldataAnalyzer:
         total_da_usage_estimate = sum(tx.da_usage_estimate for tx in non_deposit_transactions)
         total_calldata_size = sum(tx.calldata_size for tx in non_deposit_transactions)
         total_fastlz_size = sum(tx.fastlz_size for tx in non_deposit_transactions)
-        utilization = total_footprint / self.jovian_config.block_gas_limit
-        exceeds_limit = total_footprint > self.jovian_config.block_gas_limit
+        utilization = total_footprint / actual_gas_limit
+        exceeds_limit = total_footprint > actual_gas_limit
 
         # ensure this frame has exactly one block
         if block_df.select(pl.col("block_number").n_unique()).item() != 1:
@@ -959,7 +965,7 @@ class CalldataAnalyzer:
             max_tx_footprint=max(tx.da_footprint for tx in non_deposit_transactions) if non_deposit_transactions else 0,
             transactions=transactions,
             footprint_scalar=footprint_scalar,
-            block_gas_limit=self.jovian_config.block_gas_limit,
+            block_gas_limit=actual_gas_limit,
             total_calldata_size=total_calldata_size,
             total_fastlz_size=total_fastlz_size,
             block_gas_used=block_gas_used,
@@ -970,6 +976,12 @@ class CalldataAnalyzer:
         """OPTIMIZATION: Vectorized block analysis for large blocks without individual transaction details."""
         block_number = block_df['block_number'][0]
         tx_count = len(block_df)
+
+        # Get actual gas limit from block data if available, otherwise use config
+        if 'gas_limit' in block_df.columns:
+            actual_gas_limit = block_df['gas_limit'][0]
+        else:
+            actual_gas_limit = self.jovian_config.block_gas_limit
 
         # VECTORIZED OPERATION: Process all calldata in batch
         # This avoids the O(n) iter_rows() loop for large blocks
@@ -1020,8 +1032,8 @@ class CalldataAnalyzer:
         total_da_usage_estimate = sum(non_deposit_da_usage_estimates)
         total_footprint = total_da_usage_estimate * footprint_scalar
 
-        utilization = total_footprint / self.jovian_config.block_gas_limit
-        exceeds_limit = total_footprint > self.jovian_config.block_gas_limit
+        utilization = total_footprint / actual_gas_limit
+        exceeds_limit = total_footprint > actual_gas_limit
 
         # Calculate max footprint for this block (excluding deposits)
         max_tx_footprint = max(da_est * footprint_scalar for da_est in non_deposit_da_usage_estimates) if non_deposit_da_usage_estimates else 0
@@ -1053,7 +1065,7 @@ class CalldataAnalyzer:
             max_tx_footprint=max_tx_footprint,
             transactions=[],  # Empty for vectorized analysis to save memory
             footprint_scalar=footprint_scalar,
-            block_gas_limit=self.jovian_config.block_gas_limit,
+            block_gas_limit=actual_gas_limit,
             total_calldata_size=total_calldata_size,
             total_fastlz_size=total_fastlz_size,
             block_gas_used=block_gas_used,

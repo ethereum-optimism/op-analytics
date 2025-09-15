@@ -67,22 +67,16 @@ def fetch_random_sample_blocks(
     date: str,
     num_blocks: Optional[int] = None,
     sample_fraction: Optional[float] = None,  # e.g. 0.01 for 1%
-    gas_limit: Optional[int] = None,
     seed: Optional[int] = None,
     start_datetime: Optional[datetime] = None,
     end_datetime: Optional[datetime] = None
-) -> Tuple[pl.DataFrame, int]:
+) -> pl.DataFrame:
     """
     Fetch a random sample of blocks from a given day.
 
     If sample_fraction is provided (0< f ≤1), we select ceil(f * total_blocks) blocks
     using a deterministic hash-based ordering (seeded). Otherwise we select num_blocks.
     """
-
-    # Get gas limit if not provided
-    if gas_limit is None:
-        gas_limits_df = load_gas_limits(get_gas_limits_path(chain))
-        gas_limit = get_gas_limit_for_date(date, gas_limits_df, chain)
 
     # Get GCS credentials
     KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
@@ -160,7 +154,8 @@ def fetch_random_sample_blocks(
         ,blocks_with_base_fee AS (
             SELECT
                 b.number,
-                b.base_fee_per_gas
+                b.base_fee_per_gas,
+                b.gas_limit
             FROM s3(
                 'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/blocks_v1/chain={chain}/dt={date}/*.parquet',
                 '{KEY_ID}','{SECRET}','parquet'
@@ -175,6 +170,7 @@ def fetch_random_sample_blocks(
             bs.block_total_gas_used,
             bs.block_timestamp as block_timestamp,
             bbf.base_fee_per_gas,
+            bbf.gas_limit,
             t.transaction_type
         FROM s3(
             'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
@@ -213,6 +209,16 @@ def fetch_random_sample_blocks(
             INNER JOIN sampled_blocks sb ON t.block_number = sb.block_number
             GROUP BY t.block_number
         )
+        ,blocks_with_base_fee AS (
+            SELECT
+                b.number,
+                b.base_fee_per_gas,
+                b.gas_limit
+            FROM s3(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/blocks_v1/chain={chain}/dt={date}/*.parquet',
+                '{KEY_ID}','{SECRET}','parquet'
+            ) b
+        )
         SELECT
             t.block_number,
             t.transaction_index,
@@ -220,12 +226,14 @@ def fetch_random_sample_blocks(
             (LENGTH(t.input) / 2) - 1 AS calldata_size,
             bs.block_total_calldata,
             bs.block_total_gas_used,
+            bgl.gas_limit,
             t.transaction_type
         FROM s3(
             'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
             '{KEY_ID}','{SECRET}','parquet'
         ) t
         INNER JOIN block_stats bs ON t.block_number = bs.block_number
+        INNER JOIN blocks_with_base_fee bbf ON t.block_number = bbf.number
         ORDER BY t.block_number, t.transaction_index
         SETTINGS use_hive_partitioning = 1
         """
@@ -233,16 +241,17 @@ def fetch_random_sample_blocks(
     result_df = run_query(instance="OPLABS", query=query)
 
     if result_df.is_empty():
-        return pl.DataFrame(), gas_limit
+        return pl.DataFrame()
+
+
 
     # Add metadata columns
     result_df = result_df.with_columns([
-        pl.lit(gas_limit).alias("gas_limit"),
         pl.lit(chain).alias("chain"),
         pl.lit("random").alias("sampling_method")
     ])
 
-    return result_df, gas_limit
+    return result_df
 
 
 
@@ -250,9 +259,8 @@ def fetch_top_percentile_blocks(
     chain: str,
     date: str,
     percentile: float = 99.0,
-    limit: Optional[int] = None,
-    gas_limit: Optional[int] = None
-) -> Tuple[pl.DataFrame, int]:
+    limit: Optional[int] = None
+) -> pl.DataFrame:
     """
     Fetch the top X% blocks by calldata size.
 
@@ -261,15 +269,10 @@ def fetch_top_percentile_blocks(
         date: Date in YYYY-MM-DD format
         percentile: Percentile threshold (99 = top 1%)
         limit: Optional limit on number of blocks
-        gas_limit: Optional gas limit (will be looked up if not provided)
 
     Returns:
-        Tuple of (DataFrame with transaction data, gas_limit used)
+        DataFrame with transaction data (includes gas_limit from blocks_v1)
     """
-    # Get gas limit if not provided
-    if gas_limit is None:
-        gas_limits_df = load_gas_limits(get_gas_limits_path(chain))
-        gas_limit = get_gas_limit_for_date(date, gas_limits_df, chain)
 
     # Get GCS credentials
     KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
@@ -298,7 +301,7 @@ def fetch_top_percentile_blocks(
     stats_df = run_query(instance="OPLABS", query=threshold_query)
 
     if stats_df.is_empty():
-        return pl.DataFrame(), gas_limit
+        return pl.DataFrame()
 
     threshold = stats_df['threshold'][0]
 
@@ -321,6 +324,18 @@ def fetch_top_percentile_blocks(
         HAVING total_calldata >= {threshold}
         ORDER BY total_calldata DESC
         {limit_clause}
+    ),
+    blocks_with_gas_limit AS (
+        SELECT
+            b.number,
+            b.gas_limit,
+            b.base_fee_per_gas
+        FROM s3(
+            'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/blocks_v1/chain={chain}/dt={date}/*.parquet',
+            '{KEY_ID}',
+            '{SECRET}',
+            'parquet'
+        ) b
     )
     SELECT
         t.block_number,
@@ -329,6 +344,8 @@ def fetch_top_percentile_blocks(
         (LENGTH(t.input) / 2) - 1 AS calldata_size,
         tb.total_calldata AS block_total_calldata,
         tb.total_gas_used AS block_total_gas_used,
+        bgl.gas_limit,
+        bgl.base_fee_per_gas,
         t.transaction_type
     FROM s3(
         'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
@@ -337,6 +354,7 @@ def fetch_top_percentile_blocks(
         'parquet'
     ) t
     INNER JOIN top_blocks tb ON t.block_number = tb.block_number
+    INNER JOIN blocks_with_gas_limit bgl ON t.block_number = bgl.number
     ORDER BY tb.total_calldata DESC, t.block_number, t.transaction_index
     SETTINGS use_hive_partitioning = 1
     """
@@ -344,16 +362,16 @@ def fetch_top_percentile_blocks(
     result_df = run_query(instance="OPLABS", query=data_query)
 
     if result_df.is_empty():
-        return pl.DataFrame(), gas_limit
+        return pl.DataFrame()
+
 
     # Add metadata columns
     result_df = result_df.with_columns([
-        pl.lit(gas_limit).alias("gas_limit"),
         pl.lit(chain).alias("chain"),
         pl.lit("top_percentile").alias("sampling_method")
     ])
 
-    return result_df, gas_limit
+    return result_df
 
 
 def fetch_multiple_dates_parallel(
@@ -363,10 +381,9 @@ def fetch_multiple_dates_parallel(
     num_blocks: int = 100,
     percentile: float = 99.0,
     max_workers: int = 4,
-    gas_limits: Optional[Dict[str, int]] = None,
     seed: Optional[int] = None,
     verbose: bool = True
-) -> Dict[str, Tuple[pl.DataFrame, int]]:
+) -> Dict[str, pl.DataFrame]:
     """
     Fetch data for multiple dates in parallel using ThreadPoolExecutor.
 
@@ -377,43 +394,33 @@ def fetch_multiple_dates_parallel(
         num_blocks: Number of blocks for random sampling
         percentile: Percentile for top percentile sampling
         max_workers: Maximum number of parallel workers
-        gas_limits: Optional dict of date -> gas_limit
         seed: Random seed for reproducible sampling
         verbose: Print progress messages
 
     Returns:
-        Dictionary mapping date -> (DataFrame, gas_limit)
+        Dictionary mapping date -> DataFrame (includes gas_limit from blocks_v1)
     """
     results = {}
 
-    # Load gas limits if not provided
-    if gas_limits is None:
-        gas_limits_df = load_gas_limits(get_gas_limits_path(chain))
-        gas_limits = {}
-        for date in dates:
-            gas_limits[date] = get_gas_limit_for_date(date, gas_limits_df, chain)
+    # Gas limits are now fetched directly from blocks_v1 data
 
     # Define the fetch function based on sampling method
-    def fetch_single_date(date: str) -> Tuple[str, pl.DataFrame, int]:
-        gas_limit = gas_limits.get(date)
-
+    def fetch_single_date(date: str) -> Tuple[str, pl.DataFrame]:
         if sampling_method == "top_percentile":
-            df, actual_gas_limit = fetch_top_percentile_blocks(
+            df = fetch_top_percentile_blocks(
                 chain=chain,
                 date=date,
-                percentile=percentile,
-                gas_limit=gas_limit
+                percentile=percentile
             )
         else:
-            df, actual_gas_limit = fetch_random_sample_blocks(
+            df = fetch_random_sample_blocks(
                 chain=chain,
                 date=date,
                 num_blocks=num_blocks,
-                gas_limit=gas_limit,
                 seed=seed
             )
 
-        return date, df, actual_gas_limit
+        return date, df
 
     # Execute fetches in parallel
     start_time = time.time()
@@ -426,8 +433,8 @@ def fetch_multiple_dates_parallel(
         for future in as_completed(futures):
             date = futures[future]
             try:
-                date_result, df, gas_limit = future.result()
-                results[date_result] = (df, gas_limit)
+                date_result, df = future.result()
+                results[date_result] = df
 
                 if verbose and not df.is_empty():
                     blocks = df['block_number'].n_unique()
@@ -438,7 +445,7 @@ def fetch_multiple_dates_parallel(
 
             except Exception as e:
                 print(f"❌ Error fetching {date}: {e}")
-                results[date] = (pl.DataFrame(), gas_limits.get(date, DEFAULT_GAS_LIMIT))
+                results[date] = pl.DataFrame()
 
     elapsed = time.time() - start_time
     if verbose:
@@ -453,7 +460,6 @@ def fetch_date_range_single_query(
     sampling_method: str = "random",
     num_blocks_per_day: int = 100,
     percentile: float = 99.0,
-    gas_limit: int = DEFAULT_GAS_LIMIT,
     seed: Optional[int] = None
 ) -> pl.DataFrame:
     """
@@ -466,11 +472,10 @@ def fetch_date_range_single_query(
         sampling_method: "random" or "top_percentile"
         num_blocks_per_day: Number of blocks per day for random sampling
         percentile: Percentile for top percentile sampling
-        gas_limit: Gas limit to use for all dates
         seed: Random seed for reproducible sampling
 
     Returns:
-        DataFrame with data for all dates (includes 'date' column)
+        DataFrame with data for all dates (includes 'date' column and gas_limit from blocks_v1)
     """
     # Get GCS credentials
     KEY_ID = env_get("GCS_HMAC_ACCESS_KEY")
@@ -520,6 +525,19 @@ def fetch_date_range_single_query(
             ) t
             INNER JOIN sampled_blocks sb ON t.block_number = sb.block_number AND t.dt = sb.dt
             GROUP BY t.block_number, t.dt
+        ),
+        blocks_with_gas_limit AS (
+            SELECT
+                b.number,
+                b.dt,
+                b.gas_limit,
+                b.base_fee_per_gas
+            FROM s3(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/blocks_v1/chain={chain}/dt={{'{date_filter}'}}.*/∗.parquet',
+                '{KEY_ID}',
+                '{SECRET}',
+                'parquet'
+            ) b
         )
         SELECT
             t.block_number,
@@ -528,6 +546,8 @@ def fetch_date_range_single_query(
             (LENGTH(t.input) / 2) - 1 AS calldata_size,
             bs.block_total_calldata,
             bs.block_total_gas_used,
+            bgl.gas_limit,
+            bgl.base_fee_per_gas,
             t.dt as date,
             t.transaction_type
         FROM s3(
@@ -538,6 +558,7 @@ def fetch_date_range_single_query(
         ) t
         WHERE t.dt IN ('{date_filter_clause}')
         INNER JOIN block_stats bs ON t.block_number = bs.block_number AND t.dt = bs.dt
+        INNER JOIN blocks_with_gas_limit bgl ON t.block_number = bgl.number AND t.dt = bgl.dt
         ORDER BY t.dt, t.block_number, t.transaction_index
         SETTINGS use_hive_partitioning = 1
         """
@@ -574,6 +595,19 @@ def fetch_date_range_single_query(
             FROM block_sizes bs
             INNER JOIN thresholds t ON bs.dt = t.dt
             WHERE bs.total_calldata >= t.threshold
+        ),
+        blocks_with_gas_limit AS (
+            SELECT
+                b.number,
+                b.dt,
+                b.gas_limit,
+                b.base_fee_per_gas
+            FROM s3(
+                'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/blocks_v1/chain={chain}/dt={{'{date_filter}'}}.*/∗.parquet',
+                '{KEY_ID}',
+                '{SECRET}',
+                'parquet'
+            ) b
         )
         SELECT
             t.block_number,
@@ -582,6 +616,8 @@ def fetch_date_range_single_query(
             (LENGTH(t.input) / 2) - 1 AS calldata_size,
             tb.total_calldata AS block_total_calldata,
             tb.total_gas_used AS block_total_gas_used,
+            bgl.gas_limit,
+            bgl.base_fee_per_gas,
             t.dt as date,
             t.transaction_type
         FROM s3(
@@ -592,6 +628,7 @@ def fetch_date_range_single_query(
         ) t
         WHERE t.dt IN ('{date_filter_clause}')
         INNER JOIN top_blocks tb ON t.block_number = tb.block_number AND t.dt = tb.dt
+        INNER JOIN blocks_with_gas_limit bgl ON t.block_number = bgl.number AND t.dt = bgl.dt
         ORDER BY t.dt, tb.total_calldata DESC, t.block_number, t.transaction_index
         SETTINGS use_hive_partitioning = 1
         """
@@ -599,9 +636,9 @@ def fetch_date_range_single_query(
     result_df = run_query(instance="OPLABS", query=query)
 
     if not result_df.is_empty():
+        # Gas limits are already included from blocks_v1 data
         # Add metadata columns
         result_df = result_df.with_columns([
-            pl.lit(gas_limit).alias("gas_limit"),
             pl.lit(chain).alias("chain"),
             pl.lit(sampling_method).alias("sampling_method")
         ])

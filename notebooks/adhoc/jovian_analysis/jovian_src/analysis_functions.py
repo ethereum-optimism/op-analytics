@@ -25,7 +25,8 @@ from .constants import DEFAULT_DA_FOOTPRINT_GAS_SCALARS
 class JovianAnalysisResult:
     """Results from analyzing blocks with a specific DA footprint gas scalar."""
     da_footprint_gas_scalar: int
-    gas_limit: int
+    gas_limit: int  # Most common gas limit from block analyses
+    gas_limits: List[int]  # All gas limits from block analyses
     chain: str
     sampling_method: str  # "top_percentile" or "random"
     start_date: str  # Analysis start date
@@ -50,7 +51,6 @@ class JovianAnalysisResult:
 
 def perform_jovian_analysis(
     df: pl.DataFrame,
-    gas_limit: int,
     da_footprint_gas_scalars: List[int] = None,
     chain: str = "base",
     sampling_method: str = "top_percentile",
@@ -63,7 +63,6 @@ def perform_jovian_analysis(
 
     Args:
         df: Transaction data from blocks
-        gas_limit: Gas limit for the period
         da_footprint_gas_scalars: List of scalars to test (default: [160, 400, 600, 800])
         chain: Chain name for context
         sampling_method: Method used to sample blocks
@@ -77,8 +76,8 @@ def perform_jovian_analysis(
     if da_footprint_gas_scalars is None:
         da_footprint_gas_scalars = DEFAULT_DA_FOOTPRINT_GAS_SCALARS
 
-    # Create analyzer with appropriate config
-    jovian_config = JovianConfig(block_gas_limit=gas_limit)
+    # Create analyzer - each block will use its own gas_limit from the data
+    jovian_config = JovianConfig()  # Use default config, core.py will override per block
     analysis_config = AnalysisConfig(progress_bars=show_progress)
     analyzer = CalldataAnalyzer(jovian_config, analysis_config)
 
@@ -93,14 +92,19 @@ def perform_jovian_analysis(
         print(f"Chain: {chain_display}")
         print(f"Sampling Method: {sampling_method}")
         print(f"Date Range: {date_range}")
-        print(f"Gas Limit: {gas_limit:,}")
+        # Show gas limit statistics if available
+        if 'gas_limit' in df.columns and not df['gas_limit'].is_null().all():
+            print(f"Gas Limits: Per-block from blocks_v1 data")
+            print(f"Gas Limits: Average: {df['gas_limit'].mean():,}, Median: {df['gas_limit'].median():,}, Min: {df['gas_limit'].min():,}, Max: {df['gas_limit'].max():,}")
+        else:
+            print(f"Gas Limits: Per-block from blocks_v1 data (not available in this dataset)")
         print(f"DA Footprint Gas Scalars: {da_footprint_gas_scalars}")
         print("=" * 60)
 
     for scalar in da_footprint_gas_scalars:
         if show_progress:
             print(f"\n📊 Analyzing {get_chain_display_name(chain)} with DA footprint gas scalar: {scalar}")
-            print(f"   Effective limit: {gas_limit / scalar:,.0f} bytes")
+            print(f"   Effective limits: Per-block (gas_limit / {scalar})")
             print(f"   Sampling method: {sampling_method}")
 
         # Analyze blocks with this scalar (using da_footprint_gas_scalar param for compatibility)
@@ -110,7 +114,6 @@ def perform_jovian_analysis(
         result = calculate_aggregate_statistics(
             block_analyses,
             scalar,
-            gas_limit,
             chain,
             sampling_method,
             start_date,
@@ -131,7 +134,6 @@ def perform_jovian_analysis(
 def calculate_aggregate_statistics(
     block_analyses: List[BlockAnalysis],
     da_footprint_gas_scalar: int,
-    gas_limit: int,
     chain: str = "base",
     sampling_method: str = "top_percentile",
     start_date: str = None,
@@ -141,9 +143,8 @@ def calculate_aggregate_statistics(
     Calculate aggregate statistics from block analyses.
 
     Args:
-        block_analyses: List of BlockAnalysis objects
+        block_analyses: List of BlockAnalysis objects (each with its own gas_limit)
         da_footprint_gas_scalar: Scalar used
-        gas_limit: Gas limit
         chain: Chain name
         sampling_method: Sampling method used
         start_date: Analysis start date
@@ -155,7 +156,8 @@ def calculate_aggregate_statistics(
     if not block_analyses:
         return JovianAnalysisResult(
             da_footprint_gas_scalar=da_footprint_gas_scalar,
-            gas_limit=gas_limit,
+            gas_limit=0,  # No blocks to analyze
+            gas_limits=[],  # No gas limits available
             chain=chain,
             sampling_method=sampling_method,
             start_date=start_date,
@@ -172,6 +174,13 @@ def calculate_aggregate_statistics(
             excess_distribution=None,
             compression_metrics={}
         )
+
+    # Calculate gas_limit from block analyses (use most common gas_limit)
+    gas_limits = [block.block_gas_limit for block in block_analyses]
+    gas_limit_counts = {}
+    for gl in gas_limits:
+        gas_limit_counts[gl] = gas_limit_counts.get(gl, 0) + 1
+    gas_limit = max(gas_limit_counts, key=gas_limit_counts.get)  # Most common gas limit
 
     # Extract key metrics
     utilizations = [block.calldata_utilization for block in block_analyses]
@@ -220,6 +229,7 @@ def calculate_aggregate_statistics(
     return JovianAnalysisResult(
         da_footprint_gas_scalar=da_footprint_gas_scalar,
         gas_limit=gas_limit,
+        gas_limits=gas_limits,
         chain=chain,
         sampling_method=sampling_method,
         start_date=start_date,
@@ -415,14 +425,14 @@ def create_compression_ratio_bins(compression_ratios: List[float]) -> Dict[str, 
 
 
 def calculate_scalar_limits(
-    gas_limit: int,
+    block_analyses: List[BlockAnalysis],
     da_footprint_gas_scalars: List[int] = None
 ) -> Dict[int, int]:
     """
-    Calculate effective DA limits for different scalars.
+    Calculate effective DA limits for different scalars using most common gas limit.
 
     Args:
-        gas_limit: Current gas limit
+        block_analyses: List of BlockAnalysis objects (each with its own gas_limit)
         da_footprint_gas_scalars: List of scalars to calculate
 
     Returns:
@@ -430,6 +440,13 @@ def calculate_scalar_limits(
     """
     if da_footprint_gas_scalars is None:
         da_footprint_gas_scalars = DEFAULT_DA_FOOTPRINT_GAS_SCALARS
+
+    # Use most common gas limit from block analyses
+    gas_limits = [block.block_gas_limit for block in block_analyses]
+    gas_limit_counts = {}
+    for gl in gas_limits:
+        gas_limit_counts[gl] = gas_limit_counts.get(gl, 0) + 1
+    gas_limit = max(gas_limit_counts, key=gas_limit_counts.get)  # Most common gas limit
 
     limits = {}
     for scalar in da_footprint_gas_scalars:
