@@ -841,7 +841,7 @@ class CalldataAnalyzer:
         # We best approximate the in-protocol calculation by adding the min_transaction_size to the fastlz_size-based estimate of compressed calldata
         da_usage_estimate = max(
             self.jovian_config.min_transaction_size,
-            (self.jovian_config.intercept + self.jovian_config.fastlz_coef * fastlz_size) / 1e6 + 72
+            (self.jovian_config.intercept + self.jovian_config.fastlz_coef * fastlz_size) / 1e6 + self.jovian_config.min_transaction_size
         )
 
         return int(round(da_usage_estimate))
