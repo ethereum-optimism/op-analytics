@@ -16,7 +16,6 @@ from .core import (
     JovianConfig,
     AnalysisConfig,
 )
-from .clickhouse_fetcher import load_gas_limits, get_gas_limit_for_date
 from .chain_config import get_chain_display_name
 from .constants import DEFAULT_DA_FOOTPRINT_GAS_SCALARS
 

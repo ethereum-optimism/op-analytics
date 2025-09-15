@@ -4,7 +4,6 @@ Now with multiprocessing support for parallel date fetching.
 """
 
 import polars as pl
-import pandas as pd
 from typing import Tuple, Optional, List, Dict
 from datetime import datetime
 from pathlib import Path
@@ -16,49 +15,6 @@ from .constants import DEFAULT_GAS_LIMIT
 # Import from parent package
 from op_analytics.coreutils.clickhouse.client import run_query
 from op_analytics.coreutils.env.vault import env_get
-
-
-def load_gas_limits(csv_path) -> pl.DataFrame:
-    """Load gas limits from CSV file for a specific chain."""
-    # Look for gas limits file in simplified structure
-
-    # Read CSV with pandas for date parsing
-    df_pandas = pd.read_csv(csv_path)
-
-    # Convert to polars and rename columns
-    df = pl.from_pandas(df_pandas)
-    df = df.rename({
-        "Date(UTC)": "date_str",
-        "UnixTimeStamp": "unix_timestamp",
-        "Value": "gas_limit"
-    })
-
-    # Parse dates and convert to YYYY-MM-DD
-    df = df.with_columns([
-        pl.col("date_str").str.strptime(pl.Date, "%m/%d/%Y").alias("date"),
-        pl.col("gas_limit").cast(pl.Int64),
-        pl.col("unix_timestamp").cast(pl.Int64)
-    ])
-
-    # Add formatted date string
-    df = df.with_columns(
-        pl.col("date").dt.strftime("%Y-%m-%d").alias("date_formatted")
-    )
-
-    return df.select(["date", "date_formatted", "unix_timestamp", "gas_limit"])
-
-
-def get_gas_limit_for_date(date_str: str, gas_limits_df: pl.DataFrame, chain: str = "base") -> int:
-    """Get gas limit for a specific date, default to 240M if not found."""
-    result = gas_limits_df.filter(pl.col("date_formatted") == date_str)
-
-    if len(result) > 0:
-        gas_limit = result["gas_limit"][0]
-        if gas_limit > 0:
-            return int(gas_limit)
-
-    # Default gas limit
-    return None
 
 
 def fetch_random_sample_blocks(
