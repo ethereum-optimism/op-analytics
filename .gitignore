@@ -24,6 +24,7 @@ misc_analysis/clickhouse
 misc_analysis/csv_outputs/tokens_by_type_base_opm.csv
 /misc_analysis/archiveandfails/csv_outputs
 /misc_analysis/raw_data_pulls/csv_outputs
+datapull/.cache/jovian/
 
 Pipfile.lock
 /misc_analysis/csv_outputs
@@ -67,3 +68,13 @@ temp_clickhouse_address_upload.ipynb
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Miniconda/Anaconda installers and environments
+Miniconda*.sh
+Anaconda*.sh
+Miniconda*.exe
+Anaconda*.exe
+Miniconda*.pkg
+Anaconda*.pkg
+*.conda
+conda-meta/

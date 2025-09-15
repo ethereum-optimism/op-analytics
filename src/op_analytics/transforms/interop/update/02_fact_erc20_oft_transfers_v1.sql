@@ -31,7 +31,7 @@ oft_sent_events AS ( -- noqa: ST03
     -- https://docs.layerzero.network/v2/home/token-standards/oft-standard
     -- 
     -- Example Log:
-    -- https://optimistic.etherscan.io/tx/0x40ddae2718940c4487af4c02d889510ab47e2e423028b76a3b00ec9bc8c04798#eventlog#21
+    -- https://explorer.optimism.io/tx/0x40ddae2718940c4487af4c02d889510ab47e2e423028b76a3b00ec9bc8c04798#eventlog#21
     -- 
     -- Signature:
     -- OFTSent (

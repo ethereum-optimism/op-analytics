@@ -48,6 +48,8 @@ commands:
             if [ ! -d "~/miniconda3" ]; then
                 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
                 bash Miniconda3-latest-Linux-x86_64.sh -b
+                # Clean up installer to prevent accidental commits
+                rm -f Miniconda3-latest-Linux-x86_64.sh
             fi
             export PATH=$HOME/miniconda3/bin:$PATH
             ~/miniconda3/bin/conda create -n py310 python=3.10 -y
@@ -199,7 +201,11 @@ jobs:
             mkdir -p $tmp_dir
             cp -r docs/* $tmp_dir
             touch $tmp_dir/.nojekyll
-
+      # Fetch latest gh-pages to avoid conflicts
+      - run:
+          name: Fetch latest gh-pages branch
+          command: |
+            git fetch origin gh-pages || echo "gh-pages branch may not exist yet"
       - utils/github-pages-deploy:
           force-push: true
           src-pages-dir: /tmp/docs

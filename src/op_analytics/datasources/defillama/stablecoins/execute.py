@@ -111,7 +111,21 @@ class DefillamaStablecoins:
             balances.extend(stablecoin.balances)
 
         metadata_df = pl.DataFrame(metadata, schema=METADATA_DF_SCHEMA)
-        balances_df = pl.DataFrame(balances, schema=BALANCES_DF_SCHEMA)
+
+        balances_df = pl.DataFrame(balances, infer_schema_length=None)
+        balances_df = balances_df.with_columns(
+            pl.col(["circulating", "bridged_to", "minted", "unreleased"])
+            .cast(pl.Decimal(38, 18), strict=False)
+        )
+        col_order = list(BALANCES_DF_SCHEMA.keys())
+        balances_df = balances_df.select([
+            (
+                pl.col(c).cast(BALANCES_DF_SCHEMA[c], strict=False)
+                if c in balances_df.columns
+                else pl.lit(None, dtype=BALANCES_DF_SCHEMA[c])
+            ).alias(c)
+            for c in col_order
+        ])
 
         # Schema assertions to help our future selves reading this code.
         raise_for_schema_mismatch(

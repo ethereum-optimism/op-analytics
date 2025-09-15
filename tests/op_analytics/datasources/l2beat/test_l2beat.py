@@ -11,7 +11,7 @@ TESTDATA = InputTestData.at(__file__)
 
 
 def test_parse_summary():
-    with open(TESTDATA.path("mockdata/l2beat_scaling_summary_v3.json")) as fobj:
+    with open(TESTDATA.path("mockdata/l2beat_scaling_summary_v4.json")) as fobj:
         data = json.load(fobj)
 
     df = parse_summary(data)
