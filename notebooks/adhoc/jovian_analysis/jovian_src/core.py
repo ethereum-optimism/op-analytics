@@ -859,7 +859,7 @@ class CalldataAnalyzer:
             int: Calculated footprint value (rounded to nearest integer)
         """
         da_usage_estimate = self.calculate_da_usage_estimate(calldata, fastlz_size)
-        return int(round(da_usage_estimate * footprint_scalar))
+        return da_usage_estimate * footprint_scalar
 
     def analyze_transaction(self, tx_row: Dict[str, Any], footprint_scalar: int) -> TransactionAnalysis:
         """Analyze a single transaction."""
