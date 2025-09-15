@@ -412,7 +412,6 @@ workflows:
             ]
     jobs:
       - convert-and-run-notebooks-to-py:
-          commit-message: "GH Action Update - Weekly"
           matrix:
             parameters:
               notebook_paths:
