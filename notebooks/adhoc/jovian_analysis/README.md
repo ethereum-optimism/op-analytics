@@ -13,11 +13,12 @@ This project analyzes blockchain blocks to determine optimal Jovian calldata foo
 
 ## Key Features
 
-- **Dynamic Gas Limits**: Uses actual historical gas limits (30M to 240M+)
+- **Per-Block Gas Limits**: Uses actual gas limits from `blocks_v1` data for each block
 - **FastLZ Compression**: Realistic size estimates using Jovian's compression algorithm
 - **Multi-Chain Support**: Analyze Base, OP Mainnet, Mode, Ink, Soneium, Unichain, Worldchain, etc.
 - **Dual Sampling Methods**: Top percentile analysis and random sampling
 - **Time-Series Analysis**: Analyze DA throttling events with moving averages and throttling detection
+- **Deposit Transaction Handling**: Excludes DA usage for deposits in block totals
 
 ## Project Structure
 
@@ -36,9 +37,7 @@ jovian_analysis/
 │   ├── jovian_analysis.ipynb       # 🆕 Consolidated analysis notebook
 │   ├── da_throttling_analysis.ipynb # 🆕 DA throttling analysis notebook
 │   ├── saved_output_html/           # 📁 Saved HTML outputs from analysis
-│   ├── archive/                     # 📁 Archived old notebooks
-│   └── .cache/                      # Cached block data
-├── gas_limits/                      # Historical gas limits data
+│   └── archive/                     # 📁 Archived old notebooks
 └── results/                         # Analysis outputs (created on run)
 
 ```
@@ -83,26 +82,26 @@ SHOW_PLOTS = True      # Display plots inline
 ### Programmatic Usage
 
 ```python
-from jovian_src.clickhouse_fetcher import fetch_top_percentile_blocks, load_gas_limits
+from jovian_src.clickhouse_fetcher import fetch_top_percentile_blocks
 from jovian_src.analysis_functions import perform_jovian_analysis
 from jovian_src.visualization_jovian import generate_all_visualizations
 
-# Load gas limits
-gas_limits = load_gas_limits()
-
-# Fetch data
-df, gas_limit = fetch_top_percentile_blocks(
+# Fetch data with per-block gas limits
+df = fetch_top_percentile_blocks(
     chain="base",
     date="2025-03-01",
-    percentile=99.0,
-    gas_limit=120_000_000
+    percentile=99.0
 )
 
 # Analyze with multiple calldata footprint gas scalars
+# Gas limits are handled per-block automatically
 analysis_results = perform_jovian_analysis(
     df=df,
-    gas_limit=gas_limit,
-    calldata_footprint_gas_scalars=[160, 400, 600, 800]
+    da_footprint_gas_scalars=[160, 400, 600, 800],
+    chain="base",
+    sampling_method="top_percentile",
+    start_date="2025-03-01",
+    end_date="2025-03-01"
 )
 
 # Generate visualizations
@@ -125,8 +124,14 @@ figures = generate_all_visualizations(
 ### Jovian Footprint
 - **Size Estimate**: `max(100, -42585600 + 836500 * fastlz_size / 1e6)`
 - **Footprint**: `size_estimate * calldata_footprint_gas_scalar`
-- **Block Footprint**: `sum(tx_footprints)`
-- **Utilization**: `block_footprint / gas_limit`
+- **Block Footprint**: `sum(tx_footprints)` (excluding deposit transactions)
+- **Utilization**: `block_footprint / gas_limit` (per-block gas limit)
+
+### Deposit Transaction Handling
+- **Deposit Detection**: Transactions with `transaction_type == 126` are identified as deposits
+- **DA Usage Calculation**: Deposit transactions still have their DA usage calculated
+- **Block Totals**: Deposit transactions are excluded from block-level totals (footprint, DA usage, etc.)
+- **Individual Analysis**: Deposit transactions are included in individual transaction analysis
 
 ### Calldata Footprint Gas Scalars Tested
 - **160**: 4x multiplier (aggressive)
@@ -136,16 +141,18 @@ figures = generate_all_visualizations(
 
 ## Gas Limits
 
-Gas limits are loaded from CSV files in `gas_limits/`:
-- `base_gas_limits.csv` - Base gas limits
-- `op_gas_limits.csv` - OP Mainnet gas limits
-- `mode_gas_limits.csv` - Mode gas limits
-- `ink_gas_limits.csv` - Ink gas limits
-- `soneium_gas_limits.csv` - Soneium gas limits
-- `unichain_gas_limits.csv` - Unichain gas limits
-- `worldchain_gas_limits.csv` - Worldchain gas limits
+Gas limits are now fetched directly from `blocks_v1` data in ClickHouse:
+- **Per-Block Gas Limits**: Each block uses its actual gas limit from the `blocks_v1` table
+- **Automatic Handling**: No manual gas limit configuration required
+- **Fallback**: If gas limit data is not available, uses default from config (30,000,000)
+- **Multi-Chain Support**: Works with all supported chains automatically
 
-If no gas limit file exists for a chain, defaults to 30,000,000.
+### Gas Limit Data Flow
+
+1. **Data Fetching**: `clickhouse_fetcher.py` joins with `blocks_v1` table to get per-block gas limits
+2. **Analysis**: `core.py` uses each block's actual gas limit for utilization calculations
+3. **Aggregation**: `analysis_functions.py` calculates most common gas limit for summary statistics
+4. **Results**: Both per-block and aggregate gas limit data are preserved in results
 
 ## Output
 
@@ -171,7 +178,7 @@ The analysis provides:
 ## Data Sources
 
 - **Transaction Data**: ClickHouse via GCS parquet files
-- **Gas Limits**: Historical CSV with daily gas limits
+- **Gas Limits**: Per-block gas limits from `blocks_v1` table in ClickHouse
 - **Chains**: Base, OP Mainnet, Mode, Ink, Soneium, Unichain, Worldchain
 
 
