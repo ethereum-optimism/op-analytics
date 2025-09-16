@@ -1,5 +1,6 @@
 BEGIN
   CREATE TEMP TABLE base AS
+  
   WITH monthly_chain_activity AS (
     SELECT 
       DATE_TRUNC(dt,MONTH) AS dt_month, chain_key, display_name,
@@ -16,10 +17,13 @@ BEGIN
       , SUM(total_dex_volume_usd) as sum_total_dex_volume_usd
       -- developers
       , MAX_BY(distinct_parent_protocol,dt) AS latest_distinct_parent_protocol
+      -- -- UX
+      -- , SUM(median_l2_usd_fees_per_tx*txs_per_day)/SUM(txs_per_day) AS wt_avg_median_l2_usd_fees_per_tx
     FROM `oplabs-tools-data.materialized_tables.daily_superchain_health_mv`
       WHERE dt >= '2021-01-01'
           AND dt < DATE_TRUNC(CURRENT_DATE(),MONTH)
       AND layer = 'L2' -- L2s Only
+      AND eth_eco_l2 -- Ethereum Ecosystem Only (e.g., no known BNB L2s)
     GROUP BY 1,2,3,4,5,6,7,8,9,10,11
   )
   , days_per_mo AS (
@@ -99,7 +103,9 @@ BEGIN
       SUM(sum_revshare_actual_eth) AS sum_revshare_actual_eth,
         SUM(sum_revshare_actual_eth/unique_dt) AS sum_revshare_actual_eth_per_day,
       SUM(sum_revshare_actual_usd) AS sum_revshare_actual_usd,
-        SUM(sum_revshare_actual_usd/unique_dt) AS sum_revshare_actual_usd_per_day,
+        SUM(sum_revshare_actual_usd/unique_dt) AS sum_revshare_actual_usd_per_day
+      -- SUM(wt_avg_median_l2_usd_fees_per_tx*sum_txs)/SUM(sum_txs) AS wt_avg_median_l2_usd_fees_per_tx
+
     FROM pre_aggregate_groups
     GROUP BY 1,2,3
   )
