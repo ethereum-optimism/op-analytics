@@ -43,7 +43,7 @@ Analysis horizon (ideally)
 
     Thought: Instead of 1% take all the blocks where the block call data size is over the limit,
     where the limit is footprint limit = (gas limit of the block) / 800, the highest of the limits we have: [160 400 600 800] [4x, 10x, 15x, 20x]
-    DE Todo: Size estimate / Fast lz size in the block db
+    DE Todo: DA usage estimate / Fast lz size in the block db
     Goal: Do we make it a constant or configurable? If constant, what's a good constant?
 """
 # =============================================================================
@@ -808,6 +808,10 @@ class BlockAnalysis:
     utilization_vs_gas_used: Optional[float] = None
     total_calldata_size: int = 0  # Sum of raw calldata sizes
     total_fastlz_size: int = 0    # Sum of compressed sizes
+    # Target-based metrics
+    da_usage_target: Optional[float] = None  # DA usage target for this scalar
+    exceeds_target: Optional[bool] = None    # Whether DA usage exceeds target
+    target_utilization: Optional[float] = None  # DA usage / target ratio
 
 class CalldataAnalyzer:
     """Core analyzer for Jovian calldata footprints."""
@@ -891,7 +895,7 @@ class CalldataAnalyzer:
             transaction_type=transaction_type
         )
 
-    def analyze_block(self, block_df: pl.DataFrame, footprint_scalar: int, *, show_tx_progress: bool = False) -> BlockAnalysis:
+    def analyze_block(self, block_df: pl.DataFrame, footprint_scalar: int, *, show_tx_progress: bool = False, eip1559_elasticity: float = 2.0) -> BlockAnalysis:
         """Analyze all transactions in a block."""
         if len(block_df) == 0:
             raise ValueError("No transactions in block")
@@ -933,6 +937,11 @@ class CalldataAnalyzer:
         utilization = total_footprint / actual_gas_limit
         exceeds_limit = total_footprint > actual_gas_limit
 
+        # Calculate target-based metrics
+        da_usage_target = actual_gas_limit / (eip1559_elasticity * footprint_scalar)
+        exceeds_target = total_da_usage_estimate > da_usage_target
+        target_utilization = total_da_usage_estimate / da_usage_target if da_usage_target > 0 else None
+
         # ensure this frame has exactly one block
         if block_df.select(pl.col("block_number").n_unique()).item() != 1:
             raise ValueError("analyze_block received multiple block_numbers")
@@ -970,9 +979,12 @@ class CalldataAnalyzer:
             total_fastlz_size=total_fastlz_size,
             block_gas_used=block_gas_used,
             utilization_vs_gas_used=utilization_vs_gas_used,
+            da_usage_target=da_usage_target,
+            exceeds_target=exceeds_target,
+            target_utilization=target_utilization,
         )
 
-    def _analyze_block_vectorized(self, block_df: pl.DataFrame, footprint_scalar: int) -> BlockAnalysis:
+    def _analyze_block_vectorized(self, block_df: pl.DataFrame, footprint_scalar: int, eip1559_elasticity: float = 2.0) -> BlockAnalysis:
         """OPTIMIZATION: Vectorized block analysis for large blocks without individual transaction details."""
         block_number = block_df['block_number'][0]
         tx_count = len(block_df)
@@ -1009,7 +1021,7 @@ class CalldataAnalyzer:
                 is_deposit = tx_type == 126
                 deposit_flags.append(is_deposit)
 
-                # Calculate compression and size estimate for all transactions
+                # Calculate compression and DA usage estimate for all transactions
                 if not calldata:
                     fastlz_size = 0
                     size_estimate = float(self.jovian_config.min_transaction_size)
@@ -1034,6 +1046,11 @@ class CalldataAnalyzer:
 
         utilization = total_footprint / actual_gas_limit
         exceeds_limit = total_footprint > actual_gas_limit
+
+        # Calculate target-based metrics
+        da_usage_target = actual_gas_limit / (eip1559_elasticity * footprint_scalar)
+        exceeds_target = total_da_usage_estimate > da_usage_target
+        target_utilization = total_da_usage_estimate / da_usage_target if da_usage_target > 0 else None
 
         # Calculate max footprint for this block (excluding deposits)
         max_tx_footprint = max(da_est * footprint_scalar for da_est in non_deposit_da_usage_estimates) if non_deposit_da_usage_estimates else 0
@@ -1070,10 +1087,13 @@ class CalldataAnalyzer:
             total_fastlz_size=total_fastlz_size,
             block_gas_used=block_gas_used,
             utilization_vs_gas_used=utilization_vs_gas_used,
+            da_usage_target=da_usage_target,
+            exceeds_target=exceeds_target,
+            target_utilization=target_utilization,
         )
 
     def analyze_multiple_blocks(self, df: pl.DataFrame, footprint_scalar: int,
-                              show_progress: bool = True) -> List[BlockAnalysis]:
+                              show_progress: bool = True, eip1559_elasticity: float = 2.0) -> List[BlockAnalysis]:
         """Analyze multiple blocks from a DataFrame."""
         block_groups = list(df.group_by("block_number"))
 
@@ -1083,12 +1103,12 @@ class CalldataAnalyzer:
         # Use multiprocessing for large datasets
         if (self.analysis_config.use_multiprocessing and
             len(block_groups) >= self.analysis_config.multiprocessing_threshold):
-            return self._analyze_blocks_parallel(block_groups, footprint_scalar, show_progress)
+            return self._analyze_blocks_parallel(block_groups, footprint_scalar, show_progress, eip1559_elasticity)
         else:
-            return self._analyze_blocks_sequential(block_groups, footprint_scalar, show_progress)
+            return self._analyze_blocks_sequential(block_groups, footprint_scalar, show_progress, eip1559_elasticity)
 
     def _analyze_blocks_sequential(self, block_groups: List[Tuple], footprint_scalar: int,
-                                 show_progress: bool) -> List[BlockAnalysis]:
+                                 show_progress: bool, eip1559_elasticity: float = 2.0) -> List[BlockAnalysis]:
         """Analyze blocks sequentially."""
         results = []
 
@@ -1098,7 +1118,7 @@ class CalldataAnalyzer:
 
         for block_num, block_df in iterator:
             try:
-                result = self.analyze_block(block_df, footprint_scalar)
+                result = self.analyze_block(block_df, footprint_scalar, eip1559_elasticity=eip1559_elasticity)
                 results.append(result)
             except Exception as e:
                 if show_progress:
@@ -1107,7 +1127,7 @@ class CalldataAnalyzer:
         return results
 
     def _analyze_blocks_parallel(self, block_groups: List[Tuple], footprint_scalar: int,
-                               show_progress: bool) -> List[BlockAnalysis]:
+                               show_progress: bool, eip1559_elasticity: float = 2.0) -> List[BlockAnalysis]:
         """Analyze blocks using multiprocessing."""
         # Prepare arguments for workers
         config_dict = {
@@ -1117,7 +1137,7 @@ class CalldataAnalyzer:
             'block_gas_limit': self.jovian_config.block_gas_limit,
         }
 
-        args_list = [(block_df, footprint_scalar, config_dict) for block_num, block_df in block_groups]
+        args_list = [(block_df, footprint_scalar, config_dict, eip1559_elasticity) for block_num, block_df in block_groups]
 
         # Determine number of workers
         configured_workers = self.analysis_config.num_analysis_workers or mp.cpu_count()
@@ -1157,7 +1177,7 @@ class CalldataAnalyzer:
 def _analyze_block_worker(args: Tuple) -> Optional[BlockAnalysis]:
     """Worker function for multiprocessing block analysis."""
     try:
-        block_data, footprint_scalar, config_dict = args
+        block_data, footprint_scalar, config_dict, eip1559_elasticity = args
 
         # Recreate config and analyzer
         jovian_config = JovianConfig(**config_dict)
@@ -1165,7 +1185,7 @@ def _analyze_block_worker(args: Tuple) -> Optional[BlockAnalysis]:
         analyzer = CalldataAnalyzer(jovian_config, analysis_config)
 
         # Analyze the block
-        return analyzer.analyze_block(block_data, footprint_scalar)
+        return analyzer.analyze_block(block_data, footprint_scalar, eip1559_elasticity=eip1559_elasticity)
 
     except Exception as e:
         # Log the error for debugging

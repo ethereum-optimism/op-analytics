@@ -14,7 +14,7 @@ This project analyzes blockchain blocks to determine optimal Jovian calldata foo
 ## Key Features
 
 - **Per-Block Gas Limits**: Uses actual gas limits from `blocks_v1` data for each block
-- **FastLZ Compression**: Realistic size estimates using Jovian's compression algorithm
+- **FastLZ Compression**: Realistic DA usage estimates using Jovian's compression algorithm
 - **Multi-Chain Support**: Analyze Base, OP Mainnet, Mode, Ink, Soneium, Unichain, Worldchain, etc.
 - **Dual Sampling Methods**: Top percentile analysis and random sampling
 - **Time-Series Analysis**: Analyze DA throttling events with moving averages and throttling detection
@@ -113,7 +113,7 @@ figures = generate_all_visualizations(
 
 ## Analysis Goals
 
-1. **Histogram of total size estimates** - Distribution of block sizes
+1. **Histogram of total DA usage estimates** - Distribution of block sizes
 2. **Blocks exceeding limits** - Analysis of when/how blocks exceed
 3. **Excess distribution** - Distribution for blocks over limit
 4. **Over-utilization quantification** - Percentage metrics (e.g., 50/10000 blocks)
@@ -122,8 +122,8 @@ figures = generate_all_visualizations(
 ## Key Calculations
 
 ### Jovian Footprint
-- **Size Estimate**: `max(100, -42585600 + 836500 * fastlz_size / 1e6)`
-- **Footprint**: `size_estimate * calldata_footprint_gas_scalar`
+- **DA Usage Estimate**: `max(100, -42585600 + 836500 * fastlz_size / 1e6)`
+- **Footprint**: `da_usage_estimate * calldata_footprint_gas_scalar`
 - **Block Footprint**: `sum(tx_footprints)` (excluding deposit transactions)
 - **Utilization**: `block_footprint / gas_limit` (per-block gas limit)
 
@@ -159,7 +159,7 @@ Gas limits are now fetched directly from `blocks_v1` data in ClickHouse:
 Results are saved to: `results/{chain}/jovian_analysis_{method}_{start_date}_{end_date}/`
 
 Generated files:
-- Size estimates histogram
+- DA usage estimates histogram
 - Blocks exceeding analysis
 - Compression analysis
 - Trend analysis

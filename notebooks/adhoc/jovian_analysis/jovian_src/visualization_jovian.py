@@ -35,7 +35,8 @@ def plot_da_usage_estimates_histogram(
     end_date: str = None,
     title: str = None,
     save_path: Optional[Path] = None,
-    gas_limit: int = DEFAULT_GAS_LIMIT
+    gas_limit: int = DEFAULT_GAS_LIMIT,
+    eip1559_elasticity: float = 2.0
 ) -> plt.Figure:
     """
     Plot histogram of total size estimates - two versions: with and without scalar limits.
@@ -46,20 +47,20 @@ def plot_da_usage_estimates_histogram(
 
     if title is None:
         date_suffix = f" ({start_date} → {end_date})" if start_date and end_date else ""
-        title = f"{get_chain_display_name(chain)}: Distribution of Block Size Estimates{date_suffix}"
+        title = f"{get_chain_display_name(chain)}: Distribution of Block DA Usage Estimates{date_suffix}"
 
     # Extract DA usage estimates
     da_usage_estimates = [block.total_da_usage_estimate for block in block_analyses]
 
-    # Create figure with two subplots side by side
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=FIGURE_SIZE_LARGE)
+    # Create figure with three subplots side by side
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(24, 7))
 
     # Use chain color
     color = get_chain_color(chain)
 
-    # ========== LEFT PLOT: Without scalar limits ==========
+    # ========== LEFT PLOT: Basic distribution ==========
     n1, bins1, patches1 = ax1.hist(da_usage_estimates, bins=HISTOGRAM_BINS, edgecolor='black', alpha=0.7, color=color)
-    ax1.set_xlabel('Size Estimate (bytes)', fontsize=11)
+    ax1.set_xlabel('DA usage estimate (bytes)', fontsize=11)
     ax1.set_ylabel('Number of Blocks', fontsize=11)
     ax1.set_title(f'{title}', fontsize=12, fontweight='bold')
 
@@ -72,9 +73,9 @@ def plot_da_usage_estimates_histogram(
     ax1.legend(loc='upper right', fontsize=10)
     ax1.grid(True, alpha=0.3)
 
-    # ========== RIGHT PLOT: With scalar limits ==========
+    # ========== MIDDLE PLOT: With scalar limits ==========
     n2, bins2, patches2 = ax2.hist(da_usage_estimates, bins=HISTOGRAM_BINS, edgecolor='black', alpha=0.7, color=color)
-    ax2.set_xlabel('Size Estimate (bytes)', fontsize=11)
+    ax2.set_xlabel('DA usage estimate (bytes)', fontsize=11)
     ax2.set_ylabel('Number of Blocks', fontsize=11)
     ax2.set_title(f'{title} (with Scalar Limits)', fontsize=12, fontweight='bold')
 
@@ -84,16 +85,39 @@ def plot_da_usage_estimates_histogram(
     ax2.axvline(np.mean(da_usage_estimates), color='red', linestyle='--', linewidth=2,
                 label=f'Mean: {np.mean(da_usage_estimates):,.0f}')
 
-    # Add vertical lines for scalar limits
+    # Add vertical lines for scalar limits only
     scalars = DEFAULT_DA_FOOTPRINT_GAS_SCALARS
     scalar_colors = ['blue', 'purple', 'brown', 'pink']
     for scalar, scolor in zip(scalars, scalar_colors):
+        # DA usage limit: gas_limit / da_footprint_gas_scalar
         limit = gas_limit / scalar
         ax2.axvline(limit, color=scolor, linestyle=':', linewidth=1.5, alpha=0.7,
                    label=f'Limit @ {scalar}: {limit:,.0f}')
 
     ax2.legend(loc='upper right', fontsize=9, ncol=1)
     ax2.grid(True, alpha=0.3)
+
+    # ========== RIGHT PLOT: With scalar targets ==========
+    n3, bins3, patches3 = ax3.hist(da_usage_estimates, bins=HISTOGRAM_BINS, edgecolor='black', alpha=0.7, color=color)
+    ax3.set_xlabel('DA usage estimate (bytes)', fontsize=11)
+    ax3.set_ylabel('Number of Blocks', fontsize=11)
+    ax3.set_title(f'{title} (with Scalar Targets)', fontsize=12, fontweight='bold')
+
+    # Add mean and median
+    ax3.axvline(np.median(da_usage_estimates), color='green', linestyle='-', linewidth=2,
+                label=f'Median: {np.median(da_usage_estimates):,.0f}')
+    ax3.axvline(np.mean(da_usage_estimates), color='red', linestyle='--', linewidth=2,
+                label=f'Mean: {np.mean(da_usage_estimates):,.0f}')
+
+
+    # Add vertical lines for scalar targets only
+    for scalar, scolor in zip(scalars, scalar_colors):
+        target = gas_limit / (eip1559_elasticity * scalar)
+        ax3.axvline(target, color=scolor, linestyle='--', linewidth=1.5, alpha=0.7,
+                   label=f'Target @ {scalar}: {target:,.0f}')
+
+    ax3.legend(loc='upper right', fontsize=9, ncol=1)
+    ax3.grid(True, alpha=0.3)
 
     # Add statistics text to left plot only
     stats_text = (
@@ -114,7 +138,7 @@ def plot_da_usage_estimates_histogram(
     if save_path:
         save_path.parent.mkdir(parents=True, exist_ok=True)
         plt.savefig(save_path, dpi=PLOT_DPI, bbox_inches='tight')
-        print(f"✅ Saved size estimates histogram to {save_path}")
+        print(f"✅ Saved DA usage estimates histogram (3 plots: basic, limits, targets) to {save_path}")
 
     return fig
 
@@ -755,7 +779,8 @@ def generate_all_visualizations(
     output_dir: Optional[Path] = None,
     chain: str = "base",
     start_date: str = None,
-    end_date: str = None
+    end_date: str = None,
+    eip1559_elasticity: float = 2.0
 ) -> Dict[str, plt.Figure]:
     """
     Generate all required visualizations for Jovian analysis.
@@ -778,15 +803,16 @@ def generate_all_visualizations(
     block_analyses = first_result.block_analyses
     gas_limit = first_result.gas_limit
 
-    # 1. Size estimates histogram (with gas_limit for vertical lines)
-    print("📊 Generating enhanced size estimates histogram...")
+    # 1. DA usage estimates histogram (with gas_limit for vertical lines)
+    print("📊 Generating enhanced DA usage estimates histogram...")
     fig1 = plot_da_usage_estimates_histogram(
         block_analyses,
         chain=chain,
         start_date=start_date,
         end_date=end_date,
         save_path=output_dir / "1_da_usage_estimates_histogram.png" if output_dir else None,
-        gas_limit=gas_limit
+        gas_limit=gas_limit,
+        eip1559_elasticity=eip1559_elasticity
     )
     figures["da_usage_estimates"] = fig1
 
@@ -852,7 +878,8 @@ def generate_all_visualizations(
         chain=chain,
         start_date=start_date,
         end_date=end_date,
-        save_path=output_dir / "7_comprehensive_summary.png" if output_dir else None
+        save_path=output_dir / "7_comprehensive_summary.png" if output_dir else None,
+        eip1559_elasticity=eip1559_elasticity
     )
     figures["comprehensive_summary"] = fig7
 
@@ -885,7 +912,8 @@ def plot_comprehensive_summary(
     start_date: str = None,
     end_date: str = None,
     title: str = None,
-    save_path: Optional[Path] = None
+    save_path: Optional[Path] = None,
+    eip1559_elasticity: float = 2.0
 ) -> plt.Figure:
     """
     Create a comprehensive single-page summary of all key metrics.
@@ -898,9 +926,9 @@ def plot_comprehensive_summary(
         date_suffix = f" ({start_date} → {end_date})" if start_date and end_date else ""
         title = f"{get_chain_display_name(chain)}: Comprehensive Analysis Summary{date_suffix}"
 
-    # Create figure with 4 subplots
-    fig = plt.figure(figsize=(18, 12))
-    gs = fig.add_gridspec(2, 2, hspace=0.3, wspace=0.25)
+    # Create figure with 6 subplots (2 rows, 3 columns)
+    fig = plt.figure(figsize=(24, 12))
+    gs = fig.add_gridspec(2, 3, hspace=0.3, wspace=0.25)
 
     scalars = sorted(results_by_scalar.keys())
     chain_color = get_chain_color(chain)
@@ -908,7 +936,7 @@ def plot_comprehensive_summary(
     # Get a reference result for block analyses
     ref_result = results_by_scalar[scalars[0]]
 
-    # ========== Plot 1: Size Distribution with All Limits ==========
+    # ========== Plot 1: Basic Distribution ==========
     ax1 = fig.add_subplot(gs[0, 0])
 
     # Collect all DA usage estimates
@@ -922,13 +950,6 @@ def plot_comprehensive_summary(
         n, bins, patches = ax1.hist(all_da_usage_estimates, bins=40, edgecolor='black',
                                     alpha=0.7, color=chain_color)
 
-        # Add vertical lines for each scalar limit
-        scalar_colors = ['blue', 'purple', 'brown', 'pink']
-        for scalar, scolor in zip(scalars, scalar_colors):
-            limit = ref_result.gas_limit / scalar
-            ax1.axvline(limit, color=scolor, linestyle='--', linewidth=1.5, alpha=0.7,
-                       label=f'Limit @ {scalar}: {limit:,.0f}')
-
         # Add mean and median lines
         median_val = np.median(all_da_usage_estimates)
         mean_val = np.mean(all_da_usage_estimates)
@@ -937,37 +958,92 @@ def plot_comprehensive_summary(
         ax1.axvline(mean_val, color='red', linestyle='--', linewidth=2,
                    label=f'Mean: {mean_val:,.0f}')
 
-        ax1.set_xlabel('Size Estimate (bytes)', fontsize=11)
+        ax1.set_xlabel('DA usage estimate (bytes)', fontsize=11)
         ax1.set_ylabel('Number of Blocks', fontsize=11)
-        ax1.set_title('Size Distribution with Scalar Limits', fontsize=12, fontweight='bold')
+        ax1.set_title('DA Usage Distribution', fontsize=12, fontweight='bold')
         ax1.legend(loc='upper right', fontsize=8, ncol=1)
         ax1.grid(True, alpha=0.3)
 
-    # ========== Plot 2: Blocks Exceeding by Scalar ==========
+    # ========== Plot 2: Distribution with Scalar Limits ==========
     ax2 = fig.add_subplot(gs[0, 1])
+
+    if all_da_usage_estimates:
+        # Create histogram
+        n, bins, patches = ax2.hist(all_da_usage_estimates, bins=40, edgecolor='black',
+                                    alpha=0.7, color=chain_color)
+
+        # Add vertical lines for each scalar limit only
+        scalar_colors = ['blue', 'purple', 'brown', 'pink']
+        for scalar, scolor in zip(scalars, scalar_colors):
+            # DA usage limit: gas_limit / da_footprint_gas_scalar
+            limit = ref_result.gas_limit / scalar
+            ax2.axvline(limit, color=scolor, linestyle='--', linewidth=1.5, alpha=0.7,
+                       label=f'Limit @ {scalar}: {limit:,.0f}')
+
+        # Add mean and median lines
+        ax2.axvline(median_val, color='green', linestyle='-', linewidth=2,
+                   label=f'Median: {median_val:,.0f}')
+        ax2.axvline(mean_val, color='red', linestyle='--', linewidth=2,
+                   label=f'Mean: {mean_val:,.0f}')
+
+        ax2.set_xlabel('DA usage estimate (bytes)', fontsize=11)
+        ax2.set_ylabel('Number of Blocks', fontsize=11)
+        ax2.set_title('DA Usage Distribution with Scalar Limits', fontsize=12, fontweight='bold')
+        ax2.legend(loc='upper right', fontsize=8, ncol=1)
+        ax2.grid(True, alpha=0.3)
+
+    # ========== Plot 3: Distribution with Scalar Targets ==========
+    ax3 = fig.add_subplot(gs[0, 2])
+
+    if all_da_usage_estimates:
+        # Create histogram
+        n, bins, patches = ax3.hist(all_da_usage_estimates, bins=40, edgecolor='black',
+                                    alpha=0.7, color=chain_color)
+
+
+        # Add vertical lines for each scalar target only
+        for scalar, scolor in zip(scalars, scalar_colors):
+            target = ref_result.gas_limit / (eip1559_elasticity * scalar)
+            ax3.axvline(target, color=scolor, linestyle=':', linewidth=1.5, alpha=0.7,
+                       label=f'Target @ {scalar}: {target:,.0f}')
+
+        # Add mean and median lines
+        ax3.axvline(median_val, color='green', linestyle='-', linewidth=2,
+                   label=f'Median: {median_val:,.0f}')
+        ax3.axvline(mean_val, color='red', linestyle='--', linewidth=2,
+                   label=f'Mean: {mean_val:,.0f}')
+
+        ax3.set_xlabel('DA usage estimate (bytes)', fontsize=11)
+        ax3.set_ylabel('Number of Blocks', fontsize=11)
+        ax3.set_title('DA Usage Distribution with Scalar Targets', fontsize=12, fontweight='bold')
+        ax3.legend(loc='upper right', fontsize=8, ncol=1)
+        ax3.grid(True, alpha=0.3)
+
+    # ========== Plot 4: Blocks Exceeding by Scalar ==========
+    ax4 = fig.add_subplot(gs[1, 0])
 
     # Simple bar chart showing blocks exceeding for each scalar
     exceeding_counts = [results_by_scalar[s].blocks_exceeding for s in scalars]
     exceeding_pcts = [results_by_scalar[s].percentage_exceeding for s in scalars]
 
-    bars = ax2.bar(range(len(scalars)), exceeding_counts, color=chain_color, alpha=0.7)
-    ax2.set_xlabel('Calldata Footprint Gas Scalar', fontsize=11)
-    ax2.set_ylabel('Number of Blocks Exceeding', fontsize=11)
-    ax2.set_title('Blocks Exceeding Limit by Scalar', fontsize=12, fontweight='bold')
-    ax2.set_xticks(range(len(scalars)))
-    ax2.set_xticklabels(scalars)
+    bars = ax4.bar(range(len(scalars)), exceeding_counts, color=chain_color, alpha=0.7)
+    ax4.set_xlabel('Calldata Footprint Gas Scalar', fontsize=11)
+    ax4.set_ylabel('Number of Blocks Exceeding', fontsize=11)
+    ax4.set_title('Blocks Exceeding Limit by Scalar', fontsize=12, fontweight='bold')
+    ax4.set_xticks(range(len(scalars)))
+    ax4.set_xticklabels(scalars)
 
     # Add value labels on bars
     for i, (bar, val, pct) in enumerate(zip(bars, exceeding_counts, exceeding_pcts)):
         if val > 0:
-            ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height(),
+            ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height(),
                    f'{val}\n({pct:.1f}%)',
                    ha='center', va='bottom')
 
-    ax2.grid(True, alpha=0.3, axis='y')
+    ax4.grid(True, alpha=0.3, axis='y')
 
-    # ========== Plot 3: Compression & Efficiency Metrics ==========
-    ax3 = fig.add_subplot(gs[1, 0])
+    # ========== Plot 5: Compression & Efficiency Metrics ==========
+    ax5 = fig.add_subplot(gs[1, 1])
 
     # Calculate compression metrics
     compression_ratios = []
@@ -983,40 +1059,40 @@ def plot_comprehensive_summary(
 
     if compression_ratios:
         # Create box plots
-        bp1 = ax3.boxplot([compression_ratios], positions=[1], widths=0.6,
+        bp1 = ax5.boxplot([compression_ratios], positions=[1], widths=0.6,
                           patch_artist=True, labels=['Compression\nRatio'])
         bp1['boxes'][0].set_facecolor(chain_color)
         bp1['boxes'][0].set_alpha(0.7)
 
         # Add text annotations
-        ax3.text(1, np.median(compression_ratios), f'{np.median(compression_ratios):.2f}x',
+        ax5.text(1, np.median(compression_ratios), f'{np.median(compression_ratios):.2f}x',
                 ha='center', va='bottom', fontweight='bold')
 
     if da_efficiencies:
         # Create second y-axis for DA efficiency
-        ax3_2 = ax3.twinx()
-        bp2 = ax3_2.boxplot([da_efficiencies], positions=[2], widths=0.6,
+        ax5_2 = ax5.twinx()
+        bp2 = ax5_2.boxplot([da_efficiencies], positions=[2], widths=0.6,
                            patch_artist=True, labels=['DA\nEfficiency'])
         bp2['boxes'][0].set_facecolor('orange')
         bp2['boxes'][0].set_alpha(0.7)
 
-        ax3_2.set_ylabel('DA Efficiency (%)', fontsize=11)
+        ax5_2.set_ylabel('DA Efficiency (%)', fontsize=11)
 
         # Add text annotation
-        ax3_2.text(2, np.median(da_efficiencies), f'{np.median(da_efficiencies):.1f}%',
+        ax5_2.text(2, np.median(da_efficiencies), f'{np.median(da_efficiencies):.1f}%',
                   ha='center', va='bottom', fontweight='bold')
 
-    ax3.set_xlim(0.5, 2.5)
-    ax3.set_xticks([1, 2])
-    ax3.set_xticklabels(['Compression\nRatio', 'DA\nEfficiency'])
-    ax3.set_ylabel('Compression Ratio (x)', fontsize=11)
-    ax3.set_title('Compression & Efficiency Metrics', fontsize=12, fontweight='bold')
-    ax3.grid(True, alpha=0.3, axis='y')
+    ax5.set_xlim(0.5, 2.5)
+    ax5.set_xticks([1, 2])
+    ax5.set_xticklabels(['Compression\nRatio', 'DA\nEfficiency'])
+    ax5.set_ylabel('Compression Ratio (x)', fontsize=11)
+    ax5.set_title('Compression & Efficiency Metrics', fontsize=12, fontweight='bold')
+    ax5.grid(True, alpha=0.3, axis='y')
 
-    # ========== Plot 4: Summary Table ==========
-    ax4 = fig.add_subplot(gs[1, 1])
-    ax4.axis('tight')
-    ax4.axis('off')
+    # ========== Plot 6: Summary Table ==========
+    ax6 = fig.add_subplot(gs[1, 2])
+    ax6.axis('tight')
+    ax6.axis('off')
 
     # Create summary table
     table_data = []
@@ -1048,7 +1124,7 @@ def plot_comprehensive_summary(
             status
         ])
 
-    table = ax4.table(cellText=table_data,
+    table = ax6.table(cellText=table_data,
                      colLabels=['Scalar', 'Effective\nLimit', 'Blocks\nExceeding',
                                '% Exceed', 'Avg\nUtil', 'Compression', 'Status'],
                      cellLoc='center',
@@ -1078,7 +1154,7 @@ def plot_comprehensive_summary(
         table[(0, j)].set_facecolor('#e6e6e6')
         table[(0, j)].set_text_props(weight='bold')
 
-    ax4.set_title('Summary Metrics by Scalar', fontsize=12, fontweight='bold', pad=20)
+    ax6.set_title('Summary Metrics by Scalar', fontsize=12, fontweight='bold', pad=20)
 
     # Add overall statistics text
     total_blocks = ref_result.total_blocks
@@ -1088,7 +1164,7 @@ def plot_comprehensive_summary(
         f"Sampling Method: {ref_result.sampling_method}\n"
         f"Gas Limit: {ref_result.gas_limit:,}"
     )
-    ax4.text(0.5, -0.15, stats_text, transform=ax4.transAxes,
+    ax6.text(0.5, -0.15, stats_text, transform=ax6.transAxes,
             ha='center', va='top', fontsize=10,
             bbox=dict(boxstyle='round', facecolor='lightgray', alpha=0.3))
 
