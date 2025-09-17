@@ -961,11 +961,14 @@ class CalldataAnalyzer:
             else None
         )
 
+        tx_count = len(transactions)
+
+
         return BlockAnalysis(
             block_number=block_number,
             block_timestamp=block_timestamp,
             base_fee_per_gas=base_fee_per_gas,
-            tx_count=len(transactions),
+            tx_count=tx_count,
             total_da_footprint=total_footprint,
             total_da_usage_estimate=total_da_usage_estimate,
             calldata_utilization=utilization,
@@ -988,6 +991,7 @@ class CalldataAnalyzer:
         """OPTIMIZATION: Vectorized block analysis for large blocks without individual transaction details."""
         block_number = block_df['block_number'][0]
         tx_count = len(block_df)
+
 
         # Get actual gas limit from block data if available, otherwise use config
         if 'gas_limit' in block_df.columns:
@@ -1101,6 +1105,7 @@ class CalldataAnalyzer:
 
         if not block_groups:
             return []
+
 
         # Use multiprocessing for large datasets
         if (self.analysis_config.use_multiprocessing and
