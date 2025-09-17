@@ -61,19 +61,20 @@ class JovianAnalysisResult:
 
 def perform_jovian_analysis(
     df: pl.DataFrame,
+    eip1559_elasticity: int,
     da_footprint_gas_scalars: List[int] = None,
     chain: str = "base",
     sampling_method: str = "top_percentile",
     start_date: str = None,
     end_date: str = None,
-    show_progress: bool = True,
-    eip1559_elasticity: float = 2.0
+    show_progress: bool = True
 ) -> Dict[int, JovianAnalysisResult]:
     """
     Perform comprehensive Jovian analysis for multiple DA footprint gas scalars.
 
     Args:
         df: Transaction data from blocks
+        eip1559_elasticity: EIP-1559 elasticity value for target calculation
         da_footprint_gas_scalars: List of scalars to test (default: [160, 400, 600, 800])
         chain: Chain name for context
         sampling_method: Method used to sample blocks

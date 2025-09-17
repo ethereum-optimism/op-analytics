@@ -30,13 +30,13 @@ sns.set_palette("husl")
 
 def plot_da_usage_estimates_histogram(
     block_analyses: List[BlockAnalysis],
+    eip1559_elasticity: int,
     chain: str = "base",
     start_date: str = None,
     end_date: str = None,
     title: str = None,
     save_path: Optional[Path] = None,
-    gas_limit: int = DEFAULT_GAS_LIMIT,
-    eip1559_elasticity: float = 2.0
+    gas_limit: int = DEFAULT_GAS_LIMIT
 ) -> plt.Figure:
     """
     Plot histogram of total size estimates - two versions: with and without scalar limits.
@@ -776,11 +776,11 @@ def plot_da_footprint_gas_scalar_comparison(
 
 def generate_all_visualizations(
     results_by_scalar: Dict[int, JovianAnalysisResult],
+    eip1559_elasticity: int,
     output_dir: Optional[Path] = None,
     chain: str = "base",
     start_date: str = None,
-    end_date: str = None,
-    eip1559_elasticity: float = 2.0
+    end_date: str = None
 ) -> Dict[str, plt.Figure]:
     """
     Generate all required visualizations for Jovian analysis.
@@ -908,12 +908,12 @@ def plot_util_vs_gas_used_hist(block_analyses, chain, start_date=None, end_date=
 
 def plot_comprehensive_summary(
     results_by_scalar: Dict[int, JovianAnalysisResult],
+    eip1559_elasticity: int,
     chain: str = "base",
     start_date: str = None,
     end_date: str = None,
     title: str = None,
-    save_path: Optional[Path] = None,
-    eip1559_elasticity: float = 2.0
+    save_path: Optional[Path] = None
 ) -> plt.Figure:
     """
     Create a comprehensive single-page summary of all key metrics.

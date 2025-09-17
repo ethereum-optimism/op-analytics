@@ -608,7 +608,7 @@ def fetch_date_range_single_query(
     return result_df
 
 
-def fetch_eip1559_elasticity(chain: str) -> float:
+def fetch_eip1559_elasticity(chain: str) -> int:
     """
     Fetch EIP-1559 elasticity value for a chain from ClickHouse.
 
@@ -616,7 +616,10 @@ def fetch_eip1559_elasticity(chain: str) -> float:
         chain: Chain name (e.g., 'op', 'base')
 
     Returns:
-        EIP-1559 elasticity value (default: 2.0 if not found)
+        EIP-1559 elasticity value as integer
+
+    Raises:
+        ValueError: If no elasticity value found for the chain
     """
     try:
         # Get chain identifier for ClickHouse query
@@ -633,13 +636,12 @@ def fetch_eip1559_elasticity(chain: str) -> float:
         result_df = run_query(instance="OPLABS", query=query)
 
         if result_df.is_empty():
-            print(f"⚠️  No EIP-1559 elasticity found for {chain} ({chain_identifier}), using default: 2.0")
-            return 2.0
+            raise ValueError(f"No EIP-1559 elasticity found for {chain} ({chain_identifier})")
 
-        elasticity = float(result_df['eip1559_elasticity'][0])
+        elasticity = int(result_df['eip1559_elasticity'][0])
         print(f"✅ Fetched EIP-1559 elasticity for {chain}: {elasticity}")
         return elasticity
 
     except Exception as e:
-        print(f"⚠️  Error fetching EIP-1559 elasticity for {chain}: {e}, using default: 2.0")
-        return 2.0
+        print(f"❌ Error fetching EIP-1559 elasticity for {chain}: {e}")
+        raise

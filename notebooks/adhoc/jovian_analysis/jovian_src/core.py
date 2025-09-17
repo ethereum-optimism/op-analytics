@@ -895,7 +895,7 @@ class CalldataAnalyzer:
             transaction_type=transaction_type
         )
 
-    def analyze_block(self, block_df: pl.DataFrame, footprint_scalar: int, *, show_tx_progress: bool = False, eip1559_elasticity: float = 2.0) -> BlockAnalysis:
+    def analyze_block(self, block_df: pl.DataFrame, footprint_scalar: int, *, show_tx_progress: bool = False, eip1559_elasticity: int) -> BlockAnalysis:
         """Analyze all transactions in a block."""
         if len(block_df) == 0:
             raise ValueError("No transactions in block")
@@ -913,7 +913,7 @@ class CalldataAnalyzer:
         # OPTIMIZATION: For large blocks without detailed transaction analysis needs,
         # use vectorized operations to calculate aggregates directly
         if len(block_df) > 1000 and not show_tx_progress:
-            return self._analyze_block_vectorized(block_df, footprint_scalar)
+            return self._analyze_block_vectorized(block_df, footprint_scalar, eip1559_elasticity)
 
         # Original detailed analysis path for smaller blocks or when progress is needed
         transactions = []
@@ -984,7 +984,7 @@ class CalldataAnalyzer:
             target_utilization=target_utilization,
         )
 
-    def _analyze_block_vectorized(self, block_df: pl.DataFrame, footprint_scalar: int, eip1559_elasticity: float = 2.0) -> BlockAnalysis:
+    def _analyze_block_vectorized(self, block_df: pl.DataFrame, footprint_scalar: int, eip1559_elasticity: int) -> BlockAnalysis:
         """OPTIMIZATION: Vectorized block analysis for large blocks without individual transaction details."""
         block_number = block_df['block_number'][0]
         tx_count = len(block_df)
@@ -1073,6 +1073,8 @@ class CalldataAnalyzer:
 
         return BlockAnalysis(
             block_number=block_number,
+            block_timestamp=block_df['block_timestamp'][0],
+            base_fee_per_gas=block_df['base_fee_per_gas'][0],
             tx_count=tx_count,
             total_da_footprint=total_footprint,
             total_da_usage_estimate=total_da_usage_estimate,
@@ -1093,7 +1095,7 @@ class CalldataAnalyzer:
         )
 
     def analyze_multiple_blocks(self, df: pl.DataFrame, footprint_scalar: int,
-                              show_progress: bool = True, eip1559_elasticity: float = 2.0) -> List[BlockAnalysis]:
+                              eip1559_elasticity: int, show_progress: bool = True) -> List[BlockAnalysis]:
         """Analyze multiple blocks from a DataFrame."""
         block_groups = list(df.group_by("block_number"))
 
@@ -1108,7 +1110,7 @@ class CalldataAnalyzer:
             return self._analyze_blocks_sequential(block_groups, footprint_scalar, show_progress, eip1559_elasticity)
 
     def _analyze_blocks_sequential(self, block_groups: List[Tuple], footprint_scalar: int,
-                                 show_progress: bool, eip1559_elasticity: float = 2.0) -> List[BlockAnalysis]:
+                                 eip1559_elasticity: int, show_progress: bool) -> List[BlockAnalysis]:
         """Analyze blocks sequentially."""
         results = []
 
@@ -1127,7 +1129,7 @@ class CalldataAnalyzer:
         return results
 
     def _analyze_blocks_parallel(self, block_groups: List[Tuple], footprint_scalar: int,
-                               show_progress: bool, eip1559_elasticity: float = 2.0) -> List[BlockAnalysis]:
+                               eip1559_elasticity: int, show_progress: bool) -> List[BlockAnalysis]:
         """Analyze blocks using multiprocessing."""
         # Prepare arguments for workers
         config_dict = {
