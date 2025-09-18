@@ -614,7 +614,7 @@ def fetch_date_range_single_query(
 
 def fetch_eip1559_elasticity(chain: str) -> int:
     """
-    Fetch EIP-1559 elasticity value for a chain from ClickHouse.
+    Fetch EIP-1559 elasticity value for a chain from ClickHouse, with GitHub fallback.
 
     Args:
         chain: Chain name (e.g., 'op', 'base')
@@ -643,9 +643,59 @@ def fetch_eip1559_elasticity(chain: str) -> int:
             raise ValueError(f"No EIP-1559 elasticity found for {chain} ({chain_identifier})")
 
         elasticity = int(result_df['eip1559_elasticity'][0])
+
+        # If elasticity is 0, try GitHub fallback
+        if elasticity == 0:
+            print(f"⚠️  ClickHouse returned 0 for {chain}, trying GitHub fallback...")
+            elasticity = _fetch_eip1559_elasticity_from_github(chain)
+
         print(f"✅ Fetched EIP-1559 elasticity for {chain}: {elasticity}")
         return elasticity
 
     except Exception as e:
         print(f"❌ Error fetching EIP-1559 elasticity for {chain}: {e}")
-        raise
+        # Try GitHub fallback as last resort
+        try:
+            print(f"🔄 Trying GitHub fallback for {chain}...")
+            return _fetch_eip1559_elasticity_from_github(chain)
+        except Exception as fallback_error:
+            print(f"❌ GitHub fallback also failed for {chain}: {fallback_error}")
+            raise
+
+
+def _fetch_eip1559_elasticity_from_github(chain: str) -> int:
+    """
+    Fetch EIP-1559 elasticity from GitHub superchain registry as fallback.
+
+    Args:
+        chain: Chain name (e.g., 'op', 'base', 'ink')
+
+    Returns:
+        EIP-1559 elasticity value as integer
+
+    Raises:
+        ValueError: If no elasticity value found for the chain
+    """
+    import requests
+    import toml
+
+    # Use chain name directly as config file name
+    config_file = f"{chain}.toml"
+    url = f"https://raw.githubusercontent.com/ethereum-optimism/superchain-registry/40526b1288534f6b84b7aae21d13c0b5f5b12f47/superchain/configs/mainnet/{config_file}"
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        config = toml.loads(response.text)
+
+        # Get eip1559_elasticity from the optimism section
+        optimism_config = config.get("optimism", {})
+        eip1559_elasticity = optimism_config.get("eip1559_elasticity")
+
+        if eip1559_elasticity is None:
+            raise ValueError(f"No eip1559_elasticity found in GitHub config for {chain}")
+
+        return int(eip1559_elasticity)
+
+    except Exception as e:
+        raise ValueError(f"Failed to fetch EIP-1559 elasticity from GitHub for {chain}: {e}")
