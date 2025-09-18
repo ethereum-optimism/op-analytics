@@ -18,7 +18,8 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#0052FF",  # Base blue
         "priority": 1,
-        "enabled": True
+        "enabled": True,
+        "identifier": "mainnet/base"
     },
     "op": {
         "name": "OP",
@@ -27,7 +28,8 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#FF0420",  # OP red
         "priority": 2,
-        "enabled": True
+        "enabled": True,
+        "identifier": "mainnet/op"
     },
     "mode": {
         "name": "Mode",
@@ -36,7 +38,8 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#DFFE00",  # Mode yellow-green
         "priority": 3,
-        "enabled": True
+        "enabled": True,
+        "identifier": "mainnet/mode"
     },
     "zora": {
         "name": "Zora",
@@ -45,7 +48,8 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#000000",  # Zora black
         "priority": 4,
-        "enabled": True
+        "enabled": True,
+        "identifier": "mainnet/zora"
     },
     "world": {
         "name": "World",
@@ -54,7 +58,8 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#00D4FF",  # World cyan
         "priority": 5,
-        "enabled": True
+        "enabled": True,
+        "identifier": "mainnet/worldchain"
     },
     "ink": {
         "name": "Ink",
@@ -63,7 +68,8 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#2D2D2D",  # Ink dark gray
         "priority": 6,
-        "enabled": True
+        "enabled": True,
+        "identifier": "mainnet/ink"
     },
     "soneium": {
         "name": "Soneium",
@@ -72,7 +78,8 @@ CHAIN_CONFIGS: Dict[str, Dict[str, Any]] = {
         "default_gas_limit": CHAIN_DEFAULT_GAS_LIMIT,
         "color": "#9B59B6",  # Soneium purple
         "priority": 7,
-        "enabled": True
+        "enabled": True,
+        "identifier": "mainnet/soneium"
     }
 }
 
@@ -107,6 +114,10 @@ def get_chain_display_name(chain: str) -> str:
 def get_chain_color(chain: str) -> str:
     """Get color for a chain's visualizations."""
     return CHAIN_CONFIGS.get(chain, {}).get("color", "#808080")
+
+def get_chain_identifier(chain: str) -> str:
+    """Get ClickHouse identifier for a chain."""
+    return CHAIN_CONFIGS.get(chain, {}).get("identifier", f"mainnet/{chain}")
 
 def get_gas_limits_path(chain: str) -> Path:
     """Get path to gas limits CSV for a chain."""
