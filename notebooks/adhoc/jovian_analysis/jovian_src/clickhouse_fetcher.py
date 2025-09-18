@@ -242,6 +242,7 @@ def fetch_top_percentile_blocks(
         SELECT
             block_number,
             SUM((LENGTH(input) / 2) - 1) AS total_calldata,
+            SUM(LENGTH(input)/2-1) + COUNT(*) * 100 AS total_call_data_adjusted,
             SUM(receipt_gas_used) AS total_gas_used
         FROM s3(
             'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
@@ -251,7 +252,7 @@ def fetch_top_percentile_blocks(
         )
         GROUP BY block_number
     )
-    SELECT quantile({percentile/100})(total_calldata) AS threshold
+    SELECT quantile({percentile/100})(total_call_data_adjusted) AS threshold
     FROM block_sizes
     SETTINGS use_hive_partitioning = 1
     """
@@ -272,6 +273,7 @@ def fetch_top_percentile_blocks(
             block_number,
             block_timestamp,
             SUM((LENGTH(input) / 2) - 1) AS total_calldata,
+            SUM(LENGTH(input)/2-1) + COUNT(*) * 100 AS total_call_data_adjusted,
             SUM(receipt_gas_used) AS total_gas_used
         FROM s3(
             'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={date}/*.parquet',
@@ -280,8 +282,8 @@ def fetch_top_percentile_blocks(
             'parquet'
         )
         GROUP BY block_number, block_timestamp
-        HAVING total_calldata >= {threshold}
-        ORDER BY total_calldata DESC
+        HAVING total_call_data_adjusted >= {threshold}
+        ORDER BY total_call_data_adjusted DESC
         {limit_clause}
     ),
     blocks_with_gas_limit AS (
@@ -532,6 +534,7 @@ def fetch_date_range_single_query(
                 block_number,
                 dt,
                 SUM((LENGTH(input) / 2) - 1) AS total_calldata,
+                SUM(LENGTH(input)/2-1) + COUNT(*) * 100 AS total_call_data_adjusted,
                 SUM(receipt_gas_used) AS total_gas_used
             FROM s3(
                 'https://storage.googleapis.com/oplabs-tools-data-sink/ingestion/transactions_v1/chain={chain}/dt={{'{date_filter}'}}.*/∗.parquet',
@@ -544,7 +547,7 @@ def fetch_date_range_single_query(
         thresholds AS (
             SELECT
                 dt,
-                quantile({percentile/100})(total_calldata) AS threshold
+                quantile({percentile/100})(total_call_data_adjusted) AS threshold
             FROM block_sizes
             GROUP BY dt
         ),
@@ -553,10 +556,11 @@ def fetch_date_range_single_query(
                 bs.block_number,
                 bs.dt,
                 bs.total_calldata,
+                bs.total_call_data_adjusted,
                 bs.total_gas_used
             FROM block_sizes bs
             INNER JOIN thresholds t ON bs.dt = t.dt
-            WHERE bs.total_calldata >= t.threshold
+            WHERE bs.total_call_data_adjusted >= t.threshold
         ),
         blocks_with_gas_limit AS (
             SELECT

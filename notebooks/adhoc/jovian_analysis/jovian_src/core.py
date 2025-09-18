@@ -910,10 +910,7 @@ class CalldataAnalyzer:
         else:
             actual_gas_limit = self.jovian_config.block_gas_limit
 
-        # OPTIMIZATION: For large blocks without detailed transaction analysis needs,
-        # use vectorized operations to calculate aggregates directly
-        if len(block_df) > 1000 and not show_tx_progress:
-            return self._analyze_block_vectorized(block_df, footprint_scalar, eip1559_elasticity)
+
 
         # Original detailed analysis path for smaller blocks or when progress is needed
         transactions = []
@@ -987,116 +984,7 @@ class CalldataAnalyzer:
             target_utilization=target_utilization,
         )
 
-    def _analyze_block_vectorized(self, block_df: pl.DataFrame, footprint_scalar: int, eip1559_elasticity: int) -> BlockAnalysis:
-        """OPTIMIZATION: Vectorized block analysis for large blocks without individual transaction details."""
-        block_number = block_df['block_number'][0]
-        tx_count = len(block_df)
 
-
-        # Get actual gas limit from block data if available, otherwise use config
-        if 'gas_limit' in block_df.columns:
-            actual_gas_limit = block_df['gas_limit'][0]
-        else:
-            actual_gas_limit = self.jovian_config.block_gas_limit
-
-        # VECTORIZED OPERATION: Process all calldata in batch
-        # This avoids the O(n) iter_rows() loop for large blocks
-        calldata_sizes = []
-        fastlz_sizes = []
-        da_usage_estimates = []
-
-        # Process in chunks to manage memory for very large blocks
-        chunk_size = 1000
-        deposit_flags = []  # Track which transactions are deposits
-
-        for start_idx in range(0, len(block_df), chunk_size):
-            end_idx = min(start_idx + chunk_size, len(block_df))
-            chunk_df = block_df.slice(start_idx, end_idx - start_idx)
-
-            # Extract input and transaction_type columns for this chunk
-            inputs = chunk_df['input'].to_list()
-            transaction_types = chunk_df['transaction_type'].to_list() if 'transaction_type' in chunk_df.columns else [0] * len(inputs)
-
-            for calldata_hex, tx_type in zip(inputs, transaction_types):
-                calldata = parse_calldata(calldata_hex)
-                calldata_size = len(calldata)
-
-                # Check if this is a deposit transaction (type 126)
-                is_deposit = tx_type == 126
-                deposit_flags.append(is_deposit)
-
-                # Calculate compression and DA usage estimate for all transactions
-                if not calldata:
-                    fastlz_size = 0
-                    size_estimate = float(self.jovian_config.min_transaction_size)
-                else:
-                    fastlz_size = self.compressor.compress_len(calldata)
-                    da_usage_estimate = self.calculate_da_usage_estimate(calldata, fastlz_size)
-
-                calldata_sizes.append(calldata_size)
-                fastlz_sizes.append(fastlz_size)
-                da_usage_estimates.append(da_usage_estimate)
-
-        # VECTORIZED AGGREGATIONS: Calculate totals excluding deposits
-        # Filter out deposits from totals
-        non_deposit_calldata_sizes = [size for size, is_deposit in zip(calldata_sizes, deposit_flags) if not is_deposit]
-        non_deposit_fastlz_sizes = [size for size, is_deposit in zip(fastlz_sizes, deposit_flags) if not is_deposit]
-        non_deposit_da_usage_estimates = [est for est, is_deposit in zip(da_usage_estimates, deposit_flags) if not is_deposit]
-
-        total_calldata_size = sum(non_deposit_calldata_sizes)
-        total_fastlz_size = sum(non_deposit_fastlz_sizes)
-        total_da_usage_estimate = sum(non_deposit_da_usage_estimates)
-        total_footprint = total_da_usage_estimate * footprint_scalar
-
-        utilization = total_footprint / actual_gas_limit
-        exceeds_limit = total_footprint > actual_gas_limit
-
-        # Calculate target-based metrics
-        da_usage_target = actual_gas_limit / (eip1559_elasticity * footprint_scalar)
-        exceeds_target = total_da_usage_estimate > da_usage_target
-        target_utilization = total_da_usage_estimate / da_usage_target if da_usage_target > 0 else None
-
-        # Calculate max footprint for this block (excluding deposits)
-        max_tx_footprint = max(da_est * footprint_scalar for da_est in non_deposit_da_usage_estimates) if non_deposit_da_usage_estimates else 0
-
-        block_gas_used = None
-        if "block_total_gas_used" in block_df.columns:
-            nuniq = block_df.select(pl.col("block_total_gas_used").n_unique()).item()
-            if nuniq != 1:
-                raise ValueError(f"block_total_gas_used not constant within block {block_number}")
-            block_gas_used = int(block_df["block_total_gas_used"].max())
-
-        utilization_vs_gas_used = (
-            total_footprint / block_gas_used
-            if (block_gas_used is not None and block_gas_used > 0)
-            else None
-        )
-        # CORRECTNESS: This vectorized path produces mathematically identical results
-        # to the iter_rows() path, but with O(1) memory for transaction storage
-        # and better CPU cache locality for large blocks
-
-        return BlockAnalysis(
-            block_number=block_number,
-            block_timestamp=block_df['block_timestamp'][0],
-            base_fee_per_gas=block_df['base_fee_per_gas'][0],
-            tx_count=tx_count,
-            total_da_footprint=total_footprint,
-            total_da_usage_estimate=total_da_usage_estimate,
-            calldata_utilization=utilization,
-            exceeds_limit=exceeds_limit,
-            avg_footprint_per_tx=total_footprint / tx_count,
-            max_tx_footprint=max_tx_footprint,
-            transactions=[],  # Empty for vectorized analysis to save memory
-            footprint_scalar=footprint_scalar,
-            block_gas_limit=actual_gas_limit,
-            total_calldata_size=total_calldata_size,
-            total_fastlz_size=total_fastlz_size,
-            block_gas_used=block_gas_used,
-            utilization_vs_gas_used=utilization_vs_gas_used,
-            da_usage_target=da_usage_target,
-            exceeds_target=exceeds_target,
-            target_utilization=target_utilization,
-        )
 
     def analyze_multiple_blocks(self, df: pl.DataFrame, footprint_scalar: int,
                               eip1559_elasticity: int, show_progress: bool = True) -> List[BlockAnalysis]:
