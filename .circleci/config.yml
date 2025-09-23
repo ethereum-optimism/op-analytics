@@ -411,7 +411,10 @@ workflows:
               "run_weekly_l2_chain_data_uploads",
             ]
     jobs:
+      - setup-python-3-10-job
       - convert-and-run-notebooks-to-py:
+          requires:
+            - setup-python-3-10-job
           matrix:
             parameters:
               notebook_paths:
