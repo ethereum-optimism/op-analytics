@@ -43,3 +43,6 @@ class DefiLlama(DailyDataset):
     # Token Mappings
     TOKEN_MAPPINGS = "dim_token_mappings_v1"
     PROTOCOL_CATEGORY_MAPPINGS = "dim_protocol_category_mappings_v1"
+
+    # Token Prices
+    TOKEN_PRICES = "token_prices_v1"
