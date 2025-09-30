@@ -28,3 +28,6 @@ class ChainsMeta(DailyDataset):
 
     # A dimension table that stores system config metadata for chains.
     SYSTEM_CONFIG_LIST = "system_config_v1"
+
+    # A dimension table that pulls TOML configurations from GitHub superchain registry.
+    SUPERCHAIN_CONFIG = "superchain_config_v1"
