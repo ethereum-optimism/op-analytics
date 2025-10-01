@@ -118,7 +118,7 @@ def pull_superchain_registry() -> SuperchainRegistry:
         if config_data:
             all_configs.append(config_data)
             successful_fetches += 1
-            log.info(f"✅ Successfully fetched config for {chain}")
+            log.info(f"Successfully fetched config for {chain}")
         else:
             raise ValueError(f"No config data found for {chain}")
 
@@ -147,7 +147,7 @@ def pull_superchain_registry() -> SuperchainRegistry:
         actual_schema=registry_df.schema,
         expected_schema=dynamic_schema,
     )
-    log.info("✅ Schema validation passed")
+    log.info("Schema validation passed")
 
     # Write to storage
     ChainsMeta.SUPERCHAIN_CONFIG.write(
