@@ -325,6 +325,6 @@ CREATE TEMP TABLE tiles_share AS
     ) AS popout
   FROM grouped g
   JOIN totals t USING (dt_month)
-  WHERE g.dt_month > '2024-06-01'
+  WHERE g.dt_month >= '2021-01-01'
   GROUP BY 1;
 END
