@@ -42,3 +42,12 @@ def transforms_github(context: OpExecutionContext):
     """
     result = execute_dt_transforms(group_name="github", force_complete=True)
     context.log.info(result)
+
+
+@asset
+def superchain_config(context: OpExecutionContext) -> None:
+    """Pull superchain configuration data from GitHub."""
+    from op_analytics.datasources.chainsmeta.superchain.superchainconfig import execute_pull
+
+    result = execute_pull()
+    context.log.info(result)
