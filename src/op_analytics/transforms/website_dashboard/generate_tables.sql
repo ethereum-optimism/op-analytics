@@ -275,4 +275,56 @@ BEGIN
   WHERE dt_month > '2024-06-01'
   QUALIFY ROW_NUMBER() OVER(ORDER BY dt_month DESC) = 1
   ;
+CREATE TEMP TABLE tiles_share AS
+  WITH grouped AS (
+    SELECT
+      dt_month,
+      agg_display_name,
+      SUM(IFNULL(sum_txs_per_day, 0)) AS sum_txs_per_day,
+      SUM(IFNULL(sum_total_rev_txn_fees_usd_per_day, 0)) AS sum_total_rev_txn_fees_usd_per_day,
+      SUM(IFNULL(sum_total_rev_txn_fees_eth_per_day, 0)) AS sum_total_rev_txn_fees_eth_per_day,
+      SUM(IFNULL(sum_dex_volume_usd_per_day, 0)) AS sum_dex_volume_usd_per_day,
+      SUM(IFNULL(latest_app_tvl_usd, 0)) AS latest_app_tvl_usd,
+      SUM(IFNULL(latest_onchain_value_usd, 0)) AS latest_onchain_value_usd,
+      SUM(IFNULL(latest_stables_onchain_usd, 0)) AS latest_stables_onchain_usd
+    FROM base
+    GROUP BY 1, 2
+  ),
+  totals AS (
+    SELECT
+      dt_month,
+      SUM(sum_txs_per_day) AS tot_sum_txs_per_day,
+      SUM(sum_total_rev_txn_fees_usd_per_day) AS tot_sum_total_rev_txn_fees_usd_per_day,
+      SUM(sum_total_rev_txn_fees_eth_per_day) AS tot_sum_total_rev_txn_fees_eth_per_day,
+      SUM(sum_dex_volume_usd_per_day) AS tot_sum_dex_volume_usd_per_day,
+      SUM(latest_app_tvl_usd) AS tot_latest_app_tvl_usd,
+      SUM(latest_onchain_value_usd) AS tot_latest_onchain_value_usd,
+      SUM(latest_stables_onchain_usd) AS tot_latest_stables_onchain_usd
+    FROM grouped
+    GROUP BY 1
+  )
+  SELECT
+    agg_display_name,
+    ARRAY_AGG(
+      STRUCT(
+        g.dt_month,
+        -- g.sum_txs_per_day AS txs_per_day,
+        SAFE_DIVIDE(g.sum_txs_per_day, t.tot_sum_txs_per_day) AS txs_per_day_share,
+        -- g.sum_total_rev_txn_fees_usd_per_day AS txn_fees_usd_per_day,
+        SAFE_DIVIDE(g.sum_total_rev_txn_fees_usd_per_day, t.tot_sum_total_rev_txn_fees_usd_per_day) AS txn_fees_usd_per_day_share,
+        -- g.sum_dex_volume_usd_per_day AS dex_volume_usd_per_day,
+        SAFE_DIVIDE(g.sum_dex_volume_usd_per_day, t.tot_sum_dex_volume_usd_per_day) AS dex_volume_usd_per_day_share,
+        -- g.latest_app_tvl_usd AS app_tvl_usd,
+        SAFE_DIVIDE(g.latest_app_tvl_usd, t.tot_latest_app_tvl_usd) AS app_tvl_usd_share,
+        -- g.latest_onchain_value_usd AS onchain_value_usd,
+        SAFE_DIVIDE(g.latest_onchain_value_usd, t.tot_latest_onchain_value_usd) AS onchain_value_usd_share,
+        -- g.latest_stables_onchain_usd AS stables_onchain_usd,
+        SAFE_DIVIDE(g.latest_stables_onchain_usd, t.tot_latest_stables_onchain_usd) AS stables_onchain_usd_share
+      )
+      ORDER BY g.dt_month DESC
+    ) AS popout
+  FROM grouped g
+  JOIN totals t USING (dt_month)
+  WHERE g.dt_month > '2024-06-01'
+  GROUP BY 1;
 END
