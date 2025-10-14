@@ -442,7 +442,7 @@ workflows:
           matrix:
             parameters:
               notebook_paths:
-                - other_chains_tracking/chain_tvl_trends
+                # - other_chains_tracking/chain_tvl_trends #remove, no longer used
                 - other_chains_tracking/pull_l2_activity
                 - other_chains_tracking/get_ethereum_chain_list
                 - other_chains_tracking/get_dune_evms_info
