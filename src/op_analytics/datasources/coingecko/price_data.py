@@ -193,6 +193,10 @@ class CoinGeckoDataSource:
                     "days": str(days),
                     "interval": "daily",
                 }
+                from urllib.parse import urlencode
+
+                full_url = f"{url}?{urlencode(params)}"
+                print(f"Requesting URL: {full_url}")
 
                 try:
                     response = self.session.get(url, params=params)
