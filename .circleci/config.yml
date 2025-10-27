@@ -309,7 +309,7 @@ workflows:
           matrix:
             parameters:
               notebook_paths:
-                - other_chains_tracking/get_filtered_deployers
+                # - other_chains_tracking/get_filtered_deployers
                 - other_chains_tracking/total_chain_data_to_uploads
 
   # run_market_data:
