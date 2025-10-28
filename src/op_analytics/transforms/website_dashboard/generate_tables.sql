@@ -1,11 +1,11 @@
 BEGIN
-  CREATE TEMP TABLE base AS
+  CREATE TEMP TABLE base_all AS
   
   WITH monthly_chain_activity AS (
     SELECT 
       DATE_TRUNC(dt,MONTH) AS dt_month, chain_key, display_name,
       -- attributes
-      layer, alignment, provider_entity_w_superchain, is_evm, gas_token, da_layer, output_root_layer, l2b_stage
+      layer, eth_eco_l2, alignment, provider_entity_w_superchain, is_evm, gas_token, da_layer, output_root_layer, l2b_stage
       -- value metrics
       , MAX_BY(app_tvl_usd,dt) AS latest_app_tvl_usd
       , MAX_BY(stables_onchain_usd,dt) AS latest_stables_onchain_usd
@@ -22,9 +22,8 @@ BEGIN
     FROM `oplabs-tools-data.materialized_tables.daily_superchain_health_mv`
       WHERE dt >= '2021-01-01'
           AND dt < DATE_TRUNC(CURRENT_DATE(),MONTH)
-      AND layer = 'L2' -- L2s Only
-      AND eth_eco_l2 -- Ethereum Ecosystem Only (e.g., no known BNB L2s)
-    GROUP BY 1,2,3,4,5,6,7,8,9,10,11
+
+    GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12
   )
   , days_per_mo AS (
       SELECT DATE_TRUNC(dt,MONTH) AS dt_month, COUNT(DISTINCT dt) AS unique_dt
@@ -83,7 +82,7 @@ BEGIN
     FROM monthly_chain_level
   )
   , aggregates AS (
-    SELECT dt_month, agg_display_name, display_name,
+    SELECT dt_month, agg_display_name, display_name, layer, eth_eco_l2,
       SUM(latest_app_tvl_usd) AS latest_app_tvl_usd,
       SUM(latest_stables_onchain_usd) AS latest_stables_onchain_usd,
       SUM(latest_onchain_value_usd) AS latest_onchain_value_usd,
@@ -107,12 +106,21 @@ BEGIN
       -- SUM(wt_avg_median_l2_usd_fees_per_tx*sum_txs)/SUM(sum_txs) AS wt_avg_median_l2_usd_fees_per_tx
 
     FROM pre_aggregate_groups
-    GROUP BY 1,2,3
+    GROUP BY 1,2,3,4,5
   )
   SELECT *
     , dense_rank() over (order by dt_month DESC) AS month_recency_rank
   FROM aggregates
   ORDER BY dt_month DESC;
+
+  CREATE TEMP TABLE base AS
+    SELECT * EXCEPT (layer, eth_eco_l2)
+    FROM base_all
+    WHERE 
+      layer = 'L2' -- L2s Only
+      AND eth_eco_l2 -- Ethereum Ecosystem Only (e.g., no known BNB L2s)
+  ;
+
   CREATE TEMP TABLE chain_measurements AS
   WITH cte AS (
     SELECT
@@ -327,4 +335,78 @@ CREATE TEMP TABLE tiles_share AS
   JOIN totals t USING (dt_month)
   WHERE g.dt_month >= '2021-01-01'
   GROUP BY 1;
+
+CREATE TEMP TABLE op_l2_chains AS
+WITH filtered AS (
+  SELECT *
+  FROM base
+  WHERE agg_display_name = 'Optimism: Superchain'
+)
+SELECT
+  display_name,
+  ARRAY_AGG(
+    STRUCT(
+      dt_month,
+      sum_txs_per_day AS txs_per_day,
+      sum_total_rev_txn_fees_usd_per_day AS txn_fees_usd_per_day,
+      sum_total_rev_txn_fees_eth_per_day AS txn_fees_eth_per_day,
+      sum_dex_volume_usd_per_day AS dex_volume_usd_per_day,
+      latest_app_tvl_usd AS app_tvl_usd,
+      latest_onchain_value_usd AS onchain_value_usd,
+      latest_stables_onchain_usd AS stables_onchain_usd
+    )
+    ORDER BY dt_month DESC
+  ) AS popout
+FROM filtered
+GROUP BY 1
+;
+CREATE TEMP TABLE op_l2_totals_share AS
+  WITH grouped AS (
+    SELECT
+      dt_month,
+      agg_display_name,
+      SUM(IFNULL(sum_txs_per_day, 0)) AS sum_txs_per_day,
+      SUM(IFNULL(sum_total_rev_txn_fees_usd_per_day, 0)) AS sum_total_rev_txn_fees_usd_per_day,
+      SUM(IFNULL(sum_total_rev_txn_fees_eth_per_day, 0)) AS sum_total_rev_txn_fees_eth_per_day,
+      SUM(IFNULL(sum_dex_volume_usd_per_day, 0)) AS sum_dex_volume_usd_per_day,
+      SUM(IFNULL(latest_app_tvl_usd, 0)) AS latest_app_tvl_usd,
+      SUM(IFNULL(latest_onchain_value_usd, 0)) AS latest_onchain_value_usd,
+      SUM(IFNULL(latest_stables_onchain_usd, 0)) AS latest_stables_onchain_usd
+    FROM base
+    WHERE agg_display_name = 'Optimism: Superchain'
+    GROUP BY 1, 2
+  ),
+  totals AS (
+    SELECT
+      dt_month,
+      SUM(IFNULL(sum_txs_per_day, 0)) AS tot_sum_txs_per_day,
+      SUM(IFNULL(sum_total_rev_txn_fees_usd_per_day, 0)) AS tot_sum_total_rev_txn_fees_usd_per_day,
+      SUM(IFNULL(sum_total_rev_txn_fees_eth_per_day, 0)) AS tot_sum_total_rev_txn_fees_eth_per_day,
+      SUM(IFNULL(sum_dex_volume_usd_per_day, 0)) AS tot_sum_dex_volume_usd_per_day,
+      SUM(IFNULL(latest_app_tvl_usd, 0)) AS tot_latest_app_tvl_usd,
+      SUM(IFNULL(latest_onchain_value_usd, 0)) AS tot_latest_onchain_value_usd,
+      SUM(IFNULL(latest_stables_onchain_usd, 0)) AS tot_latest_stables_onchain_usd
+    FROM base_all
+    GROUP BY 1
+  )
+  SELECT
+    agg_display_name,
+    ARRAY_AGG(
+      STRUCT(
+        g.dt_month,
+        SAFE_DIVIDE(g.sum_txs_per_day, t.tot_sum_txs_per_day) AS txs_per_day_share,
+        SAFE_DIVIDE(g.sum_total_rev_txn_fees_usd_per_day, t.tot_sum_total_rev_txn_fees_usd_per_day) AS txn_fees_usd_per_day_share,
+        SAFE_DIVIDE(g.sum_total_rev_txn_fees_eth_per_day, t.tot_sum_total_rev_txn_fees_eth_per_day) AS txn_fees_eth_per_day_share,
+        SAFE_DIVIDE(g.sum_dex_volume_usd_per_day, t.tot_sum_dex_volume_usd_per_day) AS dex_volume_usd_per_day_share,
+        SAFE_DIVIDE(g.latest_app_tvl_usd, t.tot_latest_app_tvl_usd) AS app_tvl_usd_share,
+        SAFE_DIVIDE(g.latest_onchain_value_usd, t.tot_latest_onchain_value_usd) AS onchain_value_usd_share,
+        SAFE_DIVIDE(g.latest_stables_onchain_usd, t.tot_latest_stables_onchain_usd) AS stables_onchain_usd_share
+      )
+      ORDER BY g.dt_month DESC
+    ) AS shares
+  FROM grouped g
+  JOIN totals t USING (dt_month)
+  WHERE g.dt_month >= '2021-01-01'
+  GROUP BY 1
+  ;
 END
