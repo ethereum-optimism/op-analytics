@@ -19,7 +19,7 @@ parameters:
         "daily_l2_aggregate_later_loads",
         "daily_l2_chain_data_uploads",
         "deploy_github_pages",
-        "run_market_data",
+        # "run_market_data",
         "run_op_governance_uploads",
         "run_op_stack_chain_revenue",
         "run_op_stack_metadata_upload",
@@ -309,27 +309,27 @@ workflows:
           matrix:
             parameters:
               notebook_paths:
-                - other_chains_tracking/get_filtered_deployers
+                # - other_chains_tracking/get_filtered_deployers
                 - other_chains_tracking/total_chain_data_to_uploads
 
-  run_market_data:
-    when:
-      or:
-        - equal: [<< pipeline.schedule.name >>, "run_market_data"]
-        - equal: [<< pipeline.parameters.run_job >>, "run_market_data"]
-    jobs:
-      - setup-python-3-10-job
-      - convert-and-run-notebooks-to-py:
-          requires:
-            - setup-python-3-10-job
-          context:
-            - op-analytics-legacy
-            - circleci-repo-op-analytics
-            - op-analytics-gcp
-          matrix:
-            parameters:
-              notebook_paths:
-                - reference_data/market_data/get_market_data
+  # run_market_data:
+  #   when:
+  #     or:
+  #       - equal: [<< pipeline.schedule.name >>, "run_market_data"]
+  #       - equal: [<< pipeline.parameters.run_job >>, "run_market_data"]
+  #   jobs:
+  #     - setup-python-3-10-job
+  #     - convert-and-run-notebooks-to-py:
+  #         requires:
+  #           - setup-python-3-10-job
+  #         context:
+  #           - op-analytics-legacy
+  #           - circleci-repo-op-analytics
+  #           - op-analytics-gcp
+  #         matrix:
+  #           parameters:
+  #             notebook_paths:
+  #               - reference_data/market_data/get_market_data
 
   run_op_governance_uploads:
     when:
@@ -442,7 +442,7 @@ workflows:
           matrix:
             parameters:
               notebook_paths:
-                - other_chains_tracking/chain_tvl_trends
+                # - other_chains_tracking/chain_tvl_trends #remove, no longer used
                 - other_chains_tracking/pull_l2_activity
                 - other_chains_tracking/get_ethereum_chain_list
                 - other_chains_tracking/get_dune_evms_info
