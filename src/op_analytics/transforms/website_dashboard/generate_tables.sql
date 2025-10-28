@@ -360,7 +360,7 @@ SELECT
 FROM filtered
 GROUP BY 1
 ;
-CREATE TEMP TABLE op_l2_totals_share AS
+CREATE TEMP TABLE op_l2_total_tiles_share AS
   WITH grouped AS (
     SELECT
       dt_month,
