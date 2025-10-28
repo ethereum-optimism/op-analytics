@@ -4,7 +4,13 @@ import json
 from google.cloud import bigquery
 from google.oauth2 import service_account
 from google.api_core.exceptions import NotFound
-from google.auth.exceptions import OAuthError
+from google.auth.exceptions import OAuthError, RefreshError
+from google.api_core.exceptions import (
+    Unauthorized,
+    Forbidden,
+    PermissionDenied,
+    GoogleAPICallError,
+)
 import pandas_utils as pu
 import pandas as pd
 import math
@@ -17,6 +23,49 @@ dotenv.load_dotenv()
 # Setup logging configuration
 logging.basicConfig(level=logging.ERROR)  # Set logging level to ERROR
 logger = logging.getLogger(__name__)  # Create logger instance for this module
+
+def _is_auth_error(err: Exception) -> bool:
+    """
+    Return True if the exception likely indicates an auth/token issue that is
+    retriable by recreating credentials.
+    """
+    if isinstance(err, (OAuthError, RefreshError, Unauthorized, PermissionDenied, Forbidden)):
+        return True
+    # Some auth errors are wrapped; inspect message text
+    msg = str(err).lower()
+    indicators = [
+        "invalid_grant",
+        "unauthorized",
+        "401",
+        "request had invalid authentication credentials",
+        "expired",
+        "stale",
+        "token",
+        "invalid credentials",
+    ]
+    return any(ind in msg for ind in indicators)
+
+def _create_service_account_client(project_id: str):
+    """Create a BigQuery client using service account credentials from env."""
+    credentials = None
+    # Prefer explicit JSON in env var; fallback to file path
+    bq_sa_env = os.getenv("BQ_APPLICATION_CREDENTIALS")
+    if bq_sa_env:
+        try:
+            # Try parse as JSON string first
+            service_account_key = json.loads(bq_sa_env)
+            credentials = service_account.Credentials.from_service_account_info(service_account_key)
+        except json.JSONDecodeError:
+            # Treat as file path
+            credentials = service_account.Credentials.from_service_account_file(bq_sa_env)
+    else:
+        # Last resort: GOOGLE_APPLICATION_CREDENTIALS path if available
+        creds_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+        if creds_path and os.path.exists(creds_path):
+            credentials = service_account.Credentials.from_service_account_file(creds_path)
+    if credentials is None:
+        raise Exception("Service account credentials not found in env")
+    return bigquery.Client(credentials=credentials, project=project_id)
 
 def setup_google_cloud_env():
     """
@@ -79,11 +128,21 @@ def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID"), max_retries=3):
     """
     for attempt in range(max_retries):
         try:
-            # Check if running in a GCP environment and will use the default credentials
-            # -------------- start OIDC login
-            # In this case the environment variables already contain the credentials set up by the GCP login performed
-            logging.info(f"Attempt {attempt + 1}: Using OIDC login")
-            # project_id is taken from the environment variables GOOGLE_CLOUD_PROJECT
+            # In CI or when explicitly requested, prefer service account creds first
+            prefer_sa = (
+                os.getenv("CI", "").lower() == "true"
+                or os.getenv("PREFER_BQ_SERVICE_ACCOUNT", "").lower() == "true"
+                or bool(os.getenv("BQ_APPLICATION_CREDENTIALS"))
+            )
+            if prefer_sa:
+                logging.info(f"Attempt {attempt + 1}: Using service account credentials")
+                return _create_service_account_client(project_id)
+        except Exception as e:
+            logging.warning(f"Service account init failed on attempt {attempt + 1}: {e}")
+
+        try:
+            # ADC / OIDC login via environment (may be short-lived in CI)
+            logging.info(f"Attempt {attempt + 1}: Using ADC/OIDC login")
             client = bigquery.Client()
             return client
         except OAuthError as e:
@@ -109,30 +168,14 @@ def connect_bq_client(project_id = os.getenv("BQ_PROJECT_ID"), max_retries=3):
         except Exception as e:
             logging.error(f"Exception occurred while trying to get local credentials on attempt {attempt + 1}: {e}")
 
-        # Check if running locally
-        is_running_local = os.environ.get("IS_RUNNING_LOCAL", "False").lower() == "true"
-
         try:
-            # Using try-except block to catch any exceptions that may occur and suppress the error message
-
-            # Set the environment variable to the path of your service account key file
-            if is_running_local: #GH Action was weird with this, so forcing the datatype here
-                    # print("Running locally")
-                    # Path to your local service account key file
-                    service_account_key_path = os.getenv("BQ_APPLICATION_CREDENTIALS")
-                    credentials = service_account.Credentials.from_service_account_file(service_account_key_path)
-            else: #Can't get the Github Action version to work
-                    # print('not running local')
-                    # Set the Google Cloud service account key from GitHub secret
-                    service_account_key = json.loads( os.getenv("BQ_APPLICATION_CREDENTIALS") )
-                    credentials = service_account.Credentials.from_service_account_info(service_account_key)
-
-            client = bigquery.Client(credentials=credentials, project=project_id)
-            return client
+            # Final fallback: service account
+            logging.info(f"Attempt {attempt + 1}: Fallback to service account credentials")
+            return _create_service_account_client(project_id)
         except Exception as e:
-            logging.critical(f"Exception occurred while trying to get service account credentials on attempt {attempt + 1}: {e}")
+            logging.critical(f"Service account fallback failed on attempt {attempt + 1}: {e}")
             if attempt < max_retries - 1:
-                time.sleep(2 ** attempt)  # Exponential backoff
+                time.sleep(2 ** attempt)
                 continue
     
     logging.critical("All authentication methods failed")
@@ -296,24 +339,20 @@ def write_df_to_bq_table(df, table_id, dataset_id='api_table_uploads',
             print(f"All data loaded successfully to {dataset_id}.{table_id}")
             return  # Success, exit the retry loop
             
-        except OAuthError as e:
-            if "stale" in str(e).lower() or "invalid_grant" in str(e).lower():
-                print(f"OAuth token expired on attempt {attempt + 1}: {e}")
+        except Exception as e:
+            if _is_auth_error(e):
+                print(f"Auth error on attempt {attempt + 1}: {e}")
                 if attempt < max_retries - 1:
                     print("Waiting before retry...")
-                    time.sleep(2 ** attempt)  # Exponential backoff
+                    time.sleep(2 ** attempt)
                     continue
                 else:
-                    print("All attempts failed due to token expiration")
+                    print("All attempts failed due to authentication errors")
                     raise
-            else:
-                print(f"OAuth error on attempt {attempt + 1}: {e}")
-                raise
-        except Exception as e:
             print(f"Error on attempt {attempt + 1}: {e}")
             if attempt < max_retries - 1:
                 print("Waiting before retry...")
-                time.sleep(2 ** attempt)  # Exponential backoff
+                time.sleep(2 ** attempt)
                 continue
             else:
                 print("All attempts failed")
@@ -436,24 +475,20 @@ def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads
                     # If the table doesn't exist, just create it by writing the data (overwrite mode)
                     write_df_to_bq_table(df, table_id, dataset_id, write_mode='overwrite', project_id=project_id)
             
-            except OAuthError as e:
-                if "stale" in str(e).lower() or "invalid_grant" in str(e).lower():
-                    print(f"OAuth token expired on attempt {attempt + 1}: {e}")
+            except Exception as e:
+                if _is_auth_error(e):
+                    print(f"Auth error during append_and_upsert on attempt {attempt + 1}: {e}")
                     if attempt < max_retries - 1:
                         print("Waiting before retry...")
-                        time.sleep(2 ** attempt)  # Exponential backoff
+                        time.sleep(2 ** attempt)
                         continue
                     else:
-                        print("All attempts failed due to token expiration")
+                        print("All attempts failed due to authentication errors")
                         raise
-                else:
-                    print(f"OAuth error on attempt {attempt + 1}: {e}")
-                    raise
-            except Exception as e:
                 logger.error(f"Error during append_and_upsert_df_to_bq_table on attempt {attempt + 1}: {e}")
                 if attempt < max_retries - 1:
                     print("Waiting before retry...")
-                    time.sleep(2 ** attempt)  # Exponential backoff
+                    time.sleep(2 ** attempt)
                     continue
                 else:
                     raise  # Re-raise the exception for higher-level error handling
@@ -461,10 +496,19 @@ def append_and_upsert_df_to_bq_table(df, table_id, dataset_id='api_table_uploads
             return  # Success, exit the retry loop
             
         except Exception as e:
+            if _is_auth_error(e):
+                print(f"Auth error on attempt {attempt + 1}: {e}")
+                if attempt < max_retries - 1:
+                    print("Waiting before retry...")
+                    time.sleep(2 ** attempt)
+                    continue
+                else:
+                    print("All attempts failed due to authentication errors")
+                    raise
             print(f"Error on attempt {attempt + 1}: {e}")
             if attempt < max_retries - 1:
                 print("Waiting before retry...")
-                time.sleep(2 ** attempt)  # Exponential backoff
+                time.sleep(2 ** attempt)
                 continue
             else:
                 print("All attempts failed")
@@ -503,24 +547,20 @@ def delete_bq_table(dataset_id, table_id, project_id=os.getenv("BQ_PROJECT_ID"),
             print(f"Table '{table_id}' deleted successfully from dataset '{dataset_id}'.")
             return True
             
-        except OAuthError as e:
-            if "stale" in str(e).lower() or "invalid_grant" in str(e).lower():
-                print(f"OAuth token expired on attempt {attempt + 1}: {e}")
+        except Exception as e:
+            if _is_auth_error(e):
+                print(f"Auth error on attempt {attempt + 1}: {e}")
                 if attempt < max_retries - 1:
                     print("Waiting before retry...")
-                    time.sleep(2 ** attempt)  # Exponential backoff
+                    time.sleep(2 ** attempt)
                     continue
                 else:
-                    print("All attempts failed due to token expiration")
+                    print("All attempts failed due to authentication errors")
                     return False
-            else:
-                print(f"OAuth error on attempt {attempt + 1}: {e}")
-                return False
-        except Exception as e:
             print(f"Error deleting table '{table_id}' from dataset '{dataset_id}' on attempt {attempt + 1}: {e}")
             if attempt < max_retries - 1:
                 print("Waiting before retry...")
-                time.sleep(2 ** attempt)  # Exponential backoff
+                time.sleep(2 ** attempt)
                 continue
             else:
                 return False
@@ -539,24 +579,20 @@ def run_query_to_df(query, project_id=os.getenv("BQ_PROJECT_ID"), max_retries=3)
             df = query_job.to_dataframe()
             return df
             
-        except OAuthError as e:
-            if "stale" in str(e).lower() or "invalid_grant" in str(e).lower():
-                print(f"OAuth token expired on attempt {attempt + 1}: {e}")
+        except Exception as e:
+            if _is_auth_error(e):
+                print(f"Auth error on attempt {attempt + 1}: {e}")
                 if attempt < max_retries - 1:
                     print("Waiting before retry...")
-                    time.sleep(2 ** attempt)  # Exponential backoff
+                    time.sleep(2 ** attempt)
                     continue
                 else:
-                    print("All attempts failed due to token expiration")
+                    print("All attempts failed due to authentication errors")
                     raise
-            else:
-                print(f"OAuth error on attempt {attempt + 1}: {e}")
-                raise
-        except Exception as e:
             print(f"Error on attempt {attempt + 1}: {e}")
             if attempt < max_retries - 1:
                 print("Waiting before retry...")
-                time.sleep(2 ** attempt)  # Exponential backoff
+                time.sleep(2 ** attempt)
                 continue
             else:
                 print("All attempts failed")
