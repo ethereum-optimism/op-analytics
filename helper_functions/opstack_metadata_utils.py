@@ -5,7 +5,7 @@ import os
 def generate_alignment_column(df):
 
         # Create 'is_op_chain' column
-        df['is_op_chain'] = df['chain_type'].notnull().astype(bool)
+        df['is_op_chain'] = (df['chain_type'].notnull()) & (df['op_chain_start'].notnull())
 
         conditions = [
         df['is_op_chain'] == True,
