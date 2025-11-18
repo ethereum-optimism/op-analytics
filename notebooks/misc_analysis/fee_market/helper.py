@@ -41,6 +41,14 @@ def fetch_eip1559_params(chain: str, date: string) -> dict:
             print(f"⚠️ No EIP-1559 params found for {chain} on {date}, trying GitHub fallback...")
             return _fetch_eip1559_params_from_github(chain)
 
+        # Check if values are 0 (extract scalar from Series)
+        elasticity = result_df["eip1559_elasticity"].item()
+        denominator = result_df["eip1559_denominator"].item()
+
+        if elasticity == 0 or denominator == 0:
+            print(f"⚠️ Invalid EIP-1559 params (elasticity={elasticity}, denominator={denominator}) for {chain} on {date}, trying GitHub fallback...")
+            return _fetch_eip1559_params_from_github(chain)
+
         print(f"✅ Fetched EIP-1559 params for {chain} ({date})")
         return result_df
 
