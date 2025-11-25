@@ -108,11 +108,11 @@ def plot_base_fee_and_fullness(df_output, chain_name: str, block_date: str, smoo
     """
     # Compute block fullness (%)
     df_output = df_output.with_columns(
-        ((df_output["gas_used"] / df_output["gas_limit"]) * 100).alias("block_fullness_pct")
-    )
+        ((df_output["block_fullness"] * 100).alias("block_fullness_pct")
+    ))
 
     # Convert to pandas for plotting
-    df_plot = df_output.select(["datetime", "base_fee_per_gas", "block_fullness_pct"]).to_pandas()
+    df_plot = df_output.select(["datetime", "base_fee_per_gas", "block_fullness_pct", "target_fullness"]).to_pandas()
 
     # Optionally smooth the fullness curve
     if smoothing_window and smoothing_window > 1:
@@ -138,6 +138,17 @@ def plot_base_fee_and_fullness(df_output, chain_name: str, block_date: str, smoo
     ax2.set_ylabel("Block Fullness (%)", color="tab:orange")
     ax2.tick_params(axis="y", labelcolor="tab:orange")
     ax2.set_ylim(0, 105)
+
+    # Extract scalar value for target_fullness (should be constant across all rows)
+    target_fullness_value = df_plot["target_fullness"].iloc[0] * 100
+
+    ax2.axhline(
+        y=target_fullness_value,
+        color="red",
+        linestyle="--",
+        linewidth=1.2,
+        label=f"Target Fullness ({target_fullness_value:.1f}%)"
+    )
 
     # Title & formatting
     ax1.set_title(f"Base Fee and Block Fullness on {block_date} ({chain_name})")
