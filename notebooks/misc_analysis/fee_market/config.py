@@ -2,4 +2,4 @@
 # Configurations
 # ----------------------------------------
 BLOCK_DATE= "2025-08-16"
-CHAIN = 'unichain'
+CHAIN = 'base'
