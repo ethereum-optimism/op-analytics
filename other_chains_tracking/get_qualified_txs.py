@@ -207,12 +207,24 @@ print(f"dune_df shape: {dune_df.shape}")
 # Convert chain_id and source to strings in both DataFrames
 ch['chain_id'] = ch['chain_id'].astype(str).fillna('na')
 ch['source'] = ch['source'].astype(str).fillna('na')
+
+# Handle numeric columns NaN values
+numeric_columns = ['num_raw_txs', 'num_success_txs', 'num_qualified_txs', 
+                  'sum_raw_gas_used', 'sum_success_gas_used', 'sum_qualified_gas_used']
+
+for col in numeric_columns:
+    if col in ch.columns:
+        ch[col] = ch[col].fillna(0).astype(int)
+    if col in dune_df.columns:
+        dune_df[col] = dune_df[col].fillna(0).astype(int)
+
 # Apply ch datatypes to dunedf
 ch_dtypes = ch.dtypes.to_dict()
 
 # Now, apply these dtypes to dune_df
 for col, dtype in ch_dtypes.items():
-    dune_df[col] = dune_df[col].astype(dtype)
+    if col in dune_df.columns:
+        dune_df[col] = dune_df[col].astype(dtype)
 
 print("ch columns:", ch.columns)
 print("dune_df columns:", dune_df.columns)
