@@ -22,16 +22,16 @@ def breakout_partitions(
     yielded_partitions = []
 
     if len(df) == 0:
-        assert default_partitions is not None
-        for default_partition in default_partitions:
-            partition_data = PartitionData.from_dict(
-                partition_cols=partition_cols,
-                partitions_dict=default_partition,
-                df=df.drop(*partition_cols),
-            )
+        if default_partitions is not None:
+            for default_partition in default_partitions:
+                partition_data = PartitionData.from_dict(
+                    partition_cols=partition_cols,
+                    partitions_dict=default_partition,
+                    df=df.drop(*partition_cols),
+                )
 
-            yielded_partitions.append(partition_data.partition.path)
-            yield partition_data
+                yielded_partitions.append(partition_data.partition.path)
+                yield partition_data
 
     else:
         for part in parts:
