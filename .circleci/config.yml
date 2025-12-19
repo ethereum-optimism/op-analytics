@@ -19,11 +19,11 @@ parameters:
         "daily_l2_aggregate_later_loads",
         "daily_l2_chain_data_uploads",
         "deploy_github_pages",
-        # "run_market_data",
         "run_op_governance_uploads",
         "run_op_stack_chain_revenue",
         "run_op_stack_metadata_upload",
         "run_weekly_l2_chain_data_uploads",
+        # "run_market_data", #remove, no longer used
       ]
 
 commands:
