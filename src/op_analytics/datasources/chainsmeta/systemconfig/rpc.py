@@ -192,7 +192,7 @@ class SystemConfigMetadata:
                 if code == -32016:  # rate limit
                     raise RateLimit(f"JSON-RPC error: {item} [{config}]")
 
-                if code == -32000:  # "execution reverted"
+                if code in (-32000, 3):  # "execution reverted"
                     # Log the failed method but continue processing
                     method_name = item.get("id", "unknown")
                     failed_methods.append(method_name)

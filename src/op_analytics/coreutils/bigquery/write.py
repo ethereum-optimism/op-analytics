@@ -205,6 +205,10 @@ def breakout_partitioned_df(df: pl.DataFrame) -> Generator[DatePart, None, None]
 
     partitions = df["dt"].unique().sort().to_list()
 
+    if not partitions:
+        log.info("No partitions found in dataframe.")
+        return
+
     log.info(
         f"Found {len(partitions)} partitions in dataframe [{partitions[0]} ... {partitions[-1]}]"
     )
