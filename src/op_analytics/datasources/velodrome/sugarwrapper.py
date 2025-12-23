@@ -1,7 +1,7 @@
 import itertools
 from dataclasses import dataclass
 
-from sugar.chains import BaseChain, OPChain, Chain
+from sugar.chains import Chain
 from sugar.price import Price
 from sugar.token import Token
 from sugar.pool import LiquidityPool
@@ -9,16 +9,9 @@ from sugar.helpers import normalize_address
 
 from op_analytics.coreutils.coroutines import run_coroutine
 from op_analytics.coreutils.logger import structlog
-
+from op_analytics.datasources.velodrome.chain_list import SUGAR_CHAINS
 
 log = structlog.get_logger()
-
-
-# Map our chain names to the sugar sdk Chain class.
-SUGAR_CHAINS = {
-    "op": OPChain(),
-    "base": BaseChain(),
-}
 
 
 @dataclass(frozen=True)
@@ -120,7 +113,7 @@ async def _sugar_pools(chain: str, sugar_chain: Chain) -> VelodromePools:
     lps = []
     missing = []
     for pool in pools:
-        lp = LiquidityPool.from_tuple(pool, tokens_index)
+        lp = LiquidityPool.from_tuple(pool, tokens_index, prices)
 
         if lp is None:
             missing.append(
