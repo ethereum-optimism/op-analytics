@@ -30,7 +30,6 @@ dependencies = [
     "structlog>=24.4.0",
     "typer>=0.12.5",
     "urllib3>=2.2.3",
-    "sugar",
     "dune-spice>=0.2.6",
     "cloud-sql-python-connector[pg8000]>=1.18.1",
 ]
@@ -69,9 +68,6 @@ dev-dependencies = [
     "nbformat>=4.2.0",
     "dagster-webserver>=1.9.7",
 ]
-
-[tool.uv.sources]
-sugar = { git = "https://github.com/velodrome-finance/sugar-sdk" }
 
 [tool.ruff]
 # Allow lines to be as long as 100.
