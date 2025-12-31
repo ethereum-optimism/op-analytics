@@ -60,7 +60,12 @@ class ProtocolTVL:
             tokens_usd = make_token_tvl_usd_df(slug, chain_tvls)
 
         except Exception as ex:
-            raise Exception(f"Error processing data for slug={slug}") from ex
+            raise Exception(f"Error processing data for slug={slug}: {ex}") from ex
+
+        raise_for_schema_mismatch(
+            actual_schema=tvl_df.schema,
+            expected_schema=pl.Schema(TVL_SCHEMA),
+        )
 
         # Join TVL and TVL-USD
         token_tvl_df = tokens.join(
@@ -114,7 +119,15 @@ def make_token_tvl_df(slug: str, chain_tvls: dict):
     tokens = []
 
     for chain, chain_data in chain_tvls.items():
-        for tokens_entry in chain_data.get("tokens") or []:
+        tvl_entries = chain_data.get("tvl") or []
+        tokens_entries = chain_data.get("tokens") or []
+
+        if len(tvl_entries) > 0 and len(tokens_entries) < len(tvl_entries):
+            raise Exception(
+                f"Incomplete [chainTvls][{chain}][tokens] entries for slug={slug}, chain={chain}: {len(tvl_entries)} tvl entries and {len(tokens_entries)} tokens entries."
+            )
+
+        for tokens_entry in tokens_entries:
             dateval = dt_fromepoch(tokens_entry["date"])
 
             if not epoch_is_date(tokens_entry["date"]):
@@ -148,7 +161,15 @@ def make_token_tvl_usd_df(slug: str, chain_tvls: dict):
     tokens_usd = []
 
     for chain, chain_data in chain_tvls.items():
-        for tokens_usd_entry in chain_data.get("tokensInUsd") or []:
+        tvl_entries = chain_data.get("tvl") or []
+        tokens_usd_entries = chain_data.get("tokensInUsd") or []
+
+        if len(tvl_entries) > 0 and len(tokens_usd_entries) < len(tvl_entries):
+            raise Exception(
+                f"Incomplete [chainTvls][{chain}][tokensInUsd] entries for slug={slug}, chain={chain}: {len(tvl_entries)} tvl entries and {len(tokens_usd_entries)} tokensInUsd entries."
+            )
+
+        for tokens_usd_entry in tokens_usd_entries:
             dateval = dt_fromepoch(tokens_usd_entry["date"])
 
             if not epoch_is_date(tokens_usd_entry["date"]):
