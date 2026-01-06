@@ -55,7 +55,7 @@ sphinx-serve: .makemarkers/sphinx-docs
 IMAGE_TAG = ghcr.io/ethereum-optimism/op-analytics:v20250404.2
 
 # Dagster image version.
-IMAGE_TAG_DAGSTER = ghcr.io/ethereum-optimism/op-analytics-dagster:v20251218.001
+IMAGE_TAG_DAGSTER = ghcr.io/ethereum-optimism/op-analytics-dagster:v20260106.001
 
 
 .PHONY: uv-build
@@ -83,4 +83,4 @@ docker-dagster: uv-build
 
 .PHONY: helm-dagster
 helm-dagster:
-	helm upgrade dagster dagster/dagster -f helm/dagster/values.yaml -n dagster
+	helm upgrade dagster dagster/dagster -f helm/dagster/values.yaml -n dagster --skip-schema-validation
