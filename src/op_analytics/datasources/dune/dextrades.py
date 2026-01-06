@@ -39,7 +39,6 @@ class DuneDexTradesSummary:
         df = (
             spice.query(
                 DEX_TRADES_QUERY_ID,
-                # Runs every time so we are guaranteed to get fresh results.
                 refresh=True,
                 parameters={
                     "lookback_start_days": lookback_start,
@@ -51,8 +50,8 @@ class DuneDexTradesSummary:
             )
             .with_columns(
                 pl.col("block_date")
-                .str.to_date(format="%Y-%m-%d %H:%M:%S.000 UTC")
                 .cast(pl.Utf8)
+                .str.slice(0, 10)  # works for "2026-01-06" and "2026-01-06 00:00:00.000 UTC"
                 .alias("dt")
             )
             .drop("block_date")
