@@ -487,6 +487,16 @@ def test_decode_response():
         },
         {
             "jsonrpc": "2.0",
+            "id": "minBaseFee",
+            "error": {"code": -32000, "message": "execution reverted"},
+        },
+        {
+            "jsonrpc": "2.0",
+            "id": "daFootprintGasScalar",
+            "error": {"code": -32000, "message": "execution reverted"},
+        },
+        {
+            "jsonrpc": "2.0",
             "id": "optimismMintableERC20Factory",
             "result": "0x0000000000000000000000004d898f66327fa050131a17ed17a39ebecc81f0c3",
         },
@@ -558,6 +568,8 @@ def test_decode_response():
         minimum_gas_limit=21000000,
         operator_fee_constant=None,
         operator_fee_scalar=None,
+        min_base_fee=0,
+        da_footprint_gas_scalar=0,
         optimism_mintable_erc20_factory="0x4d898f66327fa050131a17ed17a39ebecc81f0c3",
         optimism_portal="0x7b02d13904d8e6e0f0efaf756ab14cb0ff21ee7e",
         overhead=2100,
