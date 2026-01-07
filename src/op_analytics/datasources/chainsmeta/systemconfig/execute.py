@@ -81,6 +81,8 @@ SYSTEM_CONFIG_SCHEMA = pl.Schema(
         "minimum_gas_limit": pl.Int64,
         "operator_fee_constant": pl.Int64,  # Null for chains that don't support this method
         "operator_fee_scalar": pl.Int64,  # Null for chains that don't support this method
+        "min_base_fee": pl.Int64,  # Null for chains that don't support this method
+        "da_footprint_gas_scalar": pl.Int64,  # Null for chains that don't support this method
         "optimism_mintable_erc20_factory": pl.Utf8,
         "optimism_portal": pl.Utf8,
         "overhead": pl.Utf8,  # Changed to String to handle large 256-bit integers, nullable if not supported

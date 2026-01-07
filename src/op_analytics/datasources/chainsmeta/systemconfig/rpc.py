@@ -52,6 +52,8 @@ SYSTEM_CONFIG_METHODS = {
     "minimumGasLimit": "0x4add321d",
     "operatorFeeConstant": "0x16d3bc7f",
     "operatorFeeScalar": "0x4d5d9a2a",
+    "minBaseFee": "0xa62611a2",
+    "daFootprintGasScalar": "0xfe3d5710",
     "optimismMintableERC20Factory": "0x9b7d7f0a",
     "optimismPortal": "0x0a49cb03",
     "overhead": "0x0c18c162",
@@ -169,6 +171,8 @@ class SystemConfigMetadata:
     minimum_gas_limit: Optional[int]
     operator_fee_constant: Optional[int]
     operator_fee_scalar: Optional[int]
+    min_base_fee: Optional[int]
+    da_footprint_gas_scalar: Optional[int]
     optimism_mintable_erc20_factory: Optional[str]
     optimism_portal: Optional[str]
     overhead: Optional[int]
@@ -269,6 +273,8 @@ class SystemConfigMetadata:
                 minimum_gas_limit=safe_decode("minimumGasLimit", "uint64", None),
                 operator_fee_constant=safe_decode("operatorFeeConstant", "uint64", None),
                 operator_fee_scalar=safe_decode("operatorFeeScalar", "uint32", None),
+                min_base_fee=safe_decode("minBaseFee", "uint64", None),
+                da_footprint_gas_scalar=safe_decode("daFootprintGasScalar", "uint16", None),
                 optimism_mintable_erc20_factory=safe_decode_address("optimismMintableERC20Factory"),
                 optimism_portal=safe_decode_address("optimismPortal"),
                 overhead=safe_decode("overhead", "uint256", None),

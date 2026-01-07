@@ -48,6 +48,8 @@ def transform_system_config(
         "minimum_gas_limit",
         "operator_fee_constant",
         "operator_fee_scalar",
+        "min_base_fee",
+        "da_footprint_gas_scalar",
         "optimism_mintable_erc20_factory",
         "optimism_portal",
         "overhead",
