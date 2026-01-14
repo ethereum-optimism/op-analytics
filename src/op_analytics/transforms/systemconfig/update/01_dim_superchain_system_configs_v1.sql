@@ -77,6 +77,9 @@ SELECT
     ,sc.minimum_gas_limit
     ,sc.operator_fee_constant
     ,sc.operator_fee_scalar
+    ,sc.blob_basefee_scalar
+    ,sc.min_base_fee
+    ,sc.da_footprint_gas_scalar
     ,sc.overhead
     ,sc.scalar
     ,sc.start_block
