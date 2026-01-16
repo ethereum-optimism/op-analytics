@@ -240,6 +240,32 @@ Fetch content of a specific file from GitHub.
 { content, url, lines_shown, total_lines, truncated: boolean }
 ```
 
+### Maintenance Tools
+
+#### `check_index_freshness`
+
+Check if the knowledge index is up-to-date.
+
+```typescript
+// Input
+{}
+
+// Output
+{ is_fresh: boolean, last_synced: string, age_days: number, message: string }
+```
+
+#### `sync_resource_index`
+
+Sync the knowledge index from upstream sources (GitHub, docs, specs).
+
+```typescript
+// Input
+{}
+
+// Output
+{ success: boolean, last_synced: string, sections_count: { docs, specs, github_repos }, message: string }
+```
+
 ## Usage Examples
 
 ### Find documentation about bridging
@@ -298,6 +324,49 @@ Fetch content of a specific file from GitHub.
 - **superchain-registry**: Canonical chain registry
 - **specs**: Specification documents source
 
+## Keeping the Index Up-to-Date
+
+The MCP server uses a local resource index (`data/resource-index.json`) that caches information about Optimism docs, specs, and GitHub repos. This index can become stale as Optimism's documentation evolves.
+
+### Manual Sync
+
+Run the sync script to update the index from upstream sources:
+
+```bash
+npm run sync
+```
+
+This fetches:
+- Specs structure from `ethereum-optimism/specs` SUMMARY.md
+- Docs sections from `ethereum-optimism/docs`
+- GitHub repos from the ethereum-optimism org API
+
+### Checking Freshness
+
+Use the `check_index_freshness` MCP tool to see when the index was last synced:
+
+```
+check_index_freshness({})
+→ { is_fresh: true, last_synced: "2026-01-16T...", age_days: 0 }
+```
+
+The index is considered stale after 7 days.
+
+### Auto-Sync via MCP
+
+Use the `sync_resource_index` MCP tool to trigger a sync from within Claude:
+
+```
+sync_resource_index({})
+→ { success: true, sections_count: { docs: 7, specs: 6, github_repos: 9 } }
+```
+
+### Recommended: Weekly Sync
+
+For production use, consider setting up a cron job or CI workflow to run `npm run sync` weekly.
+
+---
+
 ## Development
 
 ```bash
@@ -309,6 +378,9 @@ npm run build
 
 # Run built server
 npm start
+
+# Sync resource index from upstream
+npm run sync
 ```
 
 ## Caching
@@ -325,7 +397,10 @@ src/
 │   ├── search-docs.ts      # Docs search tool
 │   ├── search-specs.ts     # Specs search tool
 │   ├── search-github.ts    # GitHub search tools
-│   └── get-content.ts      # Content fetch tools
+│   ├── get-content.ts      # Content fetch tools
+│   └── sync-index.ts       # Index freshness/sync tools
+├── sync/
+│   └── sync-resources.ts   # Upstream sync script
 ├── resources/
 │   └── knowledge-base.ts   # Curated knowledge index
 ├── cache/
@@ -333,6 +408,9 @@ src/
 └── utils/
     ├── web-fetcher.ts      # Web scraping utilities
     └── github-api.ts       # GitHub API client
+
+data/
+└── resource-index.json     # Synced knowledge index (auto-updated)
 ```
 
 ## License

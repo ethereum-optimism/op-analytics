@@ -39,6 +39,12 @@ import {
   getFileSchema,
 } from "./tools/get-content.js";
 import type { GetDocInput, GetSpecInput, GetFileInput } from "./tools/get-content.js";
+import {
+  checkIndexFreshness,
+  checkFreshnessSchema,
+  syncResourceIndex,
+  syncIndexSchema,
+} from "./tools/sync-index.js";
 
 // Create the MCP server
 const server = new Server(
@@ -65,6 +71,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       getDocSchema,
       getSpecSchema,
       getFileSchema,
+      checkFreshnessSchema,
+      syncIndexSchema,
     ],
   };
 });
@@ -107,6 +115,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case "get_github_file":
         result = await getGitHubFile(args as unknown as GetFileInput);
+        break;
+
+      case "check_index_freshness":
+        result = await checkIndexFreshness();
+        break;
+
+      case "sync_resource_index":
+        result = await syncResourceIndex();
         break;
 
       default:
