@@ -1,0 +1,126 @@
+{
+  "docs": {
+    "base_url": "https://docs.optimism.io",
+    "description": "Official Optimism documentation",
+    "sections": {
+      "chain-operators": {
+        "path": "/chain-operators",
+        "description": "Deploy and manage L2 rollups",
+        "topics": ["rollup deployment", "configuration", "maintenance", "upgrades"]
+      },
+      "node-operators": {
+        "path": "/node-operators",
+        "description": "Run network nodes",
+        "topics": ["op-node", "op-geth", "sync", "configuration"]
+      },
+      "app-developers": {
+        "path": "/app-developers",
+        "description": "Build blockchain apps",
+        "topics": ["smart contracts", "bridging", "transactions", "tooling"]
+      },
+      "op-stack": {
+        "path": "/op-stack",
+        "description": "Protocol fundamentals",
+        "topics": ["architecture", "components", "rollup protocol", "sequencer"]
+      },
+      "superchain": {
+        "path": "/superchain",
+        "description": "Multi-chain coordination",
+        "topics": ["interop", "shared security", "chain registry"]
+      },
+      "governance": {
+        "path": "/governance",
+        "description": "How Optimism evolves",
+        "topics": ["token house", "citizens house", "proposals", "voting"]
+      }
+    }
+  },
+  "specs": {
+    "base_url": "https://specs.optimism.io",
+    "description": "OP Stack technical specifications",
+    "sections": {
+      "protocol": {
+        "path": "/protocol",
+        "description": "Core protocol specifications",
+        "topics": ["derivation", "deposits", "withdrawals", "fault proofs"]
+      },
+      "experimental": {
+        "path": "/experimental",
+        "description": "Experimental features",
+        "topics": ["interop", "custom gas token", "plasma"]
+      },
+      "fjord": {
+        "path": "/fjord",
+        "description": "Fjord network upgrade",
+        "topics": ["RIP-7212", "brotli compression", "fee changes"]
+      },
+      "granite": {
+        "path": "/granite",
+        "description": "Granite network upgrade",
+        "topics": ["channel timeouts", "derivation fixes"]
+      }
+    }
+  },
+  "github": {
+    "org": "ethereum-optimism",
+    "org_url": "https://github.com/ethereum-optimism",
+    "key_repos": {
+      "optimism": {
+        "description": "Main monorepo - Go/Solidity/Rust",
+        "url": "https://github.com/ethereum-optimism/optimism",
+        "components": [
+          "op-node (consensus client)",
+          "op-batcher (batch submitter)",
+          "op-proposer (output proposer)",
+          "contracts-bedrock (L1/L2 contracts)",
+          "op-challenger (fault proof challenger)",
+          "op-program (fault proof program)"
+        ]
+      },
+      "op-geth": {
+        "description": "Optimism execution client (geth fork)",
+        "url": "https://github.com/ethereum-optimism/op-geth"
+      },
+      "supersim": {
+        "description": "Local multi-chain dev environment",
+        "url": "https://github.com/ethereum-optimism/supersim"
+      },
+      "superchain-registry": {
+        "description": "Canonical chain registry with configs",
+        "url": "https://github.com/ethereum-optimism/superchain-registry"
+      },
+      "specs": {
+        "description": "Specification documents source",
+        "url": "https://github.com/ethereum-optimism/specs"
+      },
+      "ecosystem": {
+        "description": "Ecosystem contributions and tools",
+        "url": "https://github.com/ethereum-optimism/ecosystem"
+      },
+      "design-docs": {
+        "description": "Internal design documents",
+        "url": "https://github.com/ethereum-optimism/design-docs"
+      }
+    }
+  },
+  "explorer": {
+    "mainnet": {
+      "url": "https://optimistic.etherscan.io",
+      "description": "OP Mainnet block explorer"
+    },
+    "sepolia": {
+      "url": "https://sepolia-optimism.etherscan.io",
+      "description": "OP Sepolia testnet explorer"
+    }
+  },
+  "community": {
+    "forum": {
+      "url": "https://gov.optimism.io",
+      "description": "Governance forum"
+    },
+    "discord": {
+      "url": "https://discord.gg/optimism",
+      "description": "Community Discord"
+    }
+  }
+}
