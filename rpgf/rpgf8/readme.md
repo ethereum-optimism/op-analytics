@@ -1,6 +1,6 @@
 # Retro Funding Season 8 Results
 
-_Last updated: December 15, 2025_
+_Last updated: January 19, 2026_
 
 This directory contains the monthly results of Retro Funding Season 8. Consolidated results are stored in the `results.csv` file.
 
