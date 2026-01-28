@@ -65,6 +65,8 @@ dev-dependencies = [
     "webdriver-manager>=4.0.2",
     "matplotlib>=3.9.0",
     "plotly>=5.20.1",
+    "seaborn>=0.13.0",
+    "db-dtypes>=1.2.0",
     "nbformat>=4.2.0",
     "dagster-webserver>=1.9.7",
 ]
