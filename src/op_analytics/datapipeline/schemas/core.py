@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 from collections import Counter
 from enum import Enum
@@ -38,7 +39,86 @@ def to_bigquery_type(arrow_type: pa.DataType) -> str:
         fields_str = ", ".join(fields)
         return f"STRUCT<{fields_str}>"
 
-    raise NotImplementedError()
+    raise NotImplementedError(f"Unsupported Arrow type: {arrow_type}")
+
+
+# -------------------------------------------------------------------
+# ClickHouse -> Arrow safety for wide ints (UInt128/Int128/UInt256/Int256)
+# -------------------------------------------------------------------
+
+# Minimal blast radius: always protect these column names even if type metadata is missing.
+_FORCE_SAFE_INT_CAST_COLUMNS: set[str] = {
+    "receipt_l1_blob_base_fee",
+}
+
+# Find Int/UInt widths inside strings like "UInt128" or "Nullable(UInt128)".
+_CH_INT_RE = re.compile(r"\b(U?Int)(\d+)\b")
+
+
+def _infer_clickhouse_int_width(type_str: str | None) -> tuple[bool, int] | None:
+    """
+    Returns (is_unsigned, bits) if type_str contains Int*/UInt*.
+    Examples:
+      "UInt128" -> (True, 128)
+      "Nullable(UInt128)" -> (True, 128)
+      "Int64" -> (False, 64)
+    """
+    if not type_str:
+        return None
+    m = _CH_INT_RE.search(type_str)
+    if not m:
+        return None
+    is_unsigned = m.group(1) == "UInt"
+    bits = int(m.group(2))
+    return is_unsigned, bits
+
+
+def _split_alias(expr: str) -> tuple[str, str | None]:
+    """
+    Split "<lhs> AS <alias>" using the LAST " AS " occurrence.
+    """
+    s = expr.strip()
+    if " AS " in s:
+        lhs, alias = s.rsplit(" AS ", 1)
+        return lhs.strip(), alias.strip()
+    return s, None
+
+
+def _needs_safe_int_cast(col: "Column") -> bool:
+    """
+    Apply accurateCastOrNull to prevent Arrow crash when ClickHouse has to serialize wide ints.
+
+    Rule:
+      - Only for target ints (pa.int32/pa.int64)
+      - If raw ClickHouse type width > target width (e.g. UInt128 -> Int64)
+      - OR if the column is force-listed
+    """
+    if col.field_type not in (pa.int32(), pa.int64()):
+        return False
+
+    if col.name in _FORCE_SAFE_INT_CAST_COLUMNS:
+        return True
+
+    raw = _infer_clickhouse_int_width(col.raw_goldsky_pipeline_type)
+    if raw is None:
+        return False
+
+    _is_unsigned, raw_bits = raw
+    target_bits = 32 if col.field_type == pa.int32() else 64
+    return raw_bits > target_bits
+
+
+def _safe_cast_expr(col: "Column") -> str:
+    """
+    Produce ClickHouse expression:
+      accurateCastOrNull(<raw_expr>, 'Int64') AS <name>
+
+    Uses raw_goldsky_pipeline_expr (preferred), else falls back to the column name.
+    """
+    base = (col.raw_goldsky_pipeline_expr or col.name).strip()
+    target = "Int32" if col.field_type == pa.int32() else "Int64"
+    # accurateCastOrNull always returns Nullable(T) and returns NULL if not representable. :contentReference[oaicite:1]{index=1}
+    return f"accurateCastOrNull({base}, '{target}') AS {col.name}"
 
 
 @dataclass
@@ -110,22 +190,31 @@ class CoreDataset:
         _check_unique("name")
         _check_unique("op_analytics_clickhouse_expr")
 
-    def goldsky_sql(
-        self,
-        source_table: str,
-        where: str | None = None,
-    ):
+    def goldsky_sql(self, source_table: str, where: str | None = None):
         """Query to read the source table from the Goldsky Clickhouse instance.
 
         The clickhouse expr is used for each column in the dataset to formulate the
         SQL query. The optional "where" filter is typically used to narrow down the
         query to a specific range of block numbers.
+
+        NEW behavior:
+          - If a column is INT32/INT64 in our dataset but raw type is wider (UInt128, etc),
+            generate: accurateCastOrNull(raw_expr, 'Int64') AS <col>
+            so overflow becomes NULL and Arrow serialization cannot crash.
         """
-        exprs = [
-            "    " + _.op_analytics_clickhouse_expr
-            for _ in self.columns
-            if _.op_analytics_clickhouse_expr is not None
-        ]
+        exprs: list[str] = []
+
+        for col in self.columns:
+            if col.op_analytics_clickhouse_expr is None:
+                continue
+
+            # If we need safe casting, override the expression entirely for this column.
+            if _needs_safe_int_cast(col):
+                exprs.append("    " + _safe_cast_expr(col))
+                continue
+
+            exprs.append("    " + col.op_analytics_clickhouse_expr)
+
         cols = ",\n".join(exprs)
 
         if where is None:
