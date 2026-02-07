@@ -1,0 +1,663 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>DailyDataset (GCS) &#8212; OP Analytics  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=613916f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dataplatform/5-datasources/2-dailydata-gcs';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ClickHouseDataset" href="3-clickhouse-data.html" />
+    <link rel="prev" title="Overview" href="1-overview.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-wordmark-large/OPTIMISM.png?raw=true" class="logo__image only-light" alt="OP Analytics  documentation - Home"/>
+    <img src="https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-wordmark-large/OPTIMISM.png?raw=true" class="logo__image only-dark pst-js-only" alt="OP Analytics  documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    OP Labs Data Platform
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../devsetup/index.html">
+    Development Guide
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    OP Labs Data Platform
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../devsetup/index.html">
+    Development Guide
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../1-architecture.html">Architecture</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../2-blockbatch/index.html">Onchain Data Processing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/1-design.html">Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/2-markers.html">Marker Metadata Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/3-ingestion.html">Ingestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/4-models.html">Blockbatch Models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Third-Party Data Ingestion</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="1-overview.html">Overview</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">DailyDataset (GCS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3-clickhouse-data.html">ClickHouseDataset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../3-clickhouse/index.html">Data Warehouse</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../3-clickhouse/1-blockbatch-loading.html">Onchain Data Pipelines: Blockbatch Load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3-clickhouse/2-transforms.html">General Purpose Data Pipelines: Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3-clickhouse/3-comparison.html">Comparison to dbt and SQLMesh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../4-public-datasets/index.html">OP Labs Public BigQuery Data</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">OP Labs Data Platform</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Third-Party Data Ingestion</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">DailyDataset (GCS)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="dailydataset-gcs">
+<h1>DailyDataset (GCS)<a class="headerlink" href="#dailydataset-gcs" title="Link to this heading">#</a></h1>
+<section id="historical-note">
+<h2>Historical Note<a class="headerlink" href="#historical-note" title="Link to this heading">#</a></h2>
+<p>When we started building the OP Labs data platform we were heavy BigQuery users. For our most
+important dashboards we still are. To make it easier to migrate from BigQuery to ClickHouse we
+used GCS as the landing spot for ingested data. Data in GCS can be read from BigQuery by using
+<a class="reference external" href="https://cloud.google.com/bigquery/docs/external-data-cloud-storage">external tables</a> and from
+ClickHouse by using the <a class="reference external" href="https://clickhouse.com/docs/sql-reference/table-functions/s3">s3 Table Function</a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">DailyDataset</span></code> data ingestion pattern was created with GCS in mind, and so all of the data
+ingested using this pattern lands in GCS. If you are thinking of integrating a new data source
+I strongly recommend you use the <a class="reference internal" href="3-clickhouse-data.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">ClickHouseDataset</span></code></span></a> pattern instead.</p>
+</section>
+<section id="subclassing-the-dailydataset-class">
+<h2>Subclassing the <code class="docutils literal notranslate"><span class="pre">DailyDataset</span></code> class<a class="headerlink" href="#subclassing-the-dailydataset-class" title="Link to this heading">#</a></h2>
+<p>Let’s take the defillama source as an example. For this datasource the data access class is
+defined in the <code class="docutils literal notranslate"><span class="pre">src/op_analytics/datasources/defillama/dataaccess.py</span></code> directory. At the time
+of writing here is how this file looks like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">op_analytics.coreutils.partitioned.dailydata</span><span class="w"> </span><span class="kn">import</span> <span class="n">DailyDataset</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DefiLlama</span><span class="p">(</span><span class="n">DailyDataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supported defillama datasets.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Chain TVL</span>
+    <span class="n">CHAINS_METADATA</span> <span class="o">=</span> <span class="s2">&quot;chains_metadata_v1&quot;</span>
+    <span class="n">HISTORICAL_CHAIN_TVL</span> <span class="o">=</span> <span class="s2">&quot;historical_chain_tvl_v1&quot;</span>
+
+    <span class="c1"># Protocol TVL</span>
+    <span class="n">PROTOCOLS_METADATA</span> <span class="o">=</span> <span class="s2">&quot;protocols_metadata_v1&quot;</span>
+    <span class="n">PROTOCOLS_TVL</span> <span class="o">=</span> <span class="s2">&quot;protocols_tvl_v1&quot;</span>
+    <span class="n">PROTOCOLS_TOKEN_TVL</span> <span class="o">=</span> <span class="s2">&quot;protocols_token_tvl_v1&quot;</span>
+    <span class="c1"># Enrichment:</span>
+    <span class="n">PROTOCOL_TVL_FLOWS_FILTERED</span> <span class="o">=</span> <span class="s2">&quot;tvl_flows_breakdown_filtered_v1&quot;</span>
+
+    <span class="c1"># Stablecoins TVL</span>
+    <span class="n">STABLECOINS_METADATA</span> <span class="o">=</span> <span class="s2">&quot;stablecoins_metadata_v1&quot;</span>
+    <span class="n">STABLECOINS_BALANCE</span> <span class="o">=</span> <span class="s2">&quot;stablecoins_balances_v1&quot;</span>
+
+    <span class="c1"># DEX Volumes, Fees, and Revenue at chain and chain/name levels of granularity</span>
+    <span class="n">VOLUME_FEES_REVENUE</span> <span class="o">=</span> <span class="s2">&quot;volume_fees_revenue_v1&quot;</span>
+    <span class="n">VOLUME_FEES_REVENUE_BREAKDOWN</span> <span class="o">=</span> <span class="s2">&quot;volume_fees_revenue_breakdown_v1&quot;</span>
+
+    <span class="c1"># Yield</span>
+    <span class="n">YIELD_POOLS_METADATA</span> <span class="o">=</span> <span class="s2">&quot;yield_pools_metadata_v1&quot;</span>
+    <span class="n">YIELD_POOLS_HISTORICAL</span> <span class="o">=</span> <span class="s2">&quot;yield_pools_historical_v1&quot;</span>
+
+    <span class="c1"># Lend/Borrow</span>
+    <span class="n">LEND_BORROW_POOLS_METADATA</span> <span class="o">=</span> <span class="s2">&quot;lend_borrow_pools_metadata_v1&quot;</span>
+    <span class="n">LEND_BORROW_POOLS_HISTORICAL</span> <span class="o">=</span> <span class="s2">&quot;lend_borrow_pools_historical_v1&quot;</span>
+
+    <span class="c1"># Protocols metadata obtained from &quot;dexs/dailyVolume&quot;, and &quot;fees/dailyFees&quot;</span>
+    <span class="c1"># and &quot;fees/dailyRevenue&quot; endpoints.</span>
+    <span class="n">VOLUME_PROTOCOLS_METADATA</span> <span class="o">=</span> <span class="s2">&quot;volume_protocols_metadata_v1&quot;</span>
+    <span class="n">FEES_PROTOCOLS_METADATA</span> <span class="o">=</span> <span class="s2">&quot;fees_protocols_metadata_v1&quot;</span>
+    <span class="n">REVENUE_PROTOCOLS_METADATA</span> <span class="o">=</span> <span class="s2">&quot;revenue_protocols_metadata_v1&quot;</span>
+
+    <span class="c1"># Token Mappings</span>
+    <span class="n">TOKEN_MAPPINGS</span> <span class="o">=</span> <span class="s2">&quot;dim_token_mappings_v1&quot;</span>
+    <span class="n">PROTOCOL_CATEGORY_MAPPINGS</span> <span class="o">=</span> <span class="s2">&quot;dim_protocol_category_mappings_v1&quot;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">DailyDataset</span></code> class is an <code class="docutils literal notranslate"><span class="pre">Enum</span></code> and the body of the subclass are the enumeration members
+which are strings.  Each of these strings corresponds to the name of a table where ingested data
+will be written to.</p>
+</section>
+<section id="discoverability">
+<h2>Discoverability<a class="headerlink" href="#discoverability" title="Link to this heading">#</a></h2>
+<p>The reason we require a <code class="docutils literal notranslate"><span class="pre">datasource/&lt;name&gt;/dataaccess.py</span></code> module for each datasource and an enumeration
+of the associated tables is discoverability. If someone wants to know what tables are ingested for
+a given datasource they can easily find it in that file.</p>
+</section>
+<section id="writing-data">
+<h2>Writing Data<a class="headerlink" href="#writing-data" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">DailyDataset</span></code> class is a simple enum but it offers a number of built-in methods that help
+implement data ingestion. The most important one is the <code class="docutils literal notranslate"><span class="pre">write()</span></code> method.</p>
+<p>When ingesting data the mechanism of obtaining and transforming the data will be specific to each
+data source. The custom code needs to figure out a way to produce a polars dataframe with the
+data and then call the <code class="docutils literal notranslate"><span class="pre">write()</span></code> method of the destination table, for example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Write stablecoin balances.</span>
+<span class="n">DefiLlama</span><span class="o">.</span><span class="n">STABLECOINS_BALANCE</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+    <span class="n">dataframe</span><span class="o">=</span><span class="n">most_recent_dates</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">balances_df</span><span class="p">,</span> <span class="n">n_dates</span><span class="o">=</span><span class="n">BALANCES_TABLE_LAST_N_DAYS</span><span class="p">),</span>
+    <span class="n">sort_by</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;symbol&quot;</span><span class="p">,</span> <span class="s2">&quot;chain&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The only expectation is that the dataframe you pass to the <code class="docutils literal notranslate"><span class="pre">write()</span></code> method must have a <code class="docutils literal notranslate"><span class="pre">dt</span></code>
+column, since all data in GCS is written out partitioned by <code class="docutils literal notranslate"><span class="pre">dt</span></code>.</p>
+</section>
+<section id="root-paths">
+<h2>Root Paths<a class="headerlink" href="#root-paths" title="Link to this heading">#</a></h2>
+<p>The name of the <code class="docutils literal notranslate"><span class="pre">DailyDataset</span></code> subclass and the table enum member string value will be
+combined by the system to determine the <code class="docutils literal notranslate"><span class="pre">root_path</span></code> and in turn the exact location in GCS
+where the data will be written.</p>
+<p>For example, the <code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">DefiLlama(DailyDataset)</span></code> above has a member called
+<code class="docutils literal notranslate"><span class="pre">STABLECOINS_BALANCE</span> <span class="pre">=</span> <span class="pre">&quot;stablecoins_balances_v1&quot;</span></code>. The root path for this will be
+<code class="docutils literal notranslate"><span class="pre">defillama/stablecoins_balances_v1</span></code> and the full URI for a parquet file corresponding to
+<code class="docutils literal notranslate"><span class="pre">dt=2025-04-01</span></code> will be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gs</span><span class="p">:</span><span class="o">//</span><span class="n">oplabs</span><span class="o">-</span><span class="n">tools</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">sink</span><span class="o">/</span><span class="n">defillama</span><span class="o">/</span><span class="n">stablecoins_balances_v1</span><span class="o">/</span><span class="n">dt</span><span class="o">=</span><span class="mi">2024</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span><span class="o">/</span><span class="n">out</span><span class="o">.</span><span class="n">parquet</span>
+</pre></div>
+</div>
+</section>
+<section id="other-built-in-functionality">
+<h2>Other built-in functionality<a class="headerlink" href="#other-built-in-functionality" title="Link to this heading">#</a></h2>
+<p>There are a number of other methods that come as part of the <code class="docutils literal notranslate"><span class="pre">DailyDataset</span></code> class. Refer to the
+code in <code class="docutils literal notranslate"><span class="pre">dailydata.py</span></code> for more details.</p>
+</section>
+<section id="execution-and-scheduling">
+<h2>Execution and Scheduling<a class="headerlink" href="#execution-and-scheduling" title="Link to this heading">#</a></h2>
+<p>To execute the ingestion we adopted the convention of having one or more <code class="docutils literal notranslate"><span class="pre">execute.py</span></code> files inside
+the datasource directory. Depending on the complexity of the datasource, you can have one single
+<code class="docutils literal notranslate"><span class="pre">execute.py</span></code> at the top, or event some sub-directories each with their own <code class="docutils literal notranslate"><span class="pre">execute.py</span></code> files
+where ingestion of a subset of tables in the data source is handled.</p>
+<p>Using the defillama stablecoins data as an example, we have a file called
+<code class="docutils literal notranslate"><span class="pre">src/op_analytics/datasources/defillama/stablecoins/execute.py</span></code>.</p>
+<p>For scheduling we use Dagster assets which are then scheduled to run daily in our Dagster <code class="docutils literal notranslate"><span class="pre">defs.py</span></code>
+file. Below we show the <code class="docutils literal notranslate"><span class="pre">Dagster</span></code> assent definition for the stablecoins data pull. Note how
+we include creation of BigQuery external tables there, which is easy thanks to built-in functionality
+in the <code class="docutils literal notranslate"><span class="pre">DailyDatset</span></code> class . We don’t need to recreate the external table every time the job runs,
+but it helps to have that code there so that people can be aware of where the external table
+definition is coming from.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@asset</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">stablecoins</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">AssetExecutionContext</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pull stablecoin data.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">op_analytics.datasources.defillama.stablecoins</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">op_analytics.datasources.defillama.dataaccess</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefiLlama</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">execute</span><span class="o">.</span><span class="n">execute_pull</span><span class="p">()</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="n">DefiLlama</span><span class="o">.</span><span class="n">STABLECOINS_METADATA</span><span class="o">.</span><span class="n">create_bigquery_external_table</span><span class="p">()</span>
+    <span class="n">DefiLlama</span><span class="o">.</span><span class="n">STABLECOINS_METADATA</span><span class="o">.</span><span class="n">create_bigquery_external_table_at_latest_dt</span><span class="p">()</span>
+    <span class="n">DefiLlama</span><span class="o">.</span><span class="n">STABLECOINS_BALANCE</span><span class="o">.</span><span class="n">create_bigquery_external_table</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="prototyping-and-debugging">
+<h2>Prototyping and Debugging<a class="headerlink" href="#prototyping-and-debugging" title="Link to this heading">#</a></h2>
+<p>To prototype we use IPython notebooks. In the notebooks we exercise the <code class="docutils literal notranslate"><span class="pre">execute_pull</span></code> functions
+or some helper functions defined for a specific datasource. For some examples refer to the
+<code class="docutils literal notranslate"><span class="pre">notebooks/adhoc/defillama/</span></code> directory where we have some notebooks that were used to prototype
+the original implementation of defillama pulls and are used regularly to debug issues observed
+in production.</p>
+</section>
+<section id="monitoring">
+<h2>Monitoring<a class="headerlink" href="#monitoring" title="Link to this heading">#</a></h2>
+<p>Like for everything else in our data platform we use markers to monitor <code class="docutils literal notranslate"><span class="pre">DailyDataset</span></code> ingestion.
+There is one marker per <code class="docutils literal notranslate"><span class="pre">root_path</span></code> and <code class="docutils literal notranslate"><span class="pre">dt</span></code> combination. This allows us to keep an eye of new
+data arriving in time for each table and raise alerts on our <code class="docutils literal notranslate"><span class="pre">go/pipeline</span></code> Hex dashboard when
+things are delayed.  The marker metadata includes the row count ingested, so we can included
+that in the monitoring dashboard as well, right along side the number of hours since last ingested.</p>
+<p>Here is a snapshot of part of the dashboard from April 2025:</p>
+<div style="text-align: center;">
+    <img src="../../_static/images//dailydata-monitor.png" alt="dailydata-monitor" width="70%"/>
+</div>
+</section>
+<section id="advanced-use-cases">
+<h2>Advanced use cases<a class="headerlink" href="#advanced-use-cases" title="Link to this heading">#</a></h2>
+<p>Some data sources are not easy to implement because of the way in which data is exposed
+by third-party systems. API calls may be error prone and need to be retried. Or APIs may be
+rate-limited requiring our systems to back off if they get throttled. Some cases may require
+a lot of transformations to get the data in the tabular form that we want to ingest it as.
+All of these cases require creative solutions.</p>
+<p>If you encounter a challenge try to check the code to see if maybe there is another data source
+that has a similar problem that you can borrow some code from.</p>
+</section>
+<section id="when-to-use-clickhousedata-instead">
+<h2>When to use <code class="docutils literal notranslate"><span class="pre">ClickHouseData</span></code> instead<a class="headerlink" href="#when-to-use-clickhousedata-instead" title="Link to this heading">#</a></h2>
+<p>There is also the issue of recovering from transient failures. The <code class="docutils literal notranslate"><span class="pre">DailyDataset</span></code> pattern requires
+you to know all of the data for a single <code class="docutils literal notranslate"><span class="pre">dt</span></code> at once.  If that is a lot of data there may be
+cases where you do a lot of work (call many endpoints) and something failing in the middle causes
+the job to crash. All the progress made is now lost.</p>
+<p>Ingesting data from defillama and ingesting token metadata (totalSupply, etc.) for ERC-20 tokens
+are two ingestion use cases that have presented us with that all-or-nothing challenge we encounter
+with <code class="docutils literal notranslate"><span class="pre">DailyDataset</span></code>.</p>
+<p>For both of these cases the solution we ended up implementing leverages ClickHouse. We write the
+data for a given <code class="docutils literal notranslate"><span class="pre">root_path</span></code> and <code class="docutils literal notranslate"><span class="pre">dt</span></code> in a buffer ClickHouse table. If the data pull fails halfway
+through the next time it kicks off we can look at the buffer table to see what we were able to
+complete on the last run and we resume from there.  Once we are done we go ahead and write the
+entire <code class="docutils literal notranslate"><span class="pre">dt</span></code> data to GCS.</p>
+<p>This solution works well, but it begs the question: If ClickHouse can offer better facilities for
+partial progress and incremental data ingestion why don’t we just use ClickHouse as the final
+destination (instead of as a buffer on the way to GCS)?</p>
+<p>The answer is, for some processes (looking at you Defillama), we still need the data in GCS because
+our reporting logic lives in BigQuery, so we are not ready to move entirely to ClickHouse.</p>
+<p>That said, after realizing how convenient ClickHouse ReplacingMergeTree tables are for ingesting
+data we decided to provide better support for that pattern, which is what led to the creation of
+the <code class="docutils literal notranslate"><span class="pre">ClickHouseData</span></code> ingestion pattern which we go over in the next section.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="1-overview.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Overview</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="3-clickhouse-data.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">ClickHouseDataset</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#historical-note">Historical Note</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subclassing-the-dailydataset-class">Subclassing the <code class="docutils literal notranslate"><span class="pre">DailyDataset</span></code> class</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#discoverability">Discoverability</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-data">Writing Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#root-paths">Root Paths</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-built-in-functionality">Other built-in functionality</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#execution-and-scheduling">Execution and Scheduling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prototyping-and-debugging">Prototyping and Debugging</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monitoring">Monitoring</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-use-cases">Advanced use cases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-clickhousedata-instead">When to use <code class="docutils literal notranslate"><span class="pre">ClickHouseData</span></code> instead</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/dataplatform/5-datasources/2-dailydata-gcs.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, OP Labs.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
