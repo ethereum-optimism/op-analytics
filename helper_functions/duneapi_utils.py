@@ -22,6 +22,8 @@ sys.path.pop()
 from dune_client.types import QueryParameter
 from dune_client.client import DuneClient
 from dune_client.query import QueryBase
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Callable, List, Tuple, Optional, Any
 
 def get_dune_data_crud(query_name, query_str, query_params = None, query_is_private = False):
     dotenv.load_dotenv()
@@ -126,6 +128,143 @@ def generate_query_parameter(input, field_name, dtype):
         par = None
         # print(par)
     return par
+
+
+def generate_chunk_ranges(
+    trailing_days: int,
+    chunk_size: int,
+    ending_days: int = 0
+) -> List[Tuple[int, int]]:
+    """
+    Generate a list of (days_start, days_end) tuples for chunked date ranges.
+
+    Args:
+        trailing_days: Total number of days to cover (e.g., 28)
+        chunk_size: Size of each chunk in days (e.g., 3)
+        ending_days: Offset from today to stop at (default 0 = today)
+
+    Returns:
+        List of (days_start, days_end) tuples, e.g., [(25, 28), (22, 25), ...]
+    """
+    chunk_ranges = []
+    current_end = trailing_days
+    while current_end > ending_days:
+        days_start = max(current_end - chunk_size, ending_days)
+        chunk_ranges.append((days_start, current_end))
+        current_end = days_start
+    return chunk_ranges
+
+
+def run_dune_chunked(
+    query_id: int,
+    trailing_days: int,
+    chunk_size: int = 3,
+    ending_days: int = 0,
+    name: str = "chunked_query",
+    path: str = "outputs",
+    performance: str = "large",
+    extra_params: List = None,
+    num_hours_to_rerun: int = 4,
+    parallel: bool = True,
+    max_workers: int = 3,
+    trailing_days_param_name: str = "trailing_days",
+    ending_days_param_name: str = "ending_days",
+    dedupe_cols: List[str] = None
+) -> pd.DataFrame:
+    """
+    Run a Dune query in chunks to avoid timeout issues.
+
+    This function breaks a large date range query into smaller chunks,
+    optionally running them in parallel for faster execution.
+
+    Args:
+        query_id: The Dune query ID
+        trailing_days: Total number of days to cover
+        chunk_size: Size of each chunk in days (default 3)
+        ending_days: Offset from today to stop at (default 0)
+        name: Name for the query results
+        path: Output path for results
+        performance: Dune performance tier ("small", "medium", "large")
+        extra_params: Additional query parameters to include
+        num_hours_to_rerun: Hours before forcing a refresh
+        parallel: Whether to run chunks in parallel (default True)
+        max_workers: Number of parallel workers (default 3)
+        trailing_days_param_name: Name of the trailing days parameter in the query
+        ending_days_param_name: Name of the ending/lookback days parameter in the query
+        dedupe_cols: Columns to use for deduplication (removes overlapping boundary rows)
+
+    Returns:
+        Combined DataFrame from all chunks
+    """
+    chunk_ranges = generate_chunk_ranges(trailing_days, chunk_size, ending_days)
+
+    def fetch_chunk(days_start: int, days_end: int) -> pd.DataFrame:
+        # trailing_days = how far back from NOW() to start (e.g., 25 = 25 days ago)
+        # ending_days = how far back from NOW() to end (e.g., 22 = 22 days ago)
+        # So for chunk (22, 25): trailing_days=25, ending_days=22 gives range 25-22 days ago
+        days_param = generate_query_parameter(
+            input=days_end,
+            field_name=trailing_days_param_name,
+            dtype='number'
+        )
+        end_days_param = generate_query_parameter(
+            input=days_start,
+            field_name=ending_days_param_name,
+            dtype='number'
+        )
+
+        params = [days_param, end_days_param]
+        if extra_params:
+            params.extend(extra_params)
+
+        return get_dune_data(
+            query_id=query_id,
+            name=name,
+            path=path,
+            performance=performance,
+            params=params,
+            num_hours_to_rerun=num_hours_to_rerun
+        )
+
+    dfs = []
+
+    if parallel and len(chunk_ranges) > 1:
+        print(f'Running {len(chunk_ranges)} chunks in parallel with {max_workers} workers')
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {
+                executor.submit(fetch_chunk, start, end): (start, end)
+                for start, end in chunk_ranges
+            }
+            for future in as_completed(futures):
+                start, end = futures[future]
+                try:
+                    chunk_df = future.result()
+                    if not chunk_df.empty:
+                        dfs.append(chunk_df)
+                    print(f'Completed chunk days {start}-{end}')
+                except Exception as e:
+                    print(f'Failed chunk days {start}-{end}: {e}')
+    else:
+        for days_start, days_end in chunk_ranges:
+            print(f'Running chunk: day range {days_start}-{days_end}')
+            try:
+                chunk_df = fetch_chunk(days_start, days_end)
+                if not chunk_df.empty:
+                    dfs.append(chunk_df)
+            except Exception as e:
+                print(f'Failed chunk days {days_start}-{days_end}: {e}')
+
+    if dfs:
+        result_df = pd.concat(dfs, ignore_index=True)
+        # Remove duplicates from overlapping chunk boundaries (BETWEEN is inclusive in SQL)
+        if dedupe_cols:
+            before_count = len(result_df)
+            result_df = result_df.drop_duplicates(subset=dedupe_cols, keep='first')
+            after_count = len(result_df)
+            if before_count != after_count:
+                print(f'Removed {before_count - after_count} duplicate rows from chunk overlaps')
+        return result_df
+    return pd.DataFrame()
 
 
 def get_dune_data_raw(query_id, perf_var="medium"):
