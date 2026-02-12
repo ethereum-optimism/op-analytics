@@ -92,7 +92,10 @@ def refresh_oidc_token_file():
         return True
 
     # Get the OIDC token from CircleCI environment (re-read, may be fresh)
-    oidc_token = os.getenv("CIRCLE_OIDC_TOKEN_V2") or os.getenv("CIRCLE_OIDC_TOKEN")
+    # Use v1 token (CIRCLE_OIDC_TOKEN) because v2 includes VCS info in the sub claim
+    # (repo URL + branch), which exceeds GCP Workload Identity Federation's
+    # 127-byte limit on google.subject.
+    oidc_token = os.getenv("CIRCLE_OIDC_TOKEN") or os.getenv("CIRCLE_OIDC_TOKEN_V2")
     if not oidc_token:
         logging.warning("No CircleCI OIDC token found in environment")
         return False
