@@ -70,6 +70,139 @@ def test_decode_response():
     }
 
 
+def test_error_handling_missing_functions():
+    """Test that tokens with missing functions are handled gracefully."""
+    # Test with error code 3 (contract doesn't have fallback/receive functions)
+    response_with_error_3: list[dict] = [
+        {
+            "jsonrpc": "2.0",
+            "result": {
+                "number": "0x1934a94",
+                "timestamp": "0x67b0f20b",
+            },
+            "id": "block",
+        },
+        {
+            "jsonrpc": "2.0",
+            "error": {
+                "code": 3,
+                "message": "execution reverted: Contract does not have fallback nor receive functions",
+                "data": "0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000035436f6e747261637420646f6573206e6f7420686176652066616c6c6261636b206e6f7220726563656976652066756e6374696f6e730000000000000000000000",
+            },
+            "id": "decimals",
+        },
+        {
+            "jsonrpc": "2.0",
+            "error": {
+                "code": 3,
+                "message": "execution reverted: Contract does not have fallback nor receive functions",
+            },
+            "id": "symbol",
+        },
+        {
+            "jsonrpc": "2.0",
+            "error": {
+                "code": 3,
+                "message": "execution reverted: Contract does not have fallback nor receive functions",
+            },
+            "id": "name",
+        },
+        {
+            "jsonrpc": "2.0",
+            "error": {
+                "code": 3,
+                "message": "execution reverted: Contract does not have fallback nor receive functions",
+            },
+            "id": "totalSupply",
+        },
+    ]
+
+    token = Token(
+        chain="base", chain_id=8453, contract_address="0xece616e29f54d124542e8d7ae5296f73640f8002"
+    )
+    result = TokenMetadata.of(token, response_with_error_3)
+
+    # Should return None because all required methods failed
+    assert result is None
+
+    # Test with error code -32000 (execution reverted)
+    response_with_error_32000: list[dict] = [
+        {
+            "jsonrpc": "2.0",
+            "result": {
+                "number": "0x1934a94",
+                "timestamp": "0x67b0f20b",
+            },
+            "id": "block",
+        },
+        {
+            "jsonrpc": "2.0",
+            "error": {"code": -32000, "message": "execution reverted"},
+            "id": "decimals",
+        },
+        {
+            "jsonrpc": "2.0",
+            "result": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000054265744d65000000000000000000000000000000000000000000000000000000",
+            "id": "symbol",
+        },
+        {
+            "jsonrpc": "2.0",
+            "result": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000054265744d65000000000000000000000000000000000000000000000000000000",
+            "id": "name",
+        },
+        {
+            "jsonrpc": "2.0",
+            "result": "0x0000000000000000000000000000000000000000033b2e3c9fd0803ce8000000",
+            "id": "totalSupply",
+        },
+    ]
+
+    result = TokenMetadata.of(token, response_with_error_32000)
+
+    # Should return None because decimals method failed (required)
+    assert result is None
+
+    # Test with partial success (some methods work, some fail)
+    response_partial_success: list[dict] = [
+        {
+            "jsonrpc": "2.0",
+            "result": {
+                "number": "0x1934a94",
+                "timestamp": "0x67b0f20b",
+            },
+            "id": "block",
+        },
+        {
+            "jsonrpc": "2.0",
+            "result": "0x0000000000000000000000000000000000000000000000000000000000000012",
+            "id": "decimals",
+        },
+        {
+            "jsonrpc": "2.0",
+            "result": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000054265744d65000000000000000000000000000000000000000000000000000000",
+            "id": "symbol",
+        },
+        {
+            "jsonrpc": "2.0",
+            "error": {
+                "code": 3,
+                "message": "execution reverted: Contract does not have fallback nor receive functions",
+            },
+            "id": "name",
+        },
+        {
+            "jsonrpc": "2.0",
+            "result": "0x0000000000000000000000000000000000000000033b2e3c9fd0803ce8000000",
+            "id": "totalSupply",
+        },
+    ]
+
+    result = TokenMetadata.of(token, response_partial_success)
+
+    # Should return None because name method failed (required)
+    assert result is None
+
+
 def test_invalid_strings():
     """Some tokens have invalid utf-8 on their symbol or name."""
 
