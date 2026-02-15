@@ -1,0 +1,27 @@
+mapping_type,identifier_type,identifier_value,source_filter,target_field,new_value,conditions,start_date,end_date,description,enabled
+chain_id_override,chain,molten,,chain_id,360,,,,Handle molten chain ID collision by setting to 360,true
+field_override,chain,celol2,,chain_id,{chain_id}-l2,,,,Add -l2 suffix for Celo L2 transition,true
+field_override,chain,celo,,chain_id,{chain_id}-l2,layer=L2,,,Add -l2 suffix for Celo chains when layer is L2,true
+field_override,chain,kardia,,chain_id,24,,,,Special case: Kardia chain ID override,true
+display_name_preference,display_name,arbitrum,,display_name,Arbitrum One,,,,Prefer 'Arbitrum One' over 'Arbitrum',true
+display_name_preference,display_name,optimism,,display_name,OP Mainnet,,,,Prefer 'OP Mainnet' over 'Optimism',true
+display_name_preference,display_name,polygon,,display_name,Polygon PoS,,,,Prefer 'Polygon PoS' over 'Polygon',true
+field_override,display_name,Polygon PoS,,provider,Polygon,,,,Override provider for Polygon PoS,true
+field_override,display_name,Polygon PoS,,provider_entity,Polygon: CDK,,,,Override provider entity for Polygon PoS,true
+display_name_preference,display_name,Base,,display_name,Base Mainnet,,,,Prefer 'Base Mainnet' over 'Base',true
+display_name_preference,display_name,Zora,,display_name,Zora Network,,,,Prefer 'Zora Network' over 'Zora',true
+display_name_preference,display_name,Mode,,display_name,Mode Network,,,,Prefer 'Mode Network' over 'Mode',true
+field_override,chain,ethereum,,layer,L1,,,,Set Ethereum as L1,true
+field_override,chain,bitcoin,,layer,L1,,,,Set Bitcoin as L1,true
+field_override,provider,OP Stack,,provider_entity,Optimism: OP Stack,,,,Set provider_entity for chains with OP Stack provider,true
+field_override,chain,*mainnet*,,is_mainnet,true,,,,Set mainnet flag for chains containing 'mainnet',false
+field_override,chain,*testnet*,,is_testnet,true,,,,Set testnet flag for chains containing 'testnet',false
+field_override,chain_id,*,,chain_id_str,{chain_id},,,,Convert chain_id to string type,true
+field_override,provider,ZK Stack,,provider_entity,zkSync: ZK Stack,,,,Set provider_entity for chains with ZK Stack provider,true
+field_override,provider,Polygon,,provider_entity,Polygon: CDK,,,,Set provider_entity for chains with Polygon provider,true
+field_override,provider,Arbitrum,,provider_entity,Arbitrum: Orbit,,,,Set provider_entity for chains with Arbitrum provider,true
+field_override,provider,Starkware,,provider_entity,Starkware: SN Stack,,,,Set provider_entity for chains with Starkware provider,true
+field_override,provider,Starknet,,provider_entity,Starkware: SN Stack,,,,Set provider_entity for chains with Starknet provider,true
+field_override,provider,StarkEx,,provider_entity,Starkware: SN Stack,,,,Set provider_entity for chains with StarkEx provider,true
+field_override,provider,SN Stack,,provider_entity,Starkware: SN Stack,,,,Set provider_entity for chains with SN Stack provider,true
+field_override,provider,OVM,,provider_entity,Optimism: OP Stack,,,,Set provider_entity for chains with OVM provider,true 

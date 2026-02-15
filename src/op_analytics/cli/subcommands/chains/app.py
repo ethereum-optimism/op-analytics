@@ -1,12 +1,12 @@
-import json
 import os
+import json
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import typer
 from rich import print
 from typing_extensions import Annotated
 
-import op_analytics.datapipeline.rpcs as rpcs
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.partitioned.location import DataLocation
 from op_analytics.coreutils.rangeutils.blockrange import BlockRange
@@ -29,6 +29,7 @@ from op_analytics.datapipeline.etl.blockbatchload.yaml_loaders import (
 )
 from op_analytics.datapipeline.schemas import ONCHAIN_CURRENT_VERSION
 from op_analytics.datapipeline.orchestrate import normalize_chains, normalize_blockbatch_models
+from op_analytics.datapipeline import rpcs
 
 log = structlog.get_logger()
 
@@ -38,6 +39,8 @@ app = typer.Typer(
     add_completion=False,
     pretty_exceptions_show_locals=False,
 )
+
+chains_app = typer.Typer(help="Chain metadata pipeline commands")
 
 
 @app.command()
@@ -66,43 +69,63 @@ def get_receipts(chain: str, tx_hashes: list[str]):
     print(json.dumps(txs, indent=2))
 
 
-@app.command(name="build-metadata")
-def build_metadata_command(
-    output_bq_table: Annotated[
-        str,
-        typer.Option(
-            "--output-bq-table", help="Target BigQuery table name for aggregated metadata output"
-        ),
-    ],
-    manual_mappings_file: Annotated[
-        str,
-        typer.Option("--manual-mappings-file", help="Path to manual mappings configuration file"),
-    ],
-    bq_project_id: Annotated[
-        str, typer.Option("--bq-project-id", help="BigQuery project ID for data operations")
-    ],
-    bq_dataset_id: Annotated[
-        str, typer.Option("--bq-dataset-id", help="BigQuery dataset ID for table operations")
-    ],
+@chains_app.command()
+def build_metadata(
+    output_bq_table: str = typer.Option(
+        "analytics.chain_metadata",
+        help="Target BigQuery table for aggregated metadata (format: dataset.table)",
+    ),
+    bq_project_id: str = typer.Option(
+        "oplabs-tools-data", help="BigQuery project ID for data operations"
+    ),
+    bq_dataset_id: str = typer.Option("raw_data", help="BigQuery dataset ID for table operations"),
 ):
     """
-    Build aggregated metadata for all chains.
+    Build aggregated chain metadata from multiple sources.
 
     This command orchestrates the complete chain metadata aggregation pipeline,
-    including data loading, preprocessing, entity resolution, deduplication,
-    enrichment, and output to BigQuery.
+    including data loading, preprocessing, combination, entity resolution,
+    deduplication, enrichment, validation, and output to BigQuery.
     """
-    print("Building chain metadata with the following parameters:")
-    print(f"  Output BigQuery Table: {output_bq_table}")
-    print(f"  Manual Mappings File: {manual_mappings_file}")
-    print(f"  BigQuery Project ID: {bq_project_id}")
-    print(f"  BigQuery Dataset ID: {bq_dataset_id}")
-    print()
+    log.info("Starting chain metadata aggregation pipeline")
 
-    # Call the aggregator function
-    build_all_chains_metadata(
+    manual_mappings_file = "resources/manual_chain_mappings.csv"
+    log.info(f"Using manual mappings from: {manual_mappings_file}")
+
+    result_df = build_all_chains_metadata(
         output_bq_table=output_bq_table,
         manual_mappings_filepath=manual_mappings_file,
+        bq_project_id=bq_project_id,
+        bq_dataset_id=bq_dataset_id,
+    )
+
+    log.info(f"Chain metadata aggregation completed successfully: {result_df.height} records")
+
+
+def build_metadata_command(
+    output_bq_table: str,
+    manual_mappings_file: str,
+    bq_project_id: str,
+    bq_dataset_id: str,
+):
+    """
+    Legacy function for backward compatibility.
+
+    Builds aggregated chain metadata from multiple sources.
+    """
+    log.info("Starting chain metadata aggregation pipeline (legacy)")
+
+    # Use provided manual mappings file or fallback to hardcoded path
+    mappings_file = (
+        manual_mappings_file
+        if Path(manual_mappings_file).exists()
+        else "resources/manual_chain_mappings.csv"
+    )
+    log.info(f"Using manual mappings from: {mappings_file}")
+
+    build_all_chains_metadata(
+        output_bq_table=output_bq_table,
+        manual_mappings_filepath=mappings_file,
         bq_project_id=bq_project_id,
         bq_dataset_id=bq_dataset_id,
     )
