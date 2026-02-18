@@ -133,5 +133,6 @@ FROM (
     ) a
 
 SETTINGS
-    max_memory_usage = 200000000000,
+    max_memory_usage = 20000000000,
+    max_bytes_before_external_group_by = 5000000000,
     max_execution_time = @max_execution_secs@
