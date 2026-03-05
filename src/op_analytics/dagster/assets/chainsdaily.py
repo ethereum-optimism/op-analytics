@@ -11,8 +11,7 @@ def chain_metadata(context: OpExecutionContext):
     - Upload chain_metadata_raw.csv to Google Sheets.
     - Update the OP Analytics Chain Metadata [ADMIN MANAGED] google sheet.
     - Update the Across Superchain Bridge Addresses [ADMIN MANAGED] google sheet.
-
-    TODO: Decide if we want to upload to Dune, Clickhouse, BigQuery. or op-analytics-static repo.
+    - Upload chain metadata to BigQuery (api_table_uploads.op_stack_chain_metadata).
     """
     from op_analytics.datapipeline.chains.upload import upload_all
 
