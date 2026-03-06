@@ -153,7 +153,7 @@ def _destination_table_exists(client: bigquery.Client, table_fq: str) -> bool:
 
 def _build_parquet_load_job_config(
     *,
-    write_disposition: bigquery.WriteDisposition,
+    write_disposition: str,
     source_uri_prefix: str,
     time_partition_field: str,
     clustering_fields: list[str] | None,
