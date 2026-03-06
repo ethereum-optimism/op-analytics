@@ -59,7 +59,11 @@ def _safe_qualify_destination(
     oplabs_env = os.getenv(OPLABS_ENVVAR, "").strip().lower()
     is_prod_env = oplabs_env in PROD_ENVS
 
-    legacy_override = os.getenv(ALLOW_PROD_WRITES_ENVVAR, "").strip().lower() in {"1", "true", "yes"}
+    legacy_override = os.getenv(ALLOW_PROD_WRITES_ENVVAR, "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
 
     permitted = is_prod_env or allow_prod_writes or legacy_override
 
@@ -123,6 +127,7 @@ def _extract_failed_uris(exc: Exception, source_uris: list[str]) -> list[str]:
 # Hive partitioning + job config
 # -----------------------------
 
+
 def _normalize_source_uri_prefix(prefix: str) -> str:
     p = prefix.strip()
     if not p.endswith("/"):
@@ -153,7 +158,7 @@ def _destination_table_exists(client: bigquery.Client, table_fq: str) -> bool:
 
 def _build_parquet_load_job_config(
     *,
-    write_disposition: bigquery.WriteDisposition,
+    write_disposition: str,
     source_uri_prefix: str,
     time_partition_field: str,
     clustering_fields: list[str] | None,
@@ -197,6 +202,7 @@ def _run_parquet_load_job(
 # Partition clearing (rare fallback)
 # -----------------------------
 
+
 def _clear_partition_by_query(
     *,
     client: bigquery.Client,
@@ -225,6 +231,7 @@ def _clear_partition_by_query(
 # -----------------------------
 # Slow-path patching
 # -----------------------------
+
 
 @dataclass(frozen=True)
 class HiveParts:
@@ -333,7 +340,7 @@ def _append_parquet_uri_via_file_upload(
     storage_client: storage.Client,
     parquet_uri: str,
     destination_partition: str,  # project.dataset.table$YYYYMMDD
-    destination_table: str,      # project.dataset.table
+    destination_table: str,  # project.dataset.table
     date_partition: date,
     time_partition_field: str,
     rewrite_page_size: int = 256 * 1024,
@@ -387,7 +394,11 @@ def _append_parquet_uri_via_file_upload(
 
         except Exception as exc:
             # last resort
-            log.warning("Slow-path upload failed; falling back to dataframe append", uri=parquet_uri, error=str(exc))
+            log.warning(
+                "Slow-path upload failed; falling back to dataframe append",
+                uri=parquet_uri,
+                error=str(exc),
+            )
             _append_parquet_uri_rowwise(
                 client=client,
                 storage_client=storage_client,
@@ -418,7 +429,9 @@ def _append_parquet_uri_rowwise(
     time_partition_field: str,
     batch_rows: int = 25_000,
 ) -> None:
-    log.warning("Manual patch start (dataframe append)", uri=parquet_uri, destination=destination_partition)
+    log.warning(
+        "Manual patch start (dataframe append)", uri=parquet_uri, destination=destination_partition
+    )
 
     import pyarrow as pa
     import pyarrow.parquet as pq
@@ -453,7 +466,9 @@ def _append_parquet_uri_rowwise(
             for col, val in extra_cols.items():
                 df[col] = val
 
-            client.load_table_from_dataframe(df, destination_partition, job_config=job_config).result()
+            client.load_table_from_dataframe(
+                df, destination_partition, job_config=job_config
+            ).result()
             loaded += len(df)
 
         log.warning("Manual patch complete", uri=parquet_uri, rows_loaded=loaded, batches=batches)
@@ -468,6 +483,7 @@ def _append_parquet_uri_rowwise(
 # -----------------------------
 # Fast-path retry loop (the core change)
 # -----------------------------
+
 
 def _truncate_load_failfast_retry(
     *,
@@ -548,6 +564,7 @@ def _truncate_load_failfast_retry(
 # Public API
 # -----------------------------
 
+
 def load_from_parquet_uris(
     source_uris: list[str],
     source_uri_prefix: str,
@@ -583,11 +600,15 @@ def load_from_parquet_uris(
             clustering_fields=clustering_fields,
             destination_exists=False,
         )
-        client.load_table_from_uri(source_uris=source_uris, destination=destination_partition, job_config=job_config).result()
+        client.load_table_from_uri(
+            source_uris=source_uris, destination=destination_partition, job_config=job_config
+        ).result()
         log.info("DRYRUN WRITE_TRUNCATE to BQ", destination=destination_partition)
         return
 
-    destination_fq = _safe_qualify_destination(client, destination, allow_prod_writes=allow_prod_writes)
+    destination_fq = _safe_qualify_destination(
+        client, destination, allow_prod_writes=allow_prod_writes
+    )
     destination_exists = _destination_table_exists(client, destination_fq)
 
     date_suffix = date_partition.strftime("%Y%m%d")
@@ -681,7 +702,9 @@ def load_unpartitioned_single_uri(
             write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
             clustering_fields=clustering_fields,
         )
-        client.load_table_from_uri(source_uris=[source_uri], destination=destination, job_config=job_config).result()
+        client.load_table_from_uri(
+            source_uris=[source_uri], destination=destination, job_config=job_config
+        ).result()
         log.info("DRYRUN WRITE_TRUNCATE to BQ", destination=destination)
         return
 
@@ -695,5 +718,7 @@ def load_unpartitioned_single_uri(
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )
 
-    client.load_table_from_uri(source_uris=[source_uri], destination=destination_fq, job_config=job_config).result()
+    client.load_table_from_uri(
+        source_uris=[source_uri], destination=destination_fq, job_config=job_config
+    ).result()
     log.info("WRITE_TRUNCATE to BQ", destination=destination_fq)
