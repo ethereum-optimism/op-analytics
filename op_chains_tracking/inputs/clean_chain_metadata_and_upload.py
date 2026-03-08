@@ -59,12 +59,12 @@ def convert_to_int_or_keep_string(value):
 
 # Trim columns
 df.columns = df.columns.str.replace(" ", "").str.strip()
-df = df.map(lambda x: x.strip() if isinstance(x, str) else x)
+df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 # Datetime - specify format to avoid warnings
-df['public_mainnet_launch_date'] = pd.to_datetime(df['public_mainnet_launch_date'], errors='coerce', format='mixed')
-df['op_chain_start'] = pd.to_datetime(df['op_chain_start'], errors='coerce', format='mixed')
-df['op_governed_start'] = pd.to_datetime(df['op_governed_start'], errors='coerce', format='mixed')
-df['migration_start'] = pd.to_datetime(df['migration_start'], errors='coerce', format='mixed')
+df['public_mainnet_launch_date'] = pd.to_datetime(df['public_mainnet_launch_date'], errors='coerce')
+df['op_chain_start'] = pd.to_datetime(df['op_chain_start'], errors='coerce')
+df['op_governed_start'] = pd.to_datetime(df['op_governed_start'], errors='coerce')
+df['migration_start'] = pd.to_datetime(df['migration_start'], errors='coerce')
 # ChainID
 # Apply the function to the column
 df['mainnet_chain_id'] = df['mainnet_chain_id'].apply(convert_to_int_or_keep_string)
@@ -109,4 +109,3 @@ ch.write_df_to_clickhouse(df, table_name, if_exists='replace')
 df['last_updated'] = pd.Timestamp.now()
 # Save the cleaned DataFrame to a new CSV file
 df.to_csv('../outputs/chain_metadata.csv', index=False)
-
