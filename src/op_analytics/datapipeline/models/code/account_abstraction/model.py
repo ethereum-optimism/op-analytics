@@ -81,16 +81,18 @@ def account_abstraction(
     log.info("memory usage after enriched traces", max_rss=memory_usage())
 
     # Data Quality Checks
-    errors = []
-    for name, val in auxiliary_templates.items():
-        if "data_quality_check" in name:
-            errors.extend(val.run_as_data_quality_check(duckdb_context=ctx))
+    errors: list[tuple[str, dict]] = []
+    for tpl_name, tpl in auxiliary_templates.items():
+        if "data_quality_check" in tpl_name:
+            template_errors = tpl.run_as_data_quality_check(duckdb_context=ctx)
+            errors.extend((tpl_name, err) for err in template_errors)
+
     if errors:
         log.error("failed data quality")
-        for error in errors[:10]:
-            log.error(str(error))
+        for tpl_name, err in errors[:10]:
+            log.error(f"{tpl_name}: {err}")
 
-        raise Exception("\n\n".join([name] + [str(_) for _ in errors]))
+        raise Exception("\n\n".join(f"{tpl_name}: {err}" for tpl_name, err in errors))
     else:
         log.info("Data Quality OK")
 
