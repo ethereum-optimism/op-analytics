@@ -12,7 +12,11 @@ def transform_system_config(
 ) -> pl.DataFrame:
     system_config_df = system_config_fetched_df.join(
         chains_df, on="chain_id", how="left"
-    ).with_columns(dt=pl.lit(date_tostr(process_dt)))
+    ).with_columns(
+        dt=pl.lit(date_tostr(process_dt)),
+        batch_inbox_slot=pl.lit(None, dtype=pl.String),
+        batch_inbox=pl.lit(None, dtype=pl.Utf8),
+    )
 
     # Reorder columns
     col_order = [
@@ -72,7 +76,6 @@ def transform_system_config(
             or c.endswith("_proxy")
             or c
             in [
-                "batch_inbox",
                 "dispute_game_factory",
                 "l1_cross_domain_messenger",
                 "l1_erc721_bridge",

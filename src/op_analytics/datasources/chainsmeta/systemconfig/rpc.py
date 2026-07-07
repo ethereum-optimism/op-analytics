@@ -27,7 +27,6 @@ BLOCK_REQUEST = {
 
 # System Config Contract method IDs
 SYSTEM_CONFIG_METHODS = {
-    "BATCH_INBOX_SLOT": "0xbc49ce5f",
     "DISPUTE_GAME_FACTORY_SLOT": "0xe2a3285c",
     "L1_CROSS_DOMAIN_MESSENGER_SLOT": "0x5d73369c",
     "L1_ERC_721_BRIDGE_SLOT": "0x19f5cea8",
@@ -38,7 +37,6 @@ SYSTEM_CONFIG_METHODS = {
     "UNSAFE_BLOCK_SIGNER_SLOT": "0x4f16540b",
     "VERSION": "0xffa1ad74",
     "basefeeScalar": "0xbfb14fb7",
-    "batchInbox": "0xdac6e63a",
     "batcherHash": "0xe81b2c6d",
     "blobbasefeeScalar": "0xec707517",
     "disputeGameFactory": "0xf2b4e617",
@@ -146,7 +144,6 @@ class SystemConfigMetadata:
     contract_address: str
     block_number: int
     block_timestamp: int
-    batch_inbox_slot: str
     dispute_game_factory_slot: str
     l1_cross_domain_messenger_slot: str
     l1_erc721_bridge_slot: str
@@ -157,7 +154,6 @@ class SystemConfigMetadata:
     unsafe_block_signer_slot: str
     version: Optional[int]
     basefee_scalar: Optional[int]
-    batch_inbox: Optional[str]
     batcher_hash: Optional[str]
     blob_basefee_scalar: Optional[int]
     dispute_game_factory: Optional[str]
@@ -246,7 +242,6 @@ class SystemConfigMetadata:
                 contract_address=config.system_config_proxy,
                 block_number=data["block_number"],
                 block_timestamp=data["block_timestamp"],
-                batch_inbox_slot=safe_get("BATCH_INBOX_SLOT"),
                 dispute_game_factory_slot=safe_get("DISPUTE_GAME_FACTORY_SLOT"),
                 l1_cross_domain_messenger_slot=safe_get("L1_CROSS_DOMAIN_MESSENGER_SLOT"),
                 l1_erc721_bridge_slot=safe_get("L1_ERC_721_BRIDGE_SLOT"),
@@ -259,7 +254,6 @@ class SystemConfigMetadata:
                 unsafe_block_signer_slot=safe_get("UNSAFE_BLOCK_SIGNER_SLOT"),
                 version=safe_decode("VERSION", "uint256", None),
                 basefee_scalar=safe_decode("basefeeScalar", "uint32", None),
-                batch_inbox=safe_decode_address("batchInbox"),
                 batcher_hash=safe_get("batcherHash"),
                 blob_basefee_scalar=safe_decode("blobbasefeeScalar", "uint64", None),
                 dispute_game_factory=safe_decode_address("disputeGameFactory"),

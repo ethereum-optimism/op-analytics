@@ -1,13 +1,20 @@
+from datetime import date
+
+import polars as pl
+import pytest
+from typing import Any
+
 from op_analytics.datasources.chainsmeta.systemconfig.chain import _int_to_str
-from op_analytics.datasources.chainsmeta.systemconfig.transform import _normalize_address
+from op_analytics.datasources.chainsmeta.systemconfig.transform import (
+    _normalize_address,
+    transform_system_config,
+)
 from op_analytics.datasources.chainsmeta.systemconfig.rpc import (
     SystemConfigMetadata,
     RPCManager,
     decode,
     decode_string_from_abi,
 )
-import pytest
-from typing import Any
 
 
 def test_int_to_str():
@@ -15,9 +22,41 @@ def test_int_to_str():
     assert _int_to_str(None) is None
 
 
+def test_rpc_batch_excludes_removed_batch_inbox_calls():
+    batch = RPCManager(system_config_proxy="0x158Fd5715F16Ac1F2Dc959A299B383aAaf9B59EB").rpc_batch()
+    ids = {item["id"] for item in batch}
+
+    assert "BATCH_INBOX_SLOT" not in ids
+    assert "batchInbox" not in ids
+
+
 def test_normalize_address():
     assert _normalize_address(None) is None
     assert _normalize_address("0x0000AB0") == "0x0000ab0"
+
+
+def test_transform_system_config_keeps_batch_inbox_columns_null():
+    fetched_df = pl.DataFrame(
+        {
+            "chain_id": [1],
+            "block_number": [100],
+            "block_timestamp": [200],
+        }
+    )
+    chains_df = pl.DataFrame(
+        {
+            "chain_id": [1],
+            "name": ["chain"],
+            "identifier": ["mainnet/chain"],
+            "rpc_url": ["http://localhost"],
+            "system_config_proxy": ["0x0000000000000000000000000000000000000001"],
+        }
+    )
+
+    result = transform_system_config(fetched_df, chains_df, process_dt=date(2024, 1, 1))
+
+    assert result["batch_inbox_slot"][0] is None
+    assert result["batch_inbox"][0] is None
 
 
 def test_decode_response():
@@ -362,11 +401,6 @@ def test_decode_response():
         },
         {
             "jsonrpc": "2.0",
-            "id": "BATCH_INBOX_SLOT",
-            "result": "0x71ac12829d66ee73d8d95bff50b3589745ce57edae70a3fb111a2342464dc597",
-        },
-        {
-            "jsonrpc": "2.0",
             "id": "DISPUTE_GAME_FACTORY_SLOT",
             "result": "0x52322a25d9f59ea17656545543306b7aef62bc0cc53a0e65ccfa0c75b97aa906",
         },
@@ -414,11 +448,6 @@ def test_decode_response():
             "jsonrpc": "2.0",
             "id": "basefeeScalar",
             "result": "0x000000000000000000000000000000000000000000000000000000000007a120",
-        },
-        {
-            "jsonrpc": "2.0",
-            "id": "batchInbox",
-            "result": "0x000000000000000000000000fff0000000000000000000000000000000000288",
         },
         {
             "jsonrpc": "2.0",
@@ -543,7 +572,6 @@ def test_decode_response():
         contract_address="0x158Fd5715F16Ac1F2Dc959A299B383aAaf9B59EB",
         block_number=22698518,
         block_timestamp=1749852479,
-        batch_inbox_slot="0x71ac12829d66ee73d8d95bff50b3589745ce57edae70a3fb111a2342464dc597",
         dispute_game_factory_slot="0x52322a25d9f59ea17656545543306b7aef62bc0cc53a0e65ccfa0c75b97aa906",
         l1_cross_domain_messenger_slot="0x383f291819e6d54073bc9a648251d97421076bdd101933c0c022219ce9580636",
         l1_erc721_bridge_slot="0x46adcbebc6be8ce551740c29c47c8798210f23f7f4086c41752944352568d5a7",
@@ -554,7 +582,6 @@ def test_decode_response():
         unsafe_block_signer_slot="0x65a7ed542fb37fe237fdfbdd70b31598523fe5b32879e307bae27a0bd9581c08",
         version=0,
         basefee_scalar=500000,
-        batch_inbox="0xfff0000000000000000000000000000000000288",
         batcher_hash="0x000000000000000000000000e1b64045351b0b6e9821f19b39f81bc4711d2230",
         blob_basefee_scalar=1014213,
         dispute_game_factory="0x0000000000000000000000000000000000000000",
