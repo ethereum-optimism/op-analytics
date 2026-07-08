@@ -581,6 +581,64 @@ def test_decode_response():
     )
 
 
+def test_decode_response_systemconfig_v4_removed_getters():
+    # SystemConfig 4.0.0 (op-contracts v8.0.0) removed the batchInbox and startBlock
+    # getters along with BATCH_INBOX_SLOT and START_BLOCK_SLOT, so calls to them revert
+    # or return empty on upgraded chains while pre-4.0.0 chains still answer them.
+    # See https://github.com/ethereum-optimism/optimism/issues/21614.
+    #
+    # This response mixes both failure shapes: "execution reverted" errors (codes
+    # -32000 and 3) and empty "0x" results. All four fields must decode to None and
+    # the row must still be produced with the remaining fields intact.
+    response: list[dict[Any, Any]] = [
+        {
+            "jsonrpc": "2.0",
+            "id": "block",
+            "result": {"number": "0x15a5a16", "timestamp": "0x684ca13f"},
+        },
+        {
+            "jsonrpc": "2.0",
+            "id": "batchInbox",
+            "error": {"code": -32000, "message": "execution reverted"},
+        },
+        {
+            "jsonrpc": "2.0",
+            "id": "startBlock",
+            "error": {"code": 3, "message": "execution reverted"},
+        },
+        {"jsonrpc": "2.0", "id": "BATCH_INBOX_SLOT", "result": "0x"},
+        {"jsonrpc": "2.0", "id": "START_BLOCK_SLOT", "result": "0x"},
+        {
+            "jsonrpc": "2.0",
+            "id": "gasLimit",
+            "result": "0x0000000000000000000000000000000000000000000000000000000001c9c380",
+        },
+        {
+            "jsonrpc": "2.0",
+            "id": "owner",
+            "result": "0x00000000000000000000000056121a8612474c3eb65d69a3b871f284705b9bc4",
+        },
+        {
+            "jsonrpc": "2.0",
+            "id": "version",
+            "result": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000005342e302e30000000000000000000000000000000000000000000000000000000",
+        },
+    ]
+    dummy = RPCManager(system_config_proxy="0x158Fd5715F16Ac1F2Dc959A299B383aAaf9B59EB")
+    actual = SystemConfigMetadata.of(dummy, response)
+
+    assert actual is not None
+    assert actual.batch_inbox is None
+    assert actual.start_block is None
+    assert actual.batch_inbox_slot is None
+    assert actual.start_block_slot is None
+    # Fields that still exist on 4.0.0 decode as usual.
+    assert actual.block_number == 22698518
+    assert actual.gas_limit == 30000000
+    assert actual.owner == "0x56121a8612474c3eb65d69a3b871f284705b9bc4"
+    assert actual.version_hex == "4.0.0"
+
+
 def test_decode():
     assert (
         decode("uint256", "0x0000000000000000000000000000000000000000000000000000000000000834")

@@ -26,6 +26,19 @@ BLOCK_REQUEST = {
 
 
 # System Config Contract method IDs
+#
+# Not every method exists on every chain's SystemConfig, and chains upgrade at
+# different times, so we tolerate both old and new contract versions indefinitely:
+#
+# - Methods added in newer versions (e.g. operatorFeeScalar) revert on chains
+#   that have not upgraded yet.
+# - batchInbox, startBlock, BATCH_INBOX_SLOT, and START_BLOCK_SLOT were removed
+#   in SystemConfig 4.0.0 (op-contracts v8.0.0), so they revert or return empty
+#   on chains that have upgraded.
+#   See https://github.com/ethereum-optimism/optimism/issues/21614.
+#
+# SystemConfigMetadata.of() records None for any method that reverts or returns
+# an empty result.
 SYSTEM_CONFIG_METHODS = {
     "BATCH_INBOX_SLOT": "0xbc49ce5f",
     "DISPUTE_GAME_FACTORY_SLOT": "0xe2a3285c",
@@ -146,14 +159,17 @@ class SystemConfigMetadata:
     contract_address: str
     block_number: int
     block_timestamp: int
-    batch_inbox_slot: str
+    # batch_inbox_slot and start_block_slot are None on chains running SystemConfig
+    # 4.0.0+ (op-contracts v8.0.0), which removed these getters and cleared the slots.
+    # See https://github.com/ethereum-optimism/optimism/issues/21614.
+    batch_inbox_slot: Optional[str]
     dispute_game_factory_slot: str
     l1_cross_domain_messenger_slot: str
     l1_erc721_bridge_slot: str
     l1_standard_bridge_slot: str
     optimism_mintable_erc20_factory_slot: str
     optimism_portal_slot: str
-    start_block_slot: str
+    start_block_slot: Optional[str]
     unsafe_block_signer_slot: str
     version: Optional[int]
     basefee_scalar: Optional[int]
@@ -213,6 +229,15 @@ class SystemConfigMetadata:
                 data["block_timestamp"] = int(item["result"]["timestamp"], 16)
 
             elif item["id"] in SYSTEM_CONFIG_METHODS:
+                # Some nodes answer an eth_call to a removed method with an empty "0x"
+                # result instead of an "execution reverted" error (e.g. batchInbox and
+                # startBlock on SystemConfig 4.0.0+, see
+                # https://github.com/ethereum-optimism/optimism/issues/21614). Treat it
+                # the same as a revert so the field is recorded as None.
+                if item["result"] == "0x":
+                    failed_methods.append(item["id"])
+                    continue
+
                 data[item["id"]] = item["result"]
 
             else:
