@@ -1,0 +1,737 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Onchain Data Pipelines: Blockbatch Load &#8212; OP Analytics  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=613916f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dataplatform/3-clickhouse/1-blockbatch-loading';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="General Purpose Data Pipelines: Transforms" href="2-transforms.html" />
+    <link rel="prev" title="Data Warehouse" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-wordmark-large/OPTIMISM.png?raw=true" class="logo__image only-light" alt="OP Analytics  documentation - Home"/>
+    <img src="https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-wordmark-large/OPTIMISM.png?raw=true" class="logo__image only-dark pst-js-only" alt="OP Analytics  documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    OP Labs Data Platform
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../devsetup/index.html">
+    Development Guide
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    OP Labs Data Platform
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../devsetup/index.html">
+    Development Guide
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../1-architecture.html">Architecture</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../2-blockbatch/index.html">Onchain Data Processing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/1-design.html">Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/2-markers.html">Marker Metadata Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/3-ingestion.html">Ingestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/4-models.html">Blockbatch Models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../5-datasources/index.html">Third-Party Data Ingestion</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../5-datasources/1-overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5-datasources/2-dailydata-gcs.html">DailyDataset (GCS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5-datasources/3-clickhouse-data.html">ClickHouseDataset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Data Warehouse</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Onchain Data Pipelines: Blockbatch Load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2-transforms.html">General Purpose Data Pipelines: Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3-comparison.html">Comparison to dbt and SQLMesh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../4-public-datasets/index.html">OP Labs Public BigQuery Data</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">OP Labs Data Platform</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Data Warehouse</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Onchain Data Pipelines: Blockbatch Load</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="onchain-data-pipelines-blockbatch-load">
+<h1>Onchain Data Pipelines: Blockbatch Load<a class="headerlink" href="#onchain-data-pipelines-blockbatch-load" title="Link to this heading">#</a></h1>
+<p>The data produced by <code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> processing is stored in GCS, so it is not easily accessible for
+dashboards and SQL-based data pipelines. In this section we go over how to explore and prototype
+with <code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> data in GCS, and how to create jobs that load the data into ClickHouse to power
+downstream analytics and dashboards.</p>
+<section id="ad-hoc-blockbatch-queries">
+<h2>Ad-hoc Blockbatch Queries<a class="headerlink" href="#ad-hoc-blockbatch-queries" title="Link to this heading">#</a></h2>
+<p>We have set up a parameterized view on our ClickHouse instance that allows you to query data from
+a blockbatch root path for a given chain and date. The parameterized view is defined like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CREATE</span> <span class="n">VIEW</span> <span class="n">blockbatch_gcs</span><span class="o">.</span><span class="n">read_date</span>
+<span class="n">AS</span> <span class="n">SELECT</span>
+    <span class="n">chain</span><span class="p">,</span>
+    <span class="n">CAST</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="s1">&#39;Date&#39;</span><span class="p">)</span> <span class="n">AS</span> <span class="n">dt</span><span class="p">,</span>
+    <span class="o">*</span>
+<span class="n">FROM</span> <span class="n">s3</span><span class="p">(</span>
+    <span class="n">concat</span><span class="p">(</span>
+        <span class="s1">&#39;https://storage.googleapis.com/oplabs-tools-data-sink/&#39;</span><span class="p">,</span>
+        <span class="p">{</span><span class="n">rootpath</span><span class="p">:</span><span class="n">String</span><span class="p">},</span>
+        <span class="s1">&#39;/chain=&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">chain</span><span class="p">:</span><span class="n">String</span><span class="p">},</span>
+        <span class="s1">&#39;/dt=&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">dt</span><span class="p">:</span><span class="n">String</span><span class="p">},</span>
+        <span class="s1">&#39;/*.parquet&#39;</span>
+    <span class="p">)</span>
+    <span class="p">,</span> <span class="s1">&#39;[HIDDEN]&#39;</span>
+    <span class="p">,</span> <span class="s1">&#39;[HIDDEN]&#39;</span>
+    <span class="p">,</span> <span class="s1">&#39;parquet&#39;</span>
+<span class="p">)</span>
+<span class="n">SETTINGS</span> <span class="n">use_hive_partitioning</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>For the <code class="docutils literal notranslate"><span class="pre">chain</span></code> and <code class="docutils literal notranslate"><span class="pre">dt</span></code> values to appear as top-level columns we need the <code class="docutils literal notranslate"><span class="pre">use_hive_partitioning</span></code>
+setting. The view is a simple convenience so that users don’t have to remember the exact syntax
+for the <code class="docutils literal notranslate"><span class="pre">s3</span></code> table function and the credentials that are used to access the GCS bucket.</p>
+<p>Here is how one would use the view to query the data:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+<span class="w">    </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">blockbatch_gcs</span><span class="p">.</span><span class="n">read_date</span><span class="p">(</span>
+<span class="w">    </span><span class="n">rootpath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;blockbatch/account_abstraction/enriched_entrypoint_traces_v2&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">chain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;base&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;2025-04-01&#39;</span>
+<span class="p">)</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span>
+<span class="n">SETTINGS</span><span class="w"> </span><span class="n">use_hive_partitioning</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>Notice that the <code class="docutils literal notranslate"><span class="pre">use_hive_partitioning</span></code> setting must be used both when creating the view and when
+using the view in a query.</p>
+</section>
+<section id="data-loading-jobs">
+<h2>Data Loading Jobs<a class="headerlink" href="#data-loading-jobs" title="Link to this heading">#</a></h2>
+<p>Our platform supports loading data from GCS into ClickHouse, using data markers to make sure that
+data is ready to load before executing the load job.</p>
+<section id="loading-by-blockbatch">
+<h3>Loading by Blockbatch<a class="headerlink" href="#loading-by-blockbatch" title="Link to this heading">#</a></h3>
+<p>This section describes how to create a job that loads <code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> data from GCS into ClickHouse
+tables one block batch at a time. This can be useful if:</p>
+<ul class="simple">
+<li><p>You want to load data exactly AS-IS, without any transformations from GCS to ClickHouse. Only to
+gain the benefits of ClickHouse’s performance and analytics capabilities.</p></li>
+<li><p>You want to load a filtered existing <code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> model into ClickHouse. The results of a
+<code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> model are large, so not practical to load into ClickHouse. In some cases filtering
+down (e.g. to a specific event or contract address) and loading the results into ClickHouse can
+be useful to power a specific analytics use case.</p></li>
+<li><p>You want to maintain a dimension table where the source of truth is the <code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> model but
+the values in the dimension table are updated with each new block batch. A good example of this is
+the <code class="docutils literal notranslate"><span class="pre">dim_erc20_first_seen_v1</span></code> table which maintains a running <code class="docutils literal notranslate"><span class="pre">min(block_timestamp)</span></code> for ERC-20
+tokens.</p></li>
+</ul>
+<p>Note that loading by blockbatch is generally not a good fit for aggregations. The loading process
+will only be able to see the data for a single block batch at a time, so it will not be able to
+aggregate on any useful grain. Advanced ClickHouse users will recognize that the destination table
+in ClickHouse could have aggregation state columns, so it is definitely possible to use blockbatch
+loading to compute aggregations. However it would be relatively complex and so we don’t encourage
+it.</p>
+<p>To set up a blockbatch loading job all you need is the CREATE TABLE statement for the table you want
+to load into, and the INSERT INTO statement that you want to use to load the data. We’ll go over
+that in more detail below.</p>
+</section>
+<section id="loading-by-date-and-chain">
+<h3>Loading by Date and Chain<a class="headerlink" href="#loading-by-date-and-chain" title="Link to this heading">#</a></h3>
+<p>There are cases where it is useful to operate on a date and chain grain instead of at the single
+block batch level. The mental model you build about the data pipeline is much easier to reason
+about since <code class="docutils literal notranslate"><span class="pre">chain</span></code> and <code class="docutils literal notranslate"><span class="pre">dt</span></code> map directly to the majority of our reports and dashboards.</p>
+<p>Load jobs by <code class="docutils literal notranslate"><span class="pre">chain</span></code> ad <code class="docutils literal notranslate"><span class="pre">dt</span></code> are set up in a similar way to blockbatch loading jobs. You will need
+the <code class="docutils literal notranslate"><span class="pre">CREATE</span></code> and <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> statements that define the load job.</p>
+</section>
+</section>
+<section id="load-job-specification">
+<h2>Load Job Specification<a class="headerlink" href="#load-job-specification" title="Link to this heading">#</a></h2>
+<p>There are four pieces you need to set up to create a load job:</p>
+<ol class="arabic simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">TABLE</span></code> statement that defines the destination table.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">INTO</span></code> statement that defines the source data.</p></li>
+<li><p>The job specification which specifies the input data needed to run the job and the output
+table where the results will be written.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">dagster</span></code> asset that defines the job</p></li>
+</ol>
+<section id="location">
+<h3>Location<a class="headerlink" href="#location" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Blockbatch load jobs: <code class="docutils literal notranslate"><span class="pre">src/op_analytics/datapipeline/etl/blockbatchload/ddl</span></code>.</p></li>
+<li><p>Date and chain load jobs: <code class="docutils literal notranslate"><span class="pre">src/op_analytics/datapipeline/etl/blockbatchloaddaily/ddl</span></code>.</p></li>
+</ul>
+</section>
+<section id="naming-convention">
+<h3>Naming convention<a class="headerlink" href="#naming-convention" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">CREATE</span></code> and <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> files are named after the table they are loading into and they have the
+<code class="docutils literal notranslate"><span class="pre">__CREATE.sql</span></code> and <code class="docutils literal notranslate"><span class="pre">__INSERT.sql</span></code> suffixes to identify them.</p>
+<p>For example here are the two files for the <code class="docutils literal notranslate"><span class="pre">create_traces_v1</span></code> table</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">src</span><span class="o">/</span><span class="n">op_analytics</span><span class="o">/</span><span class="n">datapipeline</span><span class="o">/</span><span class="n">etl</span><span class="o">/</span><span class="n">blockbatchload</span><span class="o">/</span><span class="n">ddl</span><span class="o">/</span>
+    <span class="n">contract_creation</span><span class="o">/</span><span class="n">create_traces_v1__CREATE</span><span class="o">.</span><span class="n">sql</span>
+    <span class="n">contract_creation</span><span class="o">/</span><span class="n">create_traces_v1__INSERT</span><span class="o">.</span><span class="n">sql</span>
+</pre></div>
+</div>
+<p>The root path of the output table is <code class="docutils literal notranslate"><span class="pre">blockbatch/contract_creation/create_traces_v1</span></code> and the
+resulting table in ClickHouse will be <code class="docutils literal notranslate"><span class="pre">blockbatch.contract_creation__create_traces_v1</span></code> (the slash
+in the root path is replaced with a double underscore).</p>
+<p>A couple of points worth noting:</p>
+<ul class="simple">
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">CREATE</span></code> file we use the <code class="docutils literal notranslate"><span class="pre">_placeholder_</span></code> table name. This gets replaced using the resulting
+table name derived from the naming convention.  We do this so that people don’t have to remember
+to use the correct table name in the <code class="docutils literal notranslate"><span class="pre">CREATE</span></code> statement file.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> file does not require the <code class="docutils literal notranslate"><span class="pre">INSERT</span> <span class="pre">INTO</span></code> portion, it is just a <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> and the
+<code class="docutils literal notranslate"><span class="pre">INSERT</span></code> part is added by the system when it runs the job.</p></li>
+</ul>
+</section>
+<section id="job-specification">
+<h3>Job Specification<a class="headerlink" href="#job-specification" title="Link to this heading">#</a></h3>
+<p>The job specification is defined in the <code class="docutils literal notranslate"><span class="pre">datasets.py</span></code> file.  For batch and daily we use the following
+python classes respectively:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">op_analytics.datapipeline.etl.blockbatchload.loadspec.ClickHouseBlockBatchETL</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">op_analytics.datapipeline.etl.blockbatchloaddaily.loadspec.ClickHouseDateChainETL</span></code></p></li>
+</ul>
+<p>The main goal for these classes is to be very explicit about the input datasets needed to produce
+the output dataset. They also support configuration options that are specific to the type of job.
+Refer to the documentation for each of them in the code.</p>
+</section>
+</section>
+<section id="data-readiness-markers-and-job-idempotency">
+<h2>Data Readiness, Markers, and Job Idempotency<a class="headerlink" href="#data-readiness-markers-and-job-idempotency" title="Link to this heading">#</a></h2>
+<p>One of the trickiest parts of building data pipelines is triggering jobs. This amounts to answering
+the question: when is the upstream data ready to be processed? To answer this question you need to
+define the unit of incremental processing and to understand when data is complete (becomes immutable)
+for that unit.</p>
+<p>As mentioned before in this manual, our data platform uses “markers” to track execution of ingestion,
+processing, and loading tasks. We leverage these markers to determine when data is ready to be
+processed.</p>
+<p>In the case of loading by batch this is simple. A batch is the unit of processing, and it is fully
+ingested once we have written the four raw onchain data files to GCS for it (blocks, logs,
+transactions, and traces). A blockbatch model is fully computed once the batch at the output root
+path is written to GCS.</p>
+<p>In the case of loading by date and chain this is more complex. We have to understand which batches
+cover a given date, and track when all of them are ready to be processed. We use a simple heuristic.
+We require that the batches for a give date do not have any block number gaps among them and that
+we ingest the batches that straddle the start and end of the date (i.e. we have data for the previous
+and the next dates).</p>
+<p>Using the readiness detection approaches we can ensure that we will never run a ClickHouse load job
+on stale data. Before executing the load task the system check that the input data for the batch
+(or chain/date) is ready. If it is not a warning is logged and the task is skipped.</p>
+<p>We also store markers for load tasks. So we can make sure that a give load task is executed only
+once. If we already have the marker for a given task then we skip it on the next run of the
+scheduled job. Scheduled jobs always sweep a range of recent dates, that way they are always
+attempting to load any pending tasks for which we don’t have markers yet.</p>
+<p>At the moment the only way to force a load task to execute more than once is by manually deleting
+the corresponding marker from the marker store table in ClickHouse. That said we always assume
+that the load job destination table is a ReplacingMergeTree that is configured to correctly handle
+duplicate rows in case a load task is executed more than once. We do this because our markers approach
+only guarantees at least once execution (and not exactly once).</p>
+</section>
+<section id="building-data-pipelines">
+<h2>Building Data Pipelines<a class="headerlink" href="#building-data-pipelines" title="Link to this heading">#</a></h2>
+<p>Each dataset defined as a <code class="docutils literal notranslate"><span class="pre">ClickHouseBlockBatchETL</span></code> or a <code class="docutils literal notranslate"><span class="pre">ClickHouseDateChainETL</span></code> can be thought
+of as a node in a data pipeline. The collection of nodes that are chained together forms a data
+pipeline.</p>
+<p>The operation and maintenance of these blockbatch data pipelines relies on the following:</p>
+<ul class="simple">
+<li><p>No node is ever executed until the input data is ready.</p></li>
+<li><p>The go/pipeline Hex dashboard allows us to easily check if there is a problem with processing
+any of the batches.</p></li>
+</ul>
+<section id="execution">
+<h3>Execution<a class="headerlink" href="#execution" title="Link to this heading">#</a></h3>
+<p>So far we have described how jobs are defined in SQL, but we need to execute them. The system
+provides dedicated functions to execute by blockbatch and by date and chain jobs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">op_analytics.datapipeline.etl.blockbatchload.main.load_to_clickhouse</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">op_analytics.datapipeline.etl.blockbatchloaddaily.main.daily_to_clickhouse</span></code></p></li>
+</ul>
+<p>Each of these functions takes a <code class="docutils literal notranslate"><span class="pre">dataset</span></code> argument which is the specification of the dataset to
+load (specs are in the <code class="docutils literal notranslate"><span class="pre">datasets.py</span></code> files).</p>
+<p>The function also accepts a <code class="docutils literal notranslate"><span class="pre">range_spec</span></code> argument which is used to specify the date range that
+should be loaded. In the case of loading by chain/date the function also lets you provide a <code class="docutils literal notranslate"><span class="pre">chains</span></code>
+parameter to target only a subset of chains.</p>
+<p>Both functions accept a <code class="docutils literal notranslate"><span class="pre">dry_run</span></code> parameter to allow you to test the job without actually loading
+any data. When <code class="docutils literal notranslate"><span class="pre">dry_run=True</span></code> the SQL statement that will be executed is printed out but not
+sent to the database.</p>
+</section>
+<section id="prototyping-and-backfilling">
+<h3>Prototyping and Backfilling<a class="headerlink" href="#prototyping-and-backfilling" title="Link to this heading">#</a></h3>
+<p>We use IPython notebooks to prototype and backfill data pipelines. Notebooks for blockbatch data
+pipelines are located in the <code class="docutils literal notranslate"><span class="pre">notebooks/adhoc/blockbatch_clickhouse</span></code> directory. Browse that
+directory for examples.</p>
+</section>
+<section id="scheduling">
+<h3>Scheduling<a class="headerlink" href="#scheduling" title="Link to this heading">#</a></h3>
+<p>We run the load jobs by block batch and by date and chain in two separate Dagster jobs. One job
+targets all blockbatch datasets and the other targets all date and chain datasets.  The jobs are
+group jobs (execute all the assets in a Dagster group) and each group is defined in a separate
+assets python file:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">src/op_analytics/dagster/assets/blockbatchload.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/op_analytics/dagster/assets/blockbatchloaddaily.py</span></code></p></li>
+</ul>
+<p>The sequence of exactly what gets executed can be customized as needed within the Dagster asset
+definition function. In most cases all you will need is to call the <code class="docutils literal notranslate"><span class="pre">load_to_clickhouse</span></code> or
+<code class="docutils literal notranslate"><span class="pre">daily_to_clickhouse</span></code> function with the appropriate arguments.</p>
+</section>
+<section id="monitoring">
+<h3>Monitoring<a class="headerlink" href="#monitoring" title="Link to this heading">#</a></h3>
+<p>The loading by blockbatch and by date and chain tasks have dedicated marker tables in ClickHouse:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">blockbatch_markers_datawarehouse</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">blockbatch_daily</span></code></p></li>
+</ul>
+<p>These names are arguably not the best, but they are what we have.</p>
+<p>On top of these marker tables we have dedicated views in ClickHouse that make monitoring data
+completeness easier:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_dashboard.blockbatch_load_markers_deduped</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_dashboard.blockbatch_load_markers_agged</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_dashboard.blockbatch_load_markers_status</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_dashboard.blockbatch_load_markers_missing</span></code></p></li>
+</ul>
+<p>and for the date and chain load jobs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_dashboard.blockbatch_daily_markers_deduped</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_dashboard.blockbatch_daily_markers_agged</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_dashboard.blockbatch_daily_markers_status</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_dashboard.blockbatch_daily_markers_missing</span></code></p></li>
+</ul>
+<p>We write markers every time a load task completes successfully, so if a task runs more than once we
+have duplicates.  The <code class="docutils literal notranslate"><span class="pre">deduped</span></code> view helps query without duplicates. The <code class="docutils literal notranslate"><span class="pre">agged</span></code> view int turn
+aggregates markers at the <code class="docutils literal notranslate"><span class="pre">root_path</span></code>, <code class="docutils literal notranslate"><span class="pre">dt</span></code>, and <code class="docutils literal notranslate"><span class="pre">chain</span></code> level so that it is easy to find out
+which chains and dates are missing data.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">status</span></code> view brings in the data expectation (the batches that have been ingested) and then
+find out which chains and dates have load tasks that have not been executed yet. This view shows
+daily completion percentages for each date.</p>
+<p>Finally the <code class="docutils literal notranslate"><span class="pre">missing</span></code> view gives us a raw list of batches that are missing. This view is used in
+the “ALERTS” tab in the dashboard and should ideally be empty all the time. In the dashboard query
+in Hex we set the delay threshold so that we only get alerts for batches that have been delayed by
+longer than our latency SLA.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Data Warehouse</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="2-transforms.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">General Purpose Data Pipelines: Transforms</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ad-hoc-blockbatch-queries">Ad-hoc Blockbatch Queries</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-loading-jobs">Data Loading Jobs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loading-by-blockbatch">Loading by Blockbatch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loading-by-date-and-chain">Loading by Date and Chain</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-job-specification">Load Job Specification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#location">Location</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#naming-convention">Naming convention</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#job-specification">Job Specification</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-readiness-markers-and-job-idempotency">Data Readiness, Markers, and Job Idempotency</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-data-pipelines">Building Data Pipelines</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#execution">Execution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prototyping-and-backfilling">Prototyping and Backfilling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scheduling">Scheduling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monitoring">Monitoring</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/dataplatform/3-clickhouse/1-blockbatch-loading.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, OP Labs.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
