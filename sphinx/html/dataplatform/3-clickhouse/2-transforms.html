@@ -1,0 +1,590 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>General Purpose Data Pipelines: Transforms &#8212; OP Analytics  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=613916f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dataplatform/3-clickhouse/2-transforms';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Comparison to dbt and SQLMesh" href="3-comparison.html" />
+    <link rel="prev" title="Onchain Data Pipelines: Blockbatch Load" href="1-blockbatch-loading.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-wordmark-large/OPTIMISM.png?raw=true" class="logo__image only-light" alt="OP Analytics  documentation - Home"/>
+    <img src="https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-wordmark-large/OPTIMISM.png?raw=true" class="logo__image only-dark pst-js-only" alt="OP Analytics  documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    OP Labs Data Platform
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../devsetup/index.html">
+    Development Guide
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    OP Labs Data Platform
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../devsetup/index.html">
+    Development Guide
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../1-architecture.html">Architecture</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../2-blockbatch/index.html">Onchain Data Processing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/1-design.html">Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/2-markers.html">Marker Metadata Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/3-ingestion.html">Ingestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2-blockbatch/4-models.html">Blockbatch Models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../5-datasources/index.html">Third-Party Data Ingestion</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../5-datasources/1-overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5-datasources/2-dailydata-gcs.html">DailyDataset (GCS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5-datasources/3-clickhouse-data.html">ClickHouseDataset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Data Warehouse</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="1-blockbatch-loading.html">Onchain Data Pipelines: Blockbatch Load</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">General Purpose Data Pipelines: Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3-comparison.html">Comparison to dbt and SQLMesh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../4-public-datasets/index.html">OP Labs Public BigQuery Data</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">OP Labs Data Platform</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Data Warehouse</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">General Purpose Data Pipelines: Transforms</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="general-purpose-data-pipelines-transforms">
+<h1>General Purpose Data Pipelines: Transforms<a class="headerlink" href="#general-purpose-data-pipelines-transforms" title="Link to this heading">#</a></h1>
+<p>In the previous section we went over how to build data pipelines that process onchain data using
+ClickHouse as the compute engine. In this section we talk about data pipelines for a wider variety
+of use cases.</p>
+<p>The “transforms” system was developed before we built the blockbatch load system and so we also use
+it for onchain data (e.g. the interop transforms group). That said it would be a good idea to
+migrate some of the onchain data tables from the transforms system to the blockbatch system, since
+the latter has better data integrity guarantees and better monitoring.</p>
+<section id="transform-groups">
+<h2>Transform Groups<a class="headerlink" href="#transform-groups" title="Link to this heading">#</a></h2>
+<p>A transform group is a collection of tables and views that are processed together. You can think
+of a group as a mini-pipeline where a series of tables are populated one after the other.</p>
+<p>Let’s take as an example the <code class="docutils literal notranslate"><span class="pre">interop</span></code> transform group. This group has the following ClickHouse
+tables:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dim_erc20_with_ntt_first_seen_v1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fact_erc20_oft_transfers_v1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fact_erc20_ntt_transfers_v1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dim_erc20_ntt_first_seen_v1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dim_erc20_oft_first_seen_v1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fact_erc20_create_traces_v2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export_fact_erc20_create_traces_v2</span></code></p></li>
+</ul>
+</section>
+<section id="transform-specification">
+<h2>Transform Specification<a class="headerlink" href="#transform-specification" title="Link to this heading">#</a></h2>
+<p>Each table in a transform group is defined by a <code class="docutils literal notranslate"><span class="pre">CREATE</span></code> statement that defines the table schema
+and ClickHouse engine (including the very important <code class="docutils literal notranslate"><span class="pre">ORDER</span> <span class="pre">BY</span></code> clause).  And an <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> statement
+that will be used to populate the table.</p>
+<section id="directory-structure-and-naming-convention">
+<h3>Directory Structure and Naming Convention<a class="headerlink" href="#directory-structure-and-naming-convention" title="Link to this heading">#</a></h3>
+<p>The directory structure for a transform group consists of two folders:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">create/</span></code>: Has the <code class="docutils literal notranslate"><span class="pre">CREATE</span></code> statements for all the tables in the group.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">insert/</span></code>: Has the <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> statements for all the tables in the group.</p></li>
+</ul>
+<p>The naming convention for files in each of the folders is the following:</p>
+<ul class="simple">
+<li><p>`[INDEX]_[tablename].sql</p></li>
+</ul>
+<p>Where <code class="docutils literal notranslate"><span class="pre">[INDEX]</span></code> is a number that indicates the order of execution and <code class="docutils literal notranslate"><span class="pre">[tablename]</span></code> is the name of
+the table.</p>
+<p>Let’s take the <code class="docutils literal notranslate"><span class="pre">fees</span></code> transforms croup as an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>src/op_analytics/transforms/fees
+├── create
+│   ├── 01_agg_daily_transactions_grouping_sets.sql
+│   ├── 02_agg_daily_transactions.sql
+│   ├── 10_view_agg_daily_transactions_tx_from_tx_to_method.sql
+│   ├── 11_view_agg_daily_transactions_tx_to_method.sql
+│   └── 12_view_agg_daily_transactions_tx_to.sql
+└── update
+    ├── 01_agg_daily_transactions_grouping_sets.sql
+    └── 02_agg_daily_transactions.sql
+</pre></div>
+</div>
+<p>This group has 2 tables and 3 views.  For each of the two tables we have a corresponding <code class="docutils literal notranslate"><span class="pre">update</span></code>
+SQL statement that is used to populate the table.</p>
+<p>Note that it is perfectly fine to have any kind of SQL file in the <code class="docutils literal notranslate"><span class="pre">create</span></code> folder. Although it’s
+better not to get too creative. If you inspect the SQL files for the <code class="docutils literal notranslate"><span class="pre">views</span></code> you will see that they
+are straight-up <code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">VIEW</span></code> ClickHouse statements.</p>
+</section>
+</section>
+<section id="transform-execution-model">
+<h2>Transform Execution Model<a class="headerlink" href="#transform-execution-model" title="Link to this heading">#</a></h2>
+<p>The execution model for a transform is very simple:</p>
+<ul class="simple">
+<li><p>When the system runs a transforms it first runs all the <code class="docutils literal notranslate"><span class="pre">CREATE</span></code> statements in order according to
+their index.</p></li>
+<li><p>It then runs all the <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> statements in order according to their index.</p></li>
+<li><p>The system provides the execution date as a query parameter (<code class="docutils literal notranslate"><span class="pre">dt</span></code>) that may or may not be
+utilized by the <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> statement.</p></li>
+</ul>
+</section>
+<section id="building-data-pipelines">
+<h2>Building Data Pipelines<a class="headerlink" href="#building-data-pipelines" title="Link to this heading">#</a></h2>
+<p>To build a <code class="docutils literal notranslate"><span class="pre">transforms</span></code> pipeline all you need to do is create a new directory in the <code class="docutils literal notranslate"><span class="pre">src/op_analytics/transforms</span></code>
+directory and add the appropriate SQL files.</p>
+<section id="execution">
+<h3>Execution<a class="headerlink" href="#execution" title="Link to this heading">#</a></h3>
+<p>We provide a function to execute a transform group for a given date range:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">src.op_analytics.transforms.main.execute_dt_transforms</span></code></p></li>
+</ul>
+<p>For a detailed description of the parameters see the function’s docstring.</p>
+</section>
+<section id="prototyping-and-backfilling">
+<h3>Prototyping and Backfilling<a class="headerlink" href="#prototyping-and-backfilling" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">execute_dt_transforms</span></code> function is used from an IPython notebook to prototype and also to
+manually backfill data.  Notebooks for transforms are located in the
+<code class="docutils literal notranslate"><span class="pre">notebooks/adhoc/clickhouse_transforms</span></code> directory. Browse that directory for examples.</p>
+</section>
+<section id="scheduling">
+<h3>Scheduling<a class="headerlink" href="#scheduling" title="Link to this heading">#</a></h3>
+<p>All transforms-related Dagster assets are defined in the <code class="docutils literal notranslate"><span class="pre">src/op_analytics/dagster/assets/transforms.py</span></code> file.
+There is no hard and fast rule for how to define the assets. Generally we schedule one asset per
+group, but there are cases where we may want to have more control over what is executed on each
+day and so each asset can decide how it calls the <code class="docutils literal notranslate"><span class="pre">execute_dt_transforms</span></code> function.</p>
+<p>Similarly for Dagster jobs, there is no hard and fast rule but we generally define one scheduled
+job per transform group.  The jobs are defined in the <code class="docutils literal notranslate"><span class="pre">src/op_analytics/dagster/defs.py</span></code> file.</p>
+</section>
+<section id="markers">
+<h3>Markers<a class="headerlink" href="#markers" title="Link to this heading">#</a></h3>
+<p>We use markers to track the execution of the transforms. The markers are stored in the
+<code class="docutils literal notranslate"><span class="pre">etl_monitor.transform_dt_markers</span></code> table in ClickHouse.</p>
+</section>
+<section id="monitoring">
+<h3>Monitoring<a class="headerlink" href="#monitoring" title="Link to this heading">#</a></h3>
+<p>Unfortunately we have not yet built monitoring tools for the transforms system. I have talked about
+the idea of having <code class="docutils literal notranslate"><span class="pre">quality</span></code> tables as part of a transforms group. A <code class="docutils literal notranslate"><span class="pre">quality</span></code> table is a table that
+contains information about anything that might be wrong with the data in the group.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="1-blockbatch-loading.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Onchain Data Pipelines: Blockbatch Load</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="3-comparison.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Comparison to dbt and SQLMesh</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transform-groups">Transform Groups</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transform-specification">Transform Specification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directory-structure-and-naming-convention">Directory Structure and Naming Convention</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transform-execution-model">Transform Execution Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-data-pipelines">Building Data Pipelines</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#execution">Execution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prototyping-and-backfilling">Prototyping and Backfilling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scheduling">Scheduling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#markers">Markers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monitoring">Monitoring</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/dataplatform/3-clickhouse/2-transforms.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, OP Labs.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
