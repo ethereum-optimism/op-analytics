@@ -25,6 +25,7 @@ sys.path.pop()
 
 etherscan_api_key = os.environ.get("L1_ETHERSCAN_API")
 max_attempts = 3
+request_timeout_seconds = 10
 
 
 def get_eth_usd(api_key):
@@ -34,7 +35,7 @@ def get_eth_usd(api_key):
     )
     for attempt in range(max_attempts):
         try:
-            response = requests.get(api_url)
+            response = requests.get(api_url, timeout=request_timeout_seconds)
             if response.status_code == 200:
                 data = response.json()
                 print(data)
@@ -61,7 +62,7 @@ def get_suggest_base_fee(api_key):
     api_url = f"https://api.etherscan.io/v2/api?chainid=1&module=gastracker&action=gasoracle&apikey={api_key}"
     for attempt in range(max_attempts):
         try:
-            response = requests.get(api_url)
+            response = requests.get(api_url, timeout=request_timeout_seconds)
             if response.status_code == 200:
                 data = response.json()
                 print(data)
@@ -83,10 +84,12 @@ def get_suggest_base_fee(api_key):
                 return "0"
 
 
-# In[4]:
-
-
 def get_blob_base_fee_per_gas(rpc_url):
+    """Return the Ethereum L1 blob base fee from a standard JSON-RPC endpoint.
+
+    This value is a price per blob gas unit. Optimism L1 data-fee attributes are
+    transaction-level values and are not part of this market-data endpoint.
+    """
     payload = {"jsonrpc": "2.0", "method": "eth_blobBaseFee", "params": [], "id": 1}
     for attempt in range(max_attempts):
         try:
@@ -96,6 +99,8 @@ def get_blob_base_fee_per_gas(rpc_url):
             # Check if the request was successful
             if response.status_code == 200:
                 data = response.json()
+                if data.get("error") is not None:
+                    raise ValueError(f"RPC returned an error: {data['error']}")
                 result = data.get("result")
 
                 if result and isinstance(result, str) and result.startswith("0x"):
