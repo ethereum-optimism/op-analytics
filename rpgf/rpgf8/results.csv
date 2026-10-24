@@ -1,0 +1,971 @@
+date,round,application_name,amount_op,amount_usd_equiv,oso_project_slug,application_url
+2025-09-08,retrofunding_s8_devtooling,Aderyn,1272.31,954.2325,cyfrin,https://atlas.optimism.io/project/0xa7d78d566bfa319479ec048c94c3d8c1f4d628a9344ba157fc4974dbf472dc3e
+2025-09-08,retrofunding_s8_devtooling,Ape Framework,4461.97,3346.4775,apeworx,https://atlas.optimism.io/project/0xa0b16714baef75d97ec07fd48eaf42e79df92fe2a3c2d725d2388ede587ea54c
+2025-09-08,retrofunding_s8_devtooling,Blockscout open-source block explorer,1101.25,825.9375,blockscout,https://atlas.optimism.io/project/0x663e4d25ca3f327365240471b4831ea3c989cb132bbf6ae8f5c1e15268591795
+2025-09-08,retrofunding_s8_devtooling,Brownie,4735.66,3551.745,eth-brownie,https://atlas.optimism.io/project/0x5200a7351f8d195401dc04631fb83e4836f73a2794f316b2739c03807f30a78b
+2025-09-08,retrofunding_s8_devtooling,Cannon,7412.47,5559.3525,usecannon,https://atlas.optimism.io/project/0xc7798704a6d730cea776c4866a9636bfa04c1201e29b6b0c99cc3603bc1bca25
+2025-09-08,retrofunding_s8_devtooling,Create2Deployer,459.13,344.3475,create2deployer,https://atlas.optimism.io/project/0x513265758a3804184b6a0771d99c1a4b04d3267bacd4b914e89ff991de229f6a
+2025-09-08,retrofunding_s8_devtooling,CreateX,3957.02,2967.765,createx,https://atlas.optimism.io/project/0x0008577196fa6ec286440b418e2f6305fc10e62ce759625d826be272ee6b45a3
+2025-09-08,retrofunding_s8_devtooling,DefiLlama,25000.0,18750.0,defi-llama,https://atlas.optimism.io/project/0xae07bfec2c3c90937679f8c8c5c32e80407c09903aa03d1b5e5a075e67592b86
+2025-09-08,retrofunding_s8_devtooling,Ethereum Attestation Service (EAS),1743.67,1307.7525,ethereum-attestation-service,https://atlas.optimism.io/project/0xa88844cea135382e3484e39c3172033437121b35ca0bc8b10b9b8253984876b5
+2025-09-08,retrofunding_s8_devtooling,Ethers.js,25000.0,18750.0,ethers-io,https://atlas.optimism.io/project/0xa3d07f453f70d844196d89d79848aa2e70a0bd8b38bf0f493cba1547bb3bca5e
+2025-09-08,retrofunding_s8_devtooling,Fe Language,856.31,642.2325,fe-ethereum,https://atlas.optimism.io/project/0x541b7b08401d799b87f583c102a6c94cee7105f1b29dc630de5edbbd966d7c13
+2025-09-08,retrofunding_s8_devtooling,Foundry,25000.0,18750.0,foundry,https://atlas.optimism.io/project/0x4562c0630907577f433cad78c7e2cc03349d918b6c14ef982f11a2678f5999ad
+2025-09-08,retrofunding_s8_devtooling,Foundry MCP Server,694.6,520.95,foundry-mcp-server-praneshasp,https://atlas.optimism.io/project/0xa873dcdcc84e0022edd2f7d5cc8646667b87bf06609d506cd8e39dbd7412fa59
+2025-09-08,retrofunding_s8_devtooling,Frames.js,3090.17,2317.6275,framesjs,https://atlas.optimism.io/project/0x9d93ec97ef2d3bd4c2b8d95abac9ce0cf43e4f3eb1f05709f8282da8200e69ee
+2025-09-08,retrofunding_s8_devtooling,Hardhat,25000.0,18750.0,hardhat-nomicfoundation,https://atlas.optimism.io/project/0x670a2982f6d7786b58a8399bcabc23246365b21e533a97945e055791fc235e64
+2025-09-08,retrofunding_s8_devtooling,IPFS,7099.43,5324.5725,ipfs,https://atlas.optimism.io/project/0x7f330267969cf845a983a9d4e7b7dbcca5c700a5191269af377836d109e0bb69
+2025-09-08,retrofunding_s8_devtooling,Kontrol - formal verification tool based on Foundry and KEVM,435.47,326.6025,runtimeverification,https://atlas.optimism.io/project/0x7348ae42266ff626319e8ea5398343b847603b3cc7101b03d8e4fb2b75ea8db3
+2025-09-08,retrofunding_s8_devtooling,Kurtosis,2579.33,1934.4975,kurtosis-tech,https://atlas.optimism.io/project/0x35295108e0c7b4625d650fbdabd4888417782539f56159d39ac2f0e2411f607b
+2025-09-08,retrofunding_s8_devtooling,LI.FI,3856.88,2892.66,lifinance,https://atlas.optimism.io/project/0x517eaa9c56951de89261f2d7830ea49aae92f2a903104a17d9c5c2edd4959806
+2025-09-08,retrofunding_s8_devtooling,Maintaining simple-optimism-node,570.14,427.605,simple-optimism-node-smartcontracts,https://atlas.optimism.io/project/0x09b95c7697625da4915338750c5f78446817a3634cb38bc9155e26bbbc0c87f1
+2025-09-08,retrofunding_s8_devtooling,Medusa,1033.05,774.7875000000000,medusa-crytic,https://atlas.optimism.io/project/0xb9996d35862a7c60282da2adf3447f043580f586fcb702ff6869896d15ef6344
+2025-09-08,retrofunding_s8_devtooling,MerkleTreeJS,4615.21,3461.4075000000000,merkletreejs,https://atlas.optimism.io/project/0xc377ed1b705bcc856a628f961f1e7c8ca943e6f3727b7c179c657e227e8e852c
+2025-09-08,retrofunding_s8_devtooling,Multicaller,2623.02,1967.265,multicaller-vectorized,https://atlas.optimism.io/project/0xfc54b4a9c537be25238cba3f05100b733aeee83a3eb3fdae60d651b3b913390c
+2025-09-08,retrofunding_s8_devtooling,OpenRPC,3575.29,2681.4675,open-rpc,https://atlas.optimism.io/project/0x6f8f610667400044907494c879b717e806a03bf519dcfd786edc7f2fa61d6db8
+2025-09-08,retrofunding_s8_devtooling,OpenZeppelin Contracts,25000.0,18750.0,openzeppelin,https://atlas.optimism.io/project/0x939241afa4c4b9e1dda6b8250baa8f04fa8b0debce738cfd324c0b18f9926d25
+2025-09-08,retrofunding_s8_devtooling,Otterscan,1443.88,1082.91,otterscan,https://atlas.optimism.io/project/0xaed5941b7a9f20de83f5c839bda507be43cbf41777fc623abf4bf05773298826
+2025-09-08,retrofunding_s8_devtooling,PRBMath,6696.47,5022.3525,prb-math-paulrberg,https://atlas.optimism.io/project/0x7e917a2d0718401c9fe2a82f43ea558f5128f251b1e658c76dc7ff9a5e9fd993
+2025-09-08,retrofunding_s8_devtooling,Party.app + Party Protocol,1187.12,890.3400000000000,party-dao,https://atlas.optimism.io/project/0x850df51e29f2846a5f085d88e6b6fc13fad51ad7161f8a825ed09d470668161a
+2025-09-08,retrofunding_s8_devtooling,Ponder,8592.39,6444.2925,ponder-sh,https://atlas.optimism.io/project/0x351967474a454b494260a488f3ceb77d993580a4fe79fb6b6d132c70634bc516
+2025-09-08,retrofunding_s8_devtooling,Prettier Solidity,10093.38,7570.035,prettier-solidity,https://atlas.optimism.io/project/0xc6cac7cd3793888032cc8a9e5aef92550beeec2598f86f1ec6972ffd5b82a990
+2025-09-08,retrofunding_s8_devtooling,Remix Project,2399.8,1799.85,remix-ethereum,https://atlas.optimism.io/project/0x754c37e401e2527ab24b9d7ca3e042bfcbfebeef54a533f8833d46242d2c3017
+2025-09-08,retrofunding_s8_devtooling,Revm,8440.41,6330.3075,revm-bluealloy,https://atlas.optimism.io/project/0xb2d109759fe14e11ac5cc100ab6006321ebdd7ffdefbd2efac93a002105f8e92
+2025-09-08,retrofunding_s8_devtooling,Revoke.cash,1344.28,1008.21,revoke-cash,https://atlas.optimism.io/project/0xfbc74fb5d15b7b2554277371a41ee6ff1bf392377bce5fbfce140c2980cc4f64
+2025-09-08,retrofunding_s8_devtooling,Ronan Sandford,11796.15,8847.1125,wighawag,https://atlas.optimism.io/project/0x9b639cc6061e41a1d12adb39619a2fddb7005074cf965a3a6f4eabc6eea31112
+2025-09-08,retrofunding_s8_devtooling,Rundler,407.92,305.94,alchemyplatform,https://atlas.optimism.io/project/0x2247247c751707d897f5c0eab670426d9c1c26d84e96ac226004afbf0080cba4
+2025-09-08,retrofunding_s8_devtooling,Rust Libp2p,2963.96,2222.9700000000000,libp2p,https://atlas.optimism.io/project/0xdf1bb03d08808e2d789f5eac8462bdc560f1bb5b0877f0cf8c66ab53a0bc2f5c
+2025-09-08,retrofunding_s8_devtooling,Slither,8379.3,6284.475000000000,slither-crytic,https://atlas.optimism.io/project/0xdc3dce33fd5fb50cf932586d4257456ddf5040ba0955d97641646504c73dbd13
+2025-09-08,retrofunding_s8_devtooling,Snapshot,6281.18,4710.885,snapshot-labs,https://atlas.optimism.io/project/0x5e6c436e48e56d6d9622ba5d0be0035c314e2b29d2afc8f5f1ee8ac75cd42532
+2025-09-08,retrofunding_s8_devtooling,Solady,13946.88,10460.16,solady-vectorized,https://atlas.optimism.io/project/0x9151666888d0ca532a529be98a50d2eb992988117e202163f865fa9a27eb7149
+2025-09-08,retrofunding_s8_devtooling,Solc-select,3493.14,2619.855,solc-select-crytic,https://atlas.optimism.io/project/0x2a04bac7482169a929fd70444bbfac10654d0588e022db7527566dbfc307d2e9
+2025-09-08,retrofunding_s8_devtooling,Solhint,9427.19,7070.3925,solhint-protofire,https://atlas.optimism.io/project/0xfa7d950cfda2c634b052b6c07e75daaa95dd22ac1f220b6862cfd24221d4cabc
+2025-09-08,retrofunding_s8_devtooling,Solidity,25000.0,18750.0,solidity-ethereum,https://atlas.optimism.io/project/0xcc8d03e014e121d10602eeff729b755d5dc6a317df0d6302c8a9d3b5424aaba8
+2025-09-08,retrofunding_s8_devtooling,Solidity Bytes Arrays Utils Library,5184.22,3888.165,solidity-bytes-utils-gnsps,https://atlas.optimism.io/project/0xd63cb23c26cc3bda03b1cc2971589fd26c9d22f3bbc8f1ff2bb74613e6d1c36d
+2025-09-08,retrofunding_s8_devtooling,Sourcify,724.56,543.42,sourcify-ethereum,https://atlas.optimism.io/project/0x51cda5996ef1a2ccd8fcf4ee5792337695599454c83eb1218c3ad4388dcb5bf5
+2025-09-08,retrofunding_s8_devtooling,Surl,1126.54,844.905,surl-memester-xyz,https://atlas.optimism.io/project/0x5c0234455c4b86b05ed0c612ac0d7e53cd2249686305af9b2184190b781b8063
+2025-09-08,retrofunding_s8_devtooling,Swiss-Knife.xyz,1290.4,967.8,swiss-knife-xyz,https://atlas.optimism.io/project/0x93c4efb5e2d7416c56ecdcd8244be8faf924194d65b514d90a7a51f6797cc012
+2025-09-08,retrofunding_s8_devtooling,Synpress,7780.31,5835.2325,synpress-synthetixio,https://atlas.optimism.io/project/0xbb067b01988521110c91737f058e7301f608be231d850a72af1516bd034d161c
+2025-09-08,retrofunding_s8_devtooling,Tevm,3854.79,2891.0925,evmts,https://atlas.optimism.io/project/0x2d90d9565ef127727845637425880545cfebe0931160ce25afe929f8ab415706
+2025-09-08,retrofunding_s8_devtooling,The Ethernaut,1683.24,1262.43,ethernaut-openzeppelin,https://atlas.optimism.io/project/0x17fb589e599fe05e532b90c121eccc55b1249301e783dae226bad698872322da
+2025-09-08,retrofunding_s8_devtooling,Titanoboa,5616.35,4212.262500000000,vyperlang,https://atlas.optimism.io/project/0x202a80f0f57630d04a26464d6492b3399059ca1187943032c37652eb2468a76f
+2025-09-08,retrofunding_s8_devtooling,VSCode Solidity Inspector ,381.05,285.7875,vscode-solidity-inspector-praneshasp,https://atlas.optimism.io/project/0x3ec2d572a608cf939eaf7886402320b3b2229610c13bdb5cb0776bd097331e5a
+2025-09-08,retrofunding_s8_devtooling,Velodrome Finance,362.57,271.9275,velodrome,https://atlas.optimism.io/project/0x08df6e20a3cfabbaf8f34d4f4d048fe7da40447c24be0f3ad513db6f13c755dd
+2025-09-08,retrofunding_s8_devtooling,Viem: TypeScript Interface for Ethereum,25000.0,18750.0,wevm,https://atlas.optimism.io/project/0x6bd057da522918a4675396313ae33a2f2788a1ceeb3bd7ae228015e3eb317a7d
+2025-09-08,retrofunding_s8_devtooling,Vscode Solidity Extension,476.46,357.345,vscode-solidity,https://atlas.optimism.io/project/0x819775803938d78eaa95809971ce94cae6a54b4df58505fa36153ffa1d55e12c
+2025-09-08,retrofunding_s8_devtooling,Vyper,6800.14,5100.1050000000000,vyperlang,https://atlas.optimism.io/project/0x9ca1f7b0e0d10d3bd2619e51a54f2e4175e029c87a2944cf1ebc89164ba77ea0
+2025-09-08,retrofunding_s8_devtooling,Wagmi: Reactive primitives for Ethereum apps ,25000.0,18750.0,wevm,https://atlas.optimism.io/project/0xc0615947773148cbc340b175fb9afc98dbb4e0acd31d018b1ee41a5538785abf
+2025-09-08,retrofunding_s8_devtooling,WhatsABI,6602.37,4951.7775,whatsabi-shazow,https://atlas.optimism.io/project/0xabdfa10e699db5127100da1dd2403692afe8d86e793d57780f1c7e93437a73a0
+2025-09-08,retrofunding_s8_devtooling,alloy,8107.15,6080.362500000000,alloy-rs,https://atlas.optimism.io/project/0x56ce7cbc27852a8d8ef5869dc9033a215c8893f799468f61527dacb9f92be790
+2025-09-08,retrofunding_s8_devtooling,bulloak,1599.6,1199.7000000000000,bulloak-alexfertel,https://atlas.optimism.io/project/0x740bebbc731ec56dcc17c7d429656220a73960022c3809edf324bd8120285722
+2025-09-08,retrofunding_s8_devtooling,eRPC,6669.42,5002.0650000000000,erpc,https://atlas.optimism.io/project/0x1e7a1f9763d25b6844567a7133b1005ef6ed785642a75229acf1b9b25202a5f3
+2025-09-08,retrofunding_s8_devtooling,ethereum-bloom-filters,3865.92,2899.44,ethereum-bloom-filters-joshstevens19,https://atlas.optimism.io/project/0x4c9626843c4e3f3c96d80b0ec6b1d10b7682fc9b6d67ab61ece5a87648535b1f
+2025-09-08,retrofunding_s8_devtooling,ethereum-multicall,6193.19,4644.8925,ethereum-multicall-joshstevens19,https://atlas.optimism.io/project/0x37fe5886f4c77d5a5cb947deff90158c045a5d207572763187748ac4dd4bd9b9
+2025-09-08,retrofunding_s8_devtooling,ethers-multicall-provider,3083.18,2312.385,ethers-multicall-provider-rubilmax,https://atlas.optimism.io/project/0xf46bb7a4597826d57ce9ef1579b7a11079dccfd8510770ad64b2e5a801d8ff27
+2025-09-08,retrofunding_s8_devtooling,evmc,296.12,222.09,evmc-joshstevens19,https://atlas.optimism.io/project/0xf4f7d13f2ac3c9805998d8540950883b872d7c5d7c81d6254dde8655af690b2a
+2025-09-08,retrofunding_s8_devtooling,foundry-gas-diff,321.15,240.8625,foundry-gas-diff-rubilmax,https://atlas.optimism.io/project/0xb024f6abfa79f7eb7af334f56015509bb70355709991d31bc689c7bea3250f7e
+2025-09-08,retrofunding_s8_devtooling,foundry-storage-check,415.12,311.34000000000000,foundry-storage-check-rubilmax,https://atlas.optimism.io/project/0xfeafe16f8c1a25aebe754f3653340a17943a483a3e389464e44cf14613e210f0
+2025-09-08,retrofunding_s8_devtooling,hardhat-gas-reporter,6818.62,5113.965,hardhat-gas-reporter-cgewecke,https://atlas.optimism.io/project/0xc2d8139cd61ddc75689610ee0cca0fe37ba8bec3270beb6aac6eac91c6256f60
+2025-09-08,retrofunding_s8_devtooling,hevm,469.6,352.20000000000000,hevm-ethereum,https://atlas.optimism.io/project/0x2c97e213fef2bd3f30a71edf6ed48232640368d0083dc0a134a1b59391639bde
+2025-09-08,retrofunding_s8_devtooling,js-libp2p,2966.91,2225.1825,libp2p,https://atlas.optimism.io/project/0x5a7e7c7acb21521e99021d746740b368801cbfe531301e50bdbaafdc24a0aac5
+2025-09-08,retrofunding_s8_devtooling,keccak256js,3162.62,2371.965,keccak256js,https://atlas.optimism.io/project/0x48220ef1d103189cd918e9290db4c4b99b463ae2817fb5ef0cc54556a7961b6f
+2025-09-08,retrofunding_s8_devtooling,noble cryptography,6984.89,5238.6675000000000,paulmillr,https://atlas.optimism.io/project/0x62d9a8a3b602c688610abfbe3965e04ca0d19c5c506f40e79cd185cb501d2018
+2025-09-08,retrofunding_s8_devtooling,rindexer,4423.42,3317.565,rindexer-joshstevens19,https://atlas.optimism.io/project/0x97525ec91080ddd917eaccabf9d383cf70a2f78839ab21eeabe1687e312f2132
+2025-09-08,retrofunding_s8_devtooling,rotki,4291.1,3218.3250000000000,rotki,https://atlas.optimism.io/project/0xc0ad090a80d748c19dce84d17f85d7b0016daa1c35f72ada2d92f469f8a77067
+2025-09-08,retrofunding_s8_devtooling,solidity-coverage,11844.86,8883.645,solidity-coverage-sc-forks,https://atlas.optimism.io/project/0x2bb095e1f297c71da8bd4ee15097abad3b99e299fe14cd6aa704df3f36d0ae22
+2025-09-08,retrofunding_s8_devtooling,thirdweb,5641.4,4231.050000000000,third-web,https://atlas.optimism.io/project/0xc6052138bbdae5976fa2866f46b0537182d4126c4bb97485738d1b43f2276134
+2025-09-08,retrofunding_s8_devtooling,web3.py,10581.14,7935.855,web3py-ethereum,https://atlas.optimism.io/project/0xebe03c3d6d33cad60124b9b05ef6e2ff056293a1de3c5fa51dfbb90c86c14bf7
+2025-09-08,retrofunding_s8_devtooling,xdeployer,2615.65,1961.7375,xdeployer,https://atlas.optimism.io/project/0x537097f27d55cb52d39b95c3ed65076349ab68aac48051d742d715456e0884d8
+2025-09-08,retrofunding_s8_devtooling,🏗️  Scaffold-ETH 2,10740.35,8055.262500000000,buidlguidl,https://atlas.optimism.io/project/0x154a42e5ca88d7c2732fda74d6eb611057fc88dbe6f0ff3aae7b89c2cd1666ab
+2025-09-08,retrofunding_s8_devtooling,🐍 snekmate,3959.8,2969.8500000000000,snekmate,https://atlas.optimism.io/project/0x50159544ec22884b777a997a625c75bb02e55b1dc8934aad3b78678e7c11d039
+2025-09-08,retrofunding_s8_onchain_builders,AION,2491.6,1868.7,world-mini-app-aion,https://atlas.optimism.io/project/0x12721a0927c5d0598380e718e69c7f3395cc7b8847da42ac384af9c59efd025d
+2025-09-08,retrofunding_s8_onchain_builders,Account Abstraction - ERC-4337,5000.0,3750.0,eth-infinitism-account-abstraction,https://atlas.optimism.io/project/0xb98778ca9ff41446e2bc304f7b5d27f0fa7c2bcd11df19e22d1352c06698a1f6
+2025-09-08,retrofunding_s8_onchain_builders,Across Protocol,1697.75,1273.3125,across,https://atlas.optimism.io/project/0x72723e07fe409557489a6643b43d9493a94c10ba68230b0527f01834cb6a550f
+2025-09-08,retrofunding_s8_onchain_builders,Arcadia Finance ,364.19,273.1425,arcadia-finance,https://atlas.optimism.io/project/0xdd35cc4641c3c35bee5782fc0442b2a1b88a058ec0a7b90ba32c70347e4e9194
+2025-09-08,retrofunding_s8_onchain_builders,Arkada,218.22,163.665,,https://atlas.optimism.io/project/0x5962ef9e4955bc4cd4c6ed080c55879be9ee2dddb1b7cd37d72182a142dc9eab
+2025-09-08,retrofunding_s8_onchain_builders,Avantis ,4608.14,3456.1050000000000,avantis-labs,https://atlas.optimism.io/project/0x6371518c95cfa543514e01a77d470c695fac36691cffa3a45e992b2c0cc6ba72
+2025-09-08,retrofunding_s8_onchain_builders,BMX,744.08,558.0600000000000,morphex-labs,https://atlas.optimism.io/project/0xe5c133e05956a3939b9a78f4ad5d0a897a027da60a7d5e1b6276a2266211f69f
+2025-09-08,retrofunding_s8_onchain_builders,BSX,340.52,255.39,bsx-exchange,https://atlas.optimism.io/project/0xc938557155993da8f33857e52d7deb04421d1bb341fc24216563aae64fe32d36
+2025-09-08,retrofunding_s8_onchain_builders,BaseSwap ,1561.23,1170.9225,baseswapfi,https://atlas.optimism.io/project/0xca3f26e1c876e821d2384a5cb699c6be494f9810301c2e2be49c232656262642
+2025-09-08,retrofunding_s8_onchain_builders,Basepaint,1666.72,1250.04,basepaint,https://atlas.optimism.io/project/0xc0901c8f9503f0bf91a1cca0c6c90e55af8719cc2237fb4a0bf0770b307cbd11
+2025-09-08,retrofunding_s8_onchain_builders,BitMaster,1343.54,1007.655,world-mini-app-goodluckgame,https://atlas.optimism.io/project/0x79e3ed10841da009fbbaef5ac13c27022dd35e95ac5c02bae078775981a9aaa0
+2025-09-08,retrofunding_s8_onchain_builders,Brahma,972.47,729.3525,brahma,https://atlas.optimism.io/project/0xc66e357ad67e63954cd1eb79da4d507d8800518f06c82e423e93e8771e7b8d13
+2025-09-08,retrofunding_s8_onchain_builders,Bunni.xyz,1609.27,1206.9525,bunniapp,https://atlas.optimism.io/project/0xcc230da6ee8cbcc2d4039a526fbc8aa910d63201e350be2fae0cab9864194974
+2025-09-08,retrofunding_s8_onchain_builders,Cash Convert,2065.47,1549.1025,kids-table-inc,https://atlas.optimism.io/project/0x2bdfa034cf1e853db8ed4b30531270c7a62d66550cd23383819e816abb234f0a
+2025-09-08,retrofunding_s8_onchain_builders,Catex,416.03,312.0225,,https://atlas.optimism.io/project/0x5c7ac8becc35168a91b594f18284f7ea661ab2bf727d6bfac80fb6f04c4792ec
+2025-09-08,retrofunding_s8_onchain_builders,Coop Records,375.86,281.895,coop-records,https://atlas.optimism.io/project/0x0b06e685eab9c4fee7d93ca54e1c02281e2be560bfc54f43fa738961fa2ce4c1
+2025-09-08,retrofunding_s8_onchain_builders,CreateX,751.1,563.325,createx,https://atlas.optimism.io/project/0x0008577196fa6ec286440b418e2f6305fc10e62ce759625d826be272ee6b45a3
+2025-09-08,retrofunding_s8_onchain_builders,Credit,1064.13,798.0975000000000,world-mini-app-credit,https://atlas.optimism.io/project/0x08447636de20816960f0427a65677df5571d503f09235b2bec37f7dd5c28161d
+2025-09-08,retrofunding_s8_onchain_builders,DIAMANTE,2726.79,2045.0925,,https://atlas.optimism.io/project/0xc7104d126ffe628630e89f455711ef296175069fffb1f9c0e85b396ee1d23f27
+2025-09-08,retrofunding_s8_onchain_builders,DICE MAXx6,1632.93,1224.6975,,https://atlas.optimism.io/project/0x22f19557b1142eeed40eceffa2e5b31fb8393ca57dafb3454035a71c613b5ce1
+2025-09-08,retrofunding_s8_onchain_builders,DNA Token,1799.9,1349.9250000000000,dnatokenio,https://atlas.optimism.io/project/0xdafc4d2a060c7d08913ceb05b19c4fe7fb6d93a7f5f1142642be939be16bf6e9
+2025-09-08,retrofunding_s8_onchain_builders,DackieSwap,482.93,362.1975,dackieswap,https://atlas.optimism.io/project/0x18e7582de42dd9a7fd2cb69fb6566b8bcb3e86b936b229b0c5af78fa1de791a4
+2025-09-08,retrofunding_s8_onchain_builders,Dalgona,1876.71,1407.5325,,https://atlas.optimism.io/project/0x1f998a77880db01b4938b7fa84fc2f6577fee032fd0a55393406e665d7f3a9e1
+2025-09-08,retrofunding_s8_onchain_builders,Dark Forest MUD,1774.89,1331.1675,,https://atlas.optimism.io/project/0x33f99467bb08ce97fc0829a766e06555c7a7c6870db71a13d82241ecd186406a
+2025-09-08,retrofunding_s8_onchain_builders,Double or Nothing,1461.64,1096.23,world-mini-app-goodluckgame,https://atlas.optimism.io/project/0x394cdf60010e890aeb52606b938e6ff6ef7a52b0b5a3e897daf0133bed243b14
+2025-09-08,retrofunding_s8_onchain_builders,Drop Wallet,2430.8,1823.1,world-mini-app-drop-wallet,https://atlas.optimism.io/project/0xf9af65e8afbd0fd21802bca92c9d0d6201a8b1d114d5c9170fea7e914fd2b392
+2025-09-08,retrofunding_s8_onchain_builders,Eggs Vault,2920.83,2190.6225,holdstation,https://atlas.optimism.io/project/0xf4e56e0c6654d6ef621191708f27ee20242462f541d3e79dc5512e1a10d90736
+2025-09-08,retrofunding_s8_onchain_builders,Enso Build,5000.0,3750.0,ensobuild,https://atlas.optimism.io/project/0x738c0967c0f70a0a78d8794dcf2c40540f60ea9568e163dd5826b85e8e2a9a79
+2025-09-08,retrofunding_s8_onchain_builders,Ethereum Attestation Service (EAS),1285.57,964.1775,ethereum-attestation-service,https://atlas.optimism.io/project/0xa88844cea135382e3484e39c3172033437121b35ca0bc8b10b9b8253984876b5
+2025-09-08,retrofunding_s8_onchain_builders,FLAG!,2066.8,1550.1,party-dao,https://atlas.optimism.io/project/0x7d5bcf0b123ca5611f1bb0c889816753cc215b0a230849c8464c6c2a08c4eddc
+2025-09-08,retrofunding_s8_onchain_builders,Flaunch,3725.7,2794.275,flayerlabs,https://atlas.optimism.io/project/0x259b729af86ba38c0c84be9b739dfbca109a6df985371d8cabd43116d18d7a1a
+2025-09-08,retrofunding_s8_onchain_builders,GM,1612.73,1209.5475,inkonchain,https://atlas.optimism.io/project/0x2c1d2ae68e4a718a04a41f1a9fde1ed0648602e08c150e3f72d3dc7ef22dd71a
+2025-09-08,retrofunding_s8_onchain_builders,GMonchain,893.48,670.11,,https://atlas.optimism.io/project/0xef71b036123a72aa9aa64afb1263751bdfc7e7e4e63ec658c323136dc3a88d37
+2025-09-08,retrofunding_s8_onchain_builders,Gains Network (gTrade),1498.06,1123.545,gainsnetwork,https://atlas.optimism.io/project/0x70ba3cb2e433f1cd9ace8aea84c46d167ba5db12293cd108eaca068d06be3a71
+2025-09-08,retrofunding_s8_onchain_builders,Guild.xyz,668.3,501.225,guildxyz,https://atlas.optimism.io/project/0x3d009f8f7c1e8a3bcbc81ca8ed60d2e86b956dd0fa68c4595f851be37052a2b5
+2025-09-08,retrofunding_s8_onchain_builders,Gyroscope,2179.74,1634.8050000000000,gyrostable,https://atlas.optimism.io/project/0x3526b9c6fdc34076d7d2c31893b94e760f4d5a010387b6b76b45f8b5577ceb98
+2025-09-08,retrofunding_s8_onchain_builders,Holdstation Wallet,1615.96,1211.97,holdstation,https://atlas.optimism.io/project/0x8fbddc02ddbc9c9b303b7bbb645aa933541876a31a93d7dea165fb0283d7f685
+2025-09-08,retrofunding_s8_onchain_builders,HumanFi,299.05,224.2875,world-mini-app-human-tap,https://atlas.optimism.io/project/0xb1ee13dc3a4f1db5840d4852e7c81977fcd14d7b423f3ed15407bbf13d1a3986
+2025-09-08,retrofunding_s8_onchain_builders,Hydrex,1549.65,1162.2375000000000,hydrex-fi,https://atlas.optimism.io/project/0xab28184ffcd1429ce9bbcffdba320787e9d2ab1e2f365352af3b5a9ef64f4600
+2025-09-08,retrofunding_s8_onchain_builders,Ionic Protocol,596.58,447.43500000000000,ionicprotocol,https://atlas.optimism.io/project/0xbcb5c437d5347be21add3972512679054416805274f80e85ab8053ae79340a69
+2025-09-08,retrofunding_s8_onchain_builders,Kelp,578.6,433.9500000000000,kelp-dao,https://atlas.optimism.io/project/0xff1edf67227651293a9cff4dce3577c6ca52bf8c7c6f5f133f07b05255379b27
+2025-09-08,retrofunding_s8_onchain_builders,Kim Exchange,563.31,422.4825,kim-protocol,https://atlas.optimism.io/project/0xfd9f98de666c5b0a5ce96d4a4b8d4ceee9f8c2156734d57bf6c23d0cff183e90
+2025-09-08,retrofunding_s8_onchain_builders,Kyo finance,2452.97,1839.7275,kyo-finance,https://atlas.optimism.io/project/0x5958eb35cf4d4b8871924adc5e6272eff2ac701e368ca6ad043ee486cce9e223
+2025-09-08,retrofunding_s8_onchain_builders,LI.FI,2548.04,1911.03,lifinance,https://atlas.optimism.io/project/0x517eaa9c56951de89261f2d7830ea49aae92f2a903104a17d9c5c2edd4959806
+2025-09-08,retrofunding_s8_onchain_builders,Layer3,2666.37,1999.7775,layer3xyz,https://atlas.optimism.io/project/0x91a4420e2fcc8311e97dad480f201a8ce221f2cd64c2de77280cbcc6ce193752
+2025-09-08,retrofunding_s8_onchain_builders,LeverageX by Javsphere,1374.41,1030.8075,javsphere,https://atlas.optimism.io/project/0xf9513b5bfca3be3513450bd56b48ae485ce157aa56c1d8b2e06a68bce0b8d084
+2025-09-08,retrofunding_s8_onchain_builders,MetaMap,3186.91,2390.1825,,https://atlas.optimism.io/project/0x4f64c34669043d9fac6a8fd01a93c27b2ab0c88a803c7b72dedb8cef035ede01
+2025-09-08,retrofunding_s8_onchain_builders,Mint Club,742.75,557.0625,mintclub-steemhunt,https://atlas.optimism.io/project/0x0ee3defac0e2a31b995bc073ac02a2140aaf01679e141eb8d1d80409f75f90ea
+2025-09-08,retrofunding_s8_onchain_builders,Mint Forest,308.81,231.6075,,https://atlas.optimism.io/project/0x81c88822ad7d004a94a2a5ce5d6a2a04466f78d211931230ac0c5a804d36c855
+2025-09-08,retrofunding_s8_onchain_builders,Multicaller,441.34,331.005,multicaller-vectorized,https://atlas.optimism.io/project/0xfc54b4a9c537be25238cba3f05100b733aeee83a3eb3fdae60d651b3b913390c
+2025-09-08,retrofunding_s8_onchain_builders,NFTs2Me,427.49,320.6175,nfts2me,https://atlas.optimism.io/project/0xd54e1032bf16d649f8f8f0a7da42a249966ad4a270b4c17b24ded1e32c97b2bf
+2025-09-08,retrofunding_s8_onchain_builders,Neptune Finance,567.66,425.745,nepfinance,https://atlas.optimism.io/project/0x469f813ce1b0c64293d1f884363808f076d27abc8c6060bd3abe46bedd0d7982
+2025-09-08,retrofunding_s8_onchain_builders,ORB,1762.99,1322.2425,party-dao,https://atlas.optimism.io/project/0xb620f012eb197e5661f65c1a5aee6a4bbb43629f0056879ae4dc66adf8383ae3
+2025-09-08,retrofunding_s8_onchain_builders,ORO,3722.12,2791.59,party-dao,https://atlas.optimism.io/project/0x40ee6048c99aefd288f6133db207849d0951fe6b62afa1cca0db5a4ad7f558de
+2025-09-08,retrofunding_s8_onchain_builders,Oku Trade,839.37,629.5275,gfx-labs,https://atlas.optimism.io/project/0xb926ab918147d2264dba94a429eb07986aa533fd6062a78736d3eda4e0b4a69b
+2025-09-08,retrofunding_s8_onchain_builders,Omni Exchange,1683.33,1262.4975,omni-exchange,https://atlas.optimism.io/project/0xdd73108cfd9ee7517836e18800a06412a6ba08b43356791c2db6a7a75b910692
+2025-09-08,retrofunding_s8_onchain_builders,OmniHub,479.3,359.475,omnihub-xyz,https://atlas.optimism.io/project/0xd7a8e115b2b3772d7d5656d7798e349dcdedf2463302c78528c9e9686ab4efe3
+2025-09-08,retrofunding_s8_onchain_builders,OnChainGM,1309.14,981.855,onchaingm,https://atlas.optimism.io/project/0xa1f96576ad998e804140caccd478bae81b8b1059a107166df87b59fbf42c9e4a
+2025-09-08,retrofunding_s8_onchain_builders,OpenOcean,1493.19,1119.8925,openocean-finance,https://atlas.optimism.io/project/0x24ff0fb2933e55b169a80d9bd35a00a7011795387717b27445ccdc0f8660d740
+2025-09-08,retrofunding_s8_onchain_builders,Orki Finance,652.11,489.0825,,https://atlas.optimism.io/project/0x578d022acd70130def85327e2926a2ed4545e08617ced951ef54a872f5a2a5f5
+2025-09-08,retrofunding_s8_onchain_builders,Otterverse,1756.07,1317.0525,world-mini-app-otterverse,https://atlas.optimism.io/project/0xc55fe3df4a2689935cc0a4b912e3f913de7a8c1c6758370550aaf25a949ec79c
+2025-09-08,retrofunding_s8_onchain_builders,O＝C＝O,393.14,294.855,pileum-org,https://atlas.optimism.io/project/0xc55da0ccb43d29814ac5ac3e1eacb85a5008a30df7fff6c34c45684c89ad5f11
+2025-09-08,retrofunding_s8_onchain_builders,PHI,1376.38,1032.285,phi-labs-inc,https://atlas.optimism.io/project/0xf87906563da69538c969ba438f127ce5f2196e76c84c9026ab6dafc4280b6be3
+2025-09-08,retrofunding_s8_onchain_builders,PUF,4524.41,3393.3075,world-mini-app-puf,https://atlas.optimism.io/project/0x2c41bf7b4d36a344881581e20ecb2929d38c3415fffa4bf65f81ae049dfb2e72
+2025-09-08,retrofunding_s8_onchain_builders,PancakeSwap,5000.0,3750.0,pancakeswap,https://atlas.optimism.io/project/0x1ac8413aaf8110410b9447af27251ba89311f5ec4e2d289006e834b122a44dbf
+2025-09-08,retrofunding_s8_onchain_builders,Party.app + Party Protocol,241.29,180.9675,party-dao,https://atlas.optimism.io/project/0x850df51e29f2846a5f085d88e6b6fc13fad51ad7161f8a825ed09d470668161a
+2025-09-08,retrofunding_s8_onchain_builders,Passport XYZ | Gitcoin Passport,378.55,283.9125,passportxyz,https://atlas.optimism.io/project/0x120cdd8e43ae1efbafdf02eda876e1952c05a52870c8d5a8f56d9ec0f79f586d
+2025-09-08,retrofunding_s8_onchain_builders,Pinto Protocol,2707.23,2030.4225,pinto-org,https://atlas.optimism.io/project/0x7eb6ba7a1057659d04ec414446c1b32509bf57704958139266c7120903446ad6
+2025-09-08,retrofunding_s8_onchain_builders,Plaza Finance,3933.62,2950.215,plaza-finance,https://atlas.optimism.io/project/0x61438e534ef14ce82cde9a10e36272e51cb56709b996e096157821948a705856
+2025-09-08,retrofunding_s8_onchain_builders,Rainbow (Rainbow Router),348.88,261.66,rainbow,https://atlas.optimism.io/project/0xffffeb1d3576c1e847701c225975ee1a10259e05366b477e98fea7a47c5e5896
+2025-09-08,retrofunding_s8_onchain_builders,Relay Protocol,5000.0,3750.0,reservoirprotocol,https://atlas.optimism.io/project/0x250065e82e6a2fd0127f0f7c7e0df7eb305810bd9796f72aa28a0c7f2c71ae08
+2025-09-08,retrofunding_s8_onchain_builders,Reserve Protocol,260.2,195.15,reserve-protocol,https://atlas.optimism.io/project/0xab1ddf597f6539acc5ad601c2a6d2899c0475cfd9cc3b837939b1084ba5d7a36
+2025-09-08,retrofunding_s8_onchain_builders,Rubic,303.47,227.6025,cryptorubic,https://atlas.optimism.io/project/0xbd0a2132830ab98440f052dd378cfad9cc3133bd0fa226fd485da2540179b458
+2025-09-08,retrofunding_s8_onchain_builders,SOCKET protocol,1386.72,1040.04,socket,https://atlas.optimism.io/project/0xe8833ceee8beb2b3fb0f7f2dcef576f6f9cf20e35d8e53324d71b0ed47b01982
+2025-09-08,retrofunding_s8_onchain_builders,SONEX,1852.58,1389.435,sonex,https://atlas.optimism.io/project/0x57b84242462a1ddfb9006369b96a60d85ec41fa29aa20b8f2902ce9ba22e3f54
+2025-09-08,retrofunding_s8_onchain_builders,Sablier,371.17,278.3775,sablier,https://atlas.optimism.io/project/0x7262ed9c020b3b41ac7ba405aab4ff37575f8b6f975ebed2e65554a08419f8f4
+2025-09-08,retrofunding_s8_onchain_builders,Sake,588.03,441.0225,sake-finance,https://atlas.optimism.io/project/0x18923b60296e26a8ce35a0b4754cd6fd5427b2820a202f82901c826794fdbc9e
+2025-09-08,retrofunding_s8_onchain_builders,Smol,357.35,268.01250000000000,smoldapp,https://atlas.optimism.io/project/0x79fa54d6c030c7803827e96933fc93b092f638079c738d13a27a08b3905b95ec
+2025-09-08,retrofunding_s8_onchain_builders,Splits,352.98,264.735,0x-splits,https://atlas.optimism.io/project/0xb6266f3d955040aa7583f2f346db87abe0649f545389af3cc8fe302aacfc850b
+2025-09-08,retrofunding_s8_onchain_builders,Stargate Finance,1304.01,978.0075,stargate-finance,https://atlas.optimism.io/project/0x62e37e96aa6e1cbfb6bd24b97c4b8f1e12cc3fe35d5388d2f041c42a12b40745
+2025-09-08,retrofunding_s8_onchain_builders,SuperSwap,659.98,494.985,superswapink,https://atlas.optimism.io/project/0x8f7edabd00cd8a9bc0065eec465bd3d97ebe3f4632c8d3d52b336a9bc1d8fb3a
+2025-09-08,retrofunding_s8_onchain_builders,Superchain Safe,244.33,183.2475,superchain-safe-protofire,https://atlas.optimism.io/project/0x31704fee34d3edec158b5df714b613642bfbbb58ad7466204ded66a3f811b979
+2025-09-08,retrofunding_s8_onchain_builders,Superfluid,2361.44,1771.08,superfluid,https://atlas.optimism.io/project/0x3ecbf66c1b21342b26acb0f7d4c6b8bbbef168ffafff3f425de3503fd8dfa535
+2025-09-08,retrofunding_s8_onchain_builders,Superform,264.48,198.36,superform-xyz,https://atlas.optimism.io/project/0x82edc3ac2a03da21c5a6033159ba8e97aab2f61dc5d1d9813929fea6d6c35362
+2025-09-08,retrofunding_s8_onchain_builders,Superhero,482.34,361.755,world-mini-app-superhero,https://atlas.optimism.io/project/0x42bdd05fa3beb0b21780bbd35b34eefc3e69e45bc4f17043f6eb6b2bbed26237
+2025-09-08,retrofunding_s8_onchain_builders,Sushiswap,1986.95,1490.2125,sushi,https://atlas.optimism.io/project/0x41b2ae8a2ead458ff7c85549a9a11380353e1ae4b234666312d495326636f77a
+2025-09-08,retrofunding_s8_onchain_builders,SwapBased,1508.51,1131.3825,swapbased,https://atlas.optimism.io/project/0x8595f830f4d1716621d19bca6394f304837133fb473d8fcd1699e84402df1409
+2025-09-08,retrofunding_s8_onchain_builders,SwapMode,492.99,369.7425,swapmode,https://atlas.optimism.io/project/0x491ffd3c2e4c25ab7fbdbefe0f5fc8dc2beee5ab801287b9c6c93c9c3c810463
+2025-09-08,retrofunding_s8_onchain_builders,SynFutures,3137.92,2353.44,synfutures,https://atlas.optimism.io/project/0x596292c1581406fc4cfba89bc8ed86e32c7ac85c6239d074df7b91fcbc53f4c8
+2025-09-08,retrofunding_s8_onchain_builders,TPulseFi,954.53,715.8975,world-mini-app-tpulsefi,https://atlas.optimism.io/project/0x84893ce34d8069c43d8814db55a1ff5d472e4765650f0c37c1156b5ce97421ff
+2025-09-08,retrofunding_s8_onchain_builders,The Box,3777.77,2833.3275,world-mini-app-birdgames,https://atlas.optimism.io/project/0x00d5eaebec0fa6a41bbf5e29d347162dabc04dfffcd188663fc16393a5d9917a
+2025-09-08,retrofunding_s8_onchain_builders,The Button,412.33,309.2475,world-mini-app-hocus-labs,https://atlas.optimism.io/project/0xe2ef3fbfd10df401a0221939359e96af29805db8936c1199ae7532262c69ec5f
+2025-09-08,retrofunding_s8_onchain_builders,UNO,3798.46,2848.8450000000000,party-dao,https://atlas.optimism.io/project/0x9fb539aa3ddb63cda1c29b50fbeaa6071f290926ce10f3d224233577b823454e
+2025-09-08,retrofunding_s8_onchain_builders,Uman,443.22,332.415,world-mini-app-samiibou,https://atlas.optimism.io/project/0x7e7d21d6fd33a544b7d1dc853239b1af732c778d16dbf0e2e059f5f34b1c1bfe
+2025-09-08,retrofunding_s8_onchain_builders,Veil Cash,284.05,213.0375,veildotcash,https://atlas.optimism.io/project/0x40cda7edf27894d647d9433ded29290966f5c258dade2c3ea36427fccf0ef3c9
+2025-09-08,retrofunding_s8_onchain_builders,Velodrome Finance,5000.0,3750.0,velodrome,https://atlas.optimism.io/project/0x08df6e20a3cfabbaf8f34d4f4d048fe7da40447c24be0f3ad513db6f13c755dd
+2025-09-08,retrofunding_s8_onchain_builders,Vexy Marketplace,981.2,735.9000000000000,,https://atlas.optimism.io/project/0x34521bed3b3eb4c08223fb87b6fcc64718d994bc3312c13522a67b90fbfd1df6
+2025-09-08,retrofunding_s8_onchain_builders,Virtuals Protocol,5000.0,3750.0,virtual-protocol,https://atlas.optimism.io/project/0x780cf3d5aa4e3c94b8a4157f4b06a3f92ebcc20813585e20e3fe0271bf76b7a9
+2025-09-08,retrofunding_s8_onchain_builders,WOOFi,1469.8,1102.35,woonetwork,https://atlas.optimism.io/project/0x000c2ce4773defb3010a58d3800d0ec9d432189c574ba26d3103f1db44a5af6d
+2025-09-08,retrofunding_s8_onchain_builders,Winance,442.38,331.785,,https://atlas.optimism.io/project/0x82d0c4b823b28da0bfeeef79d42a5daa8c039bdbeb75cd4b426c0748832a21da
+2025-09-08,retrofunding_s8_onchain_builders,World Billboard,630.22,472.665,world-mini-app-world-billboard,https://atlas.optimism.io/project/0xd17c16ed0ff3c31ae81ae9af4070a2150db0be538cabcb720c67cc5f221d3965
+2025-09-08,retrofunding_s8_onchain_builders,World MiniApps - NFT and Gaming,358.79,269.09250000000000,world-mini-app-world-miniapps---nft-and-gaming,https://atlas.optimism.io/project/0xcae812d91b7b86edf3141f44f006e8a03931ebc489e0a417b82b603bf325bc96
+2025-09-08,retrofunding_s8_onchain_builders,World Republic,2881.02,2160.765,worldrepublicorg,https://atlas.optimism.io/project/0x5831a5bc2b6e683bcb8e392453a85c5e7f755aa700e827ed9c3e1c6d67fb2a96
+2025-09-08,retrofunding_s8_onchain_builders,Worldle,930.16,697.62,,https://atlas.optimism.io/project/0x041baee0d8c07a4e89e4c6c19410d8f6cd0a8439cbe8ea0687bf9a504f1c6a88
+2025-09-08,retrofunding_s8_onchain_builders,X3X,481.43,361.0725,world-mini-app-x3x,https://atlas.optimism.io/project/0xfb9ddb0fdae7aa1049979189c20c53bad5ab49b44435ca939cef7c618c96a187
+2025-09-08,retrofunding_s8_onchain_builders,ZNS,945.96,709.47,,https://atlas.optimism.io/project/0xa2447abd4724c68eff8635f01a39a46bd00a2380a56513fbcd430653cfd74c98
+2025-09-08,retrofunding_s8_onchain_builders,deBridge,781.95,586.4625000000000,debridge-finance,https://atlas.optimism.io/project/0xf24315614063278ba3543e1717791132a9afa79b0e65baa01a85bcccbdfa215f
+2025-09-08,retrofunding_s8_onchain_builders,fxhash / $fxh,305.35,229.0125,fxhash,https://atlas.optimism.io/project/0xa2a580dae44336df1cbcb7a5303880f393068fb96116e10e180e10f5745dccd4
+2025-09-08,retrofunding_s8_onchain_builders,rhinofi,212.95,159.71250000000000,rhinofi,https://atlas.optimism.io/project/0x85bef37b528ec9d7e1a9cb864e298e3c117071507acd3f522c28561435d167f5
+2025-09-08,retrofunding_s8_onchain_builders,waveX,537.29,402.9675,,https://atlas.optimism.io/project/0xdb3560a0c42f54dea2bc0b226fb45dc14bc19821b95cc18fae812d199feb5cbc
+2025-10-10,retrofunding_s8_devtooling,Abi Ninja,1399.62,699.81,buidlguidl,https://atlas.optimism.io/project/0xafb4dc19ccc63057da88110df49234b311044bc73b070041bb8df03e583943ab
+2025-10-10,retrofunding_s8_devtooling,Aderyn,1391.45,695.725,cyfrin,https://atlas.optimism.io/project/0xa7d78d566bfa319479ec048c94c3d8c1f4d628a9344ba157fc4974dbf472dc3e
+2025-10-10,retrofunding_s8_devtooling,Ape Framework,4768.67,2384.335,apeworx,https://atlas.optimism.io/project/0xa0b16714baef75d97ec07fd48eaf42e79df92fe2a3c2d725d2388ede587ea54c
+2025-10-10,retrofunding_s8_devtooling,Blockscout open-source block explorer,1116.07,558.035,blockscout,https://atlas.optimism.io/project/0x663e4d25ca3f327365240471b4831ea3c989cb132bbf6ae8f5c1e15268591795
+2025-10-10,retrofunding_s8_devtooling,Brownie,5351.0,2675.5,eth-brownie,https://atlas.optimism.io/project/0x5200a7351f8d195401dc04631fb83e4836f73a2794f316b2739c03807f30a78b
+2025-10-10,retrofunding_s8_devtooling,Cannon,7758.35,3879.175,usecannon,https://atlas.optimism.io/project/0xc7798704a6d730cea776c4866a9636bfa04c1201e29b6b0c99cc3603bc1bca25
+2025-10-10,retrofunding_s8_devtooling,Create2Deployer,386.78,193.39,create2deployer,https://atlas.optimism.io/project/0x513265758a3804184b6a0771d99c1a4b04d3267bacd4b914e89ff991de229f6a
+2025-10-10,retrofunding_s8_devtooling,CreateX,3816.48,1908.24,createx,https://atlas.optimism.io/project/0x0008577196fa6ec286440b418e2f6305fc10e62ce759625d826be272ee6b45a3
+2025-10-10,retrofunding_s8_devtooling,DefiLlama,24941.78,12470.89,defi-llama,https://atlas.optimism.io/project/0xae07bfec2c3c90937679f8c8c5c32e80407c09903aa03d1b5e5a075e67592b86
+2025-10-10,retrofunding_s8_devtooling,Ethereum Attestation Service (EAS),1832.7,916.35,ethereum-attestation-service,https://atlas.optimism.io/project/0xa88844cea135382e3484e39c3172033437121b35ca0bc8b10b9b8253984876b5
+2025-10-10,retrofunding_s8_devtooling,Ethers.js,25000.0,12500.0,ethers-io,https://atlas.optimism.io/project/0xa3d07f453f70d844196d89d79848aa2e70a0bd8b38bf0f493cba1547bb3bca5e
+2025-10-10,retrofunding_s8_devtooling,Fe Language,871.53,435.765,fe-ethereum,https://atlas.optimism.io/project/0x541b7b08401d799b87f583c102a6c94cee7105f1b29dc630de5edbbd966d7c13
+2025-10-10,retrofunding_s8_devtooling,Foundry,25000.0,12500.0,foundry,https://atlas.optimism.io/project/0x4562c0630907577f433cad78c7e2cc03349d918b6c14ef982f11a2678f5999ad
+2025-10-10,retrofunding_s8_devtooling,Foundry MCP Server,744.81,372.405,foundry-mcp-server-praneshasp,https://atlas.optimism.io/project/0xa873dcdcc84e0022edd2f7d5cc8646667b87bf06609d506cd8e39dbd7412fa59
+2025-10-10,retrofunding_s8_devtooling,Hardhat,25000.0,12500.0,hardhat-nomicfoundation,https://atlas.optimism.io/project/0x670a2982f6d7786b58a8399bcabc23246365b21e533a97945e055791fc235e64
+2025-10-10,retrofunding_s8_devtooling,IPFS,7159.6,3579.8,ipfs,https://atlas.optimism.io/project/0x7f330267969cf845a983a9d4e7b7dbcca5c700a5191269af377836d109e0bb69
+2025-10-10,retrofunding_s8_devtooling,K Semantics of the Ethereum Virtual Machine (EVM),856.72,428.36,,https://atlas.optimism.io/project/0x8af71ece7f50d6962b589b19854ceac72b81e5f5b3014637b262c33809d5a395
+2025-10-10,retrofunding_s8_devtooling,Kontrol - formal verification tool based on Foundry and KEVM,458.12,229.06,runtimeverification,https://atlas.optimism.io/project/0x7348ae42266ff626319e8ea5398343b847603b3cc7101b03d8e4fb2b75ea8db3
+2025-10-10,retrofunding_s8_devtooling,Kurtosis,2700.63,1350.315,kurtosis-tech,https://atlas.optimism.io/project/0x35295108e0c7b4625d650fbdabd4888417782539f56159d39ac2f0e2411f607b
+2025-10-10,retrofunding_s8_devtooling,LI.FI,3692.46,1846.23,lifinance,https://atlas.optimism.io/project/0x517eaa9c56951de89261f2d7830ea49aae92f2a903104a17d9c5c2edd4959806
+2025-10-10,retrofunding_s8_devtooling,Maintaining simple-optimism-node,248.89,124.445,simple-optimism-node-smartcontracts,https://atlas.optimism.io/project/0x09b95c7697625da4915338750c5f78446817a3634cb38bc9155e26bbbc0c87f1
+2025-10-10,retrofunding_s8_devtooling,Medusa,1101.02,550.51,medusa-crytic,https://atlas.optimism.io/project/0xb9996d35862a7c60282da2adf3447f043580f586fcb702ff6869896d15ef6344
+2025-10-10,retrofunding_s8_devtooling,MerkleTreeJS,4974.69,2487.345,merkletreejs,https://atlas.optimism.io/project/0xc377ed1b705bcc856a628f961f1e7c8ca943e6f3727b7c179c657e227e8e852c
+2025-10-10,retrofunding_s8_devtooling,Multicaller,2686.04,1343.02,multicaller-vectorized,https://atlas.optimism.io/project/0xfc54b4a9c537be25238cba3f05100b733aeee83a3eb3fdae60d651b3b913390c
+2025-10-10,retrofunding_s8_devtooling,OpenRPC,3381.65,1690.825,open-rpc,https://atlas.optimism.io/project/0x6f8f610667400044907494c879b717e806a03bf519dcfd786edc7f2fa61d6db8
+2025-10-10,retrofunding_s8_devtooling,OpenZeppelin Contracts,25000.0,12500.0,openzeppelin,https://atlas.optimism.io/project/0x939241afa4c4b9e1dda6b8250baa8f04fa8b0debce738cfd324c0b18f9926d25
+2025-10-10,retrofunding_s8_devtooling,Otterscan,1448.61,724.305,otterscan,https://atlas.optimism.io/project/0xaed5941b7a9f20de83f5c839bda507be43cbf41777fc623abf4bf05773298826
+2025-10-10,retrofunding_s8_devtooling,PRBMath,5268.84,2634.42,prb-math-paulrberg,https://atlas.optimism.io/project/0x7e917a2d0718401c9fe2a82f43ea558f5128f251b1e658c76dc7ff9a5e9fd993
+2025-10-10,retrofunding_s8_devtooling,Party.app + Party Protocol,1207.17,603.585,party-dao,https://atlas.optimism.io/project/0x850df51e29f2846a5f085d88e6b6fc13fad51ad7161f8a825ed09d470668161a
+2025-10-10,retrofunding_s8_devtooling,Ponder,8912.12,4456.06,ponder-sh,https://atlas.optimism.io/project/0x351967474a454b494260a488f3ceb77d993580a4fe79fb6b6d132c70634bc516
+2025-10-10,retrofunding_s8_devtooling,Prettier Solidity,9590.18,4795.09,prettier-solidity,https://atlas.optimism.io/project/0xc6cac7cd3793888032cc8a9e5aef92550beeec2598f86f1ec6972ffd5b82a990
+2025-10-10,retrofunding_s8_devtooling,Remix Project,2259.73,1129.865,remix-ethereum,https://atlas.optimism.io/project/0x754c37e401e2527ab24b9d7ca3e042bfcbfebeef54a533f8833d46242d2c3017
+2025-10-10,retrofunding_s8_devtooling,Revm,8916.06,4458.03,revm-bluealloy,https://atlas.optimism.io/project/0xb2d109759fe14e11ac5cc100ab6006321ebdd7ffdefbd2efac93a002105f8e92
+2025-10-10,retrofunding_s8_devtooling,Revoke.cash,1457.12,728.56,revoke-cash,https://atlas.optimism.io/project/0xfbc74fb5d15b7b2554277371a41ee6ff1bf392377bce5fbfce140c2980cc4f64
+2025-10-10,retrofunding_s8_devtooling,Ronan Sandford,12327.31,6163.655,wighawag,https://atlas.optimism.io/project/0x9b639cc6061e41a1d12adb39619a2fddb7005074cf965a3a6f4eabc6eea31112
+2025-10-10,retrofunding_s8_devtooling,Rundler,479.64,239.82,alchemyplatform,https://atlas.optimism.io/project/0x2247247c751707d897f5c0eab670426d9c1c26d84e96ac226004afbf0080cba4
+2025-10-10,retrofunding_s8_devtooling,Rust Libp2p,3581.46,1790.73,libp2p,https://atlas.optimism.io/project/0xdf1bb03d08808e2d789f5eac8462bdc560f1bb5b0877f0cf8c66ab53a0bc2f5c
+2025-10-10,retrofunding_s8_devtooling,Slither,4681.95,2340.975,slither-crytic,https://atlas.optimism.io/project/0xdc3dce33fd5fb50cf932586d4257456ddf5040ba0955d97641646504c73dbd13
+2025-10-10,retrofunding_s8_devtooling,Snapshot,6082.95,3041.475,snapshot-labs,https://atlas.optimism.io/project/0x5e6c436e48e56d6d9622ba5d0be0035c314e2b29d2afc8f5f1ee8ac75cd42532
+2025-10-10,retrofunding_s8_devtooling,Solady,13504.82,6752.41,solady-vectorized,https://atlas.optimism.io/project/0x9151666888d0ca532a529be98a50d2eb992988117e202163f865fa9a27eb7149
+2025-10-10,retrofunding_s8_devtooling,Solc-select,3366.62,1683.31,solc-select-crytic,https://atlas.optimism.io/project/0x2a04bac7482169a929fd70444bbfac10654d0588e022db7527566dbfc307d2e9
+2025-10-10,retrofunding_s8_devtooling,Solhint,8939.38,4469.69,solhint-protofire,https://atlas.optimism.io/project/0xfa7d950cfda2c634b052b6c07e75daaa95dd22ac1f220b6862cfd24221d4cabc
+2025-10-10,retrofunding_s8_devtooling,Solidity,25000.0,12500.0,solidity-ethereum,https://atlas.optimism.io/project/0xcc8d03e014e121d10602eeff729b755d5dc6a317df0d6302c8a9d3b5424aaba8
+2025-10-10,retrofunding_s8_devtooling,Solidity Bytes Arrays Utils Library,5451.59,2725.795,solidity-bytes-utils-gnsps,https://atlas.optimism.io/project/0xd63cb23c26cc3bda03b1cc2971589fd26c9d22f3bbc8f1ff2bb74613e6d1c36d
+2025-10-10,retrofunding_s8_devtooling,Sourcify,689.83,344.915,sourcify-ethereum,https://atlas.optimism.io/project/0x51cda5996ef1a2ccd8fcf4ee5792337695599454c83eb1218c3ad4388dcb5bf5
+2025-10-10,retrofunding_s8_devtooling,Surl,1094.01,547.005,surl-memester-xyz,https://atlas.optimism.io/project/0x5c0234455c4b86b05ed0c612ac0d7e53cd2249686305af9b2184190b781b8063
+2025-10-10,retrofunding_s8_devtooling,Swiss-Knife.xyz,1317.49,658.745,swiss-knife-xyz,https://atlas.optimism.io/project/0x93c4efb5e2d7416c56ecdcd8244be8faf924194d65b514d90a7a51f6797cc012
+2025-10-10,retrofunding_s8_devtooling,Synpress,7984.9,3992.45,synpress-synthetixio,https://atlas.optimism.io/project/0xbb067b01988521110c91737f058e7301f608be231d850a72af1516bd034d161c
+2025-10-10,retrofunding_s8_devtooling,Tevm,4241.12,2120.56,evmts,https://atlas.optimism.io/project/0x2d90d9565ef127727845637425880545cfebe0931160ce25afe929f8ab415706
+2025-10-10,retrofunding_s8_devtooling,The Ethernaut,1738.6,869.3,ethernaut-openzeppelin,https://atlas.optimism.io/project/0x17fb589e599fe05e532b90c121eccc55b1249301e783dae226bad698872322da
+2025-10-10,retrofunding_s8_devtooling,Titanoboa,6065.46,3032.73,vyperlang,https://atlas.optimism.io/project/0x202a80f0f57630d04a26464d6492b3399059ca1187943032c37652eb2468a76f
+2025-10-10,retrofunding_s8_devtooling,VSCode Solidity Inspector ,301.59,150.795,vscode-solidity-inspector-praneshasp,https://atlas.optimism.io/project/0x3ec2d572a608cf939eaf7886402320b3b2229610c13bdb5cb0776bd097331e5a
+2025-10-10,retrofunding_s8_devtooling,Viem: TypeScript Interface for Ethereum,25000.0,12500.0,wevm,https://atlas.optimism.io/project/0x6bd057da522918a4675396313ae33a2f2788a1ceeb3bd7ae228015e3eb317a7d
+2025-10-10,retrofunding_s8_devtooling,Vscode Solidity Extension,398.99,199.495,vscode-solidity,https://atlas.optimism.io/project/0x819775803938d78eaa95809971ce94cae6a54b4df58505fa36153ffa1d55e12c
+2025-10-10,retrofunding_s8_devtooling,Vyper,6948.58,3474.29,vyperlang,https://atlas.optimism.io/project/0x9ca1f7b0e0d10d3bd2619e51a54f2e4175e029c87a2944cf1ebc89164ba77ea0
+2025-10-10,retrofunding_s8_devtooling,Wagmi: Reactive primitives for Ethereum apps ,25000.0,12500.0,wevm,https://atlas.optimism.io/project/0xc0615947773148cbc340b175fb9afc98dbb4e0acd31d018b1ee41a5538785abf
+2025-10-10,retrofunding_s8_devtooling,WhatsABI,6909.52,3454.76,whatsabi-shazow,https://atlas.optimism.io/project/0xabdfa10e699db5127100da1dd2403692afe8d86e793d57780f1c7e93437a73a0
+2025-10-10,retrofunding_s8_devtooling,alloy,7923.92,3961.96,alloy-rs,https://atlas.optimism.io/project/0x56ce7cbc27852a8d8ef5869dc9033a215c8893f799468f61527dacb9f92be790
+2025-10-10,retrofunding_s8_devtooling,bulloak,1323.82,661.91,bulloak-alexfertel,https://atlas.optimism.io/project/0x740bebbc731ec56dcc17c7d429656220a73960022c3809edf324bd8120285722
+2025-10-10,retrofunding_s8_devtooling,eRPC,7190.96,3595.48,erpc,https://atlas.optimism.io/project/0x1e7a1f9763d25b6844567a7133b1005ef6ed785642a75229acf1b9b25202a5f3
+2025-10-10,retrofunding_s8_devtooling,ethereum-bloom-filters,4020.97,2010.485,ethereum-bloom-filters-joshstevens19,https://atlas.optimism.io/project/0x4c9626843c4e3f3c96d80b0ec6b1d10b7682fc9b6d67ab61ece5a87648535b1f
+2025-10-10,retrofunding_s8_devtooling,ethereum-multicall,6190.68,3095.34,ethereum-multicall-joshstevens19,https://atlas.optimism.io/project/0x37fe5886f4c77d5a5cb947deff90158c045a5d207572763187748ac4dd4bd9b9
+2025-10-10,retrofunding_s8_devtooling,ethers-multicall-provider,2959.84,1479.92,ethers-multicall-provider-rubilmax,https://atlas.optimism.io/project/0xf46bb7a4597826d57ce9ef1579b7a11079dccfd8510770ad64b2e5a801d8ff27
+2025-10-10,retrofunding_s8_devtooling,evmc,295.09,147.545,evmc-joshstevens19,https://atlas.optimism.io/project/0xf4f7d13f2ac3c9805998d8540950883b872d7c5d7c81d6254dde8655af690b2a
+2025-10-10,retrofunding_s8_devtooling,foundry-gas-diff,317.0,158.5,foundry-gas-diff-rubilmax,https://atlas.optimism.io/project/0xb024f6abfa79f7eb7af334f56015509bb70355709991d31bc689c7bea3250f7e
+2025-10-10,retrofunding_s8_devtooling,foundry-storage-check,373.36,186.68,foundry-storage-check-rubilmax,https://atlas.optimism.io/project/0xfeafe16f8c1a25aebe754f3653340a17943a483a3e389464e44cf14613e210f0
+2025-10-10,retrofunding_s8_devtooling,hardhat-gas-reporter,7148.87,3574.435,hardhat-gas-reporter-cgewecke,https://atlas.optimism.io/project/0xc2d8139cd61ddc75689610ee0cca0fe37ba8bec3270beb6aac6eac91c6256f60
+2025-10-10,retrofunding_s8_devtooling,hevm,468.06,234.03,hevm-ethereum,https://atlas.optimism.io/project/0x2c97e213fef2bd3f30a71edf6ed48232640368d0083dc0a134a1b59391639bde
+2025-10-10,retrofunding_s8_devtooling,js-libp2p,3046.96,1523.48,libp2p,https://atlas.optimism.io/project/0x5a7e7c7acb21521e99021d746740b368801cbfe531301e50bdbaafdc24a0aac5
+2025-10-10,retrofunding_s8_devtooling,keccak256js,3727.48,1863.74,keccak256js,https://atlas.optimism.io/project/0x48220ef1d103189cd918e9290db4c4b99b463ae2817fb5ef0cc54556a7961b6f
+2025-10-10,retrofunding_s8_devtooling,noble cryptography,7339.66,3669.83,paulmillr,https://atlas.optimism.io/project/0x62d9a8a3b602c688610abfbe3965e04ca0d19c5c506f40e79cd185cb501d2018
+2025-10-10,retrofunding_s8_devtooling,rindexer,4923.12,2461.56,rindexer-joshstevens19,https://atlas.optimism.io/project/0x97525ec91080ddd917eaccabf9d383cf70a2f78839ab21eeabe1687e312f2132
+2025-10-10,retrofunding_s8_devtooling,rotki,5010.56,2505.28,rotki,https://atlas.optimism.io/project/0xc0ad090a80d748c19dce84d17f85d7b0016daa1c35f72ada2d92f469f8a77067
+2025-10-10,retrofunding_s8_devtooling,solidity-coverage,11978.88,5989.44,solidity-coverage-sc-forks,https://atlas.optimism.io/project/0x2bb095e1f297c71da8bd4ee15097abad3b99e299fe14cd6aa704df3f36d0ae22
+2025-10-10,retrofunding_s8_devtooling,thirdweb,4883.56,2441.78,third-web,https://atlas.optimism.io/project/0xc6052138bbdae5976fa2866f46b0537182d4126c4bb97485738d1b43f2276134
+2025-10-10,retrofunding_s8_devtooling,web3.py,10364.53,5182.265,web3py-ethereum,https://atlas.optimism.io/project/0xebe03c3d6d33cad60124b9b05ef6e2ff056293a1de3c5fa51dfbb90c86c14bf7
+2025-10-10,retrofunding_s8_devtooling,xdeployer,2723.46,1361.73,xdeployer,https://atlas.optimism.io/project/0x537097f27d55cb52d39b95c3ed65076349ab68aac48051d742d715456e0884d8
+2025-10-10,retrofunding_s8_devtooling,🏗️  Scaffold-ETH 2,11851.05,5925.525,buidlguidl,https://atlas.optimism.io/project/0x154a42e5ca88d7c2732fda74d6eb611057fc88dbe6f0ff3aae7b89c2cd1666ab
+2025-10-10,retrofunding_s8_devtooling,🐍 snekmate,4133.46,2066.73,snekmate,https://atlas.optimism.io/project/0x50159544ec22884b777a997a625c75bb02e55b1dc8934aad3b78678e7c11d039
+2025-10-10,retrofunding_s8_onchain_builders,AION,1312.3,656.15,world-mini-app-aion,https://atlas.optimism.io/project/0x12721a0927c5d0598380e718e69c7f3395cc7b8847da42ac384af9c59efd025d
+2025-10-10,retrofunding_s8_onchain_builders,Account Abstraction - ERC-4337,5000.0,2500.0,eth-infinitism-account-abstraction,https://atlas.optimism.io/project/0xb98778ca9ff41446e2bc304f7b5d27f0fa7c2bcd11df19e22d1352c06698a1f6
+2025-10-10,retrofunding_s8_onchain_builders,Across Protocol,1968.15,984.075,across,https://atlas.optimism.io/project/0x72723e07fe409557489a6643b43d9493a94c10ba68230b0527f01834cb6a550f
+2025-10-10,retrofunding_s8_onchain_builders,Arcadia Finance ,254.18,127.09,arcadia-finance,https://atlas.optimism.io/project/0xdd35cc4641c3c35bee5782fc0442b2a1b88a058ec0a7b90ba32c70347e4e9194
+2025-10-10,retrofunding_s8_onchain_builders,Arkada,1196.13,598.065,,https://atlas.optimism.io/project/0x5962ef9e4955bc4cd4c6ed080c55879be9ee2dddb1b7cd37d72182a142dc9eab
+2025-10-10,retrofunding_s8_onchain_builders,Arrows,467.57,233.785,,https://atlas.optimism.io/project/0x50b442d0244a351acff81a3efa0824983cb4488118af2462488c3376e72ad898
+2025-10-10,retrofunding_s8_onchain_builders,Avantis ,3500.07,1750.035,avantis-labs,https://atlas.optimism.io/project/0x6371518c95cfa543514e01a77d470c695fac36691cffa3a45e992b2c0cc6ba72
+2025-10-10,retrofunding_s8_onchain_builders,BMX,219.14,109.57,morphex-labs,https://atlas.optimism.io/project/0xe5c133e05956a3939b9a78f4ad5d0a897a027da60a7d5e1b6276a2266211f69f
+2025-10-10,retrofunding_s8_onchain_builders,BSX,213.04,106.52,bsx-exchange,https://atlas.optimism.io/project/0xc938557155993da8f33857e52d7deb04421d1bb341fc24216563aae64fe32d36
+2025-10-10,retrofunding_s8_onchain_builders,BaseSwap ,944.51,472.255,baseswapfi,https://atlas.optimism.io/project/0xca3f26e1c876e821d2384a5cb699c6be494f9810301c2e2be49c232656262642
+2025-10-10,retrofunding_s8_onchain_builders,Basepaint,1742.12,871.06,basepaint,https://atlas.optimism.io/project/0xc0901c8f9503f0bf91a1cca0c6c90e55af8719cc2237fb4a0bf0770b307cbd11
+2025-10-10,retrofunding_s8_onchain_builders,Beefy,356.53,178.265,beefy-finance,https://atlas.optimism.io/project/0x30769523b16315b6404ce3c6dbaf610028acdf3133dca8a4d427e0d19d3628c9
+2025-10-10,retrofunding_s8_onchain_builders,BitMaster,1194.76,597.38,world-mini-app-goodluckgame,https://atlas.optimism.io/project/0x79e3ed10841da009fbbaef5ac13c27022dd35e95ac5c02bae078775981a9aaa0
+2025-10-10,retrofunding_s8_onchain_builders,Brahma,1307.36,653.68,brahma,https://atlas.optimism.io/project/0xc66e357ad67e63954cd1eb79da4d507d8800518f06c82e423e93e8771e7b8d13
+2025-10-10,retrofunding_s8_onchain_builders,Cash Convert,2540.42,1270.21,kids-table-inc,https://atlas.optimism.io/project/0x2bdfa034cf1e853db8ed4b30531270c7a62d66550cd23383819e816abb234f0a
+2025-10-10,retrofunding_s8_onchain_builders,Coop Records,327.4,163.7,coop-records,https://atlas.optimism.io/project/0x0b06e685eab9c4fee7d93ca54e1c02281e2be560bfc54f43fa738961fa2ce4c1
+2025-10-10,retrofunding_s8_onchain_builders,CreateX,1418.4,709.2,createx,https://atlas.optimism.io/project/0x0008577196fa6ec286440b418e2f6305fc10e62ce759625d826be272ee6b45a3
+2025-10-10,retrofunding_s8_onchain_builders,Credit,1483.33,741.665,world-mini-app-credit,https://atlas.optimism.io/project/0x08447636de20816960f0427a65677df5571d503f09235b2bec37f7dd5c28161d
+2025-10-10,retrofunding_s8_onchain_builders,DAOBase,517.97,258.985,daobase-ai,https://atlas.optimism.io/project/0x76596da0afbf2980ce80e6238c974495fbe52f5c29ec38893dcfdacd5378eaa3
+2025-10-10,retrofunding_s8_onchain_builders,DIAMANTE,2355.92,1177.96,,https://atlas.optimism.io/project/0xc7104d126ffe628630e89f455711ef296175069fffb1f9c0e85b396ee1d23f27
+2025-10-10,retrofunding_s8_onchain_builders,DICE MAXx6,211.65,105.825,,https://atlas.optimism.io/project/0x22f19557b1142eeed40eceffa2e5b31fb8393ca57dafb3454035a71c613b5ce1
+2025-10-10,retrofunding_s8_onchain_builders,DNA Token,1237.34,618.67,dnatokenio,https://atlas.optimism.io/project/0xdafc4d2a060c7d08913ceb05b19c4fe7fb6d93a7f5f1142642be939be16bf6e9
+2025-10-10,retrofunding_s8_onchain_builders,DackieSwap,310.53,155.265,dackieswap,https://atlas.optimism.io/project/0x18e7582de42dd9a7fd2cb69fb6566b8bcb3e86b936b229b0c5af78fa1de791a4
+2025-10-10,retrofunding_s8_onchain_builders,Daimo Pay,543.12,271.56,daimo-pay,https://atlas.optimism.io/project/0xc850d11fe786d1168bfeda108721101427dd5425d9d9e6595c35573f7616e940
+2025-10-10,retrofunding_s8_onchain_builders,Dalgona,656.8,328.4,,https://atlas.optimism.io/project/0x1f998a77880db01b4938b7fa84fc2f6577fee032fd0a55393406e665d7f3a9e1
+2025-10-10,retrofunding_s8_onchain_builders,Double or Nothing,2594.42,1297.21,world-mini-app-goodluckgame,https://atlas.optimism.io/project/0x394cdf60010e890aeb52606b938e6ff6ef7a52b0b5a3e897daf0133bed243b14
+2025-10-10,retrofunding_s8_onchain_builders,Drop Wallet,3369.89,1684.945,world-mini-app-drop-wallet,https://atlas.optimism.io/project/0xf9af65e8afbd0fd21802bca92c9d0d6201a8b1d114d5c9170fea7e914fd2b392
+2025-10-10,retrofunding_s8_onchain_builders,EARN HUB!,1678.45,839.225,,https://atlas.optimism.io/project/0x6fbc494492f9d721670f2a4b6b7b9a3a86c5050cb342146d4d4e3a606e1a3478
+2025-10-10,retrofunding_s8_onchain_builders,Eggs Vault,3398.37,1699.185,holdstation,https://atlas.optimism.io/project/0xf4e56e0c6654d6ef621191708f27ee20242462f541d3e79dc5512e1a10d90736
+2025-10-10,retrofunding_s8_onchain_builders,Enso Build,3890.8,1945.4,ensobuild,https://atlas.optimism.io/project/0x738c0967c0f70a0a78d8794dcf2c40540f60ea9568e163dd5826b85e8e2a9a79
+2025-10-10,retrofunding_s8_onchain_builders,Ethereum Attestation Service (EAS),327.16,163.58,ethereum-attestation-service,https://atlas.optimism.io/project/0xa88844cea135382e3484e39c3172033437121b35ca0bc8b10b9b8253984876b5
+2025-10-10,retrofunding_s8_onchain_builders,FLAG!,3154.22,1577.11,party-dao,https://atlas.optimism.io/project/0x7d5bcf0b123ca5611f1bb0c889816753cc215b0a230849c8464c6c2a08c4eddc
+2025-10-10,retrofunding_s8_onchain_builders,Flaunch,1252.18,626.09,flayerlabs,https://atlas.optimism.io/project/0x259b729af86ba38c0c84be9b739dfbca109a6df985371d8cabd43116d18d7a1a
+2025-10-10,retrofunding_s8_onchain_builders,GM,1207.32,603.66,inkonchain,https://atlas.optimism.io/project/0x2c1d2ae68e4a718a04a41f1a9fde1ed0648602e08c150e3f72d3dc7ef22dd71a
+2025-10-10,retrofunding_s8_onchain_builders,GMonchain,529.84,264.92,,https://atlas.optimism.io/project/0xef71b036123a72aa9aa64afb1263751bdfc7e7e4e63ec658c323136dc3a88d37
+2025-10-10,retrofunding_s8_onchain_builders,Gains Network (gTrade),873.54,436.77,gainsnetwork,https://atlas.optimism.io/project/0x70ba3cb2e433f1cd9ace8aea84c46d167ba5db12293cd108eaca068d06be3a71
+2025-10-10,retrofunding_s8_onchain_builders,Guild.xyz,337.05,168.525,guildxyz,https://atlas.optimism.io/project/0x3d009f8f7c1e8a3bcbc81ca8ed60d2e86b956dd0fa68c4595f851be37052a2b5
+2025-10-10,retrofunding_s8_onchain_builders,Gyroscope,2040.71,1020.355,gyrostable,https://atlas.optimism.io/project/0x3526b9c6fdc34076d7d2c31893b94e760f4d5a010387b6b76b45f8b5577ceb98
+2025-10-10,retrofunding_s8_onchain_builders,Highlight,538.83,269.415,highlightxyz,https://atlas.optimism.io/project/0x331511dd6300baf10a35b2d3f3953fd7160412b970049b3a63b64564ce26c347
+2025-10-10,retrofunding_s8_onchain_builders,Holdstation Wallet,1684.23,842.115,holdstation,https://atlas.optimism.io/project/0x8fbddc02ddbc9c9b303b7bbb645aa933541876a31a93d7dea165fb0283d7f685
+2025-10-10,retrofunding_s8_onchain_builders,Hydrex,3045.34,1522.67,hydrex-fi,https://atlas.optimism.io/project/0xab28184ffcd1429ce9bbcffdba320787e9d2ab1e2f365352af3b5a9ef64f4600
+2025-10-10,retrofunding_s8_onchain_builders,Ionic Protocol,460.85,230.425,ionicprotocol,https://atlas.optimism.io/project/0xbcb5c437d5347be21add3972512679054416805274f80e85ab8053ae79340a69
+2025-10-10,retrofunding_s8_onchain_builders,Kim Exchange,291.99,145.995,kim-protocol,https://atlas.optimism.io/project/0xfd9f98de666c5b0a5ce96d4a4b8d4ceee9f8c2156734d57bf6c23d0cff183e90
+2025-10-10,retrofunding_s8_onchain_builders,Kyo finance,4578.11,2289.055,kyo-finance,https://atlas.optimism.io/project/0x5958eb35cf4d4b8871924adc5e6272eff2ac701e368ca6ad043ee486cce9e223
+2025-10-10,retrofunding_s8_onchain_builders,LI.FI,2965.13,1482.565,lifinance,https://atlas.optimism.io/project/0x517eaa9c56951de89261f2d7830ea49aae92f2a903104a17d9c5c2edd4959806
+2025-10-10,retrofunding_s8_onchain_builders,Layer3,1987.85,993.925,layer3xyz,https://atlas.optimism.io/project/0x91a4420e2fcc8311e97dad480f201a8ce221f2cd64c2de77280cbcc6ce193752
+2025-10-10,retrofunding_s8_onchain_builders,LeverageX by Javsphere,1349.41,674.705,javsphere,https://atlas.optimism.io/project/0xf9513b5bfca3be3513450bd56b48ae485ce157aa56c1d8b2e06a68bce0b8d084
+2025-10-10,retrofunding_s8_onchain_builders,MetaMap,887.86,443.93,,https://atlas.optimism.io/project/0x4f64c34669043d9fac6a8fd01a93c27b2ab0c88a803c7b72dedb8cef035ede01
+2025-10-10,retrofunding_s8_onchain_builders,Mint Club,689.07,344.535,mintclub-steemhunt,https://atlas.optimism.io/project/0x0ee3defac0e2a31b995bc073ac02a2140aaf01679e141eb8d1d80409f75f90ea
+2025-10-10,retrofunding_s8_onchain_builders,Morkie,285.51,142.755,morkiexyz,https://atlas.optimism.io/project/0x2a2d2dbfa03619094fbeb6474776f2f3b5f6be443c8576abc6f3caa2c18dc45e
+2025-10-10,retrofunding_s8_onchain_builders,Multicaller,324.23,162.115,multicaller-vectorized,https://atlas.optimism.io/project/0xfc54b4a9c537be25238cba3f05100b733aeee83a3eb3fdae60d651b3b913390c
+2025-10-10,retrofunding_s8_onchain_builders,MySphere,234.65,117.325,,https://atlas.optimism.io/project/0x94db05b6b1f8196cbc00d76fba5434c275f26cc90826351ecb327a85df4bb25a
+2025-10-10,retrofunding_s8_onchain_builders,Neptune Finance,417.97,208.985,nepfinance,https://atlas.optimism.io/project/0x469f813ce1b0c64293d1f884363808f076d27abc8c6060bd3abe46bedd0d7982
+2025-10-10,retrofunding_s8_onchain_builders,ORB,1820.92,910.46,party-dao,https://atlas.optimism.io/project/0xb620f012eb197e5661f65c1a5aee6a4bbb43629f0056879ae4dc66adf8383ae3
+2025-10-10,retrofunding_s8_onchain_builders,ORO,4734.92,2367.46,party-dao,https://atlas.optimism.io/project/0x40ee6048c99aefd288f6133db207849d0951fe6b62afa1cca0db5a4ad7f558de
+2025-10-10,retrofunding_s8_onchain_builders,Oku Trade,507.28,253.64,gfx-labs,https://atlas.optimism.io/project/0xb926ab918147d2264dba94a429eb07986aa533fd6062a78736d3eda4e0b4a69b
+2025-10-10,retrofunding_s8_onchain_builders,Omni Exchange,2442.06,1221.03,omni-exchange,https://atlas.optimism.io/project/0xdd73108cfd9ee7517836e18800a06412a6ba08b43356791c2db6a7a75b910692
+2025-10-10,retrofunding_s8_onchain_builders,OnChainGM,1915.72,957.86,onchaingm,https://atlas.optimism.io/project/0xa1f96576ad998e804140caccd478bae81b8b1059a107166df87b59fbf42c9e4a
+2025-10-10,retrofunding_s8_onchain_builders,OpenOcean,1267.93,633.965,openocean-finance,https://atlas.optimism.io/project/0x24ff0fb2933e55b169a80d9bd35a00a7011795387717b27445ccdc0f8660d740
+2025-10-10,retrofunding_s8_onchain_builders,Orbiter,262.28,131.14,orbiter-finance,https://atlas.optimism.io/project/0x9d4b7018b3a7c6010c5035ef99c485f960e6705ac0e99b4d832b2e748490f089
+2025-10-10,retrofunding_s8_onchain_builders,Origin Protocol,420.17,210.085,originprotocol,https://atlas.optimism.io/project/0x9c691ba3012549259099205cc1a7ca4d09d9b7a24a1b7b821b52c7bf1c9b89f4
+2025-10-10,retrofunding_s8_onchain_builders,Orki Finance,707.6,353.8,,https://atlas.optimism.io/project/0x578d022acd70130def85327e2926a2ed4545e08617ced951ef54a872f5a2a5f5
+2025-10-10,retrofunding_s8_onchain_builders,Otterverse,1594.58,797.29,world-mini-app-otterverse,https://atlas.optimism.io/project/0xc55fe3df4a2689935cc0a4b912e3f913de7a8c1c6758370550aaf25a949ec79c
+2025-10-10,retrofunding_s8_onchain_builders,O＝C＝O,341.6,170.8,pileum-org,https://atlas.optimism.io/project/0xc55da0ccb43d29814ac5ac3e1eacb85a5008a30df7fff6c34c45684c89ad5f11
+2025-10-10,retrofunding_s8_onchain_builders,PHI,525.52,262.76,phi-labs-inc,https://atlas.optimism.io/project/0xf87906563da69538c969ba438f127ce5f2196e76c84c9026ab6dafc4280b6be3
+2025-10-10,retrofunding_s8_onchain_builders,PUF,4937.47,2468.735,world-mini-app-puf,https://atlas.optimism.io/project/0x2c41bf7b4d36a344881581e20ecb2929d38c3415fffa4bf65f81ae049dfb2e72
+2025-10-10,retrofunding_s8_onchain_builders,PancakeSwap,5000.0,2500.0,pancakeswap,https://atlas.optimism.io/project/0x1ac8413aaf8110410b9447af27251ba89311f5ec4e2d289006e834b122a44dbf
+2025-10-10,retrofunding_s8_onchain_builders,Pinto Protocol,1950.98,975.49,pinto-org,https://atlas.optimism.io/project/0x7eb6ba7a1057659d04ec414446c1b32509bf57704958139266c7120903446ad6
+2025-10-10,retrofunding_s8_onchain_builders,Pixotchi,754.43,377.215,pixotchi,https://atlas.optimism.io/project/0x43c0bbbedc1c04715c3fb34b9387a0779a0d43092c716c29949e7099429eccdb
+2025-10-10,retrofunding_s8_onchain_builders,Rainbow (Rainbow Router),625.64,312.82,rainbow,https://atlas.optimism.io/project/0xffffeb1d3576c1e847701c225975ee1a10259e05366b477e98fea7a47c5e5896
+2025-10-10,retrofunding_s8_onchain_builders,Relay Protocol,5000.0,2500.0,reservoirprotocol,https://atlas.optimism.io/project/0x250065e82e6a2fd0127f0f7c7e0df7eb305810bd9796f72aa28a0c7f2c71ae08
+2025-10-10,retrofunding_s8_onchain_builders,Rolu,746.76,373.38,rolu-abdulrahimiqbal,https://atlas.optimism.io/project/0xaf0b91c11966164d5b8e3cf02f082b19479c5f3faca1108ca1e2aec1e1177d06
+2025-10-10,retrofunding_s8_onchain_builders,SOCKET protocol,2264.03,1132.015,socket,https://atlas.optimism.io/project/0xe8833ceee8beb2b3fb0f7f2dcef576f6f9cf20e35d8e53324d71b0ed47b01982
+2025-10-10,retrofunding_s8_onchain_builders,SONEX,1727.09,863.545,sonex,https://atlas.optimism.io/project/0x57b84242462a1ddfb9006369b96a60d85ec41fa29aa20b8f2902ce9ba22e3f54
+2025-10-10,retrofunding_s8_onchain_builders,Sake,3502.25,1751.125,sake-finance,https://atlas.optimism.io/project/0x18923b60296e26a8ce35a0b4754cd6fd5427b2820a202f82901c826794fdbc9e
+2025-10-10,retrofunding_s8_onchain_builders,Send,524.19,262.095,0xsend,https://atlas.optimism.io/project/0x5614d129eba060ce7d224e8e8f9f29aeddfdb572b0dd45edc81f18f5307bc01a
+2025-10-10,retrofunding_s8_onchain_builders,Sonus Exchange,1457.05,728.525,sonusexchange,https://atlas.optimism.io/project/0x96767e87a27cdb9798f40c3a6fd78e70da611afe53a5e45cbaafc50cae4ad0e7
+2025-10-10,retrofunding_s8_onchain_builders,Splits,272.46,136.23,0x-splits,https://atlas.optimism.io/project/0xb6266f3d955040aa7583f2f346db87abe0649f545389af3cc8fe302aacfc850b
+2025-10-10,retrofunding_s8_onchain_builders,Stargate Finance,922.22,461.11,stargate-finance,https://atlas.optimism.io/project/0x62e37e96aa6e1cbfb6bd24b97c4b8f1e12cc3fe35d5388d2f041c42a12b40745
+2025-10-10,retrofunding_s8_onchain_builders,SuperSwap,227.54,113.77,superswapink,https://atlas.optimism.io/project/0x8f7edabd00cd8a9bc0065eec465bd3d97ebe3f4632c8d3d52b336a9bc1d8fb3a
+2025-10-10,retrofunding_s8_onchain_builders,Superfluid,1424.63,712.315,superfluid,https://atlas.optimism.io/project/0x3ecbf66c1b21342b26acb0f7d4c6b8bbbef168ffafff3f425de3503fd8dfa535
+2025-10-10,retrofunding_s8_onchain_builders,Superhero,360.45,180.225,world-mini-app-superhero,https://atlas.optimism.io/project/0x42bdd05fa3beb0b21780bbd35b34eefc3e69e45bc4f17043f6eb6b2bbed26237
+2025-10-10,retrofunding_s8_onchain_builders,Sushiswap,1349.32,674.66,sushi,https://atlas.optimism.io/project/0x41b2ae8a2ead458ff7c85549a9a11380353e1ae4b234666312d495326636f77a
+2025-10-10,retrofunding_s8_onchain_builders,SwapBased,857.38,428.69,swapbased,https://atlas.optimism.io/project/0x8595f830f4d1716621d19bca6394f304837133fb473d8fcd1699e84402df1409
+2025-10-10,retrofunding_s8_onchain_builders,SwapMode,216.84,108.42,swapmode,https://atlas.optimism.io/project/0x491ffd3c2e4c25ab7fbdbefe0f5fc8dc2beee5ab801287b9c6c93c9c3c810463
+2025-10-10,retrofunding_s8_onchain_builders,Symbiosis,297.06,148.53,symbiosis-finance,https://atlas.optimism.io/project/0x47047238c33fb3f16f4e93d5b9844c06a64525c8a483538dc72085c0df4495e8
+2025-10-10,retrofunding_s8_onchain_builders,SynFutures,2307.08,1153.54,synfutures,https://atlas.optimism.io/project/0x596292c1581406fc4cfba89bc8ed86e32c7ac85c6239d074df7b91fcbc53f4c8
+2025-10-10,retrofunding_s8_onchain_builders,SynStation,326.79,163.395,synstation-staking-contract-wasd3rplay,https://atlas.optimism.io/project/0x869d601d2c5d78bcad37b589225632a9674c7bfbafeebf3c379ccc41265d6f33
+2025-10-10,retrofunding_s8_onchain_builders,TPulseFi,679.44,339.72,world-mini-app-tpulsefi,https://atlas.optimism.io/project/0x84893ce34d8069c43d8814db55a1ff5d472e4765650f0c37c1156b5ce97421ff
+2025-10-10,retrofunding_s8_onchain_builders,The Box,3082.53,1541.265,world-mini-app-birdgames,https://atlas.optimism.io/project/0x00d5eaebec0fa6a41bbf5e29d347162dabc04dfffcd188663fc16393a5d9917a
+2025-10-10,retrofunding_s8_onchain_builders,The Button,593.11,296.555,world-mini-app-hocus-labs,https://atlas.optimism.io/project/0xe2ef3fbfd10df401a0221939359e96af29805db8936c1199ae7532262c69ec5f
+2025-10-10,retrofunding_s8_onchain_builders,UNO,5000.0,2500.0,party-dao,https://atlas.optimism.io/project/0x9fb539aa3ddb63cda1c29b50fbeaa6071f290926ce10f3d224233577b823454e
+2025-10-10,retrofunding_s8_onchain_builders,Uman,379.73,189.865,world-mini-app-samiibou,https://atlas.optimism.io/project/0x7e7d21d6fd33a544b7d1dc853239b1af732c778d16dbf0e2e059f5f34b1c1bfe
+2025-10-10,retrofunding_s8_onchain_builders,UniDerpFun,591.69,295.845,,https://atlas.optimism.io/project/0x6318678f29da36a652cda174bf1cf5ed9bba753381c7b3b613b981803ba3d550
+2025-10-10,retrofunding_s8_onchain_builders,Uniswap on Superchain (Oku),5000.0,2500.0,uniswap,https://atlas.optimism.io/project/0x9d9162fac637991d2a56da8fbe03dba24c87eb82d47c7a00b921e39e956f8a9d
+2025-10-10,retrofunding_s8_onchain_builders,Untitled Bank,1562.41,781.205,untitled-bank,https://atlas.optimism.io/project/0x2ecedc3cad0a68d398020bf6d41167535fcaeb6d5bbf1602d6318f07e9c59af6
+2025-10-10,retrofunding_s8_onchain_builders,Velodrome Finance,5000.0,2500.0,velodrome,https://atlas.optimism.io/project/0x08df6e20a3cfabbaf8f34d4f4d048fe7da40447c24be0f3ad513db6f13c755dd
+2025-10-10,retrofunding_s8_onchain_builders,Virtuals Protocol,5000.0,2500.0,virtual-protocol,https://atlas.optimism.io/project/0x780cf3d5aa4e3c94b8a4157f4b06a3f92ebcc20813585e20e3fe0271bf76b7a9
+2025-10-10,retrofunding_s8_onchain_builders,WOOFi,1144.17,572.085,woonetwork,https://atlas.optimism.io/project/0x000c2ce4773defb3010a58d3800d0ec9d432189c574ba26d3103f1db44a5af6d
+2025-10-10,retrofunding_s8_onchain_builders,Winance,257.64,128.82,,https://atlas.optimism.io/project/0x82d0c4b823b28da0bfeeef79d42a5daa8c039bdbeb75cd4b426c0748832a21da
+2025-10-10,retrofunding_s8_onchain_builders,World Billboard,930.9,465.45,world-mini-app-world-billboard,https://atlas.optimism.io/project/0xd17c16ed0ff3c31ae81ae9af4070a2150db0be538cabcb720c67cc5f221d3965
+2025-10-10,retrofunding_s8_onchain_builders,World MiniApps - NFT and Gaming,2322.31,1161.155,world-mini-app-world-miniapps---nft-and-gaming,https://atlas.optimism.io/project/0xcae812d91b7b86edf3141f44f006e8a03931ebc489e0a417b82b603bf325bc96
+2025-10-10,retrofunding_s8_onchain_builders,World Republic,3062.05,1531.025,worldrepublicorg,https://atlas.optimism.io/project/0x5831a5bc2b6e683bcb8e392453a85c5e7f755aa700e827ed9c3e1c6d67fb2a96
+2025-10-10,retrofunding_s8_onchain_builders,Worldle,801.13,400.565,,https://atlas.optimism.io/project/0x041baee0d8c07a4e89e4c6c19410d8f6cd0a8439cbe8ea0687bf9a504f1c6a88
+2025-10-10,retrofunding_s8_onchain_builders,X3X,599.77,299.885,world-mini-app-x3x,https://atlas.optimism.io/project/0xfb9ddb0fdae7aa1049979189c20c53bad5ab49b44435ca939cef7c618c96a187
+2025-10-10,retrofunding_s8_onchain_builders,ZNS,1154.98,577.49,,https://atlas.optimism.io/project/0xa2447abd4724c68eff8635f01a39a46bd00a2380a56513fbcd430653cfd74c98
+2025-10-10,retrofunding_s8_onchain_builders,deBridge,1073.71,536.855,debridge-finance,https://atlas.optimism.io/project/0xf24315614063278ba3543e1717791132a9afa79b0e65baa01a85bcccbdfa215f
+2025-10-10,retrofunding_s8_onchain_builders,doginme memecoin,365.02,182.51,doginme,https://atlas.optimism.io/project/0xeecfa614f020c2ea4c2eb431246befedf35ddc6c52cfaa83d0c4caf2f580f9f4
+2025-10-10,retrofunding_s8_onchain_builders,waveX,822.57,411.285,,https://atlas.optimism.io/project/0xdb3560a0c42f54dea2bc0b226fb45dc14bc19821b95cc18fae812d199feb5cbc
+2025-10-10,retrofunding_s8_onchain_builders,zkCodex,333.49,166.745,zkcodex,https://atlas.optimism.io/project/0x7a4bb37bc7997b8e9b34775164682ff1f441b716cd235f2e7cdce76677b66007
+2025-11-07,retrofunding_s8_devtooling,Abi Ninja,1683.11,723.7373000000000,buidlguidl,https://atlas.optimism.io/project/0xafb4dc19ccc63057da88110df49234b311044bc73b070041bb8df03e583943ab
+2025-11-07,retrofunding_s8_devtooling,Aderyn,1352.25,581.4675,cyfrin,https://atlas.optimism.io/project/0xa7d78d566bfa319479ec048c94c3d8c1f4d628a9344ba157fc4974dbf472dc3e
+2025-11-07,retrofunding_s8_devtooling,Ape Framework,4646.86,1998.1498,apeworx,https://atlas.optimism.io/project/0xa0b16714baef75d97ec07fd48eaf42e79df92fe2a3c2d725d2388ede587ea54c
+2025-11-07,retrofunding_s8_devtooling,Blockscout open-source block explorer,1485.95,638.9585,blockscout,https://atlas.optimism.io/project/0x663e4d25ca3f327365240471b4831ea3c989cb132bbf6ae8f5c1e15268591795
+2025-11-07,retrofunding_s8_devtooling,Brownie,5721.06,2460.0558,eth-brownie,https://atlas.optimism.io/project/0x5200a7351f8d195401dc04631fb83e4836f73a2794f316b2739c03807f30a78b
+2025-11-07,retrofunding_s8_devtooling,Cannon,7479.78,3216.3054,usecannon,https://atlas.optimism.io/project/0xc7798704a6d730cea776c4866a9636bfa04c1201e29b6b0c99cc3603bc1bca25
+2025-11-07,retrofunding_s8_devtooling,Create2Deployer,349.13,150.1259,create2deployer,https://atlas.optimism.io/project/0x513265758a3804184b6a0771d99c1a4b04d3267bacd4b914e89ff991de229f6a
+2025-11-07,retrofunding_s8_devtooling,CreateX,3613.54,1553.8222,createx,https://atlas.optimism.io/project/0x0008577196fa6ec286440b418e2f6305fc10e62ce759625d826be272ee6b45a3
+2025-11-07,retrofunding_s8_devtooling,DefiLlama,25000.0,10750.0,defi-llama,https://atlas.optimism.io/project/0xae07bfec2c3c90937679f8c8c5c32e80407c09903aa03d1b5e5a075e67592b86
+2025-11-07,retrofunding_s8_devtooling,Ethereum Attestation Service (EAS),1810.85,778.6655,ethereum-attestation-service,https://atlas.optimism.io/project/0xa88844cea135382e3484e39c3172033437121b35ca0bc8b10b9b8253984876b5
+2025-11-07,retrofunding_s8_devtooling,Ethernal,1074.22,461.9146,tryethernal,https://atlas.optimism.io/project/0x14eab8b10f729239d63df6c0cb85f666c3eb1f2dd440ebd003c1821f186a49da
+2025-11-07,retrofunding_s8_devtooling,Ethers.js,25000.0,10750.0,ethers-io,https://atlas.optimism.io/project/0xa3d07f453f70d844196d89d79848aa2e70a0bd8b38bf0f493cba1547bb3bca5e
+2025-11-07,retrofunding_s8_devtooling,Fe Language,830.73,357.2139,fe-ethereum,https://atlas.optimism.io/project/0x541b7b08401d799b87f583c102a6c94cee7105f1b29dc630de5edbbd966d7c13
+2025-11-07,retrofunding_s8_devtooling,Foundry,25000.0,10750.0,foundry,https://atlas.optimism.io/project/0x4562c0630907577f433cad78c7e2cc03349d918b6c14ef982f11a2678f5999ad
+2025-11-07,retrofunding_s8_devtooling,Foundry MCP Server,908.06,390.4658,foundry-mcp-server-praneshasp,https://atlas.optimism.io/project/0xa873dcdcc84e0022edd2f7d5cc8646667b87bf06609d506cd8e39dbd7412fa59
+2025-11-07,retrofunding_s8_devtooling,Hardhat,25000.0,10750.0,hardhat-nomicfoundation,https://atlas.optimism.io/project/0x670a2982f6d7786b58a8399bcabc23246365b21e533a97945e055791fc235e64
+2025-11-07,retrofunding_s8_devtooling,IPFS,6995.86,3008.2198,ipfs,https://atlas.optimism.io/project/0x7f330267969cf845a983a9d4e7b7dbcca5c700a5191269af377836d109e0bb69
+2025-11-07,retrofunding_s8_devtooling,K Semantics of the Ethereum Virtual Machine (EVM),846.57,364.0251,,https://atlas.optimism.io/project/0x8af71ece7f50d6962b589b19854ceac72b81e5f5b3014637b262c33809d5a395
+2025-11-07,retrofunding_s8_devtooling,Kontrol - formal verification tool based on Foundry and KEVM,572.96,246.3728,runtimeverification,https://atlas.optimism.io/project/0x7348ae42266ff626319e8ea5398343b847603b3cc7101b03d8e4fb2b75ea8db3
+2025-11-07,retrofunding_s8_devtooling,Kurtosis,2641.34,1135.7762,kurtosis-tech,https://atlas.optimism.io/project/0x35295108e0c7b4625d650fbdabd4888417782539f56159d39ac2f0e2411f607b
+2025-11-07,retrofunding_s8_devtooling,LI.FI,3783.78,1627.0254,lifinance,https://atlas.optimism.io/project/0x517eaa9c56951de89261f2d7830ea49aae92f2a903104a17d9c5c2edd4959806
+2025-11-07,retrofunding_s8_devtooling,Maintaining simple-optimism-node,533.48,229.3964,simple-optimism-node-smartcontracts,https://atlas.optimism.io/project/0x09b95c7697625da4915338750c5f78446817a3634cb38bc9155e26bbbc0c87f1
+2025-11-07,retrofunding_s8_devtooling,Medusa,991.96,426.5428,medusa-crytic,https://atlas.optimism.io/project/0xb9996d35862a7c60282da2adf3447f043580f586fcb702ff6869896d15ef6344
+2025-11-07,retrofunding_s8_devtooling,MerkleTreeJS,4879.33,2098.1119,merkletreejs,https://atlas.optimism.io/project/0xc377ed1b705bcc856a628f961f1e7c8ca943e6f3727b7c179c657e227e8e852c
+2025-11-07,retrofunding_s8_devtooling,Multicaller,2528.12,1087.0916,multicaller-vectorized,https://atlas.optimism.io/project/0xfc54b4a9c537be25238cba3f05100b733aeee83a3eb3fdae60d651b3b913390c
+2025-11-07,retrofunding_s8_devtooling,OpenRPC,3369.85,1449.0355,open-rpc,https://atlas.optimism.io/project/0x6f8f610667400044907494c879b717e806a03bf519dcfd786edc7f2fa61d6db8
+2025-11-07,retrofunding_s8_devtooling,OpenZeppelin Contracts,25000.0,10750.0,openzeppelin,https://atlas.optimism.io/project/0x939241afa4c4b9e1dda6b8250baa8f04fa8b0debce738cfd324c0b18f9926d25
+2025-11-07,retrofunding_s8_devtooling,Otterscan,1393.23,599.0889,otterscan,https://atlas.optimism.io/project/0xaed5941b7a9f20de83f5c839bda507be43cbf41777fc623abf4bf05773298826
+2025-11-07,retrofunding_s8_devtooling,PRBMath,5316.63,2286.1509,prb-math-paulrberg,https://atlas.optimism.io/project/0x7e917a2d0718401c9fe2a82f43ea558f5128f251b1e658c76dc7ff9a5e9fd993
+2025-11-07,retrofunding_s8_devtooling,Party.app + Party Protocol,1015.17,436.5231,party-dao,https://atlas.optimism.io/project/0x850df51e29f2846a5f085d88e6b6fc13fad51ad7161f8a825ed09d470668161a
+2025-11-07,retrofunding_s8_devtooling,Ponder,9140.43,3930.3849,ponder-sh,https://atlas.optimism.io/project/0x351967474a454b494260a488f3ceb77d993580a4fe79fb6b6d132c70634bc516
+2025-11-07,retrofunding_s8_devtooling,Prettier Solidity,10186.66,4380.2638,prettier-solidity,https://atlas.optimism.io/project/0xc6cac7cd3793888032cc8a9e5aef92550beeec2598f86f1ec6972ffd5b82a990
+2025-11-07,retrofunding_s8_devtooling,Remix Project,1891.67,813.4181,remix-ethereum,https://atlas.optimism.io/project/0x754c37e401e2527ab24b9d7ca3e042bfcbfebeef54a533f8833d46242d2c3017
+2025-11-07,retrofunding_s8_devtooling,Revm,8498.56,3654.3808,revm-bluealloy,https://atlas.optimism.io/project/0xb2d109759fe14e11ac5cc100ab6006321ebdd7ffdefbd2efac93a002105f8e92
+2025-11-07,retrofunding_s8_devtooling,Revoke.cash,1609.77,692.2011,revoke-cash,https://atlas.optimism.io/project/0xfbc74fb5d15b7b2554277371a41ee6ff1bf392377bce5fbfce140c2980cc4f64
+2025-11-07,retrofunding_s8_devtooling,Ronan Sandford,11338.53,4875.5679,wighawag,https://atlas.optimism.io/project/0x9b639cc6061e41a1d12adb39619a2fddb7005074cf965a3a6f4eabc6eea31112
+2025-11-07,retrofunding_s8_devtooling,Rundler,435.24,187.1532,alchemyplatform,https://atlas.optimism.io/project/0x2247247c751707d897f5c0eab670426d9c1c26d84e96ac226004afbf0080cba4
+2025-11-07,retrofunding_s8_devtooling,Rust Libp2p,3461.54,1488.4622,libp2p,https://atlas.optimism.io/project/0xdf1bb03d08808e2d789f5eac8462bdc560f1bb5b0877f0cf8c66ab53a0bc2f5c
+2025-11-07,retrofunding_s8_devtooling,Slither,4786.7,2058.281,slither-crytic,https://atlas.optimism.io/project/0xdc3dce33fd5fb50cf932586d4257456ddf5040ba0955d97641646504c73dbd13
+2025-11-07,retrofunding_s8_devtooling,Snapshot,5380.69,2313.6967,snapshot-labs,https://atlas.optimism.io/project/0x5e6c436e48e56d6d9622ba5d0be0035c314e2b29d2afc8f5f1ee8ac75cd42532
+2025-11-07,retrofunding_s8_devtooling,Solady,13421.82,5771.3826,solady-vectorized,https://atlas.optimism.io/project/0x9151666888d0ca532a529be98a50d2eb992988117e202163f865fa9a27eb7149
+2025-11-07,retrofunding_s8_devtooling,Solc-select,3320.21,1427.6903,solc-select-crytic,https://atlas.optimism.io/project/0x2a04bac7482169a929fd70444bbfac10654d0588e022db7527566dbfc307d2e9
+2025-11-07,retrofunding_s8_devtooling,Solhint,8647.55,3718.4465,solhint-protofire,https://atlas.optimism.io/project/0xfa7d950cfda2c634b052b6c07e75daaa95dd22ac1f220b6862cfd24221d4cabc
+2025-11-07,retrofunding_s8_devtooling,Solidity,25000.0,10750.0,solidity-ethereum,https://atlas.optimism.io/project/0xcc8d03e014e121d10602eeff729b755d5dc6a317df0d6302c8a9d3b5424aaba8
+2025-11-07,retrofunding_s8_devtooling,Solidity Bytes Arrays Utils Library,5335.03,2294.0629,solidity-bytes-utils-gnsps,https://atlas.optimism.io/project/0xd63cb23c26cc3bda03b1cc2971589fd26c9d22f3bbc8f1ff2bb74613e6d1c36d
+2025-11-07,retrofunding_s8_devtooling,Sourcify,865.41,372.1263,sourcify-ethereum,https://atlas.optimism.io/project/0x51cda5996ef1a2ccd8fcf4ee5792337695599454c83eb1218c3ad4388dcb5bf5
+2025-11-07,retrofunding_s8_devtooling,Surl,982.34,422.4062,surl-memester-xyz,https://atlas.optimism.io/project/0x5c0234455c4b86b05ed0c612ac0d7e53cd2249686305af9b2184190b781b8063
+2025-11-07,retrofunding_s8_devtooling,Swiss-Knife.xyz,1447.42,622.3906000000000,swiss-knife-xyz,https://atlas.optimism.io/project/0x93c4efb5e2d7416c56ecdcd8244be8faf924194d65b514d90a7a51f6797cc012
+2025-11-07,retrofunding_s8_devtooling,Synpress,8690.11,3736.7473,synpress-synthetixio,https://atlas.optimism.io/project/0xbb067b01988521110c91737f058e7301f608be231d850a72af1516bd034d161c
+2025-11-07,retrofunding_s8_devtooling,Tevm,4937.17,2122.9831,evmts,https://atlas.optimism.io/project/0x2d90d9565ef127727845637425880545cfebe0931160ce25afe929f8ab415706
+2025-11-07,retrofunding_s8_devtooling,The Ethernaut,1746.1,750.823,ethernaut-openzeppelin,https://atlas.optimism.io/project/0x17fb589e599fe05e532b90c121eccc55b1249301e783dae226bad698872322da
+2025-11-07,retrofunding_s8_devtooling,Titanoboa,5530.93,2378.2999,vyperlang,https://atlas.optimism.io/project/0x202a80f0f57630d04a26464d6492b3399059ca1187943032c37652eb2468a76f
+2025-11-07,retrofunding_s8_devtooling,VSCode Solidity Inspector ,732.38,314.9234,vscode-solidity-inspector-praneshasp,https://atlas.optimism.io/project/0x3ec2d572a608cf939eaf7886402320b3b2229610c13bdb5cb0776bd097331e5a
+2025-11-07,retrofunding_s8_devtooling,Viem: TypeScript Interface for Ethereum,25000.0,10750.0,wevm,https://atlas.optimism.io/project/0x6bd057da522918a4675396313ae33a2f2788a1ceeb3bd7ae228015e3eb317a7d
+2025-11-07,retrofunding_s8_devtooling,Vscode Solidity Extension,362.83,156.0169,vscode-solidity,https://atlas.optimism.io/project/0x819775803938d78eaa95809971ce94cae6a54b4df58505fa36153ffa1d55e12c
+2025-11-07,retrofunding_s8_devtooling,Vyper,6731.83,2894.6869,vyperlang,https://atlas.optimism.io/project/0x9ca1f7b0e0d10d3bd2619e51a54f2e4175e029c87a2944cf1ebc89164ba77ea0
+2025-11-07,retrofunding_s8_devtooling,Wagmi: Reactive primitives for Ethereum apps ,25000.0,10750.0,wevm,https://atlas.optimism.io/project/0xc0615947773148cbc340b175fb9afc98dbb4e0acd31d018b1ee41a5538785abf
+2025-11-07,retrofunding_s8_devtooling,WhatsABI,6672.58,2869.2094,whatsabi-shazow,https://atlas.optimism.io/project/0xabdfa10e699db5127100da1dd2403692afe8d86e793d57780f1c7e93437a73a0
+2025-11-07,retrofunding_s8_devtooling,alloy,7560.24,3250.9032,alloy-rs,https://atlas.optimism.io/project/0x56ce7cbc27852a8d8ef5869dc9033a215c8893f799468f61527dacb9f92be790
+2025-11-07,retrofunding_s8_devtooling,beaconcha.in,254.56,109.4608,beacon-chain,https://atlas.optimism.io/project/0xdd81f0fbb21c949e5d67176b22a39cfdc7c774349214a450df78eb31174413db
+2025-11-07,retrofunding_s8_devtooling,bulloak,1246.76,536.1068,bulloak-alexfertel,https://atlas.optimism.io/project/0x740bebbc731ec56dcc17c7d429656220a73960022c3809edf324bd8120285722
+2025-11-07,retrofunding_s8_devtooling,eRPC,6946.82,2987.1326,erpc,https://atlas.optimism.io/project/0x1e7a1f9763d25b6844567a7133b1005ef6ed785642a75229acf1b9b25202a5f3
+2025-11-07,retrofunding_s8_devtooling,ethereum-bloom-filters,3928.97,1689.4571,ethereum-bloom-filters-joshstevens19,https://atlas.optimism.io/project/0x4c9626843c4e3f3c96d80b0ec6b1d10b7682fc9b6d67ab61ece5a87648535b1f
+2025-11-07,retrofunding_s8_devtooling,ethereum-multicall,6181.07,2657.8601,ethereum-multicall-joshstevens19,https://atlas.optimism.io/project/0x37fe5886f4c77d5a5cb947deff90158c045a5d207572763187748ac4dd4bd9b9
+2025-11-07,retrofunding_s8_devtooling,ethers-multicall-provider,3276.42,1408.8606,ethers-multicall-provider-rubilmax,https://atlas.optimism.io/project/0xf46bb7a4597826d57ce9ef1579b7a11079dccfd8510770ad64b2e5a801d8ff27
+2025-11-07,retrofunding_s8_devtooling,evmc,271.51,116.7493,evmc-joshstevens19,https://atlas.optimism.io/project/0xf4f7d13f2ac3c9805998d8540950883b872d7c5d7c81d6254dde8655af690b2a
+2025-11-07,retrofunding_s8_devtooling,foundry-gas-diff,328.65,141.31950000000000,foundry-gas-diff-rubilmax,https://atlas.optimism.io/project/0xb024f6abfa79f7eb7af334f56015509bb70355709991d31bc689c7bea3250f7e
+2025-11-07,retrofunding_s8_devtooling,foundry-storage-check,367.29,157.9347,foundry-storage-check-rubilmax,https://atlas.optimism.io/project/0xfeafe16f8c1a25aebe754f3653340a17943a483a3e389464e44cf14613e210f0
+2025-11-07,retrofunding_s8_devtooling,hardhat-gas-reporter,6862.28,2950.7804,hardhat-gas-reporter-cgewecke,https://atlas.optimism.io/project/0xc2d8139cd61ddc75689610ee0cca0fe37ba8bec3270beb6aac6eac91c6256f60
+2025-11-07,retrofunding_s8_devtooling,hevm,435.32,187.1876,hevm-ethereum,https://atlas.optimism.io/project/0x2c97e213fef2bd3f30a71edf6ed48232640368d0083dc0a134a1b59391639bde
+2025-11-07,retrofunding_s8_devtooling,js-libp2p,3408.06,1465.4658,libp2p,https://atlas.optimism.io/project/0x5a7e7c7acb21521e99021d746740b368801cbfe531301e50bdbaafdc24a0aac5
+2025-11-07,retrofunding_s8_devtooling,keccak256js,3702.72,1592.1696,keccak256js,https://atlas.optimism.io/project/0x48220ef1d103189cd918e9290db4c4b99b463ae2817fb5ef0cc54556a7961b6f
+2025-11-07,retrofunding_s8_devtooling,noble cryptography,7223.58,3106.1394,paulmillr,https://atlas.optimism.io/project/0x62d9a8a3b602c688610abfbe3965e04ca0d19c5c506f40e79cd185cb501d2018
+2025-11-07,retrofunding_s8_devtooling,rindexer,5607.8,2411.354,rindexer-joshstevens19,https://atlas.optimism.io/project/0x97525ec91080ddd917eaccabf9d383cf70a2f78839ab21eeabe1687e312f2132
+2025-11-07,retrofunding_s8_devtooling,rotki,4664.97,2005.9371,rotki,https://atlas.optimism.io/project/0xc0ad090a80d748c19dce84d17f85d7b0016daa1c35f72ada2d92f469f8a77067
+2025-11-07,retrofunding_s8_devtooling,solidity-coverage,12215.06,5252.475800000000,solidity-coverage-sc-forks,https://atlas.optimism.io/project/0x2bb095e1f297c71da8bd4ee15097abad3b99e299fe14cd6aa704df3f36d0ae22
+2025-11-07,retrofunding_s8_devtooling,thirdweb,4881.52,2099.0536,third-web,https://atlas.optimism.io/project/0xc6052138bbdae5976fa2866f46b0537182d4126c4bb97485738d1b43f2276134
+2025-11-07,retrofunding_s8_devtooling,web3.py,10589.22,4553.3646,web3py-ethereum,https://atlas.optimism.io/project/0xebe03c3d6d33cad60124b9b05ef6e2ff056293a1de3c5fa51dfbb90c86c14bf7
+2025-11-07,retrofunding_s8_devtooling,xdeployer,2623.46,1128.0878,xdeployer,https://atlas.optimism.io/project/0x537097f27d55cb52d39b95c3ed65076349ab68aac48051d742d715456e0884d8
+2025-11-07,retrofunding_s8_devtooling,🏗️  Scaffold-ETH 2,11493.35,4942.1405,buidlguidl,https://atlas.optimism.io/project/0x154a42e5ca88d7c2732fda74d6eb611057fc88dbe6f0ff3aae7b89c2cd1666ab
+2025-11-07,retrofunding_s8_devtooling,🐍 snekmate,3953.06,1699.8158,snekmate,https://atlas.optimism.io/project/0x50159544ec22884b777a997a625c75bb02e55b1dc8934aad3b78678e7c11d039
+2025-11-07,retrofunding_s8_onchain_builders,AION,1435.63,617.3209,world-mini-app-aion,https://atlas.optimism.io/project/0x12721a0927c5d0598380e718e69c7f3395cc7b8847da42ac384af9c59efd025d
+2025-11-07,retrofunding_s8_onchain_builders,Account Abstraction - ERC-4337,4847.52,2084.4336000000000,eth-infinitism-account-abstraction,https://atlas.optimism.io/project/0xb98778ca9ff41446e2bc304f7b5d27f0fa7c2bcd11df19e22d1352c06698a1f6
+2025-11-07,retrofunding_s8_onchain_builders,Across Protocol,2179.1,937.013,across,https://atlas.optimism.io/project/0x72723e07fe409557489a6643b43d9493a94c10ba68230b0527f01834cb6a550f
+2025-11-07,retrofunding_s8_onchain_builders,Arcadia Finance ,325.5,139.965,arcadia-finance,https://atlas.optimism.io/project/0xdd35cc4641c3c35bee5782fc0442b2a1b88a058ec0a7b90ba32c70347e4e9194
+2025-11-07,retrofunding_s8_onchain_builders,Arkada,354.5,152.435,,https://atlas.optimism.io/project/0x5962ef9e4955bc4cd4c6ed080c55879be9ee2dddb1b7cd37d72182a142dc9eab
+2025-11-07,retrofunding_s8_onchain_builders,Avantis ,4847.52,2084.4336000000000,avantis-labs,https://atlas.optimism.io/project/0x6371518c95cfa543514e01a77d470c695fac36691cffa3a45e992b2c0cc6ba72
+2025-11-07,retrofunding_s8_onchain_builders,BMX,302.0,129.86,morphex-labs,https://atlas.optimism.io/project/0xe5c133e05956a3939b9a78f4ad5d0a897a027da60a7d5e1b6276a2266211f69f
+2025-11-07,retrofunding_s8_onchain_builders,BSX,254.92,109.6156,bsx-exchange,https://atlas.optimism.io/project/0xc938557155993da8f33857e52d7deb04421d1bb341fc24216563aae64fe32d36
+2025-11-07,retrofunding_s8_onchain_builders,BaseSwap ,1054.14,453.2802,baseswapfi,https://atlas.optimism.io/project/0xca3f26e1c876e821d2384a5cb699c6be494f9810301c2e2be49c232656262642
+2025-11-07,retrofunding_s8_onchain_builders,Basepaint,800.89,344.3827,basepaint,https://atlas.optimism.io/project/0xc0901c8f9503f0bf91a1cca0c6c90e55af8719cc2237fb4a0bf0770b307cbd11
+2025-11-07,retrofunding_s8_onchain_builders,Beefy,321.24,138.1332,beefy-finance,https://atlas.optimism.io/project/0x30769523b16315b6404ce3c6dbaf610028acdf3133dca8a4d427e0d19d3628c9
+2025-11-07,retrofunding_s8_onchain_builders,BitMaster,919.08,395.2044,world-mini-app-goodluckgame,https://atlas.optimism.io/project/0x79e3ed10841da009fbbaef5ac13c27022dd35e95ac5c02bae078775981a9aaa0
+2025-11-07,retrofunding_s8_onchain_builders,Blockchain Messages,449.47,193.2721,,https://atlas.optimism.io/project/0x9f63aa0f49f9b6a09c014535bb0b06d6bbe643fd92d528cd58679433b6ebd6d4
+2025-11-07,retrofunding_s8_onchain_builders,Brahma,1700.31,731.1333,brahma,https://atlas.optimism.io/project/0xc66e357ad67e63954cd1eb79da4d507d8800518f06c82e423e93e8771e7b8d13
+2025-11-07,retrofunding_s8_onchain_builders,Cash Convert,2258.72,971.2496,kids-table-inc,https://atlas.optimism.io/project/0x2bdfa034cf1e853db8ed4b30531270c7a62d66550cd23383819e816abb234f0a
+2025-11-07,retrofunding_s8_onchain_builders,Chonks,362.92,156.0556,chonks-xyz,https://atlas.optimism.io/project/0x558ad0914eaf21a4965b2e4b7fef4cd66ef9d5bb861c5c42f4795a9e4614df71
+2025-11-07,retrofunding_s8_onchain_builders,Coop Records,1205.14,518.2102,coop-records,https://atlas.optimism.io/project/0x0b06e685eab9c4fee7d93ca54e1c02281e2be560bfc54f43fa738961fa2ce4c1
+2025-11-07,retrofunding_s8_onchain_builders,CreateMyToken,883.69,379.9867,createmytoken,https://atlas.optimism.io/project/0xdf3eb6b429b2150c71241de0c591b18c98a3528ad0e8d838d069b6fff291d803
+2025-11-07,retrofunding_s8_onchain_builders,CreateX,2979.62,1281.2366,createx,https://atlas.optimism.io/project/0x0008577196fa6ec286440b418e2f6305fc10e62ce759625d826be272ee6b45a3
+2025-11-07,retrofunding_s8_onchain_builders,Credit,2879.76,1238.2968,world-mini-app-credit,https://atlas.optimism.io/project/0x08447636de20816960f0427a65677df5571d503f09235b2bec37f7dd5c28161d
+2025-11-07,retrofunding_s8_onchain_builders,DIAMANTE,1626.2,699.266,,https://atlas.optimism.io/project/0xc7104d126ffe628630e89f455711ef296175069fffb1f9c0e85b396ee1d23f27
+2025-11-07,retrofunding_s8_onchain_builders,DNA Token,1372.79,590.2997,dnatokenio,https://atlas.optimism.io/project/0xdafc4d2a060c7d08913ceb05b19c4fe7fb6d93a7f5f1142642be939be16bf6e9
+2025-11-07,retrofunding_s8_onchain_builders,DackieSwap,353.12,151.8416,dackieswap,https://atlas.optimism.io/project/0x18e7582de42dd9a7fd2cb69fb6566b8bcb3e86b936b229b0c5af78fa1de791a4
+2025-11-07,retrofunding_s8_onchain_builders,Daimo Pay,302.09,129.8987,daimo-pay,https://atlas.optimism.io/project/0xc850d11fe786d1168bfeda108721101427dd5425d9d9e6595c35573f7616e940
+2025-11-07,retrofunding_s8_onchain_builders,Dalgona,498.82,214.4926,,https://atlas.optimism.io/project/0x1f998a77880db01b4938b7fa84fc2f6577fee032fd0a55393406e665d7f3a9e1
+2025-11-07,retrofunding_s8_onchain_builders,Dark Forest Punk,323.79,139.2297,,https://atlas.optimism.io/project/0x33f99467bb08ce97fc0829a766e06555c7a7c6870db71a13d82241ecd186406a
+2025-11-07,retrofunding_s8_onchain_builders,Derive Automated Structured Product Vaults,361.62,155.4966,,https://atlas.optimism.io/project/0x33da4c1ddb983c46b18a0a003266a3d25c00a1ea8d3655499bbce027701f1097
+2025-11-07,retrofunding_s8_onchain_builders,Double or Nothing,1181.8,508.174,world-mini-app-goodluckgame,https://atlas.optimism.io/project/0x394cdf60010e890aeb52606b938e6ff6ef7a52b0b5a3e897daf0133bed243b14
+2025-11-07,retrofunding_s8_onchain_builders,Drop Wallet,2667.96,1147.2228,world-mini-app-drop-wallet,https://atlas.optimism.io/project/0xf9af65e8afbd0fd21802bca92c9d0d6201a8b1d114d5c9170fea7e914fd2b392
+2025-11-07,retrofunding_s8_onchain_builders,EARN HUB!,3189.74,1371.5882,,https://atlas.optimism.io/project/0x6fbc494492f9d721670f2a4b6b7b9a3a86c5050cb342146d4d4e3a606e1a3478
+2025-11-07,retrofunding_s8_onchain_builders,Eggs Vault,3099.64,1332.8452,holdstation,https://atlas.optimism.io/project/0xf4e56e0c6654d6ef621191708f27ee20242462f541d3e79dc5512e1a10d90736
+2025-11-07,retrofunding_s8_onchain_builders,Enso Build,282.17,121.3331,ensobuild,https://atlas.optimism.io/project/0x738c0967c0f70a0a78d8794dcf2c40540f60ea9568e163dd5826b85e8e2a9a79
+2025-11-07,retrofunding_s8_onchain_builders,Ethereum Attestation Service (EAS),1340.37,576.3591000000000,ethereum-attestation-service,https://atlas.optimism.io/project/0xa88844cea135382e3484e39c3172033437121b35ca0bc8b10b9b8253984876b5
+2025-11-07,retrofunding_s8_onchain_builders,FLAG!,2199.56,945.8108,party-dao,https://atlas.optimism.io/project/0x7d5bcf0b123ca5611f1bb0c889816753cc215b0a230849c8464c6c2a08c4eddc
+2025-11-07,retrofunding_s8_onchain_builders,Flaunch,1450.41,623.6763,flayerlabs,https://atlas.optimism.io/project/0x259b729af86ba38c0c84be9b739dfbca109a6df985371d8cabd43116d18d7a1a
+2025-11-07,retrofunding_s8_onchain_builders,GM,1203.21,517.3803,inkonchain,https://atlas.optimism.io/project/0x2c1d2ae68e4a718a04a41f1a9fde1ed0648602e08c150e3f72d3dc7ef22dd71a
+2025-11-07,retrofunding_s8_onchain_builders,GMonchain,526.89,226.5627,,https://atlas.optimism.io/project/0xef71b036123a72aa9aa64afb1263751bdfc7e7e4e63ec658c323136dc3a88d37
+2025-11-07,retrofunding_s8_onchain_builders,Gains Network (gTrade),982.76,422.5868,gainsnetwork,https://atlas.optimism.io/project/0x70ba3cb2e433f1cd9ace8aea84c46d167ba5db12293cd108eaca068d06be3a71
+2025-11-07,retrofunding_s8_onchain_builders,Guild.xyz,1413.31,607.7233,guildxyz,https://atlas.optimism.io/project/0x3d009f8f7c1e8a3bcbc81ca8ed60d2e86b956dd0fa68c4595f851be37052a2b5
+2025-11-07,retrofunding_s8_onchain_builders,Gyroscope,1912.7,822.461,gyrostable,https://atlas.optimism.io/project/0x3526b9c6fdc34076d7d2c31893b94e760f4d5a010387b6b76b45f8b5577ceb98
+2025-11-07,retrofunding_s8_onchain_builders,Highlight,1162.48,499.8664,highlightxyz,https://atlas.optimism.io/project/0x331511dd6300baf10a35b2d3f3953fd7160412b970049b3a63b64564ce26c347
+2025-11-07,retrofunding_s8_onchain_builders,Holdstation Wallet,1086.4,467.152,holdstation,https://atlas.optimism.io/project/0x8fbddc02ddbc9c9b303b7bbb645aa933541876a31a93d7dea165fb0283d7f685
+2025-11-07,retrofunding_s8_onchain_builders,Hydrex,4053.54,1743.0222,hydrex-fi,https://atlas.optimism.io/project/0xab28184ffcd1429ce9bbcffdba320787e9d2ab1e2f365352af3b5a9ef64f4600
+2025-11-07,retrofunding_s8_onchain_builders,InfinityName,932.74,401.0782,,https://atlas.optimism.io/project/0x4dc32aaf6b60deda7ef0f98ea1b35dbb938741f16375a25fe0ce75c872f5d0ab
+2025-11-07,retrofunding_s8_onchain_builders,Ionic Protocol,385.41,165.7263,ionicprotocol,https://atlas.optimism.io/project/0xbcb5c437d5347be21add3972512679054416805274f80e85ab8053ae79340a69
+2025-11-07,retrofunding_s8_onchain_builders,Kim Exchange,298.74,128.4582,kim-protocol,https://atlas.optimism.io/project/0xfd9f98de666c5b0a5ce96d4a4b8d4ceee9f8c2156734d57bf6c23d0cff183e90
+2025-11-07,retrofunding_s8_onchain_builders,Kyo finance,4847.52,2084.4336000000000,kyo-finance,https://atlas.optimism.io/project/0x5958eb35cf4d4b8871924adc5e6272eff2ac701e368ca6ad043ee486cce9e223
+2025-11-07,retrofunding_s8_onchain_builders,LI.FI,2904.82,1249.0726,lifinance,https://atlas.optimism.io/project/0x517eaa9c56951de89261f2d7830ea49aae92f2a903104a17d9c5c2edd4959806
+2025-11-07,retrofunding_s8_onchain_builders,Layer3,2229.93,958.8699,layer3xyz,https://atlas.optimism.io/project/0x91a4420e2fcc8311e97dad480f201a8ce221f2cd64c2de77280cbcc6ce193752
+2025-11-07,retrofunding_s8_onchain_builders,LeverageX by Javsphere,833.75,358.5125,javsphere,https://atlas.optimism.io/project/0xf9513b5bfca3be3513450bd56b48ae485ce157aa56c1d8b2e06a68bce0b8d084
+2025-11-07,retrofunding_s8_onchain_builders,Micro3,363.38,156.2534,,https://atlas.optimism.io/project/0x0bde66b4a96dfb7d47c06364766abebfbe616357f8af50c79cae5d34989f93a9
+2025-11-07,retrofunding_s8_onchain_builders,Mint Club,1538.78,661.6754,mintclub-steemhunt,https://atlas.optimism.io/project/0x0ee3defac0e2a31b995bc073ac02a2140aaf01679e141eb8d1d80409f75f90ea
+2025-11-07,retrofunding_s8_onchain_builders,Multicaller,315.04,135.46720000000000,multicaller-vectorized,https://atlas.optimism.io/project/0xfc54b4a9c537be25238cba3f05100b733aeee83a3eb3fdae60d651b3b913390c
+2025-11-07,retrofunding_s8_onchain_builders,ORB,1629.39,700.6377,party-dao,https://atlas.optimism.io/project/0xb620f012eb197e5661f65c1a5aee6a4bbb43629f0056879ae4dc66adf8383ae3
+2025-11-07,retrofunding_s8_onchain_builders,ORO,3976.39,1709.8477,party-dao,https://atlas.optimism.io/project/0x40ee6048c99aefd288f6133db207849d0951fe6b62afa1cca0db5a4ad7f558de
+2025-11-07,retrofunding_s8_onchain_builders,OXBT,320.78,137.9354,,https://atlas.optimism.io/project/0xc22f48e35fb4298e3f91fc77720d208870fba1686be3fadbff82aa84859880d6
+2025-11-07,retrofunding_s8_onchain_builders,Oku Trade,1419.6,610.428,gfx-labs,https://atlas.optimism.io/project/0xb926ab918147d2264dba94a429eb07986aa533fd6062a78736d3eda4e0b4a69b
+2025-11-07,retrofunding_s8_onchain_builders,Omni Exchange,955.53,410.8779,omni-exchange,https://atlas.optimism.io/project/0xdd73108cfd9ee7517836e18800a06412a6ba08b43356791c2db6a7a75b910692
+2025-11-07,retrofunding_s8_onchain_builders,On-Chain Check-in,892.35,383.7105,,https://atlas.optimism.io/project/0x2de0aff968ce9b118d16044d2b59cac6e43878ed658ba8e5a6c15838dc1892d0
+2025-11-07,retrofunding_s8_onchain_builders,OnChainGM,1588.5,683.055,onchaingm,https://atlas.optimism.io/project/0xa1f96576ad998e804140caccd478bae81b8b1059a107166df87b59fbf42c9e4a
+2025-11-07,retrofunding_s8_onchain_builders,OpenOcean,1389.63,597.5409000000000,openocean-finance,https://atlas.optimism.io/project/0x24ff0fb2933e55b169a80d9bd35a00a7011795387717b27445ccdc0f8660d740
+2025-11-07,retrofunding_s8_onchain_builders,Orki Finance,436.11,187.5273,,https://atlas.optimism.io/project/0x578d022acd70130def85327e2926a2ed4545e08617ced951ef54a872f5a2a5f5
+2025-11-07,retrofunding_s8_onchain_builders,Otterverse,1336.4,574.652,world-mini-app-otterverse,https://atlas.optimism.io/project/0xc55fe3df4a2689935cc0a4b912e3f913de7a8c1c6758370550aaf25a949ec79c
+2025-11-07,retrofunding_s8_onchain_builders,O＝C＝O,284.19,122.2017,pileum-org,https://atlas.optimism.io/project/0xc55da0ccb43d29814ac5ac3e1eacb85a5008a30df7fff6c34c45684c89ad5f11
+2025-11-07,retrofunding_s8_onchain_builders,PHI,1653.99,711.2157,phi-labs-inc,https://atlas.optimism.io/project/0xf87906563da69538c969ba438f127ce5f2196e76c84c9026ab6dafc4280b6be3
+2025-11-07,retrofunding_s8_onchain_builders,PUF,4675.41,2010.4263,world-mini-app-puf,https://atlas.optimism.io/project/0x2c41bf7b4d36a344881581e20ecb2929d38c3415fffa4bf65f81ae049dfb2e72
+2025-11-07,retrofunding_s8_onchain_builders,PancakeSwap,4847.52,2084.4336000000000,pancakeswap,https://atlas.optimism.io/project/0x1ac8413aaf8110410b9447af27251ba89311f5ec4e2d289006e834b122a44dbf
+2025-11-07,retrofunding_s8_onchain_builders,Party.app + Party Protocol,255.08,109.6844,party-dao,https://atlas.optimism.io/project/0x850df51e29f2846a5f085d88e6b6fc13fad51ad7161f8a825ed09d470668161a
+2025-11-07,retrofunding_s8_onchain_builders,Passport XYZ | Gitcoin Passport,422.37,181.6191,passportxyz,https://atlas.optimism.io/project/0x120cdd8e43ae1efbafdf02eda876e1952c05a52870c8d5a8f56d9ec0f79f586d
+2025-11-07,retrofunding_s8_onchain_builders,Pinto Protocol,2238.64,962.6152,pinto-org,https://atlas.optimism.io/project/0x7eb6ba7a1057659d04ec414446c1b32509bf57704958139266c7120903446ad6
+2025-11-07,retrofunding_s8_onchain_builders,Rainbow (Rainbow Router),575.44,247.43920000000000,rainbow,https://atlas.optimism.io/project/0xffffeb1d3576c1e847701c225975ee1a10259e05366b477e98fea7a47c5e5896
+2025-11-07,retrofunding_s8_onchain_builders,Relay Protocol,4847.52,2084.4336000000000,reservoirprotocol,https://atlas.optimism.io/project/0x250065e82e6a2fd0127f0f7c7e0df7eb305810bd9796f72aa28a0c7f2c71ae08
+2025-11-07,retrofunding_s8_onchain_builders,Reserve Protocol,274.35,117.9705,reserve-protocol,https://atlas.optimism.io/project/0xab1ddf597f6539acc5ad601c2a6d2899c0475cfd9cc3b837939b1084ba5d7a36
+2025-11-07,retrofunding_s8_onchain_builders,Rolu,311.36,133.8848,rolu-abdulrahimiqbal,https://atlas.optimism.io/project/0xaf0b91c11966164d5b8e3cf02f082b19479c5f3faca1108ca1e2aec1e1177d06
+2025-11-07,retrofunding_s8_onchain_builders,SOCKET protocol,1488.23,639.9389,socket,https://atlas.optimism.io/project/0xe8833ceee8beb2b3fb0f7f2dcef576f6f9cf20e35d8e53324d71b0ed47b01982
+2025-11-07,retrofunding_s8_onchain_builders,SONEX,754.88,324.5984,sonex,https://atlas.optimism.io/project/0x57b84242462a1ddfb9006369b96a60d85ec41fa29aa20b8f2902ce9ba22e3f54
+2025-11-07,retrofunding_s8_onchain_builders,Sake,1489.19,640.3517,sake-finance,https://atlas.optimism.io/project/0x18923b60296e26a8ce35a0b4754cd6fd5427b2820a202f82901c826794fdbc9e
+2025-11-07,retrofunding_s8_onchain_builders,Send,474.62,204.0866,0xsend,https://atlas.optimism.io/project/0x5614d129eba060ce7d224e8e8f9f29aeddfdb572b0dd45edc81f18f5307bc01a
+2025-11-07,retrofunding_s8_onchain_builders,Shredding Sassy & SHAKA,478.2,205.626,,https://atlas.optimism.io/project/0xb23f12d6f2b8bc60e72710053d823163208ba7169565613e034423b09aaeafce
+2025-11-07,retrofunding_s8_onchain_builders,Smol,282.3,121.389,smoldapp,https://atlas.optimism.io/project/0x79fa54d6c030c7803827e96933fc93b092f638079c738d13a27a08b3905b95ec
+2025-11-07,retrofunding_s8_onchain_builders,Sonus Exchange,500.94,215.4042,sonusexchange,https://atlas.optimism.io/project/0x96767e87a27cdb9798f40c3a6fd78e70da611afe53a5e45cbaafc50cae4ad0e7
+2025-11-07,retrofunding_s8_onchain_builders,Splits,513.8,220.934,0x-splits,https://atlas.optimism.io/project/0xb6266f3d955040aa7583f2f346db87abe0649f545389af3cc8fe302aacfc850b
+2025-11-07,retrofunding_s8_onchain_builders,Stargate Finance,1236.82,531.8326,stargate-finance,https://atlas.optimism.io/project/0x62e37e96aa6e1cbfb6bd24b97c4b8f1e12cc3fe35d5388d2f041c42a12b40745
+2025-11-07,retrofunding_s8_onchain_builders,Superfluid,1456.0,626.08,superfluid,https://atlas.optimism.io/project/0x3ecbf66c1b21342b26acb0f7d4c6b8bbbef168ffafff3f425de3503fd8dfa535
+2025-11-07,retrofunding_s8_onchain_builders,Superform,211.5,90.945,superform-xyz,https://atlas.optimism.io/project/0x82edc3ac2a03da21c5a6033159ba8e97aab2f61dc5d1d9813929fea6d6c35362
+2025-11-07,retrofunding_s8_onchain_builders,Superhero,374.27,160.93610000000000,world-mini-app-superhero,https://atlas.optimism.io/project/0x42bdd05fa3beb0b21780bbd35b34eefc3e69e45bc4f17043f6eb6b2bbed26237
+2025-11-07,retrofunding_s8_onchain_builders,SurfLayer,510.83,219.6569,,https://atlas.optimism.io/project/0x4f6091bc27c7e7c6fcd6588c086932115836445feabe29bb4e24a2d91421a36a
+2025-11-07,retrofunding_s8_onchain_builders,Sushiswap,1628.6,700.298,sushi,https://atlas.optimism.io/project/0x41b2ae8a2ead458ff7c85549a9a11380353e1ae4b234666312d495326636f77a
+2025-11-07,retrofunding_s8_onchain_builders,SwapBased,463.61,199.3523,swapbased,https://atlas.optimism.io/project/0x8595f830f4d1716621d19bca6394f304837133fb473d8fcd1699e84402df1409
+2025-11-07,retrofunding_s8_onchain_builders,SwapMode,256.96,110.4928,swapmode,https://atlas.optimism.io/project/0x491ffd3c2e4c25ab7fbdbefe0f5fc8dc2beee5ab801287b9c6c93c9c3c810463
+2025-11-07,retrofunding_s8_onchain_builders,SynFutures,2762.8,1188.004,synfutures,https://atlas.optimism.io/project/0x596292c1581406fc4cfba89bc8ed86e32c7ac85c6239d074df7b91fcbc53f4c8
+2025-11-07,retrofunding_s8_onchain_builders,TPulseFi,537.71,231.2153,world-mini-app-tpulsefi,https://atlas.optimism.io/project/0x84893ce34d8069c43d8814db55a1ff5d472e4765650f0c37c1156b5ce97421ff
+2025-11-07,retrofunding_s8_onchain_builders,The Box,2554.92,1098.6156,world-mini-app-birdgames,https://atlas.optimism.io/project/0x00d5eaebec0fa6a41bbf5e29d347162dabc04dfffcd188663fc16393a5d9917a
+2025-11-07,retrofunding_s8_onchain_builders,The Button,680.9,292.787,world-mini-app-hocus-labs,https://atlas.optimism.io/project/0xe2ef3fbfd10df401a0221939359e96af29805db8936c1199ae7532262c69ec5f
+2025-11-07,retrofunding_s8_onchain_builders,UNO,4847.52,2084.4336000000000,party-dao,https://atlas.optimism.io/project/0x9fb539aa3ddb63cda1c29b50fbeaa6071f290926ce10f3d224233577b823454e
+2025-11-07,retrofunding_s8_onchain_builders,Uman,213.81,91.9383,world-mini-app-samiibou,https://atlas.optimism.io/project/0x7e7d21d6fd33a544b7d1dc853239b1af732c778d16dbf0e2e059f5f34b1c1bfe
+2025-11-07,retrofunding_s8_onchain_builders,UniDerpFun,240.25,103.3075,,https://atlas.optimism.io/project/0x6318678f29da36a652cda174bf1cf5ed9bba753381c7b3b613b981803ba3d550
+2025-11-07,retrofunding_s8_onchain_builders,Uniswap on Superchain (Oku),4847.52,2084.4336000000000,uniswap,https://atlas.optimism.io/project/0x9d9162fac637991d2a56da8fbe03dba24c87eb82d47c7a00b921e39e956f8a9d
+2025-11-07,retrofunding_s8_onchain_builders,Untitled Bank,261.81,112.5783,untitled-bank,https://atlas.optimism.io/project/0x2ecedc3cad0a68d398020bf6d41167535fcaeb6d5bbf1602d6318f07e9c59af6
+2025-11-07,retrofunding_s8_onchain_builders,Veil Cash,939.54,404.0022,veildotcash,https://atlas.optimism.io/project/0x40cda7edf27894d647d9433ded29290966f5c258dade2c3ea36427fccf0ef3c9
+2025-11-07,retrofunding_s8_onchain_builders,Velodrome Finance,4847.52,2084.4336000000000,velodrome,https://atlas.optimism.io/project/0x08df6e20a3cfabbaf8f34d4f4d048fe7da40447c24be0f3ad513db6f13c755dd
+2025-11-07,retrofunding_s8_onchain_builders,Virtuals Protocol,4847.52,2084.4336000000000,virtual-protocol,https://atlas.optimism.io/project/0x780cf3d5aa4e3c94b8a4157f4b06a3f92ebcc20813585e20e3fe0271bf76b7a9
+2025-11-07,retrofunding_s8_onchain_builders,WOOFi,1006.9,432.967,woonetwork,https://atlas.optimism.io/project/0x000c2ce4773defb3010a58d3800d0ec9d432189c574ba26d3103f1db44a5af6d
+2025-11-07,retrofunding_s8_onchain_builders,World Billboard,1287.77,553.7411,world-mini-app-world-billboard,https://atlas.optimism.io/project/0xd17c16ed0ff3c31ae81ae9af4070a2150db0be538cabcb720c67cc5f221d3965
+2025-11-07,retrofunding_s8_onchain_builders,World MiniApps - NFT and Gaming,1462.53,628.8879,world-mini-app-world-miniapps---nft-and-gaming,https://atlas.optimism.io/project/0xcae812d91b7b86edf3141f44f006e8a03931ebc489e0a417b82b603bf325bc96
+2025-11-07,retrofunding_s8_onchain_builders,World Republic,2522.77,1084.7911,worldrepublicorg,https://atlas.optimism.io/project/0x5831a5bc2b6e683bcb8e392453a85c5e7f755aa700e827ed9c3e1c6d67fb2a96
+2025-11-07,retrofunding_s8_onchain_builders,Worldle,538.99,231.7657,,https://atlas.optimism.io/project/0x041baee0d8c07a4e89e4c6c19410d8f6cd0a8439cbe8ea0687bf9a504f1c6a88
+2025-11-07,retrofunding_s8_onchain_builders,X3X,260.36,111.9548,world-mini-app-x3x,https://atlas.optimism.io/project/0xfb9ddb0fdae7aa1049979189c20c53bad5ab49b44435ca939cef7c618c96a187
+2025-11-07,retrofunding_s8_onchain_builders,ZEROBASE Staking,230.02,98.9086,,https://atlas.optimism.io/project/0x4fbca6c29f26eac481379ffa48ebef14eaab04075bff11e1636aae429542c224
+2025-11-07,retrofunding_s8_onchain_builders,ZNS,668.3,287.369,,https://atlas.optimism.io/project/0xa2447abd4724c68eff8635f01a39a46bd00a2380a56513fbcd430653cfd74c98
+2025-11-07,retrofunding_s8_onchain_builders,deBridge,1162.62,499.9266,debridge-finance,https://atlas.optimism.io/project/0xf24315614063278ba3543e1717791132a9afa79b0e65baa01a85bcccbdfa215f
+2025-11-07,retrofunding_s8_onchain_builders,doginme memecoin,528.88,227.4184,doginme,https://atlas.optimism.io/project/0xeecfa614f020c2ea4c2eb431246befedf35ddc6c52cfaa83d0c4caf2f580f9f4
+2025-11-07,retrofunding_s8_onchain_builders,waveX,278.55,119.7765,,https://atlas.optimism.io/project/0xdb3560a0c42f54dea2bc0b226fb45dc14bc19821b95cc18fae812d199feb5cbc
+2025-12-07,retrofunding_s8_devtooling,Abi Ninja,1686.37,556.5021,buidlguidl,https://atlas.optimism.io/project/0xafb4dc19ccc63057da88110df49234b311044bc73b070041bb8df03e583943ab
+2025-12-07,retrofunding_s8_devtooling,Aderyn,1753.03,578.4999,cyfrin,https://atlas.optimism.io/project/0xa7d78d566bfa319479ec048c94c3d8c1f4d628a9344ba157fc4974dbf472dc3e
+2025-12-07,retrofunding_s8_devtooling,Ape Framework,4967.61,1639.3113,apeworx,https://atlas.optimism.io/project/0xa0b16714baef75d97ec07fd48eaf42e79df92fe2a3c2d725d2388ede587ea54c
+2025-12-07,retrofunding_s8_devtooling,Blockscout open-source block explorer,1503.61,496.1913,blockscout,https://atlas.optimism.io/project/0x663e4d25ca3f327365240471b4831ea3c989cb132bbf6ae8f5c1e15268591795
+2025-12-07,retrofunding_s8_devtooling,Brownie,5024.16,1657.9728,eth-brownie,https://atlas.optimism.io/project/0x5200a7351f8d195401dc04631fb83e4836f73a2794f316b2739c03807f30a78b
+2025-12-07,retrofunding_s8_devtooling,Cannon,7321.77,2416.1841000000000,usecannon,https://atlas.optimism.io/project/0xc7798704a6d730cea776c4866a9636bfa04c1201e29b6b0c99cc3603bc1bca25
+2025-12-07,retrofunding_s8_devtooling,Create2Deployer,406.93,134.2869,create2deployer,https://atlas.optimism.io/project/0x513265758a3804184b6a0771d99c1a4b04d3267bacd4b914e89ff991de229f6a
+2025-12-07,retrofunding_s8_devtooling,CreateX,3732.43,1231.7019,createx,https://atlas.optimism.io/project/0x0008577196fa6ec286440b418e2f6305fc10e62ce759625d826be272ee6b45a3
+2025-12-07,retrofunding_s8_devtooling,DefiLlama,25000.0,8250.0,defi-llama,https://atlas.optimism.io/project/0xae07bfec2c3c90937679f8c8c5c32e80407c09903aa03d1b5e5a075e67592b86
+2025-12-07,retrofunding_s8_devtooling,Ethereum Attestation Service (EAS),1826.62,602.7846,ethereum-attestation-service,https://atlas.optimism.io/project/0xa88844cea135382e3484e39c3172033437121b35ca0bc8b10b9b8253984876b5
+2025-12-07,retrofunding_s8_devtooling,Ethernal,1112.2,367.026,tryethernal,https://atlas.optimism.io/project/0x14eab8b10f729239d63df6c0cb85f666c3eb1f2dd440ebd003c1821f186a49da
+2025-12-07,retrofunding_s8_devtooling,Ethers.js,25000.0,8250.0,ethers-io,https://atlas.optimism.io/project/0xa3d07f453f70d844196d89d79848aa2e70a0bd8b38bf0f493cba1547bb3bca5e
+2025-12-07,retrofunding_s8_devtooling,Fe Language,838.99,276.86670000000000,fe-ethereum,https://atlas.optimism.io/project/0x541b7b08401d799b87f583c102a6c94cee7105f1b29dc630de5edbbd966d7c13
+2025-12-07,retrofunding_s8_devtooling,Foundry,25000.0,8250.0,foundry,https://atlas.optimism.io/project/0x4562c0630907577f433cad78c7e2cc03349d918b6c14ef982f11a2678f5999ad
+2025-12-07,retrofunding_s8_devtooling,Foundry MCP Server,802.82,264.9306,foundry-mcp-server-praneshasp,https://atlas.optimism.io/project/0xa873dcdcc84e0022edd2f7d5cc8646667b87bf06609d506cd8e39dbd7412fa59
+2025-12-07,retrofunding_s8_devtooling,Frames.js,611.73,201.8709,framesjs,https://atlas.optimism.io/project/0x9d93ec97ef2d3bd4c2b8d95abac9ce0cf43e4f3eb1f05709f8282da8200e69ee
+2025-12-07,retrofunding_s8_devtooling,Hardhat,25000.0,8250.0,hardhat-nomicfoundation,https://atlas.optimism.io/project/0x670a2982f6d7786b58a8399bcabc23246365b21e533a97945e055791fc235e64
+2025-12-07,retrofunding_s8_devtooling,IPFS,6979.61,2303.2713,ipfs,https://atlas.optimism.io/project/0x7f330267969cf845a983a9d4e7b7dbcca5c700a5191269af377836d109e0bb69
+2025-12-07,retrofunding_s8_devtooling,K Semantics of the Ethereum Virtual Machine (EVM),800.64,264.2112,,https://atlas.optimism.io/project/0x8af71ece7f50d6962b589b19854ceac72b81e5f5b3014637b262c33809d5a395
+2025-12-07,retrofunding_s8_devtooling,Kontrol - formal verification tool based on Foundry and KEVM,593.05,195.7065,runtimeverification,https://atlas.optimism.io/project/0x7348ae42266ff626319e8ea5398343b847603b3cc7101b03d8e4fb2b75ea8db3
+2025-12-07,retrofunding_s8_devtooling,Kurtosis,2573.19,849.1527000000000,kurtosis-tech,https://atlas.optimism.io/project/0x35295108e0c7b4625d650fbdabd4888417782539f56159d39ac2f0e2411f607b
+2025-12-07,retrofunding_s8_devtooling,LI.FI,3773.35,1245.2055,lifinance,https://atlas.optimism.io/project/0x517eaa9c56951de89261f2d7830ea49aae92f2a903104a17d9c5c2edd4959806
+2025-12-07,retrofunding_s8_devtooling,Maintaining simple-optimism-node,535.57,176.73810000000000,simple-optimism-node-smartcontracts,https://atlas.optimism.io/project/0x09b95c7697625da4915338750c5f78446817a3634cb38bc9155e26bbbc0c87f1
+2025-12-07,retrofunding_s8_devtooling,Medusa,862.16,284.5128,medusa-crytic,https://atlas.optimism.io/project/0xb9996d35862a7c60282da2adf3447f043580f586fcb702ff6869896d15ef6344
+2025-12-07,retrofunding_s8_devtooling,MerkleTreeJS,4771.95,1574.7435,merkletreejs,https://atlas.optimism.io/project/0xc377ed1b705bcc856a628f961f1e7c8ca943e6f3727b7c179c657e227e8e852c
+2025-12-07,retrofunding_s8_devtooling,Multicaller,2520.86,831.8838000000000,multicaller-vectorized,https://atlas.optimism.io/project/0xfc54b4a9c537be25238cba3f05100b733aeee83a3eb3fdae60d651b3b913390c
+2025-12-07,retrofunding_s8_devtooling,OpenRPC,3354.43,1106.9619,open-rpc,https://atlas.optimism.io/project/0x6f8f610667400044907494c879b717e806a03bf519dcfd786edc7f2fa61d6db8
+2025-12-07,retrofunding_s8_devtooling,OpenZeppelin Contracts,25000.0,8250.0,openzeppelin,https://atlas.optimism.io/project/0x939241afa4c4b9e1dda6b8250baa8f04fa8b0debce738cfd324c0b18f9926d25
+2025-12-07,retrofunding_s8_devtooling,Otterscan,1294.9,427.31700000000000,otterscan,https://atlas.optimism.io/project/0xaed5941b7a9f20de83f5c839bda507be43cbf41777fc623abf4bf05773298826
+2025-12-07,retrofunding_s8_devtooling,PRBMath,5423.22,1789.6626,prb-math-paulrberg,https://atlas.optimism.io/project/0x7e917a2d0718401c9fe2a82f43ea558f5128f251b1e658c76dc7ff9a5e9fd993
+2025-12-07,retrofunding_s8_devtooling,Party.app + Party Protocol,1022.51,337.42830000000000,party-dao,https://atlas.optimism.io/project/0x850df51e29f2846a5f085d88e6b6fc13fad51ad7161f8a825ed09d470668161a
+2025-12-07,retrofunding_s8_devtooling,Ponder,9567.13,3157.1529,ponder-sh,https://atlas.optimism.io/project/0x351967474a454b494260a488f3ceb77d993580a4fe79fb6b6d132c70634bc516
+2025-12-07,retrofunding_s8_devtooling,Prettier Solidity,9953.58,3284.6814,prettier-solidity,https://atlas.optimism.io/project/0xc6cac7cd3793888032cc8a9e5aef92550beeec2598f86f1ec6972ffd5b82a990
+2025-12-07,retrofunding_s8_devtooling,Remix Project,1682.34,555.1722,remix-ethereum,https://atlas.optimism.io/project/0x754c37e401e2527ab24b9d7ca3e042bfcbfebeef54a533f8833d46242d2c3017
+2025-12-07,retrofunding_s8_devtooling,Revm,8280.16,2732.4528,revm-bluealloy,https://atlas.optimism.io/project/0xb2d109759fe14e11ac5cc100ab6006321ebdd7ffdefbd2efac93a002105f8e92
+2025-12-07,retrofunding_s8_devtooling,Revoke.cash,1604.62,529.5246,revoke-cash,https://atlas.optimism.io/project/0xfbc74fb5d15b7b2554277371a41ee6ff1bf392377bce5fbfce140c2980cc4f64
+2025-12-07,retrofunding_s8_devtooling,Ronan Sandford,11539.84,3808.1472,wighawag,https://atlas.optimism.io/project/0x9b639cc6061e41a1d12adb39619a2fddb7005074cf965a3a6f4eabc6eea31112
+2025-12-07,retrofunding_s8_devtooling,Rundler,443.8,146.454,alchemyplatform,https://atlas.optimism.io/project/0x2247247c751707d897f5c0eab670426d9c1c26d84e96ac226004afbf0080cba4
+2025-12-07,retrofunding_s8_devtooling,Rust Libp2p,3451.36,1138.9488,libp2p,https://atlas.optimism.io/project/0xdf1bb03d08808e2d789f5eac8462bdc560f1bb5b0877f0cf8c66ab53a0bc2f5c
+2025-12-07,retrofunding_s8_devtooling,Slither,4872.9,1608.057,slither-crytic,https://atlas.optimism.io/project/0xdc3dce33fd5fb50cf932586d4257456ddf5040ba0955d97641646504c73dbd13
+2025-12-07,retrofunding_s8_devtooling,Snapshot,5275.76,1741.0008000000000,snapshot-labs,https://atlas.optimism.io/project/0x5e6c436e48e56d6d9622ba5d0be0035c314e2b29d2afc8f5f1ee8ac75cd42532
+2025-12-07,retrofunding_s8_devtooling,Solady,13330.52,4399.0716,solady-vectorized,https://atlas.optimism.io/project/0x9151666888d0ca532a529be98a50d2eb992988117e202163f865fa9a27eb7149
+2025-12-07,retrofunding_s8_devtooling,Solc-select,3317.61,1094.8113,solc-select-crytic,https://atlas.optimism.io/project/0x2a04bac7482169a929fd70444bbfac10654d0588e022db7527566dbfc307d2e9
+2025-12-07,retrofunding_s8_devtooling,Solhint,8605.56,2839.8348,solhint-protofire,https://atlas.optimism.io/project/0xfa7d950cfda2c634b052b6c07e75daaa95dd22ac1f220b6862cfd24221d4cabc
+2025-12-07,retrofunding_s8_devtooling,Solidity,25000.0,8250.0,solidity-ethereum,https://atlas.optimism.io/project/0xcc8d03e014e121d10602eeff729b755d5dc6a317df0d6302c8a9d3b5424aaba8
+2025-12-07,retrofunding_s8_devtooling,Solidity Bytes Arrays Utils Library,5328.86,1758.5238,solidity-bytes-utils-gnsps,https://atlas.optimism.io/project/0xd63cb23c26cc3bda03b1cc2971589fd26c9d22f3bbc8f1ff2bb74613e6d1c36d
+2025-12-07,retrofunding_s8_devtooling,Sourcify,617.95,203.9235,sourcify-ethereum,https://atlas.optimism.io/project/0x51cda5996ef1a2ccd8fcf4ee5792337695599454c83eb1218c3ad4388dcb5bf5
+2025-12-07,retrofunding_s8_devtooling,Surl,973.9,321.387,surl-memester-xyz,https://atlas.optimism.io/project/0x5c0234455c4b86b05ed0c612ac0d7e53cd2249686305af9b2184190b781b8063
+2025-12-07,retrofunding_s8_devtooling,Swiss-Knife.xyz,1430.57,472.0881,swiss-knife-xyz,https://atlas.optimism.io/project/0x93c4efb5e2d7416c56ecdcd8244be8faf924194d65b514d90a7a51f6797cc012
+2025-12-07,retrofunding_s8_devtooling,Synpress,8635.93,2849.8569,synpress-synthetixio,https://atlas.optimism.io/project/0xbb067b01988521110c91737f058e7301f608be231d850a72af1516bd034d161c
+2025-12-07,retrofunding_s8_devtooling,Tevm,4722.58,1558.4514,evmts,https://atlas.optimism.io/project/0x2d90d9565ef127727845637425880545cfebe0931160ce25afe929f8ab415706
+2025-12-07,retrofunding_s8_devtooling,The Ethernaut,1929.73,636.8109000000000,ethernaut-openzeppelin,https://atlas.optimism.io/project/0x17fb589e599fe05e532b90c121eccc55b1249301e783dae226bad698872322da
+2025-12-07,retrofunding_s8_devtooling,Titanoboa,5719.53,1887.4449,vyperlang,https://atlas.optimism.io/project/0x202a80f0f57630d04a26464d6492b3399059ca1187943032c37652eb2468a76f
+2025-12-07,retrofunding_s8_devtooling,VSCode Solidity Inspector ,729.21,240.6393,vscode-solidity-inspector-praneshasp,https://atlas.optimism.io/project/0x3ec2d572a608cf939eaf7886402320b3b2229610c13bdb5cb0776bd097331e5a
+2025-12-07,retrofunding_s8_devtooling,Viem: TypeScript Interface for Ethereum,25000.0,8250.0,wevm,https://atlas.optimism.io/project/0x6bd057da522918a4675396313ae33a2f2788a1ceeb3bd7ae228015e3eb317a7d
+2025-12-07,retrofunding_s8_devtooling,Vscode Solidity Extension,357.65,118.0245,vscode-solidity,https://atlas.optimism.io/project/0x819775803938d78eaa95809971ce94cae6a54b4df58505fa36153ffa1d55e12c
+2025-12-07,retrofunding_s8_devtooling,Vyper,6613.63,2182.4979000000000,vyperlang,https://atlas.optimism.io/project/0x9ca1f7b0e0d10d3bd2619e51a54f2e4175e029c87a2944cf1ebc89164ba77ea0
+2025-12-07,retrofunding_s8_devtooling,Wagmi: Reactive primitives for Ethereum apps ,25000.0,8250.0,wevm,https://atlas.optimism.io/project/0xc0615947773148cbc340b175fb9afc98dbb4e0acd31d018b1ee41a5538785abf
+2025-12-07,retrofunding_s8_devtooling,WhatsABI,6719.05,2217.2865,whatsabi-shazow,https://atlas.optimism.io/project/0xabdfa10e699db5127100da1dd2403692afe8d86e793d57780f1c7e93437a73a0
+2025-12-07,retrofunding_s8_devtooling,alloy,8012.25,2644.0425,alloy-rs,https://atlas.optimism.io/project/0x56ce7cbc27852a8d8ef5869dc9033a215c8893f799468f61527dacb9f92be790
+2025-12-07,retrofunding_s8_devtooling,beaconcha.in,252.15,83.2095,beacon-chain,https://atlas.optimism.io/project/0xdd81f0fbb21c949e5d67176b22a39cfdc7c774349214a450df78eb31174413db
+2025-12-07,retrofunding_s8_devtooling,bulloak,1225.55,404.4315,bulloak-alexfertel,https://atlas.optimism.io/project/0x740bebbc731ec56dcc17c7d429656220a73960022c3809edf324bd8120285722
+2025-12-07,retrofunding_s8_devtooling,eRPC,6930.98,2287.2234,erpc,https://atlas.optimism.io/project/0x1e7a1f9763d25b6844567a7133b1005ef6ed785642a75229acf1b9b25202a5f3
+2025-12-07,retrofunding_s8_devtooling,ethereum-bloom-filters,3903.97,1288.3101,ethereum-bloom-filters-joshstevens19,https://atlas.optimism.io/project/0x4c9626843c4e3f3c96d80b0ec6b1d10b7682fc9b6d67ab61ece5a87648535b1f
+2025-12-07,retrofunding_s8_devtooling,ethereum-multicall,6147.58,2028.7014,ethereum-multicall-joshstevens19,https://atlas.optimism.io/project/0x37fe5886f4c77d5a5cb947deff90158c045a5d207572763187748ac4dd4bd9b9
+2025-12-07,retrofunding_s8_devtooling,ethers-multicall-provider,3225.21,1064.3193,ethers-multicall-provider-rubilmax,https://atlas.optimism.io/project/0xf46bb7a4597826d57ce9ef1579b7a11079dccfd8510770ad64b2e5a801d8ff27
+2025-12-07,retrofunding_s8_devtooling,evmc,274.08,90.4464,evmc-joshstevens19,https://atlas.optimism.io/project/0xf4f7d13f2ac3c9805998d8540950883b872d7c5d7c81d6254dde8655af690b2a
+2025-12-07,retrofunding_s8_devtooling,foundry-gas-diff,309.26,102.0558,foundry-gas-diff-rubilmax,https://atlas.optimism.io/project/0xb024f6abfa79f7eb7af334f56015509bb70355709991d31bc689c7bea3250f7e
+2025-12-07,retrofunding_s8_devtooling,foundry-storage-check,371.66,122.64780000000000,foundry-storage-check-rubilmax,https://atlas.optimism.io/project/0xfeafe16f8c1a25aebe754f3653340a17943a483a3e389464e44cf14613e210f0
+2025-12-07,retrofunding_s8_devtooling,hardhat-gas-reporter,6864.89,2265.4137,hardhat-gas-reporter-cgewecke,https://atlas.optimism.io/project/0xc2d8139cd61ddc75689610ee0cca0fe37ba8bec3270beb6aac6eac91c6256f60
+2025-12-07,retrofunding_s8_devtooling,hevm,424.26,140.0058,hevm-ethereum,https://atlas.optimism.io/project/0x2c97e213fef2bd3f30a71edf6ed48232640368d0083dc0a134a1b59391639bde
+2025-12-07,retrofunding_s8_devtooling,js-libp2p,3379.15,1115.1195,libp2p,https://atlas.optimism.io/project/0x5a7e7c7acb21521e99021d746740b368801cbfe531301e50bdbaafdc24a0aac5
+2025-12-07,retrofunding_s8_devtooling,keccak256js,3674.98,1212.7434,keccak256js,https://atlas.optimism.io/project/0x48220ef1d103189cd918e9290db4c4b99b463ae2817fb5ef0cc54556a7961b6f
+2025-12-07,retrofunding_s8_devtooling,noble cryptography,7174.52,2367.5916,paulmillr,https://atlas.optimism.io/project/0x62d9a8a3b602c688610abfbe3965e04ca0d19c5c506f40e79cd185cb501d2018
+2025-12-07,retrofunding_s8_devtooling,rindexer,5519.22,1821.3426,rindexer-joshstevens19,https://atlas.optimism.io/project/0x97525ec91080ddd917eaccabf9d383cf70a2f78839ab21eeabe1687e312f2132
+2025-12-07,retrofunding_s8_devtooling,rotki,4635.51,1529.7183000000000,rotki,https://atlas.optimism.io/project/0xc0ad090a80d748c19dce84d17f85d7b0016daa1c35f72ada2d92f469f8a77067
+2025-12-07,retrofunding_s8_devtooling,solidity-coverage,11815.89,3899.2437,solidity-coverage-sc-forks,https://atlas.optimism.io/project/0x2bb095e1f297c71da8bd4ee15097abad3b99e299fe14cd6aa704df3f36d0ae22
+2025-12-07,retrofunding_s8_devtooling,thirdweb,4755.57,1569.3381,third-web,https://atlas.optimism.io/project/0xc6052138bbdae5976fa2866f46b0537182d4126c4bb97485738d1b43f2276134
+2025-12-07,retrofunding_s8_devtooling,web3.py,11218.93,3702.2469,web3py-ethereum,https://atlas.optimism.io/project/0xebe03c3d6d33cad60124b9b05ef6e2ff056293a1de3c5fa51dfbb90c86c14bf7
+2025-12-07,retrofunding_s8_devtooling,xdeployer,2618.15,863.9895,xdeployer,https://atlas.optimism.io/project/0x537097f27d55cb52d39b95c3ed65076349ab68aac48051d742d715456e0884d8
+2025-12-07,retrofunding_s8_devtooling,🏗️  Scaffold-ETH 2,11549.21,3811.2393,buidlguidl,https://atlas.optimism.io/project/0x154a42e5ca88d7c2732fda74d6eb611057fc88dbe6f0ff3aae7b89c2cd1666ab
+2025-12-07,retrofunding_s8_devtooling,🐍 snekmate,3919.55,1293.4515,snekmate,https://atlas.optimism.io/project/0x50159544ec22884b777a997a625c75bb02e55b1dc8934aad3b78678e7c11d039
+2025-12-07,retrofunding_s8_onchain_builders,AION,774.63,255.6279,world-mini-app-aion,https://atlas.optimism.io/project/0x12721a0927c5d0598380e718e69c7f3395cc7b8847da42ac384af9c59efd025d
+2025-12-07,retrofunding_s8_onchain_builders,Account Abstraction - ERC-4337,5000.0,1650.0,eth-infinitism-account-abstraction,https://atlas.optimism.io/project/0xb98778ca9ff41446e2bc304f7b5d27f0fa7c2bcd11df19e22d1352c06698a1f6
+2025-12-07,retrofunding_s8_onchain_builders,Across Protocol,1396.31,460.7823,across,https://atlas.optimism.io/project/0x72723e07fe409557489a6643b43d9493a94c10ba68230b0527f01834cb6a550f
+2025-12-07,retrofunding_s8_onchain_builders,Arcadia Finance ,343.2,113.256,arcadia-finance,https://atlas.optimism.io/project/0xdd35cc4641c3c35bee5782fc0442b2a1b88a058ec0a7b90ba32c70347e4e9194
+2025-12-07,retrofunding_s8_onchain_builders,Arkada,930.49,307.06170000000000,,https://atlas.optimism.io/project/0x5962ef9e4955bc4cd4c6ed080c55879be9ee2dddb1b7cd37d72182a142dc9eab
+2025-12-07,retrofunding_s8_onchain_builders,BMX,478.13,157.7829,morphex-labs,https://atlas.optimism.io/project/0xe5c133e05956a3939b9a78f4ad5d0a897a027da60a7d5e1b6276a2266211f69f
+2025-12-07,retrofunding_s8_onchain_builders,BaseSwap ,1010.68,333.5244,baseswapfi,https://atlas.optimism.io/project/0xca3f26e1c876e821d2384a5cb699c6be494f9810301c2e2be49c232656262642
+2025-12-07,retrofunding_s8_onchain_builders,Beefy,225.85,74.5305,beefy-finance,https://atlas.optimism.io/project/0x30769523b16315b6404ce3c6dbaf610028acdf3133dca8a4d427e0d19d3628c9
+2025-12-07,retrofunding_s8_onchain_builders,Biru,225.72,74.4876,,https://atlas.optimism.io/project/0x536837a3ba2cd12878251809d144270a54ec09bbe041fb019a9b5c223966918a
+2025-12-07,retrofunding_s8_onchain_builders,BitMaster,1165.39,384.5787,world-mini-app-goodluckgame,https://atlas.optimism.io/project/0x79e3ed10841da009fbbaef5ac13c27022dd35e95ac5c02bae078775981a9aaa0
+2025-12-07,retrofunding_s8_onchain_builders,Blockchain Messages,2046.92,675.4836,,https://atlas.optimism.io/project/0x9f63aa0f49f9b6a09c014535bb0b06d6bbe643fd92d528cd58679433b6ebd6d4
+2025-12-07,retrofunding_s8_onchain_builders,Brahma,1864.03,615.1299,brahma,https://atlas.optimism.io/project/0xc66e357ad67e63954cd1eb79da4d507d8800518f06c82e423e93e8771e7b8d13
+2025-12-07,retrofunding_s8_onchain_builders,Cash Convert,2171.66,716.6478,kids-table-inc,https://atlas.optimism.io/project/0x2bdfa034cf1e853db8ed4b30531270c7a62d66550cd23383819e816abb234f0a
+2025-12-07,retrofunding_s8_onchain_builders,CheapGM,413.2,136.356,,https://atlas.optimism.io/project/0x853bb82b68a3cc3a16982f86b2d9c032ecf8675f1e575c27355a0e37a7775295
+2025-12-07,retrofunding_s8_onchain_builders,Compound Finance,227.23,74.9859,compound-finance,https://atlas.optimism.io/project/0xd3d00c946f62ac8cf49a85e3ab7d295d3b56f68d0b9f1fa4d595742fa372cf78
+2025-12-07,retrofunding_s8_onchain_builders,Coop Records,1664.35,549.2355,coop-records,https://atlas.optimism.io/project/0x0b06e685eab9c4fee7d93ca54e1c02281e2be560bfc54f43fa738961fa2ce4c1
+2025-12-07,retrofunding_s8_onchain_builders,CreateMyToken,779.64,257.2812,createmytoken,https://atlas.optimism.io/project/0xdf3eb6b429b2150c71241de0c591b18c98a3528ad0e8d838d069b6fff291d803
+2025-12-07,retrofunding_s8_onchain_builders,CreateX,4210.16,1389.3528,createx,https://atlas.optimism.io/project/0x0008577196fa6ec286440b418e2f6305fc10e62ce759625d826be272ee6b45a3
+2025-12-07,retrofunding_s8_onchain_builders,Credit,2731.45,901.3785,world-mini-app-credit,https://atlas.optimism.io/project/0x08447636de20816960f0427a65677df5571d503f09235b2bec37f7dd5c28161d
+2025-12-07,retrofunding_s8_onchain_builders,DIAMANTE,1398.7,461.571,,https://atlas.optimism.io/project/0xc7104d126ffe628630e89f455711ef296175069fffb1f9c0e85b396ee1d23f27
+2025-12-07,retrofunding_s8_onchain_builders,DICE MAXx6,894.0,295.02000000000000,,https://atlas.optimism.io/project/0x22f19557b1142eeed40eceffa2e5b31fb8393ca57dafb3454035a71c613b5ce1
+2025-12-07,retrofunding_s8_onchain_builders,DNA Token,546.26,180.2658,dnatokenio,https://atlas.optimism.io/project/0xdafc4d2a060c7d08913ceb05b19c4fe7fb6d93a7f5f1142642be939be16bf6e9
+2025-12-07,retrofunding_s8_onchain_builders,DackieSwap,457.86,151.09380000000000,dackieswap,https://atlas.optimism.io/project/0x18e7582de42dd9a7fd2cb69fb6566b8bcb3e86b936b229b0c5af78fa1de791a4
+2025-12-07,retrofunding_s8_onchain_builders,Daimo Pay,824.81,272.1873,daimo-pay,https://atlas.optimism.io/project/0xc850d11fe786d1168bfeda108721101427dd5425d9d9e6595c35573f7616e940
+2025-12-07,retrofunding_s8_onchain_builders,Dalgona,291.34,96.1422,,https://atlas.optimism.io/project/0x1f998a77880db01b4938b7fa84fc2f6577fee032fd0a55393406e665d7f3a9e1
+2025-12-07,retrofunding_s8_onchain_builders,Double or Nothing,2103.57,694.1781000000000,world-mini-app-goodluckgame,https://atlas.optimism.io/project/0x394cdf60010e890aeb52606b938e6ff6ef7a52b0b5a3e897daf0133bed243b14
+2025-12-07,retrofunding_s8_onchain_builders,Drop Wallet,2669.71,881.0043000000000,world-mini-app-drop-wallet,https://atlas.optimism.io/project/0xf9af65e8afbd0fd21802bca92c9d0d6201a8b1d114d5c9170fea7e914fd2b392
+2025-12-07,retrofunding_s8_onchain_builders,EARN HUB!,2525.18,833.3094,,https://atlas.optimism.io/project/0x6fbc494492f9d721670f2a4b6b7b9a3a86c5050cb342146d4d4e3a606e1a3478
+2025-12-07,retrofunding_s8_onchain_builders,Eggs Vault,3081.04,1016.7432,holdstation,https://atlas.optimism.io/project/0xf4e56e0c6654d6ef621191708f27ee20242462f541d3e79dc5512e1a10d90736
+2025-12-07,retrofunding_s8_onchain_builders,Ethereum Attestation Service (EAS),241.97,79.8501,ethereum-attestation-service,https://atlas.optimism.io/project/0xa88844cea135382e3484e39c3172033437121b35ca0bc8b10b9b8253984876b5
+2025-12-07,retrofunding_s8_onchain_builders,Extra Finance,222.39,73.3887,extra-finance,https://atlas.optimism.io/project/0x512f97f1de28ad530f752d53bf4f56ed16d34a3121f0512cd5a0485c2074b312
+2025-12-07,retrofunding_s8_onchain_builders,FLAG!,1749.59,577.3647,party-dao,https://atlas.optimism.io/project/0x7d5bcf0b123ca5611f1bb0c889816753cc215b0a230849c8464c6c2a08c4eddc
+2025-12-07,retrofunding_s8_onchain_builders,Flaunch,321.81,106.1973,flayerlabs,https://atlas.optimism.io/project/0x259b729af86ba38c0c84be9b739dfbca109a6df985371d8cabd43116d18d7a1a
+2025-12-07,retrofunding_s8_onchain_builders,GM,1083.46,357.5418,inkonchain,https://atlas.optimism.io/project/0x2c1d2ae68e4a718a04a41f1a9fde1ed0648602e08c150e3f72d3dc7ef22dd71a
+2025-12-07,retrofunding_s8_onchain_builders,GMonchain,2902.01,957.6633000000000,,https://atlas.optimism.io/project/0xef71b036123a72aa9aa64afb1263751bdfc7e7e4e63ec658c323136dc3a88d37
+2025-12-07,retrofunding_s8_onchain_builders,Gains Network (gTrade),912.22,301.0326,gainsnetwork,https://atlas.optimism.io/project/0x70ba3cb2e433f1cd9ace8aea84c46d167ba5db12293cd108eaca068d06be3a71
+2025-12-07,retrofunding_s8_onchain_builders,Guild.xyz,561.33,185.23890000000000,guildxyz,https://atlas.optimism.io/project/0x3d009f8f7c1e8a3bcbc81ca8ed60d2e86b956dd0fa68c4595f851be37052a2b5
+2025-12-07,retrofunding_s8_onchain_builders,Gyroscope,616.43,203.4219,gyrostable,https://atlas.optimism.io/project/0x3526b9c6fdc34076d7d2c31893b94e760f4d5a010387b6b76b45f8b5577ceb98
+2025-12-07,retrofunding_s8_onchain_builders,Highlight,264.29,87.21570000000000,highlightxyz,https://atlas.optimism.io/project/0x331511dd6300baf10a35b2d3f3953fd7160412b970049b3a63b64564ce26c347
+2025-12-07,retrofunding_s8_onchain_builders,Holdstation Wallet,813.24,268.36920000000000,holdstation,https://atlas.optimism.io/project/0x8fbddc02ddbc9c9b303b7bbb645aa933541876a31a93d7dea165fb0283d7f685
+2025-12-07,retrofunding_s8_onchain_builders,Hydrex,4212.4,1390.092,hydrex-fi,https://atlas.optimism.io/project/0xab28184ffcd1429ce9bbcffdba320787e9d2ab1e2f365352af3b5a9ef64f4600
+2025-12-07,retrofunding_s8_onchain_builders,Infected,368.07,121.4631,infecteddotfun,https://atlas.optimism.io/project/0x0d72f0fd9ca1d475f2fc199ebe456f80212d24d02d9dbabca6137442e61c5f3f
+2025-12-07,retrofunding_s8_onchain_builders,InfinityName,499.74,164.91420000000000,,https://atlas.optimism.io/project/0x4dc32aaf6b60deda7ef0f98ea1b35dbb938741f16375a25fe0ce75c872f5d0ab
+2025-12-07,retrofunding_s8_onchain_builders,Ionic Protocol,459.52,151.6416,ionicprotocol,https://atlas.optimism.io/project/0xbcb5c437d5347be21add3972512679054416805274f80e85ab8053ae79340a69
+2025-12-07,retrofunding_s8_onchain_builders,Kelp,2852.88,941.4504,kelp-dao,https://atlas.optimism.io/project/0xff1edf67227651293a9cff4dce3577c6ca52bf8c7c6f5f133f07b05255379b27
+2025-12-07,retrofunding_s8_onchain_builders,Kim Exchange,741.32,244.63560000000000,kim-protocol,https://atlas.optimism.io/project/0xfd9f98de666c5b0a5ce96d4a4b8d4ceee9f8c2156734d57bf6c23d0cff183e90
+2025-12-07,retrofunding_s8_onchain_builders,Kyo finance,3723.85,1228.8705,kyo-finance,https://atlas.optimism.io/project/0x5958eb35cf4d4b8871924adc5e6272eff2ac701e368ca6ad043ee486cce9e223
+2025-12-07,retrofunding_s8_onchain_builders,LI.FI,4115.04,1357.9632,lifinance,https://atlas.optimism.io/project/0x517eaa9c56951de89261f2d7830ea49aae92f2a903104a17d9c5c2edd4959806
+2025-12-07,retrofunding_s8_onchain_builders,Layer3,1695.65,559.5645000000000,layer3xyz,https://atlas.optimism.io/project/0x91a4420e2fcc8311e97dad480f201a8ce221f2cd64c2de77280cbcc6ce193752
+2025-12-07,retrofunding_s8_onchain_builders,LeverageX by Javsphere,217.99,71.9367,javsphere,https://atlas.optimism.io/project/0xf9513b5bfca3be3513450bd56b48ae485ce157aa56c1d8b2e06a68bce0b8d084
+2025-12-07,retrofunding_s8_onchain_builders,Mint Club,1227.76,405.1608,mintclub-steemhunt,https://atlas.optimism.io/project/0x0ee3defac0e2a31b995bc073ac02a2140aaf01679e141eb8d1d80409f75f90ea
+2025-12-07,retrofunding_s8_onchain_builders,NFTs2Me,495.26,163.4358,nfts2me,https://atlas.optimism.io/project/0xd54e1032bf16d649f8f8f0a7da42a249966ad4a270b4c17b24ded1e32c97b2bf
+2025-12-07,retrofunding_s8_onchain_builders,Neptune Finance,212.75,70.20750000000000,nepfinance,https://atlas.optimism.io/project/0x469f813ce1b0c64293d1f884363808f076d27abc8c6060bd3abe46bedd0d7982
+2025-12-07,retrofunding_s8_onchain_builders,Nexart,659.45,217.6185,,https://atlas.optimism.io/project/0x3cd7461bfc56982b9e128172617cf423fa76bab573f0f29155963d076214b3fb
+2025-12-07,retrofunding_s8_onchain_builders,ORB,1613.95,532.6035,party-dao,https://atlas.optimism.io/project/0xb620f012eb197e5661f65c1a5aee6a4bbb43629f0056879ae4dc66adf8383ae3
+2025-12-07,retrofunding_s8_onchain_builders,ORO,3682.97,1215.3801,party-dao,https://atlas.optimism.io/project/0x40ee6048c99aefd288f6133db207849d0951fe6b62afa1cca0db5a4ad7f558de
+2025-12-07,retrofunding_s8_onchain_builders,Oku Trade,823.33,271.69890000000000,gfx-labs,https://atlas.optimism.io/project/0xb926ab918147d2264dba94a429eb07986aa533fd6062a78736d3eda4e0b4a69b
+2025-12-07,retrofunding_s8_onchain_builders,Omni Exchange,306.4,101.112,omni-exchange,https://atlas.optimism.io/project/0xdd73108cfd9ee7517836e18800a06412a6ba08b43356791c2db6a7a75b910692
+2025-12-07,retrofunding_s8_onchain_builders,OmniHub,209.88,69.2604,omnihub-xyz,https://atlas.optimism.io/project/0xd7a8e115b2b3772d7d5656d7798e349dcdedf2463302c78528c9e9686ab4efe3
+2025-12-07,retrofunding_s8_onchain_builders,OnChainGM,1369.8,452.034,onchaingm,https://atlas.optimism.io/project/0xa1f96576ad998e804140caccd478bae81b8b1059a107166df87b59fbf42c9e4a
+2025-12-07,retrofunding_s8_onchain_builders,OpenOcean,847.74,279.7542,openocean-finance,https://atlas.optimism.io/project/0x24ff0fb2933e55b169a80d9bd35a00a7011795387717b27445ccdc0f8660d740
+2025-12-07,retrofunding_s8_onchain_builders,Orki Finance,210.04,69.3132,,https://atlas.optimism.io/project/0x578d022acd70130def85327e2926a2ed4545e08617ced951ef54a872f5a2a5f5
+2025-12-07,retrofunding_s8_onchain_builders,Otterverse,3104.73,1024.5609,world-mini-app-otterverse,https://atlas.optimism.io/project/0xc55fe3df4a2689935cc0a4b912e3f913de7a8c1c6758370550aaf25a949ec79c
+2025-12-07,retrofunding_s8_onchain_builders,O＝C＝O,218.43,72.0819,pileum-org,https://atlas.optimism.io/project/0xc55da0ccb43d29814ac5ac3e1eacb85a5008a30df7fff6c34c45684c89ad5f11
+2025-12-07,retrofunding_s8_onchain_builders,PUF,3248.25,1071.9225,world-mini-app-puf,https://atlas.optimism.io/project/0x2c41bf7b4d36a344881581e20ecb2929d38c3415fffa4bf65f81ae049dfb2e72
+2025-12-07,retrofunding_s8_onchain_builders,PancakeSwap,5000.0,1650.0,pancakeswap,https://atlas.optimism.io/project/0x1ac8413aaf8110410b9447af27251ba89311f5ec4e2d289006e834b122a44dbf
+2025-12-07,retrofunding_s8_onchain_builders,Pinto Protocol,3131.56,1033.4148,pinto-org,https://atlas.optimism.io/project/0x7eb6ba7a1057659d04ec414446c1b32509bf57704958139266c7120903446ad6
+2025-12-07,retrofunding_s8_onchain_builders,Rainbow (Rainbow Router),313.33,103.3989,rainbow,https://atlas.optimism.io/project/0xffffeb1d3576c1e847701c225975ee1a10259e05366b477e98fea7a47c5e5896
+2025-12-07,retrofunding_s8_onchain_builders,Relay Protocol,5000.0,1650.0,reservoirprotocol,https://atlas.optimism.io/project/0x250065e82e6a2fd0127f0f7c7e0df7eb305810bd9796f72aa28a0c7f2c71ae08
+2025-12-07,retrofunding_s8_onchain_builders,Rolu,255.13,84.19290000000000,rolu-abdulrahimiqbal,https://atlas.optimism.io/project/0xaf0b91c11966164d5b8e3cf02f082b19479c5f3faca1108ca1e2aec1e1177d06
+2025-12-07,retrofunding_s8_onchain_builders,SOCKET protocol,813.87,268.57710000000000,socket,https://atlas.optimism.io/project/0xe8833ceee8beb2b3fb0f7f2dcef576f6f9cf20e35d8e53324d71b0ed47b01982
+2025-12-07,retrofunding_s8_onchain_builders,SONEX,2639.11,870.9063000000000,sonex,https://atlas.optimism.io/project/0x57b84242462a1ddfb9006369b96a60d85ec41fa29aa20b8f2902ce9ba22e3f54
+2025-12-07,retrofunding_s8_onchain_builders,Sake,1058.25,349.2225,sake-finance,https://atlas.optimism.io/project/0x18923b60296e26a8ce35a0b4754cd6fd5427b2820a202f82901c826794fdbc9e
+2025-12-07,retrofunding_s8_onchain_builders,Smol,2915.39,962.0787,smoldapp,https://atlas.optimism.io/project/0x79fa54d6c030c7803827e96933fc93b092f638079c738d13a27a08b3905b95ec
+2025-12-07,retrofunding_s8_onchain_builders,Sonus Exchange,534.64,176.4312,sonusexchange,https://atlas.optimism.io/project/0x96767e87a27cdb9798f40c3a6fd78e70da611afe53a5e45cbaafc50cae4ad0e7
+2025-12-07,retrofunding_s8_onchain_builders,Splits,494.27,163.1091,0x-splits,https://atlas.optimism.io/project/0xb6266f3d955040aa7583f2f346db87abe0649f545389af3cc8fe302aacfc850b
+2025-12-07,retrofunding_s8_onchain_builders,Stargate Finance,3082.77,1017.3141,stargate-finance,https://atlas.optimism.io/project/0x62e37e96aa6e1cbfb6bd24b97c4b8f1e12cc3fe35d5388d2f041c42a12b40745
+2025-12-07,retrofunding_s8_onchain_builders,Superchain Safe,1423.4,469.722,superchain-safe-protofire,https://atlas.optimism.io/project/0x31704fee34d3edec158b5df714b613642bfbbb58ad7466204ded66a3f811b979
+2025-12-07,retrofunding_s8_onchain_builders,Superfluid,3166.06,1044.7998,superfluid,https://atlas.optimism.io/project/0x3ecbf66c1b21342b26acb0f7d4c6b8bbbef168ffafff3f425de3503fd8dfa535
+2025-12-07,retrofunding_s8_onchain_builders,Superhero,543.98,179.51340000000000,world-mini-app-superhero,https://atlas.optimism.io/project/0x42bdd05fa3beb0b21780bbd35b34eefc3e69e45bc4f17043f6eb6b2bbed26237
+2025-12-07,retrofunding_s8_onchain_builders,SurfLayer,2311.17,762.6861,,https://atlas.optimism.io/project/0x4f6091bc27c7e7c6fcd6588c086932115836445feabe29bb4e24a2d91421a36a
+2025-12-07,retrofunding_s8_onchain_builders,Sushiswap,1871.3,617.529,sushi,https://atlas.optimism.io/project/0x41b2ae8a2ead458ff7c85549a9a11380353e1ae4b234666312d495326636f77a
+2025-12-07,retrofunding_s8_onchain_builders,SwapBased,979.94,323.38020000000000,swapbased,https://atlas.optimism.io/project/0x8595f830f4d1716621d19bca6394f304837133fb473d8fcd1699e84402df1409
+2025-12-07,retrofunding_s8_onchain_builders,SwapMode,230.08,75.9264,swapmode,https://atlas.optimism.io/project/0x491ffd3c2e4c25ab7fbdbefe0f5fc8dc2beee5ab801287b9c6c93c9c3c810463
+2025-12-07,retrofunding_s8_onchain_builders,SynFutures,2616.16,863.3328,synfutures,https://atlas.optimism.io/project/0x596292c1581406fc4cfba89bc8ed86e32c7ac85c6239d074df7b91fcbc53f4c8
+2025-12-07,retrofunding_s8_onchain_builders,SynStation,410.85,135.5805,synstation-staking-contract-wasd3rplay,https://atlas.optimism.io/project/0x869d601d2c5d78bcad37b589225632a9674c7bfbafeebf3c379ccc41265d6f33
+2025-12-07,retrofunding_s8_onchain_builders,TPulseFi,2903.77,958.2441,world-mini-app-tpulsefi,https://atlas.optimism.io/project/0x84893ce34d8069c43d8814db55a1ff5d472e4765650f0c37c1156b5ce97421ff
+2025-12-07,retrofunding_s8_onchain_builders,The Box,2577.94,850.7202000000000,world-mini-app-birdgames,https://atlas.optimism.io/project/0x00d5eaebec0fa6a41bbf5e29d347162dabc04dfffcd188663fc16393a5d9917a
+2025-12-07,retrofunding_s8_onchain_builders,The Button,363.12,119.8296,world-mini-app-hocus-labs,https://atlas.optimism.io/project/0xe2ef3fbfd10df401a0221939359e96af29805db8936c1199ae7532262c69ec5f
+2025-12-07,retrofunding_s8_onchain_builders,UNO,5000.0,1650.0,party-dao,https://atlas.optimism.io/project/0x9fb539aa3ddb63cda1c29b50fbeaa6071f290926ce10f3d224233577b823454e
+2025-12-07,retrofunding_s8_onchain_builders,Uman,289.39,95.4987,world-mini-app-samiibou,https://atlas.optimism.io/project/0x7e7d21d6fd33a544b7d1dc853239b1af732c778d16dbf0e2e059f5f34b1c1bfe
+2025-12-07,retrofunding_s8_onchain_builders,UniDerpFun,1643.3,542.289,,https://atlas.optimism.io/project/0x6318678f29da36a652cda174bf1cf5ed9bba753381c7b3b613b981803ba3d550
+2025-12-07,retrofunding_s8_onchain_builders,Uniswap on Superchain (Oku),5000.0,1650.0,uniswap,https://atlas.optimism.io/project/0x9d9162fac637991d2a56da8fbe03dba24c87eb82d47c7a00b921e39e956f8a9d
+2025-12-07,retrofunding_s8_onchain_builders,Untitled Bank,379.67,125.2911,untitled-bank,https://atlas.optimism.io/project/0x2ecedc3cad0a68d398020bf6d41167535fcaeb6d5bbf1602d6318f07e9c59af6
+2025-12-07,retrofunding_s8_onchain_builders,Veil Cash,622.58,205.45140000000000,veildotcash,https://atlas.optimism.io/project/0x40cda7edf27894d647d9433ded29290966f5c258dade2c3ea36427fccf0ef3c9
+2025-12-07,retrofunding_s8_onchain_builders,Velodrome Finance,5000.0,1650.0,velodrome,https://atlas.optimism.io/project/0x08df6e20a3cfabbaf8f34d4f4d048fe7da40447c24be0f3ad513db6f13c755dd
+2025-12-07,retrofunding_s8_onchain_builders,Virtuals Protocol,5000.0,1650.0,virtual-protocol,https://atlas.optimism.io/project/0x780cf3d5aa4e3c94b8a4157f4b06a3f92ebcc20813585e20e3fe0271bf76b7a9
+2025-12-07,retrofunding_s8_onchain_builders,WOOFi,634.75,209.4675,woonetwork,https://atlas.optimism.io/project/0x000c2ce4773defb3010a58d3800d0ec9d432189c574ba26d3103f1db44a5af6d
+2025-12-07,retrofunding_s8_onchain_builders,World Billboard,785.21,259.1193,world-mini-app-world-billboard,https://atlas.optimism.io/project/0xd17c16ed0ff3c31ae81ae9af4070a2150db0be538cabcb720c67cc5f221d3965
+2025-12-07,retrofunding_s8_onchain_builders,World MiniApps - NFT and Gaming,1725.22,569.3226000000000,world-mini-app-world-miniapps---nft-and-gaming,https://atlas.optimism.io/project/0xcae812d91b7b86edf3141f44f006e8a03931ebc489e0a417b82b603bf325bc96
+2025-12-07,retrofunding_s8_onchain_builders,World Republic,2276.43,751.2219,worldrepublicorg,https://atlas.optimism.io/project/0x5831a5bc2b6e683bcb8e392453a85c5e7f755aa700e827ed9c3e1c6d67fb2a96
+2025-12-07,retrofunding_s8_onchain_builders,WorldPot,891.25,294.1125,,https://atlas.optimism.io/project/0x55c2b578a1e34fbbc872dd8736b8e7dda4c87d12522db966f1bf3e75af900f13
+2025-12-07,retrofunding_s8_onchain_builders,Worldle,467.24,154.1892,,https://atlas.optimism.io/project/0x041baee0d8c07a4e89e4c6c19410d8f6cd0a8439cbe8ea0687bf9a504f1c6a88
+2025-12-07,retrofunding_s8_onchain_builders,X3X,229.0,75.57000000000000,world-mini-app-x3x,https://atlas.optimism.io/project/0xfb9ddb0fdae7aa1049979189c20c53bad5ab49b44435ca939cef7c618c96a187
+2025-12-07,retrofunding_s8_onchain_builders,ZNS,658.79,217.4007,,https://atlas.optimism.io/project/0xa2447abd4724c68eff8635f01a39a46bd00a2380a56513fbcd430653cfd74c98
+2025-12-07,retrofunding_s8_onchain_builders,deBridge,679.57,224.2581,debridge-finance,https://atlas.optimism.io/project/0xf24315614063278ba3543e1717791132a9afa79b0e65baa01a85bcccbdfa215f
+2025-12-07,retrofunding_s8_onchain_builders,doginme memecoin,642.79,212.1207,doginme,https://atlas.optimism.io/project/0xeecfa614f020c2ea4c2eb431246befedf35ddc6c52cfaa83d0c4caf2f580f9f4
+2025-12-07,retrofunding_s8_onchain_builders,waveX,535.3,176.649,,https://atlas.optimism.io/project/0xdb3560a0c42f54dea2bc0b226fb45dc14bc19821b95cc18fae812d199feb5cbc
+2025-12-07,retrofunding_s8_onchain_builders,zkCodex,312.57,103.1481,zkcodex,https://atlas.optimism.io/project/0x7a4bb37bc7997b8e9b34775164682ff1f441b716cd235f2e7cdce76677b66007
+2026-01-08,retrofunding_s8_devtooling,Abi Ninja,1652.79,545.4207,buidlguidl,https://atlas.optimism.io/project/0xafb4dc19ccc63057da88110df49234b311044bc73b070041bb8df03e583943ab
+2026-01-08,retrofunding_s8_devtooling,Aderyn,1732.11,571.5963,cyfrin,https://atlas.optimism.io/project/0xa7d78d566bfa319479ec048c94c3d8c1f4d628a9344ba157fc4974dbf472dc3e
+2026-01-08,retrofunding_s8_devtooling,Ape Framework,4914.37,1621.7421,apeworx,https://atlas.optimism.io/project/0xa0b16714baef75d97ec07fd48eaf42e79df92fe2a3c2d725d2388ede587ea54c
+2026-01-08,retrofunding_s8_devtooling,Blockscout open-source block explorer,1424.11,469.9563,blockscout,https://atlas.optimism.io/project/0x663e4d25ca3f327365240471b4831ea3c989cb132bbf6ae8f5c1e15268591795
+2026-01-08,retrofunding_s8_devtooling,Brownie,5643.43,1862.3319,eth-brownie,https://atlas.optimism.io/project/0x5200a7351f8d195401dc04631fb83e4836f73a2794f316b2739c03807f30a78b
+2026-01-08,retrofunding_s8_devtooling,Cannon,7167.27,2365.1991000000000,usecannon,https://atlas.optimism.io/project/0xc7798704a6d730cea776c4866a9636bfa04c1201e29b6b0c99cc3603bc1bca25
+2026-01-08,retrofunding_s8_devtooling,Create2Deployer,400.44,132.14520000000000,create2deployer,https://atlas.optimism.io/project/0x513265758a3804184b6a0771d99c1a4b04d3267bacd4b914e89ff991de229f6a
+2026-01-08,retrofunding_s8_devtooling,CreateX,3549.57,1171.3581,createx,https://atlas.optimism.io/project/0x0008577196fa6ec286440b418e2f6305fc10e62ce759625d826be272ee6b45a3
+2026-01-08,retrofunding_s8_devtooling,DefiLlama,25000.0,8250.0,defi-llama,https://atlas.optimism.io/project/0xae07bfec2c3c90937679f8c8c5c32e80407c09903aa03d1b5e5a075e67592b86
+2026-01-08,retrofunding_s8_devtooling,Ethereum Attestation Service (EAS),1782.51,588.2283,ethereum-attestation-service,https://atlas.optimism.io/project/0xa88844cea135382e3484e39c3172033437121b35ca0bc8b10b9b8253984876b5
+2026-01-08,retrofunding_s8_devtooling,Ethernal,1099.26,362.7558,tryethernal,https://atlas.optimism.io/project/0x14eab8b10f729239d63df6c0cb85f666c3eb1f2dd440ebd003c1821f186a49da
+2026-01-08,retrofunding_s8_devtooling,Ethers.js,25000.0,8250.0,ethers-io,https://atlas.optimism.io/project/0xa3d07f453f70d844196d89d79848aa2e70a0bd8b38bf0f493cba1547bb3bca5e
+2026-01-08,retrofunding_s8_devtooling,Fe Language,822.21,271.32930000000000,fe-ethereum,https://atlas.optimism.io/project/0x541b7b08401d799b87f583c102a6c94cee7105f1b29dc630de5edbbd966d7c13
+2026-01-08,retrofunding_s8_devtooling,Foundry,25000.0,8250.0,foundry,https://atlas.optimism.io/project/0x4562c0630907577f433cad78c7e2cc03349d918b6c14ef982f11a2678f5999ad
+2026-01-08,retrofunding_s8_devtooling,Foundry MCP Server,776.78,256.3374,foundry-mcp-server-praneshasp,https://atlas.optimism.io/project/0xa873dcdcc84e0022edd2f7d5cc8646667b87bf06609d506cd8e39dbd7412fa59
+2026-01-08,retrofunding_s8_devtooling,Frames.js,636.48,210.0384,framesjs,https://atlas.optimism.io/project/0x9d93ec97ef2d3bd4c2b8d95abac9ce0cf43e4f3eb1f05709f8282da8200e69ee
+2026-01-08,retrofunding_s8_devtooling,Gelato Relay SDK,3597.75,1187.2575000000000,gelato,https://atlas.optimism.io/project/0x7697147650b4b717ce5675982f2102da7c030498628fe37e3f403f875622b7f7
+2026-01-08,retrofunding_s8_devtooling,Hardhat,25000.0,8250.0,hardhat-nomicfoundation,https://atlas.optimism.io/project/0x670a2982f6d7786b58a8399bcabc23246365b21e533a97945e055791fc235e64
+2026-01-08,retrofunding_s8_devtooling,IPFS,6833.48,2255.0484,ipfs,https://atlas.optimism.io/project/0x7f330267969cf845a983a9d4e7b7dbcca5c700a5191269af377836d109e0bb69
+2026-01-08,retrofunding_s8_devtooling,K Semantics of the Ethereum Virtual Machine (EVM),758.76,250.3908,,https://atlas.optimism.io/project/0x8af71ece7f50d6962b589b19854ceac72b81e5f5b3014637b262c33809d5a395
+2026-01-08,retrofunding_s8_devtooling,Kontrol - formal verification tool based on Foundry and KEVM,509.92,168.27360000000000,runtimeverification,https://atlas.optimism.io/project/0x7348ae42266ff626319e8ea5398343b847603b3cc7101b03d8e4fb2b75ea8db3
+2026-01-08,retrofunding_s8_devtooling,Kurtosis,3215.32,1061.0556,kurtosis-tech,https://atlas.optimism.io/project/0x35295108e0c7b4625d650fbdabd4888417782539f56159d39ac2f0e2411f607b
+2026-01-08,retrofunding_s8_devtooling,LI.FI,3686.13,1216.4229,lifinance,https://atlas.optimism.io/project/0x517eaa9c56951de89261f2d7830ea49aae92f2a903104a17d9c5c2edd4959806
+2026-01-08,retrofunding_s8_devtooling,Maintaining simple-optimism-node,529.71,174.8043,simple-optimism-node-smartcontracts,https://atlas.optimism.io/project/0x09b95c7697625da4915338750c5f78446817a3634cb38bc9155e26bbbc0c87f1
+2026-01-08,retrofunding_s8_devtooling,Medusa,830.34,274.0122,medusa-crytic,https://atlas.optimism.io/project/0xb9996d35862a7c60282da2adf3447f043580f586fcb702ff6869896d15ef6344
+2026-01-08,retrofunding_s8_devtooling,MerkleTreeJS,4665.05,1539.4665000000000,merkletreejs,https://atlas.optimism.io/project/0xc377ed1b705bcc856a628f961f1e7c8ca943e6f3727b7c179c657e227e8e852c
+2026-01-08,retrofunding_s8_devtooling,Multicaller,2473.5,816.255,multicaller-vectorized,https://atlas.optimism.io/project/0xfc54b4a9c537be25238cba3f05100b733aeee83a3eb3fdae60d651b3b913390c
+2026-01-08,retrofunding_s8_devtooling,OpenRPC,3288.84,1085.3172000000000,open-rpc,https://atlas.optimism.io/project/0x6f8f610667400044907494c879b717e806a03bf519dcfd786edc7f2fa61d6db8
+2026-01-08,retrofunding_s8_devtooling,OpenZeppelin Contracts,25000.0,8250.0,openzeppelin,https://atlas.optimism.io/project/0x939241afa4c4b9e1dda6b8250baa8f04fa8b0debce738cfd324c0b18f9926d25
+2026-01-08,retrofunding_s8_devtooling,Otterscan,1347.56,444.6948,otterscan,https://atlas.optimism.io/project/0xaed5941b7a9f20de83f5c839bda507be43cbf41777fc623abf4bf05773298826
+2026-01-08,retrofunding_s8_devtooling,PRBMath,5312.08,1752.9864,prb-math-paulrberg,https://atlas.optimism.io/project/0x7e917a2d0718401c9fe2a82f43ea558f5128f251b1e658c76dc7ff9a5e9fd993
+2026-01-08,retrofunding_s8_devtooling,Party.app + Party Protocol,1084.41,357.85530000000000,party-dao,https://atlas.optimism.io/project/0x850df51e29f2846a5f085d88e6b6fc13fad51ad7161f8a825ed09d470668161a
+2026-01-08,retrofunding_s8_devtooling,Ponder,9352.41,3086.2953,ponder-sh,https://atlas.optimism.io/project/0x351967474a454b494260a488f3ceb77d993580a4fe79fb6b6d132c70634bc516
+2026-01-08,retrofunding_s8_devtooling,Prettier Solidity,10001.5,3300.4950000000000,prettier-solidity,https://atlas.optimism.io/project/0xc6cac7cd3793888032cc8a9e5aef92550beeec2598f86f1ec6972ffd5b82a990
+2026-01-08,retrofunding_s8_devtooling,Remix Project,1744.47,575.6751,remix-ethereum,https://atlas.optimism.io/project/0x754c37e401e2527ab24b9d7ca3e042bfcbfebeef54a533f8833d46242d2c3017
+2026-01-08,retrofunding_s8_devtooling,Revm,8171.58,2696.6214,revm-bluealloy,https://atlas.optimism.io/project/0xb2d109759fe14e11ac5cc100ab6006321ebdd7ffdefbd2efac93a002105f8e92
+2026-01-08,retrofunding_s8_devtooling,Revoke.cash,1647.51,543.6783,revoke-cash,https://atlas.optimism.io/project/0xfbc74fb5d15b7b2554277371a41ee6ff1bf392377bce5fbfce140c2980cc4f64
+2026-01-08,retrofunding_s8_devtooling,Ronan Sandford,11502.12,3795.6996,wighawag,https://atlas.optimism.io/project/0x9b639cc6061e41a1d12adb39619a2fddb7005074cf965a3a6f4eabc6eea31112
+2026-01-08,retrofunding_s8_devtooling,Rundler,438.5,144.705,alchemyplatform,https://atlas.optimism.io/project/0x2247247c751707d897f5c0eab670426d9c1c26d84e96ac226004afbf0080cba4
+2026-01-08,retrofunding_s8_devtooling,Rust Libp2p,3377.65,1114.6245,libp2p,https://atlas.optimism.io/project/0xdf1bb03d08808e2d789f5eac8462bdc560f1bb5b0877f0cf8c66ab53a0bc2f5c
+2026-01-08,retrofunding_s8_devtooling,Slither,4650.51,1534.6683,slither-crytic,https://atlas.optimism.io/project/0xdc3dce33fd5fb50cf932586d4257456ddf5040ba0955d97641646504c73dbd13
+2026-01-08,retrofunding_s8_devtooling,Snapshot,5260.8,1736.064,snapshot-labs,https://atlas.optimism.io/project/0x5e6c436e48e56d6d9622ba5d0be0035c314e2b29d2afc8f5f1ee8ac75cd42532
+2026-01-08,retrofunding_s8_devtooling,Solady,13131.79,4333.4907,solady-vectorized,https://atlas.optimism.io/project/0x9151666888d0ca532a529be98a50d2eb992988117e202163f865fa9a27eb7149
+2026-01-08,retrofunding_s8_devtooling,Solc-select,3244.91,1070.8203,solc-select-crytic,https://atlas.optimism.io/project/0x2a04bac7482169a929fd70444bbfac10654d0588e022db7527566dbfc307d2e9
+2026-01-08,retrofunding_s8_devtooling,Solhint,8471.83,2795.7039,solhint-protofire,https://atlas.optimism.io/project/0xfa7d950cfda2c634b052b6c07e75daaa95dd22ac1f220b6862cfd24221d4cabc
+2026-01-08,retrofunding_s8_devtooling,Solidity,25000.0,8250.0,solidity-ethereum,https://atlas.optimism.io/project/0xcc8d03e014e121d10602eeff729b755d5dc6a317df0d6302c8a9d3b5424aaba8
+2026-01-08,retrofunding_s8_devtooling,Solidity Bytes Arrays Utils Library,5314.82,1753.8906,solidity-bytes-utils-gnsps,https://atlas.optimism.io/project/0xd63cb23c26cc3bda03b1cc2971589fd26c9d22f3bbc8f1ff2bb74613e6d1c36d
+2026-01-08,retrofunding_s8_devtooling,Sourcify,793.33,261.7989,sourcify-ethereum,https://atlas.optimism.io/project/0x51cda5996ef1a2ccd8fcf4ee5792337695599454c83eb1218c3ad4388dcb5bf5
+2026-01-08,retrofunding_s8_devtooling,Surl,960.8,317.064,surl-memester-xyz,https://atlas.optimism.io/project/0x5c0234455c4b86b05ed0c612ac0d7e53cd2249686305af9b2184190b781b8063
+2026-01-08,retrofunding_s8_devtooling,Swiss-Knife.xyz,1426.79,470.8407,swiss-knife-xyz,https://atlas.optimism.io/project/0x93c4efb5e2d7416c56ecdcd8244be8faf924194d65b514d90a7a51f6797cc012
+2026-01-08,retrofunding_s8_devtooling,Synpress,8487.92,2801.0136,synpress-synthetixio,https://atlas.optimism.io/project/0xbb067b01988521110c91737f058e7301f608be231d850a72af1516bd034d161c
+2026-01-08,retrofunding_s8_devtooling,Tevm,4703.7,1552.221,evmts,https://atlas.optimism.io/project/0x2d90d9565ef127727845637425880545cfebe0931160ce25afe929f8ab415706
+2026-01-08,retrofunding_s8_devtooling,The Ethernaut,1910.1,630.333,ethernaut-openzeppelin,https://atlas.optimism.io/project/0x17fb589e599fe05e532b90c121eccc55b1249301e783dae226bad698872322da
+2026-01-08,retrofunding_s8_devtooling,Titanoboa,5611.21,1851.6993,vyperlang,https://atlas.optimism.io/project/0x202a80f0f57630d04a26464d6492b3399059ca1187943032c37652eb2468a76f
+2026-01-08,retrofunding_s8_devtooling,VSCode Solidity Inspector ,725.18,239.3094,vscode-solidity-inspector-praneshasp,https://atlas.optimism.io/project/0x3ec2d572a608cf939eaf7886402320b3b2229610c13bdb5cb0776bd097331e5a
+2026-01-08,retrofunding_s8_devtooling,Viem: TypeScript Interface for Ethereum,25000.0,8250.0,wevm,https://atlas.optimism.io/project/0x6bd057da522918a4675396313ae33a2f2788a1ceeb3bd7ae228015e3eb317a7d
+2026-01-08,retrofunding_s8_devtooling,Vscode Solidity Extension,354.14,116.8662,vscode-solidity,https://atlas.optimism.io/project/0x819775803938d78eaa95809971ce94cae6a54b4df58505fa36153ffa1d55e12c
+2026-01-08,retrofunding_s8_devtooling,Vyper,6653.12,2195.5296,vyperlang,https://atlas.optimism.io/project/0x9ca1f7b0e0d10d3bd2619e51a54f2e4175e029c87a2944cf1ebc89164ba77ea0
+2026-01-08,retrofunding_s8_devtooling,Wagmi: Reactive primitives for Ethereum apps ,25000.0,8250.0,wevm,https://atlas.optimism.io/project/0xc0615947773148cbc340b175fb9afc98dbb4e0acd31d018b1ee41a5538785abf
+2026-01-08,retrofunding_s8_devtooling,WhatsABI,6477.82,2137.6806,whatsabi-shazow,https://atlas.optimism.io/project/0xabdfa10e699db5127100da1dd2403692afe8d86e793d57780f1c7e93437a73a0
+2026-01-08,retrofunding_s8_devtooling,alloy,7679.9,2534.367,alloy-rs,https://atlas.optimism.io/project/0x56ce7cbc27852a8d8ef5869dc9033a215c8893f799468f61527dacb9f92be790
+2026-01-08,retrofunding_s8_devtooling,beaconcha.in,249.11,82.20630000000000,beacon-chain,https://atlas.optimism.io/project/0xdd81f0fbb21c949e5d67176b22a39cfdc7c774349214a450df78eb31174413db
+2026-01-08,retrofunding_s8_devtooling,bulloak,1182.04,390.0732,bulloak-alexfertel,https://atlas.optimism.io/project/0x740bebbc731ec56dcc17c7d429656220a73960022c3809edf324bd8120285722
+2026-01-08,retrofunding_s8_devtooling,eRPC,6886.44,2272.5252,erpc,https://atlas.optimism.io/project/0x1e7a1f9763d25b6844567a7133b1005ef6ed785642a75229acf1b9b25202a5f3
+2026-01-08,retrofunding_s8_devtooling,ethereum-bloom-filters,3846.62,1269.3846,ethereum-bloom-filters-joshstevens19,https://atlas.optimism.io/project/0x4c9626843c4e3f3c96d80b0ec6b1d10b7682fc9b6d67ab61ece5a87648535b1f
+2026-01-08,retrofunding_s8_devtooling,ethereum-multicall,5975.95,1972.0635,ethereum-multicall-joshstevens19,https://atlas.optimism.io/project/0x37fe5886f4c77d5a5cb947deff90158c045a5d207572763187748ac4dd4bd9b9
+2026-01-08,retrofunding_s8_devtooling,ethers-multicall-provider,3154.39,1040.9487,ethers-multicall-provider-rubilmax,https://atlas.optimism.io/project/0xf46bb7a4597826d57ce9ef1579b7a11079dccfd8510770ad64b2e5a801d8ff27
+2026-01-08,retrofunding_s8_devtooling,evmc,266.25,87.8625,evmc-joshstevens19,https://atlas.optimism.io/project/0xf4f7d13f2ac3c9805998d8540950883b872d7c5d7c81d6254dde8655af690b2a
+2026-01-08,retrofunding_s8_devtooling,foundry-gas-diff,312.47,103.1151,foundry-gas-diff-rubilmax,https://atlas.optimism.io/project/0xb024f6abfa79f7eb7af334f56015509bb70355709991d31bc689c7bea3250f7e
+2026-01-08,retrofunding_s8_devtooling,foundry-storage-check,363.46,119.9418,foundry-storage-check-rubilmax,https://atlas.optimism.io/project/0xfeafe16f8c1a25aebe754f3653340a17943a483a3e389464e44cf14613e210f0
+2026-01-08,retrofunding_s8_devtooling,hardhat-gas-reporter,6754.46,2228.9718000000000,hardhat-gas-reporter-cgewecke,https://atlas.optimism.io/project/0xc2d8139cd61ddc75689610ee0cca0fe37ba8bec3270beb6aac6eac91c6256f60
+2026-01-08,retrofunding_s8_devtooling,hevm,417.04,137.62320000000000,hevm-ethereum,https://atlas.optimism.io/project/0x2c97e213fef2bd3f30a71edf6ed48232640368d0083dc0a134a1b59391639bde
+2026-01-08,retrofunding_s8_devtooling,js-libp2p,3246.43,1071.3219,libp2p,https://atlas.optimism.io/project/0x5a7e7c7acb21521e99021d746740b368801cbfe531301e50bdbaafdc24a0aac5
+2026-01-08,retrofunding_s8_devtooling,keccak256js,3586.35,1183.4955,keccak256js,https://atlas.optimism.io/project/0x48220ef1d103189cd918e9290db4c4b99b463ae2817fb5ef0cc54556a7961b6f
+2026-01-08,retrofunding_s8_devtooling,noble cryptography,7086.89,2338.6737000000000,paulmillr,https://atlas.optimism.io/project/0x62d9a8a3b602c688610abfbe3965e04ca0d19c5c506f40e79cd185cb501d2018
+2026-01-08,retrofunding_s8_devtooling,rindexer,5510.04,1818.3132,rindexer-joshstevens19,https://atlas.optimism.io/project/0x97525ec91080ddd917eaccabf9d383cf70a2f78839ab21eeabe1687e312f2132
+2026-01-08,retrofunding_s8_devtooling,rotki,4526.89,1493.8737,rotki,https://atlas.optimism.io/project/0xc0ad090a80d748c19dce84d17f85d7b0016daa1c35f72ada2d92f469f8a77067
+2026-01-08,retrofunding_s8_devtooling,solidity-coverage,11798.47,3893.4951,solidity-coverage-sc-forks,https://atlas.optimism.io/project/0x2bb095e1f297c71da8bd4ee15097abad3b99e299fe14cd6aa704df3f36d0ae22
+2026-01-08,retrofunding_s8_devtooling,thirdweb,4824.81,1592.1873000000000,third-web,https://atlas.optimism.io/project/0xc6052138bbdae5976fa2866f46b0537182d4126c4bb97485738d1b43f2276134
+2026-01-08,retrofunding_s8_devtooling,web3.py,10394.18,3430.0794,web3py-ethereum,https://atlas.optimism.io/project/0xebe03c3d6d33cad60124b9b05ef6e2ff056293a1de3c5fa51dfbb90c86c14bf7
+2026-01-08,retrofunding_s8_devtooling,xdeployer,2564.09,846.1497,xdeployer,https://atlas.optimism.io/project/0x537097f27d55cb52d39b95c3ed65076349ab68aac48051d742d715456e0884d8
+2026-01-08,retrofunding_s8_devtooling,🏗️  Scaffold-ETH 2,11258.93,3715.4469,buidlguidl,https://atlas.optimism.io/project/0x154a42e5ca88d7c2732fda74d6eb611057fc88dbe6f0ff3aae7b89c2cd1666ab
+2026-01-08,retrofunding_s8_devtooling,🐍 snekmate,3966.14,1308.8262,snekmate,https://atlas.optimism.io/project/0x50159544ec22884b777a997a625c75bb02e55b1dc8934aad3b78678e7c11d039
+2026-01-08,retrofunding_s8_onchain_builders,AION,349.96,115.4868,world-mini-app-aion,https://atlas.optimism.io/project/0x12721a0927c5d0598380e718e69c7f3395cc7b8847da42ac384af9c59efd025d
+2026-01-08,retrofunding_s8_onchain_builders,Account Abstraction - ERC-4337,5000.0,1650.0,eth-infinitism-account-abstraction,https://atlas.optimism.io/project/0xb98778ca9ff41446e2bc304f7b5d27f0fa7c2bcd11df19e22d1352c06698a1f6
+2026-01-08,retrofunding_s8_onchain_builders,Across Protocol,1908.38,629.7654000000000,across,https://atlas.optimism.io/project/0x72723e07fe409557489a6643b43d9493a94c10ba68230b0527f01834cb6a550f
+2026-01-08,retrofunding_s8_onchain_builders,Arcadia Finance ,428.43,141.3819,arcadia-finance,https://atlas.optimism.io/project/0xdd35cc4641c3c35bee5782fc0442b2a1b88a058ec0a7b90ba32c70347e4e9194
+2026-01-08,retrofunding_s8_onchain_builders,Arkada,831.54,274.4082,,https://atlas.optimism.io/project/0x5962ef9e4955bc4cd4c6ed080c55879be9ee2dddb1b7cd37d72182a142dc9eab
+2026-01-08,retrofunding_s8_onchain_builders,BMX,403.04,133.00320000000000,morphex-labs,https://atlas.optimism.io/project/0xe5c133e05956a3939b9a78f4ad5d0a897a027da60a7d5e1b6276a2266211f69f
+2026-01-08,retrofunding_s8_onchain_builders,Base Logos,331.05,109.2465,,https://atlas.optimism.io/project/0xae3efd865f9584671ede5e94c83190b0aea5ac5d77eb0179ba849bcaae314546
+2026-01-08,retrofunding_s8_onchain_builders,BaseSwap ,1579.53,521.2449,baseswapfi,https://atlas.optimism.io/project/0xca3f26e1c876e821d2384a5cb699c6be494f9810301c2e2be49c232656262642
+2026-01-08,retrofunding_s8_onchain_builders,Beefy,458.56,151.3248,beefy-finance,https://atlas.optimism.io/project/0x30769523b16315b6404ce3c6dbaf610028acdf3133dca8a4d427e0d19d3628c9
+2026-01-08,retrofunding_s8_onchain_builders,BitMaster,1340.04,442.2132,world-mini-app-goodluckgame,https://atlas.optimism.io/project/0x79e3ed10841da009fbbaef5ac13c27022dd35e95ac5c02bae078775981a9aaa0
+2026-01-08,retrofunding_s8_onchain_builders,Blockchain Messages,1121.56,370.1148,,https://atlas.optimism.io/project/0x9f63aa0f49f9b6a09c014535bb0b06d6bbe643fd92d528cd58679433b6ebd6d4
+2026-01-08,retrofunding_s8_onchain_builders,Boost,323.42,106.7286,,https://atlas.optimism.io/project/0x0d9c7311e85bdb33f73377d801ff44fecd5ae6e23ec3828f9d2ef0e428f59919
+2026-01-08,retrofunding_s8_onchain_builders,Brahma,1493.37,492.8121,brahma,https://atlas.optimism.io/project/0xc66e357ad67e63954cd1eb79da4d507d8800518f06c82e423e93e8771e7b8d13
+2026-01-08,retrofunding_s8_onchain_builders,Cash Convert,2224.84,734.1972000000000,kids-table-inc,https://atlas.optimism.io/project/0x2bdfa034cf1e853db8ed4b30531270c7a62d66550cd23383819e816abb234f0a
+2026-01-08,retrofunding_s8_onchain_builders,Compound Finance,279.35,92.18550000000000,compound-finance,https://atlas.optimism.io/project/0xd3d00c946f62ac8cf49a85e3ab7d295d3b56f68d0b9f1fa4d595742fa372cf78
+2026-01-08,retrofunding_s8_onchain_builders,Coop Records,1416.1,467.313,coop-records,https://atlas.optimism.io/project/0x0b06e685eab9c4fee7d93ca54e1c02281e2be560bfc54f43fa738961fa2ce4c1
+2026-01-08,retrofunding_s8_onchain_builders,CreateMyToken,315.54,104.1282,createmytoken,https://atlas.optimism.io/project/0xdf3eb6b429b2150c71241de0c591b18c98a3528ad0e8d838d069b6fff291d803
+2026-01-08,retrofunding_s8_onchain_builders,CreateX,1426.15,470.62950000000000,createx,https://atlas.optimism.io/project/0x0008577196fa6ec286440b418e2f6305fc10e62ce759625d826be272ee6b45a3
+2026-01-08,retrofunding_s8_onchain_builders,Credit,2294.48,757.1784,world-mini-app-credit,https://atlas.optimism.io/project/0x08447636de20816960f0427a65677df5571d503f09235b2bec37f7dd5c28161d
+2026-01-08,retrofunding_s8_onchain_builders,DAOBase,895.44,295.4952,daobase-ai,https://atlas.optimism.io/project/0x76596da0afbf2980ce80e6238c974495fbe52f5c29ec38893dcfdacd5378eaa3
+2026-01-08,retrofunding_s8_onchain_builders,DIAMANTE,1393.26,459.7758,,https://atlas.optimism.io/project/0xc7104d126ffe628630e89f455711ef296175069fffb1f9c0e85b396ee1d23f27
+2026-01-08,retrofunding_s8_onchain_builders,DICE MAXx6,780.36,257.5188,,https://atlas.optimism.io/project/0x22f19557b1142eeed40eceffa2e5b31fb8393ca57dafb3454035a71c613b5ce1
+2026-01-08,retrofunding_s8_onchain_builders,DNA Token,419.69,138.4977,dnatokenio,https://atlas.optimism.io/project/0xdafc4d2a060c7d08913ceb05b19c4fe7fb6d93a7f5f1142642be939be16bf6e9
+2026-01-08,retrofunding_s8_onchain_builders,DackieSwap,428.69,141.4677,dackieswap,https://atlas.optimism.io/project/0x18e7582de42dd9a7fd2cb69fb6566b8bcb3e86b936b229b0c5af78fa1de791a4
+2026-01-08,retrofunding_s8_onchain_builders,Daimo Pay,425.39,140.3787,daimo-pay,https://atlas.optimism.io/project/0xc850d11fe786d1168bfeda108721101427dd5425d9d9e6595c35573f7616e940
+2026-01-08,retrofunding_s8_onchain_builders,Dalgona,277.32,91.5156,,https://atlas.optimism.io/project/0x1f998a77880db01b4938b7fa84fc2f6577fee032fd0a55393406e665d7f3a9e1
+2026-01-08,retrofunding_s8_onchain_builders,Double or Nothing,2085.25,688.1325,world-mini-app-goodluckgame,https://atlas.optimism.io/project/0x394cdf60010e890aeb52606b938e6ff6ef7a52b0b5a3e897daf0133bed243b14
+2026-01-08,retrofunding_s8_onchain_builders,Drop Wallet,2480.41,818.5353,world-mini-app-drop-wallet,https://atlas.optimism.io/project/0xf9af65e8afbd0fd21802bca92c9d0d6201a8b1d114d5c9170fea7e914fd2b392
+2026-01-08,retrofunding_s8_onchain_builders,EARN HUB!,2413.87,796.5771,,https://atlas.optimism.io/project/0x6fbc494492f9d721670f2a4b6b7b9a3a86c5050cb342146d4d4e3a606e1a3478
+2026-01-08,retrofunding_s8_onchain_builders,Eat The Pie,308.09,101.6697,eatthepie,https://atlas.optimism.io/project/0xe11a4f107e474ae204a45e4f674f6d422f2230c9675f9ebfba1eb2af217c2d1b
+2026-01-08,retrofunding_s8_onchain_builders,Eggs Vault,3070.26,1013.1858,holdstation,https://atlas.optimism.io/project/0xf4e56e0c6654d6ef621191708f27ee20242462f541d3e79dc5512e1a10d90736
+2026-01-08,retrofunding_s8_onchain_builders,Ethos,2040.18,673.2594,,https://atlas.optimism.io/project/0x9ddf50bd9acf450e8d0b120d60fc12dc63d1aaa7b2c617b3c511fe17cc0879e9
+2026-01-08,retrofunding_s8_onchain_builders,Extra Finance,298.47,98.4951,extra-finance,https://atlas.optimism.io/project/0x512f97f1de28ad530f752d53bf4f56ed16d34a3121f0512cd5a0485c2074b312
+2026-01-08,retrofunding_s8_onchain_builders,FLAG!,1675.22,552.8226000000000,party-dao,https://atlas.optimism.io/project/0x7d5bcf0b123ca5611f1bb0c889816753cc215b0a230849c8464c6c2a08c4eddc
+2026-01-08,retrofunding_s8_onchain_builders,Flaunch,1338.42,441.6786,flayerlabs,https://atlas.optimism.io/project/0x259b729af86ba38c0c84be9b739dfbca109a6df985371d8cabd43116d18d7a1a
+2026-01-08,retrofunding_s8_onchain_builders,Fractal Visions,510.01,168.3033,fractal-visions,https://atlas.optimism.io/project/0x808b31862cec6dccf3894bb0e76ce4ca298e4c2820e2ccbf4816da740463b220
+2026-01-08,retrofunding_s8_onchain_builders,GM,1470.59,485.2947,inkonchain,https://atlas.optimism.io/project/0x2c1d2ae68e4a718a04a41f1a9fde1ed0648602e08c150e3f72d3dc7ef22dd71a
+2026-01-08,retrofunding_s8_onchain_builders,GMonchain,1183.96,390.7068,,https://atlas.optimism.io/project/0xef71b036123a72aa9aa64afb1263751bdfc7e7e4e63ec658c323136dc3a88d37
+2026-01-08,retrofunding_s8_onchain_builders,Gains Network (gTrade),677.75,223.6575,gainsnetwork,https://atlas.optimism.io/project/0x70ba3cb2e433f1cd9ace8aea84c46d167ba5db12293cd108eaca068d06be3a71
+2026-01-08,retrofunding_s8_onchain_builders,Gardens 🌱,401.04,132.34320000000000,,https://atlas.optimism.io/project/0xf87dc66be181007e6d394553b4498ef833f7a53059d86e6ae399b4ca8db61543
+2026-01-08,retrofunding_s8_onchain_builders,Guild.xyz,414.5,136.785,guildxyz,https://atlas.optimism.io/project/0x3d009f8f7c1e8a3bcbc81ca8ed60d2e86b956dd0fa68c4595f851be37052a2b5
+2026-01-08,retrofunding_s8_onchain_builders,Gyroscope,1692.41,558.4953,gyrostable,https://atlas.optimism.io/project/0x3526b9c6fdc34076d7d2c31893b94e760f4d5a010387b6b76b45f8b5577ceb98
+2026-01-08,retrofunding_s8_onchain_builders,Highlight,278.96,92.0568,highlightxyz,https://atlas.optimism.io/project/0x331511dd6300baf10a35b2d3f3953fd7160412b970049b3a63b64564ce26c347
+2026-01-08,retrofunding_s8_onchain_builders,Holdstation Wallet,1027.77,339.1641,holdstation,https://atlas.optimism.io/project/0x8fbddc02ddbc9c9b303b7bbb645aa933541876a31a93d7dea165fb0283d7f685
+2026-01-08,retrofunding_s8_onchain_builders,Hydrex,5000.0,1650.0,hydrex-fi,https://atlas.optimism.io/project/0xab28184ffcd1429ce9bbcffdba320787e9d2ab1e2f365352af3b5a9ef64f4600
+2026-01-08,retrofunding_s8_onchain_builders,InfinityName,658.13,217.1829,,https://atlas.optimism.io/project/0x4dc32aaf6b60deda7ef0f98ea1b35dbb938741f16375a25fe0ce75c872f5d0ab
+2026-01-08,retrofunding_s8_onchain_builders,Ionic Protocol,534.34,176.33220000000000,ionicprotocol,https://atlas.optimism.io/project/0xbcb5c437d5347be21add3972512679054416805274f80e85ab8053ae79340a69
+2026-01-08,retrofunding_s8_onchain_builders,Kim Exchange,276.09,91.1097,kim-protocol,https://atlas.optimism.io/project/0xfd9f98de666c5b0a5ce96d4a4b8d4ceee9f8c2156734d57bf6c23d0cff183e90
+2026-01-08,retrofunding_s8_onchain_builders,Kyo finance,5000.0,1650.0,kyo-finance,https://atlas.optimism.io/project/0x5958eb35cf4d4b8871924adc5e6272eff2ac701e368ca6ad043ee486cce9e223
+2026-01-08,retrofunding_s8_onchain_builders,LI.FI,3340.15,1102.2495,lifinance,https://atlas.optimism.io/project/0x517eaa9c56951de89261f2d7830ea49aae92f2a903104a17d9c5c2edd4959806
+2026-01-08,retrofunding_s8_onchain_builders,Layer3,1789.96,590.6868000000000,layer3xyz,https://atlas.optimism.io/project/0x91a4420e2fcc8311e97dad480f201a8ce221f2cd64c2de77280cbcc6ce193752
+2026-01-08,retrofunding_s8_onchain_builders,Liberoverse,231.4,76.36200000000000,,https://atlas.optimism.io/project/0x670140099063200aa424366d77f43b2ef5ff2b715189f412d76846ba0abf2058
+2026-01-08,retrofunding_s8_onchain_builders,MetaMap,322.11,106.29630000000000,,https://atlas.optimism.io/project/0x4f64c34669043d9fac6a8fd01a93c27b2ab0c88a803c7b72dedb8cef035ede01
+2026-01-08,retrofunding_s8_onchain_builders,Mint Club,2714.48,895.7784,mintclub-steemhunt,https://atlas.optimism.io/project/0x0ee3defac0e2a31b995bc073ac02a2140aaf01679e141eb8d1d80409f75f90ea
+2026-01-08,retrofunding_s8_onchain_builders,Mint Forest,986.5,325.545,,https://atlas.optimism.io/project/0x81c88822ad7d004a94a2a5ce5d6a2a04466f78d211931230ac0c5a804d36c855
+2026-01-08,retrofunding_s8_onchain_builders,Multicaller,680.11,224.4363,multicaller-vectorized,https://atlas.optimism.io/project/0xfc54b4a9c537be25238cba3f05100b733aeee83a3eb3fdae60d651b3b913390c
+2026-01-08,retrofunding_s8_onchain_builders,NFTs2Me,401.71,132.5643,nfts2me,https://atlas.optimism.io/project/0xd54e1032bf16d649f8f8f0a7da42a249966ad4a270b4c17b24ded1e32c97b2bf
+2026-01-08,retrofunding_s8_onchain_builders,Neptune Finance,318.05,104.9565,nepfinance,https://atlas.optimism.io/project/0x469f813ce1b0c64293d1f884363808f076d27abc8c6060bd3abe46bedd0d7982
+2026-01-08,retrofunding_s8_onchain_builders,Next Block,1349.89,445.4637000000000,,https://atlas.optimism.io/project/0x17af27f3a8d2753e59dcc42dbbe79f2910583cbe50072406157b7a515c156f2c
+2026-01-08,retrofunding_s8_onchain_builders,ORB,1337.64,441.42120000000000,party-dao,https://atlas.optimism.io/project/0xb620f012eb197e5661f65c1a5aee6a4bbb43629f0056879ae4dc66adf8383ae3
+2026-01-08,retrofunding_s8_onchain_builders,ORO,3341.17,1102.5861,party-dao,https://atlas.optimism.io/project/0x40ee6048c99aefd288f6133db207849d0951fe6b62afa1cca0db5a4ad7f558de
+2026-01-08,retrofunding_s8_onchain_builders,Oku Trade,748.2,246.90600000000000,gfx-labs,https://atlas.optimism.io/project/0xb926ab918147d2264dba94a429eb07986aa533fd6062a78736d3eda4e0b4a69b
+2026-01-08,retrofunding_s8_onchain_builders,OmniHub,996.75,328.9275,omnihub-xyz,https://atlas.optimism.io/project/0xd7a8e115b2b3772d7d5656d7798e349dcdedf2463302c78528c9e9686ab4efe3
+2026-01-08,retrofunding_s8_onchain_builders,On-Chain Check-in,221.69,73.1577,,https://atlas.optimism.io/project/0x2de0aff968ce9b118d16044d2b59cac6e43878ed658ba8e5a6c15838dc1892d0
+2026-01-08,retrofunding_s8_onchain_builders,OnChainGM,1583.29,522.4857000000000,onchaingm,https://atlas.optimism.io/project/0xa1f96576ad998e804140caccd478bae81b8b1059a107166df87b59fbf42c9e4a
+2026-01-08,retrofunding_s8_onchain_builders,OpenOcean,1152.06,380.1798,openocean-finance,https://atlas.optimism.io/project/0x24ff0fb2933e55b169a80d9bd35a00a7011795387717b27445ccdc0f8660d740
+2026-01-08,retrofunding_s8_onchain_builders,Orbiter,475.02,156.7566,orbiter-finance,https://atlas.optimism.io/project/0x9d4b7018b3a7c6010c5035ef99c485f960e6705ac0e99b4d832b2e748490f089
+2026-01-08,retrofunding_s8_onchain_builders,Origin Protocol,387.68,127.9344,originprotocol,https://atlas.optimism.io/project/0x9c691ba3012549259099205cc1a7ca4d09d9b7a24a1b7b821b52c7bf1c9b89f4
+2026-01-08,retrofunding_s8_onchain_builders,Orki Finance,314.3,103.719,,https://atlas.optimism.io/project/0x578d022acd70130def85327e2926a2ed4545e08617ced951ef54a872f5a2a5f5
+2026-01-08,retrofunding_s8_onchain_builders,Otterverse,1377.38,454.5354,world-mini-app-otterverse,https://atlas.optimism.io/project/0xc55fe3df4a2689935cc0a4b912e3f913de7a8c1c6758370550aaf25a949ec79c
+2026-01-08,retrofunding_s8_onchain_builders,O＝C＝O,215.56,71.1348,pileum-org,https://atlas.optimism.io/project/0xc55da0ccb43d29814ac5ac3e1eacb85a5008a30df7fff6c34c45684c89ad5f11
+2026-01-08,retrofunding_s8_onchain_builders,PUF,4028.65,1329.4545,world-mini-app-puf,https://atlas.optimism.io/project/0x2c41bf7b4d36a344881581e20ecb2929d38c3415fffa4bf65f81ae049dfb2e72
+2026-01-08,retrofunding_s8_onchain_builders,PancakeSwap,5000.0,1650.0,pancakeswap,https://atlas.optimism.io/project/0x1ac8413aaf8110410b9447af27251ba89311f5ec4e2d289006e834b122a44dbf
+2026-01-08,retrofunding_s8_onchain_builders,Pheasant Network,1022.83,337.5339,,https://atlas.optimism.io/project/0x2d5167181143298e3d002d318d8b1d2917b8c3205a5634549c95cab0ff32cbdf
+2026-01-08,retrofunding_s8_onchain_builders,Pinto Protocol,4184.38,1380.8454000000000,pinto-org,https://atlas.optimism.io/project/0x7eb6ba7a1057659d04ec414446c1b32509bf57704958139266c7120903446ad6
+2026-01-08,retrofunding_s8_onchain_builders,REP,820.81,270.8673,,https://atlas.optimism.io/project/0xae5c4d35026ffdbeacee32aa43eaa32481f1a562750b8b650c7d3a5d67682bae
+2026-01-08,retrofunding_s8_onchain_builders,Rainbow (Rainbow Router),504.32,166.4256,rainbow,https://atlas.optimism.io/project/0xffffeb1d3576c1e847701c225975ee1a10259e05366b477e98fea7a47c5e5896
+2026-01-08,retrofunding_s8_onchain_builders,Relay Protocol,5000.0,1650.0,reservoirprotocol,https://atlas.optimism.io/project/0x250065e82e6a2fd0127f0f7c7e0df7eb305810bd9796f72aa28a0c7f2c71ae08
+2026-01-08,retrofunding_s8_onchain_builders,Reserve Protocol,367.43,121.2519,reserve-protocol,https://atlas.optimism.io/project/0xab1ddf597f6539acc5ad601c2a6d2899c0475cfd9cc3b837939b1084ba5d7a36
+2026-01-08,retrofunding_s8_onchain_builders,Rubic,926.39,305.7087,cryptorubic,https://atlas.optimism.io/project/0xbd0a2132830ab98440f052dd378cfad9cc3133bd0fa226fd485da2540179b458
+2026-01-08,retrofunding_s8_onchain_builders,SOCKET protocol,1130.35,373.0155,socket,https://atlas.optimism.io/project/0xe8833ceee8beb2b3fb0f7f2dcef576f6f9cf20e35d8e53324d71b0ed47b01982
+2026-01-08,retrofunding_s8_onchain_builders,SONEX,868.89,286.7337,sonex,https://atlas.optimism.io/project/0x57b84242462a1ddfb9006369b96a60d85ec41fa29aa20b8f2902ce9ba22e3f54
+2026-01-08,retrofunding_s8_onchain_builders,Sake,1011.86,333.91380000000000,sake-finance,https://atlas.optimism.io/project/0x18923b60296e26a8ce35a0b4754cd6fd5427b2820a202f82901c826794fdbc9e
+2026-01-08,retrofunding_s8_onchain_builders,Seamless Protocol,212.2,70.026,seamless-protocol,https://atlas.optimism.io/project/0x7539f43dc91f9c406c83a06339708e4033cdbf630916c6dfb9de2b5ef811affd
+2026-01-08,retrofunding_s8_onchain_builders,Shredding Sassy & SHAKA,987.56,325.8948,,https://atlas.optimism.io/project/0xb23f12d6f2b8bc60e72710053d823163208ba7169565613e034423b09aaeafce
+2026-01-08,retrofunding_s8_onchain_builders,Smol,310.12,102.3396,smoldapp,https://atlas.optimism.io/project/0x79fa54d6c030c7803827e96933fc93b092f638079c738d13a27a08b3905b95ec
+2026-01-08,retrofunding_s8_onchain_builders,Sonus Exchange,514.51,169.7883,sonusexchange,https://atlas.optimism.io/project/0x96767e87a27cdb9798f40c3a6fd78e70da611afe53a5e45cbaafc50cae4ad0e7
+2026-01-08,retrofunding_s8_onchain_builders,Splits,663.5,218.955,0x-splits,https://atlas.optimism.io/project/0xb6266f3d955040aa7583f2f346db87abe0649f545389af3cc8fe302aacfc850b
+2026-01-08,retrofunding_s8_onchain_builders,Stargate Finance,1258.76,415.3908,stargate-finance,https://atlas.optimism.io/project/0x62e37e96aa6e1cbfb6bd24b97c4b8f1e12cc3fe35d5388d2f041c42a12b40745
+2026-01-08,retrofunding_s8_onchain_builders,Super DCA,802.21,264.7293,,https://atlas.optimism.io/project/0xefb1b38ba875f579e1e27a9e1c5a83e6c7347ca0cb1835afd334c4bc36e2a178
+2026-01-08,retrofunding_s8_onchain_builders,SuperBoring,297.35,98.12550000000000,superfluid,https://atlas.optimism.io/project/0x7f0e98c70d1401fb100dc804f28743bb567a2fee12315f52300113df514b7bd3
+2026-01-08,retrofunding_s8_onchain_builders,SuperVol,999.44,329.81520000000000,stvol-official,https://atlas.optimism.io/project/0x1f60db63651f74e2fc8b3ff900d05142552a763c31caf3a8c8e62b0953f02bf2
+2026-01-08,retrofunding_s8_onchain_builders,Superchain Safe,264.57,87.3081,superchain-safe-protofire,https://atlas.optimism.io/project/0x31704fee34d3edec158b5df714b613642bfbbb58ad7466204ded66a3f811b979
+2026-01-08,retrofunding_s8_onchain_builders,Superfluid,4633.79,1529.1507,superfluid,https://atlas.optimism.io/project/0x3ecbf66c1b21342b26acb0f7d4c6b8bbbef168ffafff3f425de3503fd8dfa535
+2026-01-08,retrofunding_s8_onchain_builders,Superform,250.33,82.6089,superform-xyz,https://atlas.optimism.io/project/0x82edc3ac2a03da21c5a6033159ba8e97aab2f61dc5d1d9813929fea6d6c35362
+2026-01-08,retrofunding_s8_onchain_builders,Superhero,440.91,145.5003,world-mini-app-superhero,https://atlas.optimism.io/project/0x42bdd05fa3beb0b21780bbd35b34eefc3e69e45bc4f17043f6eb6b2bbed26237
+2026-01-08,retrofunding_s8_onchain_builders,SurfLayer,806.95,266.29350000000000,,https://atlas.optimism.io/project/0x4f6091bc27c7e7c6fcd6588c086932115836445feabe29bb4e24a2d91421a36a
+2026-01-08,retrofunding_s8_onchain_builders,Surge,816.53,269.4549,,https://atlas.optimism.io/project/0x434857e32d5ae99d89cb0c50d274b288dd29d5de61fe41ac9b0490c6ca475d89
+2026-01-08,retrofunding_s8_onchain_builders,Sushiswap,2251.35,742.9455,sushi,https://atlas.optimism.io/project/0x41b2ae8a2ead458ff7c85549a9a11380353e1ae4b234666312d495326636f77a
+2026-01-08,retrofunding_s8_onchain_builders,SwapBased,718.44,237.08520000000000,swapbased,https://atlas.optimism.io/project/0x8595f830f4d1716621d19bca6394f304837133fb473d8fcd1699e84402df1409
+2026-01-08,retrofunding_s8_onchain_builders,SynFutures,2079.02,686.0766,synfutures,https://atlas.optimism.io/project/0x596292c1581406fc4cfba89bc8ed86e32c7ac85c6239d074df7b91fcbc53f4c8
+2026-01-08,retrofunding_s8_onchain_builders,TPulseFi,489.24,161.44920000000000,world-mini-app-tpulsefi,https://atlas.optimism.io/project/0x84893ce34d8069c43d8814db55a1ff5d472e4765650f0c37c1156b5ce97421ff
+2026-01-08,retrofunding_s8_onchain_builders,The Box,2638.91,870.8403,world-mini-app-birdgames,https://atlas.optimism.io/project/0x00d5eaebec0fa6a41bbf5e29d347162dabc04dfffcd188663fc16393a5d9917a
+2026-01-08,retrofunding_s8_onchain_builders,The Button,485.2,160.116,world-mini-app-hocus-labs,https://atlas.optimism.io/project/0xe2ef3fbfd10df401a0221939359e96af29805db8936c1199ae7532262c69ec5f
+2026-01-08,retrofunding_s8_onchain_builders,Tokiemon,239.42,79.0086,unimon-alma-labs,https://atlas.optimism.io/project/0x0b8acaf73a25ba1f64bf829f9678beb8b7edf825353ebea38085590d78d74d5d
+2026-01-08,retrofunding_s8_onchain_builders,UNO,5000.0,1650.0,party-dao,https://atlas.optimism.io/project/0x9fb539aa3ddb63cda1c29b50fbeaa6071f290926ce10f3d224233577b823454e
+2026-01-08,retrofunding_s8_onchain_builders,Uman,272.54,89.93820000000000,world-mini-app-samiibou,https://atlas.optimism.io/project/0x7e7d21d6fd33a544b7d1dc853239b1af732c778d16dbf0e2e059f5f34b1c1bfe
+2026-01-08,retrofunding_s8_onchain_builders,Uniswap on Superchain (Oku),5000.0,1650.0,uniswap,https://atlas.optimism.io/project/0x9d9162fac637991d2a56da8fbe03dba24c87eb82d47c7a00b921e39e956f8a9d
+2026-01-08,retrofunding_s8_onchain_builders,Untitled Bank,426.7,140.811,untitled-bank,https://atlas.optimism.io/project/0x2ecedc3cad0a68d398020bf6d41167535fcaeb6d5bbf1602d6318f07e9c59af6
+2026-01-08,retrofunding_s8_onchain_builders,Veil Cash,604.17,199.3761,veildotcash,https://atlas.optimism.io/project/0x40cda7edf27894d647d9433ded29290966f5c258dade2c3ea36427fccf0ef3c9
+2026-01-08,retrofunding_s8_onchain_builders,Velodrome Finance,5000.0,1650.0,velodrome,https://atlas.optimism.io/project/0x08df6e20a3cfabbaf8f34d4f4d048fe7da40447c24be0f3ad513db6f13c755dd
+2026-01-08,retrofunding_s8_onchain_builders,Virtuals Protocol,5000.0,1650.0,virtual-protocol,https://atlas.optimism.io/project/0x780cf3d5aa4e3c94b8a4157f4b06a3f92ebcc20813585e20e3fe0271bf76b7a9
+2026-01-08,retrofunding_s8_onchain_builders,WOOFi,987.01,325.7133,woonetwork,https://atlas.optimism.io/project/0x000c2ce4773defb3010a58d3800d0ec9d432189c574ba26d3103f1db44a5af6d
+2026-01-08,retrofunding_s8_onchain_builders,Winance,565.0,186.45,,https://atlas.optimism.io/project/0x82d0c4b823b28da0bfeeef79d42a5daa8c039bdbeb75cd4b426c0748832a21da
+2026-01-08,retrofunding_s8_onchain_builders,World Billboard,713.14,235.3362,world-mini-app-world-billboard,https://atlas.optimism.io/project/0xd17c16ed0ff3c31ae81ae9af4070a2150db0be538cabcb720c67cc5f221d3965
+2026-01-08,retrofunding_s8_onchain_builders,World MiniApps - NFT and Gaming,1389.06,458.3898,world-mini-app-world-miniapps---nft-and-gaming,https://atlas.optimism.io/project/0xcae812d91b7b86edf3141f44f006e8a03931ebc489e0a417b82b603bf325bc96
+2026-01-08,retrofunding_s8_onchain_builders,World Republic,2471.32,815.5356,worldrepublicorg,https://atlas.optimism.io/project/0x5831a5bc2b6e683bcb8e392453a85c5e7f755aa700e827ed9c3e1c6d67fb2a96
+2026-01-08,retrofunding_s8_onchain_builders,Worldle,440.32,145.3056,,https://atlas.optimism.io/project/0x041baee0d8c07a4e89e4c6c19410d8f6cd0a8439cbe8ea0687bf9a504f1c6a88
+2026-01-08,retrofunding_s8_onchain_builders,X3X,240.5,79.36500000000000,world-mini-app-x3x,https://atlas.optimism.io/project/0xfb9ddb0fdae7aa1049979189c20c53bad5ab49b44435ca939cef7c618c96a187
+2026-01-08,retrofunding_s8_onchain_builders,ZNS,558.91,184.4403,,https://atlas.optimism.io/project/0xa2447abd4724c68eff8635f01a39a46bd00a2380a56513fbcd430653cfd74c98
+2026-01-08,retrofunding_s8_onchain_builders,daos.world,985.64,325.26120000000000,daos-world,https://atlas.optimism.io/project/0x4eaa0df4cfbda85126db57a231598d33c283b8aacf3a441539877ce7e17be22a
+2026-01-08,retrofunding_s8_onchain_builders,deBridge,1681.69,554.9577,debridge-finance,https://atlas.optimism.io/project/0xf24315614063278ba3543e1717791132a9afa79b0e65baa01a85bcccbdfa215f
+2026-01-08,retrofunding_s8_onchain_builders,doginme memecoin,595.51,196.5183,doginme,https://atlas.optimism.io/project/0xeecfa614f020c2ea4c2eb431246befedf35ddc6c52cfaa83d0c4caf2f580f9f4
+2026-01-08,retrofunding_s8_onchain_builders,pods.media,442.6,146.05800000000000,pods-media,https://atlas.optimism.io/project/0x098fca4a62159ddfc2c45dc2931a727d56f039b8f68e31222b927aaf2ce75b9e
