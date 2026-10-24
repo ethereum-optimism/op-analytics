@@ -4,7 +4,13 @@ from typing import Any, Optional
 
 import requests
 import stamina
-from requests.exceptions import JSONDecodeError
+from requests.exceptions import (
+    JSONDecodeError,
+    SSLError,
+    ConnectionError,
+    Timeout,
+    RequestException,
+)
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import new_session
@@ -38,6 +44,12 @@ ERC20_METHODS = {
 
 class RateLimit(Exception):
     """Raised when a rate limit error is encountered on the JSON-RPC response."""
+
+    pass
+
+
+class RPCConnectionError(Exception):
+    """Raised when there's a connection error to the RPC endpoint."""
 
     pass
 
@@ -93,7 +105,7 @@ class Token:
 
         return batch
 
-    @stamina.retry(on=RateLimit, attempts=3, wait_initial=10)
+    @stamina.retry(on=(RateLimit, RPCConnectionError), attempts=3, wait_initial=10)
     def call_rpc(
         self,
         rpc_endpoint: str | None = None,
@@ -104,14 +116,22 @@ class Token:
         rpc_endpoint = rpc_endpoint or get_rpc_for_chain(chain_id=self.chain_id)
 
         start = time.perf_counter()
-        response = session.post(rpc_endpoint, json=self.rpc_batch())
+        try:
+            response = session.post(rpc_endpoint, json=self.rpc_batch())
+        except (SSLError, ConnectionError, Timeout, RequestException) as ex:
+            log.warning(f"RPC connection error for {self} at {rpc_endpoint}: {ex}")
+            raise RPCConnectionError(f"Connection error to RPC endpoint: {ex}") from ex
 
         try:
             response_data = response.json()
         except JSONDecodeError as ex:
             raise TokenResponseError(dict(token=self)) from ex
 
-        result = TokenMetadata.of(token=self, response=response_data)
+        try:
+            result = TokenMetadata.of(token=self, response=response_data)
+        except TokenMetadataError as ex:
+            log.warning(f"failed to parse token metadata for {self}: {ex}")
+            return None
 
         ellapsed = time.perf_counter() - start
         if ellapsed < speed_bump:
@@ -142,15 +162,35 @@ class TokenMetadata:
     @classmethod
     def of(cls, token: Token, response: list[dict]) -> Optional["TokenMetadata"]:
         data: dict[str, Any] = {}
+        failed_methods = []
+
         for item in response:
             if "error" in item:
                 code = item["error"].get("code")
                 if code == -32016:  # rate limit
                     raise RateLimit(f"JSON-RPC error: {item} [{token}]")
 
-                if code == -32000:  # "execution reverted"
-                    log.warning(f"rpc returned -32000 'execution reverted' {token}")
-                    return None
+                # Handle various error codes that indicate missing functions or contract issues
+                # -32000: execution reverted (function doesn't exist or reverts)
+                # -32001: method not found
+                # -32002: invalid params
+                # -32003: internal error
+                # -32004: invalid request
+                # -32005: parse error
+                # 3: execution reverted with specific message (e.g., "Contract does not have fallback nor receive functions")
+                if code in [
+                    -32000,
+                    -32001,
+                    -32002,
+                    -32003,
+                    -32004,
+                    -32005,
+                    3,
+                ]:  # execution reverted, method not found, contract issues, etc.
+                    method_name = item.get("id", "unknown")
+                    failed_methods.append(method_name)
+                    log.debug(f"method {method_name} failed with code {code} for {token}")
+                    continue
 
                 if code == 3:  # "execution reverted"
                     log.warning(f"rpc returned 3 'execution reverted' {token}")
@@ -171,6 +211,41 @@ class TokenMetadata:
             else:
                 raise Exception("invalid item id: " + item["id"])
 
+        # If we have failed methods, log them and check if we can still proceed
+        if failed_methods:
+            log.warning(
+                f"methods {failed_methods} failed for {token}, checking if we can still proceed"
+            )
+
+            # Check if we have the minimum required data to create token metadata
+            required_methods = ["decimals", "symbol", "name", "totalSupply"]
+            missing_required = [method for method in required_methods if method not in data]
+
+            if missing_required:
+                log.warning(
+                    f"missing required methods {missing_required} for {token}, skipping token"
+                )
+                return None
+
+        # Helper functions for safe decoding with defaults
+        def safe_decode(key: str, decode_type: str, default_value: Any = None):
+            if key in data:
+                try:
+                    return decode(decode_type, data[key])
+                except Exception as ex:
+                    log.warning(f"failed to decode {key} for {token}: {ex}")
+                    return default_value
+            return default_value
+
+        def safe_decode_string(key: str, default_value: str = "UNKNOWN"):
+            if key in data:
+                try:
+                    return decode_string(data[key])
+                except Exception as ex:
+                    log.warning(f"failed to decode string {key} for {token}: {ex}")
+                    return default_value
+            return default_value
+
         try:
             return cls(
                 chain=token.chain,
@@ -178,10 +253,10 @@ class TokenMetadata:
                 contract_address=token.contract_address,
                 block_number=data["block_number"],
                 block_timestamp=data["block_timestamp"],
-                decimals=decode("uint8", data["decimals"]),
-                symbol=decode_string(data["symbol"]),
-                name=decode_string(data["name"]),
-                total_supply=decode("uint256", data["totalSupply"]),
+                decimals=safe_decode("decimals", "uint8", 18),  # Default to 18 decimals
+                symbol=safe_decode_string("symbol", "UNKNOWN"),
+                name=safe_decode_string("name", "Unknown Token"),
+                total_supply=safe_decode("totalSupply", "uint256", 0),  # Default to 0
             )
         except Exception as ex:
             raise TokenMetadataError(dict(data=data, token=token)) from ex

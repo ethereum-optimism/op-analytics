@@ -4,7 +4,13 @@ from typing import Any, Optional
 
 import requests
 import stamina
-from requests.exceptions import JSONDecodeError
+from requests.exceptions import (
+    JSONDecodeError,
+    SSLError,
+    ConnectionError,
+    Timeout,
+    RequestException,
+)
 
 from op_analytics.coreutils.logger import structlog
 from op_analytics.coreutils.request import new_session
@@ -71,6 +77,12 @@ class RateLimit(Exception):
     pass
 
 
+class RPCConnectionError(Exception):
+    """Raised when there's a connection error to the RPC endpoint."""
+
+    pass
+
+
 class SystemConfigError(Exception):
     """Raised when we fail to parse the RPC response."""
 
@@ -112,7 +124,7 @@ class RPCManager:
 
         return batch
 
-    @stamina.retry(on=RateLimit, attempts=3, wait_initial=10)
+    @stamina.retry(on=(RateLimit, RPCConnectionError), attempts=3, wait_initial=10)
     def call_rpc(
         self,
         rpc_endpoint: str,
@@ -122,7 +134,11 @@ class RPCManager:
         session = session or new_session()
 
         start = time.perf_counter()
-        response = session.post(rpc_endpoint, json=self.rpc_batch())
+        try:
+            response = session.post(rpc_endpoint, json=self.rpc_batch())
+        except (SSLError, ConnectionError, Timeout, RequestException) as ex:
+            log.warning(f"RPC connection error for {self} at {rpc_endpoint}: {ex}")
+            raise RPCConnectionError(f"Connection error to RPC endpoint: {ex}") from ex
 
         try:
             response_data = response.json()
