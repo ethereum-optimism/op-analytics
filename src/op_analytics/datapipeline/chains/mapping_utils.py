@@ -25,6 +25,8 @@ VALID_IDENTIFIER_TYPES = {
     "display_name",
     "source_name",
     "slug",
+    "chain",  # Actual column name in schema
+    "provider",  # Actual column name in schema
 }
 
 
@@ -312,6 +314,10 @@ def _build_identifier_condition(identifier_type: str, identifier_value: str) -> 
         # This function will be called on the DataFrame, so we need to check existence at runtime
         # For now, create a condition that checks the main 'slug' column
         return pl.col("slug").str.to_lowercase() == identifier_value.lower()
+    elif identifier_type == "chain":
+        return pl.col("chain").str.to_lowercase() == identifier_value.lower()
+    elif identifier_type == "provider":
+        return pl.col("provider").str.to_lowercase() == identifier_value.lower()
     else:
         raise ValueError(f"Unsupported identifier_type: {identifier_type}")
 

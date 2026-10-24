@@ -128,6 +128,7 @@ filterwarnings = [
     'ignore:Type google._upb._message:',
 ]
 addopts = "--cov=src/ --cov-report html"
+norecursedirs = "tests/integration"
 
 [build-system]
 requires = ["hatchling"]

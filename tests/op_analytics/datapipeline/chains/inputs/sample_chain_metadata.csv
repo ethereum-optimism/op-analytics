@@ -1,0 +1,3 @@
+chain_id,chain_name,display_name,source_name,source_rank,dt_day
+1,TestChain,Test Chain,example_source,1,2024-01-01
+2,AnotherChain,Another Chain,example_source,2,2024-01-02
