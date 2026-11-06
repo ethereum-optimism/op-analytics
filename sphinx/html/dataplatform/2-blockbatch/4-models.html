@@ -1,0 +1,619 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Blockbatch Models &#8212; OP Analytics  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=613916f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dataplatform/2-blockbatch/4-models';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Third-Party Data Ingestion" href="../5-datasources/index.html" />
+    <link rel="prev" title="Ingestion" href="3-ingestion.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-wordmark-large/OPTIMISM.png?raw=true" class="logo__image only-light" alt="OP Analytics  documentation - Home"/>
+    <img src="https://github.com/ethereum-optimism/brand-kit/blob/71ea3bb1ea24e87968804b388e99bed0b52e2a4b/assets/images/optimism-wordmark-large/OPTIMISM.png?raw=true" class="logo__image only-dark pst-js-only" alt="OP Analytics  documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    OP Labs Data Platform
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../devsetup/index.html">
+    Development Guide
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    OP Labs Data Platform
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../devsetup/index.html">
+    Development Guide
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../1-architecture.html">Architecture</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Onchain Data Processing</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="1-design.html">Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2-markers.html">Marker Metadata Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3-ingestion.html">Ingestion</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Blockbatch Models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../5-datasources/index.html">Third-Party Data Ingestion</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../5-datasources/1-overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5-datasources/2-dailydata-gcs.html">DailyDataset (GCS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5-datasources/3-clickhouse-data.html">ClickHouseDataset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../3-clickhouse/index.html">Data Warehouse</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../3-clickhouse/1-blockbatch-loading.html">Onchain Data Pipelines: Blockbatch Load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3-clickhouse/2-transforms.html">General Purpose Data Pipelines: Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3-clickhouse/3-comparison.html">Comparison to dbt and SQLMesh</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../4-public-datasets/index.html">OP Labs Public BigQuery Data</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">OP Labs Data Platform</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Onchain Data Processing</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Blockbatch Models</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="blockbatch-models">
+<h1>Blockbatch Models<a class="headerlink" href="#blockbatch-models" title="Link to this heading">#</a></h1>
+<p>Blockbatch models are a way to process onchain data from the data lake and store results back in
+the data lake.</p>
+<div style="text-align: center;">
+    <img src="../../_static/images/blockbatch-models.png" alt="models" width="100%"/>
+</div>
+<p>The image above shows our mental model of <code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> processing (for a single chain), where each
+cell represents a batch. For each batch we have the core ingestion root paths and we have many other
+root paths that are computed starting from the raw data. These derived datasets we refer to as the
+“blockbatch models”.</p>
+<p>Processing raw data is expensive, so we compute as many blockbatch models as we can to make further
+analysis cheaper.</p>
+<p>At OP Labs we have simple filtering models, such as:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">blockbatch/contract_creation/create_traces_v1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">blockbatch/token_transfers/erc20_transfers_v1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">blockbatch/token_transfers/erc721_transfers_v1</span></code></p></li>
+</ul>
+<p>We also have models that compute fee breakdowns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">blockbatch/refined_traces/refined_transactions_fees_v2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">blockbatch/refined_traces/refined_traces_fees_v2</span></code></p></li>
+</ul>
+<p>And we have models where we do more complex contract analysis (including decoding):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">blockbatch/account_abstraction/enriched_entrypoint_traces_v2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">blockbatch/account_abstraction/useroperationevent_logs_v2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">blockbatch/account_abstraction_prefilter/entrypoint_logs_v1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">blockbatch/account_abstraction_prefilter/entrypoint_traces_v1</span></code></p></li>
+</ul>
+<section id="inexpensive-joins">
+<h2>Inexpensive Joins<a class="headerlink" href="#inexpensive-joins" title="Link to this heading">#</a></h2>
+<p>Blockchain data processing usually involves joining data from the different raw datasets. For example
+you may want to join logs with traces or transactions with traces.</p>
+<p>Outside of <code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> data processing this is difficult because compute engines have to perform
+a distributed join across many blocks to produce the joined result. It seems possible, but is
+difficult to get the compute engine to perform a storage layout based optimization of these joins.
+(see for example <a class="reference external" href="https://books.japila.pl/spark-sql-internals/storage-partitioned-joins/">Storage Partitioned Joins in Apache Spark</a>).</p>
+<p>Within <code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> processing we can load data for a specific batch into memory without having to
+scan the storage layer (O(1) access to batches due to the deterministic path). And so we can
+leverage this to much more effectively perform computations that require joins across root_paths.
+Regardless of whether the root_path is one of the 4 core datasets or one derived from a model.</p>
+</section>
+<section id="duckdb-compute-engine">
+<h2>DuckDB Compute Engine<a class="headerlink" href="#duckdb-compute-engine" title="Link to this heading">#</a></h2>
+<p>Having tackled the problem of getting the right data into memory in the local context we now have
+to make a choice: how do we perform computations on this data?  Enter DuckDB.</p>
+<p>We chose DuckDB as the compute engine for <code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> for the following reasons:</p>
+<ul class="simple">
+<li><p><strong>Performance</strong>. DuckDB is very fast for SQL queries.</p></li>
+<li><p><strong>Extensibility</strong>. DuckDB can be enhanced with native UDFs and Python based UDFs. The Python UDFs are
+critical for our ability to decode smart contract data.</p></li>
+<li><p><strong>Streaming capabilities</strong>. DuckDB can stream data from the storage layer to the compute engine and
+most importantly it can also stream write data back to the storage layer. This minimizes the
+memory footprint required to perform computations.</p></li>
+<li><p><strong>Documentation</strong>. DuckDB has excellent documentation and a very active community.</p></li>
+</ul>
+</section>
+<section id="interface">
+<h2>Interface<a class="headerlink" href="#interface" title="Link to this heading">#</a></h2>
+<p>We wanted a single interface to perform all <code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> processing. The goal is to be able to
+specify three pieces of information and have the system figure out the rest. The three pieces of
+information are:</p>
+<ul class="simple">
+<li><p>The date range we want to process.</p></li>
+<li><p>The chains we want to process.</p></li>
+<li><p>The models we want to compute.</p></li>
+</ul>
+<p>Behind the scenes the system will figure out which batches need to be processed, using markers to
+determine which batches have already been processed. Depending on the required input data it will
+decide if the batches are ready to be processed (avoids processing incomplete or missing input).</p>
+<p>The interface is implemented as a single python function which can be called like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">compute_blockbatch</span><span class="p">(</span>
+    <span class="n">chains</span><span class="o">=</span><span class="n">normalize_chains</span><span class="p">(</span><span class="s2">&quot;ALL,-kroma,-unichain_sepolia&quot;</span><span class="p">),</span>
+    <span class="n">models</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;refined_traces&quot;</span><span class="p">],</span>
+    <span class="n">range_spec</span><span class="o">=</span><span class="s2">&quot;@20240301:20240310&quot;</span><span class="p">,</span>
+    <span class="n">read_from</span><span class="o">=</span><span class="n">DataLocation</span><span class="o">.</span><span class="n">GCS</span><span class="p">,</span>
+    <span class="n">write_to</span><span class="o">=</span><span class="n">DataLocation</span><span class="o">.</span><span class="n">GCS</span><span class="p">,</span>
+    <span class="n">dryrun</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">force_complete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">fork_process</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">read_from</span></code> and <code class="docutils literal notranslate"><span class="pre">write_to</span></code> parameters specify where the data is stored and where the results
+will be stored. We support both GCS and the local file system, but in practice we just use GCS most
+of the time. The local file system is useful for development and testing.</p>
+</section>
+<section id="model-definitions-in-python">
+<h2>Model Definitions in Python<a class="headerlink" href="#model-definitions-in-python" title="Link to this heading">#</a></h2>
+<p>In the interface above models are referenced by their name as a string. The actual definition of
+a model is a python function, which is decorated with the <code class="docutils literal notranslate"><span class="pre">&#64;register_model</span></code> decorator to specify
+the input datasets, auxiliary templates, and outputs that it produces.</p>
+<p>An example model definition is shown below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@register_model</span><span class="p">(</span>
+    <span class="n">input_datasets</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;ingestion/blocks_v1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ingestion/traces_v1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ingestion/transactions_v1&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">auxiliary_templates</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;refined_transactions_fees&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;refined_traces/traces_projection&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;refined_traces/traces_with_gas_used&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;refined_traces/traces_txs_join&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">expected_outputs</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;refined_transactions_fees_v2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;refined_traces_fees_v2&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">refined_traces</span><span class="p">(</span>
+    <span class="n">ctx</span><span class="p">:</span> <span class="n">DuckDBContext</span><span class="p">,</span>
+    <span class="n">input_datasets</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ParquetData</span><span class="p">],</span>
+    <span class="n">auxiliary_templates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AuxiliaryTemplate</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedRelations</span><span class="p">:</span>
+   <span class="o">...</span> <span class="n">LOGIC</span> <span class="n">GOES</span> <span class="n">HERE</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">input_datasets</span></code> and <code class="docutils literal notranslate"><span class="pre">expected_outputs</span></code> parameters in the decorator specify the data that is
+needed and the data that will be produced.  The <code class="docutils literal notranslate"><span class="pre">auxiliary_templates</span></code> parameter specifies the location
+of <code class="docutils literal notranslate"><span class="pre">.sql</span></code> files that contain SQL logic that can be leveraged to compute the model. How the templates
+are used is up to the model definition.</p>
+<p>When a model is executed the <code class="docutils literal notranslate"><span class="pre">blockbatch</span></code> processing system will find out where the input data is
+in GCS and will inject it to the model function via the <code class="docutils literal notranslate"><span class="pre">input_datasets</span></code> function argument. It will
+also inject the loaded SQL templates via the <code class="docutils literal notranslate"><span class="pre">auxiliary_templates</span></code> function argument.</p>
+<p>The model function must return a <code class="docutils literal notranslate"><span class="pre">NamedRelations</span></code> object, which is a mapping of output name to
+a DuckDB relation or view object that contains the results.</p>
+<p>The system will materialize the output DuckDB objects as parquet files in the storage layer.</p>
+</section>
+<section id="prototyping">
+<h2>Prototyping<a class="headerlink" href="#prototyping" title="Link to this heading">#</a></h2>
+<p>The tricky part when prototyping a model is the scaffolding that is needed to setup and call
+the model definition python function. We have created a helper function that can be used from
+an IPython notebook to do that. For reference we recommend looking at any notebook in the
+<code class="docutils literal notranslate"><span class="pre">notebooks/adhoc/blockbatch_modesls</span></code> path in the repository.</p>
+</section>
+<section id="integration-testing">
+<h2>Integration Testing<a class="headerlink" href="#integration-testing" title="Link to this heading">#</a></h2>
+<p>Integration tests are crucial to ensure that the model logic is correct.  Our integration test
+framework has a super useful feature which allows you to fetch real production data and use it in
+test. When setting up an integration test you specify the range_spec (as blocks or dates) that
+you want to test over and the first time you run the test it will fetch the real data and store it
+as a parquet file in the <code class="docutils literal notranslate"><span class="pre">testdata</span></code> directory in the repo.</p>
+<p>With test data in hand the integration test framework will run the model. You can define any kind
+of assertions you want to verify the results.</p>
+<p>For an example of an integration test see the <code class="docutils literal notranslate"><span class="pre">refined_traces</span></code> test in the
+<code class="docutils literal notranslate"><span class="pre">tests/op_analytics/datapipeline/etl/models/test_refined_traces.py</span></code> file.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="3-ingestion.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Ingestion</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../5-datasources/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Third-Party Data Ingestion</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inexpensive-joins">Inexpensive Joins</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#duckdb-compute-engine">DuckDB Compute Engine</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interface">Interface</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-definitions-in-python">Model Definitions in Python</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prototyping">Prototyping</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integration-testing">Integration Testing</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/dataplatform/2-blockbatch/4-models.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, OP Labs.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
